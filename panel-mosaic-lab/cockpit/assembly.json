@@ -191,6 +191,18 @@
       "sha256": "ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f",
       "gitBlobSha": "2656a3d8cdd5248490aef643dbb2501bd429403f",
       "sourceStatus": "Owner authorized 2026-11-06: four IDLE/CUTOFF bitmap stencils only. All decoded pixels outside four text rectangles remain identical to the approved bare panel."
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp",
+      "url": "./assets/throttle-quadrant-slots-centered-20261106.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 234554,
+      "sha256": "effe3523ce16b81060e0ada0ba6dfc298f7448d6256ed99b2602fe98bd254eb8",
+      "gitBlobSha": "10dd93178ae7e32caab62eccc5d487f0c5ea1549",
+      "sourceStatus": "Owner authorized 2026-11-06: move only left start-lever slot +5 px and right slot -6 px to grip centers 330.5/404.5; all pixels outside two slot rectangles unchanged."
     }
   },
   "regions": [
@@ -281,7 +293,7 @@
         {
           "id": "throttle-quadrant",
           "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
-          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp",
+          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp",
           "x": 272,
           "y": 0,
           "w": 606,
