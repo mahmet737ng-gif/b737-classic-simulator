@@ -111,10 +111,16 @@
    controls.set(device,entry);native.append(button);bind(entry);paint(entry,entry.travel);
   }
  }
+ // The cockpit assembly is rendered asynchronously after this deferred module
+ // loads. Mount immediately when available and observe the later assembly too.
+ function beginMount(){if(document.querySelector('#region-pedestal .region-native'))mount();}
  window.addEventListener('b737:engine-start-lever-state',e=>{const feedback=e.detail?.levers;if(!feedback)return;
   for(const device of ['engine1','engine2'])if(['CUTOFF','IDLE'].includes(feedback[device]))position(device,feedback[device]);
  });
- window.addEventListener('b737:cockpit-mounted',mount);
+ window.addEventListener('b737:cockpit-mounted',beginMount);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',beginMount,{once:true});else beginMount();
+ const observer=new MutationObserver(()=>{if(!art)beginMount();});
+ observer.observe(document.body,{childList:true,subtree:true});
  window.B737EngineStartLevers=Object.freeze({getPosition:device=>positions[device],getTravel:device=>controls.get(device)?.travel??model.travel(positions[device]),request,
   positions:Object.freeze(['CUTOFF','IDLE'])});
 })();

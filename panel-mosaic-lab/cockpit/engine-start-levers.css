@@ -1,4 +1,4 @@
-/* START-LEVER-0004: additive arm/shaft layer; original plate stays untouched. */
+/* START-LEVER-0006: additive arm/shaft layer; original plate stays untouched. */
 .engine-start-lever-art{position:absolute;z-index:12;display:block;overflow:visible;pointer-events:none;max-width:none;user-select:none}
 .engine-start-lever{position:absolute;z-index:13;display:block;border:0;padding:0;border-radius:5px;background:transparent;box-shadow:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .engine-start-lever[data-dragging=true]{cursor:grabbing}
