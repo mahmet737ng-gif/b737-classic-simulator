@@ -4,10 +4,22 @@
 #overheadToggleLayer .mounted-toggle[data-placement="OH23-25"] .toggle-sprite{
  filter:drop-shadow(0px 2px 2px rgba(0,0,0,.42));transition:background-position .10s steps(1);
 }
-/* Lower row uses original photographic ivory-cap (Small White) switch atlas, matching Classic reference photos. */
-#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{
- background-image:url("../../shared-assets/toggle-switch-small/Small_White_5Positions.webp")!important;
+/* Owner-approved slim ivory toggle: original transparent sheet, unchanged pixels.
+   Nine exterior controls only; keep native registry, state engine and hit targets.
+   Three source pivots: (367.5,370), (1084.5,370), (1797,370).
+   All poses use the same 0.16 scale and mounting center. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]){--ext-white-x:-8.8px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])::after{
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 59.2px);
+ width:100px;height:116px;pointer-events:none;transform:none;filter:none;transition:none;
+ background-image:url("../../shared-assets/exterior-white-owner-v1/topdown-up-center-down.png");
+ background-size:347.52px 115.84px;background-repeat:no-repeat;
+ background-position:var(--ext-white-x) 0;
 }
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="ON"]{--ext-white-x:-237.52px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="AUTO"],
+#overheadToggleLayer .mounted-toggle[data-control="position-lights"][data-state="OFF"]{--ext-white-x:-123.52px}
 /* Owner-approved top-down photograph, unchanged pixels. The three poses share
    one mounting pivot. Outer: RETRACT / EXTEND / ON; inner: OFF / ON only. */
 #overheadToggleLayer .mounted-toggle[data-control^="landing-"] .toggle-sprite{display:none!important}
