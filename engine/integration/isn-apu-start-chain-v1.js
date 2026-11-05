@@ -149,9 +149,20 @@
    if(id==='ignition-source')this.command({type:'IGNITION_SELECTOR',position:value.replace(' ','_')});
    if(id==='apu-start'&&value==='START')this.startAPU();
    if(id==='apu-start'&&value==='OFF')this.stopAPU();
-   if((id==='engine-start-1'||id==='engine-start-2')&&value==='GRD')this.startEngine(CONTROLS[id]);
-   if((id==='engine-start-1'||id==='engine-start-2')&&value==='OFF'&&
-     this.phase[CONTROLS[id]]!=='RUNNING')this.abortEngine(CONTROLS[id]);
+   // All four physical ENG START selector detents must reach the source-
+   // linked Start.Session. Previously only GRD / non-running OFF were wired,
+   // so CONT/FLT and an OFF selection on a running engine left stale ignition.
+   // Changing away from GRD during motoring must also disengage the starter,
+   // not leave a scheduled light-off behind a closed valve.
+   if(id==='engine-start-1'||id==='engine-start-2'){
+     const device=CONTROLS[id];
+     if(value==='GRD')this.startEngine(device);
+     else if(['OFF','CONT','FLT'].includes(value)){
+       if(!['RUNNING','OFF','BLOCKED'].includes(this.phase[device]))
+         this.abortEngine(device);
+       this.command({type:'ENGINE_START_SWITCH',device,position:value});
+     }
+   }
    this.syncPower();return this.get();
   }
   startAPU(){
