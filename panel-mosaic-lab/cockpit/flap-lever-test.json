@@ -255,6 +255,52 @@
           "y": 769
         }
       }
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp": {
+      "sourceSize": [
+        800,
+        1000
+      ],
+      "method": "Photo-registered 800×1000 active owner WebP: each target follows the rightmost bright tick edge (x≈597); y measured individually from the printed 0/1/2/5/10/15/25/30/40 scale. Earlier top four rows were high by 25–38 native pixels.",
+      "cosmeticCorrections": [],
+      "targets": {
+        "0": {
+          "x": 597,
+          "y": 352
+        },
+        "1": {
+          "x": 597,
+          "y": 425
+        },
+        "2": {
+          "x": 597,
+          "y": 475
+        },
+        "5": {
+          "x": 597,
+          "y": 526
+        },
+        "10": {
+          "x": 597,
+          "y": 573
+        },
+        "15": {
+          "x": 597,
+          "y": 623
+        },
+        "25": {
+          "x": 597,
+          "y": 670
+        },
+        "30": {
+          "x": 597,
+          "y": 715
+        },
+        "40": {
+          "x": 597,
+          "y": 769
+        }
+      }
     }
   },
   "controls": {

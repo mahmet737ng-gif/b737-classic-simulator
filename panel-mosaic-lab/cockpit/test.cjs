@@ -6,7 +6,7 @@ assert.equal(a.version,'CKP-0012-THROTTLE-FIT');
 const pedestal=a.regions.find(r=>r.id==='pedestal');
 const [throttle,fire,radio]=pedestal.placements;
 assert.deepEqual(pedestal.placements.map(p=>p.id),['throttle-quadrant','fire-protection','pedestal-radio']);
-assert.equal(throttle.asset,'panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp');
+assert.equal(throttle.asset,'panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp');
 assert.ok(Math.abs(throttle.w/throttle.h-throttle.sourceWindow.w/throttle.sourceWindow.h)<1e-9,'Display-only trim preserves throttle source aspect');
 assert.equal(throttle.w,606,'Throttle core must not span the full pedestal width');
 assert.ok(Math.abs(throttle.x+throttle.w/2-pedestal.nativeWidth/2)<1e-9,'Throttle centered in pedestal');
@@ -29,7 +29,8 @@ assert.equal(a.assets[priorFire].sourcePngSha256,'ebce4ad11a50d70d232f67e2e7f2c3
 assert.ok(fs.readFileSync(path.join(__dirname,'app.js'),'utf8').includes("if(p.presentation==='contain')img.style.objectFit='contain'"),'Unified must letterbox instead of stretching Fire');
 
 assert.ok(a.canvas.height>=pedestal.y+pedestal.h,'Whole pedestal remains inside canvas');
-assert.equal(a.assets[throttle.asset].sha256,'f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a');
+assert.equal(a.assets[throttle.asset].sha256,'ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f','Owner-authorized four bitmap stencils');
+assert.equal(a.assets['panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp'].sha256,'f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a','Original bare source retained unchanged');
 for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,asset.url));assert.equal(bytes.length,asset.bytes);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),asset.gitBlobSha);}
 const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
 const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
