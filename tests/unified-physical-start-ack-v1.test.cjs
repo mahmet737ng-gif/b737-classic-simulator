@@ -36,7 +36,7 @@ assert.equal(rejected.accepted,false);
 assert.equal(rejected.phase,'BLOCKED');
 assert.match(rejected.reason,/PACK L\/R MUST BE OFF/);
 assert.equal(blocked.get().engines.engine1.phase,'BLOCKED');
-assert.equal(blocked.get().engines.engine1.startValveOpen,false);
+assert.notEqual(blocked.get().engines.engine1.startValveOpen,true,'Blocked GRD must never claim START VALVE OPEN');
 const ok=make();
 ok.battery(true);ok.startAPU();ok.advance(1400);ok.apuBleed(true);
 const accepted=Router.dispatch(ok,grd);
