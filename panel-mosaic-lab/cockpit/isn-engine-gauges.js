@@ -29,10 +29,8 @@
    const pointer=element(group,'g',{'data-pointer':'',transform:`translate(${spec.cx} ${spec.cy}) rotate(${spec.start})`});
    element(pointer,'line',{x1:0,x2:0,y1:-(spec.radius+spec.gap),y2:-(spec.radius+spec.gap+spec.length),
     stroke:model.needle.color,'stroke-width':spec.width,'stroke-linecap':model.needle.linecap});
-   const value=spec.valueText?element(group,'text',{'data-value':'',x:spec.cx,y:spec.cy+27,'text-anchor':'middle',
-    fill:'#f3f3eb','font-size':'20','font-family':'ui-monospace,Consolas,monospace','font-weight':'700'}):null;
-   if(value)value.textContent='—';
-   parts.set(spec.id,{group,pointer,value});
+   // The independent dot-matrix renderer owns all EIS numeric fields.
+   parts.set(spec.id,{group,pointer});
   }
   layer=svg;paint();
  }
@@ -42,7 +40,6 @@
    const degrees=model.eisAngle(spec,reading.value)??spec.start;
    part.pointer.setAttribute('transform',`translate(${spec.cx} ${spec.cy}) rotate(${degrees})`);
    part.group.dataset.source=reading.source;
-   if(part.value)part.value.textContent=reading.value===null?'—':String(Math.round(reading.value));
   }
  }
  function setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE'){

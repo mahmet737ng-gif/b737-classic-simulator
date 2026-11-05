@@ -1,0 +1,27 @@
+name: EIS dot matrix numeric readouts
+on:
+  push:
+    paths:
+      - 'engine/instruments/eis-dot-digits-v1.js'
+      - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.*'
+      - 'panel-mosaic-lab/cockpit/isn-engine-gauges.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/eis-dot-readouts-v1.test.cjs'
+      - '.github/workflows/eis-dot-readouts-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  numeric-readouts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node --check engine/instruments/eis-dot-digits-v1.js
+          node --check panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js
+          node tests/eis-dot-readouts-v1.test.cjs
+          node tests/eis-single-line-needles-v1.test.cjs
+          node tests/engine-indication-modes-v1.test.cjs
