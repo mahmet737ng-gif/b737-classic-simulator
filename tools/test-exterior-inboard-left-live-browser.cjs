@@ -88,8 +88,12 @@ const {chromium}=require('playwright');
    x:onLabel.x+(459-398)*(audit.expected['landing-in-r'].x-onLabel.x)/(520-398),
    y:onLabel.y
   };
-  assert.ok(Math.abs(inL.x-oldWrongPoint.x)>30,
-    'Former ON-label mount must remain clearly separate from L hole');
+  // The overhead atlas is fit-to-viewport. Apply the distance threshold
+  // in SOURCE pixels, not fixed browser pixels (which change with zoom).
+  const viewPixelsPerSource=(audit.expected['landing-in-r'].x-inL.x)/(520-398);
+  const formerSourceDelta=Math.abs(inL.x-oldWrongPoint.x)/viewPixelsPerSource;
+  assert.ok(formerSourceDelta>50,
+    'Former ON-label mount must remain >50 source px away from true L hole: '+formerSourceDelta);
   const sources=await page.evaluate(()=>window.B737OverheadToggles.getRegistry().controls
    .filter(x=>x.id.startsWith('landing-'))
    .map(x=>({id:x.id,sourcePoint:x.sourcePoint})));
