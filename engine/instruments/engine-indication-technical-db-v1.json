@@ -1,0 +1,460 @@
+{
+  "schema": "b737classic.engine-indication-technical-data/1",
+  "revision": 1,
+  "date": "2026-11-05",
+  "scope": "737-300/400/500 CFM56-3; TRAINING ONLY; EP-FSI WDM NOT VERIFIED",
+  "sources": {
+    "FCOM6": {
+      "title": "Sepehran B737CL FCOM",
+      "sections": [
+        "6.20.8-6.20.12"
+      ],
+      "role": "electrical"
+    },
+    "FCOM7": {
+      "title": "Sepehran B737CL FCOM",
+      "sections": [
+        "7.10.1-7.10.22",
+        "7.20.1-7.20.2"
+      ],
+      "role": "engine indications"
+    },
+    "MRG": {
+      "title": "B737 MRG",
+      "sections": [
+        "IV.6 printed 172-184",
+        "IV.7 printed 219-225"
+      ],
+      "role": "bus effects and caution"
+    },
+    "LAN": {
+      "title": "Lufthansa Technical Training B737-300/400/500",
+      "sections": [
+        "ATA31-42 220-227",
+        "ATA77-10 228-235/250-253",
+        "ATA77-20 236-239/254-255",
+        "ATA77-30 240-245",
+        "ATA79-00 38-40"
+      ],
+      "role": "sensors"
+    }
+  },
+  "instruments": {
+    "n1": {
+      "unit": "%",
+      "section": "primary",
+      "sensor": "Inductive dual N1 speed sensor",
+      "displayUnits": {
+        "CONVENTIONAL": "%",
+        "EIS": "%"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "egt": {
+      "unit": "°C",
+      "section": "primary",
+      "sensor": "Nine Chromel-Alumel thermocouples",
+      "displayUnits": {
+        "CONVENTIONAL": "°C",
+        "EIS": "°C"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "n2": {
+      "unit": "%",
+      "section": "primary",
+      "sensor": "N2 accessory gearbox control alternator",
+      "displayUnits": {
+        "CONVENTIONAL": "%",
+        "EIS": "%"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "dc1",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "dc2",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "dcStandby",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "fuelFlow": {
+      "unit": "kg/h",
+      "section": "primary",
+      "sensor": "Engine fuel flow transmitter",
+      "displayUnits": {
+        "CONVENTIONAL": "kg/h",
+        "EIS": "kg/h"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "dc1",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "dc2",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "battery",
+            "voltage": "28VDC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "oilPressure": {
+      "unit": "psi",
+      "section": "secondary",
+      "sensor": "Oil pressure transmitter",
+      "displayUnits": {
+        "CONVENTIONAL": "psi",
+        "EIS": "psi"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "oilTemperature": {
+      "unit": "°C",
+      "section": "secondary",
+      "sensor": "Oil temperature resistive bulb",
+      "displayUnits": {
+        "CONVENTIONAL": "°C",
+        "EIS": "°C"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "28VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "oilQuantity": {
+      "unit": "%FULL",
+      "section": "secondary",
+      "sensor": "Oil tank quantity transmitter",
+      "displayUnits": {
+        "CONVENTIONAL": "USG",
+        "EIS": "%FULL"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "115VAC",
+            "quality": "MRG_FUNCTIONAL_CHANNEL"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          },
+          "2": {
+            "bus": "transfer2",
+            "voltage": "115VAC",
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+          }
+        }
+      },
+      "sources": [
+        "FCOM7",
+        "LAN",
+        "MRG"
+      ]
+    },
+    "vibration": {
+      "unit": "units",
+      "section": "secondary",
+      "sensor": "AVM fan/core accelerometers",
+      "displayUnits": {
+        "CONVENTIONAL": "units",
+        "EIS": "units"
+      },
+      "wiring": {
+        "CONVENTIONAL": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "CONFLICTED_AVM_REFERENCE"
+          },
+          "2": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "CONFLICTED_AVM_REFERENCE"
+          }
+        },
+        "EIS": {
+          "1": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "CONFLICTED_AVM_REFERENCE"
+          },
+          "2": {
+            "bus": "transfer1",
+            "voltage": "115VAC",
+            "quality": "CONFLICTED_AVM_REFERENCE"
+          }
+        }
+      },
+      "sources": [
+        "LAN",
+        "MRG"
+      ]
+    }
+  },
+  "eis": {
+    "primary": [
+      "n1",
+      "egt",
+      "n2",
+      "fuelFlow"
+    ],
+    "secondary": [
+      "oilPressure",
+      "oilTemperature",
+      "oilQuantity",
+      "vibration"
+    ],
+    "supply": "LAN: EIS units 28VDC P6-2, exact pin wiring unverified",
+    "primaryFailureHoldMs": 2000,
+    "primaryBiteBothN1Below": 10,
+    "secondaryBiteBothOilPsiBelow": 13
+  },
+  "laws": {
+    "oilPressureLamp": {
+      "onAtOrBelowPsi": 12,
+      "offAtOrAbovePsi": 15,
+      "source": "LAN ATA79-00"
+    },
+    "oilPressureRedLinePsi": 13,
+    "oilPressureYellowAtTakeoffPsi": 26,
+    "oilFilterBypass": {
+      "thresholdPsid": null,
+      "conflict": "LAN 26 PSID; MRG CL approximately 24 PSID",
+      "requireInstalledThreshold": true
+    },
+    "egtRedlineC": {
+      "example": 930,
+      "notDefaultLimit": true
+    },
+    "oilTemperatureRedlineC": {
+      "example": 165,
+      "notDefaultLimit": true
+    },
+    "n2StarterCutoutPercent": {
+      "example": 46.3,
+      "notDefaultControlLimit": true
+    },
+    "n2StarterReengageBlockPercent": {
+      "example": 30.4,
+      "notDefaultControlLimit": true
+    },
+    "oilQuantityConversion": {
+      "conventionalFullUSGApprox": 5,
+      "eisFullPercent": 100,
+      "source": "MRG printed 224"
+    }
+  },
+  "lamps": {
+    "lowOilPressure": {
+      "feed": "battery",
+      "kind": "hysteresis",
+      "sourceRefs": [
+        "LAN",
+        "MRG"
+      ]
+    },
+    "oilFilterBypass": {
+      "feed": "battery",
+      "kind": "differential_pressure",
+      "sourceRefs": [
+        "LAN",
+        "MRG"
+      ]
+    },
+    "startValveOpen": {
+      "feed": "battery",
+      "kind": "position",
+      "sourceRefs": [
+        "FCOM7",
+        "MRG"
+      ]
+    },
+    "reverserUnlocked": {
+      "feed": "battery",
+      "kind": "lock_status",
+      "sourceRefs": [
+        "FCOM7",
+        "MRG"
+      ],
+      "note": "not aft overhead REVERSER"
+    }
+  },
+  "constraints": [
+    "No sensor data must be interpreted as UNKNOWN rather than zero.",
+    "Generator OFF is not evidence of transfer bus dead; use Electrical V7 evaluate().bus.",
+    "Conventional N2 and Fuel Flow draw DC1/DC2, EIS channels have different functional supplies.",
+    "MRG indicates conventional oil pressure gauge can freeze on AC transfer loss.",
+    "EIS secondary functional feeds do not prove individual unit pin wiring: unknown effects stay uncertain.",
+    "AVM 115VAC Transfer Bus1 per LAN conflicts with different MRG indication voltage references.",
+    "Explicit effectivity-approved limits required for redline alerts; never auto-enforce examples."
+  ]
+}
