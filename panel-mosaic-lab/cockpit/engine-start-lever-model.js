@@ -4,9 +4,9 @@
 (function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737EngineStartLeverModel=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const SOURCE=Object.freeze({width:800,height:1000,window:{x:0,y:0,w:800,h:800*740.9857819905213/606}});
- const SLOTS=Object.freeze({engine1:Object.freeze({x:300,label:'1'}),engine2:Object.freeze({x:511,label:'2'})});
+ const SLOTS=Object.freeze({engine1:Object.freeze({x:363,label:'1'}),engine2:Object.freeze({x:437,label:'2'})});
  const DETENTS=Object.freeze({IDLE:790,CUTOFF:900});
- const HANDLE=Object.freeze({w:210,h:116});
+ const HANDLE=Object.freeze({w:74,h:46});
  // Hidden shaft reference only; the owner requested straight arms and no top disk.
  const PIVOT=Object.freeze({y:843,outerOffset:34});
  const clamp=x=>Math.max(0,Math.min(1,x));
