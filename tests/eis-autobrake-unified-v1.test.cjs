@@ -16,7 +16,7 @@ assert.match(css,/data-engine-indication="EIS"/);
 assert.match(css,/\.b737-eis-autobrake-rotary/);
 assert.match(css,/display:none/);
 assert.ok(!css.includes('data-engine-indication="CONVENTIONAL"] #region-main .region-native>.b737-eis'),'EIS knob must not cover Conventional');
-assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0003-RING-FIT'),'Updated EIS position must invalidate cached cockpit script');
+assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0004-RED-CENTER'),'Updated EIS position must invalidate cached cockpit script');
 assert.ok(html.includes('eis-autobrake-physical-v1.css?v=EIS-AUTOBRAKE-0001'));
 assert.ok(html.includes('autobrake-unified-v1.js?v=ATA32-AUTOBRAKE-SHARED-0001'));
 assert.ok(originalConv.includes("common.setSelector(next)"),'Conventional remains tied to existing shared system');
@@ -30,34 +30,23 @@ assert.equal(assembly.assets[fo.asset].dimensions[1],EIS.REF.image[1]);
 const cp={sourceWidth:CONV.REF.image[0],sourceHeight:CONV.REF.image[1],
  x:engine.x,y:engine.y,matrix:[(1374-engine.x)/CONV.REF.image[0],0,0,engine.h/CONV.REF.image[1],0,0]};
 const conv=CONV.point(cp,CONV.REF.autobrake.center);
-// EIS screenshot-pixel QA (1920x1080 user photograph 2026-11-05).
-// The previous knob was 120px right and 82px above the empty hole.
-// Its circular base measured 88.8px across; the white bezel measured
-// 139px. Keep the same rotary image, detents and axis, but move/scale
-// the EIS view until the white ring is visible all the way around.
-assert.deepEqual(EIS.REF.center,[67.5,915],'EIS knob must follow measured ring center');
-assert.equal(EIS.REF.diameter,108,'Resize only EIS knob to fit inside white bezel');
-assert.equal(CONV.REF.autobrake.diameter,80,'Conventional approved diameter is untouched');
-const calibrated={
- priorReference:[175,841],priorCenterPx:[1108.5,638.5],
- wellCenterPx:[988.5,720.5],baseDiameterPx:88.8,bezelOuterDiameterPx:139
-};
-const scalePxPerSource=calibrated.baseDiameterPx/CONV.REF.autobrake.diameter;
-const expectedCenterPx=[
- calibrated.priorCenterPx[0]+(EIS.REF.center[0]-calibrated.priorReference[0])*scalePxPerSource,
- calibrated.priorCenterPx[1]+(EIS.REF.center[1]-calibrated.priorReference[1])*scalePxPerSource
+// User-marked red-circle measurement in last 1920x1080 screenshot:
+// hole center (1131,681), knob mounting-base center (1074,719).
+// White ring diameter ~140px; rotary circular base diameter ~122px.
+assert.deepEqual(EIS.REF.center,[118,881]);
+assert.equal(EIS.REF.diameter,108,'Retain EIS sprite size within visible ring');
+assert.equal(CONV.REF.autobrake.diameter,80,'Conventional remains unmodified');
+const marked={hole:[1131,681],prior:[1074,719],oldAnchor:[67.5,915],ring:140,base:122};
+const pxPerSource=marked.base/EIS.REF.diameter;
+const predicted=[
+ marked.prior[0]+(EIS.REF.center[0]-marked.oldAnchor[0])*pxPerSource,
+ marked.prior[1]+(EIS.REF.center[1]-marked.oldAnchor[1])*pxPerSource
 ];
-assert.ok(Math.abs(expectedCenterPx[0]-calibrated.wellCenterPx[0])<2,
- 'Photo-derived EIS knob X must coincide with actual hole center');
-assert.ok(Math.abs(expectedCenterPx[1]-calibrated.wellCenterPx[1])<2,
- 'Photo-derived EIS knob Y must coincide with actual hole center');
-const fittedBasePx=EIS.REF.diameter*scalePxPerSource;
-const visibleWhiteRingPx=(calibrated.bezelOuterDiameterPx-fittedBasePx)/2;
-assert.ok(visibleWhiteRingPx>=7 && visibleWhiteRingPx<=13,
- 'White aperture ring must remain visible at every side of round knob base');
-assert.ok(Math.abs(eit.w-fo.w*EIS.REF.diameter/918)<1e-9 &&
- Math.abs(eit.h-fo.h*EIS.REF.diameter/1713)<1e-9,
- 'EIS hitbox and image remain proportional to physical photo registration');
+assert.ok(Math.abs(predicted[0]-marked.hole[0])<2,'Knob X centered on marked hole within 2px');
+assert.ok(Math.abs(predicted[1]-marked.hole[1])<2,'Knob Y centered on marked hole within 2px');
+assert.ok((marked.ring-marked.base)/2>=7,'White ring must remain visible all around');
+assert.ok(Math.abs(eit.w-fo.w*108/918)<1e-9 &&
+ Math.abs(eit.h-fo.h*108/1713)<1e-9,'Retain EIS photo proportions');
 assert.ok(eit.x>fo.x&&eit.x<fo.x+fo.w);
 assert.ok(eit.w>0&&eit.h>0);
 assert.throws(()=>EIS.placement({x:0,y:0,w:0,h:4}),/placement/);
