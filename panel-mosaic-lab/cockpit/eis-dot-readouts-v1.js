@@ -12,7 +12,7 @@
  })).concat([1,2].map(n=>Object.freeze({id:'oilQuantity_'+n,engine:'engine'+n,signal:'oilQuantity',
   cx:n===1?984:1095,cy:741,decimals:0,integerDigits:3,divisor:1,unit:'%FULL',template:'999',drum:false,scale:.83}))));
  const values=new Map(specs.map(s=>[s.id,{value:['n1','n2'].includes(s.signal)?0:null,source:'INITIAL'}]));
- const mounted=new Map();let layer=null,ticket=null,lastFrame=null;
+ const mounted=new Map(),ecuOwned=new Set(),startFallbacks=new Map();let layer=null,ticket=null,lastFrame=null;
  const raf=typeof requestAnimationFrame==='function'?requestAnimationFrame:null;
  const caf=typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null;
  function element(parent,tag,attrs={}){const node=document.createElementNS(ns,tag);
@@ -130,14 +130,23 @@
    const value=paths[s.signal].split('.').reduce((o,k)=>o?.[k],engine);
    // Some ECU snapshots omit FF; the start observation supplies that channel.
    // An absent property is not an invalid sensor and must not erase it.
-   if(value!==undefined)write(s,value,'UNIFIED_ECU_OBSERVATION');
+   if(value!==undefined){ecuOwned.add(s.id);write(s,value,'UNIFIED_ECU_OBSERVATION');}
+   else{
+    ecuOwned.delete(s.id);
+    if(startFallbacks.has(s.id))write(s,startFallbacks.get(s.id),'ISN_START_SOURCE');
+   }
   }
   refresh();
  }
  function observeStart(packet){
   for(const s of specs){
    const signal=packet?.engines?.[s.engine]?.[s.signal];
-   if(signal&&Object.hasOwn(signal,'value'))write(s,signal.value,'ISN_START_SOURCE');
+   if(signal&&Object.hasOwn(signal,'value')){
+    startFallbacks.set(s.id,signal.value);
+    // Do not retarget a moving drum to a legacy start estimate immediately
+    // before its authoritative ECU value arrives in the same update cycle.
+    if(!ecuOwned.has(s.id))write(s,signal.value,'ISN_START_SOURCE');
+   }
   }
   refresh();
  }

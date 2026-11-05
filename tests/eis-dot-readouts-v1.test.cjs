@@ -65,6 +65,7 @@ events['b737:unified-ecu-observation']({detail:{engines:{engine1:{...engine1,egt
 assert.equal(api.getReadings().egt_1.text,'---','Missing sensor must not retain a stale number');
 assert.equal(api.getReadings().egt_2.text,'519','The other engine stays independent');
 events['b737:isn-start-indications']({detail:{engines:{engine1:{fuelFlow:{value:350}}}}});
+assert.equal(api.getReadings().fuelFlow_1.text,'1.20','A start estimate cannot reverse an authoritative ECU drum');
 events['b737:unified-ecu-observation']({detail:{engines:{engine1:{n1Percent:21.4}}}});
 assert.equal(api.getReadings().fuelFlow_1.text,'0.35','Omitted ECU fields cannot erase the observed start channel');
 api.setReading('engine1','fuelFlow',565);
