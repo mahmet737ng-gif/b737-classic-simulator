@@ -9,6 +9,35 @@
  function feedback(msg,isError=false){const el=$('command-response');el.textContent=msg;el.classList.toggle('error',isError);}
  const e=()=>$('engine').value;
  const on=(node,kind,cb)=>$(node).addEventListener(kind,cb);
+ const SCENARIOS=Object.freeze({
+  idle:{name:'Normal engine idle',check:'Observe physical ENG START OFF, OIL PSI, EGT, N1/N2; no automatic commands'},
+  noLightOff:{name:'NO LIGHT-OFF',cmd:{type:'START_FAULT',key:'noLightOff',active:true},check:'Before GRD: fuel lever CUTOFF; after motor N2 check EGT did not rise'},
+  hot:{name:'HOT START',cmd:{type:'START_FAULT',key:'egtHigh',active:true},check:'Before GRD; EGT >=725C training advisory, never automatic FIRE'},
+  hung:{name:'HUNG START',cmd:{type:'START_FAULT',key:'hungStart',active:true},check:'Before GRD; monitor N2 plateau and EGT'},
+  stall:{name:'N2 STALL',cmd:{type:'START_FAULT',key:'n2Stall',active:true},check:'Before GRD; N2 below fuel-introduction criterion'},
+  early:{name:'EARLY STARTER CUTOUT',cmd:{type:'START_FAULT',key:'earlyCutout',active:true},check:'Before GRD; starter valve feedback and physical OFF release'},
+  flame:{name:'FLAMEOUT',cmd:{type:'START_FAULT',key:'flameOut',active:true},check:'Compare engine physical spooling down and bus-fed gauge indication'},
+  gen1:{name:'GEN1 FAILED',cmd:{type:'ELECTRICAL_FAULT',key:'GEN1_FAILED',active:true},check:'Verify alternate AC source and transfer bus before predicting lost gauges'},
+  gen2:{name:'GEN2 FAILED',cmd:{type:'ELECTRICAL_FAULT',key:'GEN2_FAILED',active:true},check:'Verify DC2, TR2, TR3 and EIS/CONVENTIONAL differences'},
+  tr1:{name:'TR1 FAILED',cmd:{type:'ELECTRICAL_FAULT',key:'TR1_FAILED',active:true},check:'DC1 can retain a feed from TR2; use Electrical V7 bus graph'},
+  tr2:{name:'TR2 FAILED',cmd:{type:'ELECTRICAL_FAULT',key:'TR2_FAILED',active:true},check:'Check DC2 and whether TR1 provides alternate feed'},
+  battery:{name:'BATTERY DEPLETED',cmd:{type:'ELECTRICAL_FAULT',key:'BATTERY_DEPLETED',active:true},check:'Check Battery Bus source before blanking N1/FF'},
+  inverter:{name:'STATIC INVERTER FAILED',cmd:{type:'ELECTRICAL_FAULT',key:'STATIC_INVERTER_FAILED',active:true},check:'Depends on STBY selector, phase and available transfer bus'},
+  primary:{name:'EIS PRIMARY LRU FAILED',cmd:{type:'DISPLAY_FAULT',key:'eisPrimary',active:true},check:'N1 EGT N2 FF blank; secondary separately powered'},
+  secondary:{name:'EIS SECONDARY LRU FAILED',cmd:{type:'DISPLAY_FAULT',key:'eisSecondary',active:true},check:'Oil pressure, temp, quantity, vibration; inspect UNKNOWN bus effects'},
+  egtSensor:{name:'EGT SENSOR FAILED',cmd:{type:'SENSOR',parameter:'egt',condition:'FAILED'},check:'EIS transient 2 seconds then digital dashes; no false physical zero'}
+ });
+ let selectedScenario=null;
+ function drawScenario(state){
+  const out=$('scenario-trace');if(!out)return;
+  const info=state?.start?.engines?.[e()];
+  out.textContent='SCENARIO '+(selectedScenario?.name||'NONE')+'\n'+
+   'EXPECTATION '+(selectedScenario?.check||'Select a scenario')+'\n'+
+   'ENGINE '+(info?.phase||'UNKNOWN')+' | ENG START '+(info?.startSwitch||'UNKNOWN')+
+   ' | IGN '+(info?.ignitionSelector||'UNKNOWN')+
+   ' | START VALVE '+(info?.starterValveObserved||'UNKNOWN');
+ }
+ 
  const command=(type,extras={})=>send({type,engine:e(),...extras});
  function cell(v){
   const text=typeof v==='boolean'?v?'YES':'NO':esc(v);
@@ -73,7 +102,7 @@
   $('connection').style.color=state.ready?'#9bdfbb':'#eac66a';
   $('report-age').textContent=state.ecu?.timeMs===undefined?'NO ECU CLOCK':'ECU CLOCK '+Math.round(state.ecu.timeMs/1000)+'s';
   if(state.snapshot?.mode && $('display').value!==state.snapshot.mode)$('display').value=state.snapshot.mode;
-  renderIndications(state);renderStart(state.start);renderSummary(state);
+  renderIndications(state);renderStart(state.start);renderSummary(state);drawScenario(state);
   $('electrical').textContent=JSON.stringify({
    sourceOwner:state.source,selectedSources:state.electrical?.source,
    battery:state.electrical?.config?.batterySwitch,standby:state.electrical?.config?.standbySelector,
@@ -101,6 +130,8 @@
   else command(type);
  });
  on('display','change',()=>send({type:'MODE',mode:$('display').value}));
+ on('start-switch-set','click',()=>send({type:'PHYSICAL_START_SWITCH',engine:e(),value:$('start-position').value}));
+ on('ignition-set','click',()=>send({type:'PHYSICAL_IGNITION',engine:e(),value:$('ignition-position').value}));
  on('start-switch-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'engine-start-'+e().at(-1),value:$('start-position').value}));
  on('ignition-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'ignition-source',value:$('ignition-position').value}));
  on('set-duct','click',()=>command('DUCT_PSI',{psi:Number($('duct').value)}));
@@ -119,6 +150,18 @@
  on('reset-fuel-used','click',()=>send({type:'RESET_FUEL_USED'}));
  on('set-filter','click',()=>send({type:'FILTER_THRESHOLD',value:$('filter-limit').value===''?null:Number($('filter-limit').value)}));
  on('reset-instruments','click',()=>send({type:'RESET_INSTRUMENT_FAULTS'}));
+ on('apply-scenario','click',()=>{
+  selectedScenario=SCENARIOS[$('scenario-preset').value]||null;
+  if(!selectedScenario)return feedback('Unknown scenario',true);
+  if(selectedScenario.cmd)send({engine:e(),...selectedScenario.cmd});
+  else feedback('Observe physical cockpit; no automatic switch action');
+  drawScenario(latest);
+ });
+ on('scenario-clear','click',()=>{
+  send({type:'RESET_INSTRUMENT_FAULTS'});
+  selectedScenario=null;drawScenario(latest);
+  feedback('Indication faults clear command sent. Clear ECU/electrical faults individually.');
+ });
  if(window.parent!==window)window.parent.postMessage({type:'b737:engine-lab-v2-ready'},location.origin);
  else feedback('This lab needs the live Unified cockpit host; open it using ENGINE TEST LAB',true);
 })();
