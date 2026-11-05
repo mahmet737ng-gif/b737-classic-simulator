@@ -30,7 +30,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -424,7 +424,7 @@
    // movement alive after shutdown WITHOUT running the expensive fuel/ECU/
    // battery integrations at 10Hz. An idle 1Hz paint is sufficient.
    const ambient=window.B737ISN1318ECUTestbenchV1.CONFIG.oilAmbientTempC;
-   if(ecu.apuThermalEgtC<=ambient+0.05){lastPassiveCoolingAt=now;return;}
+   if(ecu.apuThermalEgtC<=ambient+0.05&&!ecu.hasPassiveEngineState()){lastPassiveCoolingAt=now;return;}
    const coolingElapsed=now-lastPassiveCoolingAt;
    if(coolingElapsed<1000)return;
    lastPassiveCoolingAt=now;

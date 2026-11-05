@@ -59,7 +59,7 @@
   let column=initial,phase=mod(initial),target=phase,velocity=0;
   const moving=()=>Math.abs(target-phase)>.001||Math.abs(velocity)>.015;
   function snapshot(){return {column,phase,target,velocity,moving:moving(),
-   direction:!moving()?'REST':target>phase?'UP':'DOWN'};}
+   direction:!moving()?'REST':target>phase?'DOWN':'UP'};}
   function snap(next=column){
    if(!Number.isInteger(next))throw Error('Integer wheel column required');
    column=next;phase=target=mod(next);velocity=0;return snapshot();
@@ -96,5 +96,5 @@
   }
   return Object.freeze({setColumn,step,snap,snapshot});
  }
- return Object.freeze({VERSION:'EIS-ROLLING-DRUM-0003',glyphs,style,format,layout,createWheel});
+ return Object.freeze({VERSION:'EIS-CONV-DRUM-0004',glyphs,style,format,layout,createWheel});
 });

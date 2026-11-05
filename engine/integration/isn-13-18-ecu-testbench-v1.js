@@ -10,8 +10,12 @@ const SCHEMA='b737.isn.ecu-start-test.v1', ORIGIN='SIM_TRAINING_APPROX_13_18';
 if(!LoadDynamics?.initial||!LoadDynamics?.step)throw Error('APU load dynamics dependency required');
  const ENGINES=['engine1','engine2'];
 const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
- oilRedRadialTrainingPsi:13,oilPressureRiseN2:18,oilPressureAt22N2Psi:45,
- oilPumpPressurePerN2:0.75,oilPressureMaxPsi:95,
+ oilRedRadialTrainingPsi:13,oilPressureRiseN2:18,oilPressureMaxPsi:75,
+ // Classroom nominal curve, not an installation-specific certified limit.
+ // CFM TP.OI.9 gives broad normal envelopes (85/90/95 N2), not one fixed PSI.
+ oilWarmPressureCurve:Object.freeze([[18,0],[22,15],[60,32],[85,45],[90,48],[95,51],[105,55]]
+  .map(pair=>Object.freeze(pair))),
+ oilViscosityReferenceC:82,oilViscositySlope:.004,
  oilPressureResponseMs:300,oilPressureDecayMs:2100,
  hydraulicPumpStartN2:4.5,hydraulicPumpRatedN2:6,hydraulicRatedPressurePsi:3000,
  apuRatedRpmPct:95.5,apuGeneratorReadyRpmPct:95,
@@ -40,29 +44,35 @@ function checkEngine(engine){if(!ENGINES.includes(engine))throw Error('Expected 
 function oilInitial(){return {pressurePsi:0,temperatureC:CONFIG.oilAmbientTempC,
  quantityPct:CONFIG.oilInitialQuantityPct,lowPressureLamp:true,filterBypassLamp:false,
  faults:{pumpFailure:false,oilLeak:false,filterRestriction:false},source:ORIGIN};}
-function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false}={},dtMs){
- if(!previous||!finite(n2Percent)||!finite(throttle)||!finite(dtMs)||dtMs<0||dtMs>120000)
+function oilStep(previous,{n2Percent=0,throttle=0,engineRunning=false,ambientC=CONFIG.oilAmbientTempC}={},dtMs){
+ if(!previous||!finite(n2Percent)||!finite(throttle)||!finite(ambientC)||!finite(dtMs)||dtMs<0||dtMs>120000)
   throw Error('Invalid oil model input/time');
  if(!finite(previous.pressurePsi)||!finite(previous.temperatureC)||!finite(previous.quantityPct))
   throw Error('Invalid prior oil state');
  const s={...previous,faults:{...previous.faults}};
  const effectiveN2=clip(n2Percent,0,110);
- // No simulated oil pressure until N2 reaches 18%; rapid rise through N2 22%.
-  const coldN2Pressure=effectiveN2<=CONFIG.oilPressureRiseN2?0:
-   effectiveN2<22?CONFIG.oilPressureAt22N2Psi*(effectiveN2-CONFIG.oilPressureRiseN2)/(22-CONFIG.oilPressureRiseN2):
-   clip(CONFIG.oilPressureAt22N2Psi+(effectiveN2-22)*CONFIG.oilPumpPressurePerN2,0,CONFIG.oilPressureMaxPsi);
+ const curve=CONFIG.oilWarmPressureCurve;
+ let speedPressure=curve.at(-1)[1];
+ if(effectiveN2<=curve[0][0])speedPressure=0;
+ else for(let i=1;i<curve.length;i++)if(effectiveN2<=curve[i][0]){
+  const a=curve[i-1],b=curve[i];speedPressure=a[1]+(b[1]-a[1])*(effectiveN2-a[0])/(b[0]-a[0]);break;
+ }
  const quantityMultiplier=s.quantityPct<=5?0:s.quantityPct<20?s.quantityPct/20:1;
- const warmFactor=1-clip((s.temperatureC-100)*0.003,0,0.20);
+ const viscosity=clip(1+(CONFIG.oilViscosityReferenceC-s.temperatureC)*CONFIG.oilViscositySlope,.8,1.3);
  const pumpGood=!s.faults.pumpFailure;
- const targetPsi=pumpGood?coldN2Pressure*quantityMultiplier*warmFactor:0;
+ const targetPsi=pumpGood?clip(speedPressure*quantityMultiplier*viscosity,0,CONFIG.oilPressureMaxPsi):0;
  const pressureTau=targetPsi>=s.pressurePsi?CONFIG.oilPressureResponseMs:CONFIG.oilPressureDecayMs;
- s.pressurePsi=round(smooth(s.pressurePsi,targetPsi,dtMs,pressureTau));
- const targetTemp=engineRunning?CONFIG.oilIdleTempC+(CONFIG.oilHighPowerTempC-CONFIG.oilIdleTempC)*clip(throttle,0,1):CONFIG.oilAmbientTempC;
+ s.pressurePsi=smooth(s.pressurePsi,targetPsi,dtMs,pressureTau);
+ const heat=.6*clip(throttle,0,1)+.4*clip((effectiveN2-60)/45,0,1);
+ const targetTemp=engineRunning?CONFIG.oilIdleTempC+(CONFIG.oilHighPowerTempC-CONFIG.oilIdleTempC)*heat+
+  .2*(ambientC-CONFIG.oilAmbientTempC):ambientC;
  const tempTau=targetTemp>s.temperatureC?CONFIG.oilTempWarmupMs:CONFIG.oilTempCooldownMs;
- s.temperatureC=round(smooth(s.temperatureC,targetTemp,dtMs,tempTau));
+ // Keep unrounded internal state: rounding every 8-16 ms can freeze the
+ // temperature well below its equilibrium. Round only the exported reading.
+ s.temperatureC=smooth(s.temperatureC,targetTemp,dtMs,tempTau);
  const leakLoss=s.faults.oilLeak?CONFIG.oilLeakLossPctPerSec*dtMs/1000:0;
  const normalLoss=engineRunning?CONFIG.oilNaturalLossPctPerHour*dtMs/3600000:0;
- s.quantityPct=round(clip(s.quantityPct-normalLoss-leakLoss,0,100),5);
+ s.quantityPct=clip(s.quantityPct-normalLoss-leakLoss,0,100);
  // Explicit Schmitt thresholds for TRAINING lamp; independent of N2 or phase.
  if(s.pressurePsi>=CONFIG.oilPressureLampOffPsi)s.lowPressureLamp=false;
  else if(s.pressurePsi<=CONFIG.oilPressureLampOnPsi)s.lowPressureLamp=true;
@@ -274,7 +284,7 @@ class Testbench{
   this.chain.instructorRunEngine(engine,{instructor:true});
   const values=this.chain.operating[engine].values;
   this.coast[engine]={n1:values.n1Percent,n2:values.n2Percent,egt:values.egtC};
-  this.oil[engine]=oilStep(this.oil[engine],{n2Percent:values.n2Percent,engineRunning:true},10000);
+  this.oil[engine]=oilStep(this.oil[engine],{n2Percent:values.n2Percent,engineRunning:true,ambientC:this.aircraft.oatC},10000);
   this.core.refreshFuelDelivery();
   this.log('INSTRUCTOR_RUNNING_PRESET',{engine});
   return this.get();
@@ -304,11 +314,19 @@ class Testbench{
  shutdown(engine){checkEngine(engine);this.fuelLever(engine,'CUTOFF');return this.get();}
  // Lightweight passive heat decay while every engine and the APU is off:
  // avoids running the full ECU/fuel/electrical simulator for 20 minutes.
+ hasPassiveEngineState(){return ENGINES.some(id=>
+  Math.abs(this.oil[id].temperatureC-this.aircraft.oatC)>.05||
+  this.oil[id].pressurePsi>.01||this.coast[id].n2>.01);}
  coolAPU(ms){
   if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid passive APU cooling interval');
   if(['READY','STARTING'].includes(this.chain.get().phase.apu))return this.get();
   this.apuThermalEgtC=apuCoolingStep(this.apuThermalEgtC,ms);
   this.apuOilPressurePsi=apuOilPressureStep(this.apuOilPressurePsi,'OFF',0,ms);
+  for(const id of ENGINES)if(this.chain.get().phase[id]!=='RUNNING'){
+   this.coast[id]=coastStep(this.coast[id],{phase:'OFF'},ms);
+   this.oil[id]=oilStep(this.oil[id],{n2Percent:this.coast[id].n2,engineRunning:false,
+    ambientC:this.aircraft.oatC},ms);
+  }
   this.elapsedMs+=ms;
   return this.get();
  }
@@ -329,7 +347,7 @@ class Testbench{
      runningN1:env?.n1Percent??null,n2:finite(n2)?n2:null,
      egtC:snap.observations[id].feedback.egtC.value,phase},dt);
     this.oil[id]=oilStep(this.oil[id],{n2Percent:this.coast[id].n2,
-     throttle:snap.runningEnvelope.throttle[id],engineRunning:running},dt);
+     throttle:snap.runningEnvelope.throttle[id],engineRunning:running,ambientC:this.aircraft.oatC},dt);
    }
    if(snap.phase.apu==='READY'){
     const load=LoadDynamics.demand({selectedSources:snap.selectedSources,
@@ -371,7 +389,7 @@ class Testbench{
    const startCue=fuelReady.reason; // State only; no pilot-facing instructions.
    engines[id]={phase,n1Percent:needle.n1,n2Percent:needle.n2,
     egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
-    oil:{pressurePsi:oil.pressurePsi,temperatureC:oil.temperatureC,quantityPct:oil.quantityPct,
+    oil:{pressurePsi:round(oil.pressurePsi),temperatureC:round(oil.temperatureC),quantityPct:round(oil.quantityPct,5),
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
      hydraulic:{system:id==='engine1'?'A':'B',engineDrivenPressurePsi:hydraulicPressure(needle.n2),origin:ORIGIN},
     ignition:{selector:snap.observations[id].rules.ignition.selector,

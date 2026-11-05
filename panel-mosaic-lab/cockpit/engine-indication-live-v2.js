@@ -34,8 +34,25 @@
     const visualValue=numeric(x.value)?x.value:null;
     // Fuel USED selects accumulated mass on the digital roller only; the
     // analogue fuel-flow pointer must continue to follow instantaneous flow.
-    const digitalValue=mode==='EIS'&&p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
+    const digitalValue=p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
       x.digitalValue:visualValue;
+    if(DOT.has(p)){
+     const attr=mode==='EIS'?'data-eis-readout':'data-conventional-readout';
+     const node=$('#region-main ['+attr+'="'+key+'"]');
+     const shown=x.status==='UNIT_FAILED'||x.status==='POWER_LOSS'?'hidden':uncertain?'unchanged':'visible';
+     if(node){node.dataset.engineLiveStatus=x.status;if(shown!=='unchanged')node.style.visibility=shown;}
+     // The shared renderer consumes raw sensor units. Conventional oil
+     // quantity is converted from percent to gallons by its display spec.
+     const raw=p==='oilQuantity'?x.inputValue:digitalValue;
+     const value=valid&&numeric(raw)?raw:null,stamp='DOT.'+mode+'.'+key;
+     if(node&&p==='fuelFlow'){
+      node.dataset.fuelDisplayMode=fuelMode;node.dataset.displayUnit=fuelMode==='USED'?'t':'t/h';
+     }
+     if(!uncertain&&shown!=='hidden'&&(lastPaint.get(stamp)!==value||!node)){
+      window.B737EISDotReadoutsV1?.setReading(id,p,value,'ENGINE_INDICATION_BACKEND_V2');
+      lastPaint.set(stamp,value);
+     }
+    }
     if(mode==='EIS'){
      const pointerId='#region-main [data-gauge="'+key+'"]';
      const group=$(pointerId);
@@ -44,25 +61,6 @@
       if(!uncertain){group.style.visibility=valid?'visible':'hidden';}
      }
      if(p==='oilQuantity'){} // Oil quantity has only the separate numeric EIS field.
-     if(DOT.has(p)){
-      const dot='#region-main [data-eis-readout="'+key+'"]';
-      const shown=x.status==='UNIT_FAILED'||x.status==='POWER_LOSS'?'hidden':
-        uncertain?'unchanged':'visible';
-      const node=$(dot);
-      if(node){node.dataset.engineLiveStatus=x.status;if(shown!=='unchanged')node.style.visibility=shown;}
-      const value=valid?digitalValue:null;
-      if(node&&p==='fuelFlow'){
-       node.dataset.fuelDisplayMode=fuelMode;
-       node.dataset.displayUnit=fuelMode==='USED'?'t':'t/h';
-       node.setAttribute('aria-label',id+' FUEL '+fuelMode+' '+(numeric(value)?value:'---')+' '+node.dataset.displayUnit);
-      }
-      const stamp='EIS.'+key,old=lastPaint.get(stamp);
-      if(!uncertain&&shown!=='hidden'&&(old!==value||!node)){
-       // Existing dense dot and drum geometry is untouched; setReading(null) makes dashes.
-       window.B737EISDotReadoutsV1?.setReading(id,p,value);
-       lastPaint.set(stamp,value);
-      }
-     }
      if(p!=='oilQuantity'&&p!=='vibration'&&p!=='oilTemperature'&&p!=='oilPressure'&&p!=='n1'&&p!=='egt'&&p!=='n2'&&p!=='fuelFlow')continue;
      if(p!=='oilQuantity'&&p!=='vibration'||p==='vibration'||p==='oilTemperature'||p==='oilPressure'){
       // "hydPressure" is an unrelated EIS channel: do not overwrite it.

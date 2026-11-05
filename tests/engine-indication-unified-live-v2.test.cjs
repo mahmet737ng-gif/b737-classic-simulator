@@ -114,6 +114,8 @@ async function run(){
  assert.equal(live.getState().mode,'CONVENTIONAL');
  assert.ok(renders.some(x=>x.kind==='conventional'&&x.engine==='engine1'&&x.key==='n2'));
  assert.equal(live.getState().snapshot.engines.engine1.indications.oilQuantity.value,4);
+ assert.ok(readouts.some(x=>x.engine==='engine1'&&x.key==='oilQuantity'&&x.val===80),'Conventional drums receive percent input and convert it to gallons once');
+ assert.equal(nodeFor('#region-main [data-conventional-readout="n2_1"]').style.visibility,'visible');
  assert.equal(nodeFor('#region-main [data-conventional-needle="oilQty_1"]').style.visibility,'visible');
  // Power falls on the respective Conventional channel while other engine stays live.
  electric=Electrical.apply(electric,{type:'FAULT',id:'TR1_FAILED',active:true,instructor:true});

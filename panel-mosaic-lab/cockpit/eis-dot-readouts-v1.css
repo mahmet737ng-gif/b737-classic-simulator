@@ -1,3 +1,5 @@
 .texture-piece>.eis-dot-readouts-v1{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:6}
 .eis-dot-readouts-v1 use{shape-rendering:geometricPrecision}
+.conventional-engine-photo-wrap-v1>.conventional-dot-readouts-v1{position:absolute;left:0;top:0;display:block;max-width:none;max-height:none;transform-origin:0 0;pointer-events:none;overflow:visible;z-index:6}
+.conventional-dot-readouts-v1 use{shape-rendering:geometricPrecision}
 html[data-engine-indication="CONVENTIONAL"] #region-main .eis-dot-readouts-v1{display:none!important}

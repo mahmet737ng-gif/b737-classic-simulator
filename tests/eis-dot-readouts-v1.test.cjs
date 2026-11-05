@@ -18,11 +18,11 @@ assert.equal(font.format(1000,{integerDigits:3}),'---','Overflow cannot silently
 assert.throws(()=>font.layout('A'));
 const wheel=font.createWheel(9);
 wheel.setColumn(10);wheel.step(1/60);
-assert.ok(wheel.snapshot().phase>9&&wheel.snapshot().phase<10,'9 -> 0 rolls upward through the boundary');
+assert.ok(wheel.snapshot().phase>9&&wheel.snapshot().phase<10&&wheel.snapshot().direction==='DOWN','9 -> 0 rolls downward through the boundary');
 for(let i=0;i<180;i++)wheel.step(1/60);
 assert.equal(wheel.snapshot().phase,0);assert.equal(wheel.snapshot().moving,false);
 wheel.setColumn(9);wheel.step(1/60);
-assert.ok(wheel.snapshot().phase<0&&wheel.snapshot().phase>-1,'0 -> 9 rolls downward through the boundary');
+assert.ok(wheel.snapshot().phase<0&&wheel.snapshot().phase>-1&&wheel.snapshot().direction==='UP','0 -> 9 rolls upward through the boundary');
 for(let i=0;i<180;i++)wheel.step(1/60);
 assert.equal(wheel.snapshot().phase,9);
 wheel.setColumn(10009);
@@ -30,9 +30,10 @@ assert.ok(Math.abs(wheel.snapshot().target-wheel.snapshot().phase)<=20,'Huge dat
 const reversal=font.createWheel(0);reversal.setColumn(2);reversal.step(.02);reversal.setColumn(1);
 assert.equal(reversal.snapshot().target,1,'A retarget during movement must not introduce an unwanted full revolution');
 class Element{
- constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.dataset={};}
+ constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.dataset={};this.style={};}
  setAttribute(k,v){this.attrs[k]=String(v);}
  append(c){c.parentNode=this;this.children.push(c);}
+ appendChild(c){this.append(c);return c;}
  remove(){this.parentNode.children=this.parentNode.children.filter(c=>c!==this);this.parentNode=null;}
 }
 let piece=new Element('article');const events={};
@@ -91,13 +92,33 @@ movingAPI.setReading('engine1','n1',.1);movingAPI.setReading('engine2','n2',.1);
 assert.equal(queue.size,1,'All active digit wheels share one animation frame loop');
 frames(5);
 let motion=movingAPI.getMotion().n1_1.at(-1);
-assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='UP','The intermediate upward movement is visible');
+assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='DOWN','An increase visibly rolls downward');
 const tape=nodes(animatedPiece).find(n=>'data-eis-digit-tape' in n.attrs&&n.attrs.transform&&n.attrs.transform!=='translate(0 0.0000)');
 assert.ok(tape,'Real SVG glyphs translate between the two digit stops');
 frames(180);assert.equal(queue.size,0,'The frame loop stops when all drums settle');
 movingAPI.setReading('engine1','n1',0);frames(5);
 motion=movingAPI.getMotion().n1_1.at(-1);
-assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='DOWN','The intermediate downward movement is visible');
+assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='UP','A decrease visibly rolls upward');
 frames(180);assert.equal(queue.size,0);
 assert.equal(movingAPI.getMotion().n1_1.at(-1).phase,0);
+const convHost=new Element('section'),convPiece=new Element('article'),convEvents={};
+const convWindow={B737EISDotDigitsV1:font,B737ISNEngineGaugeModel:model,
+ B737EngineIndicationModeV1:{wrap:()=>convHost,layout:()=>({cssMatrix:'matrix(.6,0,0,1.2,0,0)'})},
+ addEventListener:(n,fn)=>convEvents[n]=fn};
+const convDocument={querySelector:()=>convPiece,baseURI:'https://test.local/panel-mosaic-lab/cockpit/',createElementNS:(_,tag)=>new Element(tag)};
+const convContext=vm.createContext({window:convWindow,document:convDocument,URL});
+vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'),'utf8'),convContext);
+vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'),'utf8'),convContext);
+const convApi=convWindow.B737EISDotReadoutsV1;
+assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,10);
+assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1').cx,427);
+convApi.setReading('engine1','oilQuantity',85);
+const oilWindow=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='oilQuantity_1');
+assert.equal(oilWindow.dataset.value,'4.25');assert.equal(oilWindow.dataset.displayUnit,'USgal');
+convApi.setReading('engine1','fuelFlow',565);
+assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='fuelFlow_1').dataset.value,'0.57');
+convApi.setReading('engine1','n1',60,'ENGINE_INDICATION_BACKEND_V2');
+convEvents['b737:unified-ecu-observation']({detail:{engines:{engine1:{n1Percent:90}}}});
+assert.equal(convApi.getReadings().n1_1.value,60,'Raw ECU cannot overwrite the bus/failure-aware backend owner');
+assert.ok(nodes(convHost).some(n=>n.attrs.id==='conv-dot-glyph-9'),'Each surface has its own glyph IDs');
 console.log('PASS dense EIS glyphs, bidirectional rolling/carry, rapid retargets, shared RAF, clipped windows and tonne/hour conversion.');
