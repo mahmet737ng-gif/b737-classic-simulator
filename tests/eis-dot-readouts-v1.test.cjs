@@ -16,6 +16,19 @@ for(const [kg,text]of [[0,'0.00'],[560,'0.56'],[565,'0.57'],[1200,'1.20'],[4000,
 assert.equal(font.format(null,{divisor:1000,decimals:2}),'-.--');
 assert.equal(font.format(1000,{integerDigits:3}),'---','Overflow cannot silently lose a digit');
 assert.throws(()=>font.layout('A'));
+const wheel=font.createWheel(9);
+wheel.setColumn(10);wheel.step(1/60);
+assert.ok(wheel.snapshot().phase>9&&wheel.snapshot().phase<10,'9 -> 0 rolls upward through the boundary');
+for(let i=0;i<180;i++)wheel.step(1/60);
+assert.equal(wheel.snapshot().phase,0);assert.equal(wheel.snapshot().moving,false);
+wheel.setColumn(9);wheel.step(1/60);
+assert.ok(wheel.snapshot().phase<0&&wheel.snapshot().phase>-1,'0 -> 9 rolls downward through the boundary');
+for(let i=0;i<180;i++)wheel.step(1/60);
+assert.equal(wheel.snapshot().phase,9);
+wheel.setColumn(10009);
+assert.ok(Math.abs(wheel.snapshot().target-wheel.snapshot().phase)<=20,'Huge data jumps cannot queue hundreds of revolutions');
+const reversal=font.createWheel(0);reversal.setColumn(2);reversal.step(.02);reversal.setColumn(1);
+assert.equal(reversal.snapshot().target,1,'A retarget during movement must not introduce an unwanted full revolution');
 class Element{
  constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.dataset={};}
  setAttribute(k,v){this.attrs[k]=String(v);}
@@ -44,7 +57,7 @@ assert.equal(nodes(piece).filter(n=>'data-eis-tall-window' in n.attrs).length,8)
 const n2Group=nodes(piece).find(n=>n.attrs['data-eis-readout']==='n2_1');
 const fragments=nodes(n2Group).filter(n=>'data-eis-adjacent-digit' in n.attrs);
 assert.deepEqual(fragments.map(n=>n.attrs.href),['#eis-dot-glyph-5','#eis-dot-glyph-7']);
-assert.ok(fragments.every(n=>n.parentNode.attrs['clip-path']&&n.attrs.visibility==='visible'));
+assert.ok(fragments.every(n=>n.parentNode.parentNode.attrs['clip-path']&&n.parentNode.attrs.visibility==='visible'));
 assert.ok(font.style.windowHeight>font.style.bodyHeight,'Last digit has a physically taller viewing window');
 assert.equal(nodes(piece).length,count,'Live updates reuse prebuilt glyphs and digit cells');
 api.mount();assert.equal(piece.children.length,1,'Mount is idempotent');
@@ -62,4 +75,28 @@ assert.equal(nodes(piece).filter(n=>'data-eis-readout' in n.attrs).length,10);
 assert.equal(api.getReadings().n1_1.text,'21.4','Remount preserves state');
 const css=fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/eis-dot-readouts-v1.css'),'utf8');
 assert.ok(css.includes('data-engine-indication="CONVENTIONAL"'));
-console.log('PASS dense EIS glyphs, tall clipped digit windows, neighbors, tonne/hour conversion, independent sources and stable DOM.');
+// Exercise the real renderer with one deterministic browser-frame queue.
+let frameClock=0,sequence=0;const queue=new Map(),animatedPiece=new Element('article');
+const animatedWindow={B737EISDotDigitsV1:font,B737ISNEngineGaugeModel:model,addEventListener(){}};
+const animatedDocument={querySelector:()=>animatedPiece,createElementNS:(_,tag)=>new Element(tag)};
+vm.runInNewContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'),'utf8'),{
+ window:animatedWindow,document:animatedDocument,
+ requestAnimationFrame:callback=>{queue.set(++sequence,callback);return sequence;},
+ cancelAnimationFrame:id=>queue.delete(id)
+});
+const movingAPI=animatedWindow.B737EISDotReadoutsV1;
+function frames(n){for(let i=0;i<n;i++){frameClock+=1000/60;const callbacks=[...queue.values()];queue.clear();for(const callback of callbacks)callback(frameClock);}}
+movingAPI.setReading('engine1','n1',.1);movingAPI.setReading('engine2','n2',.1);
+assert.equal(queue.size,1,'All active digit wheels share one animation frame loop');
+frames(5);
+let motion=movingAPI.getMotion().n1_1.at(-1);
+assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='UP','The intermediate upward movement is visible');
+const tape=nodes(animatedPiece).find(n=>'data-eis-digit-tape' in n.attrs&&n.attrs.transform&&n.attrs.transform!=='translate(0 0.0000)');
+assert.ok(tape,'Real SVG glyphs translate between the two digit stops');
+frames(180);assert.equal(queue.size,0,'The frame loop stops when all drums settle');
+movingAPI.setReading('engine1','n1',0);frames(5);
+motion=movingAPI.getMotion().n1_1.at(-1);
+assert.ok(motion.phase>0&&motion.phase<1&&motion.direction==='DOWN','The intermediate downward movement is visible');
+frames(180);assert.equal(queue.size,0);
+assert.equal(movingAPI.getMotion().n1_1.at(-1).phase,0);
+console.log('PASS dense EIS glyphs, bidirectional rolling/carry, rapid retargets, shared RAF, clipped windows and tonne/hour conversion.');

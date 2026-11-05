@@ -12,13 +12,16 @@
  })).concat([1,2].map(n=>Object.freeze({id:'oilQuantity_'+n,engine:'engine'+n,signal:'oilQuantity',
   cx:n===1?984:1095,cy:741,decimals:0,integerDigits:3,divisor:1,unit:'%FULL',template:'999',drum:false,scale:.83}))));
  const values=new Map(specs.map(s=>[s.id,{value:['n1','n2'].includes(s.signal)?0:null,source:'INITIAL'}]));
- const mounted=new Map();let layer=null;
+ const mounted=new Map();let layer=null,ticket=null,lastFrame=null;
+ const raf=typeof requestAnimationFrame==='function'?requestAnimationFrame:null;
+ const caf=typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null;
  function element(parent,tag,attrs={}){const node=document.createElementNS(ns,tag);
   for(const [k,v]of Object.entries(attrs))node.setAttribute(k,String(v));parent.append(node);return node;}
  const glyphId=ch=>'eis-dot-glyph-'+(ch==='.'?'decimal':ch==='-'?'dash':ch);
  function mount(){
   const piece=document.querySelector('#region-main .texture-piece[data-piece="engine"]');if(!piece)return false;
   if(layer?.parentNode===piece)return true;
+  if(ticket!==null&&caf)caf(ticket);ticket=null;lastFrame=null;
   if(layer)layer.remove();mounted.clear();
   layer=element(piece,'svg',{class:'eis-dot-readouts-v1',viewBox:'0 0 1235 1274',
    'data-eis-dot-readouts':font.VERSION,'aria-label':'EIS live dot matrix engine numbers'});
@@ -33,50 +36,92 @@
    const width=font.layout(spec.template).width,lastX=width-14;
    element(group,'rect',{'data-eis-display-face':'',x:-2,y:font.style.bodyTop,
     width:width+4,height:font.style.bodyHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
-   const clipId='eis-last-digit-window-'+spec.id;
+   const clipId='eis-last-digit-window-'+spec.id,bodyId='eis-body-window-'+spec.id;
+   const bodyClip=element(defs,'clipPath',{id:bodyId,clipPathUnits:'userSpaceOnUse'});
+   element(bodyClip,'rect',{x:-2,y:font.style.bodyTop,width:width+4,height:font.style.bodyHeight});
    if(spec.drum){
     element(group,'rect',{'data-eis-tall-window':'',x:lastX-2,y:font.style.windowTop,
      width:16,height:font.style.windowHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
     const clip=element(defs,'clipPath',{id:clipId,clipPathUnits:'userSpaceOnUse'});
     element(clip,'rect',{x:lastX-2,y:font.style.windowTop,width:16,height:font.style.windowHeight});
    }
-   // All cells are allocated once. Updates change glyph references only.
-   const cells=Array.from({length:7},()=>element(element(group,'g'),'use',{visibility:'hidden'}));
-   const drum=spec.drum?element(group,'g',{'clip-path':'url(#'+clipId+')'}):null;
-   const neighbors=spec.drum?[-1,1].map(direction=>element(drum,'use',{
-    'data-eis-adjacent-digit':direction,visibility:'hidden',
-    'aria-hidden':'true',opacity:'.78'})):[];
+   // Fixed windows clip independent vertical digit tapes. Glyph nodes are
+   // allocated once; one shared RAF moves all active drums without timers.
+   const template=font.layout(spec.template),digits=[...spec.template].filter(c=>c!=='.').length;
+   let position=digits;
+   const slots=template.cells.map((cell,index)=>{
+    const tall=spec.drum&&index===template.cells.length-1;
+    const clip=element(group,'g',{'data-eis-digit-cell':index,'clip-path':'url(#'+(tall?clipId:bodyId)+')'});
+    const fixed=element(clip,'use',{x:cell.x,visibility:'hidden','aria-hidden':'true'});
+    const tape=element(clip,'g',{'data-eis-digit-tape':'',visibility:'hidden','aria-hidden':'true'});
+    const glyphs=[-2,-1,0,1,2].map(offset=>element(tape,'use',{
+     x:cell.x,y:offset*font.style.drumStride,'data-drum-glyph':offset,
+     ...(tall&&Math.abs(offset)===1?{'data-eis-adjacent-digit':offset}:{})}));
+    return {clip,fixed,tape,glyphs,x:cell.x,power:cell.character==='.'?null:--position,
+     wheel:null,character:' ',base:null,offset:null};
+   });
    group.dataset.displayUnit=spec.unit;
-   mounted.set(spec.id,{group,cells,neighbors,width,lastX,text:null,clipId});
+   const pitch=font.style.pitch*spec.scale;
+   group.setAttribute('transform',`translate(${spec.cx-width*pitch/2} ${spec.cy-10*pitch}) scale(${pitch})`);
+   mounted.set(spec.id,{group,slots,width,text:null,dirty:true});
   }
-  paint();return true;
+  syncTargets();paint();schedule();return true;
  }
- function paint(){if(!layer)return;
+ function syncTargets(){if(!layer)return;
   for(const spec of specs){
    const part=mounted.get(spec.id),reading=values.get(spec.id);
    const text=font.format(reading.value,spec);part.group.dataset.source=reading.source;
    if(part.text===text)continue;
-   part.text=text;part.group.dataset.value=text;
+   part.text=text;part.dirty=true;part.group.dataset.value=text;
    part.group.setAttribute('aria-label',spec.engine+' '+spec.signal+' '+text+' '+spec.unit);
-   const shape=font.layout(text),pitch=font.style.pitch*spec.scale;
-   const padding=part.width-shape.width;
-   part.group.setAttribute('transform',`translate(${spec.cx-part.width*pitch/2} ${spec.cy-10*pitch}) scale(${pitch})`);
-   part.cells.forEach((cell,i)=>{
-    const data=shape.cells[i];cell.setAttribute('visibility',data?'visible':'hidden');
-    cell.parentNode.setAttribute('clip-path',spec.drum&&i===shape.cells.length-1?'url(#'+part.clipId+')':'none');
-    if(data){cell.setAttribute('href','#'+glyphId(data.character));cell.setAttribute('x',data.x+padding);}
-   });
-   const last=shape.cells.at(-1)?.character,hasDigit=/^[0-9]$/.test(last||'');
-   part.neighbors.forEach((cell,i)=>{
-    const direction=i===0?-1:1;
-    cell.setAttribute('visibility',hasDigit?'visible':'hidden');
-    if(hasDigit){
-     cell.setAttribute('href','#'+glyphId(String((Number(last)+direction+10)%10)));
-     cell.setAttribute('x',part.lastX);cell.setAttribute('y',direction*font.style.drumStride);
+   const padded=text.padStart(spec.template.length,' ');
+   const numeric=Number.isFinite(Number(text));
+   const ticks=numeric?Math.round(Math.abs(Number(text))*10**spec.decimals):0;
+   part.slots.forEach((slot,i)=>{
+    const character=padded[i]||' ';slot.character=character;
+    if(slot.power!==null&&numeric&&(character===' '||/^[0-9]$/.test(character))){
+     const column=Math.floor(ticks/10**slot.power);
+     if(!slot.wheel)slot.wheel=font.createWheel(column);else slot.wheel.setColumn(column);
+     if(!raf)slot.wheel.snap();
+     slot.fixed.setAttribute('visibility','hidden');
+    }else{
+     slot.wheel=null;slot.tape.setAttribute('visibility','hidden');
+     slot.fixed.setAttribute('visibility',character===' '?'hidden':'visible');
+     if(character!==' ')slot.fixed.setAttribute('href','#'+glyphId(character));
     }
    });
   }
  }
+ const isMoving=()=>[...mounted.values()].some(p=>p.slots.some(s=>s.wheel?.snapshot().moving));
+ function paint(){if(!layer)return;
+  for(const part of mounted.values()){
+   const moving=part.slots.some(s=>s.wheel?.snapshot().moving);
+   if(!part.dirty&&!moving&&part.group.dataset.motion==='REST')continue;
+   let direction='REST';
+   part.slots.forEach(slot=>{
+    if(!slot.wheel)return;
+    const state=slot.wheel.snapshot(),base=Math.floor(state.phase),fraction=state.phase-base;
+    slot.tape.setAttribute('visibility',slot.character===' '&&!state.moving?'hidden':'visible');
+    slot.clip.dataset.drumPhase=state.phase.toFixed(4);
+    slot.clip.dataset.drumDirection=state.direction;
+    if(state.moving)direction=state.direction;
+    if(slot.base!==base){
+     slot.base=base;
+     slot.glyphs.forEach((node,i)=>node.setAttribute('href','#'+glyphId(String(((base+i-2)%10+10)%10))));
+    }
+    const offset=(-fraction*font.style.drumStride).toFixed(4);
+    if(slot.offset!==offset){slot.offset=offset;slot.tape.setAttribute('transform','translate(0 '+offset+')');}
+   });
+   part.group.dataset.motion=direction;part.dirty=false;
+  }
+ }
+ function schedule(){if(raf&&ticket===null&&isMoving())ticket=raf(frame);}
+ function frame(now){
+  ticket=null;const seconds=lastFrame===null?1/60:Math.min(.05,Math.max(0,(now-lastFrame)/1000));lastFrame=now;
+  for(const part of mounted.values())for(const slot of part.slots)slot.wheel?.step(seconds);
+  paint();if(isMoving())schedule();else lastFrame=null;
+ }
+ function refresh(){mount();syncTargets();paint();schedule();}
  function write(spec,value,source){values.set(spec.id,{value:Number.isFinite(value)?value:null,source});}
  function observeECU(live){
   const paths={n1:'n1Percent',n2:'n2Percent',egt:'egtC',fuelFlow:'fuelFlowKgHr',oilQuantity:'oil.quantityPct'};
@@ -87,23 +132,24 @@
    // An absent property is not an invalid sensor and must not erase it.
    if(value!==undefined)write(s,value,'UNIFIED_ECU_OBSERVATION');
   }
-  mount();paint();
+  refresh();
  }
  function observeStart(packet){
   for(const s of specs){
    const signal=packet?.engines?.[s.engine]?.[s.signal];
    if(signal&&Object.hasOwn(signal,'value'))write(s,signal.value,'ISN_START_SOURCE');
   }
-  mount();paint();
+  refresh();
  }
  window.B737EISDotReadoutsV1=Object.freeze({
   getSpecs:()=>specs.map(s=>({...s})),
   getReadings:()=>Object.fromEntries([...values].map(([id,v])=>{
    const spec=specs.find(s=>s.id===id);return [id,{...v,text:font.format(v.value,spec),displayUnit:spec.unit}];
   })),
+  getMotion:()=>Object.fromEntries([...mounted].map(([id,p])=>[id,p.slots.map(s=>s.wheel?.snapshot()||null)])),
   setReading(engine,signal,value){
    const spec=specs.find(s=>s.engine===engine&&s.signal===signal);if(!spec)throw Error('Unknown EIS numeric field');
-   write(spec,value,'EXPLICIT_TRAINER_OR_SOURCE');mount();paint();
+   write(spec,value,'EXPLICIT_TRAINER_OR_SOURCE');refresh();
   },mount
  });
  window.addEventListener('b737:cockpit-mounted',mount);

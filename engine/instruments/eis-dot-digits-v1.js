@@ -52,5 +52,49 @@
   }
   return {cells,width:Math.max(0,cursor-4),height:style.height};
  }
- return Object.freeze({VERSION:'EIS-DENSE-DRUM-0002',glyphs,style,format,layout});
+ function createWheel(initial,{omega=16,maxSpeed=26}={}){
+  if(!Number.isInteger(initial)||!Number.isFinite(omega)||omega<=0||!Number.isFinite(maxSpeed)||maxSpeed<=0)
+   throw Error('Integer wheel column and positive motion settings required');
+  const mod=n=>((n%10)+10)%10;
+  let column=initial,phase=mod(initial),target=phase,velocity=0;
+  const moving=()=>Math.abs(target-phase)>.001||Math.abs(velocity)>.015;
+  function snapshot(){return {column,phase,target,velocity,moving:moving(),
+   direction:!moving()?'REST':target>phase?'UP':'DOWN'};}
+  function snap(next=column){
+   if(!Number.isInteger(next))throw Error('Integer wheel column required');
+   column=next;phase=target=mod(next);velocity=0;return snapshot();
+  }
+  function setColumn(next){
+   if(!Number.isInteger(next))throw Error('Integer wheel column required');
+   const delta=next-column;if(delta===0)return snapshot();
+   column=next;const digit=mod(next);
+   // Keep the requested direction through 9->0 and 0->9. Big source jumps
+   // make at most two visible turns instead of queuing hundreds of digits.
+   const steps=Math.abs(delta)>20?Math.sign(delta)*(10+Math.abs(delta)%10):delta;
+   target+=steps;
+   if(Math.abs(target-phase)>20){
+    const direction=Math.sign(target-phase);
+    const distance=direction>0?mod(digit-mod(phase)):mod(mod(phase)-digit);
+    target=phase+direction*(distance+10);
+   }
+   if(Math.sign(velocity)!==Math.sign(target-phase))velocity=0;
+   return snapshot();
+  }
+  function step(seconds){
+   if(!Number.isFinite(seconds)||seconds<0)throw Error('Nonnegative wheel timestep required');
+   if(!moving()||seconds===0)return snapshot();
+   const dt=Math.min(seconds,.05),old=phase,offset=phase-target;
+   const term=velocity+omega*offset,decay=Math.exp(-omega*dt);
+   let next=target+(offset+term*dt)*decay;
+   velocity=(velocity-omega*term*dt)*decay;
+   const travel=next-old,limit=maxSpeed*dt;
+   if(Math.abs(travel)>limit){next=old+Math.sign(travel)*limit;velocity=Math.sign(travel)*maxSpeed;}
+   if((target-old)*(target-next)<=0){next=target;velocity=0;}
+   phase=next;
+   if(!moving()){phase=target=mod(target);velocity=0;}
+   return snapshot();
+  }
+  return Object.freeze({setColumn,step,snap,snapshot});
+ }
+ return Object.freeze({VERSION:'EIS-ROLLING-DRUM-0003',glyphs,style,format,layout,createWheel});
 });
