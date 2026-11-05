@@ -169,6 +169,15 @@
    button.type='button';button.className='mounted-toggle';button.id='toggle-'+c.id;button.dataset.control=c.id;button.dataset.axis=c.axis;button.dataset.placement=c.placementId;button.dataset.visualFamily=c.visualFamily||'Standard';
    button.setAttribute('role','slider');button.setAttribute('aria-orientation',c.axis);button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax',String(c.states.length-1));button.title=c.label;
    Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.65)+'px',height:(p.diameter*1.65)+'px'});
+   // INBOARD L uses the vacant black photo socket, not the central ON legend.
+   // The source bitmap and all other landing-light switches stay unchanged.
+   // Expose the registered photo centre for pixel-based browser verification.
+   if(c.id==='landing-in-l'){
+    if(c.placementId!=='OH23-25'||c.sourcePoint[0]!==398||c.sourcePoint[1]!==318)
+     throw Error('INBOARD L must stay registered to empty photo bezel [398,318]');
+    button.dataset.photoSocketCenter='398,318';
+    button.dataset.registration='EXTL-INBOARD-L-CENTER-0003';
+   }
    // OH14 reuses its registered Small Silver three-position actuator.
    const photoOnly=c.id==='emergency-exit-lights';
    if(c.interactionSourceRect){
