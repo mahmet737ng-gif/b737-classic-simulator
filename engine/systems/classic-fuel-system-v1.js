@@ -31,8 +31,8 @@
     throw Error('Existing ISN FuelNetwork ledger is required');
    this.fuel=fuel;this.config={...TRAINING,...training};
    this.crossfeed={command:'CLOSED',position:'CLOSED',remainingMs:0,failed:false};
-   this.centerDryMs={fuel.centerLeftPump:0,fuel.centerRightPump:0};
-   this.centerAutoStopped={fuel.centerLeftPump:false,fuel.centerRightPump:false};
+   this.centerDryMs={'fuel.centerLeftPump':0,'fuel.centerRightPump':0};
+   this.centerAutoStopped={'fuel.centerLeftPump':false,'fuel.centerRightPump':false};
    this.previousSwitches=Object.fromEntries(Object.keys(PUMPS).map(k=>[k,false]));
    this.scavenge={armed:false,remainingMs:0,transferredKg:0,flowKgHr:0};
    this.temperatureC=10;this.events=[];this.elapsedMs=0;
