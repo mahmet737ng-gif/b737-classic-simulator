@@ -33,3 +33,17 @@ assert.ok(overlay.includes('data-piece="engine"'));
 assert.ok(host.includes('b737:isn-start-indications'));
 assert.ok(host.includes('isn-engine-start-dynamics-v1.js'));
 console.log('PASS ISN-05 training interpolation and four source-aligned engine-panel gauges.');
+
+// A normal start must not flatten near 46%; injected failures may level off.
+for(const entryN2 of [5,20,25]){
+ const read=t=>Dynamics.sample('LIGHT_OFF_SEQUENCE',t,{fuelEntryN2:entryN2}).n2Percent;
+ const rate=(46-entryN2)/1000;
+ for(const [a,b] of [[900,950],[950,990],[990,999]])
+  assert.ok(Math.abs((read(b)-read(a))/(b-a)-rate)<1e-10,'No pre-cutout N2 plateau');
+ assert.ok(read(999)<46);assert.equal(read(1000),46);
+}
+for(const fault of ['hungStart','noLightOff']){
+ const a=Dynamics.sample('LIGHT_OFF_SEQUENCE',1000,{[fault]:true});
+ const b=Dynamics.sample('LIGHT_OFF_SEQUENCE',1500,{[fault]:true});
+ assert.ok(a.n2Percent<46);assert.equal(a.n2Percent,b.n2Percent);
+}

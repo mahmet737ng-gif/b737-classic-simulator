@@ -89,7 +89,11 @@
     // risk curve, not a guaranteed hot start or source-certified CFM profile.
     const entryN2=clamp(Number.isFinite(faults.fuelEntryN2)?faults.fuelEntryN2:25,0,25);
     const earlyEgtRise=clamp((20-entryN2)/20,0,1)*150;
-    return {n2Percent:entryN2+(46-entryN2)*f,
+    // Normal spool must retain positive speed at starter cutout. Smoothstep
+    // flattened its endpoint, rounding the display to 46 before the relay trip.
+    // Failure curves above deliberately retain their separate stalled targets.
+    const spool=clamp(elapsedMs/duration.lightoffMs,0,1);
+    return {n2Percent:entryN2+(46-entryN2)*spool,
      egtC:faults.egtHigh?760*f:startEgt(elapsedMs/duration.lightoffMs)*(1+earlyEgtRise/ENVELOPE.normalStartPeakEgtC),
      fuelFlowKgHr:400-50*f,origin:ORIGIN};
   }
