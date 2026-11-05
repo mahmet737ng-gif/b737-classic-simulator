@@ -207,32 +207,6 @@
   });
   group.append(cover,lever);return group;
  }
- // Non-destructive label calibration: the approved atlas bitmap remains byte-for-byte locked.
- // The original FLT lettering on OH23-25 crowds CONT; replace only those two tiny regions.
- function mountEngineStartLabelCorrection(layout){
-  const plate=layout.placements.find(p=>p.id==='OH23-25');if(!plate)return;
-  const ns='http://www.w3.org/2000/svg',make=tag=>document.createElementNS(ns,tag),svg=make('svg');
-  svg.classList.add('rg-start-label-correction');
-  svg.setAttribute('viewBox','0 212 2170 297');svg.setAttribute('preserveAspectRatio','none');
-  Object.assign(svg.style,{position:'absolute',left:plate.x+'px',top:plate.y+'px',width:plate.w+'px',height:plate.h+'px',zIndex:88,pointerEvents:'none',overflow:'hidden'});
-  const defs=make('defs'),clip=make('clipPath');clip.id='rm0002-old-flt-letters';
-  for(const [x,y,w,h] of [[1052,291,46,28],[1405,292,47,29]]){
-   const mask=make('rect');for(const [k,v] of Object.entries({x,y,width:w,height:h}))mask.setAttribute(k,v);clip.append(mask);
-  }
-  defs.append(clip);svg.append(defs);
-  const background=make('image');
-  background.setAttribute('href',window.B737ImageLoader?.labelPatchURL()||url('../../panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png'));
-  background.setAttribute('x','0');background.setAttribute('y','-41');background.setAttribute('width','2170');background.setAttribute('height','725');
-  background.setAttribute('clip-path','url(#rm0002-old-flt-letters)');svg.append(background);
-  for(const [x,y] of [[1093,324],[1436,324]]){
-   const label=make('text');label.textContent='FLT';label.setAttribute('x',x);label.setAttribute('y',y);
-   label.setAttribute('font-family','Arial Narrow,Arial,sans-serif');label.setAttribute('font-size','16');
-   label.setAttribute('font-weight','700');label.setAttribute('text-anchor','middle');
-   label.setAttribute('fill','#f0eae0');label.setAttribute('stroke','#383632');label.setAttribute('stroke-width','.55');
-   label.setAttribute('paint-order','stroke fill');svg.append(label);
-  }
-  byId('atlasAbsolute').append(svg);
- }
  // Variant-specific temperature detents. The existing 737-400 five-position
  // hardware and model stay unchanged; 300/500 receive calibrated training
  // setpoint detents without touching physical artwork or guard red zones.
@@ -281,7 +255,6 @@
  function mount(layout){
   const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۰ گارد · منتظر نسخه جدید</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
-  mountEngineStartLabelCorrection(layout);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
   for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):c.presentation==='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p,placements.get(c.placementId));widgets.set(c.id,node);layer.append(node);render(c);}
