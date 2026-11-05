@@ -10,7 +10,8 @@ test('All registered ECU dependency downloads are queued in one turn, while exec
  const loader=isn.slice(start,end);
  assert.match(loader,/script\.async=false/);
  const deps=[...isn.slice(0,start).matchAll(/\['(B737[^']+)','([^']+)'\]/g)].map(m=>[m[1],m[2]]);
- assert.equal(deps.length,15,'The registered ECU dependency count changed; audit the loader and this test together');
+ assert.equal(deps.length,16,'Unified ATA28 adds one fuel-system module to the existing shared ECU dependencies; audit loader changes together');
+ assert.ok(deps.some(([name,url])=>name==='B737ClassicFuelSystemV1'&&url.endsWith('/classic-fuel-system-v1.js')),'ATA28 module must be loaded into the shared ECU');
  const queued=[],win={};
  const document={head:{append(node){queued.push(node);}},createElement:()=>({})};
  const sandbox={window:win,document,URL,deps,moduleBase:'https://example.test/repo/panel-mosaic-lab/cockpit/isn-cockpit.js'};
