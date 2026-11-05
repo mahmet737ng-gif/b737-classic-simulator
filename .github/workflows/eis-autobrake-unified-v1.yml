@@ -1,0 +1,27 @@
+name: Unified EIS AUTOBRAKE physical selector
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js'
+      - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.css'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/eis-autobrake-unified-v1.test.cjs'
+      - '.github/workflows/eis-autobrake-unified-v1.yml'
+  workflow_dispatch:
+jobs:
+  eis-autobrake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and shared autobrake behavior
+        run: |
+          node --check panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js
+          node --check panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js
+          node --check engine/systems/autobrake-classic-v1.js
+          node engine/systems/autobrake-classic-v1.test.cjs
+          node panel-mosaic-lab/cockpit/autobrake-rto-selftest-v1.test.cjs
+          node panel-mosaic-lab/cockpit/conventional-physical-controls-v1.test.cjs
+          node tests/eis-autobrake-unified-v1.test.cjs
