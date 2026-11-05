@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0006","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":80,"note":"THR-0006: sprite grips scale to an 80-source-pixel width, below the 92-source-pixel slot pitch; throttle hit areas follow each slot. Recessed TO/GA face is visual-only. Approved PNGs and locked quadrant remain unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
+const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0007","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":112,"note":"THR-0007: restore visible throttle sprites by correcting double-applied panel scale; grip is 112 native sprite pixels vs original 138 (19% smaller). Existing throttle motion and TO/GA presentation retained; image assets unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
 const KEYS=Object.freeze([0,25,50,75,100]);
 const position={1:0,2:0};
 const images={};
@@ -41,12 +41,10 @@ function buildControls(){
 function createSprite(engine,pct,tex){
  const p=CONFIG.stages[String(pct)];
  const name=filename(engine,pct),image=images[name],cal=CONFIG.sprites[name];
- // Scale the entire source sprite with the actual plate pitch rather than a fixed viewport size.
- // Both visible grips now fit within their independently registered throttle slots.
- const unit=tex.offsetWidth/1055;
- const slotPitch=CONFIG.engineSourceCenters[2]-CONFIG.engineSourceCenters[1];
- const gripWidth=Math.min(CONFIG.gripWidthNative,slotPitch-12)*unit;
- const scale=gripWidth/cal.gripWidth;
+ // THR-0007: Calibrated gripWidth is in sprite/image display pixels, not panel-source pixels.
+ // Multiplying it by the texture unit a second time made the handles nearly invisible.
+ // Preserve their source anchors and use a modest reduction relative to 138px baseline.
+ const scale=CONFIG.gripWidthNative/cal.gripWidth;
  const visual=document.createElement('img');visual.src=image.src;visual.alt='';visual.draggable=false;
  visual.className='throttle-state-sprite';
  const x=CONFIG.engineSourceCenters[engine];
