@@ -62,3 +62,19 @@
 .guard-node[data-value="off"] .guard-housing--horizontal::after{left:45%}
 .guard-node[data-value="auto"] .guard-housing--horizontal::after{left:72%}
 @media(prefers-reduced-motion:reduce){.guard-housing--horizontal::before,.guard-housing--horizontal::after{transition:none}}
+
+/* OH23-25 IGNITION SOURCE: a true left/center/right photographic toggle.
+   Sprite is the same approved Small White LEFT/CENTER/RIGHT asset used elsewhere.
+   Only the IGN selector is affected; the engine-start rotary selectors are unchanged. */
+.rg-layer .mounted-rotary.ignition-toggle{
+ border-radius:0!important;
+ cursor:ew-resize;
+ touch-action:none;
+ isolation:isolate;
+}
+.rg-layer .mounted-rotary.ignition-toggle .ignition-toggle-sprite{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ display:block;max-width:none;max-height:none;
+ background-size:500% 100%;background-position:25% 50%;background-repeat:no-repeat;
+ pointer-events:none;user-select:none;transition:background-position 0s;
+}
