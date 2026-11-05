@@ -2,14 +2,15 @@
  * This is a physical view adapter ONLY. Both EIS and Conventional command the
  * one B737AutobrakeUnified engine (FCOM 14.10/14.20; LAN ATA 32-40).
  * The approved EIS photograph/Owner18 guarded switches remain unmodified.
- * PHOTO REGISTRATION — owner-marked red circle, 1920x1080 screenshot:
- * actual AUTO BRAKE hole center (1131,681) screenshot px;
- * current rotary's circular base center (1074,719) screenshot px.
- * Old EIS reference [67.5,915] is therefore 57px LEFT and 38px LOW.
- * New reference [118,881] corrects the displacement at the observed
- * 122 screenshot px / 108 source-px scale. Diameter stays 108;
- * circular knob base stays inside ~140px outer white ring.
- * Conventional photo, sprite, detents, input and ECU remain unchanged.
+ * PIXEL-REGISTERED from the user's CURRENT live EIS screenshot (1920x1080):
+ * open aperture white ring circle: center=(1120,568), radius=38 screen px;
+ * existing OFF-detent rotary round base: center=(1136,556), radius=37 px.
+ * The actual base, not its long pointer handle, must move LEFT 16px,
+ * DOWN 12px. At 1.007 rendered px/source px, reference [102,893]
+ * centers the base over the photo well. EIS diameter 94 source px
+ * reduces base radius to ~32px and exposes ~6px of white bezel.
+ * These are EIS-only adjustments. Conventional sprite, six detents,
+ * switching law, 1500 ms RTO test, and backend remain untouched.
  */
 (function(root,factory){
  'use strict';const api=factory();
@@ -19,9 +20,9 @@
  'use strict';
  const REF=Object.freeze({
   image:Object.freeze([918,1713]),
-  center:Object.freeze([118,881]),
-  diameter:108,
-  source:'EIS_FO_INNER_OWNER_RED_CIRCLE_20261105_CENTERED'
+  center:Object.freeze([102,893]),
+  diameter:94,
+  source:'EIS_FO_INNER_SCREENSHOT_PIXEL_REGISTERED_20261105_V5'
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
