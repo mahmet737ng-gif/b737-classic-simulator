@@ -16,6 +16,14 @@
 <main>
 <section class="panel tab-panel" data-panel="normal"><h2>Normal · روشن‌کردن، تثبیت، توان و توقف</h2>
 <p>برای آزمون کامل ترتیب استارت، در Unified سوئیچ واقعی ENG START را روی GRD، IGN را روی L/BOTH/R و Fuel Start Lever را روی IDLE قرار بده. PRESET RUNNING فقط میان‌بُر مخصوص مربی است، نه یک استارت واقعی.</p>
+<div class="field physical-start-select">
+<label>Physical ENG START switch<select id="start-position"><option value="OFF">OFF</option>
+<option value="GRD">GRD</option><option value="CONT">CONT</option><option value="FLT">FLT</option></select></label>
+<button id="start-switch-set">MOVE ACTUAL OH START SWITCH</button>
+<label>IGN select toggle<select id="ignition-position"><option value="BOTH">BOTH</option>
+<option value="IGN L">IGN L</option><option value="IGN R">IGN R</option></select></label>
+<button id="ignition-set">MOVE ACTUAL OH IGN TOGGLE</button>
+</div><p>سوئیچ‌ها از کنترل فیزیکی واقعی داخل iframe اورهد حرکت می‌کنند. اگر اورهد هنوز بارگذاری نشده است، ابتدا نمای OVERHEAD را در Unified باز کن.</p>
 <div class="actions">
 <button data-command="APU_PRESET">INSTRUCTOR APU READY</button>
 <button data-command="PRESET_RUNNING">INSTRUCTOR RUN SELECTED ENGINE</button>
