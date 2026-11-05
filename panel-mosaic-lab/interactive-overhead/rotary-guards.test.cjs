@@ -64,9 +64,9 @@ e.setRotary('ac-meter','TEST');assert.equal(e.rotary('ac-meter'),'TEST');
 e.setRotary('crossfeed','OPEN');assert.equal(e.rotary('crossfeed'),'OPEN');
 for(const a of Object.values(reg.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,a.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);}
 const view=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');assert.doesNotMatch(view,/mountEngineStartLabelCorrection|rg-start-label-correction|label\.textContent='FLT'/,'No floating FLT text overlay may cover the baked CONT/FLT labels');assert.match(view,/motion.createDetentGesture/);
-assert.match(view,/function ignitionToggle\\(c,p\\)/,'IGN is mounted with dedicated horizontal toggle renderer');
-assert.match(view,/Small_White_5Positions\\.webp/,'IGN must reuse existing approved photographic switch asset');
-assert.match(view,/node=c\\.id==='ignition-source'\\?ignitionToggle\\(c,p\\)/,'Never mount a rotary knob over IGN');
-assert.match(view,/engine\\.setRotary\\(c\\.id,nearest\\(e\\),'ignition-horizontal-tap'\\)/,'Ignition click selects one of three latching positions');
-assert.match(view,/aria-orientation','IGN is keyboard and screen-reader accessible');
+assert.ok(view.includes('function ignitionToggle(c,p)'), 'IGN is mounted with dedicated horizontal toggle renderer');
+assert.ok(view.includes('Small_White_5Positions.webp'), 'IGN must reuse existing approved photographic switch asset');
+assert.ok(view.includes("node=c.id==='ignition-source'?ignitionToggle(c,p)"), 'Never mount a rotary knob over IGN');
+assert.ok(view.includes("engine.setRotary(c.id,nearest(e),'ignition-horizontal-tap')"), 'Ignition click selects one of three latching positions');
+assert.ok(view.includes("b.setAttribute('aria-orientation','horizontal')"), 'IGN is keyboard and screen-reader accessible');
 console.log('PASS: 20 rotary control channels; IGN L / BOTH / IGN R uses photographic horizontal toggle; 0 registered guards; no legacy imagery.');
