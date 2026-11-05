@@ -23,7 +23,7 @@ assert.equal(B.hydraulicPressure(4.5),0);
 near(B.hydraulicPressure(5.25),1500);
 assert.equal(B.hydraulicPressure(6),3000);
 assert.equal(B.hydraulicPressure(60),3000);
-assert.equal(B.apuStartEGT(0),20);
+assert.equal(B.apuStartEGT(0),0,'APU cold EGT retains the owner-selected zero stop');
 assert.equal(B.apuStartEGT(.64),620);
 assert.equal(B.apuStartEGT(1),390);
 sim.battery(true);sim.startAPU();
