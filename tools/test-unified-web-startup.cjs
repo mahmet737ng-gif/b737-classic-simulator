@@ -56,13 +56,20 @@ const server=http.createServer((req,res)=>{
     return {total:images.length,shown:shown.length,
       bounds:shown.map(img=>({width:img.getBoundingClientRect().width,
         height:img.getBoundingClientRect().height,decoded:img.complete&&img.naturalWidth>0})),
-      mount:root.dataset.throttleMount,missingAssets:Number(root.dataset.throttleMissingAssets||0)};
+      mount:root.dataset.throttleMount,missingAssets:Number(root.dataset.throttleMissingAssets||0),
+      geometry:window.B737ThrottlePositions.geometry(),
+      plateWidth:root.querySelector('[data-piece="throttle-quadrant"]')?.offsetWidth||0,
+      fakeTogaCircles:root.querySelectorAll('.throttle-toga-recessed').length};
    });
    assert.equal(throttles.total,10,'Two independent throttle levers must provide five states each');
    assert.equal(throttles.shown,2,'Throttle 1 and 2 must both be visible at startup');
    assert.ok(throttles.bounds.every(b=>b.decoded&&b.width>25&&b.height>25),
     'Both installed throttle lever sprites must be decoded and visibly sized');
-   console.log('THR-0008: verified two real, rendered throttle levers',JSON.stringify(throttles));
+   const slotPitch=(throttles.geometry.centers[2]-throttles.geometry.centers[1])*(throttles.plateWidth/1055);
+   assert.ok(throttles.geometry.gripWidthNative<slotPitch,
+    'Throttle handle grip heads overlap: reduce optical grip width or fix centers');
+   assert.equal(throttles.fakeTogaCircles,0,'Do not draw a second fake TO/GA circle over the throttle');
+   console.log('THR-0009: two independently mounted, spaced throttle grips with no duplicate TO/GA',JSON.stringify(throttles));
    const sample=await page.evaluate(()=>{
     const diagnostic=window.B737LoadDiagnostics.snapshot(),control=document.querySelector('[data-mcp-hardware="FD_LEFT"]'),before=window.B737McpHardwareV1.getState().FD_LEFT;
     const start=performance.now();control.click();const responded=window.B737McpHardwareV1.getState().FD_LEFT!==before;control.click();
