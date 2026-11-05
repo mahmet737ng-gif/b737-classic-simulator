@@ -13,15 +13,28 @@ const {chromium}=require('playwright');
  page.on('pageerror',e=>errors.push(String(e.message).slice(0,220)));
  try{
   const response=await page.goto(
-   'http://127.0.0.1:8788/panel-mosaic-lab/cockpit/overhead-stage.html?v=EXTL-INBOARD-L-CENTER-0003',
+   'http://127.0.0.1:8788/panel-mosaic-lab/interactive-overhead/?standalone=1&v=EXTL-INBOARD-L-CENTER-0003',
    {waitUntil:'domcontentloaded',timeout:60000});
   assert.equal(response.status(),200);
-  await page.waitForFunction(()=>{
-   const el=document.querySelector('#toggle-landing-in-l');
-   const photo=document.querySelector('.atlas-piece[data-key="OH23-25"] img.atlas-photo');
-   return Boolean(el&&photo?.complete&&photo.naturalWidth&&
-     window.B737OverheadToggles?.getState);
-  },null,{timeout:50000});
+  try{
+   await page.waitForFunction(()=>{
+    const el=document.querySelector('#toggle-landing-in-l');
+    const photo=document.querySelector('.atlas-piece[data-key="OH23-25"] img.atlas-photo');
+    return Boolean(el&&photo?.complete&&photo.naturalWidth&&
+      window.B737OverheadToggles?.getState);
+   },null,{timeout:45000});
+  }catch(e){
+   const debug=await page.evaluate(()=>({
+    href:location.href,ready:document.readyState,title:document.title,
+    toggle:document.getElementById('toggle-landing-in-l')?.outerHTML.slice(0,350),
+    panel:document.querySelector('.atlas-piece[data-key="OH23-25"]')?.outerHTML.slice(0,450),
+    images:document.querySelectorAll('img').length,
+    toggleCount:document.getElementById('toggleCount')?.textContent,
+    scripts:[...document.scripts].map(x=>x.src.split('/').slice(-2).join('/')).slice(-12)
+   }));
+   console.log('INBOARD_LEFT_BROWSER_STARTUP_DIAGNOSTICS',JSON.stringify({debug,errors}));
+   throw e;
+  }
   const target=page.locator('#toggle-landing-in-l');
   await target.scrollIntoViewIfNeeded();
   const audit=await page.evaluate(()=>{
