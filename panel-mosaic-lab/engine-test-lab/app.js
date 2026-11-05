@@ -101,6 +101,8 @@
   else command(type);
  });
  on('display','change',()=>send({type:'MODE',mode:$('display').value}));
+ on('start-switch-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'engine-start-'+e().at(-1),value:$('start-position').value}));
+ on('ignition-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'ignition-source',value:$('ignition-position').value}));
  on('set-duct','click',()=>command('DUCT_PSI',{psi:Number($('duct').value)}));
  on('throttle','input',()=>{$('throttle-label').textContent=$('throttle').value+'%';});
  on('throttle-set','click',()=>command('THROTTLE',{value:Number($('throttle').value)/100}));
