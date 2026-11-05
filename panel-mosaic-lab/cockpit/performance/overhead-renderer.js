@@ -4,11 +4,16 @@ const $=id=>document.getElementById(id);
 const SOURCE_WIDTH=2220,MIN_ZOOM=.16,MAX_ZOOM=4.5;
 let spec=null,geometry=null,atlasLayout=null,zoom=1,fitMode=true,view='mosaic',selected='UPPER',loaded=new Set(),errored=new Set(),dragged=false;
 const assetById=id=>spec.images.find(x=>x.id===id);
+// Owner-requested local photo repair. The archival bitmap and atlas geometry stay intact.
+// Route every view/clone through one baked image, never an asynchronous patch layer.
+const displayURL=asset=>asset.id==='OH23-25'
+ ? '../cockpit/assets/lower-panel-repair-v1/inboard-hole-removed.webp'
+ : asset.url;
 function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n;}
 function summary(){$('sourceCount').textContent=spec?spec.images.length:'—';$('panelCount').textContent=spec?new Set(spec.images.flatMap(x=>x.panelIds)).size:'—';$('loadedCount').textContent=loaded.size+'/'+(spec?spec.images.length:0);$('missingCount').textContent=spec?(spec.columns.reduce((n,c)=>n+(c.missing||[]).length,0)+spec.bottomMissing.length):'—';}
 function card(asset,style){const a=el('article','piece');a.tabIndex=0;a.dataset.key=asset.id;a.setAttribute('aria-label',asset.panelIds.join(', ')+' '+asset.title);
  const span=el('span','tag',asset.panelIds.length>1?asset.panelIds[0]+'–'+asset.panelIds.at(-1).slice(3):asset.panelIds[0]);a.append(span);
- const img=el('img');window.B737ImageLoader.assign(img,asset.url);img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
+ const img=el('img');window.B737ImageLoader.assign(img,displayURL(asset));img.alt=asset.title;img.loading='eager';img.decoding='async';img.draggable=false;
  img.addEventListener('load',()=>{loaded.add(asset.id);a.classList.remove('bad');summary();updateDimensions();if(selected===asset.id)showDetails();});
  img.addEventListener('error',()=>{errored.add(asset.id);loaded.delete(asset.id);a.classList.add('bad');img.remove();a.append(el('div','empty-image','⚠ بارگذاری تصویر ناموفق بود'));summary();updateDimensions();});
  if(style==='mosaic' && asset.display?.cropTopPx!=null){
@@ -63,7 +68,7 @@ function populateAssembly(){
    Object.assign(frame.style,{left:place.x+'px',top:place.y+'px',width:place.w+'px',height:place.h+'px',zIndex:String(place.zIndex||2)});
    const visible=el('div','atlas-image-window');
    const photo=el('img','atlas-photo');
-   window.B737ImageLoader.assign(photo,asset.url);photo.alt=asset.title;photo.decoding='async';
+   window.B737ImageLoader.assign(photo,displayURL(asset));photo.alt=asset.title;photo.decoding='async';
    photo.loading='eager';photo.draggable=false;
 
 
