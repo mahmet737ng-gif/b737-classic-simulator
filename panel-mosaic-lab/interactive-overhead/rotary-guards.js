@@ -30,8 +30,14 @@
  function render(c){
   const widget=widgets.get(c.id);if(!widget)return;
   if(c.kind==='rotary'){
-   let a=engine.angle(c.id);if(c.wrap&&angles.has(c.id))a+=Math.round((angles.get(c.id)-a)/360)*360;angles.set(c.id,a);
-   const img=widget.querySelector('img');img.style.transform='rotate('+a+'deg)';
+   if(c.id==='ignition-source'){
+    // The IGN selector is a three-position left/center/right toggle, never a rotary knob.
+    const sprite=widget.querySelector('.ignition-toggle-sprite');
+    if(sprite)sprite.style.backgroundPosition=(c.states.indexOf(engine.rotary(c.id))*25)+'% 50%';
+   }else{
+    let a=engine.angle(c.id);if(c.wrap&&angles.has(c.id))a+=Math.round((angles.get(c.id)-a)/360)*360;angles.set(c.id,a);
+    const img=widget.querySelector('img');img.style.transform='rotate('+a+'deg)';
+   }
    const value=engine.rotary(c.id),index=c.mode==='continuous'?value:c.states.indexOf(value);
    widget.dataset.value=String(value);widget.setAttribute('aria-valuenow',String(index));widget.setAttribute('aria-valuetext',String(value));widget.setAttribute('aria-label',c.label+' — '+value);
    for(const target of legendWidgets.get(c.id)||[])target.setAttribute('aria-pressed',String(target.dataset.detent===String(value)));
@@ -106,6 +112,60 @@
    if(e.key==='Home')engine.setRotary(c.id,c.mode==='continuous'?c.min:c.states[0],'key');else if(e.key==='End')engine.setRotary(c.id,c.mode==='continuous'?c.max:c.states.at(-1),'key');else if(e.key===' '||e.key==='Enter'){if(!e.repeat)engine.cycleRotary(c.id);}else engine.stepRotary(c.id,['ArrowLeft','ArrowDown'].includes(e.key)?-1:1,'key');
   });
   button.addEventListener('blur',()=>{if(drag&&c.mode==='detent')engine.setRotary(c.id,drag.start,'cancel-blur');drag=null;button.classList.remove('dragging');render(c);});
+ }
+ // Reuse the existing approved five-frame SMALL WHITE toggle sprite (LEFT/CENTER/RIGHT).
+ // The underlying ignition-source rotary-model state channel remains intact for engine wiring.
+ function ignitionToggle(c,p){
+  const b=document.createElement('button');b.type='button';
+  b.className='mounted-rotary ignition-toggle';b.dataset.control=c.id;b.dataset.visualSize='Small';
+  b.setAttribute('role','slider');b.setAttribute('aria-orientation','horizontal');
+  b.setAttribute('aria-valuemin','0');b.setAttribute('aria-valuemax','2');b.title=c.label;
+  Object.assign(b.style,{left:p.x+'px',top:p.y+'px',width:(p.diameter*1.38)+'px',height:(p.diameter*1.30)+'px'});
+  const sprite=document.createElement('span');sprite.className='ignition-toggle-sprite';
+  sprite.setAttribute('aria-hidden','true');
+  const fullSize=p.diameter*1024/390;
+  Object.assign(sprite.style,{width:fullSize+'px',height:fullSize+'px',
+   backgroundImage:'url("'+url('../../shared-assets/toggle-switch-small/Small_White_5Positions.webp')+'")'});
+  b.append(sprite);
+  const nearest=e=>{
+   const box=b.getBoundingClientRect();
+   const u=(e.clientX-box.left)/Math.max(box.width,1);
+   return c.states[Math.max(0,Math.min(2,Math.floor(u*3)))];
+  };
+  let drag=null;
+  b.addEventListener('pointerdown',e=>{
+   if(e.button!==0)return;
+   e.preventDefault();e.stopPropagation();choose(c);b.focus({preventScroll:true});
+   b.setPointerCapture(e.pointerId);
+   drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:false};
+  });
+  b.addEventListener('pointermove',e=>{
+   if(!drag||drag.id!==e.pointerId)return;
+   e.preventDefault();e.stopPropagation();
+   if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4)drag.moved=true;
+   if(drag.moved)engine.setRotary(c.id,nearest(e),'ignition-horizontal-drag');
+  });
+  b.addEventListener('pointerup',e=>{
+   if(!drag||drag.id!==e.pointerId)return;
+   e.preventDefault();e.stopPropagation();
+   engine.setRotary(c.id,nearest(e),'ignition-horizontal-tap');
+   drag=null;
+  });
+  for(const type of ['pointercancel','lostpointercapture'])b.addEventListener(type,()=>{drag=null;});
+  b.addEventListener('wheel',e=>{
+   e.preventDefault();e.stopPropagation();choose(c);
+   engine.stepRotary(c.id,e.deltaY>0?1:-1,'ignition-horizontal-wheel');
+  },{passive:false});
+  b.addEventListener('keydown',e=>{
+   if(!['ArrowLeft','ArrowRight','Home','End',' ','Enter'].includes(e.key))return;
+   e.preventDefault();e.stopPropagation();choose(c);
+   if(e.key==='Home')engine.setRotary(c.id,c.states[0],'ignition-key');
+   else if(e.key==='End')engine.setRotary(c.id,c.states[2],'ignition-key');
+   else if(e.key==='ArrowLeft'||e.key==='ArrowRight')engine.stepRotary(c.id,e.key==='ArrowLeft'?-1:1,'ignition-key');
+   else if(!e.repeat)engine.cycleRotary(c.id);
+  });
+  b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();});
+  return b;
  }
  function rotary(c,p){
   const b=document.createElement('button');b.type='button';b.className='mounted-rotary'+(c.mode==='detent'?' detent-motion':'');b.dataset.control=c.id;b.dataset.visualSize=c.visualSize||'Standard';b.setAttribute('role','slider');b.setAttribute('aria-valuemin',String(c.mode==='continuous'?c.min:0));b.setAttribute('aria-valuemax',String(c.mode==='continuous'?c.max:c.states.length-1));b.title=c.label;
@@ -257,7 +317,7 @@
   byId('toggleInspector').after(section);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
-  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.kind==='rotary'?rotary(c,p):c.presentation==='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p,placements.get(c.placementId));widgets.set(c.id,node);layer.append(node);render(c);}
+  for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.id==='ignition-source'?ignitionToggle(c,p):c.kind==='rotary'?rotary(c,p):c.presentation='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p,placements.get(c.placementId));widgets.set(c.id,node);layer.append(node);render(c);}
   for(const c of registry.rotaries)if(c.legendAreas)mountLegendTargets(c,placements.get(c.placementId));
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
