@@ -105,6 +105,26 @@ async function run(){
  live.refresh();
  assert.ok(['VALID','POWER_LOSS','POWER_EFFECT_UNVERIFIED','POWER_UNKNOWN'].includes(
   live.getState().snapshot.engines.engine1.indications.oilPressure.status));
+
+ // Engine Lab must drive the installed overhead rotary controller, never a shadow switch.
+ const detents={'engine-start-1':'OFF','engine-start-2':'OFF','ignition-source':'BOTH'};
+ const physical={
+  getState(){return {rotaries:{...detents}}},
+  setEngineLabDetent(id,value){if(!(id in detents))return false;detents[id]=value;return true;}
+ };
+ global.document.getElementById=id=>id==='overheadFrame'?{contentWindow:{B737RotaryGuards:physical}}:null;
+ const start=live.command({type:'PHYSICAL_START_SWITCH',engine:'engine1',value:'GRD'});
+ assert.equal(start.accepted,true);
+ assert.equal(start.owner,'ACTUAL_OVERHEAD_ROTARY');
+ assert.equal(detents['engine-start-1'],'GRD');
+ assert.equal(detents['engine-start-2'],'OFF');
+ const ign=live.command({type:'PHYSICAL_IGNITION',engine:'engine1',value:'IGN R'});
+ assert.equal(ign.accepted,true);
+ assert.equal(detents['ignition-source'],'IGN R');
+ assert.equal(live.command({type:'PHYSICAL_START_SWITCH',engine:'engine1',value:'GRD'}).unchanged,true);
+ assert.throws(()=>live.command({type:'PHYSICAL_START_SWITCH',engine:'engine1',value:'BAD'}),/Invalid physical/);
+ global.document.getElementById=()=>null;
+ assert.throws(()=>live.command({type:'PHYSICAL_START_SWITCH',engine:'engine1',value:'OFF'}),/not mounted/);
  console.log('PASS engine indication frontend + source DB + ECU, EIS faults, fuel used/10s, Conventional needles');
 }
 run().catch(e=>{console.error(e);process.exitCode=1});
