@@ -43,6 +43,26 @@ const server=http.createServer((req,res)=>{
    await page.goto(url,{waitUntil:'commit',timeout:60000});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000,polling:25});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedSharpMs,null,{timeout:30000,polling:100});
+   // THR-0008: Catch missing pedal/throttle mounts on the *compiled* GitHub
+   // Pages artifact. A successfully loaded background alone is not sufficient.
+   await page.waitForFunction(()=>{
+    const root=document.querySelector('#region-pedestal .region-native');
+    return window.B737ThrottlePositions?.mounted?.()===true&&root?.dataset.throttleMount==='ready';
+   },null,{timeout:20000,polling:100});
+   const throttles=await page.evaluate(()=>{
+    const root=document.querySelector('#region-pedestal .region-native');
+    const images=[...root.querySelectorAll('.throttle-state-sprite')];
+    const shown=images.filter(img=>img.style.display==='block');
+    return {total:images.length,shown:shown.length,
+      bounds:shown.map(img=>({width:img.getBoundingClientRect().width,
+        height:img.getBoundingClientRect().height,decoded:img.complete&&img.naturalWidth>0})),
+      mount:root.dataset.throttleMount,missingAssets:Number(root.dataset.throttleMissingAssets||0)};
+   });
+   assert.equal(throttles.total,10,'Two independent throttle levers must provide five states each');
+   assert.equal(throttles.shown,2,'Throttle 1 and 2 must both be visible at startup');
+   assert.ok(throttles.bounds.every(b=>b.decoded&&b.width>25&&b.height>25),
+    'Both installed throttle lever sprites must be decoded and visibly sized');
+   console.log('THR-0008: verified two real, rendered throttle levers',JSON.stringify(throttles));
    const sample=await page.evaluate(()=>{
     const diagnostic=window.B737LoadDiagnostics.snapshot(),control=document.querySelector('[data-mcp-hardware="FD_LEFT"]'),before=window.B737McpHardwareV1.getState().FD_LEFT;
     const start=performance.now();control.click();const responded=window.B737McpHardwareV1.getState().FD_LEFT!==before;control.click();
