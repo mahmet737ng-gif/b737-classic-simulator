@@ -17,6 +17,27 @@
  const apuAmpsFootprint=Object.freeze([[614,1258],[631,1264],[735,1326],
   [740,1340],[709,1340],[644,1291],[614,1274]]);
  const footprints=Object.freeze([footprint,apuAmpsFootprint]);
+ // Original OH12 EGT '4' and the graduation immediately below it must never
+ // be painted over by a static-pointer removal mask. These native-pixel
+ // reserves are confined to the photographed white face markings.
+ const egtLegendReserves=Object.freeze([
+  Object.freeze({x0:206,x1:246,y0:1340,y1:1384}), // printed numeral 4
+  Object.freeze({x0:176,x1:225,y0:1373,y1:1415})  // adjoining graduation
+ ]);
+ const apuBlueEdge=Object.freeze([
+  [563,1324],[590,1326],[625,1326],[648,1325],[666,1318],
+  [685,1310],[705,1305],[725,1303],[745,1305],[765,1311],
+  [784,1319],[803,1325],[835,1326],[879,1326]
+ ]);
+ function blueEdgeAt(x){
+  for(let i=1;i<apuBlueEdge.length;i++)if(x<=apuBlueEdge[i][0]){
+   const [x0,y0]=apuBlueEdge[i-1],[x1,y1]=apuBlueEdge[i];
+   return y0+(Math.max(x0,Math.min(x1,x))-x0)/(x1-x0)*(y1-y0);
+  }
+  return apuBlueEdge.at(-1)[1];
+ }
+ const preservedEGTLegend=(x,y)=>egtLegendReserves.some(r=>x>=r.x0&&x<=r.x1&&y>=r.y0&&y<=r.y1);
+
  const stats={status:'NOT_STARTED',restoredPixels:0,sourceDimensions:null,lastError:null};
  let sourcePromise=null,derivedUrl=null,swapCount=0;
  const sourceUrl=()=>new URL('../assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png',document.baseURI).href;
@@ -41,7 +62,10 @@
   const x0=Math.max(0,Math.floor(Math.min(...xs))-2),x1=Math.min(w-1,Math.ceil(Math.max(...xs))+2);
   const y0=Math.max(0,Math.floor(Math.min(...ys))-2),y1=Math.min(h-1,Math.ceil(Math.max(...ys))+2);
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
-   if(footprints.some(poly=>inPolygon(x+.5,y+.5,poly)))mask[y*w+x]=1;
+   const isEGTPointer=inPolygon(x+.5,y+.5,footprint);
+   // Do not overwrite the ORIGINAL photographed numeral/tick with dark dial
+   // samples. Apart from these scale reserves the old static pointer is removed.
+   if((isEGTPointer&&!preservedEGTLegend(x,y))||inPolygon(x+.5,y+.5,apuAmpsFootprint))mask[y*w+x]=1;
   }
   let count=0;
   const donors=[[0,-10],[0,10],[-10,-4],[10,4],[0,-20],[0,20],
@@ -51,16 +75,28 @@
   for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
    if(!mask[y*w+x])continue;
    let r=0,g=0,b=0,ws=0;
+   const isAPUAmps=inPolygon(x+.5,y+.5,apuAmpsFootprint);
+   // The APU A.C. AMPS face has two different materials. Sampling dark dial
+   // pixels to repair the BLUE lower shroud caused the jagged black blotch.
+   // Trace the native black/blue boundary and sample from the same material.
+   const blue=isAPUAmps&&y>=blueEdgeAt(x)+2;
    for(const [dx,dy] of donors){
     const sx=x+dx,sy=y+dy;
     if(sx<0||sx>=w||sy<0||sy>=h||mask[sy*w+sx])continue;
+    if(isAPUAmps){
+     const sampleBlue=sy>=blueEdgeAt(sx)+2;
+     if(sampleBlue!==blue)continue;
+    }
     const i=(sy*w+sx)*4;
     const luminance=(src[i]+src[i+1]+src[i+2])/3;
-    if(luminance>90)continue;
+    if(blue){
+     // Reject black pointer residue and white lettering; keep blue-grey paint.
+     if(luminance<55||luminance>164||src[i+2]<src[i])continue;
+    }else if(luminance>76)continue; // dark printed dial, not white ticks/letters
     const d=Math.hypot(dx,dy),weight=1/(d*d);
     r+=src[i]*weight;g+=src[i+1]*weight;b+=src[i+2]*weight;ws+=weight;
    }
-   if(!ws)continue; // Do not invent content if the original cannot be sampled.
+   if(!ws)continue; // Never synthesize unknown color; keep the original photo.
    const j=(y*w+x)*4;
    dst[j]=Math.round(r/ws);dst[j+1]=Math.round(g/ws);dst[j+2]=Math.round(b/ws);
    count++;
@@ -127,6 +163,6 @@
   observer.observe(piece,{subtree:true,attributes:true,attributeFilter:['src']});
  }
  root.B737APUEGTStaticCleaner=Object.freeze({
-  cleanPiece,watchPiece,status:()=>({...stats,swapCount}),footprint,apuAmpsFootprint
+  cleanPiece,watchPiece,status:()=>({...stats,swapCount}),footprint,apuAmpsFootprint,egtLegendReserves,blueEdgeAt
  });
 })(window);
