@@ -17,7 +17,22 @@ assert.match(index,/classic-engine-start-logic-v2\.js/);
 assert.match(index,/engine-indication-backend-v1\.js/);
 assert.match(index,/engine-indication-live-v2\.css/);
 assert.match(lab,/NORMAL/);assert.match(lab,/ABNORMAL/);
-assert.match(lab,/EMERGENCY/);assert.match(lab,/SYSTEM \/ EIS BITE/);
+assert.match(lab,/EMERGENCY/);
+const scenarioCatalog=require('../panel-mosaic-lab/engine-test-lab/scenarios-v1.json');
+assert.equal(scenarioCatalog.schema,'b737classic.engine-lab-scenarios/1');
+assert.equal(scenarioCatalog.cases.length,39);
+assert.equal(new Set(scenarioCatalog.cases.map(c=>c.id)).size,39);
+for(const item of scenarioCatalog.cases){
+ assert.ok(item.command?.type&&item.precondition&&item.expected,'Scenario requires source, precondition, action and expected effect');
+ assert.ok(['NORMAL','ABNORMAL','EMERGENCY'].includes(item.group));
+}
+assert.match(lab,/id="scenario-select"/);
+assert.match(lab,/id="scenario-library-clear"/);
+assert.equal((lab.match(/id="scenario-clear"/g)||[]).length,1);
+const labJS=file('panel-mosaic-lab/engine-test-lab/app.js');
+assert.equal((labJS.match(/on\('start-switch-set'/g)||[]).length,1,'Real ENG START button must send one physical event');
+assert.equal((labJS.match(/on\('ignition-set'/g)||[]).length,1,'Real IGN button must send one physical event');
+assert.match(lab,/SYSTEM \/ EIS BITE/);
 assert.match(shell,/engineTrainerAction:command/);
 assert.match(shell,/getECUState:\(\)=>ecu.get\(\)/);
 assert.match(ui,/B737ISNCockpitV1\?\.getElectricalState/);
