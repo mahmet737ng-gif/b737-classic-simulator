@@ -279,7 +279,7 @@
  async function start(){
   try{
    if(!motion||typeof motion.createDetentGesture!=='function')throw Error('RM-0002 detent engine unavailable');
-   const responses=await Promise.all([fetch(url('rotary-guards.json'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
+   const responses=await Promise.all([fetch(url('rotary-guards.json?v=ENGINE-START-DETENTS-0002'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
    registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);
    changeAirconDetents(profileAirconFamily());
    const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
