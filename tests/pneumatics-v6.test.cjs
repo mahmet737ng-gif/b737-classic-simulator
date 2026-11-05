@@ -39,7 +39,29 @@ test('recirc AUTO inhibited both packs operating either HIGH',()=>assert.equal(o
 test('recirc OFF and fault stop recirc',()=>{assert.equal(out(sw(P.initial(),'recirc','OFF')).recircFanRunning,false);assert.equal(out(fault(P.initial(),'recircFanFailed')).recircFanRunning,false)});
 test('pressure gauge absent when AC lost',()=>{let s=sensor(P.initial(),'ductLeftPsi',45);s=sensor(s,'ductGaugeAcPower',false);assert.equal(out(s).gauges.L,null)});
 test('pressure sensor not inferred from running engine',()=>assert.equal(out(P.initial()).gauges.L,null));
-test('APU-only side duct routing is UNKNOWN rather than invented',()=>{let s=sw(sw(P.initial(),'engineBleed1','OFF'),'engineBleed2','OFF');s=sw(s,'apuBleed','ON');s=sensor(s,'apuRunning',true);assert.equal(out(s).duct.L.anySupply,null)});
+test('LAN ATA36 APU source enters LEFT duct; AUTO opens with engine bleed OFF',()=>{
+ let s=sw(sw(P.initial(),'engineBleed1','OFF'),'engineBleed2','OFF');
+ s=sw(s,'apuBleed','ON');s=sensor(s,'apuRunning',true);
+ assert.equal(out(s).duct.L.anySupply,true);
+ assert.equal(out(s).bleed.isolationOpen,true);
+ assert.equal(out(s).duct.R.anySupply,true);
+ s=sw(s,'isolation','CLOSE');
+ assert.equal(out(s).duct.L.anySupply,true);
+ assert.equal(out(s).duct.R.anySupply,false);
+ s=sw(s,'isolation','AUTO');
+ s=sensor(s,'isolationAcPower',false);
+ assert.equal(out(s).duct.L.anySupply,true);
+ assert.equal(out(s).duct.R.anySupply,null,'unpowered valve position must not prove crossover');
+});
+test('LAN ATA36 cart enters RIGHT duct; isolation controls LEFT crossover only',()=>{
+ let s=sw(sw(P.initial(),'engineBleed1','OFF'),'engineBleed2','OFF');
+ s=sensor(s,'externalAirAvailable',true);
+ s=sw(s,'isolation','CLOSE');
+ assert.equal(out(s).duct.R.anySupply,true);
+ assert.equal(out(s).duct.L.anySupply,false);
+ s=sw(s,'isolation','OPEN');
+ assert.equal(out(s).duct.L.anySupply,true);
+});
 test('pump/supply available is functional metadata not cabin pressure',()=>{const d=out(P.initial());assert.equal(d.toPressurization.cabinPressureCalculated,false);assert.equal(d.toPressurization.packConditionedAirAvailable,true)});
 test('instructor flag required for fault',()=>assert.throws(()=>P.apply(P.initial(),{type:'FAULT',id:'packLValveFailed',active:true}),/Instructor/));
 test('input and control enum validation',()=>{assert.throws(()=>sw(P.initial(),'isolation','INVALID'),/Invalid/);assert.throws(()=>sensor(P.initial(),'ductLeftPsi',-2),/nonnegative/)});
