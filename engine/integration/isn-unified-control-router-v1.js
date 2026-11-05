@@ -12,7 +12,16 @@
   const id=event.id,next=event.kind==='guarded'?event.next?.value:event.next;
   if(typeof next!=='string')return {accepted:false,reason:'UNSUPPORTED_CONTROL_VALUE'};
   if(id==='apu-start'&&next==='START')return ecu.startAPU();
-  if(Object.hasOwn(ENGINE_START,id)&&next==='GRD')return ecu.engineStart(ENGINE_START[id]);
+  if(Object.hasOwn(ENGINE_START,id)&&next==='GRD'){
+   const engine=ENGINE_START[id];
+   ecu.engineStart(engine);
+   // The ECU returns a snapshot even for a source-blocked GRD selection.
+   // Only observed MOTORING proves that the pneumatic starter engaged.
+   const state=ecu.chain.get(),phase=state.phase[engine];
+   if(phase!=='MOTORING')return {accepted:false,id,engine,phase,
+    reason:state.lastError||engine.toUpperCase()+': START NOT ENGAGED ('+phase+')'};
+   return {accepted:true,id,engine,phase,owner:'EXISTING_ISN18_ECU'};
+  }
   const result=ecu.chain.event(event);
   ecu.core.refreshFuelDelivery();
   return result;
@@ -31,8 +40,8 @@
   }
   for(const [id,engine] of Object.entries(ENGINE_START))if(packet.rotaries[id]==='GRD'&&
    ecu.chain.get().phase[engine]==='OFF'){
-    dispatch(ecu,{id,kind:'rotary',next:'GRD',reason:'SNAPSHOT_RECOVERY'});
-    recovered.push(id);
+    const response=dispatch(ecu,{id,kind:'rotary',next:'GRD',reason:'SNAPSHOT_RECOVERY'});
+    if(response?.accepted!==false)recovered.push(id);
    }
   return {recovered,apu:ecu.chain.get().phase.apu,
    engines:{engine1:ecu.chain.get().phase.engine1,engine2:ecu.chain.get().phase.engine2}};
