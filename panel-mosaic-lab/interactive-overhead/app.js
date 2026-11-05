@@ -286,6 +286,27 @@
     setCover(true);layer.append(holder);refreshOne(c);
    }
   }
+  // Owner correction (2026-11-05): the legacy empty black circular socket
+  // between INBOARD L and INBOARD R is NOT a switch location. Paint only this
+  // vacant area in atlas coordinates, without moving controls or editing assets.
+  // Source plate OH23-25 uses 2170x725; its vacant centre is x=459,y=318.
+  const lowerPlate=placements.get('OH23-25');
+  if(lowerPlate && !byId('inboardUnusedSocketFill')){
+   const anchor={...registry.controls.find(c=>c.id==='landing-in-l'),sourcePoint:[459,318],bezelSourceDiameter:1};
+   const centre=model.mapPoint(anchor,lowerPlate);
+   const edge=model.mapPoint({...anchor,sourcePoint:[495,318]},lowerPlate);
+   const radius=Math.abs(edge.x-centre.x);
+   const fill=document.createElement('div');
+   fill.id='inboardUnusedSocketFill';
+   fill.setAttribute('aria-hidden','true');
+   Object.assign(fill.style,{
+    position:'absolute',left:(centre.x-radius)+'px',top:(centre.y-radius)+'px',
+    width:(radius*2)+'px',height:(radius*2)+'px',borderRadius:'50%',
+    pointerEvents:'none',zIndex:'2',
+    background:'radial-gradient(circle at 48% 42%, #526b79 0%, #4e6573 52%, #4c6270 72%, rgba(76,98,112,0) 100%)'
+   });
+   byId('atlasAbsolute').append(fill);
+  }
   byId('atlasAbsolute').append(layer);
   byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · رفرنس جدید · '+registry.version;
   byId('toggleVisibility').onchange=e=>layer.classList.toggle('hidden',!e.target.checked);
