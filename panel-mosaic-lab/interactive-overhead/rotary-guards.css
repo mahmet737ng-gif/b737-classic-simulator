@@ -78,3 +78,21 @@
  background-size:500% 100%;background-position:25% 50%;background-repeat:no-repeat;
  pointer-events:none;user-select:none;transition:background-position 0s;
 }
+
+/* IGN-BASE-MATTE-0001 — reduce glare exclusively on the IGN toggle's
+   metal mounting bezel. The native 1024px-per-pose Small White sprite,
+   its ivory handle, state frames and pixel geometry remain untouched.
+   No image resize, blur or downsampling. */
+.rg-layer .mounted-rotary.ignition-toggle::after{
+ content:"";
+ position:absolute;
+ left:50%;top:50%;
+ width:73%;height:77%;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ pointer-events:none;
+ background:rgba(47,52,56,.27);
+ mix-blend-mode:multiply;
+ -webkit-mask-image:radial-gradient(circle,transparent 0 29%,#000 39% 83%,transparent 96%);
+ mask-image:radial-gradient(circle,transparent 0 29%,#000 39% 83%,transparent 96%);
+}
