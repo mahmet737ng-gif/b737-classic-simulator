@@ -1,0 +1,30 @@
+name: Classic Engine Start and Lab V3 QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - "panel-mosaic-lab/cockpit/engine-indication-live-v2.js"
+      - "panel-mosaic-lab/engine-test-lab/**"
+      - "tests/engine-indication-unified-live-v2.test.cjs"
+      - "tests/engine-start-physical-lab-v3.test.cjs"
+      - ".github/workflows/engine-start-panel-lab-v3.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  engine-panel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ECU and both front-end modes
+        run: |
+          node tests/engine-indication-tech-db-v1.test.cjs
+          node tests/engine-indication-unified-live-v2.test.cjs
+          node tests/isn-start-fcom-rules-v1.test.cjs
+      - name: Engine lab physical command and scenario checks
+        run: |
+          node tests/engine-start-physical-lab-v3.test.cjs
+          node --check panel-mosaic-lab/engine-test-lab/app.js
+          node --check panel-mosaic-lab/cockpit/engine-indication-live-v2.js
+      - name: Overhead image lock
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
