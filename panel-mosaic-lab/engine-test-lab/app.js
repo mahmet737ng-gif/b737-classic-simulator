@@ -114,6 +114,7 @@
  on('sensor-fail','click',()=>send({type:'SENSOR',engine:e(),parameter:$('sensor').value,condition:'FAILED'}));
  on('sensor-clear','click',()=>send({type:'SENSOR',engine:e(),parameter:$('sensor').value,condition:'CLEAR'}));
  on('set-fuel-mode','click',()=>send({type:'FUEL_MODE',value:$('fuel-mode').value}));
+ on('reset-fuel-used','click',()=>send({type:'RESET_FUEL_USED'}));
  on('set-filter','click',()=>send({type:'FILTER_THRESHOLD',value:$('filter-limit').value===''?null:Number($('filter-limit').value)}));
  on('reset-instruments','click',()=>send({type:'RESET_INSTRUMENT_FAULTS'}));
  if(window.parent!==window)window.parent.postMessage({type:'b737:engine-lab-v2-ready'},location.origin);
