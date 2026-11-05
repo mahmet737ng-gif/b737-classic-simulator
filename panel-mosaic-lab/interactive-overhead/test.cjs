@@ -38,7 +38,8 @@ engine.set('apu-start','START');engine.releaseAll();assert.equal(engine.get('apu
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(x=>x.id===c.placementId));assert.ok(p.diameter>0&&Number.isFinite(p.x+p.y));}
 assert.ok(events.length>0);
 const page=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(page.includes('app.js?v=OH14-INPUT-RELEASE-0018'));
+assert.ok(page.includes('app.js?v=EXTL-INBOARD-L-CENTER-0003'),'Embedded overhead must use the current photo-registered switch bundle');
+assert.ok(app.includes("const photoOnly=c.id==='emergency-exit-lights';"),'OH14 remains unchanged by exterior switch version');
 assert.ok(!page.includes('socket-cleanup-v3.js'));
 console.log('PASS 59 overhead controls with one explicitly owner-requested OH14 Small Silver actuator; other frozen toggles preserved.');
 
