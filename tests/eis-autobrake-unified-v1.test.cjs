@@ -30,8 +30,21 @@ assert.equal(assembly.assets[fo.asset].dimensions[1],EIS.REF.image[1]);
 const cp={sourceWidth:CONV.REF.image[0],sourceHeight:CONV.REF.image[1],
  x:engine.x,y:engine.y,matrix:[(1374-engine.x)/CONV.REF.image[0],0,0,engine.h/CONV.REF.image[1],0,0]};
 const conv=CONV.point(cp,CONV.REF.autobrake.center);
-assert.ok(Math.abs(eit.x-conv.x)<0.6 && Math.abs(eit.y-conv.y)<0.6,
- 'EIS selector must lie at same native cockpit AUTO BRAKE station as Conventional, pending pixel audit');
+// The EIS and Conventional photographs contain DIFFERENT well locations.
+ // Owner screenshot at 1920 x 1080: move EIS visual knob from the wrongly
+ // projected Conventional position to the actual EIS AUTO BRAKE circular well.
+ // The pixel test must protect that EIS-only anchor, not force CONV's x/y.
+ assert.deepEqual(EIS.REF.center,[175,841],'Only the screenshot-fitted EIS anchor changes');
+ const previousEIS={x:fo.x+49.5*fo.w/918,y:fo.y+923*fo.h/1713};
+ assert.ok(eit.x>previousEIS.x+45 && eit.y<previousEIS.y-30,
+  'EIS must move right and up into its own printed AUTO BRAKE well');
+ assert.ok(Math.abs(eit.x-conv.x)>45 && Math.abs(eit.y-conv.y)>30,
+  'An EIS-only placement must not reuse Conventional center');
+ assert.equal(EIS.REF.diameter,CONV.REF.autobrake.diameter,
+  'Retain the same approved rotary reference diameter as Conventional');
+ assert.ok(Math.abs(eit.w-fo.w*80/918)<1e-9 &&
+  Math.abs(eit.h-fo.h*80/1713)<1e-9,
+  'Do not change EIS knob size, hitbox or physical scale in a position-only fix');
 assert.ok(eit.x>fo.x&&eit.x<fo.x+fo.w);
 assert.ok(eit.w>0&&eit.h>0);
 assert.throws(()=>EIS.placement({x:0,y:0,w:0,h:4}),/placement/);

@@ -2,9 +2,10 @@
  * This is a physical view adapter ONLY. Both EIS and Conventional command the
  * one B737AutobrakeUnified engine (FCOM 14.10/14.20; LAN ATA 32-40).
  * The approved EIS photograph/Owner18 guarded switches remain unmodified.
- * FO-inner native source (918x1713); knob center is registered to the same
- * main-panel position as the approved Conventional selector (about 1242,501).
- * The EIS aperture is a geometry projection pending independent pixel audit.
+ * FO-inner native source (918x1713). EIS has its own photographic
+ * AUTO BRAKE well: its anchor is fitted to the owner's 2026-11-05 screenshot.
+ * Only this EIS x/y is adjusted; the approved Conventional sprite, size,
+ * detents and shared autobrake logic remain unchanged.
  */
 (function(root,factory){
  'use strict';const api=factory();
@@ -14,9 +15,9 @@
  'use strict';
  const REF=Object.freeze({
   image:Object.freeze([918,1713]),
-  center:Object.freeze([49.5,923]),
+  center:Object.freeze([175,841]),
   diameter:80,
-  source:'EIS_FO_INNER_APPROXIMATE_CONVENTIONAL_ALIGNED'
+  source:'EIS_FO_INNER_OWNER_SCREENSHOT_20261105_ANCHOR'
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
