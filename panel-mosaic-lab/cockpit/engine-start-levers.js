@@ -4,7 +4,7 @@
  'use strict';
  const model=window.B737EngineStartLeverModel,ns='http://www.w3.org/2000/svg';
  const positions={engine1:'CUTOFF',engine2:'CUTOFF'},controls=new Map();
- const master=new URL('./assets/engine-start-grips-front-v2.png?v=START-LEVER-0004',document.baseURI).href;
+ const master=new URL('./assets/engine-start-lever-reference-v2.png?v=START-LEVER-0005',document.baseURI).href;
  let art=null;
  const raf=window.requestAnimationFrame?.bind(window),caf=window.cancelAnimationFrame?.bind(window);
  function svg(parent,tag,attrs){const n=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs||{}))n.setAttribute(k,String(v));parent.append(n);return n;}
@@ -38,13 +38,11 @@
   const changed=positions[device]!==next;positions[device]=next;
   const entry=controls.get(device);if(!entry)return;
   entry.button.dataset.position=next;
-  // A 10 Hz ECU observation must not pull a hand-driven lever out of the hand.
   if(!entry.drag&&!entry.keyboard&&changed)settle(entry,model.travel(next));
  }
  function request(device,next=positions[device]==='CUTOFF'?'IDLE':'CUTOFF'){
   if(!model.SLOTS[device]||!['CUTOFF','IDLE'].includes(next))throw Error('Unknown physical start lever state');
   const entry=controls.get(device);if(entry)entry.button.dataset.pending='true';
-  // The shared ISN ECU alone accepts/rejects the fuel/ignition detent.
   window.dispatchEvent(new CustomEvent('b737:engine-start-lever-command',{detail:{device,position:next,source:'PEDESTAL_PHYSICAL'}}));
   if(entry){delete entry.button.dataset.pending;if(!entry.drag&&!entry.keyboard)settle(entry,model.travel(positions[device]));}
  }
@@ -92,7 +90,7 @@
   if(art){for(const entry of controls.values()){entry.piece=piece;paint(entry,entry.travel);}return;}
   model.placement(piece,'engine1','CUTOFF');
   art=svg(native,'svg',{class:'engine-start-lever-art',viewBox:'0 0 '+model.SOURCE.window.w+' '+model.SOURCE.window.h,
-   'data-start-lever-art':'START-LEVER-0004','aria-hidden':'true'});
+   'data-start-lever-art':'START-LEVER-0005','aria-hidden':'true'});
   Object.assign(art.style,{left:piece.x+'px',top:piece.y+'px',width:piece.w+'px',height:piece.h+'px'});
   const defs=svg(art,'defs'),metal=svg(defs,'linearGradient',{id:'start-lever-arm-metal',x1:'0%',y1:'0%',x2:'100%',y2:'0%'});
   for(const [offset,color]of [['0%','#454b4d'],['12%','#e1e2dc'],['35%','#939a9a'],['70%','#aeb4b2'],['92%','#e8e9e1'],['100%','#5c6261']])svg(metal,'stop',{offset,'stop-color':color});
@@ -102,7 +100,8 @@
    const edge=svg(group,'path',{fill:'none',stroke:'#e4e6de','stroke-width':'.55',opacity:'.7'});
    const joint=svg(group,'circle',{r:4,fill:'url(#start-lever-arm-metal)',stroke:'#555b5a','stroke-width':'.6'});
    const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,
-    viewBox:device==='engine1'?'0 0 1086 724':'1086 0 1086 724',overflow:'hidden'});
+    viewBox:device==='engine1'?'330 0 760 724':'1082 0 758 724',overflow:'hidden'});
+   // CUTOFF and IDLE are distinct detents on the same movable physical assembly.
    svg(cap,'image',{href:master,width:2172,height:724});
    const button=document.createElement('button');button.type='button';button.className='engine-start-lever';
    button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
