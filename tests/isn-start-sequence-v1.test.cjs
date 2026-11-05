@@ -86,7 +86,11 @@ assert.equal(o.network.electrical.bus.generator1,true,
   'BAT remains ON on ground, preventing APU GEN automatic shutdown demand');
 o = s.send(pneumatic({type:'CONTROL',key:'apuBleed',value:'ON'}));
 assert.equal(o.network.pneumatics.bleed.apuBleedValveOpen,true);
-assert.equal(o.network.pneumatics.duct.L.anySupply,null);
+// LAN ATA36: APU bleed enters the LEFT manifold. In AUTO with both
+// engine bleed switches and both pack selectors ON, isolation is CLOSED.
+assert.equal(o.network.pneumatics.bleed.isolationOpen,false);
+assert.equal(o.network.pneumatics.duct.L.anySupply,true,'APU BLEED provides left duct supply');
+assert.equal(o.network.pneumatics.duct.R.anySupply,false,'Closed isolation separates right duct');
 assert.equal(o.network.engineFuelFeed,null);
 
 o = s.send(feedback('engine1','n2Percent',null));
