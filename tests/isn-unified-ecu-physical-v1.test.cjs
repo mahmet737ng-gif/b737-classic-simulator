@@ -61,6 +61,10 @@ assert.equal(ecu.get().apu.phase,'OFF');
 ecu.startAPU();ecu.advance(85000);
 assert.equal(ecu.get().apu.phase,'READY');
 assert.equal(ecu.get().apu.generator.voltageV,115);
+// APU GEN powers AC TRANSFER BUS 1 and the isolation actuator; AUTO
+// opens automatically with the existing physical PACK OFF detents.
+ecu.selectGenerator('APU',1);
+ecu.chain.event({id:'isolation-valve',kind:'toggle',next:'AUTO'});
 // Bleed valve is a real overhead control action and starter must have air.
 ecu.chain.event({id:'bleed-apu',kind:'toggle',next:'ON'});
 ecu.core.refreshFuelDelivery();
