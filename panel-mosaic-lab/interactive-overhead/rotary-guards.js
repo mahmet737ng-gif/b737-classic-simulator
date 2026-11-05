@@ -333,6 +333,18 @@
     const desired=activeAirconFamily==='B737-400'?value:(alias[value]||value);
     return engine.setRotary(id,desired,'AIRCON400_ZONE_SELECTOR');
    },
+   // Instructor Engine Lab always drives the ACTUAL installed rotary
+   // controller. An ordinary click, lab command and starter cutout share one
+   // physical state/event owner; no separate shadow selector is created.
+   setEngineLabDetent:(id,value)=>{
+    const approved={
+     'engine-start-1':['GRD','OFF','CONT','FLT'],
+     'engine-start-2':['GRD','OFF','CONT','FLT'],
+     'ignition-source':['IGN L','BOTH','IGN R']
+    };
+    if(!Object.hasOwn(approved,id)||!approved[id].includes(value))return false;
+    return engine.setRotary(id,value,'UNIFIED_ENGINE_LAB_PHYSICAL');
+   },
    setDetent:(id,value)=>{if(!['engine-start-1','engine-start-2'].includes(id)||value!=='OFF')return false;
     return engine.setRotary(id,value,'ISN03_STARTER_CUTOUT');}});persist();
  }
