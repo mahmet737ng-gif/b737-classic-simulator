@@ -26,7 +26,8 @@ assert.match(ui,/b737:unified-ecu-observation/);
 assert.match(ui,/b737:isn-start-indications/);
 assert.match(lever,/b737:engine-start-lever-command/);
 assert.match(throttle,/b737:throttle-position/);
-for(const frozen of ['engine-start-levers.js?v=ISN-0003','throttle-levers.js?v=THR-0005','isn-engine-gauges.js?v=ISN-0007-CDARK'])
+assert.ok(index.includes('engine-start-levers.js?v=START-LEVER-0004'),'Owner-requested continuous start levers are cache refreshed');
+for(const frozen of ['throttle-levers.js?v=THR-0005','isn-engine-gauges.js?v=ISN-0007-CDARK'])
  assert.ok(index.includes(frozen),'Locked hardware renderer untouched '+frozen);
 
 const ECU=require('../engine/integration/isn-13-18-ecu-testbench-v1');

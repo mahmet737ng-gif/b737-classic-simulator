@@ -1,0 +1,21 @@
+name: Continuous pedestal engine start levers
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/engine-start-lever*'
+      - 'panel-mosaic-lab/cockpit/assets/engine-start-*'
+      - 'tests/engine-start-lever-continuous-v2.test.cjs'
+      - '.github/workflows/engine-start-lever-continuous-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lever-travel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node panel-mosaic-lab/cockpit/engine-start-levers.test.cjs
+          node tests/engine-start-lever-continuous-v2.test.cjs
+          node tests/isn-unified-ecu-physical-v1.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
