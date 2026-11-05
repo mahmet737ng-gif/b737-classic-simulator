@@ -2,10 +2,14 @@
  * This is a physical view adapter ONLY. Both EIS and Conventional command the
  * one B737AutobrakeUnified engine (FCOM 14.10/14.20; LAN ATA 32-40).
  * The approved EIS photograph/Owner18 guarded switches remain unmodified.
- * FO-inner native source (918x1713). EIS has its own photographic
- * AUTO BRAKE well: its anchor is fitted to the owner's 2026-11-05 screenshot.
- * Only this EIS x/y is adjusted; the approved Conventional sprite, size,
- * detents and shared autobrake logic remain unchanged.
+ * EIS-only registration from the owner's 1920x1080 live screenshot:
+ * empty AUTO BRAKE well center (988.5,720.5) px, outer white ring
+ * diameter ~139 px; misplaced knob base center (1108.5,638.5) px,
+ * diameter ~88.8 px at source REF [175,841] / 80 source-px.
+ * With 1.11 screenshot pixels per source px, the EIS-only anchor
+ * [67.5,915] centers the knob inside the well. EIS sprite width 108
+ * produces ~120 px round base, preserving ~9.5 px ring per side.
+ * Conventional source, detents, axis and autobrake logic are unchanged.
  */
 (function(root,factory){
  'use strict';const api=factory();
@@ -15,9 +19,9 @@
  'use strict';
  const REF=Object.freeze({
   image:Object.freeze([918,1713]),
-  center:Object.freeze([175,841]),
-  diameter:80,
-  source:'EIS_FO_INNER_OWNER_SCREENSHOT_20261105_ANCHOR'
+  center:Object.freeze([67.5,915]),
+  diameter:108,
+  source:'EIS_FO_INNER_OWNER_SCREENSHOT_20261105_RING_FIT'
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
