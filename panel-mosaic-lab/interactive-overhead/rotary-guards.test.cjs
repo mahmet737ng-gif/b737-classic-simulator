@@ -26,5 +26,5 @@ e.setRotary('engine-start-1','GRD');assert.equal(e.stepRotary('engine-start-1',-
 e.setRotary('ac-meter','TEST');assert.equal(e.rotary('ac-meter'),'TEST');
 e.setRotary('crossfeed','OPEN');assert.equal(e.rotary('crossfeed'),'OPEN');
 for(const a of Object.values(reg.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,a.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),a.sha256);}
-const view=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');assert.match(view,/mountEngineStartLabelCorrection\(layout\)/);assert.match(view,/motion.createDetentGesture/);
+const view=fs.readFileSync(path.join(__dirname,'rotary-guards.js'),'utf8');assert.doesNotMatch(view,/mountEngineStartLabelCorrection|rg-start-label-correction|label\.textContent='FLT'/,'No floating FLT text overlay may cover the baked CONT/FLT labels');assert.match(view,/motion.createDetentGesture/);
 console.log('PASS: 20 rotary knobs operational; 0 registered guards; no legacy imagery; cached guarded states ignored.');
