@@ -11,6 +11,7 @@ on:
       - "panel-mosaic-lab/cockpit/index.html"
       - "panel-mosaic-lab/engine-test-lab/**"
       - "tests/engine-indication-unified-live-v2.test.cjs"
+      - "tests/engine-start-crossbleed-ignition-v2.test.cjs"
       - ".github/workflows/engine-indication-unified-live-v2.yml"
   workflow_dispatch:
 permissions:
@@ -25,6 +26,7 @@ jobs:
         run: |
           node tests/engine-indication-tech-db-v1.test.cjs
           node tests/engine-indication-unified-live-v2.test.cjs
+          node tests/engine-start-crossbleed-ignition-v2.test.cjs
           node tests/isn-start-fcom-rules-v1.test.cjs
           node tests/isn-ecu-realtime-start-v1.test.cjs
           node tests/isn-unified-ecu-physical-v1.test.cjs
