@@ -11,6 +11,7 @@ on:
       - "panel-mosaic-lab/cockpit/isn-cockpit.js"
       - "panel-mosaic-lab/cockpit/isn-cockpit.css"
       - "tests/unified-physical-start-ack-v1.test.cjs"
+      - "tests/isn-unified-ecu-physical-v1.test.cjs"
       - "panel-mosaic-lab/cockpit/engine-indication-live-v2.js"
       - "panel-mosaic-lab/cockpit/index.html"
       - "panel-mosaic-lab/engine-test-lab/**"
