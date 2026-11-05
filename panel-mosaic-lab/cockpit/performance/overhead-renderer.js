@@ -7,7 +7,7 @@ const assetById=id=>spec.images.find(x=>x.id===id);
 // Owner-requested local photo repair. The archival bitmap and atlas geometry stay intact.
 // Route every view/clone through one baked image, never an asynchronous patch layer.
 const displayURL=asset=>asset.id==='OH23-25'
- ? '../cockpit/assets/lower-panel-repair-v1/inboard-hole-removed.webp'
+ ? '../cockpit/assets/lower-panel-repair-v1/engine-detents-inboard-restored-v2.webp'
  : asset.url;
 function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n;}
 function summary(){$('sourceCount').textContent=spec?spec.images.length:'—';$('panelCount').textContent=spec?new Set(spec.images.flatMap(x=>x.panelIds)).size:'—';$('loadedCount').textContent=loaded.size+'/'+(spec?spec.images.length:0);$('missingCount').textContent=spec?(spec.columns.reduce((n,c)=>n+(c.missing||[]).length,0)+spec.bottomMissing.length):'—';}
