@@ -187,9 +187,9 @@
         800,
         1000
       ],
-      "bytes": 234714,
-      "sha256": "0638cd40db646b36ea9c4c23a46a63780cd344d34f2520b5c9ae030183b1453c",
-      "gitBlobSha": "c7ef4a2197758df38253da96972062a3af2abfb0",
+      "bytes": 234198,
+      "sha256": "7419d9c5e93e028352b22a978d5af363efbeb0dc67a525b3fbf18a1356e5e4ba",
+      "gitBlobSha": "81662e698231efd6ef5f708fdb62aeaad40a36e8",
       "sourceStatus": "Owner authorized 2026-11-06: four IDLE/CUTOFF bitmap stencils only. All decoded pixels outside four text rectangles remain identical to the approved bare panel."
     }
   },
