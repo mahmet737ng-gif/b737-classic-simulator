@@ -26,7 +26,7 @@ noAir.battery(true);
 const rejectedNoAir=Router.dispatch(noAir,grd);
 assert.equal(rejectedNoAir.accepted,false);
 assert.equal(rejectedNoAir.phase,'BLOCKED');
-assert.match(rejectedNoAir.reason,/START SOURCE|APU|CROSSBLEED/);
+assert.match(rejectedNoAir.reason,/START SOURCE|APU|CROSSBLEED|NO VERIFIED [LR] START DUCT AIR SOURCE/);
 const blocked=make();
 blocked.battery(true);
 blocked.startAPU();blocked.advance(1400);blocked.apuBleed(true);
