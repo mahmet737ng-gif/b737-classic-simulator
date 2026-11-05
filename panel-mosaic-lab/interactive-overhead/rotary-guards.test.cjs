@@ -69,4 +69,9 @@ assert.ok(view.includes('Small_White_5Positions.webp'), 'IGN must reuse existing
 assert.ok(view.includes("node=c.id==='ignition-source'?ignitionToggle(c,p)"), 'Never mount a rotary knob over IGN');
 assert.ok(view.includes("engine.setRotary(c.id,nearest(e),'ignition-horizontal-tap')"), 'Ignition click selects one of three latching positions');
 assert.ok(view.includes("b.setAttribute('aria-orientation','horizontal')"), 'IGN is keyboard and screen-reader accessible');
+const ignitionCss=fs.readFileSync(path.join(__dirname,'rotary-guards.css'),'utf8');
+assert.ok(ignitionCss.includes('IGN-BASE-MATTE-0001'),'IGN base glare must be reduced locally');
+assert.ok(ignitionCss.includes('.mounted-rotary.ignition-toggle::after'),'Matte bezel may only affect ignition toggle');
+assert.ok(ignitionCss.includes('mask-image:radial-gradient'),'Matte overlay must preserve the original white handle');
+assert.ok(!ignitionCss.includes('blur('),'No blur or reduction in source photo resolution');
 console.log('PASS: 20 rotary control channels; IGN L / BOTH / IGN R uses photographic horizontal toggle; 0 registered guards; no legacy imagery.');
