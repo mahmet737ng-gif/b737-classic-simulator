@@ -1,0 +1,21 @@
+/* Engine Test Lab is a new independent shell; existing panels and protected guard
+ * switches, apertures and geometry are unchanged. */
+#engineLabButtonV2{
+ padding:7px 12px!important;background:#19526a!important;color:#f0faff!important;
+ border:1px solid #66a8c1!important;border-radius:5px!important;
+ font-weight:750!important;white-space:nowrap!important;cursor:pointer!important
+}
+#engineLabButtonV2:hover{background:#276b85!important}
+#engineLabDialogV2{
+ padding:0;border:1px solid #456780;border-radius:10px;background:#0b1521;
+ color:#eef5ff;width:min(1520px,98vw);height:min(940px,97vh);
+ max-width:none;max-height:none;overflow:hidden;
+ box-shadow:0 20px 50px #000c
+}
+#engineLabDialogV2::backdrop{background:#020710c9}
+#engineLabDialogV2>header{height:43px;padding:5px 12px;
+ display:flex;align-items:center;justify-content:space-between;
+ gap:8px;background:#1a2d40;font-size:13px}
+#engineLabDialogV2>header button{border:1px solid #6b90ab;
+ background:#304b61;color:#f1f7ff;padding:6px 16px;border-radius:5px;cursor:pointer}
+#engineLabDialogV2>iframe{width:100%;height:calc(100% - 43px);border:0;background:#0a131d}
