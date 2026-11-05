@@ -12,7 +12,7 @@
  const numeric=n=>typeof n==='number'&&Number.isFinite(n);
  const api=()=>window.B737EngineIndicationsV1;
  let db=null,prior=null,current=null,lastTime=null,lastRaw=null,error=null,loadPromise=null;
- let mode='EIS',fuelMode='RATE',filterThreshold=null;
+ let mode='EIS',fuelMode='RATE',filterThreshold=null,fuelUsedExpiresAt=null,resetFuelPending=false;
  let displayFaults={},sensorOverrides={engine1:{},engine2:{}},displayLimits={};
  let lastPaint=new Map(),lastEmitted=-1,events=0,labFrame=null;
  const electrical=()=>window.B737ElectricalV7?.evaluate(window.B737ISNCockpitV1?.getElectricalState?.());
@@ -32,6 +32,10 @@
        (x.pointer==='HOLD_LAST'&&numeric(x.value));
     const uncertain=x.status==='POWER_EFFECT_UNVERIFIED'||x.status==='POWER_UNKNOWN';
     const visualValue=numeric(x.value)?x.value:null;
+    // Fuel USED selects accumulated mass on the digital roller only; the
+    // analogue fuel-flow pointer must continue to follow instantaneous flow.
+    const digitalValue=mode==='EIS'&&p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
+      x.digitalValue:visualValue;
     if(mode==='EIS'){
      const pointerId='#region-main [data-gauge="'+key+'"]';
      const group=$(pointerId);
@@ -46,9 +50,14 @@
         uncertain?'unchanged':'visible';
       const node=$(dot);
       if(node){node.dataset.engineLiveStatus=x.status;if(shown!=='unchanged')node.style.visibility=shown;}
-      const value=valid?visualValue:null;
+      const value=valid?digitalValue:null;
+      if(node&&p==='fuelFlow'){
+       node.dataset.fuelDisplayMode=fuelMode;
+       node.dataset.displayUnit=fuelMode==='USED'?'t':'t/h';
+       node.setAttribute('aria-label',id+' FUEL '+fuelMode+' '+(numeric(value)?value:'---')+' '+node.dataset.displayUnit);
+      }
       const stamp='EIS.'+key,old=lastPaint.get(stamp);
-      if(!uncertain&&shown!=='hidden'&&(old!==value||!node||node.dataset.source!=='ENGINE_INDICATION_BACKEND_V2')){
+      if(!uncertain&&shown!=='hidden'&&(old!==value||!node)){
        // Existing dense dot and drum geometry is untouched; setReading(null) makes dashes.
        window.B737EISDotReadoutsV1?.setReading(id,p,value);
        lastPaint.set(stamp,value);
@@ -123,10 +132,16 @@
    }
    const now=numeric(live.timeMs)?live.timeMs:0;
    const dt=lastTime===null?0:Math.max(0,Math.min(60000,Math.round(now-lastTime)));
+   // EIS FUEL USED is a momentary ten-second display. Conventional uses its
+   // own held RATE/USED selector and is not subject to this automatic timer.
+   if(mode==='EIS'&&fuelMode==='USED'&&fuelUsedExpiresAt!==null&&now>=fuelUsedExpiresAt){
+    fuelMode='RATE';fuelUsedExpiresAt=null;lastPaint.clear();
+   }
    if(lastTime!==null&&now<lastTime){prior=null;lastPaint.clear();}
    const next=api().calculate(db,{mode,electrical:state,observed,previous:prior,
     faults:displayFaults,limits:displayLimits,filterBypassThresholdPsid:filterThreshold,
-    dtMs:dt,fuelMode});
+    dtMs:dt,fuelMode,resetFuelUsed:resetFuelPending});
+   resetFuelPending=false;
    prior=next;lastTime=now;lastRaw=live;current=next;events++;
    paint(next);
    // Start logic contains actual switch feedback; no duplicate start controller.
@@ -170,7 +185,12 @@
    case 'MODE':return changeMode(cmd.mode);
    case 'FUEL_MODE':
     if(!['RATE','USED'].includes(cmd.value))throw Error('Unsupported fuel display mode');
-    fuelMode=cmd.value;return refresh();
+    fuelMode=cmd.value;
+    const clock=window.B737ISNCockpitV1?.getECUState?.()?.timeMs;
+    fuelUsedExpiresAt=fuelMode==='USED'&&mode==='EIS'&&numeric(clock)?clock+10000:null;
+    lastPaint.clear();return refresh();
+   case 'RESET_FUEL_USED':
+    resetFuelPending=true;lastPaint.clear();return refresh();
    case 'FILTER_THRESHOLD':
     if(cmd.value!==null&&(!numeric(cmd.value)||cmd.value<0||cmd.value>100))
      throw Error('Explicit installed filter switch threshold required');
@@ -188,7 +208,7 @@
   return apply(now);
  }
  function status(){
-  return {version:VER,ready:!!db,mode,error,events,
+  return {version:VER,ready:!!db,mode,fuelMode,error,events,
    source:'ONE ECU / ONE ELECTRICAL V7',snapshot:current?copy(current):null,
    start:startReport(),electrical:window.B737ISNCockpitV1?.getElectricalState?.()||null};
  }
