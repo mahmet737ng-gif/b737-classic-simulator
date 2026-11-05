@@ -195,6 +195,21 @@
     if(cmd.value!==null&&(!numeric(cmd.value)||cmd.value<0||cmd.value>100))
      throw Error('Explicit installed filter switch threshold required');
     filterThreshold=cmd.value;return refresh();
+   case 'PHYSICAL_START_DETENT':{
+    const allowed={
+     'engine-start-1':['GRD','OFF','CONT','FLT'],
+     'engine-start-2':['GRD','OFF','CONT','FLT'],
+     'ignition-source':['IGN L','BOTH','IGN R']
+    };
+    if(!Object.hasOwn(allowed,cmd.id)||!allowed[cmd.id].includes(cmd.value))
+     throw Error('Invalid engine start / ignition physical detent');
+    const overhead=document.getElementById('overheadFrame')?.contentWindow;
+    if(!overhead?.B737RotaryGuards?.setEngineLabDetent)
+     throw Error('Physical Overhead not ready. Open the Overhead view first, then retry.');
+    const accepted=overhead.B737RotaryGuards.setEngineLabDetent(cmd.id,cmd.value);
+    if(accepted===false)throw Error('Overhead physical selector rejected '+cmd.id+' '+cmd.value);
+    return {accepted:true,physicalOwner:'B737RotaryGuards',id:cmd.id,value:cmd.value};
+   }
    case 'RESET_INSTRUMENT_FAULTS':
     displayFaults={};sensorOverrides={engine1:{},engine2:{}};filterThreshold=null;
     prior=null;lastPaint.clear();return refresh();
