@@ -479,6 +479,47 @@
    getPressurizationAir:()=>startSession.core.complete()
      ?startSession.core.Pneumatics.derive(startSession.core.pneumaticState).toPressurization
      :null,
+  // Instrument/start lab: explicit INSTRUCTOR actions only, on the existing ISN-18 ECU.
+  // Starting via GRD / ignition-source still requires the actual OH control;
+  // this adapter NEVER secretly moves a physical switch or guarded control.
+  engineTrainerAction:command=>{
+    if(!command||command.instructor!==true||
+       !['engine1','engine2'].includes(command.engine)&&!['ELECTRICAL_FAULT','APU_PRESET'].includes(command.type))
+      throw Error('Explicit validated instructor command required');
+    const engine=command.engine;
+    switch(command.type){
+      case 'START_FAULT':
+        if(!window.B737ISNAPUStartChainV1.FAULT_KEYS.includes(command.key)||typeof command.active!=='boolean')
+          throw Error('Unknown engine start fault');
+        ecu.setStartFault(engine,command.key,command.active);break;
+      case 'OIL_FAULT':
+        if(!['pumpFailure','oilLeak','filterRestriction'].includes(command.key)||typeof command.active!=='boolean')
+          throw Error('Unknown engine oil fault');
+        ecu.setOilFault(engine,command.key,command.active);break;
+      case 'DUCT_PSI':
+        if(!Number.isFinite(command.psi)||command.psi<20||command.psi>50)throw Error('Invalid instructor duct PSI');
+        ecu.setStartDuctPressure(engine,command.psi);break;
+      case 'THROTTLE':
+        if(!Number.isFinite(command.value)||command.value<0||command.value>1)throw Error('Invalid throttle');
+        ecu.setThrottle(engine,command.value);break;
+      case 'LEVER':
+        if(!['IDLE','CUTOFF'].includes(command.position))throw Error('Invalid engine start lever');
+        ecu.fuelLever(engine,command.position);break;
+      case 'PRESET_RUNNING':
+        ecu.instructorRunEngine(engine,{instructor:true});break;
+      case 'SHUTDOWN':
+        ecu.shutdown(engine);break;
+      case 'ELECTRICAL_FAULT':
+        if(!window.B737ElectricalV7.FAULTS.includes(command.key)||typeof command.active!=='boolean')
+          throw Error('Unknown electrical instructor fault');
+        bridge.instructor({type:'ELECTRICAL',action:{type:'FAULT',id:command.key,
+          active:command.active,instructor:true}});chain.syncPower();ecu.core.refreshFuelDelivery();break;
+      case 'APU_PRESET':
+        ecu.instructorPresetAPUReady({instructor:true});break;
+      default:throw Error('Unsupported engine lab action — use the actual OH start selector');
+    }
+    render();return {accepted:true,type:command.type,engine:engine||null,ecu:ecu.get()};
+  },
   instructor:command=>{const r=bridge.instructor(command);chain.syncPower();ecu.core.refreshFuelDelivery();render();return r;},reset:()=>{const r=bridge.reset();render();return r;}});
  // Dependencies are dynamically loaded, so request a fresh iframe snapshot
  // even if its initial ready event arrived before this message listener.
