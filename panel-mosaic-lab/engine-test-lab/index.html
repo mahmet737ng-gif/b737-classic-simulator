@@ -82,11 +82,32 @@
 <button id="reset-instruments">RESET ALL INSTRUMENT INJECTIONS</button>
 <p>هنگام نامعلوم بودن WDM دقیق یا آستانه Filter Bypass، برنامه UNKNOWN نشان می‌دهد؛ از این ورودی‌ها فقط برای سناریوی تست استفاده کن.</p>
 </section>
+
+<section class="panel statuses" id="engine-scenario-matrix-v3">
+<h2>SCENARIO MATRIX · FCOM / MRG / LAN</h2>
+<p>Apply a fault to the existing ECU and verify all dependent gauge indications. Set start failures before turning ENG START to GRD. This does not move any guarded switch.</p>
+<div class="field"><label>SELECT CASE<select id="scenario-preset">
+<optgroup label="NORMAL"><option value="idle">Stable engine / monitor</option></optgroup>
+<optgroup label="ABNORMAL">
+<option value="noLightOff">NO LIGHT-OFF</option><option value="hot">HOT START</option>
+<option value="hung">HUNG START</option><option value="stall">N2 STALL</option>
+<option value="early">EARLY STARTER CUTOUT</option><option value="flame">FLAMEOUT</option></optgroup>
+<optgroup label="EMERGENCY / ELECTRICAL">
+<option value="gen1">GEN1 FAILURE</option><option value="gen2">GEN2 FAILURE</option>
+<option value="tr1">TR1 FAILURE</option><option value="tr2">TR2 FAILURE</option>
+<option value="battery">BATTERY DEPLETED</option><option value="inverter">STATIC INVERTER FAILED</option></optgroup>
+<optgroup label="EIS / SENSOR">
+<option value="primary">EIS PRIMARY FAILED</option><option value="secondary">EIS SECONDARY FAILED</option>
+<option value="egtSensor">EGT SENSOR FAILED</option></optgroup>
+</select></label><button id="apply-scenario">INJECT SCENARIO</button><button id="scenario-clear">CLEAR INDICATION FAULTS</button></div>
+<pre id="scenario-trace" dir="ltr">Select a case to inject a documented training fault.</pre>
+<p class="tip">FCOM/MRG/LAN are used for functional logic; thresholds and effects without installed WDM evidence remain UNKNOWN.</p>
+</section>
 <section class="panel statuses"><h2>START PANEL · Actual discrete switching</h2><div id="start-table" class="table-scroll">Waiting for ECU…</div></section>
 <section class="panel statuses"><h2>Engine indications · All gauges, both engines, bus source &amp; failure state</h2><div id="indications-table" class="table-scroll">Waiting for engine technical database…</div></section>
 <section class="panel statuses"><h2>EIS / BITE / Lamps / Faults</h2><div id="summary" class="table-scroll">—</div></section>
 <section class="panel statuses"><h2>Current electrical status &amp; audit</h2><pre id="electrical" dir="ltr">—</pre></section>
 </main>
 <div id="command-response" role="status" aria-live="polite"></div>
-<script src="./app.js?v=ENG-LAB-0002"></script>
+<script src="./app.js?v=ENG-LAB-0003"></script>
 </body></html>
