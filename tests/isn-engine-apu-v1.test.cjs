@@ -88,8 +88,12 @@ assert.equal(o.electrical.bus.generator1, true);
 assert.equal(o.pneumatics.bleed.apuBleedValveOpen, false, 'APU running does not automatically turn BLEED switch ON');
 o = s.send(pneumatic({type:'CONTROL', key:'apuBleed', value:'ON'}));
 assert.equal(o.pneumatics.bleed.apuBleedValveOpen, true);
-assert.equal(o.pneumatics.duct.L.anySupply, null, 'APU duct assignment remains UNKNOWN');
-assert.equal(o.pneumatics.duct.R.anySupply, null);
+// LAN ATA36-10: APU bleed joins the LEFT manifold. With both engine
+// BLEED switches and both PACKs selected, ISOLATION AUTO is CLOSED: the
+// left duct is supplied by APU and the right duct has no source here.
+assert.equal(o.pneumatics.bleed.isolationOpen, false, 'AUTO isolation closed with both bleeds and both packs selected');
+assert.equal(o.pneumatics.duct.L.anySupply, true, 'APU BLEED supplies LEFT manifold');
+assert.equal(o.pneumatics.duct.R.anySupply, false, 'Closed isolation prevents APU from feeding RIGHT manifold');
 
 o = s.send(pack({type:'WARNING_SENSOR', key:'apuFire', value:true}));
 assert.equal(o.warnings.audio.active.some(x => x.id === 'fireBell'), true);
