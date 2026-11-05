@@ -12,11 +12,11 @@ assert.equal(model.needles[4].window,'OH12_APU');
 // Immutable source image QA rejected 128/135px oversized and 64px undersized pointers; near-original radii touch inner 0 ticks.
 for(const needle of model.needles.slice(0,2)){assert.equal(needle.tipRadius,98);assert.equal(needle.initialAngle,-46);}
 for(const needle of model.needles.slice(2,4)){assert.equal(needle.tipRadius,125);assert.equal(needle.initialAngle,model.bearingForAmps(needle.id,0));}
-assert.equal(model.needles[4].tipRadius,124);assert.equal(model.needles[4].initialAngle,-60);
-assert.deepEqual(model.apuAmpPhotoAngles,[-60,-37,0,37,74]);
-for(const [amps,angle] of [[0,-60],[50,-37],[100,0],[150,37],[200,74]])
+assert.equal(model.needles[4].tipRadius,124);assert.equal(model.needles[4].initialAngle,-57);
+assert.deepEqual(model.apuAmpPhotoAngles,[-57,-37,0,37,74]);
+for(const [amps,angle] of [[0,-57],[50,-37],[100,0],[150,37],[200,74]])
  assert.equal(model.bearingForApuAmps(amps),angle);
-assert.equal(model.bearingForApuAmps(-1),-60);
+assert.equal(model.bearingForApuAmps(-1),-57);
 assert.equal(model.bearingForApuAmps(201),74);
 assert.equal(model.bearingForApuAmps(0),model.needles[4].initialAngle,'0 amperes must sit at the photographed zero mark');
 assert.ok(model.bearingForApuAmps(0)>-70,'Zero position must not fall beneath the first white tick');
@@ -46,7 +46,7 @@ assert.ok(ui.includes('model.windowPath(needle)'),'Blade must stop at the traced
 assert.ok(ui.includes("new URL('./drive-amps-needle.svg?v=DAN-0001'"));
 assert.ok(ui.includes('window.B737UnifiedDriveAmpsNeedles'));
 assert.ok(ui.includes('model.bearingForAmps(id,amps)'));
-assert.ok(ui.includes("min:calibrated?'0':needle.id==='apuAcAmps'?'-60':'-90'"));
+assert.ok(ui.includes("min:calibrated?'0':needle.id==='apuAcAmps'?'-57':'-90'"));
 assert.ok(ui.includes("max:calibrated?'200':needle.id==='apuAcAmps'?'74':'90'"));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('drive-amps-needle-model.js?v=DAN-APU-ZERO-0008'));
