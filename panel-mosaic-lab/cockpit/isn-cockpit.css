@@ -39,3 +39,22 @@
 @media(max-width:640px){.isn-engine-card{font-size:10px;gap:2px 5px;padding:4px}.isn-engine-card [data-field=phase]{width:100%}}
 .isn-start-faults{margin:8px 0;padding:7px;border:1px solid #516a6d;border-radius:5px}.isn-start-faults label{display:block;margin:5px 0;direction:ltr;text-align:left}.isn-start-faults input{margin-right:6px}.isn-start-faults input:disabled{opacity:.5}
 .isn-engine-card[data-phase=N2_STALLED],.isn-engine-card[data-phase=ABNORMAL_EGT]{border-color:#e0875c;background:#3b2728}
+
+
+/* ENGINE START live-ECU feedback: an external non-interactive status only.
+   It does not cover the cockpit's switches or alter frozen art. */
+#unifiedEngineStartFeedback{
+ position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom,0px));
+ transform:translateX(-50%);z-index:55;max-width:min(94vw,940px);
+ max-height:20vh;overflow:hidden;padding:9px 13px;border-radius:7px;
+ border:1px solid #4f837e;background:#0b2630f2;color:#e5f7f1;
+ font:600 12px/1.55 ui-monospace,Consolas,monospace;text-align:center;
+ direction:ltr;pointer-events:none;box-shadow:0 3px 13px #0009;
+}
+#unifiedEngineStartFeedback[hidden]{display:none!important}
+#unifiedEngineStartFeedback[data-severity=warning]{
+ border-color:#e3a468;background:#3b211dec;color:#ffe4c7;
+}
+@media(max-width:560px){#unifiedEngineStartFeedback{
+ font-size:11px;max-width:96vw;padding:7px 9px;max-height:24vh;
+}}
