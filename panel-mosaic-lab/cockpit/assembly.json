@@ -179,6 +179,18 @@
       "sha256": "f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a",
       "gitBlobSha": "a9b69c7e45db0c18fc08225367ea8371b3fd988f",
       "sourceStatus": "Owner-approved new bare throttle quadrant; previous locked original retained in immutable archive, no longer active in assembly"
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp",
+      "url": "./assets/throttle-quadrant-idle-cutoff-20261106.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 234714,
+      "sha256": "0638cd40db646b36ea9c4c23a46a63780cd344d34f2520b5c9ae030183b1453c",
+      "gitBlobSha": "c7ef4a2197758df38253da96972062a3af2abfb0",
+      "sourceStatus": "Owner authorized 2026-11-06: four IDLE/CUTOFF bitmap stencils only. All decoded pixels outside four text rectangles remain identical to the approved bare panel."
     }
   },
   "regions": [
@@ -269,7 +281,7 @@
         {
           "id": "throttle-quadrant",
           "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
-          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp",
+          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp",
           "x": 272,
           "y": 0,
           "w": 606,
