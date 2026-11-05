@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0005","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":138,"note":"THR-0005: both throttle visual stages use slot-registered centers and five fixed Y anchors. Existing approved PNGs and locked quadrant are unmodified.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
+const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0006","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":80,"note":"THR-0006: sprite grips scale to an 80-source-pixel width, below the 92-source-pixel slot pitch; throttle hit areas follow each slot. Recessed TO/GA face is visual-only. Approved PNGs and locked quadrant remain unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
 const KEYS=Object.freeze([0,25,50,75,100]);
 const position={1:0,2:0};
 const images={};
@@ -17,6 +17,8 @@ function apply(engine,pct,source){
   for(const [key,object] of c.sprite.entries())object.style.display=key===next?'block':'none';
   c.select.value=String(next);
   c.visual.dataset.position=String(next);
+  c.visual.setAttribute('aria-valuenow',String(next));
+  for(const [key,face] of c.toga.entries())face.style.display=key===next?'block':'none';
   c.visual.setAttribute('aria-label','Engine '+engine+' throttle '+next+' percent');
  }
  if(source!=='sim')fire(engine);
@@ -39,7 +41,12 @@ function buildControls(){
 function createSprite(engine,pct,tex){
  const p=CONFIG.stages[String(pct)];
  const name=filename(engine,pct),image=images[name],cal=CONFIG.sprites[name];
- const scale=CONFIG.gripWidthNative/cal.gripWidth;
+ // Scale the entire source sprite with the actual plate pitch rather than a fixed viewport size.
+ // Both visible grips now fit within their independently registered throttle slots.
+ const unit=tex.offsetWidth/1055;
+ const slotPitch=CONFIG.engineSourceCenters[2]-CONFIG.engineSourceCenters[1];
+ const gripWidth=Math.min(CONFIG.gripWidthNative,slotPitch-12)*unit;
+ const scale=gripWidth/cal.gripWidth;
  const visual=document.createElement('img');visual.src=image.src;visual.alt='';visual.draggable=false;
  visual.className='throttle-state-sprite';
  const x=CONFIG.engineSourceCenters[engine];
@@ -53,6 +60,24 @@ function createSprite(engine,pct,tex){
     height:(image.naturalHeight*scale)+'px',
     display:pct===0?'block':'none'});
  return visual;
+}
+function createTogaFace(engine,pct,visual){
+ // The existing black TO/GA cap is painted into engine 2's sprite; mask that cap
+ // with a shallow, inset black face. This does not change engine/AFDS logic.
+ if(engine!==2)return null;
+ const width=parseFloat(visual.style.width),height=parseFloat(visual.style.height);
+ const diameter=Math.max(8,Math.min(18,width*0.125));
+ const face=document.createElement('span');
+ face.className='throttle-toga-recessed';
+ face.setAttribute('aria-hidden','true');
+ // Registered to the original PNG's button centre, not the panel background.
+ Object.assign(face.style,{
+  left:(parseFloat(visual.style.left)+width*0.257-diameter/2)+'px',
+  top:(parseFloat(visual.style.top)+height*0.85-diameter/2)+'px',
+  width:diameter+'px',height:diameter+'px',
+  display:pct===0?'block':'none'
+ });
+ return face;
 }
 function place(engine,tex){
  const hit=document.createElement('div');hit.className='throttle-sprite-hit';hit.setAttribute('role','slider');
@@ -68,18 +93,22 @@ function place(engine,tex){
   if(e.key==='Home')return apply(engine,0,'user');
   if(e.key==='End')return apply(engine,100,'user');
   const current=KEYS.indexOf(position[engine]);apply(engine,KEYS[Math.max(0,Math.min(4,current+(e.key==='ArrowUp'?1:-1)))],'user');};
- const sprites=new Map();
- for(const pct of KEYS){const img=createSprite(engine,pct,tex);root.append(img);sprites.set(pct,img);}
+ const sprites=new Map(),toga=new Map();
+ for(const pct of KEYS){
+  const img=createSprite(engine,pct,tex);root.append(img);sprites.set(pct,img);
+  const face=createTogaFace(engine,pct,img);if(face){root.append(face);toga.set(pct,face);}
+ }
  // Hit area follows common section of sprite movement, avoiding overlap with engine-start levers below.
  const ref=CONFIG.engineSourceCenters[engine],scale=tex.offsetWidth/1055;
  const x=tex.offsetLeft+(ref-20)*scale;
+ const hitWidth=Math.max(24,(CONFIG.engineSourceCenters[2]-CONFIG.engineSourceCenters[1]-10)*scale);
  Object.assign(hit.style,{
-  left:(x-48)+'px',
+  left:(x-hitWidth/2)+'px',
   top:(tex.offsetTop+78)+'px',
-  width:'96px',
+  width:hitWidth+'px',
   height:'585px'
  });
- root.append(hit);controls.set(engine,{sprite:sprites,visual:hit,select:null});
+ root.append(hit);controls.set(engine,{sprite:sprites,toga,visual:hit,select:null});
 }
 function mountPlasticCover(tex){
  if(root.querySelector('.throttle-plastic-cover'))return;
