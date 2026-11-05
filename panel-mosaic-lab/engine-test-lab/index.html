@@ -103,6 +103,17 @@
 <pre id="scenario-trace" dir="ltr">Select a case to inject a documented training fault.</pre>
 <p class="tip">FCOM/MRG/LAN are used for functional logic; thresholds and effects without installed WDM evidence remain UNKNOWN.</p>
 </section>
+<section class="panel scenario-library">
+<h2>TRAINING SCENARIO LIBRARY · 39 individually selectable cases</h2>
+<div class="field">
+<label>Scenario<select id="scenario-select" aria-label="Select engine test scenario"><option>Loading 39 cases…</option></select></label>
+<button id="scenario-apply" type="button">APPLY SELECTED SCENARIO</button>
+<button id="scenario-clear" type="button">CLEAR SELECTED INJECTION</button>
+</div>
+<p id="scenario-description" dir="auto">Normal, Abnormal and Emergency source-traced cases are loaded from Technical Database scenarios.</p>
+<p id="scenario-expectation" dir="auto">Expected result: —</p>
+<p class="tip">برای خطاهای START ابتدا fault را فعال کن و سپس GRD را از همان پنل فیزیکی انتخاب کن. این ابزار خطا را تزریق می‌کند؛ هیچ موتور یا شیر خیالی اضافه نمی‌شود.</p>
+</section>
 <section class="panel statuses"><h2>START PANEL · Actual discrete switching</h2><div id="start-table" class="table-scroll">Waiting for ECU…</div></section>
 <section class="panel statuses"><h2>Engine indications · All gauges, both engines, bus source &amp; failure state</h2><div id="indications-table" class="table-scroll">Waiting for engine technical database…</div></section>
 <section class="panel statuses"><h2>EIS / BITE / Lamps / Faults</h2><div id="summary" class="table-scroll">—</div></section>
