@@ -38,11 +38,14 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
  const bothPacksSelected=c.packL!=='OFF'&&c.packR!=='OFF';
  let isolation=i.isolationAcPower?(c.isolation==='OPEN'||(c.isolation==='AUTO'&&!(bothBleedsSelected&&bothPacksSelected))):null;
  if(f.isolationJammedOpen)isolation=true;else if(f.isolationJammedClosed)isolation=false;
- // APU / external ground source manifold side is not established by page-level sources.
- // Deliberately report UNKNOWN instead of inventing precise duct source distribution.
- function supply(side){const local=side==='L'?e1:e2,opposite=side==='L'?e2:e1;if(local)return true;
-  if(isolation===true&&opposite)return true;
-  if(apu||i.externalAirAvailable)return null; // functional common source; side distribution NOT VERIFIED
+ // LAN B737 Classic ATA36-10 pp.24,26,28: the APU feeds the LEFT
+ // manifold (its junction is left of isolation); the ground-cart connector
+ // is in the RIGHT pack bay. Preserve the approved isolation actuator logic.
+ function supply(side){
+  const local=side==='L'?(e1||apu):(e2||i.externalAirAvailable);
+  const opposite=side==='L'?(e2||i.externalAirAvailable):(e1||apu);
+  if(local)return true;
+  if(isolation===true)return opposite;
   if(isolation===null&&opposite)return null;
   return false;
  }
@@ -84,7 +87,7 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
  return {schema:'b737-pneumatics-derived/6',seq:s.seq,pack400,zoneTemp400,bleed:{engine1ValveOpen:e1,engine2ValveOpen:e2,apuBleedValveOpen:apu,externalAirAttached:i.externalAirAvailable,isolationOpen:isolation,dualBleed,wingBody},duct,pack,recircFanRunning:recircActive,recircFans,recircInstallation:c.aircraftFamily,gauges,
  lamps:{dualBleed,bleedTrip1:t.bleed1,bleedTrip2:t.bleed2,packTripL:c.aircraftFamily==='B737-400'?pack400.L.immediate:t.packL,packTripR:c.aircraftFamily==='B737-400'?pack400.R.immediate:t.packR,ductOverheatL:c.aircraftFamily==='B737-400'?false:t.ductL,ductOverheatR:c.aircraftFamily==='B737-400'?false:t.ductR,wingBodyOverheatL:wingBody.L,wingBodyOverheatR:wingBody.R},
  toPressurization:{packConditionedAirAvailable:operatingCount>0?true:pack.L.operational===null||pack.R.operational===null?null:false,cabinPressureCalculated:false,source:'FCOM 2.30.1 functional supply only'},
- statuses:{physicalBleedPressure:'UNKNOWN',actualTemperature:'UNKNOWN',exactAPUAndGroundSourceRouting:'UNKNOWN',powerBusRouting:'NOT_VERIFIED',overlimitSensorThresholds:'NOT_IN_THIS_SOURCE_VIEW',faultFailureResponse:'SYNTHETIC_TRAINER',flightOperations:'NOT_FOR_FLIGHT'},sources:SOURCES};
+ statuses:{physicalBleedPressure:'UNKNOWN',actualTemperature:'UNKNOWN',exactAPUAndGroundSourceRouting:'LEFT_APU_RIGHT_GROUND_FUNCTIONAL_LAN_ATA36',powerBusRouting:'NOT_VERIFIED',overlimitSensorThresholds:'NOT_IN_THIS_SOURCE_VIEW',faultFailureResponse:'SYNTHETIC_TRAINER',flightOperations:'NOT_FOR_FLIGHT'},sources:SOURCES};
 }
 function replay(commands){let s=initial();for(const a of commands)s=apply(s,a);return s;}
 return Object.freeze({SIDES,FAULTS,INPUT_TYPES,CONTROL_TYPES,SOURCES,initial,apply,derive,replay});
