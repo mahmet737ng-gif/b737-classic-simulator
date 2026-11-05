@@ -18,6 +18,9 @@ s.battery(true);
 s.startAPU();
 s.advance(85000);
 assert.equal(s.get().apu.phase,'READY');
+// APU running alone does not power either ignition channel: explicitly
+// connect APU GEN to AC transfer, preserving physical source-selection logic.
+s.selectGenerator('APU',1);
 s.apuBleed(true);
 for(const [id,next] of [
  ['pack-l','OFF'],['pack-r','OFF'],['isolation-valve','OPEN']
