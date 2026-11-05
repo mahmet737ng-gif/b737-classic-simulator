@@ -3,12 +3,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const M=require('../panel-mosaic-lab/cockpit/engine-start-lever-model');
 const file='panel-mosaic-lab/cockpit/engine-start-levers.js';
 for(const id of ['engine1','engine2'])for(const t of [0,.1,.4,.7,1]){
- const g=M.geometry(id,t);assert.equal(g.pivotX,g.jointX,'Metal arms stay perfectly straight');
- assert.equal(g.pivotY,843,'Shaft does not move with the grip');
- assert.equal(g.y,M.DETENTS.CUTOFF-73*t);
+ const g=M.geometry(id,t);
+ assert.equal(g.y,M.DETENTS.CUTOFF-(M.DETENTS.CUTOFF-M.DETENTS.IDLE)*t);
  if(t>0&&t<1)assert.equal(M.detentAt(t),null,'No intermediate fuel detents');
 }
-for(const zoom of [.15,.5,1,2])assert.ok(Math.abs(M.dragTravel(0,100,100-73*zoom*.4,73*zoom)-.4)<1e-12);
+for(const zoom of [.15,.5,1,2])assert.ok(Math.abs(M.dragTravel(0,100,100-(M.DETENTS.CUTOFF-M.DETENTS.IDLE)*zoom*.4,(M.DETENTS.CUTOFF-M.DETENTS.IDLE)*zoom)-.4)<1e-12);
 let screenScale=.25;
 class Node{
  constructor(tag){this.tagName=tag;this.children=[];this.attrs={};this.dataset={};this.style={};this.listeners=new Map();this.captured=null;}
@@ -31,7 +30,7 @@ const win={B737EngineStartLeverModel:M,addEventListener:(k,fn)=>listeners.set(k,
  }else listeners.get(e.type)?.(e);}};
 const state={engine1:'CUTOFF',engine2:'CUTOFF'};
 function feedback(){win.dispatchEvent({type:'b737:engine-start-lever-state',detail:{levers:{...state}}});}
-const context={window:win,document:{baseURI:'https://localhost/panel-mosaic-lab/cockpit/',querySelector:()=>native,
+const context={MutationObserver:class{observe(){}},window:win,document:{body:{},readyState:'loading',addEventListener(){},baseURI:'https://localhost/panel-mosaic-lab/cockpit/',querySelector:()=>native,
  createElement:tag=>new Node(tag),createElementNS:(ns,tag)=>new Node(tag)},URL,
  CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail;}}};
 vm.runInNewContext(fs.readFileSync(file,'utf8'),context);win.dispatchEvent({type:'b737:cockpit-mounted'});
@@ -39,8 +38,8 @@ const buttons=native.children.filter(n=>n.tagName==='button'),first=buttons[0],s
 assert.equal(buttons.length,2);assert.equal(first.attrs.role,'slider');
 const art=native.children.find(n=>n.tagName==='svg');
 for(const group of art.children.filter(n=>n.attrs['data-start-lever-assembly']))
- assert.equal(group.children.filter(n=>n.tagName==='circle').length,1,'Only the lower attachment exists; no top disk');
-const span=73*(606/800)*screenScale;
+ assert.equal(group.children.filter(n=>['circle','path'].includes(n.tagName)).length,0,'Grip only; no arm or base');
+const span=(M.DETENTS.CUTOFF-M.DETENTS.IDLE)*(606/800)*screenScale;
 first.emit('pointerdown');first.emit('pointermove',{clientY:100-span*.4});
 assert.ok(Math.abs(api.getTravel('engine1')-.4)<1e-10);assert.equal(commands.length,0);
 feedback();assert.ok(Math.abs(api.getTravel('engine1')-.4)<1e-10,'Feedback cannot overwrite the hand position');

@@ -4,9 +4,12 @@
 (function(root,factory){'use strict';const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.B737EngineStartLeverModel=api;})(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const SOURCE=Object.freeze({width:800,height:1000,window:{x:0,y:0,w:800,h:800*740.9857819905213/606}});
- const SLOTS=Object.freeze({engine1:Object.freeze({x:363,label:'1'}),engine2:Object.freeze({x:437,label:'2'})});
- const DETENTS=Object.freeze({IDLE:790,CUTOFF:900});
+ const SLOTS=Object.freeze({engine1:Object.freeze({x:330.5,label:'1'}),engine2:Object.freeze({x:404.5,label:'2'})});
  const HANDLE=Object.freeze({w:74,h:46});
+ // Measured black slot on the unchanged 800x1000 owner photograph.
+ // The complete grip stays inside the slot at both physical stops.
+ const SLOT_TRACK=Object.freeze({top:847,bottom:941});
+ const DETENTS=Object.freeze({IDLE:SLOT_TRACK.top+HANDLE.h/2,CUTOFF:SLOT_TRACK.bottom-HANDLE.h/2});
  // Hidden shaft reference only; the owner requested straight arms and no top disk.
  const PIVOT=Object.freeze({y:843,outerOffset:34});
  const clamp=x=>Math.max(0,Math.min(1,x));
@@ -35,5 +38,5 @@
   return clamp(start+(startY-currentY)/screenTravel);
  }
  function detentAt(fraction){return fraction>=.995?'IDLE':fraction<=.005?'CUTOFF':null;}
- return Object.freeze({SOURCE,SLOTS,DETENTS,HANDLE,PIVOT,travel,geometry,placementAt,placement,dragTravel,detentAt});
+ return Object.freeze({SOURCE,SLOTS,DETENTS,HANDLE,SLOT_TRACK,PIVOT,travel,geometry,placementAt,placement,dragTravel,detentAt});
 });

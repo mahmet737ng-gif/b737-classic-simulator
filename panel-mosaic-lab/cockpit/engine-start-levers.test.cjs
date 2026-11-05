@@ -21,11 +21,13 @@ for(const device of ['engine1','engine2']){
   assert.ok(spot.top>=plate.y&&spot.top+spot.height<=plate.y+plate.h);
  }
  assert.ok(active.top<rest.top,'moving start lever forward to IDLE');
- assert.ok(rest.top-active.top>50&&rest.top-active.top<100,'observable physical detent travel');
+ const scale=plate.w/model.SOURCE.window.w;
+ assert.equal(active.top,plate.y+model.SLOT_TRACK.top*scale,'IDLE touches top of slot');
+ assert.ok(Math.abs(rest.top+rest.height-(plate.y+model.SLOT_TRACK.bottom*scale))<1e-9,'CUTOFF touches bottom of slot');
 }
 const first=model.placement(plate,'engine1','CUTOFF');
 const second=model.placement(plate,'engine2','CUTOFF');
-assert.ok(first.left+first.width<second.left,'Engine 1 and 2 handles cannot overlap');
+assert.ok(Math.abs(first.left+first.width-second.left)<1e-9,'Paired grips touch without overlap');
 assert.throws(()=>model.placement(plate,'engine3','IDLE'));
 assert.throws(()=>model.placement({...plate,w:900},'engine1','IDLE'),/crop/);
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
