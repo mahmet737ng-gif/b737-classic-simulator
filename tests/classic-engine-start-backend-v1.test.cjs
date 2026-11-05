@@ -38,7 +38,7 @@ assert.equal(z.status,'STABILIZED_GROUND_IDLE');
 assert.equal(z.lamps.oilLowPressure,false);
 assert.equal(a.get().engineStartBackend.engine2.status,'STOPPED');
 const b=rig();b.battery(true);b.startAPU();b.advance(1400);b.apuBleed(true);
-b.engineStart('engine2');b.advance(120010);
+b.engineStart('engine2');b.advance(120000);b.advance(10);
 z=b.get().engineStartBackend.engine2;
 assert.equal(z.status,'STARTER_TIME_LIMIT');
 assert.equal(z.starter.engagedObserved,false);
