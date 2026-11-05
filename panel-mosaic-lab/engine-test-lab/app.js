@@ -1,6 +1,7 @@
 (function(){'use strict';
  const $=id=>document.getElementById(id), esc=s=>String(s===undefined||s===null?'—':s);
  let latest=null,seq=0,lastRequest=null;
+ let scenarioCases=[];
  const send=(cmd)=>{const sequence=++seq;lastRequest=sequence;
   if(window.parent===window){feedback('Open this laboratory from Unified cockpit',true);return;}
   window.parent.postMessage({type:'b737:engine-lab-v2-command',sequence,command:cmd},location.origin);
@@ -119,6 +120,56 @@
   }
   draw(pkt);
  });
+ async function loadScenarioLibrary(){
+  try{
+   const response=await fetch(new URL('./scenarios-v1.json',document.baseURI),{cache:'force-cache'});
+   if(!response.ok)throw Error('HTTP '+response.status);
+   const doc=await response.json();
+   if(doc.schema!=='b737classic.engine-lab-scenarios/1'||!Array.isArray(doc.cases)||doc.cases.length!==39)
+    throw Error('Unexpected scenario catalog schema/count');
+   const ids=new Set();
+   for(const c of doc.cases){
+    if(!c.id||ids.has(c.id)||!c.command?.type||!c.expected||!c.precondition)
+     throw Error('Malformed or duplicate training case');
+    ids.add(c.id);
+   }
+   scenarioCases=doc.cases;
+   const selector=$('scenario-select');selector.replaceChildren();
+   for(const c of scenarioCases){
+    const opt=document.createElement('option');
+    opt.value=c.id;opt.textContent=c.group+' · '+c.title;
+    selector.append(opt);
+   }
+   describeLibraryCase();
+  }catch(ex){feedback('Scenario library: '+ex.message,true);}
+ }
+ function selectedLibraryCase(){
+  return scenarioCases.find(c=>c.id===$('scenario-select').value)||null;
+ }
+ function describeLibraryCase(){
+  const c=selectedLibraryCase();
+  $('scenario-description').textContent=c?c.group+' · '+c.title+' | PRECONDITION: '+c.precondition:'No scenario loaded';
+  $('scenario-expectation').textContent=c?'EXPECTED: '+c.expected:'EXPECTED: —';
+  $('scenario-library-clear').disabled=!c?.clear;
+ }
+ function resolveLibraryCommand(source){
+  const command={...source};
+  if(command.engine==='SELECTED')command.engine=e();
+  if(command.id==='ENGINE_SELECTED')command.id='engine-start-'+e().at(-1);
+  return command;
+ }
+ on('scenario-select','change',describeLibraryCase);
+ on('scenario-apply','click',()=>{
+  const c=selectedLibraryCase();
+  if(!c)return feedback('Select a scenario',true);
+  send(resolveLibraryCommand(c.command));
+ });
+ on('scenario-library-clear','click',()=>{
+  const c=selectedLibraryCase();
+  if(!c?.clear)return feedback('This case has no automatic fault reset',true);
+  send(resolveLibraryCommand(c.clear));
+ });
+ loadScenarioLibrary();
  on('refresh','click',()=>window.parent.postMessage({type:'b737:engine-lab-v2-ready'},location.origin));
  for(const b of document.querySelectorAll('[data-tab]'))b.addEventListener('click',()=>{
   document.querySelectorAll('[data-tab]').forEach(el=>el.classList.toggle('selected',el===b));
@@ -132,8 +183,6 @@
  on('display','change',()=>send({type:'MODE',mode:$('display').value}));
  on('start-switch-set','click',()=>send({type:'PHYSICAL_START_SWITCH',engine:e(),value:$('start-position').value}));
  on('ignition-set','click',()=>send({type:'PHYSICAL_IGNITION',engine:e(),value:$('ignition-position').value}));
- on('start-switch-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'engine-start-'+e().at(-1),value:$('start-position').value}));
- on('ignition-set','click',()=>send({type:'PHYSICAL_START_DETENT',id:'ignition-source',value:$('ignition-position').value}));
  on('set-duct','click',()=>command('DUCT_PSI',{psi:Number($('duct').value)}));
  on('throttle','input',()=>{$('throttle-label').textContent=$('throttle').value+'%';});
  on('throttle-set','click',()=>command('THROTTLE',{value:Number($('throttle').value)/100}));
