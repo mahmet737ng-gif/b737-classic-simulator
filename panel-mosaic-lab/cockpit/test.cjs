@@ -69,7 +69,7 @@ assert.ok(airconParent.includes("if(d.kind==='wheel-pan'){panWheel(d);return;}")
 assert.ok(fs.readFileSync(path.join(__dirname,'cdu-bridge.js'),'utf8').includes("kind:'wheel-pan'"),'CDU iframe must forward wheel pan');
 assert.ok(fs.readFileSync(path.join(__dirname,'index.html'),'utf8').includes('wheel-pan-model-v1.js?v=WHEEL-PAN-0001'),'Wheel model cache-bust must be loaded');
 const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
-assert.ok(interactive.includes('mountEngineStartLabelCorrection(layout)'),'Unified corrects FLT spacing without changing the locked atlas image');
+assert.ok(!interactive.includes('mountEngineStartLabelCorrection')&&!interactive.includes('rg-start-label-correction'), 'Unified must not mount the removed floating FLT text overlay on either engine start selector');
 assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
 assert.ok(interactive.includes("engine.setRotary(c.id,hit.state,'legend-tap')"),'Tapping an exact legend selects its detent directly');
 assert.match(interactive,/firstThreshold:12,nextThreshold:28,minTravelPixels:9/,'Swipe sensitivity is reduced while legend targets remain immediate');
