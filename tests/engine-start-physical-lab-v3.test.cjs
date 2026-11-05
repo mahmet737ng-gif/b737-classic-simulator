@@ -1,0 +1,28 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const file=p=>fs.readFileSync(path.join(root,p),'utf8');
+const host=file('panel-mosaic-lab/cockpit/engine-indication-live-v2.js');
+const lab=file('panel-mosaic-lab/engine-test-lab/app.js');
+const html=file('panel-mosaic-lab/engine-test-lab/index.html');
+const start=file('engine/systems/classic-engine-start-logic-v2.js');
+const contracts=JSON.parse(file('engine/integration/isn-start-sequence-contracts-v1.json'));
+assert.match(host,/setPhysicalDetent/);
+assert.match(host,/setEngineLabDetent/);
+assert.match(host,/ACTUAL_OVERHEAD_ROTARY/);
+assert.match(host,/Physical detent feedback did not match/);
+assert.match(host,/PHYSICAL_START_SWITCH/);
+assert.match(host,/PHYSICAL_IGNITION/);
+assert.match(lab,/start-switch-set/);
+assert.match(lab,/ignition-set/);
+assert.match(lab,/apply-scenario/);
+assert.match(lab,/scenario-clear/);
+assert.match(html,/SCENARIO MATRIX/);
+for(const v of ['GRD','OFF','CONT','FLT'])assert.match(start,new RegExp(v));
+for(const kind of ['NORMAL','ABNORMAL','EMERGENCY','SYSTEM'])assert.match(html,new RegExp(kind));
+for(const name of ['noLightOff','hot','hung','stall','early','flame','gen1','gen2','tr1','tr2','battery','inverter','primary','secondary','egtSensor'])
+ assert.match(lab,new RegExp(name+'\\s*:'));
+assert.ok(contracts.confirmedExecutableEdges.some(x=>x.from.includes('ENGINE_START_SWITCH')));
+assert.ok(contracts.blockedAutomation.some(x=>x.from.includes('engine.n2Percent')));
+console.log('PASS Unified physical start/ignition selector controls & diagnostic scenario matrix');
