@@ -16,7 +16,7 @@ assert.match(css,/data-engine-indication="EIS"/);
 assert.match(css,/\.b737-eis-autobrake-rotary/);
 assert.match(css,/display:none/);
 assert.ok(!css.includes('data-engine-indication="CONVENTIONAL"] #region-main .region-native>.b737-eis'),'EIS knob must not cover Conventional');
-assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0005-PIXEL-CENTER'),'Updated EIS position must invalidate cached cockpit script');
+assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0006-RING-TOUCH'),'Updated EIS position must invalidate cached cockpit script');
 assert.ok(html.includes('eis-autobrake-physical-v1.css?v=EIS-AUTOBRAKE-0001'));
 assert.ok(html.includes('autobrake-unified-v1.js?v=ATA32-AUTOBRAKE-SHARED-0001'));
 assert.ok(originalConv.includes("common.setSelector(next)"),'Conventional remains tied to existing shared system');
@@ -34,7 +34,7 @@ const conv=CONV.point(cp,CONV.REF.autobrake.center);
 // white well ring [1120,568,r38] and OFF rotary's circular mount
 // [1136,556,r37]. The handle is intentionally excluded from the fit.
 assert.deepEqual(EIS.REF.center,[102,893], 'EIS-only photo aperture center');
-assert.equal(EIS.REF.diameter,94,'Reduce EIS circular base to reveal full white bezel');
+assert.equal(EIS.REF.diameter,105,'EIS base enlarged until its edge nearly touches white bezel');
 assert.equal(CONV.REF.autobrake.diameter,80,'Conventional size remains approved and unchanged');
 const measured={ring:[1120,568],ringRadius:38,previousBase:[1136,556],
  previousBaseRadius:37,previousRef:[118,881],previousDiameter:108};
@@ -49,10 +49,10 @@ assert.ok(Math.hypot(expectedBase[0]-measured.ring[0],
  expectedBase[1]-measured.ring[1])<2,
  'Projected visual circular base must align with photographed hole within 2px');
 const finalRadius=measured.previousBaseRadius*EIS.REF.diameter/measured.previousDiameter;
-assert.ok(measured.ringRadius-finalRadius>=5,
- 'A continuous >=5 screenshot-pixel white ring must remain visible');
-assert.ok(Math.abs(eit.w-fo.w*94/918)<1e-9 &&
- Math.abs(eit.h-fo.h*94/1713)<1e-9,'Keep EIS image proportions');
+assert.ok(measured.ringRadius-finalRadius>=1 && measured.ringRadius-finalRadius<=4,
+ 'Knob base must nearly touch but not cover the white aperture ring');
+assert.ok(Math.abs(eit.w-fo.w*105/918)<1e-9 &&
+ Math.abs(eit.h-fo.h*105/1713)<1e-9,'Keep EIS image proportions');
 assert.ok(eit.x>fo.x&&eit.x<fo.x+fo.w);
 assert.ok(eit.w>0&&eit.h>0);
 assert.throws(()=>EIS.placement({x:0,y:0,w:0,h:4}),/placement/);

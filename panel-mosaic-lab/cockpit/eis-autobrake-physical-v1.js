@@ -8,7 +8,8 @@
  * The actual base, not its long pointer handle, must move LEFT 16px,
  * DOWN 12px. At 1.007 rendered px/source px, reference [102,893]
  * centers the base over the photo well. EIS diameter 94 source px
- * reduces base radius to ~32px and exposes ~6px of white bezel.
+ * is now 105 source px: its base reaches just inside the photographed
+ * white ring (about 2px border still visible at native screenshot zoom).
  * These are EIS-only adjustments. Conventional sprite, six detents,
  * switching law, 1500 ms RTO test, and backend remain untouched.
  */
@@ -21,7 +22,7 @@
  const REF=Object.freeze({
   image:Object.freeze([918,1713]),
   center:Object.freeze([102,893]),
-  diameter:94,
+  diameter:105,
   source:'EIS_FO_INNER_SCREENSHOT_PIXEL_REGISTERED_20261105_V5'
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
