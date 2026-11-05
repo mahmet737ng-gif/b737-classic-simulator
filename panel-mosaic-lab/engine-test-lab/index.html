@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — Engine / EIS / Conventional Test Lab</title>
+<link rel="stylesheet" href="./style.css?v=ENG-LAB-0002"></head>
+<body>
+<header class="top"><div><h1>ENGINE SYSTEMS TEST LAB</h1><p>737 Classic · EIS / Conventional · START / IGNITION / OIL / FUEL / ELECTRICAL</p></div>
+<strong id="connection" class="connection">WAITING FOR UNIFIED ECU</strong></header>
+<div class="warning">TRAINING ONLY — اعداد و سناریوها جایگزین FCOM / AFM و دستورالعمل عملیاتی هواپیما نیستند. این آزمایشگاه از همان ECU و برق پنل Unified استفاده می‌کند؛ سوئیچ‌های واقعی را مخفیانه جابه‌جا نمی‌کند.</div>
+<nav class="tabs" aria-label="Engine test modes">
+<button data-tab="normal" class="selected">NORMAL</button><button data-tab="abnormal">ABNORMAL</button>
+<button data-tab="emergency">EMERGENCY</button><button data-tab="systems">SYSTEM / EIS BITE</button></nav>
+<div class="controls-top"><label>موتور مورد آزمایش<select id="engine"><option value="engine1">ENGINE 1</option><option value="engine2">ENGINE 2</option></select></label>
+<label>نمایشگر<select id="display"><option value="EIS">EIS</option><option value="CONVENTIONAL">CONVENTIONAL</option></select></label>
+<button id="refresh" type="button">REFRESH STATE</button><span id="report-age">—</span></div>
+<main>
+<section class="panel tab-panel" data-panel="normal"><h2>Normal · روشن‌کردن، تثبیت، توان و توقف</h2>
+<p>برای آزمون کامل ترتیب استارت، در Unified سوئیچ واقعی ENG START را روی GRD، IGN را روی L/BOTH/R و Fuel Start Lever را روی IDLE قرار بده. PRESET RUNNING فقط میان‌بُر مخصوص مربی است، نه یک استارت واقعی.</p>
+<div class="actions">
+<button data-command="APU_PRESET">INSTRUCTOR APU READY</button>
+<button data-command="PRESET_RUNNING">INSTRUCTOR RUN SELECTED ENGINE</button>
+<button data-command="SHUTDOWN">SHUTDOWN / FUEL CUTOFF</button>
+<button data-command="LEVER" data-position="IDLE">FUEL LEVER IDLE</button>
+<button data-command="LEVER" data-position="CUTOFF">FUEL LEVER CUTOFF</button>
+</div><div class="field"><label>Starter duct training pressure (20–50 PSI)<input id="duct" type="number" min="20" max="50" step=".5" value="35"></label>
+<button id="set-duct">SET STARTER DUCT</button></div>
+<div class="field"><label>Engine Thrust / Throttle (selected engine) <output id="throttle-label">0%</output><input id="throttle" type="range" min="0" max="100" value="0"></label><button id="throttle-set">APPLY THRUST</button></div>
+<p class="tip">Starter valve position, starter motor, ignition, N2 acceleration, EGT, oil pressure, fuel flow and related lamps are observed in the live tables below.</p>
+</section>
+<section class="panel tab-panel" data-panel="abnormal" hidden><h2>Abnormal · شروع ناموفق و خرابی سنسورها</h2>
+<div class="field"><label>Start failure<select id="start-fault">
+<option value="n2Stall">N2 STALL</option><option value="egtHigh">HOT START / EGT HIGH</option>
+<option value="noLightOff">NO LIGHT-OFF</option><option value="hungStart">HUNG START</option>
+<option value="earlyCutout">EARLY STARTER CUTOUT</option><option value="flameOut">FLAMEOUT AFTER RUNNING</option>
+</select></label><button id="start-fault-on">INJECT</button><button id="start-fault-off">CLEAR</button></div>
+<p>خطاهای استارت را قبل از چرخاندن سوئیچ واقعی به GRD فعال کن. این گزینه‌ها از همان ISN Start Chain استفاده می‌کنند.</p>
+<div class="field"><label>Engine oil fault<select id="oil-fault"><option value="pumpFailure">OIL PUMP FAILURE</option>
+<option value="oilLeak">OIL LEAK</option><option value="filterRestriction">OIL FILTER RESTRICTION</option></select></label>
+<button id="oil-fault-on">INJECT</button><button id="oil-fault-off">CLEAR</button></div>
+<div class="field"><label>Instrument sensor<select id="sensor">
+<option value="n1">N1</option><option value="egt">EGT</option><option value="n2">N2</option>
+<option value="fuelFlow">FUEL FLOW</option><option value="oilPressure">OIL PRESSURE</option>
+<option value="oilTemperature">OIL TEMP</option><option value="oilQuantity">OIL QUANTITY</option>
+<option value="vibration">VIBRATION</option></select></label>
+<label>TEST VALUE<input id="sensor-value" type="number" min="0" max="100000" step=".01" value="1.5"></label>
+<button id="sensor-set">INJECT SENSOR VALUE</button><button id="sensor-fail">SENSOR FAILED</button><button id="sensor-clear">CLEAR SENSOR INJECTION</button></div>
+</section>
+<section class="panel tab-panel" data-panel="emergency" hidden><h2>Emergency · Bus Failure / Engine Shutdown</h2>
+<div class="field"><label>Electrical fault (instructor)<select id="electrical-fault">
+<option value="GEN1_FAILED">GEN 1 FAILED</option><option value="GEN2_FAILED">GEN 2 FAILED</option>
+<option value="APU_FAILED">APU GENERATOR FAILED</option><option value="TR1_FAILED">TR1 FAILED</option>
+<option value="TR2_FAILED">TR2 FAILED</option><option value="TR3_FAILED">TR3 FAILED</option>
+<option value="STATIC_INVERTER_FAILED">STATIC INVERTER FAILED</option>
+<option value="BATTERY_DEPLETED">BATTERY DEPLETED</option>
+<option value="TRANSFER1_RELAY_FAILED">TRANSFER 1 RELAY</option><option value="TRANSFER2_RELAY_FAILED">TRANSFER 2 RELAY</option>
+</select></label><button id="electric-on">FAULT ON</button><button id="electric-off">FAULT OFF</button></div>
+<button data-command="SHUTDOWN" class="danger">EMERGENCY ENGINE SHUTDOWN / FUEL CUTOFF</button>
+<p>قطع باس با توقف موتور فرق دارد: مقدار فیزیکی N1/N2/EGT می‌تواند موجود بماند، ولی خود گیج یا نشانگر بر اساس منبع برق از دسترس خارج شود. وضعیت هر مورد در جدول پایین مستقل نمایش داده می‌شود.</p>
+<p class="tip">اقدامات عملیاتی Emergency به عمد به‌صورت چک‌لیست کنترل پرواز ارائه نشده‌اند. این بخش تزریق عیب آموزشی است.</p>
+</section>
+<section class="panel tab-panel" data-panel="systems" hidden><h2>System · Display, EIS BITE &amp; Indication Quality</h2>
+<div class="field"><label>EIS Unit fault<select id="unit-fault"><option value="eisPrimary">PRIMARY UNIT</option>
+<option value="eisSecondary">SECONDARY UNIT</option></select></label><button id="unit-on">FAIL UNIT</button><button id="unit-off">RESTORE</button></div>
+<div class="field"><label>Individual indication channel<select id="channel">
+<option value="n1">N1</option><option value="egt">EGT</option><option value="n2">N2</option>
+<option value="fuelFlow">FUEL FLOW</option><option value="oilPressure">OIL PRESSURE</option>
+<option value="oilTemperature">OIL TEMPERATURE</option><option value="oilQuantity">OIL QUANTITY</option>
+<option value="vibration">VIBRATION</option></select></label>
+<button id="channel-on">FAIL CHANNEL</button><button id="channel-off">RESTORE CHANNEL</button></div>
+<div class="field"><label>FUEL display<select id="fuel-mode"><option value="RATE">RATE</option><option value="USED">USED</option></select></label>
+<button id="set-fuel-mode">SET FUEL MODE</button></div>
+<div class="field"><label>Instructor-installed Oil Filter Bypass Switch threshold (PSID)<input id="filter-limit" type="number" step=".5" min="0" max="100" placeholder="Unverified / None"></label>
+<button id="set-filter">SET / CLEAR THRESHOLD</button></div>
+<button id="reset-instruments">RESET ALL INSTRUMENT INJECTIONS</button>
+<p>هنگام نامعلوم بودن WDM دقیق یا آستانه Filter Bypass، برنامه UNKNOWN نشان می‌دهد؛ از این ورودی‌ها فقط برای سناریوی تست استفاده کن.</p>
+</section>
+<section class="panel statuses"><h2>START PANEL · Actual discrete switching</h2><div id="start-table" class="table-scroll">Waiting for ECU…</div></section>
+<section class="panel statuses"><h2>Engine indications · All gauges, both engines, bus source &amp; failure state</h2><div id="indications-table" class="table-scroll">Waiting for engine technical database…</div></section>
+<section class="panel statuses"><h2>EIS / BITE / Lamps / Faults</h2><div id="summary" class="table-scroll">—</div></section>
+<section class="panel statuses"><h2>Current electrical status &amp; audit</h2><pre id="electrical" dir="ltr">—</pre></section>
+</main>
+<div id="command-response" role="status" aria-live="polite"></div>
+<script src="./app.js?v=ENG-LAB-0002"></script>
+</body></html>
