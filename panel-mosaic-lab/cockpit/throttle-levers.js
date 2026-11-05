@@ -1,11 +1,11 @@
 (function(){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0007","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":112,"note":"THR-0007: restore visible throttle sprites by correcting double-applied panel scale; grip is 112 native sprite pixels vs original 138 (19% smaller). Existing throttle motion and TO/GA presentation retained; image assets unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
+const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0008","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":478,"2":570},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":112,"note":"THR-0008: resilient cockpit installation independent of one-shot mount event, with partial sprite download fallback; unchanged throttle mechanics and original sprite assets.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
 const KEYS=Object.freeze([0,25,50,75,100]);
 const position={1:0,2:0};
 const images={};
 const controls=new Map();
-let mounted=false,root=null,piece=null,texture=null;
+let mounted=false,mounting=false,root=null,texture=null;
 function filename(engine,pct){return 'engine-'+engine+'-'+CONFIG.stages[String(pct)].name+'.png';}
 function path(engine,pct){return CONFIG.relativeAssetRoot+filename(engine,pct);}
 function fire(engine){document.dispatchEvent(new CustomEvent('b737:throttle-position',{detail:{engine,percent:position[engine],stage:CONFIG.stages[String(position[engine])].name,source:'PEDESTAL'}}));}
@@ -15,7 +15,7 @@ function apply(engine,pct,source){
  position[engine]=next;
  const c=controls.get(engine);if(c){
   for(const [key,object] of c.sprite.entries())object.style.display=key===next?'block':'none';
-  c.select.value=String(next);
+  if(c.select)c.select.value=String(next);
   c.visual.dataset.position=String(next);
   c.visual.setAttribute('aria-valuenow',String(next));
   for(const [key,face] of c.toga.entries())face.style.display=key===next?'block':'none';
@@ -132,28 +132,57 @@ function mountPlasticCover(tex){
  root.append(cover);
 }
 async function mount(){
- if(mounted)return;root=document.querySelector('#region-pedestal .region-native');
- texture=root?.querySelector('[data-piece="throttle-quadrant"]');
- if(!root||!texture)return;
- mountPlasticCover(texture);
+ // Async compiled bundles can start after app.js has already dispatched the
+ // one-shot cockpit-mounted event; never rely on that event alone.
+ if(mounted||mounting)return;
+ const candidate=document.querySelector('#region-pedestal .region-native');
+ const plate=candidate?.querySelector('[data-piece="throttle-quadrant"]');
+ if(!candidate||!plate)return;
+ mounting=true;root=candidate;texture=plate;
+ root.dataset.throttleMount='loading';
  try{
    const entries=[1,2].flatMap(e=>KEYS.map(p=>[filename(e,p),path(e,p)]));
-   const loaded=await Promise.all(entries.map(async ([name,url])=>{
-    const img=new Image();img.decoding='async';
-    img.src=url;
+   const results=await Promise.allSettled(entries.map(async ([name,url])=>{
+    const img=new Image();img.decoding='async';img.src=url;
     await img.decode();
     if(!img.naturalWidth||!img.naturalHeight)throw Error('Invalid PNG '+name);
     return [name,img];
    }));
-   for(const [name,img] of loaded)images[name]=img;
+   for(const result of results)if(result.status==='fulfilled'){
+    const [name,img]=result.value;images[name]=img;
+   }
+   const missing=entries.filter(([name])=>!images[name]).map(([name])=>name);
+   if(!Object.keys(images).length){
+    root.dataset.throttleMount='missing-assets';
+    console.warn('THR-0008: No throttle sprites decoded; preserving plate and retrying later.',missing);
+    return;
+   }
+   // Do not remove both handles because one of ten images failed to decode.
+   for(const engine of [1,2])for(const pct of KEYS){
+    const name=filename(engine,pct);
+    if(images[name])continue;
+    const sameEngine=KEYS.map(p=>filename(engine,p)).find(n=>images[n]);
+    const otherEngine=KEYS.map(p=>filename(engine===1?2:1,p)).find(n=>images[n]);
+    images[name]=images[sameEngine||otherEngine];
+   }
+   mountPlasticCover(texture);
+   place(1,texture);place(2,texture);buildControls();
+   mounted=true;root.dataset.throttleMount='ready';
+   root.dataset.throttleMissingAssets=String(missing.length);
+   if(missing.length)console.warn('THR-0008: Loaded with fallback sprites:',missing);
+   root.dispatchEvent(new CustomEvent('b737:throttle-sprites-ready',{detail:{engines:2,positions:KEYS.slice(),missing}}));
  }catch(err){
-   console.warn('THR-0001: Throttle sprites are not published; original cockpit artwork is preserved.',err);
-   return;
- }
- mounted=true;place(1,texture);place(2,texture);buildControls();
- root.dispatchEvent(new CustomEvent('b737:throttle-sprites-ready',{detail:{engines:2,positions:KEYS.slice()}}));
+   root.dataset.throttleMount='error';
+   console.error('THR-0008: Throttle lever mount failed:',err);
+ }finally{mounting=false;}
 }
-window.addEventListener('b737:cockpit-mounted',mount,{once:true});
+// Register for the usual mount, but also handle scripts that execute AFTER that
+// event (compiled Pages bundles, cached or offline boots).
+window.addEventListener('b737:cockpit-mounted',()=>{void mount();});
+queueMicrotask(()=>{void mount();});
+document.addEventListener('DOMContentLoaded',()=>{void mount();},{once:true});
+window.addEventListener('load',()=>{void mount();},{once:true});
+for(const delay of [300,1500,5000])setTimeout(()=>{if(!mounted)void mount();},delay);
 document.addEventListener('b737:throttle-state',event=>{
  const d=event.detail||{};if([1,2].includes(d.engine)&&Number.isFinite(d.percent)&&mounted)apply(d.engine,d.percent,'sim');
 });
