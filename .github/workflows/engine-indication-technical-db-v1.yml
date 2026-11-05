@@ -1,0 +1,28 @@
+name: Classic Engine Indications Technical DB
+on:
+  push:
+    branches: [main]
+    paths:
+      - "engine/instruments/engine-indication-backend-v1.js"
+      - "engine/instruments/engine-indication-technical-db-v1.json"
+      - "engine/integration/engine-indication-live-adapter-v1.js"
+      - "engine/technical_reader_v1/engine_indication_store.py"
+      - "tests/engine-indication-tech-db-v1.test.cjs"
+      - "tests/test_engine_indication_store.py"
+      - ".github/workflows/engine-indication-technical-db-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  engine-indications:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate standalone engine indication backend
+        run: node tests/engine-indication-tech-db-v1.test.cjs
+      - name: Verify immutable technical-database SQLite import
+        run: python3 -m unittest discover -s tests -p test_engine_indication_store.py
+      - name: Preserve locked final overhead
+        run: python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Preserve owner 18 guarded-switch red zone
+        run: python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
