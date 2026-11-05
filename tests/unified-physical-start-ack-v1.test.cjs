@@ -1,0 +1,54 @@
+'use strict';
+// Regression: the real OH GRD event must not claim ECU acceptance when starter
+// air or packs block motoring. Uses the existing ECU, not a shadow model.
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const Router=require('../engine/integration/isn-unified-control-router-v1');
+const ECU=require('../engine/integration/isn-13-18-ecu-testbench-v1');
+const Electrical=require('../engine/systems/electrical-v7');
+const Loads=require('../engine/systems/electrical-loads-v8');
+const TrainerCore=require('../engine/trainer/core');
+const {WarningEngine}=require('../audio/warning-engine');
+const Pneumatics=require('../engine/systems/pneumatics-v6');
+const Pack=require('../engine/integration/isn-electrical-pack-v1');
+const EngineAPU=require('../engine/integration/isn-engine-apu-v1');
+const Start=require('../engine/integration/isn-start-sequence-v1');
+const Chain=require('../engine/integration/isn-apu-start-chain-v1');
+const ThrustPlanner=require('../engine/integration/isn-thrust-performance-v1');
+const FuelRuntime=require('../engine/integration/isn-09-12-runtime-v1');
+const make=()=>new ECU.Testbench({Electrical,Loads,TrainerCore,WarningEngine,
+ Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,
+ timingProfile:'CLASSROOM_COMPRESSED'});
+const grd={id:'engine-start-1',kind:'rotary',next:'GRD'};
+const noAir=make();
+noAir.battery(true);
+const rejectedNoAir=Router.dispatch(noAir,grd);
+assert.equal(rejectedNoAir.accepted,false);
+assert.equal(rejectedNoAir.phase,'BLOCKED');
+assert.match(rejectedNoAir.reason,/START SOURCE|APU|CROSSBLEED/);
+const blocked=make();
+blocked.battery(true);
+blocked.startAPU();blocked.advance(1400);blocked.apuBleed(true);
+blocked.chain.event({id:'pack-l',kind:'toggle',next:'AUTO'});
+const rejected=Router.dispatch(blocked,grd);
+assert.equal(rejected.accepted,false);
+assert.equal(rejected.phase,'BLOCKED');
+assert.match(rejected.reason,/PACK L\/R MUST BE OFF/);
+assert.equal(blocked.get().engines.engine1.phase,'BLOCKED');
+assert.equal(blocked.get().engines.engine1.startValveOpen,false);
+const ok=make();
+ok.battery(true);ok.startAPU();ok.advance(1400);ok.apuBleed(true);
+const accepted=Router.dispatch(ok,grd);
+assert.equal(accepted.accepted,true);
+assert.equal(accepted.phase,'MOTORING');
+assert.equal(ok.get().engines.engine1.startValveOpen,true);
+assert.equal(ok.get().engines.engine2.phase,'OFF');
+const ui=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
+const style=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.css'),'utf8');
+const index=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/index.html'),'utf8');
+assert.match(ui,/startFeedback\(startLines\.join/);
+assert.match(ui,/UNIFIED ECU NOT CONNECTED/);
+assert.match(style,/#unifiedEngineStartFeedback\[hidden\]/);
+assert.match(index,/engineStartAck=0001/);
+console.log('PASS physical OH GRD -> shared ECU: blocked source, blocked packs, accepted motoring, cockpit feedback');
