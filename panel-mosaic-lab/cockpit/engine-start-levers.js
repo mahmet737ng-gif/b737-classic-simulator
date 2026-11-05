@@ -4,15 +4,15 @@
  'use strict';
  const model=window.B737EngineStartLeverModel,ns='http://www.w3.org/2000/svg';
  const positions={engine1:'CUTOFF',engine2:'CUTOFF'},controls=new Map();
- const master=new URL('./assets/engine-start-lever-reference-v2.png?v=START-LEVER-0005',document.baseURI).href;
+ const master=new URL('./assets/engine-start-lever-reference-v2.png?v=START-LEVER-0007',document.baseURI).href;
  let art=null;
  const raf=window.requestAnimationFrame?.bind(window),caf=window.cancelAnimationFrame?.bind(window);
  function svg(parent,tag,attrs){const n=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs||{}))n.setAttribute(k,String(v));parent.append(n);return n;}
  function stop(entry){if(entry.ticket!=null)caf?.(entry.ticket);entry.ticket=null;}
  function paint(entry,fraction){
   const g=model.geometry(entry.device,fraction);entry.travel=g.travel;
-  const p=model.placementAt(entry.piece,entry.device,g.travel);
-  Object.assign(entry.button.style,{left:p.left+'px',top:p.top+'px',width:p.width+'px',height:p.height+'px'});
+  const p=model.placementAt(entry.piece,entry.device,g.travel),s=entry.scale;
+  Object.assign(entry.button.style,{left:(entry.piece.x+(g.x-model.SOURCE.window.x-model.HANDLE.w/2)*s)+'px',top:(entry.piece.y+(g.y-model.SOURCE.window.y-model.HANDLE.h/2)*s)+'px',width:(model.HANDLE.w*s)+'px',height:(model.HANDLE.h*s)+'px',minWidth:(model.HANDLE.w*s)+'px',minHeight:(model.HANDLE.h*s)+'px',maxWidth:'none',padding:'0',margin:'0',boxSizing:'border-box',lineHeight:'0',fontSize:'0'});
   const {pivotX:px,pivotY:py,jointX:jx,jointY:jy}=g,w=3.4;
   entry.arm.setAttribute('d',`M ${px-w} ${py} L ${px+w} ${py} L ${jx+w} ${jy} Q ${jx} ${jy+4} ${jx-w} ${jy} Z`);
   entry.edge.setAttribute('d',`M ${px-w+1} ${py+4} L ${jx-w+1} ${jy-1}`);
@@ -86,12 +86,13 @@
  function mount(){
   const native=document.querySelector('#region-pedestal .region-native'),texture=native?.querySelector('[data-piece="throttle-quadrant"]');
   if(!texture||!native)return;
-  const piece={x:texture.offsetLeft,y:texture.offsetTop,w:texture.offsetWidth,h:texture.offsetHeight};
+  const region=document.querySelector('#region-pedestal');
+  const piece={x:272,y:0,w:606,h:740.9857819905213};
   if(art){for(const entry of controls.values()){entry.piece=piece;paint(entry,entry.travel);}return;}
   model.placement(piece,'engine1','CUTOFF');
   art=svg(native,'svg',{class:'engine-start-lever-art',viewBox:'0 0 '+model.SOURCE.window.w+' '+model.SOURCE.window.h,
-   'data-start-lever-art':'START-LEVER-0005','aria-hidden':'true'});
-  Object.assign(art.style,{left:piece.x+'px',top:piece.y+'px',width:piece.w+'px',height:piece.h+'px'});
+   'data-start-lever-art':'START-LEVER-0007','aria-hidden':'true'});
+  Object.assign(art.style,{position:'absolute',left:piece.x+'px',top:piece.y+'px',width:piece.w+'px',height:piece.h+'px',transformOrigin:'0 0'});
   const defs=svg(art,'defs'),metal=svg(defs,'linearGradient',{id:'start-lever-arm-metal',x1:'0%',y1:'0%',x2:'100%',y2:'0%'});
   for(const [offset,color]of [['0%','#454b4d'],['12%','#e1e2dc'],['35%','#939a9a'],['70%','#aeb4b2'],['92%','#e8e9e1'],['100%','#5c6261']])svg(metal,'stop',{offset,'stop-color':color});
   for(const device of ['engine1','engine2']){
@@ -107,7 +108,7 @@
    button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
    button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');
    button.setAttribute('aria-label','ENGINE '+model.SLOTS[device].label+' START LEVER');
-   const entry={device,button,piece,arm,edge,joint,cap,travel:model.travel(positions[device]),drag:null,ticket:null,keyboard:false,lastRequested:null};
+   const entry={device,button,piece,scale:piece.w/model.SOURCE.window.w,arm,edge,joint,cap,travel:model.travel(positions[device]),drag:null,ticket:null,keyboard:false,lastRequested:null};
    controls.set(device,entry);native.append(button);bind(entry);paint(entry,entry.travel);
   }
  }
