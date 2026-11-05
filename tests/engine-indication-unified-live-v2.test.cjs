@@ -88,8 +88,8 @@ async function run(){
  live.command({type:'FUEL_MODE',value:'USED'});
  raw.timeMs+=1000;live.refresh();
  const used=live.getState().snapshot.fuelUsedKg.engine1;
- assert.equal(used,1);
- assert.ok(readouts.some(x=>x.key==='fuelFlow'&&x.val===1));
+ assert.equal(used,Number((raw.timeMs/1000).toFixed(5)), 'Fuel used must include all ECU elapsed time, not only the last tick');
+ assert.ok(readouts.some(x=>x.key==='fuelFlow'&&x.val===used));
  raw.timeMs+=10001;live.refresh();
  assert.equal(live.getState().fuelMode,'RATE');
  live.command({type:'RESET_FUEL_USED'});
