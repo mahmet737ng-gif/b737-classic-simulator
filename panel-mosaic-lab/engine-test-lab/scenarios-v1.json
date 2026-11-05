@@ -1,0 +1,704 @@
+{
+  "schema": "b737classic.engine-lab-scenarios/1",
+  "date": "2026-11-05",
+  "sourceRefs": [
+    "FCOM 6.20,7.10,7.20",
+    "MRG IV.6/IV.7",
+    "LAN ATA74,77,79,80"
+  ],
+  "note": "Teacher fault tests, not real emergency checklists; run only with Unified ECU.",
+  "cases": [
+    {
+      "id": "apu-ready",
+      "group": "NORMAL",
+      "title": "APU ready (instructor)",
+      "command": {
+        "type": "APU_PRESET"
+      },
+      "clear": null,
+      "precondition": "برای استارت واقعی از APU START فیزیکی استفاده کن",
+      "expected": "APU READY و بارگذاری قابل انتخاب؛ این دستور فقط میان‌بر مربی است",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "engine-ready",
+      "group": "NORMAL",
+      "title": "Engine RUNNING preset",
+      "command": {
+        "type": "PRESET_RUNNING",
+        "engine": "SELECTED"
+      },
+      "clear": null,
+      "precondition": "موتور انتخاب‌شده در حالت خاموش یا قابل بازنشانی باشد",
+      "expected": "N1/N2/EGT/FF/OIL وارد حالت RUNNING آموزشی شوند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "engine-shutdown",
+      "group": "NORMAL",
+      "title": "Engine shutdown / fuel CUTOFF",
+      "command": {
+        "type": "SHUTDOWN",
+        "engine": "SELECTED"
+      },
+      "clear": null,
+      "precondition": "یک موتور روشن یا در استارت باشد",
+      "expected": "سوخت قطع و Engine phase متوقف؛ موتور دیگر مستقل باقی بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-grd",
+      "group": "NORMAL",
+      "title": "Physical ENG START GRD",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ENGINE_SELECTED",
+        "value": "GRD"
+      },
+      "clear": null,
+      "precondition": "اورهد لود شده، باتری/هوای استارت و PACKها درست باشند",
+      "expected": "سوییچ واقعی GRD، START VALVE OPEN و افزایش N2 در صورت وجود هوا",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-off",
+      "group": "NORMAL",
+      "title": "Physical ENG START OFF",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ENGINE_SELECTED",
+        "value": "OFF"
+      },
+      "clear": null,
+      "precondition": "اورهد لود شده باشد",
+      "expected": "Starter از مدار خارج؛ CONT/FLT خاموش و موتور روشن بی‌دلیل خاموش نشود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-cont",
+      "group": "NORMAL",
+      "title": "Physical ENG START CONT",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ENGINE_SELECTED",
+        "value": "CONT"
+      },
+      "clear": null,
+      "precondition": "اورهد و IGN source آماده باشند",
+      "expected": "Continuous ignition طبق eligibility دو کانال؛ بدون فرمان بازشدن Start Valve",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-flt",
+      "group": "NORMAL",
+      "title": "Physical ENG START FLT",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ENGINE_SELECTED",
+        "value": "FLT"
+      },
+      "clear": null,
+      "precondition": "اورهد لود و منبع برق Ignition برقرار باشد",
+      "expected": "هر دو Igniter در صورت وجود تغذیه؛ GRD pneumatic start فعال نشود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "ign-l",
+      "group": "NORMAL",
+      "title": "Physical IGN L",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ignition-source",
+        "value": "IGN L"
+      },
+      "clear": null,
+      "precondition": "اورهد لود باشد",
+      "expected": "حالت IGN L روی تاگل واقعی؛ تغذیه از AC Transfer Bus",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "ign-both",
+      "group": "NORMAL",
+      "title": "Physical IGN BOTH",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ignition-source",
+        "value": "BOTH"
+      },
+      "clear": null,
+      "precondition": "اورهد لود باشد",
+      "expected": "حالت BOTH و منطق انتخاب کانال مستقل",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "ign-r",
+      "group": "NORMAL",
+      "title": "Physical IGN R",
+      "command": {
+        "type": "PHYSICAL_START_DETENT",
+        "id": "ignition-source",
+        "value": "IGN R"
+      },
+      "clear": null,
+      "precondition": "اورهد لود باشد",
+      "expected": "حالت IGN R روی تاگل واقعی؛ تغذیه AC Standby",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-n2Stall",
+      "group": "ABNORMAL",
+      "title": "N2 Stall",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "n2Stall",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "n2Stall",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "N2 متوقف و نمایش N2_STALLED پس از زمان motoring",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-egtHigh",
+      "group": "ABNORMAL",
+      "title": "HOT START / EGT 725°C",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "egtHigh",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "egtHigh",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "EGT advisory و ABNORMAL_EGT قبل از تکمیل استارت",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-noLightOff",
+      "group": "ABNORMAL",
+      "title": "NO LIGHT-OFF",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "noLightOff",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "noLightOff",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "استارت LIGHT_OFF_FAILURE / NO_LIGHT_OFF در زمان آموزشی",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-hungStart",
+      "group": "ABNORMAL",
+      "title": "HUNG START",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "hungStart",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "hungStart",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "هنگ‌کردن موتور و عدم رسیدن به RUNNING",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-earlyCutout",
+      "group": "ABNORMAL",
+      "title": "EARLY STARTER CUTOUT",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "earlyCutout",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "earlyCutout",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "استارتر قبل از رسیدن به N2 مناسب قطع شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "start-flameOut",
+      "group": "ABNORMAL",
+      "title": "ENGINE FLAMEOUT AFTER RUNNING",
+      "command": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "flameOut",
+        "active": true
+      },
+      "clear": {
+        "type": "START_FAULT",
+        "engine": "SELECTED",
+        "key": "flameOut",
+        "active": false
+      },
+      "precondition": "خطا را در حالت موتور OFF و قبل از GRD فعال کن",
+      "expected": "بعد از RUNNING حالت FLAMEOUT القا شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "oil-pumpFailure",
+      "group": "ABNORMAL",
+      "title": "OIL PUMP FAILURE",
+      "command": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "pumpFailure",
+        "active": true
+      },
+      "clear": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "pumpFailure",
+        "active": false
+      },
+      "precondition": "موتور بهتر است RUNNING باشد؛ تزریق روی ECU واقعی",
+      "expected": "افت فشار روغن و LOW OIL PRESSURE در شرایط روشن بودن موتور",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "oil-oilLeak",
+      "group": "ABNORMAL",
+      "title": "OIL LEAK",
+      "command": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "oilLeak",
+        "active": true
+      },
+      "clear": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "oilLeak",
+        "active": false
+      },
+      "precondition": "موتور بهتر است RUNNING باشد؛ تزریق روی ECU واقعی",
+      "expected": "کاهش تدریجی Oil Quantity به‌صورت آموزشی",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "oil-filterRestriction",
+      "group": "ABNORMAL",
+      "title": "OIL FILTER RESTRICTION",
+      "command": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "filterRestriction",
+        "active": true
+      },
+      "clear": {
+        "type": "OIL_FAULT",
+        "engine": "SELECTED",
+        "key": "filterRestriction",
+        "active": false
+      },
+      "precondition": "موتور بهتر است RUNNING باشد؛ تزریق روی ECU واقعی",
+      "expected": "لامپ فیلتر در انجین تست؛ آستانه واقعی هنوز نیازمند WDM است",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-n1",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR n1",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "n1",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "n1",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-egt",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR egt",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "egt",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "egt",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-n2",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR n2",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "n2",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "n2",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-fuelFlow",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR fuelFlow",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "fuelFlow",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "fuelFlow",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-oilPressure",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR oilPressure",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilPressure",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilPressure",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-oilTemperature",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR oilTemperature",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilTemperature",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilTemperature",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-oilQuantity",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR oilQuantity",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilQuantity",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "oilQuantity",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "sensor-vibration",
+      "group": "ABNORMAL",
+      "title": "FAIL SENSOR vibration",
+      "command": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "vibration",
+        "condition": "FAILED"
+      },
+      "clear": {
+        "type": "SENSOR",
+        "engine": "SELECTED",
+        "parameter": "vibration",
+        "condition": "CLEAR"
+      },
+      "precondition": "برای مشاهده EIS Fault از حالت EIS استفاده کن؛ 2s گذار برای Primary",
+      "expected": "سنسور موتور انتخابی FAILED؛ منبع فیزیکی موتور مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "unit-eisPrimary",
+      "group": "ABNORMAL",
+      "title": "EIS eisPrimary UNIT FAILED",
+      "command": {
+        "type": "DISPLAY_FAULT",
+        "key": "eisPrimary",
+        "active": true
+      },
+      "clear": {
+        "type": "DISPLAY_FAULT",
+        "key": "eisPrimary",
+        "active": false
+      },
+      "precondition": "EIS را انتخاب کن",
+      "expected": "گروه دایل‌های واحد مربوط BLANK؛ واحد دیگر مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "unit-eisSecondary",
+      "group": "ABNORMAL",
+      "title": "EIS eisSecondary UNIT FAILED",
+      "command": {
+        "type": "DISPLAY_FAULT",
+        "key": "eisSecondary",
+        "active": true
+      },
+      "clear": {
+        "type": "DISPLAY_FAULT",
+        "key": "eisSecondary",
+        "active": false
+      },
+      "precondition": "EIS را انتخاب کن",
+      "expected": "گروه دایل‌های واحد مربوط BLANK؛ واحد دیگر مستقل بماند",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-GEN1_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT GEN1_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "GEN1_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "GEN1_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-GEN2_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT GEN2_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "GEN2_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "GEN2_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-APU_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT APU_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "APU_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "APU_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-TR1_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT TR1_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR1_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR1_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-TR2_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT TR2_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR2_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR2_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-TR3_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT TR3_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR3_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TR3_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-STATIC_INVERTER_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT STATIC_INVERTER_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "STATIC_INVERTER_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "STATIC_INVERTER_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-BATTERY_DEPLETED",
+      "group": "EMERGENCY",
+      "title": "INJECT BATTERY_DEPLETED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "BATTERY_DEPLETED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "BATTERY_DEPLETED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-TRANSFER1_RELAY_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT TRANSFER1_RELAY_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TRANSFER1_RELAY_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TRANSFER1_RELAY_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    },
+    {
+      "id": "electric-TRANSFER2_RELAY_FAILED",
+      "group": "EMERGENCY",
+      "title": "INJECT TRANSFER2_RELAY_FAILED",
+      "command": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TRANSFER2_RELAY_FAILED",
+        "active": true
+      },
+      "clear": {
+        "type": "ELECTRICAL_FAULT",
+        "key": "TRANSFER2_RELAY_FAILED",
+        "active": false
+      },
+      "precondition": "در صورت نیاز منبع ژنراتور انتخابی و BUS TRANSFER را در OH بررسی کن",
+      "expected": "شبکه Electrical V7 باز محاسبه شود؛ BUS یا LRU بدون اثبات نباید صفر شود",
+      "quality": "SOURCE_GROUNDED_FUNCTIONAL_TRAINING"
+    }
+  ]
+}
