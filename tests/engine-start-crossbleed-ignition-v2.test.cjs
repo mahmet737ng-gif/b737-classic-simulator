@@ -41,6 +41,8 @@ s.chain.stopAPU();
 s.advance(1000);
 s.chain.event({id:'bleed-apu',kind:'toggle',next:'OFF'});
 const duct=Pneumatics.derive(s.start.core.pneumaticState);
+console.log('CROSSBLEED DEBUG',JSON.stringify({e1Phase:s.get().engines.engine1.phase,
+ pneu:s.start.core.pneumaticState,bleed:duct.bleed,duct:duct.duct,electrical:s.start.core.pack.getLive().electrical.bus}));
 assert.equal(duct.bleed.engine1ValveOpen,true);
 assert.equal(duct.bleed.isolationOpen,true);
 assert.equal(duct.duct.R.anySupply,true);
