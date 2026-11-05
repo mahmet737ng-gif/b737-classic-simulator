@@ -177,9 +177,26 @@
   window.B737EngineIndicationModeV1?.setMode(value);
   refresh();
  }
+ function setPhysicalDetent(cmd){
+  const id=cmd.type==='PHYSICAL_IGNITION'?'ignition-source':
+   cmd.engine==='engine1'?'engine-start-1':cmd.engine==='engine2'?'engine-start-2':null;
+  const allowed=id==='ignition-source'?['IGN L','BOTH','IGN R']:['GRD','OFF','CONT','FLT'];
+  if(!id||!allowed.includes(cmd.value))throw Error('Invalid physical start or ignition detent');
+  const rotary=document.getElementById('overheadFrame')?.contentWindow?.B737RotaryGuards;
+  if(!rotary?.setEngineLabDetent||!rotary?.getState)
+   throw Error('Physical overhead is not mounted; open the OVERHEAD panel');
+  const old=rotary.getState()?.rotaries?.[id];
+  if(old===cmd.value)return {accepted:true,unchanged:true,id,value:cmd.value,owner:'ACTUAL_OVERHEAD_ROTARY'};
+  if(rotary.setEngineLabDetent(id,cmd.value)!==true)throw Error('Physical overhead rejected detent');
+  if(rotary.getState()?.rotaries?.[id]!==cmd.value)throw Error('Physical detent feedback did not match');
+  // Existing overhead rotary event -> single ISN live gateway -> ECU. No shadow starter.
+  return {accepted:true,id,value:cmd.value,owner:'ACTUAL_OVERHEAD_ROTARY'};
+ }
  function command(cmd){
   if(!cmd||typeof cmd!=='object')throw Error('Instructor command required');
   switch(cmd.type){
+   case 'PHYSICAL_IGNITION':
+   case 'PHYSICAL_START_SWITCH':return setPhysicalDetent(cmd);
    case 'DISPLAY_FAULT':return setFault(cmd.key,cmd.active);
    case 'SENSOR':return setSensor(cmd.engine,cmd.parameter,cmd.value,cmd.condition);
    case 'MODE':return changeMode(cmd.mode);
@@ -259,8 +276,12 @@
    if(data?.type!=='b737:engine-lab-v2-command')return;
    if(!Number.isSafeInteger(data.sequence)||data.sequence<1)return;
    let outcome={accepted:true};
-   try{command(data.command);outcome.message='Instructor command applied to live ECU/indication backend';}
-   catch(ex){outcome={accepted:false,error:ex.message};}
+   try{
+    const returned=command(data.command);
+    if(returned?.accepted===false)outcome={accepted:false,error:returned.reason||'ECU rejected action'};
+    else outcome={accepted:true,message:returned?.owner==='ACTUAL_OVERHEAD_ROTARY'?
+     'Physical overhead detent confirmed':'Shared live ECU command accepted'};
+   }catch(ex){outcome={accepted:false,error:ex.message};}
    sendLab({kind:'ack',sequence:data.sequence,outcome,state:labSnapshot()});
   });
   // Updating the lab twice a second is enough and avoids extra ECU work on every frame.
