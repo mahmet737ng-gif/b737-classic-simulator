@@ -41,6 +41,7 @@
    // sensor is supplied. This is an independent ECU bench TRAINING input,
    // not a fabricated actual pneumatic source or cockpit duct-gauge reading.
    this.startDuctPsi={engine1:35,engine2:35};
+    this.starterAt={engine1:null,engine2:null};
    this.trainingFaults=Object.fromEntries(['engine1','engine2'].map(device=>
     [device,Object.fromEntries(FAULT_KEYS.map(key=>[key,false]))]));
    for(const device of ['engine1','engine2','apu'])this.obs(device,false);
@@ -255,6 +256,17 @@
    // Ignition eligibility is checked separately at fuel entry/light-off.
    return null;
   }
+  scheduleStarterLimit(device){
+   const at=this.starterAt[device];if(at===null)return;
+   this.schedule(device,Math.max(0,at+120000-this.time),()=>{
+    if(!['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE','N2_STALLED',
+     'NO_LIGHT_OFF','HUNG_START','ABNORMAL_EGT'].includes(this.phase[device]))return;
+    this.abortEngine(device);
+    this.phase[device]='STARTER_TIME_LIMIT';
+    this.lastError=device.toUpperCase()+': STARTER 120s LIMIT EXCEEDED — START LEVER CUTOFF';
+    this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});
+   });
+  }
   setStartDuctPressure(device,psi){
    if(!['engine1','engine2'].includes(device)||!Number.isFinite(psi)||psi<20||psi>50)
     throw Error('Training starter duct PSI must be 20..50 per engine');
@@ -294,6 +306,7 @@
    this.feedback(device,'startAirAvailable',true);this.feedback(device,'startValveOpen',true);
    this.feedback(device,'starterEngaged',true);
    this.phase[device]='MOTORING';
+   this.starterAt[device]=this.time;this.scheduleStarterLimit(device);
    const startDuration=this.startDuration(device);
    this.dynamic[device]={phase:'MOTORING',since:this.time,durationMs:startDuration.motoringMs};
    if(this.trainingFaults[device].earlyCutout)this.schedule(device,Math.round(startDuration.motoringMs*FAULT_TIMING.earlyCutoutMs/Dynamics.duration.motoringMs),()=>{
@@ -370,6 +383,7 @@
    this.cancel(device);
    this.lastError='';
    this.phase[device]='LIGHT_OFF_SEQUENCE';
+   this.scheduleStarterLimit(device);
    this.dynamic[device]={phase:'LIGHT_OFF_SEQUENCE',since:this.time,
     durationMs,fuelEntryN2:n2};
    this.feedback(device,'fuelFlowKgHr',400);
@@ -475,7 +489,7 @@
      observed:{n2Percent:feedback.n2Percent.value,egtC:feedback.egtC.value,
       fuelFlowKgHr:feedback.fuelFlowKgHr.value,startValveOpen:feedback.startValveOpen.value,
       fuelStartLever:feedback.fuelStartLever.value,running:engine.observation[device].running},
-     requiredAction:!fuelCutoff&&['ABNORMAL_EGT','NO_LIGHT_OFF','HUNG_START','FLAMEOUT','AWAIT_FUEL_CUTOFF'].includes(this.phase[device])?
+     requiredAction:!fuelCutoff&&['ABNORMAL_EGT','NO_LIGHT_OFF','HUNG_START','FLAMEOUT','AWAIT_FUEL_CUTOFF','STARTER_TIME_LIMIT'].includes(this.phase[device])?
       'MOVE_START_LEVER_TO_CUTOFF':null,
      retryAllowed:phaseReady&&fuelCutoff&&this.canStartEngine(device)===null};
    }

@@ -41,6 +41,62 @@ const clip=(x,a,b)=>Math.min(b,Math.max(a,x));
 const smooth=(current,target,dt,tau)=>target+(current-target)*Math.exp(-dt/tau);
 const copy=x=>JSON.parse(JSON.stringify(x));
 function checkEngine(engine){if(!ENGINES.includes(engine))throw Error('Expected engine1 or engine2');}
+
+/* Derived training start signals; never change ISN running or fuel authority. */
+function startBackend({id,phase,record,engine,oil,aircraft,duct,blocker,elapsed,sources}){
+ const r=record.rules,fb=record.feedback,ign=r.ignition||{};
+ const v=k=>Number.isFinite(engine[k])?engine[k]:null;
+ const n1=v('n1Percent'),n2=v('n2Percent'),egt=v('egtC'),fuel=v('fuelFlowKgHr');
+ const minPsi=Math.max(0,30-.5*Math.max(0,aircraft.pressureAltitudeFt||0)/1000);
+ const release=r.startSwitch==='OFF'&&fb.starterEngaged.value===false&&fb.startValveOpen.value===false;
+ const stable=phase==='RUNNING'&&aircraft.onGround&&release&&fb.fuelStartLever.value==='IDLE'&&
+   n1!==null&&n1>=19&&n1<=26&&n2!==null&&n2>=57&&n2<=64&&
+   egt!==null&&egt>=350&&egt<=530&&fuel!==null&&fuel>150&&
+   oil.pressurePsi>=13&&oil.lowPressureLamp===false;
+ const map={OFF:'STOPPED',BLOCKED:'START_BLOCKED',MOTORING:'DRY_MOTORING',
+   AWAIT_FUEL_LEVER_IDLE:'FUEL_INTRODUCTION_CUE',LIGHT_OFF_SEQUENCE:'LIGHT_OFF_AND_ACCELERATION',
+   ABNORMAL_EGT:'ABNORMAL_START_EGT',N2_STALLED:'N2_STALL',
+   EARLY_STARTER_CUTOUT:'EARLY_CUTOUT',AWAIT_FUEL_CUTOFF:'FUEL_CUTOFF_REQUIRED'};
+ const status=phase==='RUNNING'?(stable?'STABILIZED_GROUND_IDLE':'RUNNING_SETTLING'):map[phase]||phase;
+ const adv=[];
+ if(duct<minPsi)adv.push('LOW_DUCT_PRESSURE_TRAINING_GUIDANCE');
+ if(phase==='BLOCKED'&&blocker)adv.push('START_PREREQUISITE_BLOCKED');
+ if(fb.fuelStartLever.value==='IDLE'&&n2!==null&&n2<20&&['MOTORING','LIGHT_OFF_SEQUENCE'].includes(phase))
+  adv.push('EARLY_FUEL_INTRODUCTION');
+ if(fb.fuelStartLever.value==='IDLE'&&
+    ign.supplyEligible?.left!==true&&ign.supplyEligible?.right!==true&&
+    ['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE'].includes(phase))
+  adv.push('IGNITION_POWER_UNAVAILABLE');
+ if(r.advisory?.egt725Latched)adv.push('ABNORMAL_EGT_725');
+ if(phase==='STARTER_TIME_LIMIT')adv.push('STARTER_120_SECONDS_EXCEEDED');
+ if(fb.starterEngaged.value===true&&elapsed!==null&&elapsed>=110)
+  adv.push('STARTER_TIME_LIMIT_APPROACHING');
+ const side=id==='engine1'?1:2;
+ return {schema:'b737classic.engine-start-backend/1',phase,status,groundIdleStabilized:stable,
+  prestart:{blocker:blocker??null,airBatteryPacksOwnedBy:'ISN03_PNEUMATICS_V6',
+   ductPsiTraining:duct,requiredDuctPsiTraining:minPsi,
+   ductBelowGuide:duct<minPsi,ductPressureMeasured:false},
+  controls:{startSwitch:r.startSwitch,ignitionSelector:ign.selector,fuelStartLever:fb.fuelStartLever.value},
+  starter:{valveOpenObserved:fb.startValveOpen.value,engagedObserved:fb.starterEngaged.value,
+   released:release,autoCutoutAt46N2:r.starter.cutoutAtApprox46N2===true,
+   maxUseSec:r.starter.maxStarterUseSecondsPerAttempt,
+   firstRetryWaitSec:r.starter.firstRetryWaitSeconds,laterRetryWaitSec:r.starter.laterRetryWaitSeconds,
+   elapsedSec:elapsed},
+  ignition:{selection:ign.selector,requested:copy(ign.demand),
+   eligible:copy(ign.supplyEligible),actualEnergized:fb.ignitionEnergized.value,
+   fltBothChannels:r.startSwitch==='FLT'},
+  engine:{n1Percent:n1,n2Percent:n2,egtC:egt,fuelFlowKgHr:fuel,
+   oilPressurePsi:oil.pressurePsi,oilTemperatureC:oil.temperatureC,
+   recommendedFuelIdle:r.fuel.recommendMovingLeverToIdle===true,
+   egt725Advisory:r.advisory.egt725Latched===true},
+  lamps:{startValveOpen:fb.startValveOpen.value,oilLowPressure:oil.lowPressureLamp,
+   oilFilterBypass:oil.filterBypassLamp,
+   genOffBusTraining:phase==='RUNNING'&&sources?.[side]!=='GEN'+side,
+   fuelValveClosed:'EXISTING_FUEL_SHUTOFF_OWNER'},
+  advisories:adv,quality:'TRAINING_APPROX_NOT_CERTIFIED',
+  reference:'FCOM 7.10.22/7.20.7-9 NP.21.33-35; MRG IV.6-7; LAN ATA74/80'};
+}
+
 function oilInitial(){return {pressurePsi:0,temperatureC:CONFIG.oilAmbientTempC,
  quantityPct:CONFIG.oilInitialQuantityPct,lowPressureLamp:true,filterBypassLamp:false,
  faults:{pumpFailure:false,oilLeak:false,filterRestriction:false},source:ORIGIN};}
@@ -404,6 +460,9 @@ class Testbench{
     startTimingTraining:copy(snap.effectiveEngineStartTiming[id]),
     origin:e.source,
     readingsAreTrainingEstimates:true};
+    engines[id].start=startBackend({id,phase,record:snap.observations[id],engine:engines[id],
+     oil,aircraft:this.aircraft,duct:snap.trainingStartDuctPsi[id],
+     blocker:this.chain.canStartEngine(id),elapsed:engines[id].startElapsedSec,sources:snap.selectedSources});
    if(oil.lowPressureLamp)alerts.push({id:id+'.LOW_OIL_PRESSURE',level:'AMBER',source:ORIGIN});
    if(oil.filterBypassLamp)alerts.push({id:id+'.OIL_FILTER_BYPASS',level:'AMBER',source:ORIGIN});
    for(const f of base.diagnostics.engines[id].faults)alerts.push({id:id+'.'+f.code,level:f.priority,source:f.origin});
@@ -447,6 +506,7 @@ class Testbench{
    timeMs:this.elapsedMs,timingProfile:this.chain.timingProfile,timing:copy(this.chain.timing),stage:{ISN13:'OIL',ISN14:'APU_TELEMETRY',ISN15:'FAILURE_BUS',
     ISN16:'THRUST_LIMIT',ISN17:'ENGINE_DYNAMICS',ISN18:'TESTBENCH_E2E'},
    aircraft:copy(this.aircraft),engines,apu,
+    engineStartBackend:{engine1:copy(engines.engine1.start),engine2:copy(engines.engine2.start)},
    electrical:{battery:snap.electrical.battery,selectedSources:copy(snap.selectedSources),
      standbySelector:this.start.core.pack.electricalState.config.standbySelector,
      standbyAcPowered:snap.electrical.acStandby,
@@ -463,5 +523,5 @@ class Testbench{
     'APU_LOW_OIL_PRESSURE_4_PSI_OWNER_TRAINER_OVERRIDE_NOT_AIRCRAFT_VERIFIED']};
  }
 }
-return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,apuOilTargetPsi,apuOilPressureStep,apuLowOilPressureLamp,hydraulicPressure,apuStartEGT,apuCoolingStep,coastStep,Testbench});
+return Object.freeze({SCHEMA,ORIGIN,CONFIG,oilInitial,oilStep,apuOilTargetPsi,apuOilPressureStep,apuLowOilPressureLamp,hydraulicPressure,apuStartEGT,apuCoolingStep,coastStep,startBackend,Testbench});
 });

@@ -16,7 +16,7 @@
   supply:'MRG IV.6/IV.7 and FCOM 6.20'
  });
  const faultPhases=new Set(['N2_STALLED','EARLY_STARTER_CUTOUT','NO_LIGHT_OFF',
-  'HUNG_START','ABNORMAL_EGT','FLAMEOUT','FUEL_STARVATION','AWAIT_FUEL_CUTOFF']);
+  'HUNG_START','ABNORMAL_EGT','FLAMEOUT','FUEL_STARVATION','AWAIT_FUEL_CUTOFF','STARTER_TIME_LIMIT']);
  const norm=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
  function project({chain,ecu,electrical}={}){
   if(!chain?.observations||!chain?.phase)throw Error('Actual ISN start observations required');
