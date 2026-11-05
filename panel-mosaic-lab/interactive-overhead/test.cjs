@@ -34,7 +34,20 @@ for(const id of ['alternate-flaps-position','window-power-test','gen-1','outflow
  const c=registry.controls.find(x=>x.id===id);
  for(const [a,b] of Object.entries(c.springReturn)){engine.set(id,a);assert.equal(engine.get(id),a);engine.release(id);assert.equal(engine.get(id),b);}
 }
-engine.set('apu-start','START');engine.releaseAll();assert.equal(engine.get('apu-start'),'ON');
+// Regression APU-SPRING-0001: the START->ON return is direct, without an
+// intermediate logical detent or a delayed 50%-to-25% sprite transition.
+const apuConfig=registry.controls.find(c=>c.id==='apu-start');
+assert.deepEqual(apuConfig.states,['OFF','ON','START']);
+assert.deepEqual(apuConfig.springReturn,{START:'ON'});
+const beforeApu=events.length;
+engine.set('apu-start','START');
+engine.releaseAll();
+assert.equal(engine.get('apu-start'),'ON');
+assert.deepEqual(events.slice(beforeApu).filter(e=>e.id==='apu-start').map(e=>e.next),['START','ON']);
+const extCss=fs.readFileSync(path.join(__dirname,'../cockpit/exterior-lights-classic-v1.css'),'utf8');
+assert.match(extCss,/\[data-control="apu-start"\] \.toggle-sprite\s*\{\s*transition:none!important;/,
+ 'APU must not interpolate its frame position across the single DOWN/photo atlas swap');
+
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(x=>x.id===c.placementId));assert.ok(p.diameter>0&&Number.isFinite(p.x+p.y));}
 assert.ok(events.length>0);
 const page=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
