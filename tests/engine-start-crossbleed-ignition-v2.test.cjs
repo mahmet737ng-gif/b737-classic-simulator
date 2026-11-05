@@ -34,7 +34,7 @@ s.advance(37000);
 assert.equal(s.get().engines.engine1.phase,'RUNNING');
 // APU shutdown leaves first engine providing a real, independently
 // source-observed engine bleed (training pressure is separately configured).
-s.stopAPU();
+s.chain.stopAPU();
 s.advance(1000);
 s.chain.event({id:'bleed-apu',kind:'toggle',next:'OFF'});
 const duct=Pneumatics.derive(s.start.core.pneumaticState);
