@@ -22,7 +22,7 @@ for(const device of ['engine1','engine2']){
  }
  assert.ok(active.top<rest.top,'moving start lever forward to IDLE');
  const scale=plate.w/model.SOURCE.window.w;
- assert.equal(active.top,plate.y+model.SLOT_TRACK.top*scale,'IDLE touches top of slot');
+ assert.ok(Math.abs(active.top+active.height/2-(plate.y+model.SLOT_TRACK.top*scale))<1e-9,'IDLE grip center reaches the upper slot stop');
  assert.ok(Math.abs(rest.top+rest.height-(plate.y+model.SLOT_TRACK.bottom*scale))<1e-9,'CUTOFF touches bottom of slot');
 }
 const first=model.placement(plate,'engine1','CUTOFF');

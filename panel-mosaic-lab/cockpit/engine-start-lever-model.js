@@ -7,9 +7,9 @@
  const SLOTS=Object.freeze({engine1:Object.freeze({x:330.5,label:'1'}),engine2:Object.freeze({x:404.5,label:'2'})});
  const HANDLE=Object.freeze({w:74,h:46});
  // Measured black slot on the unchanged 800x1000 owner photograph.
- // The complete grip stays inside the slot at both physical stops.
+ // IDLE grip center meets the upper slot stop; CUTOFF retains its lower stop.
  const SLOT_TRACK=Object.freeze({top:847,bottom:941});
- const DETENTS=Object.freeze({IDLE:SLOT_TRACK.top+HANDLE.h/2,CUTOFF:SLOT_TRACK.bottom-HANDLE.h/2});
+ const DETENTS=Object.freeze({IDLE:SLOT_TRACK.top,CUTOFF:SLOT_TRACK.bottom-HANDLE.h/2});
  // Hidden shaft reference only; the owner requested straight arms and no top disk.
  const PIVOT=Object.freeze({y:843,outerOffset:34});
  const clamp=x=>Math.max(0,Math.min(1,x));
