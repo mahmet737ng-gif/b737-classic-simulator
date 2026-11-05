@@ -102,6 +102,13 @@
   }
   syncPower(){const p=this.start.core.pack;
    const e=p.getLive().electrical.bus,c=p.electricalState.config;
+   // LAN ATA36 p.29: isolation motor uses 115V AC TRANSFER BUS 1.
+   // Do not invent actuator position without that bus. Preserve the V6
+   // approved AUTO/OPEN/CLOSE computation and all physical detents.
+   const actuatorPowered=e.transfer1===true;
+   if(this.start.core.pneumaticState.inputs.isolationAcPower!==actuatorPowered)
+    this.command({type:'PNEUMATIC',action:{type:'SENSOR',
+     key:'isolationAcPower',value:actuatorPowered}});
    for(const [key,val] of Object.entries({batterySwitchOn:c.batterySwitch,batteryBusPowered:e.battery,
     acTransferBusPowered:e.transfer1||e.transfer2,acStandbyBusPowered:e.acStandby,onGround:c.onGround})){
     if(this.start.powerFeedback[key].value!==val)this.observed(key,val);
@@ -235,25 +242,25 @@
    const b=this.start.core.pack.getLive().electrical.bus;
    const pneumatics=this.start.core.Pneumatics.derive(n);
    const side=device==='engine1'?'L':'R';
-   // FCOM Classic: a serviceable opposite-engine bleed, isolation OPEN and
-   // target-side duct supply may motor the starter without APU bleed. This
-   // functional, training-only route requires an actual source observation;
-   // NOT an inferred 35 PSI from a displayed knob or ground-air cart.
-   const oppositeBleed=device==='engine1'?pneumatics.bleed.engine2ValveOpen:
-     pneumatics.bleed.engine1ValveOpen;
-   const crossBleed=oppositeBleed===true&&pneumatics.bleed.isolationOpen===true&&
-     pneumatics.duct?.[side]?.anySupply===true;
-   const apuAir=apu===true&&c.apuBleed==='ON';
-   if(!apuAir&&!crossBleed){
-    if(apu===true&&c.apuBleed!=='ON')return 'APU BLEED OFF / NO VALID CROSSBLEED';
-    return 'NO VERIFIED APU OR CROSSBLEED START SOURCE';
+   // FCOM 2.20.2 / LAN ATA36 pp.24,26,28-29 / MRG IV.7:
+   // Starter eligibility is determined by air reaching THIS side's duct,
+   // not an arbitrary requirement to select ISOLATION OPEN.
+   // The approved V6 valve actuator owns AUTO, power and jam states.
+   const supplied=pneumatics.duct?.[side]?.anySupply;
+   if(supplied!==true){
+    const sources=pneumatics.bleed;
+    if(supplied===null)return 'START DUCT '+side+' AIR ROUTE UNVERIFIED (ISOLATION POSITION/POWER)';
+    if(sources.apuBleedValveOpen===true&&side==='R'&&sources.isolationOpen===false)
+     return 'NO RIGHT START DUCT AIR — APU LEFT, ISOLATION VALVE CLOSED';
+    if(sources.externalAirAttached===true&&side==='L'&&sources.isolationOpen===false)
+     return 'NO LEFT START DUCT AIR — GROUND CART RIGHT, ISOLATION VALVE CLOSED';
+    if(apu===true&&c.apuBleed!=='ON'&&sources.engine1ValveOpen!==true&&sources.engine2ValveOpen!==true)
+     return 'APU BLEED OFF / NO LOCAL OR CROSSBLEED START AIR';
+    return 'NO VERIFIED '+side+' START DUCT AIR SOURCE';
    }
-   if(c.isolation==='CLOSE')return 'ISOLATION VALVE CLOSED';
    if(c.packL!=='OFF'||c.packR!=='OFF')return 'PACK L/R MUST BE OFF FOR ENGINE START';
    if(b.battery!==true)return 'BATTERY BUS NOT AVAILABLE';
-   // Duct PSI remains owner-selected training input. Actual side distribution
-   // for external air is UNKNOWN in Pneumatics V6; it cannot silently pass.
-   // Ignition eligibility is checked separately at fuel entry/light-off.
+   // Independent fuel/ignition checks and training PSI curve remain unchanged.
    return null;
   }
   scheduleStarterLimit(device){
