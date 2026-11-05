@@ -1,0 +1,36 @@
+name: Unified B737 Classic ATA28 Fuel Live
+on:
+  push:
+    paths:
+      - 'engine/systems/classic-fuel-system-v1.js'
+      - 'engine/integration/isn-09-12-runtime-v1.js'
+      - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
+      - 'engine/runtime/unified-live-gateway-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/fuel-system-live-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/unified-classic-fuel-ata28-live-v1.test.cjs'
+      - '.github/workflows/unified-classic-fuel-ata28-live.yml'
+  workflow_dispatch:
+jobs:
+  fuel-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source modules and cockpit scripts
+        run: |
+          node --check engine/systems/classic-fuel-system-v1.js
+          node --check engine/integration/isn-09-12-runtime-v1.js
+          node --check engine/integration/isn-13-18-ecu-testbench-v1.js
+          node --check engine/runtime/unified-live-gateway-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check panel-mosaic-lab/cockpit/fuel-system-live-unified-v1.js
+      - name: Shared fuel-controller end-to-end and existing start tests
+        run: |
+          node tests/unified-classic-fuel-ata28-live-v1.test.cjs
+          node tests/isn-engine-suction-feed-v1.test.cjs
+          node tests/classic-engine-start-backend-v1.test.cjs
+          node tests/unified-live-gateway-v1.test.cjs

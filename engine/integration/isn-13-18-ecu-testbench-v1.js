@@ -202,14 +202,14 @@ function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
  return s;
 }
 class Testbench{
- constructor({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,timingProfile='REALTIME_TRAINING'}={}){
+ constructor({Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,FuelSystem=null,timingProfile='REALTIME_TRAINING'}={}){
   if(!Electrical?.initialState||!Loads?.project||!Pack?.Session||!Start?.Session||
    !Chain?.Chain||!FuelRuntime?.Runtime||!ThrustPlanner?.performance||typeof WarningEngine!=='function')
    throw Error('ISN 01, 03, 09-12 and N1 planner modules required');
-  this.modules={Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime};
+  this.modules={Electrical,Loads,TrainerCore,WarningEngine,Pneumatics,Pack,EngineAPU,Start,Chain,ThrustPlanner,FuelRuntime,FuelSystem};
   this.start=new Start.Session({EngineAPU,ElectricalPack:Pack,Electrical,Loads,TrainerCore,WarningEngine,Pneumatics});
   this.chain=new Chain.Chain(this.start,{timingProfile});
-  this.core=new FuelRuntime.Runtime({chain:this.chain,thrustPlanner:ThrustPlanner});
+  this.core=new FuelRuntime.Runtime({chain:this.chain,thrustPlanner:ThrustPlanner,FuelSystem});
   this.oil={engine1:oilInitial(),engine2:oilInitial()};
   this.coast={engine1:initialCoast(),engine2:initialCoast()};
   this.elapsedMs=0;this.apuStartMs=null;this.engineStartMs={engine1:null,engine2:null};this.lastThrust=null;this.trace=[];

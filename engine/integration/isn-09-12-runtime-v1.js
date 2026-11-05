@@ -123,18 +123,20 @@
    noInferredFireBell:true,noInferredOilWarnings:true};
  }
  class Runtime{
-  constructor({chain,thrustPlanner,initialFuelKg,allowSuctionTraining=true}={}){
+  constructor({chain,thrustPlanner,initialFuelKg,allowSuctionTraining=true,FuelSystem=null}={}){
    if(!chain||typeof chain.get!=='function'||typeof chain.advance!=='function'||typeof chain.lever!=='function')
     throw Error('ISN training start Chain required');
    if(!thrustPlanner||typeof thrustPlanner.performance!=='function'||typeof thrustPlanner.applyToTrainingChain!=='function')
     throw Error('ISN thrust-performance planner required');
    this.chain=chain;this.planner=thrustPlanner;
    this.fuel=new FuelNetwork({initialFuelKg:initialFuelKg??approx.initialFuelKg,allowSuctionTraining});
+   this.fuelSystem=FuelSystem?.Controller?new FuelSystem.Controller({fuel:this.fuel}):null;
    this.env={pressureAltitudeFt:0};this.fireSwitch={engine1:false,engine2:false};
    this.suctionPathFailed={engine1:false,engine2:false};
    this.commandLog=[];this.lastPlan=null;this.elapsedMs=0;
   }
-  pumps(){const pack=this.chain.start?.core?.pack;return (pack?.getLive?pack.getLive():pack?.get?.())?.pumps??{};}
+  rawPumps(){const pack=this.chain.start?.core?.pack;return (pack?.getLive?pack.getLive():pack?.get?.())?.pumps??{};}
+  pumps(){const raw=this.rawPumps();return this.fuelSystem?this.fuelSystem.effectivePumps(raw):raw;}
   apuFuelPath(){return this.fuel.apuSupply(this.pumps());}
   fuelPath(device,{fuelStartLever}={}){
    if(!IDS.includes(device))throw Error('Unknown engine');
@@ -201,6 +203,8 @@
   advance(ms){if(!finite(ms)||ms<0||ms>120000)throw Error('Invalid elapsed time');
    let remaining=ms;
    while(remaining>0){const dt=Math.min(remaining,approx.maxStepMs);remaining-=dt;
+    if(this.fuelSystem){const current=this.chain.get();this.fuelSystem.advance(dt,this.rawPumps(),{
+     batteryPowered:current.electrical?.battery===true,onGround:current.electrical?.onGround!==false});}
     const pre=this.chain.get(),beforeApuFuel=this.apuFuelPath();
     if(['INLET_DOOR','STARTING','READY'].includes(pre.phase.apu)&&beforeApuFuel.available!==true)
      this.chain.apuFuelStarve(beforeApuFuel.reason);
@@ -245,7 +249,8 @@
    return {schema:SCHEMA,quality:SOURCE,elapsedMs:this.elapsedMs,engines,apuFuelPath:this.apuFuelPath(),
     modeLimitsN1Pct:this.lastPlan?.mode?.limitTable??null,
     lastPlan:this.lastPlan?cp(this.lastPlan):null,
-    fuel:{...this.fuel.get(),suctionPathFailed:cp(this.suctionPathFailed)},diagnostics:diagnostics(snap,paths),commands:cp(this.commandLog),
+    fuel:{...this.fuel.get(),suctionPathFailed:cp(this.suctionPathFailed),
+     system:this.fuelSystem?this.fuelSystem.get(this.rawPumps()):null},diagnostics:diagnostics(snap,paths),commands:cp(this.commandLog),
     starter:{engine1:snap.observations?.engine1?.rules?.starter??null,
      engine2:snap.observations?.engine2?.rules?.starter??null},
     issues:['SOURCE_GATED_UNKNOWN_PUMP_POWER_IS_NOT_FALSE','NOT_INSTALLED_AIRFRAME_WIRING',

@@ -120,7 +120,7 @@
    return {schema:'b737-unified-live-snapshot/1',singleElectricalOwner:this.bridge.session===this.ecu.start.core.pack,
     engineSource:'ISN13_18_ECU',electricalSource:'ELECTRICAL_V7_EXISTING_PACK',
     electrical:copy(pack.state.electrical),loads:copy(pack.state.loads),
-    engines:copy(e.engines),apu:copy(e.apu),lamps:copy(pack.lamps),
+    engines:copy(e.engines),apu:copy(e.apu),fuel:copy(e.fuel),lamps:copy(pack.lamps),
     limitations:['NOT_ALL_CONTROLS_ROUTED','TRAINING_SURROGATE_ENGINE_ENVELOPE','UNKNOWN_EQUIPMENT_FEEDS']};
   }
   get(){return {schema:'b737-unified-live-gateway/1',initialized:this.initialized,

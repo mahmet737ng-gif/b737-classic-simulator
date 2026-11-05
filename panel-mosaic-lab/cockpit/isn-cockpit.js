@@ -21,6 +21,7 @@
   ['B737ISNFuelShutoffIndicatorV1','../../engine/integration/isn-fuel-shutoff-indicator-v1.js'],
   ['B737ISNUnifiedControlRouterV1','../../engine/integration/isn-unified-control-router-v1.js'],
   ['B737ISNThrustPerformanceV1','../../engine/integration/isn-thrust-performance-v1.js'],
+   ['B737ClassicFuelSystemV1','../../engine/systems/classic-fuel-system-v1.js'],
   ['B737ISN0912RuntimeV1','../../engine/integration/isn-09-12-runtime-v1.js'],
   ['B737ISNAPULoadDynamicsV1','../../engine/integration/isn-apu-load-dynamics-v1.js'],
   ['B737ISN1318ECUTestbenchV1','../../engine/integration/isn-13-18-ecu-testbench-v1.js'],
@@ -63,7 +64,7 @@
   EngineAPU:window.B737ISNEngineAPUV1,Start:window.B737ISNStartSequenceV1,
   Chain:window.B737ISNAPUStartChainV1,
   ThrustPlanner:window.B737ISNThrustPerformanceV1,
-  FuelRuntime:window.B737ISN0912RuntimeV1,timingProfile:'REALTIME_TRAINING'});
+  FuelRuntime:window.B737ISN0912RuntimeV1,FuelSystem:window.B737ClassicFuelSystemV1,timingProfile:'REALTIME_TRAINING'});
  // ATA24 owns the physical source-current estimate; the ECU consumes it
  // to update its EXISTING generator governor/EGT/fuel model. This listener
  // never changes source selection, electrical state, or needle geometry.
@@ -316,6 +317,10 @@
     engine2:chain.get().observations.engine2.feedback.fuelStartLever.value},
    fireHandles:ecu.core.fireSwitch,nowMs:performance.now()});
   for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
+   // Fuel indications derive from the existing ISN09 ledger + same live Pack.
+   const actualFuel=ecu.get().fuel?.system;
+   if(actualFuel){Object.assign(lamps,actualFuel.lamps);
+    lamps['crossfeed-valve']=actualFuel.valves.crossfeed.lamp;}
   // Settle even when the passive ECU is sleeping with both engines stopped.
   if(valveState.transitionStarted)setTimeout(postProjection,valveState.travelMs+20);
   // ECU owns availability; V7 evaluated source (not selected detent)
@@ -410,15 +415,15 @@
   send({sequence,accepted:result.accepted,reason:result.reason||null});
   render();
  });
- // OH09 rotary is the REAL CROSSFEED switch; only the shared FuelNetwork
- // owns the valve's flow topology. The rotor graphic and detents are frozen.
+ // OH09 rotary commands the battery-powered valve; the single FuelNetwork
+ // changes physical flow topology only after valve travel.
  function observeCrossfeed(detent){
-  if(!['CLOSED','OPEN'].includes(detent))return false;
-  if(ecu.core.fuel.crossfeed===detent)return false;
-  // Battery bus is required to motor the valve; an unpowered knob cannot
-  // silently change the fuel distribution manifold.
-  if(chain.get().electrical.battery!==true)return false;
-  ecu.core.fuel.setCrossfeed(detent);ecu.core.refreshFuelDelivery();return true;
+  if(!['CLOSED','OPEN'].includes(detent)||!ecu.core.fuelSystem)return false;
+  if(ecu.core.fuelSystem.crossfeed.command===detent)return false;
+  // Store the physical selector command without inventing electrical power;
+  // the controller advances valve position only on a powered Battery Bus.
+  ecu.core.fuelSystem.commandCrossfeed(detent);
+  ecu.core.refreshFuelDelivery();return true;
  }
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
@@ -446,7 +451,10 @@
   // Owner18 may mount asynchronously after the first iframe report.
   if(synchronizeOwnerGuards())render();
   const sources=chain.get().sources;
-  const plantActive=!!chain.jobs.length||sources.engine1.running||sources.engine2.running||sources.apu.running;
+  const fs=ecu.core.fuelSystem,rawFuelPumps=session.getLive().pumps;
+  const fuelNeedsTick=!!fs&&(fs.crossfeed.command!==fs.crossfeed.position||fs.scavenge.remainingMs>0||
+   Object.keys(fs.centerDryMs).some(id=>rawFuelPumps[id]?.switchOn&&fs.fuel.tanks.center<=0&&!fs.centerAutoStopped[id]));
+  const plantActive=!!chain.jobs.length||sources.engine1.running||sources.engine2.running||sources.apu.running||fuelNeedsTick;
   if(!plantActive){
    // When only the APU's thermal mass remains warm, keep its real-time EGT
    // movement alive after shutdown WITHOUT running the expensive fuel/ECU/
@@ -469,6 +477,25 @@
   render();
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+    getFuelSystem:()=>ecu.get().fuel?.system??null,
+    fuelTrainerAction:command=>{
+     if(command?.instructor!==true||!ecu.core.fuelSystem)throw Error('ATA28 instructor-only action required');
+     const fs=ecu.core.fuelSystem;
+     switch(command.type){
+      case 'SERVICE_TANK':fs.service({tank:command.tank,quantityKg:command.quantityKg,
+       onGround:ecu.aircraft.onGround});break;
+      case 'FUEL_TEMPERATURE':fs.setTemperature(command.celsius);
+       window.B737UnifiedFuelTemperature?.setTemperature(command.celsius);break;
+      case 'CROSSFEED_FAILURE':fs.setCrossfeedFailure(command.active);break;
+      case 'PUMP_FAILURE':
+       if(!Object.hasOwn(window.B737ClassicFuelSystemV1.PUMPS,command.id)||typeof command.active!=='boolean')throw Error('Invalid fuel pump fault');
+       bridge.instructor({type:'PUMP_FAULT',id:command.id,value:command.active,instructor:true});
+       chain.syncPower();break;
+      default:throw Error('Unsupported fuel instructor command');
+     }
+     ecu.core.refreshFuelDelivery();render();
+     return {accepted:true,system:ecu.get().fuel.system};
+    },
     // Isolated APU fault lab uses the single shared ECU, never a second owner.
     apuLabProtectionTrip:reason=>{const result=chain.tripAPU(reason);if(result){ecu.log('APU_PROTECTIVE_SHUTDOWN',{reason,origin:'APU_LAB_TRAINING'});render();}return result;},
     apuLabSetHardwareFault:(key,on)=>{if(!['generatorFailure','bleedFailure'].includes(key))throw Error('APU lab fault unavailable');const result=ecu.setAPUFault(key,on);render();return result;},
