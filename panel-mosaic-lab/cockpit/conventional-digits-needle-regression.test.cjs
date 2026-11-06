@@ -39,6 +39,6 @@ assert.ok(digits.includes("x:lastX-5,y:-5,width:23,height:31"),
 assert.match(digitCss,/conventional-dot-readouts-v1[^\n]+z-index:6/);
 assert.ok(live.includes("group.style.visibility='visible'"),'Physical pointers must remain visible');
 for(const ver of ['EIS-CONV-DRUM-0011-RAISED-DIGITS-ALL-FACES','EIS-CONV-DRUM-0008-CONV-LAYER',
-'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','CONV-DIAL-TICKS-0006-PHOTO-LINES-N2-LOCK','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
+'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','CONV-DIAL-TICKS-0007-ALL-DIAL-MARKS-N2-LOCK','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
  assert.ok(html.includes(ver),'Cached module missing revision '+ver);
 console.log('PASS: eight photo readouts, all needles front, no oil digital Conventional, unchanged EIS.');
