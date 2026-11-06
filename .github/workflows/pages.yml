@@ -197,6 +197,12 @@ jobs:
             artifacts/perf-0006/
             artifacts/hydraulic-lab-qa/
           if-no-files-found: ignore
+      - name: Remove unreferenced archive files from Pages artifact only
+        run: |
+          node --check tools/prune-pages-artifact.cjs
+          du -sh web-dist
+          node tools/prune-pages-artifact.cjs
+          du -sh web-dist
       - uses: actions/configure-pages@v5
         with:
           enablement: true
@@ -208,6 +214,6 @@ jobs:
         with:
           # Large owner-approved cockpit imagery can remain in syncing_files
           # longer than the 10-minute default. Do not lose a verified build.
-          timeout: 1800000
+          timeout: 600000
           error_count: 30
           reporting_interval: 10000
