@@ -12,6 +12,10 @@
  const UNIT_IDS=Object.freeze(['FMC1','FMC2','CDU_CAPT','CDU_FO']);
  const STATES=Object.freeze(['PRESENT','ABSENT','UNKNOWN']);
  const POWER_BUSES=Object.freeze(['generator1','generator2','transfer1','transfer2','main1','main2','acStandby','groundService','dc1','dc2','battery','hotBattery','switchedHotBattery','dcStandby']);
+ // Hot Battery is live with BAT OFF and is NOT an FMC/CDU screen supply.
+ // Ground Service supplies service loads, not an assumed CDU feeder.
+ // Only all-dead switched/aircraft buses prove the absence of CDU power.
+ const CANDIDATE_CDU_BUSES=Object.freeze(POWER_BUSES.filter(id=>!['hotBattery','groundService'].includes(id)));
  const BREAKERS=Object.freeze([
   {id:'P18-2:E8',label:'FMCS CMPTR NO.1',unit:'FMC1'},
   {id:'P18-2:E9',label:'CDU NO.1',unit:'CDU_CAPT'},
@@ -37,7 +41,10 @@
  function globalPower(snapshot){
   const buses=snapshot?.bus;
   if(!buses||!POWER_BUSES.every(k=>Object.hasOwn(buses,k)))return 'UNKNOWN';
-  if(POWER_BUSES.every(k=>buses[k]===false))return 'ABSENT';
+  if(CANDIDATE_CDU_BUSES.every(k=>buses[k]===false))return 'ABSENT';
+  // The unswitched hot battery can remain live with the aircraft cold/dark;
+  // service power alone never means an FMC or CDU display is energized.
+  // Conversely, a live candidate bus cannot certify the equipment feeder.
   // Live bus voltage NEVER proves that a particular FMC/CDU feeder is energized.
   return 'UNKNOWN';
  }
