@@ -89,25 +89,47 @@ body.side-open > main > aside#inspector {display:block !important}
   :root {--minimal-header-height:54px}
   body > header.unified-minimal-header .header-settings button {padding:4px 5px !important; font-size:10px !important}
 }
+
+/* MINIMAL-HEADER-0002: only Controls, Settings, CB PNL, Ground Power.
+   Battery metering and recharge live inside the Controls drawer. */
+body > header.unified-minimal-header .header-settings{
+ max-width:700px!important;gap:8px!important
+}
+body > header.unified-minimal-header .header-settings>button{
+ white-space:nowrap!important;flex:1 1 0!important
+}
+#unifiedControlCenter{direction:ltr;text-align:left;border:1px solid #52748a;border-radius:9px;
+ padding:12px;background:#101f2c;display:grid;gap:12px}
+#unifiedControlCenter h2{margin:0;font-size:17px}
+#unifiedControlCenter h3{margin:0 0 8px;font-size:13px}
+#unifiedControlCenter .battery-controls-slot{border:1px solid #52715f;
+ border-radius:8px;padding:10px;background:#132c2b}
+#batteryMeterControlSlot #liveBatteryReadout{position:static!important;inset:auto!important;
+ left:auto!important;top:auto!important;z-index:auto!important;
+ pointer-events:auto!important;max-width:100%!important;width:100%!important;margin:0 0 8px!important}
+#batteryRechargeControlSlot #liveBatteryRecharge{display:inline-flex!important;visibility:visible!important;
+ background:#193a37!important;border-color:#668c7f!important;color:#def5e4!important}
+#batteryRechargeControlSlot #liveBatteryRecharge:disabled{opacity:.55}
+#unifiedControlCenter .control-center-actions{display:grid;gap:7px}
+#unifiedControlCenter .unified-lab-shortcuts{display:grid;gap:7px}
+#unifiedControlCenter .control-center-actions button{width:100%;text-align:center}
+@media(max-width:430px){body > header.unified-minimal-header .header-settings>button{
+ font-size:11px!important;padding:5px 3px!important}}
 </style><link rel="stylesheet" href="./ground-power-header-v1.css?v=GPU-SPRING-0001"><link rel="stylesheet" href="./cockpit-photo-input-v1.css?v=PHOTO-INPUT-0001"><link rel="stylesheet" href="./unified-pinch-v1.css?v=UNIFIED-PINCH-0002"><link rel="stylesheet" href="./cb-panel-entry-v1.css?v=CB-ENTRY-0001"><link rel="stylesheet" href="./eis-dot-readouts-v1.css?v=EIS-CONV-DRUM-0004"></head><body>
 <header class="unified-minimal-header"><div class="header-settings">
 <span id="aircraftProfileHeader" class="aircraft-profile-header" dir="ltr" hidden>737-300/500 · DCPCS · CONVENTIONAL</span>
-<button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">کنترل‌ها</button>
+<button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">Controls</button>
 <button id="aircraftSettingsOpen" type="button" aria-haspopup="dialog" aria-controls="aircraftSettingsDialog">⚙ Settings</button>
-<button id="visualLampTest" type="button" aria-pressed="false">روشن‌کردن همه چراغ‌ها</button>
 <button id="cbPanelOpen" type="button" aria-haspopup="dialog" aria-controls="cbPanelDialog">CB PNL</button>
-<button id="liveBatteryRecharge" type="button" disabled aria-label="Recharge training battery to 100 percent" title="Waiting for live battery ECU" data-recharge-control="instructor">BAT RECHARGE</button>
 <button id="groundPowerHeader" type="button" aria-expanded="false" aria-controls="groundPowerPopover" aria-haspopup="dialog" title="External AC cable and GRD PWR ON/OFF per FCOM">GROUND POWER</button>
-<button id="apuLabButtonV1" type="button" aria-label="Open independent APU test lab">APU TEST LAB</button>
 </div></header>
-<!-- BAT RECHARGE: synchronous header prepaint survives deferred bundle errors. -->
+<!-- BAT RECHARGE: synchronous Controls-drawer prepaint survives deferred bundle errors. -->
 <script id="battery-recharge-prepaint-v4">
 (function(){
  'use strict';
- const bar=document.querySelector('body > header.unified-minimal-header .header-settings');
- if(!bar)return;
- const cb=bar.querySelector('#cbPanelOpen');
- let button=bar.querySelector('#liveBatteryRecharge');
+ const slot=document.getElementById('batteryRechargeControlSlot');
+ if(!slot)return;
+ let button=document.getElementById('liveBatteryRecharge');
  if(!button){
   button=document.createElement('button');
   button.type='button';
@@ -116,17 +138,32 @@ body.side-open > main > aside#inspector {display:block !important}
   button.disabled=true;
   button.setAttribute('aria-label','Recharge training battery to 100 percent');
  }
- if(cb&&button.previousElementSibling!==cb)cb.insertAdjacentElement('afterend',button);
- else if(!button.isConnected)bar.append(button);
+ if(button.parentElement!==slot)slot.append(button);
  button.hidden=false;
  button.style.setProperty('display','inline-flex','important');
  button.style.setProperty('visibility','visible','important');
- button.dataset.build='BAT-HEADER-0004';
+ button.dataset.build='BAT-CONTROLS-0001';
 })();
 </script>
 <main><section class="workbench"><div class="toolbar"><div class="tools"><button id="zoomOut" aria-label="کوچک‌نمایی">−</button><output id="zoomValue">—</output><button id="zoomIn" aria-label="بزرگ‌نمایی">+</button><button id="fit">FIT</button><button id="native">۱:۱</button></div><div class="tools"><button id="unifiedLightsOpen" class="unified-lights-open" aria-label="کتابخانه چراغ‌های یونیفاید">تست چراغ‌ها · در حال همگام‌سازی</button><span id="visualLampStatus" role="status"></span><button id="panMode" aria-pressed="false">جابجایی</button><button id="reference" aria-pressed="false">مرجع</button><button id="galleryOpen">تصاویر اصلی</button></div></div>
 <div id="viewport" class="viewport" tabindex="0" role="region" aria-label="موزاییک مشترک اورهد، مین پنل و پدستال"><div id="sizer"><div id="scene" class="scene"></div></div><p id="loading" class="loading" role="status">در حال اتصال پنل‌ها…</p></div><div class="view-caption"><span id="viewLabel">مین‌پنل</span><span>کشیدن برای جابه‌جایی · Ctrl + چرخ ماوس یا دو انگشت برای زوم</span></div></section>
 <aside id="inspector" class="inspector"><section><h1>کاکپیت یکپارچه</h1><p class="muted">اورهد تعاملی در کنار تصاویر جدید مین‌پنل و پدستال قرار دارد. دکمه‌های بالا فقط نما را عوض می‌کنند.</p><div class="metrics"><div><b>۳</b><small>ناحیهٔ مشترک</small></div><div><b>۷</b><small>تصویر جدید متصل</small></div></div><p id="assetStatus" role="status">تصاویر: در حال دریافت</p><p id="overheadStatus" role="status">اورهد: در حال اتصال</p></section>
+<section id="unifiedControlCenter" class="unified-control-center" aria-label="Unified cockpit controls">
+<h2>Controls · Power &amp; Test Labs</h2>
+<div id="batteryControlsSlot" class="battery-controls-slot">
+ <h3>BATTERY · Voltage / Ammeter / Charger</h3>
+ <div id="batteryMeterControlSlot" class="battery-meter-control-slot"></div>
+ <div id="batteryRechargeControlSlot">
+ <button id="liveBatteryRecharge" type="button" disabled aria-label="Recharge training battery to 100 percent" title="Waiting for live battery ECU" data-recharge-control="instructor">BAT RECHARGE</button>
+ </div>
+</div>
+<div class="control-center-actions">
+ <h3>Test &amp; Utilities</h3>
+ <button id="visualLampTest" type="button" aria-pressed="false">روشن‌کردن همه چراغ‌ها</button>
+ <button id="apuLabButtonV1" type="button" aria-label="Open independent APU test lab">APU TEST LAB</button>
+ <div id="unifiedLabShortcuts" class="unified-lab-shortcuts"></div>
+</div>
+</section>
 <section class="aircraft-profile-summary" aria-labelledby="aircraftProfileSummaryTitle"><h2 id="aircraftProfileSummaryTitle">پیکربندی فعال هواپیما</h2><dl><dt>خانواده</dt><dd id="activeAircraftFamily" dir="ltr">—</dd><dt>سیستم فشار کابین</dt><dd id="activePressurization" dir="ltr">—</dd><dt>نمایشگر موتور</dt><dd id="activeEngineInstruments" dir="ltr">—</dd></dl><button id="openSelectedPressurizationPanel" type="button">باز کردن پنل فشار کابین انتخاب‌شده</button><a class="isn-pack-link" href="../../isn-electrical-pack-lab/">تست شبکه برق، پمپ‌ها و هشدارها ↗</a><p id="activeProfileStatus" class="muted" role="status">در حال بارگذاری تنظیمات…</p><div id="pressurePhysicsDiagnostics" class="pressure-physics-diagnostics" aria-live="polite"></div></section>
 <section><h2 id="selectionTitle">Main Instrument Panel</h2><p id="selectionDescription">پنج تصویر اصلی با حفظ نسبت طول و عرض کنار هم قرار گرفته‌اند.</p><p id="selectionSize" class="muted"></p><a id="originalLink" hidden target="_blank" rel="noopener">باز کردن تصویر اصلی</a><p class="assembly-note">نسخهٔ CKP-0012 / ISN-03: اندازه و محل Throttle Quadrant مطابق مرجع اصلاح شد. سفیدی دور تصویر فقط در نمایش حذف شده و فایل اصلی دست‌نخورده است. Fire Protection و Radio/Nav بدون هم‌پوشانی زیر آن قرار دارند؛ دو اهرم تعاملی Engine Start در شیارهای همان پدستال به موتور تست ISN-03 متصل شده‌اند.</p></section>
 <section class="cdu-tools"><h2>CDU فرست‌آفیسر — فعال</h2><p id="cduStatus" role="status">کاپیتان: OFF · CDU فرست در حال بارگذاری…</p><p class="muted">CDU کاپیتان برای کاهش لگ کاملاً غیرفعال است و حتی iframe آن دانلود نمی‌شود. فقط CDU فرست‌آفیسر، ورودی FMC و NAV DATA را اجرا می‌کند.</p><button data-focus="cdu-first-officer">نمایش CDU فرست‌آفیسر</button><div class="cdu-actions"><button id="resetCduCaptain" type="button" hidden disabled aria-hidden="true">Captain CDU disabled</button><button id="resetCduFirstOfficer">بازنشانی CDU فرست</button></div><button id="resetSharedFmc">پاک‌کردن اطلاعات FMC</button></section><section class="overhead-tools"><h2>تست اورهد</h2><button id="lampTest">روشن‌کردن چراغ‌ها برای تست</button><p id="lampStatus" role="status">—</p><label for="lampSelect">انتخاب چراغ</label><select id="lampSelect" dir="ltr" disabled></select><output id="lampValue" dir="ltr">—</output><label class="check"><input id="lampFault" type="checkbox" disabled> تزریق خرابی / وضعیت حسگر</label><button id="resetScenario" disabled>پاک‌کردن خرابی‌های اورهد</button><button id="resetControls" disabled>بازنشانی کنترل‌های اورهد</button><a href="../interactive-overhead/?standalone=1&amp;v=LGT-0003">نمای مستقل اورهد و ورودی‌های کامل تست</a></section>
@@ -144,9 +181,9 @@ body.side-open > main > aside#inspector {display:block !important}
 <script src="../../engine/integration/asp-cb-trace-v3.js?v=ASP-TRAIN-0003" defer></script>
 <script src="../../engine/systems/asp-audio-mix-v3.js?v=ASP-TRAIN-0003" defer></script>
 <script src="./asp-pixel-audit-v3.js?v=ASP-TRAIN-0003" defer></script>
-<script src="./asp-audible-bench-v3.js?v=ASP-TRAIN-0003" defer></script><link rel="stylesheet" href="./toggle-base-matte-v1.css?v=TOGGLE-BASE-MATTE-0001"><script src="./conventional-full-paint-v1.js?v=CONV-FULL-PAINT-0001" defer></script><script src="./engine-indication-mode-v1.js?v=CONV-FULL-0001" defer></script><script src="./conventional-engine-needles-v1.js?v=CONV-FULL-NEEDLES-0001" defer></script><script src="./cockpit-photo-input-v1.js?v=PHOTO-INPUT-0001" defer></script><script src="./unified-pinch-v1.js?v=UNIFIED-PINCH-0001" defer></script><script src="../../engine/systems/window-heat-v1.js?v=WH-STEADY-0006" defer></script><script src="./window-heat-unified-v1.js?v=WH-DARK-0005" defer></script><script src="../../engine/cb/tat-probe-cb-link-v1.js?v=TAT-CB-0001" defer></script><script src="../../engine/systems/tat-probe-v1.js?v=TAT-STUCK-0003" defer></script><script src="./tat-probe-unified-v1.js?v=TAT-SIXPACK-LIVE-0002" defer></script><link rel="stylesheet" href="./antiice-live-test-lab-v2.css?v=ANTIICE-LIVE-0002"><script src="./antiice-live-test-lab-v2.js?v=ANTIICE-STUCK-0003" defer></script><script src="./cb-panel-entry-v1.js?v=CB-ENTRY-0001-FOUR-FLASH-0001" defer></script><script src="./aircon-300500-slim-knob-unified-v1.js?v=AIRCON-300500-ROUND-0004" defer></script><script src="../../engine/systems/aircon-ovht-hold-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005" defer></script><script src="./aircon-fcom-unified-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005" defer></script><script src="../../engine/systems/aircon-live-lab-v1.js?v=AIRCON-LIVE-LAB-0001" defer></script><link rel="stylesheet" href="./aircon-live-test-lab-v1.css?v=AIRCON-LIVE-LAB-0001"><script src="./aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0002" defer></script><script src="../../engine/systems/air-mix-valve-300500-v1.js?v=AIR-MIX-300500-THERMAL-0002" defer></script><script src="./air-mix-valve-300500-unified-v1.js?v=AIR-MIX-300500-THERMAL-0002" defer></script><script src="./fo-owner-panel-v1.js?v=FO-CONVENTIONAL-ONLY-0001" defer></script><script src="./conventional-lamp-registration-v1.js?v=CONV-LAMP-PIXEL-0003" defer></script><script src="./conventional-physical-controls-v1.js?v=ATA32-AUTOBRAKE-SHARED-0001" defer></script><script src="./eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0006-RING-TOUCH" defer></script><script src="../../engine/ch11/fmc-systems-network-v1.js?v=CH11-NET-0001" defer></script><script src="./fmc-systems-bridge-v1.js?v=CH11-NET-0001" defer></script><script src="../../engine/runtime/avionics-data-network-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/integration/avionics-fmc-computer-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/integration/avionics-sensor-ingress-v2.js?v=AVIONICS-SENSORS-0002" defer></script><script src="./avionics-network-runtime-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/systems/electrical-network-v1.js?v=ATA24-CLASSIC-RECTIFY-0001" defer></script><script src="./electrical-live-unified-v1.js?v=BATTERY-LIVE-0001" defer></script><script src="../../engine/systems/battery-dynamics-v1.js?v=BATTERY-LIVE-0001" defer></script><script src="../../engine/integration/battery-panel-loads-v1.js?v=ATA24-CLASSIC-RECTIFY-0001" defer></script><script src="./battery-panel-live-v1.js?v=BAT-HEADER-0001" defer></script><script src="./battery-recharge-header-v1.js?v=BAT-HEADER-0003-RESTORE" defer></script><script src="../../engine/systems/ground-power-header-policy-v1.js?v=GPU-FCOM-0001" defer></script><script src="./ground-power-header-v1.js?v=GPU-SPRING-0001" defer></script><script src="../../engine/systems/electrical-demand-estimate-v1.js?v=ATA24-LOAD-EST-0001" defer></script><script src="../../engine/systems/electrical-demand-estimate-v2.js?v=ATA24-LOAD-DYNAMICS-0002" defer></script><script src="./electrical-demand-live-unified-v1.js?v=ATA24-APU-ZERO-0002" defer></script><script src="./apu-live-meter-unified-v1.js?v=APU-EGT-COLDZERO3" defer></script><script src="./navdata-public-connect-v1.js?v=PUBLIC-NAV-2610-0001" defer></script>
+<script src="./asp-audible-bench-v3.js?v=ASP-TRAIN-0003" defer></script><link rel="stylesheet" href="./toggle-base-matte-v1.css?v=TOGGLE-BASE-MATTE-0001"><script src="./conventional-full-paint-v1.js?v=CONV-FULL-PAINT-0001" defer></script><script src="./engine-indication-mode-v1.js?v=CONV-FULL-0001" defer></script><script src="./conventional-engine-needles-v1.js?v=CONV-FULL-NEEDLES-0001" defer></script><script src="./cockpit-photo-input-v1.js?v=PHOTO-INPUT-0001" defer></script><script src="./unified-pinch-v1.js?v=UNIFIED-PINCH-0001" defer></script><script src="../../engine/systems/window-heat-v1.js?v=WH-STEADY-0006" defer></script><script src="./window-heat-unified-v1.js?v=WH-DARK-0005" defer></script><script src="../../engine/cb/tat-probe-cb-link-v1.js?v=TAT-CB-0001" defer></script><script src="../../engine/systems/tat-probe-v1.js?v=TAT-STUCK-0003" defer></script><script src="./tat-probe-unified-v1.js?v=TAT-SIXPACK-LIVE-0002" defer></script><link rel="stylesheet" href="./antiice-live-test-lab-v2.css?v=ANTIICE-LIVE-0002"><script src="./antiice-live-test-lab-v2.js?v=ANTIICE-STUCK-0003" defer></script><script src="./cb-panel-entry-v1.js?v=CB-ENTRY-0001-FOUR-FLASH-0001" defer></script><script src="./aircon-300500-slim-knob-unified-v1.js?v=AIRCON-300500-ROUND-0004" defer></script><script src="../../engine/systems/aircon-ovht-hold-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005" defer></script><script src="./aircon-fcom-unified-v1.js?v=AIRCON-OVHT-WALLCLOCK-0005" defer></script><script src="../../engine/systems/aircon-live-lab-v1.js?v=AIRCON-LIVE-LAB-0001" defer></script><link rel="stylesheet" href="./aircon-live-test-lab-v1.css?v=AIRCON-LIVE-LAB-0001"><script src="./aircon-live-test-lab-v1.js?v=AIRCON-LIVE-LAB-0002-CONTROLS" defer></script><script src="../../engine/systems/air-mix-valve-300500-v1.js?v=AIR-MIX-300500-THERMAL-0002" defer></script><script src="./air-mix-valve-300500-unified-v1.js?v=AIR-MIX-300500-THERMAL-0002" defer></script><script src="./fo-owner-panel-v1.js?v=FO-CONVENTIONAL-ONLY-0001" defer></script><script src="./conventional-lamp-registration-v1.js?v=CONV-LAMP-PIXEL-0003" defer></script><script src="./conventional-physical-controls-v1.js?v=ATA32-AUTOBRAKE-SHARED-0001" defer></script><script src="./eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0006-RING-TOUCH" defer></script><script src="../../engine/ch11/fmc-systems-network-v1.js?v=CH11-NET-0001" defer></script><script src="./fmc-systems-bridge-v1.js?v=CH11-NET-0001" defer></script><script src="../../engine/runtime/avionics-data-network-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/integration/avionics-fmc-computer-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/integration/avionics-sensor-ingress-v2.js?v=AVIONICS-SENSORS-0002" defer></script><script src="./avionics-network-runtime-v1.js?v=AVIONICS-NET-0001" defer></script><script src="../../engine/systems/electrical-network-v1.js?v=ATA24-CLASSIC-RECTIFY-0001" defer></script><script src="./electrical-live-unified-v1.js?v=BATTERY-LIVE-0001" defer></script><script src="../../engine/systems/battery-dynamics-v1.js?v=BATTERY-LIVE-0001" defer></script><script src="../../engine/integration/battery-panel-loads-v1.js?v=ATA24-CLASSIC-RECTIFY-0001" defer></script><script src="./battery-panel-live-v1.js?v=BAT-CONTROLS-0001" defer></script><script src="./battery-recharge-header-v1.js?v=BAT-CONTROLS-0001" defer></script><script src="../../engine/systems/ground-power-header-policy-v1.js?v=GPU-FCOM-0001" defer></script><script src="./ground-power-header-v1.js?v=GPU-SPRING-0001-HEADER4" defer></script><script src="../../engine/systems/electrical-demand-estimate-v1.js?v=ATA24-LOAD-EST-0001" defer></script><script src="../../engine/systems/electrical-demand-estimate-v2.js?v=ATA24-LOAD-DYNAMICS-0002" defer></script><script src="./electrical-demand-live-unified-v1.js?v=ATA24-APU-ZERO-0002" defer></script><script src="./apu-live-meter-unified-v1.js?v=APU-EGT-COLDZERO3" defer></script><script src="./navdata-public-connect-v1.js?v=PUBLIC-NAV-2610-0001" defer></script>
 <!-- Classic exterior lights: additive switch/photo layer; no change to locked mosaics or guards. -->
-<link rel="stylesheet" href="./exterior-lights-classic-v1.css?v=EXT-WHITE-TOPDOWN-0001"><script src="./exterior-lights-classic-v1.js?v=EXTL-CLASSIC-0001" defer></script><link rel="stylesheet" href="./sixpack-glareshield-v1.css?v=SIXPACK-0004"><script src="./sixpack-glareshield-v1.js?v=SIXPACK-0004" defer></script><script src="../../engine/systems/classic-redundancy-caution-v1.js?v=REDUNDANCY-CAUTION-0001" defer></script><script src="./sixpack-live-integration-v1.js?v=AIRCON-FCOM-0001" defer></script><link rel="stylesheet" href="./overhead-test-labs-v1.css?v=OH-LABS-0001"><script src="./overhead-test-labs-gesture-v1.js?v=OH-LABS-0001" defer></script><link rel="stylesheet" href="./overhead-cross-cockpit-v1.css?v=CROSS-COCKPIT-0001"><script src="./overhead-cross-cockpit-v1.js?v=CROSS-COCKPIT-0001" defer></script><script src="../../engine/systems/hydraulic-test-lab-core-v1.js?v=HYD-LAB-CORE-0001" defer></script><link rel="stylesheet" href="./hydraulic-live-lab-v1.css?v=HYD-LAB-UI-0001"><script src="../../engine/instruments/hydraulic-gauge-calibration-v2.js?v=HYD-GAUGE-CAL-V2" defer></script><script src="./hydraulic-live-lab-v1.js?v=HYD-LAB-UI-0003" defer></script><script src="./overhead-test-labs-v1.js?v=OH-LABS-AIRCON-0001" defer></script><style id="apu-lab-shell-v1">
+<link rel="stylesheet" href="./exterior-lights-classic-v1.css?v=EXT-WHITE-TOPDOWN-0001"><script src="./exterior-lights-classic-v1.js?v=EXTL-CLASSIC-0001-CONTROLS" defer></script><link rel="stylesheet" href="./sixpack-glareshield-v1.css?v=SIXPACK-0004"><script src="./sixpack-glareshield-v1.js?v=SIXPACK-0004" defer></script><script src="../../engine/systems/classic-redundancy-caution-v1.js?v=REDUNDANCY-CAUTION-0001" defer></script><script src="./sixpack-live-integration-v1.js?v=AIRCON-FCOM-0001" defer></script><link rel="stylesheet" href="./overhead-test-labs-v1.css?v=OH-LABS-0001"><script src="./overhead-test-labs-gesture-v1.js?v=OH-LABS-0001" defer></script><link rel="stylesheet" href="./overhead-cross-cockpit-v1.css?v=CROSS-COCKPIT-0001"><script src="./overhead-cross-cockpit-v1.js?v=CROSS-COCKPIT-0001" defer></script><script src="../../engine/systems/hydraulic-test-lab-core-v1.js?v=HYD-LAB-CORE-0001" defer></script><link rel="stylesheet" href="./hydraulic-live-lab-v1.css?v=HYD-LAB-UI-0001"><script src="../../engine/instruments/hydraulic-gauge-calibration-v2.js?v=HYD-GAUGE-CAL-V2" defer></script><script src="./hydraulic-live-lab-v1.js?v=HYD-LAB-UI-0003" defer></script><script src="./overhead-test-labs-v1.js?v=OH-LABS-AIRCON-0001" defer></script><style id="apu-lab-shell-v1">
 #apuLabButtonV1{background:#174969;color:#eff6ff;border:1px solid #4c859e;border-radius:5px;padding:8px 12px;cursor:pointer;font-weight:700}
 #apuLabDialogV1{padding:0;border:1px solid #43667d;border-radius:9px;background:#09121c;color:#ecf4ff;width:min(1510px,97vw);height:min(910px,96vh);max-width:none;max-height:none;box-shadow:0 12px 44px #000b;overflow:hidden}
 #apuLabDialogV1::backdrop{background:#050a12bf}
@@ -169,5 +206,5 @@ body.side-open > main > aside#inspector {display:block !important}
 </script><link rel="stylesheet" href="./engine-indication-live-v2.css?v=ENG-LIVE-0002">
 <script src="../../engine/instruments/engine-indication-backend-v1.js?v=ENG-LIVE-0002" defer></script>
 <script src="../../engine/systems/classic-engine-start-logic-v2.js?v=ENG-LIVE-0002" defer></script>
-<script src="./engine-indication-live-v2.js?v=ENG-LIVE-0002&amp;drums=EIS-CONV-DRUM-0004" defer></script>
+<script src="./engine-indication-live-v2.js?v=ENG-LIVE-0002-CONTROLS&amp;drums=EIS-CONV-DRUM-0004" defer></script>
 </body></html>
