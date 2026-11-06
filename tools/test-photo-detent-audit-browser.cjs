@@ -106,7 +106,7 @@ const {chromium}=require('playwright');
     const fallback=group?[...group.querySelectorAll('[data-eis-digit-cell] use')]
      .filter(t=>t.getAttribute('visibility')==='visible').length:0;
     const pointer=document.querySelector('[data-needle-pivot="'+id+'"]');
-    const actualAngle=Number(pointer?.getAttribute('transform')?.match(/rotate\\(([-0-9.]+)\\)/)?.[1]);
+    const actualAngle=Number(pointer?.getAttribute('transform')?.match(/rotate\(([-0-9.]+)\)/)?.[1]);
     const expectedAngle=core.angle(signal,'engine'+engine,pointerValue);
     found.push({id,actual:group?.dataset.value,expected,source,pointerValue,
      actualAngle,expectedAngle,visibleTapes:visual,visibleFixed:fallback,
