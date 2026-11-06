@@ -16,6 +16,16 @@
  // Ground Service supplies service loads, not an assumed CDU feeder.
  // Only all-dead switched/aircraft buses prove the absence of CDU power.
  const CANDIDATE_CDU_BUSES=Object.freeze(POWER_BUSES.filter(id=>!['hotBattery','groundService'].includes(id)));
+ // Minimum authoritative Electrical V7 proof that NO normal switched aircraft
+ // feeder can supply a CDU. Main1/main2 are upstream generator buses; if the
+ // generators and both transfers are confirmed off, they cannot alone power
+ // a display. Ignore HOT BATTERY and GROUND SERVICE (battery charger loads).
+ // Some ECU diagnostics omit the upstream main1/main2 properties; that must
+ // not turn an otherwise proven cold/dark cockpit into a bright CDU.
+ const CDU_POWER_LOSS_EVIDENCE=Object.freeze([
+  'generator1','generator2','transfer1','transfer2','acStandby',
+  'dc1','dc2','battery','switchedHotBattery','dcStandby'
+ ]);
  const BREAKERS=Object.freeze([
   {id:'P18-2:E8',label:'FMCS CMPTR NO.1',unit:'FMC1'},
   {id:'P18-2:E9',label:'CDU NO.1',unit:'CDU_CAPT'},
@@ -40,12 +50,14 @@
  }
  function globalPower(snapshot){
   const buses=snapshot?.bus;
-  if(!buses||!POWER_BUSES.every(k=>Object.hasOwn(buses,k)))return 'UNKNOWN';
-  if(CANDIDATE_CDU_BUSES.every(k=>buses[k]===false))return 'ABSENT';
-  // The unswitched hot battery can remain live with the aircraft cold/dark;
-  // service power alone never means an FMC or CDU display is energized.
-  // Conversely, a live candidate bus cannot certify the equipment feeder.
-  // Live bus voltage NEVER proves that a particular FMC/CDU feeder is energized.
+  if(!buses||typeof buses!=='object')return 'UNKNOWN';
+  // A confirmed 0V on every switched AC/DC supply is conclusive. Do not
+  // require unrelated hot-battery, charger or optional diagnostic bus fields.
+  // Unknown (null/missing) on any essential feed is NOT absence evidence.
+  const confirmedOff=CDU_POWER_LOSS_EVIDENCE.every(k=>buses[k]===false);
+  // Explicit contradictory upstream power prevents a false blackout.
+  if(confirmedOff&&buses.main1!==true&&buses.main2!==true)return 'ABSENT';
+  // Nonzero upstream voltage does not verify this CDU's individual CB/feed.
   return 'UNKNOWN';
  }
  function apply(old,event){
