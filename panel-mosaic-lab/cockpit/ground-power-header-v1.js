@@ -8,7 +8,7 @@
  const ID='groundPowerHeader',PANEL='groundPowerPopover';
  const policy=root.B737GroundPowerHeaderPolicyV1;
  if(!policy)return;
- let button=null,panel=null,notice=null,opened=false,lastSignature='';
+ let button=null,panel=null,notice=null,momentary=null,opened=false,lastSignature='';
  const byId=id=>document.getElementById(id);
  const owner=()=>root.B737ISNCockpitV1;
  const electrical=()=>root.B737ElectricalV7;
@@ -49,13 +49,17 @@
     '<p id="gpuBus">AC TRANSFER BUS 1 / 2: —</p>'+
     '<div class="gpu-actions">'+
     '<button type="button" data-gpu-action="CONNECT">1 · CONNECT GPU</button>'+
-    '<button type="button" data-gpu-action="DISCONNECT">DISCONNECT GPU</button>'+
-    '<button type="button" data-gpu-action="ON">2 · GRD PWR ON</button>'+
-    '<button type="button" data-gpu-action="OFF">GRD PWR OFF</button></div>'+
+    '<button type="button" data-gpu-action="DISCONNECT">DISCONNECT GPU</button></div>'+
+    '<div class="gpu-grd-switch"><strong>2 · GRD PWR · MOMENTARY</strong>'+
+    '<div class="gpu-switch-layout"><div class="gpu-switch-labels"><span>ON</span><span>NEUTRAL</span><span>OFF</span></div>'+
+    '<button type="button" id="gpuMomentarySwitch" class="gpu-spring-switch" data-position="NEUTRAL" aria-label="GRD POWER ON NEUTRAL OFF; momentary, spring returns to neutral; arrow up for ON and arrow down for OFF"><span class="gpu-spring-lever"></span></button></div>'+
+    '<small>Hold toward ON or OFF; release returns to NEUTRAL.</small></div>'+
     '<p class="gpu-explain">FCOM sequence: connect approved external AC → check GRD POWER AVAILABLE → BAT ON → momentarily select GRD PWR ON → verify BUS OFF / TRANSFER BUS OFF and STANDBY PWR OFF extinguish. The real P5 switch remains usable.</p>'+
     '<p id="gpuMessage" role="status" aria-live="polite"></p>';
    document.body.append(panel);
    notice=byId('gpuMessage');
+   momentary=byId('gpuMomentarySwitch');
+   bindMomentary();
    panel.querySelector('#gpuClose').addEventListener('click',close);
    for(const control of panel.querySelectorAll('[data-gpu-action]')){
     control.addEventListener('click',()=>run(control.dataset.gpuAction));
@@ -67,7 +71,61 @@
   }
   return true;
  }
- function close(){opened=false;if(panel)panel.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
+ function close(){opened=false;releaseMomentary();if(panel)panel.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
+ function setMomentary(position){
+  if(!momentary)return;
+  momentary.dataset.position=position;
+  momentary.setAttribute('aria-valuetext',position);
+ }
+ function releaseMomentary(){setMomentary('NEUTRAL');}
+ function bindMomentary(){
+  if(!momentary||momentary.dataset.bound==='true')return;
+  momentary.dataset.bound='true';
+  let held=null;
+  const poseAt=e=>{
+   const rect=momentary.getBoundingClientRect();
+   const fraction=(e.clientY-rect.top)/Math.max(1,rect.height);
+   return fraction<.35?'ON':fraction>.65?'OFF':'NEUTRAL';
+  };
+  const actuate=position=>{
+   if(position===momentary.dataset.position)return;
+   setMomentary(position);
+   if(position==='ON'||position==='OFF')run(position);
+  };
+  const release=e=>{
+   if(e&&held!==e.pointerId)return;
+   held=null;releaseMomentary();
+  };
+  momentary.addEventListener('pointerdown',e=>{
+   if(e.pointerType==='mouse'&&e.button!==0)return;
+   e.preventDefault();e.stopPropagation();
+   held=e.pointerId;
+   momentary.setPointerCapture(e.pointerId);
+   actuate(poseAt(e));
+  });
+  momentary.addEventListener('pointermove',e=>{
+   if(held===e.pointerId){e.preventDefault();actuate(poseAt(e));}
+  });
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])
+   momentary.addEventListener(name,release);
+  momentary.addEventListener('keydown',e=>{
+   const next=e.key==='ArrowUp'||e.key==='Home'?'ON':
+    e.key==='ArrowDown'||e.key==='End'?'OFF':
+    e.key===' '||e.key==='Enter'?(e.shiftKey?'OFF':'ON'):null;
+   if(next===null)return;
+   e.preventDefault();e.stopPropagation();
+   if(e.repeat)return;
+   actuate(next);
+  });
+  momentary.addEventListener('keyup',e=>{
+   if(['ArrowUp','ArrowDown','Home','End',' ','Enter'].includes(e.key)){
+    e.preventDefault();releaseMomentary();
+   }
+  });
+  momentary.addEventListener('blur',releaseMomentary);
+  root.addEventListener('blur',releaseMomentary);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseMomentary();});
+ }
  function message(value,error=false){
   if(!notice)return;
   notice.textContent=value||'';notice.dataset.error=String(error);
