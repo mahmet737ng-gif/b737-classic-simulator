@@ -24,7 +24,7 @@ function mount(){
  layer.setAttribute('viewBox','0 0 1235 1274');
  layer.setAttribute('preserveAspectRatio','none');
  layer.setAttribute('aria-hidden','true');
- layer.dataset.unpowered='false';
+ layer.dataset.unpowered=String(last===true); // preserve a power-off state observed before the DOM mounted
  const defs=document.createElementNS(ns,'defs');
  const gradient=document.createElementNS(ns,'radialGradient');
  gradient.setAttribute('id','eisColdDarkLensGradientV1');
