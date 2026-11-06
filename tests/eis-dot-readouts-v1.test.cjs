@@ -110,21 +110,25 @@ const convContext=vm.createContext({window:convWindow,document:convDocument,URL}
 vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'),'utf8'),convContext);
 vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'),'utf8'),convContext);
 const convApi=convWindow.B737EISDotReadoutsV1;
-assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,10);
-// The photo reference places the mechanical numerals above/right of each shaft.
-const convN1Spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1');
-assert.equal(convN1Spec.cx,427,'N1 readout is horizontally registered with the owner-marked dial aperture');
-assert.equal(convN1Spec.cy,401,'N1 readout is below the former too-high placement');
-const convEGTSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='egt_2');
-assert.equal(convEGTSpec.cx,600);assert.equal(convEGTSpec.cy,570,'Apply identical offset to both engines and EGT');
+assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,8,
+ 'Only N1, EGT, N2 and Fuel Flow have photographed Conventional numeric drums');
+const expected={
+ n1:[[393,401],[566,401]],
+ egt:[[393,540],[566,540]],
+ n2:[[391,691],[566,691]],
+ fuelFlow:[[392,850],[566,850]]
+};
 for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  const spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id===signal+'_'+engine);
  const needle=convWindow.B737ConventionalNeedlesV1.getSpecs().find(s=>s.id===signal+'_'+engine);
- assert.equal(spec.cx,needle.cx,signal+' engine '+engine+' is horizontally aligned to the owner dial');
- assert.equal(spec.cy,needle.cy-26,signal+' engine '+engine+' uses the marked vertical offset');
+ const [photoX,photoY]=expected[signal][engine-1];
+ assert.equal(spec.cx,photoX,signal+' engine '+engine+' X matches photographed aperture');
+ assert.equal(spec.cy,photoY,signal+' engine '+engine+' Y matches photographed aperture');
+ assert.ok(needle.cx>spec.cx&&needle.cx-spec.cx<42,'Digits stay left of shaft');
+ assert.ok(needle.cy>spec.cy&&needle.cy-spec.cy<70,'Digits stay above lettering');
 }
-const convOilSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1');
-assert.equal(convOilSpec.cx,803);assert.equal(convOilSpec.cy,750,'Do not shift the non-drum oil quantity window');
+assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1'),undefined,
+ 'Conventional oil quantity is an analog-only dial');
 const convN1Group=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='n1_1');
 const convDrumWindow=nodes(convN1Group).find(n=>'data-eis-tall-window' in n.attrs);
 assert.equal(+convDrumWindow.attrs.width,23,'The right digit must be wider than the EIS clip');
@@ -132,8 +136,10 @@ assert.equal(+convDrumWindow.attrs.y,-13);assert.equal(+convDrumWindow.attrs.hei
 const eisDrumWindow=nodes(piece).find(n=>'data-eis-tall-window' in n.attrs);
 assert.equal(+eisDrumWindow.attrs.width,16,'EIS window geometry must remain unchanged');
 convApi.setReading('engine1','oilQuantity',85);
-const oilWindow=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='oilQuantity_1');
-assert.equal(oilWindow.dataset.value,'4.25');assert.equal(oilWindow.dataset.displayUnit,'USgal');
+assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='oilQuantity_1'),undefined,
+ 'No Conventional digital oil quantity face');
+assert.equal(convApi.getReadings().oilQuantity_1.text,'85',
+ 'Electronic EIS oil quantity readout remains functional');
 convApi.setReading('engine1','fuelFlow',565);
 assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='fuelFlow_1').dataset.value,'0.57');
 convApi.setReading('engine1','n1',60,'ENGINE_INDICATION_BACKEND_V2');

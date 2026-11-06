@@ -15,7 +15,10 @@ assert.ok(index.includes('conventional-engine-needles-v1.js'));
 assert.ok(index.includes('conventional-engine-needles-v1.css'));
 assert.match(css,/#region-main \.conventional-engine-photo-wrap-v1>/);
 assert.match(fs.readFileSync(path.join(base,'engine-indication-mode-v1.css'),'utf8'),/data-engine-indication="CONVENTIONAL"/);
-assert.match(css,/z-index:1/);
+assert.match(css,/z-index:8/,'The photographic needles must display over Conventional digits');
+const digitCss=fs.readFileSync(path.join(base,'eis-dot-readouts-v1.css'),'utf8');
+assert.match(digitCss,/conventional-dot-readouts-v1[^\n]+z-index:6/,
+ 'Photo-digit layer must remain below needles');
 assert.equal((face.match(/data-conventional-red-lamp-socket/g)||[]).length,6);
 const encoded=needle.match(/data:image\/webp;base64,([A-Za-z0-9+/=]+)/)?.[1];
 assert.ok(encoded,'Photo-derived pointer must be embedded for offline GitHub Pages use');
