@@ -6,7 +6,7 @@ const {chromium}=require('playwright');
  const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const page=await browser.newPage({viewport:{width:1920,height:1080},deviceScaleFactor:1});
  const errors=[];
- page.on('pageerror',e=>errors.push(e.message));
+ page.on('pageerror',e=>errors.push(e.stack||e.message));
  try{
   const res=await page.goto('http://127.0.0.1:8788/panel-mosaic-lab/cockpit/?v=CONV-ONE-SOURCE-001',
    {waitUntil:'domcontentloaded',timeout:60000});
