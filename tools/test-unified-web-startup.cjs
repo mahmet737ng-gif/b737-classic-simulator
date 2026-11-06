@@ -95,6 +95,23 @@ const server=http.createServer((req,res)=>{
    }));
    assert.ok(charged.visible&&charged.percent>=99.99&&charged.status==='success',
     'Top-bar button must truly recharge the installed battery ECU to 100%');
+   // GPU-SPRING-0001: the physical GRD POWER header rocker must move on
+   // held input and return to center without sending a NEUTRAL bus command.
+   await page.locator('#groundPowerHeader').click();
+   const groundLever=page.locator('#gpuMomentarySwitch');
+   await groundLever.waitFor({state:'visible',timeout:15000});
+   assert.equal(await groundLever.getAttribute('data-position'),'NEUTRAL');
+   await groundLever.focus();
+   await page.keyboard.down('ArrowUp');
+   assert.equal(await groundLever.getAttribute('data-position'),'ON');
+   await page.keyboard.up('ArrowUp');
+   assert.equal(await groundLever.getAttribute('data-position'),'NEUTRAL');
+   await page.keyboard.down('ArrowDown');
+   assert.equal(await groundLever.getAttribute('data-position'),'OFF');
+   await page.keyboard.up('ArrowDown');
+   assert.equal(await groundLever.getAttribute('data-position'),'NEUTRAL');
+   await page.locator('#gpuClose').click();
+   console.log('GPU-SPRING-0001: GRD PWR lever returns to NEUTRAL after ON and OFF');
    assert.ok(sample.status.usable&&sample.interaction.responded&&sample.interaction.restored,'Real visible cockpit controls must respond');
    assert.equal(sample.profile.engineInstruments,mode==='conventional-profile'?'CONVENTIONAL':'EIS');
    assert.ok(sample.interaction.roundTripMs<200,'Live control response exceeds 200ms');
