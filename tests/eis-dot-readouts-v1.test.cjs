@@ -111,7 +111,19 @@ vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/con
 vm.runInContext(fs.readFileSync(require.resolve('../panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'),'utf8'),convContext);
 const convApi=convWindow.B737EISDotReadoutsV1;
 assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,10);
-assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1').cx,427);
+// The photo reference places the mechanical numerals above/right of each shaft.
+const convN1Spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1');
+assert.equal(convN1Spec.cx,448);assert.equal(convN1Spec.cy,384);
+const convEGTSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='egt_2');
+assert.equal(convEGTSpec.cx,621);assert.equal(convEGTSpec.cy,553);
+const convOilSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1');
+assert.equal(convOilSpec.cx,803);assert.equal(convOilSpec.cy,750,'Do not shift the non-drum oil quantity window');
+const convN1Group=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='n1_1');
+const convDrumWindow=nodes(convN1Group).find(n=>'data-eis-tall-window' in n.attrs);
+assert.equal(+convDrumWindow.attrs.width,23,'The right digit must be wider than the EIS clip');
+assert.equal(+convDrumWindow.attrs.y,-13);assert.equal(+convDrumWindow.attrs.height,46,'Both neighboring digits should be visible during a roll');
+const eisDrumWindow=nodes(piece).find(n=>'data-eis-tall-window' in n.attrs);
+assert.equal(+eisDrumWindow.attrs.width,16,'EIS window geometry must remain unchanged');
 convApi.setReading('engine1','oilQuantity',85);
 const oilWindow=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='oilQuantity_1');
 assert.equal(oilWindow.dataset.value,'4.25');assert.equal(oilWindow.dataset.displayUnit,'USgal');
@@ -121,4 +133,4 @@ convApi.setReading('engine1','n1',60,'ENGINE_INDICATION_BACKEND_V2');
 convEvents['b737:unified-ecu-observation']({detail:{engines:{engine1:{n1Percent:90}}}});
 assert.equal(convApi.getReadings().n1_1.value,60,'Raw ECU cannot overwrite the bus/failure-aware backend owner');
 assert.ok(nodes(convHost).some(n=>n.attrs.id==='conv-dot-glyph-9'),'Each surface has its own glyph IDs');
-console.log('PASS dense EIS glyphs, bidirectional rolling/carry, rapid retargets, shared RAF, clipped windows and tonne/hour conversion.');
+console.log('PASS dense EIS glyphs, bidirectional rolling/carry, calibrated upper conventional drums, wide clipped window and tonne/hour conversion.');
