@@ -1,0 +1,9 @@
+/* EIS-COLD-DARK-0001: photo remains byte-identical.
+ * Off-glass disc masks follow source-calibrated EIS gauge centers, not panel holes. */
+#region-main .texture-piece[data-piece="engine"]>.eis-cold-dark-glass-v1{
+ position:absolute;inset:0;width:100%;height:100%;z-index:12;
+ pointer-events:none;user-select:none;display:none;
+}
+#region-main .texture-piece[data-piece="engine"]>.eis-cold-dark-glass-v1[data-unpowered="true"]{display:block}
+html[data-engine-indication="CONVENTIONAL"] #region-main .eis-cold-dark-glass-v1{display:none!important}
+html.reference-mode #region-main .eis-cold-dark-glass-v1{display:none!important}
