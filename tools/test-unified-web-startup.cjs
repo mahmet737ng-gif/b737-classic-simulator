@@ -184,6 +184,33 @@ const server=http.createServer((req,res)=>{
   await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.n1Percent>40,null,{timeout:15000});
   await page.screenshot({path:path.join(out,'quick-engine-controls.png')});
   console.log('PASS visible Controls engine buttons and independent live power sliders');
+  // Same four-button layout on mobile. No hidden fifth header control,
+  // horizontal off-screen button, or battery readout overlaying the cockpit.
+  await page.setViewportSize({width:390,height:844});
+  const mobile=await page.evaluate(()=>{
+   const bar=document.querySelector('.unified-minimal-header .header-settings');
+   const nodes=[...bar.querySelectorAll(':scope > button')];
+   const bounds=nodes.map(node=>({id:node.id,left:node.getBoundingClientRect().left,
+    right:node.getBoundingClientRect().right,scrollWidth:node.scrollWidth,
+    clientWidth:node.clientWidth}));
+   return {width:document.documentElement.clientWidth,buttons:bounds,
+    batteryInViewport:!!document.querySelector('#viewport #liveBatteryReadout')};
+  });
+  assert.deepEqual(mobile.buttons.map(x=>x.id),
+   ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader']);
+  assert.equal(mobile.batteryInViewport,false,'Battery meter may not float over the cockpit');
+  assert.ok(mobile.buttons.every(b=>b.left>=-1&&b.right<=mobile.width+1),
+   'Mobile top-bar buttons must fit the device width');
+  const ordered=[...mobile.buttons].sort((a,b)=>a.left-b.left);
+  assert.ok(ordered.every((b,i)=>i===0||b.left>=ordered[i-1].right-1),
+   'Mobile top-bar buttons must not overlap');
+  await page.screenshot({path:path.join(out,'mobile-four-button-header.png')});
+  await page.locator('#inspectorToggle').click();
+  await page.locator('#batteryMeterControlSlot #liveBatteryReadout')
+   .waitFor({state:'visible',timeout:20000});
+  await page.screenshot({path:path.join(out,'mobile-controls-battery-amp.png')});
+  await page.locator('#inspectorToggle').click();
+  console.log('PASS mobile header and Controls battery meter layout',JSON.stringify(mobile));
   assert.equal(errors.length,0,'Uncaught page errors: '+errors.join('\n'));
   assert.ok(lockedIrsErrors.length<=3,'Frozen IRS observer error exceeded one per page load');
   console.log('Isolated frozen IRS observer errors: '+lockedIrsErrors.length);
