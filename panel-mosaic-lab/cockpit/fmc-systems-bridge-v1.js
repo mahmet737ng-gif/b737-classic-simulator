@@ -107,9 +107,10 @@
   for(const unit of model.UNIT_IDS){
    const target=evaluated==='ABSENT'?'ABSENT':'UNKNOWN';
    if(network.power[unit].feed!==target)
-    transition({type:'FEED',unit,evidence:target,nowMs:now(),
+    network=model.apply(network,{type:'FEED',unit,evidence:target,nowMs:now(),
      provenance:target==='ABSENT'?'ALL_POWER_BUSES_PROVEN_ABSENT':'UPSTREAM_POWER_RESTORED_FEED_UNKNOWN'});
   }
+  emit();
   transmitToMCP();
  }
  function setVerifiedFeed(unit,evidence){
