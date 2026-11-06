@@ -26,11 +26,16 @@
  // Owner-marked upper dial window: the same offset for every physical shaft,
  // at the gap between the 12 and 0 dial markers. No EIS coordinates change.
  // Needle pivot -> aperture center: (-3,-44) in the native photo layout.
+ // Calibrated to the owner's red rectangle in the 1920px screenshot.
+ // N1 right: photo window [817,374]..[892,400], needle hub about [856,436].
+ // Same 1463 x 1075 photo coordinates and (-3,-26) shaft offset on BOTH engines.
+ // Previous (-3,-44) placed the drum too HIGH; the tall window also spilled
+ // into the surrounding 12/0 marks. EIS instrument slots are independent.
  const CONVENTIONAL_APERTURES=Object.freeze({
-  n1:Object.freeze([[424,383],[597,383]]),
-  egt:Object.freeze([[424,552],[597,552]]),
-  n2:Object.freeze([[422,703],[597,703]]),
-  fuelFlow:Object.freeze([[423,866],[597,866]])
+  n1:Object.freeze([[424,401],[597,401]]),
+  egt:Object.freeze([[424,570],[597,570]]),
+  n2:Object.freeze([[422,721],[597,721]]),
+  fuelFlow:Object.freeze([[423,884],[597,884]])
  });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];
@@ -42,7 +47,7 @@
    const side=s.engine==='engine1'?0:1;
    const aperture=CONVENTIONAL_APERTURES[s.signal]?.[side];
    if(!aperture)throw Error('Missing calibrated Conventional aperture '+s.id);
-   return {...s,cx:aperture[0],cy:aperture[1],scale:.8};
+   return {...s,cx:aperture[0],cy:aperture[1],scale:.75};
   });
  }
  function createLayer(piece,layerSpecs,variant){
@@ -61,8 +66,17 @@
    const width=font.layout(spec.template).width,lastX=width-14;
    // Conventional drum aperture: show more of the numbers above and below
    // the active right-hand digit, without altering the calibrated EIS window.
-   const drumWindow=variant==='CONVENTIONAL'?{x:lastX-5,y:-13,width:23,height:46}:
+   // The owner's red box spans one numeral row. Keep the wider last-column
+   // preview, but constrain its upper/lower neighbors to the real aperture.
+   const drumWindow=variant==='CONVENTIONAL'?{x:lastX-5,y:-5,width:23,height:31}:
     {x:lastX-2,y:font.style.windowTop,width:16,height:font.style.windowHeight};
+   if(variant==='CONVENTIONAL'){
+    const outerId='conv-photo-aperture-'+spec.id;
+    const apertureClip=element(defs,'clipPath',{id:outerId,clipPathUnits:'userSpaceOnUse'});
+    element(apertureClip,'rect',{x:-3,y:-5,width:width+6,height:31});
+    group.setAttribute('clip-path','url(#'+outerId+')');
+    group.dataset.photoWindow='OWNER_RED_RECT_1920';
+   }
    element(group,'rect',{'data-eis-display-face':'',x:-2,y:font.style.bodyTop,
     width:width+4,height:font.style.bodyHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
    const clipId=variant+'-last-digit-window-'+spec.id,bodyId=variant+'-body-window-'+spec.id;

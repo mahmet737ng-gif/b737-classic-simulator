@@ -113,10 +113,10 @@ const convApi=convWindow.B737EISDotReadoutsV1;
 assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,8,
  'Only N1, EGT, N2 and Fuel Flow have photographed Conventional numeric drums');
 const expected={
- n1:[[424,383],[597,383]],
- egt:[[424,552],[597,552]],
- n2:[[422,703],[597,703]],
- fuelFlow:[[423,866],[597,866]]
+ n1:[[424,401],[597,401]],
+ egt:[[424,570],[597,570]],
+ n2:[[422,721],[597,721]],
+ fuelFlow:[[423,884],[597,884]]
 };
 for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  const spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id===signal+'_'+engine);
@@ -125,14 +125,19 @@ for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  assert.equal(spec.cx,photoX,signal+' engine '+engine+' X matches photographed aperture');
  assert.equal(spec.cy,photoY,signal+' engine '+engine+' Y matches photographed aperture');
  assert.equal(needle.cx-spec.cx,3,signal+' engine '+engine+' matches red box horizontal center');
- assert.equal(needle.cy-spec.cy,44,signal+' engine '+engine+' matches red box vertical position');
+ assert.equal(needle.cy-spec.cy,26,signal+' engine '+engine+' matches marked red box vertical position');
 }
 assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1'),undefined,
  'Conventional oil quantity is an analog-only dial');
 const convN1Group=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='n1_1');
 const convDrumWindow=nodes(convN1Group).find(n=>'data-eis-tall-window' in n.attrs);
 assert.equal(+convDrumWindow.attrs.width,23,'The right digit must be wider than the EIS clip');
-assert.equal(+convDrumWindow.attrs.y,-13);assert.equal(+convDrumWindow.attrs.height,46,'Both neighboring digits should be visible during a roll');
+assert.equal(+convDrumWindow.attrs.y,-5);assert.equal(+convDrumWindow.attrs.height,31,
+ 'Last digit preview stays inside the photographed red rectangle');
+assert.ok(convN1Group.attrs['clip-path']?.includes('conv-photo-aperture-n1_1'),
+ 'Entire Conventional number must be clipped to the owner-marked slot');
+assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1').scale,.75,
+ 'Size must fit the photographed rectangle rather than covering dial labels');
 const eisDrumWindow=nodes(piece).find(n=>'data-eis-tall-window' in n.attrs);
 assert.equal(+eisDrumWindow.attrs.width,16,'EIS window geometry must remain unchanged');
 convApi.setReading('engine1','oilQuantity',85);
