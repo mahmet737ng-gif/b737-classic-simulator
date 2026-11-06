@@ -31,6 +31,8 @@ const {chromium}=require('playwright');
    assert.equal(e.profile.values.length,e.signal==='n1'?13:11,'Every physical major mark must be registered');
   }
   let checked=0,maxAngleError=0,maxDisplayedError=0;
+  assert.equal(await page.evaluate(()=>window.B737N1EGTPrecisionLabV1.NEEDLE_VISUAL_OFFSET_DEG),
+   -1.8,'Photo-only needle correction should be -1.8 degrees');
   const valuesByGauge={};
   for(const e of base.entries){
    const marks=[...e.profile.values],tests=[...marks,...marks.slice(0,-1).map((x,i)=>(x+marks[i+1])/2)];
@@ -41,8 +43,11 @@ const {chromium}=require('playwright');
      const lab=window.B737N1EGTPrecisionLabV1,angle=lab.setValue(id,value);
      const pointer=document.querySelector('[data-photo-pointer="'+id+'"]');
      const digits=document.querySelector('[data-photo-digits="'+id+'"]');
-     return {angle:angle.angle,value:angle.value,text:angle.text,
-      rendered:Number(pointer?.dataset.angle),
+     const painted=Number(pointer?.getAttribute('transform')?.match(/rotate\(([-0-9.]+)\)/)?.[1]);
+     return {angle:angle.angle,renderAngle:angle.renderAngle,
+      visualOffsetDeg:angle.visualOffsetDeg,value:angle.value,text:angle.text,
+      rendered:Number(pointer?.dataset.angle),painted,
+      calibration:Number(pointer?.dataset.calibratedAngle),
       digit:digits?.dataset.text,source:digits?.dataset.value,
       glyphs:digits?.querySelectorAll('circle').length||0,
       photoHref:document.querySelector('article[data-gauge="'+id+'"] [data-source-photograph]')?.getAttribute('href'),
@@ -53,8 +58,15 @@ const {chromium}=require('playwright');
     assert.ok(report.glyphs>10,e.id+' visible original dot glyphs absent');
     assert.ok(report.photoHref?.includes('p2-conventional-full-owner-20261030.png'));
     assert.ok(report.needleHref?.includes('conventional-needle-photo-v1.svg'));
-    const delta=Math.abs(report.rendered-report.angle);
-    assert.ok(delta<=.000051,e.id+' photo needle not on calibrated tick '+value);
+    const delta=Math.abs(report.rendered-report.renderAngle);
+    assert.ok(delta<=.000051,e.id+' photo needle not on compensated tick '+value);
+    assert.ok(Math.abs(report.painted-report.renderAngle)<=.000051,
+     e.id+' rendered SVG transform does not apply -1.8° photo correction');
+    assert.ok(Math.abs(report.calibration-report.angle)<=.000051,
+     e.id+' detent calibration changed instead of visual needle');
+    assert.ok(Math.abs(report.renderAngle-report.angle+1.8)<=.0000001,
+     e.id+' photographic needle bias changed');
+    assert.equal(report.visualOffsetDeg,-1.8);
     maxAngleError=Math.max(maxAngleError,delta);
     const err=Math.abs(Number(report.text)-value);
     assert.ok(err<=(e.signal==='n1'?.050001:.500001),e.id+' numeric mismatch '+value);
@@ -79,7 +91,8 @@ const {chromium}=require('playwright');
   console.log('N1_EGT_PRECISION_LAB_PASS',JSON.stringify({
    photoVerified:true,photoAssetCount:base.originalPhotos,pointers:base.pointers,
    tests:checked,perGauge:valuesByGauge,zeroEndpointsValidated:true,
-   maxPointerAngleError:maxAngleError,maxDisplayQuantizationError:maxDisplayedError,
+   visualNeedleOffsetDeg:-1.8,maxPointerAngleError:maxAngleError,
+   maxDisplayQuantizationError:maxDisplayedError,
    visualMarks:marks,randomAuditChecks:audit.checks}));
  }finally{await page.close();await browser.close();}
 })().catch(error=>{console.error('N1_EGT_PRECISION_LAB_FAIL',error.stack||error);process.exitCode=1;});

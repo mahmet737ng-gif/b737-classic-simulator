@@ -16,6 +16,14 @@ assert.match(js,/photoScan\(frame,e\.signal,e\.engine\)/);
 assert.match(js,/data-photo-pointer/);
 assert.match(js,/data-photo-digits/);
 assert.match(js,/data-calibration-marks/);
+assert.match(js,/const NEEDLE_VISUAL_OFFSET_DEG=-1\.8;/,
+ 'Image registration correction is exactly -1.8°');
+assert.match(js,/needleRenderAngle\(theta\)/,
+ 'The photographic pointer uses the corrected render angle');
+assert.match(js,/card\.pointer\.dataset\.calibratedAngle=theta\.toFixed\(4\)/,
+ 'Preserve independent unmodified calibration angle for audit');
+assert.match(js,/card\.pointer\.dataset\.visualOffsetDeg/,
+ 'Expose only visual rendering correction');
 const cases=[{signal:'n1',maximum:120,step:10,precision:.05,decimals:1},
  {signal:'egt',maximum:1000,step:100,precision:.5,decimals:0}];
 let total=0;

@@ -31,6 +31,11 @@ function labelNode(tag,className,text,parent){
 }
 const format=(entry,value)=>font.format(value,{decimals:entry.decimals,integerDigits:entry.signal==='n1'?3:4});
 const angleFor=(entry,value)=>calibration.angle(entry.signal,entry.engine,value);
+// The photographic needle asset has a small clockwise registration bias.
+// Correct the *painted image only*; detent angles, ECU values and dot digits
+// remain untouched. Negative is counterclockwise in SVG rotation.
+const NEEDLE_VISUAL_OFFSET_DEG=-1.8;
+const needleRenderAngle=calibratedAngle=>calibratedAngle+NEEDLE_VISUAL_OFFSET_DEG;
 const vector=(degree,radius)=>({x:Math.sin(degree*Math.PI/180)*radius,
  y:-Math.cos(degree*Math.PI/180)*radius});
 function addDotDigits(target,entry,formatted){
@@ -71,22 +76,26 @@ function update(entry,value){
  const card=cards.get(entry.id);
  const bounded=Math.max(0,Math.min(entry.max,value));
  const theta=angleFor(entry,bounded);
+ const renderedTheta=needleRenderAngle(theta);
  const text=format(entry,bounded);
  if(!card||!Number.isFinite(theta))throw Error('No gauge pointer calibration '+entry.id);
  card.value=bounded;card.slider.value=String(bounded);
- card.pointer.setAttribute('transform','rotate('+theta.toFixed(4)+') scale(.51)');
- card.pointer.dataset.angle=theta.toFixed(4);
+ card.pointer.setAttribute('transform','rotate('+renderedTheta.toFixed(4)+') scale(.51)');
+ card.pointer.dataset.angle=renderedTheta.toFixed(4);
+ card.pointer.dataset.calibratedAngle=theta.toFixed(4);
+ card.pointer.dataset.visualOffsetDeg=String(NEEDLE_VISUAL_OFFSET_DEG);
  card.pointer.dataset.value=String(bounded);
  card.digits.dataset.text=text;
  card.digits.dataset.value=String(bounded);
  addDotDigits(card.digits,entry,text);
  card.valueLabel.textContent=text+(entry.signal==='egt'?' °C':' %');
- card.angleLabel.textContent='NEEDLE '+theta.toFixed(2)+'°';
+ card.angleLabel.textContent='NEEDLE '+renderedTheta.toFixed(2)+'° · CAL '+theta.toFixed(2)+'°';
  const p=calibration.getProfile(entry.signal,entry.engine);
  card.sourceLabel.textContent=p.status;
  card.sourceLabel.className=p.status==='PHOTO_VERIFIED'?'ok':'warn';
  for(const b of card.buttons)b.classList.toggle('selected',Math.abs(Number(b.dataset.value)-bounded)<entry.step/2);
- return {value:bounded,angle:theta,text,status:p.status};
+ return {value:bounded,angle:theta,renderAngle:renderedTheta,
+  visualOffsetDeg:NEEDLE_VISUAL_OFFSET_DEG,text,status:p.status};
 }
 function build(entry){
  const article=labelNode('article','card',undefined,byId('gauges'));article.dataset.gauge=entry.id;
@@ -166,7 +175,8 @@ function audit({count=1000,seed=191737}={}){
  return Object.freeze({pass:failures===0,checks,randomCount:count,failures,
   maxNeedleValueError:maxRawError,maxDisplayRounding:maxDotError,results});
 }
-const api=Object.freeze({VERSION:'N1-EGT-PHOTO-LAB-0001',entries,
+const api=Object.freeze({VERSION:'N1-EGT-PHOTO-LAB-0002',entries,
+ NEEDLE_VISUAL_OFFSET_DEG,
  setValue(id,value){const e=entries.find(e=>e.id===id);if(!e)throw Error('Unknown gauge');return update(e,value);},
  getValue(id){return cards.get(id)?.value;},
  getProfile(signal,engine){const p=calibration.getProfile(signal,engine);return{values:[...p.values],angles:[...p.angles],status:p.status};},
