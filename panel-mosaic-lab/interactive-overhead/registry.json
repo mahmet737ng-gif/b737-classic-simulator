@@ -297,14 +297,19 @@
         285.7
       ],
       "bezelSourceDiameter": 96,
-      "type": "toggle-2",
+      "type": "toggle-3-vertical",
       "axis": "vertical",
       "states": [
         "OFF",
+        "NEUTRAL",
         "ON"
       ],
-      "default": "ON",
-      "basis": "owner guide image; mounted at existing socket in locked source"
+      "default": "NEUTRAL",
+      "springReturn": {
+        "OFF": "NEUTRAL",
+        "ON": "NEUTRAL"
+      },
+      "basis": "Owner requested spring-loaded GRD PWR ON / NEUTRAL / OFF at existing OH12 socket; return to NEUTRAL after release; preserve latched electrical contactor state."
     },
     {
       "id": "gen-1",
