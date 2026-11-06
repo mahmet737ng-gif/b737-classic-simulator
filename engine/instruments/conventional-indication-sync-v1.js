@@ -94,8 +94,10 @@
    const number=finite(s.value)?s.value:null;
    const digitalNumber=s.signal==='fuelFlow'&&s.state==='TRACK'&&
       finite(s.digital)&&s.digital!==s.target?s.digital:number;
-   const valueChanged=force||s.emitted!==number;
-   const digitalChanged=force||s.emittedDigital!==digitalNumber;
+   // The first backend frame must claim every gauge, including BLANK.
+   // Otherwise a null channel retains the old unowned needle/ECU data.
+   const valueChanged=force||s.tick===0||s.emitted!==number;
+   const digitalChanged=force||s.tick===0||s.emittedDigital!==digitalNumber;
    if(valueChanged&&needle?.setReading){
     // Null has a distinct failure state. No fabricated 0 data point.
     needle.setReading(s.engine,s.needle,number,'ENGINE_INDICATION_SYNC_V1');
