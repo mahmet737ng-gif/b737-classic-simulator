@@ -45,3 +45,29 @@ body > header.unified-minimal-header #groundPowerHeader[data-gpu="BAD_QUALITY"]{
   font-size:10px!important;padding:4px 5px!important;
  }
 }
+
+/* GPU-SPRING-0001: actual GRD PWR selector is a three-position momentary
+   lever. Electrical contactors latch in ECU; only the physical lever centers. */
+#groundPowerPopover .gpu-grd-switch{border:1px solid #4c6978;background:#122d3c;border-radius:9px;padding:10px;margin:10px 0}
+#groundPowerPopover .gpu-grd-switch>strong{display:block;font-size:12px;letter-spacing:.04em}
+#groundPowerPopover .gpu-grd-switch>small{display:block;color:#a9c8d8;margin-top:7px}
+#groundPowerPopover .gpu-switch-layout{display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0 4px}
+#groundPowerPopover .gpu-switch-labels{display:flex;flex-direction:column;justify-content:space-between;height:120px;text-align:right;font:700 11px/1.1 system-ui;letter-spacing:.04em;color:#d6e8f2}
+#groundPowerPopover .gpu-switch-labels span:nth-child(2){color:#a5c0ca}
+#groundPowerPopover button.gpu-spring-switch{
+ position:relative;display:block;box-sizing:border-box;width:58px;height:124px;flex:0 0 58px;
+ padding:0;background:linear-gradient(90deg,#0a1116,#263d49 49%,#0a1217);
+ border:3px ridge #6b8794;border-radius:25px;box-shadow:inset 0 4px 12px #000b,0 2px 4px #0008;
+ touch-action:none;cursor:ns-resize;user-select:none
+}
+#groundPowerPopover .gpu-spring-lever{
+ display:block;position:absolute;left:50%;top:50%;width:38px;height:28px;
+ transform:translate(-50%,-50%);border-radius:11px;
+ background:linear-gradient(#d4d8d9,#818d92 45%,#455158 51%,#cbd1d3);
+ border:1px solid #a4b2bb;box-shadow:0 2px 5px #000a;
+ transition:top 90ms ease-out;pointer-events:none
+}
+#groundPowerPopover .gpu-spring-switch[data-position="ON"] .gpu-spring-lever{top:18%}
+#groundPowerPopover .gpu-spring-switch[data-position="OFF"] .gpu-spring-lever{top:82%}
+#groundPowerPopover .gpu-spring-switch:focus-visible{outline:2px solid #90e5ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#groundPowerPopover .gpu-spring-lever{transition:none}}
