@@ -49,6 +49,11 @@ function parseEntries(value){return String(value||'').split(';').map(x=>x.trim()
 function getBreakers(p){if(p.id!=='P6-4')return parseEntries(p.breakers);const base=parseEntries(p.breakers);return network.variant==='DCPCS'?base.filter(x=>!/^F[1-6]$/.test(x.position)).concat(parseEntries(p.altBreakers)):base;}
 function keyFor(p,position){return Kernel.keyFor(p.id,position,network.variant);}
 function getBreakerState(key){return network.state(key);}
+function linkedUnifiedConsumers(breakerId){
+ const definitions=window.B737UnifiedCircuitGatesV1?.DEFINITIONS||{};
+ return Object.entries(definitions).filter(([,def])=>def.keys.some(
+  id=>id.replace('|ACTIVE|','|'+network.variant+'|')===breakerId)).map(([name])=>name);
+}
 function syncButton(btn){const b=getBreakerState(btn.dataset.key);if(!b)return;const pulled=b.pulled||b.tripped;btn.classList.toggle('pulled',pulled);btn.setAttribute('aria-pressed',String(pulled));btn.setAttribute('aria-label',btn.dataset.label+' — '+(pulled?'PULLED':'PUSHED'));}
 
 /* Image-based panels. Only the original surveyed inner-circle coordinates can be
@@ -71,7 +76,11 @@ function buttonFor(p,item,rec,face,rect,g,unverified){
  const btn=document.createElement('button');btn.type='button';btn.className='cb-knob'+(unverified?' cb-unknown':'');
  const key=unverified?'PHOTO|'+p.id+'|'+item.position:keyFor(p,item.position);
  btn.dataset.key=key;btn.dataset.label=p.id+' '+item.position+' '+item.label;
- btn.title=p.id+' '+item.position+' · '+item.label+(unverified?' · Photo point, identity not verified':' · '+item.rating+'A');
+ const consumers=unverified?[]:linkedUnifiedConsumers(key);
+ btn.dataset.unifiedWiring=unverified?'UNVERIFIED':consumers.length?'MAPPED':'UNMAPPED';
+ btn.title=p.id+' '+item.position+' · '+item.label+
+  (unverified?' · Photo point, identity not verified':' · '+item.rating+'A')+
+  (unverified?'':consumers.length?' · Unified: '+consumers.join(', '):' · No linked Unified consumer (CB state only)');
  btn.setAttribute('aria-label',btn.title);
  const head=document.createElement('span');head.className='cb-head';
  head.textContent=unverified?'?':String(item.rating).replace('.5','½');btn.append(head);
@@ -221,7 +230,10 @@ function toggle(rec){
  const request=new CustomEvent('b737-cb-command',{cancelable:true,detail:{key:rec.key,panel:rec.panelId,position:rec.position,variant:network.variant,action,label:rec.label,rating:rec.rating}});
  if(!window.dispatchEvent(request))return;
  const reply=network.action(rec.key,action);if(!reply.ok){emitStatus('CB cannot be pushed: '+reply.reason);return;}
- persist();syncButton(rec.button);emitStatus(rec.panelId+' '+rec.position+' '+rec.label+' '+(action==='PULL'?'PULLED':'PUSHED'));
+ persist();syncButton(rec.button);
+ const consumers=linkedUnifiedConsumers(rec.key);
+ emitStatus(rec.panelId+' '+rec.position+' '+rec.label+' '+(action==='PULL'?'PULLED':'PUSHED')+
+  (consumers.length?' · Connected Unified: '+consumers.join(', '):' · No linked Unified consumer'));
 }
 function zoomAt(scale,px,py){
  const next=clamp(scale,Math.max(.10,minFit()*.65),3);
