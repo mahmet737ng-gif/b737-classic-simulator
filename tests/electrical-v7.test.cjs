@@ -35,7 +35,8 @@ t('TR3 disconnect relay isolates DC sides when BUS TRANS OFF',()=>{let s=fault(s
 t('glideslope capture isolates DC bus 1 and 2',()=>{let s=fault(start(),'TR1_FAILED');s=set(s,'glideslopeCaptured',true);const o=ev(s);assert.equal(o.feed.tie,false);assert.equal(o.bus.dc1,false)});
 t('hot battery bus always follows battery health',()=>{const o=ev(set(start(),'batterySwitch',false));assert.equal(o.bus.hotBattery,true)});
 t('switched hot battery bus respects battery switch',()=>{const o=ev(set(start(),'batterySwitch',false));assert.equal(o.bus.switchedHotBattery,false)});
-t('battery depletion removes hot battery bus',()=>{assert.equal(ev(fault(start(),'BATTERY_DEPLETED')).bus.hotBattery,false)});
+t('battery depletion retains hot battery bus while AC charger remains online',()=>{const o=ev(fault(start(),'BATTERY_DEPLETED'));assert.equal(o.bus.hotBattery,true);assert.equal(o.feed.chargerSource,'GROUND_SERVICE')});
+t('battery depletion removes hot battery bus when no charger source is connected',()=>{const o=ev(fault(bothOff(start()),'BATTERY_DEPLETED'));assert.equal(o.bus.hotBattery,false);assert.equal(o.feed.chargerSource,null)});
 t('normal standby draws from transfer1 and DC1',()=>{const o=ev(start());assert.equal(o.feed.standbyFeed,'TRANSFER1_DC1');assert.equal(o.bus.acStandby,true);assert.equal(o.bus.dcStandby,true)});
 t('STANDBY OFF de-energizes standby buses',()=>{const o=ev(set(start(),'standbySelector','OFF'));assert.equal(o.bus.acStandby,false);assert.equal(o.lamps.standbyPowerOff,true)});
 t('STANDBY BAT bypasses battery switch on healthy battery',()=>{let s=set(start(),'batterySwitch',false);s=set(s,'standbySelector','BAT');const o=ev(s);assert.equal(o.bus.dcStandby,true);assert.equal(o.bus.acStandby,true)});
