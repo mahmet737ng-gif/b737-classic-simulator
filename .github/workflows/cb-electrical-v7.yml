@@ -32,6 +32,7 @@ jobs:
           node --check engine/cb/unified-circuit-gates-v1.js
           node --check panel-mosaic-lab/interactive-overhead/lights-model.js
           node --test tests/cb-overhead-live-effects-v1.test.cjs
+          node --test tests/cb-unified-live-v1.test.cjs
       - name: Validate breaker mechanical and fault state
         run: npm run test:cb
       - name: Validate source-mapped CB subsystem effects
