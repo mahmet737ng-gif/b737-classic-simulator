@@ -21,7 +21,8 @@ for(const label of ['0','5','10','15','20'])assert.match(face,new RegExp('>'+lab
 assert.match(face,/OXY. PRESS./);assert.match(face,/PSI X 100/);
 assert.match(needle,/oxNeedle/);assert.match(needle,/oxHub/);
 const ui=fs.readFileSync(path.join(__dirname,'oxygen-pressure-gauge-unified.js'),'utf8');
-assert.ok(ui.includes('.atlas-piece[data-key='));assert.ok(ui.includes('model.bearing(currentPsi)'));
+assert.ok(ui.includes('.atlas-piece[data-key='));assert.ok(ui.includes("window.B737UnifiedCB?.available('oxygen.indicator')===false?0:currentPsi"),'Opened crew oxygen indicator CB must drive the displayed needle to zero without modifying oxygen pressure');
+assert.ok(ui.includes("window.addEventListener('b737:cb-state-change',paint)"),'CB pull/push must repaint oxygen indication');
 assert.ok(ui.includes('window.B737UnifiedOxygenPressureGauge'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('oxygen-pressure-gauge-model.js?v=OXG-0001'));
