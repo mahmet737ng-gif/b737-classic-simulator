@@ -41,6 +41,46 @@ test('all 12 real annunciators accept all 4096 input combinations',()=>{
   for(let i=0;i<12;i++)assert.equal(actual[key(names[i])],Boolean(mask&(1<<i)),mask+'/'+i);
  }
 });
+test('pulled FUEL and ANTI-ICE master caution CBs isolate lights even during ALL LIGHTS ON and recall',()=>{
+ const Kernel=require('../../engine/cb/cb-kernel');
+ const Gates=require('../../engine/cb/unified-circuit-gates-v1');
+ const catalogContext={window:{}};
+ vm.runInNewContext(fs.readFileSync(path.join(dir,'../../cb-panel-lab/catalog.js'),'utf8'),catalogContext);
+ const cb=Gates.create(catalogContext.window.CB_CATALOG,Kernel);
+ const {api,window}=core();window.B737UnifiedCB=cb;
+ const fuel='P6-3|ALL|D10',antiIce='P6-3|ALL|D9';
+ api.setLiveConditions({'CAPT.FUEL':['FUEL:PUMP_1_LOW_PRESSURE'],
+  'FO.ANTI ICE':['ANTIICE:WINDOW_HEAT_OVHT'], 'CAPT.ELEC':['ELEC:GEN1_FAILED']});
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],true);
+ assert.equal(api.getEffectiveState()['FO.ANTI ICE'],true);
+ assert.equal(cb.network.action(fuel,'PULL').ok,true);
+ assert.equal(cb.network.action(antiIce,'PULL').ok,true);
+ window.dispatchEvent({type:'b737:cb-state-change'});
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],false);
+ assert.equal(api.getEffectiveState()['FO.ANTI ICE'],false);
+ assert.equal(api.getEffectiveState()['CAPT.ELEC'],true,'independent category retains normal operation');
+ api.setVisualTest(true);
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],false,'ALL LIGHTS ON cannot energize an isolated lamp');
+ assert.equal(api.getEffectiveState()['FO.ANTI ICE'],false,'ALL LIGHTS ON cannot bypass ANTI ICE CB');
+ assert.equal(api.getEffectiveState()['CAPT.ELEC'],true);
+ api.setVisualTest(false);api.press('FO');
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],false,'push-to-test cannot bypass FUEL CB');
+ assert.equal(api.getEffectiveState()['FO.ANTI ICE'],false,'push-to-test cannot bypass ANTI ICE CB');
+ api.release('FO');
+ assert.deepEqual(Array.from(api.getLiveReasons()['CAPT.FUEL']),['FUEL:PUMP_1_LOW_PRESSURE']);
+ assert.deepEqual(Array.from(api.getLiveReasons()['FO.ANTI ICE']),['ANTIICE:WINDOW_HEAT_OVHT']);
+ assert.equal(cb.network.action(fuel,'PUSH').ok,true);
+ assert.equal(cb.network.action(antiIce,'PUSH').ok,true);
+ window.dispatchEvent({type:'b737:cb-state-change'});
+ api.recall('CAPT');
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],true,'FUEL alert returns when its CB is reset');
+ assert.equal(api.getEffectiveState()['FO.ANTI ICE'],true,'ANTI ICE alert returns when its CB is reset');
+ assert.equal(cb.network.action('P6-3|ALL|D13','PULL').ok,true);
+ assert.equal(api.getEffectiveState()['CAPT.MASTER CAUTION'],false);
+ assert.equal(api.getEffectiveState()['FO.MASTER CAUTION'],false);
+ assert.equal(api.getEffectiveState()['CAPT.FUEL'],true,'Master Caution lamp CB does not kill FUEL category');
+});
+
 test('both Master Caution buttons acknowledge but do not clear source faults, Recall restores',()=>{
  const {api}=core();
  api.setLiveConditions({'CAPT.ELEC':['ELEC:GEN1_FAILED'],'FO.DOORS':['OH:door-fwd-entry']});
