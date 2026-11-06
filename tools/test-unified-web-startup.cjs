@@ -43,6 +43,23 @@ const server=http.createServer((req,res)=>{
    await page.goto(url,{waitUntil:'commit',timeout:60000});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000,polling:25});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedSharpMs,null,{timeout:30000,polling:100});
+   // COLD-DARK-EIS-0001: render 16 unlit EIS glass faces only if the
+   // authoritative Electrical V7 has proven all switched aircraft buses off.
+   await page.waitForFunction(()=>window.B737EISColdDarkGlassV1?.snapshot?.().mounted===true,
+    null,{timeout:20000,polling:100});
+   const eisColdDark=await page.evaluate(()=>{
+    const visual=window.B737EISColdDarkGlassV1.snapshot();
+    const bus=window.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+    const candidates=['generator1','generator2','transfer1','transfer2','dc1','dc2',
+      'acStandby','battery','switchedHotBattery','dcStandby'];
+    const provenOff=!!bus&&candidates.every(k=>bus[k]===false);
+    return {visual,provenOff};
+   });
+   assert.equal(eisColdDark.visual.faces,16,'All 16 EIS glass faces must be installed');
+   if(eisColdDark.provenOff)
+    assert.equal(eisColdDark.visual.unpowered,true,
+     'Unpowered EIS must visibly hide the permanent green-on-photo scales');
+   console.log('Cold-dark EIS overlay verified',JSON.stringify(eisColdDark));
    // THR-0008: Catch missing pedal/throttle mounts on the *compiled* GitHub
    // Pages artifact. A successfully loaded background alone is not sufficient.
    await page.waitForFunction(()=>{
@@ -119,6 +136,24 @@ const server=http.createServer((req,res)=>{
    // Startup readiness must not skip the actual secondary systems. Wait and
    // verify overhead + both CDUs, then exercise the real Settings dialog.
    await page.waitForFunction(()=>{const s=window.CockpitStartupGate.inspect(window,window.B737AircraftProfileStore.get());return s.overhead&&s.cdu;},null,{timeout:60000});
+   // With only the unswitched hot battery alive, the embedded CDU should
+   // have confirmed ABSENT power and a dark screen, never bright green IDENT.
+   const cduPower=await page.evaluate(()=>{
+    const projection=window.B737ISNCockpitV1?.getState?.()?.state?.electrical;
+    const expected=window.B737FmcSystemsV1?.globalPower?.(projection);
+    const frame=document.getElementById('cduFrameFO');
+    const doc=frame?.contentDocument;
+    return {expected,feed:doc?.documentElement.dataset.cduElectricalFeed||null,
+      screenVisibility:doc?.getElementById('fmc-screen')?.style.visibility||null};
+   });
+   if(cduPower.expected==='ABSENT'){
+    await page.waitForFunction(()=>{
+     const doc=document.getElementById('cduFrameFO')?.contentDocument;
+     return doc?.documentElement.dataset.cduElectricalFeed==='ABSENT'&&
+       doc.getElementById('fmc-screen')?.style.visibility==='hidden';
+    },null,{timeout:12000,polling:100});
+   }
+   console.log('Cold-dark CDU power gate checked',JSON.stringify(cduPower));
    await page.locator('#aircraftSettingsOpen').click();await page.locator('#aircraftSettingsDialog').waitFor({state:'visible'});await page.locator('#aircraftSettingsClose').click();
    await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
   }
