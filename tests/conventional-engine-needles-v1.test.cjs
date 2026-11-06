@@ -46,45 +46,63 @@ const specs=api.getSpecs();
 assert.equal(specs.length,16);
 const instrumentScale={
  n1:{unit:10,maximum:120,sample:35.7},
- egt:{unit:100,maximum:1200,sample:504},
+ egt:{unit:100,maximum:1000,sample:504},
  n2:{unit:10,maximum:120,sample:71.4},
  fuelFlow:{unit:1000,maximum:12000,sample:1200}
 };
-// The major tick centres below were matched to the photographed radial
-// strokes, rather than assumed evenly spaced. N2 remains byte-for-byte on
-// its user-accepted 45/90/135/... calibration.
+// Photo-extracted ALL white radial strokes, including the 10%/100°C
+// intermediate graduations. EGT physically ENDS at 10, not 12.
 const markedAngles={
- n1:[46,89,134,180,226,274,320],
- egt:[50,88,133,179,226,275,319],
+ n1:[48.5,72.5,93.8,117.8,139,160.5,181.2,202.8,223.8,246,268.5,291.8,314.2],
+ egt:[48.8,87.5,110.5,133,157.2,181.2,204.2,227.8,251.2,276,318.2],
  n2:[45,90,135,180,225,270,315],
  fuelFlow:[46,89,134,180,226,274,320]
 };
+const near=(a,b)=>Math.abs(a-b)<1e-9;
 for(const [signal,{unit,maximum,sample}] of Object.entries(instrumentScale)){
  for(const engine of ['engine1','engine2']){
   const spec=specs.find(s=>s.engine===engine&&s.signal===signal);
   assert.ok(spec,'Missing calibrated gauge '+signal+'/'+engine);
-  assert.equal(spec.max,maximum,signal+' must cover 12 printed scale units');
-  const angles=markedAngles[signal];
-  assert.deepEqual(JSON.parse(JSON.stringify(api.getDialCalibration()[signal].photoTickAngles)),angles);
-  for(const printed of [0,2,4,6,8,10,12]){
-   const actual=api.getAngle(engine,signal,printed*unit);
-   const expected=angles[printed/2];
-   assert.ok(Math.abs(actual-expected)<1e-9,
-    signal+' '+engine+' printed radial tick '+printed+' must match the source-photo centre');
+  assert.equal(spec.max,maximum,signal+' must stop at last printed scale value');
+  const angles=markedAngles[signal],registered=api.getDialCalibration()[signal];
+  assert.deepEqual(JSON.parse(JSON.stringify(registered.photoTickAngles)),angles);
+  const full=signal==='n1'||signal==='egt';
+  const marks=full?Array.from({length:angles.length},(_,i)=>i):[0,2,4,6,8,10,12];
+  const raw=marks.map(mark=>mark*unit);
+  assert.deepEqual(JSON.parse(JSON.stringify(registered.dialLabels)),marks);
+  assert.deepEqual(JSON.parse(JSON.stringify(registered.detentValues)),raw);
+  for(let i=0;i<raw.length;i++){
+   const actual=api.getAngle(engine,signal,raw[i]);
+   assert.ok(near(actual,angles[i]),
+    signal+' '+engine+' must hit physical white stroke '+marks[i]+': '+actual+' vs '+angles[i]);
+   if(i+1<raw.length){
+    // Half and quarter marks are continuous (no quantization / stalling).
+    for(const fraction of [.25,.5,.75]){
+     const v=raw[i]+(raw[i+1]-raw[i])*fraction;
+     const expected=angles[i]+(angles[i+1]-angles[i])*fraction;
+     assert.ok(near(api.getAngle(engine,signal,v),expected),
+      signal+' '+engine+' smooth between adjacent white graduations '+i+' and '+(i+1));
+    }
+   }
   }
-  const unitMark=sample/unit,idx=Math.min(5,Math.floor(unitMark/2));
-  const expected=angles[idx]+(angles[idx+1]-angles[idx])*(unitMark/2-idx);
-  assert.ok(Math.abs(api.getAngle(engine,signal,sample)-expected)<1e-9,
-   signal+' same ECU value must interpolate between photographed tick centres');
-  assert.equal(api.getAngle(engine,signal,maximum+500),angles[6],
-   'Over-range values must park at last marked physical tick');
+  const p=Math.min((angles.length-2),Math.floor(sample/unit/(full?1:2)));
+  const stride=full?1:2,alpha=(sample/unit-p*stride)/stride;
+  assert.ok(near(api.getAngle(engine,signal,sample),
+    angles[p]+(angles[p+1]-angles[p])*alpha),
+   signal+' live digital ECU value must follow the physical source-photo dial');
+  assert.ok(near(api.getAngle(engine,signal,maximum+500),angles[angles.length-1]),
+   'Beyond-scale value parks at last physical white stroke');
  }
 }
-assert.ok(Math.abs(api.getAngle('engine1','egt',504)-156.92)<1e-9,
- '504°C must indicate 5.04 on the photo-calibrated EGT scale');
-// Owner's accepted N2 rotation, including intermediate values, is preserved.
-assert.ok(Math.abs(api.getAngle('engine1','n2',71.4)-(45+7.14*22.5))<1e-9,
- 'Accepted N2 calibration must remain unchanged');
+assert.ok(near(api.getAngle('engine1','egt',504),182.12),
+ '504°C = 5.04 on the 0..10 EGT dial, between ticks 5 and 6');
+assert.ok(near(api.getAngle('engine1','n1',60),181.2),
+ '60% N1 lands on the measured 6-mark line');
+// Accepted N2 0–120% detents, angles and intermediate motion are unchanged.
+for(const v of [0,12,35.7,60,71.4,84.4,100,120]){
+ assert.ok(near(api.getAngle('engine1','n2',v),45+v/10*22.5),
+  'Approved N2 motion is locked at '+v+'%');
+}
 const secondaryMarks={
  oilPressure:{labels:[0,20,40,60,80,100],angles:[133,193,253,314,380,452]},
  oilTemp:{labels:[-50,0,50,100,150,200],angles:[101,158,219,273,315,353]},

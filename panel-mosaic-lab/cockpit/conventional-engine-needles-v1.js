@@ -10,7 +10,7 @@ const getLayout=()=>window.B737EngineIndicationModeV1?.layout();
 const PHOTO=new URL('./assets/conventional-needle-photo-v1.svg?v=CONV-NEEDLE-0001',document.baseURI).href;
 const ROWS=Object.freeze([
  Object.freeze({key:'n1',label:'N1',y:309,min:0,max:120,primary:true,scale:1}),
- Object.freeze({key:'egt',label:'EGT',y:579,min:0,max:1200,primary:true,scale:1}),
+ Object.freeze({key:'egt',label:'EGT',y:579,min:0,max:1000,primary:true,scale:1}),
  Object.freeze({key:'n2',label:'N2',y:849,min:0,max:120,primary:true,scale:1}),
  Object.freeze({key:'fuelFlow',label:'Fuel Flow',y:1112,min:0,max:12000,primary:true,scale:.9}),
  Object.freeze({key:'oilPressure',label:'Oil Pressure',y:309,min:0,max:100,primary:false,scale:.84}),
@@ -56,12 +56,18 @@ function node(parent,tag,attrs){
  // Major radial tick centres registered against the user's actual Conventional
  // dial screenshot. Values are degrees CLOCKWISE from the 12-o'clock axis.
  // N2 is owner-accepted and intentionally remains on PRIMARY_TICK_ANGLES.
+ // Owner's November 6 source photograph: centres of EVERY radial white
+ // graduation, 0 through the last physical scale mark. Angles use the same
+ // needle rotation convention (clockwise degrees from 12 o'clock).
+ // N1: 0..12 in 10% steps; EGT: 0..10 in 100°C steps (°C x 100).
+ // Measured against actual photographed strokes, NOT assumed equal spacing.
  const PHOTO_PRIMARY_TICKS=Object.freeze({
-  n1:Object.freeze([46,89,134,180,226,274,320]),
-  egt:Object.freeze([50,88,133,179,226,275,319]),
+  n1:Object.freeze([48.5,72.5,93.8,117.8,139,160.5,181.2,202.8,223.8,246,268.5,291.8,314.2]),
+  egt:Object.freeze([48.8,87.5,110.5,133,157.2,181.2,204.2,227.8,251.2,276,318.2]),
   fuelFlow:Object.freeze([46,89,134,180,226,274,320])
  });
  const primaryAngles=signal=>signal==='n2'?PRIMARY_TICK_ANGLES:PHOTO_PRIMARY_TICKS[signal];
+ const FULL_DETENT_STEPS=Object.freeze({n1:10,egt:100});
  // Secondary dial graduations: actual visible white radial strokes and printed
  // legends from the Classic photo, not the legacy arbitrary 65°-355° sweep.
  // Increasing angles may extend beyond 360° to preserve needle continuity.
@@ -85,12 +91,19 @@ function node(parent,tag,attrs){
   if(spec.primary){
    const per=PRIMARY_UNITS_PER_TICK[spec.signal];
    if(!per)throw Error('Uncalibrated primary engine dial '+spec.signal);
-   // Interpolate on the *printed physical markings*, rather than sweeping
-   // 306° across an arbitrary scale maximum.
+   const ticks=primaryAngles(spec.signal);
+   // N1/EGT must land EXACTLY on every printed white graduation,
+   // with no snapping when between two adjacent ticks.
+   const fullStep=FULL_DETENT_STEPS[spec.signal];
+   if(fullStep){
+    const marked=Math.max(0,Math.min(ticks.length-1,value/fullStep));
+    const lower=Math.min(ticks.length-2,Math.floor(marked));
+    return ticks[lower]+(ticks[lower+1]-ticks[lower])*(marked-lower);
+   }
+   // Existing accepted N2 and Fuel Flow motion is explicitly unchanged.
    const marked=Math.max(0,Math.min(12,value/per));
    const lower=Math.min(5,Math.floor(marked/2));
    const ratio=(marked-lower*2)/2;
-   const ticks=primaryAngles(spec.signal);
    return ticks[lower]+(ticks[lower+1]-ticks[lower])*ratio;
   }
   // Every secondary display has its OWN printed physical tick table.
@@ -162,7 +175,13 @@ window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
  getDialCalibration:()=>({
   ...Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
-   signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],dialLabels:[0,2,4,6,8,10,12]}
+   signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],
+    dialLabels:FULL_DETENT_STEPS[signal]
+     ?Array.from({length:primaryAngles(signal).length},(_,i)=>i)
+     :[0,2,4,6,8,10,12],
+    detentValues:FULL_DETENT_STEPS[signal]
+     ?Array.from({length:primaryAngles(signal).length},(_,i)=>i*FULL_DETENT_STEPS[signal])
+     :[0,2,4,6,8,10,12].map(i=>i*unitsPerDial)}
   ])),
   ...Object.fromEntries(Object.entries(SECONDARY_MARKS).map(([signal,mark])=>[
    signal,{dialLabels:[...mark.values],photoTickAngles:[...mark.angles]}
