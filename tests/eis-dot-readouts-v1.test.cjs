@@ -163,6 +163,12 @@ assert.equal(convApi.getReadings().oilQuantity_1.text,'85',
  'Electronic EIS oil quantity readout remains functional');
 convApi.setReading('engine1','fuelFlow',565);
 assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='fuelFlow_1').dataset.value,'0.57');
+assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='egt_1').template,'9999');
+assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='fuelFlow_1').template,'00.00');
+convApi.setReading('engine1','egt',1000);
+assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='egt_1').dataset.value,'1000');
+convApi.setReading('engine1','fuelFlow',12000);
+assert.equal(nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='fuelFlow_1').dataset.value,'12.00');
 convApi.setReading('engine1','n1',60,'ENGINE_INDICATION_BACKEND_V2');
 convEvents['b737:unified-ecu-observation']({detail:{engines:{engine1:{n1Percent:90}}}});
 assert.equal(convApi.getReadings().n1_1.value,60,'Raw ECU cannot overwrite the bus/failure-aware backend owner');

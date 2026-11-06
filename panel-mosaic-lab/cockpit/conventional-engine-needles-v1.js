@@ -34,6 +34,33 @@ let layer=null;
 const values=new Map();
 const rotors=new Map();
 const backendOwned=new Set(); // live ECU/failure-aware readings take priority over legacy start snapshots
+const photoEngine=window.B737PhotoDetentCalibrationV1;
+let registeredPhoto=null,photoEvidence=null;
+function calibrateSourcePhoto(host){
+ if(!photoEngine||typeof document.createElement!=='function'||!host?.querySelector)return;
+ const image=host.querySelector('.conventional-engine-panel-v1');
+ if(!image||!image.complete||image.naturalWidth!==1463||image.naturalHeight!==1075||registeredPhoto===image)return;
+ let canvas,ctx,frame;
+ try{
+  canvas=document.createElement('canvas');canvas.width=1463;canvas.height=1075;
+  ctx=canvas.getContext('2d',{willReadFrequently:true});
+  if(!ctx)return;
+  ctx.drawImage(image,0,0,1463,1075);frame=ctx.getImageData(0,0,1463,1075);
+ }catch(error){
+  photoEvidence={status:'PHOTO_READ_FAILED',error:String(error)};return;
+ }
+ const scans=[];
+ for(const signal of Object.keys(photoEngine.REFERENCE))
+  for(const engine of ['engine1','engine2']){
+   const s=photoEngine.photoScan(frame,signal,engine);
+   photoEngine.applyPhotoScan(s);
+   scans.push({signal,engine,passed:s.passed,confidence:s.confidence,angles:s.angles,
+    status:photoEngine.getProfile(signal,engine).status});
+  }
+ registeredPhoto=image;
+ photoEvidence={status:'SCANNED',scans};
+ for(const spec of SPECS)paint(spec);
+}
 
 for(const spec of SPECS)values.set(spec.id,Object.freeze({value:0,source:'UNSOURCED_PARKED'}));
 function node(parent,tag,attrs){
@@ -88,6 +115,9 @@ function node(parent,tag,attrs){
   return angles[angles.length-1];
  }
  function angle(spec,value){
+  // Live image-specific white-line calibration: both engines are independent.
+  // N2 remains owner-locked in the engine and its pointer is never re-fit.
+  if(photoEngine)return photoEngine.angle(spec.signal,spec.engine,value);
   if(spec.primary){
    const per=PRIMARY_UNITS_PER_TICK[spec.signal];
    if(!per)throw Error('Uncalibrated primary engine dial '+spec.signal);
@@ -122,6 +152,7 @@ function paint(spec){
 function mount(){
  const host=getMount(),layout=getLayout();
  if(!host||!layout)return false;
+ calibrateSourcePhoto(host);
  if(layer?.parentNode===host){layer.style.transform=layout.cssMatrix;return true;}
  if(layer && layer.parentNode!==host){layer.remove();rotors.clear();}
  layer=node(host,'svg',{class:'conventional-engine-needle-layer-v1',
@@ -173,7 +204,15 @@ window.addEventListener('b737:engine-indication-view',mount);
 window.addEventListener('b737:isn-start-indications',event=>{fromIsn(event.detail);mount();});
 window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
- getDialCalibration:()=>({
+ getPhotoDetentAudit:()=>photoEngine?{...photoEngine.inspectAll({samples:512}),
+  photoEvidence}:null,
+ getDialCalibration:()=>photoEngine?Object.fromEntries(
+  Object.keys(photoEngine.REFERENCE).map(signal=>{
+   const p=photoEngine.getProfile(signal,'engine1');
+   return[signal,{photoTickAngles:[...p.angles],dialLabels:p.values.map((_,i)=>i),
+    detentValues:[...p.values],status:p.status}];
+  })
+ ):({
   ...Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
    signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],
     dialLabels:FULL_DETENT_STEPS[signal]

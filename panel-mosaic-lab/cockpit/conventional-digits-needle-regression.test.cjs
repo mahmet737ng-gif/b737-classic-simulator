@@ -22,6 +22,8 @@ for(const [signal,apertures] of Object.entries(expected))for(const [side,[x,y]] 
  assert.equal(needleY-y,signal==='n1'?42:41,
   signal+' pixel-matched window above the printed legend');
 }
+assert.ok(digits.includes("template:'9999'"),'Conventional EGT should render 1000C');
+assert.ok(digits.includes("template:'00.00'"),'Conventional FF should render 12.00t/h');
 assert.ok(digits.includes("specs.filter(s=>s.signal!=='oilQuantity').map"),
  'Conventional oil quantity must not add numeric overlay');
 assert.ok(digits.includes("id:'oilQuantity_'+n"),
@@ -38,7 +40,7 @@ assert.ok(digits.includes("x:lastX-5,y:-5,width:23,height:31"),
  'Conventional preview digits must not overflow the target photograph aperture');
 assert.match(digitCss,/conventional-dot-readouts-v1[^\n]+z-index:6/);
 assert.ok(live.includes("group.style.visibility='visible'"),'Physical pointers must remain visible');
-for(const ver of ['EIS-CONV-DRUM-0012-REAL-RED-RECT','EIS-CONV-DRUM-0008-CONV-LAYER',
-'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','CONV-DIAL-TICKS-0007-ALL-DIAL-MARKS-N2-LOCK','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
+for(const ver of ['EIS-CONV-DRUM-0013-FULL-SCALE-CONV','EIS-CONV-DRUM-0008-CONV-LAYER',
+'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','CONV-DIAL-TICKS-0009-PHOTO-ENGINE-AUDIT','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
  assert.ok(html.includes(ver),'Cached module missing revision '+ver);
 console.log('PASS: eight photo readouts, all needles front, no oil digital Conventional, unchanged EIS.');

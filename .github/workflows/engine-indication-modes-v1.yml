@@ -10,6 +10,8 @@ on:
       - 'tests/engine-indication-modes-v1.test.cjs'
       - 'tests/conventional-engine-needles-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'engine/instruments/photo-detent-calibration-v1.js'
+      - 'tests/photo-detent-calibration-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css'
       - 'panel-mosaic-lab/cockpit/assets/conventional-needle-photo-v1.svg'
       - '.github/workflows/engine-indication-modes-v1.yml'
@@ -23,6 +25,8 @@ on:
       - 'tests/engine-indication-modes-v1.test.cjs'
       - 'tests/conventional-engine-needles-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'engine/instruments/photo-detent-calibration-v1.js'
+      - 'tests/photo-detent-calibration-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css'
       - 'panel-mosaic-lab/cockpit/assets/conventional-needle-photo-v1.svg'
       - '.github/workflows/engine-indication-modes-v1.yml'
@@ -40,6 +44,7 @@ jobs:
         run: |
           node tests/engine-indication-modes-v1.test.cjs
           node tests/conventional-engine-needles-v1.test.cjs
+          node --test tests/photo-detent-calibration-v1.test.cjs
       - name: Frozen overhead check
         run: python3 panel-mosaic-lab/verify-final-overhead.py
       - name: Frozen guarded switches check

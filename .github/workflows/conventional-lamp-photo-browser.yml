@@ -9,6 +9,10 @@ on:
       - 'tools/test-conventional-photo-registration.cjs'
       - 'tools/test-conventional-digit-windows-browser.cjs'
       - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'
+      - 'engine/instruments/photo-detent-calibration-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'tests/photo-detent-calibration-v1.test.cjs'
+      - 'tools/test-photo-detent-audit-browser.cjs'
       - '.github/workflows/conventional-lamp-photo-browser.yml'
   workflow_dispatch:
 permissions:
@@ -43,6 +47,7 @@ jobs:
           done
           node tools/test-conventional-photo-registration.cjs
           node tools/test-conventional-digit-windows-browser.cjs
+          node tools/test-photo-detent-audit-browser.cjs
       - name: Archive actual Chromium photograph after correction
         if: always()
         uses: actions/upload-artifact@v4
@@ -51,5 +56,6 @@ jobs:
           path: |
             /tmp/b737-conventional-gear-pixel-qa.png
             /tmp/b737-conventional-numeric-qa.png
+            /tmp/b737-photo-detents-random-qa.png
           if-no-files-found: ignore
           retention-days: 14

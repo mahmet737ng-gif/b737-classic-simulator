@@ -49,7 +49,11 @@
    const side=s.engine==='engine1'?0:1;
    const aperture=CONVENTIONAL_APERTURES[s.signal]?.[side];
    if(!aperture)throw Error('Missing calibrated Conventional aperture '+s.id);
-   return {...s,cx:aperture[0],cy:aperture[1],scale:.75};
+   // EGT=1000 and FF=12000 must still fit their conventional numeric face.
+   // EIS maintains its existing separately designed three-digit readout.
+   const full=s.signal==='egt'?{integerDigits:4,template:'9999',scale:.61}:
+    s.signal==='fuelFlow'?{integerDigits:2,template:'00.00',scale:.61}:{scale:.75};
+   return {...s,cx:aperture[0],cy:aperture[1],...full};
   });
  }
  function createLayer(piece,layerSpecs,variant){
