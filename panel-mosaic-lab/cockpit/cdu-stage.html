@@ -4,7 +4,9 @@
   document.documentElement.dataset.cduAwaitingPower='true';
 })();</script><style id="unified-cdu-power-fail-dark-css-v2">
 html[data-cdu-awaiting-power="true"] #fmc-screen,
-html[data-cdu-awaiting-power="true"] #annunciators{visibility:hidden!important}
+html[data-cdu-awaiting-power="true"] #annunciators,
+html[data-cdu-electrical-feed="ABSENT"] #fmc-screen,
+html[data-cdu-electrical-feed="ABSENT"] #annunciators{visibility:hidden!important}
 </style><script>performance.setResourceTimingBufferSize(3000)</script><script src="../panel-mosaic-lab/cockpit/performance/manifest.js?v=PERF-0001"></script><script src="../panel-mosaic-lab/cockpit/performance-loader.js?v=PERF-0001"></script><link rel="stylesheet" href="style.css?v=CDU-OWNER-PHOTO-20261031-LSK-EDGE-01"><link rel="stylesheet" href="../assets/fonts/boeing-cdu/cdu-screen.css"><link rel="stylesheet" href="../panel-mosaic-lab/cockpit/cdu-embed.css?v=CDU-OWNER-PHOTO-20261031"><style id="unified-cdu-24col-profile-v6">
 /* Physical CDU remains 1199x1312. Real text size is computed from the 24-A
    scratchpad width, not from a fixed guessed px value. */
