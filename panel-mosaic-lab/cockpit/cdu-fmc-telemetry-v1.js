@@ -5,15 +5,18 @@
  'use strict';
  const seat=new URLSearchParams(location.search).get('seat');
  if(!['CAPT','FO'].includes(seat)||parent===window||typeof state==='undefined'||typeof update!=='function')return;
- const original=update;let queued=false,feed='UNKNOWN';
+ const original=update;let queued=false,feed='UNKNOWN',pendingPowerEvidence=true;
  const paintFeed=()=>{
-  // Existing CDU power is not inferred from the aircraft bus. Only proven
-  // absence turns the screen and annunciators off; UNKNOWN stays in trainer mode.
-  const off=feed==='ABSENT';
+  // Embedded CDU must never flash live CRZ/IDENT text before a real ECU
+  // snapshot arrives. Once the aircraft feeder is evaluated, proven loss
+  // suppresses the screen; UNKNOWN retains trainer-mode behavior only when
+  // an authoritative snapshot has actually been received.
+  const off=pendingPowerEvidence||feed==='ABSENT';
   for(const id of ['fmc-screen','annunciators']){
    const el=document.getElementById(id);if(el)el.style.visibility=off?'hidden':'visible';
   }
   document.documentElement.dataset.cduElectricalFeed=feed;
+  document.documentElement.dataset.cduAwaitingPower=String(pendingPowerEvidence);
  };
  // Block all keyboard and physical key activation only for proven CDU loss.
  for(const evt of ['pointerdown','click']){
@@ -30,7 +33,7 @@
  window.addEventListener('message',e=>{
   if(e.source!==parent||e.origin!==location.origin)return;
   if(e.data?.type==='b737:fmc-cdu-power'&&e.data.seat===seat&&['PRESENT','ABSENT','UNKNOWN'].includes(e.data.feed)){
-   feed=e.data.feed;paintFeed();
+   feed=e.data.feed;pendingPowerEvidence=false;paintFeed();
   }
  });
  function snapshot(){
@@ -53,5 +56,6 @@
   if(e.data?.type==='b737:fmc-request-snapshot'&&e.data.seat===seat)send();
  });
  paintFeed();send();parent.postMessage({type:'b737:fmc-cdu-power-ready',seat},location.origin);
- window.B737CduFmcTelemetryV1=Object.freeze({snapshot,getFeed:()=>feed});
+ window.B737CduFmcTelemetryV1=Object.freeze({snapshot,getFeed:()=>feed,
+  awaitingPower:()=>pendingPowerEvidence});
 })();
