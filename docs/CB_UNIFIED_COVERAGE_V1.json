@@ -6,7 +6,7 @@
       "revision": 0,
       "variant": "CPCS",
       "total": 474,
-      "mappedBreakers": 117,
+      "mappedBreakers": 120,
       "open": [],
       "quarantined": [
         "P6-4|CPCS|C8",
@@ -179,10 +179,6 @@
         {
           "id": "P6-2|ALL|A10",
           "label": "SPOILER"
-        },
-        {
-          "id": "P6-2|ALL|A11",
-          "label": "STBY RUD"
         },
         {
           "id": "P6-2|ALL|A12",
@@ -897,10 +893,6 @@
           "label": "MAIN DISTRIBUTION"
         },
         {
-          "id": "P6-11|ALL|A8",
-          "label": "STBY HYD PUMP NORMAL"
-        },
-        {
           "id": "P6-11|ALL|B2",
           "label": "TRANSFER BUS NO.1 NORMAL"
         },
@@ -927,10 +919,6 @@
         {
           "id": "P6-12|ALL|A2",
           "label": "MAIN DISTRIBUTION"
-        },
-        {
-          "id": "P6-12|ALL|A8",
-          "label": "STBY HYD PUMP ALTN"
         },
         {
           "id": "P6-12|ALL|B2",
@@ -1451,7 +1439,7 @@
       "revision": 0,
       "variant": "DCPCS",
       "total": 473,
-      "mappedBreakers": 114,
+      "mappedBreakers": 117,
       "open": [],
       "quarantined": [
         "P6-4|CPCS|C8",
@@ -1624,10 +1612,6 @@
         {
           "id": "P6-2|ALL|A10",
           "label": "SPOILER"
-        },
-        {
-          "id": "P6-2|ALL|A11",
-          "label": "STBY RUD"
         },
         {
           "id": "P6-2|ALL|A12",
@@ -2350,10 +2334,6 @@
           "label": "MAIN DISTRIBUTION"
         },
         {
-          "id": "P6-11|ALL|A8",
-          "label": "STBY HYD PUMP NORMAL"
-        },
-        {
           "id": "P6-11|ALL|B2",
           "label": "TRANSFER BUS NO.1 NORMAL"
         },
@@ -2380,10 +2360,6 @@
         {
           "id": "P6-12|ALL|A2",
           "label": "MAIN DISTRIBUTION"
-        },
-        {
-          "id": "P6-12|ALL|A8",
-          "label": "STBY HYD PUMP ALTN"
         },
         {
           "id": "P6-12|ALL|B2",
@@ -3584,6 +3560,24 @@
     "fire.extinguisherAPU": {
       "keys": [
         "P6-2|ALL|C23"
+      ],
+      "role": "CONTROL"
+    },
+    "hyd.standbyPumpNormal": {
+      "keys": [
+        "P6-11|ALL|A8"
+      ],
+      "role": "POWER"
+    },
+    "hyd.standbyPumpAlternate": {
+      "keys": [
+        "P6-12|ALL|A8"
+      ],
+      "role": "POWER"
+    },
+    "flight.standbyRudderControl": {
+      "keys": [
+        "P6-2|ALL|A11"
       ],
       "role": "CONTROL"
     }
