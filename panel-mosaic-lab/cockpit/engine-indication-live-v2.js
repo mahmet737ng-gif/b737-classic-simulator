@@ -24,6 +24,9 @@
  }
  function paint(result){
   if(!result)return;
+  const sharedSync=mode==='CONVENTIONAL'?window.B737ConventionalIndicationSyncV1:null;
+  // Consume the identical backend state for ALL photo pointers and numbers.
+  if(sharedSync)sharedSync.intake(result,{fuelMode});
   for(const side of [1,2]){
    const id='engine'+side;
    for(const p of P){
@@ -36,7 +39,7 @@
     // analogue fuel-flow pointer must continue to follow instantaneous flow.
     const digitalValue=p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
       x.digitalValue:visualValue;
-    if(DOT.has(p)){
+    if(DOT.has(p)&&!sharedSync){
      const attr=mode==='EIS'?'data-eis-readout':'data-conventional-readout';
      const node=$('#region-main ['+attr+'="'+key+'"]');
      const shown=x.status==='UNIT_FAILED'||x.status==='POWER_LOSS'?'hidden':uncertain?'unchanged':'visible';
@@ -72,7 +75,7 @@
        }
       }
      }
-    }else{
+    }else if(!sharedSync){
      const convKey=CONV[p];
      const group=$('#region-main [data-conventional-needle="'+convKey+'_'+side+'"]');
      if(group){
@@ -232,7 +235,8 @@
  function status(){
   return {version:VER,ready:!!db,mode,fuelMode,error,events,
    source:'ONE ECU / ONE ELECTRICAL V7',snapshot:current?copy(current):null,
-   start:startReport(),electrical:window.B737ISNCockpitV1?.getElectricalState?.()||null};
+   start:startReport(),electrical:window.B737ISNCockpitV1?.getElectricalState?.()||null,
+   conventionalSync:window.B737ConventionalIndicationSyncV1?.getState?.()||null};
  }
  function sendLab(packet){if(!labFrame?.contentWindow)return;
   labFrame.contentWindow.postMessage({type:'b737:engine-lab-v2-snapshot',packet},location.origin);

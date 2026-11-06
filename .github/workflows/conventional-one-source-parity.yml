@@ -1,0 +1,67 @@
+name: Unified Conventional — one ECU, one scale, synchronized needle and digits
+on:
+  push:
+    paths:
+      - 'engine/instruments/conventional-indication-sync-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'
+      - 'panel-mosaic-lab/cockpit/engine-indication-live-v2.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/conventional-indication-sync-v1.test.cjs'
+      - 'tools/test-unified-conventional-parity-browser.cjs'
+      - '.github/workflows/conventional-one-source-parity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  functional-and-source-integrity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source integration, 16 calibrated scales and CB/failure recovery
+        run: |
+          node --check engine/instruments/conventional-indication-sync-v1.js
+          node --check panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js
+          node --check panel-mosaic-lab/cockpit/engine-indication-live-v2.js
+          node --check panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js
+          node --check panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js
+          node --test tests/conventional-indication-sync-v1.test.cjs
+          node tests/conventional-engine-needles-v1.test.cjs
+          node tests/eis-dot-readouts-v1.test.cjs
+  unified-chromium-end-to-end:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and Playwright
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run actual cockpit pixel/DOM/CB failure/motion/scale audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/b737-one-ecu-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-unified-conventional-parity-browser.cjs
+      - name: Preserve visible photograph and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-conventional-needle-digit-parity
+          path: |
+            /tmp/b737-conventional-one-source-parity.png
+            /tmp/b737-conventional-one-source-photo-closeup.png
+          retention-days: 14
+          if-no-files-found: ignore

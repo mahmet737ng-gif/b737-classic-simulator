@@ -160,7 +160,11 @@
     if(slot.power!==null&&numeric&&(character===' '||/^[0-9]$/.test(character))){
      const column=Math.floor(ticks/10**slot.power);
      if(!slot.wheel)slot.wheel=font.createWheel(column);else slot.wheel.setColumn(column);
-     if(!raf)slot.wheel.snap();
+     // The shared Conventional display animation already moves the value.
+     // Snapping this wheel to its synchronized frame removes the old
+     // second phase-lag; EIS retains its own drum movement.
+     if(!raf||(part.variant==='CONVENTIONAL'&&reading.source==='ENGINE_INDICATION_SYNC_V1'))
+      slot.wheel.snap(column);
      slot.fixed.setAttribute('visibility','hidden');
     }else{
      slot.wheel=null;slot.tape.setAttribute('visibility','hidden');
@@ -236,9 +240,30 @@
    const spec=specs.find(s=>s.id===id);return [id,{...v,text:font.format(v.value,spec),displayUnit:spec.unit}];
   })),
   getMotion:(mode='EIS')=>Object.fromEntries([...mounted.values()].filter(p=>p.variant===mode).map(p=>[p.spec.id,p.slots.map(s=>s.wheel?.snapshot()||null)])),
+  getDisplayed:(mode='CONVENTIONAL')=>Object.fromEntries([...mounted.values()]
+   .filter(p=>p.variant===mode).map(p=>[p.spec.id,{
+    source:values.get(p.spec.id)?.source||null,raw:values.get(p.spec.id)?.value??null,
+    text:p.group.dataset.value||null,phase:p.group.dataset.motion||'REST',
+    numeric:font.format(values.get(p.spec.id)?.value,p.spec)
+   }])),
+  setBatchReadings(records,source='ENGINE_INDICATION_SYNC_V1'){
+   if(!Array.isArray(records))throw Error('Numerical display batch required');
+   for(const row of records){
+    const spec=specs.find(s=>s.engine===row.engine&&s.signal===row.signal);
+    if(!spec)throw Error('Unknown numerical engine field '+row.engine+'/'+row.signal);
+    if(source==='ENGINE_INDICATION_SYNC_V1'||source==='ENGINE_INDICATION_BACKEND_V2'){
+     backendOwned.add(spec.id);ecuOwned.add(spec.id);
+    }
+    write(spec,row.value,source);
+   }
+   // Eight gauges, ONE frame and ONE numeric render pass.
+   if(records.length)refresh();
+  },
   setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE'){
    const spec=specs.find(s=>s.engine===engine&&s.signal===signal);if(!spec)throw Error('Unknown EIS numeric field');
-   if(source==='ENGINE_INDICATION_BACKEND_V2')backendOwned.add(spec.id);
+   if(source==='ENGINE_INDICATION_BACKEND_V2'||source==='ENGINE_INDICATION_SYNC_V1'){
+    backendOwned.add(spec.id);ecuOwned.add(spec.id);
+   }
    write(spec,value,source);refresh();
   },mount
  });

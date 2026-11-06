@@ -145,9 +145,14 @@ function paint(spec){
  const rotor=rotors.get(spec.id);
  if(!rotor)return;
  const reading=values.get(spec.id);
- rotor.setAttribute('transform','translate('+spec.cx+' '+spec.cy+') rotate('+angle(spec,reading.value).toFixed(3)+') scale('+spec.scale+')');
+ const renderValue=reading.value===null?spec.min:reading.value;
+ const a=angle(spec,renderValue);
+ rotor.setAttribute('transform','translate('+spec.cx+' '+spec.cy+') rotate('+a.toFixed(3)+') scale('+spec.scale+')');
+ rotor.dataset.renderAngle=a.toFixed(3);
+ rotor.dataset.calibratedValue=String(renderValue);
  rotor.parentNode.dataset.source=reading.source;
- rotor.parentNode.dataset.value=String(reading.value);
+ rotor.parentNode.dataset.state=reading.value===null?'BLANK':'TRACK';
+ rotor.parentNode.dataset.value=reading.value===null?'BLANK':String(reading.value);
 }
 function mount(){
  const host=getMount(),layout=getLayout();
@@ -179,10 +184,13 @@ function update(engine,signal,reading,source){
  if(!['engine1','engine2'].includes(engine))throw Error('Unknown engine: '+engine);
  const spec=SPECS.find(p=>p.engine===engine&&p.signal===signal);
  if(!spec)throw Error('Unknown conventional instrument '+signal);
- if(typeof reading!=='number'||!Number.isFinite(reading))throw Error('Non-finite instrument reading');
- const bounded=Math.max(spec.min,Math.min(spec.max,reading));
+ if(reading!==null&&(typeof reading!=='number'||!Number.isFinite(reading)))
+  throw Error('Non-finite instrument reading');
+ // Distinguish electrically blank from a real zero-speed ECU reading.
+ const bounded=reading===null?null:Math.max(spec.min,Math.min(spec.max,reading));
  values.set(spec.id,Object.freeze({value:bounded,source:source||'EXPLICIT'}));
- if(source==='ENGINE_INDICATION_BACKEND_V2')backendOwned.add(spec.id);
+ if(source==='ENGINE_INDICATION_BACKEND_V2'||source==='ENGINE_INDICATION_SYNC_V1')
+  backendOwned.add(spec.id);
  paint(spec);
  return bounded;
 }
@@ -206,6 +214,12 @@ window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
  getPhotoDetentAudit:()=>photoEngine?{...photoEngine.inspectAll({samples:512}),
   photoEvidence}:null,
+ getPhotoRegistration:()=>photoEngine?Object.fromEntries(SPECS.map(s=>{
+  const p=photoEngine.getProfile(s.signal,s.engine);
+  return[s.id,{zero:p.values[0],end:p.values.at(-1),
+   zeroAngle:p.angles[0],endAngle:p.angles.at(-1),
+   values:[...p.values],angles:[...p.angles],shaft:[s.cx,s.cy],source:p.status}];
+ })):null,
  getDialCalibration:()=>photoEngine?Object.fromEntries(
   Object.keys(photoEngine.REFERENCE).map(signal=>{
    const p=photoEngine.getProfile(signal,'engine1');
