@@ -93,11 +93,20 @@ const server=http.createServer((req,res)=>{
     return {mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
-   // Assert against the exact compiled /web-dist/ HTML, not source markup:
-   // A missing fifth command must fail the Pages deployment rather than ship
-   // another release where the author sees only CB PNL and four controls.
-   const rechargeButton=page.locator('body > header.unified-minimal-header #liveBatteryRecharge');
+   // Only four commands remain in the compiled Pages header.
+   const topButtons=await page.locator('header.unified-minimal-header .header-settings > button')
+    .evaluateAll(nodes=>nodes.map(n=>n.id));
+   assert.deepEqual(topButtons,
+    ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader']);
+   await page.locator('#inspectorToggle').click();
+   await page.locator('#unifiedControlCenter').waitFor({state:'visible'});
+   const rechargeButton=page.locator('#batteryRechargeControlSlot #liveBatteryRecharge');
    await rechargeButton.waitFor({state:'visible',timeout:15000});
+   await page.locator('#batteryMeterControlSlot #liveBatteryReadout')
+    .waitFor({state:'visible',timeout:20000});
+   for(const selector of ['#apuLabButtonV1','#engineLabButtonV2',
+     '#b737ExteriorLightsOpen','#airconLiveLabOpen','#visualLampTest'])
+    await page.locator('#unifiedControlCenter '+selector).waitFor({state:'visible',timeout:20000});
    assert.equal(await rechargeButton.count(),1,'Exactly one BAT RECHARGE command must be present');
    assert.equal((await rechargeButton.textContent()).trim(),'BAT RECHARGE');
    await page.waitForFunction(()=>{
@@ -111,7 +120,8 @@ const server=http.createServer((req,res)=>{
     visible:getComputedStyle(document.getElementById('liveBatteryRecharge')).display!=='none'
    }));
    assert.ok(charged.visible&&charged.percent>=99.99&&charged.status==='success',
-    'Top-bar button must truly recharge the installed battery ECU to 100%');
+    'Controls-drawer button must truly recharge the installed battery ECU to 100%');
+   await page.locator('#inspectorToggle').click();
    // GPU-SPRING-0001: the physical GRD POWER header rocker must move on
    // held input and return to center without sending a NEUTRAL bus command.
    await page.locator('#groundPowerHeader').click();
