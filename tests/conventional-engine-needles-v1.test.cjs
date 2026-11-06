@@ -110,7 +110,7 @@ for(const [signal,{sample}] of Object.entries(instrumentScale)){
  api.setReading('engine1',signal,sample,'ENGINE_INDICATION_BACKEND_V2');
  const rotor=realPointers.get(signal+'_1');
  const expected=api.getAngle('engine1',signal,sample);
- const actual=Number(rotor.attrs.transform.match(/rotate\\(([-\\d.]+)\\)/)?.[1]);
+ const actual=Number(rotor.attrs.transform.match(/rotate\(([-\d.]+)\)/)?.[1]);
  assert.ok(Number.isFinite(actual),'Missing rendered photo needle '+signal);
  assert.ok(Math.abs(actual-expected)<.001,
   signal+' visible pointer angle must equal digital ECU numeric value');
