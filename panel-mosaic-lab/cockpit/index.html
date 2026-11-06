@@ -127,6 +127,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script id="battery-recharge-prepaint-v4">
 (function(){
  'use strict';
+ function ensureRechargePrepaint(){
  const slot=document.getElementById('batteryRechargeControlSlot');
  if(!slot)return;
  let button=document.getElementById('liveBatteryRecharge');
@@ -143,6 +144,9 @@ body > header.unified-minimal-header .header-settings>button{
  button.style.setProperty('display','inline-flex','important');
  button.style.setProperty('visibility','visible','important');
  button.dataset.build='BAT-CONTROLS-0001';
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureRechargePrepaint,{once:true});
+ else ensureRechargePrepaint();
 })();
 </script>
 <main><section class="workbench"><div class="toolbar"><div class="tools"><button id="zoomOut" aria-label="کوچک‌نمایی">−</button><output id="zoomValue">—</output><button id="zoomIn" aria-label="بزرگ‌نمایی">+</button><button id="fit">FIT</button><button id="native">۱:۱</button></div><div class="tools"><button id="unifiedLightsOpen" class="unified-lights-open" aria-label="کتابخانه چراغ‌های یونیفاید">تست چراغ‌ها · در حال همگام‌سازی</button><span id="visualLampStatus" role="status"></span><button id="panMode" aria-pressed="false">جابجایی</button><button id="reference" aria-pressed="false">مرجع</button><button id="galleryOpen">تصاویر اصلی</button></div></div>
