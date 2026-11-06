@@ -77,7 +77,9 @@
      const group=$('#region-main [data-conventional-needle="'+convKey+'_'+side+'"]');
      if(group){
       group.dataset.engineLiveStatus=x.status;
-      if(!uncertain)group.style.visibility=valid?'visible':'hidden';
+      // A physical needle remains on the gauge even when a sensor or CB
+      // fails: it may freeze or park, but must not vanish from the dial.
+      group.style.visibility='visible';
      }
      if(valid&&numeric(visualValue)){
       const stamp='CONV.'+key;

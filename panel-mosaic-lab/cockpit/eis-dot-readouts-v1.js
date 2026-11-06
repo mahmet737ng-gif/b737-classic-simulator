@@ -25,24 +25,21 @@
  // ENGINE 1 / ENGINE 2 coordinates; EIS and oil quantity are not re-registered.
  const CONVENTIONAL_APERTURES=Object.freeze({
   n1:Object.freeze([[393,401],[566,401]]),
-  egt:Object.freeze([[393,570],[566,570]]),
-  n2:Object.freeze([[391,721],[566,721]]),
-  fuelFlow:Object.freeze([[392,884],[566,884]])
+  egt:Object.freeze([[393,540],[566,540]]),
+  n2:Object.freeze([[391,691],[566,691]]),
+  fuelFlow:Object.freeze([[392,850],[566,850]])
  });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];
-  return specs.map(s=>{
+  return specs.filter(s=>s.signal!=='oilQuantity').map(s=>{
    const point=registered.find(g=>g.engine===s.engine&&g.signal===(s.signal==='oilQuantity'?'oilQty':s.signal));
    if(!point)throw Error('Conventional dial registration missing: '+s.id);
    // Fixed photo slots never inherit a needle's shaft translation.
-   // Oil quantity remains on its previously approved independent position.
-   const isMechanicalDrum=s.signal!=='oilQuantity';
+   // Conventional oil quantity is analog-only; EIS electronic oil readout remains unchanged.
    const side=s.engine==='engine1'?0:1;
    const aperture=CONVENTIONAL_APERTURES[s.signal]?.[side];
-   if(isMechanicalDrum&&!aperture)throw Error('Missing calibrated Conventional aperture '+s.id);
-   return {...s,cx:isMechanicalDrum?aperture[0]:point.cx,
-    cy:isMechanicalDrum?aperture[1]:point.cy+2,scale:isMechanicalDrum?.8:.78,
-    ...(s.signal==='oilQuantity'?{decimals:2,divisor:20,unit:'USgal',template:'0.00',integerDigits:1}:{})};
+   if(!aperture)throw Error('Missing calibrated Conventional aperture '+s.id);
+   return {...s,cx:aperture[0],cy:aperture[1],scale:.8};
   });
  }
  function createLayer(piece,layerSpecs,variant){
