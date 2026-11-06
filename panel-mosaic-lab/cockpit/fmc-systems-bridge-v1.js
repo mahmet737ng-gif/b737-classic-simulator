@@ -102,6 +102,11 @@
  window.addEventListener('message',receive);
  window.addEventListener('b737:cockpit-mounted',()=>{emit();refreshGlobalElectrical()});
  window.addEventListener('b737:isn-start-indications',refreshGlobalElectrical);
+ // Source changes, BAT switch transitions and GPU/APU generator selection
+ // must reach the embedded CDU even if no engine-start indication changes.
+ for(const type of ['b737:electrical-network','b737:electrical-v7-state',
+  'b737:unified-ecu-observation','b737:electrical-owner-ready'])
+  window.addEventListener(type,refreshGlobalElectrical);
  window.addEventListener('b737:mcp-afds-state',e=>{latestAfds=e.detail||null;emit()}); // A/T ARM/modes are observed, never commanded
  window.addEventListener('b737:irs-trainer-state',updateIRS);
  document.addEventListener('DOMContentLoaded',()=>{emit();refreshGlobalElectrical();updateIRS()});
