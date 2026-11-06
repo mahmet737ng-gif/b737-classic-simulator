@@ -60,6 +60,7 @@ class Elem{
  constructor(tag){this.tag=tag;this.attrs={};this.dataset={};this.style={};this.children=[];this.parentNode=null;}
  setAttribute(k,v){this.attrs[k]=String(v);}
  append(child){this.children.push(child);child.parentNode=this;return child;}
+ appendChild(child){return this.append(child);}
  remove(){if(this.parentNode)this.parentNode.children=this.parentNode.children.filter(x=>x!==this);}
 }
 const host=new Elem('div'),listeners=new Map();
