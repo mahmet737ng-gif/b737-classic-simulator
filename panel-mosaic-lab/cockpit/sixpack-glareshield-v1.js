@@ -10,6 +10,7 @@ const ids=['MASTER CAUTION','FIRE WARN'];
 const manual=new Map(), nodes=new Map(), acknowledged=new Set(), liveReasons=new Map();
 let fireWarningActive=false,fireWarningAcknowledged=false;
 let visualTest=false, recallHeld=false, mounted=false, recallMaster=false;
+let annunciatorPower=null; // null = no authoritative aircraft supply snapshot yet
 const recallShown=new Set();
 const norm=v=>String(v||'').trim().toUpperCase().replace(/[_\s-]+/g,' ').replace(/\s*\/\s*/g,'/');
 const key=(side,name)=>String(side).toUpperCase()+'.'+norm(name);
@@ -32,7 +33,8 @@ const anyCaution=()=>[...liveReasons.keys()].some(pending);
 const anyImmediate=()=>[...liveReasons.keys()].some(k=>reasons(k).some(immediate));
 const isActive=k=>reasons(k).length>0;
 function effective(k){
- if(visualTest)return true;
+ if(visualTest)return true; // instructor visual-only ALL LIGHTS ON test
+ if(annunciatorPower===false)return false; // no real light on a cold-and-dark DC system
  if(isSystem(k))return recallHeld||recallShown.has(k)||pending(k);
  if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||recallMaster||anyCaution();
  return (fireWarningActive&&!fireWarningAcknowledged)||manual.get(k)===true;
@@ -48,6 +50,18 @@ function paint(){
  document.querySelectorAll('[data-sixpack-checkbox]').forEach(n=>{
   n.checked=manual.get(n.dataset.sixpackCheckbox)===true;n.disabled=visualTest;
  });
+}
+function refreshAnnunciatorPower(){
+ // The existing Electrical V7 ECU owns supply; no shadow electrical model.
+ // Hot Battery and Ground Service alone are not Master Caution supplies.
+ const bus=window.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+ if(!bus)return;
+ const feeds=['dc1','dc2','battery','switchedHotBattery','dcStandby'];
+ if(!feeds.every(id=>Object.hasOwn(bus,id)))return;
+ const next=feeds.some(id=>bus[id]===true)?true:
+  feeds.every(id=>bus[id]===false)?false:null;
+ if(next===annunciatorPower)return;
+ annunciatorPower=next;paint();
 }
 function clearRecall(){
  recallShown.clear();recallMaster=false;
@@ -281,7 +295,7 @@ function mount(){
  if(!native)return;
  if(document.getElementById(ROOT))return;
  const root=document.createElement('div');root.id=ROOT;root.className='b737-sixpack-glareshield';root.setAttribute('aria-label','Boeing 737 Classic glareshield system annunciators');
- root.append(makeSeat('CAPT'),makeSeat('FO'));native.append(root);mounted=true;addInspector();paint();
+ root.append(makeSeat('CAPT'),makeSeat('FO'));native.append(root);mounted=true;addInspector();refreshAnnunciatorPower();paint();
  window.dispatchEvent(new CustomEvent('b737:sixpack-ready',{detail:{version:'SIXPACK-0004',independentLamps:12,masters:4}}));
 }
 window.B737SixPack=Object.freeze({
@@ -289,7 +303,7 @@ window.B737SixPack=Object.freeze({
  mount,
  getState:()=>Object.fromEntries(manual),
  getEffectiveState:()=>Object.fromEntries([...manual.keys()].map(k=>[k,effective(k)])),
- getLiveReasons,getLiveConditionDetails,getCautionDiagnostics,
+ getLiveReasons,getLiveConditionDetails,getCautionDiagnostics,getSupply:()=>annunciatorPower,
  setLight,setAll,setCombination,setLiveConditions,setFireWarning,acknowledgeFire,acknowledge,recall,press,release,
  reset:()=>{acknowledged.clear();clearRecall();recallHeld=false;fireWarningAcknowledged=false;return setAll(false,null,'reset');},
  setVisualTest:on=>{visualTest=!!on;paint();},
@@ -297,6 +311,9 @@ window.B737SixPack=Object.freeze({
 });
 window.addEventListener('b737:cockpit-mounted',mount);
 window.addEventListener('b737:visual-test',e=>{visualTest=!!e.detail?.active;paint()});
+for(const event of ['b737:electrical-network','b737:electrical-v7-state',
+ 'b737:unified-ecu-observation','b737:electrical-owner-ready'])
+ window.addEventListener(event,refreshAnnunciatorPower);
 window.addEventListener('b737:sixpack-command',e=>{
  const d=e.detail||{};
  if(d.combination)setCombination(d.combination,'event');
