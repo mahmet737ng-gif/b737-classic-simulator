@@ -56,7 +56,10 @@
    const isFuelUsed=channel.signal==='fuelFlow'&&
     document.querySelector('[data-conventional-readout="'+id+'"]')?.dataset.fuelDisplayMode==='USED';
    const hasNumber=Number.isFinite(channel.value);
-   const expectedAngle=hasNumber?photo.angle(channel.signal,channel.engine,channel.value):scale?.zeroAngle;
+   // Backend keys and photographed face keys differ on three gauges.
+   // oilTemperature -> oilTemp, oilQuantity -> oilQty, vibration -> vib.
+   const faceSignal=model.SIGNALS[channel.signal]?.needle||channel.signal;
+   const expectedAngle=hasNumber?photo.angle(faceSignal,channel.engine,channel.value):scale?.zeroAngle;
    const actualAngle=Number(document.querySelector('[data-needle-pivot="'+id+'"]')?.dataset.renderAngle);
    const rawDigit=digital?.value,rawNeedle=physical?.value;
    const comparable=hasNumber&&digital&&physical&&!isFuelUsed;
