@@ -239,7 +239,7 @@
   start:startReport(),technicals:db?{revision:db.revision,sources:db.sources}:null};}
  function installLab(){
   if($('#engineLabButtonV2'))return;
-  const bar=$('body > header.unified-minimal-header .header-settings');
+  const bar=$('unifiedLabShortcuts');
   if(!bar)return;
   const button=document.createElement('button');button.type='button';button.id='engineLabButtonV2';
   button.textContent='ENGINE TEST LAB';button.title='Source-traced EIS / Conventional, start and emergency test lab';
