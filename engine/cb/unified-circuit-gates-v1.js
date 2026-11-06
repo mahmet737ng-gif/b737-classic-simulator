@@ -39,6 +39,11 @@ one('apu.fireDetector','P6-2','A23','DETECTION');
 one('antiice.wingValve','P18-3','A5','CONTROL');
 one('tat.heater','P18-3','C5');
 for(const [name,pos]of Object.entries({captUpper:'C1',captLower:'C2',foUpper:'C3',foLower:'C4',elevatorR:'D1',elevatorL:'D2',alphaR:'D4',alphaL:'D5',drain:'D3'}))one('probe.'+name,'P18-3',pos);
+// Additional photo-indexed control feeds used by the live overhead indications.
+// Standby hydraulic pump NORMAL/ALTN supplies remain separate: either path can remain available.
+one('hyd.standbyPumpNormal','P6-11','A8');
+one('hyd.standbyPumpAlternate','P6-12','A8');
+one('flight.standbyRudderControl','P6-2','A11','CONTROL');
 one('brakes.autobrake','P6-2','B9','CONTROL');
 one('brakes.autobrakeControl','P6-3','A17','CONTROL');
 one('brakes.antiskidInboard','P6-2','A20','CONTROL');
