@@ -57,5 +57,6 @@ jobs:
             /tmp/b737-conventional-gear-pixel-qa.png
             /tmp/b737-conventional-numeric-qa.png
             /tmp/b737-photo-detents-random-qa.png
+            /tmp/b737-photo-detents-closeup-qa.png
           if-no-files-found: ignore
           retention-days: 14
