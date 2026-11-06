@@ -54,7 +54,7 @@ assert.ok(airconParent.includes("command('aircon-background'"),'New overhead fra
 const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=EXTL-INBOARD-L-CENTER-0003','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-DCPCS-WHITE-WHEEL-0001'])assert.ok(html.includes(src),src);
 assert.match(html,/interactive-overhead\/lights\.js\?v=[A-Za-z0-9_.-]+/,'Embedded OH14 lighting script must use explicit release-cache version');assert.ok(!html.includes('data-cockpit-entry'));
 const overheadRelease=a.regions.find(r=>r.id==='overhead').embeddedUrl;
-assert.ok(overheadRelease.startsWith('./overhead-stage.html?v='),
+assert.ok(overheadRelease.startsWith('./overhead-stage.html?')&&new URL(overheadRelease,'https://unified.example/').searchParams.has('v'),
  'Unified overhead source must remain the installed stage');
 for(const key of ['ISN-0003','PERF-0001','LGT-0006','PRESS-OH22-0007','SOCKET-FIT','AIRCON400-0005',
  'SOCKET-CENTER','LANDING3','WHEEL-PAN-0001','LE-STAGGER-0008','LE-PHOTOLENS-0003',
