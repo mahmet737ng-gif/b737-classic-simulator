@@ -84,7 +84,7 @@
      if(valid&&numeric(visualValue)){
       const stamp='CONV.'+key;
       if(lastPaint.get(stamp)!==visualValue){
-       window.B737ConventionalNeedlesV1?.setReading(id,convKey,visualValue);
+       window.B737ConventionalNeedlesV1?.setReading(id,convKey,visualValue,'ENGINE_INDICATION_BACKEND_V2');
        lastPaint.set(stamp,visualValue);
       }
      }

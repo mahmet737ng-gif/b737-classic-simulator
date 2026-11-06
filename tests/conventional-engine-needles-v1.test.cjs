@@ -103,4 +103,28 @@ assert.throws(()=>api.setReading('engine3','n2',35),/Unknown engine/);
 api.resetParked();
 assert.equal(api.getReadings().n2_1.value,0);
 assert.equal(api.getReadings().oilPressure_1.value,0);
+// Real pointer transforms must follow the same value that is displayed in the
+// live numerical engine readout (not merely report a matching getAngle result).
+const realPointers=new Map(groups.map(g=>[g.attrs['data-conventional-needle'],g.children[0]]));
+for(const [signal,{sample}] of Object.entries(instrumentScale)){
+ api.setReading('engine1',signal,sample,'ENGINE_INDICATION_BACKEND_V2');
+ const rotor=realPointers.get(signal+'_1');
+ const expected=api.getAngle('engine1',signal,sample);
+ const actual=Number(rotor.attrs.transform.match(/rotate\\(([-\\d.]+)\\)/)?.[1]);
+ assert.ok(Number.isFinite(actual),'Missing rendered photo needle '+signal);
+ assert.ok(Math.abs(actual-expected)<.001,
+  signal+' visible pointer angle must equal digital ECU numeric value');
+ assert.equal(api.getReadings()[signal+'_1'].value,sample);
+ assert.equal(api.getReadings()[signal+'_1'].source,'ENGINE_INDICATION_BACKEND_V2');
+}
+// The old start estimates are not allowed to race against the ECU authority.
+listeners.get('b737:isn-start-indications')({detail:{engines:{
+ engine1:{n2:{value:10},egt:{value:900}}
+}}});
+assert.equal(api.getReadings().n2_1.value,71.4);
+assert.equal(api.getReadings().egt_1.value,504);
+assert.equal(api.getReadings().egt_1.source,'ENGINE_INDICATION_BACKEND_V2');
+api.resetParked();
+assert.equal(api.getReadings().egt_1.value,0);
+assert.equal(api.getReadings().egt_1.source,'UNSOURCED_PARKED');
 console.log('PASS: sixteen photo-derived conventional pointers, exact dial centers, EIS isolation, N2/EGT live wiring and explicit parked-state policy.');

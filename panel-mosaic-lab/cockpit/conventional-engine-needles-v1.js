@@ -33,6 +33,8 @@ const SPECS=Object.freeze(ROWS.flatMap(row=>[1,2].map(engine=>Object.freeze({
 let layer=null;
 const values=new Map();
 const rotors=new Map();
+const backendOwned=new Set(); // live ECU/failure-aware readings take priority over legacy start snapshots
+
 for(const spec of SPECS)values.set(spec.id,Object.freeze({value:0,source:'UNSOURCED_PARKED'}));
 function node(parent,tag,attrs){
  const el=document.createElementNS(svgNs,tag);
@@ -107,6 +109,7 @@ function update(engine,signal,reading,source){
  if(typeof reading!=='number'||!Number.isFinite(reading))throw Error('Non-finite instrument reading');
  const bounded=Math.max(spec.min,Math.min(spec.max,reading));
  values.set(spec.id,Object.freeze({value:bounded,source:source||'EXPLICIT'}));
+ if(source==='ENGINE_INDICATION_BACKEND_V2')backendOwned.add(spec.id);
  paint(spec);
  return bounded;
 }
@@ -115,6 +118,7 @@ function fromIsn(indications){
   const e=indications?.engines?.[engine];
   if(!e)continue;
   for(const signal of ['n2','egt']){
+   if(backendOwned.has(signal+'_'+engine.at(-1)))continue;
    const value=e[signal]?.value;
    if(typeof value==='number'&&Number.isFinite(value))
     update(engine,signal,value,'ISN_START_SOURCE');
@@ -136,8 +140,8 @@ window.B737ConventionalNeedlesV1=Object.freeze({
   return angle(spec,value);
  },
  getReadings:()=>Object.fromEntries([...values.entries()].map(([id,v])=>[id,{...v}])),
- setReading:(engine,signal,value)=>update(engine,signal,value,'EXPLICIT_TRAINER_OR_SOURCE'),
- resetParked:()=>{for(const spec of SPECS){values.set(spec.id,Object.freeze({value:0,source:'UNSOURCED_PARKED'}));paint(spec);}},
+ setReading:(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE')=>update(engine,signal,value,source),
+ resetParked:()=>{backendOwned.clear();for(const spec of SPECS){values.set(spec.id,Object.freeze({value:0,source:'UNSOURCED_PARKED'}));paint(spec);}},
  mount
 });
 mount();
