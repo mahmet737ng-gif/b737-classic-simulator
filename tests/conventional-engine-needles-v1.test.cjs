@@ -44,6 +44,32 @@ vm.runInNewContext(js,{document:doc,window:win,URL,console});
 const api=win.B737ConventionalNeedlesV1;
 const specs=api.getSpecs();
 assert.equal(specs.length,16);
+const instrumentScale={
+ n1:{unit:10,maximum:120,sample:35.7},
+ egt:{unit:100,maximum:1200,sample:504},
+ n2:{unit:10,maximum:120,sample:71.4},
+ fuelFlow:{unit:1000,maximum:12000,sample:1200}
+};
+for(const [signal,{unit,maximum,sample}] of Object.entries(instrumentScale)){
+ for(const engine of ['engine1','engine2']){
+  const spec=specs.find(s=>s.engine===engine&&s.signal===signal);
+  assert.ok(spec,'Missing calibrated gauge '+signal+'/'+engine);
+  assert.equal(spec.max,maximum,signal+' must cover 12 printed scale units');
+  for(const printed of [0,2,4,6,8,10,12]){
+   const actual=api.getAngle(engine,signal,printed*unit);
+   const expected=45+printed*22.5;
+   assert.ok(Math.abs(actual-expected)<1e-9,
+    signal+' '+engine+' printed tick '+printed+' maps to '+expected+'°, got '+actual+'°');
+  }
+  assert.ok(Math.abs(api.getAngle(engine,signal,sample)-
+    (45+(sample/unit)*22.5))<1e-9,
+   signal+' numerical ECU reading must match photographic analog scale');
+  assert.equal(api.getAngle(engine,signal,maximum+500),315,
+   'Over-range values must park at marked upper stop');
+ }
+}
+assert.ok(Math.abs(api.getAngle('engine1','egt',504)-158.4)<1e-9,
+ '504°C must indicate 5.04 on the 0..12 x100 EGT scale');
 assert.equal(new Set(specs.map(s=>s.id)).size,16);
 assert.deepEqual(JSON.parse(JSON.stringify(specs.map(s=>[s.cx,s.cy]))),[
  [427,427],[600,427],[427,596],[600,596],

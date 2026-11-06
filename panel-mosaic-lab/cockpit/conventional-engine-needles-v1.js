@@ -10,7 +10,7 @@ const getLayout=()=>window.B737EngineIndicationModeV1?.layout();
 const PHOTO=new URL('./assets/conventional-needle-photo-v1.svg?v=CONV-NEEDLE-0001',document.baseURI).href;
 const ROWS=Object.freeze([
  Object.freeze({key:'n1',label:'N1',y:309,min:0,max:120,primary:true,scale:1}),
- Object.freeze({key:'egt',label:'EGT',y:579,min:0,max:1000,primary:true,scale:1}),
+ Object.freeze({key:'egt',label:'EGT',y:579,min:0,max:1200,primary:true,scale:1}),
  Object.freeze({key:'n2',label:'N2',y:849,min:0,max:120,primary:true,scale:1}),
  Object.freeze({key:'fuelFlow',label:'Fuel Flow',y:1112,min:0,max:12000,primary:true,scale:.9}),
  Object.freeze({key:'oilPressure',label:'Oil Pressure',y:309,min:0,max:100,primary:false,scale:.84}),
@@ -40,13 +40,33 @@ function node(parent,tag,attrs){
  parent.appendChild(el);
  return el;
 }
-function angle(spec,value){
- const fraction=Math.max(0,Math.min(1,(value-spec.min)/(spec.max-spec.min)));
- // 0 is on the right/top edge, then goes around the lower arc towards 12.
- // The panel source uses polar degrees; image pointer points vertically up.
- const polar=(spec.primary?-49:-25)+(spec.primary?306:290)*fraction;
- return polar+90;
-}
+// Photo-calibrated primary dial: the printed numbers read 0,2,4,6,8,10,12.
+ // These dial divisions are 45 degrees per 2 labeled units, measured clockwise
+ // from the upper-right 0 mark (45°) to the upper-left 12 mark (315°).
+ // The same raw ECU reading drives the digital readout and this physical pointer.
+ const PRIMARY_UNITS_PER_TICK=Object.freeze({
+  n1:10,       // %N1: dial 0..12 represents 0..120%
+  egt:100,     // EGT: dial °C x 100, 0..12 represents 0..1200°C
+  n2:10,       // %N2: dial 0..12 represents 0..120%
+  fuelFlow:1000 // fuel flow: dial kg/h x 1000, 0..12 represents 0..12000 kg/h
+ });
+ const PRIMARY_TICK_ANGLES=Object.freeze([45,90,135,180,225,270,315]);
+ function angle(spec,value){
+  if(spec.primary){
+   const per=PRIMARY_UNITS_PER_TICK[spec.signal];
+   if(!per)throw Error('Uncalibrated primary engine dial '+spec.signal);
+   // Interpolate on the *printed physical markings*, rather than sweeping
+   // 306° across an arbitrary scale maximum.
+   const marked=Math.max(0,Math.min(12,value/per));
+   const lower=Math.min(5,Math.floor(marked/2));
+   const ratio=(marked-lower*2)/2;
+   return PRIMARY_TICK_ANGLES[lower]+
+     (PRIMARY_TICK_ANGLES[lower+1]-PRIMARY_TICK_ANGLES[lower])*ratio;
+  }
+  // Secondary instruments have independent scales and remain unchanged.
+  const fraction=Math.max(0,Math.min(1,(value-spec.min)/(spec.max-spec.min)));
+  return 65+290*fraction;
+ }
 function paint(spec){
  const rotor=rotors.get(spec.id);
  if(!rotor)return;
@@ -107,6 +127,14 @@ window.addEventListener('b737:engine-indication-view',mount);
 window.addEventListener('b737:isn-start-indications',event=>{fromIsn(event.detail);mount();});
 window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
+ getDialCalibration:()=>Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
+  signal,{unitsPerDial,photoTickAngles:[...PRIMARY_TICK_ANGLES],dialLabels:[0,2,4,6,8,10,12]}
+ ])),
+ getAngle:(engine,signal,value)=>{
+  const spec=SPECS.find(p=>p.engine===engine&&p.signal===signal);
+  if(!spec||typeof value!=='number'||!Number.isFinite(value))throw Error('Known engine dial and finite reading required');
+  return angle(spec,value);
+ },
  getReadings:()=>Object.fromEntries([...values.entries()].map(([id,v])=>[id,{...v}])),
  setReading:(engine,signal,value)=>update(engine,signal,value,'EXPLICIT_TRAINER_OR_SOURCE'),
  resetParked:()=>{for(const spec of SPECS){values.set(spec.id,Object.freeze({value:0,source:'UNSOURCED_PARKED'}));paint(spec);}},
