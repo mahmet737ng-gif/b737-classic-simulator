@@ -127,6 +127,8 @@ jobs:
           node --check panel-mosaic-lab/cockpit/hydraulic-live-lab-v1.js
           node --test tests/hydraulic-gauge-calibration-v2.test.cjs tests/hydraulic-live-lab-v1.test.cjs
 
+          node tests/unified-header-controls-v1.test.cjs
+          node panel-mosaic-lab/cockpit/ground-power-header-v1.test.cjs
           node panel-mosaic-lab/cockpit/unified-annunciators.test.cjs
           node --test panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs tests/cold-dark-avionics-power-v1.test.cjs
           node panel-mosaic-lab/cockpit/lights.test.cjs
