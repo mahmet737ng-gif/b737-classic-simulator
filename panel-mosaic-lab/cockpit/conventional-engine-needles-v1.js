@@ -62,6 +62,25 @@ function node(parent,tag,attrs){
   fuelFlow:Object.freeze([46,89,134,180,226,274,320])
  });
  const primaryAngles=signal=>signal==='n2'?PRIMARY_TICK_ANGLES:PHOTO_PRIMARY_TICKS[signal];
+ // Secondary dial graduations: actual visible white radial strokes and printed
+ // legends from the Classic photo, not the legacy arbitrary 65°-355° sweep.
+ // Increasing angles may extend beyond 360° to preserve needle continuity.
+ const SECONDARY_MARKS=Object.freeze({
+  oilPressure:Object.freeze({values:[0,20,40,60,80,100],angles:[133,193,253,314,380,452]}),
+  oilTemp:Object.freeze({values:[-50,0,50,100,150,200],angles:[101,158,219,273,315,353]}),
+  oilQty:Object.freeze({values:[0,1,2,3,4],angles:[35,99,156,219,278]}),
+  vib:Object.freeze({values:[0,1,2,3,4,5],angles:[225,270,315,360,405,450]})
+ });
+ function interpolateMarks(values,angles,input){
+  const v=Math.max(values[0],Math.min(values[values.length-1],input));
+  for(let i=0;i<values.length-1;i++){
+   if(v<=values[i+1]){
+    const f=(v-values[i])/(values[i+1]-values[i]);
+    return angles[i]+(angles[i+1]-angles[i])*f;
+   }
+  }
+  return angles[angles.length-1];
+ }
  function angle(spec,value){
   if(spec.primary){
    const per=PRIMARY_UNITS_PER_TICK[spec.signal];
@@ -74,9 +93,10 @@ function node(parent,tag,attrs){
    const ticks=primaryAngles(spec.signal);
    return ticks[lower]+(ticks[lower+1]-ticks[lower])*ratio;
   }
-  // Secondary instruments have independent scales and remain unchanged.
-  const fraction=Math.max(0,Math.min(1,(value-spec.min)/(spec.max-spec.min)));
-  return 65+290*fraction;
+  // Every secondary display has its OWN printed physical tick table.
+  const secondary=SECONDARY_MARKS[spec.signal];
+  if(!secondary)throw Error('No measured Conventional dial marks: '+spec.signal);
+  return interpolateMarks(secondary.values,secondary.angles,value);
  }
 function paint(spec){
  const rotor=rotors.get(spec.id);
@@ -140,9 +160,14 @@ window.addEventListener('b737:engine-indication-view',mount);
 window.addEventListener('b737:isn-start-indications',event=>{fromIsn(event.detail);mount();});
 window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
- getDialCalibration:()=>Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
-  signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],dialLabels:[0,2,4,6,8,10,12]}
- ])),
+ getDialCalibration:()=>({
+  ...Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
+   signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],dialLabels:[0,2,4,6,8,10,12]}
+  ])),
+  ...Object.fromEntries(Object.entries(SECONDARY_MARKS).map(([signal,mark])=>[
+   signal,{dialLabels:[...mark.values],photoTickAngles:[...mark.angles]}
+  ]))
+ }),
  getAngle:(engine,signal,value)=>{
   const spec=SPECS.find(p=>p.engine===engine&&p.signal===signal);
   if(!spec||typeof value!=='number'||!Number.isFinite(value))throw Error('Known engine dial and finite reading required');

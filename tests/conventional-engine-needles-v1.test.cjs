@@ -85,6 +85,33 @@ assert.ok(Math.abs(api.getAngle('engine1','egt',504)-156.92)<1e-9,
 // Owner's accepted N2 rotation, including intermediate values, is preserved.
 assert.ok(Math.abs(api.getAngle('engine1','n2',71.4)-(45+7.14*22.5))<1e-9,
  'Accepted N2 calibration must remain unchanged');
+const secondaryMarks={
+ oilPressure:{labels:[0,20,40,60,80,100],angles:[133,193,253,314,380,452]},
+ oilTemp:{labels:[-50,0,50,100,150,200],angles:[101,158,219,273,315,353]},
+ oilQty:{labels:[0,1,2,3,4],angles:[35,99,156,219,278]},
+ vib:{labels:[0,1,2,3,4,5],angles:[225,270,315,360,405,450]}
+};
+for(const [signal,{labels,angles}] of Object.entries(secondaryMarks)){
+ const registered=api.getDialCalibration()[signal];
+ assert.deepEqual(JSON.parse(JSON.stringify(registered.dialLabels)),labels,
+  signal+' must retain the source-photo value detents');
+ assert.deepEqual(JSON.parse(JSON.stringify(registered.photoTickAngles)),angles,
+  signal+' must retain the source-photo tick centres');
+ for(const engine of ['engine1','engine2']){
+  for(let i=0;i<labels.length;i++){
+   assert.ok(Math.abs(api.getAngle(engine,signal,labels[i])-angles[i])<1e-9,
+    signal+' '+engine+' tick '+labels[i]+' must point at its printed marking');
+   if(i<labels.length-1){
+    const midpoint=(labels[i]+labels[i+1])/2;
+    assert.ok(Math.abs(api.getAngle(engine,signal,midpoint)-
+     (angles[i]+angles[i+1])/2)<1e-9,
+     signal+' analog pointer must interpolate between adjacent physical strokes');
+   }
+  }
+ }
+}
+assert.equal(api.getAngle('engine1','n2',60),180,
+ 'Secondary recalibration cannot alter the previously approved N2 needle');
 assert.equal(new Set(specs.map(s=>s.id)).size,16);
 assert.deepEqual(JSON.parse(JSON.stringify(specs.map(s=>[s.cx,s.cy]))),[
  [427,427],[600,427],[427,596],[600,596],
