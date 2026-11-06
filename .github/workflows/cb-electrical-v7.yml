@@ -7,6 +7,7 @@ on:
       - "engine/systems/electrical-v7.js"
       - "engine/trainer/core.js"
       - "tests/cb*.cjs"
+      - "panel-mosaic-lab/interactive-overhead/lights-model.js"
       - ".github/workflows/cb-electrical-v7.yml"
   workflow_dispatch:
 jobs:
@@ -26,6 +27,11 @@ jobs:
           node --check engine/cb/electrical-v7-integration.js
           node --check cb-panel-lab/electrical-bridge.js
           node --check cb-panel-lab/v7-effects.js
+      - name: Validate live CB effects in Unified overhead
+        run: |
+          node --check engine/cb/unified-circuit-gates-v1.js
+          node --check panel-mosaic-lab/interactive-overhead/lights-model.js
+          node --test tests/cb-overhead-live-effects-v1.test.cjs
       - name: Validate breaker mechanical and fault state
         run: npm run test:cb
       - name: Validate source-mapped CB subsystem effects
