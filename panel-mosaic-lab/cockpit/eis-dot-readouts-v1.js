@@ -24,7 +24,10 @@
   return specs.map(s=>{
    const point=registered.find(g=>g.engine===s.engine&&g.signal===(s.signal==='oilQuantity'?'oilQty':s.signal));
    if(!point)throw Error('Conventional dial registration missing: '+s.id);
-   return {...s,cx:point.cx,cy:point.cy+(s.signal==='oilQuantity'?2:24),scale:s.signal==='oilQuantity'?.78:.8,
+   // The real Classic mechanical-dial numerals sit in the upper-right quadrant,
+   // not beneath the shaft. Leave the separate oil-quantity window unchanged.
+   const isMechanicalDrum=s.signal!=='oilQuantity';
+   return {...s,cx:point.cx+(isMechanicalDrum?21:0),cy:point.cy+(isMechanicalDrum?-43:2),scale:isMechanicalDrum?.8:.78,
     ...(s.signal==='oilQuantity'?{decimals:2,divisor:20,unit:'USgal',template:'0.00',integerDigits:1}:{})};
   });
  }
@@ -42,16 +45,20 @@
   for(const spec of layerSpecs){
    const group=element(svg,'g',{[variant==='EIS'?'data-eis-readout':'data-conventional-readout']:spec.id,role:'img'});
    const width=font.layout(spec.template).width,lastX=width-14;
+   // Conventional drum aperture: show more of the numbers above and below
+   // the active right-hand digit, without altering the calibrated EIS window.
+   const drumWindow=variant==='CONVENTIONAL'?{x:lastX-5,y:-13,width:23,height:46}:
+    {x:lastX-2,y:font.style.windowTop,width:16,height:font.style.windowHeight};
    element(group,'rect',{'data-eis-display-face':'',x:-2,y:font.style.bodyTop,
     width:width+4,height:font.style.bodyHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
    const clipId=variant+'-last-digit-window-'+spec.id,bodyId=variant+'-body-window-'+spec.id;
    const bodyClip=element(defs,'clipPath',{id:bodyId,clipPathUnits:'userSpaceOnUse'});
    element(bodyClip,'rect',{x:-2,y:font.style.bodyTop,width:width+4,height:font.style.bodyHeight});
    if(spec.drum){
-    element(group,'rect',{'data-eis-tall-window':'',x:lastX-2,y:font.style.windowTop,
-     width:16,height:font.style.windowHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
+    element(group,'rect',{'data-eis-tall-window':'',x:drumWindow.x,y:drumWindow.y,
+     width:drumWindow.width,height:drumWindow.height,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
     const clip=element(defs,'clipPath',{id:clipId,clipPathUnits:'userSpaceOnUse'});
-    element(clip,'rect',{x:lastX-2,y:font.style.windowTop,width:16,height:font.style.windowHeight});
+    element(clip,'rect',{x:drumWindow.x,y:drumWindow.y,width:drumWindow.width,height:drumWindow.height});
    }
    // Fixed windows clip independent vertical digit tapes. Glyph nodes are
    // allocated once; one shared RAF moves all active drums without timers.
