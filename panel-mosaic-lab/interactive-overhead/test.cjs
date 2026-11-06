@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const model=require('./model.js'),registry=require('./registry.json'),layout=require('../all-overhead/atlas-layout.json');
 assert.equal(model.validate(registry,layout),true);
 assert.equal(registry.controls.length,59);
-assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':37,'toggle-3-vertical':19,'toggle-3-horizontal':3});
+assert.deepEqual(Object.fromEntries(['toggle-2','toggle-3-vertical','toggle-3-horizontal'].map(t=>[t,registry.controls.filter(c=>c.type===t).length])),{'toggle-2':36,'toggle-3-vertical':20,'toggle-3-horizontal':3});
 assert.equal(registry.version,'TGL-NEWREF-0002');assert.equal(registry.visualStatus,'USER_REFERENCE_INSTALLED');
 const positions={'vertical-off':0,'vertical-center':1,'vertical-on':3,'horizontal-left':0,'horizontal-center':1,'horizontal-right':2};
 assert.deepEqual(Object.fromEntries(Object.entries(registry.assets).map(([k,a])=>[k,a.frame])),positions);
@@ -30,10 +30,29 @@ engine.cycle('yaw-damper');assert.equal(engine.get('yaw-damper'),'ON');
 engine.step('vhf-nav',-1);assert.equal(engine.get('vhf-nav'),'BOTH ON 1');
 engine.step('vhf-nav',1);assert.equal(engine.get('vhf-nav'),'NORMAL');
 engine.step('vhf-nav',1);assert.equal(engine.get('vhf-nav'),'BOTH ON 2');
-for(const id of ['alternate-flaps-position','window-power-test','gen-1','outflow-manual']){
+for(const id of ['alternate-flaps-position','window-power-test','gen-1','outflow-manual','ground-power']){
  const c=registry.controls.find(x=>x.id===id);
  for(const [a,b] of Object.entries(c.springReturn)){engine.set(id,a);assert.equal(engine.get(id),a);engine.release(id);assert.equal(engine.get(id),b);}
 }
+// The GRD PWR lever is momentary on BOTH sides. Neither a persisted ON/OFF
+// position nor the spring's neutral return may send a second source command.
+const grd=registry.controls.find(c=>c.id==='ground-power');
+assert.equal(grd.placementId,'OH12');
+assert.equal(grd.type,'toggle-3-vertical');
+assert.deepEqual(grd.states,['OFF','NEUTRAL','ON']);
+assert.equal(grd.default,'NEUTRAL');
+assert.deepEqual(grd.springReturn,{OFF:'NEUTRAL',ON:'NEUTRAL'});
+assert.equal(engine.get('ground-power'),'NEUTRAL');
+const startGrd=events.length;
+engine.set('ground-power','ON','hold');
+engine.release('ground-power');
+engine.set('ground-power','OFF','hold');
+engine.release('ground-power');
+assert.deepEqual(events.slice(startGrd).filter(e=>e.id==='ground-power').map(e=>e.next),
+ ['ON','NEUTRAL','OFF','NEUTRAL']);
+const recovered=model.controller(registry,{'ground-power':'ON'});
+assert.equal(recovered.get('ground-power'),'NEUTRAL','Spring returns even previously saved ON on reload');
+assert.equal(model.controller(registry,{'ground-power':'OFF'}).get('ground-power'),'NEUTRAL');
 // Regression APU-SPRING-0001: the START->ON return is direct, without an
 // intermediate logical detent or a delayed 50%-to-25% sprite transition.
 const apuConfig=registry.controls.find(c=>c.id==='apu-start');
