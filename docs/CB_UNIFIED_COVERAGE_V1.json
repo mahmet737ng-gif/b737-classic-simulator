@@ -1,0 +1,3591 @@
+{
+  "schema": "b737.unified.cb.coverage/1",
+  "scope": "Functional procedural simulation, not airframe WDM wiring",
+  "configurations": {
+    "CPCS": {
+      "revision": 0,
+      "variant": "CPCS",
+      "total": 474,
+      "mappedBreakers": 117,
+      "open": [],
+      "quarantined": [
+        "P6-4|CPCS|C8",
+        "P6-4|DCPCS|C8",
+        "P6-4|CPCS|E8",
+        "P6-4|DCPCS|E8",
+        "P18-3|ALL|A12"
+      ],
+      "unmapped": [
+        {
+          "id": "P6-1|ALL|A1",
+          "label": "AIR DATA TAIL WARN AC"
+        },
+        {
+          "id": "P6-1|ALL|A2",
+          "label": "AIR DATA DC"
+        },
+        {
+          "id": "P6-1|ALL|A5",
+          "label": "COMPARATOR MON"
+        },
+        {
+          "id": "P6-1|ALL|A6",
+          "label": "COMPARATOR PWR"
+        },
+        {
+          "id": "P6-1|ALL|A8",
+          "label": "INST XFMR 2"
+        },
+        {
+          "id": "P6-1|ALL|A9",
+          "label": "GPSSU-2"
+        },
+        {
+          "id": "P6-1|ALL|A14",
+          "label": "VHF NAV-2 VOR/LOC"
+        },
+        {
+          "id": "P6-1|ALL|A15",
+          "label": "VHF NAV-2 G/S"
+        },
+        {
+          "id": "P6-1|ALL|B2",
+          "label": "ALTIM-2 26V AC"
+        },
+        {
+          "id": "P6-1|ALL|B3",
+          "label": "AUTO XFMR"
+        },
+        {
+          "id": "P6-1|ALL|B4",
+          "label": "COMPUTER-2 26V AC"
+        },
+        {
+          "id": "P6-1|ALL|B5",
+          "label": "COMPUTER-2 AC"
+        },
+        {
+          "id": "P6-1|ALL|B6",
+          "label": "ADI"
+        },
+        {
+          "id": "P6-1|ALL|B10",
+          "label": "COMPASS-1 XFMR ALTN"
+        },
+        {
+          "id": "P6-1|ALL|C2",
+          "label": "VHF-2"
+        },
+        {
+          "id": "P6-1|ALL|C4",
+          "label": "VERT SPEED IND"
+        },
+        {
+          "id": "P6-1|ALL|C5",
+          "label": "MACH ASI"
+        },
+        {
+          "id": "P6-1|ALL|C7",
+          "label": "MACH WARN SYS-2"
+        },
+        {
+          "id": "P6-1|ALL|C8",
+          "label": "CAPT ADI ALTN"
+        },
+        {
+          "id": "P6-1|ALL|C10",
+          "label": "CREW CALL HORN"
+        },
+        {
+          "id": "P6-1|ALL|C11",
+          "label": "XFER"
+        },
+        {
+          "id": "P6-1|ALL|C16",
+          "label": "RADIO ALTM-2"
+        },
+        {
+          "id": "P6-1|ALL|C17",
+          "label": "DME-2"
+        },
+        {
+          "id": "P6-1|ALL|D1",
+          "label": "SELCAL-2"
+        },
+        {
+          "id": "P6-1|ALL|D5",
+          "label": "AMPL BAT"
+        },
+        {
+          "id": "P6-1|ALL|D8",
+          "label": "FMC AC"
+        },
+        {
+          "id": "P6-1|ALL|D9",
+          "label": "DAA NO.2 IRS AC"
+        },
+        {
+          "id": "P6-1|ALL|D10",
+          "label": "DAA NO.2 DC"
+        },
+        {
+          "id": "P6-1|ALL|D13",
+          "label": "DAA FMC NO.2"
+        },
+        {
+          "id": "P6-1|ALL|D14",
+          "label": "WEATHER RADAR IND"
+        },
+        {
+          "id": "P6-1|ALL|D15",
+          "label": "WEATHER RADAR R/T"
+        },
+        {
+          "id": "P6-1|ALL|D16",
+          "label": "ATC-2"
+        },
+        {
+          "id": "P6-1|ALL|D17",
+          "label": "ATC ANT SWITCH"
+        },
+        {
+          "id": "P6-1|ALL|E6",
+          "label": "FORCE FIGHT MON"
+        },
+        {
+          "id": "P6-1|ALL|E7",
+          "label": "RUDDER LOAD LIMITER"
+        },
+        {
+          "id": "P6-1|ALL|E13",
+          "label": "AC BUS 3PH"
+        },
+        {
+          "id": "P6-1|ALL|E15",
+          "label": "DC BUS"
+        },
+        {
+          "id": "P6-2|ALL|A3",
+          "label": "IDLE CONT"
+        },
+        {
+          "id": "P6-2|ALL|A8",
+          "label": "FLT CONT"
+        },
+        {
+          "id": "P6-2|ALL|A9",
+          "label": "FWD SOV CONT"
+        },
+        {
+          "id": "P6-2|ALL|A10",
+          "label": "SPOILER"
+        },
+        {
+          "id": "P6-2|ALL|A11",
+          "label": "STBY RUD"
+        },
+        {
+          "id": "P6-2|ALL|A12",
+          "label": "FLAP"
+        },
+        {
+          "id": "P6-2|ALL|A13",
+          "label": "FLAP LOAD RELIEF"
+        },
+        {
+          "id": "P6-2|ALL|A16",
+          "label": "BRAKE PRESS IND"
+        },
+        {
+          "id": "P6-2|ALL|A18",
+          "label": "INTERPHONE BAT"
+        },
+        {
+          "id": "P6-2|ALL|A19",
+          "label": "INTERPHONE NO.2 BUS"
+        },
+        {
+          "id": "P6-2|ALL|B1",
+          "label": "AUTO FLT SYS B MACH TRIM AC"
+        },
+        {
+          "id": "P6-2|ALL|B2",
+          "label": "AFDS MCP CRS 2"
+        },
+        {
+          "id": "P6-2|ALL|B11",
+          "label": "STABILIZER TRIM ACTUATOR"
+        },
+        {
+          "id": "P6-2|ALL|B13",
+          "label": "STABILIZER TRIM CONT"
+        },
+        {
+          "id": "P6-2|ALL|B14",
+          "label": "SPEEDBRAKE AUTOSLAT"
+        },
+        {
+          "id": "P6-2|ALL|B15",
+          "label": "AUTO SLAT NO.1 DC"
+        },
+        {
+          "id": "P6-2|ALL|B16",
+          "label": "ENG PUMP DEPRESS NO.2"
+        },
+        {
+          "id": "P6-2|ALL|B17",
+          "label": "ENG PUMP DEPRESS NO.1"
+        },
+        {
+          "id": "P6-2|ALL|B18",
+          "label": "HYD SOV ENG NO.2"
+        },
+        {
+          "id": "P6-2|ALL|B19",
+          "label": "HYD SOV ENG NO.1"
+        },
+        {
+          "id": "P6-2|ALL|B20",
+          "label": "INTERPHONE F/O EQUIP RACK"
+        },
+        {
+          "id": "P6-2|ALL|B21",
+          "label": "INTERPHONE CAPT & OBS"
+        },
+        {
+          "id": "P6-2|ALL|C1",
+          "label": "AUTO FLT SYS B SNSR EXC AC"
+        },
+        {
+          "id": "P6-2|ALL|C2",
+          "label": "FCC DC"
+        },
+        {
+          "id": "P6-2|ALL|C3",
+          "label": "ENGAGE INTLK B"
+        },
+        {
+          "id": "P6-2|ALL|C4",
+          "label": "WARN LIGHT BAT"
+        },
+        {
+          "id": "P6-2|ALL|C5",
+          "label": "THR REV IND SYS"
+        },
+        {
+          "id": "P6-2|ALL|C6",
+          "label": "THR REV CONT SYS"
+        },
+        {
+          "id": "P6-2|ALL|C7",
+          "label": "THR REV IND SYS"
+        },
+        {
+          "id": "P6-2|ALL|C8",
+          "label": "THR REV CONT SYS"
+        },
+        {
+          "id": "P6-2|ALL|C9",
+          "label": "TRIM CONT AIL"
+        },
+        {
+          "id": "P6-2|ALL|C10",
+          "label": "TRIM CONT RUD"
+        },
+        {
+          "id": "P6-2|ALL|C11",
+          "label": "RUD TRIM IND"
+        },
+        {
+          "id": "P6-2|ALL|C12",
+          "label": "FLAP POS IND LE"
+        },
+        {
+          "id": "P6-2|ALL|C13",
+          "label": "FLAP POS IND TE"
+        },
+        {
+          "id": "P6-2|ALL|C15",
+          "label": "AUTO SLAT NO.2 DC"
+        },
+        {
+          "id": "P6-2|ALL|C16",
+          "label": "OIL QTY IND SYS B"
+        },
+        {
+          "id": "P6-2|ALL|C17",
+          "label": "OIL QTY IND SYS A"
+        },
+        {
+          "id": "P6-2|ALL|C18",
+          "label": "INTERPHONE AND WARN"
+        },
+        {
+          "id": "P6-2|ALL|C19",
+          "label": "INTERPHONE OBS AUDIO"
+        },
+        {
+          "id": "P6-2|ALL|C20",
+          "label": "LANDING GEAR LATCH WARN"
+        },
+        {
+          "id": "P6-2|ALL|C21",
+          "label": "LANDING GEAR AIR/GRD RELAY & LIGHTS"
+        },
+        {
+          "id": "P6-2|ALL|D10",
+          "label": "ALT T/RAP DRIVE AC"
+        },
+        {
+          "id": "P6-2|ALL|D12",
+          "label": "PTU/LG BYP V CONT"
+        },
+        {
+          "id": "P6-2|ALL|D13",
+          "label": "PTU/LG BYP V CONT"
+        },
+        {
+          "id": "P6-2|ALL|D14",
+          "label": "LG SYS XFR VALVE CONT"
+        },
+        {
+          "id": "P6-2|ALL|D15",
+          "label": "LG SYS XFR VALVE CONT"
+        },
+        {
+          "id": "P6-2|ALL|D16",
+          "label": "PRESS IND SYS B"
+        },
+        {
+          "id": "P6-2|ALL|D17",
+          "label": "PRESS IND SYS A"
+        },
+        {
+          "id": "P6-2|ALL|D18",
+          "label": "F/O BAT"
+        },
+        {
+          "id": "P6-2|ALL|D19",
+          "label": "NO.2 BUS"
+        },
+        {
+          "id": "P6-2|ALL|D20",
+          "label": "NOSE GEAR STEER"
+        },
+        {
+          "id": "P6-2|ALL|D21",
+          "label": "NOSE GEAR AIR/GND"
+        },
+        {
+          "id": "P6-2|ALL|D23",
+          "label": "EXT BOTTLES RIGHT"
+        },
+        {
+          "id": "P6-2|ALL|D24",
+          "label": "EXT BOTTLES LEFT"
+        },
+        {
+          "id": "P6-3|ALL|A1",
+          "label": "CLOCK DISPLAY"
+        },
+        {
+          "id": "P6-3|ALL|A2",
+          "label": "DOOR WARN"
+        },
+        {
+          "id": "P6-3|ALL|A3",
+          "label": "TEMP IND"
+        },
+        {
+          "id": "P6-3|ALL|A4",
+          "label": "FUEL QTY"
+        },
+        {
+          "id": "P6-3|ALL|A7",
+          "label": "EP FUELING"
+        },
+        {
+          "id": "P6-3|ALL|A9",
+          "label": "DOME WHITE"
+        },
+        {
+          "id": "P6-3|ALL|A10",
+          "label": "CONTROL STAND"
+        },
+        {
+          "id": "P6-3|ALL|A11",
+          "label": "STBY BKGD"
+        },
+        {
+          "id": "P6-3|ALL|A12",
+          "label": "BKGD"
+        },
+        {
+          "id": "P6-3|ALL|A13",
+          "label": "STBY COMPASS"
+        },
+        {
+          "id": "P6-3|ALL|A14",
+          "label": "MAP & KIT"
+        },
+        {
+          "id": "P6-3|ALL|A15",
+          "label": "OBS READING"
+        },
+        {
+          "id": "P6-3|ALL|B1",
+          "label": "CLOCK"
+        },
+        {
+          "id": "P6-3|ALL|B5",
+          "label": "FUEL SHUTOFF VALVE"
+        },
+        {
+          "id": "P6-3|ALL|B9",
+          "label": "DIGITAL DIMMING F/O"
+        },
+        {
+          "id": "P6-3|ALL|B10",
+          "label": "DIGITAL DIMMING CAPT"
+        },
+        {
+          "id": "P6-3|ALL|B11",
+          "label": "PANEL & INSTR F/O"
+        },
+        {
+          "id": "P6-3|ALL|B12",
+          "label": "PANEL & INSTR CAPT CTR"
+        },
+        {
+          "id": "P6-3|ALL|B13",
+          "label": "MASTER DIM BAT"
+        },
+        {
+          "id": "P6-3|ALL|B14",
+          "label": "MASTER DIM NO.1 DC"
+        },
+        {
+          "id": "P6-3|ALL|B15",
+          "label": "MASTER DIM NO.2 DC"
+        },
+        {
+          "id": "P6-3|ALL|C9",
+          "label": "ELEX PANEL"
+        },
+        {
+          "id": "P6-3|ALL|C11",
+          "label": "CKT BKR PNL"
+        },
+        {
+          "id": "P6-3|ALL|C12",
+          "label": "DIM & TEST"
+        },
+        {
+          "id": "P6-3|ALL|C13",
+          "label": "OVHD SECT 1"
+        },
+        {
+          "id": "P6-3|ALL|C14",
+          "label": "OVHD SECT 2"
+        },
+        {
+          "id": "P6-3|ALL|C15",
+          "label": "OVHD SECT 3"
+        },
+        {
+          "id": "P6-3|ALL|D1",
+          "label": "LAV MIRROR EXT PWR"
+        },
+        {
+          "id": "P6-3|ALL|D3",
+          "label": "SHUTOFF VALVE ENG 2"
+        },
+        {
+          "id": "P6-3|ALL|D7",
+          "label": "SHUTOFF VALVE ENG 1"
+        },
+        {
+          "id": "P6-3|ALL|D11",
+          "label": "ANNUNCIATOR NO.1"
+        },
+        {
+          "id": "P6-3|ALL|D12",
+          "label": "ANNUNCIATOR BAT"
+        },
+        {
+          "id": "P6-3|ALL|D14",
+          "label": "MASTER CAUTION SECT 4"
+        },
+        {
+          "id": "P6-3|ALL|D15",
+          "label": "MASTER CAUTION SECT 5"
+        },
+        {
+          "id": "P6-3|ALL|D16",
+          "label": "MASTER CAUTION SECT 6"
+        },
+        {
+          "id": "P6-3|ALL|D17",
+          "label": "PITOT STATIC IND F/O"
+        },
+        {
+          "id": "P6-3|ALL|D18",
+          "label": "PITOT STATIC IND CAPT"
+        },
+        {
+          "id": "P6-3|ALL|E1",
+          "label": "SERVICE OUTLETS 115 AC"
+        },
+        {
+          "id": "P6-3|ALL|E3",
+          "label": "FUEL CONT NO.1 AFT NO.2 FWD CTR L"
+        },
+        {
+          "id": "P6-3|ALL|E7",
+          "label": "FUEL CONT NO.1 FWD NO.2 AFT CTR R"
+        },
+        {
+          "id": "P6-3|ALL|E9",
+          "label": "OVERHEAD 28V PRIM"
+        },
+        {
+          "id": "P6-3|ALL|E10",
+          "label": "OVERHEAD LIGHTING"
+        },
+        {
+          "id": "P6-3|ALL|E13",
+          "label": "AFCS FLOOD LT"
+        },
+        {
+          "id": "P6-3|ALL|E16",
+          "label": "ENG 2 SYNC LOCK"
+        },
+        {
+          "id": "P6-3|ALL|E17",
+          "label": "ENG 2 ALTN"
+        },
+        {
+          "id": "P6-3|ALL|E18",
+          "label": "ENG 2 T/R CONT ALTN"
+        },
+        {
+          "id": "P6-3|ALL|F1",
+          "label": "28V DC"
+        },
+        {
+          "id": "P6-3|ALL|F3",
+          "label": "FUEL QTY R TANK"
+        },
+        {
+          "id": "P6-3|ALL|F4",
+          "label": "FUEL QTY CTR TANK"
+        },
+        {
+          "id": "P6-3|ALL|F5",
+          "label": "FUEL QTY L TANK"
+        },
+        {
+          "id": "P6-3|ALL|F6",
+          "label": "FUEL PANEL IND"
+        },
+        {
+          "id": "P6-3|ALL|F10",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F11",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F12",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F13",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F14",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F18",
+          "label": "ENG 1 SYNC LOCK"
+        },
+        {
+          "id": "P6-4|CPCS|A1",
+          "label": "TEMP CONT 35F R"
+        },
+        {
+          "id": "P6-4|CPCS|A2",
+          "label": "TEMP CONT 35F L"
+        },
+        {
+          "id": "P6-4|CPCS|A3",
+          "label": "TEMP CONT AUTO R"
+        },
+        {
+          "id": "P6-4|CPCS|A4",
+          "label": "TEMP CONT AUTO L"
+        },
+        {
+          "id": "P6-4|CPCS|A5",
+          "label": "TEMP CONT MAN"
+        },
+        {
+          "id": "P6-4|CPCS|A10",
+          "label": "AC IND NO.1"
+        },
+        {
+          "id": "P6-4|CPCS|A11",
+          "label": "AC IND GEN APU"
+        },
+        {
+          "id": "P6-4|CPCS|A12",
+          "label": "AC IND NO.2"
+        },
+        {
+          "id": "P6-4|CPCS|A13",
+          "label": "AC IND GND SERVICE A"
+        },
+        {
+          "id": "P6-4|CPCS|A14",
+          "label": "AC IND GND SERVICE B"
+        },
+        {
+          "id": "P6-4|CPCS|A15",
+          "label": "AC IND GND SERVICE C"
+        },
+        {
+          "id": "P6-4|CPCS|B5",
+          "label": "RECIRC FAN ENERGIZED"
+        },
+        {
+          "id": "P6-4|CPCS|B6",
+          "label": "DC BUS"
+        },
+        {
+          "id": "P6-4|CPCS|B10",
+          "label": "AC IND BUS NO.2 A"
+        },
+        {
+          "id": "P6-4|CPCS|B11",
+          "label": "AC IND BUS NO.2 B"
+        },
+        {
+          "id": "P6-4|CPCS|B12",
+          "label": "AC IND BUS NO.2 C"
+        },
+        {
+          "id": "P6-4|CPCS|B13",
+          "label": "AC IND BUS NO.1 A"
+        },
+        {
+          "id": "P6-4|CPCS|B14",
+          "label": "AC IND BUS NO.1 B"
+        },
+        {
+          "id": "P6-4|CPCS|B15",
+          "label": "AC IND BUS NO.1 C"
+        },
+        {
+          "id": "P6-4|CPCS|C1",
+          "label": "TURBOFAN R"
+        },
+        {
+          "id": "P6-4|CPCS|C2",
+          "label": "TURBOFAN L"
+        },
+        {
+          "id": "P6-4|CPCS|C5",
+          "label": "FWD OUTFLOW VALVE"
+        },
+        {
+          "id": "P6-4|CPCS|C8",
+          "label": "TR UNIT NO.2"
+        },
+        {
+          "id": "P6-4|CPCS|C10",
+          "label": "TRANSFER BUS 2 A"
+        },
+        {
+          "id": "P6-4|CPCS|C11",
+          "label": "TRANSFER BUS 2 B"
+        },
+        {
+          "id": "P6-4|CPCS|C12",
+          "label": "TRANSFER BUS 2 C"
+        },
+        {
+          "id": "P6-4|CPCS|C13",
+          "label": "TRANSFER BUS 1 A"
+        },
+        {
+          "id": "P6-4|CPCS|C14",
+          "label": "TRANSFER BUS 1 B"
+        },
+        {
+          "id": "P6-4|CPCS|C15",
+          "label": "TRANSFER BUS 1 C"
+        },
+        {
+          "id": "P6-4|CPCS|D2",
+          "label": "TEMP IND"
+        },
+        {
+          "id": "P6-4|CPCS|D3",
+          "label": "VALVE POS IND"
+        },
+        {
+          "id": "P6-4|CPCS|D6",
+          "label": "DC BUS 2"
+        },
+        {
+          "id": "P6-4|CPCS|D13",
+          "label": "28V GND SERV A"
+        },
+        {
+          "id": "P6-4|CPCS|D14",
+          "label": "28V GND SERV B"
+        },
+        {
+          "id": "P6-4|CPCS|D15",
+          "label": "28V GND SERV C"
+        },
+        {
+          "id": "P6-4|CPCS|E1",
+          "label": "RAM MOD R"
+        },
+        {
+          "id": "P6-4|CPCS|E2",
+          "label": "RAM MOD L"
+        },
+        {
+          "id": "P6-4|CPCS|E8",
+          "label": "TR UNIT NO.3"
+        },
+        {
+          "id": "P6-4|CPCS|E10",
+          "label": "GEN DRIVE NO.1 TEMP"
+        },
+        {
+          "id": "P6-4|CPCS|E11",
+          "label": "GEN DRIVE NO.1 LOW PRESS"
+        },
+        {
+          "id": "P6-4|CPCS|E12",
+          "label": "GEN DRIVE NO.2 TEMP"
+        },
+        {
+          "id": "P6-4|CPCS|E13",
+          "label": "GEN DRIVE NO.2 LOW PRESS"
+        },
+        {
+          "id": "P6-4|CPCS|E14",
+          "label": "28 VOLTS MAIN"
+        },
+        {
+          "id": "P6-4|CPCS|E15",
+          "label": "28 VOLTS TRANS"
+        },
+        {
+          "id": "P6-4|CPCS|F11",
+          "label": "CSD CONT NO.1"
+        },
+        {
+          "id": "P6-4|CPCS|F13",
+          "label": "CSD CONT NO.2"
+        },
+        {
+          "id": "P6-4|CPCS|F14",
+          "label": "28V MAIN NO.2"
+        },
+        {
+          "id": "P6-4|CPCS|F15",
+          "label": "28V TRANS"
+        },
+        {
+          "id": "P6-4|CPCS|F16",
+          "label": "STBY BUS PWR"
+        },
+        {
+          "id": "P6-4|CPCS|F17",
+          "label": "STBY BUS"
+        },
+        {
+          "id": "P6-5|ALL|A3",
+          "label": "BAT TRANS CONT"
+        },
+        {
+          "id": "P6-5|ALL|A5",
+          "label": "IND LT"
+        },
+        {
+          "id": "P6-5|ALL|A6",
+          "label": "AUTO CONT"
+        },
+        {
+          "id": "P6-5|ALL|B2",
+          "label": "BAT BUS CONT AUTO"
+        },
+        {
+          "id": "P6-5|ALL|B3",
+          "label": "BAT BUS CONT MANUAL"
+        },
+        {
+          "id": "P6-5|ALL|B4",
+          "label": "FUELING & EXT PWR CONT"
+        },
+        {
+          "id": "P6-5|ALL|B5",
+          "label": "GEN PWR CONT"
+        },
+        {
+          "id": "P6-5|ALL|B6",
+          "label": "ENTRY LIGHT DIM"
+        },
+        {
+          "id": "P6-5|ALL|C1",
+          "label": "BAT OVHT"
+        },
+        {
+          "id": "P6-5|ALL|C2",
+          "label": "BAT"
+        },
+        {
+          "id": "P6-5|ALL|C3",
+          "label": "HOT BAT"
+        },
+        {
+          "id": "P6-5|ALL|C4",
+          "label": "DC BUS IND NO.1"
+        },
+        {
+          "id": "P6-5|ALL|C5",
+          "label": "DC BUS IND NO.2"
+        },
+        {
+          "id": "P6-5|ALL|C6",
+          "label": "DC BUS IND TR NO.3"
+        },
+        {
+          "id": "P6-5|ALL|D1",
+          "label": "DC STBY PWR STBY"
+        },
+        {
+          "id": "P6-5|ALL|D2",
+          "label": "DC STBY PWR BAT"
+        },
+        {
+          "id": "P6-5|ALL|D3",
+          "label": "DC STBY PWR TR"
+        },
+        {
+          "id": "P6-5|ALL|D6",
+          "label": "TRANSFER"
+        },
+        {
+          "id": "P6-6|ALL|CB1",
+          "label": "FUEL SHUT-OFF VALVES"
+        },
+        {
+          "id": "P6-6|ALL|CB2",
+          "label": "HOT BAT BUS"
+        },
+        {
+          "id": "P6-11|ALL|A2",
+          "label": "MAIN DISTRIBUTION"
+        },
+        {
+          "id": "P6-11|ALL|A8",
+          "label": "STBY HYD PUMP NORMAL"
+        },
+        {
+          "id": "P6-11|ALL|B2",
+          "label": "TRANSFER BUS NO.1 NORMAL"
+        },
+        {
+          "id": "P6-11|ALL|B5",
+          "label": "TRANSFER BUS NO.2 ALT"
+        },
+        {
+          "id": "P6-11|ALL|C7",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|C8",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|C9",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|D8",
+          "label": "GND SERVICE"
+        },
+        {
+          "id": "P6-12|ALL|A2",
+          "label": "MAIN DISTRIBUTION"
+        },
+        {
+          "id": "P6-12|ALL|A8",
+          "label": "STBY HYD PUMP ALTN"
+        },
+        {
+          "id": "P6-12|ALL|B2",
+          "label": "TRANSFER BUS NO.1 ALT"
+        },
+        {
+          "id": "P6-12|ALL|B5",
+          "label": "TRANSFER BUS NO.2 NORMAL"
+        },
+        {
+          "id": "P6-12|ALL|C7",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|C8",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|C9",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|D5",
+          "label": "EXT PWR BUS PROTECTION AC"
+        },
+        {
+          "id": "P6-12|ALL|D8",
+          "label": "GND SERVICE"
+        },
+        {
+          "id": "P18-1|ALL|A1",
+          "label": "VHF NAV-1 VOR/LOC"
+        },
+        {
+          "id": "P18-1|ALL|A2",
+          "label": "VHF NAV-1 G/S"
+        },
+        {
+          "id": "P18-1|ALL|A5",
+          "label": "TERRAIN SELECT"
+        },
+        {
+          "id": "P18-1|ALL|A6",
+          "label": "MARKER BEACON"
+        },
+        {
+          "id": "P18-1|ALL|A7",
+          "label": "GND PROX WARN"
+        },
+        {
+          "id": "P18-1|ALL|B2",
+          "label": "TCAS"
+        },
+        {
+          "id": "P18-1|ALL|B3",
+          "label": "ATC-1"
+        },
+        {
+          "id": "P18-1|ALL|B5",
+          "label": "RADIO ALTM-1"
+        },
+        {
+          "id": "P18-1|ALL|B6",
+          "label": "TCAS"
+        },
+        {
+          "id": "P18-1|ALL|C2",
+          "label": "HGS DEU ALTN"
+        },
+        {
+          "id": "P18-1|ALL|C4",
+          "label": "HGS PWR MON"
+        },
+        {
+          "id": "P18-1|ALL|C5",
+          "label": "HGS DEU"
+        },
+        {
+          "id": "P18-1|ALL|C6",
+          "label": "HGS HCP"
+        },
+        {
+          "id": "P18-1|ALL|C7",
+          "label": "HGS COMPTR"
+        },
+        {
+          "id": "P18-1|ALL|D5",
+          "label": "YAW DAMPER AC"
+        },
+        {
+          "id": "P18-1|ALL|D6",
+          "label": "YAW DAMPER DC"
+        },
+        {
+          "id": "P18-1|ALL|D7",
+          "label": "AFDS AI FORCE LIMITER"
+        },
+        {
+          "id": "P18-1|ALL|E1",
+          "label": "SNSR EXC AC"
+        },
+        {
+          "id": "P18-1|ALL|E3",
+          "label": "FCC DC"
+        },
+        {
+          "id": "P18-1|ALL|E4",
+          "label": "ENGAGE INTLK A"
+        },
+        {
+          "id": "P18-1|ALL|E5",
+          "label": "WARN LIGHT BAT"
+        },
+        {
+          "id": "P18-1|ALL|E6",
+          "label": "MACH TRIM AC"
+        },
+        {
+          "id": "P18-1|ALL|E7",
+          "label": "MACH TRIM DC"
+        },
+        {
+          "id": "P18-2|ALL|A1",
+          "label": "INSTR XFMR-1"
+        },
+        {
+          "id": "P18-2|ALL|A2",
+          "label": "INSTR XFR"
+        },
+        {
+          "id": "P18-2|ALL|A4",
+          "label": "GPSSU-1"
+        },
+        {
+          "id": "P18-2|ALL|A6",
+          "label": "AUTO XFMR"
+        },
+        {
+          "id": "P18-2|ALL|A7",
+          "label": "TAT IND"
+        },
+        {
+          "id": "P18-2|ALL|A8",
+          "label": "COMPUTER-1 AC"
+        },
+        {
+          "id": "P18-2|ALL|A9",
+          "label": "COMPUTER-1 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|B1",
+          "label": "ADI"
+        },
+        {
+          "id": "P18-2|ALL|B2",
+          "label": "F/O ADI ALTN"
+        },
+        {
+          "id": "P18-2|ALL|B4",
+          "label": "COMPASS-2 XFMR ALTN"
+        },
+        {
+          "id": "P18-2|ALL|B6",
+          "label": "VERT SPEED IND"
+        },
+        {
+          "id": "P18-2|ALL|B7",
+          "label": "MACH WARN SYS-1"
+        },
+        {
+          "id": "P18-2|ALL|B8",
+          "label": "ALTM 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|B9",
+          "label": "STBY ALTM ASI VIBR"
+        },
+        {
+          "id": "P18-2|ALL|B10",
+          "label": "MACH AIR SPEED 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|C1",
+          "label": "STBY HRZN"
+        },
+        {
+          "id": "P18-2|ALL|C5",
+          "label": "DAA FMC NO.1"
+        },
+        {
+          "id": "P18-2|ALL|C6",
+          "label": "VOICE RCDR"
+        },
+        {
+          "id": "P18-2|ALL|C8",
+          "label": "POS SENSOR"
+        },
+        {
+          "id": "P18-2|ALL|C9",
+          "label": "FLIGHT RECORDER AC"
+        },
+        {
+          "id": "P18-2|ALL|C10",
+          "label": "FLIGHT RECORDER DC BAT"
+        },
+        {
+          "id": "P18-2|ALL|D1",
+          "label": "FMC AC"
+        },
+        {
+          "id": "P18-2|ALL|D2",
+          "label": "DAA NO.1 IRS AC"
+        },
+        {
+          "id": "P18-2|ALL|D3",
+          "label": "DAA NO.1 IRS DC"
+        },
+        {
+          "id": "P18-2|ALL|D7",
+          "label": "SMC STALL WRN ASYM MODE"
+        },
+        {
+          "id": "P18-2|ALL|D8",
+          "label": "SMC-1 SNSR EXC AC"
+        },
+        {
+          "id": "P18-2|ALL|D9",
+          "label": "SMC-1 CMPTR DC"
+        },
+        {
+          "id": "P18-2|ALL|D10",
+          "label": "ACARS CMU"
+        },
+        {
+          "id": "P18-2|ALL|D12",
+          "label": "VHF-1"
+        },
+        {
+          "id": "P18-2|ALL|D15",
+          "label": "SELCAL-1"
+        },
+        {
+          "id": "P18-2|ALL|E2",
+          "label": "CARGO FIRE SCU CHA"
+        },
+        {
+          "id": "P18-2|ALL|E3",
+          "label": "CARGO FIRE SCU CHB"
+        },
+        {
+          "id": "P18-2|ALL|E4",
+          "label": "CARGO FIRE CCU CHA"
+        },
+        {
+          "id": "P18-2|ALL|E5",
+          "label": "CARGO FIRE CCU CHB"
+        },
+        {
+          "id": "P18-2|ALL|E7",
+          "label": "FMCS MODE ANN"
+        },
+        {
+          "id": "P18-2|ALL|E11",
+          "label": "VHF-3"
+        },
+        {
+          "id": "P18-2|ALL|E12",
+          "label": "ACARS ALERT"
+        },
+        {
+          "id": "P18-3|ALL|A1",
+          "label": "ANTI-ICE COWL ENG 2"
+        },
+        {
+          "id": "P18-3|ALL|A2",
+          "label": "ANTI-ICE COWL ENG 1"
+        },
+        {
+          "id": "P18-3|ALL|A3",
+          "label": "ANTI-ICE ENG 2 AND WING"
+        },
+        {
+          "id": "P18-3|ALL|A4",
+          "label": "ANTI-ICE ENG 1 AND WING"
+        },
+        {
+          "id": "P18-3|ALL|A5",
+          "label": "ANTI-ICE WING VALVE"
+        },
+        {
+          "id": "P18-3|ALL|A8",
+          "label": "PASS CABIN SEAT BELT"
+        },
+        {
+          "id": "P18-3|ALL|A10",
+          "label": "PASS SIGN CONT"
+        },
+        {
+          "id": "P18-3|ALL|A11",
+          "label": "EMERG EXIT"
+        },
+        {
+          "id": "P18-3|ALL|A12",
+          "label": "LANDING LIGHTS OUTBD R"
+        },
+        {
+          "id": "P18-3|ALL|A13",
+          "label": "LANDING LIGHTS OUTBD L"
+        },
+        {
+          "id": "P18-3|ALL|A14",
+          "label": "LANDING LIGHTS INBD R"
+        },
+        {
+          "id": "P18-3|ALL|A15",
+          "label": "LANDING LIGHTS INBD L"
+        },
+        {
+          "id": "P18-3|ALL|B1",
+          "label": "WINDSHIELD WIPER R"
+        },
+        {
+          "id": "P18-3|ALL|B2",
+          "label": "WINDSHIELD WIPER L"
+        },
+        {
+          "id": "P18-3|ALL|B3",
+          "label": "RAIN REPELLENT R"
+        },
+        {
+          "id": "P18-3|ALL|B4",
+          "label": "RAIN REPELLENT L"
+        },
+        {
+          "id": "P18-3|ALL|B6",
+          "label": "WINDOW R"
+        },
+        {
+          "id": "P18-3|ALL|B7",
+          "label": "WINDOW L"
+        },
+        {
+          "id": "P18-3|ALL|B8",
+          "label": "BRIGHT ENTRY"
+        },
+        {
+          "id": "P18-3|ALL|B9",
+          "label": "WORK AND THSHD"
+        },
+        {
+          "id": "P18-3|ALL|B10",
+          "label": "GALLEY"
+        },
+        {
+          "id": "P18-3|ALL|B18",
+          "label": "NORMAL BLOWER 3PH"
+        },
+        {
+          "id": "P18-3|ALL|C6",
+          "label": "RIGHT READING STATION 340"
+        },
+        {
+          "id": "P18-3|ALL|C7",
+          "label": "RIGHT READING STATION 464"
+        },
+        {
+          "id": "P18-3|ALL|C8",
+          "label": "RIGHT READING STATION 500D"
+        },
+        {
+          "id": "P18-3|ALL|C9",
+          "label": "RIGHT READING STATION 608"
+        },
+        {
+          "id": "P18-3|ALL|C10",
+          "label": "RIGHT READING STATION 720"
+        },
+        {
+          "id": "P18-3|ALL|C11",
+          "label": "RIGHT READING STATION 727D"
+        },
+        {
+          "id": "P18-3|ALL|C12",
+          "label": "RIGHT READING STATION 844"
+        },
+        {
+          "id": "P18-3|ALL|C13",
+          "label": "RIGHT READING STATION 945"
+        },
+        {
+          "id": "P18-3|ALL|C15",
+          "label": "ADVANCED LIGHTING SYSTEM"
+        },
+        {
+          "id": "P18-3|ALL|C19",
+          "label": "ALTERNATE BLOWER 3PH"
+        },
+        {
+          "id": "P18-3|ALL|D3",
+          "label": "DRAIN HEATER"
+        },
+        {
+          "id": "P18-3|ALL|D6",
+          "label": "LEFT READING STATION 360"
+        },
+        {
+          "id": "P18-3|ALL|D7",
+          "label": "LEFT READING STATION 492"
+        },
+        {
+          "id": "P18-3|ALL|D8",
+          "label": "LEFT READING STATION 524"
+        },
+        {
+          "id": "P18-3|ALL|D9",
+          "label": "LEFT READING STATION 636"
+        },
+        {
+          "id": "P18-3|ALL|D10",
+          "label": "LEFT READING STATION 727A"
+        },
+        {
+          "id": "P18-3|ALL|D11",
+          "label": "LEFT READING STATION 727E"
+        },
+        {
+          "id": "P18-3|ALL|D12",
+          "label": "LEFT READING STATION 844"
+        },
+        {
+          "id": "P18-3|ALL|D13",
+          "label": "LEFT READING STATION 945"
+        },
+        {
+          "id": "P18-3|ALL|E6",
+          "label": "CEILING CONTROL BRT"
+        },
+        {
+          "id": "P18-3|ALL|E7",
+          "label": "CEILING CONTROL NIGHT"
+        },
+        {
+          "id": "P18-3|ALL|E8",
+          "label": "CEILING R"
+        },
+        {
+          "id": "P18-3|ALL|E9",
+          "label": "CEILING L"
+        },
+        {
+          "id": "P18-3|ALL|E10",
+          "label": "CEILING GND SERV R"
+        },
+        {
+          "id": "P18-3|ALL|E11",
+          "label": "GND SERV WINDOW BRT CONT"
+        },
+        {
+          "id": "P18-3|ALL|E12",
+          "label": "GND SERV CEILING NIGHT CONT"
+        },
+        {
+          "id": "P18-3|ALL|E14",
+          "label": "SERVICE LIGHTING ELEC RACK"
+        },
+        {
+          "id": "P18-3|ALL|E15",
+          "label": "CARGO COMPARTMENT AFT"
+        },
+        {
+          "id": "P18-3|ALL|E16",
+          "label": "CARGO COMPARTMENT FWD"
+        },
+        {
+          "id": "P18-3|ALL|F7",
+          "label": "OXYGEN MANUAL CONTROL"
+        },
+        {
+          "id": "P18-3|ALL|F8",
+          "label": "OXYGEN PASS R"
+        },
+        {
+          "id": "P18-3|ALL|F9",
+          "label": "OXYGEN PASS L"
+        },
+        {
+          "id": "P18-3|ALL|F10",
+          "label": "LAVATORY OCCUPIED SIGN"
+        },
+        {
+          "id": "P18-3|ALL|F11",
+          "label": "LAVATORY MIRROR"
+        },
+        {
+          "id": "P18-3|ALL|F12",
+          "label": "CEILING CONT BRT R"
+        },
+        {
+          "id": "P18-3|ALL|F13",
+          "label": "LAPTOP"
+        },
+        {
+          "id": "P18-3|ALL|F14",
+          "label": "ACCESS COMPT"
+        },
+        {
+          "id": "P18-3|ALL|F15",
+          "label": "WHEEL WELLS"
+        },
+        {
+          "id": "P18-3|ALL|F16",
+          "label": "AIR COND COMPT"
+        }
+      ],
+      "model": "FUNCTIONAL_TRAINER_CIRCUIT_ISOLATION_NOT_WDM"
+    },
+    "DCPCS": {
+      "revision": 0,
+      "variant": "DCPCS",
+      "total": 473,
+      "mappedBreakers": 114,
+      "open": [],
+      "quarantined": [
+        "P6-4|CPCS|C8",
+        "P6-4|DCPCS|C8",
+        "P6-4|CPCS|E8",
+        "P6-4|DCPCS|E8",
+        "P18-3|ALL|A12"
+      ],
+      "unmapped": [
+        {
+          "id": "P6-1|ALL|A1",
+          "label": "AIR DATA TAIL WARN AC"
+        },
+        {
+          "id": "P6-1|ALL|A2",
+          "label": "AIR DATA DC"
+        },
+        {
+          "id": "P6-1|ALL|A5",
+          "label": "COMPARATOR MON"
+        },
+        {
+          "id": "P6-1|ALL|A6",
+          "label": "COMPARATOR PWR"
+        },
+        {
+          "id": "P6-1|ALL|A8",
+          "label": "INST XFMR 2"
+        },
+        {
+          "id": "P6-1|ALL|A9",
+          "label": "GPSSU-2"
+        },
+        {
+          "id": "P6-1|ALL|A14",
+          "label": "VHF NAV-2 VOR/LOC"
+        },
+        {
+          "id": "P6-1|ALL|A15",
+          "label": "VHF NAV-2 G/S"
+        },
+        {
+          "id": "P6-1|ALL|B2",
+          "label": "ALTIM-2 26V AC"
+        },
+        {
+          "id": "P6-1|ALL|B3",
+          "label": "AUTO XFMR"
+        },
+        {
+          "id": "P6-1|ALL|B4",
+          "label": "COMPUTER-2 26V AC"
+        },
+        {
+          "id": "P6-1|ALL|B5",
+          "label": "COMPUTER-2 AC"
+        },
+        {
+          "id": "P6-1|ALL|B6",
+          "label": "ADI"
+        },
+        {
+          "id": "P6-1|ALL|B10",
+          "label": "COMPASS-1 XFMR ALTN"
+        },
+        {
+          "id": "P6-1|ALL|C2",
+          "label": "VHF-2"
+        },
+        {
+          "id": "P6-1|ALL|C4",
+          "label": "VERT SPEED IND"
+        },
+        {
+          "id": "P6-1|ALL|C5",
+          "label": "MACH ASI"
+        },
+        {
+          "id": "P6-1|ALL|C7",
+          "label": "MACH WARN SYS-2"
+        },
+        {
+          "id": "P6-1|ALL|C8",
+          "label": "CAPT ADI ALTN"
+        },
+        {
+          "id": "P6-1|ALL|C10",
+          "label": "CREW CALL HORN"
+        },
+        {
+          "id": "P6-1|ALL|C11",
+          "label": "XFER"
+        },
+        {
+          "id": "P6-1|ALL|C16",
+          "label": "RADIO ALTM-2"
+        },
+        {
+          "id": "P6-1|ALL|C17",
+          "label": "DME-2"
+        },
+        {
+          "id": "P6-1|ALL|D1",
+          "label": "SELCAL-2"
+        },
+        {
+          "id": "P6-1|ALL|D5",
+          "label": "AMPL BAT"
+        },
+        {
+          "id": "P6-1|ALL|D8",
+          "label": "FMC AC"
+        },
+        {
+          "id": "P6-1|ALL|D9",
+          "label": "DAA NO.2 IRS AC"
+        },
+        {
+          "id": "P6-1|ALL|D10",
+          "label": "DAA NO.2 DC"
+        },
+        {
+          "id": "P6-1|ALL|D13",
+          "label": "DAA FMC NO.2"
+        },
+        {
+          "id": "P6-1|ALL|D14",
+          "label": "WEATHER RADAR IND"
+        },
+        {
+          "id": "P6-1|ALL|D15",
+          "label": "WEATHER RADAR R/T"
+        },
+        {
+          "id": "P6-1|ALL|D16",
+          "label": "ATC-2"
+        },
+        {
+          "id": "P6-1|ALL|D17",
+          "label": "ATC ANT SWITCH"
+        },
+        {
+          "id": "P6-1|ALL|E6",
+          "label": "FORCE FIGHT MON"
+        },
+        {
+          "id": "P6-1|ALL|E7",
+          "label": "RUDDER LOAD LIMITER"
+        },
+        {
+          "id": "P6-1|ALL|E13",
+          "label": "AC BUS 3PH"
+        },
+        {
+          "id": "P6-1|ALL|E15",
+          "label": "DC BUS"
+        },
+        {
+          "id": "P6-2|ALL|A3",
+          "label": "IDLE CONT"
+        },
+        {
+          "id": "P6-2|ALL|A8",
+          "label": "FLT CONT"
+        },
+        {
+          "id": "P6-2|ALL|A9",
+          "label": "FWD SOV CONT"
+        },
+        {
+          "id": "P6-2|ALL|A10",
+          "label": "SPOILER"
+        },
+        {
+          "id": "P6-2|ALL|A11",
+          "label": "STBY RUD"
+        },
+        {
+          "id": "P6-2|ALL|A12",
+          "label": "FLAP"
+        },
+        {
+          "id": "P6-2|ALL|A13",
+          "label": "FLAP LOAD RELIEF"
+        },
+        {
+          "id": "P6-2|ALL|A16",
+          "label": "BRAKE PRESS IND"
+        },
+        {
+          "id": "P6-2|ALL|A18",
+          "label": "INTERPHONE BAT"
+        },
+        {
+          "id": "P6-2|ALL|A19",
+          "label": "INTERPHONE NO.2 BUS"
+        },
+        {
+          "id": "P6-2|ALL|B1",
+          "label": "AUTO FLT SYS B MACH TRIM AC"
+        },
+        {
+          "id": "P6-2|ALL|B2",
+          "label": "AFDS MCP CRS 2"
+        },
+        {
+          "id": "P6-2|ALL|B11",
+          "label": "STABILIZER TRIM ACTUATOR"
+        },
+        {
+          "id": "P6-2|ALL|B13",
+          "label": "STABILIZER TRIM CONT"
+        },
+        {
+          "id": "P6-2|ALL|B14",
+          "label": "SPEEDBRAKE AUTOSLAT"
+        },
+        {
+          "id": "P6-2|ALL|B15",
+          "label": "AUTO SLAT NO.1 DC"
+        },
+        {
+          "id": "P6-2|ALL|B16",
+          "label": "ENG PUMP DEPRESS NO.2"
+        },
+        {
+          "id": "P6-2|ALL|B17",
+          "label": "ENG PUMP DEPRESS NO.1"
+        },
+        {
+          "id": "P6-2|ALL|B18",
+          "label": "HYD SOV ENG NO.2"
+        },
+        {
+          "id": "P6-2|ALL|B19",
+          "label": "HYD SOV ENG NO.1"
+        },
+        {
+          "id": "P6-2|ALL|B20",
+          "label": "INTERPHONE F/O EQUIP RACK"
+        },
+        {
+          "id": "P6-2|ALL|B21",
+          "label": "INTERPHONE CAPT & OBS"
+        },
+        {
+          "id": "P6-2|ALL|C1",
+          "label": "AUTO FLT SYS B SNSR EXC AC"
+        },
+        {
+          "id": "P6-2|ALL|C2",
+          "label": "FCC DC"
+        },
+        {
+          "id": "P6-2|ALL|C3",
+          "label": "ENGAGE INTLK B"
+        },
+        {
+          "id": "P6-2|ALL|C4",
+          "label": "WARN LIGHT BAT"
+        },
+        {
+          "id": "P6-2|ALL|C5",
+          "label": "THR REV IND SYS"
+        },
+        {
+          "id": "P6-2|ALL|C6",
+          "label": "THR REV CONT SYS"
+        },
+        {
+          "id": "P6-2|ALL|C7",
+          "label": "THR REV IND SYS"
+        },
+        {
+          "id": "P6-2|ALL|C8",
+          "label": "THR REV CONT SYS"
+        },
+        {
+          "id": "P6-2|ALL|C9",
+          "label": "TRIM CONT AIL"
+        },
+        {
+          "id": "P6-2|ALL|C10",
+          "label": "TRIM CONT RUD"
+        },
+        {
+          "id": "P6-2|ALL|C11",
+          "label": "RUD TRIM IND"
+        },
+        {
+          "id": "P6-2|ALL|C12",
+          "label": "FLAP POS IND LE"
+        },
+        {
+          "id": "P6-2|ALL|C13",
+          "label": "FLAP POS IND TE"
+        },
+        {
+          "id": "P6-2|ALL|C15",
+          "label": "AUTO SLAT NO.2 DC"
+        },
+        {
+          "id": "P6-2|ALL|C16",
+          "label": "OIL QTY IND SYS B"
+        },
+        {
+          "id": "P6-2|ALL|C17",
+          "label": "OIL QTY IND SYS A"
+        },
+        {
+          "id": "P6-2|ALL|C18",
+          "label": "INTERPHONE AND WARN"
+        },
+        {
+          "id": "P6-2|ALL|C19",
+          "label": "INTERPHONE OBS AUDIO"
+        },
+        {
+          "id": "P6-2|ALL|C20",
+          "label": "LANDING GEAR LATCH WARN"
+        },
+        {
+          "id": "P6-2|ALL|C21",
+          "label": "LANDING GEAR AIR/GRD RELAY & LIGHTS"
+        },
+        {
+          "id": "P6-2|ALL|D10",
+          "label": "ALT T/RAP DRIVE AC"
+        },
+        {
+          "id": "P6-2|ALL|D12",
+          "label": "PTU/LG BYP V CONT"
+        },
+        {
+          "id": "P6-2|ALL|D13",
+          "label": "PTU/LG BYP V CONT"
+        },
+        {
+          "id": "P6-2|ALL|D14",
+          "label": "LG SYS XFR VALVE CONT"
+        },
+        {
+          "id": "P6-2|ALL|D15",
+          "label": "LG SYS XFR VALVE CONT"
+        },
+        {
+          "id": "P6-2|ALL|D16",
+          "label": "PRESS IND SYS B"
+        },
+        {
+          "id": "P6-2|ALL|D17",
+          "label": "PRESS IND SYS A"
+        },
+        {
+          "id": "P6-2|ALL|D18",
+          "label": "F/O BAT"
+        },
+        {
+          "id": "P6-2|ALL|D19",
+          "label": "NO.2 BUS"
+        },
+        {
+          "id": "P6-2|ALL|D20",
+          "label": "NOSE GEAR STEER"
+        },
+        {
+          "id": "P6-2|ALL|D21",
+          "label": "NOSE GEAR AIR/GND"
+        },
+        {
+          "id": "P6-2|ALL|D23",
+          "label": "EXT BOTTLES RIGHT"
+        },
+        {
+          "id": "P6-2|ALL|D24",
+          "label": "EXT BOTTLES LEFT"
+        },
+        {
+          "id": "P6-3|ALL|A1",
+          "label": "CLOCK DISPLAY"
+        },
+        {
+          "id": "P6-3|ALL|A2",
+          "label": "DOOR WARN"
+        },
+        {
+          "id": "P6-3|ALL|A3",
+          "label": "TEMP IND"
+        },
+        {
+          "id": "P6-3|ALL|A4",
+          "label": "FUEL QTY"
+        },
+        {
+          "id": "P6-3|ALL|A7",
+          "label": "EP FUELING"
+        },
+        {
+          "id": "P6-3|ALL|A9",
+          "label": "DOME WHITE"
+        },
+        {
+          "id": "P6-3|ALL|A10",
+          "label": "CONTROL STAND"
+        },
+        {
+          "id": "P6-3|ALL|A11",
+          "label": "STBY BKGD"
+        },
+        {
+          "id": "P6-3|ALL|A12",
+          "label": "BKGD"
+        },
+        {
+          "id": "P6-3|ALL|A13",
+          "label": "STBY COMPASS"
+        },
+        {
+          "id": "P6-3|ALL|A14",
+          "label": "MAP & KIT"
+        },
+        {
+          "id": "P6-3|ALL|A15",
+          "label": "OBS READING"
+        },
+        {
+          "id": "P6-3|ALL|B1",
+          "label": "CLOCK"
+        },
+        {
+          "id": "P6-3|ALL|B5",
+          "label": "FUEL SHUTOFF VALVE"
+        },
+        {
+          "id": "P6-3|ALL|B9",
+          "label": "DIGITAL DIMMING F/O"
+        },
+        {
+          "id": "P6-3|ALL|B10",
+          "label": "DIGITAL DIMMING CAPT"
+        },
+        {
+          "id": "P6-3|ALL|B11",
+          "label": "PANEL & INSTR F/O"
+        },
+        {
+          "id": "P6-3|ALL|B12",
+          "label": "PANEL & INSTR CAPT CTR"
+        },
+        {
+          "id": "P6-3|ALL|B13",
+          "label": "MASTER DIM BAT"
+        },
+        {
+          "id": "P6-3|ALL|B14",
+          "label": "MASTER DIM NO.1 DC"
+        },
+        {
+          "id": "P6-3|ALL|B15",
+          "label": "MASTER DIM NO.2 DC"
+        },
+        {
+          "id": "P6-3|ALL|C9",
+          "label": "ELEX PANEL"
+        },
+        {
+          "id": "P6-3|ALL|C11",
+          "label": "CKT BKR PNL"
+        },
+        {
+          "id": "P6-3|ALL|C12",
+          "label": "DIM & TEST"
+        },
+        {
+          "id": "P6-3|ALL|C13",
+          "label": "OVHD SECT 1"
+        },
+        {
+          "id": "P6-3|ALL|C14",
+          "label": "OVHD SECT 2"
+        },
+        {
+          "id": "P6-3|ALL|C15",
+          "label": "OVHD SECT 3"
+        },
+        {
+          "id": "P6-3|ALL|D1",
+          "label": "LAV MIRROR EXT PWR"
+        },
+        {
+          "id": "P6-3|ALL|D3",
+          "label": "SHUTOFF VALVE ENG 2"
+        },
+        {
+          "id": "P6-3|ALL|D7",
+          "label": "SHUTOFF VALVE ENG 1"
+        },
+        {
+          "id": "P6-3|ALL|D11",
+          "label": "ANNUNCIATOR NO.1"
+        },
+        {
+          "id": "P6-3|ALL|D12",
+          "label": "ANNUNCIATOR BAT"
+        },
+        {
+          "id": "P6-3|ALL|D14",
+          "label": "MASTER CAUTION SECT 4"
+        },
+        {
+          "id": "P6-3|ALL|D15",
+          "label": "MASTER CAUTION SECT 5"
+        },
+        {
+          "id": "P6-3|ALL|D16",
+          "label": "MASTER CAUTION SECT 6"
+        },
+        {
+          "id": "P6-3|ALL|D17",
+          "label": "PITOT STATIC IND F/O"
+        },
+        {
+          "id": "P6-3|ALL|D18",
+          "label": "PITOT STATIC IND CAPT"
+        },
+        {
+          "id": "P6-3|ALL|E1",
+          "label": "SERVICE OUTLETS 115 AC"
+        },
+        {
+          "id": "P6-3|ALL|E3",
+          "label": "FUEL CONT NO.1 AFT NO.2 FWD CTR L"
+        },
+        {
+          "id": "P6-3|ALL|E7",
+          "label": "FUEL CONT NO.1 FWD NO.2 AFT CTR R"
+        },
+        {
+          "id": "P6-3|ALL|E9",
+          "label": "OVERHEAD 28V PRIM"
+        },
+        {
+          "id": "P6-3|ALL|E10",
+          "label": "OVERHEAD LIGHTING"
+        },
+        {
+          "id": "P6-3|ALL|E13",
+          "label": "AFCS FLOOD LT"
+        },
+        {
+          "id": "P6-3|ALL|E16",
+          "label": "ENG 2 SYNC LOCK"
+        },
+        {
+          "id": "P6-3|ALL|E17",
+          "label": "ENG 2 ALTN"
+        },
+        {
+          "id": "P6-3|ALL|E18",
+          "label": "ENG 2 T/R CONT ALTN"
+        },
+        {
+          "id": "P6-3|ALL|F1",
+          "label": "28V DC"
+        },
+        {
+          "id": "P6-3|ALL|F3",
+          "label": "FUEL QTY R TANK"
+        },
+        {
+          "id": "P6-3|ALL|F4",
+          "label": "FUEL QTY CTR TANK"
+        },
+        {
+          "id": "P6-3|ALL|F5",
+          "label": "FUEL QTY L TANK"
+        },
+        {
+          "id": "P6-3|ALL|F6",
+          "label": "FUEL PANEL IND"
+        },
+        {
+          "id": "P6-3|ALL|F10",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F11",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F12",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F13",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F14",
+          "label": "OVERHEAD 5V SEC"
+        },
+        {
+          "id": "P6-3|ALL|F18",
+          "label": "ENG 1 SYNC LOCK"
+        },
+        {
+          "id": "P6-4|DCPCS|A1",
+          "label": "TEMP CONT 35F R"
+        },
+        {
+          "id": "P6-4|DCPCS|A2",
+          "label": "TEMP CONT 35F L"
+        },
+        {
+          "id": "P6-4|DCPCS|A3",
+          "label": "TEMP CONT AUTO R"
+        },
+        {
+          "id": "P6-4|DCPCS|A4",
+          "label": "TEMP CONT AUTO L"
+        },
+        {
+          "id": "P6-4|DCPCS|A5",
+          "label": "TEMP CONT MAN"
+        },
+        {
+          "id": "P6-4|DCPCS|A10",
+          "label": "AC IND NO.1"
+        },
+        {
+          "id": "P6-4|DCPCS|A11",
+          "label": "AC IND GEN APU"
+        },
+        {
+          "id": "P6-4|DCPCS|A12",
+          "label": "AC IND NO.2"
+        },
+        {
+          "id": "P6-4|DCPCS|A13",
+          "label": "AC IND GND SERVICE A"
+        },
+        {
+          "id": "P6-4|DCPCS|A14",
+          "label": "AC IND GND SERVICE B"
+        },
+        {
+          "id": "P6-4|DCPCS|A15",
+          "label": "AC IND GND SERVICE C"
+        },
+        {
+          "id": "P6-4|DCPCS|B5",
+          "label": "RECIRC FAN ENERGIZED"
+        },
+        {
+          "id": "P6-4|DCPCS|B6",
+          "label": "DC BUS"
+        },
+        {
+          "id": "P6-4|DCPCS|B10",
+          "label": "AC IND BUS NO.2 A"
+        },
+        {
+          "id": "P6-4|DCPCS|B11",
+          "label": "AC IND BUS NO.2 B"
+        },
+        {
+          "id": "P6-4|DCPCS|B12",
+          "label": "AC IND BUS NO.2 C"
+        },
+        {
+          "id": "P6-4|DCPCS|B13",
+          "label": "AC IND BUS NO.1 A"
+        },
+        {
+          "id": "P6-4|DCPCS|B14",
+          "label": "AC IND BUS NO.1 B"
+        },
+        {
+          "id": "P6-4|DCPCS|B15",
+          "label": "AC IND BUS NO.1 C"
+        },
+        {
+          "id": "P6-4|DCPCS|C1",
+          "label": "TURBOFAN R"
+        },
+        {
+          "id": "P6-4|DCPCS|C2",
+          "label": "TURBOFAN L"
+        },
+        {
+          "id": "P6-4|DCPCS|C5",
+          "label": "FWD OUTFLOW VALVE"
+        },
+        {
+          "id": "P6-4|DCPCS|C8",
+          "label": "TR UNIT NO.2"
+        },
+        {
+          "id": "P6-4|DCPCS|C10",
+          "label": "TRANSFER BUS 2 A"
+        },
+        {
+          "id": "P6-4|DCPCS|C11",
+          "label": "TRANSFER BUS 2 B"
+        },
+        {
+          "id": "P6-4|DCPCS|C12",
+          "label": "TRANSFER BUS 2 C"
+        },
+        {
+          "id": "P6-4|DCPCS|C13",
+          "label": "TRANSFER BUS 1 A"
+        },
+        {
+          "id": "P6-4|DCPCS|C14",
+          "label": "TRANSFER BUS 1 B"
+        },
+        {
+          "id": "P6-4|DCPCS|C15",
+          "label": "TRANSFER BUS 1 C"
+        },
+        {
+          "id": "P6-4|DCPCS|D2",
+          "label": "TEMP IND"
+        },
+        {
+          "id": "P6-4|DCPCS|D3",
+          "label": "VALVE POS IND"
+        },
+        {
+          "id": "P6-4|DCPCS|D6",
+          "label": "DC BUS 2"
+        },
+        {
+          "id": "P6-4|DCPCS|D13",
+          "label": "28V GND SERV A"
+        },
+        {
+          "id": "P6-4|DCPCS|D14",
+          "label": "28V GND SERV B"
+        },
+        {
+          "id": "P6-4|DCPCS|D15",
+          "label": "28V GND SERV C"
+        },
+        {
+          "id": "P6-4|DCPCS|E1",
+          "label": "RAM MOD R"
+        },
+        {
+          "id": "P6-4|DCPCS|E2",
+          "label": "RAM MOD L"
+        },
+        {
+          "id": "P6-4|DCPCS|E8",
+          "label": "TR UNIT NO.3"
+        },
+        {
+          "id": "P6-4|DCPCS|E10",
+          "label": "GEN DRIVE NO.1 TEMP"
+        },
+        {
+          "id": "P6-4|DCPCS|E11",
+          "label": "GEN DRIVE NO.1 LOW PRESS"
+        },
+        {
+          "id": "P6-4|DCPCS|E12",
+          "label": "GEN DRIVE NO.2 TEMP"
+        },
+        {
+          "id": "P6-4|DCPCS|E13",
+          "label": "GEN DRIVE NO.2 LOW PRESS"
+        },
+        {
+          "id": "P6-4|DCPCS|E14",
+          "label": "28 VOLTS MAIN"
+        },
+        {
+          "id": "P6-4|DCPCS|E15",
+          "label": "28 VOLTS TRANS"
+        },
+        {
+          "id": "P6-4|DCPCS|F11",
+          "label": "CSD CONT NO.1"
+        },
+        {
+          "id": "P6-4|DCPCS|F13",
+          "label": "CSD CONT NO.2"
+        },
+        {
+          "id": "P6-4|DCPCS|F14",
+          "label": "28V MAIN NO.2"
+        },
+        {
+          "id": "P6-4|DCPCS|F15",
+          "label": "28V TRANS"
+        },
+        {
+          "id": "P6-4|DCPCS|F16",
+          "label": "STBY BUS PWR"
+        },
+        {
+          "id": "P6-4|DCPCS|F17",
+          "label": "STBY BUS"
+        },
+        {
+          "id": "P6-4|DCPCS|F4",
+          "label": "DIGITAL PRESS IND"
+        },
+        {
+          "id": "P6-4|DCPCS|F5",
+          "label": "DIGITAL PRESS LCD LTG"
+        },
+        {
+          "id": "P6-5|ALL|A3",
+          "label": "BAT TRANS CONT"
+        },
+        {
+          "id": "P6-5|ALL|A5",
+          "label": "IND LT"
+        },
+        {
+          "id": "P6-5|ALL|A6",
+          "label": "AUTO CONT"
+        },
+        {
+          "id": "P6-5|ALL|B2",
+          "label": "BAT BUS CONT AUTO"
+        },
+        {
+          "id": "P6-5|ALL|B3",
+          "label": "BAT BUS CONT MANUAL"
+        },
+        {
+          "id": "P6-5|ALL|B4",
+          "label": "FUELING & EXT PWR CONT"
+        },
+        {
+          "id": "P6-5|ALL|B5",
+          "label": "GEN PWR CONT"
+        },
+        {
+          "id": "P6-5|ALL|B6",
+          "label": "ENTRY LIGHT DIM"
+        },
+        {
+          "id": "P6-5|ALL|C1",
+          "label": "BAT OVHT"
+        },
+        {
+          "id": "P6-5|ALL|C2",
+          "label": "BAT"
+        },
+        {
+          "id": "P6-5|ALL|C3",
+          "label": "HOT BAT"
+        },
+        {
+          "id": "P6-5|ALL|C4",
+          "label": "DC BUS IND NO.1"
+        },
+        {
+          "id": "P6-5|ALL|C5",
+          "label": "DC BUS IND NO.2"
+        },
+        {
+          "id": "P6-5|ALL|C6",
+          "label": "DC BUS IND TR NO.3"
+        },
+        {
+          "id": "P6-5|ALL|D1",
+          "label": "DC STBY PWR STBY"
+        },
+        {
+          "id": "P6-5|ALL|D2",
+          "label": "DC STBY PWR BAT"
+        },
+        {
+          "id": "P6-5|ALL|D3",
+          "label": "DC STBY PWR TR"
+        },
+        {
+          "id": "P6-5|ALL|D6",
+          "label": "TRANSFER"
+        },
+        {
+          "id": "P6-6|ALL|CB1",
+          "label": "FUEL SHUT-OFF VALVES"
+        },
+        {
+          "id": "P6-6|ALL|CB2",
+          "label": "HOT BAT BUS"
+        },
+        {
+          "id": "P6-11|ALL|A2",
+          "label": "MAIN DISTRIBUTION"
+        },
+        {
+          "id": "P6-11|ALL|A8",
+          "label": "STBY HYD PUMP NORMAL"
+        },
+        {
+          "id": "P6-11|ALL|B2",
+          "label": "TRANSFER BUS NO.1 NORMAL"
+        },
+        {
+          "id": "P6-11|ALL|B5",
+          "label": "TRANSFER BUS NO.2 ALT"
+        },
+        {
+          "id": "P6-11|ALL|C7",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|C8",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|C9",
+          "label": "FWD GALLEY"
+        },
+        {
+          "id": "P6-11|ALL|D8",
+          "label": "GND SERVICE"
+        },
+        {
+          "id": "P6-12|ALL|A2",
+          "label": "MAIN DISTRIBUTION"
+        },
+        {
+          "id": "P6-12|ALL|A8",
+          "label": "STBY HYD PUMP ALTN"
+        },
+        {
+          "id": "P6-12|ALL|B2",
+          "label": "TRANSFER BUS NO.1 ALT"
+        },
+        {
+          "id": "P6-12|ALL|B5",
+          "label": "TRANSFER BUS NO.2 NORMAL"
+        },
+        {
+          "id": "P6-12|ALL|C7",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|C8",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|C9",
+          "label": "AFT GALLEY"
+        },
+        {
+          "id": "P6-12|ALL|D5",
+          "label": "EXT PWR BUS PROTECTION AC"
+        },
+        {
+          "id": "P6-12|ALL|D8",
+          "label": "GND SERVICE"
+        },
+        {
+          "id": "P18-1|ALL|A1",
+          "label": "VHF NAV-1 VOR/LOC"
+        },
+        {
+          "id": "P18-1|ALL|A2",
+          "label": "VHF NAV-1 G/S"
+        },
+        {
+          "id": "P18-1|ALL|A5",
+          "label": "TERRAIN SELECT"
+        },
+        {
+          "id": "P18-1|ALL|A6",
+          "label": "MARKER BEACON"
+        },
+        {
+          "id": "P18-1|ALL|A7",
+          "label": "GND PROX WARN"
+        },
+        {
+          "id": "P18-1|ALL|B2",
+          "label": "TCAS"
+        },
+        {
+          "id": "P18-1|ALL|B3",
+          "label": "ATC-1"
+        },
+        {
+          "id": "P18-1|ALL|B5",
+          "label": "RADIO ALTM-1"
+        },
+        {
+          "id": "P18-1|ALL|B6",
+          "label": "TCAS"
+        },
+        {
+          "id": "P18-1|ALL|C2",
+          "label": "HGS DEU ALTN"
+        },
+        {
+          "id": "P18-1|ALL|C4",
+          "label": "HGS PWR MON"
+        },
+        {
+          "id": "P18-1|ALL|C5",
+          "label": "HGS DEU"
+        },
+        {
+          "id": "P18-1|ALL|C6",
+          "label": "HGS HCP"
+        },
+        {
+          "id": "P18-1|ALL|C7",
+          "label": "HGS COMPTR"
+        },
+        {
+          "id": "P18-1|ALL|D5",
+          "label": "YAW DAMPER AC"
+        },
+        {
+          "id": "P18-1|ALL|D6",
+          "label": "YAW DAMPER DC"
+        },
+        {
+          "id": "P18-1|ALL|D7",
+          "label": "AFDS AI FORCE LIMITER"
+        },
+        {
+          "id": "P18-1|ALL|E1",
+          "label": "SNSR EXC AC"
+        },
+        {
+          "id": "P18-1|ALL|E3",
+          "label": "FCC DC"
+        },
+        {
+          "id": "P18-1|ALL|E4",
+          "label": "ENGAGE INTLK A"
+        },
+        {
+          "id": "P18-1|ALL|E5",
+          "label": "WARN LIGHT BAT"
+        },
+        {
+          "id": "P18-1|ALL|E6",
+          "label": "MACH TRIM AC"
+        },
+        {
+          "id": "P18-1|ALL|E7",
+          "label": "MACH TRIM DC"
+        },
+        {
+          "id": "P18-2|ALL|A1",
+          "label": "INSTR XFMR-1"
+        },
+        {
+          "id": "P18-2|ALL|A2",
+          "label": "INSTR XFR"
+        },
+        {
+          "id": "P18-2|ALL|A4",
+          "label": "GPSSU-1"
+        },
+        {
+          "id": "P18-2|ALL|A6",
+          "label": "AUTO XFMR"
+        },
+        {
+          "id": "P18-2|ALL|A7",
+          "label": "TAT IND"
+        },
+        {
+          "id": "P18-2|ALL|A8",
+          "label": "COMPUTER-1 AC"
+        },
+        {
+          "id": "P18-2|ALL|A9",
+          "label": "COMPUTER-1 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|B1",
+          "label": "ADI"
+        },
+        {
+          "id": "P18-2|ALL|B2",
+          "label": "F/O ADI ALTN"
+        },
+        {
+          "id": "P18-2|ALL|B4",
+          "label": "COMPASS-2 XFMR ALTN"
+        },
+        {
+          "id": "P18-2|ALL|B6",
+          "label": "VERT SPEED IND"
+        },
+        {
+          "id": "P18-2|ALL|B7",
+          "label": "MACH WARN SYS-1"
+        },
+        {
+          "id": "P18-2|ALL|B8",
+          "label": "ALTM 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|B9",
+          "label": "STBY ALTM ASI VIBR"
+        },
+        {
+          "id": "P18-2|ALL|B10",
+          "label": "MACH AIR SPEED 26V AC"
+        },
+        {
+          "id": "P18-2|ALL|C1",
+          "label": "STBY HRZN"
+        },
+        {
+          "id": "P18-2|ALL|C5",
+          "label": "DAA FMC NO.1"
+        },
+        {
+          "id": "P18-2|ALL|C6",
+          "label": "VOICE RCDR"
+        },
+        {
+          "id": "P18-2|ALL|C8",
+          "label": "POS SENSOR"
+        },
+        {
+          "id": "P18-2|ALL|C9",
+          "label": "FLIGHT RECORDER AC"
+        },
+        {
+          "id": "P18-2|ALL|C10",
+          "label": "FLIGHT RECORDER DC BAT"
+        },
+        {
+          "id": "P18-2|ALL|D1",
+          "label": "FMC AC"
+        },
+        {
+          "id": "P18-2|ALL|D2",
+          "label": "DAA NO.1 IRS AC"
+        },
+        {
+          "id": "P18-2|ALL|D3",
+          "label": "DAA NO.1 IRS DC"
+        },
+        {
+          "id": "P18-2|ALL|D7",
+          "label": "SMC STALL WRN ASYM MODE"
+        },
+        {
+          "id": "P18-2|ALL|D8",
+          "label": "SMC-1 SNSR EXC AC"
+        },
+        {
+          "id": "P18-2|ALL|D9",
+          "label": "SMC-1 CMPTR DC"
+        },
+        {
+          "id": "P18-2|ALL|D10",
+          "label": "ACARS CMU"
+        },
+        {
+          "id": "P18-2|ALL|D12",
+          "label": "VHF-1"
+        },
+        {
+          "id": "P18-2|ALL|D15",
+          "label": "SELCAL-1"
+        },
+        {
+          "id": "P18-2|ALL|E2",
+          "label": "CARGO FIRE SCU CHA"
+        },
+        {
+          "id": "P18-2|ALL|E3",
+          "label": "CARGO FIRE SCU CHB"
+        },
+        {
+          "id": "P18-2|ALL|E4",
+          "label": "CARGO FIRE CCU CHA"
+        },
+        {
+          "id": "P18-2|ALL|E5",
+          "label": "CARGO FIRE CCU CHB"
+        },
+        {
+          "id": "P18-2|ALL|E7",
+          "label": "FMCS MODE ANN"
+        },
+        {
+          "id": "P18-2|ALL|E11",
+          "label": "VHF-3"
+        },
+        {
+          "id": "P18-2|ALL|E12",
+          "label": "ACARS ALERT"
+        },
+        {
+          "id": "P18-3|ALL|A1",
+          "label": "ANTI-ICE COWL ENG 2"
+        },
+        {
+          "id": "P18-3|ALL|A2",
+          "label": "ANTI-ICE COWL ENG 1"
+        },
+        {
+          "id": "P18-3|ALL|A3",
+          "label": "ANTI-ICE ENG 2 AND WING"
+        },
+        {
+          "id": "P18-3|ALL|A4",
+          "label": "ANTI-ICE ENG 1 AND WING"
+        },
+        {
+          "id": "P18-3|ALL|A5",
+          "label": "ANTI-ICE WING VALVE"
+        },
+        {
+          "id": "P18-3|ALL|A8",
+          "label": "PASS CABIN SEAT BELT"
+        },
+        {
+          "id": "P18-3|ALL|A10",
+          "label": "PASS SIGN CONT"
+        },
+        {
+          "id": "P18-3|ALL|A11",
+          "label": "EMERG EXIT"
+        },
+        {
+          "id": "P18-3|ALL|A12",
+          "label": "LANDING LIGHTS OUTBD R"
+        },
+        {
+          "id": "P18-3|ALL|A13",
+          "label": "LANDING LIGHTS OUTBD L"
+        },
+        {
+          "id": "P18-3|ALL|A14",
+          "label": "LANDING LIGHTS INBD R"
+        },
+        {
+          "id": "P18-3|ALL|A15",
+          "label": "LANDING LIGHTS INBD L"
+        },
+        {
+          "id": "P18-3|ALL|B1",
+          "label": "WINDSHIELD WIPER R"
+        },
+        {
+          "id": "P18-3|ALL|B2",
+          "label": "WINDSHIELD WIPER L"
+        },
+        {
+          "id": "P18-3|ALL|B3",
+          "label": "RAIN REPELLENT R"
+        },
+        {
+          "id": "P18-3|ALL|B4",
+          "label": "RAIN REPELLENT L"
+        },
+        {
+          "id": "P18-3|ALL|B6",
+          "label": "WINDOW R"
+        },
+        {
+          "id": "P18-3|ALL|B7",
+          "label": "WINDOW L"
+        },
+        {
+          "id": "P18-3|ALL|B8",
+          "label": "BRIGHT ENTRY"
+        },
+        {
+          "id": "P18-3|ALL|B9",
+          "label": "WORK AND THSHD"
+        },
+        {
+          "id": "P18-3|ALL|B10",
+          "label": "GALLEY"
+        },
+        {
+          "id": "P18-3|ALL|B18",
+          "label": "NORMAL BLOWER 3PH"
+        },
+        {
+          "id": "P18-3|ALL|C6",
+          "label": "RIGHT READING STATION 340"
+        },
+        {
+          "id": "P18-3|ALL|C7",
+          "label": "RIGHT READING STATION 464"
+        },
+        {
+          "id": "P18-3|ALL|C8",
+          "label": "RIGHT READING STATION 500D"
+        },
+        {
+          "id": "P18-3|ALL|C9",
+          "label": "RIGHT READING STATION 608"
+        },
+        {
+          "id": "P18-3|ALL|C10",
+          "label": "RIGHT READING STATION 720"
+        },
+        {
+          "id": "P18-3|ALL|C11",
+          "label": "RIGHT READING STATION 727D"
+        },
+        {
+          "id": "P18-3|ALL|C12",
+          "label": "RIGHT READING STATION 844"
+        },
+        {
+          "id": "P18-3|ALL|C13",
+          "label": "RIGHT READING STATION 945"
+        },
+        {
+          "id": "P18-3|ALL|C15",
+          "label": "ADVANCED LIGHTING SYSTEM"
+        },
+        {
+          "id": "P18-3|ALL|C19",
+          "label": "ALTERNATE BLOWER 3PH"
+        },
+        {
+          "id": "P18-3|ALL|D3",
+          "label": "DRAIN HEATER"
+        },
+        {
+          "id": "P18-3|ALL|D6",
+          "label": "LEFT READING STATION 360"
+        },
+        {
+          "id": "P18-3|ALL|D7",
+          "label": "LEFT READING STATION 492"
+        },
+        {
+          "id": "P18-3|ALL|D8",
+          "label": "LEFT READING STATION 524"
+        },
+        {
+          "id": "P18-3|ALL|D9",
+          "label": "LEFT READING STATION 636"
+        },
+        {
+          "id": "P18-3|ALL|D10",
+          "label": "LEFT READING STATION 727A"
+        },
+        {
+          "id": "P18-3|ALL|D11",
+          "label": "LEFT READING STATION 727E"
+        },
+        {
+          "id": "P18-3|ALL|D12",
+          "label": "LEFT READING STATION 844"
+        },
+        {
+          "id": "P18-3|ALL|D13",
+          "label": "LEFT READING STATION 945"
+        },
+        {
+          "id": "P18-3|ALL|E6",
+          "label": "CEILING CONTROL BRT"
+        },
+        {
+          "id": "P18-3|ALL|E7",
+          "label": "CEILING CONTROL NIGHT"
+        },
+        {
+          "id": "P18-3|ALL|E8",
+          "label": "CEILING R"
+        },
+        {
+          "id": "P18-3|ALL|E9",
+          "label": "CEILING L"
+        },
+        {
+          "id": "P18-3|ALL|E10",
+          "label": "CEILING GND SERV R"
+        },
+        {
+          "id": "P18-3|ALL|E11",
+          "label": "GND SERV WINDOW BRT CONT"
+        },
+        {
+          "id": "P18-3|ALL|E12",
+          "label": "GND SERV CEILING NIGHT CONT"
+        },
+        {
+          "id": "P18-3|ALL|E14",
+          "label": "SERVICE LIGHTING ELEC RACK"
+        },
+        {
+          "id": "P18-3|ALL|E15",
+          "label": "CARGO COMPARTMENT AFT"
+        },
+        {
+          "id": "P18-3|ALL|E16",
+          "label": "CARGO COMPARTMENT FWD"
+        },
+        {
+          "id": "P18-3|ALL|F7",
+          "label": "OXYGEN MANUAL CONTROL"
+        },
+        {
+          "id": "P18-3|ALL|F8",
+          "label": "OXYGEN PASS R"
+        },
+        {
+          "id": "P18-3|ALL|F9",
+          "label": "OXYGEN PASS L"
+        },
+        {
+          "id": "P18-3|ALL|F10",
+          "label": "LAVATORY OCCUPIED SIGN"
+        },
+        {
+          "id": "P18-3|ALL|F11",
+          "label": "LAVATORY MIRROR"
+        },
+        {
+          "id": "P18-3|ALL|F12",
+          "label": "CEILING CONT BRT R"
+        },
+        {
+          "id": "P18-3|ALL|F13",
+          "label": "LAPTOP"
+        },
+        {
+          "id": "P18-3|ALL|F14",
+          "label": "ACCESS COMPT"
+        },
+        {
+          "id": "P18-3|ALL|F15",
+          "label": "WHEEL WELLS"
+        },
+        {
+          "id": "P18-3|ALL|F16",
+          "label": "AIR COND COMPT"
+        }
+      ],
+      "model": "FUNCTIONAL_TRAINER_CIRCUIT_ISOLATION_NOT_WDM"
+    }
+  },
+  "consumers": {
+    "fuel.main2FwdPump": {
+      "keys": [
+        "P6-3|ALL|B3"
+      ],
+      "role": "POWER"
+    },
+    "fuel.main1FwdPump": {
+      "keys": [
+        "P6-3|ALL|B7"
+      ],
+      "role": "POWER"
+    },
+    "fuel.main2AftPump": {
+      "keys": [
+        "P6-3|ALL|C3"
+      ],
+      "role": "POWER"
+    },
+    "fuel.main1AftPump": {
+      "keys": [
+        "P6-3|ALL|C7"
+      ],
+      "role": "POWER"
+    },
+    "fuel.centerRightPump": {
+      "keys": [
+        "P6-3|ALL|D5"
+      ],
+      "role": "POWER"
+    },
+    "fuel.centerLeftPump": {
+      "keys": [
+        "P6-3|ALL|E5"
+      ],
+      "role": "POWER"
+    },
+    "hyd.electricPumpA": {
+      "keys": [
+        "P6-12|ALL|C2",
+        "P6-2|ALL|A15"
+      ],
+      "role": "POWER"
+    },
+    "hyd.electricPumpB": {
+      "keys": [
+        "P6-11|ALL|C2",
+        "P6-2|ALL|A14"
+      ],
+      "role": "POWER"
+    },
+    "fuel.crossfeedControl": {
+      "keys": [
+        "P6-3|ALL|C5"
+      ],
+      "role": "CONTROL"
+    },
+    "air.bleedIsolationControl": {
+      "keys": [
+        "P6-4|ACTIVE|B1"
+      ],
+      "role": "CONTROL"
+    },
+    "air.bleedRightControl": {
+      "keys": [
+        "P6-4|ACTIVE|B2"
+      ],
+      "role": "CONTROL"
+    },
+    "air.bleedLeftControl": {
+      "keys": [
+        "P6-4|ACTIVE|B3"
+      ],
+      "role": "CONTROL"
+    },
+    "air.packR": {
+      "keys": [
+        "P6-4|ACTIVE|C3"
+      ],
+      "role": "CONTROL"
+    },
+    "air.packL": {
+      "keys": [
+        "P6-4|ACTIVE|C4"
+      ],
+      "role": "CONTROL"
+    },
+    "air.ductGauge": {
+      "keys": [
+        "P6-4|ACTIVE|D1"
+      ],
+      "role": "INDICATION"
+    },
+    "air.overheatDetector": {
+      "keys": [
+        "P6-4|ACTIVE|D4"
+      ],
+      "role": "CONTROL"
+    },
+    "air.recirc": {
+      "keys": [
+        "P6-4|ACTIVE|B4",
+        "P6-4|ACTIVE|E5"
+      ],
+      "role": "POWER"
+    },
+    "electrical.tr1": {
+      "keys": [
+        "P6-4|ACTIVE|A8"
+      ],
+      "role": "POWER"
+    },
+    "electrical.charger": {
+      "keys": [
+        "P6-4|ACTIVE|D8"
+      ],
+      "role": "POWER"
+    },
+    "electrical.alternateCharger": {
+      "keys": [
+        "P6-4|ACTIVE|F8"
+      ],
+      "role": "POWER"
+    },
+    "electrical.gen1Control": {
+      "keys": [
+        "P6-4|ACTIVE|D10"
+      ],
+      "role": "POWER"
+    },
+    "electrical.apuGenControl": {
+      "keys": [
+        "P6-4|ACTIVE|D11"
+      ],
+      "role": "POWER"
+    },
+    "electrical.gen2Control": {
+      "keys": [
+        "P6-4|ACTIVE|D12"
+      ],
+      "role": "POWER"
+    },
+    "electrical.transfer1Control": {
+      "keys": [
+        "P6-4|ACTIVE|F10"
+      ],
+      "role": "POWER"
+    },
+    "electrical.transfer2Control": {
+      "keys": [
+        "P6-4|ACTIVE|F12"
+      ],
+      "role": "POWER"
+    },
+    "electrical.inverterControl": {
+      "keys": [
+        "P6-5|ALL|A1"
+      ],
+      "role": "POWER"
+    },
+    "electrical.inverterPower": {
+      "keys": [
+        "P6-5|ALL|A2"
+      ],
+      "role": "POWER"
+    },
+    "electrical.batteryBus": {
+      "keys": [
+        "P6-5|ALL|C7"
+      ],
+      "role": "POWER"
+    },
+    "electrical.dc1": {
+      "keys": [
+        "P6-5|ALL|B8"
+      ],
+      "role": "POWER"
+    },
+    "electrical.dc2": {
+      "keys": [
+        "P6-5|ALL|B7"
+      ],
+      "role": "POWER"
+    },
+    "electrical.externalPowerControl": {
+      "keys": [
+        "P6-5|ALL|D4"
+      ],
+      "role": "POWER"
+    },
+    "engine1.starter": {
+      "keys": [
+        "P6-2|ALL|A7"
+      ],
+      "role": "CONTROL"
+    },
+    "engine1.ignitionLeft": {
+      "keys": [
+        "P6-2|ALL|B8"
+      ],
+      "role": "POWER"
+    },
+    "engine1.ignitionRight": {
+      "keys": [
+        "P6-2|ALL|B7"
+      ],
+      "role": "POWER"
+    },
+    "engine1.n1Indicator": {
+      "keys": [
+        "P6-2|ALL|D3"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.n2Indicator": {
+      "keys": [
+        "P6-2|ALL|D4"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.egtIndicator": {
+      "keys": [
+        "P6-2|ALL|A2"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.oilIndicator": {
+      "keys": [
+        "P6-2|ALL|D8"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.oilQuantityIndicator": {
+      "keys": [
+        "P6-2|ALL|D7"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.fuelFlowIndicator": {
+      "keys": [
+        "P6-3|ALL|A6"
+      ],
+      "role": "INDICATION"
+    },
+    "engine1.fireDetector": {
+      "keys": [
+        "P6-2|ALL|A24"
+      ],
+      "role": "DETECTION"
+    },
+    "engine2.starter": {
+      "keys": [
+        "P6-2|ALL|A6"
+      ],
+      "role": "CONTROL"
+    },
+    "engine2.ignitionLeft": {
+      "keys": [
+        "P6-2|ALL|B6"
+      ],
+      "role": "POWER"
+    },
+    "engine2.ignitionRight": {
+      "keys": [
+        "P6-2|ALL|B5"
+      ],
+      "role": "POWER"
+    },
+    "engine2.n1Indicator": {
+      "keys": [
+        "P6-2|ALL|D1"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.n2Indicator": {
+      "keys": [
+        "P6-2|ALL|D2"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.egtIndicator": {
+      "keys": [
+        "P6-2|ALL|A1"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.oilIndicator": {
+      "keys": [
+        "P6-2|ALL|D6"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.oilQuantityIndicator": {
+      "keys": [
+        "P6-2|ALL|D5"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.fuelFlowIndicator": {
+      "keys": [
+        "P6-3|ALL|A5"
+      ],
+      "role": "INDICATION"
+    },
+    "engine2.fireDetector": {
+      "keys": [
+        "P6-2|ALL|A22"
+      ],
+      "role": "DETECTION"
+    },
+    "engine.vibrationIndicator": {
+      "keys": [
+        "P6-2|ALL|B3"
+      ],
+      "role": "INDICATION"
+    },
+    "apu.control": {
+      "keys": [
+        "P6-5|ALL|B1"
+      ],
+      "role": "CONTROL"
+    },
+    "apu.fireDetector": {
+      "keys": [
+        "P6-2|ALL|A23"
+      ],
+      "role": "DETECTION"
+    },
+    "tat.heater": {
+      "keys": [
+        "P18-3|ALL|C5"
+      ],
+      "role": "POWER"
+    },
+    "probe.captUpper": {
+      "keys": [
+        "P18-3|ALL|C1"
+      ],
+      "role": "POWER"
+    },
+    "probe.captLower": {
+      "keys": [
+        "P18-3|ALL|C2"
+      ],
+      "role": "POWER"
+    },
+    "probe.foUpper": {
+      "keys": [
+        "P18-3|ALL|C3"
+      ],
+      "role": "POWER"
+    },
+    "probe.foLower": {
+      "keys": [
+        "P18-3|ALL|C4"
+      ],
+      "role": "POWER"
+    },
+    "probe.elevatorR": {
+      "keys": [
+        "P18-3|ALL|D1"
+      ],
+      "role": "POWER"
+    },
+    "probe.elevatorL": {
+      "keys": [
+        "P18-3|ALL|D2"
+      ],
+      "role": "POWER"
+    },
+    "probe.alphaR": {
+      "keys": [
+        "P18-3|ALL|D4"
+      ],
+      "role": "POWER"
+    },
+    "probe.alphaL": {
+      "keys": [
+        "P18-3|ALL|D5"
+      ],
+      "role": "POWER"
+    },
+    "brakes.autobrake": {
+      "keys": [
+        "P6-2|ALL|B9"
+      ],
+      "role": "CONTROL"
+    },
+    "brakes.autobrakeControl": {
+      "keys": [
+        "P6-3|ALL|A17"
+      ],
+      "role": "CONTROL"
+    },
+    "brakes.antiskidInboard": {
+      "keys": [
+        "P6-2|ALL|A20"
+      ],
+      "role": "CONTROL"
+    },
+    "brakes.antiskidOutboard": {
+      "keys": [
+        "P6-2|ALL|A21"
+      ],
+      "role": "CONTROL"
+    },
+    "brakes.antiskidWarning": {
+      "keys": [
+        "P6-2|ALL|B22"
+      ],
+      "role": "INDICATION"
+    },
+    "mcp.power": {
+      "keys": [
+        "P18-1|ALL|D1"
+      ],
+      "role": "POWER"
+    },
+    "fmc.FMC1": {
+      "keys": [
+        "P18-2|ALL|E8"
+      ],
+      "role": "POWER"
+    },
+    "fmc.FMC2": {
+      "keys": [
+        "P6-1|ALL|C12"
+      ],
+      "role": "POWER"
+    },
+    "fmc.CDU_CAPT": {
+      "keys": [
+        "P18-2|ALL|E9"
+      ],
+      "role": "POWER"
+    },
+    "fmc.CDU_FO": {
+      "keys": [
+        "P6-1|ALL|C13"
+      ],
+      "role": "POWER"
+    },
+    "irs.L.ac": {
+      "keys": [
+        "P18-2|ALL|D4"
+      ],
+      "role": "POWER"
+    },
+    "irs.L.dc": {
+      "keys": [
+        "P18-2|ALL|D5"
+      ],
+      "role": "POWER"
+    },
+    "irs.R.ac": {
+      "keys": [
+        "P6-1|ALL|D11"
+      ],
+      "role": "POWER"
+    },
+    "irs.R.dc": {
+      "keys": [
+        "P6-1|ALL|D12"
+      ],
+      "role": "POWER"
+    },
+    "lights.wingScan": {
+      "keys": [
+        "P18-3|ALL|B13"
+      ],
+      "role": "POWER"
+    },
+    "lights.strobe": {
+      "keys": [
+        "P18-3|ALL|B14"
+      ],
+      "role": "POWER"
+    },
+    "lights.position": {
+      "keys": [
+        "P18-3|ALL|B15"
+      ],
+      "role": "POWER"
+    },
+    "lights.beaconUpper": {
+      "keys": [
+        "P18-3|ALL|C16"
+      ],
+      "role": "POWER"
+    },
+    "lights.beaconLower": {
+      "keys": [
+        "P18-3|ALL|C17"
+      ],
+      "role": "POWER"
+    },
+    "lights.taxi": {
+      "keys": [
+        "P18-3|ALL|D15"
+      ],
+      "role": "POWER"
+    },
+    "lights.turnoffR": {
+      "keys": [
+        "P18-3|ALL|D16"
+      ],
+      "role": "POWER"
+    },
+    "lights.turnoffL": {
+      "keys": [
+        "P18-3|ALL|D17"
+      ],
+      "role": "POWER"
+    },
+    "warning.airCond": {
+      "keys": [
+        "P6-3|ALL|D8"
+      ],
+      "role": "INDICATION"
+    },
+    "warning.antiIce": {
+      "keys": [
+        "P6-3|ALL|D9"
+      ],
+      "role": "INDICATION"
+    },
+    "warning.fuel": {
+      "keys": [
+        "P6-3|ALL|D10"
+      ],
+      "role": "INDICATION"
+    },
+    "warning.masterCaution": {
+      "keys": [
+        "P6-3|ALL|D13"
+      ],
+      "role": "INDICATION"
+    },
+    "warning.masterCautionControl": {
+      "keys": [
+        "P6-2|ALL|A4"
+      ],
+      "role": "CONTROL"
+    },
+    "warning.masterFireControl": {
+      "keys": [
+        "P6-2|ALL|B23"
+      ],
+      "role": "CONTROL"
+    },
+    "warning.aural": {
+      "keys": [
+        "P6-2|ALL|D22"
+      ],
+      "role": "AUDIO"
+    },
+    "oxygen.indicator": {
+      "keys": [
+        "P18-3|ALL|F6"
+      ],
+      "role": "INDICATION"
+    },
+    "cooling.control": {
+      "keys": [
+        "P18-3|ALL|A17"
+      ],
+      "role": "CONTROL"
+    },
+    "press.autoAC": {
+      "keys": [
+        "P6-4|CPCS|F1"
+      ],
+      "role": "POWER"
+    },
+    "press.autoDC": {
+      "keys": [
+        "P6-4|CPCS|F2"
+      ],
+      "role": "POWER"
+    },
+    "press.standbyAC": {
+      "keys": [
+        "P6-4|CPCS|F3"
+      ],
+      "role": "POWER"
+    },
+    "press.standbyDC": {
+      "keys": [
+        "P6-4|CPCS|F4"
+      ],
+      "role": "POWER"
+    },
+    "press.manualAC": {
+      "keys": [
+        "P6-4|CPCS|F5"
+      ],
+      "role": "POWER"
+    },
+    "press.manualDC": {
+      "keys": [
+        "P6-4|CPCS|F6"
+      ],
+      "role": "POWER"
+    },
+    "press.manual": {
+      "keys": [
+        "P6-4|DCPCS|F1"
+      ],
+      "role": "POWER"
+    },
+    "press.auto1": {
+      "keys": [
+        "P6-4|DCPCS|F2"
+      ],
+      "role": "POWER"
+    },
+    "press.auto2": {
+      "keys": [
+        "P6-4|DCPCS|F3"
+      ],
+      "role": "POWER"
+    },
+    "window.L_FWD": {
+      "keys": [
+        "P6-11|ALL|B9",
+        "P18-3|ALL|F1"
+      ],
+      "role": "POWER"
+    },
+    "window.L_SIDE": {
+      "keys": [
+        "P6-12|ALL|B9",
+        "P18-3|ALL|F3"
+      ],
+      "role": "POWER"
+    },
+    "window.R_FWD": {
+      "keys": [
+        "P6-12|ALL|B8",
+        "P18-3|ALL|E1"
+      ],
+      "role": "POWER"
+    },
+    "window.R_SIDE": {
+      "keys": [
+        "P6-11|ALL|B8",
+        "P18-3|ALL|E3"
+      ],
+      "role": "POWER"
+    },
+    "window.L45": {
+      "keys": [
+        "P6-11|ALL|B7"
+      ],
+      "role": "POWER"
+    },
+    "window.R45": {
+      "keys": [
+        "P6-12|ALL|B7"
+      ],
+      "role": "POWER"
+    },
+    "fire.wheelWellDetector": {
+      "keys": [
+        "P6-2|ALL|B24"
+      ],
+      "role": "DETECTION"
+    },
+    "fire.extinguisherL": {
+      "keys": [
+        "P6-2|ALL|C24"
+      ],
+      "role": "CONTROL"
+    },
+    "fire.extinguisherR": {
+      "keys": [
+        "P6-2|ALL|C22"
+      ],
+      "role": "CONTROL"
+    },
+    "fire.extinguisherAPU": {
+      "keys": [
+        "P6-2|ALL|C23"
+      ],
+      "role": "CONTROL"
+    }
+  }
+}

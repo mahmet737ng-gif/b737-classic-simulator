@@ -28,7 +28,7 @@
   const abnormalities=i.controllerNotResponding&&((!s.faults.pressureSensorInvalid&&i.cabinDifferentialPsid>8.30)||(!s.faults.rateSensorInvalid&&Math.abs(i.cabinRateFtMin)>2000)||(!s.faults.altitudeSensorInvalid&&i.cabinAltitudeFt>15800));
   const activeFault=s.faults['controller'+s.primary+'Fault'];
   if(s.selector!=='MAN'&&(!i.dcPowerAvailable||s.faults.outflowControlFault||abnormalities||activeFault))s.autoFailLatched=true;
-  if(s.selector==='MAN'&&s.manualCommand!=='NEUTRAL'&&i.dcPowerAvailable&&!s.faults.outflowControlFault&&cmd.type==='ADVANCE'){
+  if(s.selector==='MAN'&&s.manualCommand!=='NEUTRAL'&&i.dcPowerAvailable&&globalThis.B737UnifiedCB?.available('press.manual')!==false&&!s.faults.outflowControlFault&&cmd.type==='ADVANCE'){
     // Deliberate trainer approximation: fixed upper-bound full travel, not a measured installed speed.
     const dx=cmd.ms/LIMITS.manualFullTravelIllustrativeMs*(s.manualCommand==='OPEN'?1:-1);
     s.manualValveFraction=Math.max(0,Math.min(1,s.manualValveFraction+dx));
@@ -36,7 +36,7 @@
   s.seq++;s.events.push({seq:s.seq,atMs:s.clockMs,command:clone(cmd)});if(s.events.length>500)s.events.shift();return s;
  }
  function derive(s){if(!s||s.schema!=='b737-dcpcs/4')throw Error('Invalid DCPCS state');const i=s.input,f=s.faults,nominal=s.primary,other=nominal===1?2:1;
-  const health={1:i.dcPowerAvailable&&!f.controller1Fault&&!f.outflowControlFault,2:i.dcPowerAvailable&&!f.controller2Fault&&!f.outflowControlFault};
+  const health={1:i.dcPowerAvailable&&globalThis.B737UnifiedCB?.available('press.auto1')!==false&&!f.controller1Fault&&!f.outflowControlFault,2:i.dcPowerAvailable&&globalThis.B737UnifiedCB?.available('press.auto2')!==false&&!f.controller2Fault&&!f.outflowControlFault};
   const thresholdProblem=i.controllerNotResponding&&((!f.pressureSensorInvalid&&i.cabinDifferentialPsid>8.30)||(!f.rateSensorInvalid&&Math.abs(i.cabinRateFtMin)>2000)||(!f.altitudeSensorInvalid&&i.cabinAltitudeFt>15800));
   const currentIsFailed=!health[nominal]||thresholdProblem;
   const autoTransferNeeded=s.autoFailLatched||currentIsFailed;
@@ -49,7 +49,7 @@
   const altn= !manual && channel===other;
   const prepress=i.onGround&&i.engineN1Pct>60&&i.engineN2Pct>89&&s.prepressQualifiedSince!==null&&s.clockMs-s.prepressQualifiedSince>=1500;
   let outflow='UNDETERMINED_NO_PRESSURE_PHYSICS';
-  if(manual)outflow=i.dcPowerAvailable&&!f.outflowControlFault?(s.manualCommand==='NEUTRAL'?'HOLD':s.manualCommand):'NO_DRIVE_AVAILABLE';
+  if(manual)outflow=i.dcPowerAvailable&&globalThis.B737UnifiedCB?.available('press.manual')!==false&&!f.outflowControlFault?(s.manualCommand==='NEUTRAL'?'HOLD':s.manualCommand):'NO_DRIVE_AVAILABLE';
   else if(channel===null)outflow='NO_AUTO_COMMAND';
   else if(i.onGround)outflow=prepress?'MODULATE_TOWARD_CLOSED':(i.taxiIn&&i.engineN1Pct<50?'SLOWLY_OPEN_FULL':'DRIVE_FULL_OPEN_LOW_POWER');
   else outflow='AUTO_RATE_CONTROL_NO_NUMERIC_SCHEDULE';

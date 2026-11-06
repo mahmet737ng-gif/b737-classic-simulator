@@ -5,7 +5,8 @@
  const needleUrl=new URL('./'+model.dial.needleAsset+'?v=OXG-0001',document.baseURI).href;
  let frame=null,blade=null,input=null,output=null,currentPsi=model.initialPsi;
  function svg(doc,parent,tag,attrs={}){const node=doc.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))node.setAttribute(key,String(value));parent.append(node);return node;}
- function paint(){if(blade)blade.style.transform=`rotate(${model.bearing(currentPsi)}deg)`;if(input)input.value=String(currentPsi);if(output)output.textContent=`${currentPsi} PSI`;}
+ function paint(){if(blade)blade.style.transform=`rotate(${model.bearing(window.B737UnifiedCB?.available('oxygen.indicator')===false?0:currentPsi)}deg)`;if(input)input.value=String(currentPsi);if(output)output.textContent=`${currentPsi} PSI`;}
+ window.addEventListener('b737:cb-state-change',paint);
  function setPressurePsi(value){currentPsi=model.pressurePsi(value);paint();return currentPsi;}
  function mount(){
   const doc=frame?.contentDocument,host=doc?.getElementById('atlasAbsolute');if(!host)return false;

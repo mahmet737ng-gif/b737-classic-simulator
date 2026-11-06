@@ -141,6 +141,7 @@ win.addEventListener('b737:cockpit-mounted',attach);
 win.document.addEventListener('DOMContentLoaded',attach,{once:true});
 win.addEventListener('load',attach,{once:true});
 win.addEventListener('b737:visual-test',e=>{visualTest=Boolean(e.detail?.active);draw();});
+win.addEventListener('b737:cb-state-change',()=>draw());
 win.addEventListener('b737:fire-protection-state',e=>{if(e.detail?.indications&&typeof e.detail.indications==='object'){external={...e.detail.indications};draw();}});
 if(win.document.readyState==='complete')attach();
 win.B737UnifiedFireLights=Object.freeze({

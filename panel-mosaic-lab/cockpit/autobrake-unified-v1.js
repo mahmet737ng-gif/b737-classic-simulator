@@ -42,10 +42,16 @@
  function act(fn){
   clearTimer();flush();fn();return render();
  }
+ const unprotectedSensors=Model.initialSensors();
  function updateSensors(patch){
   if(!patch||typeof patch!=='object')throw Error('Missing Classic autobrake sensors');
-  return act(()=>engine.update(patch));
+  Object.assign(unprotectedSensors,patch);
+  const cb=win.B737UnifiedCB;
+  return act(()=>engine.update({...patch,
+   electricalAvailable:unprotectedSensors.electricalAvailable&&cb?.available('brakes.autobrake')!==false&&cb?.available('brakes.autobrakeControl')!==false,
+   antiskidFault:unprotectedSensors.antiskidFault||cb?.available('brakes.antiskidInboard')===false||cb?.available('brakes.antiskidOutboard')===false}));
  }
+ win.addEventListener('b737:cb-state-change',()=>updateSensors({}));
  function setSelector(position){
   if(!Model.DETENTS.includes(position))throw Error('Invalid AUTO BRAKE position '+position);
   return act(()=>engine.select(position));

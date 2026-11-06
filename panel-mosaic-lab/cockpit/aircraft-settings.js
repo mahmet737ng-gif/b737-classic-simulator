@@ -52,6 +52,7 @@
   }
   // One authoritative engine state per installation. Swapping installation
   // does not mix CPCS controls, lamp output or memory with DCPCS.
+  window.addEventListener('b737:cb-state-change',()=>publishPressureState());
   function publishPressureState(system=selectedPressure()){
     if(system!==selectedPressure())return;
     const session=getPressureSession(system);

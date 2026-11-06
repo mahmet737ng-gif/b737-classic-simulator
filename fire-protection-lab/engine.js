@@ -24,33 +24,35 @@ function sensed(s,unit,kind){
  return paths.every(loop=>s.sensing[unit][loop][kind]||s.engineFire[unit]||(kind==='overheat'&&(s.engineOverheat[unit]||s.sensing[unit][loop].fire)));
 }
 function evaluate(s){
+ const cb=(name)=>globalThis.B737UnifiedCB?.available(name)!==false;
+ const detector=unit=>cb(unit==='APU'?'apu.fireDetector':'engine'+(unit==='ENG1'?1:2)+'.fireDetector');
  const powered=s.power.batteryBus,testFire=s.test==='OVHT_FIRE'&&powered,testFault=s.test==='FAULT_INOP'&&powered;
- const badNormal=['ENG1','ENG2'].some(unit=>s.selectors[unit]==='NORMAL'&&fault(s,unit));
- const anyFault=['ENG1','ENG2'].some(unit=>fault(s,unit));
+ const badNormal=['ENG1','ENG2'].some(unit=>!detector(unit)||s.selectors[unit]==='NORMAL'&&fault(s,unit));
+ const anyFault=['ENG1','ENG2'].some(unit=>!detector(unit)||fault(s,unit));
  const activeFire={
- ENG1:powered&&(testFire||sensed(s,'ENG1','fire')),
- ENG2:powered&&(testFire||sensed(s,'ENG2','fire')),
- APU:powered&&(testFire||(s.apuFire&&s.apuDetector))
+ ENG1:powered&&detector('ENG1')&&(testFire||sensed(s,'ENG1','fire')),
+ ENG2:powered&&detector('ENG2')&&(testFire||sensed(s,'ENG2','fire')),
+ APU:powered&&detector('APU')&&(testFire||(s.apuFire&&s.apuDetector))
  };
  const activeOverheat={
- ENG1:powered&&(testFire||sensed(s,'ENG1','overheat')),
- ENG2:powered&&(testFire||sensed(s,'ENG2','overheat'))
+ ENG1:powered&&detector('ENG1')&&(testFire||sensed(s,'ENG1','overheat')),
+ ENG2:powered&&detector('ENG2')&&(testFire||sensed(s,'ENG2','overheat'))
  };
- const wheel=Boolean(s.power.acTransfer1&&(s.wheelWellFire||testFire));
+ const wheel=Boolean(cb('fire.wheelWellDetector')&&s.power.acTransfer1&&(s.wheelWellFire||testFire));
  const warningIds=[...UNITS.filter(unit=>activeFire[unit]),...(wheel?['WHEEL_WELL']:[])];
  const signature=warningIds.join('|'),acknowledged=s.ackFire===signature;
- const noDet=powered&&!s.apuDetector;
+ const noDet=powered&&(!s.apuDetector||!detector('APU'));
  const loopCaution=powered&&badNormal;
  const caution=testFault||activeOverheat.ENG1||activeOverheat.ENG2||noDet||loopCaution;
  const flags={
  ENG1_OVERHEAT:activeOverheat.ENG1,ENG2_OVERHEAT:activeOverheat.ENG2,
  FAULT:powered&&(testFault||anyFault||(testFire&&['ENG1','ENG2'].some(u=>!s.loops[u].A||!s.loops[u].B))),
- APU_DET_INOP:powered&&(testFault||!s.apuDetector),
+ APU_DET_INOP:powered&&(testFault||!s.apuDetector||!detector('APU')),
  WHEEL_WELL:wheel,L_BOTTLE_DISCHARGED:s.bottles.L||s.pressureLow.L,
  R_BOTTLE_DISCHARGED:s.bottles.R||s.pressureLow.R,
  APU_BOTTLE_DISCHARGED:s.bottles.APU||s.pressureLow.APU,
  ENG1_FIRE:activeFire.ENG1,ENG2_FIRE:activeFire.ENG2,APU_FIRE:activeFire.APU,
- FIRE_BELL:signature.length>0&&!acknowledged,
+ FIRE_BELL:cb('warning.aural')&&signature.length>0&&!acknowledged,
  MASTER_FIRE_WARN:signature.length>0&&!acknowledged,
  APU_GROUND_HORN:s.power.onGround&&activeFire.APU&&!acknowledged,
  APU_GROUND_LIGHT:s.power.onGround&&activeFire.APU&&!acknowledged,
@@ -58,7 +60,7 @@ function evaluate(s){
  };
  const channel=s.test==='EXT_1'?1:s.test==='EXT_2'?2:0;
  for(const bottle of BOTTLES){const suffix=bottle==='L'?'L':bottle==='R'?'R':'APU';
-  flags['EXT_'+suffix]=!!(channel&&s.power.hotBatteryBus&&s.circuits[bottle]&&s.squibs[bottle][channel]);
+  flags['EXT_'+suffix]=!!(channel&&cb('fire.extinguisher'+bottle)&&s.power.hotBatteryBus&&s.circuits[bottle]&&s.squibs[bottle][channel]);
  }
  const outputs={};
  for(const unit of ['ENG1','ENG2']){const pulled=s.handles[unit].pulled;outputs[unit]={
@@ -119,7 +121,7 @@ function createEngine(){
      const bottle=unit==='APU'?'APU':(cmd.angle<0?'L':'R');
      if(!n.power.hotBatteryBus){result={accepted:false,reason:'NO_HOT_BATTERY_POWER'};n.handles[unit].angle=previous;break;}
      if(n.bottles[bottle]||n.pending[bottle]!==null){result={accepted:false,reason:'BOTTLE_UNAVAILABLE'};n.handles[unit].angle=previous;break;}
-     if(!n.circuits[bottle]||!n.squibs[bottle][1]&&!n.squibs[bottle][2]){
+     if(globalThis.B737UnifiedCB?.available('fire.extinguisher'+bottle)===false||!n.circuits[bottle]||!n.squibs[bottle][1]&&!n.squibs[bottle][2]){
        result={accepted:false,reason:'EXTINGUISHER_CIRCUIT_FAILED'};n.handles[unit].angle=previous;break;
      }
      n.pending[bottle]=2.5;

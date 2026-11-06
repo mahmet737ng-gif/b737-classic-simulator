@@ -19,11 +19,12 @@ function electrical(){
  const result=provider.getState();
  const electrical=result?.state?.electrical;
  if(electrical?.schema!=="B737_ELECTRICAL_V7_RESULT")return;
- const fingerprint=JSON.stringify([electrical.revision,electrical.bus]);
+ const fingerprint=JSON.stringify([electrical.revision,electrical.bus,window.B737UnifiedCB?.available('mcp.power')]);
  if(fingerprint===lastElectrical)return;
  lastElectrical=fingerprint;
  send({type:"ELECTRICAL",snapshot:electrical});
 }
+window.addEventListener('b737:cb-state-change',electrical);
 function statusLabel(out){
  if(out.power===false)return "MCP POWER OFF · proven global AC/DC loss";
  if(out.power===null)return "MCP POWER UNKNOWN · equipment feed not verified";

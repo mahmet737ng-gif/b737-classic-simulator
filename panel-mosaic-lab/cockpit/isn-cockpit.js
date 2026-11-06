@@ -41,7 +41,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -291,7 +291,7 @@
     R:live.engines.engine2.startValveOpen===true
    },
    sensors:{L:ductSensors.ductLeftPsi,R:ductSensors.ductRightPsi},
-   gaugePowered:ductSensors.ductGaugeAcPower!==false
+   gaugePowered:ductSensors.ductGaugeAcPower!==false&&window.B737UnifiedCB?.available('air.ductGauge')!==false
   }}));
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
@@ -579,6 +579,7 @@
  // Dependencies are dynamically loaded, so request a fresh iframe snapshot
  // even if its initial ready event arrived before this message listener.
  byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
+ window.addEventListener('b737:cb-state-change',()=>{session.snapshot=session.compute(null);chain.syncPower();ecu.core.refreshFuelDelivery();ecu.advance(0);render();});
  window.dispatchEvent(new CustomEvent('b737:electrical-owner-ready'));
  render();
  }

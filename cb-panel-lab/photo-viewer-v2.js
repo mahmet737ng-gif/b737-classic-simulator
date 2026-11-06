@@ -40,7 +40,11 @@ const camera={scale:1,x:0,y:0},gestures={dragged:false,gesture:null},ui={active:
 let fittedScale=1,lastWidth=0,lastHeight=0;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function emitStatus(s){status.textContent=s;}
-function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(network.snapshot()));}catch{}}
+function persist(){try{
+ localStorage.setItem(STORAGE,JSON.stringify(network.snapshot()));
+ window.dispatchEvent(new CustomEvent('b737:cb-snapshot'));
+ if(parent!==window)parent.postMessage({type:'b737:cb-state-changed'},location.origin);
+ }catch(error){emitStatus('CB state could not be saved: '+error.message);}}
 function parseEntries(value){return String(value||'').split(';').map(x=>x.trim()).filter(Boolean).map(x=>{const z=x.split('|'),c=z[0].split(':');return {position:c[0],rating:Number(c[1]),label:(z[1]||'').trim()};});}
 function getBreakers(p){if(p.id!=='P6-4')return parseEntries(p.breakers);const base=parseEntries(p.breakers);return network.variant==='DCPCS'?base.filter(x=>!/^F[1-6]$/.test(x.position)).concat(parseEntries(p.altBreakers)):base;}
 function keyFor(p,position){return Kernel.keyFor(p.id,position,network.variant);}
@@ -211,6 +215,7 @@ function find(){
 }
 function toggle(rec){
  if(rec.unverified){emitStatus(rec.panelId+' '+rec.position+': photo circle not identified in catalogue; no electrical action');return;}
+ try{const latest=JSON.parse(localStorage.getItem(STORAGE)||'null');if(latest)network.restore(latest);}catch{}
  const state=network.state(rec.key);if(!state)return;
  const action=state.pulled||state.tripped?'PUSH':'PULL';
  const request=new CustomEvent('b737-cb-command',{cancelable:true,detail:{key:rec.key,panel:rec.panelId,position:rec.position,variant:network.variant,action,label:rec.label,rating:rec.rating}});

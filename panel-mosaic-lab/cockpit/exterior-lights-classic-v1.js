@@ -16,18 +16,23 @@ const defs=[
  ['wing-lights','WING',['OFF','ON']],
  ['wheel-well','WHEEL WELL',['OFF','ON']]
 ].map(([id,label,states])=>Object.freeze({id,label,states:Object.freeze(states)}));
+const circuits={'landing-out-l':'landingOutboardL','landing-out-r':'landingOutboardR','landing-in-l':'landingInboardL','landing-in-r':'landingInboardR','runway-turnoff-l':'turnoffL','runway-turnoff-r':'turnoffR','taxi':'taxi','strobe':'strobe','position-lights':'position','wing-lights':'wingScan'};
+const effective=states=>Object.fromEntries(defs.map(d=>{const v=states[d.id],cb=window.B737UnifiedCB;
+ const protectedOn=d.id==='anti-collision'?(cb?.available('lights.beaconUpper')!==false||cb?.available('lights.beaconLower')!==false):!circuits[d.id]||cb?.available('lights.'+circuits[d.id])!==false;
+ return [d.id,{selected:v,illuminated:protectedOn&&['ON','ON BAT'].includes(v),circuitAvailable:protectedOn}];}));
 const allowed=new Map(defs.map(x=>[x.id,x]));
 const copy=()=>JSON.parse(JSON.stringify(defs));
 const isChild=window.parent!==window&&!!document.getElementById('atlasAbsolute');
 if(isChild){
  let booted=false;
+ window.addEventListener('b737:cb-state-change',()=>report());
  const report=()=>{
   const engine=window.B737OverheadToggles;
   if(!engine)return;
   const values=engine.getState();
   const states=Object.fromEntries(defs.map(d=>[d.id,values[d.id]||null]));
-  parent.postMessage({type:'b737:exterior-lights',kind:'state',version:'EXTL-CLASSIC-0001',states},location.origin);
-  window.dispatchEvent(new CustomEvent('b737:exterior-lights-state',{detail:{states}}));
+  parent.postMessage({type:'b737:exterior-lights',kind:'state',version:'EXTL-CLASSIC-0001',states,effective:effective(states)},location.origin);
+  window.dispatchEvent(new CustomEvent('b737:exterior-lights-state',{detail:{states,effective:effective(states)}}));
  };
  function set(id,state){
   const def=allowed.get(id);if(!def||!def.states.includes(state))return false;

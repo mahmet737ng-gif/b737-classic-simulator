@@ -58,32 +58,33 @@
   if(!s||s.schema!=='b737-electrical/7')throw Error('Invalid Electrical V7 state');
   if(!['UNKNOWN','INHIBIT_6_20_11','TRANSFER_6_10_7'].includes(groundAutoPolicy))throw Error('Invalid source-conflict policy');
   const c=s.config,f=s.faults;
+  const cb=(name,value)=>globalThis.B737UnifiedCB?.gate('electrical.'+name,value)??value;
   const apuOnSystemBus=Object.values(s.source).includes('APU');
   // MRG Classic IV.6 printed p.148: BAT OFF on GND with APU GEN on SYS BUS requests APU auto shutdown.
   // Model AC output loss here; actual APU engine-plant shutdown is a separate integration contract.
   const apuShutdownDemand=Boolean(c.onGround&&!c.batterySwitch&&c.apuRunning&&apuOnSystemBus);
-  const ready={GEN1:c.engine1Running&&!f.GEN1_FAILED,GEN2:c.engine2Running&&!f.GEN2_FAILED,APU:c.apuRunning&&!f.APU_FAILED&&!apuShutdownDemand,EXT:c.onGround&&c.batterySwitch&&c.groundPowerAttached&&c.groundPowerQualityGood};
+  const ready={GEN1:cb('gen1Control',c.engine1Running&&!f.GEN1_FAILED),GEN2:cb('gen2Control',c.engine2Running&&!f.GEN2_FAILED),APU:cb('apuGenControl',c.apuRunning&&!f.APU_FAILED&&!apuShutdownDemand),EXT:cb('externalPowerControl',c.onGround&&c.batterySwitch&&c.groundPowerAttached&&c.groundPowerQualityGood)};
   const powered={};for(const side of [1,2]){const source=s.source[side];powered[side]=source&&ready[source]?source:null;}
   // No AC paralleling; each generator bus has at most one source.
   const gen={1:powered[1]!==null,2:powered[2]!==null};
   const transfer={};const transferSource={};
   for(const side of [1,2]){
-    const other=side===1?2:1;const relayFault=f['TRANSFER'+side+'_RELAY_FAILED'];
+    const other=side===1?2:1;const relayFault=f['TRANSFER'+side+'_RELAY_FAILED']||cb('transfer'+side+'Control',true)===false;
     const feed=gen[side]?side:(c.busTransferAuto&&gen[other]&&!relayFault?other:null);
     transfer[side]=feed!==null;transferSource[side]=feed===null?null:'GENERATOR_BUS_'+feed;
   }
   const main={1:gen[1],2:gen[2]};
-  const tr={TR1:transfer[1]&&!f.TR1_FAILED,TR2:transfer[2]&&!f.TR2_FAILED,TR3:main[2]&&!f.TR3_FAILED};
+  const tr={TR1:cb('tr1',transfer[1]&&!f.TR1_FAILED),TR2:cb('tr2',transfer[2]&&!f.TR2_FAILED),TR3:cb('tr3',main[2]&&!f.TR3_FAILED)};
   const tie=!c.glideslopeCaptured&&c.busTransferAuto;
-  const dc1=tie?(tr.TR1||tr.TR2):tr.TR1;
-  const dc2=tie?(tr.TR1||tr.TR2):tr.TR2;
+  const dc1=cb('dc1',tie?(tr.TR1||tr.TR2):tr.TR1);
+  const dc2=cb('dc2',tie?(tr.TR1||tr.TR2):tr.TR2);
   const batteryAvailable=!f.BATTERY_DEPLETED&&(!s.battery||
    s.battery.chargeAh>0&&s.battery.available!==false);
   const serviceBus=Boolean((c.onGround&&c.groundServiceSelected&&c.groundPowerAttached&&c.groundPowerQualityGood)||gen[1]);
   // FCOM Classic 6.20.9 / ATA24: the charger is fed by GND SERVICE,
   // with the MAIN 2 alternate path. A depleted battery must NOT remove
   // the hot battery bus while the charger remains AC-powered.
-  const chargerSource=serviceBus?'GROUND_SERVICE':main[2]?'MAIN_2':null;
+  const chargerSource=cb('charger',serviceBus)?'GROUND_SERVICE':cb('alternateCharger',main[2])?'MAIN_2':null;
   const chargerAvailable=chargerSource!==null;
   const hotBattery=batteryAvailable||chargerAvailable;
   const hotBatterySource=chargerAvailable?'CHARGER':batteryAvailable?'BATTERY':null;
@@ -91,12 +92,12 @@
   // Battery Bus relay is controlled by the BAT switch. With BAT OFF the
   // bus is dead even if TR3 runs; standby BAT overrides this relay.
   const forcedStandbyBattery=c.standbySelector==='BAT';
-  const batteryBus=forcedStandbyBattery?hotBattery:
-   c.batterySwitch&&(tr.TR3||hotBattery);
+  const batteryBus=cb('batteryBus',forcedStandbyBattery?hotBattery:
+   c.batterySwitch&&(tr.TR3||hotBattery));
   // TR3 is a described backup source; exact automatic backfeed routing is not validated here.
   const dcTr3BackupUnknown=tr.TR3&&!(tr.TR1||tr.TR2);
   let acStandby=false,dcStandby=false,standbyFeed='OFF';
-  const inverterAvailable=hotBattery&&batteryBus&&!f.STATIC_INVERTER_FAILED;
+  const inverterAvailable=cb('inverterControl',true)&&cb('inverterPower',hotBattery&&batteryBus&&!f.STATIC_INVERTER_FAILED);
   if(c.standbySelector==='BAT'){
     // BAT manually forces the hot-battery-bus path, regardless of BAT switch
     // or normal AC. The inverter still needs a healthy source of DC power.

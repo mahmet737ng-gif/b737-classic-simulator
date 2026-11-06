@@ -161,6 +161,7 @@
           power = input.observedPower;
           powerEvidence = 'INDEPENDENT_INSTRUCTOR_SENSOR';
         }
+        power=globalThis.B737UnifiedCB?.gate(spec.id,power)??power;
         let operating = !input.switchOn || input.failed || input.overheat ? false : power;
         if (input.switchOn && !input.failed && !input.overheat && power === true) operating = true;
         const lowPressure = pressureWarning({...spec, ...input}, operating);
@@ -216,7 +217,12 @@
     }
     // Live consumers share a detached, deeply immutable snapshot. Diagnostic
     // get()/send() contracts retain their complete, independently mutable history.
+    refreshCircuits() {
+      const revision=globalThis.B737UnifiedCB?.revision;
+      if(revision!==undefined&&revision!==this.cbRevision){this.cbRevision=revision;this.snapshot=this.compute(null);}
+    }
     getLive() {
+      this.refreshCircuits();
       if (this.liveSource !== this.snapshot) {
         const freeze = value => {
           if (value && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -232,7 +238,7 @@
       }
       return this.liveSnapshot;
     }
-    get() { return {...copy(this.snapshot), recentEvents: copy(this.events)}; }
+    get() { this.refreshCircuits();return {...copy(this.snapshot), recentEvents: copy(this.events)}; }
     replay(commands) { this.reset(); for (const action of commands) this.send(action); return this.get(); }
   }
   return Object.freeze({SCHEMA, MODES, PUMP_REGISTRY, tAnd, tOr, Session});

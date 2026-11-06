@@ -34,6 +34,7 @@ function globalPowerPossible(bus){
  return null;
 }
 function projectPower(s){const global=s.electrical.globalPowerPossible;
+ if(globalThis.B737UnifiedCB?.available('mcp.power')===false)return {globalPowerPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
  if(global===false)return {globalPowerPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
  if(s.observedPower)return {globalPowerPossible:global,feed:STATES.INSTRUCTOR_OBSERVED,mcpPower:true,rawRevision:s.electrical.rawRevision};
  return {globalPowerPossible:global,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:s.electrical.rawRevision};

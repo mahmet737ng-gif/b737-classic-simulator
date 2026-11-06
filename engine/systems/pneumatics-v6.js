@@ -30,13 +30,14 @@ function apply(s,command){ensure(s);if(!command||typeof command.type!=='string')
  syncTrips(n);n.seq++;n.events.push({seq:n.seq,command:copy(command)});if(n.events.length>500)n.events.shift();return n;
 }
 function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latched;
+ const cb=(name,value=true)=>globalThis.B737UnifiedCB?.gate('air.'+name,value)??value;
  // Valve availability is an explicit instructor signal. Missing physical bus wiring is NOT inferred.
- const e1=c.engineBleed1==='ON'&&i.engine1Running&&i.bleedValveControlPower&&!t.bleed1&&!f.engineBleed1ValveFailed;
- const e2=c.engineBleed2==='ON'&&i.engine2Running&&i.bleedValveControlPower&&!t.bleed2&&!f.engineBleed2ValveFailed;
+ const e1=cb('bleedLeftControl')&&c.engineBleed1==='ON'&&i.engine1Running&&i.bleedValveControlPower&&!t.bleed1&&!f.engineBleed1ValveFailed;
+ const e2=cb('bleedRightControl')&&c.engineBleed2==='ON'&&i.engine2Running&&i.bleedValveControlPower&&!t.bleed2&&!f.engineBleed2ValveFailed;
  const apu=c.apuBleed==='ON'&&i.apuRunning&&i.bleedValveControlPower&&!f.apuBleedValveFailed;
  const bothBleedsSelected=c.engineBleed1==='ON'&&c.engineBleed2==='ON';
  const bothPacksSelected=c.packL!=='OFF'&&c.packR!=='OFF';
- let isolation=i.isolationAcPower?(c.isolation==='OPEN'||(c.isolation==='AUTO'&&!(bothBleedsSelected&&bothPacksSelected))):null;
+ let isolation=cb('bleedIsolationControl',i.isolationAcPower)?(c.isolation==='OPEN'||(c.isolation==='AUTO'&&!(bothBleedsSelected&&bothPacksSelected))):null;
  if(f.isolationJammedOpen)isolation=true;else if(f.isolationJammedClosed)isolation=false;
  // LAN B737 Classic ATA36-10 pp.24,26,28: the APU feeds the LEFT
  // manifold (its junction is left of isolation); the ground-cart connector
@@ -50,7 +51,7 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
   return false;
  }
  const duct={L:{engineSource:e1,anySupply:supply('L')},R:{engineSource:e2,anySupply:supply('R')}};
- const pack={};for(const side of SIDES){const key='pack'+side,mode=c[key],overheat=t[key],available=duct[side].anySupply;const extra400Trip=c.aircraftFamily==='B737-400'&&i[key+'PrimaryControlFailed']&&i[key+'StandbyControlFailed'];const valid=mode!=='OFF'&&!overheat&&!extra400Trip&&!f[key+'ValveFailed'];const operational=valid?(available===true?true:available===null?null:false):false;pack[side]={selectedMode:mode,operational,tripOff:overheat||extra400Trip,ductOverheat:t['duct'+side],mixValveCommand:overheat||t['duct'+side]||mode==='OFF'?'FULL_COLD':'TEMP_SELECTOR',flow:'OFF'};}
+ const pack={};for(const side of SIDES){const key='pack'+side,mode=c[key],overheat=t[key],available=duct[side].anySupply;const extra400Trip=c.aircraftFamily==='B737-400'&&i[key+'PrimaryControlFailed']&&i[key+'StandbyControlFailed'];const valid=cb(key)&&mode!=='OFF'&&!overheat&&!extra400Trip&&!f[key+'ValveFailed'];const operational=valid?(available===true?true:available===null?null:false):false;pack[side]={selectedMode:mode,operational,tripOff:overheat||extra400Trip,ductOverheat:t['duct'+side],mixValveCommand:overheat||t['duct'+side]||mode==='OFF'?'FULL_COLD':'TEMP_SELECTOR',flow:'OFF'};}
  const operatingCount=SIDES.filter(x=>pack[x].operational===true).length;
  const apuOnly=apu&&c.engineBleed1==='OFF'&&c.engineBleed2==='OFF';
  for(const side of SIDES){const p=pack[side];if(p.operational===false){p.flow='OFF';continue;}if(p.operational===null){p.flow='UNKNOWN_SOURCE_ROUTE';continue;}
@@ -61,16 +62,16 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
  }
  // Legacy 300/500 single fan remains unchanged. The 400 has two independently
  // selected fans; physical AC availability is an explicit existing input.
- const singleRecircActive=c.recirc==='AUTO'&&i.recircAcPower&&!f.recircFanFailed&&!(operatingCount===2&&(c.packL==='HIGH'||c.packR==='HIGH'));
+ const singleRecircActive=cb('recirc')&&c.recirc==='AUTO'&&i.recircAcPower&&!f.recircFanFailed&&!(operatingCount===2&&(c.packL==='HIGH'||c.packR==='HIGH'));
  const recircFans={
-  L:{selectedMode:c.recircL??'AUTO',running:(c.recircL??'AUTO')==='AUTO'&&i.recircAcPower&&!f.recircFanLFailed},
-  R:{selectedMode:c.recircR??'AUTO',running:(c.recircR??'AUTO')==='AUTO'&&i.recircAcPower&&!f.recircFanRFailed}
+  L:{selectedMode:c.recircL??'AUTO',running:cb('recirc')&&(c.recircL??'AUTO')==='AUTO'&&i.recircAcPower&&!f.recircFanLFailed},
+  R:{selectedMode:c.recircR??'AUTO',running:cb('recirc')&&(c.recircR??'AUTO')==='AUTO'&&i.recircAcPower&&!f.recircFanRFailed}
  };
  const recircActive=c.aircraftFamily==='B737-400'?(recircFans.L.running||recircFans.R.running):singleRecircActive;
  const dualBleed=apu&&(c.engineBleed1==='ON'||(c.engineBleed2==='ON'&&isolation===true));
  // FCOM SP.2: Momentary detector test cannot latch unrelated pack or bleed trips.
- const wingBody={L:i.wingBodyLLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyLDetectorFailed),
-  R:i.wingBodyRLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyRDetectorFailed)};
+ const wingBody={L:cb('overheatDetector')&&(i.wingBodyLLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyLDetectorFailed)),
+  R:cb('overheatDetector')&&(i.wingBodyRLeakDetected||(i.wingBodyTestHeld&&!i.wingBodyRDetectorFailed))};
  const pack400={};
  for(const side of SIDES){
   const p=i['pack'+side+'PrimaryControlFailed'],s=i['pack'+side+'StandbyControlFailed'];
@@ -83,7 +84,7 @@ function derive(s){ensure(s);const c=s.controls,i=s.inputs,f=s.faults,t=s.latche
   FWD:{immediate:t.zoneFwd,recallOnly:!t.zoneFwd&&i.fwdTempControlFailed,trimValveClosed:t.zoneFwd},
   AFT:{immediate:t.zoneAft,recallOnly:!t.zoneAft&&i.aftTempControlFailed,trimValveClosed:t.zoneAft}
  };
- const gauges={L:i.ductGaugeAcPower?i.ductLeftPsi:null,R:i.ductGaugeAcPower?i.ductRightPsi:null,source:'EXPLICIT_SENSOR_ONLY_PRESSURE_NOT_CALCULATED'};
+ const gauges={L:cb('ductGauge',i.ductGaugeAcPower)?i.ductLeftPsi:null,R:cb('ductGauge',i.ductGaugeAcPower)?i.ductRightPsi:null,source:'EXPLICIT_SENSOR_ONLY_PRESSURE_NOT_CALCULATED'};
  return {schema:'b737-pneumatics-derived/6',seq:s.seq,pack400,zoneTemp400,bleed:{engine1ValveOpen:e1,engine2ValveOpen:e2,apuBleedValveOpen:apu,externalAirAttached:i.externalAirAvailable,isolationOpen:isolation,dualBleed,wingBody},duct,pack,recircFanRunning:recircActive,recircFans,recircInstallation:c.aircraftFamily,gauges,
  lamps:{dualBleed,bleedTrip1:t.bleed1,bleedTrip2:t.bleed2,packTripL:c.aircraftFamily==='B737-400'?pack400.L.immediate:t.packL,packTripR:c.aircraftFamily==='B737-400'?pack400.R.immediate:t.packR,ductOverheatL:c.aircraftFamily==='B737-400'?false:t.ductL,ductOverheatR:c.aircraftFamily==='B737-400'?false:t.ductR,wingBodyOverheatL:wingBody.L,wingBodyOverheatR:wingBody.R},
  toPressurization:{packConditionedAirAvailable:operatingCount>0?true:pack.L.operational===null||pack.R.operational===null?null:false,cabinPressureCalculated:false,source:'FCOM 2.30.1 functional supply only'},

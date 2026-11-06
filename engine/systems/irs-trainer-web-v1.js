@@ -245,8 +245,12 @@ function ready(s,u){
  }
 }
 function apply(state,cmd){
- const s=clone(state);
+ let s=clone(state);
  if(!cmd||!cmd.type)throw new TypeError('IRS command with type required');
+ if(cmd.type!=='POWER'&&globalThis.B737UnifiedCB?.irsPower){
+  for(const side of SIDES)if(s.units[side].powered&&globalThis.B737UnifiedCB.irsPower(side,true)===false)
+   s=apply(s,{type:'POWER',side,available:false});
+ }
  if(cmd.type==='FMC_SET_IRS_POS'){
   const p=parseFmcPosition(cmd.position);
   const sides=cmd.sides||SIDES.filter(id=>{
@@ -264,8 +268,9 @@ function apply(state,cmd){
     if(typeof cmd.available!=='boolean')throw new TypeError('Explicit true/false IRS power required');
     // Electrical bus sampling is level-triggered. A repeated identical feed
     // must not restart alignment or erase an already-entered FMC position.
-    if(u.powered===cmd.available)break;
-    u.powered=cmd.available;
+    const effective=globalThis.B737UnifiedCB?.irsPower?.(cmd.side,cmd.available)??cmd.available;
+    if(u.powered===effective)break;
+    u.powered=effective;
     if(!u.powered){
       u.valid=false;u.position=null;u.basePosition=null;
       u.groundSpeedKt=null;u.trueTrackDeg=null;u.trueHeadingDeg=null;
@@ -405,7 +410,9 @@ function resolveMotion(frame){
  return null;
 }
 function tick(state,frame){
- const s=clone(state);
+ let s=clone(state);
+ if(globalThis.B737UnifiedCB?.irsPower)for(const side of SIDES)
+  if(s.units[side].powered&&globalThis.B737UnifiedCB.irsPower(side,true)===false)s=apply(s,{type:'POWER',side,available:false});
  const dt=frame?.dtSec;
  if(!finite(dt)||dt<=0||dt>MAX_STEP)throw new RangeError('IRS tick requires dtSec >0 and <=5; substep long frames');
  const movement=resolveMotion(frame);

@@ -107,6 +107,7 @@
    window.addEventListener('blur',clearPresses);
    document.addEventListener('visibilitychange',()=>{if(document.hidden)clearPresses();});
    byId('atlasAbsolute').append(layer);engine=model.controller(registry,window.B737ElectricalV7,render,window.B737PneumaticsV6);inspector();ready=true;synchronize();choose(registry.lights.find(c=>c.id==='fuel-center-l'));
+  window.addEventListener('b737:cb-state-change',()=>synchronize());
   for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>synchronize(e.detail));
    // Owner18 has a distinct guard-change event: re-evaluate the existing annunciator.
    const flightIds=['flight-control-a','flight-control-b'];

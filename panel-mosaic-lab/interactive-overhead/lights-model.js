@@ -116,6 +116,7 @@
      default:throw Error('Unknown lamp predicate '+c.rule);
     }
     const states=c.states||['OFF','ON'],bright=states.at(-1);
+    if(globalThis.B737UnifiedCB?.lampAllowed?.(c.id)===false){frames[c.id]='OFF';on[c.id]=false;continue;}
     if(active===null){unknown.push(c.id);on[c.id]=available&&test?true:null;frames[c.id]=available&&test?bright:'OFF';}
     else {const powered=c.id==='emergency-not-armed'?context.panelPower:available;
      const frame=!powered?'OFF':test?bright:typeof active==='string'?active:active?bright:'OFF';frames[c.id]=frame;on[c.id]=frame!=='OFF';}

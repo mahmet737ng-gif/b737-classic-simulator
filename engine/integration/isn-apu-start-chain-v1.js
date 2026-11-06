@@ -58,6 +58,9 @@
   schedule(device,ms,fn){this.jobs.push({device,at:this.time+ms,fn});this.jobs.sort((a,b)=>a.at-b.at);}
   cancel(device){this.jobs=this.jobs.filter(j=>j.device!==device);}
   advance(ms){if(!Number.isFinite(ms)||ms<0)throw Error('Nonnegative elapsed ms required');
+   // Opening a circuit must interrupt queued start jobs as well as derived indications.
+   if(globalThis.B737UnifiedCB?.available('apu.control')===false&&['INLET_DOOR','STARTING','READY'].includes(this.phase.apu))this.tripAPU('ECU_DC_LOSS');
+   for(const device of ['engine1','engine2'])if(['MOTORING','AWAIT_FUEL_LEVER_IDLE','LIGHT_OFF_SEQUENCE'].includes(this.phase[device])&&globalThis.B737UnifiedCB?.available(device+'.starter')===false){this.abortEngine(device);this.lastError=device.toUpperCase()+': START VALVE CB OPEN';}
    const end=this.time+ms;let count=0;
    while(this.jobs.length&&this.jobs[0].at<=end){if(++count>100)throw Error('Training queue limit');
     const job=this.jobs.shift();this.updateDynamics(job.at);this.time=job.at;job.fn();this.syncPower();}
@@ -174,6 +177,7 @@
    this.syncPower();return this.get();
   }
   startAPU(){
+   if(globalThis.B737UnifiedCB?.available('apu.control')===false){this.phase.apu='BLOCKED';this.lastError='APU CONTROL CB OPEN';return;}
    if(this.apuProtectionReason){this.lastError='APU protection latched · select OFF to reset before restarting';return;}
    this.lastError='';this.cancel('apu');this.command({type:'APU_SWITCH',position:'START'});
    // Restore the actual cockpit-selected bleed switch after a prior APU OFF.
@@ -297,6 +301,7 @@
   }
   startEngine(device){
    const fuelLever=this.start.getLive().observation[device].feedback.fuelStartLever.value;
+   if(globalThis.B737UnifiedCB?.available(device+'.starter')===false){this.phase[device]='BLOCKED';this.lastError=device.toUpperCase()+': START VALVE CB OPEN';return;}
    if(!['OFF','BLOCKED'].includes(this.phase[device])){
     this.lastError=device.toUpperCase()+': a stopped start sequence required before GRD';
     this.effects.push({type:'ROTARY_RELEASE',id:device==='engine1'?'engine-start-1':'engine-start-2',position:'OFF'});

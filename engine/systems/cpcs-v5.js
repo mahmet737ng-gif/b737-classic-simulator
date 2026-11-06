@@ -10,7 +10,7 @@
  const deepcopy=x=>JSON.parse(JSON.stringify(x));const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);const validNumber=x=>typeof x==='number'&&Number.isFinite(x);
  function initial(){return {schema:'b737-cpcs/5',seq:0,clockMs:0,selectedMode:'AUTO',flightGround:'GRD',valveSwitch:'NEUTRAL',cabinRate:'INDEX',autoFailTriggered:false,events:[],faults:Object.fromEntries(FAULTS.map(x=>[x,false])),settings:{flightAltitudeFt:28000,landingAltitudeFt:0,standbyCabinAltitudeFt:0},inputs:{onGround:true,acPowerAvailable:true,dcPowerAvailable:true,airplaneAltitudeFt:0,cabinAltitudeFt:0,cabinRateFtMin:0,differentialPsid:0,baroCaptainInHg:29.92,baroFirstOfficerInHg:29.92,recircFanOn:false,mainOutflowNearlyClosed:false,ambientPressureExceedsCabin:false,bleedAirAvailable:true,stallManagementSignalPresent:true,offScheduleDescent:false}};}
  function validate(s){if(!s||s.schema!=='b737-cpcs/5'||!s.settings||!s.inputs||!s.faults||!Array.isArray(s.events))throw Error('Invalid CPCS state')}
- function faultsAndSignals(s){const i=s.inputs,f=s.faults;const causes={autoAcPowerLoss:!i.acPowerAvailable||f.autoAcPowerFailed,excessiveCabinRate:Math.abs(i.cabinRateFtMin)>LIMITS.autoFailRateFtMin,highCabinAltitude:i.cabinAltitudeFt>LIMITS.autoFailCabinAltitudeFt,autoControllerFailed:f.autoControllerFailed};return {causes,anyAutoFailure:Object.values(causes).some(Boolean)};}
+ function faultsAndSignals(s){const i=s.inputs,f=s.faults;const cb=globalThis.B737UnifiedCB;const autoPower=cb?.available('press.autoAC')!==false&&cb?.available('press.autoDC')!==false;const causes={autoAcPowerLoss:!i.acPowerAvailable||f.autoAcPowerFailed||!autoPower,excessiveCabinRate:Math.abs(i.cabinRateFtMin)>LIMITS.autoFailRateFtMin,highCabinAltitude:i.cabinAltitudeFt>LIMITS.autoFailCabinAltitudeFt,autoControllerFailed:f.autoControllerFailed};return {causes,anyAutoFailure:Object.values(causes).some(Boolean)};}
  function apply(state,command){validate(state);if(!command||typeof command.type!=='string')throw Error('Invalid CPCS command');if(command.type==='RESET')return initial();const s=deepcopy(state);switch(command.type){
  case 'MODE':if(!['AUTO','STBY','MAN_AC','MAN_DC'].includes(command.value))throw Error('Invalid CPCS selector mode');s.selectedMode=command.value;if(command.value==='STBY')s.autoFailTriggered=false;break;
  case 'AUTO_CHECK':if(command.pressed!==true)throw Error('CHECK is a momentary test request');if(s.selectedMode!=='AUTO')throw Error('AUTO CHECK only modeled with selector in AUTO');s.events.push({seq:s.seq+1,atMs:s.clockMs,command:{type:'AUTO_CHECK',pressed:true},policy:'CHECK_FUNCTION_NOT_SOURCE_SPECIFIED'});s.seq++;return s;
@@ -33,7 +33,9 @@
  const drive=operatingMode==='AUTO'?'AC':operatingMode==='STBY'?'DC':operatingMode==='MAN_AC'?'AC':'DC';
  const voltage=drive==='AC'?i.acPowerAvailable && (operatingMode==='AUTO'?!f.autoAcPowerFailed:!f.manualAcMotorFailed):i.dcPowerAvailable&&!f.dcMotorFailed;
  const controllerWorking=operatingMode==='AUTO'?!f.autoControllerFailed:operatingMode==='STBY'?!f.standbyControllerFailed:true;
- const actuationAvailable=voltage&&controllerWorking&&!f.valveMechanismFailed;
+ const required=operatingMode==='AUTO'?['autoAC','autoDC']:operatingMode==='STBY'?['standbyDC']:operatingMode==='MAN_AC'?['manualAC']:['manualDC'];
+ const circuitAvailable=required.every(name=>globalThis.B737UnifiedCB?.available('press.'+name)!==false);
+ const actuationAvailable=voltage&&controllerWorking&&!f.valveMechanismFailed&&circuitAvailable;
  const flightEffective=s.flightGround==='GRD'&&!i.onGround?'FLT':s.flightGround;
  let outflowCommand='HOLD_OR_UNDETERMINED';
  if(!actuationAvailable)outflowCommand='NO_ACTUATION_AVAILABLE';

@@ -105,7 +105,7 @@
     this.scavenge.flowKgHr=transferred>0?this.config.scavengeFlowKgHr:0;
     if(this.scavenge.remainingMs===0){this.scavenge.flowKgHr=0;this.record('SCAVENGE_WINDOW_CLOSED');}
    }else this.scavenge.flowKgHr=0;
-   if(this.crossfeed.command!==this.crossfeed.position&&!this.crossfeed.failed&&batteryPowered){
+   if(this.crossfeed.command!==this.crossfeed.position&&!this.crossfeed.failed&&batteryPowered&&globalThis.B737UnifiedCB?.available('fuel.crossfeedControl')!==false){
     if(this.crossfeed.remainingMs<=0)this.crossfeed.remainingMs=this.config.crossfeedTravelMs;
     this.crossfeed.remainingMs=Math.max(0,this.crossfeed.remainingMs-ms);
     if(this.crossfeed.remainingMs===0){

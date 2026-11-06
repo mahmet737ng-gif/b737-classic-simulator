@@ -8,6 +8,7 @@
  if(!model)throw Error('B737FmcSystemsV1 failed to load');
  let network=model.createState(),lastRouteSig='',lastMcpEvidence='INITIAL',lastPower='UNKNOWN';
  let electricalObserved=false; // no CDU bright screen before first real ECU supply evidence
+ const feedEvidence=new Map();
  const seatState=new Map(),lastCduPower=new Map();let latestAfds=null;const now=()=>performance.now();
  const emit=forceSeat=>{
   for(const seat of ['CAPT','FO']){
@@ -97,15 +98,17 @@
   const evaluated=model.globalPower(snap);
   const first=!electricalObserved;
   electricalObserved=true;
-  if(evaluated===lastPower){
+  const cbSignature=JSON.stringify(model.UNIT_IDS.map(unit=>window.B737UnifiedCB?.available('fmc.'+unit)));
+  if(evaluated===lastPower&&refreshGlobalElectrical.cbSignature===cbSignature){
    if(first)emit(); // resolved power evidence must reach newly loaded CDU
    return;
   }
-  lastPower=evaluated;
+  lastPower=evaluated;refreshGlobalElectrical.cbSignature=cbSignature;
   // A powered hot-battery/charger alone is NOT evidence of CDU supply.
   // Restoration of main buses is still UNKNOWN until its own feeder is verified.
   for(const unit of model.UNIT_IDS){
-   const target=evaluated==='ABSENT'?'ABSENT':'UNKNOWN';
+   const cbOpen=window.B737UnifiedCB?.available('fmc.'+unit)===false;
+   const target=cbOpen||evaluated==='ABSENT'?'ABSENT':feedEvidence.get(unit)||'UNKNOWN';
    if(network.power[unit].feed!==target)
     network=model.apply(network,{type:'FEED',unit,evidence:target,nowMs:now(),
      provenance:target==='ABSENT'?'ALL_POWER_BUSES_PROVEN_ABSENT':'UPSTREAM_POWER_RESTORED_FEED_UNKNOWN'});
@@ -115,9 +118,11 @@
  }
  function setVerifiedFeed(unit,evidence){
   if(!model.UNIT_IDS.includes(unit)||!['PRESENT','ABSENT','UNKNOWN'].includes(evidence))throw Error('DIRECT_FEED_EVIDENCE_INVALID');
-  transition({type:'FEED',unit,evidence,nowMs:now(),provenance:'DIRECT_VERIFIED_EQUIPMENT_FEED'});
+  feedEvidence.set(unit,evidence);
+  transition({type:'FEED',unit,evidence:window.B737UnifiedCB?.available('fmc.'+unit)===false?'ABSENT':evidence,nowMs:now(),provenance:'DIRECT_VERIFIED_EQUIPMENT_FEED'});
   transmitToMCP();
  }
+ window.addEventListener('b737:cb-state-change',refreshGlobalElectrical);
  window.addEventListener('message',receive);
  window.addEventListener('b737:cockpit-mounted',()=>{emit();refreshGlobalElectrical()});
  window.addEventListener('b737:isn-start-indications',refreshGlobalElectrical);

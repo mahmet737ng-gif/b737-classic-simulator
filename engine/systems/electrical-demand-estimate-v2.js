@@ -56,6 +56,8 @@
      reason+='+START_TRANSIENT';
     }
    }
+   const circuits={FUEL_1_FWD:'fuel.main1FwdPump',FUEL_1_AFT:'fuel.main1AftPump',FUEL_2_FWD:'fuel.main2FwdPump',FUEL_2_AFT:'fuel.main2AftPump',FUEL_CENTER_L:'fuel.centerLeftPump',FUEL_CENTER_R:'fuel.centerRightPump',HYD_ELEC_1:'hyd.electricPumpB',HYD_ELEC_2:'hyd.electricPumpA',RECIRC_FAN:'air.recirc',PACK_L_CTL:'air.packL',PACK_R_CTL:'air.packR',FMC_L:'fmc.FMC1',FMC_R:'fmc.FMC2',EQUIP_COOL_SUP:'cooling.control',EQUIP_COOL_EXH:'cooling.control'};
+   if(circuits[old.id]&&globalThis.B737UnifiedCB?.available(circuits[old.id])===false){factor=0;reason='PROTECTED_CIRCUIT_CB_OPEN';}
    const amps=old.active?round(old.nominalA*factor):0;
    const active=old.active&&amps>0;
    const row={...old,active,currentA:amps,source:active?old.source:null,

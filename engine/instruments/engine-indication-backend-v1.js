@@ -89,9 +89,12 @@
    const id="engine"+side,prior=previous?.engines?.[id]||{},indications={},warning={};
    for(const [param,rec] of Object.entries(database.instruments)){
     const input=sensor(observed,side,param,rec.unit),feed=rec.wiring[mode][side];
+    const circuit={n1:'n1Indicator',n2:'n2Indicator',egt:'egtIndicator',oilPressure:'oilIndicator',oilTemperature:'oilIndicator',oilQuantity:'oilQuantityIndicator',fuelFlow:'fuelFlowIndicator',vibration:'vibrationIndicator'}[param];
+    const cbOpen=circuit&&globalThis.B737UnifiedCB?.available(param==='vibration'?'engine.vibrationIndicator':id+'.'+circuit)===false;
     const unitFault=Boolean(faults[mode==="EIS"?(rec.section==="primary"?"eisPrimary":"eisSecondary"):"none"]);
     indications[param]=resolve({param,mode,reading:input,feed,unitFault,
       channelFault:Boolean(faults[param+"."+side]),previous:prior.indications?.[param],dtMs,db:database,electrical});
+    if(cbOpen)indications[param]={...indications[param],status:'POWER_LOSS',power:'OFF',pointer:mode==='EIS'?'BLANK':param==='oilPressure'?'HOLD_LAST':'OFF_SCALE',digital:'BLANK',value:param==='oilPressure'?prior.indications?.[param]?.lastValue??null:null,reason:'PROTECTED_CIRCUIT_CB_OPEN'};
    }
    let used=resetFuelUsed?0:finite(previous?.fuelUsedKg?.[id])?previous.fuelUsedKg[id]:0;
    const flow=sensor(observed,side,"fuelFlow","kg/h");

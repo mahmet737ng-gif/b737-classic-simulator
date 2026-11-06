@@ -109,7 +109,8 @@ function evaluate(elapsed=0){
   const sw=ctx.sw[PITOT[id]]==='ON',power=ctx.bus[PITOT[id]==='pitot-a'?'dc1':'dc2'];
   // Pitot A/B and individual probe failure are GENERIC trainer logic; no
   // unverified aircraft WDM/individual CB wiring is claimed.
-  probes[id]=!!power&&(!sw||ctx.pitotFaults.includes(id));
+  const heater={'probe-capt-ps':'captUpper','probe-fo-static':'foLower','probe-l-elev':'elevatorL','probe-l-alpha':'alphaL','probe-fo-ps':'foUpper','probe-capt-static':'captLower','probe-r-elev':'elevatorR','probe-r-alpha':'alphaR'}[id];
+  probes[id]=!!power&&(!sw||ctx.pitotFaults.includes(id)||window.B737UnifiedCB?.available('probe.'+heater)===false);
  }
  post('isn-projection',probes);
  post('window-heat-projection',wh);
@@ -125,6 +126,7 @@ function evaluate(elapsed=0){
  }
  return output;
 }
+window.addEventListener('b737:cb-state-change',()=>evaluate(0));
 function tick(){
  if(!ready)return;
  const now=performance.now(),dt=Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;

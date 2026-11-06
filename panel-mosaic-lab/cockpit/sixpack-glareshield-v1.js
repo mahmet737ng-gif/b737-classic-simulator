@@ -34,11 +34,17 @@ const anyImmediate=()=>[...liveReasons.keys()].some(k=>reasons(k).some(immediate
 const isActive=k=>reasons(k).length>0;
 function effective(k){
  if(visualTest)return true; // instructor visual-only ALL LIGHTS ON test
+ const cb=window.B737UnifiedCB;
+ const legend=k.slice(k.indexOf('.')+1),circuit={'AIR COND':'airCond','ANTI ICE':'antiIce','FUEL':'fuel'}[legend];
+ if(circuit&&cb?.available('warning.'+circuit)===false)return false;
+ if(legend==='MASTER CAUTION'&&(cb?.available('warning.masterCaution')===false||cb?.available('warning.masterCautionControl')===false))return false;
+ if(legend==='FIRE WARN'&&cb?.available('warning.masterFireControl')===false)return false;
  if(annunciatorPower===false)return false; // no real light on a cold-and-dark DC system
  if(isSystem(k))return recallHeld||recallShown.has(k)||pending(k);
  if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||recallMaster||anyCaution();
  return (fireWarningActive&&!fireWarningAcknowledged)||manual.get(k)===true;
 }
+window.addEventListener('b737:cb-state-change',()=>paint());
 function paint(){
  for(const [k,n]of nodes){
   const on=effective(k);n.dataset.on=String(on);

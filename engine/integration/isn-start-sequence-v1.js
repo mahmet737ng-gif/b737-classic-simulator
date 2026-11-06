@@ -52,12 +52,13 @@
   function blankFeedback(device) {
     return Object.fromEntries(Object.keys(FIELDS[device]).map(key => [key, {value:null, origin:null}]));
   }
-  function engineRules(control, selector, feedback, power, startWindow, advisoryLatched, cutout) {
+  function engineRules(control, selector, feedback, power, startWindow, advisoryLatched, cutout, device) {
     const val=key=>feedback[key].value;
+    const cb=(part,value)=>globalThis.B737UnifiedCB?.gate(device+'.'+part,value)??value;
     const n2=val('n2Percent'), lever=val('fuelStartLever');
     const switchPos=control.startSwitch;
     // This is a power-dependent command, not evidence that a physical valve moved.
-    const startValveCommand=switchPos===null?null:switchPos==='GRD'?power.batteryBusPowered.value:false;
+    const startValveCommand=switchPos===null?null:switchPos==='GRD'?cb('starter',power.batteryBusPowered.value):false;
     const startMotorPossible=triAnd([startValveCommand,val('startValveOpen'),val('startAirAvailable')]);
     const ignitionDemand=lever===null||switchPos===null?null:
       lever==='CUTOFF'?false:START_SWITCHES.includes(switchPos)&&switchPos!=='OFF';
@@ -65,8 +66,8 @@
       switchPos==='FLT'||selector==='IGN_L'||selector==='BOTH';
     const demandRight=ignitionDemand===false?false:ignitionDemand===null||(selector===null&&switchPos!=='FLT')?null:
       switchPos==='FLT'||selector==='IGN_R'||selector==='BOTH';
-    const leftEligible=triAnd([demandLeft,power.acTransferBusPowered.value]);
-    const rightEligible=triAnd([demandRight,power.acStandbyBusPowered.value]);
+    const leftEligible=cb('ignitionLeft',triAnd([demandLeft,power.acTransferBusPowered.value]));
+    const rightEligible=cb('ignitionRight',triAnd([demandRight,power.acStandbyBusPowered.value]));
     // NP.21.34: N1 rotation and either >=25 N2, or max motoring with >=20 N2.
     const n2At25=n2===null?null:n2>=25;
     const maxMotorAt20=n2===null?null:triAnd([n2>=20,val('maxMotoringObserved')]);
@@ -171,7 +172,7 @@
         };
         observation[device].rules=device==='apu'?apuRules(this.controls.apu,fb,this.powerFeedback):
           engineRules(this.controls[device],this.controls.ignitionSelector,fb,this.powerFeedback,
-            this.groundStartWindow[device],this.egtAdvisoryLatched[device],this.cutout[device]);
+            this.groundStartWindow[device],this.egtAdvisoryLatched[device],this.cutout[device],device);
       }
       return {
         schema: SCHEMA, seq: this.seq, observation,controls:clone(this.controls),
@@ -312,7 +313,12 @@
     }
     // Live consumers share a detached, deeply immutable snapshot. Diagnostic
     // get()/send() contracts retain their complete, independently mutable history.
+    refreshCircuits() {
+      const revision=globalThis.B737UnifiedCB?.revision;
+      if(revision!==undefined&&revision!==this.cbRevision){this.cbRevision=revision;this.snapshot=this.compute(null);}
+    }
     getLive() {
+      this.refreshCircuits();
       if (this.liveSource !== this.snapshot) {
         const freeze = value => {
           if (value && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -328,7 +334,7 @@
       }
       return this.liveSnapshot;
     }
-    get() { return {...clone(this.snapshot), recentEvents:clone(this.events)}; }
+    get() { this.refreshCircuits();return {...clone(this.snapshot), recentEvents:clone(this.events)}; }
     replay(commands) { this.reset(); for (const c of commands) this.send(c); return this.get(); }
   }
   return Object.freeze({SCHEMA, DEVICES, ORIGINS, ENGINE_FIELDS, APU_FIELDS, POWER_FIELDS,
