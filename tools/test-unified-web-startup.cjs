@@ -60,6 +60,37 @@ const server=http.createServer((req,res)=>{
     assert.equal(eisColdDark.visual.unpowered,true,
      'Unpowered EIS must visibly hide the permanent green-on-photo scales');
    console.log('Cold-dark EIS overlay verified',JSON.stringify(eisColdDark));
+   // CDU-ELEC-DARK-0002: check the actual Electrical V7 input, not merely
+   // our FMC.globalPower classifier. Earlier QA skipped this when it returned
+   // UNKNOWN even with every main switched feed at zero.
+   await page.waitForFunction(()=>
+    window.B737FmcSystemsBridgeV1?.getPowerAudit?.()?.observed===true,
+    null,{timeout:20000,polling:100});
+   const firstCduPower=await page.evaluate(()=>{
+    const raw=window.B737ISNCockpitV1.getElectricalState();
+    const proj=window.B737ElectricalV7.evaluate(raw),bus=proj.bus;
+    const switched=['generator1','generator2','transfer1','transfer2',
+      'acStandby','dc1','dc2','battery','switchedHotBattery','dcStandby'];
+    return {switchOff:switched.every(k=>bus[k]===false),
+     batterySwitch:raw.config.batterySwitch,source:proj.source,
+     expected:window.B737FmcSystemsV1.globalPower(proj),
+     parent:window.B737FmcSystemsBridgeV1.getPowerAudit(),hotBattery:bus.hotBattery};
+   });
+   if(firstCduPower.switchOff){
+    assert.equal(firstCduPower.expected,'ABSENT',
+     'Fully dead switched electrical V7 supplies MUST prove CDU loss');
+    assert.equal(firstCduPower.parent.globalPower,'ABSENT',
+     'Live FMCS bridge must use real owner status rather than UNKNOWN');
+    await page.waitForFunction(()=>{
+     const doc=document.getElementById('cduFrameFO')?.contentDocument;
+     return doc?.documentElement.dataset.cduElectricalFeed==='ABSENT'&&
+      doc.getElementById('fmc-screen')?.style.visibility==='hidden'&&
+      doc.getElementById('annunciators')?.style.visibility==='hidden';
+    },null,{timeout:18000,polling:100});
+   }
+   console.log('CDU-ELEC-DARK-0002: initial live electrical blackout verified',
+    JSON.stringify(firstCduPower));
+
    // THR-0008: Catch missing pedal/throttle mounts on the *compiled* GitHub
    // Pages artifact. A successfully loaded background alone is not sufficient.
    await page.waitForFunction(()=>{
