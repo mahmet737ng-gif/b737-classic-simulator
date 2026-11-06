@@ -1,5 +1,5 @@
-/* Instructor BAT RECHARGE in the Unified top command bar.
- * Always visible and usable regardless of AC generator, ground service,
+/* Instructor BAT RECHARGE inside Unified Controls drawer.
+ * Always available regardless of AC generator, ground service,
  * external power or standby inverter. Actual charge stays in the ECU.
  */
 (function(root){
@@ -7,12 +7,11 @@
  const ID='liveBatteryRecharge';
  const STORE='b737classic.live-battery.v1';
  const owner=()=>root.B737ISNCockpitV1;
- // The cockpit header may be rebuilt by a launcher or an older cached page.
- // Own exactly one command button and keep it immediately after CB PNL (RTL:
- // visually to the left). Never make visibility dependent on AC availability.
+ // Own exactly one battery recharge control under Controls, never in the top bar.
+ // Do not make availability dependent on generator or ground power state.
  function ensureButton(){
-  const bar=document.querySelector('body > header.unified-minimal-header .header-settings');
-  if(!bar)return null;
+  const slot=document.getElementById('batteryRechargeControlSlot');
+  if(!slot)return null;
   let button=document.getElementById(ID);
   if(!button){
    button=document.createElement('button');
@@ -20,11 +19,7 @@
    button.textContent='BAT RECHARGE';
    button.setAttribute('aria-label','Recharge training battery to 100 percent');
   }
-  const cb=bar.querySelector('#cbPanelOpen');
-  if(cb){
-   if(button.parentElement!==bar||button.previousElementSibling!==cb)
-    cb.insertAdjacentElement('afterend',button);
-  }else if(button.parentElement!==bar)bar.append(button);
+  if(button.parentElement!==slot)slot.append(button);
   // Other electrical modules may mark the HUD hidden; this instructor
   // command MUST remain visible with or without generator/GPU/APU power.
   if(button.hidden)button.hidden=false;
@@ -95,8 +90,7 @@
  function start(){
   const button=ensureButton();
   if(!button)return;
-  // Only watch the four-command header, not the large animated cockpit.
-  // A launcher-driven replacement of the bar can no longer lose the control.
+  // Observe only the battery slot, not the entire animated cockpit or top bar.
   const bar=button.parentElement;
   if(typeof MutationObserver==='function'){
    const observer=new MutationObserver(()=>{ensureButton();update();});
