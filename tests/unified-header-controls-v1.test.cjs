@@ -19,7 +19,7 @@ for(const id of ['liveBatteryRecharge','visualLampTest','apuLabButtonV1','engine
 const modules=[
  ['battery-panel-live-v1.js',"document.getElementById('batteryMeterControlSlot')"],
  ['battery-recharge-header-v1.js',"document.getElementById('batteryRechargeControlSlot')"],
- ['engine-indication-live-v2.js',"$('unifiedLabShortcuts')"],
+ ['engine-indication-live-v2.js',"$('#unifiedLabShortcuts')"],
  ['exterior-lights-classic-v1.js',"document.getElementById('unifiedLabShortcuts')"],
  ['aircon-live-test-lab-v1.js',"document.getElementById('unifiedLabShortcuts')"]
 ];
