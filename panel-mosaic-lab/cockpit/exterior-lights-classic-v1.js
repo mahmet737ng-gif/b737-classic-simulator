@@ -107,7 +107,7 @@ if(isChild){
  }
  function install(){
   if(document.getElementById('b737ExteriorLightsOpen'))return;
-  const bar=document.querySelector('body > header.unified-minimal-header .header-settings')||document.querySelector('.toolbar .tools');
+  const bar=document.getElementById('unifiedLabShortcuts');
   if(!bar)return;
   const b=document.createElement('button');b.type='button';b.id='b737ExteriorLightsOpen';
   b.textContent='EXTERNAL LIGHTS';b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-controls','b737ExteriorLightsDialog');
