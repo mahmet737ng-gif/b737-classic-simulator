@@ -16,6 +16,22 @@ function core(){
 const names=[['CAPT','FLT CONT'],['CAPT','ELEC'],['CAPT','IRS'],['CAPT','APU'],['CAPT','FUEL'],['CAPT','OVHT/DET'],
  ['FO','ANTI-ICE'],['FO','ENG'],['FO','HYD'],['FO','OVERHEAD'],['FO','DOORS'],['FO','AIR COND']];
 const key=([side,name])=>side+'.'+name.replace('ANTI-ICE','ANTI ICE');
+test('cold-and-dark DC supply extinguishes real six-pack lamps without deleting caution faults',()=>{
+ const {api,window}=core();
+ const bus={dc1:false,dc2:false,battery:false,switchedHotBattery:false,dcStandby:false,hotBattery:true,groundService:false};
+ window.B737ISNCockpitV1={getState:()=>({state:{electrical:{bus}}})};
+ api.setLiveConditions({'CAPT.ELEC':['ELEC:GEN1_FAILED'],'FO.DOORS':['OH:door-fwd-entry']});
+ assert.equal(api.getEffectiveState()['CAPT.MASTER CAUTION'],true);
+ window.dispatchEvent({type:'b737:electrical-network'});
+ assert.equal(api.getSupply(),false);
+ for(const on of Object.values(api.getEffectiveState()))assert.equal(on,false,'No six-pack lamp may glow with BAT OFF and no DC bus');
+ assert.deepEqual(Array.from(api.getLiveReasons()['CAPT.ELEC']),['ELEC:GEN1_FAILED'],'Fault evidence must survive loss of power');
+ bus.dc1=true;
+ window.dispatchEvent({type:'b737:electrical-v7-state'});
+ assert.equal(api.getSupply(),true);
+ assert.equal(api.getEffectiveState()['CAPT.ELEC'],true,'Existing fault may illuminate when DC power returns');
+});
+
 test('all 12 real annunciators accept all 4096 input combinations',()=>{
  const {api}=core();
  for(let mask=0;mask<4096;mask++){
