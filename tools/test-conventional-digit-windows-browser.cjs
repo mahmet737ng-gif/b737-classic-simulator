@@ -34,7 +34,7 @@ const {chromium}=require('playwright');
      const r=plate.getBoundingClientRect(),n=needles.find(x=>x.id===id);
      const readoutRect=digits.getBoundingClientRect();
      const style=getComputedStyle(plate);
-     return{id,signal:spec.signal,cx:spec.cx,cy:spec.cy,needleX:n.cx,needleY:n.cy,
+     return{id,signal:spec.signal,scale:spec.scale,cx:spec.cx,cy:spec.cy,needleX:n.cx,needleY:n.cy,
       centerX:((r.left+r.width/2-ir.left)/ir.width)*1463,
       centerY:((r.top+r.height/2-ir.top)/ir.height)*1075,
       sourceWidth:r.width/ir.width*1463,sourceHeight:r.height/ir.height*1075,
@@ -54,7 +54,8 @@ const {chromium}=require('playwright');
    assert.ok(Math.abs(a.centerY-a.cy)<1.25,a.id+' backplate y not aligned to source photo');
    assert.equal(a.cx,a.needleX,a.id+' digit aperture must be centered on needle shaft');
    assert.equal(a.needleY-a.cy,a.signal==='n1'?42:41,a.id+' top red window vertical datum');
-   assert.ok(a.sourceHeight>17&&a.sourceHeight<20.5,a.id+' 31-unit real window physical height');
+   assert.ok(Math.abs(a.sourceHeight-31*.8*a.scale)<.65,
+    a.id+' full 31-unit aperture must match individual EGT/FF font scale: '+a.sourceHeight);
    assert.ok(a.needleY-(a.centerY+a.sourceHeight/2)>30,a.id+' no overlap with printed dial text');
    assert.ok(a.fill.includes('52, 55, 56'),a.id+' must have its own charcoal face');
    assert.equal(a.opacity,'1',a.id+' opaque plate');
