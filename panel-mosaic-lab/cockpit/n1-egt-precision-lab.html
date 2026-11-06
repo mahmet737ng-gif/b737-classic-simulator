@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — N1 / EGT Precision Photo Lab</title>
+<meta name="description" content="Photo-grounded N1 and EGT calibration bench for Boeing 737 Classic training.">
+<style>
+:root{color-scheme:dark;font-family:Tahoma,"Segoe UI",sans-serif;background:#0a111a;color:#e7edf5}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 30% 0%,#172e3d 0%,#0a111a 50%,#070c12 100%)}
+header{padding:28px clamp(18px,4vw,62px) 18px;border-bottom:1px solid #273745}
+header .brand{letter-spacing:.15em;font:600 11px ui-monospace,monospace;color:#93c2d1;direction:ltr;text-align:left}
+h1{font-size:clamp(21px,3vw,35px);margin:12px 0 10px;font-weight:750}p{line-height:1.9;color:#a9bbc7;margin:0}a{color:#8bd4e7}
+main{max-width:1570px;margin:auto;padding:22px clamp(13px,3vw,40px) 70px}
+.statusbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 19px;margin-bottom:21px;border:1px solid #263c49;border-radius:13px;background:#13202c}
+.statusbar span{font:500 13px ui-monospace,monospace}#source-status{color:#d4b76f}#source-status.good{color:#90d9ab}#source-status.warn{color:#efb2a2}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap}.toolbar button,button.detent{appearance:none;border:1px solid #3c5566;background:#203544;color:#e6f3f5;border-radius:9px;padding:10px 15px;font:600 13px Tahoma,sans-serif;cursor:pointer}
+.toolbar button:hover,button.detent:hover{background:#31526a;border-color:#78aec5}.toolbar button:focus-visible,button.detent:focus-visible,input:focus-visible{outline:2px solid #7ac9f0}
+.toolbar button.primary{background:#197b91;border-color:#36a9bc;color:#fff}
+.gauges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.card{border:1px solid #2f4250;border-radius:17px;padding:20px 22px 22px;background:linear-gradient(160deg,#182b38,#0f1c27 60%,#0d1821);box-shadow:0 20px 54px #0005}
+.card h2{margin:0;font:700 19px "Segoe UI",Tahoma,sans-serif;direction:ltr;text-align:center;letter-spacing:.06em}
+.card .subtitle{text-align:center;color:#809aa9;font-size:12px;margin:6px 0}
+.dialframe{display:grid;place-items:center;padding:12px;min-height:270px}
+.dial{display:block;width:min(100%,350px);filter:drop-shadow(0 11px 12px #000a)}
+.card-numeric{display:flex;justify-content:space-around;direction:ltr;align-items:center;gap:12px;padding:7px 2px 14px;font:13px ui-monospace,monospace}
+.card-numeric strong{font-size:22px;color:#e3ecc9;min-width:100px;text-align:center}
+.card-numeric span{font-size:11px;color:#94acbd}
+.card input[type=range]{width:100%;accent-color:#49bac6;cursor:pointer;margin:10px 0 6px}
+.detents{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;direction:ltr;margin-top:12px}
+.detents button.detent{padding:7px 0;font:600 11px ui-monospace,monospace;border-radius:6px;min-width:0}
+.detents button.detent.selected{background:#176874;border-color:#7bc6d3}
+.metrics{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#8ca6b5;font:11px ui-monospace,monospace;direction:ltr;margin-top:16px;border-top:1px solid #304451;padding-top:12px}
+.metrics .ok{color:#92e3bd}.metrics .warn{color:#edbd78}
+section.audit{border:1px solid #283b48;padding:22px;border-radius:15px;margin-top:22px;background:#111e29}
+.audit h2{margin:0 0 10px;font-size:19px}.audit pre{white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left;font-size:12px;line-height:1.65;color:#a7dfbe;max-height:280px;overflow:auto}
+.audit small{color:#9bafb9;line-height:1.9;display:block;margin-top:12px}
+footer{font-size:12px;color:#778a98;padding:24px 5px;line-height:1.8}
+.is-hidden{display:none!important}
+@media(max-width:830px){.gauges{grid-template-columns:1fr}.card{padding:14px}.dialframe{min-height:200px}.dial{width:min(100%,310px)}} 
+</style>
+</head>
+<body>
+<header>
+<div class="brand">B737 CLASSIC / PRECISION INSTRUMENT LAB / N1 + EGT / V1</div>
+<h1>آزمایشگاه کالیبراسیون واقعی N1 و EGT</h1>
+<p>تصویر اصلی پنل، نیدلِ فوتوگرافیک و درجه‌بندی مستقل برای موتورهای ۱ و ۲. این صفحه صرفاً برای بررسی و تأیید طراحی است و وضعیت Unified اصلی را تغییر نمی‌دهد.</p>
+</header>
+<main>
+<div class="statusbar">
+<div><span id="source-status" role="status" aria-live="polite">در حال بارگذاری تصویر اصلی و استخراج خطوط سفید…</span></div>
+<div class="toolbar">
+<button id="marks-toggle" type="button" aria-pressed="false">نمایش خطوط کالیبراسیون</button>
+<button id="random-audit" class="primary" type="button">ممیزی ۱٬۰۰۰ مقدار تصادفی</button>
+<button id="reset" type="button">بازنشانی مقادیر</button>
+<a href="./index.html">بازگشت به Unified</a>
+</div>
+</div>
+<section class="gauges" id="gauges" aria-label="چهار گیج اصلی N1 و EGT"></section>
+<section class="audit">
+<h2>گزارش صحت صفر، خطوط اصلی، خطوط میانی و عدد دیجیتال</h2>
+<pre id="audit-result" aria-live="polite">برای آغاز آزمون دکمهٔ «ممیزی ۱٬۰۰۰ مقدار تصادفی» را فشار دهید.</pre>
+<small>زاویه‌ها از خطوط روشن تصویر اصلی استخراج می‌شوند. نمایشگر و نیدل از یک مقدار مشترک استفاده می‌کنند. اختلاف مجاز عدد نمایشگر صرفاً ناشی از گردکردن آن است: N1 حداکثر ۰٫۰۵ درصد و EGT حداکثر ۰٫۵ درجه. تأیید این صفحه به معنای اعتبارسنجی تجهیزات واقعی هواپیما یا تأیید AFM نیست.</small>
+</section>
+<footer>منبع تصویر: p2-conventional-full-owner-20261030.png (1463 × 1075). نیدل از فایل تصویری موجود conventional-needle-photo-v1.svg استفاده می‌کند. کالیبراسیون N2 و سایر پنل‌ها دست‌نخورده است.</footer>
+</main>
+<script src="../../engine/instruments/photo-detent-calibration-v1.js?v=CONV-PHOTO-DETENT-0001" defer></script>
+<script src="../../engine/instruments/eis-dot-digits-v1.js?v=EIS-CONV-DRUM-0004" defer></script>
+<script src="./n1-egt-precision-lab-v1.js?v=N1-EGT-PHOTO-LAB-0001" defer></script>
+</body></html>

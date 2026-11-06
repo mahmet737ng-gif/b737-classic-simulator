@@ -1,0 +1,49 @@
+name: N1 EGT photo-precision lab — four-gauge rendering and detent audit
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/n1-egt-precision-lab.html'
+      - 'panel-mosaic-lab/cockpit/n1-egt-precision-lab-v1.js'
+      - 'tools/test-n1-egt-precision-lab-browser.cjs'
+      - 'tests/n1-egt-precision-lab.test.cjs'
+      - 'engine/instruments/photo-detent-calibration-v1.js'
+      - '.github/workflows/n1-egt-precision-lab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  n1-egt-photo-bench:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate photograph-driven calibration and page syntax
+        run: |
+          node --check panel-mosaic-lab/cockpit/n1-egt-precision-lab-v1.js
+          node --check tools/test-n1-egt-precision-lab-browser.cjs
+          node --test tests/n1-egt-precision-lab.test.cjs
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Validate four real photographic gauges and screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8788 --bind 127.0.0.1 >/tmp/n1-egt-lab-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8788/panel-mosaic-lab/cockpit/n1-egt-precision-lab.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/test-n1-egt-precision-lab-browser.cjs
+      - name: Retain annotated screenshot of real photo gauges
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n1-egt-precision-bench-qa
+          path: /tmp/b737-n1-egt-precision-lab.png
+          if-no-files-found: ignore
+          retention-days: 14
