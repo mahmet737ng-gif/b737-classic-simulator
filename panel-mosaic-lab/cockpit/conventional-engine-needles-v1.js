@@ -53,6 +53,15 @@ function node(parent,tag,attrs){
   fuelFlow:1000 // fuel flow: dial kg/h x 1000, 0..12 represents 0..12000 kg/h
  });
  const PRIMARY_TICK_ANGLES=Object.freeze([45,90,135,180,225,270,315]);
+ // Major radial tick centres registered against the user's actual Conventional
+ // dial screenshot. Values are degrees CLOCKWISE from the 12-o'clock axis.
+ // N2 is owner-accepted and intentionally remains on PRIMARY_TICK_ANGLES.
+ const PHOTO_PRIMARY_TICKS=Object.freeze({
+  n1:Object.freeze([46,89,134,180,226,274,320]),
+  egt:Object.freeze([50,88,133,179,226,275,319]),
+  fuelFlow:Object.freeze([46,89,134,180,226,274,320])
+ });
+ const primaryAngles=signal=>signal==='n2'?PRIMARY_TICK_ANGLES:PHOTO_PRIMARY_TICKS[signal];
  function angle(spec,value){
   if(spec.primary){
    const per=PRIMARY_UNITS_PER_TICK[spec.signal];
@@ -62,8 +71,8 @@ function node(parent,tag,attrs){
    const marked=Math.max(0,Math.min(12,value/per));
    const lower=Math.min(5,Math.floor(marked/2));
    const ratio=(marked-lower*2)/2;
-   return PRIMARY_TICK_ANGLES[lower]+
-     (PRIMARY_TICK_ANGLES[lower+1]-PRIMARY_TICK_ANGLES[lower])*ratio;
+   const ticks=primaryAngles(spec.signal);
+   return ticks[lower]+(ticks[lower+1]-ticks[lower])*ratio;
   }
   // Secondary instruments have independent scales and remain unchanged.
   const fraction=Math.max(0,Math.min(1,(value-spec.min)/(spec.max-spec.min)));
@@ -132,7 +141,7 @@ window.addEventListener('b737:isn-start-indications',event=>{fromIsn(event.detai
 window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
  getDialCalibration:()=>Object.fromEntries(Object.entries(PRIMARY_UNITS_PER_TICK).map(([signal,unitsPerDial])=>[
-  signal,{unitsPerDial,photoTickAngles:[...PRIMARY_TICK_ANGLES],dialLabels:[0,2,4,6,8,10,12]}
+  signal,{unitsPerDial,photoTickAngles:[...primaryAngles(signal)],dialLabels:[0,2,4,6,8,10,12]}
  ])),
  getAngle:(engine,signal,value)=>{
   const spec=SPECS.find(p=>p.engine===engine&&p.signal===signal);

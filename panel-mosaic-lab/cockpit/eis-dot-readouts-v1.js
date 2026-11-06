@@ -25,17 +25,15 @@
  // ENGINE 1 / ENGINE 2 coordinates; EIS and oil quantity are not re-registered.
  // Owner-marked upper dial window: the same offset for every physical shaft,
  // at the gap between the 12 and 0 dial markers. No EIS coordinates change.
- // Needle pivot -> aperture center: (-3,-44) in the native photo layout.
- // Calibrated to the owner's red rectangle in the 1920px screenshot.
- // N1 right: photo window [817,374]..[892,400], needle hub about [856,436].
- // Same 1463 x 1075 photo coordinates and (-3,-26) shaft offset on BOTH engines.
- // Previous (-3,-44) placed the drum too HIGH; the tall window also spilled
- // into the surrounding 12/0 marks. EIS instrument slots are independent.
+ // The accepted N1 window remains fixed. EGT/N2/FF windows use independent
+ // upward registration because their legends sit lower than the N1 artwork.
+ // All group transforms and their background rectangles use the same frame;
+ // the extra upper-row offset prevents overlap with EGT / N2 / FF labels.
  const CONVENTIONAL_APERTURES=Object.freeze({
   n1:Object.freeze([[424,401],[597,401]]),
-  egt:Object.freeze([[424,570],[597,570]]),
-  n2:Object.freeze([[422,721],[597,721]]),
-  fuelFlow:Object.freeze([[423,884],[597,884]])
+  egt:Object.freeze([[424,555],[597,555]]),
+  n2:Object.freeze([[422,706],[597,706]]),
+  fuelFlow:Object.freeze([[423,869],[597,869]])
  });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];
@@ -62,8 +60,19 @@
    for(const p of glyph.points)element(g,'circle',{cx:p.x,cy:p.y,r:ch==='.'?.9:font.style.radius/font.style.pitch});
   }
   for(const spec of layerSpecs){
-   const group=element(svg,'g',{[variant==='EIS'?'data-eis-readout':'data-conventional-readout']:spec.id,role:'img'});
    const width=font.layout(spec.template).width,lastX=width-14;
+   const pitch=font.style.pitch*spec.scale;
+   const photoTransform=`translate(${spec.cx-width*pitch/2} ${spec.cy-10*pitch}) scale(${pitch})`;
+   // A SEPARATE, unconditional backplate is painted before each digit group.
+   // The older group-local plate was sometimes masked by the rotating-drum
+   // clip, leaving N2 and EGT without the same dark face as N1.
+   if(variant==='CONVENTIONAL'){
+    element(svg,'rect',{'data-conventional-backplate':spec.id,
+     transform:photoTransform,x:-2,y:font.style.bodyTop,
+     width:width+4,height:font.style.bodyHeight,
+     fill:'#343738','fill-opacity':'1','aria-hidden':'true'});
+   }
+   const group=element(svg,'g',{[variant==='EIS'?'data-eis-readout':'data-conventional-readout']:spec.id,role:'img'});
    // Conventional drum aperture: show more of the numbers above and below
    // the active right-hand digit, without altering the calibrated EIS window.
    // The owner's red box spans one numeral row. Keep the wider last-column
@@ -77,7 +86,7 @@
     group.setAttribute('clip-path','url(#'+outerId+')');
     group.dataset.photoWindow='OWNER_RED_RECT_1920';
    }
-   element(group,'rect',{'data-eis-display-face':'',x:-2,y:font.style.bodyTop,
+   if(variant==='EIS')element(group,'rect',{'data-eis-display-face':'',x:-2,y:font.style.bodyTop,
     width:width+4,height:font.style.bodyHeight,fill:'#343738','fill-opacity':'.92','aria-hidden':'true'});
    const clipId=variant+'-last-digit-window-'+spec.id,bodyId=variant+'-body-window-'+spec.id;
    const bodyClip=element(defs,'clipPath',{id:bodyId,clipPathUnits:'userSpaceOnUse'});
@@ -104,8 +113,7 @@
      wheel:null,character:' ',base:null,offset:null};
    });
    group.dataset.displayUnit=spec.unit;
-   const pitch=font.style.pitch*spec.scale;
-   group.setAttribute('transform',`translate(${spec.cx-width*pitch/2} ${spec.cy-10*pitch}) scale(${pitch})`);
+   group.setAttribute('transform',photoTransform);
    mounted.set(variant+'.'+spec.id,{spec,variant,group,slots,width,text:null,dirty:true});
   }
   return svg;

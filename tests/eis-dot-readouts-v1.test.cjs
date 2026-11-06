@@ -114,9 +114,9 @@ assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).l
  'Only N1, EGT, N2 and Fuel Flow have photographed Conventional numeric drums');
 const expected={
  n1:[[424,401],[597,401]],
- egt:[[424,570],[597,570]],
- n2:[[422,721],[597,721]],
- fuelFlow:[[423,884],[597,884]]
+ egt:[[424,555],[597,555]],
+ n2:[[422,706],[597,706]],
+ fuelFlow:[[423,869],[597,869]]
 };
 for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  const spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id===signal+'_'+engine);
@@ -125,10 +125,24 @@ for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  assert.equal(spec.cx,photoX,signal+' engine '+engine+' X matches photographed aperture');
  assert.equal(spec.cy,photoY,signal+' engine '+engine+' Y matches photographed aperture');
  assert.equal(needle.cx-spec.cx,3,signal+' engine '+engine+' matches red box horizontal center');
- assert.equal(needle.cy-spec.cy,26,signal+' engine '+engine+' matches marked red box vertical position');
+ assert.equal(needle.cy-spec.cy,signal==='n1'?26:41,
+  signal+' engine '+engine+' stays between the 0/12 marks and above the caption');
 }
 assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1'),undefined,
  'Conventional oil quantity is an analog-only dial');
+const photoBackplates=nodes(convHost).filter(n=>'data-conventional-backplate' in n.attrs);
+assert.equal(photoBackplates.length,8,'All eight dial readouts, including N2, have an independent black rectangle');
+for(const plate of photoBackplates){
+ assert.equal(plate.tag,'rect');
+ assert.equal(plate.attrs.fill,'#343738');
+ assert.equal(+plate.attrs['fill-opacity'],1,'Opaque rectangle must remain visible on dark dial');
+ const id=plate.attrs['data-conventional-backplate'];
+ const caption=nodes(convHost).find(n=>n.attrs['data-conventional-readout']===id);
+ assert.equal(plate.attrs.transform,caption.attrs.transform,
+   'Dark rectangle and its digits must share the exact calibrated transform');
+}
+assert.equal(nodes(piece).filter(n=>'data-conventional-backplate' in n.attrs).length,0,
+ 'EIS backplates must not be modified by Conventional change');
 const convN1Group=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='n1_1');
 const convDrumWindow=nodes(convN1Group).find(n=>'data-eis-tall-window' in n.attrs);
 assert.equal(+convDrumWindow.attrs.width,23,'The right digit must be wider than the EIS clip');

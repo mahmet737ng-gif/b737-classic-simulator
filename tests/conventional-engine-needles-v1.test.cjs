@@ -50,26 +50,41 @@ const instrumentScale={
  n2:{unit:10,maximum:120,sample:71.4},
  fuelFlow:{unit:1000,maximum:12000,sample:1200}
 };
+// The major tick centres below were matched to the photographed radial
+// strokes, rather than assumed evenly spaced. N2 remains byte-for-byte on
+// its user-accepted 45/90/135/... calibration.
+const markedAngles={
+ n1:[46,89,134,180,226,274,320],
+ egt:[50,88,133,179,226,275,319],
+ n2:[45,90,135,180,225,270,315],
+ fuelFlow:[46,89,134,180,226,274,320]
+};
 for(const [signal,{unit,maximum,sample}] of Object.entries(instrumentScale)){
  for(const engine of ['engine1','engine2']){
   const spec=specs.find(s=>s.engine===engine&&s.signal===signal);
   assert.ok(spec,'Missing calibrated gauge '+signal+'/'+engine);
   assert.equal(spec.max,maximum,signal+' must cover 12 printed scale units');
+  const angles=markedAngles[signal];
+  assert.deepEqual(JSON.parse(JSON.stringify(api.getDialCalibration()[signal].photoTickAngles)),angles);
   for(const printed of [0,2,4,6,8,10,12]){
    const actual=api.getAngle(engine,signal,printed*unit);
-   const expected=45+printed*22.5;
+   const expected=angles[printed/2];
    assert.ok(Math.abs(actual-expected)<1e-9,
-    signal+' '+engine+' printed tick '+printed+' maps to '+expected+'°, got '+actual+'°');
+    signal+' '+engine+' printed radial tick '+printed+' must match the source-photo centre');
   }
-  assert.ok(Math.abs(api.getAngle(engine,signal,sample)-
-    (45+(sample/unit)*22.5))<1e-9,
-   signal+' numerical ECU reading must match photographic analog scale');
-  assert.equal(api.getAngle(engine,signal,maximum+500),315,
-   'Over-range values must park at marked upper stop');
+  const unitMark=sample/unit,idx=Math.min(5,Math.floor(unitMark/2));
+  const expected=angles[idx]+(angles[idx+1]-angles[idx])*(unitMark/2-idx);
+  assert.ok(Math.abs(api.getAngle(engine,signal,sample)-expected)<1e-9,
+   signal+' same ECU value must interpolate between photographed tick centres');
+  assert.equal(api.getAngle(engine,signal,maximum+500),angles[6],
+   'Over-range values must park at last marked physical tick');
  }
 }
-assert.ok(Math.abs(api.getAngle('engine1','egt',504)-158.4)<1e-9,
- '504°C must indicate 5.04 on the 0..12 x100 EGT scale');
+assert.ok(Math.abs(api.getAngle('engine1','egt',504)-156.92)<1e-9,
+ '504°C must indicate 5.04 on the photo-calibrated EGT scale');
+// Owner's accepted N2 rotation, including intermediate values, is preserved.
+assert.ok(Math.abs(api.getAngle('engine1','n2',71.4)-(45+7.14*22.5))<1e-9,
+ 'Accepted N2 calibration must remain unchanged');
 assert.equal(new Set(specs.map(s=>s.id)).size,16);
 assert.deepEqual(JSON.parse(JSON.stringify(specs.map(s=>[s.cx,s.cy]))),[
  [427,427],[600,427],[427,596],[600,596],
