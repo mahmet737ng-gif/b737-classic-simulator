@@ -23,11 +23,14 @@
  // from the independent needle pivots. These slots are ABOVE each dial label
  // and LEFT of the pointer tip, matching the owner's marked red rectangles.
  // ENGINE 1 / ENGINE 2 coordinates; EIS and oil quantity are not re-registered.
+ // Owner-marked upper dial window: the same offset for every physical shaft,
+ // at the gap between the 12 and 0 dial markers. No EIS coordinates change.
+ // Needle pivot -> aperture center: (-3,-44) in the native photo layout.
  const CONVENTIONAL_APERTURES=Object.freeze({
-  n1:Object.freeze([[393,401],[566,401]]),
-  egt:Object.freeze([[393,540],[566,540]]),
-  n2:Object.freeze([[391,691],[566,691]]),
-  fuelFlow:Object.freeze([[392,850],[566,850]])
+  n1:Object.freeze([[424,383],[597,383]]),
+  egt:Object.freeze([[424,552],[597,552]]),
+  n2:Object.freeze([[422,703],[597,703]]),
+  fuelFlow:Object.freeze([[423,866],[597,866]])
  });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];

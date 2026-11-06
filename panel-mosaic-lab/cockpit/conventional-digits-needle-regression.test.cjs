@@ -13,13 +13,13 @@ function readObject(name,source){
  return vm.runInNewContext(body.slice(0,end));
 }
 const windows=readObject('CONVENTIONAL_APERTURES',digits),centers=readObject('CENTERS',needleJs);
-const expected={n1:[[393,401],[566,401]],egt:[[393,540],[566,540]],
- n2:[[391,691],[566,691]],fuelFlow:[[392,850],[566,850]]};
-assert.deepEqual(JSON.parse(JSON.stringify(windows)),expected,'N1 fixed / three rows raised');
+const expected={n1:[[424,383],[597,383]],egt:[[424,552],[597,552]],
+ n2:[[422,703],[597,703]],fuelFlow:[[423,866],[597,866]]};
+assert.deepEqual(JSON.parse(JSON.stringify(windows)),expected,'All eight conventional drums fitted to one owner-marked upper window');
 for(const [signal,apertures] of Object.entries(expected))for(const [side,[x,y]] of apertures.entries()){
  const [needleX,needleY]=centers[signal][side];
- assert.ok(needleX-x>0&&needleX-x<42,signal+' horizontal photo slot');
- assert.ok(needleY-y>0&&needleY-y<70,signal+' vertical photo slot');
+ assert.equal(needleX-x,3,signal+' exact photo slot horizontal offset');
+ assert.equal(needleY-y,44,signal+' exact photo slot vertical offset');
 }
 assert.ok(digits.includes("specs.filter(s=>s.signal!=='oilQuantity').map"),
  'Conventional oil quantity must not add numeric overlay');
@@ -31,7 +31,7 @@ assert.ok(needleJs.includes("href:PHOTO"),'Keep N1 photographic needle asset for
 assert.match(needleCss,/z-index:8;/);
 assert.match(digitCss,/conventional-dot-readouts-v1[^\n]+z-index:6/);
 assert.ok(live.includes("group.style.visibility='visible'"),'Physical pointers must remain visible');
-for(const ver of ['EIS-CONV-DRUM-0008-CONV-UPPER-NEEDLE','EIS-CONV-DRUM-0008-CONV-LAYER',
+for(const ver of ['EIS-CONV-DRUM-0009-OWNER-12-0-UNIFORM','EIS-CONV-DRUM-0008-CONV-LAYER',
 'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
  assert.ok(html.includes(ver),'Cached module missing revision '+ver);
 console.log('PASS: eight photo readouts, all needles front, no oil digital Conventional, unchanged EIS.');
