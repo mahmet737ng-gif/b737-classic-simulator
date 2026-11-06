@@ -26,9 +26,9 @@
    button=document.createElement('button');button.id=ID;button.type='button';
    button.textContent='GROUND POWER';
   }
-  const bat=holder.querySelector('#liveBatteryRecharge');
-  if(bat&&button.previousElementSibling!==bat)bat.insertAdjacentElement('afterend',button);
-  else if(!button.isConnected)holder.append(button);
+  const cb=holder.querySelector('#cbPanelOpen');
+  if(cb&&button.previousElementSibling!==cb)cb.insertAdjacentElement('afterend',button);
+  else if(button.parentElement!==holder)holder.append(button);
   if(button.dataset.gpuBound!=='true'){
    button.addEventListener('click',()=>{opened=!opened;panel.hidden=!opened;
     button.setAttribute('aria-expanded',String(opened));render(true);});
