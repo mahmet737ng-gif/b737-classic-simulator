@@ -113,9 +113,16 @@ const convApi=convWindow.B737EISDotReadoutsV1;
 assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,10);
 // The photo reference places the mechanical numerals above/right of each shaft.
 const convN1Spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='n1_1');
-assert.equal(convN1Spec.cx,448);assert.equal(convN1Spec.cy,384);
+assert.equal(convN1Spec.cx,427,'N1 readout is horizontally registered with the owner-marked dial aperture');
+assert.equal(convN1Spec.cy,401,'N1 readout is below the former too-high placement');
 const convEGTSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='egt_2');
-assert.equal(convEGTSpec.cx,621);assert.equal(convEGTSpec.cy,553);
+assert.equal(convEGTSpec.cx,600);assert.equal(convEGTSpec.cy,570,'Apply identical offset to both engines and EGT');
+for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
+ const spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id===signal+'_'+engine);
+ const needle=convWindow.B737ConventionalNeedlesV1.getSpecs().find(s=>s.id===signal+'_'+engine);
+ assert.equal(spec.cx,needle.cx,signal+' engine '+engine+' is horizontally aligned to the owner dial');
+ assert.equal(spec.cy,needle.cy-26,signal+' engine '+engine+' uses the marked vertical offset');
+}
 const convOilSpec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1');
 assert.equal(convOilSpec.cx,803);assert.equal(convOilSpec.cy,750,'Do not shift the non-drum oil quantity window');
 const convN1Group=nodes(convHost).find(n=>n.attrs['data-conventional-readout']==='n1_1');
