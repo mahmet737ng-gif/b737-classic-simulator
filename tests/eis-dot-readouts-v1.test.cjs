@@ -113,10 +113,10 @@ const convApi=convWindow.B737EISDotReadoutsV1;
 assert.equal(nodes(convHost).filter(n=>'data-conventional-readout' in n.attrs).length,8,
  'Only N1, EGT, N2 and Fuel Flow have photographed Conventional numeric drums');
 const expected={
- n1:[[424,401],[597,401]],
- egt:[[424,555],[597,555]],
- n2:[[422,706],[597,706]],
- fuelFlow:[[423,869],[597,869]]
+ n1:[[427,385],[600,385]],
+ egt:[[427,555],[600,555]],
+ n2:[[425,706],[600,706]],
+ fuelFlow:[[426,869],[600,869]]
 };
 for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  const spec=convApi.getSpecs('CONVENTIONAL').find(s=>s.id===signal+'_'+engine);
@@ -124,9 +124,9 @@ for(const signal of ['n1','egt','n2','fuelFlow'])for(const engine of [1,2]){
  const [photoX,photoY]=expected[signal][engine-1];
  assert.equal(spec.cx,photoX,signal+' engine '+engine+' X matches photographed aperture');
  assert.equal(spec.cy,photoY,signal+' engine '+engine+' Y matches photographed aperture');
- assert.equal(needle.cx-spec.cx,3,signal+' engine '+engine+' matches red box horizontal center');
- assert.equal(needle.cy-spec.cy,signal==='n1'?26:41,
-  signal+' engine '+engine+' stays between the 0/12 marks and above the caption');
+ assert.equal(needle.cx-spec.cx,0,signal+' engine '+engine+' centers rectangle over shaft');
+ assert.equal(needle.cy-spec.cy,signal==='n1'?42:41,
+  signal+' engine '+engine+' places number in 0–12 gap above label');
 }
 assert.equal(convApi.getSpecs('CONVENTIONAL').find(s=>s.id==='oilQuantity_1'),undefined,
  'Conventional oil quantity is an analog-only dial');
@@ -136,6 +136,8 @@ for(const plate of photoBackplates){
  assert.equal(plate.tag,'rect');
  assert.equal(plate.attrs.fill,'#343738');
  assert.equal(+plate.attrs['fill-opacity'],1,'Opaque rectangle must remain visible on dark dial');
+ assert.equal(+plate.attrs.x,-3);assert.equal(+plate.attrs.y,-5);
+ assert.equal(+plate.attrs.height,31,'Full rectangular black face must cover the drum viewport');
  const id=plate.attrs['data-conventional-backplate'];
  const caption=nodes(convHost).find(n=>n.attrs['data-conventional-readout']===id);
  assert.equal(plate.attrs.transform,caption.attrs.transform,

@@ -29,11 +29,15 @@
  // upward registration because their legends sit lower than the N1 artwork.
  // All group transforms and their background rectangles use the same frame;
  // the extra upper-row offset prevents overlap with EGT / N2 / FF labels.
+ // Pixel centres measured in the owner's original 1463x1075 instrument
+ // photograph. The RED target window is aligned with each mechanical shaft
+ // horizontally, 41–42 native pixels above it, between the 0 and 12 marks.
+ // Do not alter N2's needle shape, axis, tick scale or motion.
  const CONVENTIONAL_APERTURES=Object.freeze({
-  n1:Object.freeze([[424,401],[597,401]]),
-  egt:Object.freeze([[424,555],[597,555]]),
-  n2:Object.freeze([[422,706],[597,706]]),
-  fuelFlow:Object.freeze([[423,869],[597,869]])
+  n1:Object.freeze([[427,385],[600,385]]),
+  egt:Object.freeze([[427,555],[600,555]]),
+  n2:Object.freeze([[425,706],[600,706]]),
+  fuelFlow:Object.freeze([[426,869],[600,869]])
  });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];
@@ -67,9 +71,11 @@
    // The older group-local plate was sometimes masked by the rotating-drum
    // clip, leaving N2 and EGT without the same dark face as N1.
    if(variant==='CONVENTIONAL'){
+    // Full opaque aperture painted as an unmasked sibling under the glyphs.
+    // Previously the face was only 22 units tall while the rotating number
+    // window was 31 units tall. The leaked area showed dial lettering.
     element(svg,'rect',{'data-conventional-backplate':spec.id,
-     transform:photoTransform,x:-2,y:font.style.bodyTop,
-     width:width+4,height:font.style.bodyHeight,
+     transform:photoTransform,x:-3,y:-5,width:width+6,height:31,
      fill:'#343738','fill-opacity':'1','aria-hidden':'true'});
    }
    const group=element(svg,'g',{[variant==='EIS'?'data-eis-readout':'data-conventional-readout']:spec.id,role:'img'});

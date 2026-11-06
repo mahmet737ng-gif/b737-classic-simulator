@@ -13,14 +13,14 @@ function readObject(name,source){
  return vm.runInNewContext(body.slice(0,end));
 }
 const windows=readObject('CONVENTIONAL_APERTURES',digits),centers=readObject('CENTERS',needleJs);
-const expected={n1:[[424,401],[597,401]],egt:[[424,555],[597,555]],
- n2:[[422,706],[597,706]],fuelFlow:[[423,869],[597,869]]};
+const expected={n1:[[427,385],[600,385]],egt:[[427,555],[600,555]],
+ n2:[[425,706],[600,706]],fuelFlow:[[426,869],[600,869]]};
 assert.deepEqual(JSON.parse(JSON.stringify(windows)),expected,'All eight conventional drums fitted to one owner-marked upper window');
 for(const [signal,apertures] of Object.entries(expected))for(const [side,[x,y]] of apertures.entries()){
  const [needleX,needleY]=centers[signal][side];
- assert.equal(needleX-x,3,signal+' exact photo slot horizontal offset');
- assert.equal(needleY-y,signal==='n1'?26:41,
-  signal+' raised top-window photo slot offset');
+ assert.equal(needleX-x,0,signal+' photo window centred on the real shaft');
+ assert.equal(needleY-y,signal==='n1'?42:41,
+  signal+' pixel-matched window above the printed legend');
 }
 assert.ok(digits.includes("specs.filter(s=>s.signal!=='oilQuantity').map"),
  'Conventional oil quantity must not add numeric overlay');
@@ -38,7 +38,7 @@ assert.ok(digits.includes("x:lastX-5,y:-5,width:23,height:31"),
  'Conventional preview digits must not overflow the target photograph aperture');
 assert.match(digitCss,/conventional-dot-readouts-v1[^\n]+z-index:6/);
 assert.ok(live.includes("group.style.visibility='visible'"),'Physical pointers must remain visible');
-for(const ver of ['EIS-CONV-DRUM-0011-RAISED-DIGITS-ALL-FACES','EIS-CONV-DRUM-0008-CONV-LAYER',
+for(const ver of ['EIS-CONV-DRUM-0012-REAL-RED-RECT','EIS-CONV-DRUM-0008-CONV-LAYER',
 'CONV-FULL-NEEDLES-0002-ABOVE-DIGITS','CONV-DIAL-TICKS-0007-ALL-DIAL-MARKS-N2-LOCK','ENG-LIVE-0002-CONTROLS-FIX01&amp;drums=EIS-CONV-DRUM-0008'])
  assert.ok(html.includes(ver),'Cached module missing revision '+ver);
 console.log('PASS: eight photo readouts, all needles front, no oil digital Conventional, unchanged EIS.');

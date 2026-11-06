@@ -7,6 +7,8 @@ on:
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js'
       - 'tools/test-conventional-photo-registration.cjs'
+      - 'tools/test-conventional-digit-windows-browser.cjs'
+      - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'
       - '.github/workflows/conventional-lamp-photo-browser.yml'
   workflow_dispatch:
 permissions:
@@ -40,11 +42,14 @@ jobs:
             sleep 1
           done
           node tools/test-conventional-photo-registration.cjs
+          node tools/test-conventional-digit-windows-browser.cjs
       - name: Archive actual Chromium photograph after correction
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: conventional-photo-lamp-browser-evidence
-          path: /tmp/b737-conventional-gear-pixel-qa.png
+          path: |
+            /tmp/b737-conventional-gear-pixel-qa.png
+            /tmp/b737-conventional-numeric-qa.png
           if-no-files-found: ignore
           retention-days: 14
