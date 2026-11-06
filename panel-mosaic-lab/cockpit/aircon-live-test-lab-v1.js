@@ -410,7 +410,7 @@
  }
  root.addEventListener('message',onMessage,true);
  function ensureButton(){
-  const holder=document.querySelector('body > header.unified-minimal-header .header-settings');
+  const holder=document.getElementById('unifiedLabShortcuts');
   if(!holder)return;
   let btn=document.getElementById('airconLiveLabOpen');
   if(!btn){
@@ -418,9 +418,7 @@
    btn.textContent='AIR COND LAB';btn.title='FCOM Air Conditioning OH21 live failure test lab';
    btn.addEventListener('click',open);
   }
-  const neighbor=holder.querySelector('#groundPowerHeader');
-  if(neighbor)neighbor.insertAdjacentElement('afterend',btn);
-  else if(!btn.isConnected)holder.append(btn);
+  if(btn.parentElement!==holder)holder.append(btn);
  }
  function open(){
   if(!dialog)build();
