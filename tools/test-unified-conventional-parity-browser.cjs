@@ -103,7 +103,7 @@ const {chromium}=require('playwright');
    sync.intake(frame());
    await Promise.resolve();
    let previous=91.3;
-   for(let i=0;i<25;i++){
+   for(let i=0;i<50;i++){
     sync.advance(1/30);
     await Promise.resolve();
     const pointerValue=needles.getReadings().n1_1.value;
