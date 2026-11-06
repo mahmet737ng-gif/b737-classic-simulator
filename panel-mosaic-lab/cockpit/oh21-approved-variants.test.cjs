@@ -13,10 +13,10 @@ assert.equal(approved.layout,'dual-recirc');
 assert.equal(classic.layout,'single-recirc');
 assert.deepEqual(Object.keys(classic.controls).filter(x=>x.startsWith('recirc-fan')),['recirc-fan']);
 assert.ok(Object.keys(approved.controls).includes('recirc-fan-l'));
-assert.equal(approved.file,classic.file,'Exactly one owner-approved beige source photo');
-assert.ok(classic.retired_photo.file.includes('300500'),'Old blue photo recorded only as archive');
-assert.notEqual(classic.file,classic.retired_photo.file,'Retired blue source never active');
-assert.deepEqual([approved.width,approved.height],[classic.width,classic.height]);
+assert.notEqual(approved.file,classic.file,'Each aircraft family loads its dedicated photo');
+assert.equal(classic.file,'oh21-737-300500-owner-20261030.q100.webp');
+assert.equal(classic.height,1506);
+assert.equal(approved.height,1505);
 
 const photoScript=read('oh21-owner-photo-registration-v1.js');
 const embeddedCss=read('overhead-embed.css');
@@ -25,11 +25,13 @@ const assembly=JSON.parse(read('assembly.json'));
 assert.match(embeddedCss,/OH21 APPROVED-ONLY/);
 assert.match(embeddedCss,/atlas-piece\[data-key="OH21"\] > \.atlas-image-window\{\s*visibility:hidden!important/);
 assert.ok(photoScript.includes('NEUTRAL_BLANK')||photoScript.includes('neutral blank'));
-assert.ok(photoScript.includes('singleRecircAppearance'));
+assert.ok(!photoScript.includes('oh21-single-recirc-removal'));
+assert.ok(!embeddedCss.includes('oh21-single-recirc-removal'));
+assert.ok(!embeddedCss.includes('oh21-single-recirc-title'));
 assert.ok(photoScript.includes("detail?.file===asset.file"));
-assert.ok(stage.includes('oh21-owner-photo-registration-v1.js?v=OH21-APPROVED-ONLY-20261103'));
-assert.ok(stage.includes('overhead-embed.css?v=OH21-APPROVED-ONLY-20261103'));
-assert.ok(assembly.regions.some(r=>r.id==='overhead'&&r.embeddedUrl.includes('oh21=APPROVED-ONLY-20261103')));
+assert.ok(stage.includes('oh21-owner-photo-registration-v1.js?v=OH21-DEDICATED-20261106'));
+assert.ok(stage.includes('overhead-embed.css?v=OH21-DEDICATED-20261106'));
+assert.ok(assembly.regions.some(r=>r.id==='overhead'&&r.embeddedUrl.includes('oh21=DEDICATED-20261106')));
 new vm.Script(photoScript,{filename:'oh21-owner-photo-registration-v1.js'});
 
 class Node{
@@ -68,7 +70,7 @@ async function mount(initial='B737-300-500',failImage=false){
  };
  class Image extends Node{
   constructor(){super('img');created++;this.naturalWidth=approved.width;this.naturalHeight=approved.height}
-  set src(v){this._src=v;queueMicrotask(()=>failImage?this.onerror?.(new Error('unavailable')):this.onload?.())}
+  set src(v){this._src=v;const selected=v.includes(classic.file)?classic:approved;this.naturalWidth=selected.width;this.naturalHeight=selected.height;queueMicrotask(()=>failImage?this.onerror?.(new Error('unavailable')):this.onload?.())}
   get src(){return this._src}
  }
  const globals={
@@ -87,22 +89,24 @@ async function mount(initial='B737-300-500',failImage=false){
 (async()=>{
  const p=await mount();
  let state=p.win.B737OH21OwnerPhotoV1.status();
- assert.equal(state.active,'OH21_300500');assert.equal(state.asset,approved.file);
+ assert.equal(state.active,'OH21_300500');assert.equal(state.asset,classic.file);
  assert.equal(p.host.children.length,1,'One and only one photo node');
- assert.equal(p.host.children[0].children.length,3,'Approved photo plus 300/500 mask and label');
+ assert.equal(p.host.children[0].children.length,1,'Dedicated photo contains all single-fan markings');
  assert.equal(p.created(),1);
  for(const family of ['B737-400','B737-300-500','B737-400']){
   for(const handler of p.listeners.message||[])handler({origin:'https://example.org',source:p.win,
    data:{type:'b737:cockpit-command',action:'aircon-background',family}});
+  for(let i=0;i<12;i++)await Promise.resolve();
   state=p.win.B737OH21OwnerPhotoV1.status();
   assert.equal(state.active,family==='B737-400'?'OH21_400':'OH21_300500');
   assert.equal(p.host.children.length,1,'Never stack old or new photo layers');
-  const expected=family==='B737-400'?1:3;
+  assert.equal(state.asset,family==='B737-400'?approved.file:classic.file);
+  const expected=1;
   assert.equal(p.host.children[0].children.length,expected,'Only correct fan markings');
  }
- assert.equal(p.created(),1,'Family switching reuses the approved image');
+ assert.equal(p.created(),4,'Family switching loads the matching dedicated photo');
  const fail=await mount('B737-300-500',true);
  assert.equal(fail.win.B737OH21OwnerPhotoV1.status().failed,true);
  assert.equal(fail.host.children.length,0,'No forbidden old fallback after image error');
- console.log('PASS: exactly two live OH21 configurations; approved beige source only; 400 dual / 300-500 single RECIRC; atomic switch; retired blue blank-on-error.');
+ console.log('PASS: dedicated OH21 photos for both families; 400 dual / 300-500 single RECIRC; no cosmetic masks; correct family switching; blank-on-error.');
 })().catch(error=>{console.error(error);process.exitCode=1});

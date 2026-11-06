@@ -35,20 +35,9 @@ function relocateRect(node,[x,y,w,h],fit){if(!node)return;setstyle(node,{left:(f
 function singleRecircAppearance(){
  if(!layer)return;
  layer.dataset.variant=active;
- layer.querySelectorAll('.oh21-single-recirc-removal,.oh21-single-recirc-title').forEach(el=>el.remove());
- if(active!=='OH21_300500')return;
- // The legacy blue 300/500 panel has been retired. Use the approved beige
- // source and remove ONLY its additional left fan/lettering cosmetically.
- // The existing 300/500 single-fan physical control remains authoritative.
- const cover=document.createElement('span');cover.className='oh21-single-recirc-removal';
- const title=document.createElement('span');title.className='oh21-single-recirc-title';
- title.textContent='RECIRC FAN';
- cover.setAttribute('aria-hidden','true');title.setAttribute('aria-hidden','true');
- layer.append(cover,title);
+ // Each family has its own complete photograph, including its fan markings.
 }
 function place(){if(!active||!detail||!layer)return false;const f=fit();if(!f)return false;
- const recircTitle=layer.querySelector('.oh21-single-recirc-title');
- if(recircTitle)recircTitle.style.fontSize=(35*f.scale)+'px';
  // Atlas reassembly may detach a candidate after loading. Re-attach only this
  // optional photo layer, never modify any locked source image or atlas tile.
  if(layer.parentNode!==host)host.append(layer);
@@ -96,8 +85,7 @@ async function sync(){
  if(!asset||!['OH21_400','OH21_300500'].includes(next))
   throw Error('Only two current OH21 air-system variants are supported');
  if(next===active){place();return;}
- // Both supported layouts use the very same approved photographic source:
- // apply the 300/500 single-fan adaptation atomically with no image reload.
+ // Reuse a loaded image only when the selected asset really is identical.
  if(layer&&detail?.file===asset.file){
   active=next;detail=asset;failed=false;singleRecircAppearance();place();return;
  }
@@ -105,14 +93,14 @@ async function sync(){
  desired=next;loading=true;const img=new Image();img.decoding='async';
  try{
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;
-   img.src=target(asset)+'?v=OH21-APPROVED-20261103';});
+   img.src=target(asset)+'?v=OH21-DEDICATED-20261106';});
   if(img.naturalWidth!==asset.width||img.naturalHeight!==asset.height)
    throw Error('Approved OH21 photo dimensions differ from manifest');
   if(photoGroup(family())!==next)return;
   show(asset,img);
  }catch(error){
   failed=true;revert();
-  // Fail closed: no previously rejected blue photo may appear as a fallback.
+  // Fail closed instead of displaying the other aircraft family's photo.
   console.warn('Approved OH21 air-system photo unavailable; showing neutral blank',error);
   if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',
    kind:'oh21-photo-error',family:next,reason:'APPROVED_PHOTO_UNAVAILABLE'},location.origin);
@@ -136,6 +124,6 @@ async function boot(){try{const r=await fetch(MANIFEST,{cache:'no-store'});if(!r
   // not loading, so every existing owner control is eventually registered.
   setInterval(()=>{if(photoGroup(family())!==active){if(!failed)sync()}else place()},950);
  }catch(error){failed=true;console.warn('OH21 registry unavailable; neutral blank retained rather than rejected photo',error)}}
-window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer?.isConnected,failed,version:'OH21-APPROVED-ONLY-20261103',panel:detail?.layout||null}),refresh:()=>{failed=false;return sync()},restore:revert});
+window.B737OH21OwnerPhotoV1=Object.freeze({status:()=>({active,asset:detail?.file||null,loaded:!!layer?.isConnected,failed,version:'OH21-DEDICATED-20261106',panel:detail?.layout||null}),refresh:()=>{failed=false;return sync()},restore:revert});
 boot();
 })();
