@@ -25,7 +25,15 @@ test('unchanged feed does not repaint CDU; real feed changes and ready/reload ha
  w.B737FmcSystemsV1=require('../engine/ch11/fmc-systems-network-v1.js');
  w.document.getElementById=id=>frames[id]||null;w.document.querySelector=()=>null;
  const origin='https://example.test';vm.runInNewContext(fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/fmc-systems-bridge-v1.js'),'utf8'),{window:w,document:w.document,location:{origin},performance:{now:()=>1000},CustomEvent:Event});
- assert.equal(sent.length,2);
+ assert.equal(sent.length,0,'No bright CDU feed message may precede real Electrical V7 evidence');
+ const Electrical=require('../engine/systems/electrical-v7.js');
+ const coldDark=Electrical.initialState({coldDark:true});
+ w.B737ElectricalV7=Electrical;
+ w.B737ISNCockpitV1={getElectricalState:()=>coldDark};
+ w.dispatchEvent({type:'b737:electrical-owner-ready'});
+ assert.equal(sent.length,2,'One completed source observation paints each CDU exactly once');
+ assert.ok(sent.every(x=>x.feed==='ABSENT'),
+  'Both CDUs must receive ABSENT, never an intermediate UNKNOWN flash');
  for(let i=0;i<100;i++)w.dispatchEvent(new Event('b737:mcp-afds-state',{detail:{power:null,controls:{atArm:false},modes:{}}}));
  assert.equal(sent.length,2);
  w.B737FmcSystemsBridgeV1.setVerifiedFeed('CDU_CAPT','PRESENT');assert.equal(sent.length,3);assert.equal(sent[2].feed,'PRESENT');
