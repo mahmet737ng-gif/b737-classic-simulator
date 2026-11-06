@@ -204,6 +204,10 @@ const server=http.createServer((req,res)=>{
   const ordered=[...mobile.buttons].sort((a,b)=>a.left-b.left);
   assert.ok(ordered.every((b,i)=>i===0||b.left>=ordered[i-1].right-1),
    'Mobile top-bar buttons must not overlap');
+  // Earlier engine-control QA leaves Controls open; close before capturing the
+  // unobstructed header, then reopen to validate the battery meter.
+  if(await page.evaluate(()=>document.body.classList.contains('side-open')))
+   await page.locator('#inspectorToggle').click();
   await page.screenshot({path:path.join(out,'mobile-four-button-header.png')});
   await page.locator('#inspectorToggle').click();
   await page.locator('#batteryMeterControlSlot #liveBatteryReadout')
