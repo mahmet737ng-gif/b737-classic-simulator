@@ -6,10 +6,12 @@ const root=__dirname;
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 const html=read('index.html'),ui=read('ground-power-header-v1.js'),
  css=read('ground-power-header-v1.css'),battery=read('battery-recharge-header-v1.js');
-const posBat=html.indexOf('id="liveBatteryRecharge"');
-const posGPU=html.indexOf('id="groundPowerHeader"');
-assert.ok(posBat>0&&posGPU>posBat&&posGPU-posBat<500,
- 'New header control must follow the existing BAT RECHARGE button');
+const top=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/header>/)?.[1]||'';
+const buttons=[...top.matchAll(/<button\b[^>]*\bid="([^"]+)"/g)].map(m=>m[1]);
+assert.deepEqual(buttons,['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader'],
+ 'Only Controls, Settings, CB PNL and Ground Power belong in the top command bar');
+assert.ok(!top.includes('liveBatteryRecharge'),'Battery recharge now belongs in Controls, not header');
+assert.ok(html.includes('id="batteryRechargeControlSlot"'),'Battery charge control preserved in drawer');
 assert.ok(html.includes('ground-power-header-policy-v1.js?v=GPU-FCOM-0001'));
 assert.ok(html.includes('ground-power-header-v1.js?v=GPU-SPRING-0001'));
 assert.ok(html.includes('ground-power-header-v1.css?v=GPU-SPRING-0001'));
@@ -44,4 +46,4 @@ assert.ok(!ui.includes('data-gpu-action="ON"')&&!ui.includes('data-gpu-action="O
 assert.ok(!ui.includes('new B737ElectricalV7'), 'No parallel electrical backend');
 assert.ok(!battery.includes('groundPowerHeader'), 'BAT RECHARGE unaffected');
 new (require('node:vm').Script)(ui,{filename:'ground-power-header-v1.js'});
-console.log('PASS: header GPU beside battery, FCOM cable and contactor separation, single ECU and real status checks.');
+console.log('PASS: header 4 controls only, GPU FCOM contactor separation, single ECU and real status checks.');
