@@ -24,10 +24,11 @@
   return specs.map(s=>{
    const point=registered.find(g=>g.engine===s.engine&&g.signal===(s.signal==='oilQuantity'?'oilQty':s.signal));
    if(!point)throw Error('Conventional dial registration missing: '+s.id);
-   // The real Classic mechanical-dial numerals sit in the upper-right quadrant,
-   // not beneath the shaft. Leave the separate oil-quantity window unchanged.
+   // Align the mechanical-dial readout with the owner's marked physical
+   // aperture: left of the pointer tip and just above the N1/EGT/N2 legend.
+   // Keep the oil-quantity window on its independently registered position.
    const isMechanicalDrum=s.signal!=='oilQuantity';
-   return {...s,cx:point.cx+(isMechanicalDrum?21:0),cy:point.cy+(isMechanicalDrum?-43:2),scale:isMechanicalDrum?.8:.78,
+   return {...s,cx:point.cx,cy:point.cy+(isMechanicalDrum?-26:2),scale:isMechanicalDrum?.8:.78,
     ...(s.signal==='oilQuantity'?{decimals:2,divisor:20,unit:'USgal',template:'0.00',integerDigits:1}:{})};
   });
  }
