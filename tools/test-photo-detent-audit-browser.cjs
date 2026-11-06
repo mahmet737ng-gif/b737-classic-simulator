@@ -80,6 +80,44 @@ const {chromium}=require('playwright');
   assert.equal(report.auditOK,true);
   assert.equal(report.results.length,16);
   assert.equal(report.failureCount,0,'Rendered engine needle/digital audit failed: '+JSON.stringify(report.failures));
+  // After the stress loop, move all four digital gauges to a known stable
+  // value. A DOM data-value may update before the mechanical digit wheels
+  // finish rolling, so verify actual visible tape cells at REST.
+  await page.evaluate(()=>{
+   for(const engine of ['engine1','engine2'])for(const [signal,value] of
+    Object.entries({n1:60,egt:500,n2:60,fuelFlow:1230})){
+     window.B737ConventionalNeedlesV1.setReading(engine,signal,value,'ENGINE_INDICATION_BACKEND_V2');
+     window.B737EISDotReadoutsV1.setReading(engine,signal,value,'ENGINE_INDICATION_BACKEND_V2');
+    }
+  });
+  await page.waitForFunction(()=>{
+   const states=window.B737EISDotReadoutsV1?.getMotion('CONVENTIONAL');
+   return states&&Object.values(states).length===8&&
+    Object.values(states).every(slots=>slots.every(s=>!s||s.moving===false));
+  },null,{timeout:40000});
+  const settled=await page.evaluate(()=>{
+   const found=[];
+   for(const engine of [1,2])for(const [signal,expected] of
+    Object.entries({n1:'60.0',egt:'500',n2:'60.0',fuelFlow:'1.23'})){
+     const id=signal+'_'+engine;
+     const group=document.querySelector('[data-conventional-readout="'+id+'"]');
+     const visual=group?[...group.querySelectorAll('[data-eis-digit-tape]')]
+      .filter(t=>t.getAttribute('visibility')==='visible').length:0;
+     const pointer=document.querySelector('[data-needle-pivot="'+id+'"]');
+     found.push({id,actual:group?.dataset.value,expected,visibleTapes:visual,
+      needle:!!pointer,rect:group?.getBoundingClientRect()?.width||0});
+   }
+   return found;
+  });
+  for(const item of settled){
+   assert.equal(item.actual,item.expected,item.id+' photo digits not stable at indicated value');
+   assert.ok(item.visibleTapes>0,item.id+' no visible rolling dots after wheels settle');
+   assert.ok(item.needle,item.id+' no photographed needle on same value');
+   assert.ok(item.rect>0,item.id+' numeric display has zero browser width');
+  }
+  console.log('PHOTO_DETENT_SETTLED_DIGITS_PASS',JSON.stringify(settled));
   await page.screenshot({path:'/tmp/b737-photo-detents-random-qa.png',timeout:20000});
+  await page.locator('.conventional-engine-photo-wrap-v1').screenshot({
+   path:'/tmp/b737-photo-detents-closeup-qa.png',timeout:20000});
  }finally{await page.close();await browser.close();}
 })().catch(err=>{console.error('PHOTO_DETENT_BROWSER_AUDIT_FAIL',err.stack||err);process.exitCode=1;});
