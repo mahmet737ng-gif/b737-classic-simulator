@@ -32,14 +32,23 @@ const pending=k=>reasons(k).some(r=>immediate(r)&&!acknowledged.has(token(k,r.id
 const anyCaution=()=>[...liveReasons.keys()].some(pending);
 const anyImmediate=()=>[...liveReasons.keys()].some(k=>reasons(k).some(immediate));
 const isActive=k=>reasons(k).length>0;
-function effective(k){
- if(visualTest)return true; // instructor visual-only ALL LIGHTS ON test
+// Every output mode (live alert, RECALL, PTT and instructor ALL LIGHTS ON)
+// shares the physical CB circuit gate. A test command cannot bypass a pulled
+// MASTER CAUTION ANTI-ICE/FUEL lamp CB and cannot erase the underlying faults.
+function annunciatorCircuitClosed(k){
  const cb=window.B737UnifiedCB;
- const legend=k.slice(k.indexOf('.')+1),circuit={'AIR COND':'airCond','ANTI ICE':'antiIce','FUEL':'fuel'}[legend];
+ const legend=k.slice(k.indexOf('.')+1);
+ const circuit={'AIR COND':'airCond','ANTI ICE':'antiIce','FUEL':'fuel'}[legend];
  if(circuit&&cb?.available('warning.'+circuit)===false)return false;
- if(legend==='MASTER CAUTION'&&(cb?.available('warning.masterCaution')===false||cb?.available('warning.masterCautionControl')===false))return false;
+ if(legend==='MASTER CAUTION'&&(cb?.available('warning.masterCaution')===false||
+  cb?.available('warning.masterCautionControl')===false))return false;
  if(legend==='FIRE WARN'&&cb?.available('warning.masterFireControl')===false)return false;
- if(annunciatorPower===false)return false; // no real light on a cold-and-dark DC system
+ return true;
+}
+function effective(k){
+ if(!annunciatorCircuitClosed(k))return false;
+ if(annunciatorPower===false)return false; // No annunciator light on a dead DC supply.
+ if(visualTest)return true; // Visual test affects only powered, CB-protected lamps.
  if(isSystem(k))return recallHeld||recallShown.has(k)||pending(k);
  if(k.endsWith('.MASTER CAUTION'))return manual.get(k)===true||recallMaster||anyCaution();
  return (fireWarningActive&&!fireWarningAcknowledged)||manual.get(k)===true;
