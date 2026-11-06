@@ -72,17 +72,33 @@
    // Owner18 switches report the exact "STBY RUD" detent.
    const standbyRudderCommand=['flight-control-a','flight-control-b'].some(id=>['STBY RUD','STBY'].includes(String(control(id)||'').trim().toUpperCase()));
    const standbyCommand=standbyRudderCommand||control('alternate-flaps-master')==='arm';
-   const hyd=id=>isOn(id)&&!fault(id)&&(id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
+   // Use the same circuit authority as Unified fuel/hydraulic engines; no second
+   // breaker state, no change to physical switch detents or instructor faults.
+   const cb=globalThis.B737UnifiedCB;
+   const fuelCircuits={
+    'fuel-center-l':'fuel.centerLeftPump','fuel-center-r':'fuel.centerRightPump',
+    'fuel-1-fwd':'fuel.main1FwdPump','fuel-1-aft':'fuel.main1AftPump',
+    'fuel-2-fwd':'fuel.main2FwdPump','fuel-2-aft':'fuel.main2AftPump'
+   };
+   const circuitAvailable=name=>!name||cb?.available(name)!==false;
+   const hydCircuit={'hyd-elec-2':'hyd.electricPumpA','hyd-elec-1':'hyd.electricPumpB'};
+   const hyd=id=>isOn(id)&&!fault(id)&&circuitAvailable(hydCircuit[id])&&
+    (id.includes('eng-')?context['engine'+id.at(-1)+'Running']:true);
+   // Separate STBY HYD PUMP NORMAL/ALTN CBs are redundant; a single pulled
+   // breaker does not imply loss of the entire standby hydraulic pump.
+   const standbyFeed=circuitAvailable('hyd.standbyPumpNormal')||
+    circuitAvailable('hyd.standbyPumpAlternate');
+   const standbyEffective=standbyFeed&&circuitAvailable('flight.standbyRudderControl')&&!context.standbyPumpFailed;
    const pressureA=hyd('hyd-eng-1')||hyd('hyd-elec-2'),pressureB=hyd('hyd-eng-2')||hyd('hyd-elec-1');
    const available=context.panelPower&&(aircraftElectricalPower===null?(isOn('battery-master')||Object.values(e.source).some(Boolean)||control('standby-power')==='bat'):aircraftElectricalPower);
    for(const c of reg.lights){let active=false;const id=c.controls[0],v=control(id);
     switch(c.rule){
      case 'sensor':active=fault(c.sensor);break;
-     case 'fuel-pressure':active=(c.id.includes('center')?isOn(id):true)&&(!isOn(id)||!context.fuelAvailable||fault(c.id)||now-(switchTime[id]??-1000)<720);break;
+     case 'fuel-pressure':active=(c.id.includes('center')?isOn(id):true)&&(!isOn(id)||!circuitAvailable(fuelCircuits[id])||!context.fuelAvailable||fault(c.id)||now-(switchTime[id]??-1000)<720);break;
      case 'hyd-pressure':active=!hyd(id);break;
      case 'flight-pressure':active=(v!==undefined&&v!=='on')||!(c.id.endsWith('a')?pressureA:pressureB)||fault(c.id);break;
-     case 'standby-pressure':active=standbyCommand&&(context.standbyPumpFailed||fault(c.id));break;
-     case 'standby-rudder':active=standbyRudderCommand&&!context.standbyPumpFailed&&!fault('stby-pressure');break;
+     case 'standby-pressure':active=standbyCommand&&(!standbyEffective||fault(c.id));break;
+     case 'standby-rudder':active=standbyRudderCommand&&standbyEffective&&!fault('stby-pressure');break;
      case 'yaw':active=!isOn(id)||fault(c.id);break;
      case 'emergency':active=v==='OFF';break;
      case 'drive-pressure':{const side=/^drive-(\d+)-/.exec(c.id)?.[1];active=side?(!context['engine'+side+'Running']||v==='disconnect'||fault(c.id)):fault(c.id);break;}
