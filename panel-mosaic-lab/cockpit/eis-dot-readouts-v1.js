@@ -19,16 +19,29 @@
  function element(parent,tag,attrs={}){const node=document.createElementNS(ns,tag);
   for(const [k,v]of Object.entries(attrs))node.setAttribute(k,String(v));parent.append(node);return node;}
  const glyphId=(ch,variant='EIS')=>(variant==='EIS'?'eis':'conv')+'-dot-glyph-'+(ch==='.'?'decimal':ch==='-'?'dash':ch);
+ // Photo-native readout apertures (1463 × 1075), calibrated separately
+ // from the independent needle pivots. These slots are ABOVE each dial label
+ // and LEFT of the pointer tip, matching the owner's marked red rectangles.
+ // ENGINE 1 / ENGINE 2 coordinates; EIS and oil quantity are not re-registered.
+ const CONVENTIONAL_APERTURES=Object.freeze({
+  n1:Object.freeze([[393,401],[566,401]]),
+  egt:Object.freeze([[393,570],[566,570]]),
+  n2:Object.freeze([[391,721],[566,721]]),
+  fuelFlow:Object.freeze([[392,884],[566,884]])
+ });
  function conventionalSpecs(){
   const registered=window.B737ConventionalNeedlesV1?.getSpecs?.();if(!registered)return [];
   return specs.map(s=>{
    const point=registered.find(g=>g.engine===s.engine&&g.signal===(s.signal==='oilQuantity'?'oilQty':s.signal));
    if(!point)throw Error('Conventional dial registration missing: '+s.id);
-   // Align the mechanical-dial readout with the owner's marked physical
-   // aperture: left of the pointer tip and just above the N1/EGT/N2 legend.
-   // Keep the oil-quantity window on its independently registered position.
+   // Fixed photo slots never inherit a needle's shaft translation.
+   // Oil quantity remains on its previously approved independent position.
    const isMechanicalDrum=s.signal!=='oilQuantity';
-   return {...s,cx:point.cx,cy:point.cy+(isMechanicalDrum?-26:2),scale:isMechanicalDrum?.8:.78,
+   const side=s.engine==='engine1'?0:1;
+   const aperture=CONVENTIONAL_APERTURES[s.signal]?.[side];
+   if(isMechanicalDrum&&!aperture)throw Error('Missing calibrated Conventional aperture '+s.id);
+   return {...s,cx:isMechanicalDrum?aperture[0]:point.cx,
+    cy:isMechanicalDrum?aperture[1]:point.cy+2,scale:isMechanicalDrum?.8:.78,
     ...(s.signal==='oilQuantity'?{decimals:2,divisor:20,unit:'USgal',template:'0.00',integerDigits:1}:{})};
   });
  }
