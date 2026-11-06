@@ -7,13 +7,15 @@
  const model=window.B737FmcSystemsV1;
  if(!model)throw Error('B737FmcSystemsV1 failed to load');
  let network=model.createState(),lastRouteSig='',lastMcpEvidence='INITIAL',lastPower='UNKNOWN';
+ let electricalObserved=false; // no CDU bright screen before first real ECU supply evidence
  const seatState=new Map(),lastCduPower=new Map();let latestAfds=null;const now=()=>performance.now();
  const emit=forceSeat=>{
   for(const seat of ['CAPT','FO']){
    const frame=document.getElementById('cduFrame'+seat);
    const unit='CDU_'+seat;
    const feed=network.power[unit].feed,previous=lastCduPower.get(seat);
-   if(frame?.contentWindow&&(forceSeat===seat||previous?.frame!==frame.contentWindow||previous?.feed!==feed)){
+   if(electricalObserved&&frame?.contentWindow&&
+    (forceSeat===seat||previous?.frame!==frame.contentWindow||previous?.feed!==feed)){
     frame.contentWindow.postMessage({type:'b737:fmc-cdu-power',seat,feed,reason:feed==='ABSENT'?'CONFIRMED_POWER_LOSS':'FEED_NOT_CONFIRMED'},location.origin);
     lastCduPower.set(seat,{frame:frame.contentWindow,feed});
    }
@@ -79,13 +81,29 @@
   updateIRS();
  }
  function refreshGlobalElectrical(){
-  const snap=window.B737ISNCockpitV1?.getState?.()?.state?.electrical;
+  // Ask the ONE live Electrical V7 owner, not a cached CDU or trainer screen.
+  // The bridge snapshot is fallback only (e.g. an older isolated benchmark).
+  const owner=window.B737ISNCockpitV1;
+  const electrical=window.B737ElectricalV7;
+  let snap=null;
+  try{
+   const source=owner?.getElectricalState?.();
+   if(source?.schema==='b737-electrical/7'&&electrical?.evaluate)
+    snap=electrical.evaluate(source);
+  }catch(error){console.warn('FMC electrical ECU snapshot:',error);}
+  if(snap?.schema!=='B737_ELECTRICAL_V7_RESULT')
+   snap=owner?.getState?.()?.state?.electrical;
   if(snap?.schema!=='B737_ELECTRICAL_V7_RESULT')return;
   const evaluated=model.globalPower(snap);
-  if(evaluated===lastPower)return;
+  const first=!electricalObserved;
+  electricalObserved=true;
+  if(evaluated===lastPower){
+   if(first)emit(); // resolved power evidence must reach newly loaded CDU
+   return;
+  }
   lastPower=evaluated;
-  // Global loss is proven only when every bus in Electrical V7 is false.
-  // Restoring upstream power does NOT certify individual equipment feeds.
+  // A powered hot-battery/charger alone is NOT evidence of CDU supply.
+  // Restoration of main buses is still UNKNOWN until its own feeder is verified.
   for(const unit of model.UNIT_IDS){
    const target=evaluated==='ABSENT'?'ABSENT':'UNKNOWN';
    if(network.power[unit].feed!==target)
@@ -105,7 +123,8 @@
  // Source changes, BAT switch transitions and GPU/APU generator selection
  // must reach the embedded CDU even if no engine-start indication changes.
  for(const type of ['b737:electrical-network','b737:electrical-v7-state',
-  'b737:unified-ecu-observation','b737:electrical-owner-ready'])
+  'b737:unified-ecu-observation','b737:electrical-owner-ready',
+  'b737:battery-live','b737:cockpit-overhead'])
   window.addEventListener(type,refreshGlobalElectrical);
  window.addEventListener('b737:mcp-afds-state',e=>{latestAfds=e.detail||null;emit()}); // A/T ARM/modes are observed, never commanded
  window.addEventListener('b737:irs-trainer-state',updateIRS);
@@ -113,6 +132,8 @@
  if(document.readyState!=='loading'){emit();refreshGlobalElectrical();updateIRS();}
  window.B737FmcSystemsBridgeV1=Object.freeze({
   getState:()=>JSON.parse(JSON.stringify(network)),
+  getPowerAudit:()=>({observed:electricalObserved,globalPower:lastPower,
+   feeds:Object.fromEntries(model.UNIT_IDS.map(id=>[id,network.power[id].feed]))}),
   getCBPhotoCandidates:()=>model.BREAKERS.map(x=>({...x})),
   refresh:()=>{refreshGlobalElectrical();updateIRS();return network},
   setVerifiedFeed,confirmRouteLegs(verified,discontinuitiesUnknown){
