@@ -75,7 +75,31 @@
   ['LIGHTING',/light|lamp|flood/i],
   ['COMMUNICATIONS',/audio|interphone|radio|mic|speaker/i]
  ];
- function family(item){for(const [id,pattern]of FAMILY)if(pattern.test(item))return id;return 'OTHER';}
+ // Specific ATA system owners: the source index has no miscellaneous OTHER.
+ const SPECIALIZED_FAMILY=[
+  ['AVIONICS',/^(?:ADS Computer|DAA ?[12]|Instrument Transfer|SG (?:Captain|FO)|FCC ?-?A\s*\/\s*B)/i],
+  ['DOORS_AND_STAIRS',/^Air Stair(?:\b|\s|\s*-)/i],
+  ['FLIGHT_INSTRUMENTS',/^(?:Alpha Vane AoA|Altimeter |Clock(?: \(| Display)|Mach\s*ASI|Pitot Static Indicator|Pilot Static Indicator|RDMI|Standby Horizon|TAS\s*-|VSI )/i],
+  ['WARNING_SYSTEMS',/^(?:Aural Warnings|Mach Warning|Master Caution Annunciation|Stall Warning)/i],
+  ['FLIGHT_CONTROLS',/^(?:Auto Slat|Flap Load Limiter|Flap SOV|FCC\s*-?A)/i],
+  ['CABIN_SERVICES',/^(?:Cabin Service Outlets|Fasten Belts|Galley\b|Passenger(?:s)?(?: -|\s) |Passengers Signs Control)/i],
+  ['WATER_WASTE_SYSTEM',/^(?:Drain mast|Lavatory |Water Quantity Indication)/i],
+  ['ELECTRICAL',/^(?:Engine [12] CSD Oil Temp Indication|INV (?:Control|Voltage Indication)|STBY PWR)/i],
+  ['EQUIPMENT_COOLING',/^Equip\. Cooling/i],
+  ['COMMUNICATIONS',/^(?:lnterphone|Interphone|Public Address Amplifier)/i],
+  ['AIR_CONDITIONING',/^(?:Ram Door|Re-circulation Fan|Temp\. Control|Wing Body Overheat)/i],
+  ['WINDSHIELD_CLEARING',/^(?:Rain Repellent|Windshield Wiper)/i],
+  ['LANDING_GEAR',/^Nose Strut switch/i],
+  ['OXYGEN',/^Oxygen System/i],
+  ['HYDRAULICS',/^PTU\/LG Bypass Valve/i],
+  ['ENGINE_CONTROL',/^(?:PMC ?[12]|Thrust Reverse(?: Control)?$)/i],
+  ['ENGINE_INDICATION',/^Thrust Mode Annunciation/i]
+ ];
+ function family(item){
+  for(const [id,pattern]of SPECIALIZED_FAMILY)if(pattern.test(item))return id;
+  for(const [id,pattern]of FAMILY)if(pattern.test(item))return id;
+  throw Error('MRG electrical item has no assigned aircraft system: '+item);
+ }
  function role(item){
   if(/indicat|display|monitor|gauge|meter|clock|warning|annunciat|light|lamp/i.test(item))return 'INDICATION';
   if(/valve|actuator|motor|pump|fan|heat|heater|wiper|trim/i.test(item))return 'ACTUATOR';
@@ -119,7 +143,7 @@
    generator1:'115VAC',generator2:'115VAC',main1:'115VAC',main2:'115VAC',
    transfer1:'115VAC',transfer2:'115VAC',
    dc1:'28VDC',dc2:'28VDC',battery:'28VDC',hotBattery:'28VDC',
-   switchedHotBattery:'28VDC',acStandby:'115VAC',dcStandby:'28VDC',groundService:'115VAC'
+   switchedHotBattery:'28VDC',groundService:'115VAC'
   }))add(name+'@'+voltage,voltage,raw[name]??null,[],raw[name]===null?'V7_BACKUP_UNRESOLVED':'FCOM_ELECTRICAL_V7');
   const ext=electricalState?.config;
   const extOn=ext?Boolean(ext.onGround&&ext.groundPowerAttached&&ext.groundPowerQualityGood):null;
@@ -135,13 +159,10 @@
   }
   add('groundService@28VAC','28VAC',raw.groundService??null,
    ['groundService@115VAC'],'28VAC_FUNCTIONAL_CONVERSION_PROXY');
-  add('standby@115VAC','115VAC',raw.acStandby??null,['acStandby@115VAC']);
-  add('standby@28VDC','28VDC',raw.dcStandby??null,['dcStandby@28VDC']);
-  // Canonical explicit names for the standby source variants.
-  add('acStandby@115VAC','115VAC',raw.acStandby??null,
-   [],'FCOM_STANDBY_SWITCH');
-  add('dcStandby@28VDC','28VDC',raw.dcStandby??null,
-   [],'FCOM_STANDBY_SWITCH');
+  // V7 uses acStandby/dcStandby as internal signals; each corresponds to
+  // ONE physically modelled standby bus, not a separate duplicate bus node.
+  add('standby@115VAC','115VAC',raw.acStandby??null,[],'FCOM_AC_STANDBY_BUS');
+  add('standby@28VDC','28VDC',raw.dcStandby??null,[],'FCOM_DC_STANDBY_BUS');
   return all;
  }
  function getBus(buses,source,voltage,{anyAvailable=false}={}){
