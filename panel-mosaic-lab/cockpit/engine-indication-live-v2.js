@@ -114,6 +114,42 @@
    if(Object.keys(patch).length)try{lights.setInputs(patch);}catch(err){error='Physical lamp bridge: '+err.message;}
   }
  }
+ // An instructor RUNNING preset does not automatically connect its GEN to the
+ // aircraft electrical buses. Tell the trainee WHY the photo needles / digits
+ // are parked, instead of suggesting that a functioning ECU is broken.
+ function showFeedDiagnostic(result=null){
+  const owner=$('#isnQuickEngineControls');if(!owner)return;
+  let node=$('#isnEngineInstrumentFeedsV1');
+  if(!node){
+   node=document.createElement('p');node.id='isnEngineInstrumentFeedsV1';
+   node.setAttribute('role','status');node.dir='ltr';
+   Object.assign(node.style,{fontSize:'11px',lineHeight:'1.5',padding:'8px',
+    border:'1px solid #45627a',borderRadius:'5px',overflowWrap:'anywhere'});
+   owner.append(node);
+  }
+  const b=electrical()?.bus||{},mark=v=>v===true?'ON':v===false?'OFF':'UNKNOWN';
+  const feeds='BAT BUS '+mark(b.battery)+' · DC STBY '+mark(b.dcStandby)+
+    ' · DC1 '+mark(b.dc1)+' · DC2 '+mark(b.dc2)+
+    ' · AC T1 '+mark(b.transfer1)+' · AC T2 '+mark(b.transfer2);
+  const parts=[];
+  for(const side of [1,2]){
+   const channels=result?.engines?.['engine'+side]?.indications;
+   if(!channels){parts.push('ENG'+side+' NO BACKEND DATA');continue;}
+   const failures=['n1','egt','n2','fuelFlow','oilPressure'].filter(p=>channels[p]?.status!=='VALID');
+   const unique=[...new Set(failures.map(p=>channels[p]?.status||'NO SENSOR'))];
+   parts.push('ENG'+side+' '+(failures.length?unique.join('/'):'INDICATORS LIVE'));
+  }
+  const withoutFeed=['battery','dcStandby','dc1','dc2','transfer1','transfer2']
+   .every(k=>b[k]===false);
+  const hint=withoutFeed?
+   ' · NO INSTRUMENT FEED: BAT ON and select real GEN/APU/GROUND power as applicable':
+   !db?' · TECHNICAL DB NOT LOADED':
+   error?' · BRIDGE ERROR: '+error:'';
+  const text='ENGINE INSTRUMENT POWER · '+feeds+' | '+parts.join(' | ')+hint;
+  if(node.textContent!==text)node.textContent=text;
+  node.dataset.feedFault=String(withoutFeed);
+  node.dataset.indicationReady=String(Boolean(result));
+ }
  function startReport(){
   if(!window.B737ClassicEngineStartLogicV2||!window.B737ISNCockpitV1)return null;
   try{return window.B737ClassicEngineStartLogicV2.project({
@@ -147,6 +183,7 @@
    resetFuelPending=false;
    prior=next;lastTime=now;lastRaw=live;current=next;events++;
    paint(next);
+   showFeedDiagnostic(next);
    // Start logic contains actual switch feedback; no duplicate start controller.
    if(events%3===0){
     window.dispatchEvent(new CustomEvent('b737:engine-indications-live-v2',{
@@ -290,7 +327,7 @@
    if(!res.ok)throw Error('Technical data HTTP '+res.status);
    const next=await res.json();api().validate(next);db=next;refresh();
    return true;
-  })().catch(ex=>{error=ex.message;console.error('Engine Technical DB:',ex);return false;});
+  })().catch(ex=>{error=ex.message;console.error('Engine Technical DB:',ex);showFeedDiagnostic();return false;});
   return loadPromise;
  }
  window.B737UnifiedEngineIndicationsV2=Object.freeze({
