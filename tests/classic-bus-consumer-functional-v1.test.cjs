@@ -24,7 +24,10 @@ assert.ok(cold.buses['standby@115VAC']&&cold.buses['standby@28VDC'],'Exactly the
 const eq300=active(E.initialState());
 assert.equal(find(eq300,'Temp. Control - aft cabin (400)').powerState,'NOT_INSTALLED');
 assert.equal(find(eq300,'Temp. Control Auto - left (300-500)').powerState,'NORMAL');
-assert.equal(find(eq300,'Rain Repellent - left (As installed)').powerState,'UNKNOWN');
+assert.equal(find(eq300,'Rain Repellent - left (As installed)').powerState,'NORMAL',
+ 'Known DC1 electrical power is blue even when installation is optional');
+assert.equal(find(eq300,'Rain Repellent - left (As installed)').installationStatus,'AS_INSTALLED_UNVERIFIED',
+ 'Whether the aircraft has the option stays an independent evidence field');
 const eq400=Core.project({index,electrical:E.evaluate(E.initialState()),
  electricalState:E.initialState(),aircraftModel:'737-400',pressurization:'DCPCS'});
 assert.equal(find(eq400,'Temp. Control - aft cabin (400)').powerState,'NORMAL');
