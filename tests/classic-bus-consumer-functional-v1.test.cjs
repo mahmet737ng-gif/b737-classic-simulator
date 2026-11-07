@@ -16,6 +16,8 @@ let s=E.initialState({coldDark:true}),cold=active(s);
 assert.equal(Object.keys(cold.consumers).length,340);
 assert.equal(Object.keys(cold.buses).length,26);
 assert.equal(cold.coverage.sourceRows,340);
+assert.equal(cold.coverage.logicalDevices,322,'Source rows aggregate into distinct electrical devices');
+assert.equal(Object.keys(cold.devices).length,322);
 assert.equal(cold.buses['main1@115VAC'].powered,false);
 assert.equal(cold.buses['hotBattery@28VDC'].powered,true);
 assert.equal(cold.buses['battery@28VDC'].powered,false);
@@ -47,6 +49,13 @@ assert.equal(Core.lookupPump('fuel.centerRightPump',E.evaluate(one)).powered,fal
 assert.equal(Core.lookupPump('hyd.electricPumpB',E.evaluate(one)).powered,false);
 assert.equal(Core.lookupPump('hyd.electricPumpA',E.evaluate(one)).powered,true);
 assert.equal(backfeed.systems.FUEL.state,'DEGRADED');
+assert.equal(backfeed.devices['Autothrottle'].topology,'ALL_REQUIRED');
+assert.equal(backfeed.devices['Autothrottle'].state,'OFF',
+ 'Autothrottle needs AC and DC electronic power');
+assert.equal(backfeed.devices['Window Heat Control - L1'].state,'OFF',
+ 'Window heat controller requires both AC main and DC control buses');
+assert.equal(backfeed.devices['EFIS Control Panel FO'].state,'NORMAL',
+ 'Duplicate source row from the same bus must not invent two distinct feeds');
 const isolated=E.apply(one,{type:'CONTROL',key:'busTransferAuto',value:false});
 const cut=active(isolated);
 assert.equal(Core.lookupPump('fuel.main1AftPump',E.evaluate(isolated)).powered,false);
