@@ -16,6 +16,7 @@
  let displayFaults={},sensorOverrides={engine1:{},engine2:{}},displayLimits={};
  let lastPaint=new Map(),lastEmitted=-1,events=0,labFrame=null;
  let eventPowerRegistered=false;
+  const conventionalPowerLossState=new Map();
  const electrical=()=>window.B737ElectricalV7?.evaluate(window.B737ISNCockpitV1?.getElectricalState?.());
  function frameFlag(id,status,active){
   const node=$(id);if(!node)return;
@@ -27,7 +28,24 @@
   if(!result)return;
   const sharedSync=mode==='CONVENTIONAL'?window.B737ConventionalIndicationSyncV1:null;
   // Consume the identical backend state for ALL photo pointers and numbers.
-  if(sharedSync)sharedSync.intake(result,{fuelMode});
+  if(sharedSync){
+   sharedSync.intake(result,{fuelMode});
+   // Only electrical power LOSS blanks the entire numeric counter.
+   // A missing sensor/invalid value has different failure presentation.
+   // No bus polling and no repeated DOM writes: update only on a change.
+   for(const side of [1,2]){
+    const id='engine'+side;
+    for(const signal of ['n1','egt','n2','fuelFlow']){
+     const lost=result.engines[id]?.indications?.[signal]?.status==='POWER_LOSS';
+     const key=signal+'_'+side;
+     if(conventionalPowerLossState.get(key)===lost)continue;
+     conventionalPowerLossState.set(key,lost);
+     window.B737EISDotReadoutsV1?.setConventionalPowerLoss?.(id,signal,lost);
+     if(signal==='n2')
+      window.B737ConventionalNeedlesV1?.setIndicationPowerLoss?.(id,signal,lost);
+    }
+   }
+  }
   for(const side of [1,2]){
    const id='engine'+side;
    for(const p of P){
