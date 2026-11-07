@@ -19,22 +19,25 @@ function electrical(){
  const result=provider.getState();
  const electrical=result?.state?.electrical;
  if(electrical?.schema!=="B737_ELECTRICAL_V7_RESULT")return;
- const fingerprint=JSON.stringify([electrical.revision,electrical.bus,window.B737UnifiedCB?.available('mcp.power')]);
+ const fingerprint=JSON.stringify([electrical.revision,electrical.bus,window.B737UnifiedCB?.available('mcp.power'),window.B737UnifiedCB?.available('mcp.course2')]);
  if(fingerprint===lastElectrical)return;
  lastElectrical=fingerprint;
  send({type:"ELECTRICAL",snapshot:electrical});
 }
 window.addEventListener('b737:cb-state-change',electrical);
+for(const name of ['b737:electrical-network','b737:electrical-v7-state','b737:electrical-owner-ready'])window.addEventListener(name,electrical);
 function statusLabel(out){
- if(out.power===false)return "MCP POWER OFF · proven global AC/DC loss";
- if(out.power===null)return "MCP POWER UNKNOWN · equipment feed not verified";
- return "MCP ON · instructor-observed training power (not verified wiring)";
+ const crs2=out.course2Power===true?"COURSE 2 ON":out.course2Power===false?"COURSE 2 OFF":"COURSE 2 UNKNOWN";
+ if(out.power===false)return "MCP DC1 OFF · "+crs2;
+ if(out.power===null)return "MCP DC1 UNKNOWN · "+crs2+" · training CB/bus map";
+ return (out.powerEvidence==="SIMULATED_DC1"?"MCP ON · DC BUS 1 (trainer wiring)":"MCP ON · instructor observation")+" · "+crs2;
 }
 function project(){
  const out=Core.output(state);
  const visual=window.B737McpVisualV3,hardware=window.B737McpHardwareV1;
  if(visual){
   visual.setPower?.(out.power);
+  visual.setCourse2Power?.(out.course2Power);
   if(!visualTest)visual.setLamps?.(out.lamps);
   for(const [id,v] of Object.entries(out.values)){
    if(visual.getState()?.[id]!==v)visual.setValue(id,v);
@@ -52,7 +55,8 @@ function project(){
  if(status)status.textContent=statusLabel(out);
  if(button){
   button.disabled=out.power===false;
-  button.textContent=out.power===true?"Clear observed MCP power":"Confirm observed MCP power · TRAINING";
+  button.textContent=out.powerEvidence==="SIMULATED_DC1"?"DC1 supplying MCP · automatic":out.power===true?"Clear observed MCP power":"Confirm observed MCP power · TRAINING";
+  button.disabled=out.powerEvidence==="SIMULATED_DC1"||out.power===false;
   button.setAttribute("aria-pressed",String(out.power===true));
  }
  if(modeReadout){
@@ -104,7 +108,7 @@ function decorate(){
  button.addEventListener("click",()=>{send({type:"OBSERVE_POWER",active:!state.observedPower,instructor:true})});
  modeReadout=document.createElement("p");modeReadout.className="mcp-afds-mode-status";
  const note=document.createElement("small");
- note.textContent="Source-gated: electrical bus presence does not certify MCP feeder. LNAV/VNAV/APP require actual evidence.";
+ note.textContent="Simulator wiring: DC BUS 1 / P18-1 D1 drives MCP; BAT BUS / P6-2 B2 drives COURSE 2. Aircraft WDM unverified. LNAV/VNAV/APP still need mode evidence.";
  section.append(heading,status,button,modeReadout,note);
  target.prepend(section);
  project();
