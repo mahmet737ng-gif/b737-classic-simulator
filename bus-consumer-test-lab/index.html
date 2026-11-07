@@ -29,7 +29,7 @@
   <span>این Test Lab از برق واقعی Unified جداست. خاموش‌کردن یک باس فقط وضعیت مصرف‌کننده‌ها را <strong>در آزمایشگاه</strong> تغییر می‌دهد و وضعیت موتور، سوییچ‌ها و CBهای کابین را دست‌کاری نمی‌کند. مبنا: MRG IV.6 (B737 Classic).</span>
 </section>
 <div class="metrics" aria-live="polite">
-  <div class="metric"><span>باس‌های برق‌دار</span><strong id="metricBusOn">—</strong><small>از ۲۶ گره</small></div>
+  <div class="metric"><span>باس‌های برق‌دار</span><strong id="metricBusOn">—</strong><small>از ۲۴ گره</small></div>
   <div class="metric"><span>برق‌دار <i class="dot dot-blue"></i></span><strong id="metricOn" class="txt-blue">—</strong><small>مصرف‌کننده</small></div>
   <div class="metric"><span>بی‌برق <i class="dot dot-red"></i></span><strong id="metricOff" class="txt-red">—</strong><small>مصرف‌کننده</small></div>
   <div class="metric"><span>محدود / نامشخص</span><strong id="metricOther" class="txt-amber">—</strong><small>شامل تجهیزات اختیاری</small></div>
@@ -38,7 +38,7 @@
   <aside class="bus-panel" aria-labelledby="busPanelTitle">
     <div class="panel-heading">
       <div><h2 id="busPanelTitle">باس‌های برق</h2><p>روی هر باس بزن تا ON / OFF شود.</p></div>
-      <span id="busTotal" class="pill">26 BUS NODES</span>
+      <span id="busTotal" class="pill">24 BUS NODES</span>
     </div>
     <div class="scenario-actions">
       <button type="button" id="allOn" class="scenario-btn" title="برق‌دار کردن همهٔ باس‌ها در آزمایشگاه">ALL ON</button>
@@ -51,7 +51,7 @@
       <option value="NOMINAL_V7">V7 normal sources — مدل پایهٔ ژنراتورها</option>
     </select>
     <label class="cascade-option"><input type="checkbox" id="cascadeSwitch"> محاسبهٔ قطعی باس‌های پایین‌دست (Cascade)</label>
-    <div class="bus-list" id="busList" aria-label="تمام ۲۶ باس قابل آزمایش">
+    <div class="bus-list" id="busList" aria-label="تمام ۲۴ باس قابل آزمایش">
       <p class="loading">در حال بارگذاری باس‌ها…</p>
     </div>
     <div class="small-note">115V AC، 28V AC و 28V DC جدا هستند؛ قطع باس بالادستی ممکن است تغذیهٔ وابسته را نیز قطع کند. Transfer Bus می‌تواند از منبع دیگر تغذیه شود.</div>
@@ -83,7 +83,7 @@
     </details>
     <div class="legend" aria-label="راهنمای رنگ">
       <span class="legend-item txt-blue"><i class="dot dot-blue"></i> BLUE = POWERED</span>
-      <span class="legend-item txt-red crossed"><i class="dot dot-red"></i> RED = NO POWER</span>
+      <span class="legend-item txt-red"><i class="dot dot-red"></i> RED = NO POWER</span>
       <span class="legend-item txt-amber"><i class="dot dot-amber"></i> AMBER = DEGRADED / UNKNOWN</span>
       <span class="legend-item txt-muted">GRAY = NOT INSTALLED</span>
     </div>
