@@ -4,6 +4,7 @@
 (function(){
 "use strict";
 const W=2172,H=433;
+const Rules=window.B737McpFCOMCh4NumericV1;
 /* MCP-PHOTO-0003: the original generated orthographic switch renders are
    mounted from a single 4-state photo sheet, not procedural CSS substitutes. */
 const attached=new WeakSet(), all=[];
@@ -23,7 +24,7 @@ function change(id,value,method){
  if(def.kind==="toggle")value=value==="ARM"||value==="ON"?(id==="AT_ARM"?"ARM":"ON"):"OFF";
  if(def.kind==="push")value=Boolean(value);
  if(def.kind==="wheel"){
-   value=Math.min(9900,Math.max(-9900,Math.round(Number(value)/100)*100));
+   value=Rules?.normalize("verticalSpeed",Number(value));
    if(!Number.isFinite(value))return;
    window.B737McpVisualV3?.setValue("verticalSpeed",value);
  }
@@ -56,16 +57,16 @@ function mountControl(parent,c){
   on(el,"click",e=>{e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","click")});
   on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","keyboard")}});
  }else if(c.kind==="wheel"){
-  el.setAttribute("aria-valuemin","-9900");el.setAttribute("aria-valuemax","9900");
+  el.setAttribute("aria-valuemin","-7900");el.setAttribute("aria-valuemax","6000");
   el.innerHTML='<span class="mcp-hw-wheel-axle"><span class="mcp-hw-wheel-tread"></span><span class="mcp-hw-wheel-glint"></span></span>';
   let last=null;
   on(el,"pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.stopPropagation();e.preventDefault();last=e.clientY;el.setPointerCapture(e.pointerId)});
-  on(el,"pointermove",e=>{if(last===null)return;e.stopPropagation();let steps=Math.trunc((last-e.clientY)/9);if(steps){change(c.id,state[c.id]+steps*100,"drag");last-=steps*9}});
+  on(el,"pointermove",e=>{if(last===null)return;e.stopPropagation();let steps=Math.trunc((last-e.clientY)/9);if(steps){change(c.id,Rules.step("verticalSpeed",state[c.id],steps),"drag");last-=steps*9}});
   on(el,"pointerup",e=>{last=null;e.stopPropagation()});
   on(el,"pointercancel",e=>{last=null;e.stopPropagation()});
   on(el,"lostpointercapture",()=>last=null);
-  on(el,"wheel",e=>{e.preventDefault();e.stopPropagation();change(c.id,state[c.id]+(e.deltaY<0?100:-100),"wheel")},{passive:false});
-  on(el,"keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();change(c.id,state[c.id]+(["ArrowUp","ArrowRight"].includes(e.key)?100:-100),"keyboard")}});
+  on(el,"wheel",e=>{e.preventDefault();e.stopPropagation();change(c.id,Rules.step("verticalSpeed",state[c.id],e.deltaY<0?1:-1),"wheel")},{passive:false});
+  on(el,"keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();change(c.id,Rules.step("verticalSpeed",state[c.id],["ArrowUp","ArrowRight"].includes(e.key)?1:-1),"keyboard")}});
  }else{
   el.innerHTML='<span class="mcp-hw-push-bezel"><span class="mcp-hw-push-cap"></span></span>';
   on(el,"click",e=>{e.stopPropagation();change(c.id,!state[c.id],"click")});
