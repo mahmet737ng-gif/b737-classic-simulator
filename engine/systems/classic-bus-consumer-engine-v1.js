@@ -316,7 +316,13 @@
   // Multi-feed authority owns the 17 exact MRG multi-source devices.
   // Single-source device behavior and legacy API shape remain unchanged.
   const devices={};
-  const topologyEngine=typeof globalThis!=='undefined'?globalThis.B737ClassicMultifeedV1:null;
+  // Browsers load this authority as a prior ordered script. Standalone
+  // CommonJS Node tests must load the *same* canonical resolver explicitly;
+  // previously they failed before any source/CB assertions could run.
+  const liveTopology=typeof globalThis!=='undefined'?globalThis.B737ClassicMultifeedV1:null;
+  const topologyEngine=liveTopology?.resolveDevice?liveTopology:
+   (typeof module==='object'&&module.exports&&typeof require==='function'
+    ?require('./classic-multifeed-topology-v1.js'):null);
   if(!topologyEngine?.resolveDevice)throw Error('Multi-feed authority not loaded');
   for(const [name,entries]of Object.entries(deviceRows)){
    const specific=topologyEngine.resolveDevice(name,entries,buses);
