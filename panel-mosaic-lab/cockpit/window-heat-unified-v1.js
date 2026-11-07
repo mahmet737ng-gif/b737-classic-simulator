@@ -14,6 +14,7 @@
  // Explicit isolated training supply is an instructor-only exception, not an
  // aircraft source or permission to bypass the standard cold/dark default.
  let s=Core.initialState(),last=null,lastAt=performance.now(),child=null,previousCaution=null;
+  let electricalBusSnapshot=null; // six live feeder states, pushed on events
  let faults={};try{faults=JSON.parse(localStorage.getItem(FAULT_KEY)||'{}')||{};}catch{}
  for(const [ch,f] of Object.entries(faults)){if(!Core.CHANNELS[ch]||!f||typeof f!=='object')continue;
   for(const id of Core.FAULTS)if(typeof f[id]==='boolean')s=Core.injectFault(s,ch,id,f[id]);
@@ -149,7 +150,7 @@
   // Missing electrical authority is fail-dark, not an invitation to retain a
   // stale illuminated projection from a previous source or iframe session.
   const injected=window.B737UnifiedBusFailureInjectionV1?.live?.get?.()?.active===true;
-  const live=buses(),b=trainingPower&&!injected?TRAIN_BUSES:(live||{}),sw=switches();if(!Object.keys(sw).length){
+  const live=electricalBusSnapshot||buses(),b=trainingPower&&!injected?TRAIN_BUSES:(live||{}),sw=switches();if(!Object.keys(sw).length){
    if(ui)ui.querySelector('#wh-status').textContent='WAITING FOR LIVE ELECTRICAL / OVERHEAD AUTHORITY';
    return;
   }
@@ -170,8 +171,19 @@
    w.addEventListener('b737:overhead-light-state',()=>{if(last)applyLamps(last);});
   }
  }
- function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('b737:bus-failure-injection-changed',()=>tick(0));window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
+ function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('b737:bus-failure-injection-changed',()=>{if(!electricalBusSnapshot)tick(0);});window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
  window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,
+   setElectricalBusSnapshot:feeds=>{
+    if(!feeds||typeof feeds!=='object')throw Error('Window Heat electrical feed snapshot required');
+    const keys=['generator1','generator2','main1','main2','dc1','dc2'];
+    for(const id of keys)if(!Object.hasOwn(feeds,id)||
+     ![true,false,null].includes(feeds[id]))
+     throw Error('Window Heat invalid electrical feeder '+id);
+    const next=Object.fromEntries(keys.map(key=>[key,feeds[key]]));
+    if(electricalBusSnapshot&&keys.every(key=>electricalBusSnapshot[key]===next[key]))return false;
+    electricalBusSnapshot=next;tick(0);return true;
+   },
+   getEventElectricalPower:()=>electricalBusSnapshot?{...electricalBusSnapshot}:null,
   getPowerDiagnostic:()=>diagnosticPower(buses()),setTrainingPower,injectFault:fault,
   reset:()=>{s=Core.initialState();faults={};saveFaults();tick(0);},
   evaluate:()=>tick(0),matchedCBs:Core.ALL_CBS});
