@@ -111,9 +111,12 @@ function consumerEntries(snapshot){
  }));
  return Object.values(snapshot.devices).map((dev,i)=>{
   const parts=dev.channels.map(id=>snapshot.consumers[id]).filter(Boolean);
-  const feed=[...new Set(parts.map(p=>p.feedBus+' '+p.feedVoltage))].join(' + ');
+  const feed=dev.feedChannels?.length?
+   dev.feedChannels.map(f=>f.key+' ['+f.status+']').join('  |  '):
+   [...new Set(parts.map(p=>p.feedBus+' '+p.feedVoltage))].join(' + ');
   const pages=[...new Set(parts.map(p=>p.source.printedPage))].join(', ');
-  return {number:i+1,name:dev.name,label:dev.displayName||dev.name,
+  return {number:i+1,name:dev.name,
+   label:(dev.displayName||dev.name)+(dev.feedChannels?.length?' ['+dev.topology+']':''),
    system:dev.system,status:dev.state,
    feed,source:'MRG IV.6 p.'+pages+' / '+dev.channels.length+' row(s)',
    details:dev.effect+' / '+dev.topology+
