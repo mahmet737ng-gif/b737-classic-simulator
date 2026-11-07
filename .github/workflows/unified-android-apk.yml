@@ -1,0 +1,82 @@
+name: Build Unified Android APK (Sepehran)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android-app/**"
+      - "panel-mosaic-lab/cockpit/brand/unified-icon-512.webp"
+      - "panel-mosaic-lab/cockpit/brand/unified-splash.webp"
+      - ".github/workflows/unified-android-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: unified-android-beta
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Android APK build and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android API 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle 8.10.2
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Apply approved Unified Sepehran graphics
+        run: |
+          mkdir -p android-app/app/src/main/res/drawable-nodpi
+          cp panel-mosaic-lab/cockpit/brand/unified-icon-512.webp android-app/app/src/main/res/drawable-nodpi/unified_icon.webp
+          cp panel-mosaic-lab/cockpit/brand/unified-splash.webp android-app/app/src/main/res/drawable-nodpi/unified_splash.webp
+
+      - name: Build installable debug APK
+        run: gradle -p android-app --no-daemon --stacktrace assembleDebug
+
+      - name: Stage downloadable APK
+        run: |
+          mkdir -p android-app/dist
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk android-app/dist/Unified-B737-Classic-Sepehran.apk
+          sha256sum android-app/dist/Unified-B737-Classic-Sepehran.apk | tee android-app/dist/SHA256.txt
+          ls -lh android-app/dist
+
+      - name: Attach APK to workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unified-B737-Classic-Sepehran-Android-APK
+          path: android-app/dist/
+          retention-days: 90
+
+      - name: Publish directly downloadable beta APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: unified-android-beta
+          name: Unified B737 Classic — Android beta
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          body: |
+            Android WebView beta with approved FlySepehran logo and splash.
+            Online connection required; uses the live Unified cockpit.
+            This build is debug signed for install/testing, not Play Store.
+          files: |
+            android-app/dist/Unified-B737-Classic-Sepehran.apk
+            android-app/dist/SHA256.txt
