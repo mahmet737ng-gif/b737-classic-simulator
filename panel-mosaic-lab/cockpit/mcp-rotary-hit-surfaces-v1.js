@@ -10,7 +10,7 @@
 "use strict";
 const W=2172,H=433,G=win.B737McpRotaryGestureV1,R=win.B737McpFCOMCh4NumericV1;
 if(!G?.create||!R?.step)throw Error("MCP physical hitbox requires FCOM and gesture authorities");
-const mounted=new WeakSet(),roots=[],active={pointer:null,surface:null},counters=Object.create(null);
+const mounted=new WeakSet(),roots=[],active={pointer:null,surface:null,gesture:null},counters=Object.create(null);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const pct=(v,total)=>v/total*100+"%";
 const descriptors=()=> {
@@ -98,12 +98,12 @@ function createSurface(root,d){
   if(active.pointer!==null){
    // Multitouch pinch: cancel any active rotation, never mix fingers.
    if(e.pointerType==="touch"&&e.pointerId!==active.pointer){
-    gesture.cancel();active.pointer=null;active.surface=null;
+    active.gesture?.cancel();active.pointer=null;active.surface=null;active.gesture=null;
    }
    return;
   }
   if(!gesture.down(e))return;
-  active.pointer=e.pointerId??1;active.surface=d.id;
+  active.pointer=e.pointerId??1;active.surface=d.id;active.gesture=gesture;
   e.preventDefault();e.stopPropagation();
   el.focus({preventScroll:true});
   try{el.setPointerCapture(e.pointerId)}catch(_){}
@@ -116,7 +116,7 @@ function createSurface(root,d){
   if(!activePointer(e))return;
   e.preventDefault();e.stopPropagation();
   if(cancel)gesture.cancel();else gesture.up(e);
-  active.pointer=null;active.surface=null;
+  active.pointer=null;active.surface=null;active.gesture=null;
   if(el.hasPointerCapture?.(e.pointerId))el.releasePointerCapture(e.pointerId);
  }
  el.addEventListener("pointerdown",down);
@@ -171,7 +171,7 @@ function audit(){
    const reachable=target===el||el.contains?.(target)===true;
    return {id:el.dataset.mcpHit,center:[b.left+b.width/2,b.top+b.height/2],
     width:b.width,height:b.height,reachable,topTarget:target?.className||target?.tagName||null};
-  })),detents:{...counters},active:{...active}};
+  })),detents:{...counters},active:{pointer:active.pointer,surface:active.surface}};
 }
 win.B737McpRotaryHitSurfacesV1=Object.freeze({mount,audit,descriptors});
 win.addEventListener("b737:cockpit-mounted",mount);
