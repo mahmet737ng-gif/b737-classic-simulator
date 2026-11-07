@@ -50,8 +50,8 @@
     throw Error('Missing bus dependency '+key+' / '+parent);
   return true;
  }
- function calculatePower(reference,forcedOff=[],baseline='ALL_ON'){
-  if(!BASELINES.includes(baseline))throw Error('Unknown laboratory baseline');
+ function calculatePower(reference,forcedOff=[],baseline='ALL_ON',cascade=false){
+  if(!BASELINES.includes(baseline)||typeof cascade!=='boolean')throw Error('Unknown laboratory baseline or cascade mode');
   if(!reference||typeof reference!=='object'||Array.isArray(reference))
    throw Error('Reference bus states required');
   const keys=Object.keys(reference);
@@ -72,7 +72,7 @@
    // A baseline UNKNOWN remains off only in this explicitly binary ON/OFF
    // laboratory view; no observation is asserted in the live simulator.
    const dependencies=SOURCE[id];
-   const supply=!dependencies.length?true:AND.has(id)?
+   const supply=!cascade||!dependencies.length?true:AND.has(id)?
      dependencies.every(enabled):dependencies.some(enabled);
    visiting.delete(id);
    return memo[id]=own&&supply;
@@ -89,14 +89,19 @@
   const evaluated=Electrical.evaluate(source);
   const reference=Core.defineBuses(evaluated,{electricalState:source});
   checkSources(Object.keys(reference));
-  let baseline='ALL_ON',off=new Set(),config={mode,pressurization,aircraftModel};
+  let baseline='ALL_ON',cascade=false,off=new Set(),config={mode,pressurization,aircraftModel};
   const update=()=>Core.project({index,electrical:evaluated,electricalState:source,
-    labBusPower:calculatePower(reference,[...off],baseline),...config,cbAvailable});
+    labBusPower:calculatePower(reference,[...off],baseline,cascade),...config,cbAvailable});
   let snapshot=update();
   return Object.freeze({
    get version(){return VERSION;},
    get buses(){return Object.keys(reference);},
    get baseline(){return baseline;},
+   get cascade(){return cascade;},
+   setCascade(enabled){
+    if(typeof enabled!=='boolean')throw Error('Invalid cascade mode');
+    cascade=enabled;snapshot=update();return snapshot;
+   },
    get disabled(){return [...off];},
    get options(){return {...config};},
    snapshot:()=>snapshot,
@@ -127,7 +132,7 @@
     config={...config,...next};
     snapshot=update();return snapshot;
    },
-   get busStates(){return calculatePower(reference,[...off],baseline);}
+   get busStates(){return calculatePower(reference,[...off],baseline,cascade);}
   });
  }
  return Object.freeze({VERSION,BASELINES,SOURCE,checkSources,
