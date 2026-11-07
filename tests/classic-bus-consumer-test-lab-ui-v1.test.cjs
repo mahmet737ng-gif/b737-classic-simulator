@@ -35,6 +35,7 @@ class Element{
 }
 const ids={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g))ids[match[1]]=new Element('div');
+ids.labError.hidden=true;
 for(const [name,value] of Object.entries({
  modelSelect:'737-300',indicationSelect:'CONVENTIONAL',pressurizationSelect:'DCPCS',
  baselineSelect:'ALL_ON',searchInput:'',stateFilter:'ALL',systemFilter:'ALL'
@@ -97,7 +98,7 @@ async function test(){
  ids.modelSelect.value='737-400';
  ids.modelSelect.trigger('change');
  assert.equal(api.getSnapshot().aircraftModel,'737-400');
- assert.equal(ids.labError.hidden,false,'No initialization errors were expected')
+ assert.equal(ids.labError.hidden,true,'No initialization or interaction errors were expected')
 }
 test().then(()=>console.log('PASS lab UI: 26 bus toggles, 340 red/blue consumers, 322 devices, search, cascade, variant')).
  catch(e=>{console.error(e);process.exitCode=1;});
