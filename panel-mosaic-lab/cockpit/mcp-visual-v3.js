@@ -15,13 +15,19 @@ const initial=()=>({
 });
 const values=initial();
 let powerState=null; // equipment supply unresolved until explicit observed evidence
+/* MCP-0007: individual glass-aperture fits, measured against the actual
+ * 2172×433 locked MCP photograph and cross-checked with cockpit screenshot.
+ * These are INSIDE the metal bezels (not button/knob sockets). In particular,
+ * F/O COURSE begins to the right of CMD B; no black mask may cover CMD B.
+ * The shared source-coordinate SVG keeps fits correct at every cockpit zoom.
+ */
 const displays=[
- {id:"courseL",x:85,y:112,w:112,h:59,digits:3},
- {id:"speed",x:480,y:112,w:155,h:59,digits:3},
- {id:"heading",x:817,y:112,w:118,h:59,digits:3},
- {id:"altitude",x:1130,y:112,w:151,h:59,digits:5},
- {id:"verticalSpeed",x:1381,y:112,w:161,h:59,digits:4},
- {id:"courseR",x:1860,y:112,w:157,h:59,digits:3}
+ {id:"courseL",     x:85,  y:112,w:112,h:59,digits:3},
+ {id:"speed",       x:485, y:115,w:147,h:56,digits:3},
+ {id:"heading",     x:826, y:113,w:119,h:58,digits:3},
+ {id:"altitude",    x:1127,y:114,w:171,h:56,digits:5},
+ {id:"verticalSpeed",x:1376,y:118,w:171,h:56,digits:4},
+ {id:"courseR",     x:1932,y:120,w:121,h:55,digits:3}
 ];
 const lamps=[
  {id:"AT_ARM",x:322,y:129,w:45,h:8},
