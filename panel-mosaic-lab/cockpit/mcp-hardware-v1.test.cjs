@@ -82,8 +82,13 @@ const physical=fs.readFileSync(path.join(root,'assets/mcp-switches/MCP_FRONT_OWN
 assert.ok(physical.length>2000);assert.equal(physical.toString('ascii',0,4),'RIFF');
 assert.equal(physical.toString('ascii',8,12),'WEBP');
 const installed=fs.readFileSync(path.join(root,'mcp-front-actual-photo-v3.css'),'utf8');
-assert.match(installed,/MCP_FRONT_OWNER_PHOTOS_4POSE\.webp/);
-for(const pos of ['0% 0%','100% 0%','0% 100%','100% 100%'])assert.ok(installed.includes('background-position:'+pos));
+// The earlier 80px-per-pose preview is retained only for provenance.
+ // Production must use the user-approved full-resolution native switch faces.
+assert.match(installed,/AT_ARM_OFF\.svg/);
+assert.match(installed,/AT_ARM_UP\.svg/);
+assert.match(installed,/FD_OFF_NATIVE\.png/);
+assert.match(installed,/FD_ON_NATIVE\.png/);
+assert.doesNotMatch(installed,/background-image:url\("[^"]*MCP_FRONT_OWNER_PHOTOS_4POSE/);
 const photo=fs.readFileSync(path.join(root,'mcp-owner-photo-components-v1.css'),'utf8');
 for(const f of ['COURSE_PHOTO_80.webp','HEADING_PHOTO_80.webp','ALTITUDE_PHOTO_80.webp','ROUND_PUSH_80.webp'])assert.ok(photo.includes(f),'Missing original generated photo '+f);
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'mcp-photo-asset-manifest-v1.json'),'utf8'));
