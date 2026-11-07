@@ -173,6 +173,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
           node tests/mcp-fcom-ch4-numeric-v1.test.cjs
           node tests/mcp-photo-aperture-center-v1.test.cjs
+          node tests/mcp-knob-native-hole-v1.test.cjs
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing
