@@ -7,7 +7,7 @@
  if(root)root.B737McpModeCoreV1=api;
 })(typeof globalThis!=="undefined"?globalThis:null,function(){
 "use strict";
-const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_OBSERVED:"INSTRUCTOR_OBSERVED"});
+const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_OBSERVED:"INSTRUCTOR_OBSERVED",SIMULATED_DC1:"SIMULATED_DC1"});
 const lateral=Object.freeze(["HDG_SEL","LNAV","VOR_LOC"]);
 const vertical=Object.freeze(["LVL_CHG","ALT_HLD","VS","VNAV"]);
 const thrust=Object.freeze(["N1","SPEED"]);
@@ -16,7 +16,7 @@ const rejected=(s,reason)=>({...s,lastRejection:reason,revision:s.revision+1});
 const clone=v=>JSON.parse(JSON.stringify(v));
 function initialState(){return {
  schema:"B737_MCP_AFDS_V1",revision:0,
- electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:null},
+ electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,dc1:null,batteryBus:null,rawRevision:null},
  observedPower:false, fd:{left:false,right:false},autoThrottleArm:false,
  values:{courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0},
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
@@ -33,11 +33,24 @@ function globalPowerPossible(bus){
  if(keys.every(x=>bus[x]===false))return false;
  return null;
 }
-function projectPower(s){const global=s.electrical.globalPowerPossible;
- if(globalThis.B737UnifiedCB?.available('mcp.power')===false)return {globalPowerPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
- if(global===false)return {globalPowerPossible:global,feed:STATES.ABSENT,mcpPower:false,rawRevision:s.electrical.rawRevision};
- if(s.observedPower)return {globalPowerPossible:global,feed:STATES.INSTRUCTOR_OBSERVED,mcpPower:true,rawRevision:s.electrical.rawRevision};
- return {globalPowerPossible:global,feed:STATES.UNVERIFIED,mcpPower:null,rawRevision:s.electrical.rawRevision};
+/* MCP-0008. Training electrical feeds are computed only when the V7 result
+ * explicitly publishes DC BUS 1 / BAT BUS; never infer power from APU RUN,
+ * a switch position, or an unrelated generator. P18-1 D1 = AFDS MCP DC;
+ * P6-2 B2 = AFDS MCP CRS 2 (photo-labelled candidate CB assignments).
+ * Course 2 retains a separate battery-bus indication path. This is trainer
+ * wiring, not EP-FSI WDM certification. */
+function projectPower(s){
+ const e=s.electrical,global=e.globalPowerPossible;
+ const mainCb=globalThis.B737UnifiedCB?.available('mcp.power');
+ const course2Cb=globalThis.B737UnifiedCB?.available('mcp.course2');
+ const main=global===false||mainCb===false||e.dc1===false?false:
+  e.dc1===true?true:s.observedPower?true:null;
+ const course2=global===false||course2Cb===false||e.batteryBus===false?false:
+  e.batteryBus===true?true:s.observedPower?true:null;
+ const feed=main===false?STATES.ABSENT:e.dc1===true?STATES.SIMULATED_DC1:
+  main===true?STATES.INSTRUCTOR_OBSERVED:STATES.UNVERIFIED;
+ return {globalPowerPossible:global,feed,mcpPower:main,course2Power:course2,
+  dc1:e.dc1,batteryBus:e.batteryBus,rawRevision:e.rawRevision};
 }
 function clearModes(s){s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};s.pending.approach=false;}
 function transition(state,action){
@@ -51,6 +64,8 @@ function transition(state,action){
   if(!source||source.schema!=="B737_ELECTRICAL_V7_RESULT"||!source.bus)throw Error("Electrical V7 evaluated snapshot required");
   s.electrical.globalPowerPossible=globalPowerPossible(source.bus);
   s.electrical.rawRevision=source.revision;
+  s.electrical.dc1=source.bus.dc1===true?true:source.bus.dc1===false?false:null;
+  s.electrical.batteryBus=source.bus.battery===true?true:source.bus.battery===false?false:null;
   s.electrical=projectPower(s);
   if(s.electrical.mcpPower!==true)clearModes(s);
   return done();
@@ -129,10 +144,10 @@ function output(s){
   // APP indication never claims a capture without evidence.
   lamps.APP=s.pending.approach&&s.evidence.approachCapture===true;
  }
- return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,powerEvidence:s.electrical.feed,
+ return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,lamps,values:{...s.values},controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
-  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","NO_VERIFIED_MCP_FEED_MAPPING","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
+  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_DC1_AND_COURSE2_BAT_BUS_TRAINING_MAPPING_NOT_AIRCRAFT_VERIFIED","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
 }
 return Object.freeze({STATES,initialState,globalPowerPossible,transition,output});
 });
