@@ -50,6 +50,8 @@ one('brakes.antiskidInboard','P6-2','A20','CONTROL');
 one('brakes.antiskidOutboard','P6-2','A21','CONTROL');
 one('brakes.antiskidWarning','P6-2','B22','INDICATION');
 one('mcp.power','P18-1','D1');
+// Independent COURSE 2 feed from the photo-labelled P6-2 B2 CB.
+one('mcp.course2','P6-2','B2');
 one('fmc.FMC1','P18-2','E8');one('fmc.FMC2','P6-1','C12');
 one('fmc.CDU_CAPT','P18-2','E9');one('fmc.CDU_FO','P6-1','C13');
 for(const [name,p,ac,dc]of [['L','P18-2','D4','D5'],['R','P6-1','D11','D12']]){
