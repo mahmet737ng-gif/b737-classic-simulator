@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.js'
+      - 'tools/mcp-hole-calibration-v1.py'
+      - 'panel-mosaic-lab/cockpit/mcp-socket-registration-v2.js'
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.css'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.js'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.css'
