@@ -193,6 +193,12 @@ win.B737McpIndependentDigitsV1=Object.freeze({
 });
 win.addEventListener("b737:mcp-value-change",rememberVisualInput);
 win.addEventListener("b737:mcp-afds-state",rememberEngineValues);
+// The physical V/S wheel sends a hardware event, not a visual knob event.
+win.addEventListener("b737:mcp-hardware-change",e=>{
+ if(e.detail?.id!=="VS_WHEEL"||!Number.isFinite(e.detail.value))return;
+ previewValues.verticalSpeed=Math.trunc(e.detail.value);
+ if(testMode())redraw();
+});
 for(const event of ["b737:mcp-afds-state","b737:mcp-value-change","b737:cb-state-change",
  "b737:electrical-owner-ready","b737:electrical-v7-state","b737:cockpit-mounted"]){
  win.addEventListener(event,()=>event==="b737:cockpit-mounted"?mount():redraw());
