@@ -163,6 +163,12 @@
   // ONE physically modelled standby bus, not a separate duplicate bus node.
   add('standby@115VAC','115VAC',raw.acStandby??null,[],'FCOM_AC_STANDBY_BUS');
   add('standby@28VDC','28VDC',raw.dcStandby??null,[],'FCOM_DC_STANDBY_BUS');
+  // Training-only exact feeder cuts: 28VAC transformer output and electronic
+  // bus can fail independently of their upstream 115VAC/28VDC source.
+  for(const key of electrical.busClassOutages||[])if(all[key]){
+   all[key]={...all[key],powered:false,status:'OFF',
+    basis:'INJECTED_BUS_FAILURE_TRAINING'};
+  }
   return all;
  }
  function getBus(buses,source,voltage,{anyAvailable=false}={}){
