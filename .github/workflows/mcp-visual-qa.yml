@@ -34,7 +34,7 @@ permissions:
 
 jobs:
   mcp-source-and-geometry:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout simulator
         uses: actions/checkout@v4
