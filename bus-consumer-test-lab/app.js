@@ -9,7 +9,7 @@ const BUS_GROUPS=[
  {name:'AC GENERATOR / MAIN / TRANSFER · 115V',ids:['generator1@115VAC','generator2@115VAC','main1@115VAC','main2@115VAC','transfer1@115VAC','transfer2@115VAC']},
  {name:'AC SERVICE / EXTERNAL · 115V',ids:['groundService@115VAC','external@115VAC']},
  {name:'DC DISTRIBUTION · 28V',ids:['dc1@28VDC','dc2@28VDC','battery@28VDC','hotBattery@28VDC','switchedHotBattery@28VDC']},
- {name:'STANDBY AC / DC',ids:['acStandby@115VAC','dcStandby@28VDC','standby@115VAC','standby@28VDC']},
+ {name:'STANDBY AC / DC',ids:['standby@115VAC','standby@28VDC']},
  {name:'ELECTRONIC 1 / 2',ids:['electronic1@115VAC','electronic2@115VAC','electronic1@28VDC','electronic2@28VDC']},
  {name:'AC CONVERSION · 28V AC',ids:['transfer1@28VAC','transfer2@28VAC','main1@28VAC','main2@28VAC','groundService@28VAC']}
 ];
@@ -17,7 +17,7 @@ const labels={
  generator1:'GEN BUS 1',generator2:'GEN BUS 2',main1:'MAIN BUS 1',main2:'MAIN BUS 2',
  transfer1:'TRANSFER BUS 1',transfer2:'TRANSFER BUS 2',dc1:'DC BUS 1',dc2:'DC BUS 2',
  battery:'BATTERY BUS',hotBattery:'HOT BAT BUS',switchedHotBattery:'SW HOT BAT',
- acStandby:'AC STANDBY',dcStandby:'DC STANDBY',standby:'STANDBY',
+ standby:'STANDBY',
  groundService:'GROUND SERVICE',external:'EXT POWER BUS',
  electronic1:'ELECTRONIC BUS 1',electronic2:'ELECTRONIC BUS 2'
 };
@@ -41,13 +41,14 @@ function setFailure(error){
 }
 function busLabel(key){
  const [id,voltage]=key.split('@');
+ if(id==='standby')return (voltage==='115VAC'?'AC STBY BUS':'DC STBY BUS')+' · '+voltage;
  return (labels[id]||id.toUpperCase())+' · '+voltage;
 }
 function makeBusButtons(){
  const all=session.buses;
  const grouped=new Set(BUS_GROUPS.flatMap(g=>g.ids));
- if(all.length!==26||grouped.size!==26||all.some(key=>!grouped.has(key)))
-  throw Error('Bus controls must show every one of the 26 source-class nodes');
+ if(all.length!==24||grouped.size!==24||all.some(key=>!grouped.has(key)))
+  throw Error('Bus controls must show every one of the 24 source-class nodes');
  const list=$('busList');
  list.replaceChildren();
  busButtons.clear();
@@ -60,7 +61,9 @@ function makeBusButtons(){
    btn.type='button';btn.dataset.bus=key;
    btn.title='Independent lab bus toggle: '+key;
    const pair=key.split('@');
-   make('span',btn,labels[pair[0]]||pair[0].toUpperCase(),'bus-name');
+   make('span',btn,pair[0]==='standby'?
+    (pair[1]==='115VAC'?'AC STBY BUS':'DC STBY BUS'):
+    labels[pair[0]]||pair[0].toUpperCase(),'bus-name');
    const text=make('span',btn,'','bus-indicator');
    text.dataset.voltage=pair[1];text.title=pair[1];
    btn.addEventListener('click',()=>run(()=>{
