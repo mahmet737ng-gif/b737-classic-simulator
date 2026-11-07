@@ -32,6 +32,20 @@ const SPECS=Object.freeze(ROWS.flatMap(row=>[1,2].map(engine=>Object.freeze({
 }))));
 let layer=null;
 const values=new Map();
+ const powerLostIndicators=new Set();
+ // N2 has one 28V supply for both its digital counter and servo pointer.
+ // The exact mechanical rest angle is installation-specific; 12 degrees
+ // below the owner's registered zero tick is a visual training park ONLY.
+ function setIndicationPowerLoss(engine,signal,lost){
+  if(!['engine1','engine2'].includes(engine)||signal!=='n2'||typeof lost!=='boolean')
+   throw Error('Invalid Conventional N2 electrical status');
+  const id=signal+'_'+engine.slice(-1),already=powerLostIndicators.has(id);
+  if(already===lost)return false;
+  if(lost)powerLostIndicators.add(id);else powerLostIndicators.delete(id);
+  const spec=SPECS.find(x=>x.id===id);
+  if(spec)paint(spec);
+  return true;
+ }
 const rotors=new Map();
 const backendOwned=new Set(); // live ECU/failure-aware readings take priority over legacy start snapshots
 const photoEngine=window.B737PhotoDetentCalibrationV1;
@@ -174,13 +188,16 @@ function paint(spec){
  const a=angle(spec,renderValue);
  const correction=optical.status==='PHOTO_VERIFIED'&&spec.signal!=='n2'?
   optical.correctionDeg:0;
- const renderAngle=a+correction;
+ const parked=powerLostIndicators.has(spec.id)&&reading.value===null&&spec.signal==='n2';
+  const renderAngle=a+correction-(parked?12:0);
  rotor.setAttribute('transform','translate('+spec.cx+' '+spec.cy+') rotate('+renderAngle.toFixed(3)+') scale('+spec.scale+')');
  rotor.dataset.renderAngle=renderAngle.toFixed(3);
  rotor.dataset.calibratedAngle=a.toFixed(3);
  rotor.dataset.opticalCorrectionDeg=String(correction);
  rotor.dataset.calibratedValue=String(renderValue);
  rotor.parentNode.dataset.source=reading.source;
+  rotor.parentNode.dataset.electricalPower=powerLostIndicators.has(spec.id)?'OFF':'ON_OR_UNKNOWN';
+  rotor.parentNode.dataset.pointerCondition=parked?'OFF_SCALE_TRAINING':'NORMAL';
  rotor.parentNode.dataset.state=reading.value===null?'BLANK':'TRACK';
  rotor.parentNode.dataset.value=reading.value===null?'BLANK':String(reading.value);
 }
@@ -242,6 +259,8 @@ window.addEventListener('DOMContentLoaded',mount,{once:true});
 window.addEventListener('b737:engine-indication-view',mount);
 window.addEventListener('b737:isn-start-indications',event=>{fromIsn(event.detail);mount();});
 window.B737ConventionalNeedlesV1=Object.freeze({
+  setIndicationPowerLoss,
+  getIndicationPowerLoss:(engine,signal)=>powerLostIndicators.has(signal+'_'+engine.slice(-1)),
  getSpecs:()=>SPECS.map(spec=>({...spec})),
  getPhotoDetentAudit:()=>photoEngine?{...photoEngine.inspectAll({samples:512}),
   photoEvidence}:null,
