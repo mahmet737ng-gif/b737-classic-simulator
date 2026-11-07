@@ -23,6 +23,36 @@ const segments=Object.freeze({
 });
 const segmentsOn=Object.freeze({0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"});
 const roots=new Map();let currentKey="",witness=null;
+/* Visual-only preview defaults ON while the photo-matched digits are being
+ * reviewed. This is NOT an energized MCP or an electrical/AFDS override.
+ * Toggle it OFF to follow the live CB and bus power exactly. */
+let preview=true,previewButton=null;
+const previewValues={};
+const previewDefaults={courseL:20,speed:180,heading:220,altitude:10000,verticalSpeed:400,courseR:101};
+const previewSource=()=>({ ...previewDefaults,...previewValues });
+const testMode=()=>qa||preview;
+function ensurePreviewButton(){
+ if(previewButton&&previewButton.isConnected)return;
+ const holder=document.querySelector("header .header-settings")||document.querySelector(".toolbar .tools");
+ if(!holder)return;
+ previewButton=document.getElementById("mcpDigitsPreviewToggle")||document.createElement("button");
+ previewButton.id="mcpDigitsPreviewToggle";
+ previewButton.type="button";
+ previewButton.title="Visual only: show photo-matched dynamic MCP numerals without altering aircraft power. Turn off for real CB/bus-driven blanking.";
+ previewButton.setAttribute("aria-label","Toggle MCP digit visual preview; does not energize the aircraft");
+ previewButton.style.cssText="min-width:105px;font:700 11px system-ui,Arial,sans-serif;cursor:pointer;border:1px solid #aa8539;border-radius:5px;padding:6px 9px;background:#3c2d15;color:#ffda83;white-space:nowrap";
+ previewButton.addEventListener("click",()=>{
+  preview=!preview;currentKey="";refreshButton();redraw(true);
+ });
+ if(!previewButton.isConnected)holder.append(previewButton);
+ refreshButton();
+}
+function refreshButton(){
+ if(!previewButton)return;
+ previewButton.textContent=preview?"MCP DIGITS · PREVIEW":"MCP DIGITS · LIVE";
+ previewButton.setAttribute("aria-pressed",String(preview));
+ previewButton.style.opacity=preview?"1":".76";
+}
 function elem(tag,attrs={}){
  const el=document.createElementNS(NS,tag);
  for(const [name,value]of Object.entries(attrs))el.setAttribute(name,String(value));
@@ -83,14 +113,15 @@ function power(){
 }
 function redraw(force=false){
  if(!roots.size){if(qa)updateWitness();return;}
- const values=win.B737McpVisualV3?.getState?.()||{};
+ const live=win.B737McpVisualV3?.getState?.()||{};
  const p=power();
- const key=JSON.stringify([qa,values.courseL,values.speed,values.heading,
+ const values=testMode()?previewSource():live;
+ const key=JSON.stringify([testMode(),values.courseL,values.speed,values.heading,
   values.altitude,values.verticalSpeed,values.courseR,p.main,p.right]);
  if(!force&&key===currentKey){if(qa)updateWitness();return;}
  currentKey=key;
  for(const list of roots.values())for(const view of list){
-  const lit=qa||(view.d.id==="courseR"?p.right:p.main)===true;
+  const lit=testMode()||(view.d.id==="courseR"?p.right:p.main)===true;
   drawGlass(view,lit,printable(view.d.id,values));
  }
  if(qa)updateWitness();
@@ -116,7 +147,7 @@ function updateWitness(){
   "MCP: "+String(p.main)+" | COURSE 2: "+String(p.right);
 }
 function mount(){
- setupWitness();let mounted=false;
+ ensurePreviewButton();setupWitness();let mounted=false;
  for(const root of document.querySelectorAll('[data-piece="mcp"]')){
   if(roots.has(root))continue;
   const views=areas.map(createWindow);
@@ -129,18 +160,39 @@ function mount(){
  if(mounted)currentKey="";
  redraw(mounted);
 }
+function rememberVisualInput(e){
+ const detail=e?.detail;
+ if(!detail||detail.method==="external")return;
+ if(!Object.hasOwn(previewDefaults,detail.control)||!Number.isFinite(detail.value))return;
+ previewValues[detail.control]=Math.trunc(detail.value);
+ if(testMode())redraw();
+}
+function rememberEngineValues(e){
+ if(!e?.detail||e.detail.power!==true)return;
+ for(const id of Object.keys(previewDefaults)){
+  if(Number.isFinite(e.detail.values?.[id]))previewValues[id]=e.detail.values[id];
+ }
+ if(testMode())redraw();
+}
 const css=document.createElement("style");
 css.id="mcp-independent-digits-v1-style";
 css.textContent='[data-piece="mcp"][data-mcp-independent-digits="true"]>.mcp-v3-overlay [data-mcp-display]{display:none!important}';
 document.head.append(css);
 win.B737McpIndependentDigitsV1=Object.freeze({
- audit:()=>({schema:"MCP-DIGITS-0001",qa,rootCount:roots.size,
+ audit:()=>({schema:"MCP-DIGITS-0002",qa,preview,previewValues:previewSource(),rootCount:roots.size,
   windowCount:Array.from(roots.values()).reduce((n,arr)=>n+arr.length,0),
   power:power(),windows:Array.from(roots.values()).flat().map(v=>({id:v.d.id,lit:v.host.dataset.powered,
    htmlRect:{x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
     w:v.host.getBoundingClientRect().width,h:v.host.getBoundingClientRect().height}}))}),
- refresh:()=>{mount();redraw(true)}
+ refresh:()=>{mount();redraw(true)},
+ setPreview:on=>{preview=!!on;refreshButton();redraw(true);return preview},
+ setPreviewValue:(id,value)=>{
+  if(!Object.hasOwn(previewDefaults,id)||!Number.isFinite(value))return false;
+  previewValues[id]=Math.trunc(value);redraw(true);return true;
+ }
 });
+win.addEventListener("b737:mcp-value-change",rememberVisualInput);
+win.addEventListener("b737:mcp-afds-state",rememberEngineValues);
 for(const event of ["b737:mcp-afds-state","b737:mcp-value-change","b737:cb-state-change",
  "b737:electrical-owner-ready","b737:electrical-v7-state","b737:cockpit-mounted"]){
  win.addEventListener(event,()=>event==="b737:cockpit-mounted"?mount():redraw());
