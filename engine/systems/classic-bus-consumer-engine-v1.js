@@ -171,6 +171,12 @@
   validate(index);
   if(!['EIS','CONVENTIONAL'].includes(mode)||!['CPCS','DCPCS'].includes(pressurization))
    throw Error('Invalid B737 Classic aircraft configuration');
+  // Fail loudly if the 8 functional pump associations drift away from the
+  // exact consumer labels and feed buses in the committed MRG reference.
+  for(const [id,feed]of Object.entries(MRG_PUMP_FEEDS)){
+   if(!index.rows.some(r=>r.item===feed.item&&r.feedBus===feed.bus&&r.feedVoltage===feed.voltage))
+    throw Error('MRG functional pump source conflict: '+id);
+  }
   const buses=defineBuses(electrical,{electricalState}),consumers={},systems={};
   const tally={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
   for(const row of index.rows){
@@ -181,7 +187,13 @@
    const cbStates=typeof cbAvailable==='function'?cbNames.map(id=>cbAvailable(id)):null;
    const cbOpen=cbStates?.includes(false)===true;
    const cbUnknown=cbStates?.some(x=>x!==true&&x!==false)===true;
-   let state=!installed?'NOT_INSTALLED':cbOpen?'OFF':feed.powerStatus;
+   const cbPartial=Boolean(cbStates?.includes(false)&&cbStates?.includes(true));
+   // One opened EIS N1/EGT/N2 channel breaker must degrade the paired
+   // row, not assert both engine channels are dark.
+   let state=!installed?'NOT_INSTALLED':
+    cbOpen&&!cbPartial?'OFF':
+    cbPartial&&feed.powerStatus==='NORMAL'?'DEGRADED':
+    feed.powerStatus;
    const quality=row.sourceConfidence==='PRINTED_INDEX_READABLE'?
     'MRG_CLASSIC_FUNCTIONAL':'MRG_SOURCE_REVIEW_PENDING';
    // Unknown or photograph-review feeds must not be represented as reliable ON.
@@ -192,7 +204,7 @@
     feedBus:row.feedBus,feedVoltage:row.feedVoltage,
     busKeys:feed.busIds,powerState:state,
     canOperate:state==='NORMAL'?true:state==='OFF'||state==='NOT_INSTALLED'?false:null,
-    requiredCBs:cbNames,cbState:!breaker?'NOT_MAPPED':cbOpen?'OPEN':cbUnknown?'UNKNOWN':cbStates?'CLOSED':'NOT_OBSERVED',
+    requiredCBs:cbNames,cbState:!breaker?'NOT_MAPPED':cbPartial?'PARTIAL_OPEN':cbOpen?'OPEN':cbUnknown?'UNKNOWN':cbStates?'CLOSED':'NOT_OBSERVED',
     source:{reference:'MRG IV.6',printedPage:row.printedPage,
      sourceConfidence:row.sourceConfidence,genericClassic:true},
     impact:state==='NORMAL'?'ELECTRICAL_FUNCTION_AVAILABLE':
