@@ -200,7 +200,8 @@
   if(/\(300-500\)/i.test(row.item))marks.push('B737-300/500');
   if(/\(600-700\)/i.test(row.item))marks.push('737-600/700 REFERENCE');
   if(row.applicability==='EQUIPMENT_OPTION')marks.push('AS INSTALLED');
-  return row.item+(marks.length?' ['+[...new Set(marks)].join(' · ')+']':'');
+  const base=row.item.replace(/\s*\((?:non-EIS|EIS|CPCS|DCPCS|400|300-500|600-700|As installed)\)/gi,'').trim();
+  return base+(marks.length?' ['+[...new Set(marks)].join(' · ')+']':'');
  }
  function appropriate(row,{mode,pressurization,aircraftModel}){
   if(row.applicability==='DCPCS'&&pressurization!=='DCPCS')return false;
