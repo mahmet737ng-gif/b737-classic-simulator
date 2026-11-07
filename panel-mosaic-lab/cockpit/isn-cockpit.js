@@ -580,6 +580,19 @@
  // even if its initial ready event arrived before this message listener.
  byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
  window.addEventListener('b737:cb-state-change',()=>{session.snapshot=session.compute(null);chain.syncPower();ecu.core.refreshFuelDelivery();ecu.advance(0);render();});
+ // Same live electrical owner as normal CB pulls. A bus outage is an
+ // instructor overlay, not a generator selector movement or an engine STOP.
+ // Recompute once so fuel pumps, hydraulics, annunciators, engine gauges,
+ // window heat and autobrake observe the new bus data in this cockpit tab.
+ window.addEventListener('b737:bus-failure-injection-changed',()=>{
+   session.snapshot=session.compute(null);
+   chain.syncPower();
+   ecu.core.refreshFuelDelivery();
+   ecu.advance(0);
+   render();
+   window.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{
+     detail:{source:'TRAINING_BUS_FAILURE_INJECTION'}}));
+ });
  window.dispatchEvent(new CustomEvent('b737:electrical-owner-ready'));
  render();
  }
