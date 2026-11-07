@@ -91,8 +91,8 @@ function project(){
     f.electronic1===false?"ELEX 1 supply or its upstream source is OFF":"Check MCP circuit breaker"):"";
   circuit.textContent="ELEX1 28V: "+label(f.electronic1)+" · DC1 upstream: "+label(f.dc1)+
    " · MCP CB: "+cbText(cb?.available?.("mcp.power"))+
-   "\\nCOURSE2 BAT BUS: "+label(f.batteryBus)+
-   " · CB: "+cbText(cb?.available?.("mcp.course2"))+(guide?"\\nNEXT: "+guide:"");
+   "\nCOURSE2 BAT BUS: "+label(f.batteryBus)+
+   " · CB: "+cbText(cb?.available?.("mcp.course2"))+(guide?"\nNEXT: "+guide:"");
  }
  if(modeReadout){
   const m=out.modes;
