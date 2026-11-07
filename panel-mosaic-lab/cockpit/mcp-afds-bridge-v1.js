@@ -59,6 +59,7 @@ function project(){
  if(visual){
   visual.setPower?.(out.power);
   visual.setCourse2Power?.(out.course2Power);
+  visual.setSpeedMode?.(out.speedDisplayMode);
   if(!visualTest)visual.setLamps?.(out.lamps);
   for(const [id,v] of Object.entries(out.values)){
    if(visual.getState()?.[id]!==v)visual.setValue(id,v);
@@ -106,9 +107,15 @@ function hardwareCommand(e){
  AT_ARM:{type:"AT_ARM",armed:d.value==="ARM"}};
  if(own(map,d.id))send(map[d.id]);
  else if(d.id==="VS_WHEEL")send({type:"VALUE",id:"verticalSpeed",value:d.value});
- else if(["CO","SPD_INTV","ALT_INTV"].includes(d.id)){
-  // A momentary button must not remain visually latched if its control law
-  // has not been source-validated. Accept the physical press, reject activation.
+ else if(d.id==="CO"){
+  // FCOM 4.10.3: C/O is an IAS/MACH push button, not a latched mode.
+  // Restore the spring-return push visually; AFDS owns the display mode.
+  if(d.value===true)send({type:"SPEED_MODE",
+   mode:Core.output(state).speedDisplayMode==="MACH"?"IAS":"MACH"});
+  if(window.B737McpHardwareV1?.getState()?.CO===true)
+   window.B737McpHardwareV1.setState("CO",false);
+ }
+ else if(["SPD_INTV","ALT_INTV"].includes(d.id)){
   if(window.B737McpHardwareV1?.getState()?.[d.id]===true)
    window.B737McpHardwareV1.setState(d.id,false);
   state.lastRejection=d.id+"_LOGIC_NOT_VALIDATED";
