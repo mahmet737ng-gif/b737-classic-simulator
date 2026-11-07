@@ -13,6 +13,25 @@
   cx:n===1?984:1095,cy:741,decimals:0,integerDigits:3,divisor:1,unit:'%FULL',template:'999',drum:false,scale:.83}))));
  const values=new Map(specs.map(s=>[s.id,{value:['n1','n2'].includes(s.signal)?0:null,source:'INITIAL'}]));
  const mounted=new Map(),ecuOwned=new Set(),backendOwned=new Set(),startFallbacks=new Map();
+  // Conventional numerical counters share instrument power with their pointer.
+  // A null sensor reading may render fault dashes; a lost instrument bus must
+  // instead remove ALL luminous glyphs, without hiding its dark photo aperture.
+  const conventionalPowerLoss=new Set();
+  function applyConventionalPowerGate(part){
+   if(!part||part.variant!=='CONVENTIONAL')return;
+   const lost=conventionalPowerLoss.has(part.spec.id);
+   part.group.style.display=lost?'none':'';
+   part.group.dataset.electricalPower=lost?'OFF':'ON_OR_UNKNOWN';
+  }
+  function setConventionalPowerLoss(engine,signal,lost){
+   if(!['engine1','engine2'].includes(engine)||!['n1','egt','n2','fuelFlow'].includes(signal)
+     ||typeof lost!=='boolean')throw Error('Invalid Conventional digital power gate');
+   const id=signal+'_'+engine.slice(-1);
+   if(conventionalPowerLoss.has(id)===lost)return false;
+   if(lost)conventionalPowerLoss.add(id);else conventionalPowerLoss.delete(id);
+   applyConventionalPowerGate(mounted.get('CONVENTIONAL.'+id));
+   return true;
+  }
  let layer=null,conventionalLayer=null,ticket=null,lastFrame=null;
  const raf=typeof requestAnimationFrame==='function'?requestAnimationFrame:null;
  const caf=typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null;
@@ -124,7 +143,9 @@
    });
    group.dataset.displayUnit=spec.unit;
    group.setAttribute('transform',photoTransform);
-   mounted.set(variant+'.'+spec.id,{spec,variant,group,slots,width,text:null,dirty:true});
+   const part={spec,variant,group,slots,width,text:null,dirty:true};
+    mounted.set(variant+'.'+spec.id,part);
+    applyConventionalPowerGate(part);
   }
   return svg;
  }
@@ -263,7 +284,9 @@
    // Eight gauges, ONE frame and ONE numeric render pass.
    if(records.length)refresh();
   },
-  setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE'){
+  setConventionalPowerLoss,
+   getConventionalPowerLoss:(engine,signal)=>conventionalPowerLoss.has(signal+'_'+engine.slice(-1)),
+   setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE'){
    const spec=specs.find(s=>s.engine===engine&&s.signal===signal);if(!spec)throw Error('Unknown EIS numeric field');
    if(source==='ENGINE_INDICATION_BACKEND_V2'||source==='ENGINE_INDICATION_SYNC_V1'){
     backendOwned.add(spec.id);ecuOwned.add(spec.id);
