@@ -5,6 +5,9 @@
 (function(root){'use strict';
  const Core=root.B737ClassicBusConsumersV1;
  if(!Core)throw Error('Classic bus consumer engine must load before Unified bridge');
+ const EventHub=root.B737ClassicElectricalEventHubV1;
+ if(!EventHub?.createHub)throw Error('ATA24 event hub required');
+ const dispatcher=EventHub.createHub();
  const INDEX_URL='../../engine/systems/mrg-classic-340-consumer-bus-index-v1.json?v=BUS-CONSUMER-0001';
  let index=null,loadPromise=null,current=null,signature='',ui=null,rowsBody=null,summary=null;
  let query='',filterBus='ALL',limit=80,errors=null;
@@ -98,17 +101,19 @@
   if(!index||!Core||!root.B737ElectricalV7)return null;
   const input=electricalInputs();if(!input)return null;
   const config=configuration(),cb=root.B737UnifiedCB;
-  const key=JSON.stringify([input.live.bus,input.live.source,input.live.feed,
-   input.live.busClassOutages||[],input.live.busFailureInjection||null,
+  const key=JSON.stringify([input.live.bus,input.live.busClassOutages||[],
    cb?.revision??null,config]);
   if(!force&&key===signature)return current;
   const snapshot=Core.project({index,electrical:input.live,electricalState:input.state,
    ...config,cbAvailable:id=>cb?.available?.(id)??null});
-  current=snapshot;signature=key;build();paint();
-  root.dispatchEvent(new CustomEvent('b737:bus-consumer-snapshot',{
+  current=snapshot;signature=key;
+  const delta=dispatcher.publish(snapshot,{reason:'ELECTRICAL_CB_OR_PROFILE_CHANGE'});
+  build();if(delta.changed)paint();
+  if(delta.changed)root.dispatchEvent(new CustomEvent('b737:bus-consumer-snapshot',{
    detail:{revision:snapshot.revision,coverage:copy(snapshot.coverage),
     systems:copy(snapshot.systems),powerOwner:'Electrical_V7'}}));
-  for(const fn of subscribers)try{fn(current);}catch(e){console.warn('Consumer listener failed',e);}
+  if(delta.changed)for(const fn of subscribers)try{fn(current);}
+   catch(e){console.warn('Consumer listener failed',e);}
   return current;
  }
  async function load(){
@@ -131,13 +136,18 @@
   getCapability:(name,purpose)=>current?.devices?.[name]?.capabilities?.[purpose]??null,
   getBus:(bus,voltage)=>current?.buses?.[bus+'@'+voltage]?copy(current.buses[bus+'@'+voltage]):null,
   getSystem:id=>current?.systems?.[id]?copy(current.systems[id]):null,
+  subscribeBus:dispatcher.subscribeBus,
+  subscribeDevice:dispatcher.subscribeDevice,
+  subscribeConsumer:dispatcher.subscribeConsumer,
+  subscribeCapability:dispatcher.subscribeCapability,
+  subscribeSystem:dispatcher.subscribeSystem,
+  getEventStats:dispatcher.getStats,
   subscribe:fn=>{if(typeof fn!=='function')throw Error('Function required');
    subscribers.add(fn);if(current)fn(current);return ()=>subscribers.delete(fn);}
  });
  for(const event of ['b737:electrical-v7-state','b737:cb-state-change',
   'b737:aircraft-profile-change','b737:engine-indication-view',
-  'b737:electrical-owner-ready','b737:unified-ecu-observation',
-  'b737:bus-failure-injection-changed'])
+  'b737:electrical-owner-ready','b737:bus-failure-injection-changed'])
   root.addEventListener(event,()=>{if(index)refresh();});
  if(document.readyState==='loading')
   document.addEventListener('DOMContentLoaded',load,{once:true});
