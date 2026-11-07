@@ -144,7 +144,7 @@
    [],'FCOM_STANDBY_SWITCH');
   return all;
  }
- function getBus(buses,source,voltage){
+ function getBus(buses,source,voltage,{anyAvailable=false}={}){
   const parts=source.split('|');
   const values=parts.map(part=>{
    const key=part+'@'+voltage;
@@ -153,7 +153,11 @@
   });
   const live=values.filter(x=>x.powered===true).length;
   const lost=values.filter(x=>x.powered===false).length;
-  const state=parts.length===1?values[0].powered:
+  // The FMC's Electronic 1+2 reference describes alternative usable
+  // electrical feeds for binary FMC availability, not one compound
+  // half-powered LRU. Other multi-feed devices retain channel degradation.
+  const state=anyAvailable?(live>0?true:lost===parts.length?false:null):
+   parts.length===1?values[0].powered:
    lost===parts.length?false:live===parts.length?true:live>0?'DEGRADED':null;
   return {busIds:values.map(x=>x.id),sourceStatus:state,inputs:values,
    powerStatus:state===true?'NORMAL':state===false?'OFF':state==='DEGRADED'?'DEGRADED':'UNKNOWN',
@@ -206,7 +210,7 @@
   const tally={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
   for(const row of index.rows){
    const installed=appropriate(row,{mode,pressurization,aircraftModel});
-   const feed=getBus(buses,row.feedBus,row.feedVoltage);
+   const feed=getBus(buses,row.feedBus,row.feedVoltage,{anyAvailable:row.item==='FMC'});
    const breaker=CB_ITEMS[row.item]||null;
    const cbNames=breaker?.split('|')||[];
    const cbStates=typeof cbAvailable==='function'?cbNames.map(id=>cbAvailable(id)):null;
@@ -224,8 +228,16 @@
    const quality=unresolvedOption?'INSTALLATION_OPTION_UNCONFIRMED':
     row.sourceConfidence==='PRINTED_INDEX_READABLE'?
     'MRG_CLASSIC_FUNCTIONAL':'MRG_SOURCE_REVIEW_PENDING';
-   // Unknown or photograph-review feeds must not be represented as reliable ON.
-   if(installed&&quality!=='MRG_CLASSIC_FUNCTIONAL'&&state==='NORMAL')state='UNKNOWN';
+   // Bus availability and source-document confidence are independent.
+   // A duplicated transcription of exactly the same DC2 pump controller
+   // does not turn an observed ON/OFF bus into an amber electrical state.
+   // FMC electronic 1/2 has a legible bus assignment even though its
+   // source photograph needs QA; it is binary in this functional test lab.
+   // Keep all other unverified/optional equipment conservatively UNKNOWN.
+   const binaryFunctionalFeed=row.item==='FMC'||/^CDU (?:Captain|FO)$/.test(row.item)||
+    /^Fuel (?:Pump Control|Boost Pump) - /.test(row.item);
+   if(installed&&!binaryFunctionalFeed&&quality!=='MRG_CLASSIC_FUNCTIONAL'&&state==='NORMAL')
+    state='UNKNOWN';
    const type=role(row.item),group=family(row.item);
    const entry={
     id:row.id,name:row.item,system:group,role:type,
@@ -240,6 +252,8 @@
      state==='NOT_INSTALLED'?'NOT_APPLICABLE_TO_SELECTED_CONFIGURATION':
      'NO_ASSUMED_EQUIPMENT_RESPONSE',
     activeCommand:'NOT_OBSERVED',quality,
+    duplicateSourceOf:row.item==='Fuel Pump Control - Main Tank 1 Fwd'&&
+     row.id==='MRG-CL-184-048'?'MRG-CL-184-047':null,
     note:'Bus state models electrical availability; actual command, sensor, and mechanical operation are independently owned.'
    };
    consumers[row.id]=entry;tally[state]++;
@@ -265,13 +279,21 @@
    const hasDegraded=statuses.includes('DEGRADED'),hasUnknown=statuses.includes('UNKNOWN');
    const needsBoth=applicable.length>1&&new Set(applicable.map(x=>x.feedVoltage)).size>1&&!alternates.test(name);
    let state;
-   if(!applicable.length)state='NOT_INSTALLED';
+   if(name==='FMC'){
+    // FMC has two indexed reference paths: Electronic 1/2 AC and
+    // Standby AC. A surviving path keeps its functional availability
+    // BLUE; only losing every path makes it RED.
+    state=!applicable.length?'NOT_INSTALLED':hasNormal?'NORMAL':
+     statuses.every(s=>s==='OFF')?'OFF':'UNKNOWN';
+   }
+   else if(!applicable.length)state='NOT_INSTALLED';
    else if(needsBoth){
     state=hasOff?'OFF':hasUnknown?'UNKNOWN':hasDegraded?'DEGRADED':'NORMAL';
    }else state=hasDegraded||hasNormal&&hasOff?'DEGRADED':
     hasNormal?'NORMAL':hasUnknown?'UNKNOWN':'OFF';
    devices[name]={name,system:entries[0].system,role:entries[0].role,
-    topology:needsBoth?'ALL_REQUIRED':applicable.length>1?'ALTERNATE_OR_CHANNELS':'SINGLE',
+    topology:name==='FMC'?'ALTERNATE_FMC_AC_FEEDS':
+     needsBoth?'ALL_REQUIRED':applicable.length>1?'ALTERNATE_OR_CHANNELS':'SINGLE',
     state,channels:entries.map(x=>x.id),
     effect:state==='OFF'?consequence(entries[0].role):
      state==='DEGRADED'?'PARTIAL_POWER_OR_ALTERNATE_SUPPLY':
