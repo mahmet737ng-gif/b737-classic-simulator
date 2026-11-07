@@ -18,8 +18,11 @@ class Element{
   this.tagName=tag.toUpperCase();this.style={};this.dataset={};
   this.children=[];this.listeners={};this.value='';
   this.title='';this.hidden=false;this.attributes={};this.className='';
+  this._textContent='';
   this.classList={toggle:(name,on)=>{const set=new Set(this.className.split(/\s+/).filter(Boolean));if(on)set.add(name);else set.delete(name);this.className=[...set].join(' ');}};
  }
+ set textContent(value){this._textContent=String(value);}
+ get textContent(){return this._textContent;}
  appendChild(el){this.children.push(el);return el;}
  append(el){return this.appendChild(el);}
  replaceChildren(...nodes){this.children=nodes.flatMap(x=>x.tagName==='FRAGMENT'?x.children:[x]);}
