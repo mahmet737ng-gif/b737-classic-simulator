@@ -62,9 +62,11 @@ assert.equal(s.selectedSources[1],'APU');assert.equal(s.electrical.transfer1,tru
 assert.equal(s.projected['apu-gen-off-bus'],false);
 c.event('bleed-apu','ON');assert.equal(c.view().s.bleed.apuBleedValveOpen,true);
 
-// Negative gate 2: PACK left in AUTO; negative gate 3: isolation CLOSED.
+// PACK AUTO consumes bleed air but is not an engine-start interlock.
+// Negative routing case remains the ISOLATION CLOSED manifold gate.
 ({s}=c.event('engine-start-2','GRD','rotary'));
-assert.equal(s.phase.engine2,'BLOCKED');assert.match(s.lastError,/PACK L\/R/);
+assert.equal(s.phase.engine2,'MOTORING',
+ 'PACK AUTO must not block a valid APU-fed start duct');
 c.event('engine-start-2','OFF','rotary');
 c.event('pack-l','OFF');c.event('pack-r','OFF');c.event('isolation-valve','CLOSE');
 ({s}=c.event('engine-start-2','GRD','rotary'));
