@@ -6,7 +6,9 @@ test('unchanged MCP power, lamps and values never rebuild its SVG; changes remai
  const value=source.slice(source.indexOf('function setValue('),source.indexOf('\nfunction step('));
  const start=source.indexOf('window.B737McpVisualV3=Object.freeze({');
  const api=source.slice(start,source.indexOf('\n});',start)+4);
- let paints=0,events=0;const sandbox={window:{dispatchEvent(){}},W:2172,H:433,CustomEvent:class{},values:{speed:312,lamps:{LNAV:false}},powerState:null,
+ let paints=0,events=0;
+ const Rules=require('../engine/afds/mcp-fcom-ch4-numeric-v1.js');
+ const sandbox={window:{dispatchEvent(){}},W:2172,H:433,CustomEvent:class{},Rules,values:{speed:312,lamps:{LNAV:false}},powerState:null,
   displays:[],lamps:[],knobs:[],mount(){},repaint(){paints++;},event(){events++;},console};
  vm.runInNewContext(value+'\n'+api,sandbox);
  const m=sandbox.window.B737McpVisualV3;
