@@ -18,6 +18,14 @@ assert.equal(Object.keys(cold.buses).length,26);
 assert.equal(cold.coverage.sourceRows,340);
 assert.equal(cold.coverage.logicalDevices,322,'Source rows aggregate into distinct electrical devices');
 assert.equal(Object.keys(cold.devices).length,322);
+const eq300=active(E.initialState());
+assert.equal(find(eq300,'Temp. Control - aft cabin (400)').powerState,'NOT_INSTALLED');
+assert.equal(find(eq300,'Temp. Control Auto - left (300-500)').powerState,'NORMAL');
+assert.equal(find(eq300,'Rain Repellent - left (As installed)').powerState,'UNKNOWN');
+const eq400=Core.project({index,electrical:E.evaluate(E.initialState()),
+ electricalState:E.initialState(),aircraftModel:'737-400',pressurization:'DCPCS'});
+assert.equal(find(eq400,'Temp. Control - aft cabin (400)').powerState,'NORMAL');
+assert.equal(find(eq400,'Temp. Control Auto - left (300-500)').powerState,'NOT_INSTALLED');
 assert.equal(cold.buses['main1@115VAC'].powered,false);
 assert.equal(cold.buses['hotBattery@28VDC'].powered,true);
 assert.equal(cold.buses['battery@28VDC'].powered,false);
