@@ -7,11 +7,12 @@ permissions:
   contents: read
   pages: write
   id-token: write
-# Preserve an active deployment while newer parallel cockpit updates arrive.
-# GitHub retains the latest pending run without interrupting in-progress pages.
+# Publish the latest fully validated revision instead of allowing older,
+# long-running visual test jobs to block / overwrite the production Pages site.
+# Browser/performance checks run separately in pages-browser-qa.yml.
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   deploy:
     environment:
@@ -176,27 +177,15 @@ jobs:
         run: |
           node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs desktop/runtime-bundle.test.cjs desktop/avionics-scheduling.test.cjs desktop/render-efficiency.test.cjs desktop/startup-gate.test.cjs
           node tools/build-unified-web.cjs
-      - name: Install browser test dependency
-        run: npm install --no-save --ignore-scripts playwright@1.58.2
-      - name: Measure compiled web startup and live controls
+      - name: Validate 24-bus Test Lab standalone web entry
         run: |
-          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
-          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
-          node tools/build-composite-overhead-test.cjs
-          node tools/test-aircon-ovht-visual-timing.cjs
-          node tools/test-unified-web-startup.cjs
-          node tools/profile-unified-overhead-v6.cjs
-          node tools/test-hydraulic-live-lab-browser.cjs
-      - name: Save web startup evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unified-web-startup
-          path: |
-            artifacts/unified-web-startup/
-            artifacts/perf-0006/
-            artifacts/hydraulic-lab-qa/
-          if-no-files-found: ignore
+          node tests/classic-bus-consumer-test-lab-v1.test.cjs
+          node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
+          test -f web-dist/bus-consumer-test-lab/v2.html
+          grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v2.html
+          grep -q 'BUSLAB24-STBY-REV4' web-dist/bus-consumer-test-lab/v2.html
+          test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
+          grep -q 'v2.html' web-dist/panel-mosaic-lab/cockpit/index.html
       - name: Remove unreferenced archive files from Pages artifact only
         run: |
           node --check tools/prune-pages-artifact.cjs
