@@ -10,6 +10,7 @@
 <script src="../engine/systems/electrical-v7.js?v=BUSLAB24-POWER-0005" defer></script>
 <script src="../engine/systems/classic-bus-consumer-engine-v1.js?v=BUSLAB24-POWER-0005" defer></script>
 <script src="../engine/systems/classic-bus-consumer-test-lab-v1.js?v=BUSLAB24-POWER-0005" defer></script>
+<script src="../engine/systems/unified-bus-failure-injection-v1.js?v=ATA24-INJECT-0001" defer></script>
 <script src="./app.js?v=BUSLAB24-POWER-0005" defer></script>
 </head>
 <body>
@@ -27,13 +28,13 @@
 </header>
 <section class="notice" role="note">
   <span class="notice-icon">ⓘ</span>
-  <span>این Test Lab از برق واقعی Unified جداست. خاموش‌کردن یک باس فقط وضعیت مصرف‌کننده‌ها را <strong>در آزمایشگاه</strong> تغییر می‌دهد و وضعیت موتور، سوییچ‌ها و CBهای کابین را دست‌کاری نمی‌کند. مبنا: MRG IV.6 (B737 Classic).</span>
+  <span>قطع باس‌ها تا پیش از زدن <strong>Inject Failure to Cockpit</strong> فقط در آزمایشگاه است. پس از تزریق، سیستم‌های فعال کابین مطابق برق باس‌های انتخابی دچار خرابی می‌شوند؛ سوییچ فیزیکی و موتور به‌صورت ساختگی تغییر نمی‌کند. پاک‌کردن خرابی الزامی و دستی است.</span>
 </section>
 <div class="metrics" aria-live="polite">
   <div class="metric"><span>باس‌های برق‌دار</span><strong id="metricBusOn">—</strong><small>از ۲۴ گره</small></div>
   <div class="metric"><span>برق‌دار <i class="dot dot-blue"></i></span><strong id="metricOn" class="txt-blue">—</strong><small>مصرف‌کننده</small></div>
   <div class="metric"><span>بی‌برق <i class="dot dot-red"></i></span><strong id="metricOff" class="txt-red">—</strong><small>مصرف‌کننده</small></div>
-  <div class="metric"><span>محدود / نامشخص</span><strong id="metricOther" class="txt-amber">—</strong><small>شامل تجهیزات اختیاری</small></div>
+  <div class="metric"><span>محدود / نامشخص</span><strong id="metricOther" class="txt-amber">—</strong><small>خرابی بخشی یا ابهام در تغذیه</small></div>
 </div>
 <div class="work-area">
   <aside class="bus-panel" aria-labelledby="busPanelTitle">
@@ -52,6 +53,11 @@
       <option value="NOMINAL_V7">V7 normal sources — مدل پایهٔ ژنراتورها</option>
     </select>
     <label class="cascade-option"><input type="checkbox" id="cascadeSwitch"> محاسبهٔ قطعی باس‌های پایین‌دست (Cascade)</label>
+    <section class="inject-controls" aria-label="Apply bus failure to the working Unified simulator">
+      <button type="button" id="injectToCockpit" class="inject-button">Inject Failure to Cockpit</button>
+      <button type="button" id="clearCockpitFailures" class="scenario-btn subtle">Clear Injected Failures</button>
+      <p id="injectionStatus" role="status">قطع و وصل باس‌ها ابتدا فقط در این Test Lab است. برای اعمال خرابی روی کابین دکمه Inject را بزن.</p>
+    </section>
     <div class="bus-list" id="busList" aria-label="تمام ۲۴ باس قابل آزمایش">
       <p class="loading">در حال بارگذاری باس‌ها…</p>
     </div>
@@ -71,22 +77,15 @@
       <label class="select-field"><span>وضعیت</span><select id="stateFilter">
         <option value="ALL">همه</option><option value="OFF">بی‌برق</option>
         <option value="NORMAL">برق‌دار</option><option value="DEGRADED">محدود</option>
-        <option value="UNKNOWN">نامشخص</option><option value="NOT_INSTALLED">نصب‌نشده</option>
+        <option value="UNKNOWN">نامشخص</option>
       </select></label>
     </div>
-    <details class="configuration">
-      <summary>پیکربندی هواپیما (EIS / Conventional / 300-400-500)</summary>
-      <div class="config-grid">
-        <label>مدل هواپیما <select id="modelSelect"><option value="737-300">B737-300</option><option value="737-400">B737-400</option><option value="737-500">B737-500</option></select></label>
-        <label>نوع نشان‌دهنده موتور <select id="indicationSelect"><option value="CONVENTIONAL">Conventional</option><option value="EIS">EIS</option></select></label>
-        <label>Pressurization <select id="pressurizationSelect"><option value="DCPCS">DCPCS</option><option value="CPCS">CPCS</option></select></label>
-      </div>
-    </details>
+    <p class="effectivity-note">تمام مدل‌ها، EIS و Conventional، CPCS و DCPCS هم‌زمان در فهرست هستند؛ کاربرد هر تجهیز در انتهای نام مشخص می‌شود.</p>
     <div class="legend" aria-label="راهنمای رنگ">
       <span class="legend-item txt-blue"><i class="dot dot-blue"></i> BLUE = POWERED</span>
       <span class="legend-item txt-red"><i class="dot dot-red"></i> RED = NO POWER</span>
       <span class="legend-item txt-amber"><i class="dot dot-amber"></i> AMBER = DEGRADED / UNKNOWN</span>
-      <span class="legend-item txt-muted">GRAY = NOT INSTALLED</span>
+      <span class="legend-item txt-muted">EFFECTIVITY = SUFFIX ON NAME</span>
     </div>
     <div class="list-status"><span id="resultCount" aria-live="polite">در حال خواندن…</span><span id="scenarioLabel">ISOLATED TEST SCENARIO</span></div>
     <div class="table-viewport" role="region" aria-label="فهرست کامل مصرف‌کننده‌ها" tabindex="0">
