@@ -11,7 +11,14 @@ const Core=require('../engine/systems/classic-bus-consumer-engine-v1.js');
 const Lab=require('../engine/systems/classic-bus-consumer-test-lab-v1.js');
 const index=require('../engine/systems/mrg-classic-340-consumer-bus-index-v1.json');
 const dir=path.join(__dirname,'..','bus-consumer-test-lab');
-const html=fs.readFileSync(path.join(dir,'index.html'),'utf8');
+// Test the actual user-facing, cache-isolated v2 page rather than a source
+// fixture that an older GitHub Pages edge could still have cached.
+const html=fs.readFileSync(path.join(dir,'v2.html'),'utf8');
+assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-STBY-REV4"/);
+assert.equal((html.match(/v=BUSLAB24-STBY-REV4/g)||[]).length,5,
+ 'All CSS and JS dependencies must share the same never-before-used asset revision');
+assert.match(html,/24 BUS NODES/);
+assert.doesNotMatch(html,/26 BUS NODES/);
 const js=fs.readFileSync(path.join(dir,'app.js'),'utf8');
 class Element{
  constructor(tag='div'){
