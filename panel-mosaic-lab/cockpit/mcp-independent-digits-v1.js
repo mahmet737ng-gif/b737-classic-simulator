@@ -10,14 +10,21 @@
 const NS="http://www.w3.org/2000/svg",W=2172,H=433;
 const Rules=win.B737McpFCOMCh4NumericV1;
 const qa=new URLSearchParams(win.location.search).get("mcpDigitsTest")==="1";
-const areas=Object.freeze([
- {id:"courseL",x:85,y:112,w:112,h:59,slots:3},
- {id:"speed",x:485,y:115,w:147,h:56,slots:3},
- {id:"heading",x:826,y:113,w:119,h:58,slots:3},
- {id:"altitude",x:1127,y:114,w:171,h:56,slots:5},
- {id:"verticalSpeed",x:1376,y:118,w:171,h:56,slots:5},
- {id:"courseR",x:1932,y:120,w:121,h:55,slots:3}
-]);
+/* MCP-HOLES-0001: no second set of photo-space positions.
+ * The photo-measured inner glass apertures in MCP Visual V3 are authoritative;
+ * all six live numeric hosts inherit EXACT same centers and dimensions.
+ * A missing geometry authority fails closed rather than guessing positions.
+ */
+const capacity=Object.freeze({
+ courseL:{slots:3},speed:{slots:3},heading:{slots:3},
+ altitude:{slots:5},verticalSpeed:{slots:5},courseR:{slots:3}
+});
+const geometry=win.B737McpVisualV3?.geometry?.displays;
+if(!Array.isArray(geometry)||geometry.length!==6||
+ geometry.some(d=>!Object.hasOwn(capacity,d.id)))throw Error("MCP native photo display geometry unavailable");
+const areas=Object.freeze(geometry.map(d=>Object.freeze({
+ id:d.id,x:d.x,y:d.y,w:d.w,h:d.h,slots:capacity[d.id].slots
+})));
 const segments=Object.freeze({
  a:"M9 4.5 L27 4.5",b:"M30 8.5 L29 24",c:"M29 35 L28 50",
  d:"M8 54.5 L26 54.5",e:"M6 35 L5 50",f:"M7 8.5 L6 24",
