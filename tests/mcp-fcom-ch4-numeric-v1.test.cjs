@@ -23,10 +23,9 @@ for(const [field,good,bad] of [['speed',110,109],['speed',340,341],
  ['machHundredths',60,59],['machHundredths',82,83],
  ['altitude',50000,50100],['altitude',0,-100],
  ['verticalSpeed',-7900,-7950],['verticalSpeed',6000,6050],
- ['verticalSpeed',950,975],['verticalSpeed',1050,1100]]){
+ ['verticalSpeed',950,975]]){
  assert.equal(Rules.valid(field,good),true,field+' accepted '+good);
- if(field!=='verticalSpeed'||good!==1050)
-  assert.equal(Rules.valid(field,bad),false,field+' rejected '+bad);
+ assert.equal(Rules.valid(field,bad),false,field+' rejected '+bad);
 }
 assert.equal(Rules.valid('verticalSpeed',1050),false);
 assert.equal(Rules.step('verticalSpeed',0,1),50);
