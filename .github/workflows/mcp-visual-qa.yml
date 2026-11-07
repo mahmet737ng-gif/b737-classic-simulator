@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.js'
+      - 'panel-mosaic-lab/cockpit/mcp-rotary-gesture-v1.js'
+      - 'tests/mcp-rotary-gesture-v1.test.cjs'
       - 'tools/mcp-hole-calibration-v1.py'
       - 'panel-mosaic-lab/cockpit/mcp-socket-registration-v2.js'
       - 'panel-mosaic-lab/cockpit/mcp-knob-retina-v1.css'
@@ -39,6 +41,11 @@ jobs:
           python3 -m pip install --quiet Pillow
           python3 tools/mcp-hole-calibration-v1.py
           node tests/mcp-photo-aperture-center-v1.test.cjs
+      - name: Verify touch/swipe velocity, all knobs and FCOM numeric detents
+        run: |
+          node --check panel-mosaic-lab/cockpit/mcp-rotary-gesture-v1.js
+          node --check tests/mcp-rotary-gesture-v1.test.cjs
+          node tests/mcp-rotary-gesture-v1.test.cjs
       - name: Check MCP overlay syntax
         run: |
           node --check panel-mosaic-lab/cockpit/mcp-visual-v3.js
