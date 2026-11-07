@@ -62,11 +62,16 @@ async function test(){
  for(let i=0;i<6&&!root.B737BusConsumerTestLabUIV1;i++)await new Promise(r=>setImmediate(r));
  const api=root.B737BusConsumerTestLabUIV1;
  assert.ok(api,'UI was not initialized');
- assert.equal(api.listBusNames().length,26);
+ assert.equal(api.listBusNames().length,24);
  const buttons=allChildren(ids.busList).filter(x=>x.tagName==='BUTTON');
- assert.equal(buttons.length,26);
+ assert.equal(buttons.length,24);
+ const standby=buttons.filter(x=>x.dataset.bus?.startsWith('standby@'));
+ assert.equal(standby.length,2,'Exactly AC and DC standby buses are clickable');
+ assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='AC STBY BUS')));
+ assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='DC STBY BUS')));
+ assert.equal(new Set(Object.values(api.getSnapshot().consumers).map(x=>x.system)).has('OTHER'),false);
  assert.equal(ids.consumerBody.children.length,340,'All 340 physical source entries are visible');
- assert.equal(ids.metricBusOn.textContent,'26 / 26');
+ assert.equal(ids.metricBusOn.textContent,'24 / 24');
  let fuel=ids.consumerBody.children.find(x=>x.dataset.consumer==='Fuel Boost Pump - Main Tank 1 Forward');
  assert.equal(fuel.dataset.state,'NORMAL');
  const main1=buttons.find(x=>x.dataset.bus==='main1@115VAC');
@@ -80,11 +85,11 @@ async function test(){
  fuel=ids.consumerBody.children.find(x=>x.dataset.consumer==='Fuel Boost Pump - Main Tank 1 Forward');
  assert.equal(fuel.dataset.state,'NORMAL','Restored bus returns consumer to blue');
  ids.allOff.trigger('click');
- assert.equal(ids.metricBusOn.textContent,'0 / 26');
+ assert.equal(ids.metricBusOn.textContent,'0 / 24');
  assert.equal(ids.metricOn.textContent,'0');
  assert.equal(ids.metricOff.textContent,String(api.getSnapshot().coverage.activeRows));
  ids.allOn.trigger('click');
- assert.equal(ids.metricBusOn.textContent,'26 / 26');
+ assert.equal(ids.metricBusOn.textContent,'24 / 24');
  ids.devicesView.trigger('click');
  assert.equal(ids.consumerBody.children.length,322,'All 322 composite devices are shown');
  ids.rowsView.trigger('click');
@@ -103,5 +108,5 @@ async function test(){
  assert.equal(api.getSnapshot().aircraftModel,'737-400');
  assert.equal(ids.labError.hidden,true,'No initialization or interaction errors were expected')
 }
-test().then(()=>console.log('PASS lab UI: 26 bus toggles, 340 red/blue consumers, 322 devices, search, cascade, variant')).
+test().then(()=>console.log('PASS lab UI: 24 bus toggles, 340 red/blue consumers, 322 devices, search, cascade, variant')).
  catch(e=>{console.error(e);process.exitCode=1;});
