@@ -14,7 +14,8 @@ const initial=()=>({
   lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","VOR_LOC","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,false]))
 });
 const values=initial();
-let powerState=null; // equipment supply unresolved until explicit observed evidence
+// Main and COURSE 2 indications have separate electrical supply routes.
+let powerState=null,course2PowerState=null;
 /* MCP-0007: individual glass-aperture fits, measured against the actual
  * 2172×433 locked MCP photograph and cross-checked with cockpit screenshot.
  * These are INSIDE the metal bezels (not button/knob sockets). In particular,
@@ -59,27 +60,28 @@ function svgElement(tag,attrs={},txt){
  if(txt!==undefined)n.textContent=txt;return n;
 }
 function group(parent,attrs){const n=svgElement("g",attrs);parent.append(n);return n}
-function segmentPolygons(){
- return {
-  a:"5,1 28,1 24,6 10,6",
-  b:"30,2 34,7 34,24 30,28 27,24 27,9",
-  c:"30,31 34,35 34,52 30,57 27,50 27,35",
-  d:"6,54 28,54 24,59 10,59",
-  e:"4,31 8,35 8,50 4,57 1,52 1,35",
-  f:"4,2 8,9 8,24 4,28 1,24 1,7",
-  g:"6,29 10,26 26,26 30,29 26,32 10,32"
- };
-}
+/* Thin rounded, slightly slanted amber light-pipes copied in proportion and
+ * light response from the user's photographed B737 Classic MCP. Coordinates
+ * remain in a 35x59 digit cell, independent of window/zoom pixel size. */
+const segmentPaths=Object.freeze({
+ a:"M9 4.5 L27 4.5",b:"M30 8.5 L29 24",c:"M29 35 L28 50",
+ d:"M8 54.5 L26 54.5",e:"M6 35 L5 50",f:"M7 8.5 L6 24",
+ g:"M8.5 29.5 L27 29.5"
+});
 const mask={0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"};
 function numericText(id){
  const v=values[id];
- if(id==="verticalSpeed"){return v<0?"-"+String(Math.abs(v)).padStart(3,"0"):String(v).padStart(4,"0");}
+ if(id==="verticalSpeed"){return v<0?"-"+String(Math.abs(v)):String(v);}
  return String(v).padStart(id==="altitude"?5:3,"0");
 }
 function drawDigit(g,x,y,size,character){
  const node=group(g,{transform:"translate("+x+" "+y+") scale("+size/35+")"});
- for(const [seg,points] of Object.entries(segmentPolygons())){
-  node.append(svgElement("polygon",{points,fill:(mask[character]||"").includes(seg)?"#ffcd30":"#3e3517",opacity:(mask[character]||"").includes(seg)?1:.16,class:(mask[character]||"").includes(seg)?"mcp-lit-segment":"mcp-off-segment"}));
+ const active=mask[character]||"";
+ for(const [seg,d] of Object.entries(segmentPaths)){
+  const lit=active.includes(seg);
+  node.append(svgElement("path",{d,fill:"none",stroke:lit?"#ffdf91":"#503916",
+   "stroke-width":lit?4.35:3.8,"stroke-linecap":"round","stroke-linejoin":"round",
+   opacity:lit?1:.13,class:lit?"mcp-lit-segment":"mcp-off-segment"}));
  }
 }
 function drawDisplay(svg,d){
@@ -90,15 +92,19 @@ function drawDisplay(svg,d){
  svg.querySelector("defs").append(clip);
  g.setAttribute("clip-path","url(#mcp-v5-"+d.id+")");
  g.append(svgElement("rect",{x:d.x+2,y:d.y+2,width:d.w-4,height:d.h-4,rx:1.6,fill:"#070b0b",opacity:.97}));
- if(powerState!==true)return; // original photographed digits must be masked when unpowered/unknown
+ // Keep the display face black when the respective bus or breaker is dead.
+ if((d.id==="courseR"?course2PowerState:powerState)!==true)return;
  const chars=numericText(d.id);
  const count=chars.length;
- const size=count>=5?24.5:29.5;
- const aw=size, spacing=count>=5?5.7:6.1;
- const total=count*aw+(count-1)*spacing;
+ // Digit size is constrained by each *real* glass aperture, not a shared
+ // full-panel CSS width. This keeps every segment inside its own housing.
+ const countWidth=count*35+(count-1)*6.8;
+ const scale=Math.min(1,(d.w-12)/countWidth,(d.h-7)/59);
+ const cell=35*scale,spacing=6.8*scale;
+ const total=count*cell+(count-1)*spacing;
  const start=d.x+(d.w-total)/2;
- const height=size*59/35;
- for(let i=0;i<chars.length;i++)drawDigit(g,start+i*(aw+spacing),d.y+(d.h-height)/2,size,chars[i]);
+ const top=d.y+(d.h-59*scale)/2;
+ for(let i=0;i<count;i++)drawDigit(g,start+i*(cell+spacing),top,cell,chars[i]);
 }
 function repaint(){
  for(const obj of instances){
@@ -183,6 +189,8 @@ window.B737McpVisualV3=Object.freeze({
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)&&values.lamps[id]!==!!state){values.lamps[id]=!!state;repaint()}},
  setLamps:(states)=>{let changed=false;for(const id of Object.keys(values.lamps)){const next=states?.[id]===true;if(values.lamps[id]!==next){values.lamps[id]=next;changed=true;}}if(changed)repaint()},
  setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");if(powerState!==powered){powerState=powered;repaint()}},
+ setCourse2Power:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP COURSE 2 power must be true/false/null");if(course2PowerState!==powered){course2PowerState=powered;repaint()}},
+ auditDisplays:()=>({mainPowered:powerState,course2Powered:course2PowerState,values:{...values},windows:displays.map(d=>({id:d.id,x:d.x,y:d.y,width:d.w,height:d.h,lit:(d.id==="courseR"?course2PowerState:powerState)===true}))}),
  mount
 });
 window.addEventListener("b737:visual-test",e=>{for(const id of Object.keys(values.lamps))values.lamps[id]=!!e.detail?.active;repaint()});
