@@ -143,7 +143,8 @@
   const now=performance.now(),dt=typeof forcedSeconds==='number'?forcedSeconds:Math.min(300,Math.max(0,(now-lastAt)/1000));lastAt=now;
   // Missing electrical authority is fail-dark, not an invitation to retain a
   // stale illuminated projection from a previous source or iframe session.
-  const live=buses(),b=trainingPower?TRAIN_BUSES:(live||{}),sw=switches();if(!Object.keys(sw).length){
+  const injected=window.B737UnifiedBusFailureInjectionV1?.live?.get?.()?.active===true;
+  const live=buses(),b=trainingPower&&!injected?TRAIN_BUSES:(live||{}),sw=switches();if(!Object.keys(sw).length){
    if(ui)ui.querySelector('#wh-status').textContent='WAITING FOR LIVE ELECTRICAL / OVERHEAD AUTHORITY';
    return;
   }
