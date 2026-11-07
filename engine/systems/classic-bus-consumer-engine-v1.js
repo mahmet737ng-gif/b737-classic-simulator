@@ -184,6 +184,18 @@
    powerStatus:state===true?'NORMAL':state===false?'OFF':state==='DEGRADED'?'DEGRADED':'UNKNOWN',
    basis:values.map(x=>x.basis)};
  }
+ function displayName(row){
+  const marks=[];
+  if(row.applicability==='CPCS')marks.push('CPCS');
+  if(row.applicability==='DCPCS')marks.push('DCPCS');
+  if(/non.EIS/i.test(row.item))marks.push('CONVENTIONAL');
+  else if(/\(EIS\)/i.test(row.item))marks.push('EIS');
+  if(/\(400\)/i.test(row.item))marks.push('B737-400');
+  if(/\(300-500\)/i.test(row.item))marks.push('B737-300/500');
+  if(/\(600-700\)/i.test(row.item))marks.push('737-600/700 REFERENCE');
+  if(row.applicability==='EQUIPMENT_OPTION')marks.push('AS INSTALLED');
+  return row.item+(marks.length?' ['+[...new Set(marks)].join(' · ')+']':'');
+ }
  function appropriate(row,{mode,pressurization,aircraftModel}){
   if(row.applicability==='DCPCS'&&pressurization!=='DCPCS')return false;
   if(row.applicability==='CPCS'&&pressurization!=='CPCS')return false;
@@ -196,7 +208,7 @@
  }
  function project({index,electrical,electricalState=null,mode='CONVENTIONAL',
   pressurization='DCPCS',aircraftModel='737-300',cbAvailable=null,
-  labBusPower=null}={}){
+  includeAllConfigurations=false,labBusPower=null}={}){
   validate(index);
   if(!['EIS','CONVENTIONAL'].includes(mode)||!['CPCS','DCPCS'].includes(pressurization)||
    !['737-300','737-400','737-500'].includes(aircraftModel))
@@ -230,7 +242,7 @@
   const consumers={},systems={};
   const tally={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
   for(const row of index.rows){
-   const installed=appropriate(row,{mode,pressurization,aircraftModel});
+   const installed=includeAllConfigurations||appropriate(row,{mode,pressurization,aircraftModel});
    const feed=getBus(buses,row.feedBus,row.feedVoltage,{anyAvailable:row.item==='FMC'});
    const breaker=CB_ITEMS[row.item]||null;
    const cbNames=breaker?.split('|')||[];
@@ -256,7 +268,7 @@
     'AS_INSTALLED_UNVERIFIED':'GENERAL_CLASSIC_REFERENCE';
    const type=role(row.item),group=family(row.item);
    const entry={
-    id:row.id,name:row.item,system:group,role:type,
+    id:row.id,name:row.item,displayName:displayName(row),system:group,role:type,
     feedBus:row.feedBus,feedVoltage:row.feedVoltage,
     busKeys:feed.busIds,powerState:state,
     canOperate:state==='NORMAL'?true:state==='OFF'||state==='NOT_INSTALLED'?false:null,
@@ -324,7 +336,7 @@
     'NORMAL':states.every(v=>v==='OFF')?'OFF':'UNKNOWN';
   }
   return {schema:SCHEMA,revision:electrical.revision,mode,pressurization,aircraftModel,
-   buses,consumers,devices,systems,coverage:{...tally,sourceRows:index.rows.length,
+   buses,consumers,devices,systems,includeAllConfigurations,coverage:{...tally,sourceRows:index.rows.length,
     logicalDevices:Object.keys(devices).length,
     activeRows:index.rows.length-tally.NOT_INSTALLED},
    assumptions:['GENERATOR_ELECTRONIC_BUS_PROXY','28VAC_TRANSFORMER_NOT_MONITORED',
