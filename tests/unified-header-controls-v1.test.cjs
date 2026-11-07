@@ -6,8 +6,8 @@ const html=read('index.html');
 const header=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/header>/)?.[1];
 assert.ok(header,'Main Unified top bar exists');
 const ids=[...header.matchAll(/<button\b[^>]*\bid="([^"]+)"/g)].map(m=>m[1]);
-assert.deepEqual(ids,['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader'],
- 'Only Controls, Settings, CB PNL and Ground Power can be in header');
+assert.deepEqual(ids,['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
+ 'Only Controls, Settings, CB PNL, Ground Power and FAILURES can be in header');
 const controlStart=html.indexOf('<section id="unifiedControlCenter"'),controlEnd=html.indexOf('</section>',controlStart);
 assert.ok(controlStart>0,'Controls drawer must exist');
 const controlBlock=html.slice(controlStart,html.indexOf('<section class="aircraft-profile-summary"',controlStart));
@@ -33,10 +33,16 @@ assert.ok(battery.includes("readout.style.display=''"),
  'Battery voltage, charge and amperage remain visible even with AC generators online');
 const recharge=read('battery-recharge-header-v1.js');
 assert.ok(!recharge.includes("bar.querySelector('#cbPanelOpen')"),'Battery charge must not reattach to top bar');
+const failureMenu=read('failures-header-v1.js');
+assert.ok(html.includes('id="failuresHeaderOpen"'),'FAILURES must be visible beside the other header controls');
+assert.ok(html.includes('failures-header-v1.css?v=FAILURES-HEADER-0001'));
+assert.ok(html.includes('failures-header-v1.js?v=FAILURES-HEADER-0001'));
+assert.ok(failureMenu.includes("const GROUPS="),'Electrical branch must be extensible');
+new vm.Script(failureMenu,{filename:'failures-header-v1.js'});
 const gpu=read('ground-power-header-v1.js');
 assert.ok(gpu.includes("holder.querySelector('#cbPanelOpen')"),'Ground Power follows CB PNL');
 assert.ok(!gpu.includes("holder.querySelector('#liveBatteryRecharge')"),
  'Ground Power must not move behind drawer battery button');
 assert.ok(html.includes("battery-panel-live-v1.js?v=BAT-CONTROLS-0001"),'Battery meter cache bumped');
 assert.ok(html.includes("battery-recharge-header-v1.js?v=BAT-CONTROLS-0001"),'Battery recharge cache bumped');
-console.log('PASS: strict 4-button header; rechargeable live battery volt/amp meter and tests remain under Controls');
+console.log('PASS: strict 5-button header; rechargeable live battery volt/amp meter and tests remain under Controls');
