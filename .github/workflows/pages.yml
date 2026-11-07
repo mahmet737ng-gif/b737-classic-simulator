@@ -171,6 +171,8 @@ jobs:
           node --check panel-mosaic-lab/cockpit/mcp-hardware-v1.js
           node --check panel-mosaic-lab/cockpit/mcp-independent-digits-v1.js
           node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-rotary-gesture-v1.js
+          node tests/mcp-rotary-gesture-v1.test.cjs
           node tests/mcp-fcom-ch4-numeric-v1.test.cjs
           node tests/mcp-photo-aperture-center-v1.test.cjs
           node tests/mcp-knob-native-hole-v1.test.cjs
