@@ -90,7 +90,8 @@
   checkSources(Object.keys(reference));
   let baseline='ALL_ON',cascade=false,off=new Set(),config={mode,pressurization,aircraftModel};
   const update=()=>Core.project({index,electrical:evaluated,electricalState:source,
-    labBusPower:calculatePower(reference,[...off],baseline,cascade),...config,cbAvailable});
+    labBusPower:calculatePower(reference,[...off],baseline,cascade),
+    ...config,includeAllConfigurations:true,cbAvailable});
   let snapshot=update();
   return Object.freeze({
    get version(){return VERSION;},
