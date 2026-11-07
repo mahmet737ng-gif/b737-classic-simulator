@@ -171,7 +171,7 @@
    w.addEventListener('b737:overhead-light-state',()=>{if(last)applyLamps(last);});
   }
  }
- function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('b737:bus-failure-injection-changed',()=>{if(!electricalBusSnapshot)tick(0);});window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
+ function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('b737:bus-failure-injection-changed',()=>{if(!electricalBusSnapshot)tick(0);});window.addEventListener('b737:cb-state-change',()=>tick(0));window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
  window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,
    setElectricalBusSnapshot:feeds=>{
     if(!feeds||typeof feeds!=='object')throw Error('Window Heat electrical feed snapshot required');
