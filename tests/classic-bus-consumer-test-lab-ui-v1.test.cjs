@@ -8,6 +8,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const E=require('../engine/systems/electrical-v7.js');
 const Core=require('../engine/systems/classic-bus-consumer-engine-v1.js');
+const Multifeed=require('../engine/systems/classic-multifeed-topology-v1.js');
 const Lab=require('../engine/systems/classic-bus-consumer-test-lab-v1.js');
 const Protocol=require('../engine/systems/unified-bus-failure-injection-v1.js');
 const index=require('../engine/systems/mrg-classic-340-consumer-bus-index-v1.json');
@@ -58,6 +59,7 @@ const document={
 const storage=new Map();
 const root={
  B737ClassicBusConsumersV1:Core,
+ B737ClassicMultifeedV1:Multifeed,
  B737ElectricalV7:E,
  B737BusConsumerTestLabV1:Lab,
  B737UnifiedBusFailureInjectionV1:Protocol,
