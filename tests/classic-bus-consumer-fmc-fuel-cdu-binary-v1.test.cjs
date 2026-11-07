@@ -27,7 +27,7 @@ const checkBinary=title=>{
  assert.ok(['NORMAL','OFF'].includes(device('FMC').state),
   title+': composite FMC device must never be amber');
 };
-checkBinary('all 26 buses powered');
+checkBinary('all 24 buses powered');
 const duplicated=item('Fuel Pump Control - Main Tank 1 Fwd');
 assert.equal(duplicated.length,2,'Both source audit references are retained');
 assert.deepEqual(duplicated.map(x=>x.powerState),['NORMAL','NORMAL']);
@@ -83,4 +83,4 @@ assert.equal(item('Rain Repellent - left (As installed)')[0].powerState,'UNKNOWN
  'Do not falsely certify unspecified optional equipment from the generic MRG');
 assert.equal(lab.snapshot().coverage.sourceRows,340);
 assert.equal(lab.snapshot().coverage.logicalDevices,322);
-console.log('PASS: ALL fuel pump / FMC / Captain and FO CDU entries determined BLUE/RED for 26 individual outages, mixed FMC feeds, DC2 loss and blackout; source QA retained');
+console.log('PASS: ALL fuel pump / FMC / Captain and FO CDU entries determined BLUE/RED for 24 individual outages, mixed FMC feeds, DC2 loss and blackout; source QA retained');
