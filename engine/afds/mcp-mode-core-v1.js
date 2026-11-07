@@ -7,6 +7,7 @@
  if(root)root.B737McpModeCoreV1=api;
 })(typeof globalThis!=="undefined"?globalThis:null,function(){
 "use strict";
+const Rules=typeof globalThis!=="undefined"?globalThis.B737McpFCOMCh4NumericV1:null;
 const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_OBSERVED:"INSTRUCTOR_OBSERVED",SIMULATED_DC1:"SIMULATED_DC1"});
 const lateral=Object.freeze(["HDG_SEL","LNAV","VOR_LOC"]);
 const vertical=Object.freeze(["LVL_CHG","ALT_HLD","VS","VNAV"]);
@@ -18,7 +19,8 @@ function initialState(){return {
  schema:"B737_MCP_AFDS_V1",revision:0,
  electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,electronic1:null,dc1:null,batteryBus:null,rawRevision:null},
  fd:{left:false,right:false},autoThrottleArm:false,
- values:{courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0},
+ values:{courseL:261,courseR:261,speed:110,machHundredths:60,heading:134,altitude:10000,verticalSpeed:0},
+  speedDisplayMode:"IAS",
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
  pending:{approach:false},lastRejection:null
@@ -103,11 +105,14 @@ function transition(state,action){
   s.autoThrottleArm=action.armed;if(!action.armed)s.modes.thrust=null;return done();
  }
  if(s.electrical.mcpPower!==true)return rejected(s,"MCP_BUS_OR_CB_NOT_POWERED");
+ if(action.type==="SPEED_MODE"){
+  if(!["IAS","MACH"].includes(action.mode))throw Error("Unknown IAS/MACH display mode");
+  if(s.modes.vertical==="VNAV")return rejected(s,"IAS_MACH_DISPLAY_BLANK");
+  s.speedDisplayMode=action.mode;return done();
+ }
  if(action.type==="VALUE"){
-  const v=action.value,id=action.id;
-  const bounds={courseL:[0,359,1],courseR:[0,359,1],heading:[0,359,1],speed:[100,399,1],altitude:[0,49900,100],verticalSpeed:[-9900,9900,100]};
-  const b=bounds[id];
-  if(!b||!Number.isFinite(v)||Math.round(v)!==v||v<b[0]||v>b[1]||v%b[2]!==0)throw Error("MCP value out of range");
+  const id=action.id,v=action.value;
+  if(!Rules?.valid||!Rules.valid(id,v))throw Error("MCP value out of FCOM Chapter 4 range or increment");
   s.values[id]=v;return done();
  }
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
@@ -150,9 +155,11 @@ function output(s){
   lamps.APP=s.pending.approach&&s.evidence.approachCapture===true;
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
-  electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
+  electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
+   speedDisplayMode:s.speedDisplayMode,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
+   controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
-  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
+  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
 }
 return Object.freeze({STATES,initialState,globalPowerPossible,transition,output});
 });
