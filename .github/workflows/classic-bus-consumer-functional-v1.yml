@@ -8,6 +8,8 @@ on:
       - 'engine/integration/isn-electrical-pack-v1.js'
       - 'panel-mosaic-lab/cockpit/bus-consumer-unified-v1.js'
       - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/autobrake-unified-v1.js'
+      - 'tests/eis-autobrake-unified-v1.test.cjs'
       - 'tests/classic-bus-consumer-functional-v1.test.cjs'
       - '.github/workflows/classic-bus-consumer-functional-v1.yml'
   workflow_dispatch:
@@ -25,11 +27,13 @@ jobs:
           node tests/engine-indication-source-power-ata77-v2.test.cjs
           node tests/engine-indication-unified-live-v2.test.cjs
           node tests/isn-electrical-pack-v1.test.cjs
+          node tests/eis-autobrake-unified-v1.test.cjs
           node tests/electrical-v7.test.cjs
       - name: Parse client and backend modules
         run: |
           node --check engine/systems/classic-bus-consumer-engine-v1.js
           node --check panel-mosaic-lab/cockpit/bus-consumer-unified-v1.js
           node --check engine/integration/isn-electrical-pack-v1.js
+          node --check panel-mosaic-lab/cockpit/autobrake-unified-v1.js
       - name: Preserve photo and protected control assets
         run: python3 panel-mosaic-lab/verify-final-overhead.py
