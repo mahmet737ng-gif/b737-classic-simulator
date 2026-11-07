@@ -191,6 +191,17 @@
    basis:values.map(x=>x.basis)};
  }
  function displayName(row){
+  // MRG lists the *same* physical L/R AoA vane on two different electrical
+  // feeds. LAN ATA30 establishes Transfer Bus as the heater source. MRG's
+  // Main Bus entry is retained as a distinct additional feed, not a second
+  // heater; its precise aircraft-specific function is not WDM-confirmed.
+  if(/^Alpha Vane AoA - (left|right)$/i.test(row.item)){
+   const side=/left/i.test(row.item)?'L':'R';
+   if(/^transfer[12]$/.test(row.feedBus))
+    return row.item+' [L/R '+side+' · VANE HEATER · '+row.feedBus.toUpperCase()+' 115V AC]';
+   if(/^main[12]$/.test(row.feedBus))
+    return row.item+' [L/R '+side+' · ADDITIONAL AOA FEED · '+row.feedBus.toUpperCase()+' 115V AC · FUNCTION UNCONFIRMED]';
+  }
   const marks=[];
   if(row.applicability==='CPCS')marks.push('CPCS');
   if(row.applicability==='DCPCS')marks.push('DCPCS');
