@@ -79,8 +79,10 @@ checkBinary('all off');
 assert.equal(lab.snapshot().coverage.NORMAL,0);
 lab.all(true);
 checkBinary('all on restored');
-assert.equal(item('Rain Repellent - left (As installed)')[0].powerState,'UNKNOWN',
- 'Do not falsely certify unspecified optional equipment from the generic MRG');
+assert.equal(item('Rain Repellent - left (As installed)')[0].powerState,'NORMAL',
+ 'Electrical availability must be blue when DC1 powers the optional device');
+assert.equal(item('Rain Repellent - left (As installed)')[0].installationStatus,'AS_INSTALLED_UNVERIFIED',
+ 'Blue electrical power must not certify that optional hardware was installed');
 assert.equal(lab.snapshot().coverage.sourceRows,340);
 assert.equal(lab.snapshot().coverage.logicalDevices,322);
 console.log('PASS: ALL fuel pump / FMC / Captain and FO CDU entries determined BLUE/RED for 24 individual outages, mixed FMC feeds, DC2 loss and blackout; source QA retained');
