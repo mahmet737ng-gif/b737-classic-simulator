@@ -151,6 +151,8 @@ jobs:
           node tests/isn-cockpit-bridge-v1.test.cjs
           node tests/isn-overhead-transport-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/isn-cockpit.js
+          node --check engine/systems/classic-alpha-vane-heat-v1.js
+          node tests/classic-alpha-vane-heat-injection-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/overhead-bridge.js
           node --check isn-electrical-pack-lab/app.js
           # The standalone HTML is a generated, deterministic output.
@@ -192,6 +194,8 @@ jobs:
           grep -q 'BUSLAB24-INJECT-0009' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
+          test -f web-dist/engine/systems/classic-alpha-vane-heat-v1.js
+          grep -q 'classic-alpha-vane-heat-v1.js' web-dist/panel-mosaic-lab/cockpit/index.html
           test -f web-dist/panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
           test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.js
           test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.css
