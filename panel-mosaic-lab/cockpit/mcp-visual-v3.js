@@ -16,6 +16,8 @@ const initial=()=>({
 const values=initial();
 // Main and COURSE 2 indications have separate electrical supply routes.
 let powerState=null,course2PowerState=null;
+/* Explicit visual QA only: never alters electrical, CB, or AFDS state. */
+const digitQa=new URLSearchParams(location.search).get("mcpDigitsTest")==="1";
 /* MCP-0007: individual glass-aperture fits, measured against the actual
  * 2172×433 locked MCP photograph and cross-checked with cockpit screenshot.
  * These are INSIDE the metal bezels (not button/knob sockets). In particular,
@@ -93,7 +95,7 @@ function drawDisplay(svg,d){
  g.setAttribute("clip-path","url(#mcp-v5-"+d.id+")");
  g.append(svgElement("rect",{x:d.x+2,y:d.y+2,width:d.w-4,height:d.h-4,rx:1.6,fill:"#070b0b",opacity:.97}));
  // Keep the display face black when the respective bus or breaker is dead.
- if((d.id==="courseR"?course2PowerState:powerState)!==true)return;
+ if(!digitQa&&(d.id==="courseR"?course2PowerState:powerState)!==true)return;
  const chars=numericText(d.id);
  const count=chars.length;
  // Digit size is constrained by each *real* glass aperture, not a shared
@@ -180,7 +182,31 @@ function mount(){
   for(const n of knobs)mountKnob(parent,n);
   instances.push({parent,svg});
  });
+ if(digitQa)mountDigitDiagnostics();
  repaint();
+}
+function mountDigitDiagnostics(){
+ if(document.getElementById("mcp-digit-qa-status"))return;
+ const el=document.createElement("aside");
+ el.id="mcp-digit-qa-status";
+ el.setAttribute("role","status");
+ Object.assign(el.style,{position:"fixed",bottom:"42px",right:"14px",zIndex:"10000",pointerEvents:"none",
+  color:"#ffe49e",background:"#070c12ee",border:"1px solid #b88d37",borderRadius:"5px",
+  padding:"9px 12px",font:"12px/1.55 ui-monospace,Consolas,monospace",
+  whiteSpace:"pre-line",direction:"ltr",maxWidth:"380px"});
+ function render(){
+  const bus=window.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+  const out=window.B737McpAFDSBridgeV1?.getOutput?.();
+  el.textContent="MCP SEVEN-SEGMENT VISUAL QA ONLY\\n"+
+   "Digits forced visible; NO electrical change\\n"+
+   "DC1: "+String(bus?.dc1??"UNKNOWN")+" | BAT BUS: "+String(bus?.battery??"UNKNOWN")+"\\n"+
+   "CB MCP: "+String(window.B737UnifiedCB?.available("mcp.power")??"UNKNOWN")+
+   " | CB CRS2: "+String(window.B737UnifiedCB?.available("mcp.course2")??"UNKNOWN")+"\\n"+
+   "AFDS Power: "+String(out?.power??"UNKNOWN")+
+   " | CRS2 Power: "+String(out?.course2Power??"UNKNOWN");
+ }
+ for(const event of ["b737:electrical-owner-ready","b737:electrical-v7-state","b737:cb-state-change","b737:mcp-afds-state"])window.addEventListener(event,render);
+ document.body.append(el);render();
 }
 window.B737McpVisualV3=Object.freeze({
  geometry:Object.freeze({width:W,height:H,displays:displays.map(x=>({...x})),lamps:lamps.map(x=>({...x})),knobs:knobs.map(x=>({...x}))}),
@@ -190,7 +216,7 @@ window.B737McpVisualV3=Object.freeze({
  setLamps:(states)=>{let changed=false;for(const id of Object.keys(values.lamps)){const next=states?.[id]===true;if(values.lamps[id]!==next){values.lamps[id]=next;changed=true;}}if(changed)repaint()},
  setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");if(powerState!==powered){powerState=powered;repaint()}},
  setCourse2Power:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP COURSE 2 power must be true/false/null");if(course2PowerState!==powered){course2PowerState=powered;repaint()}},
- auditDisplays:()=>({mainPowered:powerState,course2Powered:course2PowerState,values:{...values},windows:displays.map(d=>({id:d.id,x:d.x,y:d.y,width:d.w,height:d.h,lit:(d.id==="courseR"?course2PowerState:powerState)===true}))}),
+ auditDisplays:()=>({mainPowered:powerState,course2Powered:course2PowerState,visualQaOverride:digitQa,values:{...values},windows:displays.map(d=>({id:d.id,x:d.x,y:d.y,width:d.w,height:d.h,lit:digitQa||(d.id==="courseR"?course2PowerState:powerState)===true}))}),
  mount
 });
 window.addEventListener("b737:visual-test",e=>{for(const id of Object.keys(values.lamps))values.lamps[id]=!!e.detail?.active;repaint()});
