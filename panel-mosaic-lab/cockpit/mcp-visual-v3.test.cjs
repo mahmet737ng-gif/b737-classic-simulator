@@ -6,7 +6,7 @@ const css=fs.readFileSync(path.join(root,'mcp-visual-v3.css'),'utf8');
 const unified=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const standalone=fs.readFileSync(path.join(root,'../mcp-panel/index.html'),'utf8');
 for(const p of [unified,standalone]){
- assert.match(p,/mcp-visual-v3\.js\?v=MCP-GESTURE-0001-FIVE-KNOBS/);
+ assert.match(p,/mcp-visual-v3\.js\?v=MCP-HIT-0001-DISPATCH/);
  assert.match(p,/mcp-visual-v3\.css\?v=MCP-0008-AMBER-LIGHTPIPE/);
  assert.doesNotMatch(p,/src="[^"]*mcp-ias-mach-knob\.js/);
 }
