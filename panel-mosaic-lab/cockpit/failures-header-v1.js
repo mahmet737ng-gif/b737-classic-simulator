@@ -109,7 +109,7 @@
      button.setAttribute('aria-label','Inject electrical bus failure: '+key);
      create('span',button,'failures-bus-name',label(key));
      const volts=create('small',button,'failures-bus-voltage',key.split('@')[1]);
-     const state=create('span',button,'failures-bus-state','ACTIVE');
+     const state=create('span',button,'failures-bus-state','NO FAULT');
      state.dataset.indicator='true';
      buttons.set(key,button);
      button.addEventListener('click',()=>toggle(key));
@@ -148,7 +148,7 @@
      button.dataset.failed=String(failed);
      button.setAttribute('aria-pressed',String(failed));
      const status=button.querySelector('[data-indicator]');
-     if(status)status.textContent=failed?'FAILED':'ACTIVE';
+     if(status)status.textContent=failed?'FAILED':'NO FAULT';
     }
     clear.disabled=keys.size===0;
     return keys.size;
