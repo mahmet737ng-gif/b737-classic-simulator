@@ -218,13 +218,48 @@
    if(!systems[group])systems[group]={id:group,consumerIds:[],counts:{NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0}};
    systems[group].consumerIds.push(row.id);systems[group].counts[state]++;
   }
+  // Multiple electrical rows can represent BOTH REQUIRED supplies
+  // (115VAC + 28VDC electronic equipment) or alternate/dual sources.
+  // Classify only the cases supported by the reference item labels.
+  // Unverified alternates remain DEGRADED rather than magically fully normal.
+  const deviceRows={};
+  for(const entry of Object.values(consumers))
+   (deviceRows[entry.name]??=[]).push(entry);
+  const devices={};
+  const alternates=/^(FMC|Audio Panel|Marker Beacons|External Power Control|Alpha Vane AoA)/i;
+  for(const [name,entries]of Object.entries(deviceRows)){
+   const unique=entries.filter((x,i)=>entries.findIndex(y=>
+    y.feedBus===x.feedBus&&y.feedVoltage===x.feedVoltage&&
+    y.powerState===x.powerState)===i);
+   const applicable=unique.filter(x=>x.powerState!=='NOT_INSTALLED');
+   const statuses=applicable.map(x=>x.powerState);
+   const hasNormal=statuses.includes('NORMAL'),hasOff=statuses.includes('OFF');
+   const hasDegraded=statuses.includes('DEGRADED'),hasUnknown=statuses.includes('UNKNOWN');
+   const needsBoth=applicable.length>1&&new Set(applicable.map(x=>x.feedVoltage)).size>1&&!alternates.test(name);
+   let state;
+   if(!applicable.length)state='NOT_INSTALLED';
+   else if(needsBoth){
+    state=hasOff?'OFF':hasUnknown?'UNKNOWN':hasDegraded?'DEGRADED':'NORMAL';
+   }else state=hasDegraded||hasNormal&&hasOff?'DEGRADED':
+    hasNormal?'NORMAL':hasUnknown?'UNKNOWN':'OFF';
+   devices[name]={name,system:entries[0].system,role:entries[0].role,
+    topology:needsBoth?'ALL_REQUIRED':applicable.length>1?'ALTERNATE_OR_CHANNELS':'SINGLE',
+    state,channels:entries.map(x=>x.id),
+    effect:state==='OFF'?consequence(entries[0].role):
+     state==='DEGRADED'?'PARTIAL_POWER_OR_ALTERNATE_SUPPLY':
+     state==='UNKNOWN'?'UNRESOLVED_FEED':'ELECTRIC_FUNCTION_AVAILABLE'};
+  }
   for(const group of Object.values(systems)){
-   const c=group.counts,total=c.NORMAL+c.OFF+c.DEGRADED+c.UNKNOWN;
-   group.state=c.DEGRADED>0||c.NORMAL>0&&c.OFF>0?'DEGRADED':
-    total===0?'NOT_INSTALLED':c.NORMAL===total?'NORMAL':c.OFF===total?'OFF':'UNKNOWN';
+   const familyDevices=Object.values(devices).filter(d=>d.system===group.id&&d.state!=='NOT_INSTALLED');
+   const states=familyDevices.map(d=>d.state);
+   group.deviceCount=familyDevices.length;
+   group.state=states.includes('DEGRADED')||states.includes('NORMAL')&&states.includes('OFF')?
+    'DEGRADED':!states.length?'NOT_INSTALLED':states.every(v=>v==='NORMAL')?
+    'NORMAL':states.every(v=>v==='OFF')?'OFF':'UNKNOWN';
   }
   return {schema:SCHEMA,revision:electrical.revision,mode,pressurization,
-   buses,consumers,systems,coverage:{...tally,sourceRows:index.rows.length,
+   buses,consumers,devices,systems,coverage:{...tally,sourceRows:index.rows.length,
+    logicalDevices:Object.keys(devices).length,
     activeRows:index.rows.length-tally.NOT_INSTALLED},
    assumptions:['GENERATOR_ELECTRONIC_BUS_PROXY','28VAC_TRANSFORMER_NOT_MONITORED',
     'GENERAL_MRG_NOT_AIRFRAME_WDM','CB_POWER_EFFECT_ONLY_WHEN_MAPPED'],
