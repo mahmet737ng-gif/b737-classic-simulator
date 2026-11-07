@@ -195,7 +195,10 @@ jobs:
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
           test -f web-dist/engine/systems/classic-alpha-vane-heat-v1.js
-          grep -q 'classic-alpha-vane-heat-v1.js' web-dist/panel-mosaic-lab/cockpit/index.html
+          # The Unified web compiler bundles deferred scripts; check the source
+          # registration, runtime file and test behavior rather than expecting
+          # a source filename to remain in the compiled script tags.
+          grep -q 'classic-alpha-vane-heat-v1.js' panel-mosaic-lab/cockpit/index.html
           test -f web-dist/panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
           test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.js
           test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.css
