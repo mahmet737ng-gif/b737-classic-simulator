@@ -1,6 +1,6 @@
 # Unified B737 Classic — functional electrical bus/consumer model
 
-**Revision:** ATA24-CONSUMER-0001 · 7 November 2026  
+**Revision:** ATA24-CONSUMER-0003 · 7 November 2026  
 **Aircraft:** 737-300/400/500 training model (not flight use or EP-FSI-specific certification)  
 **Sources:** MRG IV.6 printed pp. 182–188 (340 rows); FCOM chapter 6.20; Lufthansa technical training ATA24. Engine indication exceptions also follow FCOM chapter 7 and LAN ATA31/77.
 
@@ -10,16 +10,16 @@ Electrical V7 owns engine/APU/EXT AC source selection, generators, bus transfer,
 
 The functional model distinguishes **source output from generator-bus contactor**, **115VAC from 28VAC from 28VDC**, and **normal vs backed-up vs absent buses**. Thus, a generator may produce 115 V / 400 Hz at operating engine speed without being ON BUS, and another generator may feed Transfer Bus 1 even when the normal Generator Bus 1 is dead.
 
-## 26 logical bus × voltage-class nodes
+## 24 logical bus × voltage-class nodes
 
 - Main AC: Generator Bus 1/2, Main 1/2, Transfer 1/2, Ground Service, External 115 VAC (8).
-- DC: DC1/2, Battery, Hot Battery, Switched Hot Battery, DC Standby 28 VDC (6).
-- AC Standby (115 VAC) and Standby aliases for 115VAC and 28VDC (3).
+- DC: DC1/2, Battery, Hot Battery, Switched Hot Battery (5).
+- Standby: exactly **AC STBY BUS** (115 VAC) and **DC STBY BUS** (28 VDC), both connected to the MRG standby consumers (2).
 - Electronics Bus 1/2 115VAC and 28VDC (4).
 - 28VAC functional conversion proxies from Transfer 1/2, Main 1/2 and Ground Service (5).
-- The implementation also includes canonical AC/DC standby aliases, for a **total of 26 keyed nodes**. Treat derived electronic bus and 28VAC converter outputs as a training inference; no individual transformer failure has been added.
+- The two formerly duplicated internal V7 acStandby/dcStandby keys are no longer exposed as redundant physical nodes: **24 distinct bus-class nodes total**. Derived electronic bus and 28VAC converter outputs remain training functional estimates; no individual transformer failure has been added.
 
-The 340 source entries are individually indexed by their MRG row ID, with printed page, source bus and voltage, applicability, electrical status, CB status (when mapped), power-loss effect and system family. They additionally combine into 322 named logical devices. For a two-voltage controller (e.g. Autothrottle, DME2, Window Heat Controller), BOTH required AC and DC feeds must be energized; an alternate feed or surviving independent channel may instead lead to DEGRADED. The selected 737-300 / -400 / -500 profile filters variant-specific rows. Optional equipment marked "As installed" remains UNKNOWN until confirmed. A consumer can be `NORMAL`, `OFF`, `DEGRADED`, `UNKNOWN` or `NOT_INSTALLED`. Those states describe **electric availability**, not observed equipment running. Physical switch commands, temperatures, hydraulic pressure, fuel flow, sensed faults and actuator motion remain independently owned.
+Every one of the 340 MRG source rows has a specific ATA/system family, with no OTHER catch-all. OFF rows remain red but are not struck through for legibility. The 340 source entries are individually indexed by their MRG row ID, with printed page, source bus and voltage, applicability, electrical status, CB status (when mapped), power-loss effect and system family. They additionally combine into 322 named logical devices. For a two-voltage controller (e.g. Autothrottle, DME2, Window Heat Controller), BOTH required AC and DC feeds must be energized; an alternate feed or surviving independent channel may instead lead to DEGRADED. The selected 737-300 / -400 / -500 profile filters variant-specific rows. Optional equipment marked "As installed" remains UNKNOWN until confirmed. A consumer can be `NORMAL`, `OFF`, `DEGRADED`, `UNKNOWN` or `NOT_INSTALLED`. Those states describe **electric availability**, not observed equipment running. Physical switch commands, temperatures, hydraulic pressure, fuel flow, sensed faults and actuator motion remain independently owned.
 
 ### Real source-to-system integrations active
 
@@ -56,4 +56,4 @@ node tests/engine-indication-source-power-ata77-v2.test.cjs
 node tests/isn-electrical-pack-v1.test.cjs
 ```
 
-Includes 340-row source integrity, 322 logical devices, 737-300/400 equipment applicability, 26 bus-class nodes, cold/dark and battery-only conditions, ground/air standby selector, one-generator alternate transfer, BUS TRANSFER OFF, EIS versus Conventional effectivity, partial circuit-breaker isolation, autobrake DC2 control, actual ISN Pack operating states and unaffected independent source ownership.
+Includes 340-row source integrity, 322 logical devices, 737-300/400 equipment applicability, 24 bus-class nodes, cold/dark and battery-only conditions, ground/air standby selector, one-generator alternate transfer, BUS TRANSFER OFF, EIS versus Conventional effectivity, partial circuit-breaker isolation, autobrake DC2 control, actual ISN Pack operating states and unaffected independent source ownership.
