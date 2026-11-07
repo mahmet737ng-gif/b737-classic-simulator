@@ -8,9 +8,10 @@
 "use strict";
 const NS="http://www.w3.org/2000/svg";
 const W=2172,H=433, mounted=new WeakSet(), instances=[];
+const Rules=window.B737McpFCOMCh4NumericV1;
 const ASSET_URL=new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href;
 const initial=()=>({
-  courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0,
+  courseL:261,courseR:261,speed:110,machHundredths:60,speedMode:"IAS",heading:134,altitude:10000,verticalSpeed:0,
   lamps:Object.fromEntries(["AT_ARM","VNAV","LNAV","VOR_LOC","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"].map(k=>[k,false]))
 });
 const values=initial();
@@ -29,7 +30,7 @@ const displays=[
  {id:"speed",       x:485, y:115,w:147,h:56,digits:3},
  {id:"heading",     x:826, y:113,w:119,h:58,digits:3},
  {id:"altitude",    x:1127,y:114,w:171,h:56,digits:5},
- {id:"verticalSpeed",x:1376,y:118,w:171,h:56,digits:4},
+ {id:"verticalSpeed",x:1376,y:118,w:171,h:56,digits:5},
  {id:"courseR",     x:1932,y:120,w:121,h:55,digits:3}
 ];
 const lamps=[
@@ -72,9 +73,8 @@ const segmentPaths=Object.freeze({
 });
 const mask={0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"};
 function numericText(id){
- const v=values[id];
- if(id==="verticalSpeed"){return v<0?"-"+String(Math.abs(v)):String(v);}
- return String(v).padStart(id==="altitude"?5:3,"0");
+ if(id==="speed")return Rules?.format("speed",values.speedMode==="MACH"?values.machHundredths:values.speed,{mode:values.speedMode})||"";
+ return Rules?.format(id,values[id])||"";
 }
 function drawDigit(g,x,y,size,character){
  const node=group(g,{transform:"translate("+x+" "+y+") scale("+size/35+")"});
@@ -114,27 +114,30 @@ function repaint(){
   svg.querySelectorAll("clipPath[id^=mcp-v5-]").forEach(n=>n.remove());
   for(const d of displays)drawDisplay(svg,d);
   for(const l of lamps){const el=svg.querySelector('[data-mcp-lamp="'+l.id+'"]');if(el)el.setAttribute("data-on",String(!!values.lamps[l.id]));}
-  for(const el of parent.querySelectorAll(".mcp-v3-knob")){const n=knobs.find(k=>k.id===el.dataset.control);if(n){el.style.setProperty("--mcp-turn",String((values[n.id]-({"courseL":261,"courseR":261,"speed":312,"heading":134,"altitude":31000}[n.id]||0))*(n.type==="ias"?12:3))+"deg");}}
+  for(const el of parent.querySelectorAll(".mcp-v3-knob")){const n=knobs.find(k=>k.id===el.dataset.control);if(n){el.style.setProperty("--mcp-turn",String(((n.id==="speed"&&values.speedMode==="MACH"?values.machHundredths:values[n.id])-
+ (n.id==="speed"&&values.speedMode==="MACH"?60:({"courseL":261,"courseR":261,"speed":110,"heading":134,"altitude":10000}[n.id]||0)))*(n.type==="ias"?12:3))+"deg");}}
  }
 }
 function event(type,detail){window.dispatchEvent(new CustomEvent("b737:mcp-"+type,{detail:{source:"MCP-0003",...detail}}));}
 function setValue(id,v,method){
- if(!Object.hasOwn(values,id)||id==="lamps"||!Number.isFinite(v))return;
- const before=values[id];let next=Math.trunc(v);
- if(id==="courseL"||id==="courseR"||id==="heading")next=((next%360)+360)%360;
- if(id==="speed")next=Math.max(100,Math.min(399,next));
- if(id==="altitude")next=Math.max(0,Math.min(49900,next));
- if(id==="verticalSpeed")next=Math.max(-9900,Math.min(9900,next));
- if(next===before)return;
+ if(!Object.hasOwn(values,id)||["lamps","speedMode"].includes(id)||!Number.isFinite(v))return;
+ const before=values[id],next=Rules?.normalize(id,v);
+ if(next===null||next===undefined||next===before)return;
  values[id]=next;repaint();
- if(next!==before){
-  event("value-change",{control:id,value:next,previous:before,method});
-  if(id==="speed")window.dispatchEvent(new CustomEvent("b737:mcp-ias-mach-detent",{detail:{control:"MCP.IAS_MACH",delta:next-before,detent:next-312,method}}));
- }
+ event("value-change",{control:id,value:next,previous:before,method});
+ if(id==="speed"||id==="machHundredths")
+  window.dispatchEvent(new CustomEvent("b737:mcp-ias-mach-detent",{
+   detail:{control:"MCP.IAS_MACH",mode:id==="speed"?"IAS":"MACH",
+    delta:next-before,detent:next-(id==="speed"?110:60),method}}));
+}
+function setSpeedMode(mode){
+ if(!["IAS","MACH"].includes(mode)||values.speedMode===mode)return;
+ values.speedMode=mode;repaint();
 }
 function step(id,d,method){
- const increments={courseL:1,courseR:1,speed:1,heading:1,altitude:100,verticalSpeed:100};
- if(Object.hasOwn(increments,id))setValue(id,values[id]+d*increments[id],method);
+ const selected=id==="speed"&&values.speedMode==="MACH"?"machHundredths":id;
+ const next=Rules?.step(selected,values[selected],d);
+ if(next!==null&&next!==undefined)setValue(selected,next,method);
 }
 function mountKnob(parent,n){
  const el=document.createElement("span");
@@ -212,6 +215,7 @@ window.B737McpVisualV3=Object.freeze({
  geometry:Object.freeze({width:W,height:H,displays:displays.map(x=>({...x})),lamps:lamps.map(x=>({...x})),knobs:knobs.map(x=>({...x}))}),
  getState:()=>JSON.parse(JSON.stringify(values)),
  setValue:(id,v)=>setValue(id,v,"external"),
+ setSpeedMode,
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)&&values.lamps[id]!==!!state){values.lamps[id]=!!state;repaint()}},
  setLamps:(states)=>{let changed=false;for(const id of Object.keys(values.lamps)){const next=states?.[id]===true;if(values.lamps[id]!==next){values.lamps[id]=next;changed=true;}}if(changed)repaint()},
  setPower:(powered)=>{if(![true,false,null].includes(powered))throw Error("MCP power must be true/false/null");if(powerState!==powered){powerState=powered;repaint()}},
@@ -220,7 +224,8 @@ window.B737McpVisualV3=Object.freeze({
  mount
 });
 window.addEventListener("b737:visual-test",e=>{for(const id of Object.keys(values.lamps))values.lamps[id]=!!e.detail?.active;repaint()});
-window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:558,y:275,diameter:110,detentDegrees:12}),getDetent:()=>values.speed-312,setDetent(v){if(Number.isFinite(v))setValue("speed",312+Math.trunc(v),"external")}});
+window.B737McpIasMachKnob=Object.freeze({placement:Object.freeze({sourceWidth:W,sourceHeight:H,x:558,y:275,diameter:110,detentDegrees:12}),getDetent:()=>values.speedMode==="MACH"?values.machHundredths-60:values.speed-110,
+ setDetent(v){if(Number.isFinite(v)){const id=values.speedMode==="MACH"?"machHundredths":"speed";setValue(id,(id==="speed"?110:60)+Math.trunc(v),"external")}}});
 window.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
