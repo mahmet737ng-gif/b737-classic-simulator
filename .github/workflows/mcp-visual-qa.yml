@@ -6,6 +6,8 @@ on:
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.js'
       - 'tools/mcp-hole-calibration-v1.py'
       - 'panel-mosaic-lab/cockpit/mcp-socket-registration-v2.js'
+      - 'panel-mosaic-lab/cockpit/mcp-knob-retina-v1.css'
+      - 'tests/mcp-knob-native-hole-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.css'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.js'
       - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.css'
@@ -46,6 +48,7 @@ jobs:
       - name: Verify exact hole centers, diameters and opaque photo areas
         run: |
           node --check panel-mosaic-lab/cockpit/mcp-socket-registration-v2.js
+          node --check tests/mcp-knob-native-hole-v1.test.cjs
           node tests/mcp-knob-native-hole-v1.test.cjs
       - name: Check LCD windows, lamps, and knob pivot registration
         run: node panel-mosaic-lab/cockpit/mcp-visual-v3.test.cjs
