@@ -5,6 +5,7 @@
  'use strict';
  const Core=root.B737ElectricalNetworkV1;if(!Core)return;
  let current=null,lastKey='',panel=null,errorBox=null,numericMode='NOMINAL_MODEL';
+ let lastDistributionBusSignature=null;
  const listeners=new Set(),sourceCache=new Map(),busRows=new Map(),faultInputs=new Map();
  const label={ENERGIZED:'برق‌دار',DEENERGIZED:'بی‌برق',UNKNOWN:'نامشخص'};
  const copy=v=>JSON.parse(JSON.stringify(v));
@@ -54,6 +55,14 @@
   // Only the drive-running bit is used by the RESID adapter; Boolean bus
   // connectivity is never promoted to an inferred GCR/field/residual sensor.
   root.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{detail:{state:copy(state)}}));
+   // ATA24 consumers do not listen to every ECU/electrical render.
+   // Notify their hub ONLY when one of the actual distribution bus flags changes.
+   const distributionSignature=JSON.stringify(electrical.bus||{});
+   if(distributionSignature!==lastDistributionBusSignature){
+    lastDistributionBusSignature=distributionSignature;
+    root.dispatchEvent(new CustomEvent('b737:electrical-distribution-changed',{
+     detail:{owner:'ELECTRICAL_V7',source:'LIVE_DISTRIBUTION_CHANGE'}}));
+   }
   root.dispatchEvent(new CustomEvent('b737:electrical-network',{detail:snapshot()}));
   for(const fn of listeners)try{fn(snapshot());}catch(error){console.error('Electrical subscriber failed',error);}
   return snapshot();
