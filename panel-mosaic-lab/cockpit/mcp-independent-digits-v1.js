@@ -1,13 +1,14 @@
-/* MCP-DIGITS-0001 | Independent amber 7-segment windows.
- * The former common MCP SVG remained dark in the live cockpit despite valid
- * segment geometry. Mount digital glass ABOVE that photo/SVG in six own DOM
- * windows. No other panel art, light, knob, AFDS mode or CB logic is changed.
- * All rendering responds to the existing AFDS + MCP value events, not polling.
- * ?mcpDigitsTest=1 is a VISUAL-ONLY diagnostic and never energizes a bus.
+/* MCP-DIGITS-0004 | Native live MCP amber seven-segment displays.
+ * All six displays are automatic Electrical V7 consumers. No Controls preview
+ * toggle or instructor-observed power can energize them. The old preview is
+ * retired; ?mcpDigitsTest=1 is an explicit visual-only diagnostics URL.
+ * Photo, buttons, AFDS mode logic, and knob geometry are left unchanged.
+ * Repaints only on MCP value or electrical distribution / breaker events.
  */
 (function(win){
 "use strict";
-const NS="http://www.w3.org/2000/svg",W=2172,H=433,qa=new URLSearchParams(win.location.search).get("mcpDigitsTest")==="1";
+const NS="http://www.w3.org/2000/svg",W=2172,H=433;
+const qa=new URLSearchParams(win.location.search).get("mcpDigitsTest")==="1";
 const areas=Object.freeze([
  {id:"courseL",x:85,y:112,w:112,h:59},
  {id:"speed",x:485,y:115,w:147,h:56},
@@ -21,188 +22,161 @@ const segments=Object.freeze({
  d:"M8 54.5 L26 54.5",e:"M6 35 L5 50",f:"M7 8.5 L6 24",
  g:"M8.5 29.5 L27 29.5"
 });
-const segmentsOn=Object.freeze({0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"});
-const roots=new Map();let currentKey="",witness=null;
-/* Visual-only preview defaults ON while the photo-matched digits are being
- * reviewed. This is NOT an energized MCP or an electrical/AFDS override.
- * Toggle it OFF to follow the live CB and bus power exactly. */
-let preview=true,previewButton=null;
-const previewValues={};
-const previewDefaults={courseL:20,speed:180,heading:220,altitude:10000,verticalSpeed:400,courseR:101};
-const previewSource=()=>({ ...previewDefaults,...previewValues });
-const testMode=()=>qa||preview;
-function ensurePreviewButton(){
- if(previewButton&&previewButton.isConnected)return;
- const holder=document.querySelector("header .header-settings")||document.querySelector(".toolbar .tools");
- if(!holder)return;
- previewButton=document.getElementById("mcpDigitsPreviewToggle")||document.createElement("button");
- previewButton.id="mcpDigitsPreviewToggle";
- previewButton.type="button";
- previewButton.title="Visual only: show photo-matched dynamic MCP numerals without altering aircraft power. Turn off for real CB/bus-driven blanking.";
- previewButton.setAttribute("aria-label","Toggle MCP digit visual preview; does not energize the aircraft");
- previewButton.style.cssText="min-width:105px;font:700 11px system-ui,Arial,sans-serif;cursor:pointer;border:1px solid #aa8539;border-radius:5px;padding:6px 9px;background:#3c2d15;color:#ffda83;white-space:nowrap";
- previewButton.addEventListener("click",()=>{
-  preview=!preview;currentKey="";refreshButton();redraw(true);
- });
- if(!previewButton.isConnected)holder.append(previewButton);
- refreshButton();
+const segOn=Object.freeze({0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",
+ 5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"});
+const roots=new Map();
+let lastKey="",witness=null;
+function svg(tag,attrs={}){
+ const e=document.createElementNS(NS,tag);
+ for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
+ return e;
 }
-function refreshButton(){
- if(!previewButton)return;
- previewButton.textContent=preview?"MCP DIGITS · PREVIEW":"MCP DIGITS · LIVE";
- previewButton.setAttribute("aria-pressed",String(preview));
- previewButton.style.opacity=preview?"1":".76";
-}
-function elem(tag,attrs={}){
- const el=document.createElementNS(NS,tag);
- for(const [name,value]of Object.entries(attrs))el.setAttribute(name,String(value));
- return el;
-}
-function createWindow(d){
+function makeWindow(d){
  const host=document.createElement("span");
- host.className="mcp-digital-window-v1";host.dataset.mcpDigitalWindow=d.id;
- host.setAttribute("aria-label",d.id+" amber MCP digital display");
- Object.assign(host.style,{position:"absolute",display:"block",left:(100*d.x/W)+"%",
-  top:(100*d.y/H)+"%",width:(100*d.w/W)+"%",height:(100*d.h/H)+"%",
+ host.className="mcp-digital-window-v1";
+ host.dataset.mcpDigitalWindow=d.id;
+ host.setAttribute("aria-label",d.id+" live amber MCP display");
+ Object.assign(host.style,{position:"absolute",display:"block",
+  left:(d.x/W*100)+"%",top:(d.y/H*100)+"%",
+  width:(d.w/W*100)+"%",height:(d.h/H*100)+"%",
   zIndex:"16",overflow:"hidden",boxSizing:"border-box",
-  background:"#070b0a",borderRadius:"2px",pointerEvents:"none",
-  isolation:"isolate",contain:"paint",lineHeight:"0"});
- const glass=elem("svg",{viewBox:"0 0 "+d.w+" "+d.h,preserveAspectRatio:"none",
-  width:"100%",height:"100%","aria-hidden":"true"});
+  borderRadius:"2px",background:"#070b0a",pointerEvents:"none",
+  isolation:"isolate",lineHeight:"0"});
+ const glass=svg("svg",{viewBox:"0 0 "+d.w+" "+d.h,
+  preserveAspectRatio:"none",width:"100%",height:"100%","aria-hidden":"true"});
  glass.style.cssText="display:block;width:100%;height:100%;overflow:hidden;pointer-events:none";
- host.append(glass);return {host,glass,d};
+ host.append(glass);
+ return {host,glass,d};
 }
-function printable(id,state){
- const raw=state?.[id],v=Number.isFinite(raw)?Math.trunc(raw):0;
+function getElectrical(){
+ let observed=null;
+ const owner=win.B737ISNCockpitV1;
+ try{
+  const state=owner?.getElectricalState?.();
+  if(state&&win.B737ElectricalV7?.evaluate)observed=win.B737ElectricalV7.evaluate(state);
+ }catch(e){console.warn("MCP numeric electrical read",e);}
+ if(observed?.schema!=="B737_ELECTRICAL_V7_RESULT")
+  observed=owner?.getState?.()?.state?.electrical;
+ return observed?.schema==="B737_ELECTRICAL_V7_RESULT"?observed:null;
+}
+function supply(){
+ const bus=getElectrical()?.bus;
+ const cb=win.B737UnifiedCB;
+ const cbMain=cb?.available?.("mcp.power")??null;
+ const cbCourse2=cb?.available?.("mcp.course2")??null;
+ const availability=(bit,breaker)=>{
+  if(bit===false||breaker===false)return false;
+  if(bit===true)return true;
+  return null;
+ };
+ // Two distinct candidate simulator feeds. Do not turn on from battery ON,
+ // APU running, or instructor observation alone.
+ const core=win.B737McpAFDSBridgeV1?.getOutput?.();
+ const main=bus?availability(bus.dc1,cbMain):
+  core?.powerEvidence==="SIMULATED_DC1"?availability(core.power,cbMain):null;
+ const right=bus?availability(bus.battery,cbCourse2):null;
+ return {main,right,dc1:bus?.dc1??null,battery:bus?.battery??null,
+  cbMain,cbCourse2};
+}
+function getNumbers(){
+ const visual=win.B737McpVisualV3?.getState?.()||{};
+ const backend=win.B737McpAFDSBridgeV1?.getOutput?.()?.values||{};
+ const result={};
+ for(const {id} of areas)
+  result[id]=Number.isFinite(visual[id])?Math.trunc(visual[id]):
+   Number.isFinite(backend[id])?Math.trunc(backend[id]):0;
+ return result;
+}
+function digits(id,v){
  if(id==="verticalSpeed")return String(v);
  return String(v).padStart(id==="altitude"?5:3,"0");
 }
-function drawGlass(view,lit,value){
- const {glass,d,host}=view;host.dataset.powered=lit?"true":"false";
- if(!lit){glass.replaceChildren();return;}
- const chars=value.split("");
- const count=chars.length;
- const scale=Math.min(1,(d.w-12)/(35*count+7*Math.max(0,count-1)),(d.h-8)/59);
- const stride=42*scale,full=count*35*scale+(count-1)*7*scale;
- const first=(d.w-full)/2,top=(d.h-59*scale)/2;
- const group=elem("g");
- for(let i=0;i<count;i++){
-  const cell=elem("g",{transform:"translate("+(first+i*stride)+" "+top+") scale("+scale+")"});
-  const active=segmentsOn[chars[i]]||"";
-  for(const [part,path]of Object.entries(segments)){
-   const on=active.includes(part);
-   const el=elem("path",{d:path,fill:"none",stroke:on?"#ffdc85":"#3e321a",
-    "stroke-width":on?4.2:3.8,"stroke-linecap":"round","stroke-linejoin":"round",
-    opacity:on?1:.12});
-   if(on)el.style.filter="drop-shadow(0 0 1.3px #fff2b6) drop-shadow(0 0 2.2px #e9ab39)";
-   cell.append(el);
+function paint(view,on,number){
+ const {glass,d,host}=view;
+ host.dataset.powered=on?"true":"false";
+ if(!on){glass.replaceChildren();return;}
+ const chars=digits(d.id,number);
+ const n=chars.length;
+ const scale=Math.min(1,(d.w-12)/(35*n+7*Math.max(0,n-1)),(d.h-8)/59);
+ const total=(35*n+7*(n-1))*scale;
+ const first=(d.w-total)/2,top=(d.h-59*scale)/2;
+ const group=svg("g");
+ for(let i=0;i<n;i++){
+  const digit=svg("g",{transform:"translate("+(first+i*42*scale)+" "+top+") scale("+scale+")"});
+  const active=segOn[chars[i]]||"";
+  for(const [name,path] of Object.entries(segments)){
+   const lit=active.includes(name);
+   const seg=svg("path",{d:path,fill:"none",stroke:lit?"#ffdc85":"#3e321a",
+    "stroke-width":lit?4.2:3.8,"stroke-linecap":"round",
+    "stroke-linejoin":"round",opacity:lit?1:.12});
+   if(lit)seg.style.filter="drop-shadow(0 0 1.3px #fff2b6) drop-shadow(0 0 2.2px #e9ab39)";
+   digit.append(seg);
   }
-  group.append(cell);
+  group.append(digit);
  }
  glass.replaceChildren(group);
 }
-function power(){
- const visual=win.B737McpVisualV3?.auditDisplays?.();
- const afds=win.B737McpAFDSBridgeV1?.getOutput?.();
- return {main:visual?.mainPowered??afds?.power??null,
-  right:visual?.course2Powered??afds?.course2Power??null,
-  cbMain:win.B737UnifiedCB?.available?.("mcp.power")??null,
-  cbRight:win.B737UnifiedCB?.available?.("mcp.course2")??null,
-  dc1:win.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus?.dc1??null,
-  batteryBus:win.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus?.battery??null};
-}
-function redraw(force=false){
- if(!roots.size){if(qa)updateWitness();return;}
- const live=win.B737McpVisualV3?.getState?.()||{};
- const p=power();
- const values=testMode()?previewSource():live;
- const key=JSON.stringify([testMode(),values.courseL,values.speed,values.heading,
-  values.altitude,values.verticalSpeed,values.courseR,p.main,p.right]);
- if(!force&&key===currentKey){if(qa)updateWitness();return;}
- currentKey=key;
- for(const list of roots.values())for(const view of list){
-  const lit=testMode()||(view.d.id==="courseR"?p.right:p.main)===true;
-  drawGlass(view,lit,printable(view.d.id,values));
+function draw(force=false){
+ const p=supply(),values=getNumbers();
+ const key=JSON.stringify([qa,p.main,p.right,values]);
+ if(!force&&key===lastKey)return;
+ lastKey=key;
+ for(const views of roots.values())for(const view of views){
+  const on=qa||(view.d.id==="courseR"?p.right:p.main)===true;
+  paint(view,on,values[view.d.id]);
  }
- if(qa)updateWitness();
+ if(qa)updateWitness(p);
 }
-function setupWitness(){
- if(!qa||witness||!document.body)return;
- witness=document.createElement("div");witness.id="mcp-digital-qa-witness";
- Object.assign(witness.style,{position:"fixed",top:"72px",left:"10px",
-  zIndex:"2147483000",pointerEvents:"none",direction:"ltr",
-  padding:"9px 12px",border:"2px solid #ffdc7e",borderRadius:"6px",
-  background:"#171309",color:"#ffdf91",font:"bold 12px/1.6 Consolas,monospace",
-  whiteSpace:"pre-line",boxShadow:"0 2px 13px #000a"});
- document.body.append(witness);updateWitness();
-}
-function updateWitness(){
- if(!qa)return;setupWitness();if(!witness)return;
- const p=power();
- witness.textContent="MCP DIGITAL QA ACTIVE (VISUAL ONLY)\n"+
-  "Windows: "+Array.from(roots.values()).reduce((n,arr)=>n+arr.length,0)+
-  " | JS: RUNNING\n"+
-  "DC BUS 1: "+String(p.dc1)+" | BAT BUS: "+String(p.batteryBus)+"\n"+
-  "MCP CB: "+String(p.cbMain)+" | COURSE 2 CB: "+String(p.cbRight)+"\n"+
-  "MCP: "+String(p.main)+" | COURSE 2: "+String(p.right);
+function updateWitness(p){
+ if(!qa)return;
+ if(!witness){
+  if(!document.body)return;
+  witness=document.createElement("div");witness.id="mcp-digital-qa-witness";
+  Object.assign(witness.style,{position:"fixed",top:"72px",left:"10px",
+   zIndex:"2147483000",pointerEvents:"none",direction:"ltr",whiteSpace:"pre-line",
+   padding:"9px",background:"#171309",color:"#ffdf91",
+   border:"2px solid #ffdc7e",font:"12px/1.5 Consolas,monospace"});
+  document.body.append(witness);
+ }
+ witness.textContent="MCP DIGITAL QA · VISUAL ONLY\n"+
+ "Window count: "+Array.from(roots.values()).reduce((n,a)=>n+a.length,0)+
+ "\nDC1: "+p.dc1+" | BAT BUS: "+p.battery+
+ "\nCB MCP: "+p.cbMain+" | CB CRS2: "+p.cbCourse2;
 }
 function mount(){
- ensurePreviewButton();setupWitness();let mounted=false;
+ // Remove any orphaned preview toggle left by the retired version.
+ document.getElementById("mcpDigitsPreviewToggle")?.remove();
+ let added=false;
  for(const root of document.querySelectorAll('[data-piece="mcp"]')){
   if(roots.has(root))continue;
-  const views=areas.map(createWindow);
-  for(const view of views)root.append(view.host);
-  // Suppress ONLY the superseded numeric drawings. Mode-lamp hit targets,
-  // switches and all photo assets keep their existing owners.
+  const windows=areas.map(makeWindow);
+  for(const view of windows)root.append(view.host);
   root.dataset.mcpIndependentDigits="true";
-  roots.set(root,views);mounted=true;
+  roots.set(root,windows);added=true;
  }
- if(mounted)currentKey="";
- redraw(mounted);
-}
-function rememberVisualInput(e){
- const detail=e?.detail;
- if(!detail||detail.method==="external")return;
- if(!Object.hasOwn(previewDefaults,detail.control)||!Number.isFinite(detail.value))return;
- previewValues[detail.control]=Math.trunc(detail.value);
- if(testMode())redraw();
-}
-function rememberEngineValues(e){
- if(!e?.detail||e.detail.power!==true)return;
- for(const id of Object.keys(previewDefaults)){
-  if(Number.isFinite(e.detail.values?.[id]))previewValues[id]=e.detail.values[id];
- }
- if(testMode())redraw();
+ draw(added);
 }
 const css=document.createElement("style");
 css.id="mcp-independent-digits-v1-style";
 css.textContent='[data-piece="mcp"][data-mcp-independent-digits="true"]>.mcp-v3-overlay [data-mcp-display]{display:none!important}';
 document.head.append(css);
 win.B737McpIndependentDigitsV1=Object.freeze({
- audit:()=>({schema:"MCP-DIGITS-0002",qa,preview,previewValues:previewSource(),rootCount:roots.size,
-  windowCount:Array.from(roots.values()).reduce((n,arr)=>n+arr.length,0),
-  power:power(),windows:Array.from(roots.values()).flat().map(v=>({id:v.d.id,lit:v.host.dataset.powered,
-   htmlRect:{x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
+ audit:()=>({schema:"MCP-DIGITS-0004",qa,preview:false,rootCount:roots.size,
+  windowCount:Array.from(roots.values()).reduce((n,a)=>n+a.length,0),
+  power:supply(),values:getNumbers(),windows:Array.from(roots.values()).flat().map(v=>({
+   id:v.d.id,lit:v.host.dataset.powered,rect:{
+    x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
     w:v.host.getBoundingClientRect().width,h:v.host.getBoundingClientRect().height}}))}),
- refresh:()=>{mount();redraw(true)},
- setPreview:on=>{preview=!!on;refreshButton();redraw(true);return preview},
- setPreviewValue:(id,value)=>{
-  if(!Object.hasOwn(previewDefaults,id)||!Number.isFinite(value))return false;
-  previewValues[id]=Math.trunc(value);redraw(true);return true;
- }
+ refresh:()=>{mount();draw(true)},
+ setPreview:()=>false  // retained as a safe no-op for old callers
 });
-win.addEventListener("b737:mcp-value-change",rememberVisualInput);
-win.addEventListener("b737:mcp-afds-state",rememberEngineValues);
-// The physical V/S wheel sends a hardware event, not a visual knob event.
-win.addEventListener("b737:mcp-hardware-change",e=>{
- if(e.detail?.id!=="VS_WHEEL"||!Number.isFinite(e.detail.value))return;
- previewValues.verticalSpeed=Math.trunc(e.detail.value);
- if(testMode())redraw();
-});
-for(const event of ["b737:mcp-afds-state","b737:mcp-value-change","b737:cb-state-change",
- "b737:electrical-owner-ready","b737:electrical-v7-state","b737:cockpit-mounted"]){
- win.addEventListener(event,()=>event==="b737:cockpit-mounted"?mount():redraw());
+for(const event of ["b737:mcp-afds-state","b737:mcp-value-change",
+ "b737:mcp-hardware-change","b737:electrical-distribution-changed",
+ "b737:electrical-v7-state","b737:cb-state-change",
+ "b737:electrical-owner-ready","b737:bus-failure-injection-changed"]){
+ win.addEventListener(event,()=>draw());
 }
+win.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
 })(window);
