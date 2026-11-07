@@ -166,7 +166,7 @@ document.head.append(css);
 win.B737McpIndependentDigitsV1=Object.freeze({
  audit:()=>({schema:"MCP-DIGITS-0004",qa,preview:false,rootCount:roots.size,
   windowCount:Array.from(roots.values()).reduce((n,a)=>n+a.length,0),
-  power:supply(),values:getNumbers(),windows:Array.from(roots.values()).flat().map(v=>({
+  power:lastSupply||supply(),values:getNumbers(),windows:Array.from(roots.values()).flat().map(v=>({
    id:v.d.id,lit:v.host.dataset.powered,rect:{
     x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
     w:v.host.getBoundingClientRect().width,h:v.host.getBoundingClientRect().height}}))}),
