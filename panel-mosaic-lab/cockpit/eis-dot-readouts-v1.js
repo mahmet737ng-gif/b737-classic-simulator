@@ -206,6 +206,9 @@
  function refresh(){mount();syncTargets();paint();schedule();}
  function write(spec,value,source){values.set(spec.id,{value:Number.isFinite(value)?value:null,source});}
  function observeECU(live){
+  // The installed FCOM/MRG/LAN feed/fault backend is authoritative after load.
+  // Do not let raw ECU telemetry repower failed/CB-isolated readouts.
+  if(window.B737UnifiedEngineIndicationsV2?.ownsPresentation?.())return;
   const paths={n1:'n1Percent',n2:'n2Percent',egt:'egtC',fuelFlow:'fuelFlowKgHr',oilQuantity:'oil.quantityPct'};
   for(const s of specs){
    if(backendOwned.has(s.id))continue;
@@ -222,6 +225,7 @@
   refresh();
  }
  function observeStart(packet){
+  if(window.B737UnifiedEngineIndicationsV2?.ownsPresentation?.())return;
   for(const s of specs){
    if(backendOwned.has(s.id))continue;
    const signal=packet?.engines?.[s.engine]?.[s.signal];
