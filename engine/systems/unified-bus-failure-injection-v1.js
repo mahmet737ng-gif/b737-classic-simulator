@@ -7,7 +7,8 @@
  const api=factory();
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.B737UnifiedBusFailureInjectionV1=api;
- if(root?.document && root?.B737ElectricalV7)api.install(root);
+ if(root?.document && root?.B737ElectricalV7 &&
+    !root.location?.pathname?.includes('/bus-consumer-test-lab/'))api.install(root);
 })(typeof globalThis!=='undefined'?globalThis:null,function(){'use strict';
  const SCHEMA='b737classic.bus-failure-injection/1';
  const KEY='b737classic.bus-failure-injection.v1';
