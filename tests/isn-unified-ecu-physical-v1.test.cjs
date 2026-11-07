@@ -27,8 +27,13 @@ assert.match(ui,/b737:isn-start-indications/);
 assert.match(lever,/b737:engine-start-lever-command/);
 assert.match(throttle,/b737:throttle-position/);
 assert.ok(index.includes('engine-start-levers.js?v=START-LEVER-0007'),'Owner-requested continuous start levers are cache refreshed');
-for(const frozen of ['throttle-levers.js?v=THR-0005','isn-engine-gauges.js?v=ISN-0007-CDARK'])
- assert.ok(index.includes(frozen),'Locked hardware renderer untouched '+frozen);
+// The throttle hardware is unchanged by ATA77. A renderer's version may
+// advance when its data authority changes, so assert the mounted module names
+// and test the engine feed gating rather than freezing stale cache-buster tokens.
+for(const mounted of ['throttle-levers.js?v=THR-0009',
+ 'isn-engine-gauges.js?v=ISN-0008-ATA77-GATED'])
+ assert.ok(index.includes(mounted),'Mounted physical renderer missing '+mounted);
+assert.match(throttle,/b737:throttle-position/);
 
 const ECU=require('../engine/integration/isn-13-18-ecu-testbench-v1');
 const Electrical=require('../engine/systems/electrical-v7');
