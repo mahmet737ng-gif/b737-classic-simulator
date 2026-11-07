@@ -156,10 +156,20 @@
           power = electrical.bus[sourceBus];
           powerEvidence = 'TRAINING_SURROGATE_UNVERIFIED_BUS_ASSIGNMENT';
         } else if (projected.powered !== false && input.observedPower !== null) {
-          // This is independently observed/instructor-provided, NOT a guessed
-          // electrical bus mapping. It never mutates the original V8 results.
+          // Independent live observation/instructor test overrides the generic
+          // reference feed, but never conjures global AC power from nothing.
           power = input.observedPower;
           powerEvidence = 'INDEPENDENT_INSTRUCTOR_SENSOR';
+        } else if (this.mode === 'SOURCE_GATED' &&
+                   globalThis.B737ClassicBusConsumersV1?.lookupPump) {
+          // Functional wiring selection from Classic MRG IV.6. The
+          // single Pack and Electrical V7 are still the ONLY plant owners.
+          // This is enabled in Unified; standalone older isolated benches
+          // retain UNKNOWN until the MRG functional engine is installed.
+          const reference = globalThis.B737ClassicBusConsumersV1.lookupPump(spec.id,electrical);
+          sourceBus = reference.bus;
+          power = reference.powered;
+          powerEvidence = 'MRG_IV6_CLASSIC_FUNCTIONAL_BUS';
         }
         power=globalThis.B737UnifiedCB?.gate(spec.id,power)??power;
         let operating = !input.switchOn || input.failed || input.overheat ? false : power;
@@ -167,7 +177,9 @@
         const lowPressure = pressureWarning({...spec, ...input}, operating);
         pumps[spec.id] = {...spec, ...input, powered: power, operating, lowPressure,
           sourceBus, powerEvidence, powerQuality: this.mode === 'TRAINING_SURROGATE' ? 'EDUCATIONAL_ASSUMPTION' :
-            input.observedPower !== null ? 'OBSERVED_NOT_BUS_VERIFIED' : 'UNRESOLVED',
+            input.observedPower !== null ? 'OBSERVED_NOT_BUS_VERIFIED' :
+            powerEvidence === 'MRG_IV6_CLASSIC_FUNCTIONAL_BUS' ?
+            'MRG_CLASSIC_GENERIC_FUNCTIONAL' : 'UNRESOLVED',
           qa: 'TRAINER_DISCRETE_INDICATION_NOT_MEASURED_PRESSURE'};
       }
       const low = id => pumps[id].lowPressure;
