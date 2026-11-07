@@ -126,6 +126,12 @@ window.B737McpHardwareV1=Object.freeze({
  geometry:controls.map(c=>Object.freeze({...c})),
  getState:()=>({...state}),
  setState:(id,value)=>change(id,value,"external"),
+ rotateVS:(detents,method="drag")=>{
+  if(!Number.isInteger(detents)||!detents)return false;
+  const target=Rules.step("verticalSpeed",state.VS_WHEEL,detents);
+  if(target===null)return false;
+  change("VS_WHEEL",target,method);return true;
+ },
  mount
 });
 window.addEventListener("b737:cockpit-mounted",mount);
