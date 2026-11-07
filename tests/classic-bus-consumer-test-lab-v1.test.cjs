@@ -109,5 +109,5 @@ assert.match(app,/AC STBY BUS/);
 assert.match(app,/DC STBY BUS/);
 assert.match(css,/#consumerTable tr\[data-state="NORMAL"\] \.consumer-name/);
 assert.match(cockpit,/id="busConsumerTestLabOpen"/);
-assert.match(cockpit,/href="\.\.\/\.\.\/bus-consumer-test-lab\/"/);
+assert.match(cockpit,/href="\.\.\/\.\.\/bus-consumer-test-lab\/v2\.html"/);
 console.log('PASS 24 independent/cascaded buses; 340 consumers, 322 devices, red/blue CSS, all-off and source restoration, variant filters and Unified lab navigation');
