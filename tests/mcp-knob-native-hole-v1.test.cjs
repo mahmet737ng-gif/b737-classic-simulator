@@ -29,7 +29,7 @@ const result=[];
 for(const [id,e] of Object.entries(expected)){
  const [x,y,w,h]=registrar.knobRects[id],f=registrar.knobPhotoFits[id];
  const center=[x+w/2,y+h/2];
- assert.deepEqual(center,[e.x,e.y],id+' must match image's dark circular center');
+ assert.deepEqual(center,[e.x,e.y],id+" must match image's dark circular center");
  assert.equal(w,h,id+' socket is circular');
  assert.equal(w,2*e.r,id+' source hole diameter');
  assert.equal(f.alphaFraction,e.alphaCount/(480*480));
