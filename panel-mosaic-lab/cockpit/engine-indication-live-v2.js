@@ -152,6 +152,7 @@
   // All 16 instrument channels are wired to Electrical V7's *evaluated*
   // buses (not generator switch states). The table reads the actual source
   // contract and the one shared CB state; it never changes panel power.
+  if(typeof document.createElement!=='function'||typeof owner.append!=='function')return;
   let matrix=$('#isnEngineFeedMatrixV1');
   if(!matrix){
    matrix=document.createElement('details');matrix.id='isnEngineFeedMatrixV1';
