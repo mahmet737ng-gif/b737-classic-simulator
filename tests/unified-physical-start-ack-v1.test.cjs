@@ -31,12 +31,12 @@ const blocked=make();
 blocked.battery(true);
 blocked.startAPU();blocked.advance(1400);blocked.apuBleed(true);
 blocked.chain.event({id:'pack-l',kind:'toggle',next:'AUTO'});
-const rejected=Router.dispatch(blocked,grd);
-assert.equal(rejected.accepted,false);
-assert.equal(rejected.phase,'BLOCKED');
-assert.match(rejected.reason,/PACK L\/R MUST BE OFF/);
-assert.equal(blocked.get().engines.engine1.phase,'BLOCKED');
-assert.notEqual(blocked.get().engines.engine1.startValveOpen,true,'Blocked GRD must never claim START VALVE OPEN');
+// Pack OFF is not a universal engine-start prerequisite. Adequate source
+// duct pressure and the real valve/ignition/fuel logic determine acceptance.
+const withPackOn=Router.dispatch(blocked,grd);
+assert.equal(withPackOn.accepted,true,'An available duct source with a pack ON must not be hard-blocked');
+assert.equal(withPackOn.phase,'MOTORING');
+assert.equal(blocked.get().engines.engine1.startValveOpen,true);
 const ok=make();
 ok.battery(true);ok.startAPU();ok.advance(1400);ok.apuBleed(true);
 const accepted=Router.dispatch(ok,grd);
@@ -51,4 +51,4 @@ assert.match(ui,/startFeedback\(startLines\.join/);
 assert.match(ui,/UNIFIED ECU NOT CONNECTED/);
 assert.match(style,/#unifiedEngineStartFeedback\[hidden\]/);
 assert.match(index,/engineStartAck=0001/);
-console.log('PASS physical OH GRD -> shared ECU: blocked source, blocked packs, accepted motoring, cockpit feedback');
+console.log('PASS physical OH GRD -> shared ECU: blocked source, pack-on permitted with air, accepted motoring, cockpit feedback');
