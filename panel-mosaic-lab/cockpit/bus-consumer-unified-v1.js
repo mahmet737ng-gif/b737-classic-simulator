@@ -145,7 +145,7 @@
   subscribe:fn=>{if(typeof fn!=='function')throw Error('Function required');
    subscribers.add(fn);if(current)fn(current);return ()=>subscribers.delete(fn);}
  });
- for(const event of ['b737:electrical-v7-state','b737:cb-state-change',
+ for(const event of ['b737:electrical-distribution-changed','b737:cb-state-change',
   'b737:aircraft-profile-change','b737:engine-indication-view',
   'b737:electrical-owner-ready','b737:bus-failure-injection-changed'])
   root.addEventListener(event,()=>{if(index)refresh();});
