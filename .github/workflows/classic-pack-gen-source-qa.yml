@@ -6,6 +6,7 @@ on:
       - 'engine/systems/electrical-network-v1.js'
       - 'tests/isn-isolation-start-routing-v1.test.cjs'
       - 'tests/electrical-network-v1.test.cjs'
+      - 'tests/classic-pack-gen-source-focused.test.cjs'
       - '.github/workflows/classic-pack-gen-source-qa.yml'
   workflow_dispatch:
 permissions:
@@ -21,8 +22,8 @@ jobs:
           node-version: '22'
       - name: Pack-independent starter air path and isolation routing
         run: node tests/isn-isolation-start-routing-v1.test.cjs
-      - name: Generator 115 V 400 Hz source meter off BUS, bus isolation and failure
-        run: node --test tests/electrical-network-v1.test.cjs
+      - name: Generator off-bus source terminals and PACK AUTO/HIGH independent start regression
+        run: node tests/classic-pack-gen-source-focused.test.cjs
       - name: Syntax and no hard PACK OFF engine-start interlock
         run: |
           node --check engine/integration/isn-apu-start-chain-v1.js
