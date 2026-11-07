@@ -37,7 +37,7 @@ for(const [id,[x,y]] of Object.entries(screenshotCenters)){
 }
 const windows={
  courseL:[75,110,205,178],speed:[465,110,650,178],heading:[802,110,970,178],
- altitude:[1115,110,1309,178],verticalSpeed:[1360,110,1560,178],courseR:[1830,110,2040,178]
+ altitude:[1115,110,1309,178],verticalSpeed:[1360,110,1560,178],courseR:[1920,112,2060,180]
 };
 for(const d of displays){
  const [l,t,r,b]=windows[d.id];
