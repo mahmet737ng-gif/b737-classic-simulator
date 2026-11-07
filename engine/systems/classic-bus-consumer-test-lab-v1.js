@@ -23,8 +23,7 @@
   'battery@28VDC':[],
   'hotBattery@28VDC':[],
   'switchedHotBattery@28VDC':['hotBattery@28VDC'],
-  'acStandby@115VAC':['transfer1@115VAC','dc1@28VDC'],
-  'dcStandby@28VDC':['transfer1@115VAC','dc1@28VDC'],
+
   'groundService@115VAC':['generator1@115VAC','external@115VAC'],
   'external@115VAC':[],
   'electronic1@115VAC':['generator1@115VAC'],
@@ -36,15 +35,15 @@
   'main1@28VAC':['main1@115VAC'],
   'main2@28VAC':['main2@115VAC'],
   'groundService@28VAC':['groundService@115VAC'],
-  'standby@115VAC':['acStandby@115VAC'],
-  'standby@28VDC':['dcStandby@28VDC']
+  'standby@115VAC':['transfer1@115VAC','dc1@28VDC'],
+  'standby@28VDC':['transfer1@115VAC','dc1@28VDC']
  };
- const AND=new Set(['acStandby@115VAC','dcStandby@28VDC']);
+ const AND=new Set(['standby@115VAC','standby@28VDC']);
  function checkSources(names){
   const declared=Object.keys(SOURCE);
   if(names.length!==declared.length||declared.some(n=>!names.includes(n))||
    names.some(n=>!Object.hasOwn(SOURCE,n)))
-   throw Error('Lab bus registry must match the exact functional 26 bus-class nodes');
+   throw Error('Lab bus registry must match the exact functional 24 bus-class nodes');
   for(const [key,parents] of Object.entries(SOURCE))
    for(const parent of parents)if(!Object.hasOwn(SOURCE,parent))
     throw Error('Missing bus dependency '+key+' / '+parent);
