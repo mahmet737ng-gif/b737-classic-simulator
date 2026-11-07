@@ -14,9 +14,9 @@ const index=require('../engine/systems/mrg-classic-340-consumer-bus-index-v1.jso
 const dir=path.join(__dirname,'..','bus-consumer-test-lab');
 // Test the actual user-facing, cache-isolated v2 page rather than a source
 // fixture that an older GitHub Pages edge could still have cached.
-const html=fs.readFileSync(path.join(dir,'v2.html'),'utf8');
-assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-POWER-0005"/);
-assert.equal((html.match(/v=BUSLAB24-POWER-0005/g)||[]).length,5,
+const html=fs.readFileSync(path.join(dir,'v3.html'),'utf8');
+assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-INJECT-0009"/);
+assert.equal((html.match(/v=BUSLAB24-INJECT-0009/g)||[]).length,6,
  'All CSS and JS dependencies must share the same never-before-used asset revision');
 assert.match(html,/24 BUS NODES/);
 assert.doesNotMatch(html,/26 BUS NODES/);
