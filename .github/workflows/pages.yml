@@ -191,7 +191,7 @@ jobs:
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
           test -f web-dist/bus-consumer-test-lab/v3.html
           grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v3.html
-          grep -q 'BUSLAB24-INJECT-0009' web-dist/bus-consumer-test-lab/v3.html
+          grep -q 'BUSLAB24-MULTIFEED-0010' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
           test -f web-dist/engine/systems/classic-alpha-vane-heat-v1.js
