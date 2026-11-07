@@ -61,6 +61,9 @@ function getElectrical(){
 }
 function supply(){
  const bus=getElectrical()?.bus;
+ const facade=win.B737UnifiedBusConsumerLiveV1;
+ const elex=facade?.getBus?.("electronic1","28VDC");
+ const battery=facade?.getBus?.("battery","28VDC");
  const cb=win.B737UnifiedCB;
  const cbMain=cb?.available?.("mcp.power")??null;
  const cbCourse2=cb?.available?.("mcp.course2")??null;
@@ -69,13 +72,15 @@ function supply(){
   if(bit===true)return true;
   return null;
  };
- // Two distinct candidate simulator feeds. Do not turn on from battery ON,
- // APU running, or instructor observation alone.
- const core=win.B737McpAFDSBridgeV1?.getOutput?.();
- const main=bus?availability(bus.dc1,cbMain):
-  core?.powerEvidence==="SIMULATED_DC1"?availability(core.power,cbMain):null;
- const right=bus?availability(bus.battery,cbCourse2):null;
- return {main,right,dc1:bus?.dc1??null,battery:bus?.battery??null,
+ // Actual source: MRG CL p.186 ELECTRONIC 1 28VDC (not all DC1
+ // consumers); COURSE 2 is separately connected to BATTERY BUS.
+ // When the MRG bus-class bridge is still loading, DC1 is only its
+ // upstream V7 proxy and must NOT override an explicit ELEX-1 failure.
+ const electronic1=elex?elex.powered:bus?.dc1??null;
+ const batteryPower=battery?battery.powered:bus?.battery??null;
+ const main=availability(electronic1,cbMain);
+ const right=availability(batteryPower,cbCourse2);
+ return {main,right,electronic1,dc1:bus?.dc1??null,battery:batteryPower,
   cbMain,cbCourse2};
 }
 function getNumbers(){
@@ -143,7 +148,7 @@ function updateWitness(p){
  }
  witness.textContent="MCP DIGITAL QA · VISUAL ONLY\n"+
  "Window count: "+Array.from(roots.values()).reduce((n,a)=>n+a.length,0)+
- "\nDC1: "+p.dc1+" | BAT BUS: "+p.battery+
+ "\nELEX1: "+p.electronic1+" (upstream DC1: "+p.dc1+") | BAT BUS: "+p.battery+
  "\nCB MCP: "+p.cbMain+" | CB CRS2: "+p.cbCourse2;
 }
 function mount(){
@@ -176,7 +181,7 @@ win.B737McpIndependentDigitsV1=Object.freeze({
 for(const event of ["b737:mcp-afds-state","b737:mcp-value-change","b737:mcp-hardware-change"])
  win.addEventListener(event,()=>draw());
 for(const event of ["b737:electrical-distribution-changed","b737:electrical-v7-state",
- "b737:cb-state-change","b737:electrical-owner-ready","b737:bus-failure-injection-changed"])
+ "b737:cb-state-change","b737:electrical-owner-ready","b737:bus-failure-injection-changed","b737:bus-consumer-snapshot"])
  win.addEventListener(event,()=>draw(false,true));
 win.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
