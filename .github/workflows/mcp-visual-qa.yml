@@ -5,6 +5,9 @@ on:
     paths:
       - 'panel-mosaic-lab/cockpit/mcp-visual-v3.js'
       - 'panel-mosaic-lab/cockpit/mcp-rotary-gesture-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-rotary-hit-surfaces-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-owner13-v1.js'
+      - 'tests/mcp-browser-physical-hit-v1.cjs'
       - 'tests/mcp-rotary-gesture-v1.test.cjs'
       - 'tests/mcp-rotary-dom-integration-v1.test.cjs'
       - 'tools/mcp-hole-calibration-v1.py'
@@ -48,6 +51,11 @@ jobs:
           node --check tests/mcp-rotary-gesture-v1.test.cjs
           node tests/mcp-rotary-gesture-v1.test.cjs
           node tests/mcp-rotary-dom-integration-v1.test.cjs
+      - name: Verify browser hit routing and separate heading selector syntax
+        run: |
+          node --check panel-mosaic-lab/cockpit/mcp-rotary-hit-surfaces-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-owner13-v1.js
+          node --check tests/mcp-browser-physical-hit-v1.cjs
       - name: Check MCP overlay syntax
         run: |
           node --check panel-mosaic-lab/cockpit/mcp-visual-v3.js
@@ -65,3 +73,8 @@ jobs:
         run: node panel-mosaic-lab/cockpit/mcp-hardware-v1.test.cjs
       - name: Test conservative MCP power / AFDS integration
         run: node panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.test.cjs
+      - name: Real Chromium MCP pointer and touchscreen hit tests
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+          node tests/mcp-browser-physical-hit-v1.cjs
