@@ -13,3 +13,15 @@
 .mcp-v3-course-face,.mcp-v3-plain-face{display:block;position:absolute;left:9%;top:9%;width:82%;height:82%;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 32% 25%,#e5e5e4 3%,#bdbfbe 58%,#9ea2a1 85%,#66696b);border:2px solid #d1d1ce;box-shadow:inset -3px -5px 8px #5559,inset 2px 2px 4px #fff9}
 .mcp-v3-course-face svg{display:block;width:100%;height:100%;transform:rotate(var(--mcp-turn,0deg))}
 .mcp-v3-ias{box-shadow:none!important;border-radius:0!important;transform:translate(-50%,-50%) rotate(var(--mcp-turn,0deg))!important}
+
+/* MCP-HIT-0001: the exact photographic images are not pointer targets.
+ * Actual transparent interaction surfaces sit ABOVE them and keep touch
+ * gestures out of the outer cockpit's pan/zoom. No visual geometry changed. */
+[data-piece="mcp"]>.mcp-native-hit-surface{pointer-events:auto!important;touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;overscroll-behavior:contain}
+[data-piece="mcp"]>.mcp-native-hit-surface:focus-visible{outline:2px solid #66d8ff!important;outline-offset:1px}
+/* Rotate only the moving face of each photographic knob, preserving center,
+ * original socket radius and the independent heading BANK ANGLE outer ring. */
+[data-piece="mcp"]>.mcp-v3-knob[data-control="courseL"]>.mcp-v3-course-face,
+[data-piece="mcp"]>.mcp-v3-knob[data-control="courseR"]>.mcp-v3-course-face,
+[data-piece="mcp"]>.mcp-v3-knob[data-control="altitude"]>.mcp-v3-plain-face{transform:rotate(var(--mcp-turn,0deg));transform-origin:50% 50%}
+[data-piece="mcp"].mcp-owner13-active>.mcp-v3-knob[data-control="heading"]>.mcp-owner13-inner{transform:translate(-50%,-50%) rotate(var(--mcp-turn,0deg))!important;transform-origin:50% 50%}
