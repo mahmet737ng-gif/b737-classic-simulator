@@ -15,6 +15,7 @@
  let mode='EIS',fuelMode='RATE',filterThreshold=null,fuelUsedExpiresAt=null,resetFuelPending=false;
  let displayFaults={},sensorOverrides={engine1:{},engine2:{}},displayLimits={};
  let lastPaint=new Map(),lastEmitted=-1,events=0,labFrame=null;
+ let eventPowerRegistered=false;
  const electrical=()=>window.B737ElectricalV7?.evaluate(window.B737ISNCockpitV1?.getElectricalState?.());
  function frameFlag(id,status,active){
   const node=$(id);if(!node)return;
@@ -375,6 +376,7 @@
  }
  window.B737UnifiedEngineIndicationsV2=Object.freeze({
   getState:status,refresh,command,startReport,load,
+   onElectricalPowerChange:()=>{eventPowerRegistered=true;lastPaint.clear();return refresh();},
   // The EIS renderers use raw ECU only before this validated backend owns
   // the channel. This is the sole source for instrument power/fault validity.
   ownsPresentation:()=>!!db,
@@ -387,7 +389,7 @@
  let lastElectricalFrame=null;
  window.addEventListener('b737:electrical-v7-state',()=>{
   const frame=electrical();
-  const signature=frame?JSON.stringify([frame.bus,frame.source]):null;
+  const signature=frame?JSON.stringify([eventPowerRegistered?null:frame.bus,frame.source]):null;
   if(signature===lastElectricalFrame)return;
   lastElectricalFrame=signature;lastPaint.clear();refresh();
  });
