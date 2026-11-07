@@ -98,7 +98,8 @@ function renderBuses(){
 }
 function consumerEntries(snapshot){
  if(view==='rows')return Object.values(snapshot.consumers).map((v,i)=>({
-  number:i+1,name:v.name,system:v.system,status:v.powerState,
+  number:i+1,name:v.name,label:v.displayName||v.name,
+  system:v.system,status:v.powerState,
   feed:v.feedBus.split('|').map(x=>x+' '+v.feedVoltage).join(' / '),
   source:'MRG IV.6 p.'+v.source.printedPage+' / '+v.id+
    (v.installationStatus==='AS_INSTALLED_UNVERIFIED'?' · OPTIONAL FIT UNCONFIRMED':'')+
@@ -112,7 +113,8 @@ function consumerEntries(snapshot){
   const parts=dev.channels.map(id=>snapshot.consumers[id]).filter(Boolean);
   const feed=[...new Set(parts.map(p=>p.feedBus+' '+p.feedVoltage))].join(' + ');
   const pages=[...new Set(parts.map(p=>p.source.printedPage))].join(', ');
-  return {number:i+1,name:dev.name,system:dev.system,status:dev.state,
+  return {number:i+1,name:dev.name,label:dev.displayName||dev.name,
+   system:dev.system,status:dev.state,
    feed,source:'MRG IV.6 p.'+pages+' / '+dev.channels.length+' row(s)',
    details:dev.effect+' / '+dev.topology,role:dev.role};
  });
@@ -123,7 +125,7 @@ function displayRow(entry){
  tr.title=entry.source+' · '+entry.details;
  make('td',tr,String(entry.number),'num');
  const title=make('td',tr);
- make('div',title,entry.name,'consumer-name');
+ make('div',title,entry.label,'consumer-name');
  make('div',title,entry.source,'source-page');
  make('td',tr,entry.feed,'consumer-feed');
  make('td',tr,entry.system,'consumer-system');
@@ -136,7 +138,7 @@ function renderConsumers(){
  const entries=all.filter(r=>
   (system==='ALL'||system===r.system)&&
   (powerState==='ALL'||powerState===r.status)&&
-  (!search||(r.name+' '+r.feed+' '+r.system+' '+r.source).toLowerCase().includes(search))
+  (!search||(r.name+' '+r.label+' '+r.feed+' '+r.system+' '+r.source).toLowerCase().includes(search))
  );
  const counts={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
  for(const entry of all)counts[entry.status]=(counts[entry.status]||0)+1;
@@ -171,13 +173,37 @@ function run(action){
  try{action();}
  catch(error){setFailure(error);}
 }
-function configure(){
- session.configure({
-  aircraftModel:$('modelSelect').value,
-  mode:$('indicationSelect').value,
-  pressurization:$('pressurizationSelect').value
- });
- refresh();
+const Protocol=root.B737UnifiedBusFailureInjectionV1;
+function injectCockpit(){
+ if(!Protocol||!session)throw Error('Bus failure injection protocol unavailable');
+ const off=Object.keys(session.busStates).filter(key=>session.busStates[key]===false);
+ if(!off.length){
+  $('injectionStatus').textContent='هیچ باسی قطع نیست. ابتدا حداقل یک باس را OFF کن؛ برای پاک‌کردن خرابی قبلی از Clear استفاده کن.';
+  return null;
+ }
+ if(session.buses.length!==Protocol.BUS_KEYS.length||
+    session.buses.some(key=>!Protocol.BUS_KEYS.includes(key)))
+  throw Error('Bus injection protocol does not match the live 24-bus registry');
+ const record=Protocol.payload(off);
+ root.localStorage.setItem(Protocol.KEY,JSON.stringify(record));
+ if(typeof root.BroadcastChannel==='function'){
+  try{const channel=new root.BroadcastChannel(Protocol.CHANNEL);channel.postMessage(record);channel.close();}catch(_){}
+ }
+ $('injectionStatus').textContent='INJECTED · '+off.length+
+  ' bus failure(s) sent to Unified. If the cockpit is open, its live bus-gated systems update. Use Clear to restore.';
+ $('injectionStatus').dataset.injected='true';
+ return record;
+}
+function clearCockpit(){
+ if(!Protocol)throw Error('Bus failure injection protocol unavailable');
+ const record=Protocol.payload([]);
+ root.localStorage.setItem(Protocol.KEY,JSON.stringify(record));
+ if(typeof root.BroadcastChannel==='function'){
+  try{const channel=new root.BroadcastChannel(Protocol.CHANNEL);channel.postMessage(record);channel.close();}catch(_){}
+ }
+ $('injectionStatus').textContent='CLEARED · injected bus failures removed from Unified; switches and actual cockpit electrical sources remain untouched.';
+ $('injectionStatus').dataset.injected='false';
+ return record;
 }
 function bind(){
  $('allOn').addEventListener('click',()=>run(()=>{session.all(true);refresh();}));
@@ -189,6 +215,8 @@ function bind(){
  $('cascadeSwitch').addEventListener('change',()=>run(()=>{
   session.setCascade($('cascadeSwitch').checked);refresh();
  }));
+ $('injectToCockpit').addEventListener('click',()=>run(injectCockpit));
+ $('clearCockpitFailures').addEventListener('click',()=>run(clearCockpit));
  $('rowsView').addEventListener('click',()=>{view='rows';renderConsumers();});
  $('devicesView').addEventListener('click',()=>{view='devices';renderConsumers();});
  $('searchInput').addEventListener('input',()=>{
@@ -196,18 +224,7 @@ function bind(){
  });
  $('systemFilter').addEventListener('change',()=>{system=$('systemFilter').value;renderConsumers();});
  $('stateFilter').addEventListener('change',()=>{powerState=$('stateFilter').value;renderConsumers();});
- for(const el of ['modelSelect','indicationSelect','pressurizationSelect'])
-  $(el).addEventListener('change',()=>run(configure));
-}
-function readProfile(){
- let saved={};
- try{saved=JSON.parse(root.localStorage.getItem('b737classic.aircraft-profile.v1')||'{}');}catch(_){}
- if(['737-300','737-400','737-500'].includes(saved.aircraftModel))
-  $('modelSelect').value=saved.aircraftModel;
- if(['EIS','CONVENTIONAL'].includes(saved.engineInstruments))
-  $('indicationSelect').value=saved.engineInstruments;
- if(['DCPCS','CPCS'].includes(saved.pressurization))
-  $('pressurizationSelect').value=saved.pressurization;
+
 }
 async function start(){
  if(!Core||!E||!Lab)throw Error('The bus/electrical engines have not loaded');
@@ -215,11 +232,9 @@ async function start(){
  if(!response.ok)throw Error('MRG 340 consumer index HTTP '+response.status);
  const data=await response.json();
  Core.validate(data);
- readProfile();
- session=Lab.makeSession({Core,Electrical:E,index:data,
-  mode:$('indicationSelect').value,
-  pressurization:$('pressurizationSelect').value,
-  aircraftModel:$('modelSelect').value});
+ session=Lab.makeSession({Core,Electrical:E,index:data});
+ if(session.snapshot().coverage.NOT_INSTALLED!==0)
+  throw Error('All configurations must remain included in Test Lab');
  const snapshot=session.snapshot();
  const category=$('systemFilter');
  for(const system of Object.keys(snapshot.systems).sort()){
@@ -231,7 +246,7 @@ async function start(){
  root.B737BusConsumerTestLabUIV1=Object.freeze({
   getSnapshot:()=>session.snapshot(),getBusState:key=>session.busStates[key],
   listBusNames:()=>session.buses.slice(),getSession:()=>session,
-  version:Lab.VERSION,nonMutating:true
+  version:Lab.VERSION,nonMutating:true,injectCockpit,clearCockpit
  });
 }
 start().catch(setFailure);
