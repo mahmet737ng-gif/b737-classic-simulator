@@ -29,7 +29,11 @@
    accum:current?.accum??0});
   const cancel=()=>{current=null};
   function down(e){
-   if(current)return false;
+   if(current){
+    // Do not change MCP detents while a second finger begins a pinch.
+    if(e?.pointerType==="touch"&&e.pointerId!==current.id)current=null;
+    return false;
+   }
    if(e?.pointerType==="mouse"&&e.button!==0)return false;
    if(!Number.isFinite(e?.clientX)||!Number.isFinite(e?.clientY))return false;
    current={id:e.pointerId??1,pointerType:e.pointerType||"mouse",x:e.clientX,y:e.clientY,
@@ -86,7 +90,7 @@
    if(!Number.isFinite(deltaY)||deltaY===0)return 0;
    // A notched mouse wheel is one tick; high-resolution touchpad deltas
    // accumulate and only emit an actual detent after meaningful movement.
-   const normalized=deltaMode===1?deltaY*33:deltaMode===2?deltaY*120:deltaY;
+   const normalized=deltaMode===1?deltaY*40:deltaMode===2?deltaY*120:deltaY;
    wheelRemainder+=normalized;
    let clicks=Math.trunc(wheelRemainder/100);
    clicks=clamp(clicks,-20,20);
