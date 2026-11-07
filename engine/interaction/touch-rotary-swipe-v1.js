@@ -14,10 +14,16 @@
     '.aircon400-knob',
     '.oh22-pressure-controls [data-role="actuator"]:not(.oh22-pressure-actuator-spring):not(.oh22-pressure-hotspot)',
     '.mcp-ias-mach-knob',
+    '.mcp-v3-knob',
+    '.irs-upper-outer',
+    '.irs-upper-brt',
+    '.irs-msu-mini',
+    '.irs-live-msu-control',
+    '.asp-vbr-selector',
     '[data-acdc-selector]',
     '.asp-photo-control[data-kind="volume"]'
   ].join(',');
-  const REVERSE = '.mcp-ias-mach-knob,.asp-photo-control[data-kind="volume"]';
+  const REVERSE = '.mcp-ias-mach-knob,.mcp-v3-knob,.irs-upper-brt,.asp-photo-control[data-kind="volume"]';
 
   // Both distance and finger velocity matter: deliberate swipes produce fine
   // adjustment while quick strokes produce several existing backend steps.
