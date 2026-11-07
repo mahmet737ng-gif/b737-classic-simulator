@@ -311,6 +311,24 @@
  }
  function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
   const lamps={...bridge.get().lamps};const projected=chain.get().projected;
+  // ATA30-31 authoritative physical heater/current indication for the
+  // already-mounted L/R ALPHA VANE lamps. Retain the actual interactive
+  // PITOT A/B switches: losing AC never locks their mechanical position.
+  // This uses the same V7 evaluated bus state as the live electrical pack,
+  // including instructor bus-failure injection, never a second backend.
+  const alphaHeatEngine=window.B737ClassicAlphaVaneHeatV1;
+  if(alphaHeatEngine){
+   const evaluated=bridge.get().state.electrical;
+   const physicalSwitches=f.contentWindow.B737OverheadToggles?.getState?.()||{};
+   const alphaResult=alphaHeatEngine.evaluate({
+    buses:evaluated.bus,switches:physicalSwitches,
+    cbAvailable:id=>window.B737UnifiedCB?.available?.(id)??null
+   });
+   Object.assign(lamps,alphaResult.lamps);
+   window.B737UnifiedAlphaVaneHeatLiveV1=Object.freeze({
+    get:()=>alphaResult
+   });
+  }
   // FCOM 12.10.1 / LAN ATA 28: valve-position indications, NOT engine-running lights.
   const valveState=fuelValveIndication.observe({
    levers:{engine1:chain.get().observations.engine1.feedback.fuelStartLever.value,
