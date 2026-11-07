@@ -101,8 +101,10 @@ function consumerEntries(snapshot){
   number:i+1,name:v.name,system:v.system,status:v.powerState,
   feed:v.feedBus.split('|').map(x=>x+' '+v.feedVoltage).join(' / '),
   source:'MRG IV.6 p.'+v.source.printedPage+' / '+v.id+
+   (v.installationStatus==='AS_INSTALLED_UNVERIFIED'?' · OPTIONAL FIT UNCONFIRMED':'')+
    (v.duplicateSourceOf?' · SOURCE INDEX DUPLICATE':''),
   details:v.impact+' · DOCUMENT QA: '+v.quality+
+   ' · INSTALLATION: '+(v.installationStatus||'UNSPECIFIED')+
    (v.duplicateSourceOf?' · Same referenced power feed as '+v.duplicateSourceOf:''),
   role:v.role
  }));
