@@ -5,6 +5,13 @@ on:
     paths:
       - 'engine/systems/classic-bus-consumer-engine-v1.js'
       - 'engine/systems/classic-bus-consumer-test-lab-v1.js'
+      - 'engine/systems/unified-bus-failure-injection-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
+      - 'panel-mosaic-lab/cockpit/window-heat-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/irs-trainer-live-v1.js'
+      - 'engine/instruments/engine-indication-backend-v1.js'
+      - 'tests/unified-bus-failure-injection-v1.test.cjs'
       - 'bus-consumer-test-lab/**'
       - 'tests/classic-bus-consumer-test-lab-v1.test.cjs'
       - 'tests/classic-bus-consumer-fmc-fuel-cdu-binary-v1.test.cjs'
@@ -33,6 +40,7 @@ jobs:
           node tests/classic-bus-consumer-fmc-fuel-cdu-binary-v1.test.cjs
           node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
+          node tests/unified-bus-failure-injection-v1.test.cjs
           node tests/engine-indication-tech-db-v1.test.cjs
           node tests/engine-indication-source-power-ata77-v2.test.cjs
           node tests/engine-indication-unified-live-v2.test.cjs
@@ -44,6 +52,8 @@ jobs:
           node --check engine/systems/classic-bus-consumer-engine-v1.js
           node --check engine/systems/classic-bus-consumer-test-lab-v1.js
           node --check bus-consumer-test-lab/app.js
+          node --check engine/systems/unified-bus-failure-injection-v1.js
+          node --check panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
           node --check panel-mosaic-lab/cockpit/bus-consumer-unified-v1.js
           node --check engine/integration/isn-electrical-pack-v1.js
           node --check panel-mosaic-lab/cockpit/autobrake-unified-v1.js
