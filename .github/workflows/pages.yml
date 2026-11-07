@@ -180,10 +180,11 @@ jobs:
       - name: Validate 24-bus Test Lab standalone web entry
         run: |
           node tests/classic-bus-consumer-test-lab-v1.test.cjs
+          node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
           test -f web-dist/bus-consumer-test-lab/v2.html
           grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v2.html
-          grep -q 'BUSLAB24-STBY-REV4' web-dist/bus-consumer-test-lab/v2.html
+          grep -q 'BUSLAB24-POWER-0005' web-dist/bus-consumer-test-lab/v2.html
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           grep -q 'v2.html' web-dist/panel-mosaic-lab/cockpit/index.html
       - name: Remove unreferenced archive files from Pages artifact only
