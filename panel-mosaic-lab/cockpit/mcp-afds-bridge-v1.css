@@ -7,3 +7,6 @@
  color:#f4f7fb;background:#244357;padding:6px 8px;cursor:pointer}
 .mcp-afds-control button:disabled{opacity:.4;cursor:not-allowed}
 .mcp-afds-control small{display:block;color:#abbec7;font-size:11px}
+
+/* MCP-0012: automatic feeder diagnostics (not a power override). */
+.mcp-afds-control .mcp-afds-circuit-status{font:11px/1.7 ui-monospace,Consolas,monospace;white-space:pre-line;overflow-wrap:anywhere;color:#f3dc9c;border-top:1px solid #465668;padding-top:6px}
