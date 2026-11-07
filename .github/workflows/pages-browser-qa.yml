@@ -1,0 +1,55 @@
+name: Unified Web Browser Visual and Performance QA (non-blocking for Pages)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/**'
+      - 'panel-mosaic-lab/le-devices/**'
+      - 'engine/instruments/**'
+      - 'tools/test-unified-web-startup.cjs'
+      - 'tools/test-aircon-ovht-visual-timing.cjs'
+      - 'tools/profile-unified-overhead-v6.cjs'
+      - 'tools/test-hydraulic-live-lab-browser.cjs'
+      - 'tools/build-composite-overhead-test.cjs'
+      - '.github/workflows/pages-browser-qa.yml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: unified-web-browser-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  browser-visual-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build exactly the same Unified web assets published on Pages
+        run: |
+          node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs
+          node tools/build-unified-web.cjs
+      - name: Install browser test dependency
+        run: npm install --no-save --ignore-scripts playwright@1.58.2
+      - name: Measure compiled web startup and live controls
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+          node tools/build-composite-overhead-test.cjs
+          node tools/test-aircon-ovht-visual-timing.cjs
+          node tools/test-unified-web-startup.cjs
+          node tools/profile-unified-overhead-v6.cjs
+          node tools/test-hydraulic-live-lab-browser.cjs
+      - name: Save web startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-web-startup
+          path: |
+            artifacts/unified-web-startup/
+            artifacts/perf-0006/
+            artifacts/hydraulic-lab-qa/
+          if-no-files-found: ignore
