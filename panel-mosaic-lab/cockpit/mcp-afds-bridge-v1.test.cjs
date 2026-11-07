@@ -76,7 +76,7 @@ for(const [text,regex] of [[bridge,/B737ISNCockpitV1/],[bridge,/B737_ELECTRICAL_
 assert.doesNotMatch(bridge,/Confirm observed MCP power/);
 for(const html of [unified,standalone]){
  assert.match(html,/mcp-fcom-ch4-numeric-v1\.js\?v=MCP-FCOM4-0001/);
- assert.match(html,/mcp-mode-core-v1\.js\?v=MCP-FCOM4-0001-LIMITS/);
- assert.match(html,/mcp-afds-bridge-v1\.js\?v=MCP-FCOM4-0001-CO/);
+ assert.match(html,/mcp-mode-core-v1\.js\?v=MCP-HIT-0001-BANK-LIMIT/);
+ assert.match(html,/mcp-afds-bridge-v1\.js\?v=MCP-HIT-0001-BANK-SYNC/);
 }
 console.log('PASS MCP Chapter 4: power, independent COURSE2, no manual power, modes, C/O, FCOM numeric limits, blanking and glass');
