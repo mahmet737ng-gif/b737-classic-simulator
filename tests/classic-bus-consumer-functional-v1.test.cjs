@@ -14,10 +14,13 @@ const find=(p,name)=>Object.values(p.consumers).find(x=>x.name===name);
 assert.equal(Core.validate(index),true);
 let s=E.initialState({coldDark:true}),cold=active(s);
 assert.equal(Object.keys(cold.consumers).length,340);
-assert.equal(Object.keys(cold.buses).length,26);
+assert.equal(Object.keys(cold.buses).length,24);
 assert.equal(cold.coverage.sourceRows,340);
 assert.equal(cold.coverage.logicalDevices,322,'Source rows aggregate into distinct electrical devices');
 assert.equal(Object.keys(cold.devices).length,322);
+assert.equal(Object.values(cold.consumers).filter(x=>x.system==='OTHER').length,0,'Every source row has an aircraft system');
+assert.equal(Object.keys(cold.buses).filter(x=>/^(?:acStandby|dcStandby)@/.test(x)).length,0,'No duplicate standby nodes');
+assert.ok(cold.buses['standby@115VAC']&&cold.buses['standby@28VDC'],'Exactly the two effective standby supplies exist');
 const eq300=active(E.initialState());
 assert.equal(find(eq300,'Temp. Control - aft cabin (400)').powerState,'NOT_INSTALLED');
 assert.equal(find(eq300,'Temp. Control Auto - left (300-500)').powerState,'NORMAL');
@@ -124,4 +127,4 @@ try{
  if(old===undefined)delete globalThis.B737ClassicBusConsumersV1;
  else globalThis.B737ClassicBusConsumersV1=old;
 }
-console.log('PASS ATA24 all 340 consumers, 26 bus class nodes, CB channel degradation, standby, 8 working fuel/hyd pumps');
+console.log('PASS ATA24 all 340 consumers, 24 bus class nodes, CB channel degradation, standby, 8 working fuel/hyd pumps');
