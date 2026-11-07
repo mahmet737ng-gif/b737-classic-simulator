@@ -98,8 +98,12 @@ function readout(){
 function comparison(){return Core.comparison(state);}
 function snapshot(){return {units:{L:sample('L'),R:sample('R')},comparison:comparison().separationNm,selected:selected(),
  powerMode,manualMotion,speed,message,entry:{...isdu},source:'PROCEDURE_QRH_TRAINER',notForNavigation:true};}
+function liveElectricalGate(){
+ return powerMode==='ELECTRICAL'||
+  root.B737UnifiedBusFailureInjectionV1?.live?.get?.()?.active===true;
+}
 function powerAvailability(id){
- if(powerMode==='INSTRUCTOR')return true;
+ if(!liveElectricalGate())return true;
  const b=root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
  if(!b)return null;
  const ac=id==='L'?b.acStandby:b.transfer2;
@@ -182,9 +186,9 @@ function motionFrame(dt){
 function clock(){
  const now=performance.now(),realDelta=Math.max(.05,Math.min(1.0,(now-lastTick)/1000));
  lastTick=now;
- const bus=powerMode==='ELECTRICAL'?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
+ const bus=liveElectricalGate()?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
  if(bus?.transfer2===false&&bus?.switchedHotBattery===true&&state.units.R.mode!=='OFF')rightBackupSeconds+=realDelta*speed;
- if(bus?.transfer2===true||powerMode!=='ELECTRICAL')rightBackupSeconds=0;
+ if(bus?.transfer2===true||!liveElectricalGate())rightBackupSeconds=0;
  ensurePower();
  let remaining=realDelta*speed;
  while(remaining>0){
@@ -197,7 +201,7 @@ function lightValue(id,key){
  const s=sample(id);
  if(key==='dcFailLamp')return !s.powered&&state.units[id].mode!=='OFF';
  if(key==='onDcLamp'){
-  const bus=powerMode==='ELECTRICAL'?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
+  const bus=liveElectricalGate()?root.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus:null;
   const ac=id==='L'?bus?.acStandby:bus?.transfer2;
   return s.onDcLamp||(s.powered&&ac===false&&bus?.switchedHotBattery===true);
  }
