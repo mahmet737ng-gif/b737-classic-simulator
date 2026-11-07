@@ -5,6 +5,8 @@
 "use strict";
 const W=2172,H=433;
 const Rules=window.B737McpFCOMCh4NumericV1;
+const Gesture=window.B737McpRotaryGestureV1;
+if(!Rules?.step||!Gesture?.create)throw Error("MCP V/S FCOM Ch4 or gesture engine missing");
 /* MCP-PHOTO-0003: the original generated orthographic switch renders are
    mounted from a single 4-state photo sheet, not procedural CSS substitutes. */
 const attached=new WeakSet(), all=[];
@@ -59,14 +61,49 @@ function mountControl(parent,c){
  }else if(c.kind==="wheel"){
   el.setAttribute("aria-valuemin","-7900");el.setAttribute("aria-valuemax","6000");
   el.innerHTML='<span class="mcp-hw-wheel-axle"><span class="mcp-hw-wheel-tread"></span><span class="mcp-hw-wheel-glint"></span></span>';
-  let last=null;
-  on(el,"pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.stopPropagation();e.preventDefault();last=e.clientY;el.setPointerCapture(e.pointerId)});
-  on(el,"pointermove",e=>{if(last===null)return;e.stopPropagation();let steps=Math.trunc((last-e.clientY)/9);if(steps){change(c.id,Rules.step("verticalSpeed",state[c.id],steps),"drag");last-=steps*9}});
-  on(el,"pointerup",e=>{last=null;e.stopPropagation()});
-  on(el,"pointercancel",e=>{last=null;e.stopPropagation()});
-  on(el,"lostpointercapture",()=>last=null);
-  on(el,"wheel",e=>{e.preventDefault();e.stopPropagation();change(c.id,Rules.step("verticalSpeed",state[c.id],e.deltaY<0?1:-1),"wheel")},{passive:false});
-  on(el,"keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){e.preventDefault();change(c.id,Rules.step("verticalSpeed",state[c.id],["ArrowUp","ArrowRight"].includes(e.key)?1:-1),"keyboard")}});
+  const gesture=Gesture.create({
+   axis:"y",
+   pixelsPerDetent:()=>Math.max(5,Math.min(16,el.getBoundingClientRect().height*.055)),
+   tapDirection:e=>{
+    const rect=el.getBoundingClientRect();
+    return e.clientY<rect.top+rect.height/2?1:-1;
+   },
+   onDetents:(detents,meta)=>{
+    const value=Rules.step("verticalSpeed",state[c.id],detents);
+    if(value!==null)change(c.id,value,meta.method);
+   }
+  });
+  on(el,"pointerdown",e=>{
+   if(!gesture.down(e))return;
+   e.preventDefault();e.stopPropagation();
+   el.focus({preventScroll:true});
+   try{el.setPointerCapture(e.pointerId)}catch(_){}
+  });
+  on(el,"pointermove",e=>{
+   if(!gesture.audit().active)return;
+   e.preventDefault();e.stopPropagation();gesture.move(e);
+  });
+  on(el,"pointerup",e=>{
+   if(!gesture.audit().active)return;
+   e.preventDefault();e.stopPropagation();gesture.up(e);
+   if(el.hasPointerCapture?.(e.pointerId))el.releasePointerCapture(e.pointerId);
+  });
+  on(el,"pointercancel",e=>{gesture.cancel();e.stopPropagation()});
+  on(el,"lostpointercapture",()=>gesture.cancel());
+  on(el,"wheel",e=>{
+   e.preventDefault();e.stopPropagation();
+   gesture.wheel(e.deltaY,e.deltaMode);
+  },{passive:false});
+  on(el,"keydown",e=>{
+   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){
+    e.preventDefault();e.stopPropagation();
+    change(c.id,Rules.step("verticalSpeed",state[c.id],
+     ["ArrowUp","ArrowRight"].includes(e.key)?1:-1),"keyboard");
+   }else if(e.key==="Home"||e.key==="End"){
+    e.preventDefault();e.stopPropagation();
+    change(c.id,e.key==="Home"?0:e.shiftKey?-7900:6000,"keyboard");
+   }
+  });
  }else{
   el.innerHTML='<span class="mcp-hw-push-bezel"><span class="mcp-hw-push-cap"></span></span>';
   on(el,"click",e=>{e.stopPropagation();change(c.id,!state[c.id],"click")});
