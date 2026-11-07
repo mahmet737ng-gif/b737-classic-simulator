@@ -34,6 +34,7 @@ jobs:
         run: |
           python3 -m pip install --quiet Pillow
           python3 tools/mcp-hole-calibration-v1.py
+          node tests/mcp-photo-aperture-center-v1.test.cjs
       - name: Check MCP overlay syntax
         run: |
           node --check panel-mosaic-lab/cockpit/mcp-visual-v3.js
