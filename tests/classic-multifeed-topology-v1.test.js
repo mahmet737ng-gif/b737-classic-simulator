@@ -41,4 +41,29 @@ for(const [side,key] of [['left','transfer1@115VAC'],['right','transfer2@115VAC'
  assert.equal(d.state,'DEGRADED');
  cases++;
 }
-console.log('PASS multi-feed topology '+cases+' operational state assertions across 17 devices');
+for(const [side,extra] of [['left','main1@115VAC'],['right','main2@115VAC']]){
+ const d=project({[extra]:false}).devices['Alpha Vane AoA - '+side];
+ assert.equal(d.capabilities.VANE_HEATER,true);
+ cases++;
+}
+const required=nominal.devices['Yaw Damper'];
+const requiredRows=required.channels.map(id=>nominal.consumers[id]);
+const cbRequired=requiredRows.map((row,i)=>i===0?{...row,cbState:'OPEN'}:row);
+assert.equal(topology.resolveDevice('Yaw Damper',cbRequired,nominal.buses).state,'OFF');
+cases++;
+const fmc=nominal.devices.FMC;
+const fmcRows=fmc.channels.map(id=>nominal.consumers[id]);
+const cbFmc=fmcRows.map((row,i)=>i===0?{...row,cbState:'OPEN'}:row);
+assert.equal(topology.resolveDevice('FMC',cbFmc,nominal.buses).state,'NORMAL');
+cases++;
+const unknownBus={...nominal.buses,'electronic1@115VAC':{
+ ...nominal.buses['electronic1@115VAC'],powered:null}};
+assert.equal(topology.resolveDevice('Yaw Damper',requiredRows,unknownBus).state,'UNKNOWN');
+cases++;
+for(const key of Object.keys(base)){
+ const snap=project({[key]:false});
+ assert.equal(Object.keys(snap.consumers).length,340);
+ assert.equal(Object.keys(snap.devices).length,322);
+ cases++;
+}
+console.log('PASS multi-feed topology '+cases+' assertions across 17 devices / 24 buses');
