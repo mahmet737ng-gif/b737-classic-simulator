@@ -8,14 +8,15 @@
 (function(win){
 "use strict";
 const NS="http://www.w3.org/2000/svg",W=2172,H=433;
+const Rules=win.B737McpFCOMCh4NumericV1;
 const qa=new URLSearchParams(win.location.search).get("mcpDigitsTest")==="1";
 const areas=Object.freeze([
- {id:"courseL",x:85,y:112,w:112,h:59},
- {id:"speed",x:485,y:115,w:147,h:56},
- {id:"heading",x:826,y:113,w:119,h:58},
- {id:"altitude",x:1127,y:114,w:171,h:56},
- {id:"verticalSpeed",x:1376,y:118,w:171,h:56},
- {id:"courseR",x:1932,y:120,w:121,h:55}
+ {id:"courseL",x:85,y:112,w:112,h:59,slots:3},
+ {id:"speed",x:485,y:115,w:147,h:56,slots:3},
+ {id:"heading",x:826,y:113,w:119,h:58,slots:3},
+ {id:"altitude",x:1127,y:114,w:171,h:56,slots:5},
+ {id:"verticalSpeed",x:1376,y:118,w:171,h:56,slots:5},
+ {id:"courseR",x:1932,y:120,w:121,h:55,slots:3}
 ]);
 const segments=Object.freeze({
  a:"M9 4.5 L27 4.5",b:"M30 8.5 L29 24",c:"M29 35 L28 50",
@@ -85,39 +86,69 @@ function supply(){
 }
 function getNumbers(){
  const visual=win.B737McpVisualV3?.getState?.()||{};
- const backend=win.B737McpAFDSBridgeV1?.getOutput?.()?.values||{};
- const result={};
+ const backend=win.B737McpAFDSBridgeV1?.getOutput?.()||{};
+ const numbers={};
  for(const {id} of areas)
-  result[id]=Number.isFinite(visual[id])?Math.trunc(visual[id]):
-   Number.isFinite(backend[id])?Math.trunc(backend[id]):0;
- return result;
+  numbers[id]=Number.isFinite(visual[id])?Math.trunc(visual[id]):
+   Number.isFinite(backend.values?.[id])?Math.trunc(backend.values[id]):0;
+ numbers.machHundredths=Number.isFinite(visual.machHundredths)?
+  visual.machHundredths:(backend.values?.machHundredths??60);
+ numbers.speedMode=backend.speedDisplayMode||visual.speedMode||"IAS";
+ numbers.displayBlank=backend.displayBlank||{verticalSpeed:true,speed:false};
+ return numbers;
 }
-function digits(id,v){
- if(id==="verticalSpeed")return String(v);
- return String(v).padStart(id==="altitude"?5:3,"0");
+function stringFor(d,values){
+ const blank=!qa&&(d.id==="speed"?values.displayBlank.speed:
+  d.id==="verticalSpeed"?values.displayBlank.verticalSpeed:false);
+ const value=d.id==="speed"&&values.speedMode==="MACH"?values.machHundredths:values[d.id];
+ return Rules?.format(d.id,value,{mode:values.speedMode,blank})??"";
 }
-function paint(view,on,number){
+function paint(view,on,chars){
  const {glass,d,host}=view;
  host.dataset.powered=on?"true":"false";
- if(!on){glass.replaceChildren();return;}
- const chars=digits(d.id,number);
- const n=chars.length;
- const scale=Math.min(1,(d.w-12)/(35*n+7*Math.max(0,n-1)),(d.h-8)/59);
- const total=(35*n+7*(n-1))*scale;
+ host.dataset.characters=chars;
+ if(!on||!chars){glass.replaceChildren();return;}
+ // Fit a FIXED display capacity, never the length of a changing value.
+ // The V/S window always reserves one narrow sign plus FOUR numeric slots.
+ // MACH reserves a short decimal point and two digits; IAS reserves three.
+ const cellWidth=35,spacing=6.5;
+ const widths=Array.from({length:d.slots},(_,i)=>d.id==="verticalSpeed"&&i===0?23:
+  d.id==="speed"&&chars[0]==="."&&i===0?14:cellWidth);
+ const rawWidth=widths.reduce((n,v)=>n+v,0)+spacing*(widths.length-1);
+ const scale=Math.min(1,(d.w-10)/rawWidth,(d.h-7)/59);
+ const total=rawWidth*scale;
  const first=(d.w-total)/2,top=(d.h-59*scale)/2;
- const group=svg("g");
- for(let i=0;i<n;i++){
-  const digit=svg("g",{transform:"translate("+(first+i*42*scale)+" "+top+") scale("+scale+")"});
-  const active=segOn[chars[i]]||"";
-  for(const [name,path] of Object.entries(segments)){
-   const lit=active.includes(name);
-   const seg=svg("path",{d:path,fill:"none",stroke:lit?"#ffdc85":"#3e321a",
-    "stroke-width":lit?4.2:3.8,"stroke-linecap":"round",
-    "stroke-linejoin":"round",opacity:lit?1:.12});
-   if(lit)seg.style.filter="drop-shadow(0 0 1.3px #fff2b6) drop-shadow(0 0 2.2px #e9ab39)";
-   digit.append(seg);
+ const group=svg("g");let x=first;
+ for(let i=0;i<d.slots;i++){
+  const character=chars[i]||" ";
+  const width=widths[i],digit=svg("g",{transform:"translate("+x+" "+top+") scale("+scale+")"});
+  const mid=width/2;
+  if(character==="+"||character==="-"){
+   const horizontal=svg("path",{d:"M"+(mid-7)+" 29 L"+(mid+7)+" 29",
+    stroke:"#ffdc85","stroke-width":4.2,"stroke-linecap":"round",fill:"none"});
+   horizontal.style.filter="drop-shadow(0 0 2px #e9ab39)";
+   digit.append(horizontal);
+   if(character==="+")digit.append(svg("path",{d:"M"+mid+" 22 L"+mid+" 36",
+    stroke:"#ffdc85","stroke-width":4.2,"stroke-linecap":"round",fill:"none"}));
+  }else if(character==="."){
+   const dot=svg("circle",{cx:mid,cy:51,r:3.2,fill:"#ffdc85"});
+   dot.style.filter="drop-shadow(0 0 2px #e9ab39)";digit.append(dot);
+  }else if(character!==" "){
+   const active=segOn[character]||"";
+   // Center the 35-unit seven-segment artwork within its fixed cell.
+   const segGroup=svg("g",{transform:"translate("+((width-cellWidth)/2)+" 0)"});
+   for(const [name,path]of Object.entries(segments)){
+    const lit=active.includes(name);
+    const segment=svg("path",{d:path,fill:"none",stroke:lit?"#ffdc85":"#3e321a",
+     "stroke-width":lit?4.2:3.8,"stroke-linecap":"round","stroke-linejoin":"round",
+     opacity:lit?1:.12});
+    if(lit)segment.style.filter="drop-shadow(0 0 1.3px #fff2b6) drop-shadow(0 0 2.2px #e9ab39)";
+    segGroup.append(segment);
+   }
+   digit.append(segGroup);
   }
   group.append(digit);
+  x+=(width+spacing)*scale;
  }
  glass.replaceChildren(group);
 }
@@ -131,7 +162,7 @@ function draw(force=false,refreshPower=false){
  lastKey=key;
  for(const views of roots.values())for(const view of views){
   const on=qa||(view.d.id==="courseR"?p.right:p.main)===true;
-  paint(view,on,values[view.d.id]);
+  paint(view,on,stringFor(view.d,values));
  }
  if(qa)updateWitness(p);
 }
@@ -172,7 +203,7 @@ win.B737McpIndependentDigitsV1=Object.freeze({
  audit:()=>({schema:"MCP-DIGITS-0004",qa,preview:false,rootCount:roots.size,
   windowCount:Array.from(roots.values()).reduce((n,a)=>n+a.length,0),
   power:lastSupply||supply(),values:getNumbers(),windows:Array.from(roots.values()).flat().map(v=>({
-   id:v.d.id,lit:v.host.dataset.powered,rect:{
+   id:v.d.id,lit:v.host.dataset.powered,slots:v.d.slots,characters:v.host.dataset.characters,rect:{
     x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
     w:v.host.getBoundingClientRect().width,h:v.host.getBoundingClientRect().height}}))}),
  refresh:()=>{mount();draw(true,true)},
