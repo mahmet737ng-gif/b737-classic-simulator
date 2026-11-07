@@ -16,7 +16,7 @@ const rejected=(s,reason)=>({...s,lastRejection:reason,revision:s.revision+1});
 const clone=v=>JSON.parse(JSON.stringify(v));
 function initialState(){return {
  schema:"B737_MCP_AFDS_V1",revision:0,
- electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,dc1:null,batteryBus:null,rawRevision:null},
+ electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,electronic1:null,dc1:null,batteryBus:null,rawRevision:null},
  fd:{left:false,right:false},autoThrottleArm:false,
  values:{courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0},
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
@@ -43,15 +43,18 @@ function projectPower(s){
  const e=s.electrical,global=e.globalPowerPossible;
  const mainCb=globalThis.B737UnifiedCB?.available('mcp.power');
  const course2Cb=globalThis.B737UnifiedCB?.available('mcp.course2');
- const main=global===false||mainCb===false||e.dc1===false?false:
-  e.dc1===true?true:null;
+ // MRG CL IV.6 p.186: MCP (DC) is on ELECTRONIC 1 - 28VDC,
+ // not generically every load on DC BUS 1. Raw DC1 is a documented V7
+ // proxy only when the finer electronic-bus power has not been published.
+ const main=global===false||mainCb===false||e.electronic1===false?false:
+  e.electronic1===true?true:null;
  const course2=global===false||course2Cb===false||e.batteryBus===false?false:
   e.batteryBus===true?true:null;
  // Never invent a powered MCP from an instructor UI click. Only ATA24 V7
  // bus telemetry and the actual registered circuit breaker can energize it.
  const feed=main===false?STATES.ABSENT:main===true?STATES.SIMULATED_DC1:STATES.UNVERIFIED;
  return {globalPowerPossible:global,feed,mcpPower:main,course2Power:course2,
-  dc1:e.dc1,batteryBus:e.batteryBus,rawRevision:e.rawRevision};
+  electronic1:e.electronic1,dc1:e.dc1,batteryBus:e.batteryBus,rawRevision:e.rawRevision};
 }
 function clearModes(s){s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};s.pending.approach=false;}
 function transition(state,action){
@@ -65,8 +68,12 @@ function transition(state,action){
   if(!source||source.schema!=="B737_ELECTRICAL_V7_RESULT"||!source.bus)throw Error("Electrical V7 evaluated snapshot required");
   s.electrical.globalPowerPossible=globalPowerPossible(source.bus);
   s.electrical.rawRevision=source.revision;
-  s.electrical.dc1=source.bus.dc1===true?true:source.bus.dc1===false?false:null;
-  s.electrical.batteryBus=source.bus.battery===true?true:source.bus.battery===false?false:null;
+  const trit=v=>v===true?true:v===false?false:null;
+  s.electrical.dc1=trit(source.bus.dc1);
+  // When electronic1 is explicitly UNKNOWN, preserve that uncertainty.
+  s.electrical.electronic1=Object.hasOwn(source.bus,"electronic1")?
+   trit(source.bus.electronic1):s.electrical.dc1;
+  s.electrical.batteryBus=trit(source.bus.battery);
   s.electrical=projectPower(s);
   if(s.electrical.mcpPower!==true)clearModes(s);
   return done();
@@ -143,9 +150,9 @@ function output(s){
   lamps.APP=s.pending.approach&&s.evidence.approachCapture===true;
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
-  electricalRevision:s.electrical.rawRevision,lamps,values:{...s.values},controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
+  electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
-  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_DC1_AND_COURSE2_BAT_BUS_TRAINING_MAPPING_NOT_AIRCRAFT_VERIFIED","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
+  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","NO_IAS_MACH_CHANGEOVER_LAW"]};
 }
 return Object.freeze({STATES,initialState,globalPowerPossible,transition,output});
 });
