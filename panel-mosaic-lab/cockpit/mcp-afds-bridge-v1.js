@@ -28,22 +28,30 @@ function electrical(){
  if(observed?.schema!=="B737_ELECTRICAL_V7_RESULT")
   observed=provider.getState?.()?.state?.electrical;
  if(observed?.schema!=="B737_ELECTRICAL_V7_RESULT"||!observed.bus)return;
+ // Use the existing ATA24 MRG bus-class projection, which includes injected
+ // ELECTRONIC 1 28VDC failures. Electrical V7 dc1 is only its upstream proxy.
+ const facade=window.B737UnifiedBusConsumerLiveV1;
+ const elex1=facade?.getBus?.("electronic1","28VDC");
+ const battery=facade?.getBus?.("battery","28VDC");
+ const bit=(v)=>v===true?true:v===false?false:null;
+ const bus={...observed.bus,electronic1:elex1?bit(elex1.powered):bit(observed.bus.dc1),
+  battery:battery?bit(battery.powered):bit(observed.bus.battery)};
  const mainCB=window.B737UnifiedCB?.available?.("mcp.power");
  const courseCB=window.B737UnifiedCB?.available?.("mcp.course2");
- const fingerprint=JSON.stringify([observed.bus,mainCB,courseCB]);
+ const fingerprint=JSON.stringify([bus,mainCB,courseCB]);
  if(fingerprint===lastElectrical)return;
  lastElectrical=fingerprint;
- send({type:"ELECTRICAL",snapshot:observed});
+ send({type:"ELECTRICAL",snapshot:{...observed,bus}});
 }
 for(const name of ["b737:cb-state-change","b737:electrical-distribution-changed",
  "b737:electrical-v7-state","b737:electrical-owner-ready",
- "b737:bus-failure-injection-changed"])
+ "b737:bus-failure-injection-changed","b737:bus-consumer-snapshot"])
  window.addEventListener(name,electrical);
 function statusLabel(out){
  const crs2=out.course2Power===true?"COURSE 2 ON":out.course2Power===false?"COURSE 2 OFF":"COURSE 2 UNKNOWN";
- if(out.power===false)return "MCP OFF · DC BUS 1 or CB open · "+crs2;
- if(out.power===null)return "MCP POWER UNKNOWN · waiting for Electrical V7 · "+crs2;
- return "MCP ON · DC BUS 1 / MCP CB (automatic trainer connection) · "+crs2;
+ if(out.power===false)return "MCP OFF · ELEX 1 28V DC or CB open · "+crs2;
+ if(out.power===null)return "MCP POWER UNKNOWN · ELEX 1 feed not established · "+crs2;
+ return "MCP ON · ELECTRONIC BUS 1 28V DC / MCP CB · "+crs2;
 }
 function project(){
  const out=Core.output(state);
@@ -66,7 +74,27 @@ function project(){
   ])if(current[id]!==value)hardware.setState(id,value);
  }
  if(status)status.textContent=statusLabel(out);
-  if(modeReadout){
+ const circuit=document.querySelector(".mcp-afds-circuit-status");
+ if(circuit){
+  const cb=window.B737UnifiedCB;
+  const label=v=>v===true?"ON":v===false?"OFF":"UNKNOWN";
+  const cbText=v=>v===true?"CLOSED":v===false?"OPEN":"UNKNOWN";
+  const f=out.feedStatus||{};
+  const state=window.B737ISNCockpitV1?.getElectricalState?.();
+  const apu=state?.config?.apuRunning===true;
+  const apuOnBus=Object.values(state?.source||{}).includes("APU");
+  const guide=out.power===false?
+   (!state?"Electrical owner not initialized":
+    apu&&!apuOnBus?"APU running but not connected to generator bus: select APU GEN ON":
+    !apuOnBus&&!Object.values(state.source||{}).some(v=>v==="GEN1"||v==="GEN2"||v==="EXT")?
+    "No AC source on distribution: connect GPU/APU GEN/engine GEN to a bus":
+    f.electronic1===false?"ELEX 1 supply or its upstream source is OFF":"Check MCP circuit breaker"):"";
+  circuit.textContent="ELEX1 28V: "+label(f.electronic1)+" · DC1 upstream: "+label(f.dc1)+
+   " · MCP CB: "+cbText(cb?.available?.("mcp.power"))+
+   " | COURSE2 BAT BUS: "+label(f.batteryBus)+
+   " · CB: "+cbText(cb?.available?.("mcp.course2"))+(guide?" | "+guide:"");
+ }
+ if(modeReadout){
   const m=out.modes;
   modeReadout.textContent="LAT "+(m.lateral||"—")+" · VERT "+(m.vertical||"—")+" · A/T "+(m.thrust||"—")+" · A/P "+(m.autopilot||"—")+
    (out.rejection?" | BLOCKED: "+out.rejection:"");
@@ -112,8 +140,11 @@ function decorate(){
  status=document.createElement("p");status.className="mcp-afds-power-status";status.setAttribute("role","status");
   modeReadout=document.createElement("p");modeReadout.className="mcp-afds-mode-status";
  const note=document.createElement("small");
- note.textContent="MCP illumination is automatic from Electrical V7: DC BUS 1 / P18-1 D1 and separate COURSE 2 battery-bus CB. Trainer wiring, not certified aircraft WDM.";
- section.append(heading,status,modeReadout,note);
+ note.textContent="MRG CL p.186: MCP Electronic Bus 1 · 28V DC / P18-1 D1. COURSE 2: Battery Bus · 28V DC / dedicated CB. Trainer bus mapping; EP-FSI WDM not verified.";
+ const circuit=document.createElement("p");
+ circuit.className="mcp-afds-circuit-status";
+ circuit.setAttribute("role","status");
+ section.append(heading,status,circuit,modeReadout,note);
  target.prepend(section);
  project();
 }
