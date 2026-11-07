@@ -63,6 +63,28 @@ function addKnob(root,id){
  const pic=art(SOURCE[id]);
  el.append(pic);
 }
+function bankAngleFromStep(value,detents){
+ const proposed=Math.max(10,Math.min(30,Math.round((value+5*Math.trunc(detents))/5)*5));
+ return proposed;
+}
+function setBankAngle(value,method="external"){
+ if(!Number.isFinite(value)||value<10||value>30||value%5!==0)return bankAngle;
+ if(value===bankAngle)return bankAngle;
+ bankAngle=value;
+ for(const node of document.querySelectorAll('[data-piece="mcp"]')){
+  const knob=node.querySelector('.mcp-v3-knob[data-control="heading"]');
+  const ring=knob?.querySelector("[data-mcp-bank-limit]");
+  if(ring)ring.style.setProperty("--bank-turn",(bankAngle-20)*3+"deg");
+  if(knob)knob.dataset.bankAngleLimit=String(bankAngle);
+ }
+ window.dispatchEvent(new CustomEvent("b737:mcp-bank-limit-preview",
+  {detail:{angle:bankAngle,source:"OWNER13",method,validatedFlightLogic:false}}));
+ return bankAngle;
+}
+function adjustBank(detents,method="drag"){
+ if(!Number.isFinite(detents))return bankAngle;
+ return setBankAngle(bankAngleFromStep(bankAngle,detents),method);
+}
 function addBank(root){
  const knob=root.querySelector('.mcp-v3-knob[data-control="heading"]');
  if(!knob||knob.querySelector("[data-mcp-bank-limit]"))return;
@@ -80,24 +102,19 @@ function addBank(root){
  inner.style.height=(geometry.headingSEL.d/geometry.heading.d*100)+"%";
  inner.style.left="50%";inner.style.top="50%";
  knob.append(inner);
- function changeBank(step){
-  bankAngle=Math.max(10,Math.min(30,bankAngle+step*5));
-  ring.style.setProperty("--bank-turn",(bankAngle-20)*3+"deg");
-  knob.dataset.bankAngleLimit=String(bankAngle);
-  window.dispatchEvent(new CustomEvent("b737:mcp-bank-limit-preview",
-   {detail:{angle:bankAngle,source:"OWNER13",validatedFlightLogic:false}}));
- }
+
  const handle=e=>{
   if(!e.shiftKey)return;
-  if(e.type==="wheel"){e.preventDefault();e.stopImmediatePropagation();changeBank(e.deltaY<0?1:-1);}
+  if(e.type==="wheel"){e.preventDefault();e.stopImmediatePropagation();adjustBank(e.deltaY<0?1:-1,'wheel');}
   if(e.type==="keydown"&&["ArrowUp","ArrowDown","ArrowRight","ArrowLeft"].includes(e.key)){
-   e.preventDefault();e.stopImmediatePropagation();changeBank(["ArrowUp","ArrowRight"].includes(e.key)?1:-1);
+   e.preventDefault();e.stopImmediatePropagation();adjustBank(["ArrowUp","ArrowRight"].includes(e.key)?1:-1,'keyboard');
   }
  };
  knob.addEventListener("wheel",handle,{capture:true,passive:false});
  knob.addEventListener("keydown",handle,true);
  knob.setAttribute("aria-label","HEADING select; Shift+wheel changes bank angle limit");
- changeBank(0);
+ ring.style.setProperty("--bank-turn",(bankAngle-20)*3+"deg");
+ knob.dataset.bankAngleLimit=String(bankAngle);
 }
 const pushButtons=Object.freeze([
  // Socket envelopes are on the original 2172x433 panel, not viewport pixels.
@@ -187,7 +204,7 @@ async function load(){
   loaded=true;mount();
  }catch(e){console.warn("OWNER13_ASSET_NOT_READY",String(e));}
 }
-window.B737McpOwner13V1=Object.freeze({geometry,SOURCE,audit,getState:()=>({loaded,bankAngle}),mount});
+window.B737McpOwner13V1=Object.freeze({geometry,SOURCE,audit,getState:()=>({loaded,bankAngle}),setBankAngle,adjustBank,mount});
 document.addEventListener("DOMContentLoaded",()=>{load();mount()});
 window.addEventListener("b737:cockpit-mounted",mount);
 if(document.readyState!=="loading")load();
