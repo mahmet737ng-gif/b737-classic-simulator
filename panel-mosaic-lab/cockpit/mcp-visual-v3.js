@@ -25,13 +25,20 @@ const digitQa=new URLSearchParams(location.search).get("mcpDigitsTest")==="1";
  * F/O COURSE begins to the right of CMD B; no black mask may cover CMD B.
  * The shared source-coordinate SVG keeps fits correct at every cockpit zoom.
  */
+/* MCP-HOLES-0001: original locked B737_MCP_Blank_Panel.png SHA256
+ * 9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062.
+ * Independently sampled dark-glass source pixels at center rows/columns.
+ * Coordinates are the INNER black glass (1px inset from detected dark runs),
+ * not outer bevel or previously overlaid digital host. This is the sole
+ * cockpit source of truth consumed by B737McpIndependentDigitsV1.
+ */
 const displays=[
- {id:"courseL",     x:85,  y:112,w:112,h:59,digits:3},
- {id:"speed",       x:485, y:115,w:147,h:56,digits:3},
- {id:"heading",     x:826, y:113,w:119,h:58,digits:3},
- {id:"altitude",    x:1127,y:114,w:171,h:56,digits:5},
- {id:"verticalSpeed",x:1376,y:118,w:171,h:56,digits:5},
- {id:"courseR",     x:1932,y:120,w:121,h:55,digits:3}
+ {id:"courseL",      x:86,   y:111,w:108,h:47,digits:3},
+ {id:"speed",        x:480,  y:116,w:135,h:47,digits:3},
+ {id:"heading",      x:820,  y:118,w:97, h:47,digits:3},
+ {id:"altitude",     x:1115, y:121,w:162,h:48,digits:5},
+ {id:"verticalSpeed",x:1362, y:123,w:160,h:49,digits:5},
+ {id:"courseR",      x:1921, y:127,w:101,h:47,digits:3}
 ];
 const lamps=[
  {id:"AT_ARM",x:322,y:129,w:45,h:8},
