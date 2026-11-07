@@ -38,7 +38,8 @@
    inputValue:reading.valid===true?reading.value:null,value:null,
    pointer:"UNKNOWN",digital:"UNKNOWN",powerBus:feed.bus,
    power:pow===null?"UNKNOWN":pow?"ON":"OFF",
-   feedQuality:feed.quality,origin:reading.origin||null,
+   feedQuality:feed.quality,nominalVoltage:feed.voltage||null,sourceEvidence:feed.sourceEvidence||null,
+   origin:reading.origin||null,
    lastValue:finite(old.lastValue)?old.lastValue:null,invalidElapsedMs:0,reason:null};
   if(mode==="EIS"&&unitFault)return {...res,status:"UNIT_FAILED",pointer:"BLANK",digital:"BLANK"};
   if(pow===false){
@@ -90,11 +91,21 @@
    for(const [param,rec] of Object.entries(database.instruments)){
     const input=sensor(observed,side,param,rec.unit),feed=rec.wiring[mode][side];
     const circuit={n1:'n1Indicator',n2:'n2Indicator',egt:'egtIndicator',oilPressure:'oilIndicator',oilTemperature:'oilIndicator',oilQuantity:'oilQuantityIndicator',fuelFlow:'fuelFlowIndicator',vibration:'vibrationIndicator'}[param];
-    const cbOpen=circuit&&globalThis.B737UnifiedCB?.available(param==='vibration'?'engine.vibrationIndicator':id+'.'+circuit)===false;
+    const cbCircuit=circuit?(param==='vibration'?'engine.vibrationIndicator':id+'.'+circuit):null;
+    const cbAvailable=cbCircuit?globalThis.B737UnifiedCB?.available(cbCircuit):null;
+    const cbOpen=cbAvailable===false;
     const unitFault=Boolean(faults[mode==="EIS"?(rec.section==="primary"?"eisPrimary":"eisSecondary"):"none"]);
     indications[param]=resolve({param,mode,reading:input,feed,unitFault,
       channelFault:Boolean(faults[param+"."+side]),previous:prior.indications?.[param],dtMs,db:database,electrical});
     if(cbOpen)indications[param]={...indications[param],status:'POWER_LOSS',power:'OFF',pointer:mode==='EIS'?'BLANK':param==='oilPressure'?'HOLD_LAST':'OFF_SCALE',digital:'BLANK',value:param==='oilPressure'?prior.indications?.[param]?.lastValue??null:null,reason:'PROTECTED_CIRCUIT_CB_OPEN'};
+    // Preserve separate electrical bus power and photographic CB isolation
+    // evidence. UNKNOWN CB identities must never be reported as closed.
+    indications[param].circuitBreaker={circuit:cbCircuit,
+     state:cbAvailable===true?'CLOSED':cbAvailable===false?'OPEN':'UNKNOWN'};
+    if(param==='vibration')indications[param].supplyDiscrepancy={
+     indication:'MRG_TRANSFER1_28VAC',conditioner:'LAN_TRANSFER1_115VAC',
+     wiringStatus:'AIRCRAFT_WDM_UNVERIFIED'};
+
    }
    let used=resetFuelUsed?0:finite(previous?.fuelUsedKg?.[id])?previous.fuelUsedKg[id]:0;
    const flow=sensor(observed,side,"fuelFlow","kg/h");
