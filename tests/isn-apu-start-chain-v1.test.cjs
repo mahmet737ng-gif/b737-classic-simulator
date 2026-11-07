@@ -103,7 +103,7 @@ chain.lever('engine1','CUTOFF');
 assert.equal(chain.get().phase.engine1,'OFF');
 assert.equal(start.get().network.requests.engine1,'SHUTDOWN');
 
-// Negative cases: battery unavailable, incomplete bleed path and packs left AUTO.
+// Negative battery case and independent PACK AUTO start-air case.
 ({start,chain}=make());
 chain.synchronize({...overhead,guards:{'battery-master':{value:'off'}}});
 chain.event({id:'apu-start',kind:'toggle',next:'START'});
@@ -115,8 +115,9 @@ chain.synchronize({...overhead,toggles:{...overhead.toggles,'pack-l':'AUTO'}});
 chain.event({id:'apu-start',kind:'toggle',next:'START'});chain.advance(1400);
 start.core.pack.send({type:'ELECTRICAL',action:{type:'SELECT_SOURCE',source:'APU',side:1}});
 chain.syncPower();chain.event({id:'engine-start-1',kind:'rotary',next:'GRD'});
-assert.equal(chain.get().phase.engine1,'BLOCKED');
-assert.match(chain.get().lastError,/PACK L\/R/);
+assert.equal(chain.get().phase.engine1,'MOTORING',
+ 'PACK AUTO cannot block starter if this side has valid bleed/duct supply');
+assert.doesNotMatch(chain.get().lastError,/PACK L\/R/);
 
 const host=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/isn-cockpit.js'),'utf8');
 const child=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/overhead-bridge.js'),'utf8');
