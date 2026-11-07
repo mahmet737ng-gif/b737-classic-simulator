@@ -88,10 +88,10 @@
    // accumulate and only emit an actual detent after meaningful movement.
    const normalized=deltaMode===1?deltaY*33:deltaMode===2?deltaY*120:deltaY;
    wheelRemainder+=normalized;
-   let clicks=Math.trunc(wheelRemainder/38);
+   let clicks=Math.trunc(wheelRemainder/100);
    clicks=clamp(clicks,-20,20);
    if(clicks){
-    wheelRemainder-=clicks*38;
+    wheelRemainder-=clicks*100;
     opts.onDetents(-clicks,{method:"wheel",pointerType:"wheel",axis:forcedAxis,
      acceleration:1});
    }
