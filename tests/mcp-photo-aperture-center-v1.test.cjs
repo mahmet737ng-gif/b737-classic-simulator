@@ -41,6 +41,6 @@ assert.match(live,/const geometry=win\.B737McpVisualV3\?\.geometry\?\.displays/)
 assert.match(live,/const areas=Object\.freeze\(geometry\.map\(d=>Object\.freeze\(/);
 assert.doesNotMatch(live,/const areas=Object\.freeze\(\[/,'No second independent guessed rect list');
 for(const html of [ui,standalone])
- assert.match(html,/mcp-visual-v3\.js\?v=MCP-GESTURE-0001-FIVE-KNOBS/);
+ assert.match(html,/mcp-visual-v3\.js\?v=MCP-HIT-0001-DISPATCH/);
 assert.match(ui,/mcp-independent-digits-v1\.js\?v=MCP-HOLES-0001-SAME-GEOMETRY/);
 console.log('PASS MCP original PNG: six glass centers <=0.6 source px, exact inset, zoom invariance, one shared authority, fresh assets');
