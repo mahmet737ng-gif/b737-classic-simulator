@@ -30,7 +30,7 @@
  function createRegistry(bridge,owners={}){
   if(!bridge?.subscribeDevice||!bridge?.subscribe)throw Error('ATA24 event bridge required');
   const state=new Map(),unsubscribers=[],pending=new Set();
-  let registered=false,scheduled=false,active=true,registrationCount=0,groupCalls=0;
+  let registered=false,scheduled=false,active=true,registrationCount=0,groupCalls=0,ownerRouted=0;
   const doFlush=()=>{
    scheduled=false;
    if(!active)return;
@@ -58,6 +58,7 @@
    if(names.length!==322)throw Error('ATA24 expected 322 MRG logical devices, found '+names.length);
    for(const name of names){
     const group=groupFor(name);
+    if(group)ownerRouted++;
     const stop=bridge.subscribeDevice(name,event=>{
      const d=event?.value;if(!d)return;
      state.set(name,{state:d.state,topology:d.topology,
@@ -79,6 +80,7 @@
    getRegistrationCount:()=>registrationCount,
    getState:name=>{const d=state.get(name);return d?{...d,capabilities:{...d.capabilities}}:null;},
    getStats:()=>({registered:registrationCount,cached:state.size,
+    ownerRouted,telemetryOnly:registrationCount-ownerRouted,
     ownerActions:groupCalls,pendingGroups:pending.size,ready:registered&&active}),
    destroy:()=>{active=false;pending.clear();
     for(const fn of unsubscribers)try{fn?.();}catch(e){console.warn(e);}
