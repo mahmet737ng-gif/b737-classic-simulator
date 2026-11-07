@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'engine/systems/classic-bus-consumer-engine-v1.js'
+      - 'engine/systems/classic-alpha-vane-heat-v1.js'
+      - 'tests/classic-alpha-vane-heat-injection-v1.test.cjs'
       - 'engine/systems/classic-bus-consumer-test-lab-v1.js'
       - 'engine/systems/unified-bus-failure-injection-v1.js'
       - 'panel-mosaic-lab/cockpit/failures-header-v1.js'
@@ -40,6 +42,7 @@ jobs:
         run: |
           node tests/classic-bus-consumer-functional-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-v1.test.cjs
+          node tests/classic-alpha-vane-heat-injection-v1.test.cjs
           node tests/classic-bus-consumer-fmc-fuel-cdu-binary-v1.test.cjs
           node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
@@ -54,6 +57,8 @@ jobs:
       - name: Parse client and backend modules
         run: |
           node --check engine/systems/classic-bus-consumer-engine-v1.js
+          node --check engine/systems/classic-alpha-vane-heat-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
           node --check engine/systems/classic-bus-consumer-test-lab-v1.js
           node --check bus-consumer-test-lab/app.js
           node --check engine/systems/unified-bus-failure-injection-v1.js
