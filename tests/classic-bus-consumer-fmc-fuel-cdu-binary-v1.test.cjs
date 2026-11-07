@@ -36,7 +36,7 @@ assert.equal(duplicated[0].quality,'MRG_SOURCE_REVIEW_PENDING',
  'Index QA evidence stays separate from powered state');
 assert.equal(item('FMC')[0].source.sourceConfidence,'NEEDS_PHOTO_QA');
 assert.equal(item('FMC')[0].powerState,'NORMAL','Photo QA does not silently cut power');
-assert.equal(device('FMC').topology,'ALTERNATE_FMC_AC_FEEDS');
+assert.equal(device('FMC').topology,'ANY_AVAILABLE', 'The canonical 3-feed topology labels FMC as an any-available source device');
 assert.equal(item('CDU Captain')[0].feedBus,'electronic2');
 assert.equal(item('CDU FO')[0].feedBus,'electronic1');
 for(const key of lab.buses){
