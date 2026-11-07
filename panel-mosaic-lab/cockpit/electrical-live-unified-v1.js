@@ -57,7 +57,9 @@
   root.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{detail:{state:copy(state)}}));
    // ATA24 consumers do not listen to every ECU/electrical render.
    // Notify their hub ONLY when one of the actual distribution bus flags changes.
-   const distributionSignature=JSON.stringify(electrical.bus||{});
+   const distributionSignature=JSON.stringify([electrical.bus||{},
+    state.config?.onGround??null,state.config?.groundPowerAttached??null,
+    state.config?.groundPowerQualityGood??null]);
    if(distributionSignature!==lastDistributionBusSignature){
     lastDistributionBusSignature=distributionSignature;
     root.dispatchEvent(new CustomEvent('b737:electrical-distribution-changed',{
