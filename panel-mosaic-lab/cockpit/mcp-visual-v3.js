@@ -9,6 +9,8 @@
 const NS="http://www.w3.org/2000/svg";
 const W=2172,H=433, mounted=new WeakSet(), instances=[];
 const Rules=window.B737McpFCOMCh4NumericV1;
+const Gesture=window.B737McpRotaryGestureV1;
+if(!Rules?.step||!Gesture?.create)throw Error("MCP FCOM Ch4 / rotary gesture authority not loaded");
 const ASSET_URL=new URL("./assets/mcp-ias-mach-knob.webp",document.currentScript.src).href;
 const initial=()=>({
   courseL:261,courseR:261,speed:110,machHundredths:60,speedMode:"IAS",heading:134,altitude:10000,verticalSpeed:0,
@@ -158,14 +160,53 @@ function mountKnob(parent,n){
  }else if(n.type==="course"){
   el.innerHTML='<span class="mcp-v3-course-face" aria-hidden="true"></span>';
  }else el.innerHTML='<span class="mcp-v3-plain-face"></span>';
- let last=null;
- on(el,"pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;e.stopPropagation();e.preventDefault();last=e.clientX;el.setPointerCapture(e.pointerId)});
- on(el,"pointermove",e=>{if(last===null)return;e.stopPropagation();const div=Math.trunc((e.clientX-last)/10);if(div){step(n.id,div,"drag");last+=div*10;}});
- for(const type of ["pointerup","pointercancel"])on(el,type,e=>{last=null;e.stopPropagation()});
- on(el,"lostpointercapture",()=>last=null);
- on(el,"wheel",e=>{e.preventDefault();e.stopPropagation();step(n.id,e.deltaY<0?1:-1,"wheel")},{passive:false});
- on(el,"keydown",e=>{if(["ArrowLeft","ArrowDown","ArrowUp","ArrowRight"].includes(e.key)){e.preventDefault();step(n.id,["ArrowUp","ArrowRight"].includes(e.key)?1:-1,"keyboard");}});
+ // A single gesture authority handles physical mouse and touch; its callback
+ // sends integer detents into FCOM Ch4, which owns steps and boundaries.
+ const gesture=Gesture.create({
+  axis:"auto",
+  pixelsPerDetent:()=>Math.max(5,Math.min(18,el.getBoundingClientRect().width*.13)),
+  tapDirection:e=>{
+   const b=el.getBoundingClientRect();
+   return e.clientX<b.left+b.width/2?-1:1;
+  },
+  onDetents:(detents,meta)=>step(n.id,detents,meta.method)
+ });
+ on(el,"pointerdown",e=>{
+  if(!gesture.down(e))return;
+  e.preventDefault();e.stopPropagation();
+  el.focus({preventScroll:true});
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+ });
+ on(el,"pointermove",e=>{
+  if(!gesture.audit().active)return;
+  e.preventDefault();e.stopPropagation();
+  gesture.move(e);
+ });
+ on(el,"pointerup",e=>{
+  if(!gesture.audit().active)return;
+  e.preventDefault();e.stopPropagation();
+  gesture.up(e);
+  if(el.hasPointerCapture?.(e.pointerId))el.releasePointerCapture(e.pointerId);
+ });
+ on(el,"pointercancel",e=>{gesture.cancel();e.stopPropagation()});
+ on(el,"lostpointercapture",()=>gesture.cancel());
+ on(el,"wheel",e=>{
+  e.preventDefault();e.stopPropagation();
+  gesture.wheel(e.deltaY,e.deltaMode);
+ },{passive:false});
+ on(el,"keydown",e=>{
+  if(["ArrowLeft","ArrowDown","ArrowUp","ArrowRight"].includes(e.key)){
+   e.preventDefault();e.stopPropagation();
+   step(n.id,["ArrowUp","ArrowRight"].includes(e.key)?1:-1,"keyboard");
+  }else if(e.key==="Home"||e.key==="End"){
+   e.preventDefault();e.stopPropagation();
+   const id=n.id==="speed"&&values.speedMode==="MACH"?"machHundredths":n.id;
+   const spec=Rules.SPECS[id];
+   if(spec)setValue(id,e.key==="Home"?spec.min:spec.max,"keyboard");
+  }
+ });
  on(el,"click",e=>e.stopPropagation());
+
  parent.append(el);
 }
 function mountLamp(svg,l){
