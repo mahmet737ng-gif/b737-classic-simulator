@@ -43,6 +43,10 @@ jobs:
           node --check panel-mosaic-lab/cockpit/mcp-hardware-v1.js
           node --check engine/afds/mcp-mode-core-v1.js
           node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
+      - name: Verify exact hole centers, diameters and opaque photo areas
+        run: |
+          node --check panel-mosaic-lab/cockpit/mcp-socket-registration-v2.js
+          node tests/mcp-knob-native-hole-v1.test.cjs
       - name: Check LCD windows, lamps, and knob pivot registration
         run: node panel-mosaic-lab/cockpit/mcp-visual-v3.test.cjs
       - name: Check A/T, F/D, V/S and push controls
