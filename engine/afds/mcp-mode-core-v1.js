@@ -17,7 +17,7 @@ const clone=v=>JSON.parse(JSON.stringify(v));
 function initialState(){return {
  schema:"B737_MCP_AFDS_V1",revision:0,
  electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,dc1:null,batteryBus:null,rawRevision:null},
- observedPower:false, fd:{left:false,right:false},autoThrottleArm:false,
+ fd:{left:false,right:false},autoThrottleArm:false,
  values:{courseL:261,courseR:261,speed:312,heading:134,altitude:31000,verticalSpeed:0},
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
@@ -44,11 +44,12 @@ function projectPower(s){
  const mainCb=globalThis.B737UnifiedCB?.available('mcp.power');
  const course2Cb=globalThis.B737UnifiedCB?.available('mcp.course2');
  const main=global===false||mainCb===false||e.dc1===false?false:
-  e.dc1===true?true:s.observedPower?true:null;
+  e.dc1===true?true:null;
  const course2=global===false||course2Cb===false||e.batteryBus===false?false:
-  e.batteryBus===true?true:s.observedPower?true:null;
- const feed=main===false?STATES.ABSENT:e.dc1===true?STATES.SIMULATED_DC1:
-  main===true?STATES.INSTRUCTOR_OBSERVED:STATES.UNVERIFIED;
+  e.batteryBus===true?true:null;
+ // Never invent a powered MCP from an instructor UI click. Only ATA24 V7
+ // bus telemetry and the actual registered circuit breaker can energize it.
+ const feed=main===false?STATES.ABSENT:main===true?STATES.SIMULATED_DC1:STATES.UNVERIFIED;
  return {globalPowerPossible:global,feed,mcpPower:main,course2Power:course2,
   dc1:e.dc1,batteryBus:e.batteryBus,rawRevision:e.rawRevision};
 }
@@ -71,11 +72,8 @@ function transition(state,action){
   return done();
  }
  if(action.type==="OBSERVE_POWER"){
-  if(typeof action.active!=="boolean"||action.instructor!==true)throw Error("Explicit instructor observed-power control required");
-  if(action.active&&s.electrical.globalPowerPossible===false)return rejected(s,"GLOBAL_AC_ABSENT");
-  s.observedPower=action.active;s.electrical=projectPower(s);
-  if(s.electrical.mcpPower!==true)clearModes(s);
-  return done();
+  // Backward-compatible rejection for old training clients; no power mutation.
+  return rejected(s,"MCP_POWER_OWNED_BY_ELECTRICAL_V7");
  }
  if(action.type==="EVIDENCE"){
   if(!["fmcRouteReady","approachCapture"].includes(action.key)||![true,false,null].includes(action.value))throw Error("Unrecognized AFDS evidence");
@@ -97,7 +95,7 @@ function transition(state,action){
   if(typeof action.armed!=="boolean")throw Error("Invalid A/T switch");
   s.autoThrottleArm=action.armed;if(!action.armed)s.modes.thrust=null;return done();
  }
- if(s.electrical.mcpPower!==true)return rejected(s,"MCP_POWER_NOT_OBSERVED");
+ if(s.electrical.mcpPower!==true)return rejected(s,"MCP_BUS_OR_CB_NOT_POWERED");
  if(action.type==="VALUE"){
   const v=action.value,id=action.id;
   const bounds={courseL:[0,359,1],courseR:[0,359,1],heading:[0,359,1],speed:[100,399,1],altitude:[0,49900,100],verticalSpeed:[-9900,9900,100]};
