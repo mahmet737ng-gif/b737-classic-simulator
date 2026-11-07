@@ -47,13 +47,18 @@
   if(!spec||!Number.isFinite(value))throw Error('Known EIS gauge and finite value required');
   readings.set(spec.id,{value,source});
  }
- function render(indications){last=indications||last;
+ function render(indications){
+  if(window.B737UnifiedEngineIndicationsV2?.ownsPresentation?.())return;
+  last=indications||last;
   for(const spec of model.eisGauges){const value=last?.engines?.[spec.engine]?.[spec.signal]?.value;
    if(Number.isFinite(value))setReading(spec.engine,spec.signal,value,'ISN_START_SOURCE');
   }
   paint();
  }
  function observeECU(live){
+  // Raw ECU samples are boot fallback only; electrical/CB/sensor gates
+  // belong to the installed indication backend, not this SVG layer.
+  if(window.B737UnifiedEngineIndicationsV2?.ownsPresentation?.())return;
   const paths={n1:'n1Percent',n2:'n2Percent',egt:'egtC',fuelFlow:'fuelFlowKgHr',
    oilPressure:'oil.pressurePsi',oilTemperature:'oil.temperatureC',
    hydPressure:'hydraulic.engineDrivenPressurePsi'};
