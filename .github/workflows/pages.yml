@@ -163,6 +163,15 @@ jobs:
           node panel-mosaic-lab/cockpit/cdu.test.cjs
           node panel-mosaic-lab/cockpit/cdu-fo-only-performance.test.cjs
           node panel-mosaic-lab/cockpit/cdu-photo-type-hierarchy.test.cjs
+      - name: FCOM Chapter 4 MCP numeric selector and fixed glass regression
+        run: |
+          node --check engine/afds/mcp-fcom-ch4-numeric-v1.js
+          node --check engine/afds/mcp-mode-core-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-visual-v3.js
+          node --check panel-mosaic-lab/cockpit/mcp-hardware-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-independent-digits-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
+          node tests/mcp-fcom-ch4-numeric-v1.test.cjs
       - name: Verify demo scripts and model
         run: npm test
       - name: Protect standalone CDU from private Stage5/Stage6 routing
