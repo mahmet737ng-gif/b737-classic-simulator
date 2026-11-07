@@ -3,7 +3,7 @@
  * Additive presentation: preserve owner's photo, gauge centers and all guards.
  */
 (function(){'use strict';
- const VER='ENG-LIVE-0002', P=['n1','egt','n2','fuelFlow','oilPressure','oilTemperature','oilQuantity','vibration'];
+ const VER='ENG-LIVE-0003-ATA77-FEEDS', P=['n1','egt','n2','fuelFlow','oilPressure','oilTemperature','oilQuantity','vibration'];
  const CONV={n1:'n1',egt:'egt',n2:'n2',fuelFlow:'fuelFlow',oilPressure:'oilPressure',
   oilTemperature:'oilTemp',oilQuantity:'oilQty',vibration:'vib'};
  const DOT=new Set(['n1','egt','n2','fuelFlow','oilQuantity']);
@@ -149,6 +149,48 @@
   if(node.textContent!==text)node.textContent=text;
   node.dataset.feedFault=String(withoutFeed);
   node.dataset.indicationReady=String(Boolean(result));
+  // All 16 instrument channels are wired to Electrical V7's *evaluated*
+  // buses (not generator switch states). The table reads the actual source
+  // contract and the one shared CB state; it never changes panel power.
+  let matrix=$('#isnEngineFeedMatrixV1');
+  if(!matrix){
+   matrix=document.createElement('details');matrix.id='isnEngineFeedMatrixV1';
+   matrix.dir='ltr';
+   matrix.innerHTML='<summary>ENGINE FEEDS · 16 live channels (FCOM / MRG / LAN)</summary>'+
+    '<table style="font-size:10px;width:100%;border-collapse:collapse"><thead><tr>'+
+    '<th>IND</th><th>SOURCE</th><th>CB</th><th>STATUS</th></tr></thead><tbody></tbody></table>'+
+    '<small>EIS LRU 28VDC: P6-2, exact bus pin unverified. '+
+    'AVM: MRG 28VAC indication versus LAN 115VAC conditioner, both Transfer 1.</small>';
+   owner.append(matrix);
+   const body=matrix.querySelector('tbody');
+   for(const side of [1,2])for(const p of P){
+    const row=document.createElement('tr');row.dataset.feedId=p+'_'+side;
+    for(let i=0;i<4;i++){
+     const td=document.createElement('td');td.style.padding='3px 4px';
+     td.style.borderBottom='1px solid #375269';row.append(td);
+    }
+    row.cells[0].textContent='E'+side+' '+p;body.append(row);
+   }
+  }
+  const full=electrical();
+  const sources=full?.feed?.transferSource||{};
+  for(const side of [1,2])for(const p of P){
+   const row=matrix.querySelector('[data-feed-id="'+p+'_'+side+'"]');
+   const rule=db?.instruments?.[p]?.wiring?.[mode]?.[side];
+   const signal=result?.engines?.['engine'+side]?.indications?.[p];
+   if(!row||!rule)continue;
+   const power=mark(b[rule.bus]);
+   const backfeed=rule.bus==='transfer1'?sources[1]:
+    rule.bus==='transfer2'?sources[2]:null;
+   const source=rule.bus.toUpperCase()+' '+rule.voltage+(backfeed?' ('+backfeed+')':'')+' '+power;
+   const cb=signal?.circuitBreaker?.state||'UNKNOWN';
+   const status=signal?.status||'NO ECU';
+   if(row.cells[1].textContent!==source)row.cells[1].textContent=source;
+   if(row.cells[2].textContent!==cb)row.cells[2].textContent=cb;
+   if(row.cells[3].textContent!==status)row.cells[3].textContent=status;
+   row.dataset.power=power;
+   row.dataset.indicationStatus=status;
+  }
  }
  function startReport(){
   if(!window.B737ClassicEngineStartLogicV2||!window.B737ISNCockpitV1)return null;
@@ -332,9 +374,22 @@
  }
  window.B737UnifiedEngineIndicationsV2=Object.freeze({
   getState:status,refresh,command,startReport,load,
+  // The EIS renderers use raw ECU only before this validated backend owns
+  // the channel. This is the sole source for instrument power/fault validity.
+  ownsPresentation:()=>!!db,
   setMode:changeMode,getDatabase:()=>db?copy(db):null
  });
  window.addEventListener('b737:unified-ecu-observation',ev=>apply(ev.detail));
+ window.addEventListener('b737:cb-state-change',()=>{lastPaint.clear();refresh();});
+ // If the real electrical owner transfers between sources while the ECU is
+ // idle, update the instrument indications without waiting for engine ticks.
+ let lastElectricalFrame=null;
+ window.addEventListener('b737:electrical-v7-state',()=>{
+  const frame=electrical();
+  const signature=frame?JSON.stringify([frame.bus,frame.source]):null;
+  if(signature===lastElectricalFrame)return;
+  lastElectricalFrame=signature;lastPaint.clear();refresh();
+ });
  window.addEventListener('b737:engine-indication-view',()=>{lastPaint.clear();refresh();});
  window.addEventListener('b737:cockpit-mounted',()=>{lastPaint.clear();refresh();});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{installLab();load();},{once:true});
