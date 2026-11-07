@@ -47,11 +47,21 @@
   if(!patch||typeof patch!=='object')throw Error('Missing Classic autobrake sensors');
   Object.assign(unprotectedSensors,patch);
   const cb=win.B737UnifiedCB;
+  // Classic MRG IV.6 p.182: AUTOBRAKE CONTROL is fed by DC BUS 2.
+  // Read the SAME evaluated Electrical V7 owner, not GEN2 breaker detent.
+  // A missing owner is unknown and must not fabricate a failure.
+  const owner=win.B737ISNCockpitV1;
+  const liveBus=owner?.getState?.()?.state?.electrical?.bus?.dc2;
+  const dc2=typeof liveBus==='boolean'?liveBus:
+   owner?.getElectricalState&&win.B737ElectricalV7?
+    win.B737ElectricalV7.evaluate(owner.getElectricalState()).bus.dc2:null;
   return act(()=>engine.update({...patch,
-   electricalAvailable:unprotectedSensors.electricalAvailable&&cb?.available('brakes.autobrake')!==false&&cb?.available('brakes.autobrakeControl')!==false,
+   electricalAvailable:unprotectedSensors.electricalAvailable&&dc2!==false&&
+    cb?.available('brakes.autobrake')!==false&&cb?.available('brakes.autobrakeControl')!==false,
    antiskidFault:unprotectedSensors.antiskidFault||cb?.available('brakes.antiskidInboard')===false||cb?.available('brakes.antiskidOutboard')===false}));
  }
  win.addEventListener('b737:cb-state-change',()=>updateSensors({}));
+ win.addEventListener('b737:electrical-v7-state',()=>updateSensors({}));
  function setSelector(position){
   if(!Model.DETENTS.includes(position))throw Error('Invalid AUTO BRAKE position '+position);
   return act(()=>engine.select(position));
