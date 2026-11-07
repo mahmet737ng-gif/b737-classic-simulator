@@ -263,6 +263,7 @@ window.B737McpVisualV3=Object.freeze({
  geometry:Object.freeze({width:W,height:H,displays:displays.map(x=>({...x})),lamps:lamps.map(x=>({...x})),knobs:knobs.map(x=>({...x}))}),
  getState:()=>JSON.parse(JSON.stringify(values)),
  setValue:(id,v)=>setValue(id,v,"external"),
+ rotateKnob:(id,detents,method="drag")=>{if(!knobs.some(k=>k.id===id))return false;step(id,detents,method);return true},
  setSpeedMode,
  setLamp:(id,state)=>{if(Object.hasOwn(values.lamps,id)&&values.lamps[id]!==!!state){values.lamps[id]=!!state;repaint()}},
  setLamps:(states)=>{let changed=false;for(const id of Object.keys(values.lamps)){const next=states?.[id]===true;if(values.lamps[id]!==next){values.lamps[id]=next;changed=true;}}if(changed)repaint()},
