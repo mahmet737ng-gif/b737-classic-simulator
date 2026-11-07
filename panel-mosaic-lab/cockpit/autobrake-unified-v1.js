@@ -43,6 +43,14 @@
   clearTimer();flush();fn();return render();
  }
  const unprotectedSensors=Model.initialSensors();
+ let electricalPowerRegistered=false,eventElectricalPower=null;
+ function receiveElectricalAvailability(next){
+  if(!['NORMAL','OFF','DEGRADED','UNKNOWN','NOT_INSTALLED'].includes(next))return false;
+  const power=next==='NORMAL'?true:next==='OFF'||next==='NOT_INSTALLED'?false:null;
+  if(electricalPowerRegistered&&eventElectricalPower===power)return false;
+  electricalPowerRegistered=true;eventElectricalPower=power;
+  updateSensors({});return true;
+ }
  function updateSensors(patch){
   if(!patch||typeof patch!=='object')throw Error('Missing Classic autobrake sensors');
   Object.assign(unprotectedSensors,patch);
@@ -51,17 +59,18 @@
   // Read the SAME evaluated Electrical V7 owner, not GEN2 breaker detent.
   // A missing owner is unknown and must not fabricate a failure.
   const owner=win.B737ISNCockpitV1;
-  const liveBus=owner?.getState?.()?.state?.electrical?.bus?.dc2;
-  const dc2=typeof liveBus==='boolean'?liveBus:
-   owner?.getElectricalState&&win.B737ElectricalV7?
-    win.B737ElectricalV7.evaluate(owner.getElectricalState()).bus.dc2:null;
+  const state=owner?.getElectricalState?.();
+  const evaluated=!electricalPowerRegistered&&state&&win.B737ElectricalV7?
+   win.B737ElectricalV7.evaluate(state):null;
+  const dc2=electricalPowerRegistered?eventElectricalPower:
+   typeof evaluated?.bus?.dc2==='boolean'?evaluated.bus.dc2:null;
   return act(()=>engine.update({...patch,
    electricalAvailable:unprotectedSensors.electricalAvailable&&dc2!==false&&
     cb?.available('brakes.autobrake')!==false&&cb?.available('brakes.autobrakeControl')!==false,
    antiskidFault:unprotectedSensors.antiskidFault||cb?.available('brakes.antiskidInboard')===false||cb?.available('brakes.antiskidOutboard')===false}));
  }
  win.addEventListener('b737:cb-state-change',()=>updateSensors({}));
- win.addEventListener('b737:electrical-v7-state',()=>updateSensors({}));
+ win.addEventListener('b737:electrical-v7-state',()=>{if(!electricalPowerRegistered)updateSensors({});});
  function setSelector(position){
   if(!Model.DETENTS.includes(position))throw Error('Invalid AUTO BRAKE position '+position);
   return act(()=>engine.select(position));
@@ -160,7 +169,7 @@
  // Disconnects are represented by sensors, not changes to the visual mode.
  // EIS -> Conventional -> EIS never reinitializes this module.
  win.B737AutobrakeUnified=Object.freeze({
-  getState,setSelector,setOnGround,updateSensors,
+  getState,setSelector,setOnGround,updateSensors,receiveElectricalAvailability,
   ingest,advance:manualAdvance,reset(){
    clearTimer();engine=Model.create();previousTime=win.performance.now();return render();
   },
