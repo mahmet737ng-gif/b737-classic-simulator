@@ -313,35 +313,35 @@
   const deviceRows={};
   for(const entry of Object.values(consumers))
    (deviceRows[entry.name]??=[]).push(entry);
+  // Multi-feed authority owns the 17 exact MRG multi-source devices.
+  // Single-source device behavior and legacy API shape remain unchanged.
   const devices={};
-  const alternates=/^(FMC|Audio Panel|Marker Beacons|External Power Control|Alpha Vane AoA)/i;
+  const topologyEngine=typeof globalThis!=='undefined'?globalThis.B737ClassicMultifeedV1:null;
+  if(!topologyEngine?.resolveDevice)throw Error('Multi-feed authority not loaded');
   for(const [name,entries]of Object.entries(deviceRows)){
-   const unique=entries.filter((x,i)=>entries.findIndex(y=>
-    y.feedBus===x.feedBus&&y.feedVoltage===x.feedVoltage&&
-    y.powerState===x.powerState)===i);
-   const applicable=unique.filter(x=>x.powerState!=='NOT_INSTALLED');
+   const specific=topologyEngine.resolveDevice(name,entries,buses);
+   if(specific){
+    devices[name]={name,displayName:entries[0].displayName,
+     system:entries[0].system,role:entries[0].role,
+     topology:specific.topology,state:specific.state,
+     channels:entries.map(x=>x.id),effect:specific.effect,
+     feedChannels:specific.feedChannels,capabilities:specific.capabilities,
+     sourceQuality:specific.sourceQuality,
+     liveFeeds:specific.liveFeeds,lostFeeds:specific.lostFeeds,
+     unknownFeeds:specific.unknownFeeds};
+    continue;
+   }
+   const applicable=entries.filter(x=>x.powerState!=='NOT_INSTALLED');
    const statuses=applicable.map(x=>x.powerState);
    const hasNormal=statuses.includes('NORMAL'),hasOff=statuses.includes('OFF');
    const hasDegraded=statuses.includes('DEGRADED'),hasUnknown=statuses.includes('UNKNOWN');
-   const needsBoth=applicable.length>1&&new Set(applicable.map(x=>x.feedVoltage)).size>1&&!alternates.test(name);
-   let state;
-   if(name==='FMC'){
-    // FMC has two indexed reference paths: Electronic 1/2 AC and
-    // Standby AC. A surviving path keeps its functional availability
-    // BLUE; only losing every path makes it RED.
-    state=!applicable.length?'NOT_INSTALLED':hasNormal?'NORMAL':
-     statuses.every(s=>s==='OFF')?'OFF':'UNKNOWN';
-   }
-   else if(!applicable.length)state='NOT_INSTALLED';
-   else if(needsBoth){
-    state=hasOff?'OFF':hasUnknown?'UNKNOWN':hasDegraded?'DEGRADED':'NORMAL';
-   }else state=hasDegraded||hasNormal&&hasOff?'DEGRADED':
+   const state=!applicable.length?'NOT_INSTALLED':
+    hasDegraded||hasNormal&&hasOff?'DEGRADED':
     hasNormal?'NORMAL':hasUnknown?'UNKNOWN':'OFF';
    devices[name]={name,displayName:entries[0].displayName,
     system:entries[0].system,role:entries[0].role,
-    topology:name==='FMC'?'ALTERNATE_FMC_AC_FEEDS':
-     needsBoth?'ALL_REQUIRED':applicable.length>1?'ALTERNATE_OR_CHANNELS':'SINGLE',
-    state,channels:entries.map(x=>x.id),
+    topology:'SINGLE',state,channels:entries.map(x=>x.id),
+    feedChannels:[],capabilities:{DEVICE_POWER:state==='NORMAL'?true:state==='OFF'?false:null},
     effect:state==='OFF'?consequence(entries[0].role):
      state==='DEGRADED'?'PARTIAL_POWER_OR_ALTERNATE_SUPPLY':
      state==='UNKNOWN'?'UNRESOLVED_FEED':'ELECTRIC_FUNCTION_AVAILABLE'};
