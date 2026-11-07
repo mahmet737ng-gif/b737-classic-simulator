@@ -18,7 +18,7 @@ assert.match(css,/display:none/);
 assert.ok(!css.includes('data-engine-indication="CONVENTIONAL"] #region-main .region-native>.b737-eis'),'EIS knob must not cover Conventional');
 assert.ok(html.includes('eis-autobrake-physical-v1.js?v=EIS-AUTOBRAKE-0006-RING-TOUCH'),'Updated EIS position must invalidate cached cockpit script');
 assert.ok(html.includes('eis-autobrake-physical-v1.css?v=EIS-AUTOBRAKE-0001'));
-assert.ok(html.includes('autobrake-unified-v1.js?v=ATA24-CONSUMER-0002'));
+assert.ok(html.includes('autobrake-unified-v1.js?v=ATA24-CONSUMER-REG-0001'),'EIS and Conventional read the currently registered ATA24 autobrake consumer bridge');
 assert.match(file('panel-mosaic-lab/cockpit/autobrake-unified-v1.js'),/dc2!==false/,'Autobrake control must respond to live DC Bus 2 outages');
 assert.ok(originalConv.includes("common.setSelector(next)"),'Conventional remains tied to existing shared system');
 const assembly=JSON.parse(file('panel-mosaic-lab/cockpit/assembly.json'));
