@@ -1,7 +1,7 @@
 {
   "schema": "b737classic.engine-indication-technical-data/1",
-  "revision": 1,
-  "date": "2026-11-05",
+  "revision": 2,
+  "date": "2026-11-07",
   "scope": "737-300/400/500 CFM56-3; TRAINING ONLY; EP-FSI WDM NOT VERIFIED",
   "sources": {
     "FCOM6": {
@@ -37,6 +37,23 @@
         "ATA79-00 38-40"
       ],
       "role": "sensors"
+    },
+    "MRG_ENGINE_BUS": {
+      "title": "B737 Classic MRG",
+      "sections": [
+        "IV.6 Electrical printed pp.183-184"
+      ],
+      "role": "engine instrument consumer-to-bus functional table"
+    },
+    "LAN_EIS_FEEDS": {
+      "title": "Lufthansa Technical Training B737-300/400/500",
+      "sections": [
+        "ATA31-42 printed p.220",
+        "ATA77-10 printed pp.231/235",
+        "ATA77-20 printed p.239",
+        "ATA77-30 printed p.243"
+      ],
+      "role": "EIS primary display, tachometer, EGT, AVM supply schematics"
     }
   },
   "instruments": {
@@ -53,24 +70,28 @@
           "1": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_10_231"
           },
           "2": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_10_231"
           }
         }
       },
@@ -93,24 +114,28 @@
           "1": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_184"
           },
           "2": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_20_239"
           },
           "2": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_20_239"
           }
         }
       },
@@ -133,24 +158,28 @@
           "1": {
             "bus": "dc1",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "dc2",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_10_235"
           },
           "2": {
             "bus": "dcStandby",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "LAN_77_10_235"
           }
         }
       },
@@ -173,24 +202,28 @@
           "1": {
             "bus": "dc1",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "dc2",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_184"
           },
           "2": {
             "bus": "battery",
             "voltage": "28VDC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_184"
           }
         }
       },
@@ -213,24 +246,28 @@
           "1": {
             "bus": "transfer1",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "transfer1",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           }
         }
       },
@@ -253,24 +290,28 @@
           "1": {
             "bus": "transfer1",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "transfer1",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "28VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           }
         }
       },
@@ -293,24 +334,28 @@
           "1": {
             "bus": "transfer1",
             "voltage": "115VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "115VAC",
-            "quality": "MRG_FUNCTIONAL_CHANNEL"
+            "quality": "MRG_FUNCTIONAL_CHANNEL",
+            "sourceEvidence": "MRG_IV6_183_184"
           }
         },
         "EIS": {
           "1": {
             "bus": "transfer1",
             "voltage": "115VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           },
           "2": {
             "bus": "transfer2",
             "voltage": "115VAC",
-            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM"
+            "quality": "MRG_FUNCTIONAL_NOT_UNIT_WDM",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           }
         }
       },
@@ -332,32 +377,51 @@
         "CONVENTIONAL": {
           "1": {
             "bus": "transfer1",
-            "voltage": "115VAC",
-            "quality": "CONFLICTED_AVM_REFERENCE"
+            "voltage": "28VAC",
+            "quality": "AVM_SOURCE_VOLTAGE_SPLIT_UNRESOLVED",
+            "sourceEvidence": "MRG_IV6_183"
           },
           "2": {
             "bus": "transfer1",
-            "voltage": "115VAC",
-            "quality": "CONFLICTED_AVM_REFERENCE"
+            "voltage": "28VAC",
+            "quality": "AVM_SOURCE_VOLTAGE_SPLIT_UNRESOLVED",
+            "sourceEvidence": "MRG_IV6_183"
           }
         },
         "EIS": {
           "1": {
             "bus": "transfer1",
-            "voltage": "115VAC",
-            "quality": "CONFLICTED_AVM_REFERENCE"
+            "voltage": "28VAC",
+            "quality": "AVM_SOURCE_VOLTAGE_SPLIT_UNRESOLVED",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           },
           "2": {
             "bus": "transfer1",
-            "voltage": "115VAC",
-            "quality": "CONFLICTED_AVM_REFERENCE"
+            "voltage": "28VAC",
+            "quality": "AVM_SOURCE_VOLTAGE_SPLIT_UNRESOLVED",
+            "sourceEvidence": "MRG_IV6_FUNCTIONAL_ONLY"
           }
         }
       },
       "sources": [
         "LAN",
         "MRG"
-      ]
+      ],
+      "additionalSupplies": {
+        "signalConditioner": {
+          "bus": "transfer1",
+          "voltage": "115VAC",
+          "source": "Lufthansa Technical Training ATA77-30 printed p.243 Figure 121",
+          "quality": "SOURCE_SCHEMATIC"
+        },
+        "indication": {
+          "bus": "transfer1",
+          "voltage": "28VAC",
+          "source": "B737 MRG IV.6 printed p.183",
+          "quality": "SOURCE_CONSUMER_LIST"
+        },
+        "interpretation": "Both cite TRANSFER BUS 1 but report different nominal voltages for AVM equipment; no independent transformer/pin routing is inferred until the aircraft WDM is checked."
+      }
     }
   },
   "eis": {
@@ -455,6 +519,32 @@
     "MRG indicates conventional oil pressure gauge can freeze on AC transfer loss.",
     "EIS secondary functional feeds do not prove individual unit pin wiring: unknown effects stay uncertain.",
     "AVM 115VAC Transfer Bus1 per LAN conflicts with different MRG indication voltage references.",
-    "Explicit effectivity-approved limits required for redline alerts; never auto-enforce examples."
-  ]
+    "Explicit effectivity-approved limits required for redline alerts; never auto-enforce examples.",
+    "Functional bus assignment and EIS LRU hardware supply are distinct; P6-2 28VDC common display supply is not pinned to a specific bus.",
+    "ENG1/ENG2 non-EIS N2 and FF follow DC1/DC2 after BUS TRANSFER logic, not raw GEN1/GEN2 ON BUS detents.",
+    "Engine oil indicators follow Transfer Bus1/2 physical power, so backfeed via BUS TRANSFER AUTO is effective even with one engine generator unselected.",
+    "Vibration both engines use the Transfer Bus1 consumer circuit; AVM signal conditioner 115VAC vs AVM indication 28VAC is an explicit LAN/MRG voltage conflict.",
+    "Primary EIS failures must not bypass the technical backend through direct, raw ECU pointer updates."
+  ],
+  "eisUnitPower": {
+    "primary": {
+      "nominal": "28VDC",
+      "originPanel": "P6-2",
+      "exactSupplyBus": null,
+      "quality": "DISPLAY_UNIT_BUS_PIN_NOT_VERIFIED",
+      "sourceRefs": [
+        "LAN_EIS_FEEDS"
+      ]
+    },
+    "secondary": {
+      "nominal": "28VDC",
+      "originPanel": "P6-2",
+      "exactSupplyBus": null,
+      "quality": "DISPLAY_UNIT_BUS_PIN_NOT_VERIFIED",
+      "sourceRefs": [
+        "LAN_EIS_FEEDS"
+      ]
+    },
+    "note": "Primary/Secondary units require an independent 28VDC display feed. MRG signal functional supplies are not proof of the installed EIS LRU power pin. Do not invent a common unit bus or isolate the whole panel on one signal bus."
+  }
 }
