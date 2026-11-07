@@ -98,3 +98,12 @@ select,input{background:#0e1d2a;border:1px solid #49657a;color:var(--text);borde
 
 .cascade-option{display:flex;align-items:center;gap:8px;padding:9px 10px;margin:0 0 12px;background:#182b3a;border:1px solid #365268;border-radius:8px;color:#c6deec;font-size:11px;cursor:pointer;line-height:1.5}
 .cascade-option input{min-height:18px;width:18px;margin:0;accent-color:#59baff;flex:none}
+
+/* ATA24 injection: separate, deliberate action from isolated local switches. */
+.inject-controls{display:grid;gap:8px;margin:12px 0;padding:10px;background:#112633;border:1px solid #44677c;border-radius:9px}
+.inject-button{background:#254b69;border:1px solid #60a8d9;border-radius:7px;min-height:43px;color:#d9f0ff;font-weight:800;letter-spacing:.015em}
+.inject-button:hover{background:#2a617e}
+.inject-controls .scenario-btn{width:100%}
+.inject-controls p{font-size:11px;line-height:1.65;margin:0;color:#b9cbd8;overflow-wrap:anywhere}
+.inject-controls p[data-injected="true"]{color:#ffc2ca}
+.effectivity-note{margin:8px 0;border-block:1px solid #365068;padding:9px 1px;font-size:11px;color:#bcdbed;line-height:1.8}
