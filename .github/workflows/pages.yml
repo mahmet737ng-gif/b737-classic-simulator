@@ -181,12 +181,17 @@ jobs:
         run: |
           node tests/classic-bus-consumer-test-lab-v1.test.cjs
           node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
+          node tests/unified-bus-failure-injection-v1.test.cjs
+          node --check engine/systems/unified-bus-failure-injection-v1.js
+          node --check panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
-          test -f web-dist/bus-consumer-test-lab/v2.html
-          grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v2.html
-          grep -q 'BUSLAB24-POWER-0005' web-dist/bus-consumer-test-lab/v2.html
+          test -f web-dist/bus-consumer-test-lab/v3.html
+          grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v3.html
+          grep -q 'BUSLAB24-INJECT-0009' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
-          grep -q 'v2.html' web-dist/panel-mosaic-lab/cockpit/index.html
+          test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
+          test -f web-dist/panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
+          grep -q 'v3.html' web-dist/panel-mosaic-lab/cockpit/index.html
       - name: Remove unreferenced archive files from Pages artifact only
         run: |
           node --check tools/prune-pages-artifact.cjs
