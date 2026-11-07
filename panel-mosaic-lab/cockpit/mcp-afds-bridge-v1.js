@@ -159,6 +159,11 @@ window.addEventListener("b737:cockpit-mounted",()=>{decorate();project();electri
  window.addEventListener("b737:mcp-hardware-change",hardwareCommand);
 window.addEventListener("b737:mcp-button-request",visualRequest);
 window.addEventListener("b737:mcp-value-change",visualValue);
+window.addEventListener("b737:mcp-bank-limit-preview",e=>{
+ const deg=e.detail?.angle;
+ if([10,15,20,25,30].includes(deg)&&Core.output(state).bankAngleLimit!==deg)
+  send({type:"BANK_ANGLE",value:deg});
+});
 window.addEventListener("b737:visual-test",e=>{visualTest=!!e.detail?.active;project()});
 document.addEventListener("DOMContentLoaded",()=>{decorate();project();electrical()});
 if(document.readyState!=="loading"){decorate();project();electrical()}
