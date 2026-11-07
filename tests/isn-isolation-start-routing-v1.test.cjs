@@ -24,6 +24,15 @@ function ready(){
  return s;
 }
 function valve(s){return Pneumatics.derive(s.start.core.pneumaticState);}
+// A pack switch is an air consumer, not an engine-start circuit breaker.
+const packsOperating=ready();packsOperating.selectGenerator('APU',1);
+packsOperating.chain.event({id:'pack-l',kind:'toggle',next:'AUTO'});
+packsOperating.chain.event({id:'pack-r',kind:'toggle',next:'AUTO'});
+assert.equal(packsOperating.chain.canStartEngine('engine1'),null,
+ 'A connected left-duct APU bleed source permits engine-1 start with PACK AUTO');
+packsOperating.engineStart('engine1');
+assert.equal(packsOperating.get().engines.engine1.phase,'MOTORING',
+ 'PACK AUTO alone must not prevent N2 motoring when start air is available');
 const auto=ready();auto.selectGenerator('APU',1);
 auto.chain.event({id:'isolation-valve',kind:'toggle',next:'AUTO'});
 assert.equal(valve(auto).bleed.isolationOpen,true,'AUTO opens with PACK OFF');

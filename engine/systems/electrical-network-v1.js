@@ -51,10 +51,28 @@
    EXT:c.onGround&&c.groundPowerAttached&&c.groundPowerQualityGood,BATTERY:e.feed.batteryAvailable};
   for(const id of ['GEN1','GEN2','APU','EXT']){
    const sides=connected(id),available=Boolean(readiness[id]);
-   // A spinning, disconnected generator is NOT proof of rated field voltage.
-   const powered=!available?false:id==='EXT'||sides.length>0?true:null;
-   node(id,'AC',powered,[],{volts:115,hz:400},powered===null?'DISCONNECTED_GENERATOR_FIELD_UNVERIFIED':null);
-   Object.assign(nodes[id],{available,connectedBusSides:sides});
+   // Engine-driven AC generator output exists at operational drive speed
+   // independently of whether its generator breaker/contactor feeds a BUS.
+   // The existing engineRunning owner is the training proxy for rated drive
+   // speed + excited field; an injected generator failure, or an opened
+   // generator-control CB, inhibits that modeled output. FCOM 6.10.3:
+   // AC meter selector GEN1/GEN2 reads SOURCE terminals, not bus contactors.
+   // APU/EXT retain their previous behavior and separate source rules.
+   const engineGenerator=id==='GEN1'||id==='GEN2';
+   const field=engineGenerator?
+    (globalThis.B737UnifiedCB?.gate('electrical.gen'+id.slice(-1)+'Control',available)??available):
+    null;
+   const outputReady=engineGenerator?field===true:available;
+   const powered=engineGenerator?outputReady:
+    !available?false:id==='EXT'||sides.length>0?true:null;
+   const reason=engineGenerator?(outputReady?
+    'RATED_DRIVE_EXCITED_NOMINAL_OUTPUT_INDEPENDENT_OF_BUS_CONTACTOR':
+    'STOPPED_FAILED_OR_FIELD_CONTROL_UNAVAILABLE'):
+    powered===null?'DISCONNECTED_GENERATOR_FIELD_UNVERIFIED':null;
+   node(id,'AC',powered,[],{volts:115,hz:400},reason);
+   Object.assign(nodes[id],{available:outputReady,driveAtOperatingSpeed:engineGenerator?Boolean(readiness[id]):null,
+    electricallyExcited:engineGenerator?outputReady:null,connectedBusSides:sides,
+    busContactorClosed:sides.length>0});
   }
   node('BATTERY','DC',readiness.BATTERY,[],{volts:24});
   Object.assign(nodes.BATTERY,{available:readiness.BATTERY,capacityAh:null,stateOfCharge:null,

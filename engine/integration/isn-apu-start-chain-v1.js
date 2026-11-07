@@ -262,7 +262,11 @@
      return 'APU BLEED OFF / NO LOCAL OR CROSSBLEED START AIR';
     return 'NO VERIFIED '+side+' START DUCT AIR SOURCE';
    }
-   if(c.packL!=='OFF'||c.packR!=='OFF')return 'PACK L/R MUST BE OFF FOR ENGINE START';
+   // PACK OFF is a normal start-flow recommendation to reserve bleed air,
+   // NOT a physical start-valve electrical interlock. Running packs can
+   // consume bleed pressure, but cannot themselves inhibit a starter if
+   // the selected duct has usable supply. Duct pressure remains a separate
+   // start-rate input in the existing pneumatic/training timing engine.
    if(b.battery!==true)return 'BATTERY BUS NOT AVAILABLE';
    // Independent fuel/ignition checks and training PSI curve remain unchanged.
    return null;

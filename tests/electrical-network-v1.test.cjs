@@ -79,11 +79,45 @@ test('ground AUTO source conflict and TR3 backup uncertainty stay UNKNOWN',()=>{
  const t=net(fault(fault(E.initialState(),'TR1_FAILED'),'TR2_FAILED'));
  assert.equal(t.nodes.DC_1.powered,null);assert.equal(t.edges.find(x=>x.from==='TR3'&&x.to==='DC_1').closed,null);
 });
-test('meter positions select terminals, not buses; disconnected spinning generator field stays unknown',()=>{
- let s=select(E.initialState(),'OFF',1);const n=net(s);
- assert.equal(n.nodes.GEN1.available,true);assert.equal(n.meterSources.AC.GEN1.volts,null);
- assert.equal(n.meterSources.DC['APU BAT'].volts,null);assert.equal(n.meterSources.AC.TEST.cps,null);
- assert.equal(n.meterSources.DC.TR3.volts,28);assert.equal(n.meterSources.DC.TR3.amps,null);
+test('AC GEN source meters show nominal excited output at operational drive speed with BUS contactor OPEN',()=>{
+ let s=select(select(E.initialState(),'OFF',1),'OFF',2);let n=net(s);
+ for(const gen of ['GEN1','GEN2']){
+  assert.equal(n.nodes[gen].available,true);
+  assert.equal(n.nodes[gen].busContactorClosed,false);
+  assert.equal(n.nodes[gen].connectedBusSides.length,0);
+  assert.equal(n.nodes[gen].volts,115);
+  assert.equal(n.nodes[gen].hz,400);
+  assert.equal(n.meterSources.AC[gen].volts,115);
+  assert.equal(n.meterSources.AC[gen].cps,400);
+ }
+ assert.equal(n.nodes.GENERATOR_BUS_1.powered,false);
+ assert.equal(n.nodes.GENERATOR_BUS_2.powered,false);
+ assert.equal(n.nodes.TRANSFER_1.powered,false);
+ assert.equal(n.nodes.TRANSFER_2.powered,false);
+ assert.equal(n.lamps.genOffBus1,true);
+ assert.equal(n.lamps.genOffBus2,true);
+ assert.equal(n.meterSources.DC['APU BAT'].volts,null);
+ assert.equal(n.meterSources.AC.TEST.cps,null);
+ assert.equal(n.meterSources.DC.TR3.amps,null);
+ // STOP/Fault extinguishes SOURCE output even if bus/source selection is OFF.
+ s=E.apply(s,{type:'CONTROL',key:'engine1Running',value:false});n=net(s);
+ assert.equal(n.meterSources.AC.GEN1.volts,0);
+ assert.equal(n.meterSources.AC.GEN1.cps,0);
+ assert.equal(n.meterSources.AC.GEN2.volts,115);
+ s=E.apply(s,{type:'FAULT',id:'GEN2_FAILED',active:true,instructor:true});n=net(s);
+ assert.equal(n.meterSources.AC.GEN2.volts,0);
+ assert.equal(n.meterSources.AC.GEN2.cps,0);
+});
+test('meter source remains unmeasured in SENSOR_ONLY mode when generator not on bus',()=>{
+ const s=select(E.initialState(),'OFF',1);
+ const n=net(s,{numericMode:'SENSOR_ONLY'});
+ assert.equal(n.nodes.GEN1.powered,true);
+ assert.equal(n.meterSources.AC.GEN1.volts,null);
+ assert.equal(n.meterSources.AC.GEN1.cps,null);
+ const sample=net(s,{numericMode:'SENSOR_ONLY',measurements:{GEN1:{volts:116,hz:401}}});
+ assert.equal(sample.meterSources.AC.GEN1.volts,116);
+ assert.equal(sample.meterSources.AC.GEN1.cps,401);
+ assert.equal(sample.nodes.GENERATOR_BUS_1.powered,false);
 });
 test('strict numbers distinguish nominal model, missing sensors and dead circuits',()=>{
  const s=E.initialState(),n=net(s,{numericMode:'SENSOR_ONLY'});

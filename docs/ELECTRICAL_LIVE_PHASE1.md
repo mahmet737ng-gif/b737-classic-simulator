@@ -55,8 +55,12 @@ refresh dependent ECU power and fuel delivery before rendering.
 The existing OH10 selectors receive source samples through
 `b737:ac-dc-source-measurement`; original four needles and geometry are retained.
 `NOMINAL_MODEL` shows labeled nominal voltage/frequency, never measured current.
-`SENSOR_ONLY` leaves unsupplied numbers unknown. A spinning disconnected engine
-generator has unknown field voltage. APU BAT and maintenance TEST remain unknown.
+`SENSOR_ONLY` leaves unsupplied numbers unknown. An engine generator at operating drive speed has a modeled excited nominal
+115 V / 400 Hz source reading when selected on the AC meter, even while its
+GENERATOR BUS contactor remains open and GEN OFF BUS stays illuminated. This
+does not power a disconnected bus. Failed, stopped or control-CB-inhibited
+generators do not indicate nominal output. These values are training
+approximations, not measurements; SENSOR_ONLY still requires a measured input. APU BAT and maintenance TEST remain unknown.
 RESID keeps its momentary 0–30 V ownership; a V7 observation supplies only the
 drive-running bit, not an inferred GCR position or residual-voltage measurement.
 
