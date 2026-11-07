@@ -57,6 +57,9 @@
     for(const p of r.placements){const piece=document.createElement('div');piece.className='texture-piece';piece.dataset.piece=p.id;piece.dataset.reference=String(!!p.referenceOnly);piece.setAttribute('aria-label',p.label);Object.assign(piece.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});const img=image(assembly.assets[p.asset],p.label);if(p.presentation==='contain')img.style.objectFit='contain';if(p.sourceWindow){const ratio=p.w/p.sourceWindow.w;img.style.position='absolute';img.style.width=(assembly.assets[p.asset].dimensions[0]*ratio)+'px';img.style.height=(assembly.assets[p.asset].dimensions[1]*ratio)+'px';img.style.left=(-p.sourceWindow.x*ratio)+'px';img.style.top=(-p.sourceWindow.y*ratio)+'px';}if(p.maskPolygon){const [sw,sh]=assembly.assets[p.asset].dimensions;img.style.clipPath='polygon('+p.maskPolygon.map(([x,y])=>(x/sw*100).toFixed(4)+'% '+(y/sh*100).toFixed(4)+'%').join(',')+')';}piece.append(img);native.append(piece);}region.append(native);
     const ref=image(assembly.assets[r.id==='main'?'assets/main-panel.webp':'assets/pedestal.webp'],r.label+' REFERENCE');ref.className='reference-image';region.append(ref);
    }scene.append(region);
+   // The MCP glass is attached immediately after the source-photo piece is in DOM.
+   // This avoids relying solely on a later cockpit-mounted event to create the digits.
+   if(r.id==='main')window.B737McpIndependentDigitsV1?.refresh?.();
   }
   model.validateInstruments(assembly);
   for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);
