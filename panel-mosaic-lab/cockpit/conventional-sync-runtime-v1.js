@@ -59,7 +59,11 @@
    // Backend keys and photographed face keys differ on three gauges.
    // oilTemperature -> oilTemp, oilQuantity -> oilQty, vibration -> vib.
    const faceSignal=model.SIGNALS[channel.signal]?.needle||channel.signal;
-   const expectedAngle=hasNumber?photo.angle(faceSignal,channel.engine,channel.value):scale?.zeroAngle;
+   const calibratedAngle=hasNumber?photo.angle(faceSignal,channel.engine,channel.value):scale?.zeroAngle;
+   const optical=needles()?.getOpticalCalibration?.();
+   const correction=faceSignal!=='n2'&&optical?.status==='PHOTO_VERIFIED'?
+    optical.correctionDeg:0;
+   const expectedAngle=Number.isFinite(calibratedAngle)?calibratedAngle+correction:null;
    const actualAngle=Number(document.querySelector('[data-needle-pivot="'+id+'"]')?.dataset.renderAngle);
    const rawDigit=digital?.value,rawNeedle=physical?.value;
    const comparable=hasNumber&&digital&&physical&&!isFuelUsed;
@@ -68,7 +72,8 @@
     physical?.value===channel.value;
    parity[id]={state:channel.state,status:channel.status,source:channel.source,
     rawNeedle,rawDigit:rawDigit??null,displayedText:display?.text||null,
-    expectedAngle,actualAngle,scaleSource:scale?.source||null,
+    expectedAngle,actualAngle,calibratedAngle,opticalCorrectionDeg:correction,
+    opticalStatus:optical?.status||'UNAVAILABLE',scaleSource:scale?.source||null,
     ...(isFuelUsed?{note:'FUEL_USED_DIGITAL_IS_ACCUMULATED_NOT_INSTANTANEOUS'}:{}),
     valueMatch,angleMatch:Number.isFinite(actualAngle)&&Number.isFinite(expectedAngle)
       ?Math.abs(actualAngle-expectedAngle)<.002:null};

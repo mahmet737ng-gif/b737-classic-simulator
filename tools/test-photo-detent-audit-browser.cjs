@@ -16,7 +16,8 @@ const {chromium}=require('playwright');
    window.B737EISDotReadoutsV1?.setReading,null,{timeout:60000});
   await page.evaluate(()=>window.B737EngineIndicationModeV1.setMode('CONVENTIONAL'));
   await page.waitForFunction(()=>document.documentElement.dataset.engineIndication==='CONVENTIONAL'&&
-   window.B737ConventionalNeedlesV1.getPhotoDetentAudit()?.photoEvidence?.status==='SCANNED',
+   window.B737ConventionalNeedlesV1.getPhotoDetentAudit()?.photoEvidence?.status==='SCANNED'&&
+   window.B737ConventionalNeedlesV1.getOpticalCalibration()?.status!=='PENDING',
    null,{timeout:60000});
   const report=await page.evaluate(()=>{
    const core=window.B737PhotoDetentCalibrationV1;
@@ -24,6 +25,8 @@ const {chromium}=require('playwright');
    const digits=window.B737EISDotReadoutsV1;
    const audits=needles.getPhotoDetentAudit();
    const scans=audits.photoEvidence.scans;
+   const optical=needles.getOpticalCalibration();
+   if(optical.status!=='PHOTO_VERIFIED')throw Error('Photographic needle optical axis unresolved: '+JSON.stringify(optical));
    let rng=35179;
    const failures=[],results=[];
    function check(ok,message){if(!ok)failures.push(message);}
@@ -43,7 +46,8 @@ const {chromium}=require('playwright');
       digits.setReading(engine,signal,v,'ENGINE_INDICATION_BACKEND_V2');
      const transform=rotor?.getAttribute('transform')||'';
      const actual=Number(transform.match(/rotate\(([-0-9.]+)\)/)?.[1]);
-     const expected=core.angle(signal,engine,v);
+     const correction=signal==='n2'?0:optical.correctionDeg;
+     const expected=core.angle(signal,engine,v)+correction;
      const diff=Math.abs(actual-expected);
      maxAngleError=Math.max(maxAngleError,diff);
      check(Number.isFinite(actual)&&diff<.00051,id+' needle differs from ECU at '+v);
@@ -73,7 +77,7 @@ const {chromium}=require('playwright');
     }
    }
    check(core.getProfile('n2','engine1').status==='OWNER_LOCKED','N2 calibration changed');
-   return{version:core.VERSION,scans,results,failures:failures.slice(0,30),
+   return{version:core.VERSION,scans,optical,results,failures:failures.slice(0,30),
     failureCount:failures.length,auditOK:audits.pass};
   });
   console.log('PHOTO_DETENT_BROWSER_AUDIT',JSON.stringify(report));
@@ -93,6 +97,7 @@ const {chromium}=require('playwright');
    const dots=window.B737EISDotReadoutsV1;
    const needles=window.B737ConventionalNeedlesV1;
    const core=window.B737PhotoDetentCalibrationV1;
+   const optic=needles.getOpticalCalibration();
    const convSpecs=dots.getSpecs('CONVENTIONAL');
    for(const engine of [1,2])for(const signal of ['n1','egt','n2','fuelFlow']){
     const id=signal+'_'+engine;
@@ -107,7 +112,8 @@ const {chromium}=require('playwright');
      .filter(t=>t.getAttribute('visibility')==='visible').length:0;
     const pointer=document.querySelector('[data-needle-pivot="'+id+'"]');
     const actualAngle=Number(pointer?.getAttribute('transform')?.match(/rotate\(([-0-9.]+)\)/)?.[1]);
-    const expectedAngle=core.angle(signal,'engine'+engine,pointerValue);
+    const expectedAngle=core.angle(signal,'engine'+engine,pointerValue)+
+     (signal==='n2'?0:optic.status==='PHOTO_VERIFIED'?optic.correctionDeg:0);
     found.push({id,actual:group?.dataset.value,expected,source,pointerValue,
      actualAngle,expectedAngle,visibleTapes:visual,visibleFixed:fallback,
      rect:group?.getBoundingClientRect()?.width||0});

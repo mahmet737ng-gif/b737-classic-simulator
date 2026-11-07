@@ -5,6 +5,7 @@ on:
       - 'engine/instruments/conventional-indication-sync-v1.js'
       - 'panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
+      - 'engine/instruments/needle-photo-optical-v1.js'
       - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'
       - 'panel-mosaic-lab/cockpit/engine-indication-live-v2.js'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -29,6 +30,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js
           node --check panel-mosaic-lab/cockpit/engine-indication-live-v2.js
           node --check panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js
+          node --check engine/instruments/needle-photo-optical-v1.js
           node --check panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js
           node --test tests/conventional-indication-sync-v1.test.cjs
           node tests/conventional-engine-needles-v1.test.cjs

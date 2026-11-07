@@ -10,6 +10,7 @@ on:
       - 'tools/test-conventional-digit-windows-browser.cjs'
       - 'panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js'
       - 'engine/instruments/photo-detent-calibration-v1.js'
+      - 'engine/instruments/needle-photo-optical-v1.js'
       - 'panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js'
       - 'tests/photo-detent-calibration-v1.test.cjs'
       - 'tools/test-photo-detent-audit-browser.cjs'

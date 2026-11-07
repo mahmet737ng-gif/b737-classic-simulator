@@ -35,6 +35,31 @@ const values=new Map();
 const rotors=new Map();
 const backendOwned=new Set(); // live ECU/failure-aware readings take priority over legacy start snapshots
 const photoEngine=window.B737PhotoDetentCalibrationV1;
+const opticalEngine=window.B737NeedlePhotoOpticsV1;
+let optical={status:'PENDING',correctionDeg:0,reason:'ORIGINAL_NEEDLE_IMAGE_NOT_YET_SAMPLED'};
+let opticalPhotoRequested=false;
+function calibrateNeedleImage(){
+ if(opticalPhotoRequested||!opticalEngine||typeof Image!=='function'||
+  typeof document.createElement!=='function')return;
+ opticalPhotoRequested=true;
+ const image=new Image();
+ image.onload=()=>{
+  try{
+   const canvas=document.createElement('canvas');canvas.width=80;canvas.height=160;
+   const ctx=canvas.getContext('2d',{willReadFrequently:true});
+   if(!ctx)throw Error('No image pixel context');
+   ctx.drawImage(image,0,0,80,160);
+   optical=opticalEngine.measure(ctx.getImageData(0,0,80,160));
+   // Render-only compensation. It does NOT change the ECU or photographed
+   // major/minor tick registration, nor the already-approved N2 scale.
+   for(const spec of SPECS)paint(spec);
+  }catch(error){optical={status:'REVIEW_REQUIRED',correctionDeg:0,
+   reason:'OPTICAL_NEEDLE_PIXEL_READ_FAILED',error:String(error)};}
+ };
+ image.onerror=()=>{optical={status:'REVIEW_REQUIRED',correctionDeg:0,
+  reason:'NEEDLE_MASTER_IMAGE_LOAD_FAILED'};};
+ image.src=PHOTO;
+}
 let registeredPhoto=null,photoEvidence=null;
 function calibrateSourcePhoto(host){
  if(!photoEngine||typeof document.createElement!=='function'||!host?.querySelector)return;
@@ -147,8 +172,13 @@ function paint(spec){
  const reading=values.get(spec.id);
  const renderValue=reading.value===null?spec.min:reading.value;
  const a=angle(spec,renderValue);
- rotor.setAttribute('transform','translate('+spec.cx+' '+spec.cy+') rotate('+a.toFixed(3)+') scale('+spec.scale+')');
- rotor.dataset.renderAngle=a.toFixed(3);
+ const correction=optical.status==='PHOTO_VERIFIED'&&spec.signal!=='n2'?
+  optical.correctionDeg:0;
+ const renderAngle=a+correction;
+ rotor.setAttribute('transform','translate('+spec.cx+' '+spec.cy+') rotate('+renderAngle.toFixed(3)+') scale('+spec.scale+')');
+ rotor.dataset.renderAngle=renderAngle.toFixed(3);
+ rotor.dataset.calibratedAngle=a.toFixed(3);
+ rotor.dataset.opticalCorrectionDeg=String(correction);
  rotor.dataset.calibratedValue=String(renderValue);
  rotor.parentNode.dataset.source=reading.source;
  rotor.parentNode.dataset.state=reading.value===null?'BLANK':'TRACK';
@@ -157,6 +187,7 @@ function paint(spec){
 function mount(){
  const host=getMount(),layout=getLayout();
  if(!host||!layout)return false;
+ calibrateNeedleImage();
  calibrateSourcePhoto(host);
  if(layer?.parentNode===host){layer.style.transform=layout.cssMatrix;return true;}
  if(layer && layer.parentNode!==host){layer.remove();rotors.clear();}
@@ -214,6 +245,12 @@ window.B737ConventionalNeedlesV1=Object.freeze({
  getSpecs:()=>SPECS.map(spec=>({...spec})),
  getPhotoDetentAudit:()=>photoEngine?{...photoEngine.inspectAll({samples:512}),
   photoEvidence}:null,
+ getOpticalCalibration:()=>({...optical,appliesTo:'ALL_EXCEPT_OWNER_APPROVED_N2',
+  needleSource:'conventional-needle-photo-v1.svg'}),
+ getRenderedNeedleAngles:()=>Object.fromEntries([...rotors].map(([id,p])=>
+  [id,{rendered:Number(p.dataset.renderAngle),
+   calibrated:Number(p.dataset.calibratedAngle),
+   opticalCorrectionDeg:Number(p.dataset.opticalCorrectionDeg)}])),
  getPhotoRegistration:()=>photoEngine?Object.fromEntries(SPECS.map(s=>{
   const p=photoEngine.getProfile(s.signal,s.engine);
   return[s.id,{zero:p.values[0],end:p.values.at(-1),

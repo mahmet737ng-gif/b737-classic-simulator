@@ -22,6 +22,7 @@ const {chromium}=require('playwright');
   await page.waitForFunction(()=>
    document.documentElement.dataset.engineIndication==='CONVENTIONAL'&&
    window.B737ConventionalNeedlesV1.getPhotoDetentAudit()?.photoEvidence?.status==='SCANNED'&&
+   window.B737ConventionalNeedlesV1.getOpticalCalibration()?.status!=='PENDING'&&
    document.querySelectorAll('[data-conventional-readout]').length===8&&
    document.querySelectorAll('[data-needle-pivot]').length===16,
    null,{timeout:60000});
@@ -32,6 +33,8 @@ const {chromium}=require('playwright');
    const dots=window.B737EISDotReadoutsV1;
    const fonts=window.B737EISDotDigitsV1;
    const registration=needles.getPhotoRegistration();
+   const optic=needles.getOpticalCalibration();
+   if(optic.status!=='PHOTO_VERIFIED')throw Error('Cannot certify photographic needle: '+JSON.stringify(optic));
    const failures=[],measured=[];
    const signals=['n1','egt','n2','fuelFlow','oilPressure','oilTemperature','oilQuantity','vibration'];
    const values={n1:60,egt:500,n2:60,fuelFlow:1200,oilPressure:76,
@@ -63,7 +66,8 @@ const {chromium}=require('playwright');
     const channel=sync.getState().channels[id];
     const pointer=document.querySelector('[data-needle-pivot="'+id+'"]');
     const angle=Number(pointer?.dataset.renderAngle);
-    const expected=photo.angle(keys[signal],engine,value);
+    const expected=photo.angle(keys[signal],engine,value)+
+     (signal==='n2'?0:optic.correctionDeg);
     check(Math.abs(angle-expected)<.0011,id+' pointer misses photo tick: '+value);
     check(Math.abs(reading.value-value)<1e-8,id+' pointer differs from ECU: '+value);
     check(Math.abs(channel.value-value)<1e-8,id+' coordinator differs from ECU: '+value);
@@ -142,7 +146,7 @@ const {chromium}=require('playwright');
    return{failures:failures.slice(0,30),failureCount:failures.length,
     measured:measured.length,scales:Object.keys(registration).length,
     sampleMeasurements:measured.filter(x=>x.id==='n1_1'||x.id==='egt_2').slice(-15),
-    parity:out.parity,version:sync.VERSION};
+    parity:out.parity,optical:optic,version:sync.VERSION};
   });
   console.log('UNIFIED_ONE_SOURCE_PIXEL_AUDIT',JSON.stringify(report));
   assert.equal(report.scales,16);
