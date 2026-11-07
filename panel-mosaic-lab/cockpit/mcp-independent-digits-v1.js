@@ -25,7 +25,7 @@ const segments=Object.freeze({
 const segOn=Object.freeze({0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",
  5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"});
 const roots=new Map();
-let lastKey="",witness=null;
+let lastKey="",witness=null,lastSupply=null;
 function svg(tag,attrs={}){
  const e=document.createElementNS(NS,tag);
  for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
@@ -116,8 +116,11 @@ function paint(view,on,number){
  }
  glass.replaceChildren(group);
 }
-function draw(force=false){
- const p=supply(),values=getNumbers();
+/* Recompute electrical supply only on a distribution/CB event, not on each
+ * numeric detent, wheel tick or instrument repaint. */
+function draw(force=false,refreshPower=false){
+ if(refreshPower||!lastSupply)lastSupply=supply();
+ const p=lastSupply,values=getNumbers();
  const key=JSON.stringify([qa,p.main,p.right,values]);
  if(!force&&key===lastKey)return;
  lastKey=key;
@@ -154,7 +157,7 @@ function mount(){
   root.dataset.mcpIndependentDigits="true";
   roots.set(root,windows);added=true;
  }
- draw(added);
+ draw(added,added);
 }
 const css=document.createElement("style");
 css.id="mcp-independent-digits-v1-style";
@@ -167,15 +170,14 @@ win.B737McpIndependentDigitsV1=Object.freeze({
    id:v.d.id,lit:v.host.dataset.powered,rect:{
     x:v.host.getBoundingClientRect().x,y:v.host.getBoundingClientRect().y,
     w:v.host.getBoundingClientRect().width,h:v.host.getBoundingClientRect().height}}))}),
- refresh:()=>{mount();draw(true)},
+ refresh:()=>{mount();draw(true,true)},
  setPreview:()=>false  // retained as a safe no-op for old callers
 });
-for(const event of ["b737:mcp-afds-state","b737:mcp-value-change",
- "b737:mcp-hardware-change","b737:electrical-distribution-changed",
- "b737:electrical-v7-state","b737:cb-state-change",
- "b737:electrical-owner-ready","b737:bus-failure-injection-changed"]){
+for(const event of ["b737:mcp-afds-state","b737:mcp-value-change","b737:mcp-hardware-change"])
  win.addEventListener(event,()=>draw());
-}
+for(const event of ["b737:electrical-distribution-changed","b737:electrical-v7-state",
+ "b737:cb-state-change","b737:electrical-owner-ready","b737:bus-failure-injection-changed"])
+ win.addEventListener(event,()=>draw(false,true));
 win.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount);
 if(document.readyState!=="loading")mount();
