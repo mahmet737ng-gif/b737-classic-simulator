@@ -8,6 +8,7 @@ on:
       - 'bus-consumer-test-lab/**'
       - 'tests/classic-bus-consumer-test-lab-v1.test.cjs'
       - 'tests/classic-bus-consumer-fmc-fuel-cdu-binary-v1.test.cjs'
+      - 'tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs'
       - 'tests/classic-bus-consumer-test-lab-ui-v1.test.cjs'
       - 'engine/systems/mrg-classic-340-consumer-bus-index-v1.json'
       - 'engine/integration/isn-electrical-pack-v1.js'
@@ -30,6 +31,7 @@ jobs:
           node tests/classic-bus-consumer-functional-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-v1.test.cjs
           node tests/classic-bus-consumer-fmc-fuel-cdu-binary-v1.test.cjs
+          node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
           node tests/engine-indication-tech-db-v1.test.cjs
           node tests/engine-indication-source-power-ata77-v2.test.cjs
