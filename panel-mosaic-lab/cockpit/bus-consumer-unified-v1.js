@@ -102,6 +102,8 @@
   const input=electricalInputs();if(!input)return null;
   const config=configuration(),cb=root.B737UnifiedCB;
   const key=JSON.stringify([input.live.bus,input.live.busClassOutages||[],
+   input.state.config?.onGround??null,input.state.config?.groundPowerAttached??null,
+   input.state.config?.groundPowerQualityGood??null,
    cb?.revision??null,config]);
   if(!force&&key===signature)return current;
   const snapshot=Core.project({index,electrical:input.live,electricalState:input.state,
