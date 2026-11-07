@@ -99,6 +99,7 @@
   const input=electricalInputs();if(!input)return null;
   const config=configuration(),cb=root.B737UnifiedCB;
   const key=JSON.stringify([input.live.bus,input.live.source,input.live.feed,
+   input.live.busClassOutages||[],input.live.busFailureInjection||null,
    cb?.revision??null,config]);
   if(!force&&key===signature)return current;
   const snapshot=Core.project({index,electrical:input.live,electricalState:input.state,
@@ -115,7 +116,9 @@
   loadPromise=(async()=>{
    const res=await fetch(new URL(INDEX_URL,document.baseURI));
    if(!res.ok)throw Error('MRG consumer index HTTP '+res.status);
-   const data=await res.json();Core.validate(data);index=data;
+   const data=await res.json();Core.validate(data);
+   if(!root.B737ClassicMultifeedV1?.validateIndex)throw Error('Multi-feed authority missing');
+   root.B737ClassicMultifeedV1.validateIndex(data);index=data;
    build();refresh(true);return true;
   })().catch(e=>{build();if(errors)errors.textContent='Source index unavailable: '+e.message;console.error(e);return false;});
   return loadPromise;
@@ -125,6 +128,7 @@
   getSnapshot:()=>current?copy(current):null,
   getConsumer:id=>current?.consumers?.[id]?copy(current.consumers[id]):null,
   getDevice:name=>current?.devices?.[name]?copy(current.devices[name]):null,
+  getCapability:(name,purpose)=>current?.devices?.[name]?.capabilities?.[purpose]??null,
   getBus:(bus,voltage)=>current?.buses?.[bus+'@'+voltage]?copy(current.buses[bus+'@'+voltage]):null,
   getSystem:id=>current?.systems?.[id]?copy(current.systems[id]):null,
   subscribe:fn=>{if(typeof fn!=='function')throw Error('Function required');
@@ -132,7 +136,8 @@
  });
  for(const event of ['b737:electrical-v7-state','b737:cb-state-change',
   'b737:aircraft-profile-change','b737:engine-indication-view',
-  'b737:electrical-owner-ready','b737:unified-ecu-observation'])
+  'b737:electrical-owner-ready','b737:unified-ecu-observation',
+  'b737:bus-failure-injection-changed'])
   root.addEventListener(event,()=>{if(index)refresh();});
  if(document.readyState==='loading')
   document.addEventListener('DOMContentLoaded',load,{once:true});
