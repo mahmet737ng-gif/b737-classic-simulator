@@ -68,7 +68,7 @@ select,input{background:#0e1d2a;border:1px solid #49657a;color:var(--text);borde
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-inline:3px}
 .dot-blue{background:var(--blue)}.dot-red{background:var(--red)}.dot-amber{background:var(--amber)}
 .txt-blue{color:var(--blue)!important}.txt-red{color:var(--red)!important}.txt-amber{color:var(--amber)!important}.txt-muted{color:var(--muted)!important}
-.crossed{text-decoration:line-through;text-decoration-thickness:2px}
+/* OFF labels are red and readable, without a strike-through. */
 .list-status{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:11px;margin-bottom:6px;flex-wrap:wrap}
 #scenarioLabel{direction:ltr;letter-spacing:.04em}
 .table-viewport{overflow-x:auto;max-height:calc(100dvh - 265px);min-height:420px;overscroll-behavior:contain;background:#0f1e2b;border:1px solid #355169;border-radius:9px}
@@ -83,7 +83,7 @@ select,input{background:#0e1d2a;border:1px solid #49657a;color:var(--text);borde
 #consumerTable .consumer-status{font-size:10px;letter-spacing:.04em;font-weight:800;white-space:nowrap}
 #consumerTable .consumer-system{font-size:10px;color:#94b0c3}
 #consumerTable tr[data-state="NORMAL"] .consumer-name,#consumerTable tr[data-state="NORMAL"] .consumer-status{color:var(--blue)}
-#consumerTable tr[data-state="OFF"] .consumer-name,#consumerTable tr[data-state="OFF"] .consumer-status,#consumerTable tr[data-state="OFF"] .consumer-feed{color:var(--red);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--red)}
+#consumerTable tr[data-state="OFF"] .consumer-name,#consumerTable tr[data-state="OFF"] .consumer-status,#consumerTable tr[data-state="OFF"] .consumer-feed{color:var(--red);text-decoration:none!important}
 #consumerTable tr[data-state="DEGRADED"] .consumer-name,#consumerTable tr[data-state="DEGRADED"] .consumer-status,#consumerTable tr[data-state="UNKNOWN"] .consumer-name,#consumerTable tr[data-state="UNKNOWN"] .consumer-status{color:var(--amber)}
 #consumerTable tr[data-state="NOT_INSTALLED"] .consumer-name,#consumerTable tr[data-state="NOT_INSTALLED"] .consumer-status{color:var(--gray);opacity:.7}
 #consumerTable tr[data-state="OFF"]{background:rgba(100,29,46,.17)}
