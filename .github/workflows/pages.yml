@@ -182,6 +182,8 @@ jobs:
           node tests/classic-bus-consumer-test-lab-v1.test.cjs
           node tests/classic-bus-consumer-optional-and-interphone-power-v1.test.cjs
           node tests/unified-bus-failure-injection-v1.test.cjs
+          node tests/unified-failures-header-v1.test.cjs
+          node --check panel-mosaic-lab/cockpit/failures-header-v1.js
           node --check engine/systems/unified-bus-failure-injection-v1.js
           node --check panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
           node tests/classic-bus-consumer-test-lab-ui-v1.test.cjs
@@ -191,6 +193,9 @@ jobs:
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
           test -f web-dist/panel-mosaic-lab/cockpit/cdu-bus-failure-gate-v1.js
+          test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.js
+          test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.css
+          grep -q 'id="failuresHeaderOpen"' web-dist/panel-mosaic-lab/cockpit/index.html
           grep -q 'v3.html' web-dist/panel-mosaic-lab/cockpit/index.html
       - name: Remove unreferenced archive files from Pages artifact only
         run: |
