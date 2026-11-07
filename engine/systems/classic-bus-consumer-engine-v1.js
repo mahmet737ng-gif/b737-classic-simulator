@@ -249,16 +249,11 @@
    const quality=unresolvedOption?'INSTALLATION_OPTION_UNCONFIRMED':
     row.sourceConfidence==='PRINTED_INDEX_READABLE'?
     'MRG_CLASSIC_FUNCTIONAL':'MRG_SOURCE_REVIEW_PENDING';
-   // Bus availability and source-document confidence are independent.
-   // A duplicated transcription of exactly the same DC2 pump controller
-   // does not turn an observed ON/OFF bus into an amber electrical state.
-   // FMC electronic 1/2 has a legible bus assignment even though its
-   // source photograph needs QA; it is binary in this functional test lab.
-   // Keep all other unverified/optional equipment conservatively UNKNOWN.
-   const binaryFunctionalFeed=row.item==='FMC'||/^CDU (?:Captain|FO)$/.test(row.item)||
-    /^Fuel (?:Pump Control|Boost Pump) - /.test(row.item);
-   if(installed&&!binaryFunctionalFeed&&quality!=='MRG_CLASSIC_FUNCTIONAL'&&state==='NORMAL')
-    state='UNKNOWN';
+   // Test Lab electrical availability must be derived from the mapped bus
+   // and CB alone. Source-photo QA and optional installed equipment are
+   // separate evidence, not reasons for an energized feed to show UNKNOWN.
+   const installationStatus=row.applicability==='EQUIPMENT_OPTION'?
+    'AS_INSTALLED_UNVERIFIED':'GENERAL_CLASSIC_REFERENCE';
    const type=role(row.item),group=family(row.item);
    const entry={
     id:row.id,name:row.item,system:group,role:type,
@@ -272,10 +267,10 @@
      state==='OFF'?consequence(type):state==='DEGRADED'?'SOME_CHANNELS_AVAILABLE':
      state==='NOT_INSTALLED'?'NOT_APPLICABLE_TO_SELECTED_CONFIGURATION':
      'NO_ASSUMED_EQUIPMENT_RESPONSE',
-    activeCommand:'NOT_OBSERVED',quality,
+    activeCommand:'NOT_OBSERVED',quality,installationStatus,
     duplicateSourceOf:row.item==='Fuel Pump Control - Main Tank 1 Fwd'&&
      row.id==='MRG-CL-184-048'?'MRG-CL-184-047':null,
-    note:'Bus state models electrical availability; actual command, sensor, and mechanical operation are independently owned.'
+    note:'Bus power means the mapped feed has power IF the device is installed. Document QA, optional fit and physical operation are independent.'
    };
    consumers[row.id]=entry;tally[state]++;
    if(!systems[group])systems[group]={id:group,consumerIds:[],counts:{NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0}};
