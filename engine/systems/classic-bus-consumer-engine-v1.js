@@ -159,17 +159,21 @@
    powerStatus:state===true?'NORMAL':state===false?'OFF':state==='DEGRADED'?'DEGRADED':'UNKNOWN',
    basis:values.map(x=>x.basis)};
  }
- function appropriate(row,{mode,pressurization}){
+ function appropriate(row,{mode,pressurization,aircraftModel}){
   if(row.applicability==='DCPCS'&&pressurization!=='DCPCS')return false;
   if(row.applicability==='CPCS'&&pressurization!=='CPCS')return false;
   if(/non.EIS/i.test(row.item)&&mode==='EIS')return false;
   if(/\(EIS\)/i.test(row.item)&&mode==='CONVENTIONAL')return false;
+  if(/\(600-700\)/i.test(row.item))return false; // Not a Classic -300/400/500.
+  if(/\(400\)/i.test(row.item)&&aircraftModel!=='737-400')return false;
+  if(/\(300-500\)/i.test(row.item)&&aircraftModel==='737-400')return false;
   return true;
  }
  function project({index,electrical,electricalState=null,mode='CONVENTIONAL',
-  pressurization='CPCS',cbAvailable=null}={}){
+  pressurization='DCPCS',aircraftModel='737-300',cbAvailable=null}={}){
   validate(index);
-  if(!['EIS','CONVENTIONAL'].includes(mode)||!['CPCS','DCPCS'].includes(pressurization))
+  if(!['EIS','CONVENTIONAL'].includes(mode)||!['CPCS','DCPCS'].includes(pressurization)||
+   !['737-300','737-400','737-500'].includes(aircraftModel))
    throw Error('Invalid B737 Classic aircraft configuration');
   // Fail loudly if the 8 functional pump associations drift away from the
   // exact consumer labels and feed buses in the committed MRG reference.
@@ -180,7 +184,7 @@
   const buses=defineBuses(electrical,{electricalState}),consumers={},systems={};
   const tally={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
   for(const row of index.rows){
-   const installed=appropriate(row,{mode,pressurization});
+   const installed=appropriate(row,{mode,pressurization,aircraftModel});
    const feed=getBus(buses,row.feedBus,row.feedVoltage);
    const breaker=CB_ITEMS[row.item]||null;
    const cbNames=breaker?.split('|')||[];
@@ -194,7 +198,10 @@
     cbOpen&&!cbPartial?'OFF':
     cbPartial&&feed.powerStatus==='NORMAL'?'DEGRADED':
     feed.powerStatus;
-   const quality=row.sourceConfidence==='PRINTED_INDEX_READABLE'?
+   const unresolvedOption=row.applicability==='EQUIPMENT_OPTION'&&
+    /as installed|rain repellent/i.test(row.item);
+   const quality=unresolvedOption?'INSTALLATION_OPTION_UNCONFIRMED':
+    row.sourceConfidence==='PRINTED_INDEX_READABLE'?
     'MRG_CLASSIC_FUNCTIONAL':'MRG_SOURCE_REVIEW_PENDING';
    // Unknown or photograph-review feeds must not be represented as reliable ON.
    if(installed&&quality!=='MRG_CLASSIC_FUNCTIONAL'&&state==='NORMAL')state='UNKNOWN';
@@ -257,7 +264,7 @@
     'DEGRADED':!states.length?'NOT_INSTALLED':states.every(v=>v==='NORMAL')?
     'NORMAL':states.every(v=>v==='OFF')?'OFF':'UNKNOWN';
   }
-  return {schema:SCHEMA,revision:electrical.revision,mode,pressurization,
+  return {schema:SCHEMA,revision:electrical.revision,mode,pressurization,aircraftModel,
    buses,consumers,devices,systems,coverage:{...tally,sourceRows:index.rows.length,
     logicalDevices:Object.keys(devices).length,
     activeRows:index.rows.length-tally.NOT_INSTALLED},
