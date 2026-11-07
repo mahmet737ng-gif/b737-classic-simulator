@@ -60,3 +60,35 @@ html.mcp-retina-ready [data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-
 @media(prefers-reduced-motion:reduce) {
  [data-piece="mcp"] > .mcp-hw[data-mcp-hardware="CO"] > .mcp-hw-push-cap {transition:none!important}
 }
+
+/* MCP-KNOB-HOLE-0001 — measured original 2172x433 panel aperture and
+ * actual 480px photo alpha-coverage. --mcp-knob-photo-* is calculated once
+ * by mcp-socket-registration-v2.js, not guessed optical scale values.
+ * Root width/height equals the native hole diameter; ONLY the transparent
+ * image INSIDE the root gets scaled until its real opaque area equals
+ * the circular hole area. Photo alpha centroids are aligned to hole center.
+ * No positioning or sizing changes for HEADING / ALTITUDE knobs.
+ */
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseL"],
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseR"] {
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseL"] > .mcp-v3-course-face,
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="courseR"] > .mcp-v3-course-face {
+  left:var(--mcp-knob-photo-left,-16.253%)!important;
+  top:var(--mcp-knob-photo-top,-5.979%)!important;
+  width:var(--mcp-knob-photo-fill,126.447%)!important;
+  height:var(--mcp-knob-photo-fill,126.447%)!important;
+  border:0!important;
+  box-shadow:none!important;
+  background-color:transparent!important;
+  background-size:contain!important;
+}
+[data-piece="mcp"].mcp-owner13-active > .mcp-v3-knob[data-control="speed"] {
+  background-size:var(--mcp-knob-photo-fill,113.778%) var(--mcp-knob-photo-fill,113.778%)!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+}
