@@ -21,12 +21,42 @@ const buttonRects=Object.freeze([
  ["CMD_A",1579,130,101,67],["CMD_B",1761,131,98,67],
  ["CWS_A",1581,228,96,65],["CWS_B",1761,229,97,65]
 ]);
-// Existing five rotary controls. x/y/w/h are physical dark aperture bounds.
+/* MCP-KNOB-HOLE-0001: exact native black circular apertures detected from
+ * 2172x433 immutable source PHOTO pixels, NOT from overlaid knobs.
+ * courseL dark edge: center (90,242), radius 54 native px;
+ * IAS/MACH dark edge: center (562,276), radius 47 native px;
+ * courseR dark edge: center (2018,249), radius 49 native px.
+ * The original 80/480 photo asset has transparent inset, which is calibrated
+ * below so the VISIBLE alpha silhouette occupies equal area to the dark hole.
+ * Other two rotary controls retain previously approved positions and sizes.
+ */
 const knobRects=Object.freeze({
- courseL:[37,188,103,98],speed:[522,233,85,81],
+ courseL:[36,188,108,108],speed:[515,229,94,94],
  heading:[823,194,81,86],altitude:[1157,193,86,86],
- courseR:[1973,200,95,96]
+ courseR:[1969,200,98,98]
 });
+const knobPhotoPixels=Object.freeze({
+ courseL:{side:480,opaque:113176,alpha:[63,21,440,404]},
+ speed:{side:480,opaque:139783,alpha:[27,18,453,460]},
+ courseR:{side:480,opaque:113176,alpha:[63,21,440,404]}
+});
+function photoFit(id){
+ const a=knobPhotoPixels[id];
+ if(!a)return null;
+ const fraction=a.opaque/(a.side*a.side);
+ // Matching geometric area: alpha mask area after scaling = pi*r^2.
+ const factor=Math.sqrt((Math.PI/4)/fraction);
+ const alphaCenterX=(a.alpha[0]+a.alpha[2])/(2*a.side);
+ const alphaCenterY=(a.alpha[1]+a.alpha[3])/(2*a.side);
+ return {
+  factor,
+  imageLeftPct:100*((1-factor)/2-(alphaCenterX-.5)*factor),
+  imageTopPct:100*((1-factor)/2-(alphaCenterY-.5)*factor),
+  alphaFraction:fraction
+ };
+}
+const knobPhotoFits=Object.freeze(Object.fromEntries(Object.keys(knobPhotoPixels)
+ .map(id=>[id,Object.freeze(photoFit(id))])));
 // Existing hardware. Unmeasured round controls keep their APPROVED coordinates.
 const hardwareRects=Object.freeze({
  AT_ARM:[315,136,66,70],FD_LEFT:[177,305,47,58],
@@ -49,10 +79,21 @@ function register(root){
   const hole=knobRects[g.id],el=root.querySelector('.mcp-v3-knob[data-control="'+g.id+'"]');
   if(!hole||!el)continue;
   const [x,y]=rectCenter(hole);
-  // Existing knobs are round and retain their source sprites and handlers.
+  // Center BOTH x and y on the hole and set both dimensions from its
+  // physical diameter (no width-only sizing, guessed scale, or CSS stretch).
+  const fitted=knobPhotoFits[g.id],diameter=Math.max(hole[2],hole[3]);
   el.style.left=percent(x,W);
   el.style.top=percent(y,H);
-  el.style.width=percent(Math.max(hole[2],hole[3]),W);
+  el.style.width=percent(diameter,W);
+  if(fitted){
+   el.style.height=percent(diameter,H);
+   el.style.setProperty("--mcp-knob-photo-fill",(fitted.factor*100).toFixed(5)+"%");
+   el.style.setProperty("--mcp-knob-photo-left",fitted.imageLeftPct.toFixed(5)+"%");
+   el.style.setProperty("--mcp-knob-photo-top",fitted.imageTopPct.toFixed(5)+"%");
+   el.dataset.mcpHoleCenter=x+","+y;
+   el.dataset.mcpHoleDiameter=String(diameter);
+   el.dataset.mcpHoleArea=(Math.PI*diameter*diameter/4).toFixed(2);
+  }
   el.dataset.mcpSocketSource="native-original-photo";
  }
  for(const g of getHardware()){
@@ -144,16 +185,24 @@ function audit(){
      status:e<1?"CENTER_PASS":"CHECK",pixelMapped:!!(knobRects[item.id]||hardwareRects[item.id]||buttonRects.some(a=>a[0]===item.id))});
   }
  }
- return {schema:"MCP-SOCKET-0002",sourcePanel:"B737_MCP_Blank_Panel.png",
+ return {schema:"MCP-SOCKET-0003",sourcePanel:"B737_MCP_Blank_Panel.png",
   originalDimensions:[W,H],originalSha256:photoSha,
   apertureDetection:"original image RGB dark connected-component bounds; source file unmodified",
-  records};
+  knobFitAudit:Object.entries(knobPhotoFits).map(([id,p])=>{
+   const [x,y,w,h]=knobRects[id],holeArea=Math.PI*w*h/4;
+   const renderedArea=p.alphaFraction*p.factor*p.factor*w*h;
+   return {id,holeCenter:[x+w/2,y+h/2],holeDiameter:w,
+    holeAreaPx2:+holeArea.toFixed(2),renderedOpaqueAreaPx2:+renderedArea.toFixed(2),
+    areaErrorPct:+(100*(renderedArea/holeArea-1)).toFixed(4),
+    photoScale:+p.factor.toFixed(6),imageLeftPct:+p.imageLeftPct.toFixed(4),
+    imageTopPct:+p.imageTopPct.toFixed(4)};
+  }),records};
 }
 window.B737McpSocketRegistrationV2=Object.freeze({
  mount,audit,sourceSize:[W,H],sourceSha256:photoSha,
  buttonRects:buttonRects.map(x=>x.slice()),
  knobRects:Object.assign({},knobRects),
- hardwareRects:Object.assign({},hardwareRects)
+ knobPhotoFits,hardwareRects:Object.assign({},hardwareRects)
 });
 window.addEventListener("b737:cockpit-mounted",mount);
 document.addEventListener("DOMContentLoaded",mount,{once:true});
