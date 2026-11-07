@@ -197,11 +197,11 @@ function mountDigitDiagnostics(){
  function render(){
   const bus=window.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
   const out=window.B737McpAFDSBridgeV1?.getOutput?.();
-  el.textContent="MCP SEVEN-SEGMENT VISUAL QA ONLY\\n"+
-   "Digits forced visible; NO electrical change\\n"+
-   "DC1: "+String(bus?.dc1??"UNKNOWN")+" | BAT BUS: "+String(bus?.battery??"UNKNOWN")+"\\n"+
+  el.textContent="MCP SEVEN-SEGMENT VISUAL QA ONLY\n"+
+   "Digits forced visible; NO electrical change\n"+
+   "DC1: "+String(bus?.dc1??"UNKNOWN")+" | BAT BUS: "+String(bus?.battery??"UNKNOWN")+"\n"+
    "CB MCP: "+String(window.B737UnifiedCB?.available("mcp.power")??"UNKNOWN")+
-   " | CB CRS2: "+String(window.B737UnifiedCB?.available("mcp.course2")??"UNKNOWN")+"\\n"+
+   " | CB CRS2: "+String(window.B737UnifiedCB?.available("mcp.course2")??"UNKNOWN")+"\n"+
    "AFDS Power: "+String(out?.power??"UNKNOWN")+
    " | CRS2 Power: "+String(out?.course2Power??"UNKNOWN");
  }
