@@ -170,7 +170,8 @@
   return true;
  }
  function project({index,electrical,electricalState=null,mode='CONVENTIONAL',
-  pressurization='DCPCS',aircraftModel='737-300',cbAvailable=null}={}){
+  pressurization='DCPCS',aircraftModel='737-300',cbAvailable=null,
+  labBusPower=null}={}){
   validate(index);
   if(!['EIS','CONVENTIONAL'].includes(mode)||!['CPCS','DCPCS'].includes(pressurization)||
    !['737-300','737-400','737-500'].includes(aircraftModel))
@@ -181,7 +182,27 @@
    if(!index.rows.some(r=>r.item===feed.item&&r.feedBus===feed.bus&&r.feedVoltage===feed.voltage))
     throw Error('MRG functional pump source conflict: '+id);
   }
-  const buses=defineBuses(electrical,{electricalState}),consumers={},systems={};
+  const sourceBuses=defineBuses(electrical,{electricalState});
+  // An isolated teaching-lab snapshot can inject a complete set of bus
+  // class states. It never writes to Electrical V7, the physical cockpit or
+  // the live source session. Missing/unknown bus keys are rejected.
+  let buses=sourceBuses;
+  if(labBusPower!==null){
+   if(typeof labBusPower!=='object'||Array.isArray(labBusPower)||
+      Object.keys(labBusPower).length!==Object.keys(sourceBuses).length)
+    throw Error('Lab injection requires exactly every known bus-class node');
+   buses={};
+   for(const [key,original] of Object.entries(sourceBuses)){
+    if(!Object.hasOwn(labBusPower,key)||typeof labBusPower[key]!=='boolean')
+     throw Error('Invalid laboratory bus state: '+key);
+    const powered=labBusPower[key];
+    buses[key]={...original,powered,status:powered?'ON':'OFF',
+      basis:'ISOLATED_LAB_INJECTION_NOT_AIRCRAFT_BUS'};
+   }
+   for(const key of Object.keys(labBusPower))
+    if(!Object.hasOwn(sourceBuses,key))throw Error('Unknown laboratory bus: '+key);
+  }
+  const consumers={},systems={};
   const tally={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
   for(const row of index.rows){
    const installed=appropriate(row,{mode,pressurization,aircraftModel});
@@ -271,7 +292,8 @@
    assumptions:['GENERATOR_ELECTRONIC_BUS_PROXY','28VAC_TRANSFORMER_NOT_MONITORED',
     'GENERAL_MRG_NOT_AIRFRAME_WDM','CB_POWER_EFFECT_ONLY_WHEN_MAPPED'],
    sources:{FCOM:'6.20.1-12',MRG:'IV.6 printed pp.182-188',LAN:'ATA 24'},
-   sourceOwner:'Electrical_V7_READ_ONLY'};
+   sourceOwner:labBusPower===null?'Electrical_V7_READ_ONLY':'ISOLATED_LAB_V7_REFERENCE_ONLY',
+   labInjected:labBusPower!==null};
  }
  function lookupPump(id,electrical){
   const feed=MRG_PUMP_FEEDS[id];if(!feed)throw Error('Unknown functional pump '+id);
