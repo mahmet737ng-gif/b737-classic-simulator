@@ -94,7 +94,7 @@ assert.equal(calc(isolated,'EIS').engines.engine1.indications.oilPressure.status
 
 // A single CB removes only its mapped channel (shared AVM CB affects both).
 const cbOpen=new Set(['engine1.n2Indicator']);
-globalThis.B737UnifiedCB={available:circuit=>cbOpen.has(circuit)?false:true};
+globalThis.B737UnifiedCB={available:circuit=>cbOpen.has(circuit)?false:true,gate:(_circuit,upstream)=>upstream};
 try{
  const q=calc(base());
  assert.equal(q.engines.engine1.indications.n2.status,'POWER_LOSS');
