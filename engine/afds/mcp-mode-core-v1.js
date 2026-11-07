@@ -20,7 +20,7 @@ function initialState(){return {
  electrical:{globalPowerPossible:null,feed:STATES.UNVERIFIED,mcpPower:null,course2Power:null,electronic1:null,dc1:null,batteryBus:null,rawRevision:null},
  fd:{left:false,right:false},autoThrottleArm:false,
  values:{courseL:261,courseR:261,speed:110,machHundredths:60,heading:134,altitude:10000,verticalSpeed:0},
-  speedDisplayMode:"IAS",
+  speedDisplayMode:"IAS",bankAngleLimit:20,
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
  pending:{approach:false},lastRejection:null
@@ -100,6 +100,13 @@ function transition(state,action){
   if(!s.fd.left&&!s.fd.right){clearModes(s);}
   return done();
  }
+ if(action.type==="BANK_ANGLE"){
+  // FCOM Ch4, 4.10.15: outer bank angle selector detents 10/15/20/25/30.
+  // Mechanical preselection can move with electrical power OFF.
+  if(!Number.isInteger(action.value)||![10,15,20,25,30].includes(action.value))
+   throw Error("FCOM Chapter 4 bank angle selector detent must be 10/15/20/25/30");
+  s.bankAngleLimit=action.value;return done();
+ }
  if(action.type==="AT_ARM"){
   if(typeof action.armed!=="boolean")throw Error("Invalid A/T switch");
   s.autoThrottleArm=action.armed;if(!action.armed)s.modes.thrust=null;return done();
@@ -156,7 +163,7 @@ function output(s){
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
-   speedDisplayMode:s.speedDisplayMode,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
+   speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
   limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
