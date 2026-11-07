@@ -496,6 +496,8 @@
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
     getFuelSystem:()=>ecu.get().fuel?.system??null,
+   reconcileElectricalConsumers:reason=>reconcileElectricalConsumers(reason),
+   refreshElectricalAnnunciations:()=>{render();return true;},
     fuelTrainerAction:command=>{
      if(command?.instructor!==true||!ecu.core.fuelSystem)throw Error('ATA28 instructor-only action required');
      const fs=ecu.core.fuelSystem;
@@ -597,19 +599,29 @@
  // Dependencies are dynamically loaded, so request a fresh iframe snapshot
  // even if its initial ready event arrived before this message listener.
  byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'report'},location.origin);
- window.addEventListener('b737:cb-state-change',()=>{session.snapshot=session.compute(null);chain.syncPower();ecu.core.refreshFuelDelivery();ecu.advance(0);render();});
- // Same live electrical owner as normal CB pulls. A bus outage is an
- // instructor overlay, not a generator selector movement or an engine STOP.
- // Recompute once so fuel pumps, hydraulics, annunciators, engine gauges,
- // window heat and autobrake observe the new bus data in this cockpit tab.
+ // One reconciliation per distinct distribution/CB state. The event hub and
+ // old compatibility events may arrive together; unchanged power is a NOOP.
+ let lastDistributionSignature=null;
+ function reconcileElectricalConsumers(reason='ATA24_CHANGE'){
+  const evaluated=window.B737ElectricalV7?.evaluate?.(session.electricalState);
+  if(!evaluated?.bus)return false;
+  const signature=JSON.stringify([evaluated.bus,evaluated.busClassOutages||[],
+   window.B737UnifiedCB?.revision??null]);
+  if(signature===lastDistributionSignature)return false;
+  lastDistributionSignature=signature;
+  session.snapshot=session.compute(null);
+  chain.syncPower();
+  ecu.core.refreshFuelDelivery();
+  ecu.advance(0);
+  render();
+  return true;
+ }
+ window.addEventListener('b737:cb-state-change',()=>reconcileElectricalConsumers('CB_CHANGE'));
+ // An injected bus loss is a power overlay, never an overhead switch or engine STOP.
  window.addEventListener('b737:bus-failure-injection-changed',()=>{
-   session.snapshot=session.compute(null);
-   chain.syncPower();
-   ecu.core.refreshFuelDelivery();
-   ecu.advance(0);
-   render();
-   window.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{
-     detail:{source:'TRAINING_BUS_FAILURE_INJECTION'}}));
+  reconcileElectricalConsumers('INJECTED_BUS_CHANGE');
+  window.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{
+   detail:{source:'TRAINING_BUS_FAILURE_INJECTION'}}));
  });
  window.dispatchEvent(new CustomEvent('b737:electrical-owner-ready'));
  render();
