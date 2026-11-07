@@ -15,7 +15,10 @@
    }
   }return true;
  }
- function busPower(electrical,bus){
+ function busPower(electrical,bus,voltage=null){
+  // An instructor may remove a converter/28VAC class without removing the
+  // corresponding upstream Transfer 115VAC bus. Keep the distinction.
+  if(voltage&&electrical?.busClassOutages?.includes(bus+'@'+voltage))return false;
   const map=electrical?.bus||electrical;
   return typeof map?.[bus]==="boolean"?map[bus]:null;
  }
@@ -32,7 +35,7 @@
    Number((v*db.laws.oilQuantityConversion.conventionalFullUSGApprox/100).toFixed(3)):v;
  }
  function resolve({param,mode,reading,feed,unitFault,channelFault,previous,dtMs,db,electrical}){
-  const pow=busPower(electrical,feed.bus);
+  const pow=busPower(electrical,feed.bus,feed.voltage||null);
   const old=previous||{};
   const res={status:"UNKNOWN",unit:db.instruments[param].displayUnits[mode],
    inputValue:reading.valid===true?reading.value:null,value:null,
