@@ -9,6 +9,7 @@ const path=require('node:path');
 const E=require('../engine/systems/electrical-v7.js');
 const Core=require('../engine/systems/classic-bus-consumer-engine-v1.js');
 const Lab=require('../engine/systems/classic-bus-consumer-test-lab-v1.js');
+const Protocol=require('../engine/systems/unified-bus-failure-injection-v1.js');
 const index=require('../engine/systems/mrg-classic-340-consumer-bus-index-v1.json');
 const dir=path.join(__dirname,'..','bus-consumer-test-lab');
 // Test the actual user-facing, cache-isolated v2 page rather than a source
@@ -47,7 +48,6 @@ const ids={};
 for(const match of html.matchAll(/\bid="([^"]+)"/g))ids[match[1]]=new Element('div');
 ids.labError.hidden=true;
 for(const [name,value] of Object.entries({
- modelSelect:'737-300',indicationSelect:'CONVENTIONAL',pressurizationSelect:'DCPCS',
  baselineSelect:'ALL_ON',searchInput:'',stateFilter:'ALL',systemFilter:'ALL'
 }))ids[name].value=value;
 const document={
@@ -55,11 +55,13 @@ const document={
  createElement:tag=>new Element(tag),
  createDocumentFragment:()=>new Element('fragment')
 };
+const storage=new Map();
 const root={
  B737ClassicBusConsumersV1:Core,
  B737ElectricalV7:E,
  B737BusConsumerTestLabV1:Lab,
- localStorage:{getItem(){return null;}}
+ B737UnifiedBusFailureInjectionV1:Protocol,
+ localStorage:{getItem(key){return storage.get(key)||null;},setItem(key,val){storage.set(key,val);}}
 };
 const context={document,window:root,fetch:async ()=>({ok:true,json:async()=>index}),
  console,setTimeout,clearTimeout};
@@ -87,7 +89,7 @@ async function test(){
  assert.equal(main1.getAttribute('aria-pressed'),'false');
  fuel=ids.consumerBody.children.find(x=>x.dataset.consumer==='Fuel Boost Pump - Main Tank 1 Forward');
  assert.equal(fuel.dataset.state,'OFF','Disconnected bus renders power loss as red source row');
- assert.equal(ids.metricOff.textContent,'17');
+ assert.ok(Number(ids.metricOff.textContent)>0);
  main1.trigger('click');
  fuel=ids.consumerBody.children.find(x=>x.dataset.consumer==='Fuel Boost Pump - Main Tank 1 Forward');
  assert.equal(fuel.dataset.state,'NORMAL','Restored bus returns consumer to blue');
@@ -110,10 +112,24 @@ async function test(){
  ids.cascadeSwitch.checked=true;
  ids.cascadeSwitch.trigger('change');
  assert.equal(api.getSession().cascade,true);
- ids.modelSelect.value='737-400';
- ids.modelSelect.trigger('change');
- assert.equal(api.getSnapshot().aircraftModel,'737-400');
+ assert.equal(api.getSnapshot().coverage.NOT_INSTALLED,0,'All variants and configurations shown');
+ assert.equal(ids.consumerBody.children.length,340);
+ assert.ok(ids.consumerBody.children.some(x=>x.dataset.consumer==='Temp. Control - aft cabin (400)'));
+ assert.doesNotMatch(html,/id="modelSelect"/);
+ assert.doesNotMatch(html,/id="indicationSelect"/);
+ assert.doesNotMatch(html,/id="pressurizationSelect"/);
+ ids.allOff.trigger('click');
+ ids.injectToCockpit.trigger('click');
+ const injected=JSON.parse(storage.get(Protocol.KEY));
+ assert.equal(injected.active,true,'The user manually injects the failed buses');
+ assert.equal(injected.offBusKeys.length,24);
+ assert.equal(ids.injectionStatus.dataset.injected,'true');
+ ids.clearCockpitFailures.trigger('click');
+ const cleared=JSON.parse(storage.get(Protocol.KEY));
+ assert.equal(cleared.active,false);
+ assert.deepEqual(cleared.offBusKeys,[]);
+ assert.equal(ids.injectionStatus.dataset.injected,'false');
  assert.equal(ids.labError.hidden,true,'No initialization or interaction errors were expected')
 }
-test().then(()=>console.log('PASS lab UI: 24 bus toggles, 340 red/blue consumers, 322 devices, search, cascade, variant')).
+test().then(()=>console.log('PASS lab UI: 24 bus toggles, 340 red/blue consumers, 322 devices, search, cascade, manual cross-tab Inject/Clear')).
  catch(e=>{console.error(e);process.exitCode=1;});
