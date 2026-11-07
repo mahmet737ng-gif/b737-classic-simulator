@@ -116,7 +116,9 @@ function consumerEntries(snapshot){
   return {number:i+1,name:dev.name,label:dev.displayName||dev.name,
    system:dev.system,status:dev.state,
    feed,source:'MRG IV.6 p.'+pages+' / '+dev.channels.length+' row(s)',
-   details:dev.effect+' / '+dev.topology,role:dev.role};
+   details:dev.effect+' / '+dev.topology+
+    (dev.feedChannels?.length?' / FEEDS: '+dev.feedChannels.map(f=>
+      f.key+'='+f.status+(f.purpose==='ELECTRICAL_SUPPLY'?'':' ['+f.purpose+']')).join('; '):''),role:dev.role};
  });
 }
 function displayRow(entry){
@@ -232,6 +234,8 @@ async function start(){
  if(!response.ok)throw Error('MRG 340 consumer index HTTP '+response.status);
  const data=await response.json();
  Core.validate(data);
+ if(!root.B737ClassicMultifeedV1?.validateIndex)throw Error('Multi-feed authority unavailable');
+ root.B737ClassicMultifeedV1.validateIndex(data);
  session=Lab.makeSession({Core,Electrical:E,index:data});
  if(session.snapshot().coverage.NOT_INSTALLED!==0)
   throw Error('All configurations must remain included in Test Lab');
