@@ -325,7 +325,8 @@
     state=hasOff?'OFF':hasUnknown?'UNKNOWN':hasDegraded?'DEGRADED':'NORMAL';
    }else state=hasDegraded||hasNormal&&hasOff?'DEGRADED':
     hasNormal?'NORMAL':hasUnknown?'UNKNOWN':'OFF';
-   devices[name]={name,system:entries[0].system,role:entries[0].role,
+   devices[name]={name,displayName:entries[0].displayName,
+    system:entries[0].system,role:entries[0].role,
     topology:name==='FMC'?'ALTERNATE_FMC_AC_FEEDS':
      needsBoth?'ALL_REQUIRED':applicable.length>1?'ALTERNATE_OR_CHANNELS':'SINGLE',
     state,channels:entries.map(x=>x.id),
