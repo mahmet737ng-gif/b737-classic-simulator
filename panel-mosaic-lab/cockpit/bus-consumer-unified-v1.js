@@ -13,7 +13,10 @@
   let saved={};
   try{saved=JSON.parse(localStorage.getItem('b737classic.aircraft-profile.v1')||'{}');}catch(_){}
   const engineMode=document.documentElement.dataset.engineIndication==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
-  return {mode:engineMode,pressurization:saved.pressurization==='DCPCS'?'DCPCS':'CPCS'};
+  return {mode:engineMode,
+   pressurization:saved.pressurization==='CPCS'?'CPCS':'DCPCS',
+   aircraftModel:['737-300','737-400','737-500'].includes(saved.aircraftModel)?
+    saved.aircraftModel:'737-300'};
  }
  function electricalInputs(){
   const owner=root.B737ISNCockpitV1;
