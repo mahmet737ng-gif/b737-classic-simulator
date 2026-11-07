@@ -97,8 +97,11 @@ function consumerEntries(snapshot){
  if(view==='rows')return Object.values(snapshot.consumers).map((v,i)=>({
   number:i+1,name:v.name,system:v.system,status:v.powerState,
   feed:v.feedBus.split('|').map(x=>x+' '+v.feedVoltage).join(' / '),
-  source:'MRG IV.6 p.'+v.source.printedPage+' / '+v.id,
-  details:v.impact,role:v.role
+  source:'MRG IV.6 p.'+v.source.printedPage+' / '+v.id+
+   (v.duplicateSourceOf?' · SOURCE INDEX DUPLICATE':''),
+  details:v.impact+' · DOCUMENT QA: '+v.quality+
+   (v.duplicateSourceOf?' · Same referenced power feed as '+v.duplicateSourceOf:''),
+  role:v.role
  }));
  return Object.values(snapshot.devices).map((dev,i)=>{
   const parts=dev.channels.map(id=>snapshot.consumers[id]).filter(Boolean);
