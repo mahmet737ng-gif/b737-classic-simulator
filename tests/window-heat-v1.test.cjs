@@ -70,10 +70,16 @@ test('OVHT test clears after 60 seconds; individual OFF cancels its channel imme
  assert.equal(r.output.channels.L_FWD.overheatOn,false,'ON must not re-trigger a test');
  assert.ok(Object.entries(r.output.channels).filter(([id])=>id!=='L_FWD').every(([,x])=>x.overheatOn),'other channels keep their test');
 });
-test('Power/controller/CB loss does not falsely light OVERHEAT',()=>{
- const r=run(undefined,{breakers:{'P6-11|ALL|B9':false}},0);
- assert.equal(r.output.channels.L_FWD.greenOn,false);
- assert.equal(r.output.channels.L_FWD.overheatOn,false);
+test('Heater CB interruption turns amber ON with independent controller supply',()=>{
+ const heater=run(undefined,{breakers:{'P6-11|ALL|B9':false}},0).output.channels.L_FWD;
+ assert.equal(heater.greenOn,false);
+ assert.equal(heater.heaterPower,false);
+ assert.equal(heater.overheatOn,true);
+ assert.equal(heater.warningReason,'WINDOW_POWER_INTERRUPTED');
+ const ctrl=run(undefined,{breakers:{'P18-3|ALL|F1':false}},0).output.channels.L_FWD;
+ assert.equal(ctrl.indicationPowered,false);
+ assert.equal(ctrl.greenOn,false);
+ assert.equal(ctrl.overheatOn,false);
 });
 test('Instructor heater, sensor and power-test failures',()=>{
  for(const fault of ['HEATER_FAIL','SENSOR_FAIL']){
@@ -111,28 +117,31 @@ test('PWR TEST leaves failed channels dark while healthy channels illuminate',()
  assert.equal(q.channels.R_SIDE.greenOn,false,'failed power-test circuit stays dark');
  assert.ok(Object.entries(q.channels).filter(([id])=>id!=='R_SIDE').every(([,x])=>x.greenOn));
 });
-test('Every lost electrical bus extinguishes BOTH green ON and amber OVERHEAT on only affected channels',()=>{
+test('Heater-only bus loss warns; controller feed loss darkens its annunciator',()=>{
  for(const busKey of Object.keys(bus())){
   const active=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
   const outage=run(active.state,{buses:{...bus(),[busKey]:false}},1).output;
   for(const [id,c] of Object.entries(WH.CHANNELS)){
-   const affected=[c.controllerAC,c.controllerDC,c.heaterBus].includes(busKey);
-   assert.equal(outage.channels[id].indicationPowered,!affected,id+' '+busKey+' indication');
-   assert.equal(outage.channels[id].overheatOn,!affected,id+' '+busKey+' OVERHEAT');
-   assert.equal(outage.channels[id].greenOn,!affected,id+' '+busKey+' green ON');
-   if(affected)assert.equal(outage.channels[id].heaterPower,false,id+' '+busKey+' heat');
+   const controllerLost=[c.controllerAC,c.controllerDC].includes(busKey);
+   const heaterLost=c.heaterBus===busKey;
+   assert.equal(outage.channels[id].indicationPowered,!controllerLost,id+' '+busKey+' controller');
+   assert.equal(outage.channels[id].overheatOn,!controllerLost,id+' '+busKey+' amber');
+   assert.equal(outage.channels[id].greenOn,!controllerLost&&!heaterLost,id+' '+busKey+' green');
+   if(controllerLost||heaterLost)assert.equal(outage.channels[id].heaterPower,false,id+' '+busKey+' heater');
   }
  }
 });
-test('Each heater and controller CB pull cancels that channel OVERHEAT test, not the other three',()=>{
+test('Heater breaker cut reports amber, controller breaker cut remains dark',()=>{
  for(const [id,c] of Object.entries(WH.CHANNELS))for(const breakerId of [c.heaterCB,c.controllerCB]){
   const testRunning=run(undefined,{switches:{...sw(),'window-power-test':'OVHT'}},0);
   const pulled=run(testRunning.state,{breakers:{[breakerId]:false}},1).output;
-  assert.equal(pulled.channels[id].indicationPowered,false,id+' '+breakerId);
+  const heaterCut=breakerId===c.heaterCB;
+  assert.equal(pulled.channels[id].indicationPowered,heaterCut,id+' '+breakerId);
   assert.equal(pulled.channels[id].greenOn,false,id+' '+breakerId);
-  assert.equal(pulled.channels[id].overheatOn,false,id+' '+breakerId);
+  assert.equal(pulled.channels[id].overheatOn,heaterCut,id+' '+breakerId);
+  if(heaterCut)assert.equal(pulled.channels[id].warningReason,'WINDOW_POWER_INTERRUPTED');
   for(const other of Object.keys(WH.CHANNELS).filter(key=>key!==id))
-   assert.equal(pulled.channels[other].overheatOn,true,other+' must keep its test');
+   assert.equal(pulled.channels[other].overheatOn,true,other+' remains independently powered');
  }
 });
 test('Returning power does not relight an abandoned OVHT test or invent new OVERHEAT',()=>{

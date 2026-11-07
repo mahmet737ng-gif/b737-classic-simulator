@@ -27,6 +27,11 @@
   // The chain.get() result exposes Electrical V7 BUS fields directly under
   // .electrical. The alternate ISN bridge returns state.electrical.bus.
   // Never incorrectly expect chain.get().electrical.bus.
+  // Use the evaluated V7 bus model: instructor BUS/FAILURES injections
+  // are applied there, not to the raw ISN start-chain electrical object.
+  const v7State=p?.getElectricalState?.();
+  const evaluated=v7State&&window.B737ElectricalV7?.evaluate?.(v7State);
+  if(evaluated?.bus&&typeof evaluated.bus==='object')return evaluated.bus;
   const fromStart=p?.getStartState?.()?.electrical;
   if(fromStart&&typeof fromStart==='object'&&Object.prototype.hasOwnProperty.call(fromStart,'generator1'))return fromStart;
   const fromBridge=p?.getState?.()?.state?.electrical?.bus;
@@ -165,7 +170,7 @@
    w.addEventListener('b737:overhead-light-state',()=>{if(last)applyLamps(last);});
   }
  }
- function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
+ function boot(){makeUI();linkOverhead();setInterval(()=>{linkOverhead();tick();},250);window.addEventListener('b737:bus-failure-injection-changed',()=>tick(0));window.addEventListener('storage',e=>{if(e.key===CB_KEY)tick(0);if(e.key===FAULT_KEY){try{const next=JSON.parse(e.newValue||'{}');for(const ch of Object.keys(Core.CHANNELS))for(const f of Core.FAULTS)s=Core.injectFault(s,ch,f,!!next?.[ch]?.[f]);faults=next;}catch{}tick(0);}});}
  window.B737WindowHeatUnifiedV1=Object.freeze({getState:()=>s,getOutput:()=>last,
   getPowerDiagnostic:()=>diagnosticPower(buses()),setTrainingPower,injectFault:fault,
   reset:()=>{s=Core.initialState();faults={};saveFaults();tick(0);},

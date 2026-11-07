@@ -45,16 +45,14 @@
     if(!selected){q.overheat=false;q.lastGreen=false;q.lastSwitch=false;}
     const controller=busOk(b,d.controllerAC)&&busOk(b,d.controllerDC)&&breakerClosed(cb,d.controllerCB)&&!f.CONTROLLER_FAIL&&!f.SENSOR_FAIL;
     const heaterBus=busOk(b,d.heaterBus),heaterCB=breakerClosed(cb,d.heaterCB);
-    // Only an electrically available channel may illuminate its green/amber
-    // annunciators. Loss of MAIN/GEN/DC or heater/controller CB does NOT
-    // represent a real thermal overheat. Keep real temperature state
-    // independent of lamp power so a genuine hot window can be indicated
-    // again when the electrical supply is restored.
-    const indicationPowered=controller&&heaterBus&&heaterCB;
-    const supply=indicationPowered&&!f.HEATER_FAIL;
+    // Distinguish heater power from the controller/annunciator feed.
+    // FCOM 3.10.1: OVERHEAT also illuminates when electrical power to
+    // a selected window is interrupted, if its indication still has power.
+    const indicationPowered=controller;
+    const supply=controller&&heaterBus&&heaterCB&&!f.HEATER_FAIL;
     // OVHT test is a powered, per-channel latch. A loss of supply cancels
     // that channel's test without generating a deferred warning on restore.
-    if(!indicationPowered){q.ovhtTestLatched=false;q.ovhtTestGreen=false;}
+    if(!supply){q.ovhtTestLatched=false;q.ovhtTestGreen=false;}
     if(startingOvhtTest&&selected&&indicationPowered){
       // Preserve the PRE-TEST ON indication. SP.3.2 does not turn an
       // extinguished green light ON during the overheat test; instead,
@@ -73,10 +71,11 @@
     q.temp=Math.max(-50,Math.min(100,q.temp+(heater?(test==='PWR TEST'?0.20:0.08):-0.025)*seconds));
     if(q.temp>=d.cutout){q.overheat=true;}
     q.heating=heater&&!q.overheat;
-    // A loss of electrical feed/controller/CB is NOT an overheat indication.
-    // It suppresses normal heat/green ON; amber OVERHEAT is only a real
-    // thermal condition or the explicitly initiated OVHT test.
-    const overheat=selected&&indicationPowered&&(q.overheat||q.ovhtTestLatched);
+    // Window heater power interruption is an amber annunciation condition,
+    // not a fictitious temperature rise. Unpowered annunciators stay dark.
+    const powerInterrupted=selected&&indicationPowered&&(!heaterBus||!heaterCB||!!f.HEATER_FAIL);
+    const overheat=selected&&indicationPowered&&(q.overheat||q.ovhtTestLatched||powerInterrupted);
+    const warningReason=overheat?(q.overheat?'THERMAL_OVERHEAT':q.ovhtTestLatched?'OVHT_TEST':'WINDOW_POWER_INTERRUPTED'):null;
     const pendingOvhtTest=q.ovhtTestLatched&&n.ovhtTestElapsed!==null&&n.ovhtTestElapsed<OVHT_ON_EXPIRE_SECONDS;
     // Green ON means the selected window's heating control is available,
     // NOT that current happens to be flowing through its thermostatically
@@ -90,7 +89,7 @@
         ?(pendingOvhtTest&&q.ovhtTestGreen&&supply)
         :(supply&&!blocked));
     q.lastGreen=!!green;
-    outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,indicationPowered,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
+    outputs[id]={id,selected,temperatureC:Math.round(q.temp*10)/10,heaterPower:q.heating,controllerPower:controller,heaterFeed:heaterBus,indicationPowered,cbHeaterClosed:heaterCB,cbControllerClosed:breakerClosed(cb,d.controllerCB),normalTargetApproxC:d.target,overheatLimitC:d.cutout,restoreLimitC:d.restore,powerInterrupted,warningReason,greenOn:!!green,overheatOn:!!overheat,warning:!!overheat,source:'FCOM+MRG_GENERIC_TRAINER'};
     q.lastSwitch=selected;
   }
   // No electronic WHCU on L4/L5 and R4/R5; independent generator bus/CB and thermal cycling.
