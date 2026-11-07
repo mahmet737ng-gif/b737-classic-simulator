@@ -36,7 +36,7 @@
  function paint(){
   if(!ui||!current)return;
   const c=current.coverage;
-  const text='MRG CL '+c.sourceRows+' mapped · '+c.NORMAL+' NORMAL · '+c.OFF+
+  const text='MRG CL '+c.sourceRows+' mapped / '+c.logicalDevices+' devices · '+c.NORMAL+' NORMAL · '+c.OFF+
    ' OFF · '+c.DEGRADED+' DEGRADED · '+c.UNKNOWN+' UNKNOWN · '+c.NOT_INSTALLED+' N/A';
   if(summary.textContent!==text)summary.textContent=text;
   if(!ui.open)return; // opening the details is the only costly DOM paint
@@ -121,6 +121,7 @@
   load,refresh,
   getSnapshot:()=>current?copy(current):null,
   getConsumer:id=>current?.consumers?.[id]?copy(current.consumers[id]):null,
+  getDevice:name=>current?.devices?.[name]?copy(current.devices[name]):null,
   getBus:(bus,voltage)=>current?.buses?.[bus+'@'+voltage]?copy(current.buses[bus+'@'+voltage]):null,
   getSystem:id=>current?.systems?.[id]?copy(current.systems[id]):null,
   subscribe:fn=>{if(typeof fn!=='function')throw Error('Function required');
