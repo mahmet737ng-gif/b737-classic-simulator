@@ -210,6 +210,10 @@
   }
   startFeedback(startLines.join(' | '),blocked?'warning':'progress');
   const apuLive=live.apu,apuGen=apuLive.generator||{};
+  // The quick instructor controls are hidden when the drawer is closed.
+  // Do not rewrite these hidden nodes ten times each second; opening the
+  // drawer already requests an immediate full render via inspectorToggle.
+  if(document.body.classList.contains('side-open')){
   byId('isnQuickApuState').textContent='APU ECU '+apuLive.phase+' · RPM '+numeric(apuLive.rpmPct,'%')+
    ' · EGT '+numeric(apuLive.egtC,'°C')+' · OIL '+numeric(apuLive.oil?.pressurePsi,'PSI')+
    ' · GEN '+numeric(apuGen.voltageV,'V')+'/'+numeric(apuGen.frequencyHz,'Hz')+
@@ -223,6 +227,7 @@
    const pct=Math.round(s.runningEnvelope.throttle[id]*100);
    byId('isnQuickPower'+n).value=pct;byId('isnQuickPowerValue'+n).textContent=pct+'%';
    byId('isnQuickState'+n).textContent=s.phase[id]+' · N1 '+live.engines[id].n1Percent.toFixed(1)+'%';
+  }
   }
 
   const indication=window.B737ISNStartIndicationsV1.project(s);
