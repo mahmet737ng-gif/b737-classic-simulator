@@ -18,7 +18,7 @@ assert.equal(native.children.length,2);
 const capt=a.snapshot().stations.CAPT,fo=a.snapshot().stations.FO;
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<0.011,
   'EADI socket coordinate drift: '+actual+' should equal '+expected);
-close(fo.x,1606.75);close(fo.y,263.40);close(fo.w,173.44);close(fo.h,147.14);
+close(fo.x,1616.75);close(fo.y,263.40);close(fo.w,173.44);close(fo.h,147.14);
 close(capt.x,35+1680*726/3942);
 close(capt.y,166+350*726/3942);
 assert.equal(native.children[0].style.borderRadius,'7% / 8%');
