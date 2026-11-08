@@ -144,7 +144,7 @@
  function install(win){
   const sources={overhead:empty(),electrical:empty(),fire:empty(),irs:empty(),windowHeat:empty(),tatProbe:empty(),pressurization:empty(),airconZones:empty(),airconRecall:empty(),apuECU:empty(),redundancy:empty()};
   let overheadPowered=null;
-  let last='',updates=0,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,airconRecall:false,apuECU:false,redundancy:false};
+  let last='',updates=0,lastApuObservationSignature=null,activeSource={overhead:false,electrical:false,fire:false,irs:false,windowHeat:false,tatProbe:false,pressurization:false,airconZones:false,airconRecall:false,apuECU:false,redundancy:false};
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
@@ -256,7 +256,22 @@
    if(d.kind==='pressurization-live-output')update('pressurization',pressurization(d));
    if(d.kind==='aircon400-zone-status')update('airconZones',airconZones(d));
   });
-  win.addEventListener('b737:unified-ecu-observation',e=>update('apuECU',apuECU(e.detail)));
+  win.addEventListener('b737:unified-ecu-observation',e=>{
+   const profiler=win.B737InteractionProfilerV1,started=profiler?performance.now():0;
+   try{
+    const next=apuECU(e.detail);
+    if(!next)return;
+    // The Six-Pack needs APU caution transitions, not 10 identical
+    // snapshots per second. APU oil pressure, phase and lamp events still
+    // publish immediately whenever their effective caution changes.
+    const signature=JSON.stringify(next);
+    if(signature===lastApuObservationSignature)return;
+    lastApuObservationSignature=signature;
+    update('apuECU',next);
+   }finally{
+    if(profiler)profiler.markWork('ECU listener SixPack APU caution',performance.now()-started);
+   }
+  });
   // Clear retired controller/zone snapshots when switching 300/500 <-> 400 or CPCS <-> DCPCS.
   // Fresh OH live outputs will repopulate them without preserving stale cautions.
   win.addEventListener('b737:aircraft-profile-change',()=>{
