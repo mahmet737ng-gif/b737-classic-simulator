@@ -21,7 +21,7 @@
  const SECTION=Object.freeze(['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE']);
  const LAYOUT=Object.freeze({x:4,y:4,w:892,h:98,segment:223});
  const COLOR=Object.freeze({green:'#21c663',white:'#f2f2f2',yellow:'#e3c23a',black:'#000000'});
- const seats={CAPT:null,FO:null},highlights={CAPT:{},FO:{}},fcc={CAPT:null,FO:null};
+ const seats={CAPT:null,FO:null},primed={CAPT:false,FO:false},highlights={CAPT:{},FO:{}},fcc={CAPT:null,FO:null};
  const scheduled={CAPT:null,FO:null};
  let win=null,ready=false,unsubscribe=[];
  function model(){return win?.B737FmaModeEngineV1||Core;}
@@ -53,7 +53,7 @@
   const engine=model();
   if(!engine)throw Error('AFDS FMA model missing');
   const incoming=engine.normalized(fields);
-  const firstPaint=seats[seat]===null;
+  const firstPaint=!primed[seat];
   const prior=seats[seat]||engine.blank();
   const signature=entry=>JSON.stringify([entry.active,entry.armed,entry.origin]);
   if(FIELDS.every(k=>signature(prior[k])===signature(incoming[k])))return false;
@@ -63,7 +63,7 @@
     highlights[seat][key]=incoming[key].active&&incoming[key].active!=='ARM'?now+10000:0;
    }
   }
-  seats[seat]=incoming;
+  seats[seat]=incoming;primed[seat]=true;
   repaint(seat);armTimer(seat,now);
   return true;
  }
