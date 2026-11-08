@@ -42,8 +42,9 @@ for(const [id,[x,y]]of Object.entries(baseline.oilQuantityReadouts)){
 }
 const mcp=read('mcp-socket-registration-v2.js');
 function block(source,name,isArray){
- const token=isArray?'\\[':'\\{',end=isArray?'\\]':'\\}';
- const pattern=new RegExp('const '+name+'=Object\\.freeze\\(\\'+token+'([\\s\\S]*?)\\'+end+'\\);');
+ const pattern=isArray
+  ?/const buttonRects=Object\.freeze\(\[([\s\S]*?)\]\);/
+  :/const knobRects=Object\.freeze\(\{([\s\S]*?)\}\);/;
  const match=source.match(pattern);
  assert.ok(match,'Missing MCP source block '+name);
  return match[1].trim();
