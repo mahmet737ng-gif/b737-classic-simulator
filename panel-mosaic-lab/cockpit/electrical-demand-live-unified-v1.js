@@ -93,9 +93,12 @@
   th.append(row);table.append(th);
   body=document.createElement('tbody');table.append(body);scroll.append(table);panel.append(scroll);
   host.append(panel);
+  // A hidden instructor ledger is not aircraft instrumentation. On opening,
+  // show the latest already-computed power estimate without a new ECU tick.
+  panel.addEventListener('toggle',()=>{if(panel.open&&latest)paint(latest);});
  }
  function paint(result){
-  mount();if(!panel)return;
+  mount();if(!panel||!document.body.classList.contains('side-open'))return;
   head.textContent='GEN 1 '+pretty(result.sourceAmps.GEN1)+' A  ·  GEN 2 '+pretty(result.sourceAmps.GEN2)+
    ' A  ·  APU '+pretty(result.sourceAmps.APU)+' A  ·  GPU '+pretty(result.sourceAmps.EXT)+
    ' A  |  TR1 '+pretty(result.trAmps.TR1)+' A  TR2 '+pretty(result.trAmps.TR2)+
@@ -163,7 +166,15 @@
 
  const events=['b737:electrical-network','b737:electrical-owner-ready','b737:unified-ecu-observation',
   'b737:battery-live','b737:ac-dc-selector-change','b737:cockpit-mounted'];
- for(const name of events)root.addEventListener(name,()=>tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'||name==='b737:cockpit-mounted'));
+ for(const name of events)root.addEventListener(name,()=>{
+  const profiler=name==='b737:unified-ecu-observation'?root.B737InteractionProfilerV1:null;
+  const started=profiler?performance.now():0;
+  try{tick(name==='b737:electrical-network'||name==='b737:ac-dc-selector-change'||name==='b737:cockpit-mounted');}
+  finally{if(profiler)profiler.markWork('ECU listener ATA24 demand',performance.now()-started);}
+ });
+ document.getElementById('inspectorToggle')?.addEventListener('click',()=>{
+  setTimeout(()=>{if(document.body.classList.contains('side-open')&&latest)paint(latest);},0);
+ });
  root.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==document.getElementById('overheadFrame')?.contentWindow)return;
   if(event.data?.type==='b737:cockpit-overhead'&&['controls-state','control-event'].includes(event.data.kind))tick(true);
