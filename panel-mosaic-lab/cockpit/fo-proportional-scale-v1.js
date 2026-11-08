@@ -30,7 +30,7 @@
  function isFoLamp(node){
   if(!node.matches('.cockpit-light[data-cockpit-light]'))return false;
   // All lamps carry their source photographic piece ID in their registration title.
-  return /(?:^|\\s)fo-(?:inner|outer)(?:\\s|$)/.test(node.title||'');
+  return /(?:^|\s)fo-(?:inner|outer)(?:\s|$)/.test(node.title||'');
  }
  function shouldScale(node,native){
   if(isProtected(node))return false;
