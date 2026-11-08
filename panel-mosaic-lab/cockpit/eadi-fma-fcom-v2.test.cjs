@@ -6,13 +6,13 @@ const view=require('./eadi-fma-fcom-v2.js');
 const index=fs.readFileSync(__dirname+'/index.html','utf8');
 const eadi=fs.readFileSync(__dirname+'/eadi-stage1-unified-v1.js','utf8');
 const frozen=JSON.parse(fs.readFileSync(__dirname+'/eis-main-final-layout-v1.json','utf8'));
-assert.equal(view.VERSION,'EADI-FMA-FCOM-0002');
+assert.equal(view.VERSION,'EADI-FMA-FCOM-0003-MCP-LIVE');
 assert.deepEqual(view.FIELDS,['at','pitch','roll','afds']);
 assert.deepEqual(view.SECTION,['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE']);
 assert.equal(view.LAYOUT.w,view.LAYOUT.segment*4);
 assert.ok(view.LAYOUT.y+view.LAYOUT.h<=103);
 assert.equal(eadi.includes('const ADI_CONTENT_SCALE=0.85;'),true);
-assert.ok(index.includes('eadi-fma-fcom-v2.js?v=EADI-FMA-FCOM-0002'));
+assert.ok(index.includes('eadi-fma-fcom-v2.js?v=EADI-FMA-FCOM-0003-MCP-LIVE'));
 assert.ok(index.indexOf('fma-mode-engine-v1.js')<
  index.indexOf('eadi-fma-four-v1.js'));
 assert.ok(index.indexOf('eadi-fma-four-v1.js')<
