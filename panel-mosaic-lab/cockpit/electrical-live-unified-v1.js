@@ -54,7 +54,10 @@
   if(signature===lastKey)return snapshot();
   const next=Core.project(state,electrical,{numericMode});
   const projectionDone=profiler?performance.now():0;
-  current=next;lastKey=signature;buildPanel();updateMeters(next);paint();
+  current=next;lastKey=signature;buildPanel();updateMeters(next);
+  // The electrical state, network notifications and real meter readings
+  // remain live; only instructor-only table DOM writes are skipped.
+  if(document.body.classList.contains('side-open'))paint();
   const painted=profiler?performance.now():0;
   // Only the drive-running bit is used by the RESID adapter; Boolean bus
   // connectivity is never promoted to an inferred GCR/field/residual sensor.
@@ -152,6 +155,14 @@
   supply:input=>Core.supply(current,input),
   subscribe(fn){if(typeof fn!=='function')throw Error('Subscriber function required');listeners.add(fn);if(current)fn(snapshot());return ()=>listeners.delete(fn);}
  });
- for(const event of ['b737:electrical-owner-ready','b737:unified-ecu-observation'])root.addEventListener(event,()=>safely(refresh));
+ for(const event of ['b737:electrical-owner-ready','b737:unified-ecu-observation'])root.addEventListener(event,()=>{
+  const profiler=event==='b737:unified-ecu-observation'?root.B737InteractionProfilerV1:null;
+  const started=profiler?performance.now():0;
+  try{safely(refresh);}
+  finally{if(profiler)profiler.markWork('ECU listener ATA24 live network',performance.now()-started);}
+ });
+ document.getElementById('inspectorToggle')?.addEventListener('click',()=>{
+  setTimeout(()=>{if(document.body.classList.contains('side-open')&&current)paint();},0);
+ });
  safely(refresh);
 })(window);
