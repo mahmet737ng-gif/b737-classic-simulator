@@ -150,7 +150,9 @@
   move(start,distance,x,y){
    if(!start||!assembly||![distance,x,y].every(Number.isFinite)||distance<2)return;
    const next=model.clamp(start.zoom*distance/start.distance,.04,2);
-   applyZoom(next,undefined,undefined,x,y,start);
+   // Source-point anchoring ignores these placeholder scroll arguments;
+   // avoid forcing two extra scroll reads on every touch frame.
+   applyZoom(next,0,0,x,y,start);
   },
   end(){
    if(!assembly)return;
