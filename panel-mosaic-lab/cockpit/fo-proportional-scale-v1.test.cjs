@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const m=require('./fo-proportional-scale-v1.js');
-assert.equal(m.VERSION,'FO-PROPORTIONAL-SCALE-0002');
+assert.equal(m.VERSION,'FO-PROPORTIONAL-SCALE-0003');
 assert.equal(m.PROFILES.EIS.anchorX,1222);
 assert.equal(m.PROFILES.CONVENTIONAL.anchorX,1374);
 assert.equal(m.GPWS_IDS.length,3);
@@ -19,6 +19,23 @@ assert.ok(Math.abs(photo.x-1374)<1e-10);
 assert.ok(Math.abs(photo.x+photo.w-2100)<1e-8);
 assert.ok(Math.abs(m.mapRect(1374,127,0,0,'CONVENTIONAL').x-1374)<1e-10);
 // Single affine map: EADI, ALT, RMI, VSI, clock, photo and lamps.
+// Owner's horizontal Paint reference: compare both framed CRT tops AND the
+// internal zero-pitch horizon, not just the FO inner/outer horizontal seam.
+const capitTop=218.20;
+const foGlass=m.mapRect(1612.75,263.40,173.44,147.14);
+assert.ok(Math.abs(m.EIS_OUTER_LIFT+49.974)<1e-9);
+assert.ok(Math.abs(foGlass.y+m.EIS_OUTER_LIFT-capitTop)<1e-9);
+const outerPanel=m.mapRect(1594,225,475,592.1638468388246);
+assert.ok(outerPanel.y+m.EIS_OUTER_LIFT<outerPanel.y);
+const captCanvasHorizon=352.6+(393-387)*1.139152;
+const foCanvasHorizon=368.42016+(393-387)*1.26;
+const captHorizon=capitTop+159.30*captCanvasHorizon/720;
+const foHorizon=(foGlass.y+m.EIS_OUTER_LIFT)+foGlass.h*foCanvasHorizon/720;
+assert.ok(Math.abs(captHorizon-foHorizon)<0.0001,
+  'The visible pitch horizons must align within 0.0001 native panel unit');
+const eadiSource=fs.readFileSync(__dirname+'/eadi-stage1-unified-v1.js','utf8');
+assert.ok(eadiSource.includes('EADI-UNIFIED-STAGE1-0009-FO-HORIZON-REGISTERED'));
+assert.ok(eadiSource.includes('c.translate(450,368.42016)'));
 const eadi=m.mapRect(1612.75,263.4,173.44,147.14);
 const eadiConventional=m.mapRect(1612.75,263.4,173.44,147.14,'CONVENTIONAL');
 assert.ok(eadi.x>1612.75 && eadi.w>173.44);
@@ -42,5 +59,5 @@ assert.ok(!source.includes('node.style.transform='));
 assert.ok(!source.includes('appendChild('));
 const index=fs.readFileSync(__dirname+'/index.html','utf8');
 assert.equal((index.match(/fo-proportional-scale-v1\.js/g)||[]).length,1);
-assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0002'));
-console.log('PASS: EIS/Conventional FO panels meet exactly; EADI/lamps and exactly 3 owner-approved GPWS guards share the active affine registration.');
+assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0003'));
+console.log('PASS: FO outer face and both EADI glass/horizon datums align; photo seams remain registered and 3 GPWS guards preserve their mechanics.');
