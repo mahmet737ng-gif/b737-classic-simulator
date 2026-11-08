@@ -53,11 +53,12 @@
   const engine=model();
   if(!engine)throw Error('AFDS FMA model missing');
   const incoming=engine.normalized(fields);
+  const firstPaint=seats[seat]===null;
   const prior=seats[seat]||engine.blank();
   const signature=entry=>JSON.stringify([entry.active,entry.armed,entry.origin]);
   if(FIELDS.every(k=>signature(prior[k])===signature(incoming[k])))return false;
   for(const key of FIELDS){
-   if(prior[key].active!==incoming[key].active){
+   if(!firstPaint&&prior[key].active!==incoming[key].active){
     // FCOM 4.10.27: 10s highlight only after an actually changed mode.
     highlights[seat][key]=incoming[key].active&&incoming[key].active!=='ARM'?now+10000:0;
    }
