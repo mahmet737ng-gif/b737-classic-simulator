@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0008-CAPT-ROUNDED-GLASS
+/* EADI-UNIFIED-STAGE1-0009-FO-HORIZON-REGISTERED
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,7 +7,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0008-CAPT-ROUNDED-GLASS',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0009-FO-HORIZON-REGISTERED',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: screenshot-owner red rectangle (2026-11-08), native 2100x920 panel:
@@ -75,9 +75,16 @@ function render(seat){
  // Original panel, screws, bezel, and approved controls stay untouched.
  // CAPT glass grew to fit the entire red outline; keep its attitude glyphs at
  // the SAME physical size as before, but center their aircraft datum on the CRT.
- // FO intentionally keeps its previously approved card transform unchanged.
+ // The owner marked a common horizon across both EADIs (2026-11-08).
+ // The F/O OUTER photo and glass are lifted as a unit in
+ // fo-proportional-scale-v1.js; its internal card also requires registration.
+ // CAPT zero-pitch horizon: 352.6 + 6*1.139152 = 359.434912 canvas px.
+ // FO scaled glass height: 147.14*1.035 = 152.2899 native px.
+ // Therefore FO zero-pitch horizon is at canvas y=375.98016,
+ // i.e. card translation y=375.98016 - 6*1.26 = 368.42016.
+ // Do not move only the glass canvas; its photograph and sockets are separate.
  if(seat==='CAPT'){c.translate(450,352.6);c.scale(0.958133,1.139152);}
- else{c.translate(450,395);c.scale(1.16,1.26);}
+ else{c.translate(450,368.42016);c.scale(1.16,1.26);}
  c.translate(-452,-387);
  drawAttitude(c,s.pitch,s.bank);drawBank(c);drawReference(c);
  c.restore();
