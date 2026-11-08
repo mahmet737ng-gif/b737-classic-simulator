@@ -217,8 +217,8 @@ const server=http.createServer((req,res)=>{
   await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.n1Percent>40,null,{timeout:15000});
   await page.screenshot({path:path.join(out,'quick-engine-controls.png')});
   console.log('PASS visible Controls engine buttons and independent live power sliders');
-  // Same four-button layout on mobile. No hidden fifth header control,
-  // horizontal off-screen button, or battery readout overlaying the cockpit.
+  // All five approved header controls must remain visible on mobile.
+  // No off-screen button, overlap, or battery readout over the cockpit.
   await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>{
    const bar=document.querySelector('.unified-minimal-header .header-settings');
@@ -230,7 +230,7 @@ const server=http.createServer((req,res)=>{
     batteryInViewport:!!document.querySelector('#viewport #liveBatteryReadout')};
   });
   assert.deepEqual(mobile.buttons.map(x=>x.id),
-   ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader']);
+   ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen']);
   assert.equal(mobile.batteryInViewport,false,'Battery meter may not float over the cockpit');
   assert.ok(mobile.buttons.every(b=>b.left>=-1&&b.right<=mobile.width+1),
    'Mobile top-bar buttons must fit the device width');
@@ -241,7 +241,7 @@ const server=http.createServer((req,res)=>{
   // unobstructed header, then reopen to validate the battery meter.
   if(await page.evaluate(()=>document.body.classList.contains('side-open')))
    await page.locator('#inspectorToggle').click();
-  await page.screenshot({path:path.join(out,'mobile-four-button-header.png')});
+  await page.screenshot({path:path.join(out,'mobile-five-button-header.png')});
   await page.locator('#inspectorToggle').click();
   await page.locator('#batteryMeterControlSlot #liveBatteryReadout')
    .waitFor({state:'visible',timeout:20000});
