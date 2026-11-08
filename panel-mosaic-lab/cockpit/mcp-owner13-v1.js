@@ -19,7 +19,7 @@ const geometry=Object.freeze({
  FD_RIGHT:{x:1903,y:321,w:36,h:51},VS_WHEEL:{x:1490,y:281,w:49,h:177},
  CO:{x:460,y:246,w:52,h:52}
 });
-let loaded=false,bankAngle=20;const mounted=new WeakSet();
+let loaded=false,bankAngle=20,firstPhotoMountMarked=false;const mounted=new WeakSet();
 /* Alpha-bound measurements from each original owner PNG; source frames have
  * very different transparent margins. Geometric centering uses full source
  * canvas and normalized alpha ROI (not a 48x48 transparent thumbnail box). */
@@ -143,15 +143,17 @@ function addPushButtons(root){
 }
 function mount(){
  if(!loaded)return;
+ let mountedNow=false;
  for(const root of document.querySelectorAll('[data-piece="mcp"]')){
   if(mounted.has(root))continue;
   if(root.querySelectorAll(".mcp-v3-knob").length!==5||root.querySelectorAll(".mcp-hw").length<7)continue;
-  mounted.add(root);root.classList.add("mcp-owner13-active");
+  mounted.add(root);mountedNow=true;root.classList.add("mcp-owner13-active");
   for(const id of ["courseL","courseR","speed","heading"])addKnob(root,id);
   for(const id of ["AT_ARM","FD_LEFT","FD_RIGHT","VS_WHEEL","CO"])addHardware(root,id,id.startsWith("FD_")||id==="AT_ARM"?"toggle":"other");
   addBank(root);
   addPushButtons(root);
  }
+ if(mountedNow&&!firstPhotoMountMarked){firstPhotoMountMarked=true;window.performance?.mark?.('b737:mcp-owner13-mounted');}
 }
 function audit(){
  const report=[];
