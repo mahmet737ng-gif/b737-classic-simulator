@@ -148,10 +148,15 @@
   }
   function scan(node){
    if(node.nodeType!==1)return;
-   if(node.matches('img[data-perf-source]')&&!entries.has(node))assign(node,node.dataset.perfSource);
-   for(const img of node.querySelectorAll('img[data-perf-source]'))if(!entries.has(img))assign(img,img.dataset.perfSource);
-   // assign() already schedules a refresh for new images; avoid re-measuring
-   // every texture after unrelated switch, lamp, and digit DOM changes.
+   // Most new nodes are status spans, dial digits and lamp elements. The
+   // observer sees them at 10Hz or faster; never run descendant selector
+   // searches for leaf nodes with no image children.
+   if(node.tagName==='IMG'&&node.hasAttribute('data-perf-source')&&!entries.has(node))
+    assign(node,node.dataset.perfSource);
+   if(!node.childElementCount)return;
+   for(const img of node.querySelectorAll('img[data-perf-source]'))if(!entries.has(img))
+    assign(img,img.dataset.perfSource);
+   // Real texture image insertions still schedule the usual priority loader.
   }
   new win.MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes)scan(node);}).observe(doc.documentElement,{childList:true,subtree:true});
   doc.addEventListener('scroll',noteMotion,{capture:true,passive:true});
