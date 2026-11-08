@@ -32,7 +32,7 @@
    applyConventionalPowerGate(mounted.get('CONVENTIONAL.'+id));
    return true;
   }
- let layer=null,conventionalLayer=null,ticket=null,lastFrame=null;
+ let layer=null,conventionalLayer=null,ticket=null,lastFrame=null,initialEisStamped=false;
  const raf=typeof requestAnimationFrame==='function'?requestAnimationFrame:null;
  const caf=typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null;
  function element(parent,tag,attrs={}){const node=document.createElementNS(ns,tag);
@@ -155,7 +155,9 @@
  }
  function mount(){
   const piece=document.querySelector('#region-main .texture-piece[data-piece="engine"]');if(!piece)return false;
-  if(layer?.parentNode!==piece){removeLayer('EIS',layer);layer=createLayer(piece,specs,'EIS');}
+  if(layer?.parentNode!==piece){removeLayer('EIS',layer);layer=createLayer(piece,specs,'EIS');
+   if(!initialEisStamped){initialEisStamped=true;window.performance?.mark?.('b737:eis-digits-mounted');}
+  }
   const host=window.B737EngineIndicationModeV1?.wrap?.(),layout=window.B737EngineIndicationModeV1?.layout?.();
   if(host&&layout){
    if(conventionalLayer?.parentNode!==host){
