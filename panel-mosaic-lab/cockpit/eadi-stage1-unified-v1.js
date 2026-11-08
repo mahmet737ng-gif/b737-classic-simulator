@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0001
+/* EADI-UNIFIED-STAGE1-0002-SAFE-GLASS
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,7 +7,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0001',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0002-SAFE-GLASS',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: [1680,350,888,782] from 3942x3591 photo at [35,166,726,661.356].
@@ -61,15 +61,20 @@ function render(seat){
  c.clearRect(0,0,WIDTH,HEIGHT);c.fillStyle='#080b12';c.fillRect(0,0,WIDTH,HEIGHT);
  if(!s.powered)return;
  c.save();
- // Fit the attitude area into the existing photographic CRT aperture;
- // physical panel, screws and brightness hardware stay as source artwork.
- c.translate(450,360);c.scale(1.37,1.37);c.translate(-452,-387);
+ // Reference-approved ADI fit: ~45% of glass width, ~71% of glass height.
+ // The pitch/bank card is centered in the CRT, leaving independent margin
+ // for future FMA (top), speed tape (left), ILS (right), and lower data.
+ // X and Y scale are intentionally independent to match the approved mockup.
+ // Original panel, screws, bezel, and approved controls stay untouched.
+ c.translate(450,395);c.scale(1.16,1.26);c.translate(-452,-387);
  drawAttitude(c,s.pitch,s.bank);drawBank(c);drawReference(c);
+ c.restore();
+ // Future independent display overlays use full 900x720 glass coordinates;
+ // they must not inherit the attitude-only scale and translation.
  for(const cb of hooks[seat].values()){
   try{cb(c,Object.freeze({seat,pitch:s.pitch,bank:s.bank,version:VERSION}));}
   catch(e){console.warn('EADI extension paint error:',e);}
  }
- c.restore();
 }
 function make(seat,parent){
  const s=stations[seat];let host=parent.querySelector('[data-eadi-stage1-seat="'+seat+'"]');
