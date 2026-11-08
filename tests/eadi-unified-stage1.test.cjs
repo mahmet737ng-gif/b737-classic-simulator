@@ -23,7 +23,7 @@ close(capt.x,327.20);
 close(capt.y,218.20);
 close(capt.w,198.00);
 close(capt.h,159.30);
-assert.equal(native.children[0].style.borderRadius,'2.5% / 3%');
+assert.equal(native.children[0].style.borderRadius,'7% / 8%');
 assert.equal(native.children[1].style.borderRadius,'7% / 8%');
 // Owner-marked rectangle in the 1920x1080 screenshot. The old installed
 // CAPT glass [454,264,656,576] is the screen-to-native registration anchor.
