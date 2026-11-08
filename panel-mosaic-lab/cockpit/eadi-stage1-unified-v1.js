@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0005-FO-LEFT4
+/* EADI-UNIFIED-STAGE1-0006-CAPT-CRT-SOCKET
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,18 +7,19 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0005-FO-LEFT4',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0006-CAPT-CRT-SOCKET',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
-// CAPT: [1680,350,888,782] from 3942x3591 photo at [35,166,726,661.356].
+// CAPT: screenshot-owner red rectangle (2026-11-08), native 2100x920 panel:
+// [x:343.36, y:229.31, w:165.63, h:146.32]. Measured from the approved
+// glass black-face outline; retain silver bezel outside of this overlay.
 // FO: red-rectangle owner reference in 1920x1080 screenshot 2026-11-08.
 // Screen bounds [894..1588, 304..898] were converted to the 2100x920 native
 // mosaic using existing EADI host [977..1657, 207..867] as the scale reference.
 // The CRT black-face overlay follows the owner-marked empty socket, not bezel metal.
 // CAPT photo aperture remains separately source-measured and unchanged.
-const CAPT_SCALE=726/3942;
 const stations={
- CAPT:{name:'Captain',x:35+1680*CAPT_SCALE,y:166+350*CAPT_SCALE,w:888*CAPT_SCALE,h:782*CAPT_SCALE,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'captain-photo-measured'},
+ CAPT:{name:'Captain',x:343.36,y:229.31,w:165.63,h:146.32,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'capt-owner-red-rectangle-registered-20261108'},
  FO:{name:'First Officer',x:1612.75,y:263.40,w:173.44,h:147.14,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-red-rectangle-registered-20261108'}
 };
 const futureSlots=Object.freeze(['fma','speedTape','mach','localizer','glideslope','radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
