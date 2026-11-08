@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0004-FO-RIGHT
+/* EADI-UNIFIED-STAGE1-0005-FO-LEFT4
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,7 +7,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0004-FO-RIGHT',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0005-FO-LEFT4',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: [1680,350,888,782] from 3942x3591 photo at [35,166,726,661.356].
@@ -19,7 +19,7 @@ const WIDTH=900,HEIGHT=720;
 const CAPT_SCALE=726/3942;
 const stations={
  CAPT:{name:'Captain',x:35+1680*CAPT_SCALE,y:166+350*CAPT_SCALE,w:888*CAPT_SCALE,h:782*CAPT_SCALE,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'captain-photo-measured'},
- FO:{name:'First Officer',x:1616.75,y:263.40,w:173.44,h:147.14,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-red-rectangle-registered-20261108'}
+ FO:{name:'First Officer',x:1612.75,y:263.40,w:173.44,h:147.14,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-red-rectangle-registered-20261108'}
 };
 const futureSlots=Object.freeze(['fma','speedTape','mach','localizer','glideslope','radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
 const hooks={CAPT:new Map(),FO:new Map()};
