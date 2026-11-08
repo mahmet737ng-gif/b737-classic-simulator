@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0006-CAPT-CRT-SOCKET
+/* EADI-UNIFIED-STAGE1-0007-CAPT-FULL-SOCKET
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,19 +7,22 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0006-CAPT-CRT-SOCKET',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0007-CAPT-FULL-SOCKET',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: screenshot-owner red rectangle (2026-11-08), native 2100x920 panel:
-// [x:343.36, y:229.31, w:165.63, h:146.32]. Measured from the approved
-// glass black-face outline; retain silver bezel outside of this overlay.
+// Target [x:327.20,y:218.20,w:198.00,h:159.30] converted from user marked
+// screenshot red CRT outline x=385..1178,y=215..851 (1920x1080).
+// Previous screenshot CAPT face was x=454..1109,y=264..839; native-to-screen
+// scale 4.011px/unit X, 3.999px/unit Y, so the prior ~1% update was inadequate.
+// Keep the metal/silver bezel and image untouched; fill only the owner-marked glass.
 // FO: red-rectangle owner reference in 1920x1080 screenshot 2026-11-08.
 // Screen bounds [894..1588, 304..898] were converted to the 2100x920 native
 // mosaic using existing EADI host [977..1657, 207..867] as the scale reference.
 // The CRT black-face overlay follows the owner-marked empty socket, not bezel metal.
-// CAPT photo aperture remains separately source-measured and unchanged.
+// CAPT source painting remains unchanged; the live overlay alone is fitted.
 const stations={
- CAPT:{name:'Captain',x:343.36,y:229.31,w:165.63,h:146.32,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'capt-owner-red-rectangle-registered-20261108'},
+ CAPT:{name:'Captain',x:327.20,y:218.20,w:198.00,h:159.30,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'capt-owner-red-rectangle-pixel-registered-20261108'},
  FO:{name:'First Officer',x:1612.75,y:263.40,w:173.44,h:147.14,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-red-rectangle-registered-20261108'}
 };
 const futureSlots=Object.freeze(['fma','speedTape','mach','localizer','glideslope','radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
@@ -70,7 +73,12 @@ function render(seat){
  // for future FMA (top), speed tape (left), ILS (right), and lower data.
  // X and Y scale are intentionally independent to match the approved mockup.
  // Original panel, screws, bezel, and approved controls stay untouched.
- c.translate(450,395);c.scale(1.16,1.26);c.translate(-452,-387);
+ // CAPT glass grew to fit the entire red outline; keep its attitude glyphs at
+ // the SAME physical size as before, but center their aircraft datum on the CRT.
+ // FO intentionally keeps its previously approved card transform unchanged.
+ if(seat==='CAPT'){c.translate(450,352.6);c.scale(0.958133,1.139152);}
+ else{c.translate(450,395);c.scale(1.16,1.26);}
+ c.translate(-452,-387);
  drawAttitude(c,s.pitch,s.bank);drawBank(c);drawReference(c);
  c.restore();
  // Future independent display overlays use full 900x720 glass coordinates;
@@ -87,7 +95,7 @@ function make(seat,parent){
   const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;canvas.className='eadi-stage1-canvas';canvas.setAttribute('aria-label',s.name+' B737 Classic attitude display');canvas.setAttribute('role','img');
   host.appendChild(canvas);parent.appendChild(host);
  }
- Object.assign(host.style,{position:'absolute',left:s.x+'px',top:s.y+'px',width:s.w+'px',height:s.h+'px',overflow:'hidden',borderRadius:'7% / 8%',background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
+ Object.assign(host.style,{position:'absolute',left:s.x+'px',top:s.y+'px',width:s.w+'px',height:s.h+'px',overflow:'hidden',borderRadius:seat==='CAPT'?'2.5% / 3%':'7% / 8%',background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
  const canvas=host.querySelector('canvas');Object.assign(canvas.style,{display:'block',width:'100%',height:'100%',pointerEvents:'none'});
  s.host=host;s.canvas=canvas;render(seat);
 }
