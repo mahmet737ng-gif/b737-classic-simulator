@@ -59,10 +59,17 @@ painter.CAPT(ctx);
 const lines=actions.filter(x=>x[0]==='line');
 assert.equal(lines.length,3);
 assert.equal(actions.filter(x=>x[0]==='ground').length,1);
-assert.equal(actions.filter(x=>x[0]==='rect').length,4); // transient 10s FCOM engagement boxes
+assert.equal(actions.filter(x=>x[0]==='rect').length,0); // initial display has no fabricated mode change
 const words=actions.filter(x=>x[0]==='text').map(x=>x[1]);
 assert.deepEqual(words,['MCP SPD','ALT HOLD','HDG SEL','CMD']);
 assert.ok(!words.includes('A/T MODE'),'Printed headings must not obscure reference font');
+// An actual new MCP mode must transiently highlight ONLY that mode.
+handlers['b737:mcp-afds-state']({detail:{
+ ...output,modes:{...output.modes,lateral:'LNAV'}}});
+actions.length=0;
+view.render(ctx,'CAPT');
+assert.equal(actions.filter(x=>x[0]==='rect').length,1,
+ 'FCOM changed-mode highlight must be temporary and per-mode');
 actions.length=0;
 view.render(ctx,'CAPT',Date.now()+15000);
 assert.equal(actions.filter(x=>x[0]==='rect').length,0,
