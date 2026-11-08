@@ -191,7 +191,7 @@ function audit(){
 async function load(){
  try{
   const parts=await Promise.all([0,1,2,3].map(async i=>{
-   const response=await fetch(ASSET_BASE+i+".b64",{cache:"no-cache"});
+   const response=await fetch(ASSET_BASE+i+".b64",{cache:"default"});
    if(!response.ok)throw Error("Missing owner reference photo part "+i);
    return (await response.text()).replace(/[^A-Za-z0-9+/=]/g,"");
   }));
@@ -205,7 +205,11 @@ async function load(){
  }catch(e){console.warn("OWNER13_ASSET_NOT_READY",String(e));}
 }
 window.B737McpOwner13V1=Object.freeze({geometry,SOURCE,audit,getState:()=>({loaded,bankAngle}),setBankAngle,adjustBank,mount});
-document.addEventListener("DOMContentLoaded",()=>{load();mount()});
+// Launch the immutable owner photo downloads as soon as this deferred module
+// executes, in parallel with the remaining cockpit scripts. Waiting for
+// DOMContentLoaded blocked every MCP photo on slow networks while the
+// cockpit background had already appeared.
+load();
+document.addEventListener("DOMContentLoaded",mount);
 window.addEventListener("b737:cockpit-mounted",mount);
-if(document.readyState!=="loading")load();
 })();
