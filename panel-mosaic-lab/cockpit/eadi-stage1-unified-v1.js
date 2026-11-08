@@ -9,6 +9,11 @@
 'use strict';
 const VERSION='EADI-UNIFIED-STAGE1-0009-FO-HORIZON-REGISTERED',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
+// Owner-requested 2026-11-08: ADI attitude artwork 15% smaller than before,
+// uniformly for both crew seats in BOTH EIS and Conventional. The CRT glass,
+// panel coordinates, photo bezel, FMA extension layers, and zero-pitch datum
+// are not scaled or translated.
+const ADI_CONTENT_SCALE=0.85;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: screenshot-owner red rectangle (2026-11-08), native 2100x920 panel:
 // Target [x:327.20,y:218.20,w:198.00,h:159.30] converted from user marked
@@ -94,6 +99,13 @@ function render(seat){
  if(seat==='CAPT'){c.translate(450,352.6);c.scale(0.958133,1.139152);}
  else{c.translate(450,368.42016);c.scale(1.16,1.26);}
  c.translate(-452,-387);
+ // Shrink ONLY the ADI picture (sky/earth, pitch ladder, bank arc, aircraft
+ // reference) about its actual zero-pitch horizon. Keeping (452,393)
+ // invariant preserves the accepted Captain/FO common horizon and all
+ // frozen EIS glass coordinates. Also applies to Conventional automatically.
+ c.translate(452,393);
+ c.scale(ADI_CONTENT_SCALE,ADI_CONTENT_SCALE);
+ c.translate(-452,-393);
  drawAttitude(c,s.pitch,s.bank);drawBank(c);drawReference(c);
  c.restore();
  // Future independent display overlays use full 900x720 glass coordinates;
@@ -139,10 +151,10 @@ function normalizeSeat(seat){const s=String(seat).toUpperCase();if(s==='CAPTAIN'
 function setAttitude(seat,pitch,bank){const id=normalizeSeat(seat),s=stations[id];if(!Number.isFinite(pitch)||!Number.isFinite(bank))throw TypeError('Attitude requires numeric degrees');s.pitch=Math.max(-90,Math.min(90,round1(pitch)));s.bank=((bank%360)+540)%360-180;render(id);return {seat:id,pitch:s.pitch,bank:s.bank};}
 function setPower(seat,on){const id=normalizeSeat(seat);stations[id].powered=!!on;render(id);return stations[id].powered;}
 function registerLayer(seat,id,draw){const key=normalizeSeat(seat);if(!futureSlots.includes(id)||typeof draw!=='function')throw Error('Unregistered EADI slot');hooks[key].set(id,draw);render(key);return ()=>{hooks[key].delete(id);render(key);};}
-function snapshot(){return {version:VERSION,mode:activeMode(),
+function snapshot(){return {version:VERSION,mode:activeMode(),adiContentScale:ADI_CONTENT_SCALE,
  activeGlass:Object.fromEntries(['CAPT','FO'].map(seat=>[seat,rectFor(seat)])),
  mounted:!!stations.CAPT.host?.isConnected&&!!stations.FO.host?.isConnected,stations:Object.fromEntries(Object.entries(stations).map(([k,s])=>[k,{x:s.x,y:s.y,w:s.w,h:s.h,pitch:s.pitch,bank:s.bank,powered:s.powered,source:s.source}])) ,futureSlots:[...futureSlots]};}
-const api=Object.freeze({version:VERSION,mount,setAttitude,setPower,registerLayer,snapshot});
+const api=Object.freeze({version:VERSION,adiContentScale:ADI_CONTENT_SCALE,mount,setAttitude,setPower,registerLayer,snapshot});
 root.B737UnifiedEADIStage1=api;
 root.addEventListener('b737:cockpit-mounted',mount);
 root.addEventListener('b737:engine-indication-view',mount);
