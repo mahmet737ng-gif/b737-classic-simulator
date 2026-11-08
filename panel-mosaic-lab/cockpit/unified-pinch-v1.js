@@ -75,6 +75,9 @@
    // Preserve the final finger position when the gesture ends before paint.
    const latest=current.nextPoint;
    if(latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
+   // Restore exact display-label geometry and schedule source image quality
+   // only when the pinch finishes; never during its compositor frame loop.
+   adapter()?.end?.();
    gesture=null;
   }
   if(remaining>0)suppressRemaining=true;
