@@ -6,7 +6,9 @@ const source=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 const assembly=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 const start=source.indexOf('for(const item of assembly.embeddedInstruments||[])');
-const end=source.indexOf('\n }\n function applyZoom(',start);
+// Stop at the mount() closing brace, not at the next named function:
+// zoom may introduce independently named helpers without changing CDU mount.
+const end=source.indexOf('\n }\n',start);
 assert.ok(start>=0&&end>start,'CDU mounting loop still exists independently of the lazy gallery');
 const loop=source.slice(start,end);
 assert.match(source,/function mountGallery\(\)/,'PERF-0002 gallery is mounted on demand');
