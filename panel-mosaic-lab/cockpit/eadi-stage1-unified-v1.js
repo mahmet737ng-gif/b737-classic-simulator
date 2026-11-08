@@ -78,7 +78,7 @@ function drawReference(c){
 function render(seat){
  const s=stations[seat];if(!s?.canvas)return;
  const c=s.canvas.getContext('2d',{alpha:false});if(!c)return;
- c.clearRect(0,0,WIDTH,HEIGHT);c.fillStyle='#080b12';c.fillRect(0,0,WIDTH,HEIGHT);
+ c.clearRect(0,0,WIDTH,HEIGHT);c.fillStyle='#000000';c.fillRect(0,0,WIDTH,HEIGHT);
  if(!s.powered)return;
  c.save();
  // Reference-approved ADI fit: ~45% of glass width, ~71% of glass height.
@@ -131,7 +131,7 @@ function make(seat,parent){
   width:slot.w+'px',height:slot.h+'px',overflow:'hidden',
   borderRadius:(seat==='FO'&&mode==='CONVENTIONAL'
    ?root.B737ConventionalEadiSocketV1.cornerRadius:'7% / 8%'),
-  background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
+  background:'#000000',pointerEvents:'none',userSelect:'none',zIndex:'27'});
  host.dataset.eadiMode=mode;
  host.dataset.eadiSocket=seat==='FO'&&mode==='CONVENTIONAL'
   ?root.B737ConventionalEadiSocketV1.VERSION:'EIS-FINAL';
