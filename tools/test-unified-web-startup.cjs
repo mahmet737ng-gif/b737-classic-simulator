@@ -124,11 +124,13 @@ const server=http.createServer((req,res)=>{
     return {mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
-   // Only four commands remain in the compiled Pages header.
+   // Five approved header controls: Controls, Settings, CB, GPU and the
+   // electrical Failure injector. This is an explicit UI contract, not a
+   // relaxed count; removing or duplicating a control must still fail CI.
    const topButtons=await page.locator('header.unified-minimal-header .header-settings > button')
     .evaluateAll(nodes=>nodes.map(n=>n.id));
    assert.deepEqual(topButtons,
-    ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader']);
+    ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen']);
    await page.locator('#inspectorToggle').click();
    await page.locator('#unifiedControlCenter').waitFor({state:'visible'});
    const rechargeButton=page.locator('#batteryRechargeControlSlot #liveBatteryRecharge');
