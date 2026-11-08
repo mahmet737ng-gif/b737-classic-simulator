@@ -71,7 +71,11 @@
   if(node.matches('#fo-owner-panel-v1')){
    return mode==='CONVENTIONAL'?mode:null;
   }
-  if(node.matches('[data-eadi-stage1-seat="FO"].eadi-stage1-host'))return mode;
+  // Conventional FO EADI is registered to the owner's actual CRT glass in
+  // conventional-eadi-socket-v1.js, not the shared panel-wide FO transform.
+  // EIS remains byte-for-byte identical in scale, origin and outer lift.
+  if(node.matches('[data-eadi-stage1-seat="FO"].eadi-stage1-host'))
+   return mode==='EIS'?'EIS':null;
   if(node.matches('.cockpit-light[data-cockpit-light]')){
    if(!isFoLamp(node))return null;
    return mode==='EIS'||ownerLamps.has(node.dataset.cockpitLight)?mode:null;
