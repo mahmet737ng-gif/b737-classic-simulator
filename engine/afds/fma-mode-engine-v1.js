@@ -61,7 +61,12 @@
   if(output.power!==true)return state;
   const m=output.modes||{},ctrl=output.controls||{};
   const at=ctrl.atArm===true;
-  state.at.active=at?sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM':'';
+  // FCOM 4.10.5 / 4.20.11: V/S and ALT HOLD automatically engage
+  // MCP SPD when A/T is armed, regardless of stale N1/SPEED MCP requests.
+  // LVL CHG climb/descent requires actual vertical flight-state evidence.
+  const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical);
+  state.at.active=at?(automaticSpeed?'MCP SPD':
+   sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM'):'';
   // A/T ARM is a WHITE engaged annunciation per FCOM 4.10.27.
   state.at.origin=ORIGIN.MCP;
   state.pitch.active=sourceMode(m.vertical,
