@@ -33,6 +33,7 @@
    parts.set(spec.id,{group,pointer});
   }
   layer=svg;paint();
+  window.performance?.mark?.('b737:eis-needles-mounted');
  }
  function paint(){if(!layer)return;
   for(const spec of model.eisGauges){
