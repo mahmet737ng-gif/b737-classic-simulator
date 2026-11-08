@@ -10,6 +10,6 @@ assert.ok(Math.abs(outer.x+outer.w-2098.645)<1e-6,'F/O fits within right edge');
 assert.ok(outer.x+outer.w<=2100,'F/O cannot spill out of main panel');
 assert.ok(m.mapRect(1222,127,372,694).w===372*1.035);
 const src=fs.readFileSync(__dirname+'/index.html','utf8');
-assert.equal((src.match(/fo-proportional-scale-v1\\.js/g)||[]).length,1);
-assert.ok(!/guard-redzone-lock|verify-guard-redzone/.test(fs.readFileSync(__filename,'utf8')));
+assert.equal((src.match(/fo-proportional-scale-v1\.js/g)||[]).length,1);
+assert.ok(!/guard-redzone-lock|verify-guard-redzone/.test(fs.readFileSync(__dirname+'/fo-proportional-scale-v1.js','utf8')));
 console.log('PASS: F/O photo, needles, EADI and lamps share one native mapping; immutable guards are excluded');
