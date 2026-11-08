@@ -113,6 +113,7 @@ jobs:
           node panel-mosaic-lab/cockpit/eadi-fma-four-v1.test.cjs
           node --check engine/afds/fma-mode-engine-v1.js
           node engine/afds/fma-mode-engine-v1.test.cjs
+          node engine/afds/mcp-exclusive-modes-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js
           node panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.test.cjs
           node panel-mosaic-lab/cockpit/eadi-fma-mcp-live-v1.test.cjs
