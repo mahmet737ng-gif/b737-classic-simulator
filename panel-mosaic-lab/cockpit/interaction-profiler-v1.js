@@ -6,7 +6,7 @@
  'use strict';
  if(!root?.document||new URLSearchParams(root.location.search).get('profiler')!=='1')return;
  if(root.B737InteractionProfilerV1)return;
- const VERSION='UNIFIED-PROFILER-0002', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
+ const VERSION='UNIFIED-PROFILER-0003', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
  const origin=root.performance.timeOrigin, active=new Set(), round=n=>Math.round(n*10)/10;
  let panel,summary,detail,panButton,panTest=null,measuringPan=false;
  function now(w=root){return w.performance.now()+w.performance.timeOrigin-origin;}
@@ -23,7 +23,7 @@
     'Electrical event timing is temporal correlation only; another update may have caused it.',
     'Two requestAnimationFrame callbacks indicate a paint opportunity, not verified pixels on glass.',
     'Browser Event Timing is only reported when supported. Long tasks seen in several iframes can overlap and must not be summed as exclusive CPU time.',
-    'Pointerup records completed taps even when the browser does not fire click; task duration uses the recorded trigger event.'],
+    'A matched pointerup and click are one interaction. Long tasks are deduplicated across same-process frame observers; observing frame does not prove task ownership.'],
    count:samples.length,interactionTriggers:Object.fromEntries([...new Set(samples.map(s=>s.trigger))].map(k=>[k,samples.filter(x=>x.trigger===k).length])),clickTaskMs:stat(durations('clickTaskMs')),
    tapToDomSignalMs:stat(durations('tapToDomSignalMs')),
    tapToPaintOpportunityMs:stat(durations('tapToPaintOpportunityMs')),
@@ -88,7 +88,7 @@
    // Some mobile cockpit switches use pointerup rather than click. Capture
    // the completed stationary tap at pointerup, then merge a subsequent
    // synthetic click instead of reporting two separate interactions.
-   const pendingClick=new Map();
+   const pendingClick=[];
    function sampleInteraction(e,pointer,trigger){
     const at=timestamp(w,e),tapAt=pointer&&at>=pointer.tapAt&&at-pointer.tapAt<2200?pointer.tapAt:at;
     const sample={frame:name,control:pointer?.control||label(e.target),trigger,
@@ -122,20 +122,31 @@
     starts.delete(key);
     if(!pointer||pointer.moved||Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>13||ignore(e.target))return;
     const sample=sampleInteraction(e,pointer,'pointerup');
-    pendingClick.set(key,sample);
-    if(pendingClick.size>12)pendingClick.clear();
-    w.setTimeout(()=>{if(pendingClick.get(key)===sample)pendingClick.delete(key);},1000);
+    pendingClick.push({sample,x:e.clientX,y:e.clientY,target:e.target});
+    if(pendingClick.length>12)pendingClick.shift();
    },true);
    doc.addEventListener('click',e=>{
     if(ignore(e.target))return;
     const key=e.pointerId??1,at=timestamp(w,e);
-    let linked=pendingClick.get(key);
-    if(!linked&&pendingClick.size===1)linked=[...pendingClick.values()][0];
-    if(linked&&at>=linked.clickAt&&at-linked.clickAt<900){
-     linked.hasClick=true;linked.inputToClickMs=round(Math.max(0,at-linked.tapAt));
-     linked.clickAt=round(at);pendingClick.delete(key);
-     paint();return;
+    // Touch click.pointerId can differ from pointerup.pointerId, and a
+    // switch label can change before click. Match by temporal/spatial
+    // proximity instead; do not double-count one physical finger tap.
+    let best=-1,score=Infinity;
+    for(let i=pendingClick.length-1;i>=0;i--){
+     const p=pendingClick[i],delta=at-p.sample.clickAt;
+     if(delta<0||delta>900)continue;
+     const dx=Number(e.clientX)-p.x,dy=Number(e.clientY)-p.y;
+     const distance=Number.isFinite(dx)&&Number.isFinite(dy)?Math.hypot(dx,dy):0;
+     if(distance>26)continue;
+     const cost=delta+distance*5;
+     if(cost<score){score=cost;best=i;}
     }
+    if(best>=0){
+     const linked=pendingClick.splice(best,1)[0].sample;
+     linked.hasClick=true;linked.inputToClickMs=round(Math.max(0,at-linked.tapAt));
+     linked.clickAt=round(at);paint();return;
+    }
+    for(let i=pendingClick.length-1;i>=0;i--)if(at-pendingClick[i].sample.clickAt>900)pendingClick.splice(i,1);
     const pointer=starts.get(key)||[...starts.values()].at(-1);
     starts.delete(key);
     if(pointer?.moved)return;
@@ -153,7 +164,14 @@
     }catch{}
     try{
      const o=new w.PerformanceObserver(list=>{
-      for(const e of list.getEntries())keep(longTasks,{frame:name,durationMs:round(e.duration),timeMs:round(now(w))});
+      for(const e of list.getEntries()){
+       const startedAtMs=round(e.startTime+w.performance.timeOrigin-origin);
+       const durationMs=round(e.duration);
+       // Chrome can surface the same main-thread LongTask in parent + child
+       // observers; do not count the identical task three times.
+       if(longTasks.some(t=>Math.abs(t.startedAtMs-startedAtMs)<2&&Math.abs(t.durationMs-durationMs)<1))continue;
+       keep(longTasks,{frame:name,durationMs,startedAtMs,timeMs:round(now(w))});
+      }
       paint();
      });
      o.observe({type:'longtask'});
