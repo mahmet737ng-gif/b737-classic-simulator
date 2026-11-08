@@ -49,6 +49,6 @@ assert.match(eadi,/host\.dataset\.eadiMode=mode/);
 const index=fs.readFileSync(__dirname+'/index.html','utf8');
 assert.ok(index.indexOf('conventional-eadi-socket-v1.js')<
  index.indexOf('eadi-stage1-unified-v1.js'));
-assert.ok(index.includes('EADI-STAGE1-0010-CONV-FO-CRT'));
+assert.ok(index.includes('EADI-STAGE1-0011-ADI-CONTENT-85PCT'));
 assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0004-CONV-CRT-ISOLATED'));
 console.log('PASS: Conventional FO EADI mounted on owner CRT black glass; EIS geometry remains final and independent.');
