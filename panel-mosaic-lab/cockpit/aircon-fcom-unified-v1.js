@@ -255,7 +255,12 @@
  });
  for(const name of ['b737:unified-ecu-observation','b737:electrical-owner-ready',
   'b737:aircraft-profile-change','b737:cockpit-mounted'])
-  root.addEventListener(name,()=>refresh());
+  root.addEventListener(name,()=>{
+   const profiler=name==='b737:unified-ecu-observation'?root.B737InteractionProfilerV1:null;
+   const started=profiler?performance.now():0;
+   try{refresh();}
+   finally{if(profiler)profiler.markWork('ECU listener AIRCON FCOM',performance.now()-started);}
+  });
  const releaseTest=()=>{
   stopDeadlineFrame();
   try{testHold?.release();}catch(error){console.warn('OVHT fail-safe release',error)}
