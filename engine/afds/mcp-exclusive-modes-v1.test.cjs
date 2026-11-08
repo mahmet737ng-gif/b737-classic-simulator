@@ -119,8 +119,10 @@ assert.equal(fma('FO').afds.active,'CMD');
 send({type:'BUTTON',id:'CWS_A'});
 assert.equal(lamps().CMD_B,false);
 assert.equal(lamps().CWS_A,true);
-assert.equal(fma('CAPT').pitch.active,'CWS P');
-assert.equal(fma('CAPT').roll.active,'CWS R');
+assert.equal(fma('CAPT').pitch.active,'');
+assert.equal(fma('CAPT').roll.active,'');
+assert.equal(fma('CAPT').afds.active,'CWS P');
+assert.equal(fma('CAPT').afds.secondary,'CWS R');
 check();
 // Both flight directors OFF clears AFDS modes but not the physical A/T arm.
 send({type:'FD',side:'left',on:false});
