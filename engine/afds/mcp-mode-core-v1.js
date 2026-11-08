@@ -205,6 +205,18 @@ function transition(state,action){
  if(vertical.includes(id)){selectPitch(s,id);return done();}
  return rejected(s,"NOT_SUPPORTED");
 }
+// Training-state autopilot axis engagement, sourced from the selected
+// pitch/roll CMD modes. FCOM 4.10.18 and 4.20.9–10: the CMD autopilot
+// falls back to CWS on either axis when that axis has no selected mode.
+// This does not simulate yoke forces, aerodynamic servos or ALT/LOC capture.
+function axisControl(s,powered){
+ const ap=powered&&typeof s.modes.autopilot==="string"?s.modes.autopilot:"";
+ const engaged=/^(?:CMD|CWS)_[AB]$/.test(ap);
+ if(!engaged)return {pitch:"OFF",roll:"OFF"};
+ const manual=ap.startsWith("CWS_");
+ return {pitch:manual||s.modes.vertical===null?"CWS":"CMD",
+  roll:manual||s.modes.lateral===null?"CWS":"CMD"};
+}
 function output(s){
  const powered=s.electrical.mcpPower===true;
  const lampIds=["AT_ARM","VNAV","LNAV","VOR_LOC","N1","SPEED","LVL_CHG","HDG_SEL","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"];
@@ -220,8 +232,9 @@ function output(s){
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
    speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
-  modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
+  modes:{...s.modes},axisControl:axisControl(s,powered),
+  pending:{...s.pending},rejection:s.lastRejection,
   limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
 }
-return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,initialState,globalPowerPossible,transition,output});
+return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState,globalPowerPossible,transition,output});
 });
