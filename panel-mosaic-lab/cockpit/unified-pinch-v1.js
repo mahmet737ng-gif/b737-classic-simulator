@@ -15,12 +15,42 @@
  };
  const interactive='button,input,select,textarea,a,[contenteditable="true"],[role="slider"],[role="switch"],[role="button"],[data-control],.cockpit-light,.mounted-light';
  let gesture=null,oneFinger=null,suppressRemaining=false,iframeBlocked=false;
+ // A touch controller can send many move events before the display can paint.
+ // Coalesce only the viewport pan writes; never alter the aircraft controls,
+ // switch/guard hit testing, or the final finger-end scroll location.
+ function flushOneFinger(){
+  const current=oneFinger;
+  if(!current)return;
+  if(current.frame!==undefined){
+   cancelAnimationFrame(current.frame);
+   current.frame=undefined;
+  }
+  if(current.pending){
+   viewport.scrollLeft=current.left-current.pending.dx;
+   viewport.scrollTop=current.top-current.pending.dy;
+   current.pending=null;
+  }
+  oneFinger=null;
+ }
+ function moveOneFinger(current,dx,dy){
+  current.pending={dx,dy};
+  if(current.frame!==undefined)return;
+  current.frame=requestAnimationFrame(()=>{
+   current.frame=undefined;
+   if(oneFinger!==current)return;
+   const point=current.pending;
+   current.pending=null;
+   if(!point)return;
+   viewport.scrollLeft=current.left-point.dx;
+   viewport.scrollTop=current.top-point.dy;
+  });
+ }
  function begin(point,kind){
   if(!adapter()||!point||point.distance<2)return;
   const start=adapter().begin(point.distance,point.x,point.y);
   if(!start)return;
+  flushOneFinger();
   gesture={kind,start};
-  oneFinger=null;
   if(kind==='overhead')iframeBlocked=true;
  }
  // Coalesce high-frequency touchmove messages to the next screen frame.
@@ -47,7 +77,7 @@
    gesture=null;
   }
   if(remaining>0)suppressRemaining=true;
-  else {suppressRemaining=false;oneFinger=null;}
+  else {suppressRemaining=false;flushOneFinger();}
   if(kind==='overhead'&&remaining===0)iframeBlocked=false;
  }
  viewport.addEventListener('touchstart',e=>{
@@ -78,14 +108,21 @@
    const touch=e.touches[0];
    if(touch.identifier!==oneFinger.id)return;
    const dx=touch.clientX-oneFinger.x,dy=touch.clientY-oneFinger.y;
-   viewport.scrollLeft=oneFinger.left-dx;
-   viewport.scrollTop=oneFinger.top-dy;
+   moveOneFinger(oneFinger,dx,dy);
    if(e.cancelable)e.preventDefault();
   }
  },{capture:true,passive:false});
  const end=e=>{
   if(e.touches.length<2&&gesture?.kind==='parent')finish('parent',e.touches.length);
-  if(e.touches.length===0){oneFinger=null;suppressRemaining=false}
+  if(oneFinger){
+   // Touchend may contain a final coordinate not present in touchmove.
+   const finalTouch=Array.from(e.changedTouches||[]).find(t=>t.identifier===oneFinger.id);
+   if(finalTouch)oneFinger.pending={
+    dx:finalTouch.clientX-oneFinger.x,dy:finalTouch.clientY-oneFinger.y
+   };
+   if(finalTouch||e.touches.length===0)flushOneFinger();
+  }
+  if(e.touches.length===0)suppressRemaining=false;
  };
  viewport.addEventListener('touchend',end,{capture:true,passive:true});
  viewport.addEventListener('touchcancel',end,{capture:true,passive:true});
