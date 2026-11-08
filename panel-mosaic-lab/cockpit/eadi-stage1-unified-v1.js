@@ -27,6 +27,14 @@ const stations={
 };
 const futureSlots=Object.freeze(['fma','speedTape','mach','localizer','glideslope','radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
 const hooks={CAPT:new Map(),FO:new Map()};
+function activeMode(){return document.documentElement.dataset.engineIndication==='CONVENTIONAL'
+ ?'CONVENTIONAL':'EIS';}
+function rectFor(seat,mode=activeMode()){
+ if(seat!=='FO'||mode!=='CONVENTIONAL')return stations[seat];
+ const slot=root.B737ConventionalEadiSocketV1;
+ if(!slot?.nativeRect)throw Error('Conventional FO EADI glass registration unavailable');
+ return slot.nativeRect;
+}
 function round1(v){return Math.round(v*10)/10}
 function line(c,x,y,ex,ey,width=2,color='#f3f3f6'){c.beginPath();c.moveTo(x,y);c.lineTo(ex,ey);c.lineWidth=width;c.strokeStyle=color;c.stroke();}
 function aperture(c){const cx=452,top=174,bottom=579,L=278,U=626;c.beginPath();c.moveTo(L,303);c.bezierCurveTo(L,231,354,top,cx,top);c.bezierCurveTo(550,top,U,231,U,303);c.lineTo(U,474);c.bezierCurveTo(U,546,550,bottom,cx,bottom);c.bezierCurveTo(354,bottom,L,546,L,474);c.closePath();}
@@ -96,13 +104,25 @@ function render(seat){
  }
 }
 function make(seat,parent){
- const s=stations[seat];let host=parent.querySelector('[data-eadi-stage1-seat="'+seat+'"]');
+ const s=stations[seat],mode=activeMode(),slot=rectFor(seat,mode);
+ let host=parent.querySelector('[data-eadi-stage1-seat="'+seat+'"]');
  if(!host){
   host=document.createElement('div');host.className='eadi-stage1-host';host.dataset.eadiStage1Seat=seat;host.dataset.eadiVersion=VERSION;
   const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;canvas.className='eadi-stage1-canvas';canvas.setAttribute('aria-label',s.name+' B737 Classic attitude display');canvas.setAttribute('role','img');
   host.appendChild(canvas);parent.appendChild(host);
  }
- Object.assign(host.style,{position:'absolute',left:s.x+'px',top:s.y+'px',width:s.w+'px',height:s.h+'px',overflow:'hidden',borderRadius:'7% / 8%',background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
+ // Independent Conventional FO CRT: the host sits directly in native MAIN
+ // coordinates. The FO panel adapter explicitly leaves this host unscaled.
+ // Its parent remains the original region-native; no DOM reparenting or
+ // instrument state reset is required when EIS/Conventional switches.
+ Object.assign(host.style,{position:'absolute',left:slot.x+'px',top:slot.y+'px',
+  width:slot.w+'px',height:slot.h+'px',overflow:'hidden',
+  borderRadius:(seat==='FO'&&mode==='CONVENTIONAL'
+   ?root.B737ConventionalEadiSocketV1.cornerRadius:'7% / 8%'),
+  background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
+ host.dataset.eadiMode=mode;
+ host.dataset.eadiSocket=seat==='FO'&&mode==='CONVENTIONAL'
+  ?root.B737ConventionalEadiSocketV1.VERSION:'EIS-FINAL';
  const canvas=host.querySelector('canvas');Object.assign(canvas.style,{display:'block',width:'100%',height:'100%',pointerEvents:'none'});
  s.host=host;s.canvas=canvas;render(seat);
 }
@@ -110,7 +130,8 @@ function mount(){
  const native=document.querySelector('#region-main .region-native');if(!native)return false;
  for(const seat of ['CAPT','FO']){
   if(stations[seat].host?.parentElement!==native){stations[seat].host=null;stations[seat].canvas=null;}
-  if(!stations[seat].host)make(seat,native);
+  if(!stations[seat].host||stations[seat].host.dataset.eadiMode!==activeMode())
+   make(seat,native);
  }
  return true;
 }
@@ -118,7 +139,9 @@ function normalizeSeat(seat){const s=String(seat).toUpperCase();if(s==='CAPTAIN'
 function setAttitude(seat,pitch,bank){const id=normalizeSeat(seat),s=stations[id];if(!Number.isFinite(pitch)||!Number.isFinite(bank))throw TypeError('Attitude requires numeric degrees');s.pitch=Math.max(-90,Math.min(90,round1(pitch)));s.bank=((bank%360)+540)%360-180;render(id);return {seat:id,pitch:s.pitch,bank:s.bank};}
 function setPower(seat,on){const id=normalizeSeat(seat);stations[id].powered=!!on;render(id);return stations[id].powered;}
 function registerLayer(seat,id,draw){const key=normalizeSeat(seat);if(!futureSlots.includes(id)||typeof draw!=='function')throw Error('Unregistered EADI slot');hooks[key].set(id,draw);render(key);return ()=>{hooks[key].delete(id);render(key);};}
-function snapshot(){return {version:VERSION,mounted:!!stations.CAPT.host?.isConnected&&!!stations.FO.host?.isConnected,stations:Object.fromEntries(Object.entries(stations).map(([k,s])=>[k,{x:s.x,y:s.y,w:s.w,h:s.h,pitch:s.pitch,bank:s.bank,powered:s.powered,source:s.source}])) ,futureSlots:[...futureSlots]};}
+function snapshot(){return {version:VERSION,mode:activeMode(),
+ activeGlass:Object.fromEntries(['CAPT','FO'].map(seat=>[seat,rectFor(seat)])),
+ mounted:!!stations.CAPT.host?.isConnected&&!!stations.FO.host?.isConnected,stations:Object.fromEntries(Object.entries(stations).map(([k,s])=>[k,{x:s.x,y:s.y,w:s.w,h:s.h,pitch:s.pitch,bank:s.bank,powered:s.powered,source:s.source}])) ,futureSlots:[...futureSlots]};}
 const api=Object.freeze({version:VERSION,mount,setAttitude,setPower,registerLayer,snapshot});
 root.B737UnifiedEADIStage1=api;
 root.addEventListener('b737:cockpit-mounted',mount);
