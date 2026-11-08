@@ -58,7 +58,9 @@ const win={
 vm.runInNewContext(src,{window:win,document:doc,console},{filename:'eadi-stage1-unified-v1.js'});
 const api=win.B737UnifiedEADIStage1;
 assert.equal(api.adiContentScale,.85);
+let paintCount=0;
 function check(mode){
+ paintCount++;
  doc.documentElement.dataset.engineIndication=mode;
  handlers.get('b737:engine-indication-view')();
  const snap=api.snapshot();
@@ -70,7 +72,7 @@ function check(mode){
   assert.equal(host.dataset.eadiMode,mode);
   const ops=host.querySelector('canvas').context.ops;
   const shrinks=ops.filter(x=>x[0]==='scale'&&x[1]===.85&&x[2]===.85);
-  assert.equal(shrinks.length,mode==='EIS'?1:2,
+  assert.equal(shrinks.length,paintCount,
    mode+' '+seat+' ADI should shrink once per paint');
   const s=shrinks.at(-1),i=ops.lastIndexOf(s);
   assert.deepEqual(ops[i-1],['translate',452,393]);
