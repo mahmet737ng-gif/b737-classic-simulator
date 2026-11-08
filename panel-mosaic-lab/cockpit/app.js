@@ -142,20 +142,33 @@
    endParentDrag();
    if(drag?.source==='iframe')drag=null;
    const beforeX=parseFloat(scene.style.left)||0,beforeY=parseFloat(scene.style.top)||0;
-   return {distance,zoom,left:vp.scrollLeft,top:vp.scrollTop,x,y,
+   const left=vp.scrollLeft,top=vp.scrollTop;
+   return {distance,zoom,left,top,x,y,
     offsetX:beforeX,offsetY:beforeY,
-    sourceX:(vp.scrollLeft+x-beforeX)/zoom,
-    sourceY:(vp.scrollTop+y-beforeY)/zoom};
+    sourceX:(left+x-beforeX)/zoom,
+    sourceY:(top+y-beforeY)/zoom};
   },
   move(start,distance,x,y){
    if(!start||!assembly||![distance,x,y].every(Number.isFinite)||distance<2)return;
+   const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
    const next=model.clamp(start.zoom*distance/start.distance,.04,2);
-   // Source-point anchoring ignores these placeholder scroll arguments;
-   // avoid forcing two extra scroll reads on every touch frame.
-   applyZoom(next,0,0,x,y,start);
+   // Compositor-only preview: freeze the scroll range, parent position and
+   // texture level while the fingers move. One scene transform keeps the
+   // exact aircraft source point under the moving gesture midpoint.
+   // Layout, sizer, scroll and inherited --zoom commit exactly ONCE on end.
+   const dx=x+start.left-start.offsetX-start.sourceX*next;
+   const dy=y+start.top-start.offsetY-start.sourceY*next;
+   scene.style.transform='translate('+dx+'px,'+dy+'px) scale('+next+')';
+   start.latestZoom=next;start.latestX=x;start.latestY=y;
+   if(profiler)profiler.markWork('ZOOM compositor preview transform',performance.now()-started);
   },
-  end(){
+  end(start){
    if(!assembly)return;
+   if(start&&Number.isFinite(start.latestZoom)){
+    // Commit the preview's exact zoom anchor in one geometry/scroll pass.
+    // The former applyZoom path ran this work on EVERY touch frame.
+    applyZoom(start.latestZoom,0,0,start.latestX,start.latestY,start);
+   }
    commitZoomPresentation();
   }
  });
