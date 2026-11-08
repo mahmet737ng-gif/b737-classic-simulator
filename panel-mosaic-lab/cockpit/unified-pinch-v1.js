@@ -82,7 +82,7 @@
    if(latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
    // Restore exact display-label geometry and schedule source image quality
    // only when the pinch finishes; never during its compositor frame loop.
-   adapter()?.end?.();
+   adapter()?.end?.(current.start);
    gesture=null;
   }
   if(remaining>0)suppressRemaining=true;
@@ -176,5 +176,5 @@
   }
  },true);
  window.addEventListener('resize',()=>{pinchViewportRect=null;});
- window.B737UnifiedPinchV1=Object.freeze({version:'UNIFIED-PINCH-0002'});
+ window.B737UnifiedPinchV1=Object.freeze({version:'UNIFIED-PINCH-0003'});
 })();
