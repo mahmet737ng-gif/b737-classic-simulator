@@ -81,7 +81,7 @@
  // A qualified simulated FCC observation may override a training-selected
  // mode. No inference about capture, autoland, or thrust-servo motion is
  // made from unverified MCP selections.
- function withFcc(base,observation,seat){
+ function withFcc(base,observation,seat=observation?.seat){
   if(!observation)return normalized(base);
   if(observation.schema!=='B737_FMA_FCC_OBSERVATION_V1'||
    observation.confirmed!==true||observation.seat!==seat)
