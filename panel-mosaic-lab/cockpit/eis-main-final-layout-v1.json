@@ -1,0 +1,739 @@
+{
+  "schema": "b737.unified.main-eis-geometry.final.v1",
+  "status": "OWNER_FINAL_EIS_GEOMETRY",
+  "approvedAt": "2026-11-08",
+  "basis": "User-approved CURRENT EIS visual arrangement after FO horizon registration v0003",
+  "scope": "Native 2100 × 920 MAIN instrument panel; all EIS panels, lamps, MCP apertures, pointers, and the two EADI glasses. Runtime behavior and Conventional-specific geometry remain editable.",
+  "excludes": [
+    "Overhead protected artwork and guards (own immutable locks)",
+    "Conventional-only photo/pointer/number registrations",
+    "Aircraft dynamics and interaction logic"
+  ],
+  "mainRegion": {
+    "x": 100,
+    "y": 3560,
+    "w": 4200,
+    "h": 1840,
+    "nativeWidth": 2100,
+    "nativeHeight": 920
+  },
+  "placements": [
+    {
+      "id": "captain",
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "x": 35,
+      "y": 166,
+      "w": 726,
+      "h": 661.3561643835617
+    },
+    {
+      "id": "mcp",
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "x": 786,
+      "y": 7,
+      "w": 600,
+      "h": 119.61325966850829
+    },
+    {
+      "id": "engine",
+      "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "x": 761,
+      "y": 127,
+      "w": 461,
+      "h": 475.5578947368421
+    },
+    {
+      "id": "fo-inner",
+      "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "x": 1222,
+      "y": 127,
+      "w": 372,
+      "h": 694.156862745098
+    },
+    {
+      "id": "fo-outer",
+      "asset": "file_000000006c00820ab145b3682f686256.png",
+      "x": 1594,
+      "y": 225,
+      "w": 475,
+      "h": 592.1638468388246
+    }
+  ],
+  "sourcePixels": {
+    "captain": {
+      "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "dimensions": [
+        3942,
+        3591
+      ]
+    },
+    "mcp": {
+      "sha256": "9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062",
+      "dimensions": [
+        2172,
+        433
+      ]
+    },
+    "engine": {
+      "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "dimensions": [
+        1235,
+        1274
+      ]
+    },
+    "fo-inner": {
+      "sha256": "16120d7f4e38aef3854619f231ee2a324b4888bc35c506d0b6d24e1b8417c672",
+      "dimensions": [
+        918,
+        1713
+      ]
+    },
+    "fo-outer": {
+      "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "dimensions": [
+        1123,
+        1400
+      ]
+    }
+  },
+  "lampSockets": {
+    "main-at-lim": {
+      "pieceId": "engine",
+      "sourceRect": [
+        589,
+        255,
+        84,
+        41
+      ],
+      "center": [
+        631,
+        275.5
+      ]
+    },
+    "main-reverser-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        492,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        534,
+        276.5
+      ]
+    },
+    "main-reverser-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        686,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        728,
+        276.5
+      ]
+    },
+    "main-start-valve-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        900,
+        207,
+        83,
+        40
+      ],
+      "center": [
+        941.5,
+        227
+      ]
+    },
+    "main-start-valve-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1088,
+        206,
+        85,
+        41
+      ],
+      "center": [
+        1130.5,
+        226.5
+      ]
+    },
+    "main-low-oil-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        852,
+        256,
+        83,
+        41
+      ],
+      "center": [
+        893.5,
+        276.5
+      ]
+    },
+    "main-oil-filter-1": {
+      "pieceId": "engine",
+      "sourceRect": [
+        946,
+        256,
+        82,
+        41
+      ],
+      "center": [
+        987,
+        276.5
+      ]
+    },
+    "main-low-oil-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1040,
+        256,
+        84,
+        41
+      ],
+      "center": [
+        1082,
+        276.5
+      ]
+    },
+    "main-oil-filter-2": {
+      "pieceId": "engine",
+      "sourceRect": [
+        1136,
+        257,
+        82,
+        41
+      ],
+      "center": [
+        1177,
+        277.5
+      ]
+    },
+    "main-altitude-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        2777,
+        481,
+        170,
+        82
+      ],
+      "center": [
+        2862,
+        522
+      ]
+    },
+    "main-altitude-fo": {
+      "pieceId": "fo-outer",
+      "sourceRect": [
+        504,
+        174,
+        70,
+        32
+      ],
+      "center": [
+        539,
+        190
+      ]
+    },
+    "main-pull-up-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        1285,
+        383,
+        165,
+        73
+      ],
+      "center": [
+        1367.5,
+        419.5
+      ]
+    },
+    "main-below-gs-captain": {
+      "pieceId": "captain",
+      "sourceRect": [
+        1283,
+        482,
+        164,
+        75
+      ],
+      "center": [
+        1365,
+        519.5
+      ]
+    },
+    "main-pull-up-fo": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        819,
+        312,
+        73,
+        32
+      ],
+      "center": [
+        855.5,
+        328
+      ]
+    },
+    "main-below-gs-fo": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        819,
+        353,
+        73,
+        34
+      ],
+      "center": [
+        855.5,
+        370
+      ]
+    },
+    "main-gear-nose-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        249,
+        149,
+        73,
+        38
+      ],
+      "center": [
+        285.5,
+        168
+      ]
+    },
+    "main-gear-nose-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        249,
+        193,
+        73,
+        35
+      ],
+      "center": [
+        285.5,
+        210.5
+      ]
+    },
+    "main-gear-left-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        209,
+        237,
+        72,
+        35
+      ],
+      "center": [
+        245,
+        254.5
+      ]
+    },
+    "main-gear-left-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        209,
+        281,
+        72,
+        35
+      ],
+      "center": [
+        245,
+        298.5
+      ]
+    },
+    "main-gear-right-red": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        293,
+        238,
+        72,
+        34
+      ],
+      "center": [
+        329,
+        255
+      ]
+    },
+    "main-gear-right-green": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        294,
+        281,
+        71,
+        34
+      ],
+      "center": [
+        329.5,
+        298
+      ]
+    },
+    "main-le-transit": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        23,
+        403,
+        72,
+        35
+      ],
+      "center": [
+        59,
+        420.5
+      ]
+    },
+    "main-le-extended": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        107,
+        403,
+        71,
+        35
+      ],
+      "center": [
+        142.5,
+        420.5
+      ]
+    },
+    "main-antiskid": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        60,
+        501,
+        84,
+        40
+      ],
+      "center": [
+        102,
+        521
+      ]
+    },
+    "main-autobrake": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        60,
+        765,
+        85,
+        44
+      ],
+      "center": [
+        102.5,
+        787
+      ]
+    },
+    "main-brake-temp": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        595,
+        1232,
+        74,
+        35
+      ],
+      "center": [
+        632,
+        1249.5
+      ]
+    },
+    "main-stab-trim": {
+      "pieceId": "engine",
+      "sourceRect": [
+        256,
+        736,
+        87,
+        63
+      ],
+      "center": [
+        299.5,
+        767.5
+      ]
+    },
+    "main-speed-brake-do-not-arm": {
+      "pieceId": "engine",
+      "sourceRect": [
+        21,
+        739,
+        95,
+        41
+      ],
+      "center": [
+        68.5,
+        759.5
+      ]
+    },
+    "main-speed-brake-armed": {
+      "pieceId": "engine",
+      "sourceRect": [
+        21,
+        789,
+        94,
+        40
+      ],
+      "center": [
+        68,
+        809
+      ]
+    },
+    "main-gpws-inop": {
+      "pieceId": "fo-inner",
+      "sourceRect": [
+        478,
+        1402,
+        83,
+        40
+      ],
+      "center": [
+        519.5,
+        1422
+      ]
+    }
+  },
+  "flightNeedleSources": {
+    "captain": {
+      "piece": "captain",
+      "width": 3942,
+      "height": 3591,
+      "gauges": {
+        "altimeter": {
+          "x": 3082,
+          "y": 980,
+          "radius": 207
+        },
+        "verticalSpeed": {
+          "x": 3080,
+          "y": 1610,
+          "radius": 196
+        },
+        "clock": {
+          "x": 3713,
+          "y": 1610,
+          "radius": 193
+        },
+        "rmi": {
+          "x": 1183,
+          "y": 1838,
+          "radius": 215
+        }
+      }
+    },
+    "firstOfficerOuter": {
+      "piece": "fo-outer",
+      "width": 1123,
+      "height": 1400,
+      "gauges": {
+        "altimeter": {
+          "x": 618,
+          "y": 343,
+          "radius": 106
+        },
+        "verticalSpeed": {
+          "x": 619,
+          "y": 611,
+          "radius": 102
+        },
+        "clock": {
+          "x": 869,
+          "y": 609,
+          "radius": 103
+        }
+      }
+    },
+    "firstOfficerInner": {
+      "piece": "fo-inner",
+      "width": 918,
+      "height": 1713,
+      "gauges": {
+        "rmi": {
+          "x": 771,
+          "y": 954,
+          "radius": 128
+        }
+      }
+    }
+  },
+  "airspeed": {
+    "captain": {
+      "source": {
+        "piece": "captain",
+        "width": 3942,
+        "height": 3591
+      },
+      "pivot": {
+        "x": 1108,
+        "y": 973
+      }
+    },
+    "firstOfficer": {
+      "piece": "fo-inner",
+      "width": 918,
+      "height": 1713,
+      "pivot": {
+        "x": 741,
+        "y": 577
+      },
+      "tipRadius": 145,
+      "vmoTipRadius": 138
+    }
+  },
+  "engineEisGauges": {
+    "n1_1": [
+      536,
+      542,
+      55
+    ],
+    "n1_2": [
+      724,
+      542,
+      55
+    ],
+    "egt_1": [
+      536,
+      724,
+      55
+    ],
+    "egt_2": [
+      724,
+      724,
+      55
+    ],
+    "n2_1": [
+      536,
+      896,
+      55
+    ],
+    "n2_2": [
+      724,
+      896,
+      55
+    ],
+    "fuelFlow_1": [
+      536,
+      1051,
+      55
+    ],
+    "fuelFlow_2": [
+      724,
+      1051,
+      55
+    ],
+    "oilPressure_1": [
+      984,
+      496,
+      39
+    ],
+    "oilPressure_2": [
+      1118,
+      496,
+      39
+    ],
+    "oilTemperature_1": [
+      984,
+      646,
+      39
+    ],
+    "oilTemperature_2": [
+      1118,
+      646,
+      39
+    ],
+    "vibration_1": [
+      984,
+      839,
+      39
+    ],
+    "vibration_2": [
+      1118,
+      839,
+      39
+    ],
+    "hydPressure_1": [
+      982,
+      991,
+      39
+    ],
+    "hydPressure_2": [
+      1118,
+      991,
+      39
+    ]
+  },
+  "oilQuantityReadouts": {
+    "oilQuantity_1": [
+      984,
+      741
+    ],
+    "oilQuantity_2": [
+      1095,
+      741
+    ]
+  },
+  "mcpRegistrations": {
+    "buttonRects": "[\"VNAV\",669,106,102,68],[\"LNAV\",965,109,100,67],\n [\"VOR_LOC\",964,218,98,66],\n [\"N1\",240,321,98,68],[\"SPEED\",356,322,98,68],\n [\"LVL_CHG\",669,325,105,67],[\"HDG_SEL\",813,325,104,67],\n [\"APP\",956,326,109,67],[\"ALT_HLD\",1144,327,106,68],\n [\"VS\",1273,328,103,67],\n [\"CMD_A\",1579,130,101,67],[\"CMD_B\",1761,131,98,67],\n [\"CWS_A\",1581,228,96,65],[\"CWS_B\",1761,229,97,65]",
+    "knobRects": "courseL:[36,188,108,108],speed:[515,229,94,94],\n heading:[823,194,81,86],altitude:[1157,193,86,86],\n courseR:[1969,200,98,98]"
+  },
+  "eadi": {
+    "canvas": [
+      900,
+      720
+    ],
+    "stations": {
+      "CAPT": {
+        "x": 327.2,
+        "y": 218.2,
+        "w": 198,
+        "h": 159.3
+      },
+      "FO": {
+        "x": 1612.75,
+        "y": 263.4,
+        "w": 173.44,
+        "h": 147.14
+      }
+    },
+    "attitudeTransforms": {
+      "CAPT": {
+        "translate": [
+          450,
+          352.6
+        ],
+        "scale": [
+          0.958133,
+          1.139152
+        ]
+      },
+      "FO": {
+        "translate": [
+          450,
+          368.42016
+        ],
+        "scale": [
+          1.16,
+          1.26
+        ]
+      }
+    },
+    "zeroPitchAnchorY": 393,
+    "translationReferenceY": 387
+  },
+  "foEis": {
+    "profile": {
+      "anchorX": 1222,
+      "anchorY": 127,
+      "scale": 1.035,
+      "rightEdge": 2069,
+      "mainRightEdge": 2100
+    },
+    "outerLift": -49.97399999999999,
+    "guardIds": [
+      "gpws-terrain-inhibit",
+      "gpws-flap-inhibit",
+      "gpws-gear-inhibit"
+    ]
+  },
+  "acceptance": {
+    "seamX": 1222,
+    "outerMaxX": 2100,
+    "dualEadiTopY": 218.2,
+    "horizonErrorToleranceNative": 0.0001
+  }
+}
