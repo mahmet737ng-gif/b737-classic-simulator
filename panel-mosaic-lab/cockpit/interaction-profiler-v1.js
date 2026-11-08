@@ -22,13 +22,15 @@
     'Local DOM mutation is an observed control visual change, NOT proven aircraft-system state.',
     'Electrical event timing is temporal correlation only; another update may have caused it.',
     'Two requestAnimationFrame callbacks indicate a paint opportunity, not verified pixels on glass.',
-    'Browser Event Timing is only reported when supported. Long tasks are not exclusive CPU usage.'],
-   count:samples.length,clickTaskMs:stat(durations('clickTaskMs')),
+    'Browser Event Timing is only reported when supported. Long tasks seen in several iframes can overlap and must not be summed as exclusive CPU time.',
+    'Pointerup records completed taps even when the browser does not fire click; task duration uses the recorded trigger event.'],
+   count:samples.length,interactionTriggers:Object.fromEntries([...new Set(samples.map(s=>s.trigger))].map(k=>[k,samples.filter(x=>x.trigger===k).length])),clickTaskMs:stat(durations('clickTaskMs')),
    tapToDomSignalMs:stat(durations('tapToDomSignalMs')),
    tapToPaintOpportunityMs:stat(durations('tapToPaintOpportunityMs')),
    tapToElectricalSignalMs:stat(durations('tapToElectricalSignalMs')),
    browserInputQueueMs:stat(eventTimings.map(x=>x.queueMs)),
-   longTasks:{count:longTasks.length,totalDurationMs:round(longTasks.reduce((n,x)=>n+x.durationMs,0)),p95Ms:percentile(longTasks.map(x=>x.durationMs),.95)},
+   longTasks:{count:longTasks.length,totalDurationMs:round(longTasks.reduce((n,x)=>n+x.durationMs,0)),p95Ms:percentile(longTasks.map(x=>x.durationMs),.95),
+    byFrame:Object.fromEntries([...new Set(longTasks.map(x=>x.frame))].map(frame=>[frame,stat(longTasks.filter(x=>x.frame===frame).map(x=>x.durationMs))]))},
    pan:panTest,workByName:Object.fromEntries([...new Set(work.map(x=>x.name))].map(name=>[name,stat(work.filter(x=>x.name===name).map(x=>x.durationMs))])),
    recentInteractions:samples.slice(-35),recentWork:work.slice(-35),recentInputEvents:eventTimings.slice(-35),
    recentLongTasks:longTasks.slice(-20)};
@@ -45,10 +47,10 @@
   const s=report();
   summary.textContent='Tap → paint P95: '+value(s.tapToPaintOpportunityMs.p95)+' · DOM change P95: '+value(s.tapToDomSignalMs.p95)+
    '\nInput queue P95: '+value(s.browserInputQueueMs.p95)+' · Electrical signal P95: '+value(s.tapToElectricalSignalMs.p95)+
-   '\nClicks: '+s.count+' · Long tasks: '+s.longTasks.count+' · Pan FPS: '+(s.pan?.fps??'—');
+   '\nCompleted taps: '+s.count+' · Long-task observations: '+s.longTasks.count+' · Pan FPS: '+(s.pan?.fps??'—');
   if(detail&&!detail.hidden)detail.textContent=JSON.stringify({recent:s.recentInteractions.slice(-8),work:s.workByName,pan:s.pan},null,2);
  }
- function ignore(node){return !(node instanceof root.Element)&&!node?.closest||!!node?.closest?.('#unifiedInteractionProfiler');}
+ function ignore(node){return !node?.closest||!!node.closest('#unifiedInteractionProfiler');}
  function label(node){
   const n=node?.closest?.('[aria-label],[data-control],button,[role="switch"],[role="button"],[role="slider"],.mounted-switch,.mounted-light,.rotary,.knob,.toggle,.lever')||node;
   return String(n?.getAttribute?.('aria-label')||n?.getAttribute?.('data-control')||n?.id||n?.className?.baseVal||n?.className||n?.tagName||'control').slice(0,85);
@@ -65,7 +67,7 @@
   }
   paint();
  }
- const signals=['b737:electrical-network','b737:electrical-v7-state','b737:electrical-distribution-changed','b737:unified-ecu-observation'];
+ const signals=['b737:electrical-network','b737:electrical-v7-state','b737:electrical-distribution-changed'];
  for(const name of signals)root.addEventListener(name,()=>onSignal(name),{passive:true});
  function attach(w,name){
   try{
@@ -83,14 +85,17 @@
     if(p&&Math.hypot(e.clientX-p.x,e.clientY-p.y)>13)p.moved=true;
    },{capture:true,passive:true});
    doc.addEventListener('pointercancel',e=>starts.delete(e.pointerId??1),true);
-   doc.addEventListener('click',e=>{
-    if(ignore(e.target))return;
-    const key=e.pointerId??1, pointer=starts.get(key)||[...starts.values()].at(-1),at=timestamp(w,e),tapAt=pointer&&!pointer.moved&&at-pointer.tapAt<2200?pointer.tapAt:at;
-    starts.delete(key);
-    if(pointer?.moved)return;
-    const sample={frame:name,control:label(e.target),tapAt:round(tapAt),clickAt:round(at),
-     inputToClickMs:round(Math.max(0,at-tapAt)),clickTaskMs:null,tapToDomSignalMs:null,
-     tapToPaintOpportunityMs:null,tapToElectricalSignalMs:null,electricalSignalName:null};
+   // Some mobile cockpit switches use pointerup rather than click. Capture
+   // the completed stationary tap at pointerup, then merge a subsequent
+   // synthetic click instead of reporting two separate interactions.
+   const pendingClick=new Map();
+   function sampleInteraction(e,pointer,trigger){
+    const at=timestamp(w,e),tapAt=pointer&&at>=pointer.tapAt&&at-pointer.tapAt<2200?pointer.tapAt:at;
+    const sample={frame:name,control:pointer?.control||label(e.target),trigger,
+     tapAt:round(tapAt),clickAt:round(at),hasClick:trigger==='click',
+     inputToClickMs:trigger==='click'?round(Math.max(0,at-tapAt)):null,
+     clickTaskMs:null,tapToDomSignalMs:null,tapToPaintOpportunityMs:null,
+     tapToElectricalSignalMs:null,electricalSignalName:null};
     keep(samples,sample);active.add(sample);
     const host=controlHost(e.target);
     let observer=null;
@@ -110,6 +115,31 @@
     }));
     w.setTimeout(()=>{observer?.disconnect();active.delete(sample);paint();},1900);
     paint();
+    return sample;
+   }
+   doc.addEventListener('pointerup',e=>{
+    const key=e.pointerId??1,pointer=starts.get(key);
+    starts.delete(key);
+    if(!pointer||pointer.moved||Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>13||ignore(e.target))return;
+    const sample=sampleInteraction(e,pointer,'pointerup');
+    pendingClick.set(key,sample);
+    if(pendingClick.size>12)pendingClick.clear();
+    w.setTimeout(()=>{if(pendingClick.get(key)===sample)pendingClick.delete(key);},1000);
+   },true);
+   doc.addEventListener('click',e=>{
+    if(ignore(e.target))return;
+    const key=e.pointerId??1,at=timestamp(w,e);
+    let linked=pendingClick.get(key);
+    if(!linked&&pendingClick.size===1)linked=[...pendingClick.values()][0];
+    if(linked&&at>=linked.clickAt&&at-linked.clickAt<900){
+     linked.hasClick=true;linked.inputToClickMs=round(Math.max(0,at-linked.tapAt));
+     linked.clickAt=round(at);pendingClick.delete(key);
+     paint();return;
+    }
+    const pointer=starts.get(key)||[...starts.values()].at(-1);
+    starts.delete(key);
+    if(pointer?.moved)return;
+    sampleInteraction(e,pointer,'click');
    },true);
    if(typeof w.PerformanceObserver==='function'){
     try{
