@@ -38,6 +38,41 @@ approximation until a verified authorized font file is available.
 - **FLARE armed** requires dual A/P, LOC and G/S captured and RA below 1,500 ft. **FLARE engaged** requires an FCC flare-engaged event and RA 50 ft or less (FCOM 4.20.8).
 - The existing MCP state machine can provide training-mode selections, but not physical capture proof. FCC-only events follow schema `B737_FMA_FCC_OBSERVATION_V1`, `confirmed:true`, seat-specific `fields` and `evidence` values.
 
+## CWS while autopilot is CMD (FCOM 4.10.18, 4.20.9–10)
+
+**CWS is NOT annunciated as an engaged Pitch or Roll mode.** With the autopilot
+engaged in CMD, if no pitch command mode exists (or that mode is deselected),
+the pitch servo axis falls back to **CWS P**. The Pitch FMA command field is
+**BLANK**; the fourth **AFDS STATUS** field shows yellow `CWS P`. The
+other (Roll) command may remain engaged in CMD.
+
+Independently, when no roll command exists (or it is deselected), the roll
+servo axis falls back to **CWS R**. The Roll command field is **BLANK** and
+the fourth column shows yellow `CWS R`; Pitch CMD is unaffected.
+
+If both command modes are absent, both axes are CWS. Their status displays
+`CWS P` and `CWS R` on two lines in the fourth AFDS column. Neither
+command field displays CWS. **CMD may remain physically engaged** but its
+fourth-column annunciation is superseded by the relevant CWS axis status.
+If neither autopilot is engaged, a blank command column does **not** imply
+CWS (the F/D-only status is FD).
+
+Explicit MCP CWS engage selects both CWS axes, even if pitch/roll CMD commands
+had previously been selected. This behavior is implemented as per-axis
+`axisControl: {pitch:'CMD'|'CWS'|'OFF', roll:'CMD'|'CWS'|'OFF'}` in MCP AFDS
+output, projected by the independent FMA engine, and drawn by the EADI FMA
+layer (both EIS and Conventional).
+
+**Actual CWS force and altitude/capture logic remain unmodeled:** FCOM says
+column force can override an engaged pitch command into CWS P, and wheel
+force can similarly override roll. In a dual-autopilot APP after LOC/GS
+capture, manual override disengages A/P rather than engaging CWS. Qualified
+FCC observation can declare a CWS force override only with evidence, not
+from a blank display alone. In CWS P, ALT ACQ can capture near the MCP
+altitude, followed by ALT HOLD; in CWS R, arming VOR/LOC or APP can permit
+VOR/LOC capture. These capture behaviors await validated flight-state
+sensors and FCC logic in the training model.
+
 ## Limitations still open before claiming full FCOM fidelity
 
 The present Unified MCP model is a *training selection state machine*, not
