@@ -1,0 +1,118 @@
+{
+  "schema": "b737.unified.conventional-main.calibration-wip.v1",
+  "status": "REFERENCE_CAPTURED_NOT_PIXEL_VERIFIED",
+  "createdAt": "2026-11-08",
+  "coordinateSystem": "native MAIN region, 2100 x 920, before browser/scene zoom",
+  "eisBaseline": "./eis-main-final-layout-v1.json",
+  "policy": [
+    "Conventional calibration may alter only CONVENTIONAL mode geometry",
+    "The EIS finalized geometry and its 2 EADI horizons must pass the immutable gate unchanged",
+    "Owner18 switch visual/mechanical locks remain independently protected; no source-asset changes"
+  ],
+  "enginePanorama": {
+    "nativeRect": {
+      "x": 761,
+      "y": 127,
+      "w": 613,
+      "h": 475.5578947368421
+    },
+    "sourceImage": {
+      "width": 1463,
+      "height": 1075
+    },
+    "sourceFile": "./assets/p2-conventional-full-owner-20261030.png",
+    "seamRight": 1374
+  },
+  "foOwnerPhoto": {
+    "rawRect": {
+      "x": 1374,
+      "y": 127,
+      "w": 695,
+      "h": 660.952566096423
+    },
+    "sourceFile": "./assets/fo-efis-rd-owner-20261030-v1.png",
+    "sourceDimensions": [
+      1286,
+      1223
+    ],
+    "sourceSHA256": "34aa9374760f8eb331ef359ad9a39b2954fd2398d0dbb8b9283e695a18744163",
+    "currentScale": 1.0446043165467627,
+    "transformedRect": {
+      "x": 1374,
+      "y": 127,
+      "w": 726,
+      "h": 690.4339035769829
+    }
+  },
+  "EADI": {
+    "captainGlass": {
+      "x": 327.2,
+      "y": 218.2,
+      "w": 198,
+      "h": 159.3
+    },
+    "firstOfficerBase": {
+      "x": 1612.75,
+      "y": 263.4,
+      "w": 173.44,
+      "h": 147.14
+    },
+    "firstOfficerCurrent": {
+      "x": 1623.3992805755397,
+      "y": 269.4840287769784,
+      "w": 181.1761726618705,
+      "h": 153.70307913669063
+    },
+    "currentTopDifferenceNative": 51.284029,
+    "target": "pending explicit photo registration for Conventional"
+  },
+  "conventionalDigitSourceCentres": {
+    "n1": [
+      [
+        427,
+        385
+      ],
+      [
+        600,
+        385
+      ]
+    ],
+    "egt": [
+      [
+        427,
+        555
+      ],
+      [
+        600,
+        555
+      ]
+    ],
+    "n2": [
+      [
+        425,
+        706
+      ],
+      [
+        600,
+        706
+      ]
+    ],
+    "fuelFlow": [
+      [
+        426,
+        869
+      ],
+      [
+        600,
+        869
+      ]
+    ]
+  },
+  "nextQA": [
+    "photo-boundary matching at engine x=1374 to FO owner x=1374",
+    "all EADI glass corners and horizon, measured from source and native stage",
+    "ALT/VSI/CLOCK/RMI/airspeed pointers against photographed pivot holes",
+    "every lamp, AUTO BRAKE and ANTI SKID socket with power/event interaction intact",
+    "panel mode switch Conventional → EIS → Conventional must restore EIS pixel geometry"
+  ]
+}
