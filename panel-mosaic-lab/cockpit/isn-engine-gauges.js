@@ -72,7 +72,11 @@
  }
  window.addEventListener('b737:cockpit-mounted',mount);
  window.addEventListener('b737:isn-start-indications',event=>{render(event.detail);mount();});
- window.addEventListener('b737:unified-ecu-observation',event=>observeECU(event.detail));
+ window.addEventListener('b737:unified-ecu-observation',event=>{
+  const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
+  try{observeECU(event.detail);}
+  finally{if(profiler)profiler.markWork('ECU listener EIS pointers fallback',performance.now()-started);}
+ });
  window.B737EISNeedlesV1=Object.freeze({
   getSpecs:()=>model.eisGauges.map(spec=>({...spec})),
   getReadings:()=>Object.fromEntries([...readings].map(([id,r])=>[id,{...r}])),
