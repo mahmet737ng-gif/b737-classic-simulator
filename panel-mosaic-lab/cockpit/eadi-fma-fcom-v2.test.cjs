@@ -64,7 +64,7 @@ const words=actions.filter(x=>x[0]==='text').map(x=>x[1]);
 assert.deepEqual(words,['MCP SPD','ALT HOLD','HDG SEL','CMD']);
 assert.ok(!words.includes('A/T MODE'),'Printed headings must not obscure reference font');
 actions.length=0;
-painter.CAPT(ctx,undefined,Date.now()+15000);
+view.render(ctx,'CAPT',Date.now()+15000);
 assert.equal(actions.filter(x=>x[0]==='rect').length,0,
  'No permanent boxes after the 10s FCOM mode change highlight');
 assert.equal(actions.filter(x=>x[0]==='line').length,3);
