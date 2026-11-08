@@ -94,7 +94,45 @@
    }
    const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.loading='lazy';child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
  }
- function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){wheelController?.cancel();const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';scheduleViewRefresh();}
+ // Keep expensive visual-only CSS invalidation and texture rescans out
+ // of the 2-finger pinch loop. The authoritative scale/scroll transform and
+ // geometry remain exact, including source-point anchoring.
+ function commitZoomPresentation(){
+  scene.style.setProperty('--zoom',String(zoom));
+  byId('zoomValue').textContent=Math.round(zoom*100)+'%';
+  scheduleViewRefresh();
+ }
+ function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null){
+  wheelController?.cancel();
+  const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
+  const next=model.clamp(value,.04,2);
+  const after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),
+   y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};
+  let z;
+  if(gestureSource){
+   // The source point was captured when both fingers touched the glass.
+   // Unlike the former two-step implementation, the anchoring scroll
+   // position is calculated ONCE and written ONCE per animation frame.
+   z={zoom:next,
+    left:Math.max(0,gestureSource.sourceX*next+after.x-x),
+    top:Math.max(0,gestureSource.sourceY*next+after.y-y)};
+  }else{
+   const before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0};
+   z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);
+  }
+  zoom=z.zoom;
+  scene.style.left=after.x+'px';scene.style.top=after.y+'px';
+  scene.style.transform='scale('+zoom+')';
+  sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';
+  sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';
+  vp.scrollLeft=z.left;vp.scrollTop=z.top;
+  if(gestureSource){
+   // The inherited --zoom style affects region labels and selection
+   // outlines, not the actual gauges. Sync it when the pinch ends.
+   lastNavigationAt=Date.now();
+  }else commitZoomPresentation();
+  if(profiler)profiler.markWork(gestureSource?'ZOOM pinch geometry and scroll':'ZOOM single-step geometry and scroll',performance.now()-started);
+ }
  // Responsive two-finger zoom adapter for the outer canvas. This touches only
  // viewport transforms, never protected cockpit artwork or switch geometry.
  window.B737UnifiedPinchAdapterV1=Object.freeze({
@@ -103,19 +141,20 @@
    wheelController?.cancel();
    endParentDrag();
    if(drag?.source==='iframe')drag=null;
+   const beforeX=parseFloat(scene.style.left)||0,beforeY=parseFloat(scene.style.top)||0;
    return {distance,zoom,left:vp.scrollLeft,top:vp.scrollTop,x,y,
-     offsetX:parseFloat(scene.style.left)||0,offsetY:parseFloat(scene.style.top)||0};
+    offsetX:beforeX,offsetY:beforeY,
+    sourceX:(vp.scrollLeft+x-beforeX)/zoom,
+    sourceY:(vp.scrollTop+y-beforeY)/zoom};
   },
   move(start,distance,x,y){
    if(!start||!assembly||![distance,x,y].every(Number.isFinite)||distance<2)return;
    const next=model.clamp(start.zoom*distance/start.distance,.04,2);
-   const sourceX=(start.left+start.x-start.offsetX)/start.zoom;
-   const sourceY=(start.top+start.y-start.offsetY)/start.zoom;
-   // Keep the original point on the aircraft beneath the moving midpoint.
-   applyZoom(next,vp.scrollLeft,vp.scrollTop,x,y);
-   const afterX=parseFloat(scene.style.left)||0,afterY=parseFloat(scene.style.top)||0;
-   vp.scrollLeft=Math.max(0,sourceX*next+afterX-x);
-   vp.scrollTop=Math.max(0,sourceY*next+afterY-y);
+   applyZoom(next,undefined,undefined,x,y,start);
+  },
+  end(){
+   if(!assembly)return;
+   commitZoomPresentation();
   }
  });
  function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();
