@@ -6,7 +6,7 @@
  'use strict';
  if(!root?.document||new URLSearchParams(root.location.search).get('profiler')!=='1')return;
  if(root.B737InteractionProfilerV1)return;
- const VERSION='UNIFIED-PROFILER-0006', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
+ const VERSION='UNIFIED-PROFILER-0007', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
  const origin=root.performance.timeOrigin, active=new Set(), round=n=>Math.round(n*10)/10;
  let panel,summary,detail,panButton,panTest=null,measuringPan=false,motionButtons=[],motionTests={};
  function now(w=root){return w.performance.now()+w.performance.timeOrigin-origin;}
