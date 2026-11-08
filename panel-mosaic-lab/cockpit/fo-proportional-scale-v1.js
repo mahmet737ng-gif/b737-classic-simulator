@@ -1,112 +1,163 @@
-/* FO-PROPORTIONAL-SCALE-0001 — unified F/O visual scale in native main-panel coordinates.
- * Owner request 2026-11-08: scale the whole F/O field, not just its background.
- * Keep the cockpit's source photos and their registered layout data byte-identical.
- * Immutable Owner18 guarded controls are explicitly excluded: they require
- * their own separate owner approval before any geometry change.
- * No timer, image decode, or aircraft-system polling is introduced.
+/* FO-PROPORTIONAL-SCALE-0002 — photo-seam anchored native registration.
+ * Owner-authorized 2026-11-08: scale the complete F/O visual field, including
+ * the three named GPWS guards. Preserve their guard artwork, switch mechanics,
+ * electrical behavior and frozen source geometry; never edit Owner18 masters.
+ *
+ * Mode-specific photographic seams:
+ * EIS          engine right = FO INNER left = 1222
+ * CONVENTIONAL panoramic engine right = FO owner photo left = 1374
+ * Different anchors are essential: scaling an owner photograph about 1222
+ * creates an otherwise visible black gap at the conventional panel seam.
+ *
+ * CSS individual transforms preserve original transform:scale(...) !important
+ * on the three GPWS guards, physical knobs, and photographed needle rotation.
+ * No moving DOM nodes (critical for active EADI and aircraft system bindings).
+ * Event-driven; zero timers or subsystem polling.
  */
 (function(root,factory){
  'use strict';
  const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root&&root.document)api.install(root);
+ if(typeof module==='object')module.exports=api;
+ if(root?.document)api.install(root);
 })(typeof window==='object'?window:globalThis,function(){
  'use strict';
- const VERSION='FO-PROPORTIONAL-SCALE-0001';
- const config=Object.freeze({anchorX:1222,anchorY:127,scale:1.035,
-  originalRightEdge:2069,mainRightEdge:2100});
- function mapRect(x,y,w,h){
-  const k=config.scale,a=config.anchorX,b=config.anchorY;
-  return {x:a+(x-a)*k,y:b+(y-b)*k,w:w*k,h:h*k};
+ const VERSION='FO-PROPORTIONAL-SCALE-0002';
+ const GPWS_IDS=Object.freeze(['gpws-terrain-inhibit','gpws-flap-inhibit','gpws-gear-inhibit']);
+ const OWNER_LAMP_IDS=Object.freeze(['main-pull-up-fo','main-below-gs-fo','main-altitude-fo','main-gpws-inop']);
+ const PROFILES=Object.freeze({
+  EIS:Object.freeze({anchorX:1222,anchorY:127,scale:1.035,rightEdge:2069,mainRightEdge:2100}),
+  CONVENTIONAL:Object.freeze({anchorX:1374,anchorY:127,scale:726/695,rightEdge:2069,mainRightEdge:2100})
+ });
+ const included=new Set(GPWS_IDS),ownerLamps=new Set(OWNER_LAMP_IDS);
+ function mapRect(x,y,w,h,mode='EIS'){
+  const p=PROFILES[mode];if(!p)throw Error('Unknown F/O mode');
+  return {x:p.anchorX+(x-p.anchorX)*p.scale,
+   y:p.anchorY+(y-p.anchorY)*p.scale,w:w*p.scale,h:h*p.scale};
  }
- function delta(x,y){
-  return {dx:(x-config.anchorX)*(config.scale-1),
-   dy:(y-config.anchorY)*(config.scale-1)};
+ function delta(x,y,originX=0,originY=0,mode='EIS'){
+  const p=PROFILES[mode],factor=p.scale-1;
+  return {dx:factor*(x+originX-p.anchorX),
+   dy:factor*(y+originY-p.anchorY)};
  }
- function isProtected(node){
-  return node.matches('.owner18-guard-control,[data-guard-id],.owner18-guard-box') ||
-   !!node.closest('.owner18-guard-control,[data-guard-id]');
- }
+ function guardId(node){return node?.getAttribute?.('data-guard-id')||'';}
  function isFoLamp(node){
-  if(!node.matches('.cockpit-light[data-cockpit-light]'))return false;
-  // All lamps carry their source photographic piece ID in their registration title.
-  return /(?:^|\s)fo-(?:inner|outer)(?:\s|$)/.test(node.title||'');
+  return node.matches('.cockpit-light[data-cockpit-light]') &&
+   /(?:^|\s)fo-(?:inner|outer)(?:\s|$)/.test(node.title||'');
  }
- function shouldScale(node,native){
-  if(isProtected(node))return false;
-  if(node.matches('.texture-piece[data-piece="fo-inner"],.texture-piece[data-piece="fo-outer"],#fo-owner-panel-v1,[data-eadi-stage1-seat="FO"]'))return true;
-  if(isFoLamp(node))return true;
-  // Other independently mounted F/O hardware (e.g. conventional AUTO BRAKE).
-  // Never touch protected guards, the seam repair, CDU, shared light layer,
-  // captain, MCP, engine, or the aircraft system's opaque host layers.
-  if(node.parentElement!==native ||
-    node.matches('.texture-piece,.cockpit-light-layer,.cdu-station,.main-panel-seam-repair,.conventional-engine-photo-wrap-v1,.eadi-stage1-host,.region-native') ||
-    node.id==='fo-proportional-scale-v1')return false;
-  if(node.querySelector('.owner18-guard-control,[data-guard-id]'))return false;
-  const x=parseFloat(node.style.left),y=parseFloat(node.style.top);
-  return Number.isFinite(x)&&Number.isFinite(y)&&
-   x>=config.anchorX&&x<config.mainRightEdge&&
-   y>=config.anchorY&&y<920;
+ function classification(node,native,mode){
+  if(!node?.matches||!native||!PROFILES[mode])return null;
+  if(node.matches('[data-guard-id],.owner18-guard-control')){
+   return included.has(guardId(node))?mode:null;
+  }
+  if(node.matches('.texture-piece')){
+   return mode==='EIS'&&node.matches('[data-piece="fo-inner"],[data-piece="fo-outer"]')?mode:null;
+  }
+  if(node.matches('#fo-owner-panel-v1')){
+   return mode==='CONVENTIONAL'?mode:null;
+  }
+  if(node.matches('[data-eadi-stage1-seat="FO"].eadi-stage1-host'))return mode;
+  if(node.matches('.cockpit-light[data-cockpit-light]')){
+   if(!isFoLamp(node))return null;
+   return mode==='EIS'||ownerLamps.has(node.dataset.cockpitLight)?mode:null;
+  }
+  // A mounted FO control whose native coordinates belong to the F/O field.
+  // Do not claim generic engine-panorama or captain elements by proximity.
+  if(node.parentElement!==native||
+     node.matches('.cockpit-light-layer,.cdu-station,.main-panel-seam-repair,.conventional-engine-photo-wrap-v1,.region-native,.eadi-stage1-host,.fo-proportional-scale-group')||
+     node.querySelector?.('[data-guard-id],.owner18-guard-control')){
+   return null;
+  }
+  const x=parseFloat(node.style.left),y=parseFloat(node.style.top),p=PROFILES[mode];
+  return Number.isFinite(x)&&Number.isFinite(y)&&x>=p.anchorX&&
+   x<p.mainRightEdge&&y>=p.anchorY&&y<920?mode:null;
  }
  function install(win){
-  const doc=win.document;
-  let pending=false,observed=null,observer=null;
-  const applied=new WeakMap();
-  let bootObserver=null;
-  function scaleNode(node){
-   if(!shouldScale(node,observed))return false;
+  const doc=win.document,applied=new Map();
+  let native=null,observer=null,bootstrapObserver=null,pending=false,activeMode='EIS';
+  function stopBoot(){if(bootstrapObserver){bootstrapObserver.disconnect();bootstrapObserver=null;}}
+  function measuredOrigin(node,style){
+   const parts=(style.transformOrigin||'').split(/\s+/);
+   return [parseFloat(parts[0])||0,parseFloat(parts[1])||0];
+  }
+  function scaleNode(node,mode){
    const style=win.getComputedStyle(node);
    const x=parseFloat(style.left),y=parseFloat(style.top);
    if(!Number.isFinite(x)||!Number.isFinite(y))return false;
-   const d=delta(x,y);
-   const transform='translate('+d.dx.toFixed(5)+'px, '+d.dy.toFixed(5)+'px) scale('+config.scale+')';
-   const old=applied.get(node);
-   // Never overwrite a separately animated/rotated control's own transform.
-   if(!old&&node.style.transform&&node.style.transform!=='none')return false;
-   if(old&&node.style.transform!==old)return false;
-   if(node.style.transform!==transform)node.style.transform=transform;
-   if(node.style.transformOrigin!=='0px 0px')node.style.transformOrigin='0px 0px';
-   applied.set(node,transform);
+   const [ox,oy]=measuredOrigin(node,style);
+   const d=delta(x,y,ox,oy,mode);
+   const tr=d.dx.toFixed(5)+'px '+d.dy.toFixed(5)+'px';
+   const sc=String(PROFILES[mode].scale);
+   let before=applied.get(node);
+   if(!before){before={translate:node.style.translate,scale:node.style.scale};applied.set(node,before);}
+   if(node.style.translate!==tr)node.style.translate=tr;
+   if(node.style.scale!==sc)node.style.scale=sc;
    node.dataset.foScaleVersion=VERSION;
    return true;
   }
+  function restore(node){
+   const original=applied.get(node);
+   if(!original)return;
+   node.style.translate=original.translate;
+   node.style.scale=original.scale;
+   if(node.dataset.foScaleVersion===VERSION)delete node.dataset.foScaleVersion;
+   applied.delete(node);
+  }
   function mount(){
-   const native=doc.querySelector('#region-main .region-native');
-   if(!native)return false;
-   if(native!==observed){
-    observer?.disconnect();observed=native;
+   const target=doc.querySelector('#region-main .region-native');
+   if(!target)return false;
+   if(target!==native){
+    observer?.disconnect();native=target;
     observer=new win.MutationObserver(queue);
     observer.observe(native,{childList:true,subtree:true});
-    bootObserver?.disconnect();bootObserver=null;
+    stopBoot();
    }
-   let count=0;
-   for(const node of native.children)if(scaleNode(node))count++;
-   for(const node of native.querySelectorAll('.cockpit-light-layer > .cockpit-light[data-cockpit-light]'))
-    if(scaleNode(node))count++;
-   const original={x:config.anchorX,y:config.anchorY,
-    w:config.originalRightEdge-config.anchorX,h:694.156862745098};
-   win.B737FoProportionalScaleV1=Object.freeze({
-    version:VERSION,config,geometry:{before:original,after:mapRect(original.x,original.y,original.w,original.h)},
-    inspect:()=>({version:VERSION,factor:config.scale,
-      scaledNodes:native.querySelectorAll('[data-fo-scale-version="'+VERSION+'"]').length,
-      guardsUnchanged:[...native.querySelectorAll('.owner18-guard-control')].every(n=>!n.dataset.foScaleVersion)})
-   });
-   return count>0;
+   const mode=doc.documentElement.dataset.engineIndication==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
+   activeMode=mode;
+   const selected=new Map();
+   // Keep the parent of each real instrument unchanged (EADI canvas state).
+   for(const node of native.children){
+    const id=classification(node,native,mode);
+    if(id)selected.set(node,id);
+   }
+   const lampLayer=native.querySelector('.cockpit-light-layer');
+   if(lampLayer){
+    for(const node of lampLayer.querySelectorAll('.cockpit-light[data-cockpit-light]')){
+     const id=classification(node,native,mode);
+     if(id)selected.set(node,id);
+    }
+   }
+   for(const node of applied.keys())if(!selected.has(node)||!node.isConnected)restore(node);
+   for(const [node,id]of selected)scaleNode(node,id);
+   doc.documentElement.dataset.foScaleVersion=VERSION;
+   return selected.size>0;
   }
   function queue(){
-   if(pending)return;pending=true;
+   if(pending)return;
+   pending=true;
    win.requestAnimationFrame(()=>{pending=false;mount();});
   }
+  const stage=doc.getElementById('scene')||doc.body;
   if(!doc.querySelector('#region-main .region-native')){
-   const stage=doc.getElementById('scene')||doc.body;
-   bootObserver=new win.MutationObserver(queue);
-   bootObserver.observe(stage,{childList:true,subtree:true});
+   bootstrapObserver=new win.MutationObserver(queue);
+   bootstrapObserver.observe(stage,{childList:true,subtree:true});
   }
-  win.addEventListener('b737:cockpit-mounted',queue);
-  win.addEventListener('b737:engine-indication-view',queue);
-  win.addEventListener('b737:aircraft-profile-change',queue);
+  for(const event of ['b737:cockpit-mounted','b737:engine-indication-view',
+   'b737:aircraft-profile-change'])win.addEventListener(event,queue);
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',queue,{once:true});
   queue();
+  win.B737FoProportionalScaleV1=Object.freeze({
+   version:VERSION,profiles:PROFILES,guards:GPWS_IDS,
+   inspect:()=>({version:VERSION,mode:activeMode,profile:PROFILES[activeMode],
+    scaled:[...applied.keys()].filter(n=>n.isConnected).map(n=>({
+     id:n.id||n.dataset.guardId||n.dataset.cockpitLight||n.dataset.piece||'fo-control',
+     translate:n.style.translate,scale:n.style.scale})),
+    seams:{EIS:{engineRight:1222,foLeft:mapRect(1222,127,0,0).x},
+     CONVENTIONAL:{engineRight:1374,foLeft:mapRect(1374,127,0,0,'CONVENTIONAL').x}},
+    guards:[...native?.querySelectorAll('[data-guard-id]')||[]]
+     .filter(n=>included.has(guardId(n)))
+     .map(n=>({id:guardId(n),scaled:n.dataset.foScaleVersion===VERSION}))})
+  });
  }
- return Object.freeze({VERSION,config,mapRect,delta,install});
+ return Object.freeze({VERSION,PROFILES,GPWS_IDS,OWNER_LAMP_IDS,
+  mapRect,delta,classification,install});
 });
