@@ -34,7 +34,13 @@
    recentLongTasks:longTasks.slice(-20)};
  }
  function value(n){return n==null?'—':n+' ms';}
+ let refreshTimer=0;
  function paint(){
+  if(refreshTimer)return;
+  refreshTimer=root.setTimeout(update,140);
+ }
+ function update(){
+  refreshTimer=0;
   if(!summary)return;
   const s=report();
   summary.textContent='Tap → paint P95: '+value(s.tapToPaintOpportunityMs.p95)+' · DOM change P95: '+value(s.tapToDomSignalMs.p95)+
