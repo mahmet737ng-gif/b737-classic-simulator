@@ -1,4 +1,4 @@
-/* B737-FMA-ENGINE-0001 — 737-300/400/500 training FMA contract.
+/* B737-FMA-ENGINE-0002 — 737 Classic CMD/CWS axis-aware FMA contract.
  * Grounding:
  * Sepehran FCOM 4.10.27, 4.20.4–4.20.11: mode labels, 4 columns, ARM
  * white, CWS yellow, 10 s changed-engaged highlight, conditional captures.
@@ -17,12 +17,12 @@
  if(root)root.B737FmaModeEngineV1=api;
 })(typeof globalThis==='object'?globalThis:null,function(){
  'use strict';
- const VERSION='B737-FMA-ENGINE-0001';
+ const VERSION='B737-FMA-ENGINE-0002-CWS-AXIS';
  const FIELDS=Object.freeze(['at','pitch','roll','afds']);
  const MODES=Object.freeze({
   at:Object.freeze(['','N1','GA','RETARD','FMC SPD','MCP SPD','THR HLD','ARM']),
-  pitch:Object.freeze(['','TO/GA','V/S','ALT ACQ','ALT HOLD','VNAV SPD','VNAV PTH','MCP SPD','G/S','FLARE','CWS P']),
-  roll:Object.freeze(['','TO/GA','HDG SEL','VOR/LOC','LNAV','CWS R']),
+  pitch:Object.freeze(['','TO/GA','V/S','ALT ACQ','ALT HOLD','VNAV SPD','VNAV PTH','MCP SPD','G/S','FLARE']),
+  roll:Object.freeze(['','TO/GA','HDG SEL','VOR/LOC','LNAV']),
   afds:Object.freeze(['','CMD','FD','CWS P','CWS R','1 CH'])
  });
  const ARMED=Object.freeze({
@@ -36,7 +36,14 @@
   FCC:'SIMULATED_FCC_CONFIRMED',
   UNKNOWN:'POWER_OR_FCC_UNVERIFIED'
  });
- function blank(){return Object.fromEntries(FIELDS.map(k=>[k,{active:'',armed:'',origin:ORIGIN.UNKNOWN}]));}
+ function blank(){
+  const state=Object.fromEntries(FIELDS.map(k=>[k,{active:'',armed:'',origin:ORIGIN.UNKNOWN}]));
+  // In the 737CL the fourth AFDS status column may carry two separate
+  // YELLOW axis states at once: CWS P and CWS R. Neither is a Pitch/Roll
+  // command-mode annunciation; those command fields are BLANK in CWS.
+  state.afds.secondary='';
+  return state;
+ }
  function assertField(field,type,value){
   const table=type==='armed'?ARMED:MODES;
   if(!table[field]?.includes(value))throw Error('Invalid FMA '+field+' '+type+': '+String(value));
@@ -48,11 +55,46 @@
    if(!FIELDS.includes(field)||!data||typeof data!=='object')throw Error('Unknown FMA field '+field);
    for(const k of ['active','armed'])if(Object.hasOwn(data,k))state[field][k]=assertField(field,k,data[k]);
    if(Object.hasOwn(data,'origin'))state[field].origin=String(data.origin);
+   if(Object.hasOwn(data,'secondary')){
+    if(field!=='afds'||!['','CWS R'].includes(data.secondary))
+     throw Error('Only AFDS column can show secondary CWS R');
+    state.afds.secondary=data.secondary;
+   }
   }
+  if(state.afds.secondary&&state.afds.active!=='CWS P')
+   throw Error('Second CWS line requires CWS P status as primary');
   return state;
  }
  function sourceMode(val,map){
   return typeof val==='string'&&Object.hasOwn(map,val)?map[val]:'';
+ }
+ function cwsAxes(output){
+  // An engaged CMD autopilot has independent pitch/roll axis control.
+  // FCOM 4.10.18, 4.20.9/10: absent/deselected CMD mode -> that axis CWS.
+  // Do NOT infer CWS from an F/D-only blank FMA or a VNAV command whose
+  // subtype is unknown. Prefer the published MCP/AFDS axis-control state.
+  const m=output?.modes||{},autopilot=m.autopilot;
+  const engaged=/^(?:CMD|CWS)_[AB]$/.test(autopilot||'');
+  if(output?.power!==true||!engaged)return {pitch:false,roll:false};
+  const manual=autopilot.startsWith('CWS_'),axis=output?.axisControl;
+  return {
+   pitch:manual||(axis&&['CMD','CWS'].includes(axis.pitch)
+    ?axis.pitch==='CWS':m.vertical==null),
+   roll:manual||(axis&&['CMD','CWS'].includes(axis.roll)
+    ?axis.roll==='CWS':m.lateral==null)
+  };
+ }
+ function applyCwsStatus(state,pitchCws,rollCws){
+  if(pitchCws)state.pitch.active='';
+  if(rollCws)state.roll.active='';
+  // The 4th AFDS STATUS area is the ONLY place where CWS is displayed.
+  // CMD remains mechanically engaged but is superseded in the annunciator
+  // by CWS P, CWS R or both, depending on the affected axes.
+  if(pitchCws||rollCws){
+   state.afds.active=pitchCws?'CWS P':'CWS R';
+   state.afds.secondary=pitchCws&&rollCws?'CWS R':'';
+  }
+  return state;
  }
  function fromMcp(output,seat){
   if(seat!=='CAPT'&&seat!=='FO')throw Error('Invalid FMA seat');
@@ -61,26 +103,25 @@
   if(output.power!==true)return state;
   const m=output.modes||{},ctrl=output.controls||{};
   const at=ctrl.atArm===true;
-  // FCOM 4.10.5 / 4.20.11: V/S and ALT HOLD automatically engage
-  // MCP SPD when A/T is armed, regardless of stale N1/SPEED MCP requests.
-  // LVL CHG climb/descent requires actual vertical flight-state evidence.
   const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical);
   state.at.active=at?(automaticSpeed?'MCP SPD':
    sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM'):'';
-  // A/T ARM is a WHITE engaged annunciation per FCOM 4.10.27.
   state.at.origin=ORIGIN.MCP;
   state.pitch.active=sourceMode(m.vertical,
    {LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'});
-  // VNAV requires actual FMC climb/descent/altitude logic to discriminate
-  // VNAV SPD from VNAV PTH; the generic VNAV button is not a legal FMA label.
   state.roll.active=sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:'LNAV'});
   state.pitch.origin=state.roll.origin=ORIGIN.MCP;
-  const cws=m.autopilot==='CWS_A'||m.autopilot==='CWS_B';
-  if(cws){state.pitch.active='CWS P';state.roll.active='CWS R';}
+  // Specific NAV/vertical capture states require verified FCC observation,
+  // not merely illuminated MCP switches.
   const cmd=m.autopilot==='CMD_A'||m.autopilot==='CMD_B';
-  state.afds.active=cmd?'CMD':cws?'FD':
+  const cws=m.autopilot==='CWS_A'||m.autopilot==='CWS_B';
+  state.afds.active=cmd?'CMD':
    ctrl.fd?.[seat==='CAPT'?'left':'right']===true?'FD':'';
   state.afds.origin=ORIGIN.MCP;
+  if(cmd||cws){
+   const axes=cwsAxes(output);
+   applyCwsStatus(state,axes.pitch,axes.roll);
+  }
   return state;
  }
  // A qualified simulated FCC observation may override a training-selected
@@ -120,16 +161,61 @@
    throw Error('VNAV submode requires valid FMC profile');
   if(state.pitch.active==='ALT ACQ'&&observation.evidence?.altAcquire!==true)
    throw Error('ALT ACQ requires AFDS acquisition evidence');
+  // Qualified FCC changes to command pitch/roll modes replace CWS on that
+  // axis. Force-override CWS must be explicitly supported by evidence;
+  // unlike a blank F/D field it must not be invented from missing data.
+  const m=observation?.evidence||{};
+  const ap=observation?.autopilotMode||'';
+  if(m.pitchCwsOverride===true||m.rollCwsOverride===true){
+   if(!ap){
+    // The MCP-only model has no physical force transducers; a declared FCC
+    // pitch/roll override is allowed only with a separately authenticated
+    // engaged autopilot flag in the observation.
+    if(m.autopilotEngaged!==true)throw Error('CWS override needs engaged A/P evidence');
+   }
+   if(m.dualAp===true&&m.locCaptured===true&&m.gsCaptured===true)
+    throw Error('Dual-channel APP manual CWS override disengages autopilot');
+  }
+  let pitchCws=m.pitchCwsOverride===true;
+  let rollCws=m.rollCwsOverride===true;
+  // A capture re-engages command on the newly confirmed axis, so it
+  // cancels the CWS status for that axis without disturbing the other.
+  const confirmedPitch=Object.hasOwn(p.pitch||{},'active')?p.pitch.active:null;
+  const confirmedRoll=Object.hasOwn(p.roll||{},'active')?p.roll.active:null;
+  if(confirmedPitch!==null&&confirmedPitch!=='')pitchCws=false;
+  if(confirmedRoll!==null&&confirmedRoll!=='')rollCws=false;
+  if(pitchCws||rollCws){
+   applyCwsStatus(state,pitchCws,rollCws);
+   state.afds.origin=ORIGIN.FCC;
+  }
   return state;
  }
  function project(output,seat,observation){
   const base=fromMcp(output,seat);
   if(base===null)return null;
   if(output.power!==true)return base;
-  return withFcc(base,observation,seat);
+  const state=withFcc(base,observation,seat);
+  if(observation){
+   // If FCC reports a captured command while the selector had no mode,
+   // only the captured axis leaves CWS. The other can remain CWS.
+   const pitch=Object.hasOwn(observation.fields?.pitch||{},'active')&&
+    observation.fields.pitch.active!=='';
+   const roll=Object.hasOwn(observation.fields?.roll||{},'active')&&
+    observation.fields.roll.active!=='';
+   if(pitch||roll){
+    const axes=cwsAxes(output);
+    const pc=axes.pitch&&!pitch,rc=axes.roll&&!roll;
+    if(pc||rc)applyCwsStatus(state,pc,rc);
+    else if(/^(CWS P|CWS R)$/.test(state.afds.active)){
+     state.afds.active=/^CMD_/.test(output.modes?.autopilot||'')?'CMD':'FD';
+     state.afds.secondary='';
+    }
+   }
+  }
+  return state;
  }
  const color=(field,mode,type='active')=>type==='armed'||(field==='at'&&mode==='ARM')?'white':
   /^(CWS P|CWS R|1 CH)$/.test(mode)?'yellow':'green';
  return Object.freeze({VERSION,FIELDS,MODES,ARMED,ORIGIN,blank,normalized,
-  fromMcp,withFcc,project,color});
+  fromMcp,cwsAxes,applyCwsStatus,withFcc,project,color});
 });
