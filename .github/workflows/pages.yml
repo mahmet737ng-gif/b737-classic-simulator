@@ -99,6 +99,8 @@ jobs:
           node panel-mosaic-lab/lights-test/atlas-stage-adapter.test.cjs
       - name: Verify unified cockpit assembly
         run: |
+          node --check panel-mosaic-lab/cockpit/fo-proportional-scale-v1.js
+          node panel-mosaic-lab/cockpit/fo-proportional-scale-v1.test.cjs
           node panel-mosaic-lab/cockpit/flap-lever-model.test.cjs
           node --check panel-mosaic-lab/cockpit/flap-lever-test.js
           node --check panel-mosaic-lab/cockpit/flap-lever-model.js
