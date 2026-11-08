@@ -187,10 +187,35 @@
   report();
  });
  document.addEventListener('click',e=>{const node=e.target.closest('[data-light]');if(node)send({kind:'selected-light',id:node.dataset.light});});
- const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light,.oh14-lever-hit,.oh14-top-hinge-lid,.oh14-emergency-exit-physical,.oh22-dcpcs-altitude-knob');let drag=null;
- document.addEventListener('pointerdown',e=>{if(e.button!==0||isControl(e))return;drag=e.pointerId;send({kind:'pan-start',screenX:e.screenX,screenY:e.screenY});});
- document.addEventListener('pointermove',e=>{if(drag===e.pointerId)send({kind:'pan-move',screenX:e.screenX,screenY:e.screenY});});
- for(const type of ['pointerup','pointercancel'])document.addEventListener(type,()=>{if(drag!==null)send({kind:'pan-end'});drag=null;});
+ const isControl=e=>e.target.closest('.mounted-toggle,.mounted-rotary,.rg-detent-hit,.guard-node,.mounted-light,.oh14-lever-hit,.oh14-top-hinge-lid,.oh14-emergency-exit-physical,.oh22-dcpcs-altitude-knob');
+ let drag=null,pendingPan=null,panFrame=0;
+ // Only inert-background pan messages are coalesced. Never throttle
+ // physical switch, rotary, guard or annunciator interactions.
+ function flushPan(){
+  if(panFrame){cancelAnimationFrame(panFrame);panFrame=0;}
+  if(drag!==null&&pendingPan)send({kind:'pan-move',...pendingPan});
+  pendingPan=null;
+ }
+ document.addEventListener('pointerdown',e=>{
+  if(e.button!==0||isControl(e))return;
+  if(drag!==null)flushPan();
+  drag=e.pointerId;
+  send({kind:'pan-start',screenX:e.screenX,screenY:e.screenY});
+ });
+ document.addEventListener('pointermove',e=>{
+  if(drag!==e.pointerId)return;
+  pendingPan={screenX:e.screenX,screenY:e.screenY};
+  if(!panFrame)panFrame=requestAnimationFrame(()=>{panFrame=0;flushPan();});
+ });
+ for(const type of ['pointerup','pointercancel'])document.addEventListener(type,e=>{
+  if(drag!==null){
+   if(type==='pointerup'&&e.pointerId===drag&&Number.isFinite(e.screenX)&&Number.isFinite(e.screenY))
+    pendingPan={screenX:e.screenX,screenY:e.screenY};
+   flushPan();
+   send({kind:'pan-end'});
+  }
+  drag=null;
+ });
  document.addEventListener('wheel',e=>{
   if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
   // OH iframe is overflow:clip. Route wheel to parent without modifying approved hardware.
