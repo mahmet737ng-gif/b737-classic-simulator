@@ -89,9 +89,10 @@
   const changed=physicalAt!==controls.atArm||physicalFd.left!==fd.left||physicalFd.right!==fd.right;
   lastPhysicalSource=changed?'VERIFIED_PHYSICAL_SWITCH_OVERRIDE':'PHYSICAL_AFDS_MATCH';
   const bothOff=!physicalFd.left&&!physicalFd.right;
-  const modes=bothOff
-   ?{...out.modes,lateral:null,vertical:null,autopilot:null}
-   :out.modes;
+  // Never mutate the AFDS bridge's published output. All per-event
+  // reconciliations are read-only snapshots of its existing mode authority.
+  const modes={...out.modes};
+  if(bothOff){modes.lateral=null;modes.vertical=null;modes.autopilot=null;}
   // Do not allow stale thrust modes after A/T is physically OFF.
   if(!physicalAt)modes.thrust=null;
   return {...out,
