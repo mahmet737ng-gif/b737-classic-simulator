@@ -59,5 +59,5 @@ assert.ok(!source.includes('node.style.transform='));
 assert.ok(!source.includes('appendChild('));
 const index=fs.readFileSync(__dirname+'/index.html','utf8');
 assert.equal((index.match(/fo-proportional-scale-v1\.js/g)||[]).length,1);
-assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0003'));
+assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0004-CONV-CRT-ISOLATED'));
 console.log('PASS: FO outer face and both EADI glass/horizon datums align; photo seams remain registered and 3 GPWS guards preserve their mechanics.');
