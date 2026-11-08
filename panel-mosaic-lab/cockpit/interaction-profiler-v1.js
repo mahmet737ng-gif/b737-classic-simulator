@@ -6,7 +6,7 @@
  'use strict';
  if(!root?.document||new URLSearchParams(root.location.search).get('profiler')!=='1')return;
  if(root.B737InteractionProfilerV1)return;
- const VERSION='UNIFIED-PROFILER-0003', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
+ const VERSION='UNIFIED-PROFILER-0004', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
  const origin=root.performance.timeOrigin, active=new Set(), round=n=>Math.round(n*10)/10;
  let panel,summary,detail,panButton,panTest=null,measuringPan=false;
  function now(w=root){return w.performance.now()+w.performance.timeOrigin-origin;}
@@ -17,6 +17,18 @@
  function markWork(name,durationMs){if(typeof name!=='string'||!Number.isFinite(durationMs)||durationMs<0)return;keep(work,{name:name.slice(0,70),durationMs:round(durationMs),timeMs:round(now())});paint();}
  function report(){
   const durations=key=>samples.map(s=>s[key]);
+  const startupNames={
+   mainVisual:'b737:main-visual-instruments-mounted',
+   eisPointers:'b737:eis-needles-mounted',
+   eisDigits:'b737:eis-digits-mounted',
+   mcpPhotos:'b737:mcp-owner13-mounted',
+   mainUsable:'b737:unified-usable',
+   overheadControls:'b737:overhead-controls-ready',
+   foCdu:'b737:fo-cdu-ready'
+  };
+  const startupVisualMountsMs=Object.fromEntries(Object.entries(startupNames).map(([key,name])=>[
+   key,root.performance.getEntriesByName(name,'mark')[0]?.startTime??null
+  ]));
   return {version:VERSION,provisional:true,
    notes:['Click task completion is an event-loop bound, not isolated simulation time.',
     'Local DOM mutation is an observed control visual change, NOT proven aircraft-system state.',
@@ -24,6 +36,7 @@
     'Two requestAnimationFrame callbacks indicate a paint opportunity, not verified pixels on glass.',
     'Browser Event Timing is only reported when supported. Long tasks seen in several iframes can overlap and must not be summed as exclusive CPU time.',
     'A matched pointerup and click are one interaction. Long tasks are deduplicated across same-process frame observers; observing frame does not prove task ownership.'],
+   startupVisualMountsMs,
    count:samples.length,interactionTriggers:Object.fromEntries([...new Set(samples.map(s=>s.trigger))].map(k=>[k,samples.filter(x=>x.trigger===k).length])),clickTaskMs:stat(durations('clickTaskMs')),
    tapToDomSignalMs:stat(durations('tapToDomSignalMs')),
    tapToPaintOpportunityMs:stat(durations('tapToPaintOpportunityMs')),
