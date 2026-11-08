@@ -15,7 +15,7 @@
  if(root?.document){root.B737EADIFMAFcomV2=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-FMA-FCOM-0002';
+ const VERSION='EADI-FMA-FCOM-0003-MCP-LIVE';
  const Core=typeof globalThis==='object'?globalThis.B737FmaModeEngineV1:null;
  const FIELDS=Object.freeze(['at','pitch','roll','afds']);
  const SECTION=Object.freeze(['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE']);
@@ -24,6 +24,7 @@
  const seats={CAPT:null,FO:null},primed={CAPT:false,FO:false},highlights={CAPT:{},FO:{}},fcc={CAPT:null,FO:null};
  const scheduled={CAPT:null,FO:null};
  let win=null,ready=false,unsubscribe=[];
+ let lastMcpPower=null,lastPhysicalSource='NO_HARDWARE_SNAPSHOT',lastTrigger='INIT',lastBridgeRevision=null;
  function model(){return win?.B737FmaModeEngineV1||Core;}
  function validate(seat){if(!['CAPT','FO'].includes(seat))throw Error('FMA seat CAPT or FO required');}
  function getState(seat){validate(seat);return JSON.parse(JSON.stringify({version:VERSION,seat,
@@ -67,25 +68,74 @@
   repaint(seat);armTimer(seat,now);
   return true;
  }
- function projectMcp(out){
+ // The hardware layer contains the actual A/T ARM and left/right F/D
+ // switch positions, while MCP/AFDS owns the simulated powered mode state.
+ // FMA must read BOTH; neither a switch click nor the illuminated test button
+ // can create unverified autopilot, thrust servo, or electrical power.
+ function hardwareReconciled(out){
+  if(out?.schema!=='B737_MCP_AFDS_OUTPUT_V1')return out;
+  const controls=out.controls||{},fd=controls.fd||{};
+  const physical=win?.B737McpHardwareV1?.getState?.();
+  if(!physical){lastPhysicalSource='AFDS_OUTPUT_ONLY';return out;}
+  const values={AT_ARM:physical.AT_ARM,FD_LEFT:physical.FD_LEFT,FD_RIGHT:physical.FD_RIGHT};
+  const valid=(id)=>id==='AT_ARM'?['OFF','ARM'].includes(values[id]):
+   ['OFF','ON'].includes(values[id]);
+  if(!['AT_ARM','FD_LEFT','FD_RIGHT'].every(valid)){
+   lastPhysicalSource='INVALID_HARDWARE_SNAPSHOT';
+   return out;
+  }
+  const physicalAt=values.AT_ARM==='ARM';
+  const physicalFd={left:values.FD_LEFT==='ON',right:values.FD_RIGHT==='ON'};
+  const changed=physicalAt!==controls.atArm||physicalFd.left!==fd.left||physicalFd.right!==fd.right;
+  lastPhysicalSource=changed?'VERIFIED_PHYSICAL_SWITCH_OVERRIDE':'PHYSICAL_AFDS_MATCH';
+  const bothOff=!physicalFd.left&&!physicalFd.right;
+  const modes=bothOff
+   ?{...out.modes,lateral:null,vertical:null,autopilot:null}
+   :out.modes;
+  // Do not allow stale thrust modes after A/T is physically OFF.
+  if(!physicalAt)modes.thrust=null;
+  return {...out,
+   controls:{...controls,atArm:physicalAt,fd:physicalFd},
+   modes};
+ }
+ function projectMcp(out,trigger='AFDS_OUTPUT'){
   const engine=model();
   if(!engine||out?.schema!=='B737_MCP_AFDS_OUTPUT_V1')return false;
+  const matched=hardwareReconciled(out);
+  lastMcpPower=matched.power;
+  lastTrigger=trigger;
+  lastBridgeRevision=matched.electricalRevision??null;
   const now=Date.now();
   let changed=false;
   for(const seat of ['CAPT','FO']){
    try{
-    const result=engine.project(out,seat,fcc[seat]);
+    const result=engine.project(matched,seat,fcc[seat]);
     if(result)changed=accept(seat,result,now)||changed;
    }catch(error){
-    // Reject stale or unverified capture rather than manufacturing a flight
-    // mode; retain only conservative MCP-selected annunciations.
+    // Discard stale FCC captures when electrical/mode input conflicts.
     fcc[seat]=null;
-    const conservative=engine.fromMcp(out,seat);
+    const conservative=engine.fromMcp(matched,seat);
     if(conservative)changed=accept(seat,conservative,now)||changed;
     win?.console?.warn?.('FMA rejected FCC observation',error.message);
    }
   }
   return changed;
+ }
+ function refreshFromMcp(trigger='MCP_REFRESH'){
+  const out=win?.B737McpAFDSBridgeV1?.getOutput?.();
+  if(!out)return false;
+  return projectMcp(out,trigger);
+ }
+ function inspectLink(){
+  const output=win?.B737McpAFDSBridgeV1?.getOutput?.()||null;
+  return Object.freeze({
+   version:VERSION,ready,mcpPowered:lastMcpPower,
+   mcpPowerEvidence:output?.powerEvidence??null,
+   electricalRevision:lastBridgeRevision,
+   physical:win?.B737McpHardwareV1?.getState?.()||null,
+   physicalSource:lastPhysicalSource,lastTrigger,
+   seats:{CAPT:getState('CAPT').fields,FO:getState('FO').fields}
+  });
  }
  function observeFcc(evidence){
   if(!evidence||evidence.schema!=='B737_FMA_FCC_OBSERVATION_V1'||
@@ -153,12 +203,24 @@
    // boxed implementation with the FCOM presentation, no second overlay.
    unsubscribe.push(eadi.registerLayer(seat,'fma',(canvas)=>render(canvas,seat)));
   }
-  root.addEventListener('b737:mcp-afds-state',event=>projectMcp(event.detail));
+  root.addEventListener('b737:mcp-afds-state',event=>projectMcp(event.detail,'AFDS_EVENT'));
+  // MCP AFDS bridge handles the hardware/button command before this
+  // fallback listener (scripts are loaded in document order). Read its
+  // resolved output immediately afterward. No timers or constant polling.
+  for(const event of ['b737:mcp-hardware-change','b737:mcp-button-request',
+   'b737:mcp-value-change','b737:mcp-bank-limit-preview'])
+   root.addEventListener(event,()=>refreshFromMcp(event));
+  // The scene can be remounted or changed between EIS/Conventional without
+  // any MCP movement. The same source snapshot rehydrates both EADI FMAs.
+  for(const event of ['b737:cockpit-mounted','b737:engine-indication-view',
+   'b737:electrical-owner-ready','b737:cb-state-change',
+   'b737:electrical-distribution-changed','b737:bus-failure-injection-changed'])
+   root.addEventListener(event,()=>refreshFromMcp(event));
   root.addEventListener('b737:fma-fcc-observation',event=>observeFcc(event.detail));
   const current=root.B737McpAFDSBridgeV1?.getOutput?.();
-  if(current)projectMcp(current);
+  if(current)projectMcp(current,'INITIAL_BRIDGE_SNAPSHOT');
   return true;
  }
  return Object.freeze({VERSION,FIELDS,SECTION,LAYOUT,COLOR,
-  accept,projectMcp,observeFcc,render,getState,bind});
+  accept,projectMcp,refreshFromMcp,hardwareReconciled,inspectLink,observeFcc,render,getState,bind});
 });
