@@ -12,6 +12,14 @@ const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_O
 const lateral=Object.freeze(["HDG_SEL","LNAV","VOR_LOC"]);
 const vertical=Object.freeze(["LVL_CHG","ALT_HLD","VS","VNAV"]);
 const thrust=Object.freeze(["N1","SPEED"]);
+// FCOM 4.10.4–4.10.11: one active command per A/T, pitch, roll, and
+// AFDS channel. New selections replace the previous mode atomically.
+// SPEED is A/T; LVL CHG is pitch MCP SPD, NOT another A/T SPEED command.
+const MODE_OWNERS=Object.freeze({
+ thrust, pitch:vertical, roll:lateral,
+ afds:Object.freeze(["CMD_A","CWS_A","CMD_B","CWS_B"])
+});
+const autoSpeedPitch=mode=>mode==="ALT_HLD"||mode==="VS";
 const buttons=Object.freeze(["VNAV","LNAV","N1","SPEED","LVL_CHG","HDG_SEL","VOR_LOC","APP","ALT_HLD","VS","CMD_A","CWS_A","CMD_B","CWS_B"]);
 const rejected=(s,reason)=>({...s,lastRejection:reason,revision:s.revision+1});
 const clone=v=>JSON.parse(JSON.stringify(v));
@@ -23,6 +31,7 @@ function initialState(){return {
   speedDisplayMode:"IAS",bankAngleLimit:20,
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
+ autoThrustByPitch:false,
  pending:{approach:false},lastRejection:null
 };}
 function globalPowerPossible(bus){
@@ -58,7 +67,35 @@ function projectPower(s){
  return {globalPowerPossible:global,feed,mcpPower:main,course2Power:course2,
   electronic1:e.electronic1,dc1:e.dc1,batteryBus:e.batteryBus,rawRevision:e.rawRevision};
 }
-function clearModes(s){s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};s.pending.approach=false;}
+function clearModes(s){
+ s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};
+ s.pending.approach=false;
+ s.autoThrustByPitch=false;
+}
+function selectPitch(s,id){
+ const previous=s.modes.vertical;
+ const next=previous===id?null:id;
+ s.modes.vertical=next;
+ // Transition from a pitch-owned auto A/T SPEED mode: the new pitch mode
+ // replaces the old one, with exactly one illuminated pitch selector.
+ if(s.autoThrustByPitch){
+  s.modes.thrust=null;
+  s.autoThrustByPitch=false;
+ }
+ if(next==="LVL_CHG"){
+  // FCOM 4.10.9: if A/T SPEED was active, retain the selected IAS/MACH
+  // as the pitch TARGET, not as a competing A/T MCP SPD annunciation.
+  // Without measured climb/descent, do NOT invent N1/RETARD capture.
+  s.modes.thrust=null;
+ }else if(next==="VNAV"){
+  // A generic VNAV selection cannot prove N1/RETARD/FMC SPD.
+  s.modes.thrust=null;
+ }else if(autoSpeedPitch(next)&&s.autoThrottleArm){
+  // FCOM 4.10.5/4.10.11: V/S and ALT HOLD engage A/T SPEED.
+  s.modes.thrust="SPEED";
+  s.autoThrustByPitch=true;
+ }
+}
 function transition(state,action){
  if(!state||state.schema!=="B737_MCP_AFDS_V1")throw Error("AFDS state required");
  if(!action||typeof action.type!=="string")throw Error("AFDS action required");
@@ -109,7 +146,12 @@ function transition(state,action){
  }
  if(action.type==="AT_ARM"){
   if(typeof action.armed!=="boolean")throw Error("Invalid A/T switch");
-  s.autoThrottleArm=action.armed;if(!action.armed)s.modes.thrust=null;return done();
+  s.autoThrottleArm=action.armed;
+  if(!action.armed){s.modes.thrust=null;s.autoThrustByPitch=false;}
+  else if(autoSpeedPitch(s.modes.vertical)){
+   s.modes.thrust="SPEED";s.autoThrustByPitch=true;
+  }
+  return done();
  }
  if(s.electrical.mcpPower!==true)return rejected(s,"MCP_BUS_OR_CB_NOT_POWERED");
  if(action.type==="SPEED_MODE"){
@@ -144,10 +186,23 @@ function transition(state,action){
  if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
  if(thrust.includes(id)){
   if(!s.autoThrottleArm)return rejected(s,"AUTOTHROTTLE_NOT_ARMED");
-  s.modes.thrust=s.modes.thrust===id?null:id;return done();
+  // A/T SPEED is incompatible with LVL CHG's pitch-owned speed
+  // hold, and N1 is incompatible with V/S/ALT HOLD A/T speed hold.
+  if(id==="SPEED"&&s.modes.vertical==="LVL_CHG")
+   return rejected(s,"AT_SPEED_INCOMPATIBLE_WITH_LVL_CHG");
+  if(id==="N1"&&autoSpeedPitch(s.modes.vertical))
+   return rejected(s,"AT_N1_INCOMPATIBLE_WITH_PITCH_SPEED_HOLD");
+  const was=s.modes.thrust;
+  s.modes.thrust=was===id?null:id;
+  s.autoThrustByPitch=false;
+  return done();
  }
- if(lateral.includes(id)){s.modes.lateral=s.modes.lateral===id?null:id;return done();}
- if(vertical.includes(id)){s.modes.vertical=s.modes.vertical===id?null:id;return done();}
+ if(lateral.includes(id)){
+  // A new lateral selector replaces the former one, without requiring
+  // a separate disengage click and without a second active roll lamp.
+  s.modes.lateral=s.modes.lateral===id?null:id;return done();
+ }
+ if(vertical.includes(id)){selectPitch(s,id);return done();}
  return rejected(s,"NOT_SUPPORTED");
 }
 function output(s){
@@ -168,5 +223,5 @@ function output(s){
   modes:{...s.modes},pending:{...s.pending},rejection:s.lastRejection,
   limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
 }
-return Object.freeze({STATES,initialState,globalPowerPossible,transition,output});
+return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,initialState,globalPowerPossible,transition,output});
 });
