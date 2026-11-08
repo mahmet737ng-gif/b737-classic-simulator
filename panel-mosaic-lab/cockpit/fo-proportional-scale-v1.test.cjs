@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const m=require('./fo-proportional-scale-v1.js');
+assert.equal(m.config.scale,1.035);
+assert.deepEqual(m.mapRect(1222,127,0,0),{x:1222,y:127,w:0,h:0});
+const outer=m.mapRect(1594,225,475,592.1638468388246);
+assert.ok(Math.abs(outer.x-(1222+(1594-1222)*1.035))<1e-9);
+assert.ok(Math.abs(outer.x+outer.w-2098.645)<1e-6,'F/O fits within right edge');
+assert.ok(outer.x+outer.w<=2100,'F/O cannot spill out of main panel');
+assert.ok(m.mapRect(1222,127,372,694).w===372*1.035);
+const src=fs.readFileSync(__dirname+'/index.html','utf8');
+assert.equal((src.match(/fo-proportional-scale-v1\\.js/g)||[]).length,1);
+assert.ok(!/guard-redzone-lock|verify-guard-redzone/.test(fs.readFileSync(__filename,'utf8')));
+console.log('PASS: F/O photo, needles, EADI and lamps share one native mapping; immutable guards are excluded');
