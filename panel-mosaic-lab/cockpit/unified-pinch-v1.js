@@ -65,9 +65,11 @@
   if(current.frame!==undefined)return;
   current.frame=requestAnimationFrame(()=>{
    current.frame=undefined;
-   const latest=current.nextPoint;
+   const queued=current.nextPoint;
    current.nextPoint=null;
-   if(gesture===current&&latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
+   if(gesture!==current||!queued)return;
+   const latest=typeof queued==='function'?queued():queued;
+   if(latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
   });
  }
  function finish(kind,remaining){
@@ -75,7 +77,8 @@
    const current=gesture;
    if(current.frame!==undefined)cancelAnimationFrame(current.frame);
    // Preserve the final finger position when the gesture ends before paint.
-   const latest=current.nextPoint;
+   const queued=current.nextPoint;
+   const latest=typeof queued==='function'?queued():queued;
    if(latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
    // Restore exact display-label geometry and schedule source image quality
    // only when the pinch finishes; never during its compositor frame loop.
@@ -153,8 +156,14 @@
    return;
   }
   if(d.kind==='pinch-move'){
-   const point=convertFromOverhead(d,frame);
-   if(point){if(!gesture||gesture.kind!=='overhead')begin(point,'overhead');move(point,'overhead');}
+   // An iframe reports many touch-move messages during one screen frame.
+   // Defer the expensive parent/iframe rect reads until the one rAF that
+   // actually applies the zoom. The latest midpoint always wins.
+   if(!gesture||gesture.kind!=='overhead'){
+    const first=convertFromOverhead(d,frame);
+    if(first)begin(first,'overhead');
+   }
+   if(gesture?.kind==='overhead')move(()=>convertFromOverhead(d,frame),'overhead');
    return;
   }
   if(d.kind==='pinch-end'){
