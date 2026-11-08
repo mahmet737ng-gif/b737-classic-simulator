@@ -12,6 +12,11 @@ const path=require('node:path');
 const src=fs.readFileSync(path.join(__dirname,'eadi-stage1-unified-v1.js'),'utf8');
 const frozen=JSON.parse(fs.readFileSync(path.join(__dirname,'eis-main-final-layout-v1.json'),'utf8'));
 assert.match(src,/const ADI_CONTENT_SCALE=0\.85;/);
+assert.match(src,/c\.clearRect\(0,0,WIDTH,HEIGHT\);c\.fillStyle='#000000';c\.fillRect\(0,0,WIDTH,HEIGHT\);/,
+ 'ADI surrounding canvas must be pure black, matching FMA');
+assert.ok(!src.includes("background:'#080b12'"),
+ 'No graphite CRT host background permitted');
+
 assert.match(src,/c\.translate\(452,393\);\s*c\.scale\(ADI_CONTENT_SCALE,ADI_CONTENT_SCALE\);\s*c\.translate\(-452,-393\);/);
 const handlers=new Map();
 const crt={
@@ -70,6 +75,7 @@ function check(mode){
   const host=native.querySelector('[data-eadi-stage1-seat="'+seat+'"]');
   assert.ok(host,mode+' '+seat+' host mounted');
   assert.equal(host.dataset.eadiMode,mode);
+  assert.equal(host.style.background,'#000000',mode+' '+seat+' CRT surround must be black');
   const ops=host.querySelector('canvas').context.ops;
   const shrinks=ops.filter(x=>x[0]==='scale'&&x[1]===.85&&x[2]===.85);
   assert.equal(shrinks.length,paintCount,
