@@ -298,7 +298,11 @@
  });
  window.addEventListener('b737:cockpit-mounted',mount);
  window.addEventListener('b737:engine-indication-view',mount);
- window.addEventListener('b737:unified-ecu-observation',e=>observeECU(e.detail));
+ window.addEventListener('b737:unified-ecu-observation',e=>{
+  const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
+  try{observeECU(e.detail);}
+  finally{if(profiler)profiler.markWork('ECU listener EIS digits fallback',performance.now()-started);}
+ });
  window.addEventListener('b737:isn-start-indications',e=>observeStart(e.detail));
  mount();
  const live=window.B737ISNCockpitV1?.getECUState?.();if(live)observeECU(live);
