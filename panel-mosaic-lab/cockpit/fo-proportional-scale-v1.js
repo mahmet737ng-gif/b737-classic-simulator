@@ -1,4 +1,4 @@
-/* FO-PROPORTIONAL-SCALE-0002 — photo-seam anchored native registration.
+/* FO-PROPORTIONAL-SCALE-0003 — coupled outer F/O photo + EADI horizon registration.
  * Owner-authorized 2026-11-08: scale the complete F/O visual field, including
  * the three named GPWS guards. Preserve their guard artwork, switch mechanics,
  * electrical behavior and frozen source geometry; never edit Owner18 masters.
@@ -21,7 +21,7 @@
  if(root?.document)api.install(root);
 })(typeof window==='object'?window:globalThis,function(){
  'use strict';
- const VERSION='FO-PROPORTIONAL-SCALE-0002';
+ const VERSION='FO-PROPORTIONAL-SCALE-0003';
  const GPWS_IDS=Object.freeze(['gpws-terrain-inhibit','gpws-flap-inhibit','gpws-gear-inhibit']);
  const OWNER_LAMP_IDS=Object.freeze(['main-pull-up-fo','main-below-gs-fo','main-altitude-fo','main-gpws-inop']);
  const PROFILES=Object.freeze({
@@ -29,6 +29,22 @@
   CONVENTIONAL:Object.freeze({anchorX:1374,anchorY:127,scale:726/695,rightEdge:2069,mainRightEdge:2100})
  });
  const included=new Set(GPWS_IDS),ownerLamps=new Set(OWNER_LAMP_IDS);
+ // Measured glass top edges in native MAIN PANEL units: CAPT 218.20,
+ // FO 263.40 prior to FO scaling. The aircraft photo + its attached
+ // instruments must travel together; moving only the FO canvas is WRONG.
+ const EIS_OUTER_LIFT=218.20-(PROFILES.EIS.anchorY+
+  (263.40-PROFILES.EIS.anchorY)*PROFILES.EIS.scale);
+ function isOuterSurface(node,mode){
+  if(mode!=='EIS')return false;
+  if(node.matches('.texture-piece[data-piece="fo-outer"],[data-eadi-stage1-seat="FO"].eadi-stage1-host'))return true;
+  if(node.matches('.cockpit-light[data-cockpit-light]'))
+   return isFoLamp(node)&&/(?:^|\\s)fo-outer(?:\\s|$)/.test(node.title||'');
+  // Standalone, direct-mounted controls on the outboard FO photograph.
+  // Do not shift GPWS guards or the RMI / gear field in FO INNER.
+  const x=parseFloat(node.style.left);
+  return node.matches(':not([data-guard-id]):not(.owner18-guard-control)')&&
+    Number.isFinite(x)&&x>=1594&&x<2100;
+ }
  function mapRect(x,y,w,h,mode='EIS'){
   const p=PROFILES[mode];if(!p)throw Error('Unknown F/O mode');
   return {x:p.anchorX+(x-p.anchorX)*p.scale,
@@ -85,6 +101,10 @@
    if(!Number.isFinite(x)||!Number.isFinite(y))return false;
    const [ox,oy]=measuredOrigin(node,style);
    const d=delta(x,y,ox,oy,mode);
+   // A single additional vertical offset applies to the entire FO OUTER
+   // photograph and every independently mounted item on that photograph.
+   // The inner FO/ENGINE join stays registered at its locked native seam.
+   if(isOuterSurface(node,mode))d.dy+=EIS_OUTER_LIFT;
    const tr=d.dx.toFixed(5)+'px '+d.dy.toFixed(5)+'px';
    const sc=String(PROFILES[mode].scale);
    let before=applied.get(node);
@@ -146,11 +166,14 @@
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',queue,{once:true});
   queue();
   win.B737FoProportionalScaleV1=Object.freeze({
-   version:VERSION,profiles:PROFILES,guards:GPWS_IDS,
+   version:VERSION,profiles:PROFILES,guards:GPWS_IDS,outerLift:EIS_OUTER_LIFT,
    inspect:()=>({version:VERSION,mode:activeMode,profile:PROFILES[activeMode],
     scaled:[...applied.keys()].filter(n=>n.isConnected).map(n=>({
      id:n.id||n.dataset.guardId||n.dataset.cockpitLight||n.dataset.piece||'fo-control',
      translate:n.style.translate,scale:n.style.scale})),
+    alignment:{captainEadiTop:218.20,
+     foEadiTop:mapRect(1612.75,263.40,0,0,'EIS').y+EIS_OUTER_LIFT,
+     foOutboardTop:mapRect(1594,225,0,0,'EIS').y+EIS_OUTER_LIFT},
     seams:{EIS:{engineRight:1222,foLeft:mapRect(1222,127,0,0).x},
      CONVENTIONAL:{engineRight:1374,foLeft:mapRect(1374,127,0,0,'CONVENTIONAL').x}},
     guards:[...native?.querySelectorAll('[data-guard-id]')||[]]
@@ -158,6 +181,6 @@
      .map(n=>({id:guardId(n),scaled:n.dataset.foScaleVersion===VERSION}))})
   });
  }
- return Object.freeze({VERSION,PROFILES,GPWS_IDS,OWNER_LAMP_IDS,
-  mapRect,delta,classification,install});
+ return Object.freeze({VERSION,PROFILES,GPWS_IDS,OWNER_LAMP_IDS,EIS_OUTER_LIFT,
+  mapRect,delta,classification,isOuterSurface,install});
 });
