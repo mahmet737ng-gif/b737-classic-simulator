@@ -159,6 +159,9 @@
    const dx=x+start.left-start.offsetX-start.sourceX*next;
    const dy=y+start.top-start.offsetY-start.sourceY*next;
    scene.style.transform='translate('+dx+'px,'+dy+'px) scale('+next+')';
+   // A live pinch is navigation activity: do not prewarm the heavy overhead
+   // iframe mid-gesture while the pilot is zooming the main photograph.
+   lastNavigationAt=Date.now();
    start.latestZoom=next;start.latestX=x;start.latestY=y;
    if(profiler)profiler.markWork('ZOOM compositor preview transform',performance.now()-started);
   },
