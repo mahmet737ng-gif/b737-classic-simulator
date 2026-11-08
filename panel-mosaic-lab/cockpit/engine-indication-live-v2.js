@@ -137,6 +137,10 @@
  // aircraft electrical buses. Tell the trainee WHY the photo needles / digits
  // are parked, instead of suggesting that a functioning ECU is broken.
  function showFeedDiagnostic(result=null){
+  // Instructor feed-matrix is not part of the aircraft instruments.
+  // Never calculate the 16-row diagnostic DOM on every ECU tick while
+  // Controls is closed; the real EIS/conventional paint remains unchanged.
+  if(!document.body.classList.contains('side-open'))return;
   const owner=$('#isnQuickEngineControls');if(!owner)return;
   let node=$('#isnEngineInstrumentFeedsV1');
   if(!node){
@@ -182,6 +186,7 @@
     '<small>EIS LRU 28VDC: P6-2, exact bus pin unverified. '+
     'AVM: MRG 28VAC indication versus LAN 115VAC conditioner, both Transfer 1.</small>';
    owner.append(matrix);
+   matrix.addEventListener('toggle',()=>{if(matrix.open&&current)showFeedDiagnostic(current);});
    const body=matrix.querySelector('tbody');
    for(const side of [1,2])for(const p of P){
     const row=document.createElement('tr');row.dataset.feedId=p+'_'+side;
@@ -192,6 +197,7 @@
     row.cells[0].textContent='E'+side+' '+p;body.append(row);
    }
   }
+  if(!matrix.open)return;
   const full=electrical();
   const sources=full?.feed?.transferSource||{};
   for(const side of [1,2])for(const p of P){
@@ -221,6 +227,8 @@
  }
  function apply(live){
   if(!db||!api()||!live||live.quality!=='TRAINING_SIMULATION_ONLY')return null;
+  const profiler=window.B737InteractionProfilerV1;
+  const startedAt=profiler?performance.now():0;
   try{
    const state=electrical();
    if(!state)return null;
@@ -244,8 +252,16 @@
     dtMs:dt,fuelMode,resetFuelUsed:resetFuelPending});
    resetFuelPending=false;
    prior=next;lastTime=now;lastRaw=live;current=next;events++;
+   const derivedAt=profiler?performance.now():0;
    paint(next);
+   const paintedAt=profiler?performance.now():0;
    showFeedDiagnostic(next);
+   if(profiler){
+    const doneAt=performance.now();
+    profiler.markWork('ENGINE indication computation',derivedAt-startedAt);
+    profiler.markWork('ENGINE indication instrument paint',paintedAt-derivedAt);
+    profiler.markWork('ENGINE instructor feed diagnostic',doneAt-paintedAt);
+   }
    // Start logic contains actual switch feedback; no duplicate start controller.
    if(events%3===0){
     window.dispatchEvent(new CustomEvent('b737:engine-indications-live-v2',{
