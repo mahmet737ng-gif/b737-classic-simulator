@@ -1,4 +1,4 @@
-/* EADI-UNIFIED-STAGE1-0002-SAFE-GLASS
+/* EADI-UNIFIED-STAGE1-0003-CRT-SOCKET
  * B737 Classic attitude-only EADI. Independent CAPT/FO canvas faces.
  * Non-destructive display overlay on original/owner main panel artwork.
  * First milestone: static level datum until flight-state is explicitly injected.
@@ -7,16 +7,19 @@
  */
 (function(root){
 'use strict';
-const VERSION='EADI-UNIFIED-STAGE1-0002-SAFE-GLASS',R=Math.PI/180;
+const VERSION='EADI-UNIFIED-STAGE1-0003-CRT-SOCKET',R=Math.PI/180;
 const WIDTH=900,HEIGHT=720;
 // Main-panel native coordinates (2100 x 920), calculated from source-image apertures.
 // CAPT: [1680,350,888,782] from 3942x3591 photo at [35,166,726,661.356].
-// FO: independent first-officer photo (1286x1223) at [1374,127,695,661];
-// initial approximate viewport [469,208,314,302] to be reviewed pixel-by-pixel.
-const CAPT_SCALE=726/3942,FO_SCALE=695/1286;
+// FO: red-rectangle owner reference in 1920x1080 screenshot 2026-11-08.
+// Screen bounds [894..1588, 304..898] were converted to the 2100x920 native
+// mosaic using existing EADI host [977..1657, 207..867] as the scale reference.
+// The CRT black-face overlay follows the owner-marked empty socket, not bezel metal.
+// CAPT photo aperture remains separately source-measured and unchanged.
+const CAPT_SCALE=726/3942;
 const stations={
  CAPT:{name:'Captain',x:35+1680*CAPT_SCALE,y:166+350*CAPT_SCALE,w:888*CAPT_SCALE,h:782*CAPT_SCALE,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'captain-photo-measured'},
- FO:{name:'First Officer',x:1374+469*FO_SCALE,y:127+208*FO_SCALE,w:314*FO_SCALE,h:302*FO_SCALE,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-photo-provisional'}
+ FO:{name:'First Officer',x:1606.75,y:263.40,w:173.44,h:147.14,pitch:0,bank:0,powered:true,canvas:null,host:null,source:'fo-owner-red-rectangle-registered-20261108'}
 };
 const futureSlots=Object.freeze(['fma','speedTape','mach','localizer','glideslope','radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
 const hooks={CAPT:new Map(),FO:new Map()};
@@ -83,7 +86,7 @@ function make(seat,parent){
   const canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;canvas.className='eadi-stage1-canvas';canvas.setAttribute('aria-label',s.name+' B737 Classic attitude display');canvas.setAttribute('role','img');
   host.appendChild(canvas);parent.appendChild(host);
  }
- Object.assign(host.style,{position:'absolute',left:s.x+'px',top:s.y+'px',width:s.w+'px',height:s.h+'px',overflow:'hidden',borderRadius:'9% 9% 6% 6%',background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
+ Object.assign(host.style,{position:'absolute',left:s.x+'px',top:s.y+'px',width:s.w+'px',height:s.h+'px',overflow:'hidden',borderRadius:'7% / 8%',background:'#080b12',pointerEvents:'none',userSelect:'none',zIndex:'27'});
  const canvas=host.querySelector('canvas');Object.assign(canvas.style,{display:'block',width:'100%',height:'100%',pointerEvents:'none'});
  s.host=host;s.canvas=canvas;render(seat);
 }
