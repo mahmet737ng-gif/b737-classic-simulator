@@ -65,6 +65,8 @@ assert.equal(View.inspectLink().mcpPowerEvidence,'SIMULATED_DC1');
 assert.equal(seat('CAPT').at.active,'ARM');
 assert.equal(seat('FO').at.active,'ARM');
 assert.equal(FMA.color('at',seat('CAPT').at.active),'white');
+// Bridge consumes the physical toggle and records the armed switch state.
+send({type:'AT_ARM',armed:true});
 // Left F/D physically ON: CAPT FD only; bridge may lag on a short hardware
 // event, but direct hardware reconciliation must show switch position.
 physical.FD_LEFT='ON';
@@ -107,7 +109,7 @@ physical.AT_ARM='OFF';
 emit('b737:mcp-hardware-change',{id:'AT_ARM',value:'OFF',method:'click'});
 assert.equal(seat('CAPT').at.active,'');
 assert.equal(seat('FO').at.active,'');
-assert.equal(base.controls.atArm,false,'MCP core was never spuriously modified');
+assert.equal(base.controls.atArm,true,'Physical preview never mutates the MCP core before bridge handles toggle');
 send({type:'AT_ARM',armed:false});
 const after=AFDS.output(state);
 assert.equal(after.controls.atArm,false);
