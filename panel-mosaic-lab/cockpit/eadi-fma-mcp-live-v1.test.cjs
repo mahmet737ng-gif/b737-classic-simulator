@@ -97,8 +97,11 @@ assert.equal(seat('CAPT').at.active,'MCP SPD');
 send({type:'BUTTON',id:'ALT_HLD'});
 assert.equal(seat('CAPT').pitch.active,'ALT HOLD');
 send({type:'BUTTON',id:'N1'});
-assert.equal(seat('CAPT').at.active,'MCP SPD','FCOM ALT HOLD A/T SPD takes precedence');
+assert.equal(state.lastRejection,'AT_N1_INCOMPATIBLE_WITH_PITCH_SPEED_HOLD');
+assert.equal(seat('CAPT').at.active,'MCP SPD','FCOM ALT HOLD A/T SPEED blocks conflicting N1');
 send({type:'BUTTON',id:'ALT_HLD'}); // exit ALT HOLD
+assert.equal(seat('CAPT').at.active,'ARM','automatic pitch-owned SPEED is released');
+send({type:'BUTTON',id:'N1'}); // new compatible A/T selection
 assert.equal(seat('CAPT').at.active,'N1');
 send({type:'BUTTON',id:'CMD_A'});
 assert.equal(seat('CAPT').afds.active,'CMD');
