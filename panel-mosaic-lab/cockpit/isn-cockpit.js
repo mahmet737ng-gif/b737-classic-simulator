@@ -185,7 +185,13 @@
   catch(error){if(!/must be RUNNING/.test(error.message))byId('isnStartError').textContent=error.message;}
  });
 
- function renderStart(){const s=chain.get(),live=ecu.get();
+ // Opt-in, read-only performance probes. Never change ECU integration, timing,
+ // protected cockpit controls, or outputs when diagnostics are disabled.
+ const profileStart=()=>window.B737InteractionProfilerV1?performance.now():null;
+ const profileDone=(name,started)=>{if(started!==null)window.B737InteractionProfilerV1?.markWork(name,performance.now()-started);};
+ function renderStart(){
+  const readStarted=profileStart(),s=chain.get(),live=ecu.get();
+  profileDone('ISN state snapshot read',readStarted);
   const startLines=[];let blocked=false;
   for(const n of [1,2]){
    const id='engine'+n,phase=s.phase[id],measured=live.engines[id];
@@ -266,8 +272,12 @@
    indication.engines[id].n2={value:measured.n2Percent,text:numeric(measured.n2Percent,'%')};
    indication.engines[id].egt={value:measured.egtC,text:numeric(measured.egtC,'°C')};
   }
+  const indicationStarted=profileStart();
   window.dispatchEvent(new CustomEvent('b737:isn-start-indications',{detail:indication}));
+  profileDone('ISN start-indication listeners',indicationStarted);
+  const ecuObserversStarted=profileStart();
   window.dispatchEvent(new CustomEvent('b737:unified-ecu-observation',{detail:live}));
+  profileDone('ISN ECU observation listeners',ecuObserversStarted);
   // Both B737-300/500 and B737-400 use the same dual duct pressure indicator.
   // Observe the one existing ECU/pneumatic state owner; do not create a second plant.
   const pneumaticState=startSession.core.pneumaticState;
@@ -277,6 +287,7 @@
   // Read ONLY its actual OH16 switch detents, never lamp-test states.
   // Starter demand uses valve feedback, not simply an ENG START GRD request.
   const oh16=lastPhysicalPacket?.toggles||s.controls;
+  const ductObserversStarted=profileStart();
   window.dispatchEvent(new CustomEvent('b737:duct-pressure-live-inputs',{detail:{
    ecu:live,bleed:pneumaticOutput.bleed,controls:pneumaticState.controls,
    apuRunning:ductSensors.apuRunning===true,
@@ -293,10 +304,13 @@
    sensors:{L:ductSensors.ductLeftPsi,R:ductSensors.ductRightPsi},
    gaugePowered:ductSensors.ductGaugeAcPower!==false&&window.B737UnifiedCB?.available('air.ductGauge')!==false
   }}));
+  profileDone('ISN duct pressure listeners',ductObserversStarted);
   const levers={engine1:s.observations.engine1.feedback.fuelStartLever.value,
    engine2:s.observations.engine2.feedback.fuelStartLever.value};
   if(document.body.classList.contains('side-open'))byId('isnStartLeverStatus').textContent='ENG 1 '+levers.engine1+' · ENG 2 '+levers.engine2;
+  const leverObserversStarted=profileStart();
   window.dispatchEvent(new CustomEvent('b737:engine-start-lever-state',{detail:{levers}}));
+  profileDone('ISN engine lever listeners',leverObserversStarted);
   if(document.body.classList.contains('side-open'))byId('isnStartError').textContent=s.lastError||'';
   if(window.B737CockpitLights?.setInputs){
    const startInputs={};for(const n of [1,2]){
@@ -356,6 +370,7 @@
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
  function render(){
+  const renderStarted=profileStart();
   // Instructor-only tables, trace and fault controls are not visible in the main cockpit.
   if(document.body.classList.contains('side-open')){
   const {state,lamps,rejected,initialized}=bridge.get();
@@ -379,8 +394,13 @@
   byId('isnError').textContent=liveFailure?'فرمان فیزیکی رد شد: '+liveFailure.id+' · '+liveFailure.reason:
    rejected.length?'آخرین فرمان ردشده: '+rejected.at(-1).reason:(ownerElectricalGuards()['bus-transfer']?'BUS TRANSFER: متصل به گارد نصب‌شدهٔ Owner18.':'BUS TRANSFER: منتظر نصب گارد.');
   }
+  const startIndicationsStarted=profileStart();
   renderStart();
+  profileDone('ISN renderStart total',startIndicationsStarted);
+  const lampProjectionStarted=profileStart();
   postProjection();
+  profileDone('ISN overhead lamp projection',lampProjectionStarted);
+  profileDone('ISN render total',renderStarted);
  }
  // Refresh once whenever Controls opens (also when the engines are stopped).
  byId('inspectorToggle')?.addEventListener('click',()=>setTimeout(render,0));
@@ -465,7 +485,9 @@
    startFeedback('UNIFIED ENGINE LINK ERROR: '+error.message,'warning');}
  });
  let lastTime=performance.now(),lastPassiveCoolingAt=lastTime;
- setInterval(()=>{const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
+ setInterval(()=>{
+  const tickStarted=profileStart();
+  const now=performance.now(),elapsed=Math.max(0,Math.min(500,now-lastTime));lastTime=now;
   // Owner18 may mount asynchronously after the first iframe report.
   if(synchronizeOwnerGuards())render();
   const sources=chain.get().sources;
@@ -487,12 +509,15 @@
    render();return;
   }
   lastPassiveCoolingAt=now;
+  const advanceStarted=profileStart();
   ecu.advance(elapsed);
+  profileDone('ISN ECU.advance',advanceStarted);
   for(const effect of chain.consumeEffects())if(effect.type==='ROTARY_RELEASE'){
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
     action:'isn-starter-cutout',id:effect.id},location.origin);
   }
   render();
+  profileDone('ISN 100ms active tick',tickStarted);
  },100);
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
     getFuelSystem:()=>ecu.get().fuel?.system??null,
