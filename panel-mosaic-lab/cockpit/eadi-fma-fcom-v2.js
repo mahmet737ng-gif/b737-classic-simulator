@@ -1,4 +1,4 @@
-/* EADI-FMA-FCOM-0002 — source-grounded Classic FMA upper annunciator.
+/* EADI-FMA-FCOM-0004-CWS-AXIS — source-grounded Classic FMA status annunciator.
  * Replaces the old 'fma' paint callback without changing EADI glass, its
  * frozen EIS geometry, the ADI 0.85 scale, or existing MCP controls.
  * FCOM D6-27370-300/400/500-SHI 4.10.27 / 4.20.4–4.20.11;
@@ -15,7 +15,7 @@
  if(root?.document){root.B737EADIFMAFcomV2=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-FMA-FCOM-0003-MCP-LIVE';
+ const VERSION='EADI-FMA-FCOM-0004-CWS-AXIS';
  const Core=typeof globalThis==='object'?globalThis.B737FmaModeEngineV1:null;
  const FIELDS=Object.freeze(['at','pitch','roll','afds']);
  const SECTION=Object.freeze(['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE']);
@@ -56,10 +56,11 @@
   const incoming=engine.normalized(fields);
   const firstPaint=!primed[seat];
   const prior=seats[seat]||engine.blank();
-  const signature=entry=>JSON.stringify([entry.active,entry.armed,entry.origin]);
+  const signature=entry=>JSON.stringify([entry.active,entry.secondary||'',entry.armed,entry.origin]);
   if(FIELDS.every(k=>signature(prior[k])===signature(incoming[k])))return false;
   for(const key of FIELDS){
-   if(!firstPaint&&prior[key].active!==incoming[key].active){
+   if(!firstPaint&&(prior[key].active!==incoming[key].active||
+     (key==='afds'&&prior[key].secondary!==incoming[key].secondary))){
     // FCOM 4.10.27: 10s highlight only after an actually changed mode.
     highlights[seat][key]=incoming[key].active&&incoming[key].active!=='ARM'?now+10000:0;
    }
@@ -173,15 +174,24 @@
   for(let i=0;i<4;i++){
    const field=FIELDS[i],val=states[field],cx=x+segment*(i+.5);
    if(val?.active){
+    // FCOM 4.10.18: CWS P/R are YELLOW in AFDS status; corresponding
+    // PITCH and ROLL command-mode fields are blank. Show two independent
+    // CWS axes as two lines inside the same FOURTH status column.
+    const dualCws=field==='afds'&&val.secondary==='CWS R';
     const color=model().color(field,val.active);
     ctx.fillStyle=COLOR[color]||COLOR.green;
-    ctx.font="700 43px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
-    ctx.fillText(val.active,cx,y+39,segment-13);
+    if(dualCws){
+     ctx.font="700 30px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
+     ctx.fillText(val.active,cx,y+27,segment-13);
+     ctx.fillText(val.secondary,cx,y+72,segment-13);
+    }else{
+     ctx.font="700 43px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
+     ctx.fillText(val.active,cx,y+39,segment-13);
+    }
     if(highlights[seat][field]>now){
-     // Transient rectangle around a CHANGE only, mandated by FCOM;
-     // NEVER a border framing any section during normal operation.
+     // A temporary changed-mode highlight, not a permanent cell box.
      ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=1.5;
-     ctx.strokeRect(cx-segment/2+8,y+15,segment-16,46);
+     ctx.strokeRect(cx-segment/2+8,y+15,segment-16,dualCws?69:46);
     }
    }
    if(val?.armed){
