@@ -8,13 +8,15 @@
  if(!viewport)return;
  const adapter=()=>window.B737UnifiedPinchAdapterV1;
  const clampPoint=(e)=>{
-  const r=viewport.getBoundingClientRect();
+  // The viewport boundary is stationary during scroll/zoom. Cache its rect
+  // for the gesture to avoid forced layout reads after the prior zoom frame.
+  const r=pinchViewportRect||(pinchViewportRect=viewport.getBoundingClientRect());
   const a=e.touches[0],b=e.touches[1];
   return {distance:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),
    x:(a.clientX+b.clientX)/2-r.left,y:(a.clientY+b.clientY)/2-r.top};
  };
  const interactive='button,input,select,textarea,a,[contenteditable="true"],[role="slider"],[role="switch"],[role="button"],[data-control],.cockpit-light,.mounted-light';
- let gesture=null,oneFinger=null,suppressRemaining=false,iframeBlocked=false;
+ let gesture=null,oneFinger=null,suppressRemaining=false,iframeBlocked=false,pinchViewportRect=null;
  // A touch controller can send many move events before the display can paint.
  // Coalesce only the viewport pan writes; never alter the aircraft controls,
  // switch/guard hit testing, or the final finger-end scroll location.
@@ -83,9 +85,11 @@
   if(remaining>0)suppressRemaining=true;
   else {suppressRemaining=false;flushOneFinger();}
   if(kind==='overhead'&&remaining===0)iframeBlocked=false;
+  if(kind==='parent')pinchViewportRect=null;
  }
  viewport.addEventListener('touchstart',e=>{
   if(e.touches.length>=2){
+   if(!gesture||gesture.kind!=='parent')pinchViewportRect=null;
    const point=clampPoint(e);
    if(!gesture||gesture.kind!=='parent')begin(point,'parent');
    oneFinger=null;
@@ -162,5 +166,6 @@
    e.stopImmediatePropagation();
   }
  },true);
- window.B737UnifiedPinchV1=Object.freeze({version:'UNIFIED-PINCH-0001'});
+ window.addEventListener('resize',()=>{pinchViewportRect=null;});
+ window.B737UnifiedPinchV1=Object.freeze({version:'UNIFIED-PINCH-0002'});
 })();
