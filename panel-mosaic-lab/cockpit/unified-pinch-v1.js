@@ -23,12 +23,29 @@
   oneFinger=null;
   if(kind==='overhead')iframeBlocked=true;
  }
+ // Coalesce high-frequency touchmove messages to the next screen frame.
+ // A single paint uses the newest midpoint/scale without intermediate layouts.
  function move(point,kind){
   if(!gesture||gesture.kind!==kind||!adapter())return;
-  adapter().move(gesture.start,point.distance,point.x,point.y);
+  const current=gesture;
+  current.nextPoint=point;
+  if(current.frame!==undefined)return;
+  current.frame=requestAnimationFrame(()=>{
+   current.frame=undefined;
+   const latest=current.nextPoint;
+   current.nextPoint=null;
+   if(gesture===current&&latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
+  });
  }
  function finish(kind,remaining){
-  if(gesture?.kind===kind)gesture=null;
+  if(gesture?.kind===kind){
+   const current=gesture;
+   if(current.frame!==undefined)cancelAnimationFrame(current.frame);
+   // Preserve the final finger position when the gesture ends before paint.
+   const latest=current.nextPoint;
+   if(latest)adapter()?.move(current.start,latest.distance,latest.x,latest.y);
+   gesture=null;
+  }
   if(remaining>0)suppressRemaining=true;
   else {suppressRemaining=false;oneFinger=null;}
   if(kind==='overhead'&&remaining===0)iframeBlocked=false;
