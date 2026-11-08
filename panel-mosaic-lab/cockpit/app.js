@@ -57,9 +57,22 @@
     for(const p of r.placements){const piece=document.createElement('div');piece.className='texture-piece';piece.dataset.piece=p.id;piece.dataset.reference=String(!!p.referenceOnly);piece.setAttribute('aria-label',p.label);Object.assign(piece.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});const img=image(assembly.assets[p.asset],p.label);if(p.presentation==='contain')img.style.objectFit='contain';if(p.sourceWindow){const ratio=p.w/p.sourceWindow.w;img.style.position='absolute';img.style.width=(assembly.assets[p.asset].dimensions[0]*ratio)+'px';img.style.height=(assembly.assets[p.asset].dimensions[1]*ratio)+'px';img.style.left=(-p.sourceWindow.x*ratio)+'px';img.style.top=(-p.sourceWindow.y*ratio)+'px';}if(p.maskPolygon){const [sw,sh]=assembly.assets[p.asset].dimensions;img.style.clipPath='polygon('+p.maskPolygon.map(([x,y])=>(x/sw*100).toFixed(4)+'% '+(y/sh*100).toFixed(4)+'%').join(',')+')';}piece.append(img);native.append(piece);}region.append(native);
     const ref=image(assembly.assets[r.id==='main'?'assets/main-panel.webp':'assets/pedestal.webp'],r.label+' REFERENCE');ref.className='reference-image';region.append(ref);
    }scene.append(region);
-   // The MCP glass is attached immediately after the source-photo piece is in DOM.
-   // This avoids relying solely on a later cockpit-mounted event to create the digits.
-   if(r.id==='main')window.B737McpIndependentDigitsV1?.refresh?.();
+   // First-paint lane: make the actual MCP controls and EIS needles/digits
+   // visible as soon as their photograph host exists. These already-loaded
+   // presenters use only their original geometry and inactive/cold-dark
+   // readings; the single ECU and electrical owner connect later as before.
+   // Crucially, no CDU or overhead iframe has been started at this point.
+   if(r.id==='main'){
+    window.B737McpVisualV3?.mount?.();
+    window.B737McpHardwareV1?.mount?.();
+    window.B737McpIndependentDigitsV1?.refresh?.();
+    window.B737EISNeedlesV1?.mount?.();
+    window.B737EISDotReadoutsV1?.mount?.();
+    window.B737McpOwner13V1?.mount?.();
+    const t=performance.now();
+    document.documentElement.dataset.unifiedMainVisualMountMs=String(Math.round(t));
+    performance.mark('b737:main-visual-instruments-mounted');
+   }
   }
   model.validateInstruments(assembly);
   for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);
@@ -79,7 +92,7 @@
     byId('region-'+item.regionId).querySelector('.region-native').append(station);
     continue;
    }
-   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
+   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.loading='lazy';child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2){wheelController?.cancel();const next=model.clamp(value,.04,2),before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0},after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};const z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);zoom=z.zoom;scene.style.left=after.x+'px';scene.style.top=after.y+'px';scene.style.transform='scale('+zoom+')';scene.style.setProperty('--zoom',String(zoom));sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';vp.scrollLeft=z.left;vp.scrollTop=z.top;byId('zoomValue').textContent=Math.round(zoom*100)+'%';scheduleViewRefresh();}
  // Responsive two-finger zoom adapter for the outer canvas. This touches only
@@ -105,7 +118,11 @@
    vp.scrollTop=Math.max(0,sourceY*next+afterY-y);
   }
  });
- function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
+ function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();
+  // A user requesting FO CDU takes priority over background lazy loading.
+  if(id==='cdu-first-officer'||id==='cdu-both'){
+   const fo=cduFrames.get('FO');if(fo?.child)fo.child.loading='eager';
+  }wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
  function panWheel(payload){if(drag)return false;return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
