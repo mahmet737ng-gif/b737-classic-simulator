@@ -1,6 +1,6 @@
 {
   "schema": "b737.unified.conventional-main.calibration-wip.v1",
-  "status": "REFERENCE_CAPTURED_NOT_PIXEL_VERIFIED",
+  "status": "CONVENTIONAL_FO_EADI_GLASS_REGISTERED_SCREENSHOT_BASED",
   "createdAt": "2026-11-08",
   "coordinateSystem": "native MAIN region, 2100 x 920, before browser/scene zoom",
   "eisBaseline": "./eis-main-final-layout-v1.json",
@@ -64,7 +64,26 @@
       "h": 153.70307913669063
     },
     "currentTopDifferenceNative": 51.284029,
-    "target": "pending explicit photo registration for Conventional"
+    "target": "Conventional FO CRT glass mounted; pending owner's final on-device visual approval",
+    "firstOfficerFinal": {
+      "x": 1631.430793157076,
+      "y": 234.26283048211508,
+      "w": 194.76671850699844,
+      "h": 158.0715396578538
+    },
+    "sourceGlassRectPx": {
+      "x": 456,
+      "y": 190,
+      "w": 345,
+      "h": 280
+    },
+    "sourcePhotoDimensions": [
+      1286,
+      1223
+    ],
+    "registrationModule": "./conventional-eadi-socket-v1.js",
+    "derivedFrom": "Owner-provided Conventional FO CRT close-up 2026-11-08. Screenshot-registered black-glass bounds; physical black aperture, excluding metal bezel.",
+    "independentFromFoPanelScale": true
   },
   "conventionalDigitSourceCentres": {
     "n1": [
@@ -110,7 +129,7 @@
   },
   "nextQA": [
     "photo-boundary matching at engine x=1374 to FO owner x=1374",
-    "all EADI glass corners and horizon, measured from source and native stage",
+    "Conventional FO CRT photo-space alignment registered; inspect corner fit at browser zoom and obtain owner visual approval",
     "ALT/VSI/CLOCK/RMI/airspeed pointers against photographed pivot holes",
     "every lamp, AUTO BRAKE and ANTI SKID socket with power/event interaction intact",
     "panel mode switch Conventional → EIS → Conventional must restore EIS pixel geometry"
