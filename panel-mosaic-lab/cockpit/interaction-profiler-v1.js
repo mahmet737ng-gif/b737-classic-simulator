@@ -6,9 +6,9 @@
  'use strict';
  if(!root?.document||new URLSearchParams(root.location.search).get('profiler')!=='1')return;
  if(root.B737InteractionProfilerV1)return;
- const VERSION='UNIFIED-PROFILER-0005', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
+ const VERSION='UNIFIED-PROFILER-0006', MAX=160, samples=[],eventTimings=[],longTasks=[],work=[], attached=new WeakSet();
  const origin=root.performance.timeOrigin, active=new Set(), round=n=>Math.round(n*10)/10;
- let panel,summary,detail,panButton,panTest=null,measuringPan=false;
+ let panel,summary,detail,panButton,panTest=null,measuringPan=false,motionButtons=[],motionTests={};
  function now(w=root){return w.performance.now()+w.performance.timeOrigin-origin;}
  function timestamp(w,e){const v=Number(e.timeStamp);return !Number.isFinite(v)?now(w):v>1e12?v-origin:v+w.performance.timeOrigin-origin;}
  function percentile(a,p){if(!a.length)return null;const v=a.filter(Number.isFinite).sort((x,y)=>x-y);return v.length?round(v[Math.max(0,Math.ceil(v.length*p)-1)]):null;}
@@ -44,7 +44,7 @@
    browserInputQueueMs:stat(eventTimings.map(x=>x.queueMs)),
    longTasks:{count:longTasks.length,totalDurationMs:round(longTasks.reduce((n,x)=>n+x.durationMs,0)),p95Ms:percentile(longTasks.map(x=>x.durationMs),.95),
     byFrame:Object.fromEntries([...new Set(longTasks.map(x=>x.frame))].map(frame=>[frame,stat(longTasks.filter(x=>x.frame===frame).map(x=>x.durationMs))]))},
-   pan:panTest,workByName:Object.fromEntries([...new Set(work.map(x=>x.name))].map(name=>[name,stat(work.filter(x=>x.name===name).map(x=>x.durationMs))])),
+   pan:panTest,motionTests:{...motionTests},workByName:Object.fromEntries([...new Set(work.map(x=>x.name))].map(name=>[name,stat(work.filter(x=>x.name===name).map(x=>x.durationMs))])),
    recentInteractions:samples.slice(-35),recentWork:work.slice(-35),recentInputEvents:eventTimings.slice(-35),
    recentLongTasks:longTasks.slice(-20)};
  }
@@ -60,7 +60,8 @@
   const s=report();
   summary.textContent='Tap → paint P95: '+value(s.tapToPaintOpportunityMs.p95)+' · DOM change P95: '+value(s.tapToDomSignalMs.p95)+
    '\nInput queue P95: '+value(s.browserInputQueueMs.p95)+' · Electrical signal P95: '+value(s.tapToElectricalSignalMs.p95)+
-   '\nCompleted taps: '+s.count+' · Long-task observations: '+s.longTasks.count+' · Pan FPS: '+(s.pan?.fps??'—');
+   '\nCompleted taps: '+s.count+' · Long-task observations: '+s.longTasks.count+
+   '\nIDLE / PAN / ZOOM FPS: '+['idle','pan','zoom'].map(k=>s.motionTests[k]?.fps??'—').join(' / ');
   if(detail&&!detail.hidden)detail.textContent=JSON.stringify({recent:s.recentInteractions.slice(-8),work:s.workByName,pan:s.pan},null,2);
  }
  function ignore(node){return !node?.closest||!!node.closest('#unifiedInteractionProfiler');}
@@ -201,20 +202,28 @@
    frame.addEventListener('load',a);a();
   }
  }
- function measurePan(){
-  if(measuringPan)return;
-  measuringPan=true;panButton.disabled=true;panButton.textContent='Swipe / zoom now (5 seconds)';
-  const t0=now(),gaps=[];let prior=null,count=0;
+ // The legacy pan score combined panning and pinching, so it could not
+ // establish which movement actually causes the frame drops. Benchmark all
+ // three modes independently with the SAME rAF measurement method.
+ function measureMotion(mode){
+  if(measuringPan||!['idle','pan','zoom'].includes(mode))return;
+  measuringPan=true;
+  for(const button of motionButtons)button.disabled=true;
+  const startAt=now(),gaps=[];let prior=null,count=0;
   const frame=t=>{
    count++;
    if(prior!=null)gaps.push(t-prior);
    prior=t;
-   if(now()-t0<5000){root.requestAnimationFrame(frame);return;}
-   const ms=now()-t0;
-   panTest={fps:round((Math.max(0,count-1))*1000/ms),p95FrameMs:percentile(gaps,.95),
+   if(now()-startAt<5000){root.requestAnimationFrame(frame);return;}
+   const ms=now()-startAt;
+   const result={fps:round(Math.max(0,count-1)*1000/ms),p95FrameMs:percentile(gaps,.95),
     maximumFrameMs:gaps.length?round(Math.max(...gaps)):null,slowFrames:gaps.filter(x=>x>34).length,
-    durationMs:round(ms)};
-   measuringPan=false;panButton.disabled=false;panButton.textContent='Measure pan / zoom (5s)';paint();
+    durationMs:round(ms),mode};
+   motionTests[mode]=result;
+   if(mode==='pan')panTest=result;
+   measuringPan=false;
+   for(const button of motionButtons)button.disabled=false;
+   paint();
   };
   root.requestAnimationFrame(frame);
  }
@@ -227,14 +236,17 @@
   summary=root.document.createElement('pre');summary.style.cssText='white-space:pre-wrap;margin:5px 0;font:11px/1.5 monospace';
   detail=root.document.createElement('pre');detail.hidden=true;detail.style.cssText='white-space:pre-wrap;word-break:break-word;font:10px/1.4 monospace';
   const btn=(title,fn)=>{const b=root.document.createElement('button');b.textContent=title;b.style.cssText='margin:3px;padding:4px 7px;background:#24506a;color:white;border:1px solid #9db9ca;border-radius:5px';b.addEventListener('click',fn);return b;};
-  panButton=btn('Measure pan / zoom (5s)',measurePan);
+  const idleButton=btn('Idle / no touch (5s)',()=>measureMotion('idle'));
+  panButton=btn('Pan only / 1 finger (5s)',()=>measureMotion('pan'));
+  const zoomButton=btn('Pinch zoom only / 2 fingers (5s)',()=>measureMotion('zoom'));
+  motionButtons=[idleButton,panButton,zoomButton];
   const toggle=btn('Details',()=>{detail.hidden=!detail.hidden;paint();});
   const copy=btn('Copy JSON',async()=>{
    const payload=JSON.stringify(report(),null,2);
    try{await root.navigator.clipboard.writeText(payload);}catch{const el=root.document.createElement('textarea');el.value=payload;panel.appendChild(el);el.select();root.document.execCommand('copy');el.remove();}
   });
-  const clear=btn('Clear',()=>{samples.length=0;eventTimings.length=0;longTasks.length=0;work.length=0;panTest=null;active.clear();paint();});
-  panel.append(heading,help,summary,panButton,toggle,copy,clear,detail);
+  const clear=btn('Clear',()=>{samples.length=0;eventTimings.length=0;longTasks.length=0;work.length=0;panTest=null;motionTests={};active.clear();paint();});
+  panel.append(heading,help,summary,...motionButtons,toggle,copy,clear,detail);
   root.document.body.append(panel);
   scanFrames();
   root.addEventListener('b737:cockpit-mounted',scanFrames);
