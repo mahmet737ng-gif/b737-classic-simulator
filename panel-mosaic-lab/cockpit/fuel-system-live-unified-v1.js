@@ -64,7 +64,19 @@
    '\nFUEL CAUTION '+(s.caution.masterCaution?'ON':'OFF')+'\n'+ps.join(' | ');
  }
  root.addEventListener('b737:electrical-owner-ready',()=>{mount();refresh()});
- root.addEventListener('b737:unified-ecu-observation',()=>{if(mount()&&panel)refresh()});
+ // ATA28 instructor telemetry is not an aircraft output. Never serialize
+ // the full fuel snapshot at 10 Hz while the instructor drawer is hidden.
+ // The ECU fuel plant, physical OH09 switches, cautions and fuel needles
+ // still update independently through their existing live paths.
+ root.addEventListener('b737:unified-ecu-observation',()=>{
+  if(!document.body.classList.contains('side-open'))return;
+  const profiler=root.B737InteractionProfilerV1,started=profiler?performance.now():0;
+  try{if(mount()&&panel)refresh();}
+  finally{if(profiler)profiler.markWork('ECU listener ATA28 instructor',performance.now()-started);}
+ });
+ document.getElementById('inspectorToggle')?.addEventListener('click',()=>{
+  setTimeout(()=>{if(document.body.classList.contains('side-open')){mount();refresh();}},0);
+ });
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
  root.B737UnifiedFuelSystemATA28=Object.freeze({version:'ATA28-FUEL-LIVE-0001',snapshot:()=>owner()?.getFuelSystem?.()??null,refresh});
 })(window);
