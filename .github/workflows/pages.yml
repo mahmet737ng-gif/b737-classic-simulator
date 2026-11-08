@@ -108,6 +108,7 @@ jobs:
           node --check panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js
           node --check panel-mosaic-lab/cockpit/eadi-stage1-unified-v1.js
           node panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.test.cjs
+          node panel-mosaic-lab/cockpit/eadi-adi-content-scale-v1.test.cjs
           node panel-mosaic-lab/cockpit/flap-lever-model.test.cjs
           node --check panel-mosaic-lab/cockpit/flap-lever-test.js
           node --check panel-mosaic-lab/cockpit/flap-lever-model.js
