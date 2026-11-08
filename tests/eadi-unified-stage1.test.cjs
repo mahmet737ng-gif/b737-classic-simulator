@@ -15,6 +15,14 @@ vm.runInNewContext(code,{window:root,document:doc,console,Math,Map,Object,Number
 const a=root.B737UnifiedEADIStage1;
 assert.equal(a.snapshot().mounted,true);
 assert.equal(native.children.length,2);
+const capt=a.snapshot().stations.CAPT,fo=a.snapshot().stations.FO;
+const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<0.011,
+  'EADI socket coordinate drift: '+actual+' should equal '+expected);
+close(fo.x,1606.75);close(fo.y,263.40);close(fo.w,173.44);close(fo.h,147.14);
+close(capt.x,35+1680*726/3942);
+close(capt.y,166+350*726/3942);
+assert.equal(native.children[0].style.borderRadius,'7% / 8%');
+assert.equal(native.children[1].style.borderRadius,'7% / 8%');
 assert.ok(draws>0);
 assert.equal(a.snapshot().futureSlots.length,11);
 assert.equal(a.setAttitude('CAPT',7.5,24).bank,24);
