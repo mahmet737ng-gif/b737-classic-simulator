@@ -149,3 +149,12 @@
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
+
+/* PROFILER-0001: opt-in diagnostics, zero cost in normal sessions. */
+;(function(){
+ if(new URLSearchParams(location.search).get('profiler')!=='1')return;
+ const script=document.createElement('script');
+ script.src='./interaction-profiler-v1.js?v=PROFILER-0001';
+ script.async=true;
+ document.head.appendChild(script);
+})();
