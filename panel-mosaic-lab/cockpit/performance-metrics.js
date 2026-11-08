@@ -77,3 +77,75 @@
  });
  if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=PERF-0003',{scope:'./',updateViaCache:'none'}).then(()=>navigator.serviceWorker.ready).then(registration=>{registration.active?.postMessage({type:'b737:prime-used-textures',urls:resources().map(r=>r.url)});const out=document.getElementById('performanceStats');if(out)out.dataset.cache='ready';}).catch(()=>{const out=document.getElementById('performanceStats');if(out)out.dataset.cache='unavailable';}),{once:true});
 })();
+
+;(function tapLagAddon(){
+ /* TAP-LAG-0001 — opt-in interaction timing; no state writes or uploads. */
+ if(new URLSearchParams(location.search).get('tapLag')!=='1')return;
+ const taps=[],events=[],longTasks=[],attached=new WeakSet();
+ let box,stats,lines,panButton,panResult=null,panRunning=false;
+ const round=n=>Math.round(n*10)/10;
+ function percentile(values,p){if(!values.length)return null;const a=[...values].sort((x,y)=>x-y);return round(a[Math.max(0,Math.ceil(a.length*p)-1)]);}
+ function aggregate(values){return {count:values.length,median:percentile(values,.5),p95:percentile(values,.95),max:values.length?round(Math.max(...values)):null};}
+ function report(){return {version:'TAP-LAG-0001',warning:'RAF bound is paint opportunity, NOT verified physical switch state change',
+  tapToPaintOpportunity:aggregate(taps.map(x=>x.tapMs)),clickToPaintOpportunity:aggregate(taps.map(x=>x.clickMs)),
+  eventInputDelay:aggregate(events.map(x=>x.delayMs)),browserEventCount:events.length,
+  longTaskCount:longTasks.length,longTaskTotalMs:round(longTasks.reduce((a,b)=>a+b.durationMs,0)),pan:panResult,
+  recentTaps:taps.slice(-30),recentBrowserEvents:events.slice(-20)};}
+ function render(){if(!stats)return;const r=report();stats.textContent=`Tap → next paint opportunity: ${r.tapToPaintOpportunity.count} samples\nMedian ${r.tapToPaintOpportunity.median??'—'} ms · P95 ${r.tapToPaintOpportunity.p95??'—'} ms · Max ${r.tapToPaintOpportunity.max??'—'} ms\nBrowser input queue P95 ${r.eventInputDelay.p95??'—'} ms · Long tasks ${r.longTaskCount}\nPan FPS ${r.pan?.fps??'—'} · 95% frame ${r.pan?.p95FrameMs??'—'} ms`;
+  lines.textContent=taps.slice(-5).map(x=>`${x.frame} · ${x.control}: ${x.tapMs} ms`).join('\n')||'Tap switches in the cockpit to collect samples.';}
+ function attach(w,frame){
+  try{
+   if(!w?.document||attached.has(w))return;attached.add(w);
+   const starts=new Map();
+   const valid=e=>e.target instanceof w.Element&&!e.target.closest('#unifiedTapLagDiagnostic')&&(frame!=='main'||!!e.target.closest('#viewport'));
+   w.document.addEventListener('pointerdown',e=>{
+    if(!valid(e)||e.isPrimary===false)return;
+    starts.set(e.pointerId??0,{at:e.timeStamp,control:String(e.target.getAttribute('aria-label')||e.target.id||e.target.className||e.target.tagName).slice(0,48)});
+    if(starts.size>12)starts.clear();
+   },true);
+   w.document.addEventListener('click',e=>{
+    if(!valid(e))return;
+    const id=e.pointerId??0,s=starts.get(id)||[...starts.values()].at(-1),clickAt=e.timeStamp;
+    const at=s&&clickAt>=s.at&&clickAt-s.at<3000?s.at:clickAt;
+    starts.delete(id);
+    w.requestAnimationFrame(()=>w.requestAnimationFrame(paintAt=>{
+     taps.push({frame,control:s?.control||String(e.target.id||e.target.tagName),tapMs:round(Math.max(0,paintAt-at)),clickMs:round(Math.max(0,paintAt-clickAt))});
+     if(taps.length>150)taps.shift();render();
+    }));
+   },true);
+   if(w.PerformanceObserver){
+    try{const o=new w.PerformanceObserver(list=>{for(const e of list.getEntries()){
+     if(!['click','pointerdown','pointerup'].includes(e.name))continue;
+     events.push({frame,type:e.name,delayMs:round(Math.max(0,e.processingStart-e.startTime)),totalMs:round(e.duration)});
+     if(events.length>150)events.shift();}render();});o.observe({type:'event',durationThreshold:16});}catch{}
+    try{const o=new w.PerformanceObserver(list=>{for(const e of list.getEntries()){
+     longTasks.push({frame,durationMs:round(e.duration)});if(longTasks.length>150)longTasks.shift();}render();});o.observe({type:'longtask'});}catch{}
+   }
+  }catch{}
+ }
+ function frames(){for(const el of document.querySelectorAll('iframe')){
+   if(el.dataset.tapLagTracked)return;el.dataset.tapLagTracked='1';
+   const join=()=>{try{attach(el.contentWindow,el.id||'embedded');}catch{}};
+   el.addEventListener('load',join);join();
+ }}
+ function pan(){if(panRunning)return;panRunning=true;panButton.disabled=true;panButton.textContent='Swipe now for five seconds...';
+  const begin=performance.now(),gaps=[];let prev=null,n=0;
+  const frame=t=>{n++;if(prev!==null)gaps.push(t-prev);prev=t;
+   if(t-begin<5000){requestAnimationFrame(frame);return;}
+   panResult={fps:round(n*1000/(t-begin)),p95FrameMs:percentile(gaps,.95),maxFrameMs:round(Math.max(0,...gaps)),slowFrames:gaps.filter(v=>v>34).length};
+   panRunning=false;panButton.disabled=false;panButton.textContent='Measure pan (5s)';render();};requestAnimationFrame(frame);
+ }
+ function start(){
+  box=document.createElement('aside');box.id='unifiedTapLagDiagnostic';box.style.cssText='position:fixed;bottom:8px;left:8px;z-index:2147483000;width:min(350px,calc(100vw - 16px));max-height:42vh;overflow:auto;border:1px solid #739fb4;border-radius:9px;background:#071925f2;color:#e5f3ff;padding:9px;direction:ltr;text-align:left;font:11px/1.5 system-ui';
+  const title=document.createElement('strong');title.textContent='Unified · Tap latency diagnostic';
+  const note=document.createElement('p');note.textContent='Approximate next-paint timing, not exact switch-state timing. No data leaves the device.';note.style.color='#a8c8da';
+  stats=document.createElement('pre');stats.style.whiteSpace='pre-wrap';lines=document.createElement('pre');lines.style.whiteSpace='pre-wrap';
+  panButton=document.createElement('button');panButton.textContent='Measure pan (5s)';panButton.onclick=pan;
+  const copy=document.createElement('button');copy.textContent='Copy JSON';copy.onclick=async()=>{const value=JSON.stringify(report(),null,2);try{await navigator.clipboard.writeText(value);}catch{const t=document.createElement('textarea');t.value=value;document.body.append(t);t.select();document.execCommand('copy');t.remove();}};
+  for(const b of [panButton,copy])b.style.cssText='margin:3px;color:white;background:#20566e;border:1px solid #8fb9ce;border-radius:5px;padding:4px 6px';
+  box.append(title,note,stats,lines,panButton,copy);document.body.append(box);
+  attach(window,'main');frames();window.addEventListener('b737:cockpit-mounted',frames);
+  window.B737TapLagDiagnostic=Object.freeze({report,measurePan:pan});render();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
