@@ -11,6 +11,11 @@ assert.deepEqual(e.FIELDS,['at','pitch','roll','afds']);
 assert.equal(e.VERSION,'B737-FMA-ENGINE-0001');
 let s=e.fromMcp(out(),'CAPT');
 assert.equal(s.at.active,'MCP SPD');
+assert.equal(e.fromMcp(out({modes:{thrust:null,vertical:'ALT_HLD',lateral:null,autopilot:null}}),'CAPT').at.active,'MCP SPD',
+ 'ALT HOLD automatically engages MCP SPD when armed');
+assert.equal(e.fromMcp(out({modes:{thrust:null,vertical:'VS',lateral:null,autopilot:null}}),'CAPT').at.active,'MCP SPD',
+ 'V/S automatically engages MCP SPD when armed');
+
 assert.equal(s.pitch.active,'ALT HOLD');
 assert.equal(s.roll.active,'HDG SEL');
 assert.equal(s.afds.active,'CMD');
