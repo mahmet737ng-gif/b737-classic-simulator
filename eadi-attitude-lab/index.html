@@ -15,12 +15,12 @@ header{padding:20px 26px 13px;display:flex;justify-content:space-between;align-i
 <body>
 <header><div><strong>B737 CLASSIC <span style="color:#81bdff">/ EADI ATTITUDE LAB</span></strong><small>300 / 400 / 500 · Attitude aperture · fixed aircraft · pitch ladder · bank scale</small></div><span class="tag">INDEPENDENT TEST • NOT CONNECTED TO UNIFIED SYSTEMS</span></header>
 <main class="wrap"><div class="layout">
-<section class="screen-card"><div class="screen-head"><span>CAPTAIN EADI — ATTITUDE ONLY V2</span><span class="live"><i class="dot"></i><span id="activity">STABLE</span></span></div><div class="canvas-holder" id="stage" tabindex="0" role="application" aria-label="Interactive EADI attitude display. Drag to adjust pitch and bank."><canvas id="eadi" width="900" height="720" aria-label="737 Classic EADI instrument"></canvas></div><p class="hint">Drag on the display: <b>horizontal = bank</b>, <b>vertical = pitch</b>. Keyboard: <span class="kbd">↑</span> <span class="kbd">↓</span> pitch · <span class="kbd">←</span> <span class="kbd">→</span> bank · <span class="kbd">R</span> level · <span class="kbd">F</span> fullscreen.</p></section>
+<section class="screen-card"><div class="screen-head"><span>CAPTAIN EADI — ATTITUDE ONLY V5 • TWO-L REFERENCE</span><span class="live"><i class="dot"></i><span id="activity">STABLE</span></span></div><div class="canvas-holder" id="stage" tabindex="0" role="application" aria-label="Interactive EADI attitude display. Drag to adjust pitch and bank."><canvas id="eadi" width="900" height="720" aria-label="737 Classic EADI instrument"></canvas></div><p class="hint">Drag on the display: <b>horizontal = bank</b>, <b>vertical = pitch</b>. Keyboard: <span class="kbd">↑</span> <span class="kbd">↓</span> pitch · <span class="kbd">←</span> <span class="kbd">→</span> bank · <span class="kbd">R</span> level · <span class="kbd">F</span> fullscreen.</p></section>
 <aside class="panel"><h2>Attitude Controls</h2><div class="sub">Move the actual horizon behind the fixed airplane reference.</div>
 <div class="readout"><label for="pitch">PITCH</label><output id="pitchOut">+0.0°</output></div><input id="pitch" class="range" type="range" min="-90" max="90" step="0.5" value="0"><div class="ends"><span>−90° DOWN</span><span>+90° UP</span></div>
 <div class="readout"><label for="bank">BANK / ROLL</label><output id="bankOut">+0.0°</output></div><input id="bank" class="range" type="range" min="-180" max="180" step="0.5" value="0"><div class="ends"><span>−180° LEFT</span><span>+180° RIGHT</span></div>
 <div class="section-title">QUICK ATTITUDE TESTS</div><div class="buttons"><button class="btn main" data-p="0" data-b="0">Wings Level</button><button class="btn" data-p="10" data-b="0">Pitch +10°</button><button class="btn" data-p="-10" data-b="0">Pitch −10°</button><button class="btn" data-p="0" data-b="30">Bank +30°</button><button class="btn" data-p="0" data-b="-30">Bank −30°</button><button class="btn" data-p="15" data-b="25">Climbing Turn</button><button class="btn" data-p="-12" data-b="-35">Descending Turn</button><button class="btn" data-p="0" data-b="60">Bank +60°</button><button class="btn" data-p="85" data-b="0">Pitch +85°</button><button class="btn" data-p="-85" data-b="0">Pitch −85°</button><button class="btn wide" id="demo">▶ Auto Motion Demo</button></div>
-<div class="numbox"><label for="smoothing">Motion response</label><input id="smoothing" type="number" min="1" max="100" value="18" step="1"><span>%</span></div><div class="info"><b>Calibration:</b> The reference-aircraft symbol stays fixed. The horizon and numbered pitch ladder move and rotate inside the rounded aperture. The white upward-pointing filled bank pointer moves around the bank arc and meets the fixed downward-pointing pointer at zero bank. All attitude readings are simulator test values.</div><div class="small-note">Attitude-only geometry from the supplied 737 Classic reference photos. Not certified or validated for flight operation.</div></aside>
+<div class="numbox"><label for="smoothing">Motion response</label><input id="smoothing" type="number" min="1" max="100" value="18" step="1"><span>%</span></div><div class="info"><b>Calibration:</b> The twin L-shaped reference bars and center circular datum stay fixed. The horizon and numbered pitch ladder move and rotate inside the rounded aperture. The white upward-pointing filled bank triangle is attached to the moving attitude page and rotates with bank. Its apex is placed at the highest practical point of the attitude page with only a minimal gap below the fixed top triangle. All attitude readings are simulator test values.</div><div class="small-note">Attitude-only geometry from the supplied 737 Classic reference photos. Not certified or validated for flight operation.</div></aside>
 </div><div class="footer">B737 Classic · Dedicated EADI Attitude Visual Test · Attitude-only · no FMA / speed tape / FD / ILS / DH · single-file</div></main>
 <script>
 (()=>{'use strict';
@@ -51,43 +51,49 @@ const abs=Math.abs(d),tens=Math.abs(d%10)<.001,fives=Math.abs(d%5)<.001;
 let half=tens?68:fives?30:18;let w=tens?2.7:fives?2.4:2.1;
 strokeLine(-half,y,half,y,'#f2f2f6',w);
 if(tens){const lab=String(Math.round(abs));text(lab,-half-10,y,16.4,'#f0f1f5','right',600);text(lab,half+10,y,16.4,'#f0f1f5','left',600)} }
+// Moving bank-index triangle belongs to the attitude card itself and rotates with bank.
+g.beginPath();g.moveTo(0,-222);g.lineTo(-11,-198);g.lineTo(11,-198);g.closePath();g.fillStyle='#ffffff';g.fill();
 g.restore();g.restore();g.save();attitudeClip();g.strokeStyle='#262e35';g.lineWidth=1.6;g.stroke();g.restore();}
-// Bank pointer geometry: two WHITE FILLED opposed triangles touch exactly at 0°.
-// The top triangle is stationary and points inward (down); the lower triangle
-// points outward (up) and follows the bank angle along the calibrated arc.
-const BANK={cx:452,cy:387,tipRadius:220,outerBaseRadius:243,innerBaseRadius:195};
-function bankMarkerGeometry(deg){
-  const a=deg*RAD,{cx,cy,tipRadius}=BANK;
-  return {angle:a,tipX:cx+tipRadius*Math.sin(a),tipY:cy-tipRadius*Math.cos(a)};
-}
+// Bank scale is fixed to the screen. Only the top downward pointer is fixed.
+const BANK={cx:452,cy:387,tipRadius:220,outerBaseRadius:243};
+function bankMarkerGeometry(deg){const a=deg*RAD,{cx,cy,tipRadius}=BANK;return {angle:a,tipX:cx+tipRadius*Math.sin(a),tipY:cy-tipRadius*Math.cos(a)}}
 function drawBank(b){
-  const {cx,cy,tipRadius,outerBaseRadius,innerBaseRadius}=BANK;
+  const {cx,cy,tipRadius,outerBaseRadius}=BANK;
   g.save();
-  // Bank ticks remain fixed to the screen; tick centers match pointer angle.
   for(const a of [-60,-45,-30,-20,-10,10,20,30,45,60]){
     const rad=a*RAD,s=Math.sin(rad),co=Math.cos(rad);
     const len=([-60,60,-30,30].includes(a)?19:([-45,45].includes(a)?16:11));
     strokeLine(cx+(tipRadius+5)*s,cy-(tipRadius+5)*co,
       cx+(tipRadius+5+len)*s,cy-(tipRadius+5+len)*co,'#fff',a%30===0?3.5:3);
   }
-  // Stationary upper index: apex at exactly the same radius as movable tip.
   const apexY=cy-tipRadius;
   g.beginPath();g.moveTo(cx-11,cy-outerBaseRadius);g.lineTo(cx+11,cy-outerBaseRadius);
   g.lineTo(cx,apexY+0.9);g.closePath();g.fillStyle='#ffffff';g.fill();
-  // Inner bank-angle pointer: a solid WHITE triangle, pointing UP / radially
-  // outward. At zero bank the two triangle tips touch at (cx, cy-tipRadius).
-  const m=bankMarkerGeometry(b);
-  g.save();g.translate(m.tipX,m.tipY);g.rotate(m.angle);
-  g.beginPath();g.moveTo(0,-0.9);g.lineTo(-12,tipRadius-innerBaseRadius);
-  g.lineTo(12,tipRadius-innerBaseRadius);g.closePath();
-  g.fillStyle='#ffffff';g.fill();
-  g.restore();g.restore();
+  g.restore();}
+function drawAircraft(){
+  // EADI Classic fixed reference: two DISTINCT inverted-L black wing shapes
+  // and a separate black circular reference at the geometric center.
+  // The arms do not connect underneath the reference circle.
+  const x=452,y=393;
+  g.save();g.translate(x,y);g.lineJoin='round';g.lineCap='round';
+  function wing(side){
+    g.save();g.scale(side,1);
+    g.beginPath();
+    g.moveTo(130,-13);g.lineTo(42,-13);g.lineTo(42,23);
+    g.lineTo(56,23);g.lineTo(56,1);g.lineTo(130,1);
+    g.closePath();
+    g.fillStyle='#040609';g.fill();
+    g.strokeStyle='#f3f4f7';g.lineWidth=3.6;g.stroke();
+    g.restore();
+  }
+  wing(-1);wing(1);
+  // Separate, opaque black circular aircraft datum: stays stationary
+  // even when the pitch ladder and bank card rotate behind it.
+  g.beginPath();g.arc(0,0,9.5,0,TWO);
+  g.fillStyle='#030507';g.fill();
+  g.lineWidth=3.3;g.strokeStyle='#f3f4f7';g.stroke();
+  g.restore();
 }
-function drawAircraft(){const x=452,y=393;g.save();g.translate(x,y);
-// 737 Classic wing-shaped aircraft reference: white perimeter and opaque black body
-const poly=[[-129,-12],[-46,-12],[-46,8],[-27,8],[-27,-12],[27,-12],[27,8],[46,8],[46,-12],[129,-12],[129,-1],[46,-1],[46,18],[13,18],[13,-1],[-13,-1],[-13,18],[-46,18],[-46,-1],[-129,-1]];
-g.beginPath();poly.forEach(([xx,yy],i)=>i?g.lineTo(xx,yy):g.moveTo(xx,yy));g.closePath();g.fillStyle='#070b13';g.fill();g.strokeStyle='#f4f4f7';g.lineWidth=3.4;g.lineJoin='miter';g.stroke();
-g.restore();}
 function scanlines(){g.save();roundPath(84,73,730,568,54);g.clip();g.globalAlpha=.055;g.fillStyle='#151d2d';for(let y=78;y<637;y+=4)g.fillRect(86,y,726,1);g.restore()}
 function paint(){g.save();g.clearRect(0,0,W,H);drawBezel();drawAttitude(state.pitch,state.bank);drawBank(state.bank);drawAircraft();scanlines();g.restore()}
 function frame(t){state.frame=null;let dt=Math.min(0.05,(t-(state.lastTime||t))/1000);state.lastTime=t;
