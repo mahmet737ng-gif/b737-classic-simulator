@@ -8,7 +8,7 @@ const out=(other={})=>({
  ...other
 });
 assert.deepEqual(e.FIELDS,['at','pitch','roll','afds']);
-assert.equal(e.VERSION,'B737-FMA-ENGINE-0001');
+assert.equal(e.VERSION,'B737-FMA-ENGINE-0002-CWS-AXIS');
 let s=e.fromMcp(out(),'CAPT');
 assert.equal(s.at.active,'MCP SPD');
 assert.equal(e.fromMcp(out({modes:{thrust:null,vertical:'ALT_HLD',lateral:null,autopilot:null}}),'CAPT').at.active,'MCP SPD',
