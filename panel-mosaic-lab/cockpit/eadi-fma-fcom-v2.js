@@ -20,7 +20,7 @@
  const FIELDS=Object.freeze(['at','pitch','roll','afds']);
  const SECTION=Object.freeze(['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE']);
  const LAYOUT=Object.freeze({x:4,y:4,w:892,h:98,segment:223});
- const COLOR=Object.freeze({green:'#12c875',white:'#f4f5f5',yellow:'#e3c23a',black:'#040607'});
+ const COLOR=Object.freeze({green:'#21c663',white:'#f2f2f2',yellow:'#e3c23a',black:'#000000'});
  const seats={CAPT:null,FO:null},highlights={CAPT:{},FO:{}},fcc={CAPT:null,FO:null};
  const scheduled={CAPT:null,FO:null};
  let win=null,ready=false,unsubscribe=[];
