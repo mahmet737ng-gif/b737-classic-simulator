@@ -43,6 +43,8 @@
   }
  }
  function refresh(){
+  const profiler=root.B737InteractionProfilerV1;
+  const profileStart=profiler?performance.now():0;
   const p=owner();if(!p?.getElectricalState||!p?.getState)return null;
   const state=p.getElectricalState(),electrical=p.getState().state.electrical;
   const key=state.rev+':'+numericMode;
@@ -51,7 +53,9 @@
   const signature=key+':'+JSON.stringify([state.config,state.source,state.faults,electrical.bus,state.battery]);
   if(signature===lastKey)return snapshot();
   const next=Core.project(state,electrical,{numericMode});
+  const projectionDone=profiler?performance.now():0;
   current=next;lastKey=signature;buildPanel();updateMeters(next);paint();
+  const painted=profiler?performance.now():0;
   // Only the drive-running bit is used by the RESID adapter; Boolean bus
   // connectivity is never promoted to an inferred GCR/field/residual sensor.
   root.dispatchEvent(new CustomEvent('b737:electrical-v7-state',{detail:{state:copy(state)}}));
@@ -67,6 +71,13 @@
    }
   root.dispatchEvent(new CustomEvent('b737:electrical-network',{detail:snapshot()}));
   for(const fn of listeners)try{fn(snapshot());}catch(error){console.error('Electrical subscriber failed',error);}
+  if(profiler){
+   const finished=performance.now();
+   profiler.markWork('ATA24 evaluate and project',projectionDone-profileStart);
+   profiler.markWork('ATA24 panel DOM update',painted-projectionDone);
+   profiler.markWork('ATA24 events and subscribers',finished-painted);
+   profiler.markWork('ATA24 refresh total',finished-profileStart);
+  }
   return snapshot();
  }
  function checkbox(parent,id,text,handler){
