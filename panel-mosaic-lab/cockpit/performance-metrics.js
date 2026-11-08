@@ -154,7 +154,7 @@
 ;(function(){
  if(new URLSearchParams(location.search).get('profiler')!=='1')return;
  const script=document.createElement('script');
- script.src='./interaction-profiler-v1.js?v=PROFILER-0004';
+ script.src='./interaction-profiler-v1.js?v=PROFILER-0005';
  script.async=true;
  document.head.appendChild(script);
 })();
