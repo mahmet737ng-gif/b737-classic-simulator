@@ -47,9 +47,10 @@
  }
  function begin(point,kind){
   if(!adapter()||!point||point.distance<2)return;
+  // Flush the last one-finger coordinate before capturing the pinch anchor.
+  flushOneFinger();
   const start=adapter().begin(point.distance,point.x,point.y);
   if(!start)return;
-  flushOneFinger();
   gesture={kind,start};
   if(kind==='overhead')iframeBlocked=true;
  }
