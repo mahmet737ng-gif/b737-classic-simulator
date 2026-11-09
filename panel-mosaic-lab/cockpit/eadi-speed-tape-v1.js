@@ -10,12 +10,14 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0007';
+ const VERSION='EADI-SPEED-TAPE-0008';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
  // Reference: contiguous to the RIGHT of the white numeric speed scale.
  const POLE_X=TAPE.axis+2,POLE_WIDTH=12;
+ // Reuse the exact placard-block height when anchoring the yellow buffer.
+ const PLACARD_BLOCK_SIZE=12,PLACARD_BLOCK_GAP=3;
  const model=()=>typeof globalThis==='object'?globalThis.B737ClassicSpeedTapeEngineV1:null;
  let win=null,ready=false;
  const states={CAPT:null,FO:null},unsubscribers=[],expiry={CAPT:null,FO:null};
@@ -60,7 +62,7 @@
  // This is deliberately different from the diagonal VMO/MMO barber pole.
  function placardBlocks(ctx,x,y,w,h){
   if(h<=0)return;
-  const block=12,gap=3;
+  const block=PLACARD_BLOCK_SIZE,gap=PLACARD_BLOCK_GAP;
   ctx.save();
   ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
   ctx.fillStyle=COLOR.black;ctx.fillRect(x,y,w,h);
@@ -126,13 +128,17 @@
    if(visible(endpoint))segment(ctx,x,endpoint,x+w,endpoint,COLOR[color]||COLOR.yellow,2);
   }
  }
- // HIGH/flap buffer is an inverted L (┘): right-side stem,
- // ONE lower tooth pointing LEFT, NO upper tooth and NO fill.
+ // HIGH/flap buffer is an inverted L (┘): its stem TOUCHES the
+ // RIGHT EDGE of the LAST red block, beginning at that block's CENTER.
+ // The final block ends at maximumKt and is PLACARD_BLOCK_SIZE tall;
+ // therefore the exact center is yFor(maximumKt) - blockSize/2.
+ // There is ONLY a lower, inward/left-facing tooth: no upper tooth/fill.
  function flapBufferBracket(ctx,buffer,view){
   if(!buffer||!Number.isFinite(buffer.lowerKt)||
      !Number.isFinite(buffer.upperKt)||!Number.isFinite(buffer.bufferKt)||
      buffer.bufferKt<=0||buffer.lowerKt>=buffer.upperKt)return;
-  const x=POLE_X+20,arm=12,upper=yFor(buffer.upperKt,view),
+  const x=POLE_X+POLE_WIDTH,arm=12,
+   upper=yFor(buffer.upperKt,view)-PLACARD_BLOCK_SIZE/2,
    lower=yFor(buffer.lowerKt,view);
   if(upper>TAPE.bottom||lower<TAPE.top)return;
   const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
@@ -180,7 +186,6 @@
   band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
-  flapBufferBracket(ctx,m.flapBuffer,view);
   band(ctx,m.maximumOperatingKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',
    placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
    striped:view.maxLimitReason==='VMO_MMO'});
@@ -190,6 +195,9 @@
    band(ctx,m.trainingFlapLimit.maximumKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',placard:true});
    text(ctx,'TRN FL'+m.trainingFlapLimit.detent,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
   }
+  // Draw on top of red blocks so the attachment at the center of the
+  // last block is continuous, with no 8px horizontal air gap.
+  flapBufferBracket(ctx,m.flapBuffer,view);
   if(Number.isFinite(m.flapsUpKt)){
    const y=yFor(m.flapsUpKt,view);
    if(visible(y,9)){

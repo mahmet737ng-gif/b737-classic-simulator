@@ -159,24 +159,32 @@ trainingDisplay=apply(trainingDisplay,{type:'TRAINING_FLAP_PROFILE',
 trainingDisplay=apply(trainingDisplay,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:174,timeMs:1000});
 R.draw(ctx,E.view(trainingDisplay));
 assert.ok(calls.some(x=>x[0]==='fillText'&&x[1]==='TRN FL30'));
-// Overspeed yellow buffer is inverted L (┘): only the LOWER arm
-// points LEFT toward the scale, and the UPPER arm is removed.
-const top=391-(180-174)*5.2,bottom=391-(155-174)*5.2;
+// Overspeed buffer is attached to the RIGHT EDGE and MID-HEIGHT of
+// the final red block, not to the block's lower boundary and not 8px away.
+// Lower arm still points LEFT; the upper arm must remain absent.
+const placardEnd=391-(180-174)*5.2;
+const top=placardEnd-12/2,bottom=391-(155-174)*5.2;
 const near=(a,b)=>Math.abs(a-b)<1e-6;
 const hasLine=(x1,y1,x2,y2)=>calls.some((c,i)=>
  c[0]==='moveTo'&&near(c[1],x1)&&near(c[2],y1)&&
  calls[i+1]?.[0]==='lineTo'&&near(calls[i+1][1],x2)&&near(calls[i+1][2],y2));
-assert.ok(hasLine(221,top,221,bottom),'HIGH bracket stem on RIGHT');
-assert.ok(hasLine(209,bottom,221,bottom),'HIGH lower arm points LEFT');
-assert.ok(!hasLine(209,top,221,top),'HIGH bracket has NO upper tooth');
+assert.ok(hasLine(213,top,213,bottom),'HIGH stem starts at red-block center on its right edge');
+assert.ok(hasLine(201,bottom,213,bottom),'HIGH lower arm points LEFT');
+assert.ok(!hasLine(201,top,213,top),'HIGH bracket has NO upper tooth');
+assert.ok(!hasLine(221,placardEnd,221,bottom),'old 8px gap must not return');
 assert.ok(!calls.some(c=>c[0]==='fillRect'&&c[1]===233&&c[3]===15),
  'flap buffer must not be filled');
 // Red block placard matches the square/rectangular EADI reference; do NOT
 // confuse it with the diagonal VMO barber pole or yellow pre-maximum buffer.
 assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12),
  'Flap red squares must adjoin the right of numeric speed axis');
-const blockCount=calls.filter(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12).length;
-assert.ok(blockCount>=2,'More than one separated red block above the maximum');
+const redBlocks=calls.filter(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12);
+assert.ok(redBlocks.length>=2,'More than one separated red block above the maximum');
+const finalBlock=redBlocks.reduce((latest,block)=>block[2]>latest[2]?block:latest);
+assert.ok(near(finalBlock[2]+finalBlock[4]/2,top),
+ 'HIGH stem begins exactly at midpoint of the last red block');
+assert.ok(near(finalBlock[1]+finalBlock[3],213),
+ 'HIGH stem directly touches last red block right edge');
 calls.length=0;
 // Stall yellow buffer is the OPPOSITE (┌). Upper tooth RIGHT into tape,
 // no lower tooth; never fill the maneuver-to-stick-shaker region.
@@ -199,8 +207,9 @@ for(const [detent,maximumKt,bufferKt] of [[40,158,0],[1,230,null]]){
   source:'INSTRUCTOR_VISUAL_DETENT',detent,maximumKt,bufferKt}),
   {type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:maximumKt-4,timeMs:1000});
  R.draw(ctx,E.view(limited));
- assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===221),
-  'zero/unspecified flap buffer must not produce bracket');
+ assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===213&&
+   calls.some(d=>d[0]==='lineTo'&&d[1]===213)),
+  'zero/unspecified flap buffer must not produce stem');
  calls.length=0;
 }
 let vmoOnly=E.initialState();
