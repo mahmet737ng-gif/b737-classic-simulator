@@ -125,7 +125,12 @@
    maximumCandidates.push({reason:'GEAR',speedKt:lim.gearPlacardKt});
   if(config.flapsPosition!==null&&config.flapsPosition>0&&within(lim.flapPlacardKt))
    maximumCandidates.push({reason:'FLAPS',speedKt:lim.flapPlacardKt});
-  const limiting=maximumCandidates.length?
+  // Unknown gear/flap configuration or an applicable missing placard must
+  // never be presented as a verified safe maximum speed.
+  const maxCoverage=within(lim.vmoMmoCasKt)&&
+   (config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)))&&
+   (config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)));
+  const limiting=maxCoverage&&maximumCandidates.length?
    maximumCandidates.reduce((a,b)=>a.speedKt<=b.speedKt?a:b):null;
   const f=s.fmc;
   const preferFmc=s.mcp.displayBlank===true;
@@ -178,9 +183,7 @@
    coverage:{vmo:within(lim.vmoMmoCasKt),
     gear:config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)),
     flaps:config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)),
-    complete:within(lim.vmoMmoCasKt)&&
-     (config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)))&&
-     (config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)))}};
+    complete:maxCoverage}};
  }
  return Object.freeze({VERSION,SCHEMA,initialState,transition,view,LIMIT_KEYS,REF_KEYS});
 });
