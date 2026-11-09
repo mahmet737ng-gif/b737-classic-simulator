@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0005';
+ const VERSION='EADI-SPEED-TAPE-0006';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -124,20 +124,25 @@
    if(visible(endpoint))segment(ctx,x,endpoint,x+w,endpoint,COLOR[color]||COLOR.yellow,2);
   }
  }
- // Visual training buffer, a short yellow band BELOW the flap maximum.
- // Keep it separate from the High Speed Buffet/next-flap indications.
- function flapBufferBand(ctx,buffer,view){
+ // Flap pre-maximum buffer: a single OPEN-RIGHT YELLOW [ BRACKET,
+ // exactly adjacent to the red block placard (x=249). No fill, no
+ // second vertical edge; distinct from high-speed buffet/yellow bands.
+ // The two short right-facing arms mark maximum and (maximum-buffer).
+ function flapBufferBracket(ctx,buffer,view){
   if(!buffer||!Number.isFinite(buffer.lowerKt)||
-     !Number.isFinite(buffer.upperKt)||buffer.bufferKt<=0)return;
-  const x=233,w=15,
-   y1=Math.max(TAPE.top,yFor(buffer.upperKt,view)),
-   y2=Math.min(TAPE.bottom,yFor(buffer.lowerKt,view));
-  if(y2<=y1)return;
-  ctx.fillStyle='rgba(227,192,48,.24)';
-  ctx.fillRect(x,y1,w,y2-y1);
-  segment(ctx,x,y1,x,y2,COLOR.yellow,2.5);
-  segment(ctx,x+w,y1,x+w,y2,COLOR.yellow,2.5);
-  if(visible(y2))segment(ctx,x,y2,x+w,y2,COLOR.yellow,2.5);
+     !Number.isFinite(buffer.upperKt)||!Number.isFinite(buffer.bufferKt)||
+     buffer.bufferKt<=0||buffer.lowerKt>=buffer.upperKt)return;
+  const x=234,arm=12;
+  const upper=yFor(buffer.upperKt,view),
+   lower=yFor(buffer.lowerKt,view);
+  // A buffer completely outside the visible tape must not draw a
+  // misleading bracket at either clipped boundary.
+  if(upper>TAPE.bottom||lower<TAPE.top)return;
+  const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
+  if(yBottom<=yTop)return;
+  segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
+  if(visible(upper))segment(ctx,x,upper,x+arm,upper,COLOR.yellow,3);
+  if(visible(lower))segment(ctx,x,lower,x+arm,lower,COLOR.yellow,3);
  }
  function draw(ctx,view){
   if(!view||view.schema!=='B737_CLASSIC_SPEED_TAPE_VIEW_V1')return;
@@ -165,7 +170,7 @@
   band(ctx,m.stickShakerKt,view,{x:249,w:10,direction:'LOW',striped:true});
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
-  flapBufferBand(ctx,m.flapBuffer,view);
+  flapBufferBracket(ctx,m.flapBuffer,view);
   band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',
    placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
    striped:view.maxLimitReason==='VMO_MMO'});

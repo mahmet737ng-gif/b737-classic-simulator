@@ -159,6 +159,20 @@ trainingDisplay=apply(trainingDisplay,{type:'TRAINING_FLAP_PROFILE',
 trainingDisplay=apply(trainingDisplay,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:174,timeMs:1000});
 R.draw(ctx,E.view(trainingDisplay));
 assert.ok(calls.some(x=>x[0]==='fillText'&&x[1]==='TRN FL30'));
+// Reference screenshot: open-right "[" YELLOW BRACKET, no fill rectangle,
+// one long vertical stem plus upper/lower 12px arms at 180/155 kt.
+const top=391-(180-174)*5.2,bottom=391-(155-174)*5.2;
+const near=(v,n)=>Math.abs(v-n)<.00001;
+assert.ok(calls.some(c=>c[0]==='moveTo'&&c[1]===234&&near(c[2],top)),
+ 'flap bracket starts at the maximum speed');
+assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===234&&near(c[2],bottom)),
+ 'flap bracket vertical stem ends at max minus buffer');
+assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===246&&near(c[2],top)),
+ 'flap bracket upper arm points RIGHT');
+assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===246&&near(c[2],bottom)),
+ 'flap bracket lower arm points RIGHT');
+assert.ok(!calls.some(c=>c[0]==='fillRect'&&c[1]===233&&c[3]===15),
+ 'yellow buffer is NEVER a filled band');
 // Red block placard matches the square/rectangular EADI reference; do NOT
 // confuse it with the diagonal VMO barber pole or yellow pre-maximum buffer.
 assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
@@ -166,6 +180,16 @@ assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
 const blockCount=calls.filter(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10).length;
 assert.ok(blockCount>=2,'More than one separated red block above the maximum');
 calls.length=0;
+// No buffer means NO [ : FL40 has zero kt, FL1 is unspecified.
+for(const [detent,maximumKt,bufferKt] of [[40,158,0],[1,230,null]]){
+ const limited=apply(apply(E.initialState(),{type:'TRAINING_FLAP_PROFILE',
+  source:'INSTRUCTOR_VISUAL_DETENT',detent,maximumKt,bufferKt}),
+  {type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:maximumKt-4,timeMs:1000});
+ R.draw(ctx,E.view(limited));
+ assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===234),
+  'zero/unspecified buffer must not produce bracket');
+ calls.length=0;
+}
 let vmoOnly=E.initialState();
 vmoOnly=apply(vmoOnly,{type:'CONFIG',gearExtended:false,flapsPosition:0});
 vmoOnly=apply(vmoOnly,{type:'LIMITS',valid:true,vmoMmoCasKt:180});
