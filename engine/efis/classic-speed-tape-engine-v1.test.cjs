@@ -105,7 +105,7 @@ const fake={
  B737McpAFDSBridgeV1:{getOutput:()=>({schema:'B737_MCP_AFDS_OUTPUT_V1',
   power:true,speedDisplayMode:'IAS',displayBlank:{speed:false},values:{speed:245}})},
  B737UnifiedAvionicsNetworkV1:{getSignal(topic){
-  return topic==='airdata.adc1'?{quality:'VALID',receivedAtMs:5000,
+  return topic==='airdata.adc1'?{quality:'VALID',origin:'SIMULATOR_TELEMETRY',receivedAtMs:5000,
    value:{sensorValid:true,casKt:229,pressureAltitudeFt:3000}}:
    {quality:'UNKNOWN',value:null};
  }},
