@@ -44,7 +44,7 @@ assert.equal(E.view(s).marks.nextFlapPlacardKt,225);
 s=apply(s,{type:'CONFIG',flapsRetracting:true});
 assert.equal(E.view(s).marks.nextFlapPlacardKt,null);
 s=apply(s,{type:'CONFIG',flapsPosition:0,flapsRetracting:false});
-assert.equal(E.view(s).marks.maximumOperatingKt,270,'Gear placard still applies');
+assert.equal(E.view(s).marks.maximumOperatingKt,320,'Gear DOWN maximum extended speed is 320 kt');
 s=apply(s,{type:'FAILURES',speedLimit:true});
 assert.equal(E.view(s).marks.maximumOperatingKt,null);
 assert.equal(E.view(s).marks.stickShakerKt,null);
@@ -136,6 +136,25 @@ verified=apply(verified,{type:'LIMITS',valid:true,vmoMmoCasKt:200,
 assert.equal(E.view(verified).marks.maximumOperatingKt,200);
 assert.equal(E.view(verified).marks.flapBuffer,null,
  'no flap buffer when VMO/MMO is a lower controlling limit');
+// Instructor gear profiles must be separate from verified AFDS limits.
+for(const [gearState,max,limitMach] of [['UP',null,null],['DOWN',320,.82],
+ ['EXTENDING',270,.82],['RETRACTING',235,null]]){
+ let g=E.initialState();
+ g=apply(g,{type:'TRAINING_GEAR_PROFILE',source:'INSTRUCTOR_VISUAL_GEAR',gearState});
+ const v=E.view(g);
+ assert.equal(v.marks.trainingOperatingLimit?.maximumKt??null,max);
+ assert.equal(v.marks.trainingGearLimit?.maximumMach??null,limitMach);
+ assert.equal(v.speedProtection.maximumKt,null,'Visual gear input must not command AFDS');
+}
+let gl=E.initialState();
+gl=apply(gl,{type:'CONFIG',gearState:'RETRACTING',flapsPosition:0});
+gl=apply(gl,{type:'LIMITS',valid:true,vmoMmoCasKt:340});
+assert.equal(E.view(gl).marks.maximumOperatingKt,235);
+gl=apply(gl,{type:'CONFIG',gearState:'DOWN'});
+assert.equal(E.view(gl).marks.maximumOperatingKt,320);
+gl=apply(gl,{type:'CONFIG',gearState:'EXTENDING'});
+assert.equal(E.view(gl).marks.maximumOperatingKt,270);
+assert.throws(()=>apply(gl,{type:'TRAINING_GEAR_PROFILE',source:'SIMULATOR_TELEMETRY',gearState:'UP'}),/INVALID_TRAINING_GEAR_SOURCE/);
 const calls=[];
 const ctx=new Proxy({},{
  get(target,key){return key in target?target[key]:
@@ -186,8 +205,8 @@ assert.ok(near(finalBlock[2]+finalBlock[4]/2,top),
 assert.ok(near(finalBlock[1]+finalBlock[3],213),
  'HIGH stem directly touches last red block right edge');
 calls.length=0;
-// Stall yellow buffer is the OPPOSITE (┌). Upper tooth RIGHT into tape,
-// no lower tooth; never fill the maneuver-to-stick-shaker region.
+// Stall bracket has a single upper inward-facing tooth, anchored on
+// the RIGHT edge at x=213, like the flap buffer; no lower tooth or fill.
 let stall=E.initialState();
 stall=apply(stall,{type:'CONFIG',gearExtended:false,flapsPosition:0});
 stall=apply(stall,{type:'LIMITS',valid:true,vmoMmoCasKt:340,
@@ -195,9 +214,10 @@ stall=apply(stall,{type:'LIMITS',valid:true,vmoMmoCasKt:340,
 stall=apply(stall,{type:'ADC',valid:true,casKt:153,timeMs:1000});
 R.draw(ctx,E.view(stall));
 const upper=391-(165-153)*5.2,lower=391-(140-153)*5.2;
-assert.ok(hasLine(201,upper,201,lower),'STALL stem immediately right of axis');
-assert.ok(hasLine(201,upper,213,upper),'STALL UPPER tooth points INTO tape');
+assert.ok(hasLine(213,upper,213,lower),'STALL stem on the right edge of the red speed pole');
+assert.ok(hasLine(201,upper,213,upper),'STALL upper tooth extends left, into speed tape');
 assert.ok(!hasLine(201,lower,213,lower),'STALL lower tooth absent');
+assert.ok(!hasLine(201,upper,201,lower),'Old stall stem on left edge must not return');
 assert.ok(!calls.some(c=>c[0]==='fillRect'&&c[1]===234&&c[3]===15),
  'STALL yellow range not filled');
 calls.length=0;
