@@ -6,8 +6,8 @@ const R=require('./eadi-speed-tape-v1.js');
 const Trainer=require('./speed-tape-unified-training-v1.js');
 const Flap=require('../../engine/efis/classic-flap-speed-profile-v1.js');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/eadi-speed-tape-v1\.js\?v=EADI-SPEED-TAPE-UNIFIED-0008/);
-assert.match(html,/speed-tape-unified-training-v1\.js\?v=SPEED-TAPE-TRAINING-0003/);
+assert.match(html,/eadi-speed-tape-v1\.js\?v=EADI-SPEED-TAPE-UNIFIED-0012/);
+assert.match(html,/speed-tape-unified-training-v1\.js\?v=SPEED-TAPE-TRAINING-0004/);
 let s=E.initialState('CAPT');
 s=E.transition(s,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:180,timeMs:1000});
 assert.equal(E.view(s).casKt,180);
@@ -54,6 +54,21 @@ for(const seat of ['CAPT','FO']){
   'visual-only flap selection cannot create certified speed limit');
 }
 assert.equal(Trainer.snapshot().lastVisualFlapDetent,30);
+for(const [gearState,expected,maximumMach] of [
+ ['DOWN',320,0.82],['EXTENDING',270,0.82],['RETRACTING',235,null],['UP',null,null]]){
+ Trainer.setGearState(gearState);
+ for(const seat of ['CAPT','FO']){
+  const v=E.view(state[seat]);
+  assert.equal(v.marks.trainingGearLimit?.maximumKt??null,expected,
+   'Instructor gear limit visible on '+seat+' for '+gearState);
+  assert.equal(v.marks.trainingGearLimit?.maximumMach??null,maximumMach);
+  assert.equal(v.speedProtection.maximumKt,null,
+   'Instructor gear limit is strictly visual, never AFDS authority');
+ }
+}
+Trainer.setGearState('UNKNOWN');
+assert.equal(E.view(state.CAPT).marks.trainingGearLimit,null);
+assert.throws(()=>Trainer.setGearState('MOVING'),/INVALID_INSTRUCTOR_GEAR_STATE/);
 Trainer.setFlap30MaximumKt(185);
 assert.equal(E.view(state.FO).marks.flapBuffer.lowerKt,160);
 Trainer.setFlap30MaximumKt(180);
