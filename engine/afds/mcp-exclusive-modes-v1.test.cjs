@@ -115,7 +115,8 @@ assert.equal(lamps().CMD_A,true);
 send({type:'BUTTON',id:'CMD_B'});
 assert.equal(lamps().CMD_A,false);
 assert.equal(lamps().CMD_B,true);
-assert.equal(fma('FO').afds.active,'CWS P');
+assert.equal(fma('FO').afds.active,'CMD');
+assert.equal(fma('FO').afds.secondary,'CWS P');
 assert.equal(fma('FO').pitch.active,'');
 assert.equal(fma('FO').roll.active,'LNAV'); // CMD remains on roll; CWS only on uncommanded pitch
 send({type:'BUTTON',id:'CWS_A'});
@@ -123,8 +124,9 @@ assert.equal(lamps().CMD_B,false);
 assert.equal(lamps().CWS_A,true);
 assert.equal(fma('CAPT').pitch.active,'');
 assert.equal(fma('CAPT').roll.active,'');
-assert.equal(fma('CAPT').afds.active,'CWS P');
-assert.equal(fma('CAPT').afds.secondary,'CWS R');
+assert.equal(fma('CAPT').afds.active,'FD');
+assert.equal(fma('CAPT').afds.secondary,'CWS P');
+assert.equal(fma('CAPT').afds.tertiary,'CWS R');
 check();
 // Both flight directors OFF clears AFDS modes but not the physical A/T arm.
 send({type:'FD',side:'left',on:false});

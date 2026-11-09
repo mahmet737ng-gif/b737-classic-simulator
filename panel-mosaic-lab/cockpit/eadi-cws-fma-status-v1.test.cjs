@@ -59,10 +59,10 @@ assert.equal(view.bind(w),true);
 for(const seat of ['CAPT','FO']){
  assert.equal(view.getState(seat).fields.pitch.active,'V/S');
  assert.equal(view.getState(seat).fields.roll.active,'');
- assert.equal(view.getState(seat).fields.afds.active,'CWS R');
+ assert.equal(view.getState(seat).fields.afds.secondary,'CWS R');
  const texts=rendered(seat).filter(x=>x.kind==='text');
- assert.deepEqual(texts.map(x=>x.text),['V/S','CWS R']);
- assert.equal(texts[1].color,view.COLOR.yellow);
+ assert.deepEqual(texts.map(x=>x.text),['V/S','CMD','CWS R']);
+ assert.equal(texts[2].color,view.COLOR.yellow);
 }
 out={...out,modes:{...out.modes,vertical:null},
  axisControl:{pitch:'CWS',roll:'CWS'}};
@@ -71,12 +71,13 @@ for(const seat of ['CAPT','FO']){
  const mode=view.getState(seat).fields;
  assert.equal(mode.pitch.active,'');
  assert.equal(mode.roll.active,'');
- assert.equal(mode.afds.active,'CWS P');
- assert.equal(mode.afds.secondary,'CWS R');
+ assert.equal(mode.afds.active,'CMD');
+ assert.equal(mode.afds.secondary,'CWS P');
  const texts=rendered(seat).filter(x=>x.kind==='text');
- assert.deepEqual(texts.map(x=>x.text),['CWS P','CWS R']);
- assert.equal(texts[0].color,view.COLOR.yellow);
+ assert.deepEqual(texts.map(x=>x.text),['CMD','CWS P','CWS R']);
+ assert.equal(texts[0].color,view.COLOR.green);
  assert.equal(texts[1].color,view.COLOR.yellow);
+ assert.equal(texts[2].color,view.COLOR.yellow);
  assert.ok(texts[0].y<texts[1].y,'CWS statuses must be stacked');
 }
 out={...out,modes:{...out.modes,vertical:'ALT_HLD',lateral:'HDG_SEL'},

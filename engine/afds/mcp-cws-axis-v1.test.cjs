@@ -29,19 +29,21 @@ send({type:'BUTTON',id:'CMD_A'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CWS',roll:'CWS'});
 assert.equal(read('CAPT').pitch.active,'');
 assert.equal(read('CAPT').roll.active,'');
-assert.equal(read('CAPT').afds.active,'CWS P');
-assert.equal(read('CAPT').afds.secondary,'CWS R');
+assert.equal(read('CAPT').afds.active,'CMD');
+assert.equal(read('CAPT').afds.secondary,'CWS P');
+assert.equal(read('CAPT').afds.tertiary,'CWS R');
 assert.equal(fma.color('afds','CWS P'),'yellow');
 assert.equal(fma.color('afds','CWS R'),'yellow');
-assert.equal(read('FO').afds.active,'CWS P','both EADI reflect an engaged A/P');
-assert.equal(read('FO').afds.secondary,'CWS R');
+assert.equal(read('FO').afds.active,'CMD','both EADI reflect an engaged A/P');
+assert.equal(read('FO').afds.secondary,'CWS P');
+assert.equal(read('FO').afds.tertiary,'CWS R');
 // Select pitch V/S: only roll remains in CWS.
 send({type:'BUTTON',id:'VS'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CMD',roll:'CWS'});
 assert.equal(read('CAPT').pitch.active,'V/S');
 assert.equal(read('CAPT').roll.active,'');
-assert.equal(read('CAPT').afds.active,'CWS R');
-assert.equal(read('CAPT').afds.secondary,'');
+assert.equal(read('CAPT').afds.active,'CMD');
+assert.equal(read('CAPT').afds.secondary,'CWS R');
 // Now select the roll mode: CMD on both axes.
 send({type:'BUTTON',id:'HDG_SEL'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CMD',roll:'CMD'});
@@ -53,7 +55,7 @@ send({type:'BUTTON',id:'VS'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CWS',roll:'CMD'});
 assert.equal(read('CAPT').pitch.active,'');
 assert.equal(read('CAPT').roll.active,'HDG SEL');
-assert.equal(read('CAPT').afds.active,'CWS P');
+assert.equal(read('CAPT').afds.secondary,'CWS P');
 // Restore pitch, then deselect HDG: only roll blank and CWS R.
 send({type:'BUTTON',id:'ALT_HLD'});
 assert.equal(read('CAPT').afds.active,'CMD');
@@ -61,15 +63,15 @@ send({type:'BUTTON',id:'HDG_SEL'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CMD',roll:'CWS'});
 assert.equal(read('CAPT').pitch.active,'ALT HOLD');
 assert.equal(read('CAPT').roll.active,'');
-assert.equal(read('CAPT').afds.active,'CWS R');
+assert.equal(read('CAPT').afds.secondary,'CWS R');
 // Explicit CWS selector: CWS in BOTH axes regardless of selected CMD modes.
 send({type:'BUTTON',id:'HDG_SEL'});
 send({type:'BUTTON',id:'CWS_A'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'CWS',roll:'CWS'});
 assert.equal(read('CAPT').pitch.active,'');
 assert.equal(read('CAPT').roll.active,'');
-assert.equal(read('CAPT').afds.active,'CWS P');
-assert.equal(read('CAPT').afds.secondary,'CWS R');
+assert.equal(read('CAPT').afds.secondary,'CWS P');
+assert.equal(read('CAPT').afds.tertiary,'CWS R');
 // Turn off the A/P: blank axes are not CWS merely because the F/D is ON.
 send({type:'BUTTON',id:'CWS_A'});
 assert.deepEqual(core.output(s).axisControl,{pitch:'OFF',roll:'OFF'});
@@ -86,14 +88,14 @@ const confirmed={
 const acquired=fma.project(output,'CAPT',confirmed);
 assert.equal(acquired.pitch.active,'ALT ACQ');
 assert.equal(acquired.roll.active,'');
-assert.equal(acquired.afds.active,'CWS R');
-assert.equal(acquired.afds.secondary,'');
+assert.equal(acquired.afds.active,'CMD');
+assert.equal(acquired.afds.secondary,'CWS R');
 const loc=fma.project(output,'CAPT',{
  ...confirmed,fields:{roll:{active:'VOR/LOC'}},
  evidence:{navCaptured:true}
 });
 assert.equal(loc.roll.active,'VOR/LOC');
-assert.equal(loc.afds.active,'CWS P');
+assert.equal(loc.afds.secondary,'CWS P');
 // A verified manual override of engaged CMD pitch requires FCC evidence.
 const commanded={...output,modes:{...output.modes,lateral:'HDG_SEL',vertical:'VS'},
  axisControl:{pitch:'CMD',roll:'CMD'}};
@@ -102,7 +104,7 @@ const overridden=fma.project(commanded,'CAPT',{
 });
 assert.equal(overridden.pitch.active,'');
 assert.equal(overridden.roll.active,'HDG SEL');
-assert.equal(overridden.afds.active,'CWS P');
+assert.equal(overridden.afds.secondary,'CWS P');
 assert.throws(()=>fma.project(commanded,'CAPT',{
  ...confirmed,fields:{},
  evidence:{pitchCwsOverride:true,autopilotEngaged:true,dualAp:true,

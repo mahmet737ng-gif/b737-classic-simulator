@@ -105,8 +105,8 @@ send({type:'BUTTON',id:'N1'}); // new compatible A/T selection
 assert.equal(seat('CAPT').at.active,'N1');
 send({type:'BUTTON',id:'CMD_A'});
 assert.equal(seat('CAPT').pitch.active,'');
-assert.equal(seat('CAPT').afds.active,'CWS P');
-assert.equal(seat('FO').afds.active,'CWS P');
+assert.equal(seat('CAPT').afds.secondary,'CWS P');
+assert.equal(seat('FO').afds.secondary,'CWS P');
 // A/T switch OFF must extinguish A/T column (without damaging AFDS output).
 const base=AFDS.output(state);
 physical.AT_ARM='OFF';

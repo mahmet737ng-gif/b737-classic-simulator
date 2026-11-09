@@ -52,8 +52,9 @@ the fourth column shows yellow `CWS R`; Pitch CMD is unaffected.
 
 If both command modes are absent, both axes are CWS. Their status displays
 `CWS P` and `CWS R` on two lines in the fourth AFDS column. Neither
-command field displays CWS. **CMD may remain physically engaged** but its
-fourth-column annunciation is superseded by the relevant CWS axis status.
+command field displays CWS. **CMD remains displayed GREEN** in the fourth AFDS column, and CWS P/R
+annunciates YELLOW beneath it. With both axes in CWS under CMD the three
+visible lines are CMD, CWS P and CWS R.
 If neither autopilot is engaged, a blank command column does **not** imply
 CWS (the F/D-only status is FD).
 
@@ -63,15 +64,25 @@ had previously been selected. This behavior is implemented as per-axis
 output, projected by the independent FMA engine, and drawn by the EADI FMA
 layer (both EIS and Conventional).
 
-**Actual CWS force and altitude/capture logic remain unmodeled:** FCOM says
+**Qualified CWS force and altitude/capture logic is now modeled by events:** FCOM says
 column force can override an engaged pitch command into CWS P, and wheel
 force can similarly override roll. In a dual-autopilot APP after LOC/GS
 capture, manual override disengages A/P rather than engaging CWS. Qualified
 FCC observation can declare a CWS force override only with evidence, not
 from a blank display alone. In CWS P, ALT ACQ can capture near the MCP
 altitude, followed by ALT HOLD; in CWS R, arming VOR/LOC or APP can permit
-VOR/LOC capture. These capture behaviors await validated flight-state
-sensors and FCC logic in the training model.
+VOR/LOC capture. Transitions require `B737_AFDS_FLIGHT_OBSERVATION_V1` with `confirmed:true`
+and `source:'SIMULATED_FCC'`, dispatched as `b737:afds-flight-observation`
+or delivered via `B737McpAFDSBridgeV1.observeFlight(sample)`. CWS roll release
+holds bank for angles above 6 degrees and levels wings/holds heading at <=6
+degrees except the three FCOM conditions. CMD pitch manual ALT HOLD override
+recaptures through ALT ACQ if released within 250 ft; otherwise CWS P remains
+until a confirmed capture or newly selected pitch mode. APP/VOR_LOC arming
+requires validated NAV evidence; LOC must capture before G/S, with confirmed
+glideslope intercept at <=0.4 dot below the glidepath. FMA active, armed, and
+CWS status derive from the same AFDS core; `axisDemand` publishes guidance
+for a downstream flight-dynamics implementation. There is no undocumented
+synthetic physical yoke-force threshold or automatic aircraft servo.
 
 ## Limitations still open before claiming full FCOM fidelity
 
@@ -80,7 +91,7 @@ an actual simulated flight-control computer or complete A/T and VNAV plant.
 This implementation **does not claim to implement** the actual TO/GA
 engagement envelope (including IAS/RA/time), independent FCC master transfers,
 the LNAV 3-NM/intercept geometry, localizer/GS receiver dynamics, all
-vertical-capture/altitude constraints, CWS axis force overrides, dual-channel
+vertical-capture/altitude constraints, physical force-to-yoke calibration, full dual-channel
 autoland transition, A/T thrust lever servo feedback, electrical loss of
 individual FCCs, FMC glide/descent commands, or aircraft-specific option
 effectivity.
