@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0009';
+ const VERSION='EADI-SPEED-TAPE-0010';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -146,13 +146,15 @@
   segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
   if(visible(lower))segment(ctx,x-arm,lower,x,lower,COLOR.yellow,3);
  }
- // STALL buffer has an upper tooth facing LEFT toward the numeric speed tape,
- // never outward to the right. Both bounds must be verified inputs.
+ // STALL buffer uses the SAME right-hand anchor and inward LEFT-facing
+ // tooth as the flap buffer, except its tooth is at the UPPER boundary.
+ // With x=POLE_X+POLE_WIDTH the tooth occupies the speed pole itself,
+ // not the area outside the pole. Both speed bounds are verified inputs.
  function stallBufferBracket(ctx,minimumManeuverKt,stickShakerKt,view){
   if(!Number.isFinite(minimumManeuverKt)||
      !Number.isFinite(stickShakerKt)||
      minimumManeuverKt<=stickShakerKt)return;
-  const x=POLE_X,arm=12,upper=yFor(minimumManeuverKt,view),
+  const x=POLE_X+POLE_WIDTH,arm=POLE_WIDTH,upper=yFor(minimumManeuverKt,view),
    lower=yFor(stickShakerKt,view);
   if(upper>TAPE.bottom||lower<TAPE.top)return;
   const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
