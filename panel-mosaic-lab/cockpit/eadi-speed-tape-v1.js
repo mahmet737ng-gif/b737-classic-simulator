@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0010';
+ const VERSION='EADI-SPEED-TAPE-0011';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -263,6 +263,7 @@
   if(stamps[seat]!==null&&timeMs<=stamps[seat])return false;
   stamps[seat]=timeMs;
   try{dispatch(seat,{type:'ADC',valid:true,casKt:value.casKt,timeMs,
+   mach:Number.isFinite(value.mach)?value.mach:null,
    pressureAltitudeFt:value.pressureAltitudeFt??null});}
   catch(error){win?.console?.warn?.('EADI rejected ADC sample',error);return false;}
   cancelExpiry(seat);
@@ -318,11 +319,13 @@
    if(f?.schema!=='B737_CH4_FCC_SPEED_LIMIT_SAMPLE_V1'||
      f.confirmed!==true||f.source!=='SIMULATED_FCC')return;
    const finite=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=600;
-   if(![true,false].includes(f.gearExtended)||
+   const validGearState=['UP','DOWN','EXTENDING','RETRACTING'].includes(f.gearState);
+   if(!validGearState&&![true,false].includes(f.gearExtended)||
       !finite(f.flapsPosition)||f.flapsPosition>40)return;
    for(const seat of ['CAPT','FO']){
     try{
-     dispatch(seat,{type:'CONFIG',gearExtended:f.gearExtended,
+     dispatch(seat,{type:'CONFIG',
+      ...(validGearState?{gearState:f.gearState}:{gearExtended:f.gearExtended}),
       flapsPosition:f.flapsPosition});
      const previous=states[seat].limits;
      const data={type:'LIMITS',...previous,valid:true};
