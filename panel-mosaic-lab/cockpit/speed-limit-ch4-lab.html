@@ -39,7 +39,9 @@ a{color:#97caff}
 <div class="screen"><canvas id="tape" width="900" height="720" aria-label="Training Speed Tape"></canvas></div>
 <div class="stat"><span>IAS/MACH speed condition</span><span id="symbol" class="sym">—</span></div>
 <div class="stat"><span>Effective AFS command</span><b id="effective">—</b></div>
-<div class="stat"><span>Maximum applicable</span><b id="maximum">—</b></div>
+<div class="stat"><span>Maximum applicable (IAS)</span><b id="maximum">—</b></div>
+<div class="stat"><span>Gear operating limit</span><b id="gearLimits">—</b></div>
+<div class="stat"><span>Gear Mach condition</span><b id="machStatus">—</b></div>
 <div class="stat"><span>Flap yellow buffer</span><b id="bufferStatus">—</b></div>
 <div class="stat"><span>Minimum (≈1.3 Vs)</span><b id="minimum">—</b></div>
 <div class="stat"><span>AFDS / A/T directive</span><b id="reversion">—</b></div>
@@ -55,7 +57,13 @@ a{color:#97caff}
 <label>Stall maneuver (test kt)<input id="minimumManeuver" type="number" value="165" min="45" max="420"></label>
 <label>Stick shaker (test kt)<input id="stickShaker" type="number" value="140" min="45" max="420"></label>
 <label>VMO/MMO CAS equivalent (kt)<input id="vmo" type="number" value="340" min="110" max="420"></label>
-<label>Gear Placard (kt)<input id="gearPlacard" type="number" value="270" min="45" max="420"></label>
+<label>Landing Gear State<select id="gearState">
+<option value="UP">UP / Retracted</option>
+<option value="EXTENDING">EXTENDING / Gear moving down</option>
+<option value="DOWN">DOWN / Fully extended</option>
+<option value="RETRACTING">RETRACTING / Gear moving up</option>
+</select></label>
+<label>Actual Mach (blank = unknown)<input id="mach" type="number" value="0.70" min="0" max="1.5" step="0.01"></label>
 <label>Flap Placard (kt)<input id="flapPlacard" type="number" value="" min="45" max="420"></label>
 <label>Flap buffer (kt; empty = unspecified)<input id="flapBuffer" type="number" value="" min="0" max="100"></label>
 <label>Flaps 30 max — choose source<select id="flap30Variant">
@@ -64,7 +72,6 @@ a{color:#97caff}
 <label>Flaps<select id="flaps"><option value="0">UP</option><option>1</option><option>2</option><option>5</option><option>10</option><option>15</option><option>25</option><option>30</option><option>40</option></select></label>
 <label>Pitch Mode<select id="pitch"><option value="VS">V/S</option><option value="LVL_CHG">LVL CHG</option><option value="VNAV_PTH">VNAV PTH</option><option value="ALT_HOLD">ALT HOLD</option><option value="G/S">G/S</option><option value="CWS">CWS</option></select></label>
 <fieldset class="wide"><legend>FCC/AFDS observation flags</legend>
-<label class="check"><input type="checkbox" id="gear"> Gear Down</label>
 <label class="check"><input type="checkbox" id="nearHigh"> Near high limit (FCC)</label>
 <label class="check"><input type="checkbox" id="nearMin"> Near minimum (FCC)</label>
 <label class="check"><input type="checkbox" id="atArmed" checked> A/T armed</label>
@@ -80,11 +87,15 @@ a{color:#97caff}
 <div class="wide" style="display:flex;flex-wrap:wrap;gap:7px">
 <button id="presetLow" type="button">Minimum Reversion</button>
 <button id="presetHigh" type="button">Flap Overspeed</button>
+<button id="presetGearDown" type="button">Gear DOWN 320 kt / M.82</button>
+<button id="presetGearExtend" type="button">Gear EXTENDING 270 kt / M.82</button>
+<button id="presetGearRetract" type="button">Gear RETRACTING 235 kt</button>
 <button id="presetPerformance" type="button">V/S Performance</button>
 <button id="presetStall" type="button">Stall Buffer Bracket</button>
 <button id="reset" type="button">Reset</button>
 </div>
 </div>
+<p class="note">حدود چرخ: DOWN = 320 kt / M0.82؛ EXTENDING = 270 kt / M0.82؛ RETRACTING = 235 kt. Mach بدون اطلاعات معتبر به CAS تبدیل نمی‌شود و مقدار Mach برای جمع‌کردن چرخ مشخص نشده است.</p>
 <p class="note">جدول Flap Max/Buffer توسط کاربر ارائه شده است و هنوز داده تأییدشده AFM نیست. بافر زرد پایین‌تر از حد قرمز رسم می‌شود؛ این با High Speed Buffet و Next Flap Placard فرق دارد. برای «slightly before limit» از تیک FCC استفاده کن، چون FCOM آستانه عددی نداده است.</p>
 <pre id="diagnostics" aria-live="polite"></pre>
 <p class="note"><a href="./index.html">بازگشت به Unified</a> — <a href="./speed-tape-lab.html">آزمایشگاه Speed Tape</a></p>
@@ -108,13 +119,15 @@ function updateFlapInputs(){
 }
 function go(){
  const actual=v('ias'),selected=v('sel'),min=v('minimumInput'),max=v('vmo');
- const flaps=v('flaps'),gear=yes('gear'),pitch=el('pitch').value;
+ const flaps=v('flaps'),gearState=el('gearState').value,pitch=el('pitch').value;
+ const gearExtended=gearState==='DOWN'?true:gearState==='UP'?false:null;
+ const mach=el('mach').value.trim()===''?null:v('mach');
  const flapMax=flaps?v('flapPlacard'):null;
  const buffer=flaps&&el('flapBuffer').value!==''?v('flapBuffer'):null;
  const event={type:'FCC_SPEED_LIMIT',confirmed:true,source:'INSTRUCTOR_SCENARIO',
   actualCasKt:actual,commandSource:'MCP',selectedMcpCasKt:selected,
-  minimumSpeedKt:min,vmoMmoCasKt:max,gearExtended:gear,
-  gearPlacardKt:gear?v('gearPlacard'):null,flapsPosition:flaps,
+  minimumSpeedKt:min,vmoMmoCasKt:max,gearExtended,gearState,actualMach:mach,
+  gearPlacardKt:null,flapsPosition:flaps,
   flapPlacardKt:flapMax,pitchMode:pitch,
   atArmed:yes('atArmed'),atAvailable:yes('atAvailable'),atSpeedControl:yes('atSpeed'),
   afdsEngaged:true,afdsSpeedControl:pitch==='LVL_CHG',apEngaged:true,
@@ -125,21 +138,26 @@ function go(){
   climb:pitch==='LVL_CHG',climbMaintainable:!yes('unmaintainable')};
  try{
   limit=M.transition(limit,event);
-  tape=E.transition(tape,{type:'CONFIG',gearExtended:gear,flapsPosition:flaps,inFlight:true,phase:'CRUISE'});
+  tape=E.transition(tape,{type:'CONFIG',gearState,flapsPosition:flaps,inFlight:true,phase:'CRUISE'});
   tape=E.transition(tape,{type:'LIMITS',valid:true,vmoMmoCasKt:max,
-   gearPlacardKt:gear?v('gearPlacard'):null,flapPlacardKt:flapMax,
+   gearPlacardKt:null,flapPlacardKt:flapMax,
    flapBufferKt:buffer,minimumAfdsKt:min,
    minimumManeuverKt:v('minimumManeuver'),stickShakerKt:v('stickShaker')});
   tape=E.transition(tape,{type:'MCP',powered:true,selectedCasKt:selected,
    displayBlank:false,speedDisplayMode:'IAS'});
   time=Math.max(Date.now(),time+150);
   tape=E.transition(tape,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',
-   casKt:actual,pressureAltitudeFt:3000,timeMs:time});
+   casKt:actual,mach,pressureAltitudeFt:3000,timeMs:time});
   ctx.fillStyle='#080b10';ctx.fillRect(0,0,900,720);R.draw(ctx,E.view(tape));
   const o=M.view(limit);
   el('iasO').textContent=actual.toFixed(1)+' kt';el('selO').textContent=selected+' kt';
   el('effective').textContent=o.effectiveCommandKt===null?'UNKNOWN':o.effectiveCommandKt+' kt';
   el('maximum').textContent=o.maximumSpeedKt===null?'UNKNOWN':o.maximumSpeedKt+' kt ('+o.maximumReason+')';
+  el('gearLimits').textContent=o.gearOperatingLimitKt===null?'NONE / GEAR UP':
+   o.gearOperatingLimitKt+' kt'+(o.gearOperatingLimitMach===null?'':' / M'+o.gearOperatingLimitMach.toFixed(2))+' ('+o.gearState+')';
+  el('machStatus').textContent=o.actualMach===null?'UNKNOWN MACH':
+   'M'+o.actualMach.toFixed(2)+(o.gearOperatingLimitMach===null?' / NO GEAR MACH LIMIT':
+    o.gearMachLimitReached?' / AT OR ABOVE LIMIT':' / BELOW LIMIT');
   const band=E.view(tape).marks.flapBuffer;
   el('bufferStatus').textContent=band?
    (band.bufferKt===0?'0 kt (none)':band.lowerKt+'–'+band.upperKt+' kt'):
@@ -152,7 +170,9 @@ function go(){
   symbol.classList.toggle('blink',o.flashing);
   el('diagnostics').textContent=JSON.stringify({source:o.source,authorized:o.authorized,
    symbol:o.speedConditionSymbol,reversion:o.reversion,limit:o.clampReason,
-   command:o.effectiveCommandKt,flaps,flapPlacardKt:flapMax,
+   command:o.effectiveCommandKt,gearState,actualMach:mach,
+   gearOperatingLimitKt:o.gearOperatingLimitKt,gearOperatingLimitMach:o.gearOperatingLimitMach,
+   gearMachLimitReached:o.gearMachLimitReached,flaps,flapPlacardKt:flapMax,
    flapBufferKt:buffer,bufferLowerKt:E.view(tape).marks.flapBuffer?.lowerKt??null,
    inhibitedBy:o.minimumReversionInhibitedBy,
     tape:{actualCasKt:E.view(tape).casKt,displayCenterKt:E.view(tape).tapeCenterKt,
@@ -160,8 +180,8 @@ function go(){
     conflict:o.conflictingLimits},null,2);
  }catch(error){el('diagnostics').textContent='INVALID SCENARIO: '+error.message;}
 }
-const fields=['ias','sel','minimumInput','minimumManeuver','stickShaker','vmo','gearPlacard','flapPlacard','flapBuffer','pitch',
- 'gear','nearHigh','nearMin','atArmed','atAvailable','atSpeed','atIdle','gs','vnavLevel',
+const fields=['ias','sel','minimumInput','minimumManeuver','stickShaker','vmo','gearState','mach','flapPlacard','flapBuffer','pitch',
+ 'nearHigh','nearMin','atArmed','atAvailable','atSpeed','atIdle','gs','vnavLevel',
  'insufficient','increasing','unmaintainable'];
 for(const id of fields)el(id).addEventListener('input',go);
 for(const id of ['flaps','flap30Variant'])el(id).addEventListener('input',()=>{
@@ -173,17 +193,23 @@ function set(vals){for(const [id,value]of Object.entries(vals)){const node=el(id
  if('flaps' in vals||'flap30Variant' in vals)updateFlapInputs();
  go();}
 el('presetLow').onclick=()=>set({ias:154,sel:145,minimumInput:160,pitch:'VS',
- nearMin:true,nearHigh:false,flaps:0,gear:false,insufficient:false,increasing:false});
+ nearMin:true,nearHigh:false,flaps:0,gearState:'UP',insufficient:false,increasing:false});
 el('presetStall').onclick=()=>set({ias:153,sel:155,
  minimumManeuver:165,stickShaker:140,flaps:0,nearMin:false,nearHigh:false,
  insufficient:false});
 el('presetHigh').onclick=()=>set({ias:227,sel:250,minimumInput:160,pitch:'VS',
- nearHigh:true,nearMin:false,flaps:5,gear:false,
+ nearHigh:true,nearMin:false,flaps:5,gearState:'UP',
  atArmed:true,atAvailable:true,atSpeed:false,insufficient:false,increasing:true});
+el('presetGearDown').onclick=()=>set({ias:319,sel:335,mach:0.75,flaps:0,gearState:'DOWN',
+ nearHigh:false,nearMin:false,insufficient:false,increasing:true});
+el('presetGearExtend').onclick=()=>set({ias:271,sel:300,mach:0.75,flaps:0,gearState:'EXTENDING',
+ nearHigh:false,nearMin:false,insufficient:false,increasing:true});
+el('presetGearRetract').onclick=()=>set({ias:236,sel:280,mach:0.75,flaps:0,gearState:'RETRACTING',
+ nearHigh:false,nearMin:false,insufficient:false,increasing:true});
 el('presetPerformance').onclick=()=>set({ias:210,sel:230,minimumInput:160,pitch:'VS',
- nearMin:false,nearHigh:false,flaps:0,gear:false,insufficient:true,increasing:false});
-el('reset').onclick=()=>set({ias:230,sel:235,minimumInput:160,vmo:340,gearPlacard:270,
- flapPlacard:250,flaps:0,pitch:'VS',gear:false,nearMin:false,nearHigh:false,
+ nearMin:false,nearHigh:false,flaps:0,gearState:'UP',insufficient:true,increasing:false});
+el('reset').onclick=()=>set({ias:230,sel:235,minimumInput:160,vmo:340,mach:0.70,
+ flapPlacard:250,flaps:0,pitch:'VS',gearState:'UP',nearMin:false,nearHigh:false,
  atArmed:true,atAvailable:true,atSpeed:true,atIdle:false,gs:false,vnavLevel:false,
  insufficient:false,increasing:true,unmaintainable:false});
 updateFlapInputs();
