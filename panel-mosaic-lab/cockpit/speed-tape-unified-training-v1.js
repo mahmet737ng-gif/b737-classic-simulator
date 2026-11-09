@@ -10,9 +10,9 @@
  if(root?.document){root.B737UnifiedSpeedTapeTrainerV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='SPEED-TAPE-TRAINING-0001';
+ const VERSION='SPEED-TAPE-TRAINING-0004';
  let win=null,ready=false,enabled=true,overrideKt=null;
- let flap30MaximumKt=180,lastVisualFlapDetent=null;
+ let flap30MaximumKt=180,lastVisualFlapDetent=null,lastVisualGearState=null;
  const originalAdcSeen={CAPT:false,FO:false};
  const lastValue={CAPT:null,FO:null},lastTime={CAPT:0,FO:0};
  let panel=null;
@@ -78,6 +78,24 @@
   }
   updatePanel();return true;
  }
+ // Gear states are explicit training choices until a verified cockpit gear
+ // system is connected. The selected limit is visual-only on both EADIs.
+ function syncVisualGear(){
+  const renderer=win?.B737UnifiedSpeedTapeV1;
+  if(!ready||!renderer?.observe)return false;
+  for(const seat of ['CAPT','FO']){
+   renderer.observe(seat,{type:'TRAINING_GEAR_PROFILE',
+    source:'INSTRUCTOR_VISUAL_GEAR',gearState:lastVisualGearState});
+  }
+  updatePanel();return true;
+ }
+ function setGearState(value){
+  if(![null,'UNKNOWN','UP','DOWN','EXTENDING','RETRACTING'].includes(value))
+   throw Error('INVALID_INSTRUCTOR_GEAR_STATE');
+  lastVisualGearState=value==='UNKNOWN'?null:value;
+  syncVisualGear();updatePanel();
+  return lastVisualGearState;
+ }
  function setFlap30MaximumKt(value){
   if(![180,185].includes(Number(value)))throw Error('INVALID_FLAP30_VARIANT');
   flap30MaximumKt=Number(value);
@@ -107,6 +125,16 @@
     ' kt / BUFFER '+(value.bufferKt===null?'UNSPECIFIED':value.bufferKt+' kt'):
     'TRN FLAP LIMIT: '+(detent===0?'UP / NONE':'not connected');
   }
+  const gear=panel.querySelector('[data-gear-limit-status]');
+  if(gear){
+   const l=lastVisualGearState?win?.B737ClassicSpeedTapeEngineV1?.GEAR_SPEED_LIMITS?.[lastVisualGearState]:null;
+   gear.textContent=lastVisualGearState===null?'TRN GEAR: UNKNOWN / no cockpit gear sensor connected':
+    l?'TRN GEAR '+lastVisualGearState+' / MAX '+l.iasKt+' kt'+
+      (l.mach===null?'':' / M'+l.mach.toFixed(2)):
+    'TRN GEAR UP / no gear-specific placard';
+  }
+  const gearSelector=panel.querySelector('[data-gear-training-state]');
+  if(gearSelector)gearSelector.value=lastVisualGearState??'UNKNOWN';
   const option=panel.querySelector('[data-flap30-variant]');
   if(option)option.value=String(flap30MaximumKt);
  }
@@ -149,6 +177,17 @@
    '<option value="180">180 kt — image</option><option value="185">185 kt — list</option>'+
    '</select></label>'+
    '<p style="font-size:11px;opacity:.8">Visual flap detents display TRN LIMIT only; this does not command the AFDS.</p>'+
+   '<p style="font-size:12px;margin-top:12px"><strong>LANDING GEAR SPEED LIMITS · TRAINING</strong></p>'+
+   '<label style="font-size:12px">Gear state (manual instructor input)'+
+   '<select data-gear-training-state style="margin:5px;color:inherit;background:#213448">'+
+   '<option value="UNKNOWN">UNKNOWN / no verified gear signal</option>'+
+   '<option value="UP">UP / no gear speed placard</option>'+
+   '<option value="EXTENDING">EXTENDING / 270 kt / M0.82</option>'+
+   '<option value="DOWN">DOWN / 320 kt / M0.82</option>'+
+   '<option value="RETRACTING">RETRACTING / 235 kt</option>'+
+   '</select></label>'+
+   '<p data-gear-limit-status style="font-size:12px;line-height:1.5">TRN GEAR: UNKNOWN</p>'+
+   '<p style="font-size:11px;opacity:.8">Selected gear state draws a TRAINING speed limit on CAPT and FO tape only. It never moves the gear or commands AFDS. When a verified FCC limit controls, that verified limit takes precedence.</p>'+
    '<p><a href="./speed-limit-ch4-lab.html" target="_blank" rel="noopener" style="color:#9ad1ff">FCOM CH4 SPEED LIMITS · TEST LAB</a></p>';
   owner.appendChild(panel);
   panel.querySelector('[data-speed-toggle]').addEventListener('change',e=>setEnabled(e.target.checked));
@@ -156,6 +195,8 @@
   panel.querySelector('[data-speed-auto]').addEventListener('click',()=>setIAS(null));
   panel.querySelector('[data-flap30-variant]').addEventListener('change',
    e=>setFlap30MaximumKt(Number(e.target.value)));
+  panel.querySelector('[data-gear-training-state]').addEventListener('change',
+   e=>setGearState(e.target.value));
   updatePanel();return true;
  }
  function bind(root){
@@ -176,14 +217,14 @@
   flapEventTarget.addEventListener('b737:flap-ready',event=>{
    syncVisualFlap(event.detail?.position);
   });
-  root.addEventListener('b737:cockpit-mounted',()=>{mount();sync();syncVisualFlap()});
+  root.addEventListener('b737:cockpit-mounted',()=>{mount();sync();syncVisualFlap();syncVisualGear()});
   if(root.document?.readyState==='loading')
-   root.document.addEventListener('DOMContentLoaded',()=>{mount();sync();syncVisualFlap()},{once:true});
+   root.document.addEventListener('DOMContentLoaded',()=>{mount();sync();syncVisualFlap();syncVisualGear()},{once:true});
   else mount();
-  sync();syncVisualFlap();return true;
+  sync();syncVisualFlap();syncVisualGear();return true;
  }
  function snapshot(){return {version:VERSION,enabled,overrideKt,
-  flap30MaximumKt,lastVisualFlapDetent,
+  flap30MaximumKt,lastVisualFlapDetent,lastVisualGearState,
   realAdcSeen:{...originalAdcSeen},sourceLabel:'TRAINING_SCENARIO_NOT_ADC'};}
- return Object.freeze({VERSION,bind,sync,syncVisualFlap,setFlap30MaximumKt,setEnabled,setIAS,snapshot});
+ return Object.freeze({VERSION,bind,sync,syncVisualFlap,syncVisualGear,setGearState,setFlap30MaximumKt,setEnabled,setIAS,snapshot});
 });
