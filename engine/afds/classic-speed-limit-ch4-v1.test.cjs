@@ -37,12 +37,30 @@ assert.equal(go({actualCasKt:251,selectedMcpCasKt:290,gearExtended:true,gearPlac
 assert.equal(E.view(s).maximumSpeedKt,250);
 assert.equal(E.view(s).maximumReason,'FLAP_PLACARD');
 assert.equal(E.view(s).speedConditionSymbol,'OVERSPEED');
-assert.equal(go({actualCasKt:251,selectedMcpCasKt:290,gearExtended:true,gearPlacardKt:null}).upperLimitComplete,false);
-assert.equal(E.view(s).maximumSpeedKt,null);
+assert.equal(go({actualCasKt:251,selectedMcpCasKt:290,gearExtended:true,gearPlacardKt:null}).upperLimitComplete,true);
+assert.equal(E.view(s).maximumSpeedKt,320,'Gear DOWN does not depend on a legacy 270-kt placard input');
 assert.equal(go({actualCasKt:339,selectedMcpCasKt:330,nearHighLimit:true,pitchMode:'VS',atSpeedControl:true,thrustAtIdle:true}).reversion,'LVL_CHG_VMO');
 assert.equal(go({actualCasKt:340,selectedMcpCasKt:330,atAvailable:false,atSpeedControl:false}).reversion,'AFDS_VMO_SPEED_CONTROL');
 assert.equal(go({actualCasKt:256,selectedMcpCasKt:250,flapsPosition:5,flapPlacardKt:250,atAvailable:false,atSpeedControl:false}).reversion,'NONE');
 assert.equal(go({actualCasKt:218,selectedMcpCasKt:220,source:'INSTRUCTOR_SCENARIO'}).authorized,false);
 assert.equal(go({actualCasKt:215,selectedMcpCasKt:220,minimumSpeedKt:350,vmoMmoCasKt:340}).conflictingLimits,true);
 assert.equal(E.view(s).effectiveCommandKt,null);
-console.log('PASS FCOM 4.20.31-35 speed limits, 5/15-kt thresholds and exact reversion mode boundaries');
+// Owner supplied gear limit schedule: separate DOWN, EXTENDING, RETRACTING
+// limits; Mach 0.82 is independent from CAS and is not converted to knots.
+for(const [state,max,mach] of [['UP',340,null],['DOWN',320,.82],
+ ['EXTENDING',270,.82],['RETRACTING',235,null]]){
+ const o=go({actualCasKt:220,selectedMcpCasKt:400,flapsPosition:0,
+  gearExtended:state==='DOWN'?true:state==='UP'?false:null,
+  gearState:state,actualMach:.7,nearHighLimit:false});
+ assert.equal(o.maximumSpeedKt,max,'Maximum IAS for '+state);
+ assert.equal(o.gearOperatingLimitMach,mach,'Mach restriction for '+state);
+}
+const machLimit=go({gearState:'EXTENDING',gearExtended:null,actualCasKt:250,
+ actualMach:.83,selectedMcpCasKt:250,flapsPosition:0,nearHighLimit:false});
+assert.equal(machLimit.speedConditionSymbol,'OVERSPEED');
+assert.equal(machLimit.reversionReason,'GEAR_MACH_LIMIT');
+const retractNoMach=go({gearState:'RETRACTING',gearExtended:null,actualCasKt:225,
+ actualMach:.95,selectedMcpCasKt:225,flapsPosition:0,nearHighLimit:false});
+assert.notEqual(retractNoMach.speedConditionSymbol,'OVERSPEED');
+assert.throws(()=>go({gearState:'TRANSIT'}),/INVALID_GEAR_STATE/);
+console.log('PASS FCOM 4.20.31-35 and gear speed limits 320/270/235 kt and M0.82');
