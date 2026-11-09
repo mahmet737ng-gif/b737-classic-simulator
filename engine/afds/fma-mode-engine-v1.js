@@ -105,7 +105,8 @@
   if(output.power!==true)return state;
   const m=output.modes||{},ctrl=output.controls||{};
   const at=ctrl.atArm===true;
-  const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical);
+  const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical)||
+   output.capture?.pitch==='G/S'||output.capture?.pitch==='ALT_HOLD';
   state.at.active=at?(automaticSpeed?'MCP SPD':
    sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM'):'';
   state.at.origin=ORIGIN.MCP;

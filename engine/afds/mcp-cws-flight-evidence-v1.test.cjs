@@ -37,6 +37,14 @@ assert.equal(f().roll.armed,'');
 sample({gsCaptureConfirmed:true,gsBelowDots:0.4});
 assert.equal(f().pitch.active,'G/S');
 assert.equal(f().pitch.armed,'');
+// Start a separate, non-APP ALT HOLD scenario: ALT HLD is inhibited
+// after G/S capture and cannot be used to escape an engaged ILS.
+assert.equal(send({type:'BUTTON',id:'ALT_HLD'}).rejection,
+ 'PITCH_MODE_INHIBITED_AFTER_GS_CAPTURE');
+send({type:'RESET'});
+send({type:'ELECTRICAL',snapshot:{schema:'B737_ELECTRICAL_V7_RESULT',revision:2,bus}});
+send({type:'FD',side:'left',on:true});
+send({type:'BUTTON',id:'CMD_A'});
 send({type:'BUTTON',id:'ALT_HLD'});
 sample({pitchOverrideConfirmed:true,altitudeFt:10000});
 assert.equal(core.output(s).axisControl.pitch,'CWS');
@@ -51,6 +59,10 @@ sample({altAcquireConfirmed:true});
 assert.equal(f().pitch.active,'ALT ACQ');
 sample({altitudeHoldConfirmed:true});
 assert.equal(f().pitch.active,'ALT HOLD');
+sample({navKind:'ILS',navValid:true});
+send({type:'BUTTON',id:'APP'});
+sample({navCaptureConfirmed:true,navKind:'ILS',navValid:true});
+sample({gsCaptureConfirmed:true,gsBelowDots:0.4});
 sample({dualAutopilot:true,pitchOverrideConfirmed:true});
 assert.equal(core.output(s).modes.autopilot,null);
 console.log('PASS FCOM CWS bank, ALT override, NAV arming, LOC and G/S captures');

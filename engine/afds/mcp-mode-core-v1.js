@@ -178,6 +178,10 @@ function transition(state,action){
   }
   if(cmd&&f.pitchForceReleased===true&&s.override.pitch&&
    s.override.altHold&&Number.isFinite(f.altitudeFt)&&
+   Math.abs(f.altitudeFt-s.values.altitude)>250)
+   s.override.altHold=false; // CWS stays latched after release beyond 250 ft.
+  if(cmd&&f.pitchForceReleased===true&&s.override.pitch&&
+   s.override.altHold&&Number.isFinite(f.altitudeFt)&&
    Math.abs(f.altitudeFt-s.values.altitude)<=250){
    s.override.pitch=false;s.override.altHold=false;
    s.capture.pitch="ALT_ACQ";s.targets.pitch=null;
@@ -312,7 +316,13 @@ function transition(state,action){
   if(!s.pending.approach)s.armed.roll=null;
   return done();
  }
- if(vertical.includes(id)){selectPitch(s,id);return done();}
+ if(vertical.includes(id)){
+  // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
+  // following G/S capture in APP.
+  if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
+   return rejected(s,"PITCH_MODE_INHIBITED_AFTER_GS_CAPTURE");
+  selectPitch(s,id);return done();
+ }
  return rejected(s,"NOT_SUPPORTED");
 }
 // Training-state autopilot axis engagement, sourced from the selected
