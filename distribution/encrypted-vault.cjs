@@ -47,8 +47,12 @@ async function syncEncryptedVault({root,envelope,publicKeys,encryptionKey,fetchO
         continue;
       }catch(error){
         if(error.code!=='ENOENT'){
-          // A corrupt cached object is discarded, not silently trusted.
-          await fs.rm(dest,{force:true});
+          // Never discard a ciphertext merely because a caller supplied
+          // the wrong key: a valid previous release must remain readable.
+          const existing=await fs.readFile(dest);
+          if(core.hash(existing)===file.objectSha256)throw error;
+          // A corrupted file may be replaced only after a new object
+          // has been fetched and authenticated successfully.
         }
       }
       const blob=await fetchObject(file.objectSha256,core.objectPath(file.objectSha256));
