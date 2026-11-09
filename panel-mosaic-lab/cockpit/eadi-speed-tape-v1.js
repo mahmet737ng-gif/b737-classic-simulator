@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0008';
+ const VERSION='EADI-SPEED-TAPE-0009';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -146,8 +146,8 @@
   segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
   if(visible(lower))segment(ctx,x-arm,lower,x,lower,COLOR.yellow,3);
  }
- // STALL buffer is the OPPOSITE (┌): left stem and ONE upper tooth
- // pointing RIGHT into the tape. Both bounds must be verified inputs.
+ // STALL buffer has an upper tooth facing LEFT toward the numeric speed tape,
+ // never outward to the right. Both bounds must be verified inputs.
  function stallBufferBracket(ctx,minimumManeuverKt,stickShakerKt,view){
   if(!Number.isFinite(minimumManeuverKt)||
      !Number.isFinite(stickShakerKt)||
@@ -158,7 +158,7 @@
   const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
   if(yBottom<=yTop)return;
   segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
-  if(visible(upper))segment(ctx,x,upper,x+arm,upper,COLOR.yellow,3);
+  if(visible(upper))segment(ctx,x-arm,upper,x,upper,COLOR.yellow,3);
  }
  function draw(ctx,view){
   if(!view||view.schema!=='B737_CLASSIC_SPEED_TAPE_VIEW_V1')return;
