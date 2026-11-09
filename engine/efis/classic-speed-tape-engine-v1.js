@@ -9,11 +9,17 @@
  if(root)root.B737ClassicSpeedTapeEngineV1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
- const VERSION='SPEED-TAPE-FCOM-0001',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
+ const VERSION='SPEED-TAPE-FCOM-0002',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
  const LIMIT_KEYS=['vmoMmoCasKt','gearPlacardKt','flapPlacardKt','minimumManeuverKt',
   'stickShakerKt','minimumAfdsKt','highSpeedBuffetKt','nextFlapPlacardKt',
   'flapRetractionKt','flapsUpManeuverKt','flapBufferKt'];
  const REF_KEYS=['v1Kt','vrKt','selectedVrefKt','landingFlaps'];
+ const GEAR_SPEED_LIMITS=Object.freeze({
+  DOWN:Object.freeze({iasKt:320,mach:0.82}),
+  EXTENDING:Object.freeze({iasKt:270,mach:0.82}),
+  RETRACTING:Object.freeze({iasKt:235,mach:null})
+ });
+ const GEAR_STATES=['UP','DOWN','EXTENDING','RETRACTING'];
  const blankFields=keys=>Object.fromEntries(keys.map(k=>[k,null]));
  const clone=v=>JSON.parse(JSON.stringify(v));
  const isNum=v=>typeof v==='number'&&Number.isFinite(v);
@@ -23,10 +29,10 @@
  function initialState(seat='CAPT'){
   if(!['CAPT','FO'].includes(seat))throw Error('INVALID_SEAT');
   return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',adc:{quality:'UNKNOWN',casKt:null,
-   pressureAltitudeFt:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false},
+   pressureAltitudeFt:null,mach:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false},
    mcp:{powered:null,displayBlank:true,selectedCasKt:null,speedDisplayMode:'IAS',source:'MCP'},
    fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
-   config:{flapsPosition:null,gearExtended:null,inFlight:null,phase:null,flapsRetracting:null},
+   config:{flapsPosition:null,gearExtended:null,gearState:null,inFlight:null,phase:null,flapsRetracting:null},
    limits:{valid:false,...blankFields(LIMIT_KEYS)},
    trainingFlap:null,
    failures:{speed:false,selectedSpeed:false,v1:false,speedLimit:false,mach:false}};
@@ -49,6 +55,7 @@
      (previous.trendVisible?Math.abs(difference)>=3:Math.abs(difference)>4);
     s.adc={quality:'VALID',casKt:cas,pressureAltitudeFt:e.pressureAltitudeFt==null?null:
      required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
+     mach:e.mach==null?null:required(e.mach,0,1.5,'ACTUAL_MACH'),
      lastMs:ms,previousCasKt:previous.casKt,accelerationKtS:acceleration,trendVisible:visible};
    }else{
     s.adc={quality:'INVALID',casKt:null,pressureAltitudeFt:null,lastMs:null,
@@ -70,10 +77,11 @@
    s.adc={quality:'TRAINING',casKt:cas,
     pressureAltitudeFt:e.pressureAltitudeFt==null?null:
      required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
+    mach:e.mach==null?null:required(e.mach,0,1.5,'ACTUAL_MACH'),
     lastMs:ms,previousCasKt:p.casKt,accelerationKtS:acceleration,trendVisible:visible};
   }else if(e.type==='TRAINING_CLEAR'){
    if(s.adc.quality==='TRAINING')s.adc={quality:'UNKNOWN',casKt:null,
-    pressureAltitudeFt:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false};
+    pressureAltitudeFt:null,mach:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false};
   }else if(e.type==='ADC_TIMEOUT'){
    const now=required(e.nowMs,0,1e15,'TIMESTAMP');
    if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&now-s.adc.lastMs>2000)
@@ -117,6 +125,12 @@
      throw Error('INVALID_FLIGHT_PHASE');
     config.phase=e.phase;
    }
+   if(Object.hasOwn(e,'gearState')){
+    if(![null,...GEAR_STATES].includes(e.gearState))throw Error('INVALID_GEAR_STATE');
+    config.gearState=e.gearState;
+    config.gearExtended=e.gearState==='DOWN'?true:e.gearState==='UP'?false:null;
+   }else if(Object.hasOwn(e,'gearExtended'))
+    config.gearState=e.gearExtended===true?'DOWN':e.gearExtended===false?'UP':null;
    s.config=config;
   }else if(e.type==='LIMITS'){
    if(typeof e.valid!=='boolean')throw Error('LIMIT_VALIDITY_REQUIRED');
@@ -166,15 +180,16 @@
   const lim=validLimits?s.limits:blankFields(LIMIT_KEYS);
   const config=s.config;
   const maximumCandidates=[];
+  const gearState=config.gearState??(config.gearExtended===true?'DOWN':config.gearExtended===false?'UP':null);
+  const gearLimit=GEAR_SPEED_LIMITS[gearState]??null;
   if(within(lim.vmoMmoCasKt))maximumCandidates.push({reason:'VMO_MMO',speedKt:lim.vmoMmoCasKt});
-  if(config.gearExtended===true&&within(lim.gearPlacardKt))
-   maximumCandidates.push({reason:'GEAR',speedKt:lim.gearPlacardKt});
+  if(gearLimit)maximumCandidates.push({reason:'GEAR',speedKt:gearLimit.iasKt});
   if(config.flapsPosition!==null&&config.flapsPosition>0&&within(lim.flapPlacardKt))
    maximumCandidates.push({reason:'FLAPS',speedKt:lim.flapPlacardKt});
   // Unknown gear/flap configuration or an applicable missing placard must
   // never be presented as a verified safe maximum speed.
   const maxCoverage=within(lim.vmoMmoCasKt)&&
-   (config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)))&&
+   (gearState!==null)&&
    (config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)));
   const limiting=maxCoverage&&maximumCandidates.length?
    maximumCandidates.reduce((a,b)=>a.speedKt<=b.speedKt?a:b):null;
@@ -261,11 +276,16 @@
     maximumKt:limiting?.speedKt??null,
     limitsComplete:maxCoverage},
    maxLimitReason:limiting?.reason??null,
+   gearState,gearOperatingLimitKt:gearLimit?.iasKt??null,
+   gearOperatingLimitMach:gearLimit?.mach??null,
+   actualMach:adcValid?s.adc.mach:null,
+   gearMachLimitReached:adcValid&&gearLimit?.mach!=null&&s.adc.mach!==null&&
+    s.adc.mach>=gearLimit.mach,
    trainingFlapSource:trainingFlapLimit?.source??null,
    coverage:{vmo:within(lim.vmoMmoCasKt),
-    gear:config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)),
+    gear:gearState!==null,
     flaps:config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)),
     complete:maxCoverage}};
  }
- return Object.freeze({VERSION,SCHEMA,initialState,transition,view,LIMIT_KEYS,REF_KEYS});
+ return Object.freeze({VERSION,SCHEMA,GEAR_SPEED_LIMITS,initialState,transition,view,LIMIT_KEYS,REF_KEYS});
 });
