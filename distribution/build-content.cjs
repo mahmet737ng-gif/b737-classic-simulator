@@ -40,6 +40,7 @@ function packageRelease({input,output,version,sequence,keyId,encryptionKeyId,pri
       items.push(file);oldByPlain.set(file.sha256,items);
     }
   }
+  fs.mkdirSync(output,{recursive:true});
   const files=[];
   const written=new Set();
   for(const relative of inventory(input)){
