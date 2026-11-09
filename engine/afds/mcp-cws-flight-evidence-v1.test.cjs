@@ -1,5 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict');
+// The MCP core reads the numeric rules registered by its browser module.
+require('./mcp-fcom-ch4-numeric-v1.js');
 const core=require('./mcp-mode-core-v1.js');
 const fma=require('./fma-mode-engine-v1.js');
 const keys=['generator1','generator2','transfer1','transfer2','main1',

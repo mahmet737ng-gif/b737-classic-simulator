@@ -13,8 +13,10 @@ label{display:grid;gap:7px;font-size:14px}.line{display:flex;align-items:center;
 input[type=range]{width:100%;accent-color:#ae36cf}
 select,button{padding:9px 12px;background:#23364b;color:white;border:1px solid #54718e;border-radius:7px;font:inherit}
 button{cursor:pointer}button:hover{background:#354f6a}
-.screen{width:286px;height:502px;overflow:hidden;margin-inline:auto;border:9px solid #19242c;border-radius:20px;background:#000}
-canvas{display:block;width:900px;height:720px;max-width:none;transform:translate(-2px,-138px);transform-origin:top left}
+.screen{position:relative;direction:ltr;width:286px;height:502px;overflow:hidden;margin-inline:auto;border:9px solid #19242c;border-radius:20px;background:#000}
+/* Anchor the 900px EADI canvas at its LEFT edge even under the RTL page.
+   Otherwise the browser aligns the rightmost (empty) 286px inside .screen. */
+.screen canvas{display:block;position:absolute;left:0;top:0;width:900px;height:720px;max-width:none;direction:ltr;transform:translate(-2px,-138px);transform-origin:top left}
 pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;color:#9eeca7;margin-top:18px}
 .value{font-variant-numeric:tabular-nums;font-weight:bold;color:#f4f2f9}
 </style>
@@ -26,6 +28,7 @@ pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break
 <main>
 <section class="card">
 <div class="screen"><canvas id="preview" width="900" height="720" aria-label="B737 Classic EFIS speed tape preview"></canvas></div>
+<p class="note" style="text-align:center;margin:10px 0 0">پیش‌نمایش اختصاصی Speed Tape (ناحیه چپ EADI)؛ نمایش کامل EADI در <a href="./index.html" style="color:#8dd0ff">پنل Unified</a> است.</p>
 <pre id="diag" aria-live="polite"></pre>
 </section>
 <section class="card controls">
@@ -72,6 +75,7 @@ function command(){
  const speed=Number(dom('mcp').value);
  update({type:'MCP',powered:true,displayBlank:dom('source').value==='FMC',
   speedDisplayMode:'IAS',selectedCasKt:speed});
+ update({type:'COMMAND_AUTHORITY',source:dom('source').value});
 }
 function draw(){
  const v=E.view(state);
