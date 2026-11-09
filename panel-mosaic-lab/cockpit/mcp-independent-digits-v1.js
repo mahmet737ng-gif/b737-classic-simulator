@@ -33,6 +33,10 @@ const segments=Object.freeze({
 const segOn=Object.freeze({0:"abcdef",1:"bc",2:"abged",3:"abgcd",4:"fgbc",
  5:"afgcd",6:"afgecd",7:"abc",8:"abcdefg",9:"abfgcd","-":"g"});
 const roots=new Map();
+const speedConditionStyle=document.createElement('style');
+speedConditionStyle.id='mcp-fcom-ch4-speed-condition-style';
+speedConditionStyle.textContent='@keyframes b737McpSpeedLimitFlash{0%,49%{opacity:1}50%,100%{opacity:0}}';
+document.head.append(speedConditionStyle);
 let lastKey="",witness=null,lastSupply=null;
 function svg(tag,attrs={}){
  const e=document.createElementNS(NS,tag);
@@ -54,7 +58,20 @@ function makeWindow(d){
   preserveAspectRatio:"none",width:"100%",height:"100%","aria-hidden":"true"});
  glass.style.cssText="display:block;width:100%;height:100%;overflow:hidden;pointer-events:none";
  host.append(glass);
- return {host,glass,d};
+ // Symbol is a separate layer inside the same owner-approved MCP speed
+ // aperture, not an altered photograph, knob, display location or frame.
+ let condition=null;
+ if(d.id==='speed'){
+  condition=document.createElement('span');
+  condition.dataset.mcpCh4SpeedCondition='true';
+  condition.setAttribute('aria-label','MCP speed limiting condition');
+  Object.assign(condition.style,{position:'absolute',top:'4%',left:'0px',
+   width:'20%',height:'89%',display:'none',color:'#ffdc85',
+   font:'bold 16px Arial,sans-serif',textAlign:'center',lineHeight:'2.1',
+   pointerEvents:'none',textShadow:'0 0 5px #f9b953'});
+  host.append(condition);
+ }
+ return {host,glass,d,condition};
 }
 function getElectrical(){
  let observed=null;
@@ -111,8 +128,18 @@ function stringFor(d,values){
  return Rules?.format(d.id,value,{mode:values.speedMode,blank})??"";
 }
 function paint(view,on,chars){
- const {glass,d,host}=view;
+ const {glass,d,host,condition}=view;
  host.dataset.powered=on?"true":"false";
+ if(condition){
+  const evidence=win.B737McpAFDSBridgeV1?.getOutput?.()?.speedLimit;
+  const symbol=on&&evidence?.authorized===true?evidence.speedConditionSymbol:'NONE';
+  condition.style.display=symbol&&symbol!=='NONE'?'block':'none';
+  // Chapter 4 figure depicts flashing A (low/performance) and 8 (high).
+  condition.textContent=symbol==='OVERSPEED'?'8':'A';
+  condition.style.animation=condition.style.display==='block'?
+   'b737McpSpeedLimitFlash 1s steps(1,end) infinite':'none';
+  host.dataset.speedCondition=symbol||'NONE';
+ }
  host.dataset.characters=chars;
  if(!on||!chars){glass.replaceChildren();return;}
  // Fit a FIXED display capacity, never the length of a changing value.
@@ -164,7 +191,8 @@ function paint(view,on,chars){
 function draw(force=false,refreshPower=false){
  if(refreshPower||!lastSupply)lastSupply=supply();
  const p=lastSupply,values=getNumbers();
- const key=JSON.stringify([qa,p.main,p.right,values]);
+ const key=JSON.stringify([qa,p.main,p.right,values,
+  win.B737McpAFDSBridgeV1?.getOutput?.()?.speedLimit?.speedConditionSymbol]);
  if(!force&&key===lastKey)return;
  lastKey=key;
  for(const views of roots.values())for(const view of views){

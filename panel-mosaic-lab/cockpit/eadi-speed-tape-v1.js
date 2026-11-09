@@ -228,6 +228,33 @@
    states[seat]=engine.initialState(seat);
    unsubscribers.push(eadi.registerLayer(seat,'speedTape',(ctx)=>draw(ctx,engine.view(states[seat]))));
   }
+  // The Chapter 4 FCC report carries the verified *command* limits.
+  // Do not confuse minimum AFDS speed with Chapter 10 minimum-maneuver
+  // or stick-shaker red/yellow bands. Keep those sources independent.
+  root.addEventListener('b737:speed-limit-fcc',e=>{
+   const f=e.detail;
+   if(f?.schema!=='B737_CH4_FCC_SPEED_LIMIT_SAMPLE_V1'||
+     f.confirmed!==true||f.source!=='SIMULATED_FCC')return;
+   const finite=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=600;
+   if(![true,false].includes(f.gearExtended)||
+      !finite(f.flapsPosition)||f.flapsPosition>40)return;
+   for(const seat of ['CAPT','FO']){
+    try{
+     dispatch(seat,{type:'CONFIG',gearExtended:f.gearExtended,
+      flapsPosition:f.flapsPosition});
+     const previous=states[seat].limits;
+     const data={type:'LIMITS',...previous,valid:true};
+     const mapping={vmoMmoCasKt:'vmoMmoCasKt',
+      gearPlacardKt:'gearPlacardKt',flapPlacardKt:'flapPlacardKt',
+      minimumAfdsKt:'minimumSpeedKt'};
+     for(const [target,source]of Object.entries(mapping)){
+      if(f[source]===null) data[target]=null;
+      else if(finite(f[source]))data[target]=f[source];
+     }
+     dispatch(seat,data);
+    }catch(error){win?.console?.warn?.('CH4 speed-limit projection rejected',error);}
+   }
+  });
   root.addEventListener('b737:mcp-afds-state',syncMcp);
   root.addEventListener('b737:avionics-data',e=>{
    if(['airdata.adc1','airdata.adc2'].includes(e.detail?.topic))syncNetwork();

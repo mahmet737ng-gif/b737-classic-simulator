@@ -165,6 +165,13 @@ window.addEventListener("b737:mcp-value-change",visualValue);
   if(e.detail?.schema==="B737_AFDS_FLIGHT_OBSERVATION_V1")
    send({type:"FLIGHT_OBSERVATION",sample:e.detail});
  });
+window.addEventListener('b737:speed-limit-fcc',event=>{
+ const d=event.detail;
+ if(d?.schema!=='B737_CH4_FCC_SPEED_LIMIT_SAMPLE_V1'||d.confirmed!==true||
+    d.source!=='SIMULATED_FCC')return;
+ try{send({type:'SPEED_LIMIT_FCC',sample:d});}
+ catch(error){console.warn('CH4 qualified speed-limit rejection',error);}
+});
 window.addEventListener("b737:mcp-bank-limit-preview",e=>{
  const deg=e.detail?.angle;
  if([10,15,20,25,30].includes(deg)&&Core.output(state).bankAngleLimit!==deg)

@@ -8,6 +8,11 @@
 })(typeof globalThis!=="undefined"?globalThis:null,function(){
 "use strict";
 const Rules=typeof globalThis!=="undefined"?globalThis.B737McpFCOMCh4NumericV1:null;
+// Decision-only Ch4 model. Browser module loads before this AFDS core;
+ // CommonJS import is used only by deterministic Node regression tests.
+const SpeedLimit=globalThis.B737ClassicSpeedLimitCh4V1||
+ (typeof module==='object'&&typeof require==='function'?
+ require('./classic-speed-limit-ch4-v1.js'):null);
 const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_OBSERVED:"INSTRUCTOR_OBSERVED",SIMULATED_DC1:"SIMULATED_DC1"});
 const lateral=Object.freeze(["HDG_SEL","LNAV","VOR_LOC"]);
 const vertical=Object.freeze(["LVL_CHG","ALT_HLD","VS","VNAV"]);
@@ -35,6 +40,7 @@ function initialState(){return {
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
  nav:{loc:false,gs:false},flight:null,targets:{pitch:null,roll:null},
+ speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
  lastRejection:null
 };}
 function globalPowerPossible(bus){
@@ -77,6 +83,8 @@ function clearModes(s){
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.targets={pitch:null,roll:null};s.flight=null;
  s.autoThrustByPitch=false;
+ s.speedLimit=SpeedLimit?.initialState?.()??null;
+ s.flightDirectorBarsRetracted=false;
 }
 function selectPitch(s,id){
  const previous=s.modes.vertical;
@@ -123,6 +131,51 @@ function transition(state,action){
   s.electrical.batteryBus=trit(source.bus.battery);
   s.electrical=projectPower(s);
   if(s.electrical.mcpPower!==true)clearModes(s);
+  return done();
+ }
+ if(action.type==="SPEED_LIMIT_FCC"){
+  // Only an explicitly observed, qualified simulator FCC may change AFDS.
+  // Instructor/test-lab speed values cannot drive real/virtual flight modes.
+  const f=action.sample;
+  if(!SpeedLimit||f?.schema!=='B737_CH4_FCC_SPEED_LIMIT_SAMPLE_V1'||
+    f.confirmed!==true||f.source!=='SIMULATED_FCC')
+   return rejected(s,'QUALIFIED_CH4_FCC_SAMPLE_REQUIRED');
+  if(s.electrical.mcpPower!==true)return rejected(s,'MCP_BUS_OR_CB_NOT_POWERED');
+  const pitch=s.nav.gs?'G/S':
+   s.capture.pitch==='ALT_HOLD'||s.modes.vertical==='ALT_HLD'?'ALT_HOLD':
+   s.modes.vertical==='VNAV'?
+     (['VNAV_PTH','VNAV_SPD'].includes(f.vnavPitchMode)?f.vnavPitchMode:null):
+   s.modes.vertical;
+  const frame={...f,type:'FCC_SPEED_LIMIT',confirmed:true,source:'SIMULATED_FCC',
+   pitchMode:pitch,
+   commandSource:s.modes.vertical==='VNAV'?'FMC':
+     s.speedDisplayMode==='IAS'?'MCP':null,
+   selectedMcpCasKt:s.speedDisplayMode==='IAS'?s.values.speed:null,
+   atArmed:s.autoThrottleArm,
+   atSpeedControl:s.modes.thrust==='SPEED'||f.fmcAtSpeedConfirmed===true,
+   afdsEngaged:s.fd.left||s.fd.right||!!s.modes.autopilot,
+   afdsSpeedControl:s.modes.vertical==='LVL_CHG'||f.afdsSpeedConfirmed===true,
+   apEngaged:!!s.modes.autopilot,
+   gsCaptured:s.nav.gs,
+   cwsMode:s.modes.autopilot?.startsWith('CWS_')===true||
+    s.override.pitch===true};
+  try{s.speedLimit=SpeedLimit.transition(s.speedLimit||SpeedLimit.initialState(),frame);}
+  catch(error){return rejected(s,'INVALID_CH4_FCC_'+String(error.message||error));}
+  const result=SpeedLimit.view(s.speedLimit);
+  if(result.reversion==='LVL_CHG_MINIMUM'||result.reversion==='LVL_CHG_PERFORMANCE'||
+   result.reversion==='LVL_CHG_VMO'){
+   // Chapter 4's explicit mode transition; not a synthetic aircraft servo.
+   s.modes.vertical='LVL_CHG';s.capture.pitch=null;s.override.pitch=false;
+   s.targets.pitch=null;s.armed.pitch=null;
+   s.modes.thrust=null;s.autoThrustByPitch=false;
+  }else if(result.reversion==='AT_SPEED_PLACARD'&&s.autoThrottleArm){
+   s.modes.thrust='SPEED';s.autoThrustByPitch=false;
+  }else if(result.reversion==='AP_DISENGAGE_FD_RETRACT'){
+   // FD SELECT switches remain ON; command bars retract independently.
+   s.modes.autopilot=null;s.flightDirectorBarsRetracted=true;
+  }
+  // AFDS_VMO_SPEED_CONTROL is an evidence-gated demand, not a named
+  // selector change: the FCOM does not specify which button illuminates.
   return done();
  }
  if(action.type==="OBSERVE_POWER"){
@@ -364,6 +417,8 @@ function output(s){
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
    speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
+  speedLimit:SpeedLimit?.view(s.speedLimit)??null,
+  flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   modes:{...s.modes},axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
