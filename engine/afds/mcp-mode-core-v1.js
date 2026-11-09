@@ -32,7 +32,10 @@ function initialState(){return {
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
  autoThrustByPitch:false,
- pending:{approach:false},lastRejection:null
+ pending:{approach:false},armed:{pitch:null,roll:null},
+ capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
+ nav:{loc:false,gs:false},flight:null,targets:{pitch:null,roll:null},
+ lastRejection:null
 };}
 function globalPowerPossible(bus){
  if(!bus||typeof bus!=="object")return null;
@@ -70,12 +73,17 @@ function projectPower(s){
 function clearModes(s){
  s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};
  s.pending.approach=false;
+ s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
+ s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
+ s.targets={pitch:null,roll:null};s.flight=null;
  s.autoThrustByPitch=false;
 }
 function selectPitch(s,id){
  const previous=s.modes.vertical;
  const next=previous===id?null:id;
  s.modes.vertical=next;
+ s.capture.pitch=null;s.override.pitch=false;s.override.altHold=false;
+ s.targets.pitch=null;if(!s.pending.approach)s.armed.pitch=null;
  // Transition from a pitch-owned auto A/T SPEED mode: the new pitch mode
  // replaces the old one, with exactly one illuminated pitch selector.
  if(s.autoThrustByPitch){
@@ -131,6 +139,85 @@ function transition(state,action){
   if(action.key==="approachCapture"&&action.value!==true)s.pending.approach=false;
   return done();
  }
+ if(action.type==="FLIGHT_OBSERVATION"){
+  // Qualified simulated FCC/flight-model telemetry; never invent yoke force
+  // thresholds, radio-course intercepts, or ALT ACQ distance.
+  const f=action.sample;
+  if(!f||f.schema!=="B737_AFDS_FLIGHT_OBSERVATION_V1"||
+   f.confirmed!==true||f.source!=="SIMULATED_FCC")
+   return rejected(s,"QUALIFIED_FLIGHT_SAMPLE_REQUIRED");
+  if(s.electrical.mcpPower!==true)return rejected(s,"MCP_BUS_OR_CB_NOT_POWERED");
+  for(const k of ["bankDeg","headingDeg","pitchDeg","altitudeFt",
+   "radioAltitudeFt","tasKt","gsBelowDots","verticalSpeedFpm"])
+   if(f[k]!==undefined&&!Number.isFinite(f[k]))
+    return rejected(s,"INVALID_FLIGHT_SENSOR_"+k);
+  if(f.navKind!==undefined&&!["NONE","VOR","LOC","ILS"].includes(f.navKind))
+   return rejected(s,"INVALID_NAV_SIGNAL_TYPE");
+  const flags=["navValid","gearDown","fdVorCaptured","fdLocCaptured",
+   "pitchOverrideConfirmed","rollOverrideConfirmed","pitchForceReleased",
+   "rollForceReleased","altAcquireConfirmed","altitudeHoldConfirmed",
+   "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot"];
+  if(flags.some(k=>f[k]!==undefined&&typeof f[k]!=="boolean"))
+   return rejected(s,"INVALID_FLIGHT_SENSOR_FLAG");
+  s.flight={...(s.flight||{}),...f};
+  const cmd=/^CMD_[AB]$/.test(s.modes.autopilot||"");
+  if(cmd&&f.dualAutopilot===true&&s.nav.loc&&s.nav.gs&&
+   (f.pitchOverrideConfirmed||f.rollOverrideConfirmed)){
+   // FCOM 4.10.16: override after dual-channel LOC + GS capture
+   // disengages the A/P, not a CWS axis.
+   s.modes.autopilot=null;s.override.pitch=false;s.override.roll=false;
+   s.targets.pitch=null;s.targets.roll=null;return done();
+  }
+  if(cmd&&f.pitchOverrideConfirmed===true){
+   if(!s.override.pitch)s.override.altHold=
+    s.modes.vertical==="ALT_HLD"||s.capture.pitch==="ALT_HOLD";
+   s.override.pitch=true;s.capture.pitch=null;s.targets.pitch=null;
+  }
+  if(cmd&&f.rollOverrideConfirmed===true){
+   s.override.roll=true;s.capture.roll=null;s.targets.roll=null;
+  }
+  if(cmd&&f.pitchForceReleased===true&&s.override.pitch&&
+   s.override.altHold&&Number.isFinite(f.altitudeFt)&&
+   Math.abs(f.altitudeFt-s.values.altitude)<=250){
+   s.override.pitch=false;s.override.altHold=false;
+   s.capture.pitch="ALT_ACQ";s.targets.pitch=null;
+  }
+  if(cmd&&f.altAcquireConfirmed===true&&
+   axisControl(s,true).pitch==="CWS"&&!s.nav.gs){
+   s.capture.pitch="ALT_ACQ";s.override.pitch=false;
+   s.override.altHold=false;s.targets.pitch=null;
+  }
+  if(cmd&&f.altitudeHoldConfirmed===true&&s.capture.pitch==="ALT_ACQ"){
+   s.capture.pitch="ALT_HOLD";s.modes.vertical="ALT_HLD";
+   s.override.pitch=false;s.targets.pitch=null;s.armed.pitch=null;
+  }
+  if(cmd&&s.armed.roll==="VOR/LOC"&&f.navCaptureConfirmed===true&&
+   s.flight.navValid===true&&["VOR","LOC","ILS"].includes(s.flight.navKind)){
+   s.capture.roll="VOR_LOC";s.modes.lateral="VOR_LOC";s.armed.roll=null;
+   s.override.roll=false;s.targets.roll=null;
+   if(["LOC","ILS"].includes(s.flight.navKind))s.nav.loc=true;
+  }
+  if(cmd&&s.pending.approach&&s.nav.loc&&s.armed.pitch==="G/S"&&
+   f.gsCaptureConfirmed===true&&Number.isFinite(f.gsBelowDots)&&
+   f.gsBelowDots>=0&&f.gsBelowDots<=0.4){
+   s.capture.pitch="G/S";s.modes.vertical=null;s.nav.gs=true;
+   s.armed.pitch=null;s.override.pitch=false;s.targets.pitch=null;
+  }
+  if(axisControl(s,true).roll==="CWS"&&f.rollForceReleased===true&&
+   Number.isFinite(f.bankDeg)&&Number.isFinite(f.headingDeg)){
+   const inhibited=(Number.isFinite(f.radioAltitudeFt)&&
+      f.radioAltitudeFt<1500&&f.gearDown===true)||
+     (f.fdVorCaptured===true&&Number.isFinite(f.tasKt)&&f.tasKt<=250)||
+     (f.fdLocCaptured===true&&s.pending.approach);
+   s.targets.roll=Math.abs(f.bankDeg)<=6&&!inhibited?
+    {type:"WINGS_LEVEL_HEADING_HOLD",bankDeg:0,headingDeg:f.headingDeg}:
+    {type:"BANK_ATTITUDE_HOLD",bankDeg:f.bankDeg};
+  }
+  if(axisControl(s,true).pitch==="CWS"&&f.pitchForceReleased===true&&
+   Number.isFinite(f.pitchDeg))
+   s.targets.pitch={type:"PITCH_ATTITUDE_HOLD",pitchDeg:f.pitchDeg};
+  return done();
+ }
  if(action.type==="FD"){
   if(!["left","right"].includes(action.side)||typeof action.on!=="boolean")throw Error("Invalid FD position");
   s.fd[action.side]=action.on;
@@ -162,25 +249,45 @@ function transition(state,action){
  if(action.type==="VALUE"){
   const id=action.id,v=action.value;
   if(!Rules?.valid||!Rules.valid(id,v))throw Error("MCP value out of FCOM Chapter 4 range or increment");
-  s.values[id]=v;return done();
+  const old=s.values[id];s.values[id]=v;
+  if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&Math.abs(v-old)>100){
+   s.capture.pitch=null;s.modes.vertical="VS";s.override.pitch=false;
+   if(Number.isFinite(s.flight?.verticalSpeedFpm))
+    s.values.verticalSpeed=Math.max(-7900,Math.min(6000,
+     Math.round(s.flight.verticalSpeedFpm/50)*50));
+  }else if(id==="altitude"&&s.modes.vertical==="ALT_HLD"&&
+   Math.abs(v-old)>100&&s.capture.pitch!=="ALT_ACQ")s.armed.pitch="V/S";
+  return done();
  }
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
  const id=action.id;
  if(id==="APP"){
-  // APP press requests approach mode; actual capture/LOC/GS signals unmodeled.
-  s.pending.approach=true;
-  return rejected(s,"APP_CAPTURE_INPUT_UNVERIFIED");
+  if(s.flight?.navKind!=="ILS"||s.flight.navValid!==true)
+   return rejected(s,"APP_ILS_NAV_EVIDENCE_REQUIRED");
+  s.pending.approach=!s.pending.approach;
+  s.armed.roll=s.pending.approach?"VOR/LOC":null;
+  s.armed.pitch=s.pending.approach?"G/S":null;
+  if(!s.pending.approach){s.nav.loc=false;s.nav.gs=false;}
+  return done();
  }
  if(id==="LNAV"||id==="VNAV"){
   if(s.evidence.fmcRouteReady!==true)return rejected(s,"FMC_ROUTE_EVIDENCE_REQUIRED");
  }
- if(id==="VOR_LOC")return rejected(s,"VOR_LOC_CAPTURE_INPUT_UNVERIFIED");
+ if(id==="VOR_LOC"){
+  if(s.flight?.navValid!==true||!["VOR","LOC","ILS"].includes(s.flight.navKind))
+   return rejected(s,"VOR_LOC_NAV_EVIDENCE_REQUIRED");
+  s.armed.roll=s.armed.roll==="VOR/LOC"?null:"VOR/LOC";
+  s.pending.approach=false;s.armed.pitch=null;s.nav.loc=false;s.nav.gs=false;
+  return done();
+ }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
   if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
   const selected=s.modes.autopilot;
   s.modes.autopilot=selected===id?null:id;
+  s.override={pitch:false,roll:false,altHold:false};
+  s.targets={pitch:null,roll:null};
   // Dual-channel autoland, CWS capture and servo are not modeled.
-  if(s.modes.autopilot!==null)s.pending.approach=false;
+  // CMD engagement does not deselect an already armed approach.
   return done();
  }
  if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
@@ -200,7 +307,10 @@ function transition(state,action){
  if(lateral.includes(id)){
   // A new lateral selector replaces the former one, without requiring
   // a separate disengage click and without a second active roll lamp.
-  s.modes.lateral=s.modes.lateral===id?null:id;return done();
+  s.modes.lateral=s.modes.lateral===id?null:id;
+  s.capture.roll=null;s.override.roll=false;s.targets.roll=null;
+  if(!s.pending.approach)s.armed.roll=null;
+  return done();
  }
  if(vertical.includes(id)){selectPitch(s,id);return done();}
  return rejected(s,"NOT_SUPPORTED");
@@ -214,8 +324,10 @@ function axisControl(s,powered){
  const engaged=/^(?:CMD|CWS)_[AB]$/.test(ap);
  if(!engaged)return {pitch:"OFF",roll:"OFF"};
  const manual=ap.startsWith("CWS_");
- return {pitch:manual||s.modes.vertical===null?"CWS":"CMD",
-  roll:manual||s.modes.lateral===null?"CWS":"CMD"};
+ return {pitch:manual||s.override.pitch||
+   (!s.capture.pitch&&s.modes.vertical===null)?"CWS":"CMD",
+  roll:manual||s.override.roll||
+   (!s.capture.roll&&s.modes.lateral===null)?"CWS":"CMD"};
 }
 function output(s){
  const powered=s.electrical.mcpPower===true;
@@ -233,8 +345,11 @@ function output(s){
    speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   modes:{...s.modes},axisControl:axisControl(s,powered),
+  armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
+  flight:s.flight?{...s.flight}:null,
+  axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
   pending:{...s.pending},rejection:s.lastRejection,
-  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_CAPTURE","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
+  limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_SERVO_DYNAMICS","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
 }
 return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState,globalPowerPossible,transition,output});
 });
