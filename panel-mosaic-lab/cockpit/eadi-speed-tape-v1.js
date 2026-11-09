@@ -206,7 +206,8 @@
  function receiveChannel(event){
   const d=event.detail;
   if(!d||!['CAPT','FO','BOTH'].includes(d.seat)||!d.payload)return;
-  const type={'b737:speed-tape-fmc':'FMC','b737:speed-tape-limits':'LIMITS',
+  const type={'b737:speed-tape-command-source':'COMMAND_AUTHORITY',
+   'b737:speed-tape-fmc':'FMC','b737:speed-tape-limits':'LIMITS',
    'b737:speed-tape-configuration':'CONFIG','b737:speed-tape-failures':'FAILURES'}[event.type];
   if(!type)return;
   for(const seat of d.seat==='BOTH'?['CAPT','FO']:[d.seat])
@@ -225,7 +226,7 @@
   root.addEventListener('b737:avionics-data',e=>{
    if(['airdata.adc1','airdata.adc2'].includes(e.detail?.topic))syncNetwork();
   });
-  for(const kind of ['b737:speed-tape-fmc','b737:speed-tape-limits',
+  for(const kind of ['b737:speed-tape-command-source','b737:speed-tape-fmc','b737:speed-tape-limits',
    'b737:speed-tape-configuration','b737:speed-tape-failures'])
    root.addEventListener(kind,receiveChannel);
   root.addEventListener('b737:cockpit-mounted',()=>{syncMcp();syncNetwork()});

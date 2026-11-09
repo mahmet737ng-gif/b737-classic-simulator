@@ -61,6 +61,30 @@ t=apply(t,{type:'LIMITS',valid:true,vmoMmoCasKt:340});
 assert.equal(E.view(t).marks.maximumOperatingKt,null,'Do not publish red pole with unknown gear/flaps');
 t=apply(t,{type:'CONFIG',gearExtended:false,flapsPosition:0});
 assert.equal(E.view(t).marks.maximumOperatingKt,340);
+// Explicit AFDS/FMC authority cannot be inferred from an arbitrary MCP knob.
+let a=E.initialState();
+a=apply(a,{type:'MCP',powered:true,displayBlank:false,selectedCasKt:230,speedDisplayMode:'IAS'});
+a=apply(a,{type:'FMC',valid:true,commandCasKt:245,grossWeightAvailable:true});
+assert.equal(E.view(a).command?.source,'MCP');
+a=apply(a,{type:'COMMAND_AUTHORITY',source:'FMC'});
+assert.equal(E.view(a).command?.speedKt,245);
+a=apply(a,{type:'COMMAND_AUTHORITY',source:'NONE'});
+assert.equal(E.view(a).command,null);
+a=apply(a,{type:'COMMAND_AUTHORITY',source:'MCP'});
+assert.equal(E.view(a).command?.speedKt,230);
+assert.throws(()=>apply(a,{type:'COMMAND_AUTHORITY',source:'GUESS'}),/INVALID_COMMAND_AUTHORITY/);
+a=apply(a,{type:'LIMITS',valid:true,vmoMmoCasKt:300,
+ minimumAfdsKt:180,minimumManeuverKt:190,stickShakerKt:160});
+a=apply(a,{type:'CONFIG',gearExtended:false,flapsPosition:0});
+assert.equal(E.view(a).speedProtection.active,false);
+a=apply(a,{type:'MCP',powered:true,displayBlank:false,selectedCasKt:150,speedDisplayMode:'IAS'});
+assert.equal(E.view(a).speedProtection.effectiveKt,180);
+assert.equal(E.view(a).speedProtection.reason,'MINIMUM_AFDS_SPEED');
+assert.equal(E.view(a).marks.minimumManeuverKt,190);
+assert.equal(E.view(a).marks.stickShakerKt,160);
+a=apply(a,{type:'MCP',powered:true,displayBlank:false,selectedCasKt:330,speedDisplayMode:'IAS'});
+assert.equal(E.view(a).speedProtection.effectiveKt,300);
+assert.equal(E.view(a).speedProtection.reason,'VMO_MMO');
 const calls=[];
 const ctx=new Proxy({},{
  get(target,key){return key in target?target[key]:

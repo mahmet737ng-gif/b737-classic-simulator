@@ -22,7 +22,7 @@
  const within=(v)=>isNum(v)&&v>=0&&v<=600;
  function initialState(seat='CAPT'){
   if(!['CAPT','FO'].includes(seat))throw Error('INVALID_SEAT');
-  return {schema:SCHEMA,version:VERSION,seat,revision:0,adc:{quality:'UNKNOWN',casKt:null,
+  return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',adc:{quality:'UNKNOWN',casKt:null,
    pressureAltitudeFt:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false},
    mcp:{powered:null,displayBlank:true,selectedCasKt:null,speedDisplayMode:'IAS',source:'MCP'},
    fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
@@ -74,6 +74,13 @@
      required(e[k],0,k==='landingFlaps'?40:600,'FMC_'+k);
     s.fmc=f;
    }
+  }else if(e.type==='COMMAND_AUTHORITY'){
+   // AUTO preserves the legacy MCP display-blanking adapter; explicit
+   // authority is reserved for verified AFDS/FMC output. A blank MCP
+   // window alone must not assert an FMC command without valid data.
+   if(!['AUTO','MCP','FMC','NONE'].includes(e.source))
+    throw Error('INVALID_COMMAND_AUTHORITY');
+   s.commandAuthority=e.source;
   }else if(e.type==='CONFIG'){
    const config={...s.config};
    if(Object.hasOwn(e,'flapsPosition'))config.flapsPosition=optional(e.flapsPosition,0,40,'FLAPS');
@@ -133,10 +140,13 @@
   const limiting=maxCoverage&&maximumCandidates.length?
    maximumCandidates.reduce((a,b)=>a.speedKt<=b.speedKt?a:b):null;
   const f=s.fmc;
-  const preferFmc=s.mcp.displayBlank===true;
-  const commanded=f.valid&&preferFmc&&within(f.commandCasKt)?
+  const preferFmc=s.commandAuthority==='FMC'||
+   (s.commandAuthority==='AUTO'&&s.mcp.displayBlank===true);
+  const allowMcp=s.commandAuthority==='MCP'||
+   (s.commandAuthority==='AUTO'&&s.mcp.displayBlank!==true);
+  const commanded=s.commandAuthority!=='NONE'&&f.valid&&preferFmc&&within(f.commandCasKt)?
    {source:'FMC',speedKt:f.commandCasKt}:
-   !preferFmc&&s.mcp.powered===true&&within(s.mcp.selectedCasKt)?
+   allowMcp&&s.mcp.powered===true&&!s.mcp.displayBlank&&within(s.mcp.selectedCasKt)?
    {source:'MCP',speedKt:s.mcp.selectedCasKt}:null;
   const command=!s.failures.selectedSpeed?commanded:null;
   let commandedPosition=null;
@@ -178,8 +188,15 @@
   }
   return {schema:'B737_CLASSIC_SPEED_TAPE_VIEW_V1',version:VERSION,seat:s.seat,
    revision:s.revision,quality:s.adc.quality,casKt:cas,tapeCenterKt,range,
+   commandAuthority:s.commandAuthority,
    rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
    effectiveTargetKt,limitReason,marks,flags,
+   // Advisory ONLY. No implied mode switch or authority over AFDS servos.
+   speedProtection:{active:limitReason!==null,reason:limitReason,
+    commandKt:command?.speedKt??null,effectiveKt:effectiveTargetKt,
+    minimumKt:within(lim.minimumAfdsKt)?lim.minimumAfdsKt:null,
+    maximumKt:limiting?.speedKt??null,
+    limitsComplete:maxCoverage},
    maxLimitReason:limiting?.reason??null,
    coverage:{vmo:within(lim.vmoMmoCasKt),
     gear:config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)),
