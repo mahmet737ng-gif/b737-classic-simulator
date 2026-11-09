@@ -9,7 +9,7 @@
  if(root)root.B737ClassicSpeedTapeEngineV1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
- const VERSION='SPEED-TAPE-FCOM-0002',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
+ const VERSION='SPEED-TAPE-FCOM-0003',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
  const LIMIT_KEYS=['vmoMmoCasKt','gearPlacardKt','flapPlacardKt','minimumManeuverKt',
   'stickShakerKt','minimumAfdsKt','highSpeedBuffetKt','nextFlapPlacardKt',
   'flapRetractionKt','flapsUpManeuverKt','flapBufferKt'];
@@ -34,7 +34,7 @@
    fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
    config:{flapsPosition:null,gearExtended:null,gearState:null,inFlight:null,phase:null,flapsRetracting:null},
    limits:{valid:false,...blankFields(LIMIT_KEYS)},
-   trainingFlap:null,
+   trainingFlap:null,trainingGear:null,
    failures:{speed:false,selectedSpeed:false,v1:false,speedLimit:false,mach:false}};
  }
  function transition(old,event){
@@ -156,6 +156,15 @@
     if(buffer!==null&&buffer>max)throw Error('INVALID_TRAINING_FLAP_BUFFER');
     s.trainingFlap={detent,maximumKt:max,bufferKt:buffer,source:e.source};
    }
+  }else if(e.type==='TRAINING_GEAR_PROFILE'){
+   // Instructor gear choices affect only the speed-tape visual overlay.
+   // This never commands the gear, FCC, servos or ADC sensor feeds.
+   if(e.source!=='INSTRUCTOR_VISUAL_GEAR')throw Error('INVALID_TRAINING_GEAR_SOURCE');
+   if(e.gearState===null||e.gearState==='UNKNOWN')s.trainingGear=null;
+   else{
+    if(!GEAR_STATES.includes(e.gearState))throw Error('INVALID_TRAINING_GEAR_STATE');
+    s.trainingGear={state:e.gearState,source:e.source};
+   }
   }else if(e.type==='FAILURES'){
    for(const k of Object.keys(s.failures)){
     if(Object.hasOwn(e,k)){
@@ -209,7 +218,19 @@
    {detent:t.detent,maximumKt:t.maximumKt,bufferKt:t.bufferKt,
     bufferStartKt:t.bufferKt===null?null:t.maximumKt-t.bufferKt,
     source:'INSTRUCTOR_VISUAL_DETENT'}:null;
-  if(!flapBuffer&&trainingFlapLimit&&trainingFlapLimit.bufferKt!==null)
+  const g=s.trainingGear;
+  const trainingGearLimit=!s.failures.speedLimit&&!limiting&&g&&GEAR_SPEED_LIMITS[g.state]?
+   {state:g.state,maximumKt:GEAR_SPEED_LIMITS[g.state].iasKt,
+    maximumMach:GEAR_SPEED_LIMITS[g.state].mach,source:g.source}:null;
+  // Prefer the lower visual training limit; verified operating limits
+  // retain authority. This overlay is never applied to speedProtection.
+  const trainingOperatingLimit=trainingFlapLimit&&trainingGearLimit?
+   (trainingFlapLimit.maximumKt<=trainingGearLimit.maximumKt?
+    {...trainingFlapLimit,reason:'FLAPS'}:{...trainingGearLimit,reason:'GEAR'}):
+   trainingFlapLimit?{...trainingFlapLimit,reason:'FLAPS'}:
+   trainingGearLimit?{...trainingGearLimit,reason:'GEAR'}:null;
+  if(!flapBuffer&&trainingFlapLimit&&trainingOperatingLimit?.reason==='FLAPS'&&
+     trainingFlapLimit.bufferKt!==null)
    flapBuffer={lowerKt:trainingFlapLimit.bufferStartKt,
     upperKt:trainingFlapLimit.maximumKt,
     bufferKt:trainingFlapLimit.bufferKt,training:true};
@@ -242,7 +263,7 @@
    highSpeedBuffetKt:s.adc.pressureAltitudeFt!==null&&s.adc.pressureAltitudeFt>25000&&
     f.grossWeightAvailable===true?lim.highSpeedBuffetKt:null,
    maximumOperatingKt:limiting?.speedKt??null,
-   trainingFlapLimit,flapBuffer
+   trainingFlapLimit,trainingGearLimit,trainingOperatingLimit,flapBuffer
   };
   // A confirmed SPD or SPD LIM failure does not masquerade as a dead EADI.
   // No source connected (UNKNOWN) is not itself a hardware failure.
@@ -282,6 +303,7 @@
    gearMachLimitReached:adcValid&&gearLimit?.mach!=null&&s.adc.mach!==null&&
     s.adc.mach>=gearLimit.mach,
    trainingFlapSource:trainingFlapLimit?.source??null,
+   trainingGearSource:trainingGearLimit?.source??null,
    coverage:{vmo:within(lim.vmoMmoCasKt),
     gear:gearState!==null,
     flaps:config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)),
