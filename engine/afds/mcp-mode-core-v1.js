@@ -260,7 +260,12 @@ function transition(state,action){
     s.values.verticalSpeed=Math.max(-7900,Math.min(6000,
      Math.round(s.flight.verticalSpeedFpm/50)*50));
   }else if(id==="altitude"&&s.modes.vertical==="ALT_HLD"&&
-   Math.abs(v-old)>100&&s.capture.pitch!=="ALT_ACQ")s.armed.pitch="V/S";
+   Number.isFinite(s.flight?.altitudeFt)&&
+   Math.abs(v-s.flight.altitudeFt)>100&&s.capture.pitch!=="ALT_ACQ"){
+   // FCOM 4.10.10/11: arming is relative to present aircraft altitude,
+   // not the previous MCP selector value. No unverified altitude assumption.
+   s.armed.pitch="V/S";
+  }
   return done();
  }
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
@@ -348,7 +353,12 @@ function output(s){
   for(const x of [...lateral,...vertical,...thrust])if(lamps[x]!==undefined)lamps[x]=s.modes[x==="N1"||x==="SPEED"?"thrust":lateral.includes(x)?"lateral":"vertical"]===x;
   for(const x of ["CMD_A","CMD_B","CWS_A","CWS_B"])lamps[x]=s.modes.autopilot===x;
   // APP indication never claims a capture without evidence.
-  lamps.APP=s.pending.approach&&s.evidence.approachCapture===true;
+  // FCOM 4.10.16: APP illuminates when armed, not only after capture.
+  // Extinguish it after both localizer and glideslope have captured.
+  lamps.APP=s.pending.approach&&!(s.nav.loc&&s.nav.gs);
+  // FCOM 4.10.14: VOR/LOC pushbutton illuminates while armed,
+  // independently of the green VOR/LOC roll capture annunciation.
+  lamps.VOR_LOC=lamps.VOR_LOC||(s.armed.roll==="VOR/LOC"&&!s.pending.approach);
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
