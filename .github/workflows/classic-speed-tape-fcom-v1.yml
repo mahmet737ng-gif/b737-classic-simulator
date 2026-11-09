@@ -12,6 +12,8 @@ on:
       - 'engine/efis/classic-speed-tape-engine-v1.js'
       - 'engine/efis/classic-speed-tape-engine-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
+      - 'panel-mosaic-lab/cockpit/speed-limit-ch4-lab.html'
+      - 'panel-mosaic-lab/cockpit/speed-limit-ch4-lab.test.cjs'
       - 'panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.js'
       - 'panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -41,6 +43,7 @@ jobs:
           node engine/afds/mcp-speed-limit-ch4-integration.test.cjs
           node engine/efis/classic-speed-tape-engine-v1.test.cjs
           node panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs
+          node panel-mosaic-lab/cockpit/speed-limit-ch4-lab.test.cjs
       - name: Confirm EADI scripts installed
         run: |
           grep -Fq 'engine/efis/classic-speed-tape-engine-v1.js' panel-mosaic-lab/cockpit/index.html

@@ -109,7 +109,8 @@
    '<label style="display:block;font-size:12px;margin-top:8px">IAS <output data-speed-reading>SIM IAS</output></label>'+
    '<input type="range" data-speed-slider min="0" max="420" step=".1" value="180" style="width:100%">'+
    '<button type="button" data-speed-auto style="margin:6px">Follow simulator IAS</button>'+
-   '<p style="font-size:11px;opacity:.8">TRN on glass = training source. Verified ADC overrides this display. No changes to flight-control or ADC network.</p>';
+   '<p style="font-size:11px;opacity:.8">TRN on glass = training source. Verified ADC overrides this display. No changes to flight-control or ADC network.</p>'+
+   '<p><a href="./speed-limit-ch4-lab.html" target="_blank" rel="noopener" style="color:#9ad1ff">FCOM CH4 SPEED LIMITS · TEST LAB</a></p>';
   owner.appendChild(panel);
   panel.querySelector('[data-speed-toggle]').addEventListener('change',e=>setEnabled(e.target.checked));
   panel.querySelector('[data-speed-slider]').addEventListener('input',e=>setIAS(Number(e.target.value)));

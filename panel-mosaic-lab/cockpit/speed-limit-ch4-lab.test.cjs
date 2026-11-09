@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const file=fs.readFileSync(__dirname+'/speed-limit-ch4-lab.html','utf8');
+assert.match(file,/classic-speed-limit-ch4-v1\.js/);
+assert.match(file,/classic-speed-tape-engine-v1\.js/);
+assert.match(file,/INSTRUCTOR_SCENARIO/);
+assert.match(file,/speedConditionSymbol/);
+assert.match(file,/source:'INSTRUCTOR_SCENARIO'/);
+assert.match(file,/nearHighLimit:yes\('nearHigh'\)/);
+assert.match(file,/flapsPosition:flaps/);
+const inline=[...file.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean);
+assert.equal(inline.length,1);
+new vm.Script(inline[0]);
+console.log('PASS — Ch4 speed limit standalone test page, training-only scenario flags, original engine sources');
