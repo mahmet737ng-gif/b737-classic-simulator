@@ -24,7 +24,7 @@ const ctx=new Proxy({}, {get:(o,k)=>k in o?o[k]:(...a)=>{if(k==='fillText')lines
 const training=E.transition(E.initialState('CAPT'),{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:190,timeMs:1200});
 R.draw(ctx,E.view(training));
 assert.ok(lines.includes('TRN'),'Training provenance must remain visible on EADI glass');
-const listeners={};
+const listeners={},documentListeners={};
 const state={CAPT:E.initialState('CAPT'),FO:E.initialState('FO')};
 let adcSignal={quality:'UNKNOWN',value:null};
 const root={
@@ -36,13 +36,17 @@ const root={
   return adcSignal;
  }},
  addEventListener(type,cb){(listeners[type]||=[]).push(cb)},
- document:{readyState:'loading',addEventListener(){}}
+ document:{readyState:'loading',addEventListener(type,cb){
+  (documentListeners[type]||=[]).push(cb);
+ }}
 };
 assert.equal(Trainer.bind(root),true);
 assert.equal(state.CAPT.adc.quality,'TRAINING');
 assert.equal(state.FO.adc.quality,'TRAINING');
-assert.equal((listeners['b737:flap-detent-visual-test']||[]).length,1);
-listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:30}});
+assert.equal((documentListeners['b737:flap-detent-visual-test']||[]).length,1,
+ 'non-bubbling pedestal event must be observed on document');
+assert.equal((listeners['b737:flap-detent-visual-test']||[]).length,0);
+documentListeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:30}});
 for(const seat of ['CAPT','FO']){
  assert.equal(E.view(state[seat]).marks.trainingFlapLimit.maximumKt,180);
  assert.equal(E.view(state[seat]).marks.flapBuffer.lowerKt,155);
@@ -53,10 +57,10 @@ assert.equal(Trainer.snapshot().lastVisualFlapDetent,30);
 Trainer.setFlap30MaximumKt(185);
 assert.equal(E.view(state.FO).marks.flapBuffer.lowerKt,160);
 Trainer.setFlap30MaximumKt(180);
-listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:40}});
+documentListeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:40}});
 assert.equal(E.view(state.CAPT).marks.trainingFlapLimit.maximumKt,158);
 assert.equal(E.view(state.CAPT).marks.flapBuffer.bufferKt,0);
-listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:0}});
+documentListeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:0}});
 assert.equal(E.view(state.CAPT).marks.trainingFlapLimit,null);
 
 Trainer.setIAS(230);

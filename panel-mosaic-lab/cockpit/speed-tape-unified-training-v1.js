@@ -166,11 +166,14 @@
    if(['airdata.adc1','airdata.adc2','flightcontext.state'].includes(e.detail?.topic))
     sync();
   });
-  root.addEventListener('b737:flap-detent-visual-test',event=>{
+  // The existing pedestal dispatches CustomEvent on DOCUMENT with
+  // bubbles:false. A window listener never receives that event.
+  const flapEventTarget=root.document?.addEventListener?root.document:root;
+  flapEventTarget.addEventListener('b737:flap-detent-visual-test',event=>{
    if(event.detail?.visualOnly!==true)return;
    syncVisualFlap(event.detail.detent);
   });
-  root.addEventListener('b737:flap-ready',event=>{
+  flapEventTarget.addEventListener('b737:flap-ready',event=>{
    syncVisualFlap(event.detail?.position);
   });
   root.addEventListener('b737:cockpit-mounted',()=>{mount();sync();syncVisualFlap()});
