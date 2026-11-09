@@ -159,6 +159,12 @@ window.addEventListener("b737:cockpit-mounted",()=>{decorate();project();electri
  window.addEventListener("b737:mcp-hardware-change",hardwareCommand);
 window.addEventListener("b737:mcp-button-request",visualRequest);
 window.addEventListener("b737:mcp-value-change",visualValue);
+ // Flight-model observations update the *same* AFDS state as MCP commands.
+ // Event-driven only; unconfirmed telemetry cannot drive a false capture.
+ window.addEventListener("b737:afds-flight-observation",e=>{
+  if(e.detail?.schema==="B737_AFDS_FLIGHT_OBSERVATION_V1")
+   send({type:"FLIGHT_OBSERVATION",sample:e.detail});
+ });
 window.addEventListener("b737:mcp-bank-limit-preview",e=>{
  const deg=e.detail?.angle;
  if([10,15,20,25,30].includes(deg)&&Core.output(state).bankAngleLimit!==deg)
@@ -173,6 +179,7 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  refreshElectrical:electrical,
  observePower:()=>Core.output(state), // compatibility: read-only, no manual power injection
  setEvidence:(key,value)=>send({type:"EVIDENCE",key,value}),
+ observeFlight:sample=>send({type:"FLIGHT_OBSERVATION",sample}),
  press:requestMode,
  reset:()=>send({type:"RESET"})
 });
