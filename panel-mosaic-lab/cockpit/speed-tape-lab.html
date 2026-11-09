@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unified · B737 Classic Speed Tape Test Lab</title>
+<style>
+:root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#080e16;color:#f1f5f9}
+body{margin:0;padding:22px;max-width:1100px;margin-inline:auto}
+h1{font-size:24px;margin:0 0 8px}.note{font-size:14px;color:#adc0d6;line-height:1.8}
+main{display:grid;grid-template-columns:minmax(270px, 360px) minmax(330px,1fr);gap:20px;margin-top:20px}
+@media(max-width:750px){main{grid-template-columns:1fr}}
+.card{border:1px solid #3c4b5e;background:#111c2a;border-radius:12px;padding:20px}
+.controls{display:grid;gap:14px}
+label{display:grid;gap:7px;font-size:14px}.line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+input[type=range]{width:100%;accent-color:#ae36cf}
+select,button{padding:9px 12px;background:#23364b;color:white;border:1px solid #54718e;border-radius:7px;font:inherit}
+button{cursor:pointer}button:hover{background:#354f6a}
+.screen{width:286px;height:502px;overflow:hidden;margin-inline:auto;border:9px solid #19242c;border-radius:20px;background:#000}
+canvas{display:block;width:900px;height:720px;max-width:none;transform:translate(-2px,-138px);transform-origin:top left}
+pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;color:#9eeca7;margin-top:18px}
+.value{font-variant-numeric:tabular-nums;font-weight:bold;color:#f4f2f9}
+</style>
+<script src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-FCOM-0001" defer></script>
+<script src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-0001" defer></script>
+</head><body>
+<h1>B737 Classic — Speed Tape Test Lab</h1>
+<p class="note">آزمایشگاه مستقل و تعاملی Unified، بر اساس FCOM 10.30 و 10.40. همه اعداد اولیه در این صفحه صرفاً <strong>سناریوی آموزشی ساختگی</strong> هستند؛ هیچ داده‌ای به هواپیمای واقعی یا شبیه‌ساز اصلی ارسال نمی‌شود. به Cockpit اصلی آسیبی نمی‌رسد.</p>
+<main>
+<section class="card">
+<div class="screen"><canvas id="preview" width="900" height="720" aria-label="B737 Classic EFIS speed tape preview"></canvas></div>
+<pre id="diag" aria-live="polite"></pre>
+</section>
+<section class="card controls">
+<label>سرعت فعلی ADC / IAS <span id="iasValue" class="value">227 kt</span><input type="range" id="ias" min="45" max="420" value="227" step=".1"></label>
+<label>سرعت انتخابی MCP <span id="mcpValue" class="value">230 kt</span><input type="range" id="mcp" min="110" max="340" value="230" step="1"></label>
+<label>منبع سرعت
+<select id="source"><option value="MCP">MCP IAS</option><option value="FMC">FMC / VNAV</option></select></label>
+<label>وضعیت فلپ
+<select id="flaps"><option value="0">UP</option><option value="1">1</option><option value="5">5</option><option value="15">15</option><option value="30">30</option><option value="40">40</option></select></label>
+<div class="line"><label><input id="gear" type="checkbox"> Gear Extended</label><label><input id="high" type="checkbox"> Above FL250</label></div>
+<div class="line"><label><input id="adcFailure" type="checkbox"> ADC Failure (SPD)</label><label><input id="limitFailure" type="checkbox"> SPD LIM Failure</label></div>
+<div class="line"><button id="takeoff">Takeoff Markers</button><button id="landing">Approach / VREF</button><button id="reset">Reset Demo</button></div>
+<p class="note">با حرکت‌دادن IAS، Speed Tape و Rolling Digits تغییر می‌کنند. حرکت سریع IAS، Trend Arrow را فعال می‌کند. با تغییر MCP، نشانگر Magenta حرکت می‌کند. در Test Lab فقط داده‌های مجاز در موتور محاسباتی اعمال می‌شوند.</p>
+</section>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+'use strict';
+const E=window.B737ClassicSpeedTapeEngineV1,R=window.B737UnifiedSpeedTapeV1;
+if(!E||!R){document.getElementById('diag').textContent='Engine / renderer missing';return;}
+const dom=id=>document.getElementById(id),canvas=dom('preview'),c=canvas.getContext('2d');
+let state=E.initialState('CAPT'),t=Date.now(),phase='CRUISE',landing=false;
+function update(event){state=E.transition(state,event);draw();}
+function adc(value){t=Math.max(Date.now(),t+150);update({type:'ADC',valid:true,casKt:value,timeMs:t,
+  pressureAltitudeFt:dom('high').checked?30000:3000});}
+function configure(){
+ const flaps=Number(dom('flaps').value),gear=dom('gear').checked,approach=phase==='APPROACH';
+ update({type:'CONFIG',flapsPosition:flaps,gearExtended:gear,inFlight:true,
+  phase,flapsRetracting:false});
+ // TEST VALUES ONLY — NOT an airframe's AFM tables.
+ update({type:'LIMITS',valid:true,vmoMmoCasKt:340,
+  gearPlacardKt:270,flapPlacardKt:flaps===0?null:flaps>=30?175:250,
+  stickShakerKt:flaps>0?118:180,minimumManeuverKt:flaps>0?135:198,
+  minimumAfdsKt:flaps>0?137:200,
+  flapsUpManeuverKt:210,flapRetractionKt:flaps>0?158:null,
+  highSpeedBuffetKt:dom('high').checked?305:null,
+  nextFlapPlacardKt:flaps>0?215:null});
+ update({type:'FMC',valid:true,commandCasKt:Number(dom('mcp').value)+5,
+  grossWeightAvailable:true,v1Kt:phase==='TAKEOFF'?135:null,
+  vrKt:phase==='TAKEOFF'?142:null,
+  selectedVrefKt:approach?143:null,landingFlaps:30});
+}
+function command(){
+ const speed=Number(dom('mcp').value);
+ update({type:'MCP',powered:true,displayBlank:dom('source').value==='FMC',
+  speedDisplayMode:'IAS',selectedCasKt:speed});
+}
+function draw(){
+ const v=E.view(state);
+ c.fillStyle='#080b10';c.fillRect(0,0,900,720);R.draw(c,v);
+ dom('iasValue').textContent=(v.casKt===null?'—':v.casKt.toFixed(1))+' kt';
+ dom('mcpValue').textContent=dom('mcp').value+' kt';
+ dom('diag').textContent=JSON.stringify({speed:v.casKt,trend10:v.trend?.delta10Kt??null,
+  command:v.command,commandedPosition:v.commandedPosition,max:v.marks.maximumOperatingKt,
+  maxLimitReason:v.maxLimitReason,flags:v.flags},null,2);
+}
+dom('ias').addEventListener('input',()=>adc(Number(dom('ias').value)));
+dom('mcp').addEventListener('input',()=>{command();if(dom('source').value==='FMC')configure()});
+dom('source').addEventListener('change',command);
+dom('flaps').addEventListener('change',configure);
+dom('gear').addEventListener('change',configure);
+dom('high').addEventListener('change',()=>{adc(Number(dom('ias').value));configure()});
+dom('adcFailure').addEventListener('change',()=>{
+ update({type:'FAILURES',speed:dom('adcFailure').checked});
+ if(!dom('adcFailure').checked)adc(Number(dom('ias').value));
+});
+dom('limitFailure').addEventListener('change',()=>update({type:'FAILURES',speedLimit:dom('limitFailure').checked}));
+dom('takeoff').addEventListener('click',()=>{phase='TAKEOFF';landing=false;configure()});
+dom('landing').addEventListener('click',()=>{phase='APPROACH';landing=true;configure()});
+dom('reset').addEventListener('click',()=>{state=E.initialState('CAPT');t=Date.now();phase='CRUISE';landing=false;
+ dom('ias').value=227;dom('mcp').value=230;dom('source').value='MCP';dom('flaps').value=0;
+ dom('gear').checked=false;dom('high').checked=false;dom('adcFailure').checked=false;
+ dom('limitFailure').checked=false;adc(227);configure();command()});
+adc(227);configure();command();
+});
+</script></body></html>
