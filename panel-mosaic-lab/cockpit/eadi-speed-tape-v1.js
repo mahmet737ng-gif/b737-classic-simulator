@@ -10,10 +10,12 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0006';
+ const VERSION='EADI-SPEED-TAPE-0007';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
+ // Reference: contiguous to the RIGHT of the white numeric speed scale.
+ const POLE_X=TAPE.axis+2,POLE_WIDTH=12;
  const model=()=>typeof globalThis==='object'?globalThis.B737ClassicSpeedTapeEngineV1:null;
  let win=null,ready=false;
  const states={CAPT:null,FO:null},unsubscribers=[],expiry={CAPT:null,FO:null};
@@ -58,7 +60,7 @@
  // This is deliberately different from the diagonal VMO/MMO barber pole.
  function placardBlocks(ctx,x,y,w,h){
   if(h<=0)return;
-  const block=10,gap=4;
+  const block=12,gap=3;
   ctx.save();
   ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
   ctx.fillStyle=COLOR.black;ctx.fillRect(x,y,w,h);
@@ -124,25 +126,33 @@
    if(visible(endpoint))segment(ctx,x,endpoint,x+w,endpoint,COLOR[color]||COLOR.yellow,2);
   }
  }
- // Flap pre-maximum buffer: a single OPEN-RIGHT YELLOW [ BRACKET,
- // exactly adjacent to the red block placard (x=249). No fill, no
- // second vertical edge; distinct from high-speed buffet/yellow bands.
- // The two short right-facing arms mark maximum and (maximum-buffer).
+ // HIGH/flap buffer is an inverted L (┘): right-side stem,
+ // ONE lower tooth pointing LEFT, NO upper tooth and NO fill.
  function flapBufferBracket(ctx,buffer,view){
   if(!buffer||!Number.isFinite(buffer.lowerKt)||
      !Number.isFinite(buffer.upperKt)||!Number.isFinite(buffer.bufferKt)||
      buffer.bufferKt<=0||buffer.lowerKt>=buffer.upperKt)return;
-  const x=234,arm=12;
-  const upper=yFor(buffer.upperKt,view),
+  const x=POLE_X+20,arm=12,upper=yFor(buffer.upperKt,view),
    lower=yFor(buffer.lowerKt,view);
-  // A buffer completely outside the visible tape must not draw a
-  // misleading bracket at either clipped boundary.
+  if(upper>TAPE.bottom||lower<TAPE.top)return;
+  const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
+  if(yBottom<=yTop)return;
+  segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
+  if(visible(lower))segment(ctx,x-arm,lower,x,lower,COLOR.yellow,3);
+ }
+ // STALL buffer is the OPPOSITE (┌): left stem and ONE upper tooth
+ // pointing RIGHT into the tape. Both bounds must be verified inputs.
+ function stallBufferBracket(ctx,minimumManeuverKt,stickShakerKt,view){
+  if(!Number.isFinite(minimumManeuverKt)||
+     !Number.isFinite(stickShakerKt)||
+     minimumManeuverKt<=stickShakerKt)return;
+  const x=POLE_X,arm=12,upper=yFor(minimumManeuverKt,view),
+   lower=yFor(stickShakerKt,view);
   if(upper>TAPE.bottom||lower<TAPE.top)return;
   const yTop=Math.max(TAPE.top,upper),yBottom=Math.min(TAPE.bottom,lower);
   if(yBottom<=yTop)return;
   segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
   if(visible(upper))segment(ctx,x,upper,x+arm,upper,COLOR.yellow,3);
-  if(visible(lower))segment(ctx,x,lower,x+arm,lower,COLOR.yellow,3);
  }
  function draw(ctx,view){
   if(!view||view.schema!=='B737_CLASSIC_SPEED_TAPE_VIEW_V1')return;
@@ -166,18 +176,18 @@
   segment(ctx,TAPE.axis,TAPE.top,TAPE.axis,TAPE.bottom,'#e5e9e9',2.5);
   const m=view.marks;
   // Only source-verified limits are drawn, never fixed performance estimates.
-  band(ctx,m.minimumManeuverKt,view,{x:234,w:15,direction:'LOW'});
-  band(ctx,m.stickShakerKt,view,{x:249,w:10,direction:'LOW',striped:true});
+  stallBufferBracket(ctx,m.minimumManeuverKt,m.stickShakerKt,view);
+  band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
   flapBufferBracket(ctx,m.flapBuffer,view);
-  band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',
+  band(ctx,m.maximumOperatingKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',
    placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
    striped:view.maxLimitReason==='VMO_MMO'});
   // A visual-only flap detent is NOT a real AFM placard. Its markings are
   // intentionally labelled and never drive AFDS/autothrottle speed limiting.
   if(Number.isFinite(m.trainingFlapLimit?.maximumKt)){
-   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:249,w:10,direction:'HIGH',placard:true});
+   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',placard:true});
    text(ctx,'TRN FL'+m.trainingFlapLimit.detent,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
   }
   if(Number.isFinite(m.flapsUpKt)){

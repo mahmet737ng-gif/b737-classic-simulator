@@ -30,7 +30,7 @@ a{color:#97caff}
 <script defer src="../../engine/efis/classic-flap-speed-profile-v1.js?v=FLAP-SPEED-PROFILE-0001"></script>
 <script defer src="../../engine/afds/classic-speed-limit-ch4-v1.js?v=SPEED-LIMIT-CH4-0001"></script>
 <script defer src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-UNIFIED-0005"></script>
-<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0006"></script>
+<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0007"></script>
 </head><body>
 <h1>Speed Limits · Boeing 737 Classic · FCOM Chapter 4</h1>
 <p class="note">آزمایشگاه مستقل برای 737-300/400/500 — صفحات 4.10.3–5 و 4.20.31–35. اعداد زیر صرفاً داده آزمایشی و قابل‌تغییر هستند، نه حدود تأییدشده AFM. هیچ فرمانی از این صفحه به کابین یا AFDS اصلی ارسال نمی‌شود.</p>
@@ -52,6 +52,8 @@ a{color:#97caff}
 <label class="wide">Actual IAS — <output id="iasO">230 kt</output><input id="ias" type="range" min="0" max="420" step=".1" value="230"></label>
 <label class="wide">MCP Selected IAS — <output id="selO">235 kt</output><input id="sel" type="range" min="110" max="340" step="1" value="235"></label>
 <label>Minimum AFDS Speed (kt)<input id="minimumInput" type="number" value="160" min="45" max="420"></label>
+<label>Stall maneuver (test kt)<input id="minimumManeuver" type="number" value="165" min="45" max="420"></label>
+<label>Stick shaker (test kt)<input id="stickShaker" type="number" value="140" min="45" max="420"></label>
 <label>VMO/MMO CAS equivalent (kt)<input id="vmo" type="number" value="340" min="110" max="420"></label>
 <label>Gear Placard (kt)<input id="gearPlacard" type="number" value="270" min="45" max="420"></label>
 <label>Flap Placard (kt)<input id="flapPlacard" type="number" value="" min="45" max="420"></label>
@@ -79,6 +81,7 @@ a{color:#97caff}
 <button id="presetLow" type="button">Minimum Reversion</button>
 <button id="presetHigh" type="button">Flap Overspeed</button>
 <button id="presetPerformance" type="button">V/S Performance</button>
+<button id="presetStall" type="button">Stall Buffer Bracket</button>
 <button id="reset" type="button">Reset</button>
 </div>
 </div>
@@ -125,7 +128,8 @@ function go(){
   tape=E.transition(tape,{type:'CONFIG',gearExtended:gear,flapsPosition:flaps,inFlight:true,phase:'CRUISE'});
   tape=E.transition(tape,{type:'LIMITS',valid:true,vmoMmoCasKt:max,
    gearPlacardKt:gear?v('gearPlacard'):null,flapPlacardKt:flapMax,
-   flapBufferKt:buffer,minimumAfdsKt:min});
+   flapBufferKt:buffer,minimumAfdsKt:min,
+   minimumManeuverKt:v('minimumManeuver'),stickShakerKt:v('stickShaker')});
   tape=E.transition(tape,{type:'MCP',powered:true,selectedCasKt:selected,
    displayBlank:false,speedDisplayMode:'IAS'});
   time=Math.max(Date.now(),time+150);
@@ -156,7 +160,7 @@ function go(){
     conflict:o.conflictingLimits},null,2);
  }catch(error){el('diagnostics').textContent='INVALID SCENARIO: '+error.message;}
 }
-const fields=['ias','sel','minimumInput','vmo','gearPlacard','flapPlacard','flapBuffer','pitch',
+const fields=['ias','sel','minimumInput','minimumManeuver','stickShaker','vmo','gearPlacard','flapPlacard','flapBuffer','pitch',
  'gear','nearHigh','nearMin','atArmed','atAvailable','atSpeed','atIdle','gs','vnavLevel',
  'insufficient','increasing','unmaintainable'];
 for(const id of fields)el(id).addEventListener('input',go);
@@ -170,6 +174,9 @@ function set(vals){for(const [id,value]of Object.entries(vals)){const node=el(id
  go();}
 el('presetLow').onclick=()=>set({ias:154,sel:145,minimumInput:160,pitch:'VS',
  nearMin:true,nearHigh:false,flaps:0,gear:false,insufficient:false,increasing:false});
+el('presetStall').onclick=()=>set({ias:153,sel:155,
+ minimumManeuver:165,stickShaker:140,flaps:0,nearMin:false,nearHigh:false,
+ insufficient:false});
 el('presetHigh').onclick=()=>set({ias:227,sel:250,minimumInput:160,pitch:'VS',
  nearHigh:true,nearMin:false,flaps:5,gear:false,
  atArmed:true,atAvailable:true,atSpeed:false,insufficient:false,increasing:true});

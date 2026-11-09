@@ -159,35 +159,48 @@ trainingDisplay=apply(trainingDisplay,{type:'TRAINING_FLAP_PROFILE',
 trainingDisplay=apply(trainingDisplay,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:174,timeMs:1000});
 R.draw(ctx,E.view(trainingDisplay));
 assert.ok(calls.some(x=>x[0]==='fillText'&&x[1]==='TRN FL30'));
-// Reference screenshot: open-right "[" YELLOW BRACKET, no fill rectangle,
-// one long vertical stem plus upper/lower 12px arms at 180/155 kt.
+// Overspeed yellow buffer is inverted L (┘): only the LOWER arm
+// points LEFT toward the scale, and the UPPER arm is removed.
 const top=391-(180-174)*5.2,bottom=391-(155-174)*5.2;
-const near=(v,n)=>Math.abs(v-n)<.00001;
-assert.ok(calls.some(c=>c[0]==='moveTo'&&c[1]===234&&near(c[2],top)),
- 'flap bracket starts at the maximum speed');
-assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===234&&near(c[2],bottom)),
- 'flap bracket vertical stem ends at max minus buffer');
-assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===246&&near(c[2],top)),
- 'flap bracket upper arm points RIGHT');
-assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===246&&near(c[2],bottom)),
- 'flap bracket lower arm points RIGHT');
+const near=(a,b)=>Math.abs(a-b)<1e-6;
+const hasLine=(x1,y1,x2,y2)=>calls.some((c,i)=>
+ c[0]==='moveTo'&&near(c[1],x1)&&near(c[2],y1)&&
+ calls[i+1]?.[0]==='lineTo'&&near(calls[i+1][1],x2)&&near(calls[i+1][2],y2));
+assert.ok(hasLine(221,top,221,bottom),'HIGH bracket stem on RIGHT');
+assert.ok(hasLine(209,bottom,221,bottom),'HIGH lower arm points LEFT');
+assert.ok(!hasLine(209,top,221,top),'HIGH bracket has NO upper tooth');
 assert.ok(!calls.some(c=>c[0]==='fillRect'&&c[1]===233&&c[3]===15),
- 'yellow buffer is NEVER a filled band');
+ 'flap buffer must not be filled');
 // Red block placard matches the square/rectangular EADI reference; do NOT
 // confuse it with the diagonal VMO barber pole or yellow pre-maximum buffer.
-assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
- 'Flap max must render discrete red 10x10 block elements');
-const blockCount=calls.filter(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10).length;
+assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12),
+ 'Flap red squares must adjoin the right of numeric speed axis');
+const blockCount=calls.filter(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12).length;
 assert.ok(blockCount>=2,'More than one separated red block above the maximum');
 calls.length=0;
-// No buffer means NO [ : FL40 has zero kt, FL1 is unspecified.
+// Stall yellow buffer is the OPPOSITE (┌). Upper tooth RIGHT into tape,
+// no lower tooth; never fill the maneuver-to-stick-shaker region.
+let stall=E.initialState();
+stall=apply(stall,{type:'CONFIG',gearExtended:false,flapsPosition:0});
+stall=apply(stall,{type:'LIMITS',valid:true,vmoMmoCasKt:340,
+ minimumManeuverKt:165,stickShakerKt:140});
+stall=apply(stall,{type:'ADC',valid:true,casKt:153,timeMs:1000});
+R.draw(ctx,E.view(stall));
+const upper=391-(165-153)*5.2,lower=391-(140-153)*5.2;
+assert.ok(hasLine(201,upper,201,lower),'STALL stem immediately right of axis');
+assert.ok(hasLine(201,upper,213,upper),'STALL UPPER tooth points INTO tape');
+assert.ok(!hasLine(201,lower,213,lower),'STALL lower tooth absent');
+assert.ok(!calls.some(c=>c[0]==='fillRect'&&c[1]===234&&c[3]===15),
+ 'STALL yellow range not filled');
+calls.length=0;
+// No flap buffer: FL40 zero kt, FL1 unspecified.
 for(const [detent,maximumKt,bufferKt] of [[40,158,0],[1,230,null]]){
  const limited=apply(apply(E.initialState(),{type:'TRAINING_FLAP_PROFILE',
   source:'INSTRUCTOR_VISUAL_DETENT',detent,maximumKt,bufferKt}),
   {type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:maximumKt-4,timeMs:1000});
  R.draw(ctx,E.view(limited));
- assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===234),
-  'zero/unspecified buffer must not produce bracket');
+ assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===221),
+  'zero/unspecified flap buffer must not produce bracket');
  calls.length=0;
 }
 let vmoOnly=E.initialState();
@@ -195,7 +208,7 @@ vmoOnly=apply(vmoOnly,{type:'CONFIG',gearExtended:false,flapsPosition:0});
 vmoOnly=apply(vmoOnly,{type:'LIMITS',valid:true,vmoMmoCasKt:180});
 vmoOnly=apply(vmoOnly,{type:'ADC',valid:true,casKt:175,timeMs:1000});
 R.draw(ctx,E.view(vmoOnly));
-assert.ok(!calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
+assert.ok(!calls.some(x=>x[0]==='fillRect'&&x[1]===201&&x[3]===12&&x[4]===12),
  'VMO/MMO retains its own diagonal pattern');
 
 const listeners={},layer={},drawn={CAPT:0,FO:0};
