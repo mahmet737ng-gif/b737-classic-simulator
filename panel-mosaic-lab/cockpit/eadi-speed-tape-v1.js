@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0011';
+ const VERSION='EADI-SPEED-TAPE-0012';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -191,11 +191,14 @@
   band(ctx,m.maximumOperatingKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',
    placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
    striped:view.maxLimitReason==='VMO_MMO'});
-  // A visual-only flap detent is NOT a real AFM placard. Its markings are
-  // intentionally labelled and never drive AFDS/autothrottle speed limiting.
-  if(Number.isFinite(m.trainingFlapLimit?.maximumKt)){
-   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',placard:true});
-   text(ctx,'TRN FL'+m.trainingFlapLimit.detent,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
+  // Instructor gear/flap states are presentation overlays, not verified
+  // aircraft configuration and never control AFDS or the autothrottle.
+  // The stricter of overlapping visual gear/flap limits is drawn.
+  const trn=m.trainingOperatingLimit;
+  if(Number.isFinite(trn?.maximumKt)){
+   band(ctx,trn.maximumKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',placard:true});
+   const caption=trn.reason==='GEAR'?'TRN GEAR '+trn.state:'TRN FL'+trn.detent;
+   text(ctx,caption,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
   }
   // Draw on top of red blocks so the attachment at the center of the
   // last block is continuous, with no 8px horizontal air gap.
