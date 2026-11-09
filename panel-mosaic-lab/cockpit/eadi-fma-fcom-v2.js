@@ -56,11 +56,11 @@
   const incoming=engine.normalized(fields);
   const firstPaint=!primed[seat];
   const prior=seats[seat]||engine.blank();
-  const signature=entry=>JSON.stringify([entry.active,entry.secondary||'',entry.armed,entry.origin]);
+  const signature=entry=>JSON.stringify([entry.active,entry.secondary||'',entry.tertiary||'',entry.armed,entry.origin]);
   if(FIELDS.every(k=>signature(prior[k])===signature(incoming[k])))return false;
   for(const key of FIELDS){
    if(!firstPaint&&(prior[key].active!==incoming[key].active||
-     (key==='afds'&&prior[key].secondary!==incoming[key].secondary))){
+     (key==='afds'&&(prior[key].secondary!==incoming[key].secondary||prior[key].tertiary!==incoming[key].tertiary)))){
     // FCOM 4.10.27: 10s highlight only after an actually changed mode.
     highlights[seat][key]=incoming[key].active&&incoming[key].active!=='ARM'?now+10000:0;
    }
@@ -177,21 +177,30 @@
     // FCOM 4.10.18: CWS P/R are YELLOW in AFDS status; corresponding
     // PITCH and ROLL command-mode fields are blank. Show two independent
     // CWS axes as two lines inside the same FOURTH status column.
-    const dualCws=field==='afds'&&val.secondary==='CWS R';
-    const color=model().color(field,val.active);
-    ctx.fillStyle=COLOR[color]||COLOR.green;
-    if(dualCws){
-     ctx.font="700 30px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
-     ctx.fillText(val.active,cx,y+27,segment-13);
-     ctx.fillText(val.secondary,cx,y+72,segment-13);
+    const hasCws=field==='afds'&&!!val.secondary;
+    const triple=hasCws&&!!val.tertiary;
+    ctx.fillStyle=COLOR[model().color(field,val.active)]||COLOR.green;
+    if(hasCws){
+     // Green CMD/FD above yellow CWS P/R, with three rows when needed.
+     ctx.font=(triple?'700 29px ':'700 35px ')+
+      "'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
+     ctx.fillText(val.active,cx,y+(triple?18:27),segment-13);
+     ctx.fillStyle=COLOR.yellow;
+     ctx.font=(triple?'700 24px ':'700 29px ')+
+      "'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
+     ctx.fillText(val.secondary,cx,y+(triple?52:75),segment-13);
+     if(triple){
+      ctx.font="700 23px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
+      ctx.fillText(val.tertiary,cx,y+84,segment-13);
+     }
     }else{
      ctx.font="700 43px 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif";
      ctx.fillText(val.active,cx,y+39,segment-13);
     }
     if(highlights[seat][field]>now){
-     // A temporary changed-mode highlight, not a permanent cell box.
-     ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=1.5;
-     ctx.strokeRect(cx-segment/2+8,y+15,segment-16,dualCws?69:46);
+     ctx.strokeStyle=hasCws?COLOR.yellow:ctx.fillStyle;ctx.lineWidth=1.5;
+     ctx.strokeRect(cx-segment/2+8,y+(hasCws?43:15),
+      segment-16,hasCws?(triple?50:43):46);
     }
    }
    if(val?.armed){
