@@ -148,10 +148,11 @@
    v1Kt:s.failures.v1?null:reference('v1Kt'),
    vrKt:reference('vrKt'),vrefKt:reference('selectedVrefKt'),
    flapsUpKt:config.flapsPosition===0?lim.flapsUpManeuverKt:null,
-   retractKt:config.inFlight===true&&['TAKEOFF','GO_AROUND'].includes(config.phase)?
-    lim.flapRetractionKt:null,
+   retractKt:config.inFlight===true&&config.flapsPosition!==null&&config.flapsPosition>0&&
+    ['TAKEOFF','GO_AROUND'].includes(config.phase)?lim.flapRetractionKt:null,
    nextFlapPlacardKt:config.inFlight===true&&config.flapsPosition!==null&&config.flapsPosition>0&&
-    config.flapsRetracting===false&&f.landingFlaps!==config.flapsPosition?
+    config.flapsRetracting===false&&f.valid===true&&f.landingFlaps!==null&&
+    f.landingFlaps!==config.flapsPosition?
     lim.nextFlapPlacardKt:null,
    minimumManeuverKt:lim.minimumManeuverKt,stickShakerKt:lim.stickShakerKt,
    highSpeedBuffetKt:s.adc.pressureAltitudeFt!==null&&s.adc.pressureAltitudeFt>25000&&
