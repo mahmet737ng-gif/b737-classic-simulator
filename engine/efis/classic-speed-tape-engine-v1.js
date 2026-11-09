@@ -139,8 +139,9 @@
   if(s?.schema!==SCHEMA)throw Error('INVALID_TAPE_STATE');
   const adcValid=['VALID','TRAINING'].includes(s.adc.quality)&&!s.failures.speed&&within(s.adc.casKt);
   const cas=adcValid?s.adc.casKt:null;
-  // The ADC has a 45 kt low-speed default. Rolling digits are not displayed
-  // at/below 45 kt even when a valid simulator sensor reports less.
+  // FCOM 10.40.6: ADC display defaults to 45 kt at low IAS.
+  // Actual CAS remains unchanged, but presentation is clamped and magnified.
+  const lowSpeedDefault=adcValid&&cas<=45;
   const tapeCenterKt=adcValid?Math.max(45,Math.min(420,cas)):null;
   const window=42;
   const range=tapeCenterKt===null?null:{minKt:tapeCenterKt-window,maxKt:tapeCenterKt+window};
@@ -211,7 +212,7 @@
    revision:s.revision,quality:s.adc.quality,
    provenance:s.adc.quality==='TRAINING'?'TRAINING_SCENARIO':
     s.adc.quality==='VALID'?'SIMULATOR_ADC':'UNKNOWN',
-   casKt:cas,tapeCenterKt,range,
+   casKt:cas,tapeCenterKt,range,lowSpeedDefault,
    commandAuthority:s.commandAuthority,
    rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
    effectiveTargetKt,limitReason,marks,flags,

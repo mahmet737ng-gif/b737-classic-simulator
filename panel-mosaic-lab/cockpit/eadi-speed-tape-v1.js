@@ -72,6 +72,21 @@
   text(ctx,String(Math.floor(ias/10)).padStart(2,'0'),x+74,y,COLOR.white,37,'right');
   ctx.restore();
  }
+ // Magnified 45-kt low speed default: a fixed window, not rolling digits.
+ // The window masks the 40-kt numeral when the tape rests at 45.
+ function lowSpeed45(ctx){
+  const y=TAPE.centerY,x=91,w=108,h=67;
+  ctx.save();
+  ctx.fillStyle='#07090b';ctx.fillRect(x,y-h/2,w,h);
+  ctx.strokeStyle=COLOR.white;ctx.lineWidth=2.5;
+  ctx.strokeRect(x,y-h/2,w,h);
+  ctx.beginPath();ctx.moveTo(x+w,y-10);ctx.lineTo(x+w+14,y);
+  ctx.lineTo(x+w,y+10);ctx.fillStyle=COLOR.white;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x+w-3,y-6);ctx.lineTo(x+w+8,y);
+  ctx.lineTo(x+w-3,y+6);ctx.fillStyle='#07090b';ctx.fill();
+  text(ctx,'45',x+w-12,y,COLOR.white,43,'right');
+  ctx.restore();
+ }
  function mark(ctx,label,value,view,color=COLOR.green){
   if(!Number.isFinite(value))return;
   const y=yFor(value,view);if(!visible(y,9))return;
@@ -108,7 +123,8 @@
    if(k<low-3||k>high+3)continue;
    const y=yFor(k,view);
    segment(ctx,k%20===0?TAPE.axis-31:TAPE.axis-17,y,TAPE.axis,y,COLOR.white,2.6);
-   if(k%20===0)text(ctx,k,TAPE.axis-40,y,COLOR.white,30,'right');
+   if(k%20===0&&!(view.lowSpeedDefault&&k===40))
+     text(ctx,k,TAPE.axis-40,y,COLOR.white,30,'right');
   }
   segment(ctx,TAPE.axis,TAPE.top,TAPE.axis,TAPE.bottom,'#e5e9e9',2.5);
   const m=view.marks;
@@ -152,7 +168,7 @@
    }
   }
   if(view.rollingDigitsVisible)digits(ctx,view.casKt);
-  else text(ctx,'45',TAPE.axis-46,TAPE.centerY,COLOR.white,30,'right');
+   else if(view.lowSpeedDefault)lowSpeed45(ctx);
   // Visible provenance: never masquerade instructor IAS as ADC equipment.
   if(view.provenance==='TRAINING_SCENARIO')
    text(ctx,'TRN',TAPE.left+7,TAPE.bottom-13,COLOR.yellow,15,'left');

@@ -28,8 +28,8 @@ pre{direction:ltr;text-align:left;font:12px/1.7 Consolas,monospace;white-space:p
 a{color:#97caff}
 </style>
 <script defer src="../../engine/afds/classic-speed-limit-ch4-v1.js?v=SPEED-LIMIT-CH4-0001"></script>
-<script defer src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-UNIFIED-0002"></script>
-<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0002"></script>
+<script defer src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-UNIFIED-0003"></script>
+<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0003"></script>
 </head><body>
 <h1>Speed Limits · Boeing 737 Classic · FCOM Chapter 4</h1>
 <p class="note">آزمایشگاه مستقل برای 737-300/400/500 — صفحات 4.10.3–5 و 4.20.31–35. اعداد زیر صرفاً داده آزمایشی و قابل‌تغییر هستند، نه حدود تأییدشده AFM. هیچ فرمانی از این صفحه به کابین یا AFDS اصلی ارسال نمی‌شود.</p>
@@ -47,7 +47,7 @@ a{color:#97caff}
 <section class="card">
 <h2>داده‌های سناریو · Instructor Training</h2>
 <div class="controls">
-<label class="wide">Actual IAS — <output id="iasO">230 kt</output><input id="ias" type="range" min="45" max="420" step=".1" value="230"></label>
+<label class="wide">Actual IAS — <output id="iasO">230 kt</output><input id="ias" type="range" min="0" max="420" step=".1" value="230"></label>
 <label class="wide">MCP Selected IAS — <output id="selO">235 kt</output><input id="sel" type="range" min="110" max="340" step="1" value="235"></label>
 <label>Minimum AFDS Speed (kt)<input id="minimumInput" type="number" value="160" min="45" max="420"></label>
 <label>VMO/MMO CAS equivalent (kt)<input id="vmo" type="number" value="340" min="110" max="420"></label>
@@ -127,7 +127,10 @@ function go(){
   symbol.classList.toggle('blink',o.flashing);
   el('diagnostics').textContent=JSON.stringify({source:o.source,authorized:o.authorized,
    symbol:o.speedConditionSymbol,reversion:o.reversion,limit:o.clampReason,
-   command:o.effectiveCommandKt,inhibitedBy:o.minimumReversionInhibitedBy,conflict:o.conflictingLimits},null,2);
+   command:o.effectiveCommandKt,inhibitedBy:o.minimumReversionInhibitedBy,
+    tape:{actualCasKt:E.view(tape).casKt,displayCenterKt:E.view(tape).tapeCenterKt,
+      lowSpeedDefault:E.view(tape).lowSpeedDefault},
+    conflict:o.conflictingLimits},null,2);
  }catch(error){el('diagnostics').textContent='INVALID SCENARIO: '+error.message;}
 }
 const fields=['ias','sel','minimumInput','vmo','gearPlacard','flapPlacard','flaps','pitch',

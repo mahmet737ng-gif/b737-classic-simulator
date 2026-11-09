@@ -85,6 +85,21 @@ assert.equal(E.view(a).marks.stickShakerKt,160);
 a=apply(a,{type:'MCP',powered:true,displayBlank:false,selectedCasKt:330,speedDisplayMode:'IAS'});
 assert.equal(E.view(a).speedProtection.effectiveKt,300);
 assert.equal(E.view(a).speedProtection.reason,'VMO_MMO');
+// Regression: 0..45 actual CAS anchors the visible tape at 45.
+for(const speed of [0,12.5,44.9,45]){
+ let low=E.initialState();
+ low=apply(low,{type:'ADC',valid:true,casKt:speed,timeMs:1000});
+ const display=E.view(low);
+ assert.equal(display.casKt,speed);
+ assert.equal(display.tapeCenterKt,45);
+ assert.equal(display.lowSpeedDefault,true);
+ assert.equal(display.rollingDigitsVisible,false);
+}
+let high=E.initialState();
+high=apply(high,{type:'ADC',valid:true,casKt:45.1,timeMs:1000});
+assert.equal(E.view(high).lowSpeedDefault,false);
+assert.equal(E.view(high).rollingDigitsVisible,true);
+assert.equal(E.view(high).tapeCenterKt,45.1);
 const calls=[];
 const ctx=new Proxy({},{
  get(target,key){return key in target?target[key]:
@@ -94,6 +109,13 @@ const ctx=new Proxy({},{
 R.draw(ctx,E.view(t));assert.equal(calls.some(c=>c[0]==='fillText'),false,'No IAS means no displayed digits without flags');
 t=apply(t,{type:'ADC',valid:true,casKt:227.5,timeMs:100});
 R.draw(ctx,E.view(t));assert.ok(calls.some(c=>c[0]==='fillText'));
+calls.length=0;
+let stopped=E.initialState();
+stopped=apply(stopped,{type:'ADC',valid:true,casKt:0,timeMs:250});
+R.draw(ctx,E.view(stopped));
+assert.equal(calls.filter(c=>c[0]==='fillText'&&c[1]==='45').length,1);
+assert.ok(calls.some(c=>c[0]==='strokeRect'),'magnified fixed 45 window');
+assert.ok(!calls.some(c=>c[0]==='fillText'&&c[1]==='40'),'no 40-label collision');
 const listeners={},layer={},drawn={CAPT:0,FO:0};
 const fake={
  B737ClassicSpeedTapeEngineV1:E,

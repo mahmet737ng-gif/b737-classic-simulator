@@ -4,6 +4,7 @@ const file=fs.readFileSync(__dirname+'/speed-limit-ch4-lab.html','utf8');
 assert.match(file,/classic-speed-limit-ch4-v1\.js/);
 assert.match(file,/classic-speed-tape-engine-v1\.js/);
 assert.match(file,/INSTRUCTOR_SCENARIO/);
+assert.match(file,/id="ias" type="range" min="0"/,'IAS can reach zero');
 assert.match(file,/speedConditionSymbol/);
 assert.match(file,/source:'INSTRUCTOR_SCENARIO'/);
 assert.match(file,/nearHighLimit:yes\('nearHigh'\)/);

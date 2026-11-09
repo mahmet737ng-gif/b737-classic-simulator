@@ -20,8 +20,8 @@ button{cursor:pointer}button:hover{background:#354f6a}
 pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;color:#9eeca7;margin-top:18px}
 .value{font-variant-numeric:tabular-nums;font-weight:bold;color:#f4f2f9}
 </style>
-<script src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-FCOM-0001" defer></script>
-<script src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-0001" defer></script>
+<script src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-FCOM-0003" defer></script>
+<script src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-0003" defer></script>
 </head><body>
 <h1>B737 Classic — Speed Tape Test Lab</h1>
 <p class="note"><a style="color:#9ed6ff" href="./speed-limit-ch4-lab.html">FCOM Chapter 4 — Speed Limits / Mode Reversion Test Lab</a></p>
@@ -33,7 +33,7 @@ pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break
 <pre id="diag" aria-live="polite"></pre>
 </section>
 <section class="card controls">
-<label>سرعت فعلی ADC / IAS <span id="iasValue" class="value">227 kt</span><input type="range" id="ias" min="45" max="420" value="227" step=".1"></label>
+<label>سرعت فعلی ADC / IAS <span id="iasValue" class="value">227 kt</span><input type="range" id="ias" min="0" max="420" value="227" step=".1"></label>
 <label>سرعت انتخابی MCP <span id="mcpValue" class="value">230 kt</span><input type="range" id="mcp" min="110" max="340" value="230" step="1"></label>
 <label>منبع سرعت
 <select id="source"><option value="MCP">MCP IAS</option><option value="FMC">FMC / VNAV</option></select></label>
@@ -83,7 +83,8 @@ function draw(){
  c.fillStyle='#080b10';c.fillRect(0,0,900,720);R.draw(c,v);
  dom('iasValue').textContent=(v.casKt===null?'—':v.casKt.toFixed(1))+' kt';
  dom('mcpValue').textContent=dom('mcp').value+' kt';
- dom('diag').textContent=JSON.stringify({speed:v.casKt,trend10:v.trend?.delta10Kt??null,
+ dom('diag').textContent=JSON.stringify({speed:v.casKt,tapeCenter:v.tapeCenterKt,
+   lowSpeedDefault:v.lowSpeedDefault,trend10:v.trend?.delta10Kt??null,
   command:v.command,commandedPosition:v.commandedPosition,max:v.marks.maximumOperatingKt,
   maxLimitReason:v.maxLimitReason,flags:v.flags},null,2);
 }
