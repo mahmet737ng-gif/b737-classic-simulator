@@ -21,6 +21,7 @@ assert.equal(f().afds.tertiary,'CWS R');
 assert.equal(send({type:'BUTTON',id:'APP'}).rejection,'APP_ILS_NAV_EVIDENCE_REQUIRED');
 sample({navKind:'ILS',navValid:true});
 send({type:'BUTTON',id:'APP'});
+assert.equal(core.output(s).lamps.APP,true,'APP lamp must light when armed');
 assert.equal(f().roll.armed,'VOR/LOC');
 assert.equal(f().pitch.armed,'G/S');
 sample({bankDeg:4,headingDeg:221,rollForceReleased:true,
@@ -35,6 +36,7 @@ sample({navCaptureConfirmed:true,navKind:'ILS',navValid:true});
 assert.equal(f().roll.active,'VOR/LOC');
 assert.equal(f().roll.armed,'');
 sample({gsCaptureConfirmed:true,gsBelowDots:0.4});
+assert.equal(core.output(s).lamps.APP,false,'APP extinguishes after LOC and GS capture');
 assert.equal(f().pitch.active,'G/S');
 assert.equal(f().pitch.armed,'');
 // Start a separate, non-APP ALT HOLD scenario: ALT HLD is inhibited
@@ -65,4 +67,33 @@ sample({navCaptureConfirmed:true,navKind:'ILS',navValid:true});
 sample({gsCaptureConfirmed:true,gsBelowDots:0.4});
 sample({dualAutopilot:true,pitchOverrideConfirmed:true});
 assert.equal(core.output(s).modes.autopilot,null);
-console.log('PASS FCOM CWS bank, ALT override, NAV arming, LOC and G/S captures');
+// FCOM 4.10.14: VOR/LOC button is illuminated during armed intercept,
+ // even while lateral command mode is CWS R.
+send({type:'RESET'});
+send({type:'ELECTRICAL',snapshot:{schema:'B737_ELECTRICAL_V7_RESULT',revision:3,bus}});
+send({type:'FD',side:'left',on:true});
+send({type:'BUTTON',id:'CMD_A'});
+sample({navKind:'VOR',navValid:true});
+send({type:'BUTTON',id:'VOR_LOC'});
+assert.equal(core.output(s).lamps.VOR_LOC,true);
+assert.equal(f().roll.armed,'VOR/LOC');
+assert.equal(f().roll.active,'');
+assert.equal(f().afds.secondary,'CWS P');
+assert.equal(f().afds.tertiary,'CWS R');
+sample({navCaptureConfirmed:true});
+assert.equal(f().roll.active,'VOR/LOC');
+assert.equal(f().afds.secondary,'CWS P');
+assert.equal(core.output(s).lamps.VOR_LOC,true);
+// FCOM 4.10.10: V/S arms on new selected altitude >100 ft from
+// actual airplane altitude, not from the last MCP number.
+send({type:'RESET'});
+send({type:'ELECTRICAL',snapshot:{schema:'B737_ELECTRICAL_V7_RESULT',revision:4,bus}});
+send({type:'FD',side:'left',on:true});
+send({type:'BUTTON',id:'CMD_A'});
+send({type:'BUTTON',id:'ALT_HLD'});
+sample({altitudeFt:10000});
+send({type:'VALUE',id:'altitude',value:10100});
+assert.equal(f().pitch.armed,'','100ft difference is not V/S arm');
+send({type:'VALUE',id:'altitude',value:10200});
+assert.equal(f().pitch.armed,'V/S','selected altitude is 200ft above aircraft');
+console.log('PASS FCOM CWS bank, ALT override, armed APP/VOR switches, V/S arming, LOC and G/S captures');
