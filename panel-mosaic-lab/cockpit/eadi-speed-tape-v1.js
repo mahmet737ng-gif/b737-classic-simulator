@@ -10,7 +10,7 @@
  if(root?.document){root.B737UnifiedSpeedTapeV1=api;api.bind(root);}
 })(typeof window==='object'?window:null,function(){
  'use strict';
- const VERSION='EADI-SPEED-TAPE-0001';
+ const VERSION='EADI-SPEED-TAPE-0005';
  const COLOR=Object.freeze({white:'#f4f4f3',green:'#16bf62',magenta:'#dc36df',
   yellow:'#dfc53c',red:'#d44747',black:'#000000'});
  const WIDTH=900,HEIGHT=720,TAPE={left:57,right:256,top:172,bottom:612,axis:199,centerY:391,pxPerKt:5.2};
@@ -50,6 +50,22 @@
   ctx.fillStyle=COLOR.black;ctx.fillRect(x,y,w,h);
   for(let i=y-30;i<y+h+30;i+=16){
    segment(ctx,x,i,x+w,i+16,COLOR.red,6);
+  }
+  ctx.restore();
+ }
+ // FCOM 10.40.6: the flap/gear placard on the supplied Classic EADI
+ // reference is a ladder of discrete RED SQUARE blocks with BLACK gaps.
+ // This is deliberately different from the diagonal VMO/MMO barber pole.
+ function placardBlocks(ctx,x,y,w,h){
+  if(h<=0)return;
+  const block=10,gap=4;
+  ctx.save();
+  ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+  ctx.fillStyle=COLOR.black;ctx.fillRect(x,y,w,h);
+  ctx.fillStyle=COLOR.red;
+  // Align the last full block to the placard boundary, then repeat upward.
+  for(let top=y+h-block;top>y-block;top-=block+gap){
+   ctx.fillRect(x,top,w,block);
   }
   ctx.restore();
  }
@@ -93,13 +109,14 @@
   segment(ctx,214,y,228,y,color,3);
   text(ctx,label,234,y,color,18,'left');
  }
- function band(ctx,endSpeed,view,{x,w,direction,color='yellow',striped=false}){
+ function band(ctx,endSpeed,view,{x,w,direction,color='yellow',striped=false,placard=false}){
   if(!Number.isFinite(endSpeed))return;
   const endpoint=yFor(endSpeed,view);
   const y1=direction==='LOW'?Math.max(endpoint,TAPE.top):TAPE.top;
   const y2=direction==='LOW'?TAPE.bottom:Math.min(endpoint,TAPE.bottom);
   if(y2<=y1)return;
-  if(striped)stripe(ctx,x,y1,w,y2-y1);
+  if(placard)placardBlocks(ctx,x,y1,w,y2-y1);
+  else if(striped)stripe(ctx,x,y1,w,y2-y1);
   else{
    ctx.fillStyle='rgba(218,183,55,.16)';ctx.fillRect(x,y1,w,y2-y1);
    segment(ctx,x,y1,x,y2,COLOR[color]||COLOR.yellow,2);
@@ -149,11 +166,13 @@
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
   flapBufferBand(ctx,m.flapBuffer,view);
-  band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',striped:true});
+  band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',
+   placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
+   striped:view.maxLimitReason==='VMO_MMO'});
   // A visual-only flap detent is NOT a real AFM placard. Its markings are
   // intentionally labelled and never drive AFDS/autothrottle speed limiting.
   if(Number.isFinite(m.trainingFlapLimit?.maximumKt)){
-   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:249,w:10,direction:'HIGH',striped:true});
+   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:249,w:10,direction:'HIGH',placard:true});
    text(ctx,'TRN FL'+m.trainingFlapLimit.detent,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
   }
   if(Number.isFinite(m.flapsUpKt)){

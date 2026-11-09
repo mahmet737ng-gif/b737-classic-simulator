@@ -159,6 +159,21 @@ trainingDisplay=apply(trainingDisplay,{type:'TRAINING_FLAP_PROFILE',
 trainingDisplay=apply(trainingDisplay,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:174,timeMs:1000});
 R.draw(ctx,E.view(trainingDisplay));
 assert.ok(calls.some(x=>x[0]==='fillText'&&x[1]==='TRN FL30'));
+// Red block placard matches the square/rectangular EADI reference; do NOT
+// confuse it with the diagonal VMO barber pole or yellow pre-maximum buffer.
+assert.ok(calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
+ 'Flap max must render discrete red 10x10 block elements');
+const blockCount=calls.filter(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10).length;
+assert.ok(blockCount>=2,'More than one separated red block above the maximum');
+calls.length=0;
+let vmoOnly=E.initialState();
+vmoOnly=apply(vmoOnly,{type:'CONFIG',gearExtended:false,flapsPosition:0});
+vmoOnly=apply(vmoOnly,{type:'LIMITS',valid:true,vmoMmoCasKt:180});
+vmoOnly=apply(vmoOnly,{type:'ADC',valid:true,casKt:175,timeMs:1000});
+R.draw(ctx,E.view(vmoOnly));
+assert.ok(!calls.some(x=>x[0]==='fillRect'&&x[1]===249&&x[3]===10&&x[4]===10),
+ 'VMO/MMO retains its own diagonal pattern');
+
 const listeners={},layer={},drawn={CAPT:0,FO:0};
 const fake={
  B737ClassicSpeedTapeEngineV1:E,
