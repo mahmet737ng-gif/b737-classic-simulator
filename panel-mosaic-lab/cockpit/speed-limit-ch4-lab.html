@@ -27,9 +27,10 @@ pre{direction:ltr;text-align:left;font:12px/1.7 Consolas,monospace;white-space:p
 .pill{font-size:11px;padding:4px 9px;border-radius:20px;background:#2a3d50;color:#e2ebf4}
 a{color:#97caff}
 </style>
+<script defer src="../../engine/efis/classic-flap-speed-profile-v1.js?v=FLAP-SPEED-PROFILE-0001"></script>
 <script defer src="../../engine/afds/classic-speed-limit-ch4-v1.js?v=SPEED-LIMIT-CH4-0001"></script>
-<script defer src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-UNIFIED-0003"></script>
-<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0003"></script>
+<script defer src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-UNIFIED-0004"></script>
+<script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0004"></script>
 </head><body>
 <h1>Speed Limits · Boeing 737 Classic · FCOM Chapter 4</h1>
 <p class="note">آزمایشگاه مستقل برای 737-300/400/500 — صفحات 4.10.3–5 و 4.20.31–35. اعداد زیر صرفاً داده آزمایشی و قابل‌تغییر هستند، نه حدود تأییدشده AFM. هیچ فرمانی از این صفحه به کابین یا AFDS اصلی ارسال نمی‌شود.</p>
@@ -39,6 +40,7 @@ a{color:#97caff}
 <div class="stat"><span>IAS/MACH speed condition</span><span id="symbol" class="sym">—</span></div>
 <div class="stat"><span>Effective AFS command</span><b id="effective">—</b></div>
 <div class="stat"><span>Maximum applicable</span><b id="maximum">—</b></div>
+<div class="stat"><span>Flap yellow buffer</span><b id="bufferStatus">—</b></div>
 <div class="stat"><span>Minimum (≈1.3 Vs)</span><b id="minimum">—</b></div>
 <div class="stat"><span>AFDS / A/T directive</span><b id="reversion">—</b></div>
 <div class="stat"><span>Minimum reversion excluded by</span><b id="exclusion">—</b></div>
@@ -52,8 +54,12 @@ a{color:#97caff}
 <label>Minimum AFDS Speed (kt)<input id="minimumInput" type="number" value="160" min="45" max="420"></label>
 <label>VMO/MMO CAS equivalent (kt)<input id="vmo" type="number" value="340" min="110" max="420"></label>
 <label>Gear Placard (kt)<input id="gearPlacard" type="number" value="270" min="45" max="420"></label>
-<label>Flap Placard (kt)<input id="flapPlacard" type="number" value="250" min="45" max="420"></label>
-<label>Flaps<select id="flaps"><option value="0">UP</option><option>1</option><option>5</option><option>10</option><option>15</option><option>25</option><option>30</option><option>40</option></select></label>
+<label>Flap Placard (kt)<input id="flapPlacard" type="number" value="" min="45" max="420"></label>
+<label>Flap buffer (kt; empty = unspecified)<input id="flapBuffer" type="number" value="" min="0" max="100"></label>
+<label>Flaps 30 max — choose source<select id="flap30Variant">
+<option value="180">180 kt (image statement)</option>
+<option value="185">185 kt (written table)</option></select></label>
+<label>Flaps<select id="flaps"><option value="0">UP</option><option>1</option><option>2</option><option>5</option><option>10</option><option>15</option><option>25</option><option>30</option><option>40</option></select></label>
 <label>Pitch Mode<select id="pitch"><option value="VS">V/S</option><option value="LVL_CHG">LVL CHG</option><option value="VNAV_PTH">VNAV PTH</option><option value="ALT_HOLD">ALT HOLD</option><option value="G/S">G/S</option><option value="CWS">CWS</option></select></label>
 <fieldset class="wide"><legend>FCC/AFDS observation flags</legend>
 <label class="check"><input type="checkbox" id="gear"> Gear Down</label>
@@ -76,26 +82,37 @@ a{color:#97caff}
 <button id="reset" type="button">Reset</button>
 </div>
 </div>
-<p class="note">برای شبیه‌سازی نقطه «slightly before limit» از تیک FCC استفاده کن؛ چون FCOM برای آن مقدار عددی نداده است. تغییر هر کنترل یک Frame آموزشی جدید ایجاد می‌کند.</p>
+<p class="note">جدول Flap Max/Buffer توسط کاربر ارائه شده است و هنوز داده تأییدشده AFM نیست. بافر زرد پایین‌تر از حد قرمز رسم می‌شود؛ این با High Speed Buffet و Next Flap Placard فرق دارد. برای «slightly before limit» از تیک FCC استفاده کن، چون FCOM آستانه عددی نداده است.</p>
 <pre id="diagnostics" aria-live="polite"></pre>
 <p class="note"><a href="./index.html">بازگشت به Unified</a> — <a href="./speed-tape-lab.html">آزمایشگاه Speed Tape</a></p>
 </section></main>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
 'use strict';
-const M=window.B737ClassicSpeedLimitCh4V1,E=window.B737ClassicSpeedTapeEngineV1,R=window.B737UnifiedSpeedTapeV1;
+const M=window.B737ClassicSpeedLimitCh4V1,E=window.B737ClassicSpeedTapeEngineV1,
+ R=window.B737UnifiedSpeedTapeV1,P=window.B737ClassicFlapSpeedProfileV1;
 const el=id=>document.getElementById(id),v=id=>Number(el(id).value),yes=id=>el(id).checked;
-if(!M||!E||!R){el('diagnostics').textContent='Missing engine or renderer';return;}
+if(!M||!E||!R||!P){el('diagnostics').textContent='Missing speed limit, flap profile or renderer';return;}
 const ctx=el('tape').getContext('2d');
 let limit=M.initialState(),tape=E.initialState('CAPT'),time=Date.now();
+function currentFlapProfile(){
+ return P.get(v('flaps'),{flap30MaximumKt:v('flap30Variant')});
+}
+function updateFlapInputs(){
+ const row=currentFlapProfile();
+ el('flapPlacard').value=row.maximumKt===null?'':String(row.maximumKt);
+ el('flapBuffer').value=row.bufferKt===null?'':String(row.bufferKt);
+}
 function go(){
  const actual=v('ias'),selected=v('sel'),min=v('minimumInput'),max=v('vmo');
  const flaps=v('flaps'),gear=yes('gear'),pitch=el('pitch').value;
+ const flapMax=flaps?v('flapPlacard'):null;
+ const buffer=flaps&&el('flapBuffer').value!==''?v('flapBuffer'):null;
  const event={type:'FCC_SPEED_LIMIT',confirmed:true,source:'INSTRUCTOR_SCENARIO',
   actualCasKt:actual,commandSource:'MCP',selectedMcpCasKt:selected,
   minimumSpeedKt:min,vmoMmoCasKt:max,gearExtended:gear,
   gearPlacardKt:gear?v('gearPlacard'):null,flapsPosition:flaps,
-  flapPlacardKt:flaps?v('flapPlacard'):null,pitchMode:pitch,
+  flapPlacardKt:flapMax,pitchMode:pitch,
   atArmed:yes('atArmed'),atAvailable:yes('atAvailable'),atSpeedControl:yes('atSpeed'),
   afdsEngaged:true,afdsSpeedControl:pitch==='LVL_CHG',apEngaged:true,
   cwsMode:pitch==='CWS',thrustAtIdle:yes('atIdle'),gsCaptured:yes('gs'),
@@ -107,8 +124,8 @@ function go(){
   limit=M.transition(limit,event);
   tape=E.transition(tape,{type:'CONFIG',gearExtended:gear,flapsPosition:flaps,inFlight:true,phase:'CRUISE'});
   tape=E.transition(tape,{type:'LIMITS',valid:true,vmoMmoCasKt:max,
-   gearPlacardKt:gear?v('gearPlacard'):null,flapPlacardKt:flaps?v('flapPlacard'):null,
-   minimumAfdsKt:min});
+   gearPlacardKt:gear?v('gearPlacard'):null,flapPlacardKt:flapMax,
+   flapBufferKt:buffer,minimumAfdsKt:min});
   tape=E.transition(tape,{type:'MCP',powered:true,selectedCasKt:selected,
    displayBlank:false,speedDisplayMode:'IAS'});
   time=Math.max(Date.now(),time+150);
@@ -119,6 +136,10 @@ function go(){
   el('iasO').textContent=actual.toFixed(1)+' kt';el('selO').textContent=selected+' kt';
   el('effective').textContent=o.effectiveCommandKt===null?'UNKNOWN':o.effectiveCommandKt+' kt';
   el('maximum').textContent=o.maximumSpeedKt===null?'UNKNOWN':o.maximumSpeedKt+' kt ('+o.maximumReason+')';
+  const band=E.view(tape).marks.flapBuffer;
+  el('bufferStatus').textContent=band?
+   (band.bufferKt===0?'0 kt (none)':band.lowerKt+'–'+band.upperKt+' kt'):
+   (flaps===0?'UP / NONE':buffer===null?'UNSPECIFIED':'NOT CONTROLLING');
   el('minimum').textContent=o.minimumSpeedKt===null?'UNKNOWN':o.minimumSpeedKt+' kt';
   el('reversion').textContent=o.reversion;
   el('exclusion').textContent=o.minimumReversionInhibitedBy||'NONE';
@@ -127,23 +148,30 @@ function go(){
   symbol.classList.toggle('blink',o.flashing);
   el('diagnostics').textContent=JSON.stringify({source:o.source,authorized:o.authorized,
    symbol:o.speedConditionSymbol,reversion:o.reversion,limit:o.clampReason,
-   command:o.effectiveCommandKt,inhibitedBy:o.minimumReversionInhibitedBy,
+   command:o.effectiveCommandKt,flaps,flapPlacardKt:flapMax,
+   flapBufferKt:buffer,bufferLowerKt:E.view(tape).marks.flapBuffer?.lowerKt??null,
+   inhibitedBy:o.minimumReversionInhibitedBy,
     tape:{actualCasKt:E.view(tape).casKt,displayCenterKt:E.view(tape).tapeCenterKt,
       lowSpeedDefault:E.view(tape).lowSpeedDefault},
     conflict:o.conflictingLimits},null,2);
  }catch(error){el('diagnostics').textContent='INVALID SCENARIO: '+error.message;}
 }
-const fields=['ias','sel','minimumInput','vmo','gearPlacard','flapPlacard','flaps','pitch',
+const fields=['ias','sel','minimumInput','vmo','gearPlacard','flapPlacard','flapBuffer','pitch',
  'gear','nearHigh','nearMin','atArmed','atAvailable','atSpeed','atIdle','gs','vnavLevel',
  'insufficient','increasing','unmaintainable'];
 for(const id of fields)el(id).addEventListener('input',go);
+for(const id of ['flaps','flap30Variant'])el(id).addEventListener('input',()=>{
+ updateFlapInputs();go();
+});
 function set(vals){for(const [id,value]of Object.entries(vals)){const node=el(id);
  if(node.type==='checkbox')node.checked=value;else node.value=value;}
- limit=M.initialState();go();}
+ limit=M.initialState();
+ if('flaps' in vals||'flap30Variant' in vals)updateFlapInputs();
+ go();}
 el('presetLow').onclick=()=>set({ias:154,sel:145,minimumInput:160,pitch:'VS',
  nearMin:true,nearHigh:false,flaps:0,gear:false,insufficient:false,increasing:false});
-el('presetHigh').onclick=()=>set({ias:252,sel:290,minimumInput:160,pitch:'VS',
- nearHigh:true,nearMin:false,flaps:5,flapPlacard:250,gear:false,
+el('presetHigh').onclick=()=>set({ias:227,sel:250,minimumInput:160,pitch:'VS',
+ nearHigh:true,nearMin:false,flaps:5,gear:false,
  atArmed:true,atAvailable:true,atSpeed:false,insufficient:false,increasing:true});
 el('presetPerformance').onclick=()=>set({ias:210,sel:230,minimumInput:160,pitch:'VS',
  nearMin:false,nearHigh:false,flaps:0,gear:false,insufficient:true,increasing:false});
@@ -151,6 +179,7 @@ el('reset').onclick=()=>set({ias:230,sel:235,minimumInput:160,vmo:340,gearPlacar
  flapPlacard:250,flaps:0,pitch:'VS',gear:false,nearMin:false,nearHigh:false,
  atArmed:true,atAvailable:true,atSpeed:true,atIdle:false,gs:false,vnavLevel:false,
  insufficient:false,increasing:true,unmaintainable:false});
+updateFlapInputs();
 go();
 });
 </script>

@@ -9,6 +9,8 @@ on:
       - 'engine/afds/mcp-mode-core-v1.js'
       - 'panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/mcp-independent-digits-v1.js'
+      - 'engine/efis/classic-flap-speed-profile-v1.js'
+      - 'engine/efis/classic-flap-speed-profile-v1.test.cjs'
       - 'engine/efis/classic-speed-tape-engine-v1.js'
       - 'engine/efis/classic-speed-tape-engine-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
@@ -33,6 +35,7 @@ jobs:
           node --check engine/afds/mcp-mode-core-v1.js
           node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
           node --check panel-mosaic-lab/cockpit/mcp-independent-digits-v1.js
+          node --check engine/efis/classic-flap-speed-profile-v1.js
           node --check engine/efis/classic-speed-tape-engine-v1.js
           node --check panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js
           node --check panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.js
@@ -41,6 +44,7 @@ jobs:
         run: |
           node engine/afds/classic-speed-limit-ch4-v1.test.cjs
           node engine/afds/mcp-speed-limit-ch4-integration.test.cjs
+          node engine/efis/classic-flap-speed-profile-v1.test.cjs
           node engine/efis/classic-speed-tape-engine-v1.test.cjs
           node panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs
           node panel-mosaic-lab/cockpit/speed-limit-ch4-lab.test.cjs
@@ -49,3 +53,4 @@ jobs:
           grep -Fq 'engine/efis/classic-speed-tape-engine-v1.js' panel-mosaic-lab/cockpit/index.html
           grep -Fq 'eadi-speed-tape-v1.js' panel-mosaic-lab/cockpit/index.html
           grep -Fq 'classic-speed-limit-ch4-v1.js' panel-mosaic-lab/cockpit/index.html
+          grep -Fq 'classic-flap-speed-profile-v1.js' panel-mosaic-lab/cockpit/index.html

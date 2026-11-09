@@ -5,6 +5,7 @@
 const assert=require('node:assert/strict');
 const E=require('./classic-speed-tape-engine-v1.js');
 const R=require('../../panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js');
+const Flap=require('./classic-flap-speed-profile-v1.js');
 const apply=(state,event)=>E.transition(state,event);
 let s=E.initialState('CAPT');
 assert.equal(E.view(s).casKt,null);
@@ -100,6 +101,41 @@ high=apply(high,{type:'ADC',valid:true,casKt:45.1,timeMs:1000});
 assert.equal(E.view(high).lowSpeedDefault,false);
 assert.equal(E.view(high).rollingDigitsVisible,true);
 assert.equal(E.view(high).tapeCenterKt,45.1);
+// Owner-supplied flap schedule must show the band independently of
+// FMC high-speed buffet and never leak into AFDS speed-control authority.
+for(const detent of [1,2,5,10,15,25,30,40]){
+ const row=Flap.get(detent);
+ let ss=E.initialState();
+ ss=apply(ss,{type:'TRAINING_FLAP_PROFILE',source:'INSTRUCTOR_VISUAL_DETENT',
+  detent,maximumKt:row.maximumKt,bufferKt:row.bufferKt});
+ const result=E.view(ss);
+ assert.equal(result.marks.trainingFlapLimit.maximumKt,row.maximumKt);
+ assert.equal(result.marks.trainingFlapLimit.detent,detent);
+ assert.equal(result.marks.flapBuffer?.bufferKt??null,row.bufferKt);
+ if(row.bufferKt!==null)assert.equal(result.marks.flapBuffer.lowerKt,row.bufferStartKt);
+  assert.equal(result.speedProtection.maximumKt,null);
+ assert.equal(result.coverage.complete,false);
+}
+let flap30=E.initialState();
+flap30=apply(flap30,{type:'TRAINING_FLAP_PROFILE',source:'INSTRUCTOR_VISUAL_DETENT',
+ detent:30,maximumKt:180,bufferKt:25});
+assert.equal(E.view(flap30).marks.flapBuffer.lowerKt,155);
+flap30=apply(flap30,{type:'TRAINING_FLAP_PROFILE',source:'INSTRUCTOR_VISUAL_DETENT',
+ detent:30,maximumKt:185,bufferKt:25});
+assert.equal(E.view(flap30).marks.flapBuffer.lowerKt,160);
+assert.throws(()=>apply(flap30,{type:'TRAINING_FLAP_PROFILE',
+ source:'SIMULATOR_TELEMETRY',detent:30,maximumKt:180,bufferKt:25}),/INVALID_TRAINING_FLAP_SOURCE/);
+let verified=E.initialState();
+verified=apply(verified,{type:'CONFIG',flapsPosition:5,gearExtended:false});
+verified=apply(verified,{type:'LIMITS',valid:true,vmoMmoCasKt:340,
+ flapPlacardKt:225,flapBufferKt:15});
+assert.equal(E.view(verified).marks.maximumOperatingKt,225);
+assert.equal(E.view(verified).marks.flapBuffer.lowerKt,210);
+verified=apply(verified,{type:'LIMITS',valid:true,vmoMmoCasKt:200,
+ flapPlacardKt:225,flapBufferKt:15});
+assert.equal(E.view(verified).marks.maximumOperatingKt,200);
+assert.equal(E.view(verified).marks.flapBuffer,null,
+ 'no flap buffer when VMO/MMO is a lower controlling limit');
 const calls=[];
 const ctx=new Proxy({},{
  get(target,key){return key in target?target[key]:
@@ -116,6 +152,13 @@ R.draw(ctx,E.view(stopped));
 assert.equal(calls.filter(c=>c[0]==='fillText'&&c[1]==='45').length,1);
 assert.ok(calls.some(c=>c[0]==='strokeRect'),'magnified fixed 45 window');
 assert.ok(!calls.some(c=>c[0]==='fillText'&&c[1]==='40'),'no 40-label collision');
+calls.length=0;
+let trainingDisplay=E.initialState();
+trainingDisplay=apply(trainingDisplay,{type:'TRAINING_FLAP_PROFILE',
+ source:'INSTRUCTOR_VISUAL_DETENT',detent:30,maximumKt:180,bufferKt:25});
+trainingDisplay=apply(trainingDisplay,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:174,timeMs:1000});
+R.draw(ctx,E.view(trainingDisplay));
+assert.ok(calls.some(x=>x[0]==='fillText'&&x[1]==='TRN FL30'));
 const listeners={},layer={},drawn={CAPT:0,FO:0};
 const fake={
  B737ClassicSpeedTapeEngineV1:E,

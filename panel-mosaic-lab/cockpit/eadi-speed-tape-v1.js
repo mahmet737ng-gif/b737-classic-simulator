@@ -107,6 +107,21 @@
    if(visible(endpoint))segment(ctx,x,endpoint,x+w,endpoint,COLOR[color]||COLOR.yellow,2);
   }
  }
+ // Visual training buffer, a short yellow band BELOW the flap maximum.
+ // Keep it separate from the High Speed Buffet/next-flap indications.
+ function flapBufferBand(ctx,buffer,view){
+  if(!buffer||!Number.isFinite(buffer.lowerKt)||
+     !Number.isFinite(buffer.upperKt)||buffer.bufferKt<=0)return;
+  const x=233,w=15,
+   y1=Math.max(TAPE.top,yFor(buffer.upperKt,view)),
+   y2=Math.min(TAPE.bottom,yFor(buffer.lowerKt,view));
+  if(y2<=y1)return;
+  ctx.fillStyle='rgba(227,192,48,.24)';
+  ctx.fillRect(x,y1,w,y2-y1);
+  segment(ctx,x,y1,x,y2,COLOR.yellow,2.5);
+  segment(ctx,x+w,y1,x+w,y2,COLOR.yellow,2.5);
+  if(visible(y2))segment(ctx,x,y2,x+w,y2,COLOR.yellow,2.5);
+ }
  function draw(ctx,view){
   if(!view||view.schema!=='B737_CLASSIC_SPEED_TAPE_VIEW_V1')return;
   ctx.save();
@@ -131,9 +146,16 @@
   // Only source-verified limits are drawn, never fixed performance estimates.
   band(ctx,m.minimumManeuverKt,view,{x:234,w:15,direction:'LOW'});
   band(ctx,m.stickShakerKt,view,{x:249,w:10,direction:'LOW',striped:true});
-  band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',striped:true});
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
+  flapBufferBand(ctx,m.flapBuffer,view);
+  band(ctx,m.maximumOperatingKt,view,{x:249,w:10,direction:'HIGH',striped:true});
+  // A visual-only flap detent is NOT a real AFM placard. Its markings are
+  // intentionally labelled and never drive AFDS/autothrottle speed limiting.
+  if(Number.isFinite(m.trainingFlapLimit?.maximumKt)){
+   band(ctx,m.trainingFlapLimit.maximumKt,view,{x:249,w:10,direction:'HIGH',striped:true});
+   text(ctx,'TRN FL'+m.trainingFlapLimit.detent,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
+  }
   if(Number.isFinite(m.flapsUpKt)){
    const y=yFor(m.flapsUpKt,view);
    if(visible(y,9)){

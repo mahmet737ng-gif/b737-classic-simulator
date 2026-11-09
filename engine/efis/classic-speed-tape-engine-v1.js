@@ -12,7 +12,7 @@
  const VERSION='SPEED-TAPE-FCOM-0001',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
  const LIMIT_KEYS=['vmoMmoCasKt','gearPlacardKt','flapPlacardKt','minimumManeuverKt',
   'stickShakerKt','minimumAfdsKt','highSpeedBuffetKt','nextFlapPlacardKt',
-  'flapRetractionKt','flapsUpManeuverKt'];
+  'flapRetractionKt','flapsUpManeuverKt','flapBufferKt'];
  const REF_KEYS=['v1Kt','vrKt','selectedVrefKt','landingFlaps'];
  const blankFields=keys=>Object.fromEntries(keys.map(k=>[k,null]));
  const clone=v=>JSON.parse(JSON.stringify(v));
@@ -28,6 +28,7 @@
    fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
    config:{flapsPosition:null,gearExtended:null,inFlight:null,phase:null,flapsRetracting:null},
    limits:{valid:false,...blankFields(LIMIT_KEYS)},
+   trainingFlap:null,
    failures:{speed:false,selectedSpeed:false,v1:false,speedLimit:false,mach:false}};
  }
  function transition(old,event){
@@ -125,6 +126,22 @@
     for(const k of LIMIT_KEYS)o[k]=e[k]==null?null:required(e[k],0,600,'LIMIT_'+k);
     s.limits=o;
    }
+  }else if(e.type==='TRAINING_FLAP_PROFILE'){
+   // Pedestal detent is visually operated, not a verified aircraft sensor.
+   // This signal is an independent PRESENTATION LAYER: never mutate the
+   // real flap configuration, AFDS limits or aircraft speed-control bus.
+   if(e.source!=='INSTRUCTOR_VISUAL_DETENT')throw Error('INVALID_TRAINING_FLAP_SOURCE');
+   const detent=required(e.detent,0,40,'TRAINING_FLAP_DETENT');
+   if(![0,1,2,5,10,15,25,30,40].includes(detent))
+    throw Error('INVALID_TRAINING_FLAP_DETENT');
+   if(detent===0){
+    s.trainingFlap=null;
+   }else{
+    const max=required(e.maximumKt,0,600,'TRAINING_FLAP_MAX'),
+     buffer=e.bufferKt==null?null:required(e.bufferKt,0,100,'TRAINING_FLAP_BUFFER');
+    if(buffer!==null&&buffer>max)throw Error('INVALID_TRAINING_FLAP_BUFFER');
+    s.trainingFlap={detent,maximumKt:max,bufferKt:buffer,source:e.source};
+   }
   }else if(e.type==='FAILURES'){
    for(const k of Object.keys(s.failures)){
     if(Object.hasOwn(e,k)){
@@ -161,6 +178,26 @@
    (config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)));
   const limiting=maxCoverage&&maximumCandidates.length?
    maximumCandidates.reduce((a,b)=>a.speedKt<=b.speedKt?a:b):null;
+  // A user-entered FCOM-style yellow buffer is separate from Boeing's
+  // High-Speed Buffet and Next Flap Placard cues. It is not an automatic
+  // speed reversion trigger and must never change AFDS command values.
+  let flapBuffer=null;
+  if(validLimits&&limiting?.reason==='FLAPS'&&within(lim.flapBufferKt)&&
+     within(lim.flapPlacardKt)&&lim.flapBufferKt<=lim.flapPlacardKt){
+   flapBuffer={lowerKt:lim.flapPlacardKt-lim.flapBufferKt,
+    upperKt:lim.flapPlacardKt,bufferKt:lim.flapBufferKt,training:false};
+  }
+  // When the only input is a visual pedestal detent, show a clearly
+  // labelled training overlay, never a certified/AFDS usable limit.
+  const t=s.trainingFlap;
+  const trainingFlapLimit=!s.failures.speedLimit&&!limiting&&t&&t.detent>0?
+   {detent:t.detent,maximumKt:t.maximumKt,bufferKt:t.bufferKt,
+    bufferStartKt:t.bufferKt===null?null:t.maximumKt-t.bufferKt,
+    source:'INSTRUCTOR_VISUAL_DETENT'}:null;
+  if(!flapBuffer&&trainingFlapLimit&&trainingFlapLimit.bufferKt!==null)
+   flapBuffer={lowerKt:trainingFlapLimit.bufferStartKt,
+    upperKt:trainingFlapLimit.maximumKt,
+    bufferKt:trainingFlapLimit.bufferKt,training:true};
   const f=s.fmc;
   const preferFmc=s.commandAuthority==='FMC'||
    (s.commandAuthority==='AUTO'&&s.mcp.displayBlank===true);
@@ -189,7 +226,8 @@
    minimumManeuverKt:lim.minimumManeuverKt,stickShakerKt:lim.stickShakerKt,
    highSpeedBuffetKt:s.adc.pressureAltitudeFt!==null&&s.adc.pressureAltitudeFt>25000&&
     f.grossWeightAvailable===true?lim.highSpeedBuffetKt:null,
-   maximumOperatingKt:limiting?.speedKt??null
+   maximumOperatingKt:limiting?.speedKt??null,
+   trainingFlapLimit,flapBuffer
   };
   // A confirmed SPD or SPD LIM failure does not masquerade as a dead EADI.
   // No source connected (UNKNOWN) is not itself a hardware failure.
@@ -223,6 +261,7 @@
     maximumKt:limiting?.speedKt??null,
     limitsComplete:maxCoverage},
    maxLimitReason:limiting?.reason??null,
+   trainingFlapSource:trainingFlapLimit?.source??null,
    coverage:{vmo:within(lim.vmoMmoCasKt),
     gear:config.gearExtended===false||(config.gearExtended===true&&within(lim.gearPlacardKt)),
     flaps:config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)),

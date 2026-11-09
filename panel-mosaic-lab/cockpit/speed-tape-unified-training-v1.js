@@ -12,6 +12,7 @@
  'use strict';
  const VERSION='SPEED-TAPE-TRAINING-0001';
  let win=null,ready=false,enabled=true,overrideKt=null;
+ let flap30MaximumKt=180,lastVisualFlapDetent=null;
  const originalAdcSeen={CAPT:false,FO:false};
  const lastValue={CAPT:null,FO:null},lastTime={CAPT:0,FO:0};
  let panel=null;
@@ -63,6 +64,26 @@
   }
   updatePanel();return true;
  }
+ function syncVisualFlap(detent){
+  const renderer=win?.B737UnifiedSpeedTapeV1;
+  const profile=win?.B737ClassicFlapSpeedProfileV1;
+  if(!ready||!renderer?.observe||!profile?.get)return false;
+  const d=detent??lastVisualFlapDetent??win?.B737FlapVisualTest?.position;
+  if(!profile.DETENTS.includes(Number(d)))return false;
+  lastVisualFlapDetent=Number(d);
+  const value=profile.get(d,{flap30MaximumKt});
+  for(const seat of ['CAPT','FO']){
+   renderer.observe(seat,{type:'TRAINING_FLAP_PROFILE',source:'INSTRUCTOR_VISUAL_DETENT',
+    detent:value.detent,maximumKt:value.maximumKt,bufferKt:value.bufferKt});
+  }
+  updatePanel();return true;
+ }
+ function setFlap30MaximumKt(value){
+  if(![180,185].includes(Number(value)))throw Error('INVALID_FLAP30_VARIANT');
+  flap30MaximumKt=Number(value);
+  syncVisualFlap();updatePanel();
+  return flap30MaximumKt;
+ }
  function updatePanel(){
   if(!panel)return;
   const ctx=getTrainingContext(),live=ctx?.iasKt;
@@ -76,6 +97,18 @@
   if(overrideKt!==null)panel.querySelector('[data-speed-slider]').value=String(overrideKt);
   else if(finite(live))panel.querySelector('[data-speed-slider]').value=String(live);
   panel.querySelector('[data-speed-reading]').textContent=overrideKt===null?'SIM IAS':overrideKt.toFixed(1)+' kt';
+  const flap=panel.querySelector('[data-flap-profile-status]');
+  if(flap){
+   const detent=lastVisualFlapDetent;
+   const value=detent===null?null:
+    win?.B737ClassicFlapSpeedProfileV1?.get?.(detent,{flap30MaximumKt});
+   flap.textContent=value?.maximumKt!=null?
+    'TRN FLAP '+detent+' / MAX '+value.maximumKt+
+    ' kt / BUFFER '+(value.bufferKt===null?'UNSPECIFIED':value.bufferKt+' kt'):
+    'TRN FLAP LIMIT: '+(detent===0?'UP / NONE':'not connected');
+  }
+  const option=panel.querySelector('[data-flap30-variant]');
+  if(option)option.value=String(flap30MaximumKt);
  }
  function setEnabled(value){
   enabled=value===true;
@@ -110,11 +143,19 @@
    '<input type="range" data-speed-slider min="0" max="420" step=".1" value="180" style="width:100%">'+
    '<button type="button" data-speed-auto style="margin:6px">Follow simulator IAS</button>'+
    '<p style="font-size:11px;opacity:.8">TRN on glass = training source. Verified ADC overrides this display. No changes to flight-control or ADC network.</p>'+
+   '<p data-flap-profile-status style="font-size:12px;line-height:1.5">TRN FLAP LIMIT: not connected</p>'+
+   '<label style="font-size:12px">Flap 30 training max (180 image / 185 list) '+
+   '<select data-flap30-variant style="margin:5px;color:inherit;background:#213448">'+
+   '<option value="180">180 kt — image</option><option value="185">185 kt — list</option>'+
+   '</select></label>'+
+   '<p style="font-size:11px;opacity:.8">Visual flap detents display TRN LIMIT only; this does not command the AFDS.</p>'+
    '<p><a href="./speed-limit-ch4-lab.html" target="_blank" rel="noopener" style="color:#9ad1ff">FCOM CH4 SPEED LIMITS · TEST LAB</a></p>';
   owner.appendChild(panel);
   panel.querySelector('[data-speed-toggle]').addEventListener('change',e=>setEnabled(e.target.checked));
   panel.querySelector('[data-speed-slider]').addEventListener('input',e=>setIAS(Number(e.target.value)));
   panel.querySelector('[data-speed-auto]').addEventListener('click',()=>setIAS(null));
+  panel.querySelector('[data-flap30-variant]').addEventListener('change',
+   e=>setFlap30MaximumKt(Number(e.target.value)));
   updatePanel();return true;
  }
  function bind(root){
@@ -125,13 +166,21 @@
    if(['airdata.adc1','airdata.adc2','flightcontext.state'].includes(e.detail?.topic))
     sync();
   });
-  root.addEventListener('b737:cockpit-mounted',()=>{mount();sync()});
+  root.addEventListener('b737:flap-detent-visual-test',event=>{
+   if(event.detail?.visualOnly!==true)return;
+   syncVisualFlap(event.detail.detent);
+  });
+  root.addEventListener('b737:flap-ready',event=>{
+   syncVisualFlap(event.detail?.position);
+  });
+  root.addEventListener('b737:cockpit-mounted',()=>{mount();sync();syncVisualFlap()});
   if(root.document?.readyState==='loading')
-   root.document.addEventListener('DOMContentLoaded',()=>{mount();sync()},{once:true});
+   root.document.addEventListener('DOMContentLoaded',()=>{mount();sync();syncVisualFlap()},{once:true});
   else mount();
-  sync();return true;
+  sync();syncVisualFlap();return true;
  }
  function snapshot(){return {version:VERSION,enabled,overrideKt,
+  flap30MaximumKt,lastVisualFlapDetent,
   realAdcSeen:{...originalAdcSeen},sourceLabel:'TRAINING_SCENARIO_NOT_ADC'};}
- return Object.freeze({VERSION,bind,sync,setEnabled,setIAS,snapshot});
+ return Object.freeze({VERSION,bind,sync,syncVisualFlap,setFlap30MaximumKt,setEnabled,setIAS,snapshot});
 });

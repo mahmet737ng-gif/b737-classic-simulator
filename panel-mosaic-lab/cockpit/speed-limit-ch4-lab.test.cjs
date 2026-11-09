@@ -3,6 +3,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const file=fs.readFileSync(__dirname+'/speed-limit-ch4-lab.html','utf8');
 assert.match(file,/classic-speed-limit-ch4-v1\.js/);
 assert.match(file,/classic-speed-tape-engine-v1\.js/);
+assert.match(file,/classic-flap-speed-profile-v1\.js/);
+assert.match(file,/flap30Variant/);
+assert.match(file,/flapBufferKt:buffer/);
 assert.match(file,/INSTRUCTOR_SCENARIO/);
 assert.match(file,/id="ias" type="range" min="0"/,'IAS can reach zero');
 assert.match(file,/speedConditionSymbol/);

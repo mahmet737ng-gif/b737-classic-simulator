@@ -4,9 +4,10 @@ const fs=require('node:fs'),path=require('node:path');
 const E=require('../../engine/efis/classic-speed-tape-engine-v1.js');
 const R=require('./eadi-speed-tape-v1.js');
 const Trainer=require('./speed-tape-unified-training-v1.js');
+const Flap=require('../../engine/efis/classic-flap-speed-profile-v1.js');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/eadi-speed-tape-v1\.js\?v=EADI-SPEED-TAPE-UNIFIED-0003/);
-assert.match(html,/speed-tape-unified-training-v1\.js\?v=SPEED-TAPE-TRAINING-0001/);
+assert.match(html,/eadi-speed-tape-v1\.js\?v=EADI-SPEED-TAPE-UNIFIED-0004/);
+assert.match(html,/speed-tape-unified-training-v1\.js\?v=SPEED-TAPE-TRAINING-0002/);
 let s=E.initialState('CAPT');
 s=E.transition(s,{type:'TRAINING_CAS',origin:'TRAINING_SCENARIO',casKt:180,timeMs:1000});
 assert.equal(E.view(s).casKt,180);
@@ -27,6 +28,7 @@ const listeners={};
 const state={CAPT:E.initialState('CAPT'),FO:E.initialState('FO')};
 let adcSignal={quality:'UNKNOWN',value:null};
 const root={
+ B737ClassicFlapSpeedProfileV1:Flap,
  B737UnifiedSpeedTapeV1:{observe(seat,e){state[seat]=E.transition(state[seat],e);return E.view(state[seat]);},getState(seat){return state[seat]}},
  B737UnifiedAvionicsNetworkV1:{getSignal(topic){
   if(topic==='flightcontext.state')return {quality:'VALID',origin:'TRAINING_SCENARIO',
@@ -39,6 +41,24 @@ const root={
 assert.equal(Trainer.bind(root),true);
 assert.equal(state.CAPT.adc.quality,'TRAINING');
 assert.equal(state.FO.adc.quality,'TRAINING');
+assert.equal((listeners['b737:flap-detent-visual-test']||[]).length,1);
+listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:30}});
+for(const seat of ['CAPT','FO']){
+ assert.equal(E.view(state[seat]).marks.trainingFlapLimit.maximumKt,180);
+ assert.equal(E.view(state[seat]).marks.flapBuffer.lowerKt,155);
+ assert.equal(E.view(state[seat]).marks.maximumOperatingKt,null,
+  'visual-only flap selection cannot create certified speed limit');
+}
+assert.equal(Trainer.snapshot().lastVisualFlapDetent,30);
+Trainer.setFlap30MaximumKt(185);
+assert.equal(E.view(state.FO).marks.flapBuffer.lowerKt,160);
+Trainer.setFlap30MaximumKt(180);
+listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:40}});
+assert.equal(E.view(state.CAPT).marks.trainingFlapLimit.maximumKt,158);
+assert.equal(E.view(state.CAPT).marks.flapBuffer.bufferKt,0);
+listeners['b737:flap-detent-visual-test'][0]({detail:{visualOnly:true,detent:0}});
+assert.equal(E.view(state.CAPT).marks.trainingFlapLimit,null);
+
 Trainer.setIAS(230);
 assert.equal(E.view(state.CAPT).casKt,230);
 Trainer.setEnabled(false);

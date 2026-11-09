@@ -20,8 +20,9 @@ button{cursor:pointer}button:hover{background:#354f6a}
 pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;color:#9eeca7;margin-top:18px}
 .value{font-variant-numeric:tabular-nums;font-weight:bold;color:#f4f2f9}
 </style>
-<script src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-FCOM-0003" defer></script>
-<script src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-0003" defer></script>
+<script src="../../engine/efis/classic-flap-speed-profile-v1.js?v=FLAP-SPEED-PROFILE-0001" defer></script>
+<script src="../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-FCOM-0004" defer></script>
+<script src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-0004" defer></script>
 </head><body>
 <h1>B737 Classic — Speed Tape Test Lab</h1>
 <p class="note"><a style="color:#9ed6ff" href="./speed-limit-ch4-lab.html">FCOM Chapter 4 — Speed Limits / Mode Reversion Test Lab</a></p>
@@ -38,7 +39,9 @@ pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break
 <label>منبع سرعت
 <select id="source"><option value="MCP">MCP IAS</option><option value="FMC">FMC / VNAV</option></select></label>
 <label>وضعیت فلپ
-<select id="flaps"><option value="0">UP</option><option value="1">1</option><option value="5">5</option><option value="15">15</option><option value="30">30</option><option value="40">40</option></select></label>
+<select id="flaps"><option value="0">UP</option><option value="1">1</option><option value="2">2</option><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="25">25</option><option value="30">30</option><option value="40">40</option></select></label>
+<label>Flaps 30 maximum<select id="flap30Variant"><option value="180">180 kt (screenshot)</option><option value="185">185 kt (written list)</option></select></label>
+<p class="note" id="flapProfileInfo">UP — no flap cap</p>
 <div class="line"><label><input id="gear" type="checkbox"> Gear Extended</label><label><input id="high" type="checkbox"> Above FL250</label></div>
 <div class="line"><label><input id="adcFailure" type="checkbox"> ADC Failure (SPD)</label><label><input id="limitFailure" type="checkbox"> SPD LIM Failure</label></div>
 <div class="line"><button id="takeoff">Takeoff Markers</button><button id="landing">Approach / VREF</button><button id="reset">Reset Demo</button></div>
@@ -48,8 +51,9 @@ pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break
 <script>
 document.addEventListener('DOMContentLoaded',function(){
 'use strict';
-const E=window.B737ClassicSpeedTapeEngineV1,R=window.B737UnifiedSpeedTapeV1;
-if(!E||!R){document.getElementById('diag').textContent='Engine / renderer missing';return;}
+const E=window.B737ClassicSpeedTapeEngineV1,R=window.B737UnifiedSpeedTapeV1,
+ P=window.B737ClassicFlapSpeedProfileV1;
+if(!E||!R||!P){document.getElementById('diag').textContent='Engine / profile / renderer missing';return;}
 const dom=id=>document.getElementById(id),canvas=dom('preview'),c=canvas.getContext('2d');
 let state=E.initialState('CAPT'),t=Date.now(),phase='CRUISE',landing=false;
 function update(event){state=E.transition(state,event);draw();}
@@ -57,16 +61,22 @@ function adc(value){t=Math.max(Date.now(),t+150);update({type:'ADC',valid:true,c
   pressureAltitudeFt:dom('high').checked?30000:3000});}
 function configure(){
  const flaps=Number(dom('flaps').value),gear=dom('gear').checked,approach=phase==='APPROACH';
+ const profile=P.get(flaps,{flap30MaximumKt:Number(dom('flap30Variant').value)});
+ dom('flapProfileInfo').textContent=flaps?
+  'TRN FLAP '+flaps+' | MAX '+profile.maximumKt+' kt | BUFFER '+
+   (profile.bufferKt===null?'UNSPECIFIED':profile.bufferKt+' kt')+
+   (profile.bufferStartKt!==null?' | YELLOW '+profile.bufferStartKt+'–'+profile.maximumKt+' kt':''):
+  'UP — no flap cap';
  update({type:'CONFIG',flapsPosition:flaps,gearExtended:gear,inFlight:true,
   phase,flapsRetracting:false});
  // TEST VALUES ONLY — NOT an airframe's AFM tables.
  update({type:'LIMITS',valid:true,vmoMmoCasKt:340,
-  gearPlacardKt:270,flapPlacardKt:flaps===0?null:flaps>=30?175:250,
+  gearPlacardKt:270,flapPlacardKt:profile.maximumKt,flapBufferKt:profile.bufferKt,
   stickShakerKt:flaps>0?118:180,minimumManeuverKt:flaps>0?135:198,
   minimumAfdsKt:flaps>0?137:200,
   flapsUpManeuverKt:210,flapRetractionKt:flaps>0?158:null,
   highSpeedBuffetKt:dom('high').checked?305:null,
-  nextFlapPlacardKt:flaps>0?215:null});
+  nextFlapPlacardKt:null});
  update({type:'FMC',valid:true,commandCasKt:Number(dom('mcp').value)+5,
   grossWeightAvailable:true,v1Kt:phase==='TAKEOFF'?135:null,
   vrKt:phase==='TAKEOFF'?142:null,
@@ -83,7 +93,9 @@ function draw(){
  c.fillStyle='#080b10';c.fillRect(0,0,900,720);R.draw(c,v);
  dom('iasValue').textContent=(v.casKt===null?'—':v.casKt.toFixed(1))+' kt';
  dom('mcpValue').textContent=dom('mcp').value+' kt';
- dom('diag').textContent=JSON.stringify({speed:v.casKt,tapeCenter:v.tapeCenterKt,
+ dom('diag').textContent=JSON.stringify({speed:v.casKt,
+  flapMax:v.marks.maximumOperatingKt,flapBuffer:v.marks.flapBuffer,
+  tapeCenter:v.tapeCenterKt,
    lowSpeedDefault:v.lowSpeedDefault,trend10:v.trend?.delta10Kt??null,
   command:v.command,commandedPosition:v.commandedPosition,max:v.marks.maximumOperatingKt,
   maxLimitReason:v.maxLimitReason,flags:v.flags},null,2);
@@ -92,6 +104,7 @@ dom('ias').addEventListener('input',()=>adc(Number(dom('ias').value)));
 dom('mcp').addEventListener('input',()=>{command();if(dom('source').value==='FMC')configure()});
 dom('source').addEventListener('change',command);
 dom('flaps').addEventListener('change',configure);
+dom('flap30Variant').addEventListener('change',configure);
 dom('gear').addEventListener('change',configure);
 dom('high').addEventListener('change',()=>{adc(Number(dom('ias').value));configure()});
 dom('adcFailure').addEventListener('change',()=>{
@@ -103,6 +116,7 @@ dom('takeoff').addEventListener('click',()=>{phase='TAKEOFF';landing=false;confi
 dom('landing').addEventListener('click',()=>{phase='APPROACH';landing=true;configure()});
 dom('reset').addEventListener('click',()=>{state=E.initialState('CAPT');t=Date.now();phase='CRUISE';landing=false;
  dom('ias').value=227;dom('mcp').value=230;dom('source').value='MCP';dom('flaps').value=0;
+ dom('flap30Variant').value='180';
  dom('gear').checked=false;dom('high').checked=false;dom('adcFailure').checked=false;
  dom('limitFailure').checked=false;adc(227);configure();command()});
 adc(227);configure();command();
