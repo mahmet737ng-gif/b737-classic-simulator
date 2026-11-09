@@ -75,8 +75,8 @@
  function mark(ctx,label,value,view,color=COLOR.green){
   if(!Number.isFinite(value))return;
   const y=yFor(value,view);if(!visible(y,9))return;
-  segment(ctx,217,y,237,y,color,3);
-  text(ctx,label,252,y,color,20,'left');
+  segment(ctx,214,y,228,y,color,3);
+  text(ctx,label,234,y,color,18,'left');
  }
  function band(ctx,endSpeed,view,{x,w,direction,color='yellow',striped=false}){
   if(!Number.isFinite(endSpeed))return;
