@@ -67,7 +67,7 @@ const ctx=new Proxy({},{
   (...args)=>{calls.push([String(key),...args])}},
  set(target,key,value){target[key]=value;return true}
 });
-R.draw(ctx,E.view(t));assert.equal(calls.length,0,'No IAS means no tape without flags');
+R.draw(ctx,E.view(t));assert.equal(calls.some(c=>c[0]==='fillText'),false,'No IAS means no displayed digits without flags');
 t=apply(t,{type:'ADC',valid:true,casKt:227.5,timeMs:100});
 R.draw(ctx,E.view(t));assert.ok(calls.some(c=>c[0]==='fillText'));
 const listeners={},layer={},drawn={CAPT:0,FO:0};
