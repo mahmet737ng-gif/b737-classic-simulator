@@ -64,7 +64,7 @@ assert.equal(E.view(t).marks.maximumOperatingKt,340);
 const calls=[];
 const ctx=new Proxy({},{
  get(target,key){return key in target?target[key]:
-  (...args)=>{calls.push([String(key),...args])}};
+  (...args)=>{calls.push([String(key),...args])}},
  set(target,key,value){target[key]=value;return true}
 });
 R.draw(ctx,E.view(t));assert.equal(calls.length,0,'No IAS means no tape without flags');
