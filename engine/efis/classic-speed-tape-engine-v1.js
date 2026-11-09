@@ -37,7 +37,8 @@
    if(typeof e.valid!=='boolean')throw Error('ADC_VALIDITY_REQUIRED');
    if(e.valid){
     const cas=required(e.casKt,0,600,'CAS_KT'),ms=required(e.timeMs,0,1e15,'TIMESTAMP');
-    if(s.adc.lastMs!==null&&ms<=s.adc.lastMs)throw Error('STALE_ADC_SAMPLE');
+    if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&ms<=s.adc.lastMs)
+     throw Error('STALE_ADC_SAMPLE');
     const previous=s.adc;
     const deltaTime=previous.lastMs===null?null:(ms-previous.lastMs)/1000;
     const acceleration=previous.quality==='VALID'&&deltaTime>=0.1&&deltaTime<=10?
@@ -52,9 +53,29 @@
     s.adc={quality:'INVALID',casKt:null,pressureAltitudeFt:null,lastMs:null,
      previousCasKt:null,accelerationKtS:null,trendVisible:false};
    }
+  }else if(e.type==='TRAINING_CAS'){
+   // This is an explicitly labelled cockpit TRAINING source, not an ADC
+   // sensor, and is never published to airdata.adc1/adc2 or the AFDS.
+   if(e.origin!=='TRAINING_SCENARIO')throw Error('TRAINING_SOURCE_REQUIRED');
+   const cas=required(e.casKt,0,600,'TRAINING_CAS');
+   const ms=required(e.timeMs,0,1e15,'TRAINING_TIMESTAMP');
+   if(s.adc.quality==='TRAINING'&&s.adc.lastMs!==null&&ms<=s.adc.lastMs)
+    throw Error('STALE_TRAINING_SAMPLE');
+   const p=s.adc,dt=p.quality==='TRAINING'&&p.lastMs!==null?(ms-p.lastMs)/1000:null;
+   const acceleration=dt!==null&&dt>=.1&&dt<=10?(cas-p.casKt)/dt:null;
+   const difference=acceleration===null?0:10*acceleration;
+   const visible=acceleration!==null&&
+    (p.trendVisible?Math.abs(difference)>=3:Math.abs(difference)>4);
+   s.adc={quality:'TRAINING',casKt:cas,
+    pressureAltitudeFt:e.pressureAltitudeFt==null?null:
+     required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
+    lastMs:ms,previousCasKt:p.casKt,accelerationKtS:acceleration,trendVisible:visible};
+  }else if(e.type==='TRAINING_CLEAR'){
+   if(s.adc.quality==='TRAINING')s.adc={quality:'UNKNOWN',casKt:null,
+    pressureAltitudeFt:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false};
   }else if(e.type==='ADC_TIMEOUT'){
    const now=required(e.nowMs,0,1e15,'TIMESTAMP');
-   if(s.adc.lastMs!==null&&now-s.adc.lastMs>2000)
+   if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&now-s.adc.lastMs>2000)
     s.adc={quality:'UNKNOWN',casKt:null,pressureAltitudeFt:null,lastMs:null,
      previousCasKt:null,accelerationKtS:null,trendVisible:false};
   }else if(e.type==='MCP'){
@@ -116,7 +137,7 @@
  }
  function view(s){
   if(s?.schema!==SCHEMA)throw Error('INVALID_TAPE_STATE');
-  const adcValid=s.adc.quality==='VALID'&&!s.failures.speed&&within(s.adc.casKt);
+  const adcValid=['VALID','TRAINING'].includes(s.adc.quality)&&!s.failures.speed&&within(s.adc.casKt);
   const cas=adcValid?s.adc.casKt:null;
   // The ADC has a 45 kt low-speed default. Rolling digits are not displayed
   // at/below 45 kt even when a valid simulator sensor reports less.
@@ -187,7 +208,10 @@
    }
   }
   return {schema:'B737_CLASSIC_SPEED_TAPE_VIEW_V1',version:VERSION,seat:s.seat,
-   revision:s.revision,quality:s.adc.quality,casKt:cas,tapeCenterKt,range,
+   revision:s.revision,quality:s.adc.quality,
+   provenance:s.adc.quality==='TRAINING'?'TRAINING_SCENARIO':
+    s.adc.quality==='VALID'?'SIMULATOR_ADC':'UNKNOWN',
+   casKt:cas,tapeCenterKt,range,
    commandAuthority:s.commandAuthority,
    rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
    effectiveTargetKt,limitReason,marks,flags,

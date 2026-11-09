@@ -153,6 +153,9 @@
   }
   if(view.rollingDigitsVisible)digits(ctx,view.casKt);
   else text(ctx,'45',TAPE.axis-46,TAPE.centerY,COLOR.white,30,'right');
+  // Visible provenance: never masquerade instructor IAS as ADC equipment.
+  if(view.provenance==='TRAINING_SCENARIO')
+   text(ctx,'TRN',TAPE.left+7,TAPE.bottom-13,COLOR.yellow,15,'left');
   if(view.flags.SEL_SPD_INOP)text(ctx,'SEL SPD',TAPE.axis-7,TAPE.top+45,COLOR.yellow,17,'right');
   if(view.flags.V1_INOP)text(ctx,'V1',TAPE.axis+30,TAPE.top+46,COLOR.yellow,18,'left');
   if(view.flags.SPD_LIM)text(ctx,'SPD LIM',TAPE.axis+38,TAPE.bottom-22,COLOR.yellow,17,'right');
@@ -169,8 +172,11 @@
    cancelExpiry(seat);dispatch(seat,{type:'ADC',valid:false});return true;
   }
   const value=signal.value;
-  if(signal.quality!=='VALID'||value?.sensorValid!==true||
-     !Number.isFinite(value.casKt))return false;
+  // Both approved simulator ingress (sensorValid) and explicitly owned
+  // ADC topic publishers are valid. A missing sensorValid is not proof of
+  // failure, but an explicit false is.
+  if(signal.quality!=='VALID'||signal.origin!=='SIMULATOR_TELEMETRY'||
+     value?.sensorValid===false||!Number.isFinite(value?.casKt))return false;
   const timeMs=signal.receivedAtMs??Date.now();
   if(stamps[seat]!==null&&timeMs<=stamps[seat])return false;
   stamps[seat]=timeMs;

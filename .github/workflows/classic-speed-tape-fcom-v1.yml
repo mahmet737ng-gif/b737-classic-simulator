@@ -6,6 +6,8 @@ on:
       - 'engine/efis/classic-speed-tape-engine-v1.js'
       - 'engine/efis/classic-speed-tape-engine-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
+      - 'panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.js'
+      - 'panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - '.github/workflows/classic-speed-tape-fcom-v1.yml'
   workflow_dispatch:
@@ -21,9 +23,12 @@ jobs:
         run: |
           node --check engine/efis/classic-speed-tape-engine-v1.js
           node --check panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js
+          node --check panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.js
           node --check engine/efis/classic-speed-tape-engine-v1.test.cjs
       - name: FCOM speed tape and Unified integration assertions
-        run: node engine/efis/classic-speed-tape-engine-v1.test.cjs
+        run: |
+          node engine/efis/classic-speed-tape-engine-v1.test.cjs
+          node panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs
       - name: Confirm EADI scripts installed
         run: |
           grep -Fq 'engine/efis/classic-speed-tape-engine-v1.js' panel-mosaic-lab/cockpit/index.html
