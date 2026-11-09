@@ -42,6 +42,7 @@
   // YELLOW axis states at once: CWS P and CWS R. Neither is a Pitch/Roll
   // command-mode annunciation; those command fields are BLANK in CWS.
   state.afds.secondary='';
+  state.afds.tertiary='';
   return state;
  }
  function assertField(field,type,value){
@@ -56,13 +57,18 @@
    for(const k of ['active','armed'])if(Object.hasOwn(data,k))state[field][k]=assertField(field,k,data[k]);
    if(Object.hasOwn(data,'origin'))state[field].origin=String(data.origin);
    if(Object.hasOwn(data,'secondary')){
-    if(field!=='afds'||!['','CWS R'].includes(data.secondary))
+    if(field!=='afds'||!['','CWS P','CWS R'].includes(data.secondary))
      throw Error('Only AFDS column can show secondary CWS R');
     state.afds.secondary=data.secondary;
    }
+   if(Object.hasOwn(data,'tertiary')){
+    if(field!=='afds'||!['','CWS R'].includes(data.tertiary))
+     throw Error('Only AFDS can show third-line CWS R');
+    state.afds.tertiary=data.tertiary;
+   }
   }
-  if(state.afds.secondary&&state.afds.active!=='CWS P')
-   throw Error('Second CWS line requires CWS P status as primary');
+  if(state.afds.tertiary&&state.afds.secondary!=='CWS P')
+   throw Error('Third-line CWS R requires second-line CWS P');
   return state;
  }
  function sourceMode(val,map){
@@ -87,13 +93,9 @@
  function applyCwsStatus(state,pitchCws,rollCws){
   if(pitchCws)state.pitch.active='';
   if(rollCws)state.roll.active='';
-  // The 4th AFDS STATUS area is the ONLY place where CWS is displayed.
-  // CMD remains mechanically engaged but is superseded in the annunciator
-  // by CWS P, CWS R or both, depending on the affected axes.
-  if(pitchCws||rollCws){
-   state.afds.active=pitchCws?'CWS P':'CWS R';
-   state.afds.secondary=pitchCws&&rollCws?'CWS R':'';
-  }
+  // CMD stays active (green). Independent CWS status is yellow beneath it.
+  state.afds.secondary=pitchCws?'CWS P':rollCws?'CWS R':'';
+  state.afds.tertiary=pitchCws&&rollCws?'CWS R':'';
   return state;
  }
  function fromMcp(output,seat){
@@ -107,9 +109,14 @@
   state.at.active=at?(automaticSpeed?'MCP SPD':
    sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM'):'';
   state.at.origin=ORIGIN.MCP;
-  state.pitch.active=sourceMode(m.vertical,
-   {LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'});
-  state.roll.active=sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:'LNAV'});
+  state.pitch.active=sourceMode(output.capture?.pitch,
+   {ALT_ACQ:'ALT ACQ',ALT_HOLD:'ALT HOLD','G/S':'G/S'})||
+   sourceMode(m.vertical,{LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'});
+  state.roll.active=sourceMode(output.capture?.roll,{VOR_LOC:'VOR/LOC'})||
+   sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:'LNAV'});
+  state.pitch.armed=output.armed?.pitch==='G/S'?'G/S':
+   output.armed?.pitch==='V/S'?'V/S':'';
+  state.roll.armed=output.armed?.roll==='VOR/LOC'?'VOR/LOC':'';
   state.pitch.origin=state.roll.origin=ORIGIN.MCP;
   // Specific NAV/vertical capture states require verified FCC observation,
   // not merely illuminated MCP switches.
@@ -196,21 +203,15 @@
   if(output.power!==true)return base;
   const state=withFcc(base,observation,seat);
   if(observation){
-   // If FCC reports a captured command while the selector had no mode,
-   // only the captured axis leaves CWS. The other can remain CWS.
-   const pitch=Object.hasOwn(observation.fields?.pitch||{},'active')&&
+   // Capturing a selected command cancels only its own CWS axis.
+   const pitchCaptured=Object.hasOwn(observation.fields?.pitch||{},'active')&&
     observation.fields.pitch.active!=='';
-   const roll=Object.hasOwn(observation.fields?.roll||{},'active')&&
+   const rollCaptured=Object.hasOwn(observation.fields?.roll||{},'active')&&
     observation.fields.roll.active!=='';
-   if(pitch||roll){
-    const axes=cwsAxes(output);
-    const pc=axes.pitch&&!pitch,rc=axes.roll&&!roll;
-    if(pc||rc)applyCwsStatus(state,pc,rc);
-    else if(/^(CWS P|CWS R)$/.test(state.afds.active)){
-     state.afds.active=/^CMD_/.test(output.modes?.autopilot||'')?'CMD':'FD';
-     state.afds.secondary='';
-    }
-   }
+   const axes=cwsAxes(output);
+   applyCwsStatus(state,
+    (axes.pitch&&!pitchCaptured)||(observation.evidence?.pitchCwsOverride===true&&!pitchCaptured),
+    (axes.roll&&!rollCaptured)||(observation.evidence?.rollCwsOverride===true&&!rollCaptured));
   }
   return state;
  }
