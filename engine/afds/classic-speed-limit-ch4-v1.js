@@ -7,6 +7,12 @@
  if(root)root.B737ClassicSpeedLimitCh4V1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(){'use strict';
  const SCHEMA='B737_CLASSIC_CH4_SPEED_LIMIT_V1';
+ const GEAR_SPEED_LIMITS=Object.freeze({
+  DOWN:Object.freeze({iasKt:320,mach:0.82}),
+  EXTENDING:Object.freeze({iasKt:270,mach:0.82}),
+  RETRACTING:Object.freeze({iasKt:235,mach:null})
+ });
+ const GEAR_STATES=['UP','DOWN','EXTENDING','RETRACTING'];
  const PITCH=['VS','VNAV_PTH','VNAV_SPD','LVL_CHG','ALT_HOLD','G/S','CWS','OTHER',null];
  const BOOL=['gearExtended','atArmed','atAvailable','atSpeedControl','thrustAtIdle',
   'afdsEngaged','afdsSpeedControl','apEngaged','gsCaptured','vnavLevelSegment',
@@ -28,8 +34,17 @@
   for(const k of NUM)if(e[k]!==undefined&&e[k]!==null&&!finite(e[k]))
    throw Error('INVALID_CH4_SPEED_'+k);
   if(e.flapsPosition>40)throw Error('INVALID_FLAPS');
+  if(e.gearState!==undefined&&e.gearState!==null&&!GEAR_STATES.includes(e.gearState))
+   throw Error('INVALID_GEAR_STATE');
+  if(e.actualMach!==undefined&&e.actualMach!==null&&
+     (typeof e.actualMach!=='number'||!Number.isFinite(e.actualMach)||e.actualMach<0||e.actualMach>1.5))
+   throw Error('INVALID_ACTUAL_MACH');
   const x={...e};
   for(const k of [...BOOL,...NUM])if(x[k]===undefined)x[k]=null;
+  if(x.actualMach===undefined)x.actualMach=null;
+  x.gearState=x.gearState??(x.gearExtended===true?'DOWN':x.gearExtended===false?'UP':null);
+  if((x.gearState==='UP'&&x.gearExtended===true)||(x.gearState==='DOWN'&&x.gearExtended===false))
+   throw Error('CONFLICTING_GEAR_EVIDENCE');
   return x;
  }
  function transition(old,event){
@@ -39,13 +54,12 @@
   const selected=e.commandSource==='MCP'?e.selectedMcpCasKt:
    e.commandSource==='FMC'?e.selectedFmcCasKt:null;
   const candidates=[];
+  const gearLimit=GEAR_SPEED_LIMITS[e.gearState]??null;
   if(finite(e.vmoMmoCasKt))candidates.push({speed:e.vmoMmoCasKt,reason:'VMO_MMO'});
-  if(e.gearExtended===true&&finite(e.gearPlacardKt))
-   candidates.push({speed:e.gearPlacardKt,reason:'GEAR_PLACARD'});
+  if(gearLimit)candidates.push({speed:gearLimit.iasKt,reason:'GEAR_PLACARD'});
   if(e.flapsPosition!==null&&e.flapsPosition>0&&finite(e.flapPlacardKt))
    candidates.push({speed:e.flapPlacardKt,reason:'FLAP_PLACARD'});
-  const complete=finite(e.vmoMmoCasKt)&&e.gearExtended!==null&&
-   (e.gearExtended===false||finite(e.gearPlacardKt))&&
+  const complete=finite(e.vmoMmoCasKt)&&e.gearState!==null&&
    e.flapsPosition!==null&&(e.flapsPosition===0||finite(e.flapPlacardKt));
   const max=complete?candidates.reduce((a,b)=>a.speed<=b.speed?a:b):null;
   const min=finite(e.minimumSpeedKt)?e.minimumSpeedKt:null;
@@ -53,8 +67,11 @@
   const actual=finite(e.actualCasKt)?e.actualCasKt:null;
   const low=!conflict&&actual!==null&&min!==null&&
    (actual<=min||e.nearMinimum===true);
-  const high=!conflict&&actual!==null&&max!==null&&
+  const machExceeded=gearLimit?.mach!=null&&e.actualMach!==null&&
+   e.actualMach>=gearLimit.mach;
+  const highByCas=actual!==null&&max!==null&&
    (actual>=max.speed||e.nearHighLimit===true);
+  const high=!conflict&&(highByCas||machExceeded);
   const perf=e.pitchMode==='VS'&&e.performanceInsufficient===true&&
    e.speedIncreasing===false&&actual!==null&&finite(e.selectedMcpCasKt)&&
    actual<e.selectedMcpCasKt-5;
@@ -94,7 +111,7 @@
   }else if(perf){
    reversion='LVL_CHG_PERFORMANCE';reason='VS_THRUST_INSUFFICIENT';
   }else if(high){
-   reason=max.reason;
+   reason=machExceeded&&!highByCas?'GEAR_MACH_LIMIT':max.reason;
    if(max.reason==='VMO_MMO'&&e.pitchMode==='VS'&&
     e.atSpeedControl===true&&e.thrustAtIdle===true)
     reversion='LVL_CHG_VMO';
@@ -110,6 +127,9 @@
   const out={schema:SCHEMA,revision:old.revision+1,source:e.source,
    authorized:e.source==='SIMULATED_FCC',actualCasKt:actual,
    selectedCasKt:selected,minimumSpeedKt:min,maximumSpeedKt:max?.speed??null,
+   gearState:e.gearState,gearOperatingLimitKt:gearLimit?.iasKt??null,
+   gearOperatingLimitMach:gearLimit?.mach??null,actualMach:e.actualMach,
+   gearMachLimitReached:machExceeded,
    maximumReason:max?.reason??null,upperLimitComplete:complete&&!conflict,
    conflictingLimits:conflict,effectiveCommandKt:commanded,
    clampReason:clamp,speedConditionSymbol:symbol,flashing:symbol!=='NONE',
@@ -122,5 +142,6 @@
  }
  function view(s){if(s?.schema!==SCHEMA)throw Error('INVALID_CH4_STATE');
   return s.last?JSON.parse(JSON.stringify(s.last)):null;}
- return Object.freeze({VERSION:'SPEED-LIMIT-CH4-0001',SCHEMA,initialState,transition,view});
+ return Object.freeze({VERSION:'SPEED-LIMIT-CH4-0002',SCHEMA,GEAR_SPEED_LIMITS,
+  initialState,transition,view});
 });
