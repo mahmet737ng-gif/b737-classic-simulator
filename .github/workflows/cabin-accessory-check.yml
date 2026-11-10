@@ -1,0 +1,29 @@
+name: Cabin accessory checks
+on:
+  pull_request:
+    paths:
+      - 'engine/galley-linen/**'
+      - '.github/workflows/cabin-accessory-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/galley-linen/**'
+      - '.github/workflows/cabin-accessory-check.yml'
+permissions:
+  contents: read
+jobs:
+  a0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node --check engine/galley-linen/a1.cjs
+          node --check engine/galley-linen/a2.cjs
+          node --test engine/galley-linen/a0.test.cjs
