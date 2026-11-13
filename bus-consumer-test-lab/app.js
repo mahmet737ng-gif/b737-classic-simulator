@@ -200,6 +200,8 @@ function refresh(){
  if(!session)return;
  renderBuses();
  renderConsumers();
+ if(root.B737BusConsumerTestLabUIV1)
+  root.dispatchEvent(new CustomEvent('b737:buslab-updated',{detail:{source:'BUSLAB_UI'}}));
 }
 function run(action){
  try{action();}
@@ -280,8 +282,11 @@ async function start(){
  root.B737BusConsumerTestLabUIV1=Object.freeze({
   getSnapshot:()=>session.snapshot(),getBusState:key=>session.busStates[key],
   listBusNames:()=>session.buses.slice(),getSession:()=>session,
-  version:Lab.VERSION,nonMutating:true,injectCockpit,clearCockpit
+  version:Lab.VERSION,nonMutating:true,injectCockpit,clearCockpit,
+  toggleBus:key=>{session.toggle(key);refresh();return session.busStates[key];},
+  setCascade:enabled=>{session.setCascade(enabled);$('cascadeSwitch').checked=enabled;refresh();return session.busStates;}
  });
+ root.dispatchEvent(new CustomEvent('b737:buslab-ui-ready',{detail:{schematicSupported:true}}));
 }
 start().catch(setFailure);
 })(window);
