@@ -240,9 +240,15 @@ function clearCockpit(){
  return record;
 }
 function bind(){
- $('allOn').addEventListener('click',()=>run(()=>{session.all(true);refresh();}));
+ $('allOn').addEventListener('click',()=>run(()=>{
+  root.B737MRGElectricalPlateV2?.resetControls?.();
+  session.all(true);refresh();
+ }));
  $('allOff').addEventListener('click',()=>run(()=>{session.all(false);refresh();}));
- $('resetLab').addEventListener('click',()=>run(()=>{session.restore();$('baselineSelect').value='ALL_ON';refresh();}));
+ $('resetLab').addEventListener('click',()=>run(()=>{
+  root.B737MRGElectricalPlateV2?.resetControls?.();
+  session.restore();$('baselineSelect').value='ALL_ON';refresh();
+ }));
  $('baselineSelect').addEventListener('change',()=>run(()=>{
   session.selectBaseline($('baselineSelect').value);refresh();
  }));
@@ -284,6 +290,7 @@ async function start(){
   listBusNames:()=>session.buses.slice(),getSession:()=>session,
   version:Lab.VERSION,nonMutating:true,injectCockpit,clearCockpit,
   toggleBus:key=>{session.toggle(key);refresh();return session.busStates[key];},
+  refreshLab:()=>{session.refresh();refresh();return session.busStates;},
   setCascade:enabled=>{session.setCascade(enabled);$('cascadeSwitch').checked=enabled;refresh();return session.busStates;}
  });
  if(typeof root.dispatchEvent==='function')root.dispatchEvent(new CustomEvent('b737:buslab-ui-ready',{detail:{schematicSupported:true}}));
