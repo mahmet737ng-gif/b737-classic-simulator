@@ -6,7 +6,7 @@
 .schematic-reset{padding:10px 15px;background:#264761;border:1px solid #529ac6;border-radius:8px;color:#d9efff;font-weight:750}
 .schematic-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;min-height:450px;direction:ltr}
 .schematic-scroll{background:#0b1c2a;border:1px solid #36546b;border-radius:9px;overflow:auto;overscroll-behavior:contain}
-.schematic-scroll svg{width:100%;min-width:875px;height:auto;display:block}
+.schematic-scroll svg{width:100%;min-width:1300px;height:auto;display:block}
 .schematic-edge{fill:none;stroke:#577588;stroke-width:2.2;opacity:.58;pointer-events:none}
 .schematic-edge[data-selected="true"]{stroke:#f5ca7f;stroke-width:3.1;opacity:1}
 .schematic-node{cursor:pointer;outline:none}
@@ -32,4 +32,4 @@
 .schematic-device[data-power="DEGRADED"] span,.schematic-device[data-power="UNKNOWN"] span{color:#ffd68f}
 .schematic-empty{color:#a1c5da;font-size:12px}
 .schematic-disclaimer{font-size:10.5px;line-height:1.7;color:#9fb9cb;padding:7px 0 0;margin:0}
-@media(max-width:1000px){.schematic-body{grid-template-columns:1fr}.schematic-affected{max-height:370px}.schematic-scroll svg{min-width:875px}}
+@media(max-width:1000px){.schematic-body{grid-template-columns:1fr}.schematic-affected{max-height:370px}.schematic-scroll svg{min-width:1300px}}
