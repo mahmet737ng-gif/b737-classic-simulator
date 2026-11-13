@@ -153,9 +153,18 @@ function createControls(){
    GEN1_EXTERNAL:r('GEN1_EXTERNAL')&&!!sources.EXTERNAL,
    GEN2_EXTERNAL:r('GEN2_EXTERNAL')&&!!sources.EXTERNAL,
    GROUND_SVC:r('GROUND_SVC')&&!!p['groundService@115VAC'],
-   R3:r('R3'),R4:r('R4'),BUS_XFR:r('BUS_XFR'),
-   R9:r('R9'),TR1:r('TR1'),TR2:r('TR2'),TR3:r('TR3'),
-   R37_AC:r('R37_AC'),R37_DC:r('R37_DC'),R2:r('R2'),R1:r('R1'),R41:r('R41'),
+   R3:r('R3')&&!!p['generator1@115VAC'],
+   R4:r('R4')&&!!p['generator2@115VAC'],
+   BUS_XFR:r('BUS_XFR')&&(!!p['transfer1@115VAC']||!!p['transfer2@115VAC']),
+   R9:r('R9')&&(!!p['dc1@28VDC']||!!p['dc2@28VDC']),
+   TR1:r('TR1')&&!!p['transfer1@115VAC'],
+   TR2:r('TR2')&&!!p['transfer2@115VAC'],
+   TR3:r('TR3')&&(!!p['transfer1@115VAC']||!!p['transfer2@115VAC']),
+   R37_AC:r('R37_AC')&&!!p['transfer1@115VAC'],
+   R37_DC:r('R37_DC')&&(!!p['dc1@28VDC']||!!p['battery@28VDC']),
+   R2:r('R2')&&!!p['battery@28VDC'],
+   R1:r('R1')&&!!p['hotBattery@28VDC'],
+   R41:r('R41')&&!!p['switchedHotBattery@28VDC'],
    APU_BAT_CHARGER:r('APU_BAT_CHARGER'),R89:r('R89')
   };
  };
