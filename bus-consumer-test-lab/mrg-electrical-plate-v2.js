@@ -7,10 +7,48 @@
 (function(root){
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const VERSION='MRG-CL-POWER-PLATE-0001';
+const VERSION='MRG-CL-POWER-PLATE-0002';
 const $=id=>document.getElementById(id);
-let lab=null,figure=null,summary=null,affected=null,selectedInfo=null;
-let selected=null,wireNodes=new Map(),busNodes=new Map(),contactNodes=new Map();
+let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null;
+let selected=null,wireSegments=[],busNodes=new Map(),contactNodes=new Map();
+const SOURCE_FEED_WIRES=Object.freeze({
+ 'M184 263 V343':'generator1@115VAC',
+ 'M512 263 V343':'generator2@115VAC',
+ 'M241 263 V288 H274 V343':'generator1@115VAC',
+ 'M419 263 V288 H418 V343':'generator2@115VAC',
+ 'M271 288 H332 L351 278 L369 288 H420':'generator2@115VAC',
+ 'M419 288 H351 L332 278 H271':'generator1@115VAC',
+ 'M116 297 V339 H131 V377':'external@115VAC',
+ 'M184 364 V377':'main1@115VAC',
+ 'M512 364 V377':'main2@115VAC',
+ 'M275 364 V377':'transfer1@115VAC',
+ 'M416 364 V377':'transfer2@115VAC',
+ 'M112 398 V440 H152 V410':'groundService@115VAC',
+ 'M283 398 V410':'transfer1@115VAC',
+ 'M396 398 V410':'transfer2@115VAC',
+ 'M242 398 V455':'transfer1@115VAC',
+ 'M452 398 V455':'transfer2@115VAC',
+ 'M526 397 V455':'main2@115VAC',
+ 'M242 484 V519':'transfer1@115VAC',
+ 'M452 484 V519':'transfer2@115VAC',
+ 'M242 540 V560 H259':'dc1@28VDC',
+ 'M452 540 V560 H433':'dc2@28VDC',
+ 'M166 606 V617':'standby@115VAC',
+ 'M247 606 V617':'standby@28VDC',
+ 'M395 690 V732 H450':'hotBattery@28VDC'
+});
+const UNTAGGED_FEED_WIRES=Object.freeze({
+ 'M116 153 V297 H120':'external@115VAC',
+ 'M257 222 V242':'generator1@115VAC',
+ 'M397 222 V242':'generator2@115VAC',
+ 'M526 485 V496 H452':'main2@115VAC',
+ 'M184 364 V403 H141 V410':'main1@115VAC',
+ 'M316 650 V634':'standby@28VDC',
+ 'M332 650 V689':'hotBattery@28VDC',
+ 'M116 397 V718 H120 V760 H205':'groundService@115VAC',
+ 'M174 676 H205 V719':'hotBattery@28VDC',
+ 'M166 771 H205':'hotBattery@28VDC'
+});
 const BUS={
  'external@115VAC':{x:79,y:133,w:76,h:20,color:'service',lines:['115V AC','EXTERNAL BUS']},
  'generator1@115VAC':{x:126,y:242,w:192,h:21,color:'generator',lines:['115V AC','GENERATOR BUS 1']},
@@ -53,9 +91,20 @@ function line(parent,x1,y1,x2,y2,props={}){
  return s('path',parent,{d:'M'+x1+' '+y1+' L'+x2+' '+y2,class:'mrg-wire',...props});
 }
 function wire(parent,d,opts={}){
- const n=s('path',parent,{d,class:'mrg-wire',...opts});
- if(opts['data-bus']){const id=opts['data-bus'];if(!wireNodes.has(id))wireNodes.set(id,[]);wireNodes.get(id).push(n);}
+ const bus=opts['data-bus']||UNTAGGED_FEED_WIRES[d]||null;
+ const from=opts['data-from']||SOURCE_FEED_WIRES[d]||null;
+ const attrs={d,class:'mrg-wire',...opts};
+ if(bus)attrs['data-bus']=bus;
+ if(from)attrs['data-from']=from;
+ const n=s('path',parent,attrs);
+ if(bus||from)wireSegments.push({node:n,bus:bus||from,from});
  return n;
+}
+function classifyWire(segment,power,cuts){
+ const fromOff=segment.from&&power[segment.from]!==true;
+ const toOff=power[segment.bus]!==true;
+ if(!fromOff&&!toOff)return 'ON';
+ return cuts.has(segment.bus)||(segment.from&&cuts.has(segment.from))?'DIRECT':'CASCADE';
 }
 function dot(parent,x,y,r=1.35){return s('circle',parent,{cx:x,cy:y,r,fill:'#272727'});}
 function text(parent,x,y,t,size=8,opts={}){
@@ -262,6 +311,8 @@ function addTiles(parent){
  for(const [key,b]of Object.entries(BUS)){
   const node=s('g',g,{class:'mrg-bus-node','data-key':key,'data-status':'ON',role:'button',tabindex:0,'aria-label':b.lines.join(' ')+' simulated bus power toggle'});
   rect(node,b.x,b.y,b.w,b.h,'mrg-bus-rect mrg-fill-'+b.color);
+  // LED outside the native MRG colored bar avoids obscuring the original legend.
+  s('circle',node,{cx:b.x+b.w+5,cy:b.y+b.h/2,r:3.3,class:'mrg-power-led'});
   const fs=b.w>140?8.6:b.w>95?7.4:b.w>74?7.15:6.7;
   const y=b.y+b.h/2-1;
   pair(node,b.x+b.w/2,y,b.lines[0],b.lines[1],fs);
@@ -274,26 +325,31 @@ function addTiles(parent){
 function createScene(){
  const panel=make('section',null,'mrg-plate-section');
  panel.id='mrgElectricalPowerPlateV2';
- const heading=make('div',panel,'mrg-plate-heading');
- const left=make('div',heading);
- make('h2',left,null,'MRG IV.6 · ELECTRICAL POWER SCHEMATIC');
- make('p',left,null,'Vector redraw · source-geometry matched · tap a colored bus to simulate an interruption');
- const acts=make('div',heading,'mrg-plate-actions');
+ const toolbar=make('div',panel,'mrg-plate-toolbar');
+ const legend=make('div',toolbar,'mrg-power-legend');
+ make('span',legend,'mrg-legend-on','● POWERED · GREEN PATH');
+ make('span',legend,'mrg-legend-off','● DIRECT OFF · RED PATH');
+ make('span',legend,'mrg-legend-cascade','● DOWNSTREAM OFF · RED DASHED');
+ const acts=make('div',toolbar,'mrg-plate-actions');
  const restore=make('button',acts,null,'RESTORE ALL');
  restore.addEventListener('click',()=>document.getElementById('allOn')?.click());
  const change=make('button',acts,null,'RESET TEST');
  change.addEventListener('click',()=>document.getElementById('resetLab')?.click());
- const grid=make('div',panel,'mrg-plate-layout');
+ layout=make('div',panel,'mrg-plate-layout');
+ const grid=layout;
  const holder=make('div',grid,'mrg-sheet-holder');
- figure=s('svg',holder,{viewBox:'0 0 616 850',xmlns:NS,'aria-label':'Boeing 737 Classic electrical power schematic vector redraw from supplied MRG reference',role:'img',preserveAspectRatio:'xMidYMin meet'});
+ figure=s('svg',holder,{viewBox:'0 0 765 714',xmlns:NS,'aria-label':'Wide MRG-style 737 Classic electrical diagram with interactive bus power paths',role:'img',preserveAspectRatio:'xMidYMid meet'});
  const defs=s('defs',figure);
  hatch(defs);
- const paper=s('g',figure,{class:'mrg-art'});
+ // Preserve MRG coordinates in the source; the page is re-proportioned wide
+ // only for the interactive screen layout requested by the user.
+ const paper=s('g',figure,{class:'mrg-art',transform:'scale(1.24 0.84)'});
  plain(paper);
  linesLayer(paper);
  components(paper);
  addTiles(paper);
- const aside=make('aside',grid,'mrg-affected');
+ affectedPanel=make('aside',grid,'mrg-affected');
+ const aside=affectedPanel;
  make('h3',aside,null,'AFFECTED SYSTEMS / CONSUMERS');
  summary=make('p',aside,'mrg-affected-count');
  selectedInfo=make('p',aside,'mrg-affected-selection');
@@ -324,8 +380,9 @@ function updateContacts(power){
  setContact('GROUND_SVC',p('groundService@115VAC')&&(one||p('external@115VAC')));
  setContact('R3',one&&x1,'GEN BUS 1 / TRANSFER 1 LAB SUPPLY');
  setContact('R4',two&&x2,'GEN BUS 2 / TRANSFER 2 LAB SUPPLY');
- const trBackup=two&&!p('dc1@28VDC')&&!p('dc2@28VDC');
- setContact('R9',trBackup,'TR3 backup is a training approximation');
+ // TR3/R9 contact position requires an independent transfer control state;
+ // DC bus loss alone is insufficient evidence that R9 closed.
+ setContact('R9',null,'TR3 DISCONNECT RELAY: selector feedback unavailable');
  setContact('R37_AC',p('standby@115VAC')&&x1);
  setContact('R37_DC',p('standby@28VDC')&&p('dc1@28VDC'));
  setContact('R2',p('battery@28VDC')&&p('main2@115VAC'));
@@ -341,9 +398,14 @@ function render(){
   const status=power[key]===true?'ON':cuts.has(key)?'CUT':'CASCADE';
   node.dataset.status=status;node.dataset.selected=String(key===selected);
   node.setAttribute('aria-pressed',String(power[key]===true));
+  node.setAttribute('aria-label',BUS[key].lines.join(' ')+' · '+(status==='ON'?'POWERED':status==='CUT'?'DIRECTLY FAILED':'DOWNSTREAM FAILED'));
+  const title=node.querySelector('title');
+  if(title)title.textContent=BUS[key].lines.join(' ')+' · '+(status==='ON'?'POWERED':status==='CUT'?'DIRECT OFF':'CASCADE OFF')+' · click to toggle';
  }
- for(const [key,paths]of wireNodes){
-  for(const el of paths)el.dataset.power=power[key]===true?'ON':'OFF';
+ for(const segment of wireSegments){
+  const state=classifyWire(segment,power,cuts);
+  segment.node.dataset.power=state==='ON'?'ON':'OFF';
+  segment.node.dataset.failureType=state;
  }
  updateContacts(power);
  const snap=lab.getSnapshot();
@@ -351,6 +413,9 @@ function render(){
  const impacted=devices.filter(d=>['OFF','DEGRADED','UNKNOWN'].includes(d.state));
  const direct=cuts.size,downstream=Object.keys(power).filter(k=>power[k]===false&&!cuts.has(k)).length;
  const off=impacted.filter(d=>d.state==='OFF').length,partial=impacted.length-off;
+ const showFailures=direct>0||downstream>0||impacted.length>0;
+ layout.dataset.hasFailures=String(showFailures);
+ affectedPanel.hidden=!showFailures;
  summary.textContent=direct+' DIRECT OFF   ·   '+downstream+' CASCADE OFF   ·   '+off+' DEVICES LOST   ·   '+partial+' DEGRADED / UNKNOWN';
  selectedInfo.textContent=selected?
   selected.split('@')[0].toUpperCase()+' · '+selected.split('@')[1]+' · '+(power[selected]===true?'POWERED':cuts.has(selected)?'DIRECT INTERRUPTION':'UPSTREAM SOURCE UNAVAILABLE'):
@@ -399,6 +464,7 @@ function mount(){
   version:VERSION,refresh:render,select:toggle,
   getContacts:()=>Object.fromEntries([...contactNodes].map(([k,v])=>[k,v.g.dataset.closed])),
   getPower:()=>({...lab.getSession().busStates}),
+  getWires:()=>wireSegments.map(({node,bus,from})=>({bus,from,state:node.dataset.failureType})),
   getGeometry:()=>Object.fromEntries(Object.entries(BUS).map(([k,v])=>[k,{...v}]))
  });
  root.dispatchEvent(new CustomEvent('b737:mrg-electrical-plate-ready',{detail:{version:VERSION,buses:busNodes.size,contacts:contactNodes.size}}));
