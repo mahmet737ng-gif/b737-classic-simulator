@@ -78,8 +78,8 @@ async function test(){
  assert.equal(buttons.length,24);
  const standby=buttons.filter(x=>x.dataset.bus?.startsWith('standby@'));
  assert.equal(standby.length,2,'Exactly AC and DC standby buses are clickable');
- assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='AC STANDBY BUS')));
- assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='DC STANDBY BUS')));
+ assert.ok(standby.some(x=>allChildren(x).some(c=>c.textContent==='AC STANDBY BUS')));
+ assert.ok(standby.some(x=>allChildren(x).some(c=>c.textContent==='DC STANDBY BUS')));
  assert.equal(new Set(Object.values(api.getSnapshot().consumers).map(x=>x.system)).has('OTHER'),false);
  assert.equal(ids.consumerBody.children.length,340,'All 340 physical source entries are visible');
  assert.match(html,/باس تغذیه \(MRG \/ FCOM\)/);
@@ -96,7 +96,7 @@ async function test(){
  assert.equal(hot.children[2].textContent,'HOT BATTERY BUS');
  assert.equal(hot.children[3].textContent,'28 V DC');
  assert.ok(ids.consumerBody.children.every(x=>x.children.length===6),'Every source row must have separate bus and voltage columns');
- assert.ok(ids.consumerBody.children.every(x=>!/^battery\\s+28VDC$/i.test(x.children[2].textContent)));
+ assert.ok(ids.consumerBody.children.every(x=>!/^battery\s+28VDC$/i.test(x.children[2].textContent)));
  const allButtons=buttons.map(x=>allChildren(x).map(child=>child.textContent));
  assert.ok(allButtons.some(t=>t.includes('SWITCHED HOT BATTERY BUS')));
  assert.ok(allButtons.some(t=>t.includes('TRANSFER BUS 1')));
