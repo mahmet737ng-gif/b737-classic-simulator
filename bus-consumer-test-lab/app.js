@@ -5,22 +5,45 @@ const Core=root.B737ClassicBusConsumersV1;
 const E=root.B737ElectricalV7;
 const Lab=root.B737BusConsumerTestLabV1;
 const $=id=>document.getElementById(id);
+// Names from Sepehran 737CL FCOM 6.20 and MRG IV.6 (pp.182-188).
+// Keep the 24 pre-existing bus-class identifiers stable for failure injection.
+// A 28 V AC channel is a power class in this lab, not an extra physical 115 V bus.
 const BUS_GROUPS=[
- {name:'AC GENERATOR / MAIN / TRANSFER · 115V',ids:['generator1@115VAC','generator2@115VAC','main1@115VAC','main2@115VAC','transfer1@115VAC','transfer2@115VAC']},
- {name:'AC SERVICE / EXTERNAL · 115V',ids:['groundService@115VAC','external@115VAC']},
- {name:'DC DISTRIBUTION · 28V',ids:['dc1@28VDC','dc2@28VDC','battery@28VDC','hotBattery@28VDC','switchedHotBattery@28VDC']},
- {name:'STANDBY AC / DC',ids:['standby@115VAC','standby@28VDC']},
- {name:'ELECTRONIC 1 / 2',ids:['electronic1@115VAC','electronic2@115VAC','electronic1@28VDC','electronic2@28VDC']},
- {name:'AC CONVERSION · 28V AC',ids:['transfer1@28VAC','transfer2@28VAC','main1@28VAC','main2@28VAC','groundService@28VAC']}
+ {name:'115 V AC · GENERATOR / MAIN / TRANSFER',ids:['generator1@115VAC','generator2@115VAC','main1@115VAC','main2@115VAC','transfer1@115VAC','transfer2@115VAC']},
+ {name:'115 V AC · GROUND / EXTERNAL',ids:['groundService@115VAC','external@115VAC']},
+ {name:'28 V DC · DISTRIBUTION / BATTERY',ids:['dc1@28VDC','dc2@28VDC','battery@28VDC','hotBattery@28VDC','switchedHotBattery@28VDC']},
+ {name:'STANDBY DISTRIBUTION · AC / DC',ids:['standby@115VAC','standby@28VDC']},
+ {name:'ELECTRONIC BUS FEEDS · AC / DC',ids:['electronic1@115VAC','electronic2@115VAC','electronic1@28VDC','electronic2@28VDC']},
+ {name:'28 V AC · MRG FEED CLASSES (NOT EXTRA 115 V BUSES)',ids:['transfer1@28VAC','transfer2@28VAC','main1@28VAC','main2@28VAC','groundService@28VAC']}
 ];
-const labels={
- generator1:'GEN BUS 1',generator2:'GEN BUS 2',main1:'MAIN BUS 1',main2:'MAIN BUS 2',
- transfer1:'TRANSFER BUS 1',transfer2:'TRANSFER BUS 2',dc1:'DC BUS 1',dc2:'DC BUS 2',
- battery:'BATTERY BUS',hotBattery:'HOT BAT BUS',switchedHotBattery:'SW HOT BAT',
- standby:'STANDBY',
- groundService:'GROUND SERVICE',external:'EXT POWER BUS',
+const BUS_NAMES=Object.freeze({
+ generator1:'GENERATOR BUS 1',generator2:'GENERATOR BUS 2',
+ main1:'MAIN BUS 1',main2:'MAIN BUS 2',
+ transfer1:'TRANSFER BUS 1',transfer2:'TRANSFER BUS 2',
+ dc1:'DC BUS 1',dc2:'DC BUS 2',battery:'BATTERY BUS',
+ hotBattery:'HOT BATTERY BUS',switchedHotBattery:'SWITCHED HOT BATTERY BUS',
+ groundService:'GROUND SERVICE BUS',external:'EXTERNAL BUS',
  electronic1:'ELECTRONIC BUS 1',electronic2:'ELECTRONIC BUS 2'
-};
+});
+const VOLTAGE_LABELS=Object.freeze({'115VAC':'115 V AC','28VDC':'28 V DC','28VAC':'28 V AC'});
+function voltageLabel(value){
+ if(!Object.hasOwn(VOLTAGE_LABELS,value))throw Error('Unknown MRG power class: '+value);
+ return VOLTAGE_LABELS[value];
+}
+function busName(key){
+ const [id,voltage]=key.split('@');
+ if(id==='standby'){
+  if(voltage==='115VAC')return 'AC STANDBY BUS';
+  if(voltage==='28VDC')return 'DC STANDBY BUS';
+  throw Error('Unrecognized standby bus class: '+key);
+ }
+ if(!Object.hasOwn(BUS_NAMES,id)||!Object.hasOwn(VOLTAGE_LABELS,voltage))
+  throw Error('Unknown bus class in MRG reference: '+key);
+ return BUS_NAMES[id];
+}
+function feedNames(feedBus,feedVoltage){
+ return feedBus.split('|').map(id=>busName(id+'@'+feedVoltage)).join(' / ');
+}
 const statusLabels={
  NORMAL:'● POWERED',OFF:'● NO POWER',DEGRADED:'● DEGRADED',
  UNKNOWN:'● UNKNOWN',NOT_INSTALLED:'— N/A'
@@ -40,9 +63,7 @@ function setFailure(error){
  console.error('B737 BUS TEST LAB',error);
 }
 function busLabel(key){
- const [id,voltage]=key.split('@');
- if(id==='standby')return (voltage==='115VAC'?'AC STBY BUS':'DC STBY BUS')+' · '+voltage;
- return (labels[id]||id.toUpperCase())+' · '+voltage;
+ return busName(key)+' · '+voltageLabel(key.split('@')[1]);
 }
 function makeBusButtons(){
  const all=session.buses;
@@ -61,11 +82,11 @@ function makeBusButtons(){
    btn.type='button';btn.dataset.bus=key;
    btn.title='Independent lab bus toggle: '+key;
    const pair=key.split('@');
-   make('span',btn,pair[0]==='standby'?
-    (pair[1]==='115VAC'?'AC STBY BUS':'DC STBY BUS'):
-    labels[pair[0]]||pair[0].toUpperCase(),'bus-name');
+   const nameGroup=make('span',btn,null,'bus-label-group');
+   make('span',nameGroup,busName(key),'bus-name');
+   make('span',nameGroup,voltageLabel(pair[1]),'bus-voltage');
    const text=make('span',btn,'','bus-indicator');
-   text.dataset.voltage=pair[1];text.title=pair[1];
+   text.dataset.voltage=pair[1];text.title=voltageLabel(pair[1]);
    btn.addEventListener('click',()=>run(()=>{
     const old=session.busStates[key];
     if(session.cascade&&!old&&!session.disabled.includes(key)){
@@ -100,7 +121,9 @@ function consumerEntries(snapshot){
  if(view==='rows')return Object.values(snapshot.consumers).map((v,i)=>({
   number:i+1,name:v.name,label:v.displayName||v.name,
   system:v.system,status:v.powerState,
-  feed:v.feedBus.split('|').map(x=>x+' '+v.feedVoltage).join(' / '),
+  feedBus:feedNames(v.feedBus,v.feedVoltage),
+  feedVoltage:voltageLabel(v.feedVoltage),
+  feedKey:v.feedBus+'@'+v.feedVoltage,
   source:'MRG IV.6 p.'+v.source.printedPage+' / '+v.id+
    (v.installationStatus==='AS_INSTALLED_UNVERIFIED'?' · OPTIONAL FIT UNCONFIRMED':'')+
    (v.duplicateSourceOf?' · SOURCE INDEX DUPLICATE':''),
@@ -111,14 +134,17 @@ function consumerEntries(snapshot){
  }));
  return Object.values(snapshot.devices).map((dev,i)=>{
   const parts=dev.channels.map(id=>snapshot.consumers[id]).filter(Boolean);
-  const feed=dev.feedChannels?.length?
-   dev.feedChannels.map(f=>f.key+' ['+f.status+']').join('  |  '):
-   [...new Set(parts.map(p=>p.feedBus+' '+p.feedVoltage))].join(' + ');
+  const feedKeys=dev.feedChannels?.length?
+   dev.feedChannels.map(f=>f.key):
+   [...new Set(parts.flatMap(p=>p.feedBus.split('|').map(bus=>bus+'@'+p.feedVoltage)))];
+  const feedBus=[...new Set(feedKeys.map(busName))].join(' / ');
+  const feedVoltage=[...new Set(feedKeys.map(key=>voltageLabel(key.split('@')[1])))].join(' / ');
   const pages=[...new Set(parts.map(p=>p.source.printedPage))].join(', ');
   return {number:i+1,name:dev.name,
    label:(dev.displayName||dev.name)+(dev.feedChannels?.length?' ['+dev.topology+']':''),
    system:dev.system,status:dev.state,
-   feed,source:'MRG IV.6 p.'+pages+' / '+dev.channels.length+' row(s)',
+   feedBus,feedVoltage,feedKey:feedKeys.join(' | '),
+   source:'MRG IV.6 p.'+pages+' / '+dev.channels.length+' row(s)',
    details:dev.effect+' / '+dev.topology+
     (dev.feedChannels?.length?' / FEEDS: '+dev.feedChannels.map(f=>
       f.key+'='+f.status+(f.purpose==='ELECTRICAL_SUPPLY'?'':' ['+f.purpose+']')).join('; '):''),role:dev.role};
@@ -132,7 +158,8 @@ function displayRow(entry){
  const title=make('td',tr);
  make('div',title,entry.label,'consumer-name');
  make('div',title,entry.source,'source-page');
- make('td',tr,entry.feed,'consumer-feed');
+ make('td',tr,entry.feedBus,'consumer-feed');
+ make('td',tr,entry.feedVoltage,'consumer-voltage');
  make('td',tr,entry.system,'consumer-system');
  const state=make('td',tr,statusLabels[entry.status]||entry.status,'consumer-status');
  state.dataset.power=entry.status;
@@ -143,7 +170,7 @@ function renderConsumers(){
  const entries=all.filter(r=>
   (system==='ALL'||system===r.system)&&
   (powerState==='ALL'||powerState===r.status)&&
-  (!search||(r.name+' '+r.label+' '+r.feed+' '+r.system+' '+r.source).toLowerCase().includes(search))
+  (!search||(r.name+' '+r.label+' '+r.feedBus+' '+r.feedVoltage+' '+r.feedKey+' '+r.system+' '+r.source).toLowerCase().includes(search))
  );
  const counts={NORMAL:0,OFF:0,DEGRADED:0,UNKNOWN:0,NOT_INSTALLED:0};
  for(const entry of all)counts[entry.status]=(counts[entry.status]||0)+1;
@@ -158,7 +185,7 @@ function renderConsumers(){
  if(!entries.length){
   const tr=make('tr',fragment);
   const td=make('td',tr,'با فیلتر فعلی مصرف‌کننده‌ای پیدا نشد.');
-  td.colSpan=5;
+  td.colSpan=6;
  }
  body.replaceChildren(fragment);
  const tabRows=view==='rows';
