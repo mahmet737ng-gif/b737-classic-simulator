@@ -60,3 +60,72 @@
 .mrg-plate-note{font-size:10px;color:#b2c8d5;line-height:1.7;margin:11px 0 0}
 @media(max-width:950px){.mrg-plate-layout{grid-template-columns:1fr}.mrg-sheet-holder{max-height:none;justify-content:flex-start}.mrg-sheet-holder svg{min-width:616px}.mrg-affected{height:340px;max-height:340px}}
 @media(prefers-reduced-motion:reduce){.mrg-contact-blade{transition:none!important}}
+
+
+/* MRG PLATE V2.1 — responsive landscape & operational electrical indications.
+   Geometry is stored in original-page units in JS; only viewport transform changes.
+   Styles are event-driven, never animation loops or continuously polled effects. */
+.mrg-plate-section{padding:10px 12px 12px}
+.mrg-plate-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:9px;margin-bottom:9px}
+.mrg-power-legend{display:flex;gap:8px 17px;flex-wrap:wrap;align-items:center;font:800 11px/1.5 system-ui,Arial,sans-serif}
+.mrg-legend-on{color:#5bef94}
+.mrg-legend-off{color:#ff657a}
+.mrg-legend-cascade{color:#ff957d}
+.mrg-plate-actions{display:flex;gap:6px;margin:0}
+.mrg-plate-actions button{font-size:10px;padding:8px 12px;min-height:34px}
+.mrg-plate-layout{grid-template-columns:minmax(0,1fr) minmax(280px,340px);align-items:start}
+.mrg-plate-layout[data-has-failures="false"]{grid-template-columns:minmax(0,1fr)}
+.mrg-affected[hidden]{display:none!important}
+.mrg-sheet-holder{padding:4px;min-height:0;max-height:none;overflow:auto;align-items:center}
+.mrg-sheet-holder svg{width:min(100%,880px);min-width:0;height:auto;max-height:min(72vh,700px);filter:drop-shadow(0 0 3px #0006)}
+.mrg-wire[data-power="ON"]{
+ stroke:#008d41!important;stroke-width:2.75;stroke-dasharray:none!important;opacity:1;
+ filter:drop-shadow(0 0 1px #09dc65);transition:stroke .18s ease,stroke-width .18s ease
+}
+.mrg-wire[data-power="OFF"]{
+ stroke:#dc0929!important;stroke-width:3.1;stroke-dasharray:none!important;opacity:1;
+ filter:drop-shadow(0 0 1px #ff2644);transition:stroke .18s ease
+}
+.mrg-wire[data-failure-type="CASCADE"]{
+ stroke:#e22837!important;stroke-width:2.75;stroke-dasharray:6 3!important;opacity:1;
+ filter:drop-shadow(0 0 1px #ff3d4c)
+}
+.mrg-bus-node[data-status="ON"] .mrg-bus-rect{
+ stroke:#039a4a;stroke-width:3.1;filter:drop-shadow(0 0 1.6px #05c85a)
+}
+.mrg-bus-node[data-status="CUT"] .mrg-bus-rect{
+ stroke:#ee173a;stroke-width:3.6;stroke-dasharray:none;filter:drop-shadow(0 0 1.4px #ff2852)
+}
+.mrg-bus-node[data-status="CASCADE"] .mrg-bus-rect{
+ stroke:#ed3d3d;stroke-width:3;stroke-dasharray:6 2;filter:drop-shadow(0 0 1px #f84c52)
+}
+.mrg-bus-node .mrg-power-led{stroke:#fff;stroke-width:.9;fill:#04c05c;filter:drop-shadow(0 0 1.8px #0add73)}
+.mrg-bus-node[data-status="CUT"] .mrg-power-led,.mrg-bus-node[data-status="CASCADE"] .mrg-power-led{fill:#ef1339;filter:drop-shadow(0 0 1.5px #f33)}
+.mrg-bus-node[data-selected="true"] .mrg-bus-rect{stroke-width:4.1}
+.mrg-contact[data-closed="true"] .mrg-contact-blade{
+ transform:rotate(0deg);stroke:#078c43;stroke-width:2.6;stroke-dasharray:none
+}
+.mrg-contact[data-closed="false"] .mrg-contact-blade{
+ transform:rotate(48deg);stroke:#e0002d;stroke-width:2.7;stroke-dasharray:none
+}
+.mrg-contact[data-closed="unverified"] .mrg-contact-blade{
+ transform:rotate(28deg);stroke:#666;stroke-width:1.45;stroke-dasharray:2 1
+}
+.mrg-contact[data-closed="true"] circle{stroke:#078c43;stroke-width:1.5}
+.mrg-contact[data-closed="false"] circle{stroke:#e0002d;stroke-width:1.6}
+.mrg-contact-blade{transition:transform .24s cubic-bezier(.15,.9,.2,1),stroke .15s ease,stroke-width .15s ease}
+.mrg-affected{height:min(72vh,700px);max-height:700px;min-height:300px;border-color:#537386}
+.mrg-affected-scroll{scrollbar-color:#648ba0 #112636}
+.mrg-plate-note{margin-top:7px;font-size:10px}
+@media(max-width:940px){
+ .mrg-plate-layout{grid-template-columns:1fr}
+ .mrg-sheet-holder svg{width:100%;min-width:615px;max-height:none}
+ .mrg-affected{height:330px;max-height:330px;min-height:0}
+}
+@media(max-width:640px){
+ .mrg-power-legend{font-size:9px;gap:4px 10px}
+ .mrg-sheet-holder{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+ .mrg-wire[data-power],.mrg-contact-blade{transition:none!important}
+}
