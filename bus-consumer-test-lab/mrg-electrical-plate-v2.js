@@ -422,8 +422,21 @@ function contactStates(power){
  });
 }
 function updateContacts(power){
- for(const [name,state]of Object.entries(contactStates(power)))
-  setContact(name,state,state===null?'ACTUAL CONTACTOR CONTROL UNKNOWN':'ISOLATED LAB SUPPLY INDICATION');
+ const contacts=controls?controls.derivedContacts():contactStates(power);
+ for(const [name,state]of Object.entries(contacts))
+  setContact(name,state,'ISOLATED LAB SOURCE / RELAY');
+ const state=controls?.copy();
+ for(const [name,node]of sourceNodes){
+  const on=!!state?.sources[name];
+  node.dataset.active=String(on);
+  node.setAttribute('aria-pressed',String(on));
+  node.setAttribute('aria-label',name+' source '+(on?'ON':'OFF')+' · click to toggle');
+ }
+ for(const [name,node]of componentNodes){
+  const on=!!state?.relays[name];
+  node.dataset.active=String(on);
+  node.setAttribute('aria-pressed',String(on));
+ }
 }
 function render(){
  if(!lab||!figure)return;
@@ -436,8 +449,14 @@ function render(){
   const title=node.querySelector('title');
   if(title)title.textContent=BUS[key].lines.join(' ')+' · '+(status==='ON'?'POWERED':status==='CUT'?'DIRECT OFF':'CASCADE OFF')+' · click to toggle';
  }
+ const relayStates=controls?.copy().relays||{},sourceStates=controls?.copy().sources||{};
+ const directCuts=new Set(cuts);
+ for(const [source,bus]of [['GEN1','generator1@115VAC'],['GEN2','generator2@115VAC'],['EXTERNAL','external@115VAC']])
+  if(sourceStates[source]===false&&power[bus]!==true)directCuts.add(bus);
  for(const segment of wireSegments){
-  const state=classifyWire(segment,power,cuts);
+  let state=classifyWire(segment,power,directCuts);
+  if(segment.relay&&relayStates[segment.relay]===false)state='DIRECT';
+  else if(segment.from&&power[segment.from]===false&&power[segment.bus]===true)state='DIRECT';
   segment.node.dataset.power=state==='ON'?'ON':'OFF';
   segment.node.dataset.failureType=state;
  }
@@ -447,10 +466,11 @@ function render(){
  const impacted=devices.filter(d=>['OFF','DEGRADED','UNKNOWN'].includes(d.state));
  const direct=cuts.size,downstream=Object.keys(power).filter(k=>power[k]===false&&!cuts.has(k)).length;
  const off=impacted.filter(d=>d.state==='OFF').length,partial=impacted.length-off;
- const showFailures=direct>0||downstream>0||impacted.length>0;
+ const sourceBreak=controls?Object.entries(controls.copy().sources).filter(([id,enabled])=>id!=='APU'&&!enabled).length:0;
+ const showFailures=direct>0||downstream>0||impacted.length>0||sourceBreak>0||!!controls?.dirty();
  layout.dataset.hasFailures=String(showFailures);
  affectedPanel.hidden=!showFailures;
- summary.textContent=direct+' DIRECT OFF   ·   '+downstream+' CASCADE OFF   ·   '+off+' DEVICES LOST   ·   '+partial+' DEGRADED / UNKNOWN';
+ summary.textContent=direct+' BUS CUTS · '+sourceBreak+' SOURCES OFF · '+downstream+' CASCADE OFF · '+off+' DEVICES OFF · '+partial+' DEGRADED';
  selectedInfo.textContent=selected?
   selected.split('@')[0].toUpperCase()+' · '+selected.split('@')[1]+' · '+(power[selected]===true?'POWERED':cuts.has(selected)?'DIRECT INTERRUPTION':'UPSTREAM SOURCE UNAVAILABLE'):
   'Tap a colored bus in the original-format drawing to inject its failure.';
@@ -461,7 +481,7 @@ function render(){
   grouped.get(g).push(item);
  }
  const fragment=document.createDocumentFragment();
- if(!impacted.length)make('p',fragment,'mrg-none','NO AFFECTED SYSTEMS IN THE CURRENT SCENARIO');
+ if(!impacted.length)make('p',fragment,'mrg-none','NO CONSUMERS LOST POWER — AN ALTERNATE FEED MAY STILL BE AVAILABLE.');
  for(const [group,entries]of [...grouped].sort((a,b)=>a[0].localeCompare(b[0]))){
   const section=make('section',fragment,'mrg-impact-group');
   make('h4',section,null,group+' ('+entries.length+')');
@@ -473,6 +493,24 @@ function render(){
   }
  }
  affected.replaceChildren(fragment);
+}
+function toggleSource(key){
+ if(!controls||!lab)return;
+ controls.changeSource(key);
+ root.B737BusConsumerTestLabUIV1?.refreshLab();
+ render();
+}
+function toggleRelay(key){
+ if(!controls||!lab)return;
+ controls.changeRelay(key);
+ root.B737BusConsumerTestLabUIV1?.refreshLab();
+ render();
+}
+function resetControls(){
+ if(!controls||!lab)return;
+ controls.reset();
+ lab.getSession().refresh();
+ render();
 }
 function toggle(key){
  if(!lab||!busNodes.has(key))return;
@@ -491,14 +529,24 @@ function mount(){
  lab=root.B737BusConsumerTestLabUIV1;
  if(!lab.listBusNames||!lab.setCascade||!lab.getSession)return;
  for(const key of lab.listBusNames())if(!BUS[key])throw Error('MRG plate power class not drawn: '+key);
- // Dependency cascades are opt-in in the existing lab, mandatory for this diagram.
+ // Source and contactor controls are active exclusively inside this test lab.
+ const authority=root.B737MRGContactNetworkV3;
+ if(!authority?.createControls)throw Error('MRG source / relay controls failed to load');
+ controls=authority.createControls();
  if(!lab.getSession().cascade)lab.setCascade(true);
- createScene();render();
+ if(typeof lab.getSession().setPowerModel!=='function')throw Error('Electrical lab power projection missing');
+ lab.getSession().setPowerModel(controls.compute);
+ createScene();
+ root.B737BusConsumerTestLabUIV1.refreshLab();
+ render();
  root.B737MRGElectricalPlateV2=Object.freeze({
   version:VERSION,refresh:render,select:toggle,
   getContacts:()=>Object.fromEntries([...contactNodes].map(([k,v])=>[k,v.g.dataset.closed])),
   getPower:()=>({...lab.getSession().busStates}),
-  getWires:()=>wireSegments.map(({node,bus,from})=>({bus,from,state:node.dataset.failureType})),
+  getSources:()=>controls.copy().sources,
+  getRelayCommands:()=>controls.copy().relays,
+  toggleSource,toggleRelay,resetControls,
+  getWires:()=>wireSegments.map(({node,bus,from,relay})=>({bus,from,relay,state:node.dataset.failureType})),
   getGeometry:()=>Object.fromEntries(Object.entries(BUS).map(([k,v])=>[k,{...v}]))
  });
  root.dispatchEvent(new CustomEvent('b737:mrg-electrical-plate-ready',{detail:{version:VERSION,buses:busNodes.size,contacts:contactNodes.size}}));
