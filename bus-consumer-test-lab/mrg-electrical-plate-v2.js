@@ -7,7 +7,7 @@
 (function(root){
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const VERSION='MRG-CL-POWER-PLATE-0004';
+const VERSION='MRG-CL-POWER-PLATE-0005';
 const $=id=>document.getElementById(id);
 let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null;
 const statusNodes=new Map();
@@ -347,8 +347,11 @@ function createScene(){
   button.addEventListener('click',()=>toggle(key));
   statusNodes.set(key,button);
  }
+ // Fixed 4:3 viewing window shows the same upper MRG area as the reference.
+ // The full source-height SVG stays below it and is accessible by scrolling.
  const holder=make('div',grid,'mrg-sheet-holder');
- figure=s('svg',holder,{viewBox:'67 100 500 708',xmlns:NS,'aria-label':'Boeing 737 Classic electrical schematic with original proportions and clickable bus blocks',role:'img',preserveAspectRatio:'xMidYMid meet'});
+ holder.setAttribute('aria-label','4:3 MRG electrical diagram viewing window; scroll downward to inspect remaining buses');
+ figure=s('svg',holder,{viewBox:'0 100 616 708',xmlns:NS,'aria-label':'Boeing 737 Classic electrical schematic with original proportions and clickable bus blocks',role:'img',preserveAspectRatio:'xMidYMid meet'});
  const defs=s('defs',figure);
  hatch(defs);
  // Single native coordinate system preserves exact 1:1 shape proportions.
