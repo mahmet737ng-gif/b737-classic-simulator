@@ -481,6 +481,28 @@ function render(){
   grouped.get(g).push(item);
  }
  const fragment=document.createDocumentFragment();
+ if(controls){
+  const authority=root.B737MRGContactNetworkV3;
+  const commanded=controls.copy();
+  const opened=Object.entries(commanded.relays).filter(([id,closed])=>
+   authority.INITIAL_RELAYS[id]===true&&!closed);
+  const stopped=Object.entries(commanded.sources).filter(([id,on])=>id!=='APU'&&!on);
+  if(opened.length||stopped.length){
+   const box=make('section',fragment,'mrg-impact-group');
+   make('h4',box,null,'OPEN CIRCUITS / INACTIVE SOURCES');
+   for(const [id]of stopped){
+    const item=make('div',box,'mrg-impact-row');
+    make('span',item,null,id+' GENERATOR/RECEPTACLE');
+    make('b',item,null,'SOURCE OFF');
+   }
+   for(const [id]of opened){
+    const item=make('div',box,'mrg-impact-row');
+    const paths=authority.RELAY_FEEDS[id]||[];
+    make('span',item,null,id+' · '+(paths.length?paths.map(v=>v.split('@')[0]).join(' / '):'AUXILIARY CHARGER CONTROL'));
+    make('b',item,null,'CONTACT OPEN');
+   }
+  }
+ }
  if(!impacted.length)make('p',fragment,'mrg-none','NO CONSUMERS LOST POWER — AN ALTERNATE FEED MAY STILL BE AVAILABLE.');
  for(const [group,entries]of [...grouped].sort((a,b)=>a[0].localeCompare(b[0]))){
   const section=make('section',fragment,'mrg-impact-group');
