@@ -168,3 +168,119 @@
  .mrg-power-legend{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){.mrg-source-hitbox{transition:none}}
+
+
+/* MRG COMPOSED LAYOUT V4 — natural source-page geometry; presentation only.
+   The SVG is aspect-locked. Relay/source symbols are static reference artwork.
+   Bus toggles and event-driven 24-bus impact logic remain interactive. */
+.mrg-plate-section{
+ background:#101c2a;border-color:#2d4658;border-radius:14px;
+ padding:11px 12px 12px;box-shadow:0 5px 22px rgba(0,0,0,.10)
+}
+.mrg-plate-toolbar{margin-bottom:10px;padding:0 2px;gap:14px;align-items:center}
+.mrg-power-legend{font:700 10px/1.5 system-ui,Arial,sans-serif;letter-spacing:.02em;gap:8px 16px}
+.mrg-legend-on{color:#62d99d}.mrg-legend-off{color:#ff8e94}.mrg-legend-cascade{color:#f7bc8a}
+.mrg-plate-actions button{min-height:35px;padding:7px 12px;background:#203a4d;border-color:#486e83;color:#e2edf4}
+.mrg-plate-layout,.mrg-plate-layout[data-has-failures="false"]{
+ display:grid;grid-template-columns:minmax(185px,245px) minmax(0,1fr) minmax(260px,315px);
+ gap:12px;align-items:stretch;width:100%
+}
+.mrg-sheet-holder{
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ background:linear-gradient(155deg,#e2e7ec,#cdd7df)!important;
+ padding:10px!important;min-width:0;overflow:hidden!important;min-height:0!important;
+ border:1px solid #516879;border-radius:10px;box-shadow:inset 0 1px 6px #233c5018
+}
+.mrg-sheet-holder svg{
+ flex:0 1 auto!important;display:block!important;
+ width:auto!important;height:min(74dvh,745px)!important;
+ max-width:100%!important;min-width:0!important;max-height:none!important;
+ aspect-ratio:500 / 708;filter:drop-shadow(0 3px 9px #33485c2a)!important
+}
+.mrg-quick-panel{
+ min-width:0;min-height:0;height:min(78dvh,780px);max-height:780px;
+ background:#152636;border:1px solid #324b60;border-radius:10px;
+ display:flex;flex-direction:column;padding:13px 10px 10px
+}
+.mrg-quick-kicker{font-size:10px;color:#67bde5;font-weight:800;letter-spacing:.12em;margin:0 0 8px}
+.mrg-quick-title{font-size:15px;line-height:1.3;letter-spacing:.025em;margin:0 0 8px;color:#e2f2fa}
+.mrg-quick-description{font-size:11px;line-height:1.65;color:#a9bfd0;margin:0 0 14px}
+.mrg-quick-list{overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;display:flex;flex-direction:column;gap:5px;padding-right:4px;scrollbar-color:#557c96 #14293b}
+.mrg-quick-bus{
+ width:100%;min-height:38px;display:flex;justify-content:space-between;align-items:center;
+ gap:7px;padding:7px 8px;text-align:left;direction:ltr;cursor:pointer;
+ color:#d3e6ee;background:#193347;border:1px solid #355c6f;border-radius:7px;
+ transition:background .14s,border-color .14s
+}
+.mrg-quick-bus:hover,.mrg-quick-bus:focus-visible{background:#285064;border-color:#68b5db}
+.mrg-quick-name{font-size:10px;line-height:1.35;min-width:0;overflow-wrap:anywhere}
+.mrg-quick-state{font-size:9px;font-weight:900;white-space:nowrap;color:#6cdaa6}
+.mrg-quick-bus[data-state="CUT"],.mrg-quick-bus[data-state="CASCADE"]{border-color:#9a4e5e;background:#382735}
+.mrg-quick-bus[data-state="CUT"] .mrg-quick-state{color:#ff788e}
+.mrg-quick-bus[data-state="CASCADE"] .mrg-quick-state{color:#f6b38c}
+.mrg-affected{
+ height:min(78dvh,780px);max-height:780px;min-height:0;
+ border-color:#385466;border-radius:10px;padding:14px 12px;
+ background:#142534
+}
+.mrg-affected h3{font-size:12px;letter-spacing:.04em;margin-bottom:9px;color:#dbedf5}
+.mrg-affected-count{line-height:1.8;color:#bfd7e3;font-size:11px}
+.mrg-affected-selection{color:#9bbecf;font-size:11px}
+.mrg-impact-group{background:#193144;border-color:#35546b}
+.mrg-impact-row{font-size:10.5px;line-height:1.5}
+.mrg-plate-note{font-size:10px;color:#93b0c0;margin:11px 2px 0}
+.mrg-bus-node[data-status="ON"] .mrg-bus-rect{
+ stroke:#148c63!important;stroke-width:1.7!important;
+ filter:none!important;stroke-dasharray:none
+}
+.mrg-bus-node[data-status="CUT"] .mrg-bus-rect{
+ stroke:#db4259!important;stroke-width:2.7!important;
+ filter:none!important;stroke-dasharray:none
+}
+.mrg-bus-node[data-status="CASCADE"] .mrg-bus-rect{
+ stroke:#e07f58!important;stroke-width:2.3!important;
+ stroke-dasharray:5 3!important;filter:none!important
+}
+.mrg-bus-node .mrg-power-led{r:2.3;filter:none!important;stroke-width:.5}
+.mrg-wire[data-power="ON"]{
+ stroke:#278d68!important;stroke-width:1.4!important;
+ stroke-dasharray:none!important;filter:none!important;opacity:1
+}
+.mrg-wire[data-power="OFF"]{
+ stroke:#d34d60!important;stroke-width:2!important;
+ stroke-dasharray:none!important;filter:none!important;opacity:1
+}
+.mrg-wire[data-failure-type="CASCADE"]{
+ stroke:#db805f!important;stroke-width:1.8!important;
+ stroke-dasharray:4 2.5!important;filter:none!important
+}
+.mrg-contact,.mrg-rectifier-hit,.mrg-source-hit{cursor:default!important;pointer-events:none!important}
+.mrg-contact .mrg-contact-blade{
+ stroke:#4e5963!important;stroke-width:1.05!important;
+ transform:rotate(23deg)!important;stroke-dasharray:none!important;
+ transition:none!important;filter:none!important
+}
+.mrg-contact circle{stroke:#4e5963!important;stroke-width:.8!important}
+.mrg-rectifier-hit,.mrg-source-hit{display:none!important}
+@media(max-width:1200px){
+ .mrg-plate-layout,.mrg-plate-layout[data-has-failures="false"]{
+  grid-template-columns:minmax(165px,220px) minmax(0,1fr) minmax(240px,285px)
+ }
+ .mrg-sheet-holder svg{height:min(71dvh,720px)!important}
+}
+@media(max-width:930px){
+ .mrg-plate-layout,.mrg-plate-layout[data-has-failures="false"]{grid-template-columns:minmax(0,1fr) minmax(230px,300px)}
+ .mrg-quick-panel{grid-column:1/-1;height:180px;max-height:180px}
+ .mrg-quick-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-content:start;overflow:auto}
+ .mrg-sheet-holder svg{height: min(73dvh,690px)!important}
+ .mrg-affected{height:min(75dvh,730px);max-height:730px}
+}
+@media(max-width:650px){
+ .mrg-plate-layout,.mrg-plate-layout[data-has-failures="false"]{grid-template-columns:1fr}
+ .mrg-quick-panel{grid-column:1;height:178px;max-height:178px}
+ .mrg-quick-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mrg-sheet-holder svg{height:auto!important;width:100%!important;max-height:none!important}
+ .mrg-affected{height:260px;max-height:260px}
+ .mrg-power-legend{font-size:9px;gap:5px 8px}
+}
+@media(prefers-reduced-motion:reduce){.mrg-quick-bus{transition:none}}
