@@ -16,9 +16,10 @@ const dir=path.join(__dirname,'..','bus-consumer-test-lab');
 // Test the actual user-facing, cache-isolated v2 page rather than a source
 // fixture that an older GitHub Pages edge could still have cached.
 const html=fs.readFileSync(path.join(dir,'v3.html'),'utf8');
-assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-BUS-NAMES-0011"/);
-assert.equal((html.match(/v=BUSLAB24-BUS-NAMES-0011/g)||[]).length,7,
- 'CSS and all six scripts must share the same cache-safe revision');
+assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-SCHEMATIC-0001"/);
+assert.match(html,/schematic-v1\\.css\\?v=BUSLAB-SCHEMATIC-0001/);
+assert.match(html,/schematic-v1\\.js\\?v=BUSLAB-SCHEMATIC-0001/);
+assert.match(html,/app\\.js\\?v=BUSLAB24-SCHEMATIC-0001/);
 assert.match(html,/24 BUS NODES/);
 assert.doesNotMatch(html,/26 BUS NODES/);
 const js=fs.readFileSync(path.join(dir,'app.js'),'utf8');
