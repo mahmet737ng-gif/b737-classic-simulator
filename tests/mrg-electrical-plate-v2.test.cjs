@@ -21,15 +21,20 @@ const state=cuts=>Lab.calculatePower(reference,cuts,'ALL_ON',true);
 test('24 bus classes and original-aspect SVG with no anisotropic stretch',()=>{
  assert.equal(keys.length,24);
  assert.equal(Object.keys(Plate.BUS).length,24);
- assert.match(Plate.VERSION,/0004$/);
- assert.match(js,/viewBox:'67 100 500 708'/);
+ assert.match(Plate.VERSION,/0005$/);
+ assert.match(js,/viewBox:'0 100 616 708'/);
  assert.match(js,/preserveAspectRatio:'xMidYMid meet'/);
  assert.doesNotMatch(js,/scale\(1\.80 0\.955\)/);
  assert.doesNotMatch(js,/preserveAspectRatio:'none'/);
  assert.match(css,/MRG COMPOSED LAYOUT V4/);
  assert.match(css,/\.mrg-quick-panel/);
  assert.match(css,/\.mrg-sheet-holder svg/);
- assert.match(html,/MRG-COMPOSED-V4-0001/);
+ assert.match(css,/MRG REFERENCE FRAME V5/);
+ assert.match(css,/aspect-ratio:4 \/ 3!important/);
+ assert.match(css,/overflow-y:auto!important/);
+ assert.match(css,/aspect-ratio:616 \/ 708!important/);
+ assert.match(css,/align-self:start!important/);
+ assert.match(html,/MRG-REF-4X3-V5-0001/);
 });
 test('Relay/source controls are not loaded or interactive',()=>{
  assert.doesNotMatch(html,/mrg-electrical-controls-v3\.js/);
