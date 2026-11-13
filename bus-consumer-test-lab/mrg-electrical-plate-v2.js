@@ -7,10 +7,10 @@
 (function(root){
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const VERSION='MRG-CL-POWER-PLATE-0003';
+const VERSION='MRG-CL-POWER-PLATE-0004';
 const $=id=>document.getElementById(id);
-let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null,controls=null;
-const sourceNodes=new Map(),componentNodes=new Map();
+let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null;
+const statusNodes=new Map();
 let selected=null,wireSegments=[],busNodes=new Map(),contactNodes=new Map();
 const SOURCE_FEED_WIRES=Object.freeze({
  'M184 263 V343':'generator1@115VAC',
@@ -37,19 +37,6 @@ const SOURCE_FEED_WIRES=Object.freeze({
  'M166 606 V617':'standby@115VAC',
  'M247 606 V617':'standby@28VDC',
  'M395 690 V732 H450':'hotBattery@28VDC'
-});
-const RELAY_WIRE_ROUTES=Object.freeze({
- 'M143 195 V205 H136 V242':'GB1','M519 195 V210 H519 V242':'GB2',
- 'M151 195 V218 H260 V242':'GEN1_APU','M296 186 V200 H257 V209':'GEN1_APU',
- 'M319 184 V200 H397 V209':'GEN2_APU',
- 'M241 263 V288 H274 V343':'R3','M419 263 V288 H418 V343':'R4',
- 'M271 288 H332 L351 278 L369 288 H420':'BUS_XFR',
- 'M419 288 H351 L332 278 H271':'BUS_XFR',
- 'M116 297 V339 H131 V377':'GROUND_SVC',
- 'M242 484 V519':'TR1','M452 484 V519':'TR2',
- 'M526 485 V496 H452':'TR3','M242 497 H527':'R9',
- 'M166 606 V617':'R37_AC','M247 606 V617':'R37_DC',
- 'M395 616 V669':'R1','M395 690 V732 H450':'R41'
 });
 const UNTAGGED_FEED_WIRES=Object.freeze({
  'M116 153 V297 H120':'external@115VAC',
@@ -111,7 +98,7 @@ function wire(parent,d,opts={}){
  if(bus)attrs['data-bus']=bus;
  if(from)attrs['data-from']=from;
  const n=s('path',parent,attrs);
- if(bus||from)wireSegments.push({node:n,bus:bus||from,from,relay:RELAY_WIRE_ROUTES[d]||null});
+ if(bus||from)wireSegments.push({node:n,bus:bus||from,from});
  return n;
 }
 function classifyWire(segment,power,cuts){
@@ -137,17 +124,13 @@ function hatch(def){
  s('path',p,{d:'M0 0 L6 6 M6 0 L0 6',stroke:'#555', 'stroke-width':.45,opacity:.7,fill:'none'});
 }
 function drawContact(parent,id,x,y,{orientation='vertical',label='',closed=null}={}){
- const g=s('g',parent,{class:'mrg-contact',transform:'translate('+x+' '+y+')','data-contact':id,tabindex:0,role:'img'});
+ const g=s('g',parent,{class:'mrg-contact',transform:'translate('+x+' '+y+')','data-contact':id,'data-closed':'unverified','aria-label':id+' electrical symbol (display only)',role:'img'});
  const mark=orientation==='horizontal'?s('g',g,{transform:'rotate(-90)'}):g;
  s('circle',mark,{cx:0,cy:-9,r:1.65,fill:'#fff',stroke:'#333','stroke-width':.75});
  s('circle',mark,{cx:0,cy:9,r:1.65,fill:'#fff',stroke:'#333','stroke-width':.75});
  s('path',mark,{d:'M0 9 L0 -6',class:'mrg-contact-blade'});
- s('rect',g,{x:-11,y:-16,width:23,height:32,fill:'transparent',class:'mrg-hit-area'});
  if(label)text(parent,x+6,y+2,label,7,{'text-anchor':'start'});
- g.setAttribute('aria-label','Toggle '+id+' relay contact');
- g.addEventListener('click',event=>{event.stopPropagation();toggleRelay(id);});
- g.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRelay(id);}});
- contactNodes.set(id,{g,blade:mark.querySelector('.mrg-contact-blade'),defaultClosed:closed});
+ contactNodes.set(id,{g,defaultClosed:null});
  return g;
 }
 function plain(parent){
@@ -278,14 +261,6 @@ function components(parent){
   text(c,x+13,y+16,label,8,{'text-anchor':'middle'});
  };
  device(229,457,'TR1');device(439,457,'TR2');device(513,457,'TR3');
- for(const [id,x,y] of [['TR1',229,457],['TR2',439,457],['TR3',513,457]]){
-  const hit=s('g',c,{class:'mrg-rectifier-hit',role:'button',tabindex:0,'data-relay':id});
-  s('rect',hit,{x,y,width:26,height:28,class:'mrg-rectifier-hitbox'});
-  s('title',hit,{},'Toggle '+id+' transformer-rectifier availability');
-  hit.addEventListener('click',()=>toggleRelay(id));
-  hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRelay(id);}});
-  componentNodes.set(id,hit);
- }
  text(c,312,504,'BUS XFR',7,{'text-anchor':'middle'});
  text(c,312,513,'TR3',7,{'text-anchor':'middle'});
  pair(c,312,519,'DISCONNECT','RELAY',7);
@@ -326,19 +301,7 @@ function components(parent){
  // Hairline control switch symbols (only actual relay/contact driven nodes animate).
  drawContact(c,'APU_BAT_CHARGER',103,771);
  drawContact(c,'R89',224,768);
- // Touchable hit areas are precisely co-located with original generator icons.
- for(const [id,x,y,w,h] of [
-  ['GEN1',112,161,65,46],['APU',286,155,49,35],
-  ['GEN2',482,158,57,46],['EXTERNAL',318,103,69,32]
- ]){
-  const hit=s('g',c,{class:'mrg-source-hit',role:'button',tabindex:0,'data-source':id,'aria-label':'Toggle '+id+' generator supply'});
-  s('rect',hit,{x,y,width:w,height:h,rx:2,class:'mrg-source-hitbox'});
-  s('circle',hit,{cx:x+w-3,cy:y-3,r:3.5,class:'mrg-source-indicator'});
-  s('title',hit,{},'Toggle '+id+' source — isolated training network');
-  hit.addEventListener('click',event=>{event.stopPropagation();toggleSource(id);});
-  hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSource(id);}});
-  sourceNodes.set(id,hit);
- }
+
 }
 function addTiles(parent){
  const g=s('g',parent,{class:'mrg-bus-blocks'});
@@ -361,9 +324,9 @@ function createScene(){
  panel.id='mrgElectricalPowerPlateV2';
  const toolbar=make('div',panel,'mrg-plate-toolbar');
  const legend=make('div',toolbar,'mrg-power-legend');
- make('span',legend,'mrg-legend-on','● POWERED · GREEN PATH');
- make('span',legend,'mrg-legend-off','● DIRECT OFF · RED PATH');
- make('span',legend,'mrg-legend-cascade','● DOWNSTREAM OFF · RED DASHED');
+ make('span',legend,'mrg-legend-on','● ENERGIZED');
+ make('span',legend,'mrg-legend-off','● DIRECT OFF');
+ make('span',legend,'mrg-legend-cascade','● CASCADE OFF');
  const acts=make('div',toolbar,'mrg-plate-actions');
  const restore=make('button',acts,null,'RESTORE ALL');
  restore.addEventListener('click',()=>document.getElementById('allOn')?.click());
@@ -371,72 +334,40 @@ function createScene(){
  change.addEventListener('click',()=>document.getElementById('resetLab')?.click());
  layout=make('div',panel,'mrg-plate-layout');
  const grid=layout;
+ const sidebar=make('aside',grid,'mrg-quick-panel');
+ make('div',sidebar,'mrg-quick-kicker','ATA 24  /  LAB');
+ make('h3',sidebar,'mrg-quick-title','BUS DISTRIBUTION');
+ make('p',sidebar,'mrg-quick-description','Select any powered bus to simulate a failure and highlight the affected circuit.');
+ const quickList=make('div',sidebar,'mrg-quick-list');
+ for(const [key,b]of Object.entries(BUS)){
+  const button=make('button',quickList,'mrg-quick-bus');
+  button.type='button';button.dataset.key=key;
+  make('span',button,'mrg-quick-name',b.lines[1]+' · '+b.lines[0]);
+  make('span',button,'mrg-quick-state','ON');
+  button.addEventListener('click',()=>toggle(key));
+  statusNodes.set(key,button);
+ }
  const holder=make('div',grid,'mrg-sheet-holder');
- figure=s('svg',holder,{viewBox:'0 0 900 680',xmlns:NS,'aria-label':'Wide MRG-style 737 Classic electrical diagram with interactive bus power paths',role:'img',preserveAspectRatio:'none'});
+ figure=s('svg',holder,{viewBox:'67 100 500 708',xmlns:NS,'aria-label':'Boeing 737 Classic electrical schematic with original proportions and clickable bus blocks',role:'img',preserveAspectRatio:'xMidYMid meet'});
  const defs=s('defs',figure);
  hatch(defs);
- // Preserve MRG coordinates in the source; the page is re-proportioned wide
- // only for the interactive screen layout requested by the user.
- s('rect',figure,{x:0,y:0,width:900,height:680,fill:'#fff'});
- const paper=s('g',figure,{class:'mrg-art',transform:'translate(-122 -102) scale(1.80 0.955)'});
+ // Single native coordinate system preserves exact 1:1 shape proportions.
+ const paper=s('g',figure,{class:'mrg-art'});
  plain(paper);
  linesLayer(paper);
  components(paper);
  addTiles(paper);
  affectedPanel=make('aside',grid,'mrg-affected');
  const aside=affectedPanel;
- make('h3',aside,null,'AFFECTED SYSTEMS / CONSUMERS');
+ make('h3',aside,null,'ELECTRICAL STATUS / IMPACT');
  summary=make('p',aside,'mrg-affected-count');
  selectedInfo=make('p',aside,'mrg-affected-selection');
  affected=make('div',aside,'mrg-affected-scroll');
  const foot=make('p',panel,'mrg-plate-note');
- foot.textContent='Source geometry: supplied MRG IV.6 page 152 (PDF page 161). Animated contact positions show the isolated LAB topology model, not verified EP-FSI physical contactor feedback. Source switching and aircraft-specific WDM remain separate.';
+ foot.textContent='Training schematic based on MRG IV.6 page 152. Only colored bus blocks are interactive. Relay contacts, GEN/APU symbols and power-source switching are display-only; no aircraft-specific relay behavior is asserted.';
  const metrics=document.querySelector('.metrics');
  if(!metrics)throw Error('Bus Lab metrics host missing');
  metrics.after(panel);
-}
-function setContact(name,on,note=''){
- const item=contactNodes.get(name);if(!item)return;
- item.g.dataset.closed=on===null?'unverified':String(!!on);
- item.g.setAttribute('aria-label',name+' '+(on===null?'SOURCE SELECTION NOT MODELLED':on?'CONTACT CLOSED':'CONTACT OPEN'));
- let title=item.g.querySelector('title');
- if(!title)title=s('title',item.g);
- title.textContent=name+': '+(on===null?'UNVERIFIED SOURCE SELECTION':on?'CLOSED':'OPEN')+(note?' · '+note:'');
-}
-function contactStates(power){
- const p=key=>power[key]===true;
- const one=p('generator1@115VAC'),two=p('generator2@115VAC');
- return Object.freeze({
-  GB1:one,GB2:two,
-  // A powered potential feed does not prove a selected contactor closure.
-  GEN1_EXTERNAL:null,GEN2_EXTERNAL:null,GEN1_APU:null,GEN2_APU:null,
-  GROUND_SVC:p('groundService@115VAC')&&(one||p('external@115VAC')),
-  R3:one&&p('transfer1@115VAC'),R4:two&&p('transfer2@115VAC'),
-  // TR3 disconnect and APU charger contacts lack a dedicated selector state.
-  R9:null,R37_AC:p('standby@115VAC')&&p('transfer1@115VAC'),
-  R37_DC:p('standby@28VDC')&&p('dc1@28VDC'),
-  R2:p('battery@28VDC')&&p('main2@115VAC'),
-  R1:p('battery@28VDC')&&p('hotBattery@28VDC'),
-  R41:p('switchedHotBattery@28VDC')&&p('hotBattery@28VDC'),
-  APU_BAT_CHARGER:null,R89:null
- });
-}
-function updateContacts(power){
- const contacts=controls?controls.derivedContacts():contactStates(power);
- for(const [name,state]of Object.entries(contacts))
-  setContact(name,state,'ISOLATED LAB SOURCE / RELAY');
- const state=controls?.copy();
- for(const [name,node]of sourceNodes){
-  const on=!!state?.sources[name];
-  node.dataset.active=String(on);
-  node.setAttribute('aria-pressed',String(on));
-  node.setAttribute('aria-label',name+' source '+(on?'ON':'OFF')+' · click to toggle');
- }
- for(const [name,node]of componentNodes){
-  const on=!!state?.relays[name];
-  node.dataset.active=String(on);
-  node.setAttribute('aria-pressed',String(on));
- }
 }
 function render(){
  if(!lab||!figure)return;
@@ -449,28 +380,27 @@ function render(){
   const title=node.querySelector('title');
   if(title)title.textContent=BUS[key].lines.join(' ')+' · '+(status==='ON'?'POWERED':status==='CUT'?'DIRECT OFF':'CASCADE OFF')+' · click to toggle';
  }
- const relayStates=controls?.copy().relays||{},sourceStates=controls?.copy().sources||{};
- const directCuts=new Set(cuts);
- for(const [source,bus]of [['GEN1','generator1@115VAC'],['GEN2','generator2@115VAC'],['EXTERNAL','external@115VAC']])
-  if(sourceStates[source]===false&&power[bus]!==true)directCuts.add(bus);
  for(const segment of wireSegments){
-  let state=classifyWire(segment,power,directCuts);
-  if(segment.relay&&relayStates[segment.relay]===false)state='DIRECT';
-  else if(segment.from&&power[segment.from]===false&&power[segment.bus]===true)state='DIRECT';
+  const state=classifyWire(segment,power,cuts);
   segment.node.dataset.power=state==='ON'?'ON':'OFF';
   segment.node.dataset.failureType=state;
  }
- updateContacts(power);
+ for(const [key,button]of statusNodes){
+  const isOn=power[key]===true;
+  button.dataset.state=isOn?'ON':cuts.has(key)?'CUT':'CASCADE';
+  button.setAttribute('aria-pressed',String(isOn));
+  const symbol=button.querySelector('.mrg-quick-state');
+  if(symbol)symbol.textContent=isOn?'ON':cuts.has(key)?'OFF':'CASCADE';
+ }
  const snap=lab.getSnapshot();
  const devices=Object.values(snap.devices||{});
  const impacted=devices.filter(d=>['OFF','DEGRADED','UNKNOWN'].includes(d.state));
  const direct=cuts.size,downstream=Object.keys(power).filter(k=>power[k]===false&&!cuts.has(k)).length;
  const off=impacted.filter(d=>d.state==='OFF').length,partial=impacted.length-off;
- const sourceBreak=controls?Object.entries(controls.copy().sources).filter(([id,enabled])=>id!=='APU'&&!enabled).length:0;
- const showFailures=direct>0||downstream>0||impacted.length>0||sourceBreak>0||!!controls?.dirty();
+ const showFailures=direct>0||downstream>0||impacted.length>0;
  layout.dataset.hasFailures=String(showFailures);
- affectedPanel.hidden=!showFailures;
- summary.textContent=direct+' BUS CUTS · '+sourceBreak+' SOURCES OFF · '+downstream+' CASCADE OFF · '+off+' DEVICES OFF · '+partial+' DEGRADED';
+ affectedPanel.hidden=false;
+ summary.textContent=direct+' DIRECT BUS OFF  ·  '+downstream+' DOWNSTREAM OFF  ·  '+off+' DEVICES OFF  ·  '+partial+' DEGRADED';
  selectedInfo.textContent=selected?
   selected.split('@')[0].toUpperCase()+' · '+selected.split('@')[1]+' · '+(power[selected]===true?'POWERED':cuts.has(selected)?'DIRECT INTERRUPTION':'UPSTREAM SOURCE UNAVAILABLE'):
   'Tap a colored bus in the original-format drawing to inject its failure.';
@@ -481,28 +411,6 @@ function render(){
   grouped.get(g).push(item);
  }
  const fragment=document.createDocumentFragment();
- if(controls){
-  const authority=root.B737MRGContactNetworkV3;
-  const commanded=controls.copy();
-  const opened=Object.entries(commanded.relays).filter(([id,closed])=>
-   authority.INITIAL_RELAYS[id]===true&&!closed);
-  const stopped=Object.entries(commanded.sources).filter(([id,on])=>id!=='APU'&&!on);
-  if(opened.length||stopped.length){
-   const box=make('section',fragment,'mrg-impact-group');
-   make('h4',box,null,'OPEN CIRCUITS / INACTIVE SOURCES');
-   for(const [id]of stopped){
-    const item=make('div',box,'mrg-impact-row');
-    make('span',item,null,id+' GENERATOR/RECEPTACLE');
-    make('b',item,null,'SOURCE OFF');
-   }
-   for(const [id]of opened){
-    const item=make('div',box,'mrg-impact-row');
-    const paths=authority.RELAY_FEEDS[id]||[];
-    make('span',item,null,id+' · '+(paths.length?paths.map(v=>v.split('@')[0]).join(' / '):'AUXILIARY CHARGER CONTROL'));
-    make('b',item,null,'CONTACT OPEN');
-   }
-  }
- }
  if(!impacted.length)make('p',fragment,'mrg-none','NO CONSUMERS LOST POWER — AN ALTERNATE FEED MAY STILL BE AVAILABLE.');
  for(const [group,entries]of [...grouped].sort((a,b)=>a[0].localeCompare(b[0]))){
   const section=make('section',fragment,'mrg-impact-group');
@@ -515,24 +423,6 @@ function render(){
   }
  }
  affected.replaceChildren(fragment);
-}
-function toggleSource(key){
- if(!controls||!lab)return;
- controls.changeSource(key);
- root.B737BusConsumerTestLabUIV1?.refreshLab();
- render();
-}
-function toggleRelay(key){
- if(!controls||!lab)return;
- controls.changeRelay(key);
- root.B737BusConsumerTestLabUIV1?.refreshLab();
- render();
-}
-function resetControls(){
- if(!controls||!lab)return;
- controls.reset();
- lab.getSession().refresh();
- render();
 }
 function toggle(key){
  if(!lab||!busNodes.has(key))return;
@@ -551,30 +441,21 @@ function mount(){
  lab=root.B737BusConsumerTestLabUIV1;
  if(!lab.listBusNames||!lab.setCascade||!lab.getSession)return;
  for(const key of lab.listBusNames())if(!BUS[key])throw Error('MRG plate power class not drawn: '+key);
- // Source and contactor controls are active exclusively inside this test lab.
- const authority=root.B737MRGContactNetworkV3;
- if(!authority?.createControls)throw Error('MRG source / relay controls failed to load');
- controls=authority.createControls();
+ // Retain the canonical independent bus test lab; no source-selector/relay
+ // override, no invented contact positions and no electrical polling.
  if(!lab.getSession().cascade)lab.setCascade(true);
- if(typeof lab.getSession().setPowerModel!=='function')throw Error('Electrical lab power projection missing');
- lab.getSession().setPowerModel(controls.compute);
- createScene();
- root.B737BusConsumerTestLabUIV1.refreshLab();
- render();
+ createScene();render();
  root.B737MRGElectricalPlateV2=Object.freeze({
   version:VERSION,refresh:render,select:toggle,
-  getContacts:()=>Object.fromEntries([...contactNodes].map(([k,v])=>[k,v.g.dataset.closed])),
+  getContacts:()=>Object.fromEntries([...contactNodes].map(([k])=>[k,'display-only'])),
   getPower:()=>({...lab.getSession().busStates}),
-  getSources:()=>controls.copy().sources,
-  getRelayCommands:()=>controls.copy().relays,
-  toggleSource,toggleRelay,resetControls,
-  getWires:()=>wireSegments.map(({node,bus,from,relay})=>({bus,from,relay,state:node.dataset.failureType})),
+  getWires:()=>wireSegments.map(({node,bus,from})=>({bus,from,state:node.dataset.failureType})),
   getGeometry:()=>Object.fromEntries(Object.entries(BUS).map(([k,v])=>[k,{...v}]))
  });
  root.dispatchEvent(new CustomEvent('b737:mrg-electrical-plate-ready',{detail:{version:VERSION,buses:busNodes.size,contacts:contactNodes.size}}));
 }
 if(typeof module==='object'&&module.exports)
- module.exports=Object.freeze({VERSION,BUS,classifyWire,contactStates});
+ module.exports=Object.freeze({VERSION,BUS,classifyWire});
 if(typeof root.addEventListener==='function'){
  root.addEventListener('b737:buslab-ui-ready',mount);
  root.addEventListener('b737:buslab-updated',render);
