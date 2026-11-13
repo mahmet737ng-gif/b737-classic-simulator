@@ -16,10 +16,12 @@ const dir=path.join(__dirname,'..','bus-consumer-test-lab');
 // Test the actual user-facing, cache-isolated v2 page rather than a source
 // fixture that an older GitHub Pages edge could still have cached.
 const html=fs.readFileSync(path.join(dir,'v3.html'),'utf8');
-assert.match(html,/name="b737-bus-lab-revision" content="MRG-PLATE-V2-0002"/);
-assert.ok(html.includes('mrg-electrical-plate-v2.css?v=MRG-PLATE-V2-0002'));
-assert.ok(html.includes('mrg-electrical-plate-v2.js?v=MRG-PLATE-V2-0002'));
-assert.ok(html.includes('app.js?v=MRG-PLATE-V2-0002'));
+assert.match(html,/name="b737-bus-lab-revision" content="MRG-PLATE-V3-0001"/);
+assert.ok(html.includes('mrg-electrical-plate-v2.css?v=MRG-PLATE-V3-0001'));
+assert.ok(html.includes('mrg-electrical-plate-v2.js?v=MRG-PLATE-V3-0001'));
+assert.ok(html.includes('mrg-electrical-controls-v3.js?v=MRG-SOURCE-RELAY-0001'));
+assert.doesNotMatch(html,/id="mrgV2Release"/);
+assert.ok(html.includes('app.js?v=MRG-PLATE-V3-0001'));
 assert.match(html,/24 BUS NODES/);
 assert.doesNotMatch(html,/id="mrgV2Release"/);
 assert.doesNotMatch(html,/26 BUS NODES/);
