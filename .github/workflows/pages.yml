@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 # Publish the latest fully validated revision instead of allowing older,
@@ -263,6 +264,24 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: 'web-dist'
+      - name: Verify exactly one Pages artifact is indexed before deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in $(seq 1 24); do
+            found="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" --jq '[.artifacts[] | select(.name == "github-pages" and (.expired == false))] | length' || echo unavailable)"
+            if [ "$found" = "1" ]; then
+              echo "Exactly one github-pages artifact is visible to Actions REST API."
+              exit 0
+            fi
+            if [ "$found" != "0" ] && [ "$found" != "unavailable" ]; then
+              echo "::error::Expected one github-pages artifact, got $found. Start a fresh workflow run rather than rerunning artifact upload."
+              exit 1
+            fi
+            sleep 3
+          done
+          echo "::error::Pages artifact is not yet visible to the deployment API."
+          exit 1
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
