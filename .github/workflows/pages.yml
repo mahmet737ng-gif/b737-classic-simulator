@@ -230,15 +230,16 @@ jobs:
           node --check bus-consumer-test-lab/mrg-electrical-controls-v3.js
           test -f web-dist/bus-consumer-test-lab/v3.html
           grep -q '24 BUS NODES' web-dist/bus-consumer-test-lab/v3.html
-          grep -q 'MRG-PLATE-V3-0001' web-dist/bus-consumer-test-lab/v3.html
+          grep -q 'MRG-COMPOSED-V4-0001' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/bus-consumer-test-lab/mrg-electrical-v2.html
           grep -q 'mrg-electrical-plate-v2.js' web-dist/bus-consumer-test-lab/mrg-electrical-v2.html
           test -f web-dist/bus-consumer-test-lab/bus-schematic-test-v1.html
-          grep -q 'MRG-PLATE-V3-0001' web-dist/bus-consumer-test-lab/bus-schematic-test-v1.html
+          grep -q 'MRG-COMPOSED-V4-0001' web-dist/bus-consumer-test-lab/bus-schematic-test-v1.html
           grep -q 'mrg-electrical-plate-v2.js' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/bus-consumer-test-lab/mrg-electrical-plate-v2.js
           test -f web-dist/bus-consumer-test-lab/mrg-electrical-controls-v3.js
-          grep -q 'mrg-electrical-controls-v3.js' web-dist/bus-consumer-test-lab/v3.html
+          ! grep -q 'mrg-electrical-controls-v3.js' web-dist/bus-consumer-test-lab/v3.html
+          grep -q 'mrg-electrical-plate-v2.js' web-dist/bus-consumer-test-lab/v3.html
           test -f web-dist/bus-consumer-test-lab/mrg-electrical-plate-v2.css
           test -f web-dist/engine/systems/classic-bus-consumer-test-lab-v1.js
           test -f web-dist/engine/systems/unified-bus-failure-injection-v1.js
