@@ -142,7 +142,11 @@ function drawContact(parent,id,x,y,{orientation='vertical',label='',closed=null}
  s('circle',mark,{cx:0,cy:-9,r:1.65,fill:'#fff',stroke:'#333','stroke-width':.75});
  s('circle',mark,{cx:0,cy:9,r:1.65,fill:'#fff',stroke:'#333','stroke-width':.75});
  s('path',mark,{d:'M0 9 L0 -6',class:'mrg-contact-blade'});
+ s('rect',g,{x:-11,y:-16,width:23,height:32,fill:'transparent',class:'mrg-hit-area'});
  if(label)text(parent,x+6,y+2,label,7,{'text-anchor':'start'});
+ g.setAttribute('aria-label','Toggle '+id+' relay contact');
+ g.addEventListener('click',event=>{event.stopPropagation();toggleRelay(id);});
+ g.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRelay(id);}});
  contactNodes.set(id,{g,blade:mark.querySelector('.mrg-contact-blade'),defaultClosed:closed});
  return g;
 }
@@ -266,6 +270,7 @@ function components(parent){
  drawContact(c,'R4',419,300,{label:'R4'});
  text(c,229,309,'BUS XFR',7);
  text(c,439,309,'BUS XFR',7);
+ drawContact(c,'BUS_XFR',350,287,{orientation:'horizontal'});
  // Actual AC/DC transformer rectifier symbols and inverse label.
  const device=(x,y,label)=>{
   rect(c,x,y,26,28,'mrg-transformer');
@@ -273,6 +278,14 @@ function components(parent){
   text(c,x+13,y+16,label,8,{'text-anchor':'middle'});
  };
  device(229,457,'TR1');device(439,457,'TR2');device(513,457,'TR3');
+ for(const [id,x,y] of [['TR1',229,457],['TR2',439,457],['TR3',513,457]]){
+  const hit=s('g',c,{class:'mrg-rectifier-hit',role:'button',tabindex:0,'data-relay':id});
+  s('rect',hit,{x,y,width:26,height:28,class:'mrg-rectifier-hitbox'});
+  s('title',hit,{},'Toggle '+id+' transformer-rectifier availability');
+  hit.addEventListener('click',()=>toggleRelay(id));
+  hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleRelay(id);}});
+  componentNodes.set(id,hit);
+ }
  text(c,312,504,'BUS XFR',7,{'text-anchor':'middle'});
  text(c,312,513,'TR3',7,{'text-anchor':'middle'});
  pair(c,312,519,'DISCONNECT','RELAY',7);
@@ -313,6 +326,19 @@ function components(parent){
  // Hairline control switch symbols (only actual relay/contact driven nodes animate).
  drawContact(c,'APU_BAT_CHARGER',103,771);
  drawContact(c,'R89',224,768);
+ // Touchable hit areas are precisely co-located with original generator icons.
+ for(const [id,x,y,w,h] of [
+  ['GEN1',112,161,65,46],['APU',286,155,49,35],
+  ['GEN2',482,158,57,46],['EXTERNAL',318,103,69,32]
+ ]){
+  const hit=s('g',c,{class:'mrg-source-hit',role:'button',tabindex:0,'data-source':id,'aria-label':'Toggle '+id+' generator supply'});
+  s('rect',hit,{x,y,width:w,height:h,rx:2,class:'mrg-source-hitbox'});
+  s('circle',hit,{cx:x+w-3,cy:y-3,r:3.5,class:'mrg-source-indicator'});
+  s('title',hit,{},'Toggle '+id+' source — isolated training network');
+  hit.addEventListener('click',event=>{event.stopPropagation();toggleSource(id);});
+  hit.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSource(id);}});
+  sourceNodes.set(id,hit);
+ }
 }
 function addTiles(parent){
  const g=s('g',parent,{class:'mrg-bus-blocks'});
