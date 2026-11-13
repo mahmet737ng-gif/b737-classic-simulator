@@ -89,8 +89,20 @@
   const reference=Core.defineBuses(evaluated,{electricalState:source});
   checkSources(Object.keys(reference));
   let baseline='ALL_ON',cascade=false,off=new Set(),config={mode,pressurization,aircraftModel};
+  // Optional isolated MRG electrical contact network. Existing test-lab use
+  // remains byte-for-byte equivalent without a registered override.
+  let powerModel=null;
+  const projectedPower=()=>{
+   const base=calculatePower(reference,[...off],baseline,cascade);
+   if(!powerModel)return base;
+   const custom=powerModel({reference,forcedOff:[...off],baseline,cascade,defaultPower:base});
+   if(!custom||Object.keys(custom).length!==Object.keys(reference).length||
+      Object.keys(reference).some(id=>typeof custom[id]!=='boolean'))
+    throw Error('MRG power model must return exact boolean states for all 24 buses');
+   return custom;
+  };
   const update=()=>Core.project({index,electrical:evaluated,electricalState:source,
-    labBusPower:calculatePower(reference,[...off],baseline,cascade),
+    labBusPower:projectedPower(),
     ...config,includeAllConfigurations:true,cbAvailable});
   let snapshot=update();
   return Object.freeze({
@@ -105,6 +117,12 @@
    get disabled(){return [...off];},
    get options(){return {...config};},
    snapshot:()=>snapshot,
+   // Event-driven sync only; no polling or repeated consumer queries.
+   setPowerModel(model){
+    if(model!==null&&typeof model!=='function')throw Error('Invalid MRG lab power model');
+    powerModel=model;snapshot=update();return snapshot;
+   },
+   refresh(){snapshot=update();return snapshot;},
    toggle(bus){
     if(!Object.hasOwn(reference,bus))throw Error('Unknown bus '+bus);
     if(off.has(bus))off.delete(bus);else off.add(bus);
@@ -132,7 +150,7 @@
     config={...config,...next};
     snapshot=update();return snapshot;
    },
-   get busStates(){return calculatePower(reference,[...off],baseline,cascade);}
+   get busStates(){return projectedPower();}
   });
  }
  return Object.freeze({VERSION,BASELINES,SOURCE,checkSources,
