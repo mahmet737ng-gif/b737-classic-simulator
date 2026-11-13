@@ -368,28 +368,27 @@ function setContact(name,on,note=''){
  if(!title)title=s('title',item.g);
  title.textContent=name+': '+(on===null?'UNVERIFIED SOURCE SELECTION':on?'CLOSED':'OPEN')+(note?' · '+note:'');
 }
-function updateContacts(power){
+function contactStates(power){
  const p=key=>power[key]===true;
  const one=p('generator1@115VAC'),two=p('generator2@115VAC');
- const x1=p('transfer1@115VAC'),x2=p('transfer2@115VAC');
- setContact('GB1',one);
- setContact('GB2',two);
- // Modelled source selection is not exposed by the generic lab; never fake
- // EXT / APU contactor operation based only on the availability of a bus.
- for(const id of ['GEN1_EXTERNAL','GEN2_EXTERNAL','GEN1_APU','GEN2_APU'])setContact(id,null);
- setContact('GROUND_SVC',p('groundService@115VAC')&&(one||p('external@115VAC')));
- setContact('R3',one&&x1,'GEN BUS 1 / TRANSFER 1 LAB SUPPLY');
- setContact('R4',two&&x2,'GEN BUS 2 / TRANSFER 2 LAB SUPPLY');
- // TR3/R9 contact position requires an independent transfer control state;
- // DC bus loss alone is insufficient evidence that R9 closed.
- setContact('R9',null,'TR3 DISCONNECT RELAY: selector feedback unavailable');
- setContact('R37_AC',p('standby@115VAC')&&x1);
- setContact('R37_DC',p('standby@28VDC')&&p('dc1@28VDC'));
- setContact('R2',p('battery@28VDC')&&p('main2@115VAC'));
- setContact('R1',p('battery@28VDC')&&p('hotBattery@28VDC'));
- setContact('R41',p('switchedHotBattery@28VDC')&&p('hotBattery@28VDC'));
- setContact('APU_BAT_CHARGER',null);
- setContact('R89',null);
+ return Object.freeze({
+  GB1:one,GB2:two,
+  // A powered potential feed does not prove a selected contactor closure.
+  GEN1_EXTERNAL:null,GEN2_EXTERNAL:null,GEN1_APU:null,GEN2_APU:null,
+  GROUND_SVC:p('groundService@115VAC')&&(one||p('external@115VAC')),
+  R3:one&&p('transfer1@115VAC'),R4:two&&p('transfer2@115VAC'),
+  // TR3 disconnect and APU charger contacts lack a dedicated selector state.
+  R9:null,R37_AC:p('standby@115VAC')&&p('transfer1@115VAC'),
+  R37_DC:p('standby@28VDC')&&p('dc1@28VDC'),
+  R2:p('battery@28VDC')&&p('main2@115VAC'),
+  R1:p('battery@28VDC')&&p('hotBattery@28VDC'),
+  R41:p('switchedHotBattery@28VDC')&&p('hotBattery@28VDC'),
+  APU_BAT_CHARGER:null,R89:null
+ });
+}
+function updateContacts(power){
+ for(const [name,state]of Object.entries(contactStates(power)))
+  setContact(name,state,state===null?'ACTUAL CONTACTOR CONTROL UNKNOWN':'ISOLATED LAB SUPPLY INDICATION');
 }
 function render(){
  if(!lab||!figure)return;
@@ -469,7 +468,11 @@ function mount(){
  });
  root.dispatchEvent(new CustomEvent('b737:mrg-electrical-plate-ready',{detail:{version:VERSION,buses:busNodes.size,contacts:contactNodes.size}}));
 }
-root.addEventListener('b737:buslab-ui-ready',mount);
-root.addEventListener('b737:buslab-updated',render);
-if(root.B737BusConsumerTestLabUIV1)mount();
-})(window);
+if(typeof module==='object'&&module.exports)
+ module.exports=Object.freeze({VERSION,BUS,classifyWire,contactStates});
+if(typeof root.addEventListener==='function'){
+ root.addEventListener('b737:buslab-ui-ready',mount);
+ root.addEventListener('b737:buslab-updated',render);
+}
+if(root.B737BusConsumerTestLabUIV1&&root.document)mount();
+})(typeof window!=='undefined'?window:globalThis);
