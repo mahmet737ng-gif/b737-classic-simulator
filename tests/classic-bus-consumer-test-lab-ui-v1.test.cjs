@@ -16,9 +16,9 @@ const dir=path.join(__dirname,'..','bus-consumer-test-lab');
 // Test the actual user-facing, cache-isolated v2 page rather than a source
 // fixture that an older GitHub Pages edge could still have cached.
 const html=fs.readFileSync(path.join(dir,'v3.html'),'utf8');
-assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-MULTIFEED-0010"/);
-assert.equal((html.match(/v=BUSLAB24-MULTIFEED-0010/g)||[]).length,7,
- 'All seven CSS and JS dependencies, including the canonical multi-feed authority, must share the same cache-safe revision');
+assert.match(html,/name="b737-bus-lab-revision" content="BUSLAB24-BUS-NAMES-0011"/);
+assert.equal((html.match(/v=BUSLAB24-BUS-NAMES-0011/g)||[]).length,8,
+ 'Page metadata, CSS and all six scripts must share the same cache-safe revision');
 assert.match(html,/24 BUS NODES/);
 assert.doesNotMatch(html,/26 BUS NODES/);
 const js=fs.readFileSync(path.join(dir,'app.js'),'utf8');
@@ -78,10 +78,29 @@ async function test(){
  assert.equal(buttons.length,24);
  const standby=buttons.filter(x=>x.dataset.bus?.startsWith('standby@'));
  assert.equal(standby.length,2,'Exactly AC and DC standby buses are clickable');
- assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='AC STBY BUS')));
- assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='DC STBY BUS')));
+ assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='AC STANDBY BUS')));
+ assert.ok(standby.some(x=>x.children.some(c=>c.textContent==='DC STANDBY BUS')));
  assert.equal(new Set(Object.values(api.getSnapshot().consumers).map(x=>x.system)).has('OTHER'),false);
  assert.equal(ids.consumerBody.children.length,340,'All 340 physical source entries are visible');
+ assert.match(html,/باس تغذیه \(MRG \/ FCOM\)/);
+ assert.match(html,/نوع \/ ولتاژ تغذیه/);
+ const getSourceRow=name=>ids.consumerBody.children.find(x=>x.dataset.consumer===name);
+ const starter=getSourceRow('Engine 2 Starter Valve');
+ assert.ok(starter,'MRG starter source row must remain visible');
+ assert.equal(starter.children[2].textContent,'BATTERY BUS');
+ assert.equal(starter.children[3].textContent,'28 V DC');
+ assert.equal(getSourceRow('Engines EGT Indication').children[2].textContent,'DC STANDBY BUS');
+ assert.equal(getSourceRow('ADC 1').children[2].textContent,'ELECTRONIC BUS 1');
+ assert.equal(getSourceRow('ADC 1').children[3].textContent,'115 V AC');
+ const hot=getSourceRow('APU Fire Extinguisher');
+ assert.equal(hot.children[2].textContent,'HOT BATTERY BUS');
+ assert.equal(hot.children[3].textContent,'28 V DC');
+ assert.ok(ids.consumerBody.children.every(x=>x.children.length===6),'Every source row must have separate bus and voltage columns');
+ assert.ok(ids.consumerBody.children.every(x=>!/^battery\\s+28VDC$/i.test(x.children[2].textContent)));
+ const allButtons=buttons.map(x=>allChildren(x).map(child=>child.textContent));
+ assert.ok(allButtons.some(t=>t.includes('SWITCHED HOT BATTERY BUS')));
+ assert.ok(allButtons.some(t=>t.includes('TRANSFER BUS 1')));
+ assert.ok(allButtons.some(t=>t.includes('DC BUS 1')));
  assert.equal(ids.metricBusOn.textContent,'24 / 24');
  let fuel=ids.consumerBody.children.find(x=>x.dataset.consumer==='Fuel Boost Pump - Main Tank 1 Forward');
  assert.equal(fuel.dataset.state,'NORMAL');
