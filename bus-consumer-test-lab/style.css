@@ -45,7 +45,10 @@ select,input{background:#0e1d2a;border:1px solid #49657a;color:var(--text);borde
 .bus-toggle{border:1px solid #31678b;border-radius:8px;padding:8px 9px;background:#17324a;color:var(--blue);display:flex;justify-content:space-between;gap:8px;align-items:center;text-align:left;min-width:0;min-height:54px;direction:ltr;transition:background .12s ease,border-color .12s ease}
 .bus-toggle:hover{filter:brightness(1.15)}
 .bus-toggle[aria-pressed="false"]{color:var(--red);background:#392231;border-color:#8d4559}
-.bus-toggle .bus-name{font-size:10.5px;font-weight:760;overflow-wrap:anywhere}
+.bus-toggle .bus-label-group{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;flex:1}
+.bus-toggle .bus-name{font-size:10.5px;font-weight:760;line-height:1.25;overflow-wrap:anywhere}
+.bus-toggle .bus-voltage{font-size:9.5px;color:#a8c4da;letter-spacing:.02em;white-space:nowrap}
+.bus-toggle[aria-pressed="false"] .bus-voltage{color:#e9a3ab}
 .bus-toggle .bus-indicator{font-size:10px;white-space:nowrap;font-weight:800}
 .bus-toggle .bus-indicator:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-right:4px}
 .bus-toggle[aria-pressed="false"] .bus-indicator:before{background:var(--red)}
@@ -79,11 +82,12 @@ select,input{background:#0e1d2a;border:1px solid #49657a;color:var(--text);borde
 #consumerTable tr:hover{background:#1c3445}
 #consumerTable .num{width:55px;color:#92a7b5;font-variant-numeric:tabular-nums}
 #consumerTable .consumer-name{font-weight:740;letter-spacing:.005em}
-#consumerTable .consumer-feed{color:#9eafbb;white-space:normal}
+#consumerTable .consumer-feed{color:#9eafbb;white-space:normal;min-width:165px;line-height:1.6;direction:ltr;text-align:left;font-weight:650}
+#consumerTable .consumer-voltage{color:#9abfda;direction:ltr;text-align:left;white-space:normal;min-width:86px;font-variant-numeric:tabular-nums}
 #consumerTable .consumer-status{font-size:10px;letter-spacing:.04em;font-weight:800;white-space:nowrap}
 #consumerTable .consumer-system{font-size:10px;color:#94b0c3}
 #consumerTable tr[data-state="NORMAL"] .consumer-name,#consumerTable tr[data-state="NORMAL"] .consumer-status{color:var(--blue)}
-#consumerTable tr[data-state="OFF"] .consumer-name,#consumerTable tr[data-state="OFF"] .consumer-status,#consumerTable tr[data-state="OFF"] .consumer-feed{color:var(--red);text-decoration:none!important}
+#consumerTable tr[data-state="OFF"] .consumer-name,#consumerTable tr[data-state="OFF"] .consumer-status,#consumerTable tr[data-state="OFF"] .consumer-feed,#consumerTable tr[data-state="OFF"] .consumer-voltage{color:var(--red);text-decoration:none!important}
 #consumerTable tr[data-state="DEGRADED"] .consumer-name,#consumerTable tr[data-state="DEGRADED"] .consumer-status,#consumerTable tr[data-state="UNKNOWN"] .consumer-name,#consumerTable tr[data-state="UNKNOWN"] .consumer-status{color:var(--amber)}
 #consumerTable tr[data-state="NOT_INSTALLED"] .consumer-name,#consumerTable tr[data-state="NOT_INSTALLED"] .consumer-status{color:var(--gray);opacity:.7}
 #consumerTable tr[data-state="OFF"]{background:rgba(100,29,46,.17)}
