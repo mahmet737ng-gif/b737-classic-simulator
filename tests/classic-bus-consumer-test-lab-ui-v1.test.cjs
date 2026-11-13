@@ -21,7 +21,7 @@ assert.ok(html.includes('mrg-electrical-plate-v2.css?v=MRG-PLATE-V2-0001'));
 assert.ok(html.includes('mrg-electrical-plate-v2.js?v=MRG-PLATE-V2-0001'));
 assert.ok(html.includes('app.js?v=MRG-PLATE-V2-0001'));
 assert.match(html,/24 BUS NODES/);
-assert.match(html,/MRG IV\\.6 · ELECTRICAL POWER SCHEMATIC · VECTOR REDRAW V2/);
+assert.ok(html.includes('MRG IV.6 · ELECTRICAL POWER SCHEMATIC · VECTOR REDRAW V2'));
 assert.doesNotMatch(html,/26 BUS NODES/);
 const js=fs.readFileSync(path.join(dir,'app.js'),'utf8');
 class Element{
