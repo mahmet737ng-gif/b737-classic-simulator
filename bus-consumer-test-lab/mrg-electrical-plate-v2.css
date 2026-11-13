@@ -284,3 +284,55 @@
  .mrg-power-legend{font-size:9px;gap:5px 8px}
 }
 @media(prefers-reduced-motion:reduce){.mrg-quick-bus{transition:none}}
+
+
+/* MRG REFERENCE FRAME V5
+   Match the visible 1197×897 reference framing (=4:3, exact in CSS).
+   Never distort geometry: SVG viewBox is in its original 616-unit width.
+   The complete source drawing scrolls vertically within the 4:3 viewport. */
+.mrg-sheet-holder{
+ display:block!important;
+ box-sizing:border-box;
+ width:100%!important;
+ aspect-ratio:4 / 3!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ padding:0!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ justify-content:initial!important;
+ align-items:initial!important;
+ background:#fff!important;
+ scroll-behavior:smooth;
+ overscroll-behavior:contain;
+ scrollbar-gutter:stable;
+}
+.mrg-sheet-holder svg{
+ display:block!important;
+ position:static!important;
+ flex:none!important;
+ width:100%!important;
+ height:auto!important;
+ max-width:100%!important;
+ max-height:none!important;
+ min-width:0!important;
+ min-height:0!important;
+ aspect-ratio:616 / 708!important;
+ object-fit:contain!important;
+ transform:none!important;
+ filter:none!important;
+ margin:0!important;
+}
+@media(max-width:1200px){
+ .mrg-sheet-holder{aspect-ratio:4 / 3!important;height:auto!important;max-height:none!important}
+ .mrg-sheet-holder svg{width:100%!important;height:auto!important;max-height:none!important}
+}
+@media(max-width:930px){
+ .mrg-sheet-holder{aspect-ratio:4 / 3!important;overflow-y:auto!important}
+ .mrg-sheet-holder svg{width:100%!important;height:auto!important;min-width:0!important}
+}
+@media(max-width:650px){
+ .mrg-sheet-holder{aspect-ratio:4 / 3!important;overflow-y:auto!important}
+ .mrg-sheet-holder svg{width:100%!important;height:auto!important;min-width:0!important}
+}
