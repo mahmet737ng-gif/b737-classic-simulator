@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0006: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0007: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -42,13 +42,24 @@
   }
   return result;
  }
+ // Derive cautions from actual Electrical V7 annunciator outputs. A bus
+ // failure by itself is not necessarily a Master Caution condition.
+ // Match overhead IDs so the same lamp is not counted twice.
+ const electricalAnnunciators=Object.freeze({
+  standbyPowerOff:'standby-power-off',
+  transferBusOff1:'transferBusOff1',transferBusOff2:'transferBusOff2',
+  busOff1:'busOff1',busOff2:'busOff2',
+  genOffBus1:'gen-off-bus-1',genOffBus2:'gen-off-bus-2'
+ });
  function electrical(packet){
-  const result=empty(),state=packet?.state||packet;
+  const result=empty(),state=packet?.state||packet,lamps=packet?.evaluated?.lamps;
   if(!state||typeof state!=='object'||!state.faults)return result;
-  // Only explicit fault outputs; an unpowered bus or stopped generator is not a failure.
+  // Explicit ECU fault bits are independent of the selected power source.
   for(const id of ['GEN1_FAILED','GEN2_FAILED','TRANSFER1_RELAY_FAILED','TRANSFER2_RELAY_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED','STATIC_INVERTER_FAILED'])
    if(state.faults[id]===true)result['CAPT.ELEC'].push('ELEC:'+id);
   if(state.faults.APU_FAILED===true)result['CAPT.APU'].push('ELEC:APU_FAILED');
+  for(const [id,overheadId]of Object.entries(electricalAnnunciators))
+   if(lamps?.[id]===true)result['CAPT.ELEC'].push('OH:'+overheadId);
   return result;
  }
  function fire(packet){
@@ -237,7 +248,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0006',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0007',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -281,7 +292,18 @@
    publish();
   });
   win.addEventListener('b737:aircon-fcom-status',e=>update('airconRecall',airconFcomRecall(e.detail)));
-  win.addEventListener('b737:electrical-v7-state',e=>update('electrical',electrical(e.detail)));
+  // The bus-injection event carries only a source tag, not fault bits.
+  // Read the actual recomputed ISN snapshot, preserving existing cautions.
+  function refreshElectrical(fallback=null){
+   const owner=win.B737ISNCockpitV1;
+   const state=owner?.getElectricalState?.()||fallback?.state||fallback;
+   const evaluated=owner?.getState?.()?.state?.electrical||fallback?.evaluated;
+   if(!state?.faults)return false;
+   update('electrical',electrical({state,evaluated}));
+   return true;
+  }
+  win.addEventListener('b737:electrical-v7-state',e=>refreshElectrical(e.detail));
+  win.addEventListener('b737:bus-failure-injection-changed',()=>refreshElectrical());
   win.addEventListener('b737:redundancy-channel-state',e=>{
    const d=e.detail;if(d)setChannelFailure(d.system,d.channel,d.failed);
   });
@@ -311,15 +333,17 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0005',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+   version:'SIXPACK-LIVE-0007',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
     derivePressurization:pressurization,deriveAircon400:airconZones,deriveAPUECU:apuECU,
     setChannelFailure,setSystemFailures,
     getRedundancyState:()=>redundancy?.snapshot?.()||null,
    snapshot:()=>({sources:{...activeSource},reasons:resolved(),overheadPowered,updates}),
    refresh:()=>{
-    const power=win.B737UnifiedElectricalLive?.snapshot?.();
-    if(power?.faults)update('electrical',electrical(power));
+    if(!refreshElectrical()){
+     const power=win.B737UnifiedElectricalLive?.snapshot?.();
+     if(power?.faults)update('electrical',electrical(power));
+    }
     const i=win.B737IRSTrainerUnified?.getState?.();if(i?.units)update('irs',irs(i));
     const w=win.B737WindowHeatUnifiedV1?.getOutput?.();if(w?.channels)update('windowHeat',windowHeat(w));
     const t=win.B737TATProbeUnifiedV1?.getOutput?.();if(t?.faults)update('tatProbe',tatProbe(t));
