@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101d2a">
-<meta name="b737-bus-lab-revision" content="BUSLAB24-MULTIFEED-0010">
+<meta name="b737-bus-lab-revision" content="BUSLAB24-BUS-NAMES-0011">
 <title>B737 Classic — BUS / Consumer Test Lab · All Consumer Failure Injection</title>
-<link rel="stylesheet" href="./style.css?v=BUSLAB24-MULTIFEED-0010">
-<script src="../engine/systems/electrical-v7.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
-<script src="../engine/systems/classic-multifeed-topology-v1.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
-<script src="../engine/systems/classic-bus-consumer-engine-v1.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
-<script src="../engine/systems/classic-bus-consumer-test-lab-v1.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
-<script src="../engine/systems/unified-bus-failure-injection-v1.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
-<script src="./app.js?v=BUSLAB24-MULTIFEED-0010" defer></script>
+<link rel="stylesheet" href="./style.css?v=BUSLAB24-BUS-NAMES-0011">
+<script src="../engine/systems/electrical-v7.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
+<script src="../engine/systems/classic-multifeed-topology-v1.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
+<script src="../engine/systems/classic-bus-consumer-engine-v1.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
+<script src="../engine/systems/classic-bus-consumer-test-lab-v1.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
+<script src="../engine/systems/unified-bus-failure-injection-v1.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
+<script src="./app.js?v=BUSLAB24-BUS-NAMES-0011" defer></script>
 </head>
 <body>
 <div class="app-shell">
@@ -40,7 +40,7 @@
 <div class="work-area">
   <aside class="bus-panel" aria-labelledby="busPanelTitle">
     <div class="panel-heading">
-      <div><h2 id="busPanelTitle">باس‌های برق</h2><p>روی هر باس بزن تا ON / OFF شود.</p></div>
+      <div><h2 id="busPanelTitle">باس‌های برق</h2><p>روی هر مسیر تغذیه بزن تا ON / OFF شود؛ ولتاژ جداگانه نمایش داده می‌شود.</p></div>
       <span id="busTotal" class="pill">24 BUS NODES</span>
     </div>
     <div class="scenario-actions">
@@ -62,11 +62,11 @@
     <div class="bus-list" id="busList" aria-label="تمام ۲۴ باس قابل آزمایش">
       <p class="loading">در حال بارگذاری باس‌ها…</p>
     </div>
-    <div class="small-note">115V AC، 28V AC و 28V DC جدا هستند؛ قطع باس بالادستی ممکن است تغذیهٔ وابسته را نیز قطع کند. Transfer Bus می‌تواند از منبع دیگر تغذیه شود.</div>
+    <div class="small-note">FCOM Ch.6 Electrical / MRG IV.6 pp.182–188: نام باس، نوع تغذیه (AC/DC) و ولتاژ جداست. ۲۴ کلید، مسیرهای آزمایشی هستند؛ همهٔ آن‌ها باس فیزیکی مستقل نیستند. طبقهٔ 28 V AC در MRG نباید با 28 V DC یا باس 115 V AC اشتباه شود؛ تغذیهٔ جایگزین طبق وضعیت شبکه محاسبه می‌شود.</div>
   </aside>
   <main class="consumer-panel" aria-labelledby="consumerTitle">
     <div class="panel-heading">
-      <div><h2 id="consumerTitle">تمام مصرف‌کننده‌های برق</h2><p id="sourceCaption">MRG IV.6 • 340 source records / 322 logical devices</p></div>
+      <div><h2 id="consumerTitle">تمام مصرف‌کننده‌های برق</h2><p id="sourceCaption">MRG IV.6 pp.182–188 · 340 source rows / 322 logical devices · FCOM §6.20 bus names</p></div>
       <div class="view-tabs" role="group" aria-label="نوع فهرست">
         <button id="rowsView" type="button" class="view-tab active" aria-pressed="true">۳۴۰ کانسیومر</button>
         <button id="devicesView" type="button" class="view-tab" aria-pressed="false">۳۲۲ تجهیز</button>
@@ -91,11 +91,11 @@
     <div class="list-status"><span id="resultCount" aria-live="polite">در حال خواندن…</span><span id="scenarioLabel">ISOLATED TEST SCENARIO</span></div>
     <div class="table-viewport" role="region" aria-label="فهرست کامل مصرف‌کننده‌ها" tabindex="0">
       <table id="consumerTable">
-        <thead><tr><th scope="col" class="num">#</th><th scope="col">مصرف‌کننده / تجهیز</th><th scope="col">باس و ولتاژ</th><th scope="col">سیستم</th><th scope="col">وضعیت برق</th></tr></thead>
-        <tbody id="consumerBody"><tr><td colspan="5">در حال دریافت اطلاعات…</td></tr></tbody>
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">مصرف‌کننده / تجهیز</th><th scope="col">باس تغذیه (MRG / FCOM)</th><th scope="col">نوع / ولتاژ تغذیه</th><th scope="col">سیستم</th><th scope="col">وضعیت برق</th></tr></thead>
+        <tbody id="consumerBody"><tr><td colspan="6">در حال دریافت اطلاعات…</td></tr></tbody>
       </table>
     </div>
-    <footer>هر ۳۴۰ ردیف مرجع نمایش داده می‌شود. رنگ، وضعیت <strong>تغذیهٔ الکتریکی</strong> است؛ نه لزوماً روشن‌بودن واقعی یک سیستم. مدارهای اختیاری و نامشخص به‌اشتباه برق‌دار گزارش نمی‌شوند.</footer>
+    <footer>نام باس‌ها با MRG IV.6 و FCOM Electrical تطبیق داده شده است؛ در ردیف‌های چندتغذیه، چند نام باس مستقل نمایش داده می‌شود. رده‌های 28 V AC صرفاً مسیر تغذیه در مدل تست‌اند، نه ادعای وجود باس فیزیکی جداگانه. رنگ، وضعیت <strong>تغذیهٔ الکتریکی آزمایشگاهی</strong> است و روشن‌بودن واقعی تجهیز یا تطبیق سیم‌کشی EP-FSI را اثبات نمی‌کند.</footer>
   </main>
 </div>
 <p class="error" id="labError" role="alert" hidden></p>
