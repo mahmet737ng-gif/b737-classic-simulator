@@ -7,9 +7,10 @@
 (function(root){
 'use strict';
 const NS='http://www.w3.org/2000/svg';
-const VERSION='MRG-CL-POWER-PLATE-0002';
+const VERSION='MRG-CL-POWER-PLATE-0003';
 const $=id=>document.getElementById(id);
-let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null;
+let lab=null,figure=null,summary=null,affected=null,selectedInfo=null,affectedPanel=null,layout=null,controls=null;
+const sourceNodes=new Map(),componentNodes=new Map();
 let selected=null,wireSegments=[],busNodes=new Map(),contactNodes=new Map();
 const SOURCE_FEED_WIRES=Object.freeze({
  'M184 263 V343':'generator1@115VAC',
@@ -36,6 +37,19 @@ const SOURCE_FEED_WIRES=Object.freeze({
  'M166 606 V617':'standby@115VAC',
  'M247 606 V617':'standby@28VDC',
  'M395 690 V732 H450':'hotBattery@28VDC'
+});
+const RELAY_WIRE_ROUTES=Object.freeze({
+ 'M143 195 V205 H136 V242':'GB1','M519 195 V210 H519 V242':'GB2',
+ 'M151 195 V218 H260 V242':'GEN1_APU','M296 186 V200 H257 V209':'GEN1_APU',
+ 'M319 184 V200 H397 V209':'GEN2_APU',
+ 'M241 263 V288 H274 V343':'R3','M419 263 V288 H418 V343':'R4',
+ 'M271 288 H332 L351 278 L369 288 H420':'BUS_XFR',
+ 'M419 288 H351 L332 278 H271':'BUS_XFR',
+ 'M116 297 V339 H131 V377':'GROUND_SVC',
+ 'M242 484 V519':'TR1','M452 484 V519':'TR2',
+ 'M526 485 V496 H452':'TR3','M242 497 H527':'R9',
+ 'M166 606 V617':'R37_AC','M247 606 V617':'R37_DC',
+ 'M395 616 V669':'R1','M395 690 V732 H450':'R41'
 });
 const UNTAGGED_FEED_WIRES=Object.freeze({
  'M116 153 V297 H120':'external@115VAC',
@@ -97,7 +111,7 @@ function wire(parent,d,opts={}){
  if(bus)attrs['data-bus']=bus;
  if(from)attrs['data-from']=from;
  const n=s('path',parent,attrs);
- if(bus||from)wireSegments.push({node:n,bus:bus||from,from});
+ if(bus||from)wireSegments.push({node:n,bus:bus||from,from,relay:RELAY_WIRE_ROUTES[d]||null});
  return n;
 }
 function classifyWire(segment,power,cuts){
@@ -135,13 +149,7 @@ function drawContact(parent,id,x,y,{orientation='vertical',label='',closed=null}
 function plain(parent){
  // Paper and page title, scanned schematic format; no rewritten graph layout.
  rect(parent,0,0,616,850,'mrg-paper');
- line(parent,49,50,141,50);
- rect(parent,141,39,334,24,'mrg-header-box');
- rect(parent,144,42,328,18,'mrg-header-inner');
- text(parent,308,55,'ELECTRICAL POWER SCHEMATIC',13,{'text-anchor':'middle',style:'font-size:13px;font-weight:800'});
- line(parent,475,50,488,50);rect(parent,488,43,69,14,'mrg-header-box');
- text(parent,522,53,'CL',10,{'text-anchor':'middle'});
- line(parent,557,50,568,50);
+ // MRG drawing header removed to maximize useful electrical diagram area.
  // Drawing frame and bottom footer.
  line(parent,90,800,545,800,{'stroke-dasharray':'6 4',opacity:.4});
  line(parent,90,799,90,646,{'stroke-dasharray':'6 4',opacity:.5});
@@ -338,12 +346,13 @@ function createScene(){
  layout=make('div',panel,'mrg-plate-layout');
  const grid=layout;
  const holder=make('div',grid,'mrg-sheet-holder');
- figure=s('svg',holder,{viewBox:'0 0 765 714',xmlns:NS,'aria-label':'Wide MRG-style 737 Classic electrical diagram with interactive bus power paths',role:'img',preserveAspectRatio:'xMidYMid meet'});
+ figure=s('svg',holder,{viewBox:'0 0 900 680',xmlns:NS,'aria-label':'Wide MRG-style 737 Classic electrical diagram with interactive bus power paths',role:'img',preserveAspectRatio:'none'});
  const defs=s('defs',figure);
  hatch(defs);
  // Preserve MRG coordinates in the source; the page is re-proportioned wide
  // only for the interactive screen layout requested by the user.
- const paper=s('g',figure,{class:'mrg-art',transform:'scale(1.24 0.84)'});
+ s('rect',figure,{x:0,y:0,width:900,height:680,fill:'#fff'});
+ const paper=s('g',figure,{class:'mrg-art',transform:'translate(-122 -102) scale(1.80 0.955)'});
  plain(paper);
  linesLayer(paper);
  components(paper);
