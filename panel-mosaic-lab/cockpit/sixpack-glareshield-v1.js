@@ -327,7 +327,8 @@ window.B737SixPack=Object.freeze({
 window.addEventListener('b737:cockpit-mounted',mount);
 window.addEventListener('b737:visual-test',e=>{visualTest=!!e.detail?.active;paint()});
 for(const event of ['b737:electrical-network','b737:electrical-v7-state',
- 'b737:unified-ecu-observation','b737:electrical-owner-ready'])
+ 'b737:unified-ecu-observation','b737:electrical-owner-ready',
+ 'b737:bus-failure-injection-changed'])
  window.addEventListener(event,refreshAnnunciatorPower);
 window.addEventListener('b737:sixpack-command',e=>{
  const d=e.detail||{};
