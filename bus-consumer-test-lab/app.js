@@ -241,12 +241,10 @@ function clearCockpit(){
 }
 function bind(){
  $('allOn').addEventListener('click',()=>run(()=>{
-  root.B737MRGElectricalPlateV2?.resetControls?.();
   session.all(true);refresh();
  }));
  $('allOff').addEventListener('click',()=>run(()=>{session.all(false);refresh();}));
  $('resetLab').addEventListener('click',()=>run(()=>{
-  root.B737MRGElectricalPlateV2?.resetControls?.();
   session.restore();$('baselineSelect').value='ALL_ON';refresh();
  }));
  $('baselineSelect').addEventListener('change',()=>run(()=>{
