@@ -23,6 +23,18 @@ async function read(route,cookies){
  const auth=await get('/panel-mosaic-lab/cockpit/');
  assert.equal(auth.status,303,'Protected cockpit must reject guests');
  assert.equal(auth.headers.get('location'),'/login');
+ for(const originalResource of [
+   '/panel-mosaic-lab/cockpit/overhead-stage.html',
+   '/panel-mosaic-lab/cockpit/app.js',
+   '/engine/systems/electrical-v7.js',
+   '/cb-panel-lab/',
+   '/bus-consumer-test-lab/v3.html',
+   '/panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png'
+ ]) {
+   const unauthorized=await get(originalResource);
+   assert.equal(unauthorized.status,303,'Unprotected original resource: '+originalResource);
+   assert.equal(unauthorized.headers.get('location'),'/login');
+ }
  const first=await login();
  assert.equal(first.status,303);
  assert.equal(first.location,'/');

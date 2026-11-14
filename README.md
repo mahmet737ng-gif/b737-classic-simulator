@@ -1,3 +1,13 @@
+# B737 Classic guest simulator gateway
+
+**Current design:** Railway is the authentication and same-origin source gateway for the **full original cockpit application**. It loads `panel-mosaic-lab/cockpit/index.html` and original code, systems, controls, CB and test-lab assets directly from the `main` branch of the source GitHub repository. Only the **visual regions** Main Instrument Panel and Pedestal are hidden. Their system code is not removed, disabled or rebuilt. The original Overhead is installed by its normal application bootstrap.
+
+The browser starts on `/panel-mosaic-lab/cockpit/` under the Railway domain and has no direct embedded cross-origin iframe to GitHub Pages. All content routes on Railway are server-authenticated and covered by the 3-device session cap (20-minute idle expiry).
+
+**Security scope:** Railway is password protected; the **original GitHub repository and its public Pages site remain public**. This gateway does not make the original Pages URL private. Achieving end-to-end exclusivity would require disabling the public Pages deployment and restricting the GitHub source access separately, then replacing the current public-GitHub asset fetch with authenticated private-source or a controlled artifact deployment.
+
+## Original setup reference
+
 # ATA24 guest electrical test bench
 
 This is a **separate standalone web application** for one invited account. It includes a local copy of the B737 Classic ATA24 bus/consumer training view and its dependencies, no cockpit link, no cross-tab storage transport, and no shared app APIs.
