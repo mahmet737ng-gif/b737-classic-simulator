@@ -64,8 +64,11 @@ const assert=require('node:assert/strict');
   assert(counts.lamps>=75,'Annunciator overlays unavailable');
   // Verify the user's mouse-wheel pan reaches the original cockpit controller
   // through the original overhead iframe after a deliberate zoom-in.
-  await page.locator('#zoomIn').click();
-  await page.locator('#zoomIn').click();
+  // Unified's minimal header intentionally hides its old zoom buttons.
+  // Trigger the same original control handler programmatically to set up
+  // a scrollable view, then use an actual mouse wheel over the Overhead.
+  await page.locator('#zoomIn').evaluate(el=>el.click());
+  await page.locator('#zoomIn').evaluate(el=>el.click());
   const viewport=page.locator('#viewport');
   const before=await viewport.evaluate(el=>({top:el.scrollTop,max:el.scrollHeight-el.clientHeight}));
   if(before.max>80){
