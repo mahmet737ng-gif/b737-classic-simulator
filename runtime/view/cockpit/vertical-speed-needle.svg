@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="White vertical-speed needle copied from owner reference">
+ <title>VERTICAL SPEED needle</title>
+ <path d="M247 256 L247 226 L248 49 L252 34 L260 34 L264 49 L265 226 L265 256 Z" fill="#f7f7f0" stroke="#3c3b35" stroke-width="2" stroke-linejoin="round"/>
+ <path d="M251 50 L251 224" stroke="#fff" stroke-width="2" opacity=".8"/>
+</svg>

@@ -1,0 +1,346 @@
+{
+  "schema": "b737-classic-switches-catalog/v1",
+  "date": "2026-10-24",
+  "root": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/",
+  "purpose": "Approved/reusable cockpit switch visual assets centralized for all panels",
+  "compatibility": "Original deployed file paths are preserved because active screens and registries depend on them. These entries are pixel-identical Git blobs.",
+  "preservation": "Do not regenerate/recolor/reframe locked visual assets. Add versioned replacements after user approval.",
+  "assets": [
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Black_Guarded_CLOSED.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_CLOSED.png",
+      "git_blob_sha": "7bcf7e68812631a77cbfe8875d62534a911aea28",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Black_Guarded_Open_CENTER.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_CENTER.png",
+      "git_blob_sha": "3f5780a46d0a35c42dacbbfd7a084f25e540aa16",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Black_Guarded_Open_DOWN.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_DOWN.png",
+      "git_blob_sha": "8a2e31185650ed4b2ff2624986544a9c93fb838a",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Black_Guarded_Open_UP.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Black_Guarded_Open_UP.png",
+      "git_blob_sha": "b6e17fc9a6b1b910c93c6fa34355735574a97c86",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Red_Guarded_CLOSED.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_CLOSED.png",
+      "git_blob_sha": "98f78191a04dc71515702d5fbdf2ca606e4eab05",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Red_Guarded_Open_CENTER.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_CENTER.png",
+      "git_blob_sha": "a8e9ad3d4afbacb3ee4df63f53269b8ba41c5409",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Red_Guarded_Open_DOWN.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_DOWN.png",
+      "git_blob_sha": "a946128f8b5899f726a6ade4bc0fd0bbf923561c",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/Red_Guarded_Open_UP.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/Red_Guarded_Open_UP.png",
+      "git_blob_sha": "1e975ba06292ebe057ba9aaa464118b48e68fe76",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/guarded-switches.manifest.json",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/guarded-switches.manifest.json",
+      "git_blob_sha": "e9d2b50fd8e98efbe17d009313f5b2bfc2fcc493",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/guarded-switches.manifest.v2.json",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/guarded-switches.manifest.v2.json",
+      "git_blob_sha": "a3d76527aabe6af0497d3f82fec47da195a47ce3",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/guarded-v1.manifest.json",
+      "original_path": "switch-lab/assets/guarded-v1/manifest.json",
+      "git_blob_sha": "3637d3373626969a09f606e08db1277fd66ee894",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Guarded",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Guarded/B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1.json",
+      "original_path": "switch-lab/references/B737-GUARDED-BLACK-BOTTOM-HINGE-OPEN-V1.json",
+      "git_blob_sha": "ab395a9100b216a57fe36265c52ac0640a891994",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/README_FA.md",
+      "original_path": "shared-assets/toggle-switch-standard-v1/README_FA.md",
+      "git_blob_sha": "52067625f505369c6efda5585e2a3074fddc4f4b",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.png",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-center.png",
+      "git_blob_sha": "79444afff5fef20a65b989fb014af202c6e7cfad",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-center.webp",
+      "git_blob_sha": "fa0c8cf84fb8fe622e89adc7f71fb78ebf1b62c7",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.png",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-off.png",
+      "git_blob_sha": "0f8cb2fb70383dba478047a4986e8fcf7325ba1b",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.webp",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-off.webp",
+      "git_blob_sha": "2651ebeb934f2c247bf53a5dc437d79f8ed778bf",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.png",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-on.png",
+      "git_blob_sha": "2fd491910df573715dc1fc678e7ee95bd79441ff",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.webp",
+      "original_path": "shared-assets/toggle-switch-standard-v1/b737-toggle-on.webp",
+      "git_blob_sha": "fa55e13ef2f8d1d8b7adcde2cb2cd12f870ec300",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/toggle-standard.json",
+      "original_path": "shared-assets/toggle-switch-standard-v1/toggle-standard.json",
+      "git_blob_sha": "eb99182c38091bc58d44ab3924f202a2d2d3d1d2",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle/Horizontal",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Horizontal/nav-transfer-center-v3.webp",
+      "original_path": "flight-controls-panel/assets/nav-transfer-center-v3.webp",
+      "git_blob_sha": "6be7709eea5dafb8d4a5a589cc4dfe5097d0f1b1",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle/Horizontal",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Horizontal/nav-transfer-left-v3.webp",
+      "original_path": "flight-controls-panel/assets/nav-transfer-left-v3.webp",
+      "git_blob_sha": "ae3712e0943cb484c10ca20f4ad0787efae88588",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle/Horizontal",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Horizontal/nav-transfer-lever-v2.svg",
+      "original_path": "flight-controls-panel/assets/nav-transfer-lever-v2.svg",
+      "git_blob_sha": "66b25ea27bb1e8bee1a8717a66c8d948565d4dba",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Toggle/Horizontal",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Horizontal/nav-transfer-right-v3.webp",
+      "original_path": "flight-controls-panel/assets/nav-transfer-right-v3.webp",
+      "git_blob_sha": "52298ac23b9fe3db88e3f83c63c1f2951c658ab5",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Rotary",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.json",
+      "original_path": "switch-lab/assets/rotary-standard-v1.json",
+      "git_blob_sha": "157d089f75a7b36211280fcca27216a431e79657",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Rotary",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp",
+      "original_path": "switch-lab/assets/rotary-standard-v1.webp",
+      "git_blob_sha": "6748ca45440d5ea38c41076f7ebb712023746cf3",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_45_manifest.json",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_45_manifest.json",
+      "git_blob_sha": "fc235ebc80afb5102b4ab2d9532b8f308be92469",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "git_blob_sha": "f64e83e3354002587b28fada540341cb9ff3e3bc",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "git_blob_sha": "d30cc913161d7464afa544729db0edd486cb4b3b",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_OFF.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_OFF.webp",
+      "git_blob_sha": "94e2b8bfa66509550e03694ed3f9f1c460bd1d2b",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_ON.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_ON.webp",
+      "git_blob_sha": "a48cd3be0acce30e2bc9c33f20f13d8bb4f97629",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "git_blob_sha": "a34b07e5f49806674a9b2ea69f08da1ebca9e8ca",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "git_blob_sha": "54ee71fedffdd5a3cc7247d3150e1f19061a71da",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_LEFT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_LEFT45_OFF.png",
+      "git_blob_sha": "dd205676bf7fbc87c5d69772442a9632c6a128d6",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_LEFT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_LEFT45_ON.png",
+      "git_blob_sha": "3a0a880be39615afbed3be2d95e7b123bffa5c32",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_OFF.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_OFF.webp",
+      "git_blob_sha": "53972fdc92a1bd5131e82d7af3c12195c22fc29a",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_ON.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_ON.webp",
+      "git_blob_sha": "62dcc3751545103b6178c24f65a27c30d6436dc4",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_RIGHT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_RIGHT45_OFF.png",
+      "git_blob_sha": "35dfa151ddbf9a5ef53e55ca5e81ad5998c5ff33",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_RIGHT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG1_RIGHT45_ON.png",
+      "git_blob_sha": "299c2e27660b8bb91ab5b463172c1b4a46552205",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_LEFT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_LEFT45_OFF.png",
+      "git_blob_sha": "8e513c10edf553cdc3774b395ea045e5dc003300",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_LEFT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_LEFT45_ON.png",
+      "git_blob_sha": "335d4982146a31e43142e9f8e3e7b62efd67a12c",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_OFF.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_OFF.webp",
+      "git_blob_sha": "308afc9bc638fb2cd5a07f4fc76b1ccd86555d3a",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_ON.webp",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_ON.webp",
+      "git_blob_sha": "3f68dd908d3e550aeb317b4a3eeca72ee0044238",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_RIGHT45_OFF.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_RIGHT45_OFF.png",
+      "git_blob_sha": "dc31e0f9065d6318eb0bdf834e7a5adcfb0f294f",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_RIGHT45_ON.png",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENG2_RIGHT45_ON.png",
+      "git_blob_sha": "65b8d5c5a8ec715f91f5c149988ccb58fc57a60d",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENGINES_45_manifest.json",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_ENGINES_45_manifest.json",
+      "git_blob_sha": "bb3cadfa415c8424a536a85ad9c2d3a92d69aaed",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Fire_Handles",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_manifest.json",
+      "original_path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_manifest.json",
+      "git_blob_sha": "d8452a35393a11f65b448a50a7357cc0f7a5f506",
+      "status": "existing_locked_or_reference"
+    },
+    {
+      "category": "Rotary",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Rotary/Cross_Feed_Knob.png",
+      "original_path": "ChatGPT Library Cross_Feed_Knob.png (front view v1)",
+      "git_blob_sha": "866893d8d80b1b6d0a2de9d9dd538654cbd64e1c",
+      "status": "new"
+    }
+  ]
+}

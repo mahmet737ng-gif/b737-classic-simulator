@@ -1,0 +1,137 @@
+'use strict';
+require('./aircon-400-model.test.cjs');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto'),m=require('./view-model');
+const a=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));assert.equal(m.validate(a),true);assert.equal(a.regions.length,3);assert.equal(a.regions.find(r=>r.id==='main').placements.length,5);assert.equal(a.regions.find(r=>r.id==='overhead').baseVersion,'UPD-0012-OVH-measured-seams');
+assert.equal(a.version,'CKP-0012-THROTTLE-FIT');
+const pedestal=a.regions.find(r=>r.id==='pedestal');
+const [throttle,fire,radio]=pedestal.placements;
+assert.deepEqual(pedestal.placements.map(p=>p.id),['throttle-quadrant','fire-protection','pedestal-radio']);
+assert.equal(throttle.asset,'panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp');
+assert.ok(Math.abs(throttle.w/throttle.h-throttle.sourceWindow.w/throttle.sourceWindow.h)<1e-9,'Display-only trim preserves throttle source aspect');
+assert.equal(throttle.w,606,'Throttle core must not span the full pedestal width');
+assert.ok(Math.abs(throttle.x+throttle.w/2-pedestal.nativeWidth/2)<1e-9,'Throttle centered in pedestal');
+assert.ok(throttle.maskPolygon?.length>=8,'Owner-approved bare quadrant silhouette hides background without changing locked assets');
+assert.ok(Math.abs(fire.y-(throttle.y+throttle.h))<1e-9,'Fire follows throttle without overlap');
+assert.ok(Math.abs(radio.y-(fire.y+fire.h))<1e-9,'Radio follows fire without overlap');
+const fireBare='panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp';
+assert.equal(fire.asset,fireBare,'Unified pedestal must show the newly uploaded bare Fire Protection texture');
+assert.equal(fire.presentation,'contain','New bare panel must preserve exact aspect ratio');
+assert.equal(fire.sourceWindow,undefined,'Full 2172x724 fire panel must not be cropped');
+assert.equal(fire.x,244,'Original fire panel position must not shift');
+assert.equal(fire.y,740.9857819905213,'Fire panel remains immediately below throttle');
+assert.equal(fire.w,685,'Fire panel reserved width unchanged');
+assert.equal(fire.h,170.10287081339712,'Fire panel reserved height unchanged');
+assert.equal(a.assets[fireBare].sha256,'0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f','Approved Fire V6 source image integrity');
+assert.equal(a.assets[fireBare].gitBlobSha,'9b5451a8c1a2598de9a5ee5ae166fee8382d0b38','Approved Fire V6 Git blob integrity');
+const priorFire='panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg';
+assert.equal(a.assets[priorFire].sha256,'4f1719e49ae624579a012214c846ba07007c7ceb39ed917fee37687397173f0c','Previous approved base retained for rollback');
+assert.equal(a.assets[priorFire].sourcePngSha256,'ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c','Previous original PNG source remains unchanged');
+assert.ok(fs.readFileSync(path.join(__dirname,'app.js'),'utf8').includes("if(p.presentation==='contain')img.style.objectFit='contain'"),'Unified must letterbox instead of stretching Fire');
+
+assert.ok(a.canvas.height>=pedestal.y+pedestal.h,'Whole pedestal remains inside canvas');
+assert.equal(a.assets[throttle.asset].sha256,'effe3523ce16b81060e0ada0ba6dfc298f7448d6256ed99b2602fe98bd254eb8','Owner-authorized inward slot alignment');
+assert.equal(a.assets['panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp'].sha256,'ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f','Prior labeled source retained unchanged');
+assert.equal(a.assets['panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp'].sha256,'f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a','Original bare source retained unchanged');
+for(const asset of Object.values(a.assets)){const bytes=fs.readFileSync(path.resolve(__dirname,asset.url));assert.equal(bytes.length,asset.bytes);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),asset.gitBlobSha);}
+const zoom=m.zoomAnchor(.25,.5,100,200,300,250);assert.equal((100+300)/.25,(zoom.left+300)/.5);assert.equal((200+250)/.25,(zoom.top+250)/.5);assert.ok(m.fit({w:4400,h:8100},390,600)>=.04);
+const centered=m.zoomAnchor(.1,.2,0,0,500,200,{x:300,y:20},{x:100,y:0});assert.equal((500-300)/.1,(centered.left+500-100)/.2);assert.equal((200-20)/.1,(centered.top+200)/.2);
+
+const airconFile=path.join(__dirname,'../assets/locked/2026-10-23/Boeing-Style Environmental Control Panel.png');
+assert.ok(fs.existsSync(airconFile),'737-400 owner Air Conditioning image must be uploaded');
+const airconPng=fs.readFileSync(airconFile);
+assert.equal(airconPng.subarray(1,4).toString(),'PNG','Owner artwork must be a PNG');
+assert.deepEqual([airconPng.readUInt32BE(16),airconPng.readUInt32BE(20)],[1122,1402],'737-400 OH20 source dimensions are fixed for needle registration');
+const oh20Bridge=fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8');
+assert.ok(oh20Bridge.includes('Boeing-Style Environmental Control Panel.png'),'Bridge must reference the uploaded owner image');
+assert.ok(oh20Bridge.includes('.atlas-piece[data-key="OH20"] .atlas-image-window'),'OH20 runtime-only replacement target');
+assert.ok(oh20Bridge.includes("airframeFamily==='B737-400'"),'B737-400 must be the sole background replacement trigger');
+assert.ok(oh20Bridge.includes("setAirframeArtwork(savedAirframe())"),'Cross-tab aircraft selection must be honoured');
+assert.ok(oh20Bridge.includes("action==='aircon-background'"),'Embedded overhead must accept aircraft selection changes');
+const airconSettings=fs.readFileSync(path.join(__dirname,'aircraft-settings.js'),'utf8');
+const airconParent=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+assert.ok(airconSettings.includes("action:'aircon-background', family:selected.family.id"),'Settings swaps the visible OH20');
+assert.ok(airconParent.includes("command('aircon-background'"),'New overhead frames restore aircraft family');
+const html=fs.readFileSync(path.join(__dirname,'overhead-stage.html'),'utf8');for(const src of ['performance/overhead-renderer.js?v=PERF-0001','app.js?v=EXTL-INBOARD-L-CENTER-0003','rotary-motion-rm0002.js?v=RM-0004','rotary-guards.js?v=ISN-0003','rotary-guards-model.js?v=RM-0003','overhead-bridge.js?v=PRESS-OH22-DCPCS-WHITE-WHEEL-0001'])assert.ok(html.includes(src),src);
+assert.match(html,/interactive-overhead\/lights\.js\?v=[A-Za-z0-9_.-]+/,'Embedded OH14 lighting script must use explicit release-cache version');assert.ok(!html.includes('data-cockpit-entry'));
+const overheadRelease=a.regions.find(r=>r.id==='overhead').embeddedUrl;
+assert.ok(overheadRelease.startsWith('./overhead-stage.html?')&&new URL(overheadRelease,'https://unified.example/').searchParams.has('v'),
+ 'Unified overhead source must remain the installed stage');
+for(const key of ['ISN-0003','PERF-0001','LGT-0006','PRESS-OH22-0007','SOCKET-FIT','AIRCON400-0005',
+ 'SOCKET-CENTER','LANDING3','WHEEL-PAN-0001','LE-STAGGER-0008','LE-PHOTOLENS-0003',
+ 'LE-EMISSION-0001','LE-SMOOTHGLASS-0001','LE-OFFGLASS-0004']){
+ assert.ok(overheadRelease.includes(key),'Required overhead feature was dropped: '+key);
+}
+assert.ok(!overheadRelease.includes('..\\\\'),'Overhead release path must not escape the approved stage');
+// WHEEL-PAN-0001 changes navigation only; physical switch/atlas geometry stays locked.
+const wheelPan=require('./wheel-pan-model-v1');
+assert.deepEqual(wheelPan.normalize({deltaX:0,deltaY:3,deltaMode:1},{height:500}),{x:0,y:48});
+assert.ok(oh20Bridge.includes("kind:'wheel-pan'"),'OH iframe wheel must reach Unified viewport');
+assert.ok(oh20Bridge.includes('.mounted-rotary,.rg-detent-hit,.guard-node'),'Real rotary/guard wheel detents must remain owned by the controls');
+assert.ok(airconParent.includes("if(d.kind==='wheel-pan'){panWheel(d);return;}"),'Unified listens to same-origin iframe wheel pan');
+assert.ok(fs.readFileSync(path.join(__dirname,'cdu-bridge.js'),'utf8').includes("kind:'wheel-pan'"),'CDU iframe must forward wheel pan');
+assert.ok(fs.readFileSync(path.join(__dirname,'index.html'),'utf8').includes('wheel-pan-model-v1.js?v=WHEEL-PAN-0001'),'Wheel model cache-bust must be loaded');
+const interactive=fs.readFileSync(path.join(__dirname,'../interactive-overhead/rotary-guards.js'),'utf8');
+assert.ok(!interactive.includes('mountEngineStartLabelCorrection')&&!interactive.includes('rg-start-label-correction'), 'Unified must not mount the removed floating FLT text overlay on either engine start selector');
+assert.ok(interactive.includes('motion.createDetentGesture'),'Unified uses event-triggered hard-stop detents');
+assert.ok(interactive.includes("engine.setRotary(c.id,hit.state,'legend-tap')"),'Tapping an exact legend selects its detent directly');
+assert.match(interactive,/firstThreshold:12,nextThreshold:28,minTravelPixels:9/,'Swipe sensitivity is reduced while legend targets remain immediate');
+assert.ok(interactive.includes('model.legendHotspots'),'UI maps calibrated polygons via source atlas transform');
+assert.match(interactive,/if\(c\.mode==='detent'\)\{drag\.gesture\.feed\(delta,Math\.hypot\(dx,dy\)\);return;\}/,'Detents require angular and pointer-distance dead zones; no continuous free-follow rotation');
+const unified=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+assert.ok(unified.includes('CKP-0012'),'Unified HTML advertises throttle fit correction');
+for(const marker of ['id="unifiedLightsOpen"','id="unifiedLightsDialog"','id="unifiedLightSearch"','unified-lights.js?v=LGT-0021','../lights-test/asset-model.js?v=LGT-0021'])assert.ok(unified.includes(marker),'Unified annunciator testing: '+marker);
+const assetModel=require('../lights-test/asset-model'),gallery=JSON.parse(fs.readFileSync(path.join(__dirname,'../lights-test/registry.json')));
+assert.ok(gallery.lights.length>=87,'Unified must load the expanding LIGHTS catalogue');
+const atLim=gallery.lights.find(c=>c.id==='A_T_LIM_WHITE');assert.deepEqual(atLim?.lines,['A/T LIM']);assert.deepEqual(atLim.states,['OFF','ON']);assert.deepEqual(atLim.face,{width:600,height:300});
+const align=gallery.lights.find(c=>c.id==='ALIGN_WHITE');assert.deepEqual(align?.lines,['ALIGN']);assert.deepEqual(align.states,['OFF','ON']);assert.deepEqual(align.face,{width:600,height:300});
+for(const [id,stem] of [['ALIGN_WHITE','ALIGN_WHITE'],['ON_DC_LAMP','ON_DC_LAMP'],['FAULT','FAULT'],['DC_FAIL','DC_FAIL']]){
+ const legend=gallery.lights.find(c=>c.id===id);
+ assert.ok(legend,id);assert.deepEqual(legend.states,['OFF','ON']);assert.equal(legend.face.width,600);assert.equal(legend.face.height,300);
+ const assetDir=id==='ALIGN_WHITE'?'black-white-v1/gallery/':id==='FAULT'?'black-amber-v1/gallery/':'unified-v2/';assert.equal(legend.assets.OFF,assetDir+stem+'_OFF.svg');assert.equal(legend.assets.ON,assetDir+stem+'_ON.svg');
+ assert.equal(gallery.lights.filter(c=>c.id===id).length,1,'One reusable legend per IRS type: '+id);
+}
+for(const [id,stem,expectedLines] of [
+ ['LOW_PRESSURE','LOW_PRESSURE_AMBER_REF',['LOW','PRESSURE']],
+ ['R_ELEV_PITOT','R_ELEV_PITOT_AMBER_REF',['R ELEV','PITOT']]
+]){
+ const light=gallery.lights.find(c=>c.id===id);
+ assert.deepEqual(light?.lines,expectedLines);assert.deepEqual(light.states,['OFF','ON']);
+ assert.deepEqual(light.face,{width:600,height:300});
+ assert.equal(light.assets.OFF,'unified-v2/'+id+'_OFF.svg');assert.equal(light.assets.ON,'unified-v2/'+id+'_ON.svg');
+ for(const state of light.states){const original=fs.readFileSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',stem+'_'+state+'.svg'));const approved=fs.readFileSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state]));assert.deepEqual(approved,original,'Keep the approved '+id+' '+state+' pixel-identical');}
+}
+for(const id of ['SPEED_BRAKE_ARMED_GREEN','SPEED_BRAKE_DO_NOT_ARMED_AMBER'])assert.ok(gallery.lights.some(c=>c.id===id),id);
+const stab=gallery.lights.find(c=>c.id==='STAB_OUT_OF_TRIM');assert.deepEqual(stab.face,{width:300,height:300});
+assert.equal(stab.assets.ON,'unified-v2/STAB_OUT_OF_TRIM_ON.svg');
+const fakeListing=['STAB_OUT_OF_TRIM_OFF.svg','STAB_OUT_OF_TRIM_ON.svg','STAB_OUT_OF_TRIM_FIT_OFF.svg','STAB_OUT_OF_TRIM_FIT_ON.svg'].map(name=>({name,type:'file'}));
+const mergedGallery=assetModel.merge(gallery,fakeListing);assert.equal(mergedGallery.length,gallery.lights.length,'Replacement faces must not create duplicate STAB lights');assert.equal(mergedGallery.find(c=>c.id==='STAB_OUT_OF_TRIM').assets.ON,'unified-v2/STAB_OUT_OF_TRIM_ON.svg','Registered revision must override older discovered face');
+for(const [asset,id] of [['SPEED_BRAKE_ARMED_GREEN','main-speed-brake-armed'],['SPEED_BRAKE_DO_NOT_ARMED_AMBER','main-speed-brake-do-not-arm']])assert.ok(gallery.lights.find(c=>c.id===asset)?.mountedCockpitInstances.includes(id),asset+' mounted on Unified');
+assert.equal(assetModel.normalize(gallery.lights.find(c=>c.id==='VALVE_OPEN'),'DIM_BLUE'),'DIM_BLUE');
+for(const light of gallery.lights)for(const state of light.states)assert.ok(fs.existsSync(path.join(__dirname,'../assets/locked/2026-10-23/LIGHTS',light.assets[state])),light.id+' '+state);
+console.log('PASS: three regions; five main sources; complete source aspects; exact eight image fingerprints; cursor-anchored zoom; embedded approved overhead modules.');
+
+const approvedFlap=fs.readFileSync(path.resolve(__dirname,'../assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png'));
+assert.equal(crypto.createHash('sha256').update(approvedFlap).digest('hex'),'709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4','Original nine-BMP extraction must remain byte-for-byte unchanged');
+const flapManifest=JSON.parse(fs.readFileSync(path.join(__dirname,'flap-lever-test.json'),'utf8'));
+assert.deepEqual(flapManifest.detents.map(d=>d.value),[0,1,2,5,10,15,25,30,40]);
+assert.equal(flapManifest.image.frameWidth*flapManifest.image.frameCount,flapManifest.image.width);
+assert.equal(flapManifest.controls.mode,'visual-test-only','No unverified physical flap motion coupling');
+const background=a.regions.find(r=>r.id==='pedestal').placements.find(p=>p.id==='throttle-quadrant');
+const flapCalibration=flapManifest.backgroundCalibrations[background.asset];
+assert.ok(flapCalibration,'Current background must have its own measured FLAP calibration');
+assert.deepEqual(flapCalibration.sourceSize,[800,1000],'New bare quadrant calibration must match its image pixels');
+assert.equal(flapCalibration.cosmeticCorrections.length,0,'Approved new bare quadrant requires no inherited legacy tick patches');
+for(const detent of flapManifest.detents){
+ const target=flapCalibration.targets[String(detent.value)];
+ assert.ok(target&&Number.isFinite(target.x)&&Number.isFinite(target.y),'Missing source-pixel target for '+detent.value);
+ assert.ok(Number.isFinite(detent.toothTip.x)&&Number.isFinite(detent.toothTip.y),'Missing sprite tooth anchor for '+detent.value);
+ const point=require('./flap-lever-model').nativePoint(background,target);
+ assert.ok(point.x>background.x+background.w/2,'FLAP tooth must sit to the right of the throttle core');
+}
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT'),'Require photo-registered nine-position FLAP actuator release');
+assert.ok(unified.includes('flap-lever-test.css?v=FLAP-BMP-0004'));
+console.log('PASS: exact owner nine-BMP flap sprite archived and visual-only nine-detent Unified overlay registered.');
+require('./flap-owner-photo-registration.test.cjs');
+require('./speedbrake-lever-unified-v2.test.cjs');
+
+require('./pressurization-oh22.test.cjs');

@@ -1,0 +1,24 @@
+/* CKP-0004: visual-only, route-local gallery. No frozen mosaic styling is touched. */
+.unified-lights-open{border-color:#d9ad60;color:#ffe0a6;font-weight:700}
+.unified-lights-dialog{width:min(1180px,97vw);max-height:94vh;padding:17px;direction:rtl}
+.unified-lights-dialog .dialog-head{position:sticky;top:-17px;z-index:4;padding:10px 0 8px;background:#10202b;border-bottom:1px solid #36556a}
+.unified-lights-dialog .dialog-head h2{font-size:17px;margin:0}
+.unified-lights-note{color:#a9c0cc;font-size:12px;line-height:1.9;margin:9px 0}
+.unified-lights-controls{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:10px 0}
+.unified-lights-controls input{flex:1;min-width:205px;background:#0c1822;border:1px solid #506e82;color:#ecf6fc;border-radius:7px;padding:9px 10px;font:inherit}
+.unified-lights-controls button{white-space:nowrap;padding:8px 11px;font-size:12px}
+.unified-lights-stats{color:#b7d4e1;font-size:12px;margin:8px 0 12px;min-height:23px}
+.unified-lights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;direction:ltr}
+.unified-light-card{background:#152737;border:1px solid #345368;border-radius:12px;padding:11px;min-width:0;direction:ltr;text-align:center}
+.unified-light-card h3{font:700 13px/1.45 system-ui,sans-serif;margin:0 0 4px;min-height:38px;overflow-wrap:anywhere}
+.unified-light-id{font:10px/1.45 monospace;color:#91acbb;overflow-wrap:anywhere;min-height:28px}
+.unified-light-stage{display:flex;align-items:center;justify-content:center;min-height:132px;margin:7px 0;background:#060a0d;border:1px solid #263946;border-radius:9px;padding:8px;cursor:pointer}
+.unified-light-stage img{display:block;max-width:100%;max-height:150px;object-fit:contain;pointer-events:none;user-select:none}
+.unified-light-buttons{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.unified-light-buttons button{font:700 11px monospace;min-width:49px;padding:7px 8px}
+.unified-light-buttons button[aria-pressed=true]{background:#725019;border-color:#ffc35d;color:#fff3d8}
+.unified-light-buttons button[data-state=OFF][aria-pressed=true]{background:#42515f;border-color:#a9c2cb;color:white}
+.unified-light-health{font:11px/1.6 monospace;color:#9dd7b2;min-height:20px;margin-top:7px}
+.unified-light-health.bad{color:#ff9988}
+@media(max-width:570px){.unified-lights-dialog{padding:11px}.unified-lights-grid{grid-template-columns:1fr 1fr;gap:6px}.unified-light-card{padding:7px}.unified-light-stage{min-height:100px}.unified-light-stage img{max-height:105px}.unified-lights-controls input{min-width:100%}.unified-light-buttons button{font-size:9px;padding:6px 5px}}
+@media(max-width:370px){.unified-lights-grid{grid-template-columns:1fr}}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-label="Single white AC/DC metering needle">
+  <title>B737 Classic AC/DC metering pointer</title>
+  <desc>One front-view, ivory-white, tapered pointer on a transparent canvas. Its reusable rotation pivot is 256,256; no dial, hub, label, or panel image is included.</desc>
+  <defs>
+    <linearGradient id="pointer-face" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d4d4cc"/>
+      <stop offset="0.18" stop-color="#f5f5ee"/>
+      <stop offset="0.63" stop-color="#fffefa"/>
+      <stop offset="1" stop-color="#e9e8df"/>
+    </linearGradient>
+  </defs>
+  <path d="M 256 40
+           L 263 66
+           L 266 116
+           L 278 190
+           L 290 243
+           Q 293 253 283 258
+           L 229 258
+           Q 219 253 222 243
+           L 234 190
+           L 246 116
+           L 249 66 Z"
+        fill="url(#pointer-face)" stroke="#b8b9b2" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M 255 55 L 255 239 L 241 239 L 251 139 Z" fill="#ffffff" opacity=".48"/>
+</svg>

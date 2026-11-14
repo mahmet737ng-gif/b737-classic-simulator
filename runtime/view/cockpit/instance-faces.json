@@ -1,0 +1,47 @@
+{
+  "schema": "b737.lamps.instance-face.v1",
+  "revision": "PH3-INSTANCE-0001",
+  "purpose": "View-only unique lens vector for original mutable photo rectangle; no model changes",
+  "apertureShapeAutoFit": true,
+  "originalImageEdits": 0,
+  "instances": {
+    "main-pull-up-captain": {
+      "asset": "PULL_UP_RED",
+      "sourceRect": [
+        1284,
+        389,
+        164,
+        68
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_OFF_164x68.svg",
+          "sha256": "59147f4c0abc48773261109dc76921e9c08387d15e6bf6833dce041f0531fb4c"
+        },
+        "ON": {
+          "url": "../assets/lights/instance-fit-v1/COCKPIT_main-pull-up-captain_ON_164x68.svg",
+          "sha256": "07d2fabe65a94490faad2c5504ba25942c9173b03f63382ee6280ff542bc3eb6"
+        }
+      }
+    },
+    "main-pull-up-fo": {
+      "asset": "PULL_UP_RED",
+      "sourceRect": [
+        820,
+        314,
+        67,
+        27
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_OFF_67x27.svg",
+          "sha256": "476d1514b6ba4a0f0b8f0d4fe5a39764b2af4b33d5032f4f43f57d8b6f893a6a"
+        },
+        "ON": {
+          "url": "../assets/lights/instance-fit-v1/COCKPIT_main-pull-up-fo_ON_67x27.svg",
+          "sha256": "5590a9d7d17b2921b2e846149cd4ec7c35cb83b5fc4a02b444b7fb99023e4803"
+        }
+      }
+    }
+  }
+}

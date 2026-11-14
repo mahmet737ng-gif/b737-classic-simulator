@@ -1,0 +1,2195 @@
+{
+  "schema": "B737_CLASSIC_OVERHEAD_LABS_CATALOG_V1",
+  "scope": "TRAINING / NON-FLIGHT",
+  "sourceMosaic": "UPD-0012",
+  "definition": "Template failure catalog based on original physical controls, indicators, and system categories. Not exhaustive of FCOM or installed aircraft failures.",
+  "panels": [
+    {
+      "id": "OH01",
+      "title": "LE DEVICES / FLAP CONTROL",
+      "region": {
+        "tile": "UPPER",
+        "x": 8,
+        "y": 66,
+        "w": 483,
+        "h": 739,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH01:0",
+          "label": "Leading edge slat/flap actuation",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH01:1",
+          "label": "Auto slat protection",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH01:2",
+          "label": "TE flap drive",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "LAMP:gear-left-down",
+          "label": "GEAR LEFT DOWN",
+          "kind": "indicator",
+          "lampId": "gear-left-down",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:gear-right-down",
+          "label": "GEAR RIGHT DOWN",
+          "kind": "indicator",
+          "lampId": "gear-right-down",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:gear-nose-down",
+          "label": "GEAR NOSE DOWN",
+          "kind": "indicator",
+          "lampId": "gear-nose-down",
+          "source": "UPPER"
+        }
+      ]
+    },
+    {
+      "id": "OH02",
+      "title": "IRS / INERTIAL REFERENCE",
+      "region": {
+        "tile": "UPPER",
+        "x": 493,
+        "y": 67,
+        "w": 496,
+        "h": 738,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH02:0",
+          "label": "IRS LEFT alignment and attitude",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH02:1",
+          "label": "IRS RIGHT alignment and attitude",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH02:2",
+          "label": "IRS DC / AC power",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH02:3",
+          "label": "IRS latitude / position input",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "LAMP:irs-l-align",
+          "label": "IRS L ALIGN",
+          "kind": "indicator",
+          "lampId": "irs-l-align",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-r-align",
+          "label": "IRS R ALIGN",
+          "kind": "indicator",
+          "lampId": "irs-r-align",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-l-on-dc",
+          "label": "IRS L ON DC",
+          "kind": "indicator",
+          "lampId": "irs-l-on-dc",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-l-fault",
+          "label": "IRS L FAULT",
+          "kind": "indicator",
+          "lampId": "irs-l-fault",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-l-dc-fail",
+          "label": "IRS L DC FAIL",
+          "kind": "indicator",
+          "lampId": "irs-l-dc-fail",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-r-on-dc",
+          "label": "IRS R ON DC",
+          "kind": "indicator",
+          "lampId": "irs-r-on-dc",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-r-fault",
+          "label": "IRS R FAULT",
+          "kind": "indicator",
+          "lampId": "irs-r-fault",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:irs-r-dc-fail",
+          "label": "IRS R DC FAIL",
+          "kind": "indicator",
+          "lampId": "irs-r-dc-fail",
+          "source": "UPPER"
+        }
+      ]
+    },
+    {
+      "id": "OH03",
+      "title": "SERVICE INTERPHONE / DOME LIGHT",
+      "region": {
+        "tile": "UPPER",
+        "x": 990,
+        "y": 497,
+        "w": 228,
+        "h": 485,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH03:0",
+          "label": "Service interphone",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH03:1",
+          "label": "Dome / cockpit lighting",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        }
+      ]
+    },
+    {
+      "id": "OH04",
+      "title": "AUDIO SELECTOR / MICROPHONE",
+      "region": {
+        "tile": "UPPER",
+        "x": 1222,
+        "y": 66,
+        "w": 485,
+        "h": 317,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH04:0",
+          "label": "Captain audio routing",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH04:1",
+          "label": "First officer audio routing",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH04:2",
+          "label": "MIC / headset paths",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        }
+      ]
+    },
+    {
+      "id": "OH05",
+      "title": "ENGINE INDICATIONS / CREW OXYGEN",
+      "region": {
+        "tile": "UPPER",
+        "x": 1222,
+        "y": 384,
+        "w": 485,
+        "h": 419,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH05:0",
+          "label": "Passenger oxygen deployment",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH05:1",
+          "label": "Crew oxygen pressure",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH05:2",
+          "label": "Engine indication supply",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH05:3",
+          "label": "PMC channel",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "LAMP:reverser-1",
+          "label": "REVERSER 1",
+          "kind": "indicator",
+          "lampId": "reverser-1",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:reverser-2",
+          "label": "REVERSER 2",
+          "kind": "indicator",
+          "lampId": "reverser-2",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:low-idle",
+          "label": "LOW IDLE",
+          "kind": "indicator",
+          "lampId": "low-idle",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:pass-oxygen",
+          "label": "PASS OXYGEN",
+          "kind": "indicator",
+          "lampId": "pass-oxygen",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:pmc-inop-1",
+          "label": "PMC INOP 1",
+          "kind": "indicator",
+          "lampId": "pmc-inop-1",
+          "source": "UPPER"
+        },
+        {
+          "id": "LAMP:pmc-inop-2",
+          "label": "PMC INOP 2",
+          "kind": "indicator",
+          "lampId": "pmc-inop-2",
+          "source": "UPPER"
+        }
+      ]
+    },
+    {
+      "id": "OH06",
+      "title": "FLIGHT RECORDER / ELT / STALL WARN",
+      "region": {
+        "tile": "UPPER",
+        "x": 1709,
+        "y": 67,
+        "w": 501,
+        "h": 737,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH06:0",
+          "label": "Flight data / cockpit recorder",
+          "kind": "recorder",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH06:1",
+          "label": "ELT alerting",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH06:2",
+          "label": "Stall warning channels",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "LAMP:flight-recorder-off",
+          "label": "FLIGHT RECORDER OFF",
+          "kind": "indicator",
+          "lampId": "flight-recorder-off",
+          "source": "UPPER"
+        }
+      ]
+    },
+    {
+      "id": "OH07",
+      "title": "FLIGHT CONTROLS / YAW DAMPER",
+      "region": {
+        "tile": "OH07",
+        "x": 3,
+        "y": 1031,
+        "w": 497,
+        "h": 943
+      },
+      "components": [
+        {
+          "id": "SYS:OH07:0",
+          "label": "Flight control hydraulic A",
+          "kind": "hydraulic",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH07:1",
+          "label": "Flight control hydraulic B",
+          "kind": "hydraulic",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH07:2",
+          "label": "Standby rudder",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH07:3",
+          "label": "Yaw damper",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH07:4",
+          "label": "Speed/Mach trim",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:alternate-flaps-position",
+          "label": "ALTERNATE FLAPS POSITION",
+          "kind": "switch",
+          "source": "OH07"
+        },
+        {
+          "id": "SW:yaw-damper",
+          "label": "YAW DAMPER",
+          "kind": "switch",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:stby-quantity",
+          "label": "STBY QUANTITY",
+          "kind": "indicator",
+          "lampId": "stby-quantity",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:stby-pressure",
+          "label": "STBY PRESSURE",
+          "kind": "indicator",
+          "lampId": "stby-pressure",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:stby-rudder",
+          "label": "STBY RUDDER",
+          "kind": "indicator",
+          "lampId": "stby-rudder",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:flight-pressure-a",
+          "label": "FLIGHT PRESSURE A",
+          "kind": "indicator",
+          "lampId": "flight-pressure-a",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:flight-pressure-b",
+          "label": "FLIGHT PRESSURE B",
+          "kind": "indicator",
+          "lampId": "flight-pressure-b",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:feel-diff",
+          "label": "FEEL DIFF",
+          "kind": "indicator",
+          "lampId": "feel-diff",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:speed-trim",
+          "label": "SPEED TRIM",
+          "kind": "indicator",
+          "lampId": "speed-trim",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:mach-trim",
+          "label": "MACH TRIM",
+          "kind": "indicator",
+          "lampId": "mach-trim",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:auto-slat",
+          "label": "AUTO SLAT",
+          "kind": "indicator",
+          "lampId": "auto-slat",
+          "source": "OH07"
+        },
+        {
+          "id": "LAMP:yaw-damper",
+          "label": "YAW DAMPER",
+          "kind": "indicator",
+          "lampId": "yaw-damper",
+          "source": "OH07"
+        }
+      ]
+    },
+    {
+      "id": "OH08",
+      "title": "NAV / IRS / EFIS TRANSFER",
+      "region": {
+        "tile": "OH08",
+        "x": 3,
+        "y": 1974,
+        "w": 497,
+        "h": 274
+      },
+      "components": [
+        {
+          "id": "SYS:OH08:0",
+          "label": "VHF NAV transfer",
+          "kind": "selector",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH08:1",
+          "label": "IRS transfer",
+          "kind": "selector",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH08:2",
+          "label": "EFIS transfer",
+          "kind": "selector",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:vhf-nav",
+          "label": "VHF NAV",
+          "kind": "switch",
+          "source": "OH08"
+        },
+        {
+          "id": "SW:irs-transfer",
+          "label": "IRS TRANSFER",
+          "kind": "switch",
+          "source": "OH08"
+        },
+        {
+          "id": "SW:efi-transfer",
+          "label": "EFI TRANSFER",
+          "kind": "switch",
+          "source": "OH08"
+        }
+      ]
+    },
+    {
+      "id": "OH09",
+      "title": "FUEL PUMPS / CROSSFEED",
+      "region": {
+        "tile": "OH09",
+        "x": 3,
+        "y": 2248,
+        "w": 497,
+        "h": 758
+      },
+      "components": [
+        {
+          "id": "SYS:OH09:0",
+          "label": "Tank 1 feed / boost",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH09:1",
+          "label": "Tank 2 feed / boost",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH09:2",
+          "label": "Center tank pumps",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH09:3",
+          "label": "Fuel crossfeed valve",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH09:4",
+          "label": "Fuel filter indication",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:fuel-center-l",
+          "label": "FUEL CENTER L",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SW:fuel-center-r",
+          "label": "FUEL CENTER R",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SW:fuel-1-aft",
+          "label": "FUEL 1 AFT",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SW:fuel-1-fwd",
+          "label": "FUEL 1 FWD",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SW:fuel-2-fwd",
+          "label": "FUEL 2 FWD",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SW:fuel-2-aft",
+          "label": "FUEL 2 AFT",
+          "kind": "switch",
+          "source": "OH09"
+        },
+        {
+          "id": "SEL:crossfeed",
+          "label": "CROSSFEED",
+          "kind": "selector",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:filter-1",
+          "label": "FILTER 1",
+          "kind": "indicator",
+          "lampId": "filter-1",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:filter-2",
+          "label": "FILTER 2",
+          "kind": "indicator",
+          "lampId": "filter-2",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-center-l",
+          "label": "FUEL CENTER L",
+          "kind": "indicator",
+          "lampId": "fuel-center-l",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-center-r",
+          "label": "FUEL CENTER R",
+          "kind": "indicator",
+          "lampId": "fuel-center-r",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-1-aft",
+          "label": "FUEL 1 AFT",
+          "kind": "indicator",
+          "lampId": "fuel-1-aft",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-1-fwd",
+          "label": "FUEL 1 FWD",
+          "kind": "indicator",
+          "lampId": "fuel-1-fwd",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-2-fwd",
+          "label": "FUEL 2 FWD",
+          "kind": "indicator",
+          "lampId": "fuel-2-fwd",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-2-aft",
+          "label": "FUEL 2 AFT",
+          "kind": "indicator",
+          "lampId": "fuel-2-aft",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:crossfeed-valve",
+          "label": "CROSSFEED VALVE",
+          "kind": "indicator",
+          "lampId": "crossfeed-valve",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-valve-closed-1",
+          "label": "FUEL VALVE CLOSED 1",
+          "kind": "indicator",
+          "lampId": "fuel-valve-closed-1",
+          "source": "OH09"
+        },
+        {
+          "id": "LAMP:fuel-valve-closed-2",
+          "label": "FUEL VALVE CLOSED 2",
+          "kind": "indicator",
+          "lampId": "fuel-valve-closed-2",
+          "source": "OH09"
+        }
+      ]
+    },
+    {
+      "id": "OH10",
+      "title": "ELECTRICAL AC/DC METERING",
+      "region": {
+        "tile": "OH10",
+        "x": 500,
+        "y": 1031,
+        "w": 496,
+        "h": 672
+      },
+      "components": [
+        {
+          "id": "SYS:OH10:0",
+          "label": "DC metering sensors",
+          "kind": "meter",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH10:1",
+          "label": "AC metering sensors",
+          "kind": "meter",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH10:2",
+          "label": "Transformer-rectifier output",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:galley",
+          "label": "GALLEY",
+          "kind": "switch",
+          "source": "OH10"
+        },
+        {
+          "id": "SEL:dc-meter",
+          "label": "DC METER",
+          "kind": "selector",
+          "source": "OH10"
+        },
+        {
+          "id": "SEL:ac-meter",
+          "label": "AC METER",
+          "kind": "selector",
+          "source": "OH10"
+        }
+      ]
+    },
+    {
+      "id": "OH11",
+      "title": "DRIVE / STANDBY POWER",
+      "region": {
+        "tile": "OH11",
+        "x": 500,
+        "y": 1703,
+        "w": 496,
+        "h": 545
+      },
+      "components": [
+        {
+          "id": "SYS:OH11:0",
+          "label": "Engine drive 1",
+          "kind": "hydraulic",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH11:1",
+          "label": "Engine drive 2",
+          "kind": "hydraulic",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH11:2",
+          "label": "Standby power transfer",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:drive-temp-rise",
+          "label": "DRIVE TEMP RISE",
+          "kind": "switch",
+          "source": "OH11"
+        },
+        {
+          "id": "LAMP:drive-1-drive-pressure",
+          "label": "DRIVE 1 DRIVE PRESSURE",
+          "kind": "indicator",
+          "lampId": "drive-1-drive-pressure",
+          "source": "OH11"
+        },
+        {
+          "id": "LAMP:drive-1-drive-temperature",
+          "label": "DRIVE 1 DRIVE TEMPERATURE",
+          "kind": "indicator",
+          "lampId": "drive-1-drive-temperature",
+          "source": "OH11"
+        },
+        {
+          "id": "LAMP:drive-2-drive-pressure",
+          "label": "DRIVE 2 DRIVE PRESSURE",
+          "kind": "indicator",
+          "lampId": "drive-2-drive-pressure",
+          "source": "OH11"
+        },
+        {
+          "id": "LAMP:drive-2-drive-temperature",
+          "label": "DRIVE 2 DRIVE TEMPERATURE",
+          "kind": "indicator",
+          "lampId": "drive-2-drive-temperature",
+          "source": "OH11"
+        },
+        {
+          "id": "LAMP:standby-power-off",
+          "label": "STANDBY POWER OFF",
+          "kind": "indicator",
+          "lampId": "standby-power-off",
+          "source": "OH11"
+        }
+      ]
+    },
+    {
+      "id": "OH12",
+      "title": "GENERATORS / BUS TRANSFER / APU GEN",
+      "region": {
+        "tile": "OH12",
+        "x": 500,
+        "y": 2248,
+        "w": 496,
+        "h": 758
+      },
+      "components": [
+        {
+          "id": "SYS:OH12:0",
+          "label": "Engine generator 1",
+          "kind": "generator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH12:1",
+          "label": "Engine generator 2",
+          "kind": "generator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH12:2",
+          "label": "APU generator",
+          "kind": "generator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH12:3",
+          "label": "Ground power contactor",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH12:4",
+          "label": "Bus transfer logic",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:ground-power",
+          "label": "GROUND POWER",
+          "kind": "switch",
+          "source": "OH12"
+        },
+        {
+          "id": "SW:gen-1",
+          "label": "GEN 1",
+          "kind": "switch",
+          "source": "OH12"
+        },
+        {
+          "id": "SW:apu-gen-1",
+          "label": "APU GEN 1",
+          "kind": "switch",
+          "source": "OH12"
+        },
+        {
+          "id": "SW:apu-gen-2",
+          "label": "APU GEN 2",
+          "kind": "switch",
+          "source": "OH12"
+        },
+        {
+          "id": "SW:gen-2",
+          "label": "GEN 2",
+          "kind": "switch",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:transferBusOff1",
+          "label": "TRANSFERBUSOFF1",
+          "kind": "indicator",
+          "lampId": "transferBusOff1",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:busOff1",
+          "label": "BUSOFF1",
+          "kind": "indicator",
+          "lampId": "busOff1",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:transferBusOff2",
+          "label": "TRANSFERBUSOFF2",
+          "kind": "indicator",
+          "lampId": "transferBusOff2",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:busOff2",
+          "label": "BUSOFF2",
+          "kind": "indicator",
+          "lampId": "busOff2",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:apu-low-pressure",
+          "label": "APU LOW PRESSURE",
+          "kind": "indicator",
+          "lampId": "apu-low-pressure",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:apu-high-oil-temp",
+          "label": "APU HIGH OIL TEMP",
+          "kind": "indicator",
+          "lampId": "apu-high-oil-temp",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:apu-overspeed",
+          "label": "APU OVERSPEED",
+          "kind": "indicator",
+          "lampId": "apu-overspeed",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:gen-off-bus-1",
+          "label": "GEN OFF BUS 1",
+          "kind": "indicator",
+          "lampId": "gen-off-bus-1",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:gen-off-bus-2",
+          "label": "GEN OFF BUS 2",
+          "kind": "indicator",
+          "lampId": "gen-off-bus-2",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:apu-gen-off-bus",
+          "label": "APU GEN OFF BUS",
+          "kind": "indicator",
+          "lampId": "apu-gen-off-bus",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:ground-power-available",
+          "label": "GROUND POWER AVAILABLE",
+          "kind": "indicator",
+          "lampId": "ground-power-available",
+          "source": "OH12"
+        },
+        {
+          "id": "LAMP:apu-low-oil-quantity",
+          "label": "APU LOW OIL QUANTITY",
+          "kind": "indicator",
+          "lampId": "apu-low-oil-quantity",
+          "source": "OH12"
+        }
+      ]
+    },
+    {
+      "id": "OH13",
+      "title": "EQUIPMENT COOLING / CIRCUIT PANEL",
+      "region": {
+        "tile": "OH13",
+        "x": 996,
+        "y": 1031,
+        "w": 235,
+        "h": 1032
+      },
+      "components": [
+        {
+          "id": "SYS:OH13:0",
+          "label": "Equipment cooling supply fan",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH13:1",
+          "label": "Equipment cooling exhaust fan",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH13:2",
+          "label": "Circuit breaker indication",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:equip-cooling-supply",
+          "label": "EQUIP COOLING SUPPLY",
+          "kind": "switch",
+          "source": "OH13"
+        },
+        {
+          "id": "SW:equip-cooling-exhaust",
+          "label": "EQUIP COOLING EXHAUST",
+          "kind": "switch",
+          "source": "OH13"
+        },
+        {
+          "id": "SEL:circuit-brightness",
+          "label": "CIRCUIT BRIGHTNESS",
+          "kind": "selector",
+          "source": "OH13"
+        },
+        {
+          "id": "SEL:panel-brightness",
+          "label": "PANEL BRIGHTNESS",
+          "kind": "selector",
+          "source": "OH13"
+        },
+        {
+          "id": "LAMP:equip-supply-off",
+          "label": "EQUIP SUPPLY OFF",
+          "kind": "indicator",
+          "lampId": "equip-supply-off",
+          "source": "OH13"
+        },
+        {
+          "id": "LAMP:equip-exhaust-off",
+          "label": "EQUIP EXHAUST OFF",
+          "kind": "indicator",
+          "lampId": "equip-exhaust-off",
+          "source": "OH13"
+        }
+      ]
+    },
+    {
+      "id": "OH14",
+      "title": "EMERGENCY LIGHTS / PASSENGER SIGNS",
+      "region": {
+        "tile": "OH14",
+        "x": 996,
+        "y": 2063,
+        "w": 235,
+        "h": 410
+      },
+      "components": [
+        {
+          "id": "SYS:OH14:0",
+          "label": "Emergency lighting battery",
+          "kind": "power",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH14:1",
+          "label": "Emergency light relay",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH14:2",
+          "label": "No smoking / seatbelt signals",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:emergency-exit-lights",
+          "label": "EMERGENCY EXIT LIGHTS",
+          "kind": "switch",
+          "source": "OH14"
+        },
+        {
+          "id": "SW:no-smoking",
+          "label": "NO SMOKING",
+          "kind": "switch",
+          "source": "OH14"
+        },
+        {
+          "id": "SW:fasten-belts",
+          "label": "FASTEN BELTS",
+          "kind": "switch",
+          "source": "OH14"
+        },
+        {
+          "id": "LAMP:emergency-not-armed",
+          "label": "EMERGENCY NOT ARMED",
+          "kind": "indicator",
+          "lampId": "emergency-not-armed",
+          "source": "OH14"
+        }
+      ]
+    },
+    {
+      "id": "OH15",
+      "title": "WINDOW HEAT / PITOT / TAT",
+      "region": {
+        "tile": "OH15",
+        "x": 1231,
+        "y": 1031,
+        "w": 493,
+        "h": 508
+      },
+      "components": [
+        {
+          "id": "SYS:OH15:0",
+          "label": "Window heater L/R",
+          "kind": "heater",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH15:1",
+          "label": "Pitot / static probes",
+          "kind": "heater",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH15:2",
+          "label": "TAT temperature probe",
+          "kind": "heater",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:window-l-side",
+          "label": "WINDOW L SIDE",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:window-l-fwd",
+          "label": "WINDOW L FWD",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:window-r-fwd",
+          "label": "WINDOW R FWD",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:window-r-side",
+          "label": "WINDOW R SIDE",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:window-power-test",
+          "label": "WINDOW POWER TEST",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:pitot-a",
+          "label": "PITOT A",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "SW:pitot-b",
+          "label": "PITOT B",
+          "kind": "switch",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-l-side-overheat",
+          "label": "WINDOW L SIDE OVERHEAT",
+          "kind": "indicator",
+          "lampId": "window-l-side-overheat",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-l-fwd-overheat",
+          "label": "WINDOW L FWD OVERHEAT",
+          "kind": "indicator",
+          "lampId": "window-l-fwd-overheat",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-r-fwd-overheat",
+          "label": "WINDOW R FWD OVERHEAT",
+          "kind": "indicator",
+          "lampId": "window-r-fwd-overheat",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-r-side-overheat",
+          "label": "WINDOW R SIDE OVERHEAT",
+          "kind": "indicator",
+          "lampId": "window-r-side-overheat",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-capt-ps",
+          "label": "PROBE CAPT PS",
+          "kind": "indicator",
+          "lampId": "probe-capt-ps",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-fo-static",
+          "label": "PROBE FO STATIC",
+          "kind": "indicator",
+          "lampId": "probe-fo-static",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-l-elev",
+          "label": "PROBE L ELEV",
+          "kind": "indicator",
+          "lampId": "probe-l-elev",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-l-alpha",
+          "label": "PROBE L ALPHA",
+          "kind": "indicator",
+          "lampId": "probe-l-alpha",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-temp",
+          "label": "PROBE TEMP",
+          "kind": "indicator",
+          "lampId": "probe-temp",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-fo-ps",
+          "label": "PROBE FO PS",
+          "kind": "indicator",
+          "lampId": "probe-fo-ps",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-capt-static",
+          "label": "PROBE CAPT STATIC",
+          "kind": "indicator",
+          "lampId": "probe-capt-static",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-r-elev",
+          "label": "PROBE R ELEV",
+          "kind": "indicator",
+          "lampId": "probe-r-elev",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:probe-r-alpha",
+          "label": "PROBE R ALPHA",
+          "kind": "indicator",
+          "lampId": "probe-r-alpha",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-l-side-on",
+          "label": "WINDOW L SIDE ON",
+          "kind": "indicator",
+          "lampId": "window-l-side-on",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-l-fwd-on",
+          "label": "WINDOW L FWD ON",
+          "kind": "indicator",
+          "lampId": "window-l-fwd-on",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-r-fwd-on",
+          "label": "WINDOW R FWD ON",
+          "kind": "indicator",
+          "lampId": "window-r-fwd-on",
+          "source": "OH15"
+        },
+        {
+          "id": "LAMP:window-r-side-on",
+          "label": "WINDOW R SIDE ON",
+          "kind": "indicator",
+          "lampId": "window-r-side-on",
+          "source": "OH15"
+        }
+      ]
+    },
+    {
+      "id": "OH16",
+      "title": "ENGINE / WING ANTI-ICE",
+      "region": {
+        "tile": "OH16",
+        "x": 1231,
+        "y": 1539,
+        "w": 493,
+        "h": 279
+      },
+      "components": [
+        {
+          "id": "SYS:OH16:0",
+          "label": "Engine anti-ice valve 1",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH16:1",
+          "label": "Engine anti-ice valve 2",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH16:2",
+          "label": "Wing anti-ice LEFT",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH16:3",
+          "label": "Wing anti-ice RIGHT",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH16:4",
+          "label": "Cowl anti-ice sensors",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:wing-anti-ice",
+          "label": "WING ANTI ICE",
+          "kind": "switch",
+          "source": "OH16"
+        },
+        {
+          "id": "SW:engine-anti-ice-1",
+          "label": "ENGINE ANTI ICE 1",
+          "kind": "switch",
+          "source": "OH16"
+        },
+        {
+          "id": "SW:engine-anti-ice-2",
+          "label": "ENGINE ANTI ICE 2",
+          "kind": "switch",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:cowl-anti-ice-1",
+          "label": "COWL ANTI ICE 1",
+          "kind": "indicator",
+          "lampId": "cowl-anti-ice-1",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:cowl-anti-ice-2",
+          "label": "COWL ANTI ICE 2",
+          "kind": "indicator",
+          "lampId": "cowl-anti-ice-2",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:wing-valve-l",
+          "label": "WING VALVE L",
+          "kind": "indicator",
+          "lampId": "wing-valve-l",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:wing-valve-r",
+          "label": "WING VALVE R",
+          "kind": "indicator",
+          "lampId": "wing-valve-r",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:cowl-valve-1",
+          "label": "COWL VALVE 1",
+          "kind": "indicator",
+          "lampId": "cowl-valve-1",
+          "source": "OH16"
+        },
+        {
+          "id": "LAMP:cowl-valve-2",
+          "label": "COWL VALVE 2",
+          "kind": "indicator",
+          "lampId": "cowl-valve-2",
+          "source": "OH16"
+        }
+      ]
+    },
+    {
+      "id": "OH17",
+      "title": "HYDRAULIC PUMPS",
+      "region": {
+        "tile": "OH17",
+        "x": 1231,
+        "y": 1818,
+        "w": 493,
+        "h": 283
+      },
+      "components": [
+        {
+          "id": "SYS:OH17:0",
+          "label": "Hydraulic engine pump A",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH17:1",
+          "label": "Hydraulic engine pump B",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH17:2",
+          "label": "Hydraulic electric pumps",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH17:3",
+          "label": "Hydraulic overheat/pressure sensing",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH17:4",
+          "label": "Standby hydraulic power",
+          "kind": "hydraulic",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:hyd-eng-1",
+          "label": "HYD ENG 1",
+          "kind": "switch",
+          "source": "OH17"
+        },
+        {
+          "id": "SW:hyd-elec-2",
+          "label": "HYD ELEC 2",
+          "kind": "switch",
+          "source": "OH17"
+        },
+        {
+          "id": "SW:hyd-elec-1",
+          "label": "HYD ELEC 1",
+          "kind": "switch",
+          "source": "OH17"
+        },
+        {
+          "id": "SW:hyd-eng-2",
+          "label": "HYD ENG 2",
+          "kind": "switch",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-eng-1",
+          "label": "HYD ENG 1",
+          "kind": "indicator",
+          "lampId": "hyd-eng-1",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-elec-2",
+          "label": "HYD ELEC 2",
+          "kind": "indicator",
+          "lampId": "hyd-elec-2",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-elec-1",
+          "label": "HYD ELEC 1",
+          "kind": "indicator",
+          "lampId": "hyd-elec-1",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-eng-2",
+          "label": "HYD ENG 2",
+          "kind": "indicator",
+          "lampId": "hyd-eng-2",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-elec-2-overheat",
+          "label": "HYD ELEC 2 OVERHEAT",
+          "kind": "indicator",
+          "lampId": "hyd-elec-2-overheat",
+          "source": "OH17"
+        },
+        {
+          "id": "LAMP:hyd-elec-1-overheat",
+          "label": "HYD ELEC 1 OVERHEAT",
+          "kind": "indicator",
+          "lampId": "hyd-elec-1-overheat",
+          "source": "OH17"
+        }
+      ]
+    },
+    {
+      "id": "OH18",
+      "title": "GROUND CALL / WIPER / RAIN REPELLENT",
+      "region": {
+        "tile": "OH18",
+        "x": 996,
+        "y": 2473,
+        "w": 235,
+        "h": 533
+      },
+      "components": [
+        {
+          "id": "SYS:OH18:0",
+          "label": "Windshield wiper motor",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH18:1",
+          "label": "Rain repellent system",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH18:2",
+          "label": "Ground / attendant call",
+          "kind": "comms",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SEL:wiper",
+          "label": "WIPER",
+          "kind": "selector",
+          "source": "OH18"
+        },
+        {
+          "id": "LAMP:ground-call",
+          "label": "GROUND CALL",
+          "kind": "indicator",
+          "lampId": "ground-call",
+          "source": "OH18"
+        }
+      ]
+    },
+    {
+      "id": "OH19-VOICE",
+      "title": "VOICE RECORDER / DOOR INDICATIONS",
+      "region": {
+        "tile": "OH19-VOICE",
+        "x": 1231,
+        "y": 2101,
+        "w": 493,
+        "h": 385
+      },
+      "components": [
+        {
+          "id": "SYS:OH19-VOICE:0",
+          "label": "Cockpit voice recording",
+          "kind": "recorder",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH19-VOICE:1",
+          "label": "Aircraft door position sensing",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "LAMP:door-fwd-entry",
+          "label": "DOOR FWD ENTRY",
+          "kind": "indicator",
+          "lampId": "door-fwd-entry",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-aft-entry",
+          "label": "DOOR AFT ENTRY",
+          "kind": "indicator",
+          "lampId": "door-aft-entry",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-air-stair",
+          "label": "DOOR AIR STAIR",
+          "kind": "indicator",
+          "lampId": "door-air-stair",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-equip",
+          "label": "DOOR EQUIP",
+          "kind": "indicator",
+          "lampId": "door-equip",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-fwd-cargo",
+          "label": "DOOR FWD CARGO",
+          "kind": "indicator",
+          "lampId": "door-fwd-cargo",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-aft-cargo",
+          "label": "DOOR AFT CARGO",
+          "kind": "indicator",
+          "lampId": "door-aft-cargo",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-fwd-service",
+          "label": "DOOR FWD SERVICE",
+          "kind": "indicator",
+          "lampId": "door-fwd-service",
+          "source": "OH19-VOICE"
+        },
+        {
+          "id": "LAMP:door-aft-service",
+          "label": "DOOR AFT SERVICE",
+          "kind": "indicator",
+          "lampId": "door-aft-service",
+          "source": "OH19-VOICE"
+        }
+      ]
+    },
+    {
+      "id": "OH19-DIFF",
+      "title": "CABIN DIFF PRESS / ALT HORN",
+      "region": {
+        "tile": "OH19-DIFF",
+        "x": 1231,
+        "y": 2486,
+        "w": 493,
+        "h": 520
+      },
+      "components": [
+        {
+          "id": "SYS:OH19-DIFF:0",
+          "label": "Cabin differential pressure",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH19-DIFF:1",
+          "label": "Cabin altitude warning horn",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH19-DIFF:2",
+          "label": "Cabin climb indication",
+          "kind": "meter",
+          "source": "TRAINING_CATALOG"
+        }
+      ]
+    },
+    {
+      "id": "OH20",
+      "title": "CABIN TEMPERATURE / AIR MIX",
+      "region": {
+        "tile": "OH20",
+        "x": 1724,
+        "y": 1031,
+        "w": 493,
+        "h": 720
+      },
+      "components": [
+        {
+          "id": "SYS:OH20:0",
+          "label": "Temperature control L/R",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH20:1",
+          "label": "Air mix valves",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH20:2",
+          "label": "737-400 trim air / zones",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH20:3",
+          "label": "737-300/500 cabin air",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SEL:temperature-source",
+          "label": "TEMPERATURE SOURCE",
+          "kind": "selector",
+          "source": "OH20"
+        },
+        {
+          "id": "SEL:control-cabin-temp",
+          "label": "CONTROL CABIN TEMP",
+          "kind": "selector",
+          "source": "OH20"
+        },
+        {
+          "id": "SEL:pass-cabin-temp",
+          "label": "PASS CABIN TEMP",
+          "kind": "selector",
+          "source": "OH20"
+        },
+        {
+          "id": "LAMP:duct-overheat-l",
+          "label": "DUCT OVERHEAT L",
+          "kind": "indicator",
+          "lampId": "duct-overheat-l",
+          "source": "OH20"
+        },
+        {
+          "id": "LAMP:duct-overheat-r",
+          "label": "DUCT OVERHEAT R",
+          "kind": "indicator",
+          "lampId": "duct-overheat-r",
+          "source": "OH20"
+        }
+      ]
+    },
+    {
+      "id": "OH21",
+      "title": "PACKS / BLEED AIR / RECIRCULATION",
+      "region": {
+        "tile": "OH21",
+        "x": 1724,
+        "y": 1751,
+        "w": 493,
+        "h": 701
+      },
+      "components": [
+        {
+          "id": "SYS:OH21:0",
+          "label": "Pack 1 refrigeration",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:1",
+          "label": "Pack 2 refrigeration",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:2",
+          "label": "Engine BLEED 1",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:3",
+          "label": "Engine BLEED 2",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:4",
+          "label": "APU BLEED",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:5",
+          "label": "Bleed isolation valve",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:6",
+          "label": "Wing-body duct heat detection",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH21:7",
+          "label": "Recirculation fans",
+          "kind": "pump",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:recirc-fan",
+          "label": "RECIRC FAN",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:pack-l",
+          "label": "PACK L",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:pack-r",
+          "label": "PACK R",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:isolation-valve",
+          "label": "ISOLATION VALVE",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:bleed-eng-1",
+          "label": "BLEED ENG 1",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:bleed-apu",
+          "label": "BLEED APU",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "SW:bleed-eng-2",
+          "label": "BLEED ENG 2",
+          "kind": "switch",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:dual-bleed",
+          "label": "DUAL BLEED",
+          "kind": "indicator",
+          "lampId": "dual-bleed",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:pack-trip-l",
+          "label": "PACK TRIP L",
+          "kind": "indicator",
+          "lampId": "pack-trip-l",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:wing-body-overheat-l",
+          "label": "WING BODY OVERHEAT L",
+          "kind": "indicator",
+          "lampId": "wing-body-overheat-l",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:bleed-trip-l",
+          "label": "BLEED TRIP L",
+          "kind": "indicator",
+          "lampId": "bleed-trip-l",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:pack-trip-r",
+          "label": "PACK TRIP R",
+          "kind": "indicator",
+          "lampId": "pack-trip-r",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:wing-body-overheat-r",
+          "label": "WING BODY OVERHEAT R",
+          "kind": "indicator",
+          "lampId": "wing-body-overheat-r",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:bleed-trip-r",
+          "label": "BLEED TRIP R",
+          "kind": "indicator",
+          "lampId": "bleed-trip-r",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:ram-door-l",
+          "label": "RAM DOOR L",
+          "kind": "indicator",
+          "lampId": "ram-door-l",
+          "source": "OH21"
+        },
+        {
+          "id": "LAMP:ram-door-r",
+          "label": "RAM DOOR R",
+          "kind": "indicator",
+          "lampId": "ram-door-r",
+          "source": "OH21"
+        }
+      ]
+    },
+    {
+      "id": "OH22",
+      "title": "CABIN PRESSURIZATION · CPCS / DCPCS",
+      "region": {
+        "tile": "OH22",
+        "x": 1724,
+        "y": 2452,
+        "w": 493,
+        "h": 554
+      },
+      "components": [
+        {
+          "id": "SYS:OH22:0",
+          "label": "CPCS automatic pressurization",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH22:1",
+          "label": "DCPCS pressurization",
+          "kind": "controller",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH22:2",
+          "label": "Outflow valve actuator",
+          "kind": "actuator",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH22:3",
+          "label": "Cabin altitude / rate feedback",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH22:4",
+          "label": "Pressure relief",
+          "kind": "valve",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:outflow-manual",
+          "label": "OUTFLOW MANUAL",
+          "kind": "switch",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:flight-alt",
+          "label": "FLIGHT ALT",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:cabin-alt",
+          "label": "CABIN ALT",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:landing-alt",
+          "label": "LANDING ALT",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:cabin-rate",
+          "label": "CABIN RATE",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:pressurization-mode",
+          "label": "PRESSURIZATION MODE",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "SEL:pressurization-check",
+          "label": "PRESSURIZATION CHECK",
+          "kind": "selector",
+          "source": "OH22"
+        },
+        {
+          "id": "LAMP:press-auto-fail",
+          "label": "PRESS AUTO FAIL",
+          "kind": "indicator",
+          "lampId": "press-auto-fail",
+          "source": "OH22"
+        },
+        {
+          "id": "LAMP:press-off-sched-descent",
+          "label": "PRESS OFF SCHED DESCENT",
+          "kind": "indicator",
+          "lampId": "press-off-sched-descent",
+          "source": "OH22"
+        },
+        {
+          "id": "LAMP:press-standby",
+          "label": "PRESS STANDBY",
+          "kind": "indicator",
+          "lampId": "press-standby",
+          "source": "OH22"
+        },
+        {
+          "id": "LAMP:press-manual",
+          "label": "PRESS MANUAL",
+          "kind": "indicator",
+          "lampId": "press-manual",
+          "source": "OH22"
+        }
+      ]
+    },
+    {
+      "id": "OH23",
+      "title": "LANDING / RUNWAY / TAXI LIGHTS",
+      "region": {
+        "tile": "OH23-25",
+        "x": 3,
+        "y": 3006,
+        "w": 837,
+        "h": 303,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH23:0",
+          "label": "Outboard landing lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH23:1",
+          "label": "Inboard landing lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH23:2",
+          "label": "Runway turnoff lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH23:3",
+          "label": "Taxi light feed",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:landing-out-l",
+          "label": "LANDING OUT L",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:landing-out-r",
+          "label": "LANDING OUT R",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:landing-in-l",
+          "label": "LANDING IN L",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:landing-in-r",
+          "label": "LANDING IN R",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:runway-turnoff-l",
+          "label": "RUNWAY TURNOFF L",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:runway-turnoff-r",
+          "label": "RUNWAY TURNOFF R",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:taxi",
+          "label": "TAXI",
+          "kind": "switch",
+          "source": "OH23-25"
+        }
+      ]
+    },
+    {
+      "id": "OH24",
+      "title": "APU / ENGINE START / IGNITION",
+      "region": {
+        "tile": "OH23-25",
+        "x": 840,
+        "y": 3006,
+        "w": 638,
+        "h": 303,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH24:0",
+          "label": "APU start / fuel / ignition",
+          "kind": "engine",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH24:1",
+          "label": "Engine 1 start / ignition",
+          "kind": "engine",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH24:2",
+          "label": "Engine 2 start / ignition",
+          "kind": "engine",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH24:3",
+          "label": "Starter air pressure",
+          "kind": "sensor",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:apu-start",
+          "label": "APU START",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SEL:engine-start-1",
+          "label": "ENGINE START 1",
+          "kind": "selector",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SEL:engine-start-2",
+          "label": "ENGINE START 2",
+          "kind": "selector",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SEL:ignition-source",
+          "label": "IGNITION SOURCE",
+          "kind": "selector",
+          "source": "OH23-25"
+        }
+      ]
+    },
+    {
+      "id": "OH25",
+      "title": "POSITION / STROBE / EXTERIOR LIGHTS",
+      "region": {
+        "tile": "OH23-25",
+        "x": 1477,
+        "y": 3006,
+        "w": 740,
+        "h": 303,
+        "provisional": true
+      },
+      "components": [
+        {
+          "id": "SYS:OH25:0",
+          "label": "Position lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH25:1",
+          "label": "Strobe / anti-collision",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH25:2",
+          "label": "Wing inspection lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SYS:OH25:3",
+          "label": "Wheel well lights",
+          "kind": "light",
+          "source": "TRAINING_CATALOG"
+        },
+        {
+          "id": "SW:logo",
+          "label": "LOGO",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:strobe",
+          "label": "STROBE",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:position-lights",
+          "label": "POSITION LIGHTS",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:anti-collision",
+          "label": "ANTI COLLISION",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:wing-lights",
+          "label": "WING LIGHTS",
+          "kind": "switch",
+          "source": "OH23-25"
+        },
+        {
+          "id": "SW:wheel-well",
+          "label": "WHEEL WELL",
+          "kind": "switch",
+          "source": "OH23-25"
+        }
+      ]
+    }
+  ]
+}

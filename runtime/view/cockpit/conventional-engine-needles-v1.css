@@ -1,0 +1,13 @@
+/* Photo and gauge pointers have the SAME native 1182x1330 layout
+   and affine registration. The parent clip protects the FO landing gear. */
+#region-main .conventional-engine-photo-wrap-v1>.conventional-engine-needle-layer-v1 {
+ position:absolute;left:0;top:0;width:1182px;height:1330px;max-width:none;
+ overflow:visible;pointer-events:none;display:block;z-index:8;transform-origin:0 0;
+}
+.conventional-engine-needle-layer-v1 [data-needle-pivot]{
+ transition:transform .18s ease-out;
+ transform-box:view-box;
+}
+@media(prefers-reduced-motion:reduce){
+ .conventional-engine-needle-layer-v1 [data-needle-pivot]{transition:none}
+}

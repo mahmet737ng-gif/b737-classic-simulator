@@ -1,0 +1,12 @@
+{
+  "version": "CONV-0002",
+  "asset": "conventional-engine-panel-owner-20261029.png",
+  "sha256": "d4ae225cddfe7697dec4c73b0f59aa3cd51ccc1234c63e6dc8323ce84c45f710",
+  "dimensions": [
+    1182,
+    1330
+  ],
+  "sourceName": "Unified Engine Gauge Readout Windows.png",
+  "library_file_id": "libfile_f51975dc30a48191875603c7a9fd23f0",
+  "policy": "Copy original PNG bytes; do not redraw or regenerate. EIS remains default. Geometry changes restricted to the optional Conventional layer. Needle scale calibration is independent and not claimed by this image replacement."
+}

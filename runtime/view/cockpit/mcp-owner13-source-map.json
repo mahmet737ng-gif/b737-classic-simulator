@@ -1,0 +1,43 @@
+{
+  "schema": "b737.mcp.owner13.input-map.v1",
+  "note": "These exact user-supplied source PNG names define the controls. Preview atlas is downsampled. Locked original panel is untouched; no claim of subpixel physical cutout verification.",
+  "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+  "sourceSize": [
+    2172,
+    433
+  ],
+  "originalFiles": [
+    "Front-facing course selector knob(1).png",
+    "Isolated ribbed V_S selector thumbwheel-2.png",
+    "A_T switch paddle rotated down(1).png",
+    "A_T switch paddle rotated up.png",
+    "Airspeed selector.png",
+    "Black switch panel with lights on.png",
+    "Black switch panel with lights removed.png",
+    "change over.png",
+    "fd swith down.png",
+    "fd swith up.png",
+    "Worn silver HDG selector knob.png",
+    "Worn silver SEL rotary knob.png",
+    "Worn square aircraft selector ring-1.png"
+  ],
+  "map": {
+    "courseL": 0,
+    "courseR": 0,
+    "vsWheel": 1,
+    "atDown": 2,
+    "atUp": 3,
+    "speed": 4,
+    "blackPushOn": 5,
+    "blackPushOff": 6,
+    "changeover": 7,
+    "fdOff": 8,
+    "fdOn": 9,
+    "heading": 10,
+    "headingSEL": 11,
+    "bankRing": 12,
+    "altitude": "UNCHANGED_ORIGINAL_EXISTING_ASSET_NOT_CONFLATED_WITH_AIRSPEED"
+  },
+  "pendingExactRoiVerification": true,
+  "pendingBinarySpriteDeployment": true
+}

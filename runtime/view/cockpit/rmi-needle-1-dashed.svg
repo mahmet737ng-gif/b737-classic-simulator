@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="RMI needle one, thin dashed two-ended pointer">
+ <title>RMI 1 — thin dashed</title>
+ <path d="M256 67 L256 223 M256 288 L256 440" fill="none" stroke="#f4f3ec" stroke-width="8" stroke-linecap="butt" stroke-dasharray="22 13"/>
+ <path d="M256 34 L246 73 L256 66 L266 73 Z" fill="#f4f3ec" stroke="#47433a" stroke-width="1.3"/>
+ <path d="M256 477 L247 437 L256 443 L265 437 Z" fill="#f4f3ec" stroke="#47433a" stroke-width="1.3"/>
+</svg>

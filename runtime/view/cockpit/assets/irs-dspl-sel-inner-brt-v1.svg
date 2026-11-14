@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<title>IRS inner BRT brightness knob, independently rotatable within outer selector</title>
+<defs><radialGradient id="blk" cx=".3" cy=".22" r=".8"><stop stop-color="#5e6668"/><stop offset=".25" stop-color="#22292d"/><stop offset=".72" stop-color="#0d1419"/><stop offset="1" stop-color="#05090d"/></radialGradient>
+<linearGradient id="ivory" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffefa"/><stop offset=".58" stop-color="#dce1dc"/><stop offset="1" stop-color="#89999d"/></linearGradient></defs>
+<circle cx="50" cy="50" r="48" fill="#243339" stroke="#ebeee9" stroke-width="2.4"/>
+<circle cx="50" cy="50" r="42" fill="url(#blk)" stroke="#09131a" stroke-width="2"/>
+<g fill="url(#ivory)" stroke="#bdc7c3" stroke-width=".85">
+<path d="M43 12 L57 12 L59 45 L54 53 L47 53 L41 45Z"/>
+<path d="M28 42 L37 33 L48 49 L46 56 L38 58Z" opacity=".85"/>
+<path d="M62 63 L72 72 L64 82 L53 70 L55 61Z" opacity=".7"/>
+</g>
+<path d="M50 11 L50 28" fill="none" stroke="#171f20" stroke-width="3.3" stroke-linecap="round"/>
+<ellipse cx="49" cy="49" rx="12" ry="11" fill="#22292b" opacity=".55"/>
+</svg>

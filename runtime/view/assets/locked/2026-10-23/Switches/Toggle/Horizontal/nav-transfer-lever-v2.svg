@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" aria-hidden="true">
+  <title>B737 Classic NAV transfer toggle moving lever only</title>
+  <!-- Transparent sprite: chrome hex mounting nut and fixed socket are sourced ONLY
+       from flight-controls-front-empty-v1.webp. Pivot is native 80/80. -->
+  <defs>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#20272b"/>
+      <stop offset=".14" stop-color="#637071"/>
+      <stop offset=".34" stop-color="#dde5e0"/>
+      <stop offset=".48" stop-color="#f6f8f1"/>
+      <stop offset=".62" stop-color="#b6c0be"/>
+      <stop offset=".83" stop-color="#576365"/>
+      <stop offset="1" stop-color="#202a2d"/>
+    </linearGradient>
+    <linearGradient id="ivory" x1="0" y1="0" x2="1" y2=".18">
+      <stop offset="0" stop-color="#acb5b1"/>
+      <stop offset=".10" stop-color="#e9efeb"/>
+      <stop offset=".33" stop-color="#fffff5"/>
+      <stop offset=".59" stop-color="#f8f8f1"/>
+      <stop offset=".81" stop-color="#e0e6e3"/>
+      <stop offset="1" stop-color="#a0adaa"/>
+    </linearGradient>
+    <radialGradient id="knob-glint" cx=".29" cy=".23" r=".86">
+      <stop offset="0" stop-color="#fff" stop-opacity=".69"/>
+      <stop offset=".38" stop-color="#fff" stop-opacity=".20"/>
+      <stop offset=".88" stop-color="#9aa8a5" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#647370" stop-opacity=".20"/>
+    </radialGradient>
+    <radialGradient id="pivot" cx=".31" cy=".25" r=".78">
+      <stop offset="0" stop-color="#c7d0ca"/>
+      <stop offset=".32" stop-color="#545f60"/>
+      <stop offset=".76" stop-color="#161e20"/>
+      <stop offset="1" stop-color="#050809"/>
+    </radialGradient>
+  </defs>
+  <!-- The complete handle/shaft, and ONLY the handle/shaft, tilts about 80/80. -->
+  <g class="movable-lever">
+    <ellipse cx="81.1" cy="81.7" rx="9" ry="7.7" fill="#010405" opacity=".68"/>
+    <path d="M73.4 81.1 L73.2 52 Q73.2 47 78.2 45.6 L81.8 45.6 Q86.8 47 86.7 52 L86.6 81.1Z"
+      fill="url(#steel)" stroke="#1f282a" stroke-width="1.5"/>
+    <path d="M76.1 76.1 L75.7 51.1 Q76.9 48.9 79 48.3"
+      fill="none" stroke="#f9fffa" stroke-width="1.4" opacity=".34"/>
+    <!-- The original approved toggle family uses an ivory/white end grip,
+         not the long industrial lever or a sliding/rail actuator. -->
+    <path d="M80 12.6 C68.7 12.6 62.7 21.6 62.7 32.5
+       L62.7 45.1 C62.7 55.8 70 61.5 80 61.5
+       C90 61.5 97.3 55.8 97.3 45.1
+       L97.3 32.5 C97.3 21.6 91.3 12.6 80 12.6Z"
+      fill="url(#ivory)" stroke="#8d9996" stroke-width="1.15"/>
+    <path d="M80 12.6 C68.7 12.6 62.7 21.6 62.7 32.5
+       L62.7 45.1 C62.7 55.8 70 61.5 80 61.5
+       C90 61.5 97.3 55.8 97.3 45.1
+       L97.3 32.5 C97.3 21.6 91.3 12.6 80 12.6Z"
+      fill="url(#knob-glint)"/>
+    <path d="M68 29 C68.5 22 72 17.7 76.5 16 L74.5 55
+       C70.2 52.9 67.8 47 68 40Z"
+      fill="white" opacity=".19"/>
+    <path d="M90.3 20 Q95.1 28 94.8 39 L94.2 48"
+      fill="none" stroke="#67736e" stroke-width="1.4" opacity=".28"/>
+    <path d="M74 60 C74 64 74 67 80 67 C86 67 86 64 86 60"
+      fill="none" stroke="#344045" stroke-width="2.4" opacity=".78"/>
+    <ellipse cx="80" cy="80" rx="7.2" ry="6.7" fill="url(#pivot)"/>
+    <ellipse cx="79" cy="78.3" rx="3.1" ry="2.3" fill="#d6dcd7" opacity=".34"/>
+  </g>
+</svg>

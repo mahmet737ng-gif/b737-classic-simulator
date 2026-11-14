@@ -1,0 +1,20 @@
+/* PHOTO-INPUT-0001 — ONLY Unified's embedded overhead stage.
+   The frozen UPD-0012 standalone overhead atlas is not touched. */
+#viewport, #board, #assembly,
+#viewport .atlas-piece, #viewport .atlas-piece .atlas-image-window,
+#viewport .atlas-piece .atlas-source-strip, #viewport .atlas-piece .atlas-photo,
+#viewport .piece, #viewport .top-image {
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#viewport .atlas-piece, #viewport .piece, #viewport .top-image {cursor:inherit !important}
+#viewport .atlas-piece:focus, #viewport .atlas-piece:active,
+#viewport .atlas-piece.selected, #viewport .piece:focus,
+#viewport .piece:active, #viewport .piece.selected,
+#viewport .top-image:focus, #viewport .top-image.selected {
+  outline:none !important;
+  box-shadow:none !important;
+}
+/* The clickable physical switches and indicators are intentionally NOT targeted. */

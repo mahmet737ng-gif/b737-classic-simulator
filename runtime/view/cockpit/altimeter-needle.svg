@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="White altimeter needle copied from owner reference">
+ <title>ALTIMETER needle</title>
+ <path d="M249 257 L250 111 L245 91 L244 58 Q245 39 252 34 Q260 30 266 40 L267 83 L262 111 L263 257 Z" fill="#f4f3ec" stroke="#30312c" stroke-width="2.2" stroke-linejoin="round"/>
+ <path d="M253 92 L253 246" stroke="#fff" stroke-width="2" opacity=".8"/>
+</svg>

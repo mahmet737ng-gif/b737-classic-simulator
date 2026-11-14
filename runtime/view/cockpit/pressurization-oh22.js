@@ -1,0 +1,369 @@
+/* The live OH22 assembly. No synthetic pressure/valve physics.
+ * All controls dispatch to the selected, source-linked CPCS/DCPCS engine.
+ * The only visual source switch is OH22; other Overhead systems remain mounted.
+ */
+(function(){
+ 'use strict';
+ const root=document,model=window.B737OH22PressureModel,atlas=root.getElementById('atlasAbsolute');
+ if(!model||!atlas)throw Error('OH22 model / atlas unavailable');
+ model.validate();
+ const PROFILE_KEY='b737classic.aircraft-profile.v1';
+ const knobAsset=new URL('../assets/locked/2026-10-23/Switches/Rotary/rotary-standard-v1.webp',document.baseURI).href;
+ // One unmarked, fluted cylindrical knob shared by the two DCPCS altitude setters only.
+ const dcpcsAltitudeKnobAsset=new URL('./dcpcs-altitude-knob-front-v1.webp',document.currentScript?.src||new URL('../cockpit/pressurization-oh22.js',document.baseURI).href).href;
+ const toggleAsset=new URL('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp',document.baseURI).href;
+ const smallSilverAsset=new URL('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp',document.baseURI).href;
+ const smallSilverFrame=(c,value)=>c.id==='flight-ground'?(value==='FLT'?0:2):(value==='CLOSE'?0:value==='OPEN'?2:1);
+ const faceBase=new URL('../assets/lights/oh22-profile-v1/',document.baseURI).href;
+ const approvedLamps=Object.freeze({'auto-fail':'AUTO_FAIL','off-sched':'OFF_SCHED_DESCENT','standby':'STANDBY_GREEN','manual':'MANUAL_GREEN'});
+
+ let system='DCPCS',layer=null,plate=null,received=null,fallback=null,controls=new Map(),lamps=new Map(),digits=new Map(),caption=null,gauge=null;
+ let activeSpring=null,holdTimer=null,observer=null,hornOverlay=null,detentHits=[],lastSixpackPressure='';
+ function notify(kind,additional={}){if(parent!==window)parent.postMessage({type:'b737:cockpit-overhead',kind,system,...additional},location.origin);}
+ function savedSystem(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.pressurization==='CPCS'?'CPCS':'DCPCS';}catch(_){return 'DCPCS';}}
+ function mount(){
+   const target=atlas.querySelector('.atlas-piece[data-key="OH22"]');
+   if(!target)return false;
+   if(target===plate&&layer?.isConnected){syncHornButton();return true;}
+   plate=target;
+   window.document.documentElement.classList.add('oh22-pressure-config-active');
+   build();
+   return true;
+ }
+ function pos(node,xy){node.style.left=(xy[0]*100)+'%';node.style.top=(xy[1]*100)+'%';}
+ function createActuator(c){
+   const el=root.createElement('button');el.type='button';el.dataset.role='actuator';el.dataset.control=c.id;
+   el.title=c.label+(c.kind==='altitude'?' — mouse wheel / left click: increase, shift/right click: decrease':' — click to next detent');
+   el.setAttribute('aria-label',el.title);el.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown');
+   pos(el,c.xy);
+   const hotspot=c.appearance==='hotspot';
+   // Size is installation-specific and based on the real source aperture.
+   // A common tiny width made the CPCS/DCPCS mechanisms float in their bezels.
+   const size=hotspot?11:model.config(system).controlFit[c.id]*100;
+   el.dataset.fitSystem=system;
+   if(c.visualFamily==='Small Silver')el.dataset.visualFamily='Small Silver';
+   el.style.width=size+'%';
+   if(hotspot){el.style.height=(size*.34)+'%';}
+   else{el.style.height='auto';el.style.aspectRatio='1 / 1';}
+   if(hotspot)el.classList.add('oh22-pressure-hotspot');
+   const value=root.createElement('span');value.className='oh22-control-value';value.dataset.value='';
+   if(!hotspot){
+     if(c.visualFamily==='Small Silver'){
+       // No nut or bezel rotation: fixed top-down atlas, pose selected per state.
+       el.classList.add('oh22-pressure-small-silver');
+       const face=root.createElement('span');face.className='oh22-small-silver-face';
+       face.setAttribute('aria-hidden','true');face.style.backgroundImage='url("'+smallSilverAsset+'")';
+       el.append(face);
+     }else{
+       const dcpcsAltitudeKnob=system==='DCPCS'&&c.kind==='altitude'&&(c.id==='flight-alt'||c.id==='landing-alt');
+       if(dcpcsAltitudeKnob)el.classList.add('oh22-dcpcs-altitude-knob');
+       const img=root.createElement('img');img.src=dcpcsAltitudeKnob?dcpcsAltitudeKnobAsset:(c.kind==='spring'?toggleAsset:knobAsset);img.alt='';img.draggable=false;
+       el.append(img);
+     }
+   }
+   el.append(value);
+   const go=(input)=>dispatch(c,input);
+   const values=c.states||[];
+   function step(dir){
+     if(c.kind==='altitude'){const before=Number(model.readControl(system,c,received?.state));go(Math.max(c.min,Math.min(c.max,(Number.isFinite(before)?before:0)+c.step*dir)));return;}
+     if(c.kind==='selector'){
+       const before=model.readControl(system,c,received?.state);
+       if(c.id==='flight-ground'){go(before==='FLT'?'GRD':'FLT');return;}
+       const index=Math.max(0,values.indexOf(before)),next=Math.max(0,Math.min(values.length-1,index+dir));go(values[next]);return;
+     }
+     if(c.kind==='momentary')go('CHECK');
+   }
+   if(c.kind==='spring'){
+     el.classList.add('oh22-pressure-actuator-spring');
+     el.addEventListener('pointerdown',e=>{
+       if(e.button!==0)return;
+       e.preventDefault();e.stopPropagation();
+       const b=el.getBoundingClientRect(),direction=e.clientX<b.left+b.width/2?'CLOSE':'OPEN';
+       activeSpring=el;go(direction);
+       try{el.setPointerCapture(e.pointerId)}catch(_){}
+       if(holdTimer!==null)clearInterval(holdTimer);
+       holdTimer=setInterval(()=>sendCommand({type:'ADVANCE',ms:250}),250);
+     });
+     const release=()=>{
+       if(activeSpring!==el)return;
+       activeSpring=null;
+       if(holdTimer!==null){clearInterval(holdTimer);holdTimer=null;}
+       go('NEUTRAL');
+     };
+     for(const evt of ['pointerup','pointercancel','lostpointercapture','blur'])el.addEventListener(evt,release);
+     window.addEventListener('blur',release);
+     el.addEventListener('click',e=>{e.stopPropagation();});
+   }else{
+     el.addEventListener('click',e=>{e.stopPropagation();step(e.shiftKey?-1:1)});
+     el.addEventListener('contextmenu',e=>{e.preventDefault();e.stopPropagation();step(-1)});
+     el.addEventListener('wheel',e=>{const delta=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(!delta)return;e.preventDefault();e.stopPropagation();step(delta>0?1:-1)},{passive:false});
+     el.addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();e.stopPropagation();step(['ArrowDown','ArrowRight'].includes(e.key)?1:-1)}});
+   }
+   el.addEventListener('pointerdown',e=>e.stopPropagation());
+   return el;
+ }
+ // ALT HORN CUTOUT is fixed hardware on OH19, not part of the
+ // interchangeable CPCS / DCPCS OH22 background. Both modes share the same
+ // photographic bezel position and the existing cabin-horn-cutout command.
+ function syncHornButton(){
+   const geom=model.config('CPCS').hornCutout;
+   const host=atlas.querySelector('.atlas-piece[data-key="'+geom.piece+'"]');
+   if(!host)return;
+   if(!hornOverlay){
+     const ring=root.createElement('div');
+     ring.className='oh22-physical-horn-cutout b737-recess-unit';
+     ring.dataset.control='horn-cutout';
+     ring.dataset.recessedId='alt-horn-cutout';
+     ring.dataset.qa='photo';
+     ring.dataset.component='RECESS-ALT-HORN-0001';
+     ring.title='ALT HORN CUTOUT · cabin altitude warning · OH19';
+     const cap=root.createElement('button');
+     cap.type='button';cap.className='b737-recess-unit__cap';
+     cap.dataset.pressed='false';
+     cap.setAttribute('aria-pressed','false');
+     cap.setAttribute('aria-label','ALT HORN CUTOUT — silence cabin-altitude warning horn');
+     ring.append(cap);
+     const setPressed=state=>{
+       cap.dataset.pressed=String(!!state);
+       cap.setAttribute('aria-pressed',String(!!state));
+     };
+     cap.addEventListener('pointerdown',event=>{
+       if(event.pointerType==='mouse'&&event.button!==0)return;
+       event.stopPropagation();setPressed(true);
+       try{cap.setPointerCapture(event.pointerId);}catch(_){}
+     });
+     for(const eventName of ['pointerup','pointercancel','lostpointercapture'])
+       cap.addEventListener(eventName,event=>{event.stopPropagation();setPressed(false);});
+     cap.addEventListener('pointerleave',event=>{
+       if(!cap.hasPointerCapture?.(event.pointerId))setPressed(false);
+     });
+     cap.addEventListener('keydown',event=>{
+       if((event.key===' '||event.key==='Enter')&&!event.repeat)setPressed(true);
+     });
+     cap.addEventListener('keyup',event=>{
+       if(event.key===' '||event.key==='Enter')setPressed(false);
+     });
+     cap.addEventListener('blur',()=>setPressed(false));
+     window.addEventListener('blur',()=>setPressed(false));
+     root.addEventListener('visibilitychange',()=>{
+       if(root.hidden)setPressed(false);
+     });
+     cap.addEventListener('click',event=>{
+       event.preventDefault();event.stopPropagation();setPressed(false);
+       notify('pressurization-horn-cutout',{sourcePiece:geom.piece});
+     });
+     hornOverlay=ring;
+   }
+   hornOverlay.style.left=geom.xy[0]*100+'%';
+   hornOverlay.style.top=geom.xy[1]*100+'%';
+   hornOverlay.style.width=geom.diameter*100+'%';
+   hornOverlay.style.aspectRatio='1 / 1';
+   if(hornOverlay.parentElement!==host)host.append(hornOverlay);
+ }
+ function installDetents(cfg){
+   detentHits=[];
+   for(const [controlId,positions] of Object.entries(cfg.detentLabels||{})){
+     for(const detent of positions){
+       // INDEX sits in the center of the CABIN RATE knob. Do not place
+       // a transparent label target over its interactive rotating handle.
+       if(controlId==='cabin-rate'&&detent.value==='INDEX')continue;
+       const btn=root.createElement('button');btn.type='button';
+       btn.className='oh22-detent-label-hotspot';
+       btn.dataset.detentFor=controlId;btn.dataset.detent=detent.value;
+       btn.setAttribute('aria-label',controlId+' → '+detent.value);
+       btn.title=controlId+' · '+detent.value;
+       pos(btn,detent.xy);btn.style.width='7%';btn.style.height='5%';
+       btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();
+         const c=cfg.controls.find(v=>v.id===controlId);
+         if(c)dispatch(c,detent.value);
+       });
+       btn.addEventListener('pointerdown',event=>event.stopPropagation());
+       layer.append(btn);detentHits.push(btn);
+     }
+   }
+ }
+ function createLamp(l){
+   const el=root.createElement('span');el.dataset.role='lamp';el.dataset.lamp=l.id;
+   el.title=l.label+' · '+system+' logic';
+   // Each photograph has its own physical lamp apertures.  Use measured
+   // center AND independent width/height, never a common arbitrary lamp size.
+   const [x,y,w,h]=model.lampFace(system,l.id);
+   pos(el,[x,y]);
+   el.style.width=(w*100)+'%';el.style.height=(h*100)+'%';
+   // Scale the inner lamp FACE only. The photographed frame never moves.
+   // Measured boxes keep their centers; neighbouring faces cannot overlap.
+   const fit=model.config(system).lampFit;
+   el.style.scale=fit.x+' '+fit.y;
+   el.dataset.faceSystem=system;
+   el.classList.add(l.id==='auto-fail'||l.id==='off-sched'?'amber':'green');
+   if(approvedLamps[l.id]){
+     el.dataset.asset=approvedLamps[l.id];
+     const approved=root.createElement('img');
+     approved.alt=l.label;
+     approved.draggable=false;
+     Object.assign(approved.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',maxHeight:'none',objectFit:'fill',pointerEvents:'none'});
+     approved.src=faceBase+system+'_'+l.id+'_OFF.svg';
+     el.replaceChildren(approved);
+   } else if(l.id==='altn') {
+     // Owner's DCPCS label is "ALTN", not the separately archived
+     // "ALTEN" spare lamp. Draw the exact legend without duplicating bezel.
+     el.textContent='ALTN';
+     el.classList.add('oh22-altn-face');
+   } else {
+     el.textContent=l.label;
+   }
+   return el;
+ }
+ function build(){
+   if(layer)layer.remove();
+   if(holdTimer!==null){clearInterval(holdTimer);holdTimer=null;activeSpring=null;}
+   controls.clear();lamps.clear();digits.clear();detentHits=[];
+   layer=root.createElement('div');layer.className='oh22-pressure-controls';layer.dataset.system=system;
+   const cfg=model.config(system);
+   for(const lamp of cfg.lamps){const node=createLamp(lamp);layer.append(node);lamps.set(lamp.id,node);}
+   for(const display of cfg.displays){
+     const node=root.createElement('output');node.className='oh22-pressure-digits';node.dataset.display=display.id;pos(node,display.xy);
+     if(display.width)node.style.width=display.width*100+'%';
+     if(display.height)node.style.height=display.height*100+'%';
+     layer.append(node);digits.set(display.id,node);
+   }
+   for(const control of cfg.controls){const node=createActuator(control);layer.append(node);controls.set(control.id,node);}
+   installDetents(cfg);
+   gauge=root.createElement('output');gauge.className='oh22-pressure-gauge';gauge.dataset.system=system;
+   gauge.dataset.known='false';gauge.title='Valve indication pending pressure model';
+   if(system==='CPCS'){
+     const g=cfg.valveIndicator;
+     pos(gauge,g.xy);gauge.style.width=g.diameter*100+'%';
+     gauge.style.height='auto';gauge.style.aspectRatio='1 / 1';
+     const pointer=root.createElement('span');pointer.className='oh22-valve-pointer';
+     pointer.setAttribute('aria-hidden','true');
+     const pin=root.createElement('span');pin.className='oh22-valve-hub';
+     pin.setAttribute('aria-hidden','true');
+     gauge.append(pointer,pin);
+   }
+   layer.append(gauge);
+   caption=root.createElement('output');caption.className='oh22-pressure-note';caption.textContent=system+' · waiting for selected engine';layer.append(caption);
+   plate.append(layer);
+   syncHornButton();
+   received=null;
+   requestState();
+ }
+ function dispatch(c,value){
+   try{const payload=model.command(system,c.id,value,received?.state);sendCommand(payload);}
+   catch(error){caption.textContent=error.message;console.warn('OH22 control rejected',error);}
+ }
+ function sendCommand(command){
+   if(parent===window){localCommand(command);return;}
+   notify('pressurization-command',{command});
+ }
+ function requestState(){if(parent===window){localState();return;}notify('pressurization-need-state');}
+ function localState(){
+   const engine=window[model.config(system).engine];if(!engine)return;
+   if(!fallback||fallback.system!==system)fallback={system,engine,state:engine.initial()};
+   accept({type:'b737:cockpit-command',action:'pressurization-state',system,output:engine.derive(fallback.state),state:fallback.state});
+ }
+ function localCommand(command){
+   if(!fallback||fallback.system!==system)localState();
+   if(!fallback)return;
+   try{fallback.state=fallback.engine.apply(fallback.state,command);localState()}catch(error){caption.textContent=error.message;}
+ }
+ function accept(message){
+   if(message.system!==system||!message.output||!message.state)return;
+   received={state:message.state,output:message.output};
+   // Read-only feed; never treat the visual lamp test as a pressure malfunction.
+   const coreLamps=message.output.lamps||{};
+   const packet={system,lamps:{autoFail:coreLamps.autoFail===true,
+    offSchedDescent:coreLamps.offSchedDescent===true}};
+   const signature=JSON.stringify(packet);
+   if(signature!==lastSixpackPressure){lastSixpackPressure=signature;notify('pressurization-live-output',packet);}
+   paint();
+ }
+ function paint(){
+   // Atlas reconstruction can deliver a state message before the replacement
+   // OH22 plate/caption is attached; ignore that transient paint, never crash
+   // the Unified iframe. build() requests a fresh state after remount.
+   if(!received||!layer?.isConnected||!caption?.isConnected)return;
+   const {state,output}=received,cfg=model.config(system);
+   const values=model.lamps(system,output);
+   // The parent "test all lights" switch and the native overhead lamp-test
+   // must override BOTH CPCS and DCPCS annunciators without mutating either
+   // engine's real fault/logic state.
+   const lampTest=document.documentElement.classList.contains('cockpit-visual-test')||
+     window.B737OverheadLights?.getState?.()?.lampTest===true;
+   for(const l of cfg.lamps){const n=lamps.get(l.id);if(!n)continue;const lit=lampTest||values[l.id];n.classList.toggle('on',lit);n.dataset.lit=String(lit);n.setAttribute('aria-label',l.label+' '+(lit?'ON':'OFF'));if(n.dataset.asset){const img=n.querySelector('img'),next=faceBase+system+'_'+l.id+'_'+(lit?'ON':'OFF')+'.svg';if(img&&img.src!==next)img.src=next;}}
+   for(const c of cfg.controls){
+     const n=controls.get(c.id);if(!n)continue;
+     const value=model.readControl(system,c,state),label=n.querySelector('.oh22-control-value');
+     if(c.kind==='momentary'){label.textContent='CHECK';continue;}
+     label.textContent=value==null?'—':String(value);
+     n.setAttribute('aria-valuetext',String(value));
+     let angle=0;
+     if(c.kind==='altitude')angle=-155+310*(Number(value)-c.min)/(c.max-c.min);
+     else if(c.kind==='selector'){
+       const measured=cfg.detentPoses?.[c.id]?.[value];
+       angle=Number.isFinite(measured)?measured:
+         (system==='DCPCS'&&c.id==='press-mode'?-45:-65)+(system==='DCPCS'&&c.id==='press-mode'?90:130)*(c.states.indexOf(value)/Math.max(1,c.states.length-1));
+     }
+     else if(c.kind==='spring')angle=value==='CLOSE'?-24:value==='OPEN'?24:0;
+     if(c.visualFamily==='Small Silver'){
+       const face=n.querySelector('.oh22-small-silver-face');
+       if(face)face.style.backgroundPosition=(smallSilverFrame(c,value)*25)+'% 50%';
+     }else{
+       const img=n.querySelector('img');if(img)img.style.transform='rotate('+angle+'deg)';
+     }
+   }
+   for(const d of cfg.displays){
+     const el=digits.get(d.id);
+     if(el){const v=model.readDisplay(system,d,state);el.textContent=v===null?'—':String(v);}
+   }
+   if(gauge){
+     const frac=output.physical?.valveOpenFraction;
+     const physicalKnown=typeof frac==='number'&&Number.isFinite(frac);
+     if(system==='CPCS'){
+       // Native CPCS AC-powered VALVE aperture is a circular indicator.
+       // Needle uses the independent cabin plant's estimated valve travel.
+       // With AC lost the source-defined presentation is FULL LEFT.
+       const powered=state.inputs?.acPowerAvailable===true;
+       const pointer=gauge.querySelector('.oh22-valve-pointer');
+       const percent=physicalKnown?Math.max(0,Math.min(1,frac)):null;
+       gauge.dataset.known=String(physicalKnown&&powered);
+       gauge.dataset.powered=String(powered);
+       if(pointer)pointer.style.transform='translate(-50%,-100%) rotate('+(!powered?-75:percent===null?-75:-75+150*percent)+'deg)';
+       gauge.title=!powered?'CPCS VALVE indicator unpowered — needle at full left':
+         percent===null?'Valve travel unknown — source not connected':
+         'CPCS VALVE · estimated '+Math.round(percent*100)+'% open (trainer physics, not measured aircraft position)';
+     }else{
+       const manual=output.operatingMode==='MAN';
+       gauge.dataset.known=String(physicalKnown||manual);
+       gauge.textContent=physicalKnown?Math.round(frac*100)+'%':manual?Math.round(output.manualValveFraction*100)+'%':'';
+       gauge.title=physicalKnown?'Training plant estimated outflow opening; not aircraft-measured':
+         manual?'Illustrative MAN motor stroke only':'Actual valve position unknown without a pressure plant';
+     }
+   }
+   caption.textContent=system+'  ·  '+(output.operatingMode||'UNKNOWN')+'  ·  '+(output.outflowCommand||output.outflow?.command||'NOT CALCULATED');
+   layer.dataset.mode=output.operatingMode||'UNKNOWN';
+   layer.dataset.lampTest=String(lampTest);
+ }
+ function setSystem(next){
+   if(next!=='CPCS'&&next!=='DCPCS')return;
+   if(system===next&&layer?.isConnected){requestState();return;}
+   system=next;
+   if(mount())build();
+ }
+ window.addEventListener('b737:pressure-configuration',event=>setSystem(event.detail?.system));
+ // Visual test is sourced from the cockpit toolbar; the native lamp test is
+ // sourced from the same overhead lamp controller as all other annunciators.
+ window.addEventListener('b737:pressure-light-test',()=>paint());
+ window.addEventListener('b737:overhead-light-state',()=>paint());
+ window.addEventListener('storage',event=>{if(event.key===PROFILE_KEY)setSystem(savedSystem());});
+ window.addEventListener('message',event=>{
+   if(event.origin!==location.origin||event.source!==parent||event.data?.type!=='b737:cockpit-command')return;
+   if(event.data.action==='pressurization-state')accept(event.data);
+   if(event.data.action==='pressurization-background')setSystem(event.data.system);
+ });
+ const mo=new MutationObserver(()=>{if(mount()){mo.disconnect();window.document.documentElement.classList.add('oh22-pressure-config-active');}});
+ mo.observe(atlas,{childList:true,subtree:true});
+ system=savedSystem();mount();
+ window.B737OH22Pressurization=Object.freeze({getSystem:()=>system,requestState,setSystem,
+  getDiagnosticSnapshot:()=>received?{system,state:received.state,output:received.output}:null});
+})();

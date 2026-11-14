@@ -1,0 +1,140 @@
+/* MCP-0006 / Hardware phase 2 — photo-reference A/T paddle and small F/D silver toggles. Photo is never modified.
+   Coordinates reference the 2172 x 433 blank MCP source image.
+   Controls are visual training controls; AFDS authority is not claimed. */
+(function(){
+"use strict";
+const W=2172,H=433;
+const Rules=window.B737McpFCOMCh4NumericV1;
+const Gesture=window.B737McpRotaryGestureV1;
+if(!Rules?.step||!Gesture?.create)throw Error("MCP V/S FCOM Ch4 or gesture engine missing");
+/* MCP-PHOTO-0003: the original generated orthographic switch renders are
+   mounted from a single 4-state photo sheet, not procedural CSS substitutes. */
+const attached=new WeakSet(), all=[];
+const controls=Object.freeze([
+ {id:"AT_ARM",kind:"toggle",x:357,y:181,w:66,h:68,caption:"A/T ARM",state:"OFF"},
+ {id:"FD_LEFT",kind:"toggle",x:203,y:321,w:36,h:51,caption:"F/D captain",state:"OFF"},
+ {id:"FD_RIGHT",kind:"toggle",x:1903,y:321,w:36,h:51,caption:"F/D first officer",state:"OFF"},
+ {id:"VS_WHEEL",kind:"wheel",x:1490,y:281,w:49,h:177,caption:"VERT SPEED wheel",state:0},
+ {id:"CO",kind:"push",x:460,y:246,w:52,h:52,caption:"C/O",state:false},
+ {id:"SPD_INTV",kind:"push",x:735,y:260,w:41,h:41,caption:"SPD INTV",state:false},
+ {id:"ALT_INTV",kind:"push",x:1370,y:258,w:41,h:41,caption:"ALT INTV",state:false}
+]);
+const state=Object.fromEntries(controls.map(c=>[c.id,c.state]));
+function change(id,value,method){
+ const def=controls.find(c=>c.id===id);if(!def)return;
+ const previous=state[id];
+ if(def.kind==="toggle")value=value==="ARM"||value==="ON"?(id==="AT_ARM"?"ARM":"ON"):"OFF";
+ if(def.kind==="push")value=Boolean(value);
+ if(def.kind==="wheel"){
+   value=Rules?.normalize("verticalSpeed",Number(value));
+   if(!Number.isFinite(value))return;
+   window.B737McpVisualV3?.setValue("verticalSpeed",value);
+ }
+ state[id]=value;
+ draw();
+ if(previous!==value)window.dispatchEvent(new CustomEvent("b737:mcp-hardware-change",{detail:{id,kind:def.kind,value,previous,method,source:"MCP-0005-VISUAL"}}));
+}
+function draw(){
+ for(const root of all)for(const el of root.querySelectorAll(".mcp-hw")){
+  const id=el.dataset.mcpHardware,def=controls.find(c=>c.id===id);
+  if(!def)continue;
+  const v=state[id];
+  el.dataset.state=String(v);
+  el.setAttribute("aria-label",def.caption+" "+(typeof v==="boolean"?(v?"pressed":"released"):v));
+  if(def.kind==="toggle")el.setAttribute("aria-pressed",String(v!=="OFF"));
+  if(def.kind==="push")el.setAttribute("aria-pressed",String(v));
+  if(def.kind==="wheel"){el.setAttribute("aria-valuenow",String(v));el.setAttribute("aria-valuetext",String(v)+" feet per minute");}
+ }
+}
+function on(el,event,listener,options){el.addEventListener(event,listener,options);}
+function mountControl(parent,c){
+ const el=document.createElement("span");el.className="mcp-hw mcp-hw-"+c.kind+(c.id==="AT_ARM"?" mcp-hw-at":c.id.startsWith("FD_")?" mcp-hw-fd":"");el.dataset.mcpHardware=c.id;
+ el.tabIndex=0;el.setAttribute("role",c.kind==="wheel"?"slider":"button");
+ el.style.left=(c.x/W*100)+"%";
+ el.style.top=(c.y/H*100)+"%";
+ el.style.width=(c.w/W*100)+"%";
+ el.style.height=(c.h/H*100)+"%";
+ if(c.kind==="toggle"){
+  el.innerHTML='<span class="mcp-hw-real-face" aria-hidden="true"></span>';
+  on(el,"click",e=>{e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","click")});
+  on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","keyboard")}});
+ }else if(c.kind==="wheel"){
+  el.setAttribute("aria-valuemin","-7900");el.setAttribute("aria-valuemax","6000");
+  el.innerHTML='<span class="mcp-hw-wheel-axle"><span class="mcp-hw-wheel-tread"></span><span class="mcp-hw-wheel-glint"></span></span>';
+  const gesture=Gesture.create({
+   axis:"y",
+   pixelsPerDetent:()=>Math.max(5,Math.min(16,el.getBoundingClientRect().height*.055)),
+   tapDirection:e=>{
+    const rect=el.getBoundingClientRect();
+    return e.clientY<rect.top+rect.height/2?1:-1;
+   },
+   onDetents:(detents,meta)=>{
+    const value=Rules.step("verticalSpeed",state[c.id],detents);
+    if(value!==null)change(c.id,value,meta.method);
+   }
+  });
+  on(el,"pointerdown",e=>{
+   if(!gesture.down(e))return;
+   e.preventDefault();e.stopPropagation();
+   el.focus({preventScroll:true});
+   try{el.setPointerCapture(e.pointerId)}catch(_){}
+  });
+  on(el,"pointermove",e=>{
+   if(!gesture.audit().active)return;
+   e.preventDefault();e.stopPropagation();gesture.move(e);
+  });
+  on(el,"pointerup",e=>{
+   if(!gesture.audit().active)return;
+   e.preventDefault();e.stopPropagation();gesture.up(e);
+   if(el.hasPointerCapture?.(e.pointerId))el.releasePointerCapture(e.pointerId);
+  });
+  on(el,"pointercancel",e=>{gesture.cancel();e.stopPropagation()});
+  on(el,"lostpointercapture",()=>gesture.cancel());
+  on(el,"wheel",e=>{
+   e.preventDefault();e.stopPropagation();
+   gesture.wheel(e.deltaY,e.deltaMode);
+  },{passive:false});
+  on(el,"keydown",e=>{
+   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)){
+    e.preventDefault();e.stopPropagation();
+    change(c.id,Rules.step("verticalSpeed",state[c.id],
+     ["ArrowUp","ArrowRight"].includes(e.key)?1:-1),"keyboard");
+   }else if(e.key==="Home"||e.key==="End"){
+    e.preventDefault();e.stopPropagation();
+    change(c.id,e.key==="Home"?0:e.shiftKey?-7900:6000,"keyboard");
+   }
+  });
+ }else{
+  el.innerHTML='<span class="mcp-hw-push-bezel"><span class="mcp-hw-push-cap"></span></span>';
+  on(el,"click",e=>{e.stopPropagation();change(c.id,!state[c.id],"click")});
+  on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,!state[c.id],"keyboard")}});
+ }
+ on(el,"pointerdown",e=>e.stopPropagation());
+ on(el,"wheel",e=>{if(c.kind!=="wheel")e.stopPropagation()},{passive:true});
+ parent.append(el);
+}
+function mount(){
+ document.querySelectorAll('[data-piece="mcp"]').forEach(parent=>{
+  if(attached.has(parent))return;
+  attached.add(parent);
+  for(const c of controls)mountControl(parent,c);
+  all.push(parent);
+ });
+ draw();
+}
+window.B737McpHardwareV1=Object.freeze({
+ geometry:controls.map(c=>Object.freeze({...c})),
+ getState:()=>({...state}),
+ setState:(id,value)=>change(id,value,"external"),
+ rotateVS:(detents,method="drag")=>{
+  if(!Number.isInteger(detents)||!detents)return false;
+  const target=Rules.step("verticalSpeed",state.VS_WHEEL,detents);
+  if(target===null)return false;
+  change("VS_WHEEL",target,method);return true;
+ },
+ mount
+});
+window.addEventListener("b737:cockpit-mounted",mount);
+document.addEventListener("DOMContentLoaded",mount);
+if(document.readyState!=="loading")mount();
+})();

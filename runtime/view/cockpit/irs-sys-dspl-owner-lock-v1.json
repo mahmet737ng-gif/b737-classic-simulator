@@ -1,0 +1,22 @@
+{
+  "schema": "b737.irs.sys-dspl.owner-locked.v1",
+  "id": "IRS-SYS-DSPL-OWNER-LOCK-0001",
+  "lockedAt": "2026-10-28",
+  "approval": "Owner explicitly approved appearance, placement, labels, movement, and requested strict no-edit lock",
+  "scope": "LOWER IRS SYS DSPL L/R rotary selector ONLY; UPPER DSPL SEL/BRT separate",
+  "policy": "NO modification/reposition/scaling/recolor/redesign/renaming/animation change to frozen selector, labels, photo or SVG without specific direct user request plus separate informed confirmation. Additive upper-switch module must not change frozen files or these integration mounts.",
+  "frozenGitBlobs": {
+    "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.js": "14c7b49687da4d71ec3d4595b3372eb5f4746815",
+    "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.css": "785ba865fee741fbd95a27c30dbe1a29ad44fa61",
+    "panel-mosaic-lab/cockpit/assets/irs-sys-dspl-selector-approved-v1.avif": "37cf1ee3391ee62db338705dbb670d64eb2f5193",
+    "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js": "aed1b46bf426fe6d9cc85e1c72af7f4b21317a7d",
+    "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.css": "b4027692474288827702f2022db55c68d6978126",
+    "panel-mosaic-lab/cockpit/assets/irs-sys-dspl-lr-markings-v1.svg": "befe5aff5ed7e132f4a9e87d1cd0773c0b0db4b6"
+  },
+  "indexMounts": [
+    "<link rel=\"stylesheet\" href=\"./irs-sys-dspl-v1.css?v=IRS-SYS-0001\">",
+    "<link rel=\"stylesheet\" href=\"./irs-sys-dspl-lr-markings-v1.css?v=IRS-LR-0001\">",
+    "<script src=\"./irs-sys-dspl-v1.js?v=IRS-SYS-0001\" defer></script>",
+    "<script src=\"./irs-sys-dspl-lr-markings-v1.js?v=IRS-LR-0001\" defer></script>"
+  ]
+}

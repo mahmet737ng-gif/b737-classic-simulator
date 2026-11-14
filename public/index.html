@@ -3,9 +3,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0c1825">
 <title>B737 Classic | Electrical & Overhead Bench</title>
-<link rel="stylesheet" href="/static/portal.css">
+<link rel="stylesheet" href="/static/portal.css"><link rel="stylesheet" href="/static/portal-overhead.css">
 <script src="/static/portal.js" defer></script>
-<script src="/static/session.js" defer></script>
+<script src="/static/session.js" defer></script><script src="/static/portal-overhead.js" defer></script>
 </head><body>
 <header class="toolbar">
  <div class="ident"><strong>737 CLASSIC</strong><small>OVERHEAD · ATA 24 TRAINING ENVIRONMENT</small></div>
@@ -20,7 +20,14 @@
 </header>
 <div id="statusBanner" class="status-banner" role="status" hidden></div>
 <main class="stage">
- <section id="view-overhead" class="module active" aria-label="Interactive overhead"><iframe id="overheadFrame" title="Interactive Overhead" src="/view/interactive-overhead/" loading="eager"></iframe></section>
+ <section id="view-overhead" class="module active" aria-label="Unified cockpit overhead">
+ <div class="guest-zoom"><button type="button" id="guestZoomOut" aria-label="Zoom out">−</button><output id="guestZoomReadout">FIT</output><button type="button" id="guestZoomIn" aria-label="Zoom in">+</button><button type="button" id="guestZoomFit">FIT</button></div>
+ <div class="guest-overhead-scroll" id="guestOverheadScroll">
+  <div class="guest-overhead-canvas" id="guestOverheadCanvas">
+    <iframe id="overheadFrame" title="B737 Classic original Unified cockpit overhead" src="/view/cockpit/overhead-stage.html" loading="eager" scrolling="no"></iframe>
+  </div>
+ </div>
+ </section>
  <section id="view-lab" class="module" hidden aria-label="Bus test lab"><iframe id="labFrame" title="Bus distribution test lab" src="/lab/" loading="eager"></iframe></section>
  <section id="view-cb" class="module" hidden aria-label="Circuit breaker panel"><iframe id="cbFrame" title="Circuit breaker panel" src="/cb-panel-lab/" loading="lazy"></iframe></section>
 </main>

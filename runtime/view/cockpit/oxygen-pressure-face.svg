@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Crew oxygen pressure dial, 0 to 20 hundreds of PSI">
+ <title>CREW OXYGEN — OXY PRESS PSI X 100</title>
+ <defs>
+  <radialGradient id="oxBrown"><stop offset="0" stop-color="#65402e"/><stop offset=".72" stop-color="#693821"/><stop offset="1" stop-color="#321910"/></radialGradient>
+ </defs>
+ <circle cx="256" cy="256" r="244" fill="#090909"/>
+ <circle cx="256" cy="256" r="234" fill="url(#oxBrown)"/>
+  <line x1="87.71" y1="369.52" x2="66.98" y2="383.50" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+  <line x1="57.03" y1="334.78" x2="44.01" y2="339.93" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="44.75" y1="290.21" x2="30.93" y2="292.45" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="42.33" y1="244.05" x2="28.36" y2="243.27" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="49.88" y1="198.45" x2="36.40" y2="194.69" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="76.76" y1="160.70" x2="54.69" y2="148.96" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+  <line x1="93.03" y1="117.30" x2="82.37" y2="108.23" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="126.62" y1="85.54" x2="118.15" y2="74.39" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="166.24" y1="61.74" x2="160.36" y2="49.03" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="210.05" y1="46.99" x2="207.04" y2="33.32" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="256.00" y1="53.00" x2="256.00" y2="28.00" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+  <line x1="301.95" y1="46.99" x2="304.96" y2="33.32" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="345.76" y1="61.74" x2="351.64" y2="49.03" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="385.38" y1="85.54" x2="393.85" y2="74.39" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="418.97" y1="117.30" x2="429.63" y2="108.23" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="435.24" y1="160.70" x2="457.31" y2="148.96" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+  <line x1="462.12" y1="198.45" x2="475.60" y2="194.69" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="469.67" y1="244.05" x2="483.64" y2="243.27" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="467.25" y1="290.21" x2="481.07" y2="292.45" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="454.97" y1="334.78" x2="467.99" y2="339.93" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <line x1="424.29" y1="369.52" x2="445.02" y2="383.50" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+  <text x="105.94" y="370.21" text-anchor="middle" font-size="43" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#fff9ed">0</text>
+  <text x="96.19" y="184.03" text-anchor="middle" font-size="43" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#fff9ed">5</text>
+  <text x="256.00" y="97.00" text-anchor="middle" font-size="43" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#fff9ed">10</text>
+  <text x="415.81" y="184.03" text-anchor="middle" font-size="43" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#fff9ed">15</text>
+  <text x="406.06" y="370.21" text-anchor="middle" font-size="43" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#fff9ed">20</text>
+ <text x="256" y="436" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="800" letter-spacing="1" fill="#fff9ed">OXY. PRESS.</text>
+ <text x="256" y="472" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="800" letter-spacing="1" fill="#fff9ed">PSI X 100</text>
+</svg>

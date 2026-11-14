@@ -13,12 +13,12 @@ for(const url of manifest){
 for(const page of [
   ['public/index.html','/'],
   ['public/lab.html','/lab/'],
-  ['runtime/view/interactive-overhead/index.html','/view/interactive-overhead/'],
+  ['runtime/view/cockpit/overhead-stage.html','/view/cockpit/overhead-stage.html'],
   ['runtime/cb-panel-lab/index.html','/cb-panel-lab/']
 ]){
  const html=fs.readFileSync(path.join(root,page[0]),'utf8');
  assert(!/https?:\/\/(?:mahmet|[^"' ]*github\.io)/i.test(html),'Source-site navigation in '+page[0]);
- const base=page[0].includes('/interactive-overhead/')
+ const base=page[0].includes('/view/cockpit/')
     ?'/view/all-overhead/':page[1];
  for(const match of html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)="([^"]+)"/g)){
   const target=match[1];const u=new URL(target,'https://example.test'+base);
@@ -44,12 +44,17 @@ assert(source.includes('MAX_DEVICES = 3'),'Missing three-device server-side cap'
 assert(source.includes('pg_advisory_xact_lock'),'Concurrent login cap must be atomic');
 assert(source.includes('runtimeFiles.has(runtimePath)'),'Static route guard missing');
 assert(source.includes("const ok=await authorized(req)"),'Authentication guard missing');
-const guest=fs.readFileSync(path.join(root,'runtime/view/interactive-overhead/index.html'),'utf8');
+const guest=fs.readFileSync(path.join(root,'runtime/view/cockpit/overhead-stage.html'),'utf8');
 assert(guest.includes('/bridge/failure-protocol.js'));
 assert(guest.includes('/bridge/cb-live.js'));
 assert(guest.includes('/bridge/guest-overhead.js'));
 const portal=fs.readFileSync(path.join(root,'public/index.html'),'utf8');
-assert(portal.includes('src="/view/interactive-overhead/"'));
+assert(portal.includes('src="/view/cockpit/overhead-stage.html"'));
+assert(!manifest.has('/view/cockpit/index.html'),'Full cockpit route must not be web-accessible');
+assert(!manifest.has('/view/interactive-overhead/index.html'),'Old alternate gallery must not be exposed');
+for(const source of ['performance/overhead-renderer.js','cockpit/guard-owner18-v1.js','cockpit/oh21-owner-photo-registration-v1.js','cockpit/exterior-lights-classic-v1.js','cockpit/overhead-bridge.js']) assert(guest.includes(source),'Original cockpit module missing: '+source);
+assert(guest.includes('/bridge/failure-protocol.js'),'Overhead must subscribe to bus failure engine');
+assert(fs.readFileSync(path.join(root,'public/index.html'),'utf8').includes('/static/portal-overhead.js'));
 assert(portal.includes('src="/cb-panel-lab/"'));
 assert(portal.includes('src="/lab/"'));
 console.log('Guest overhead, photos, CB, lab, protected resources, and injection contract: OK');

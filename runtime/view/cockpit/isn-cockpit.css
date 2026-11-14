@@ -1,0 +1,60 @@
+.isn-bridge-panel{border:1px solid #456174;border-radius:8px;padding:11px!important;margin:10px 0;background:#132838}
+.isn-bridge-panel h2{color:#a7dfd8}
+.isn-bridge-panel p,.isn-bridge-panel details{font-size:11px;line-height:1.6}
+.isn-bridge-panel .isn-note{color:#e2bd83}
+.isn-bridge-panel #isnMode{border-color:#6c9f97}
+.isn-quick-engine-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:5px 0}
+.isn-quick-engine-actions button{flex:1 1 120px;min-width:0}
+.isn-quick-engine-actions [id^=isnQuickStop]{border-color:#b47773;color:#ffd9d4;background:#412526}
+.isn-quick-engine-actions button:disabled{opacity:.42;cursor:not-allowed}
+.isn-bridge-panel #isnMode[aria-pressed=true]{background:#67431f;border-color:#d3a66c;color:#ffe1ad}
+.isn-buses{direction:ltr;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:8px 0}
+.isn-buses>div,.isn-warnings>div{display:flex;flex-direction:column;align-items:center;gap:4px;background:#0c1c2b;border:1px solid #30495a;border-radius:6px;padding:5px;min-width:0}
+.isn-buses small,.isn-warnings small{font:9px/1.4 monospace;word-break:break-word;text-align:center}
+.isn-state{font:10px/1.4 monospace;border-radius:4px;padding:2px 5px;display:inline-block;white-space:nowrap}
+.isn-state.on{color:#a9f7c8;background:#1b5434}.isn-state.off{color:#c1cfdb;background:#243443}.isn-state.unknown{color:#ffe0a1;background:#5b461f}
+.isn-setting{display:flex;align-items:start;gap:7px;line-height:1.6;margin:8px 0}
+.isn-scroll{overflow-x:auto;max-width:100%;direction:ltr;margin:8px 0}
+.isn-table{border-collapse:collapse;font-size:10px;min-width:470px;width:100%;text-align:left}
+.isn-table th,.isn-table td{padding:5px 4px;border-bottom:1px solid #365061;vertical-align:middle}
+.isn-table select{font-size:10px!important;padding:2px!important;min-width:85px}
+.isn-table .isn-fault{display:flex;gap:4px;align-items:center;font-size:10px}
+.isn-table .isn-evidence{word-break:break-all;color:#a2baca;font-size:9px;max-width:130px}
+.isn-warnings{direction:ltr;display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:10px 0}
+.isn-trace{max-height:180px;overflow-y:auto;direction:ltr;overflow-wrap:anywhere;text-align:left;background:#0c1b29;padding:6px}
+.isn-trace p{border-bottom:1px solid #2b4354;padding:5px 0;margin:0;font:10px/1.5 monospace}
+.isn-error{color:#e6b382}
+.isn-start-panel{margin:10px 0;padding:9px;border:1px solid #4c756d;border-radius:8px;background:#102a2d}
+.isn-start-panel summary{cursor:pointer;color:#b6e3d0;font-weight:750;font-size:12px}
+.isn-start-panel #isnStartStatus{font:11px/1.6 ui-monospace,Consolas,monospace;color:#b9dfc8;overflow-wrap:anywhere;padding:8px;background:#0a2225;border-radius:6px;margin:8px 0}
+.isn-lever-instruction{border-inline-start:3px solid #7cb9a1;padding-inline-start:9px;background:#153736;color:#d7eee5}
+.isn-lever-status{direction:ltr;text-align:left;font:700 11px/1.8 Consolas,monospace;color:#bcefcf}
+.isn-start-indications{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px 9px;background:#0d2026;direction:ltr;flex-shrink:0;border-bottom:1px solid #3b5b63}
+.isn-engine-card{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 11px;min-width:0;padding:4px 8px;border:1px solid #49656a;border-radius:6px;background:#122b31;color:#d5e9eb;font:11px/1.45 ui-monospace,Consolas,monospace}
+.isn-engine-card>b{color:#8ed4db;font-size:12px}.isn-engine-card [data-field=phase]{color:#8badb5;font-size:10px}
+.isn-engine-card [data-field=n2],.isn-engine-card [data-field=egt]{color:#ecf7ef;white-space:nowrap}
+.isn-engine-card [data-field=valve]{color:#8da5ae;white-space:nowrap}.isn-engine-card [data-field=valve][data-amber=true]{color:#ffcc73;text-shadow:0 0 6px #f59e30}
+.isn-engine-card[data-phase=RUNNING]{border-color:#60b28d}.isn-engine-card[data-egt-advisory=true] [data-field=egt]{color:#ff897f}
+.isn-indication-error{grid-column:1/-1;margin:0;color:#ffbf94;font:11px/1.4 ui-monospace,Consolas,monospace}.isn-indication-error:empty{display:none}
+@media(max-width:640px){.isn-engine-card{font-size:10px;gap:2px 5px;padding:4px}.isn-engine-card [data-field=phase]{width:100%}}
+.isn-start-faults{margin:8px 0;padding:7px;border:1px solid #516a6d;border-radius:5px}.isn-start-faults label{display:block;margin:5px 0;direction:ltr;text-align:left}.isn-start-faults input{margin-right:6px}.isn-start-faults input:disabled{opacity:.5}
+.isn-engine-card[data-phase=N2_STALLED],.isn-engine-card[data-phase=ABNORMAL_EGT]{border-color:#e0875c;background:#3b2728}
+
+
+/* ENGINE START live-ECU feedback: an external non-interactive status only.
+   It does not cover the cockpit's switches or alter frozen art. */
+#unifiedEngineStartFeedback{
+ position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom,0px));
+ transform:translateX(-50%);z-index:55;max-width:min(94vw,940px);
+ max-height:20vh;overflow:hidden;padding:9px 13px;border-radius:7px;
+ border:1px solid #4f837e;background:#0b2630f2;color:#e5f7f1;
+ font:600 12px/1.55 ui-monospace,Consolas,monospace;text-align:center;
+ direction:ltr;pointer-events:none;box-shadow:0 3px 13px #0009;
+}
+#unifiedEngineStartFeedback[hidden]{display:none!important}
+#unifiedEngineStartFeedback[data-severity=warning]{
+ border-color:#e3a468;background:#3b211dec;color:#ffe4c7;
+}
+@media(max-width:560px){#unifiedEngineStartFeedback{
+ font-size:11px;max-width:96vw;padding:7px 9px;max-height:24vh;
+}}

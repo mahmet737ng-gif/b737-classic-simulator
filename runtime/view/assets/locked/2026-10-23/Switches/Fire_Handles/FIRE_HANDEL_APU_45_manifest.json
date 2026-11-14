@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "family": "FIRE_HANDEL",
+  "unit": "APU",
+  "angles_deg": [
+    -45,
+    45
+  ],
+  "lights": [
+    "ON",
+    "OFF"
+  ],
+  "source_center_unchanged": true,
+  "assets": [
+    {
+      "filename": "FIRE_HANDEL_APU_LEFT45_ON.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_ON.png",
+      "git_blob_sha": "d30cc913161d7464afa544729db0edd486cb4b3b",
+      "sha256": "6061c9cfd40642f7c681739fa9d62c77449c9dd1e88a802df723fd74e1600a90",
+      "size_bytes": 1341080,
+      "angle_deg": -45,
+      "light_state": "ON",
+      "locked": true
+    },
+    {
+      "filename": "FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_LEFT45_OFF.png",
+      "git_blob_sha": "f64e83e3354002587b28fada540341cb9ff3e3bc",
+      "sha256": "122e7313efd178745300aa8cbb792dc09ec036c6f9f91ed1d1dc99ce3bf13ff6",
+      "size_bytes": 1324229,
+      "angle_deg": -45,
+      "light_state": "OFF",
+      "locked": true
+    },
+    {
+      "filename": "FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_ON.png",
+      "git_blob_sha": "54ee71fedffdd5a3cc7247d3150e1f19061a71da",
+      "sha256": "8f5cee20ea2682725603abd83b94742dbb79bfe3fb84213df07d05f6b49ef4b3",
+      "size_bytes": 1367662,
+      "angle_deg": 45,
+      "light_state": "ON",
+      "locked": true
+    },
+    {
+      "filename": "FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_APU_RIGHT45_OFF.png",
+      "git_blob_sha": "a34b07e5f49806674a9b2ea69f08da1ebca9e8ca",
+      "sha256": "7b7371d446197579c98577185299b22c22fdc6963b62867d9bf7fc6f74f9a881",
+      "size_bytes": 1369807,
+      "angle_deg": 45,
+      "light_state": "OFF",
+      "locked": true
+    }
+  ]
+}

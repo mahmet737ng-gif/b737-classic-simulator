@@ -1,0 +1,70 @@
+/* Unified FAILURES — modular instructor menu, outside protected cockpit atlas. */
+body > header.unified-minimal-header .header-settings #failuresHeaderOpen {
+  display:inline-flex!important;flex:0 1 auto!important;min-width:90px!important;
+  border-color:#997866!important;background:#433128!important;color:#ffdeca!important;
+  white-space:nowrap!important;letter-spacing:.035em!important;
+}
+body > header.unified-minimal-header .header-settings #failuresHeaderOpen[data-failures-active="true"]{
+  background:#612c36!important;border-color:#e38b9a!important;color:#ffe3e5!important;
+}
+#failuresHeaderPopover[hidden]{display:none!important}
+#failuresHeaderPopover {
+  position:fixed;top:calc(var(--minimal-header-height,48px) + 7px);
+  right:clamp(8px,6vw,96px);z-index:95;
+  box-sizing:border-box;width:min(470px,calc(100vw - 16px));
+  max-height:calc(100dvh - var(--minimal-header-height,48px) - 16px);
+  overflow-y:auto;overscroll-behavior:contain;direction:ltr;
+  background:#102431;color:#dbeaf4;border:1px solid #547487;border-radius:12px;
+  box-shadow:0 15px 45px #000b;padding:12px;
+  font:12px/1.45 system-ui,Tahoma,Arial,sans-serif;
+}
+#failuresHeaderPopover .failures-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #3a5668;padding-bottom:9px}
+#failuresHeaderPopover .failures-top strong{font-size:14px;letter-spacing:.05em}
+#failuresHeaderPopover button,#failuresHeaderPopover .failures-lab-link{
+  font:600 12px/1.25 system-ui,Tahoma,Arial,sans-serif;cursor:pointer;
+  touch-action:manipulation;border-radius:7px;color:#e6f2fa;border:1px solid #4d768a;
+  background:#1b3b4c;padding:9px;text-align:center;
+}
+#failuresHeaderPopover button:focus-visible,#failuresHeaderPopover summary:focus-visible{
+  outline:2px solid #b2e2ff;outline-offset:2px;
+}
+#failuresHeaderPopover .failures-close{font-size:20px;min-width:38px;min-height:36px;padding:3px 8px}
+#failuresHeaderPopover .failures-intro,#failuresHeaderPopover .failures-footer{
+  font-size:11px;color:#abc3d2;line-height:1.6;
+}
+#failuresHeaderPopover .failures-electrical{border:1px solid #527287;border-radius:8px;overflow:hidden;background:#0c1e2b}
+#failuresHeaderPopover .failures-section-title{display:flex;align-items:center;justify-content:space-between;padding:12px;cursor:pointer;background:#1d3e51;color:#e3f1ff;font-weight:800;list-style-position:inside;touch-action:manipulation}
+#failuresHeaderPopover .failures-branch-counter{color:#ffb7c1;font-size:11px;font-variant-numeric:tabular-nums}
+#failuresHeaderPopover .failures-electrical-content{padding:10px}
+#failuresHeaderPopover .failures-feedback{margin:2px 0 9px;color:#b6dbef;font-size:11px}
+#failuresHeaderPopover .failures-feedback[data-error="true"]{color:#ffb4b8}
+#failuresHeaderPopover .failures-group{margin-bottom:10px}
+#failuresHeaderPopover .failures-group h3{margin:0 0 6px;padding:5px 2px;color:#aecbdc;font-size:10px;letter-spacing:.05em;border-bottom:1px solid #355163}
+#failuresHeaderPopover .failures-bus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#failuresHeaderPopover .failures-bus-toggle{
+  display:grid;grid-template-columns:1fr auto;column-gap:5px;align-items:center;
+  min-width:0;min-height:52px;padding:8px 7px;text-align:left;
+  background:#19354a;border-color:#436a80;
+}
+#failuresHeaderPopover .failures-bus-name{
+  grid-column:1 / -1;font-size:11px;font-weight:700;overflow-wrap:anywhere;
+}
+#failuresHeaderPopover .failures-bus-voltage{color:#9fbacb;font-size:10px}
+#failuresHeaderPopover .failures-bus-state{font-size:10px;color:#80d5ee;text-align:right}
+#failuresHeaderPopover .failures-bus-toggle[data-failed="true"]{
+  background:#472b37;border-color:#d37b8d;color:#ffe2e6;
+}
+#failuresHeaderPopover .failures-bus-toggle[data-failed="true"] .failures-bus-state{
+  color:#ff9ba9;font-weight:800;
+}
+#failuresHeaderPopover .failures-actions{display:grid;gap:7px;margin-top:12px}
+#failuresHeaderPopover .failures-clear{background:#55323c;border-color:#b3707c;min-height:42px}
+#failuresHeaderPopover .failures-clear:disabled{opacity:.5;cursor:default}
+#failuresHeaderPopover .failures-lab-link{text-decoration:none;display:block;background:#204662}
+@media(max-width:600px){
+ body > header.unified-minimal-header .header-settings #failuresHeaderOpen{
+   font-size:10px!important;min-width:67px!important;padding:5px 4px!important;
+ }
+ #failuresHeaderPopover{right:8px;max-height:calc(100dvh - 65px)}
+}
+@media(prefers-reduced-motion:reduce){#failuresHeaderPopover *{transition:none!important}}

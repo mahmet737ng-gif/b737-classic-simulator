@@ -1,0 +1,44 @@
+/* MOBILE-COCKPIT-FIRST-0001
+   Display-shell only. Does not transform, resize or edit any protected panel,
+   sprite, guarded switch, IRS control, or underlying cockpit geometry. */
+.unified-mobile-toggle,.mobile-inspector-close{display:none}
+@media (max-width:700px), (max-height:500px) and (pointer:coarse){
+  html,body{width:100%;height:100%;min-height:100dvh;overflow:hidden}
+  body{height:100dvh;display:flex;flex-direction:column}
+  body>header{height:49px;min-height:49px;flex:0 0 49px;display:flex;flex-wrap:nowrap;align-items:center;gap:4px;padding:4px 7px;position:relative;z-index:30;border-bottom:1px solid #3f5662}
+  body>header .brand{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden}
+  body>header .brand strong{font-size:clamp(10px,3vw,13px);letter-spacing:0;line-height:1.1}
+  body>header .brand strong span,body>header .brand small,body>header .aircraft-profile-header{display:none!important}
+  body>header .header-settings{display:flex;align-items:center;gap:4px;flex:0 0 auto;min-width:0}
+  body>header .unified-mobile-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:37px;padding:0;border:1px solid #436475;border-radius:8px;background:#193444;color:#e5edf3;font-weight:700;font-size:14px;line-height:1;touch-action:manipulation}
+  body>header .unified-mobile-toggle[aria-expanded=true]{background:#245b63;border-color:#8cdae0}
+  body>header #aircraftSettingsOpen{display:inline-flex;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:37px;font-size:0!important;padding:0;margin:0;border-radius:8px;white-space:nowrap;overflow:hidden}
+  body>header #aircraftSettingsOpen::before{content:"⚙";font-size:21px;line-height:1}
+  body>header #inspectorToggle{display:none!important}
+  body>header nav{display:none;position:fixed;top:55px;left:8px;right:8px;width:auto;max-height:min(68dvh,480px);overflow:auto;padding:9px;z-index:45;background:#102530;border:1px solid #547383;border-radius:12px;box-shadow:0 15px 35px #000b;direction:rtl}
+  body>header nav.mobile-open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:6px}
+  body>header nav button{width:100%;min-width:0;margin:0;padding:9px 5px;min-height:42px;font-size:12px;white-space:normal}
+  main{flex:1 1 auto;display:flex;min-height:0;height:0;padding:0;gap:0;direction:ltr}
+  .workbench{flex:1 1 auto;width:100%;min-height:0;border:0;border-radius:0;overflow:hidden}
+  .workbench .toolbar{display:none;position:fixed;top:55px;left:8px;right:8px;z-index:45;max-height:min(72dvh,520px);overflow-y:auto;flex-direction:column;align-items:stretch;gap:8px;margin:0;padding:10px;background:#102530;border:1px solid #547383;border-radius:12px;box-shadow:0 15px 35px #000b}
+  .workbench .toolbar.mobile-open{display:flex}
+  .workbench .toolbar .tools{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;max-width:100%}
+  .workbench .toolbar button{min-height:35px;font-size:11px;padding:6px 9px}
+  .workbench .toolbar #visualLampStatus{max-width:100%;overflow-wrap:anywhere}
+  .workbench .toolbar .mobile-inspector-close{display:inline-flex}
+  .workbench .viewport{flex:1 1 auto;min-height:0!important;height:100%;border-radius:0}
+  .workbench .view-caption{display:none!important}
+  /* The live engine data is retained and updated, but is on demand only. */
+  #isnStartIndications.isn-start-indications{display:none!important}
+  #isnStartIndications.isn-start-indications.mobile-open{display:grid!important;position:fixed;top:55px;left:8px;right:8px;bottom:auto;max-height:min(65dvh,500px);overflow:auto;grid-template-columns:1fr;gap:5px;z-index:45;padding:8px;background:#102530;border:1px solid #547383;border-radius:12px;box-shadow:0 15px 35px #000b}
+  #isnStartIndications.mobile-open .isn-engine-card{min-height:0;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:3px 8px;padding:7px;font-size:11px}
+  #isnStartIndications.mobile-open .isn-engine-card [data-field=phase]{width:auto}
+  #isnStartIndications.mobile-open .isn-engine-card>b{font-size:12px}
+  .inspector{top:55px!important;right:8px!important;bottom:8px!important;width:min(340px,calc(100vw - 16px))!important;z-index:50!important}
+  .mobile-inspector-close{display:block;position:sticky;top:0;z-index:3;margin:0 0 6px;width:100%;padding:8px}
+}
+@media (max-width:370px){
+  body>header{padding:4px;gap:2px}
+  body>header .header-settings{gap:3px}
+  body>header .unified-mobile-toggle,body>header #aircraftSettingsOpen{flex-basis:32px;width:32px;height:36px}
+}

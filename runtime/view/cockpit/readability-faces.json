@@ -1,0 +1,64 @@
+{
+  "schema": "b737.lamps.readability-face-overrides.v1",
+  "revision": "READABILITY-0001",
+  "sourceRegistrationVersion": "LGT-0012",
+  "instances": {
+    "main-stab-trim": {
+      "asset": "STAB_OUT_OF_TRIM",
+      "sourceRect": [
+        255,
+        740,
+        88,
+        59
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/readability-v1/main-stab-trim_OFF.svg",
+          "sha256": "7387e3249f5c360cda36760c1d9caa5a51d9a7675c8d48e1368cf35f037f710c"
+        },
+        "ON": {
+          "url": "../assets/lights/readability-v1/main-stab-trim_ON.svg",
+          "sha256": "67f1b088a2f548e1b98c39c7002f9dc2469dbada7923e28075aeb64a652b61b4"
+        }
+      }
+    },
+    "main-antiskid": {
+      "asset": "ANTI_SKID_INOP",
+      "sourceRect": [
+        59,
+        507,
+        82,
+        32
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/readability-v1/main-antiskid_OFF.svg",
+          "sha256": "ff74f1df982e6c6dec5f21a606e9a785466c9bcb7a6b02920697f19223d69df7"
+        },
+        "ON": {
+          "url": "../assets/lights/readability-v1/main-antiskid_ON.svg",
+          "sha256": "031a1861da3616b42cb2b34edd322a46c95fa8de38b496157f6644325a6992f8"
+        }
+      }
+    },
+    "main-at-lim": {
+      "asset": "A_T_LIM_WHITE",
+      "sourceRect": [
+        590,
+        257,
+        82,
+        35
+      ],
+      "states": {
+        "OFF": {
+          "url": "../assets/lights/readability-v1/main-at-lim_OFF.svg",
+          "sha256": "66dadeafa6d90c25a3d08a8ff6e7cd836dab44890ecaf42957523a67cbbd45f4"
+        },
+        "ON": {
+          "url": "../assets/lights/readability-v1/main-at-lim_ON.svg",
+          "sha256": "d686045986ee557a2fba7fee661c8f5b39fe78056a3833984339787f79c5c178"
+        }
+      }
+    }
+  }
+}

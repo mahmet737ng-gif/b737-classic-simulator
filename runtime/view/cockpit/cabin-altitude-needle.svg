@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Short thick cabin altitude pointer">
+  <title>CAB ALT — cabin altitude</title>
+  <desc>Short broad ivory pointer for the inner thousand-foot scale, mounted beneath the PRESS pointer.</desc>
+  <defs><linearGradient id="altFace" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#bbb8ae"/><stop offset=".2" stop-color="#fffef8"/><stop offset=".72" stop-color="#f4f3eb"/><stop offset="1" stop-color="#aaa79e"/></linearGradient></defs>
+  <path d="M242 39 L270 39 L287 126 L297 192 L300 227 Q297 251 279 258 L233 258 Q215 251 212 227 L215 192 L225 126 Z" fill="url(#altFace)" stroke="#262622" stroke-width="3.2" stroke-linejoin="round"/>
+  <text x="256" y="219" fill="#242420" font-family="Arial, sans-serif" font-weight="900" font-size="18" text-anchor="middle" letter-spacing=".1">CAB</text>
+  <text x="256" y="239" fill="#242420" font-family="Arial, sans-serif" font-weight="900" font-size="18" text-anchor="middle" letter-spacing=".1">ALT</text>
+</svg>

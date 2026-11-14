@@ -1,0 +1,31 @@
+{
+  "schema": "b737-toggle-front-orthographic/draft-1",
+  "status": "DRAFT_INCOMPLETE_DO_NOT_INSTALL_OR_LOCK",
+  "date": "2026-10-24",
+  "base_style": "approved B737 Classic white tip and brushed steel stem, without the outer circular mounting disc",
+  "rules": "Only the switch lever, compact pivot collar, and white handle remain. Straight frontal orientation; fixed pivot for subsequent animation.",
+  "files": {
+    "UP": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Front_View_Draft/toggle-front-up.png",
+      "sha": "8c836ebebd82ba5d6d168e9f6198941d7dd00cea"
+    },
+    "CENTER_VERTICAL": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Front_View_Draft/toggle-front-center-vertical.png",
+      "sha": "8ad16a378cf08572cba99cd7ea5ef361a5dcf4d6"
+    },
+    "DOWN": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Front_View_Draft/toggle-front-down.png",
+      "sha": "626950596eb69fec66ae64159045160d29c7968d"
+    },
+    "CENTER_HORIZONTAL": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/Front_View_Draft/toggle-front-center-horizontal.png",
+      "sha": "8ad16a378cf08572cba99cd7ea5ef361a5dcf4d6"
+    }
+  },
+  "missing": [
+    "LEFT",
+    "RIGHT"
+  ],
+  "note": "VERTICAL_CENTER and HORIZONTAL_CENTER intentionally share the same transparent PNG bytes but have independent file paths. Images need cross-state alignment QA before panel integration.",
+  "protected_existing_assets": "Do not overwrite previous locked toggle graphics or modify runtime references until all six approved states are finished."
+}

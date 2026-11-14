@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="VMO MMO barber pole pointer, red and white diagonal stripes">
+ <title>VMO/MMO pointer</title>
+ <defs>
+  <pattern id="vmoBarber" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(36)">
+   <rect width="56" height="56" fill="#f4f1e9"/>
+   <rect width="28" height="56" fill="#c15c57"/>
+  </pattern>
+ </defs>
+ <path d="M494 511 L530 511 L530 148 L524 130 L500 130 L494 148 Z" fill="url(#vmoBarber)" stroke="#201d1c" stroke-width="3.5" stroke-linejoin="round"/>
+ <path d="M500 130 L524 130 L530 148 L494 148 Z" fill="#f5f2eb" stroke="#312b28" stroke-width="2"/>
+</svg>

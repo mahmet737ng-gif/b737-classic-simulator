@@ -1,0 +1,60 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const model=require('./duct-pressure-needles-model');
+const atlas=JSON.parse(fs.readFileSync(path.join(__dirname,'../all-overhead/atlas-layout.json'),'utf8'));
+const oh21=atlas.placements.find(piece=>piece.id===model.source.piece);
+assert.ok(oh21);assert.deepEqual(oh21.sourceDimensions,[model.source.width,model.source.height]);
+assert.deepEqual(model.pivot,{x:544,y:439});
+assert.deepEqual(model.needles.map(needle=>needle.id),['R','L']);
+assert.deepEqual(model.needles.map(needle=>needle.layer),[0,1]);
+assert.deepEqual(model.needles.map(needle=>needle.initialPsi),[0,0]);
+assert.equal(model.scale.minPsi,0);assert.equal(model.scale.maxPsi,100);
+assert.equal(model.scale.zeroBearingDeg,144);assert.equal(model.scale.spanDeg,300);
+assert.equal(model.scale.tickStepPsi,5);assert.equal(model.scale.majorStepPsi,20);
+assert.deepEqual(model.ticks.filter(x=>x.major).map(x=>x.psi),[0,20,40,60,80,100]);
+assert.equal(model.ticks.length,21);
+for(const point of model.ticks)assert.equal(point.bearingDeg,model.bearing('L',point.psi));
+for(const [pressure,angle]of [[0,144],[20,204],[40,264],[60,324],[80,384],[100,444]])
+ assert.equal(model.bearing('L',pressure),angle);
+assert.equal(model.psi('L',200),100);assert.equal(model.psi('R',-10),0);
+assert.throws(()=>model.psi('X',30));assert.throws(()=>model.psi('L',NaN));
+const pos=model.placement(oh21);
+assert.ok(pos.x>oh21.x&&pos.x<oh21.x+oh21.w);
+assert.ok(pos.y>oh21.y&&pos.y<oh21.y+oh21.h);
+for(const needle of model.needles){
+ const asset=fs.readFileSync(path.join(__dirname,needle.asset),'utf8');
+ assert.equal(needle.asset,'duct-pressure-needle-'+needle.id.toLowerCase()+'.svg');
+ assert.equal(needle.tipRadius,148);
+ assert.match(asset,/viewBox="0 0 512 512"/);
+ assert.match(asset,new RegExp('<title>DUCT PRESSURE '+needle.id+'<\\/title>'));
+ const letters=asset.match(new RegExp('<text[^>]*x="256"[^>]*y="217"[^>]*>([LR])</text>','g'))||[];
+ assert.equal(letters.length,1,'Exactly one painted L/R identifier near the pivot');
+ assert.ok(letters[0].endsWith('>'+needle.id+'</text>'),'Correct letter for each pointer');
+ assert.match(asset,/fill="#17191a"/,'Dark labeled proximal section');
+ assert.match(asset,/fill="#f8f7f1"/,'Broad ivory blade');
+ assert.ok(!asset.includes('CABIN CLIMB'),'Do not reuse the thin Cabin Rate pointer');
+}
+const ui=fs.readFileSync(path.join(__dirname,'duct-pressure-needles-unified.js'),'utf8');
+assert.ok(ui.includes('for(const needle of model.needles)'));
+assert.ok(ui.includes('window.B737UnifiedDuctPressureNeedles'));
+assert.ok(ui.includes('model.bearing(id,state[id])'));
+assert.ok(ui.includes('b737:duct-pressure-live-inputs'));
+assert.ok(ui.includes('resumeLive:auto'));
+assert.ok(ui.includes('live.advanceDynamics(motion,target,dt)'),'Frame-rate based bounded needle interpolation');
+assert.ok(ui.includes('if(!layer?.isConnected||blades.size!==model.needles.length)connect();'),
+ 'ECU data retries missing iframe/needle mounting');
+assert.ok(ui.includes('liveInputSummary:lastInputs?'), 'Exposes APU source and needle diagnostics');
+assert.ok(ui.includes('const old=host.querySelector'), 'Old inert needle layer is rehydrated');
+
+assert.ok(ui.includes('scheduleMotion()'),'Needle motion independent of 100ms ECU updates');
+assert.ok(ui.includes("transition:'none'"),'Do not double-ease a dynamically animated needle');
+assert.ok(ui.includes('manualOverride?target[id]:state[id]'),'Manual slider remains at selected target');
+const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+assert.ok(html.includes('duct-pressure-live-v1.js?v=DPN-LIVE-0003-APU'));
+assert.ok(html.includes('duct-pressure-needles-model.js?v=DPN-0005-LR'));
+assert.ok(html.includes('duct-pressure-needles-unified.js?v=DPN-0007-APU-MOUNT'));
+const ecu=fs.readFileSync(path.join(__dirname,'isn-cockpit.js'),'utf8');
+assert.ok(ecu.includes("'b737:duct-pressure-live-inputs'"));
+console.log('PASS: OH21 0-100 PSI major/minor grid, owner blue-zero at 144 deg, two independently driven L/R pointers and live ECU feed, with broad separate L/R-labeled sprites.');

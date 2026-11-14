@@ -1,0 +1,117 @@
+/* Independent photographic grips, fixed shafts and projected metal arms.
+ * Travel is continuous; ONLY endpoint commands go to the existing ECU owner. */
+(function(){
+ 'use strict';
+ const model=window.B737EngineStartLeverModel,ns='http://www.w3.org/2000/svg';
+ const positions={engine1:'CUTOFF',engine2:'CUTOFF'},controls=new Map();
+ const master=new URL('./assets/engine-start-lever-reference-v2.png?v=START-LEVER-0007',document.baseURI).href;
+ let art=null;
+ const raf=window.requestAnimationFrame?.bind(window),caf=window.cancelAnimationFrame?.bind(window);
+ function svg(parent,tag,attrs){const n=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs||{}))n.setAttribute(k,String(v));parent.append(n);return n;}
+ function stop(entry){if(entry.ticket!=null)caf?.(entry.ticket);entry.ticket=null;}
+ function paint(entry,fraction){
+  const g=model.geometry(entry.device,fraction);entry.travel=g.travel;
+  const p=model.placementAt(entry.piece,entry.device,g.travel),s=entry.scale;
+  Object.assign(entry.button.style,{left:(entry.piece.x+(g.x-model.SOURCE.window.x-model.HANDLE.w/2)*s)+'px',top:(entry.piece.y+(g.y-model.SOURCE.window.y-model.HANDLE.h/2)*s)+'px',width:(model.HANDLE.w*s)+'px',height:(model.HANDLE.h*s)+'px',minWidth:(model.HANDLE.w*s)+'px',minHeight:(model.HANDLE.h*s)+'px',maxWidth:'none',padding:'0',margin:'0',boxSizing:'border-box',lineHeight:'0',fontSize:'0'});
+    entry.cap.setAttribute('x',g.x-model.HANDLE.w/2);entry.cap.setAttribute('y',g.y-model.HANDLE.h/2);
+  entry.button.dataset.travel=g.travel.toFixed(4);
+  entry.button.dataset.position=positions[entry.device];
+  entry.button.setAttribute('aria-valuenow',String(Math.round(g.travel*100)));
+  entry.button.setAttribute('aria-valuetext',(model.detentAt(g.travel)||'IN TRANSIT')+' · '+Math.round(g.travel*100)+'%');
+  entry.button.title='ENGINE '+model.SLOTS[entry.device].label+' START LEVER · '+(model.detentAt(g.travel)||'IN TRANSIT');
+ }
+ function settle(entry,target){
+  stop(entry);const start=entry.travel;
+  if(!raf||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||Math.abs(start-target)<.0001){paint(entry,target);return;}
+  let began=null;
+  function frame(now){if(began===null)began=now;const t=Math.min(1,(now-began)/180),ease=1-(1-t)**3;
+   paint(entry,start+(target-start)*ease);entry.ticket=t<1?raf(frame):null;
+  }
+  entry.ticket=raf(frame);
+ }
+ function position(device,next){
+  if(!model.SLOTS[device]||!['CUTOFF','IDLE'].includes(next))throw Error('Unknown physical start lever state');
+  const changed=positions[device]!==next;positions[device]=next;
+  const entry=controls.get(device);if(!entry)return;
+  entry.button.dataset.position=next;
+  if(!entry.drag&&!entry.keyboard&&changed)settle(entry,model.travel(next));
+ }
+ function request(device,next=positions[device]==='CUTOFF'?'IDLE':'CUTOFF'){
+  if(!model.SLOTS[device]||!['CUTOFF','IDLE'].includes(next))throw Error('Unknown physical start lever state');
+  const entry=controls.get(device);if(entry)entry.button.dataset.pending='true';
+  window.dispatchEvent(new CustomEvent('b737:engine-start-lever-command',{detail:{device,position:next,source:'PEDESTAL_PHYSICAL'}}));
+  if(entry){delete entry.button.dataset.pending;if(!entry.drag&&!entry.keyboard)settle(entry,model.travel(positions[device]));}
+ }
+ function endpoint(entry){const next=model.detentAt(entry.travel);
+  if(next&&next!==positions[entry.device]&&entry.lastRequested!==next){entry.lastRequested=next;request(entry.device,next);}
+  if(!next)entry.lastRequested=null;
+ }
+ function finish(entry,event,cancelled){
+  const drag=entry.drag;if(!drag||drag.id!==event.pointerId)return;
+  event.stopPropagation();entry.suppressClick=drag.moved;
+  entry.drag=null;delete entry.button.dataset.dragging;
+  if(entry.button.hasPointerCapture?.(drag.id))entry.button.releasePointerCapture(drag.id);
+  if(drag.moved||cancelled)settle(entry,model.travel(positions[entry.device]));
+ }
+ function bind(entry){const b=entry.button;
+  b.addEventListener('pointerdown',e=>{
+   if(e.button!==0&&e.pointerType!=='touch')return;e.stopPropagation();stop(entry);
+   entry.keyboard=false;entry.suppressClick=false;entry.lastRequested=null;
+   const scale=b.getBoundingClientRect().width/model.HANDLE.w;
+   entry.drag={id:e.pointerId,y:e.clientY,start:entry.travel,span:(model.DETENTS.CUTOFF-model.DETENTS.IDLE)*scale,moved:false};
+   b.dataset.dragging='true';b.setPointerCapture(e.pointerId);
+  });
+  b.addEventListener('pointermove',e=>{
+   const d=entry.drag;if(!d||d.id!==e.pointerId)return;e.stopPropagation();
+   if(!d.moved&&Math.abs(e.clientY-d.y)<3)return;d.moved=true;e.preventDefault();
+   paint(entry,model.dragTravel(d.start,d.y,e.clientY,d.span));endpoint(entry);
+  });
+  b.addEventListener('pointerup',e=>finish(entry,e,false));
+  b.addEventListener('pointercancel',e=>finish(entry,e,true));
+  b.addEventListener('lostpointercapture',e=>finish(entry,e,true));
+  b.addEventListener('click',e=>{e.stopPropagation();if(entry.suppressClick){entry.suppressClick=false;return;}entry.keyboard=false;request(entry.device);});
+  b.addEventListener('keydown',e=>{
+   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End','Escape','Enter',' '].includes(e.key))return;
+   e.preventDefault();e.stopPropagation();stop(entry);entry.lastRequested=null;
+   if(e.key==='Escape'){entry.keyboard=false;settle(entry,model.travel(positions[entry.device]));return;}
+   if(['Home','End','Enter',' '].includes(e.key)){entry.keyboard=false;request(entry.device,e.key==='Home'?'CUTOFF':e.key==='End'?'IDLE':undefined);return;}
+   entry.keyboard=true;paint(entry,entry.travel+(['ArrowUp','ArrowRight'].includes(e.key)?.05:-.05));endpoint(entry);
+  });
+  b.addEventListener('blur',()=>{if(entry.keyboard){entry.keyboard=false;settle(entry,model.travel(positions[entry.device]));}});
+ }
+ function mount(){
+  const native=document.querySelector('#region-pedestal .region-native'),texture=native?.querySelector('[data-piece="throttle-quadrant"]');
+  if(!texture||!native)return;
+  const region=document.querySelector('#region-pedestal');
+  const piece={x:272,y:0,w:606,h:740.9857819905213};
+  if(art){for(const entry of controls.values()){entry.piece=piece;paint(entry,entry.travel);}return;}
+  model.placement(piece,'engine1','CUTOFF');
+  art=svg(native,'svg',{class:'engine-start-lever-art',viewBox:'0 0 '+model.SOURCE.window.w+' '+model.SOURCE.window.h,
+   'data-start-lever-art':'START-LEVER-0007','aria-hidden':'true'});
+  Object.assign(art.style,{position:'absolute',left:piece.x+'px',top:piece.y+'px',width:piece.w+'px',height:piece.h+'px',transformOrigin:'0 0'});
+  
+  for(const device of ['engine1','engine2']){
+   const group=svg(art,'g',{'data-start-lever-assembly':device});
+   const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,viewBox:device==='engine1'?'420 340 655 365':'1095 340 655 365',preserveAspectRatio:'none',overflow:'hidden'});
+   svg(cap,'image',{href:master,width:2172,height:724});
+   const button=document.createElement('button');button.type='button';button.className='engine-start-lever';
+   button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
+   button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');
+   button.setAttribute('aria-label','ENGINE '+model.SLOTS[device].label+' START LEVER');
+   const entry={device,button,piece,scale:piece.w/model.SOURCE.window.w,cap,travel:model.travel(positions[device]),drag:null,ticket:null,keyboard:false,lastRequested:null};
+   controls.set(device,entry);native.append(button);bind(entry);paint(entry,entry.travel);
+  }
+ }
+ // The cockpit assembly is rendered asynchronously after this deferred module
+ // loads. Mount immediately when available and observe the later assembly too.
+ function beginMount(){if(document.querySelector('#region-pedestal .region-native'))mount();}
+ window.addEventListener('b737:engine-start-lever-state',e=>{const feedback=e.detail?.levers;if(!feedback)return;
+  for(const device of ['engine1','engine2'])if(['CUTOFF','IDLE'].includes(feedback[device]))position(device,feedback[device]);
+ });
+ window.addEventListener('b737:cockpit-mounted',beginMount);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',beginMount,{once:true});else beginMount();
+ const observer=new MutationObserver(()=>{if(!art)beginMount();});
+ observer.observe(document.body,{childList:true,subtree:true});
+ window.B737EngineStartLevers=Object.freeze({getPosition:device=>positions[device],getTravel:device=>controls.get(device)?.travel??model.travel(positions[device]),request,
+  positions:Object.freeze(['CUTOFF','IDLE'])});
+})();

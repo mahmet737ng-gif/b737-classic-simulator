@@ -1,0 +1,9 @@
+
+/* Photo-accurate cockpit overhead; actual stage iframe is unmodified (2220×3312). */
+#view-overhead{position:relative;overflow:hidden;background:radial-gradient(circle at 50% 35%,#1a3041,#0a1825 60%,#06101a)}
+#view-overhead .guest-overhead-scroll{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#56788b #142536}
+#view-overhead .guest-overhead-canvas{position:relative;display:block;margin-inline:auto;max-width:none;flex:none;overflow:visible;min-height:1px}
+#view-overhead iframe#overheadFrame{position:absolute;inset:0;width:2220px!important;height:3312px!important;min-width:2220px!important;max-width:none!important;min-height:3312px!important;border:0;background:#152635;transform-origin:0 0;display:block;touch-action:auto}
+#view-overhead .guest-zoom{position:absolute;top:11px;left:14px;z-index:3;display:flex;align-items:center;gap:5px;background:#152b3dea;border:1px solid #50718b;border-radius:9px;padding:6px 8px;box-shadow:0 8px 30px #0008}
+.guest-zoom button{background:#193f57;border:1px solid #4a8aaf;color:#e5f6ff;padding:6px 10px;min-width:33px;border-radius:6px;font:700 12px system-ui;cursor:pointer}
+.guest-zoom output{min-width:48px;text-align:center;font:700 12px ui-monospace,monospace;color:#aaddf6}

@@ -1,0 +1,775 @@
+{
+  "schema": "b737-classic/guard-switches/owner18-redzone/v1",
+  "status": "FINAL_FROZEN_RED_ZONE",
+  "freezeDate": "2026-10-28",
+  "approvedCommit": "730815ed6ece9beb30950b96ba536e1ce3f2c4ca",
+  "enforcedBy": "panel-mosaic-lab/cockpit/verify-guard-redzone.py",
+  "ownerOnlyUnlock": {
+    "requiredSteps": [
+      "owner_direct_explicit_change_command",
+      "separate_owner_confirmation_after_exact_diff_review"
+    ],
+    "noAutonomousAlterations": true,
+    "noAutomaticOptimization": true,
+    "noAutomaticAssetReplacement": true,
+    "noNewBaselineWithoutTwoStageOwnerApproval": true,
+    "normalOperationalSwitchMovementsAllowed": true
+  },
+  "scope": {
+    "switchCount": 18,
+    "visualAndMechanicalAttributesFrozen": [
+      "identity",
+      "panel",
+      "position",
+      "size",
+      "color",
+      "shape",
+      "guard_assets",
+      "hinge",
+      "orientation",
+      "sprite_fit",
+      "hitbox",
+      "backdrop",
+      "detents",
+      "FCOM_close_policy",
+      "interaction_runtime",
+      "source_overlays"
+    ],
+    "imageMasters": 8,
+    "imageRuntimeSprites": 8
+  },
+  "frozenControls": [
+    {
+      "id": "flight-control-a",
+      "label": "FLT CONTROL A",
+      "panel": "OH07",
+      "rectPx": [
+        126,
+        91,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "owner-visual-feedback-fit-provisional",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "9.10.1",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          126,
+          91,
+          165,
+          265
+        ],
+        "hinge": "top",
+        "panel": "OH07",
+        "color": "black"
+      }
+    },
+    {
+      "id": "flight-control-b",
+      "label": "FLT CONTROL B",
+      "panel": "OH07",
+      "rectPx": [
+        296,
+        91,
+        165,
+        265
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "STBY RUD",
+        "OFF",
+        "ON"
+      ],
+      "confidence": "owner-visual-feedback-fit-provisional",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "9.10.1",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          296,
+          91,
+          165,
+          265
+        ],
+        "hinge": "top",
+        "panel": "OH07",
+        "color": "black"
+      }
+    },
+    {
+      "id": "spoiler-a",
+      "label": "SPOILER A",
+      "panel": "OH07",
+      "rectPx": [
+        126,
+        646,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "owner-visual-feedback-fit-provisional",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "9.10.2",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          126,
+          646,
+          165,
+          275
+        ],
+        "hinge": "top",
+        "panel": "OH07",
+        "color": "black"
+      }
+    },
+    {
+      "id": "spoiler-b",
+      "label": "SPOILER B",
+      "panel": "OH07",
+      "rectPx": [
+        295,
+        646,
+        165,
+        275
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "owner-visual-feedback-fit-provisional",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "9.10.2",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          295,
+          646,
+          165,
+          275
+        ],
+        "hinge": "top",
+        "panel": "OH07",
+        "color": "black"
+      }
+    },
+    {
+      "id": "alternate-flaps-master",
+      "label": "ALTERNATE FLAPS MASTER",
+      "panel": "OH07",
+      "rectPx": [
+        517,
+        408,
+        135,
+        277
+      ],
+      "hinge": "bottom",
+      "hingeConfidence": "owner-confirmed-bottom-20261028",
+      "color": "red",
+      "states": [
+        "OFF",
+        "ARM"
+      ],
+      "confidence": "photo-preview-estimated",
+      "closedInitially": true,
+      "initialState": "OFF",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "OFF",
+        "fcomFolio": "9.10.2",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          517,
+          408,
+          135,
+          277
+        ],
+        "hinge": "bottom",
+        "panel": "OH07",
+        "color": "red"
+      }
+    },
+    {
+      "id": "battery-master",
+      "label": "BATTERY MASTER",
+      "panel": "OH10",
+      "rectPx": [
+        184,
+        1140,
+        152,
+        230
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "owner-screenshot-nudge-provisional-visual-qa",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "6.10.5",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1.02,
+        "heightScale": 0.9,
+        "offsetX": 0,
+        "offsetY": -0.05
+      }
+    },
+    {
+      "id": "generator-disconnect-1",
+      "label": "GEN DRIVE DISCONNECT 1",
+      "panel": "OH11",
+      "rectPx": [
+        154,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "6.10.6",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          154,
+          334,
+          200,
+          418
+        ],
+        "hinge": "top",
+        "panel": "OH11",
+        "color": "red"
+      },
+      "irreversible": {
+        "detent": "DISCONNECT",
+        "effect": "generator-disconnect-1-drive-disconnected",
+        "fcomFolio": "6.10.6"
+      }
+    },
+    {
+      "id": "generator-disconnect-2",
+      "label": "GEN DRIVE DISCONNECT 2",
+      "panel": "OH11",
+      "rectPx": [
+        847,
+        334,
+        200,
+        418
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "red",
+      "states": [
+        "NORMAL",
+        "DISCONNECT"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "6.10.6",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          847,
+          334,
+          200,
+          418
+        ],
+        "hinge": "top",
+        "panel": "OH11",
+        "color": "red"
+      },
+      "irreversible": {
+        "detent": "DISCONNECT",
+        "effect": "generator-disconnect-2-drive-disconnected",
+        "fcomFolio": "6.10.6"
+      }
+    },
+    {
+      "id": "standby-power",
+      "label": "STANDBY POWER",
+      "panel": "OH11",
+      "rectPx": [
+        391,
+        232,
+        421,
+        184
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "BAT",
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-calibrated",
+      "closedInitially": true,
+      "initialState": "AUTO",
+      "axis": "horizontal",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "AUTO",
+        "fcomFolio": "6.10.7",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "emergency-exit-lights",
+      "label": "EMER EXIT LIGHTS",
+      "panel": "OH14",
+      "rectPx": [
+        450,
+        152,
+        300,
+        710
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ARMED",
+        "ON"
+      ],
+      "confidence": "owner-screenshot-nudge-provisional-visual-qa",
+      "closedInitially": true,
+      "initialState": "ARMED",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ARMED",
+        "fcomFolio": "1.40.5",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1,
+        "heightScale": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    {
+      "id": "bus-transfer",
+      "label": "BUS TRANSFER",
+      "panel": "OH12",
+      "rectPx": [
+        325,
+        460,
+        368,
+        148
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "OFF",
+        "AUTO"
+      ],
+      "confidence": "prior-native-aperture-estimated",
+      "closedInitially": true,
+      "initialState": "AUTO",
+      "axis": "horizontal",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "AUTO",
+        "fcomFolio": "6.10.9",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "geometryLock": {
+        "approved": true,
+        "approvedOn": "2026-10-28",
+        "rectPx": [
+          325,
+          460,
+          368,
+          148
+        ],
+        "hinge": "left",
+        "panel": "OH12",
+        "color": "black"
+      }
+    },
+    {
+      "id": "passenger-oxygen",
+      "label": "PASS OXYGEN",
+      "panel": "UPPER",
+      "rectPx": [
+        1247,
+        547,
+        82,
+        146
+      ],
+      "hinge": "bottom",
+      "hingeConfidence": "owner-confirmed-bottom-20261028",
+      "color": "black",
+      "states": [
+        "NORMAL",
+        "ON"
+      ],
+      "confidence": "owner-screenshot-nudge-provisional-visual-qa",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "1.30.21",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      },
+      "irreversible": {
+        "detent": "ON",
+        "effect": "passenger-oxygen-masks-deployed",
+        "fcomFolio": "1.30.21"
+      },
+      "photoFit": {
+        "mode": "hardware-fill",
+        "widthScale": 1,
+        "heightScale": 1,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    {
+      "id": "flight-recorder-test",
+      "label": "FLIGHT RECORDER TEST",
+      "panel": "UPPER",
+      "rectPx": [
+        1351,
+        428,
+        141,
+        54
+      ],
+      "hinge": "left",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "TEST",
+        "NORMAL"
+      ],
+      "confidence": "owner-visual-feedback-fit-provisional",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "horizontal",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "10.10.20",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "antiskid",
+      "label": "ANTI-SKID",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        55,
+        560,
+        102,
+        168
+      ],
+      "hinge": "bottom",
+      "hingeConfidence": "owner-confirmed-bottom-20261028",
+      "color": "black",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "confidence": "user-screenshot-20261027-antiskid-highlight-estimate",
+      "closedInitially": true,
+      "initialState": "ON",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "ON",
+        "fcomFolio": "14.10.5",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "gpws-flap-inhibit",
+      "label": "GPWS FLAP INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        679,
+        1431,
+        61,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "15.10.10",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "gpws-gear-inhibit",
+      "label": "GPWS GEAR INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        742,
+        1431,
+        75,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-original-existing-cavity-preview-estimate",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "15.10.10",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "gpws-terrain-inhibit",
+      "label": "GPWS TERRAIN INHIBIT",
+      "panel": "FO_INNER_BACKGROUND",
+      "rectPx": [
+        602,
+        1431,
+        75,
+        121
+      ],
+      "hinge": "top",
+      "hingeConfidence": "audit-owner-count-mapped",
+      "color": "black",
+      "states": [
+        "INHIBIT",
+        "NORMAL"
+      ],
+      "confidence": "source-derived-cavity-position-native-verified",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "15.10.10",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    },
+    {
+      "id": "stab-trim",
+      "label": "STAB TRIM",
+      "panel": "PEDESTAL_RADIO",
+      "rectPx": [
+        798,
+        1153,
+        89,
+        155
+      ],
+      "hinge": "top",
+      "hingeConfidence": "UNCONFIRMED_STAB_TRIM_TEMP_TOP",
+      "color": "black",
+      "states": [
+        "OVERRIDE",
+        "NORMAL"
+      ],
+      "confidence": "pedestal-blank-photo-estimated",
+      "closedInitially": true,
+      "initialState": "NORMAL",
+      "axis": "vertical",
+      "closePolicy": {
+        "onClose": "force",
+        "target": "NORMAL",
+        "fcomFolio": "9.10.6",
+        "fcom": "Sepehran Airlines 737CL FCOM"
+      }
+    }
+  ],
+  "frozenFootprint": {
+    "canvas": {
+      "width": 4400,
+      "height": 8100
+    },
+    "regions": [
+      {
+        "id": "overhead",
+        "x": 1090,
+        "y": 110,
+        "w": 2220,
+        "h": 3312
+      },
+      {
+        "id": "main",
+        "x": 100,
+        "y": 3560,
+        "w": 4200,
+        "h": 1840,
+        "nativeWidth": 2100,
+        "nativeHeight": 920,
+        "pieces": [
+          {
+            "id": "fo-inner",
+            "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+            "x": 1222,
+            "y": 127,
+            "w": 372,
+            "h": 694.156862745098
+          }
+        ]
+      },
+      {
+        "id": "pedestal",
+        "x": 1596,
+        "y": 5590,
+        "w": 1207.5,
+        "h": 2386.65,
+        "nativeWidth": 1150,
+        "nativeHeight": 2273,
+        "pieces": [
+          {
+            "id": "pedestal-radio",
+            "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+            "x": 35,
+            "y": 911.0886528039184,
+            "w": 1080,
+            "h": 1349.51871657754
+          }
+        ]
+      }
+    ]
+  },
+  "frozenBlobs": {
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/.gitkeep": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Black_Guarded_CLOSED.png": "ccad7c8dae63756e6969491846c4c4535b0111f9",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Black_Guarded_Open_CENTER.png": "4dbc2be2f4a89d227943e498f8b99dea6aac2b54",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Black_Guarded_Open_DOWN.png": "59462e2af5b7b5c61f07d199be3e1ff0c07ff06d",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Black_Guarded_Open_UP.png": "9f42a10329c741d1e7d30328ade124d836ac6b64",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Red_Guarded_CLOSED.png": "d150314923508a5a8803db9e0088c8c9a4018400",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Red_Guarded_Open_CENTER.png": "f0a66927867c3f79b267ace1234d8f4624978514",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Red_Guarded_Open_DOWN.png": "0c6fe949b15254e4ab67a3357d255aacfc522239",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/Red_Guarded_Open_UP.png": "07fced94254cc2cf3639aa89bf07a0b8dab0a95b",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Black_Guarded_CLOSED.png": "a10ce06744889834f073c15edee7f687e957c9e1",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Black_Guarded_Open_CENTER.png": "bcc0f38ce5232bb8c6726ec6e56dd814362dce2c",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Black_Guarded_Open_DOWN.png": "5819d939dbe122a8f919c72bac5e6752df14a4a0",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Black_Guarded_Open_UP.png": "9fe788945c15290f33adb3bb2e2bd6dc11777607",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Red_Guarded_CLOSED.png": "b33c87d3039580694cce7bf100014e4572d6fa53",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Red_Guarded_Open_CENTER.png": "408be9c11248469141f56c1efbb52e9b2fb547b5",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Red_Guarded_Open_DOWN.png": "d97375dbfe373b0191c6e31898876a5147d846e4",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/Red_Guarded_Open_UP.png": "19264eedc0b099cc05e84dfc20ad1bd1ed5c3a02",
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/guard/runtime/artwork-audit.json": "a171b026f7eb173f309221734a3f72011a6d95e1",
+    "panel-mosaic-lab/cockpit/guard-close-policy-v2.js": "34969eb49b8dfb45722db6d16ea2ec3a5a4e8280",
+    "panel-mosaic-lab/cockpit/guard-location-audit.json": "2a7711cbf814a3506894feb732e601502159c075",
+    "panel-mosaic-lab/cockpit/guard-owner18-v1.css": "2049d05dc8cb5d746890ec26bcfce51340918b9d",
+    "panel-mosaic-lab/cockpit/guard-owner18-v1.js": "47a293f7071aae2d1a562545bfc9bf0dfcf5ce56",
+    "panel-mosaic-lab/cockpit/guard-owner18-v1.json": "0d269ce0d0c49154f4f04bf9e6837ba82051d285",
+    "panel-mosaic-lab/cockpit/no-old-guards.css": "c87125e5f17a5ae2db80c51aab40502f0e8842d9",
+    "panel-mosaic-lab/cockpit/no-old-guards.js": "858bb1abdd1748e113ae6deb9d578558a8394414",
+    "panel-mosaic-lab/cockpit/tools/build_owner18_artwork.py": "96a8b04f0e868c82b417aa9c0b88c9dbbc85aba0"
+  },
+  "sourceOfTruth": "panel-mosaic-lab/cockpit/guard-owner18-v1.json",
+  "mirrorLocation": "engine/maps/guard-owner18-redzone-v1.json",
+  "warning": "Any future visual or code modification to these 18 switches is prohibited unless specifically authorized and separately confirmed by the owner. No automated task or inferred optimization is an unlock."
+}

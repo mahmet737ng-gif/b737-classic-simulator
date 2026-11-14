@@ -1,0 +1,19 @@
+{
+  "scannedPng": 28,
+  "optimized": 26,
+  "rejected": 2,
+  "eligibleSourceBytes": 60644817,
+  "optimizedBytes": 36889086,
+  "savedBytes": 23755731,
+  "allPngSourceBytes": 71603703,
+  "rejectedDetails": [
+    {
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "reason": "color-space metadata"
+    },
+    {
+      "source": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "reason": "color-space metadata"
+    }
+  ]
+}

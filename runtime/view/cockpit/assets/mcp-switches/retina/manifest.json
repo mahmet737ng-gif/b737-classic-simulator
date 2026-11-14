@@ -1,0 +1,78 @@
+{
+  "schema": "MCP-RETINA-0001",
+  "images": {
+    "course-480.webp": {
+      "source": "panel-mosaic-lab/cockpit/assets/mcp-switches/COURSE_PHOTO_80.webp",
+      "sourcePixels": [
+        80,
+        80
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    },
+    "ias-480.webp": {
+      "source": "panel-mosaic-lab/cockpit/assets/mcp-ias-mach-knob.webp",
+      "sourcePixels": [
+        80,
+        80
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    },
+    "heading-480.webp": {
+      "source": "panel-mosaic-lab/cockpit/assets/mcp-switches/HEADING_PHOTO_80.webp",
+      "sourcePixels": [
+        80,
+        80
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    },
+    "altitude-480.webp": {
+      "source": "panel-mosaic-lab/cockpit/assets/mcp-switches/ALTITUDE_PHOTO_80.webp",
+      "sourcePixels": [
+        80,
+        80
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    },
+    "bank-ring-480.webp": {
+      "source": "owner13 192x192 atlas cell 12",
+      "sourcePixels": [
+        48,
+        48
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    },
+    "heading-sel-480.webp": {
+      "source": "owner13 192x192 atlas cell 11",
+      "sourcePixels": [
+        48,
+        48
+      ],
+      "original": false,
+      "targetPixels": [
+        480,
+        480
+      ]
+    }
+  },
+  "lockedPanelUntouched": true
+}

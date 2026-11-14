@@ -1,0 +1,469 @@
+{
+  "schema": "b737.shared-cockpit-mosaic.v1",
+  "version": "CKP-0012-THROTTLE-FIT",
+  "canvas": {
+    "width": 4400,
+    "height": 8100
+  },
+  "assets": {
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+      "dimensions": [
+        3942,
+        3591
+      ],
+      "bytes": 9737911,
+      "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "gitBlobSha": "e33b8bf1e7f968509042d3d77a52a45694cf009c"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+      "dimensions": [
+        2172,
+        433
+      ],
+      "bytes": 1220975,
+      "sha256": "9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062",
+      "gitBlobSha": "28b0424488c8e89104540369170bd88ce5987d2e"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "dimensions": [
+        1235,
+        1274
+      ],
+      "bytes": 1836633,
+      "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "gitBlobSha": "4e17de4c553299c09acea9b83fa9b8c5ffcc5665"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 2006264,
+      "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "gitBlobSha": "3eaff6fe8399b6ae5684966ecdde7c4682bf8b3b"
+    },
+    "file_000000006c00820ab145b3682f686256.png": {
+      "path": "file_000000006c00820ab145b3682f686256.png",
+      "url": "../../file_000000006c00820ab145b3682f686256.png",
+      "dimensions": [
+        1123,
+        1400
+      ],
+      "bytes": 1912384,
+      "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "gitBlobSha": "ff259644232ecc0543cbe7d2761fdfa286ab7bf8"
+    },
+    "assets/main-panel.webp": {
+      "path": "assets/main-panel.webp",
+      "url": "../../assets/main-panel.webp",
+      "dimensions": [
+        2100,
+        914
+      ],
+      "bytes": 300812,
+      "sha256": "9d82db8f672d766f98d7bd9a129a1aae240c048706b1f11feaf8499fa1740765",
+      "gitBlobSha": "94eef811497a3367e9ad3284b877fa3068b33d15"
+    },
+    "assets/pedestal.webp": {
+      "path": "assets/pedestal.webp",
+      "url": "../../assets/pedestal.webp",
+      "dimensions": [
+        1150,
+        2110
+      ],
+      "bytes": 392730,
+      "sha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
+      "gitBlobSha": "73a819b1c42617ae4da52f359546a200ef189ae4"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "bytes": 2681290,
+      "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "gitBlobSha": "7e58407776dda5d5d96d446e19648af742ef3045"
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+      "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 1825903,
+      "sha256": "9f3db84357a88909210c055b3a3fc174ed0e830db5c31306c6466fcd72c536cd",
+      "gitBlobSha": "f5ab7cb55bc407944111e9409b3892fdb1244f94"
+    },
+    "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg": {
+      "path": "panel-mosaic-lab/cockpit/assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+      "url": "./assets/FIRE_PROTECTION_BARE_STANDARD_SLOTS_V2_ORIGINAL.svg",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 2749711,
+      "sha256": "4f1719e49ae624579a012214c846ba07007c7ceb39ed917fee37687397173f0c",
+      "gitBlobSha": "bf9596d549dd2ef44df6a977d77e6efc94699fba",
+      "sourcePngSha256": "ebce4ad11a50d70d232f67e2e7f2c3c8528b0822f3d2fd3b899cdd5854a6561c",
+      "sourceStatus": "byte-exact-original-pixels-in-self-contained-SVG"
+    },
+    "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+      "url": "./assets/fire-v6/FIRE_PANEL_BARE.webp",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "bytes": 380034,
+      "sourceStatus": "owner-approved extracted bare Fire Protection plate; individual 11 lamp overlays are independent",
+      "sha256": "0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f",
+      "gitBlobSha": "9b5451a8c1a2598de9a5ee5ae166fee8382d0b38"
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png": {
+      "path": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 1826218,
+      "sha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
+      "gitBlobSha": "5f3ef2c08216647903c7f0e966b8bf2228790d9c",
+      "sourceOriginalUnchanged": true,
+      "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "nativeChangedAreaPx": [
+        600,
+        1382,
+        918,
+        1595
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png": {
+      "path": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+      "dimensions": [
+        918,
+        1713
+      ],
+      "bytes": 1828457,
+      "sha256": "16120d7f4e38aef3854619f231ee2a324b4888bc35c506d0b6d24e1b8417c672",
+      "gitBlobSha": "3cabc552395a9ea1b356786f357cd252e9c4252c",
+      "sourceOriginalUnchanged": true,
+      "sourcePanel": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+      "nativeChangedAreaPx": [
+        590,
+        1378,
+        909,
+        1595
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp",
+      "url": "./assets/throttle-quadrant-bare-owner-20261104.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 26884,
+      "sha256": "f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a",
+      "gitBlobSha": "a9b69c7e45db0c18fc08225367ea8371b3fd988f",
+      "sourceStatus": "Owner-approved new bare throttle quadrant; previous locked original retained in immutable archive, no longer active in assembly"
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp",
+      "url": "./assets/throttle-quadrant-idle-cutoff-20261106.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 233688,
+      "sha256": "ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f",
+      "gitBlobSha": "2656a3d8cdd5248490aef643dbb2501bd429403f",
+      "sourceStatus": "Owner authorized 2026-11-06: four IDLE/CUTOFF bitmap stencils only. All decoded pixels outside four text rectangles remain identical to the approved bare panel."
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp": {
+      "path": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp",
+      "url": "./assets/throttle-quadrant-slots-centered-20261106.webp",
+      "dimensions": [
+        800,
+        1000
+      ],
+      "bytes": 234554,
+      "sha256": "effe3523ce16b81060e0ada0ba6dfc298f7448d6256ed99b2602fe98bd254eb8",
+      "gitBlobSha": "10dd93178ae7e32caab62eccc5d487f0c5ea1549",
+      "sourceStatus": "Owner authorized 2026-11-06: move only left start-lever slot +5 px and right slot -6 px to grip centers 330.5/404.5; all pixels outside two slot rectangles unchanged."
+    }
+  },
+  "regions": [
+    {
+      "id": "overhead",
+      "label": "OVERHEAD",
+      "x": 1090,
+      "y": 110,
+      "w": 2220,
+      "h": 3312,
+      "embeddedUrl": "./overhead-stage.html?cb=CB-UNIFIED-0001&v=ISN-0003-PERF-0001-LGT-0006-PRESS-OH22-0007-SOCKET-FIT-AIRCON400-0005-SOCKET-CENTER-LANDING3-WHEEL-PAN-0001-LE-STAGGER-0008-LE-PHOTOLENS-0003-LE-EMISSION-0001-LE-SMOOTHGLASS-0001-LE-OFFGLASS-0004-RECESS-0003-RESID-SOCKET-CENTER-BATTERY-LIVE-0001&oh14=OH14-INPUT-RELEASE-0018&ts=OH14-INPUT-RELEASE-0018&oh21=DEDICATED-20261106&apuStartup=READY-0001&aircon=OVHT-WALLCLOCK-0005&inboardL=EXTL-INBOARD-L-CENTER-0003",
+      "baseVersion": "UPD-0012-OVH-measured-seams",
+      "controlVersion": "LGT-0003"
+    },
+    {
+      "id": "main",
+      "label": "MAIN INSTRUMENT PANEL",
+      "x": 100,
+      "y": 3560,
+      "w": 4200,
+      "h": 1840,
+      "nativeWidth": 2100,
+      "nativeHeight": 920,
+      "placements": [
+        {
+          "id": "captain",
+          "label": "CAPTAIN",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+          "x": 35,
+          "y": 166,
+          "w": 726,
+          "h": 661.3561643835617,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "mcp",
+          "label": "MCP / AFDS",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+          "x": 786,
+          "y": 7,
+          "w": 600,
+          "h": 119.61325966850829,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "engine",
+          "label": "ENGINE / STANDBY",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+          "x": 761,
+          "y": 127,
+          "w": 461,
+          "h": 475.5578947368421,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        },
+        {
+          "id": "fo-inner",
+          "label": "F/O INNER / LANDING GEAR",
+          "asset": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+          "x": 1222,
+          "y": 127,
+          "w": 372,
+          "h": 694.156862745098,
+          "presentation": "Native locked F/O panel derivative: GPWS order TERRAIN / FLAP / GEAR, source-matched inset wells, centrally aligned two-line stencil captions; all other source photo pixels retained"
+        },
+        {
+          "id": "fo-outer",
+          "label": "F/O OUTER",
+          "asset": "file_000000006c00820ab145b3682f686256.png",
+          "x": 1594,
+          "y": 225,
+          "w": 475,
+          "h": 592.1638468388246,
+          "presentation": "complete source, uniform scale; no source crop or mutation"
+        }
+      ],
+      "layoutStatus": "initial visual registration against original main-panel photograph; source aspects preserved, owner visual review pending"
+    },
+    {
+      "id": "pedestal",
+      "label": "PEDESTAL",
+      "x": 1596,
+      "y": 5590,
+      "w": 1207.5,
+      "h": 2386.65,
+      "nativeWidth": 1150,
+      "nativeHeight": 2273,
+      "placements": [
+        {
+          "id": "throttle-quadrant",
+          "label": "THROTTLE QUADRANT — BLANK CONTROL PLATE",
+          "asset": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp",
+          "x": 272,
+          "y": 0,
+          "w": 606,
+          "h": 740.9857819905213,
+          "sourceWindow": {
+            "x": 0,
+            "y": 0,
+            "w": 800,
+            "h": 978.1990521327015
+          },
+          "maskPolygon": [
+            [
+              86,
+              25
+            ],
+            [
+              713,
+              25
+            ],
+            [
+              713,
+              195
+            ],
+            [
+              739,
+              263
+            ],
+            [
+              744,
+              284
+            ],
+            [
+              744,
+              937
+            ],
+            [
+              741,
+              950
+            ],
+            [
+              58,
+              950
+            ],
+            [
+              55,
+              937
+            ],
+            [
+              55,
+              284
+            ],
+            [
+              60,
+              263
+            ],
+            [
+              86,
+              195
+            ]
+          ],
+          "presentation": "Owner-approved bare throttle quadrant replacement; only this placement and its silhouette were updated. Original locked asset archived unchanged.",
+          "layoutStatus": "2026-11-04 active owner-approved bare panel; prior locked quadrant deactivated"
+        },
+        {
+          "id": "fire-protection",
+          "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
+          "asset": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+          "x": 244,
+          "y": 740.9857819905213,
+          "w": 685,
+          "h": 170.10287081339712,
+          "presentation": "contain",
+          "layoutStatus": "FIRELAMP-0006 individually separated ON/OFF lights; base V6 approved shell; adjacent panels unmodified"
+        },
+        {
+          "id": "pedestal-radio",
+          "label": "RADIO / NAV / AUDIO / TRIM",
+          "asset": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+          "x": 35,
+          "y": 911.0886528039184,
+          "w": 1080,
+          "h": 1349.51871657754,
+          "library_file_id": "libfile_5aeb51496eb88191be12ff3d6b903a27",
+          "presentation": "full uploaded source; no crop or pixel changes"
+        }
+      ]
+    }
+  ],
+  "sourcePolicy": "Original uploaded PNGs are reused byte-for-byte. Existing overhead page and frozen files stay unchanged. Blank Avionics Panel Assembly.png is an alternate overhead attempt and is not substituted for the approved UPD-0012 mosaic.",
+  "notes": [
+    "All three regions are visible on one shared pan/zoom canvas. Region buttons change only the view, never navigate away or reload the overhead.",
+    "Overhead switches and lights remain interactive. Main and newly imported pedestal artwork are connected as base images; new actuator/system overlays are a separate stage.",
+    "CKP-0011-FIT: Blank Throttle Quadrant is now proportional to the actual central throttle section, centered above Fire and RADIO/NAV. Source is byte-identical; a display crop and outer silhouette mask hide the photograph's white canvas. The historical pedestal image remains available in Reference mode."
+  ],
+  "lightVersion": "LGT-0007",
+  "embeddedInstruments": [
+    {
+      "id": "cdu-captain",
+      "label": "CAPTAIN CDU",
+      "seat": "CAPT",
+      "regionId": "main",
+      "x": 737.034259,
+      "y": 593.81471,
+      "w": 204.312255,
+      "h": 318.9685,
+      "nativeWidth": 1199,
+      "nativeHeight": 1312,
+      "embeddedUrl": "./cdu-stage.html?seat=CAPT&v=CDU-U3-PERF-0001-WHEEL-PAN-0001-24COL-0006-DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001-FCOM-PREFLIGHT-0001-ENGINE-IDENT-0001-AIRAC-2611-0001-NAVDB-CYCLE-0001-CDU-ELEC-DARK-0002",
+      "sourceWindow": {
+        "x": 111,
+        "y": 21,
+        "w": 866,
+        "h": 1277
+      },
+      "presentation": "reference-frame-fit",
+      "referenceBBox": [
+        451,
+        451,
+        688,
+        821
+      ]
+    },
+    {
+      "id": "cdu-first-officer",
+      "label": "FIRST OFFICER CDU",
+      "seat": "FO",
+      "regionId": "main",
+      "x": 1172.383157,
+      "y": 574.952633,
+      "w": 211.208871,
+      "h": 339.554731,
+      "nativeWidth": 1199,
+      "nativeHeight": 1312,
+      "embeddedUrl": "./cdu-stage.html?seat=FO&v=CDU-U3-PERF-0001-WHEEL-PAN-0001-24COL-0006-DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001-FCOM-PREFLIGHT-0001-ENGINE-IDENT-0001-AIRAC-2611-0001-NAVDB-CYCLE-0001-CDU-ELEC-DARK-0002-CDU-IDENT-2610-V71-20261031-01",
+      "sourceWindow": {
+        "x": 111,
+        "y": 21,
+        "w": 866,
+        "h": 1277
+      },
+      "presentation": "reference-frame-fit",
+      "referenceBBox": [
+        956,
+        450,
+        1201,
+        823
+      ],
+      "referenceAdjustment": {
+        "top": -18,
+        "bottom": 0,
+        "reason": "Owner correction: extend top edge to cover remaining background CDU; retain approved bottom, width and x."
+      }
+    }
+  ],
+  "cduSource": {
+    "page": "cdu-standalone-v6/index.html",
+    "artwork": "cdu-standalone-v6/assets/cdu-approved-unlit.png",
+    "artworkSha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+    "controlMap": "cdu-standalone-v6/data/cdu-map.json",
+    "controlMapSha256": "42d7b9d8b3353c6cacd9237582b3712aeee84fe532c573c0010997d118b64a8b",
+    "fontStylesheet": "assets/fonts/boeing-cdu/cdu-screen.css",
+    "controlsPerSeat": 70,
+    "statePolicy": "One shared FMC dataset (active, pending and staged fields plus route-adapter data); independent per-seat page, scratchpad, messages, brightness and navigation. CDU reset is display-only; explicit shared FMC reset clears flight data for both.",
+    "sizeReference": "cdu-size-reference.json",
+    "sizePolicy": "Owner screenshot visible-frame dimensions; source black padding is excluded from fit. Width/height registration transforms artwork and original hitboxes as one unit."
+  },
+  "displayPerformance": {
+    "version": "PERF-0001",
+    "manifest": "performance/manifest.json",
+    "policy": "View-dependent 384/768/1536 WebP previews; original byte-identical textures at detailed zoom; source asset hashes and geometry remain authoritative."
+  },
+  "gpwsBackgroundRevision": "GPWS-TERRAIN-LEFT-OF-FLAP-V3"
+}

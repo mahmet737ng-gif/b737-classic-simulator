@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Cabin climb rate pointer">
+  <title>CABIN CLIMB — cabin rate</title>
+  <desc>Independent tapered ivory pointer; its neutral installation points to the left-hand zero mark.</desc>
+  <defs><linearGradient id="rateFace" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a9a89f"/><stop offset=".23" stop-color="#fffef8"/><stop offset=".72" stop-color="#f2f1e9"/><stop offset="1" stop-color="#aaa9a0"/></linearGradient></defs>
+  <path d="M253 36 L259 36 L263 92 L268 158 L271 213 Q273 222 268 233 L264 256 L248 256 L244 233 Q239 222 241 213 L244 158 L249 92 Z" fill="url(#rateFace)" stroke="#292924" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M251 92 L249 205" stroke="#ffffff" stroke-width="1.3" opacity=".65"/>
+  <circle cx="256" cy="256" r="17" fill="url(#rateFace)" stroke="#252520" stroke-width="3"/>
+  <circle cx="256" cy="256" r="6" fill="#292a29"/>
+</svg>

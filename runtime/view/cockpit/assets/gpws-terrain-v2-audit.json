@@ -1,0 +1,128 @@
+{
+  "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+  "derivativeSha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
+  "sourceSize": [
+    918,
+    1713
+  ],
+  "generatedPixelsChanged": 21784,
+  "changeRectNativePx": [
+    600,
+    1382,
+    918,
+    1595
+  ],
+  "sourceUnmodified": true,
+  "switches": [
+    "FLAP INHIBIT",
+    "GEAR INHIBIT",
+    "TERRAIN INHIBIT"
+  ],
+  "terrainPlacement": "RIGHT_OF_GEAR_INHIBIT",
+  "fonts": "DejaVuSansCondensed 10px from system font; original photo backdrop unchanged outside GPWS region",
+  "captionBoundsNativePx": [
+    [
+      [
+        696,
+        1386,
+        723,
+        1395
+      ],
+      [
+        696,
+        1395,
+        723,
+        1401
+      ]
+    ],
+    [
+      [
+        764,
+        1386,
+        795,
+        1396
+      ],
+      [
+        766,
+        1395,
+        793,
+        1401
+      ]
+    ],
+    [
+      [
+        833,
+        1386,
+        881,
+        1395
+      ],
+      [
+        844,
+        1395,
+        871,
+        1401
+      ]
+    ]
+  ],
+  "captionText": [
+    "FLAP INHIBIT",
+    "GEAR INHIBIT",
+    "TERRAIN INHIBIT"
+  ],
+  "captionLayout": "TWO_ROWS_COMPACT_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS",
+  "qa": {
+    "captionFormat": "TWO_ROWS_COMPACT_CENTERED_ABOVE_SOCKETS_CLEAR_OF_MOUNTING_SCREWS",
+    "captionBoundsNativePx": [
+      [
+        [
+          696,
+          1386,
+          723,
+          1395
+        ],
+        [
+          696,
+          1395,
+          723,
+          1401
+        ]
+      ],
+      [
+        [
+          764,
+          1386,
+          795,
+          1396
+        ],
+        [
+          766,
+          1395,
+          793,
+          1401
+        ]
+      ],
+      [
+        [
+          833,
+          1386,
+          881,
+          1395
+        ],
+        [
+          844,
+          1395,
+          871,
+          1401
+        ]
+      ]
+    ],
+    "verifiedRules": [
+      "three matching source-photo sockets",
+      "FLAP/GEAR/TERRAIN names centered individually over respective slots",
+      "INHIBIT directly under each title and clear of the original screw heads",
+      "NORMAL centered under each socket",
+      "original image is byte-identical outside local 600x1382–918x1595 area"
+    ],
+    "release": "pixel-difference test passed; browser visual owner review pending"
+  }
+}

@@ -1,0 +1,43 @@
+'use strict';
+// AUTO BRAKE RTO: 1.5 seconds per B737 Classic FCOM/Lufthansa ATA 32-40.
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const lamps=require('./lights-model.js');
+const controls=require('./conventional-physical-controls-v1.js');
+const shared=require('../../engine/systems/autobrake-classic-v1.js');
+const reg=JSON.parse(fs.readFileSync(path.join(__dirname,'lights.json'),'utf8'));
+const panel=lamps.controller(reg),core=shared.create();
+panel.setOverheadPower(true);
+const display=()=>panel.evaluate().frames['main-autobrake'];
+const sync=()=>{
+ const q=core.getState();
+ panel.update({autobrakeRtoSelfTest:q.rtoSelfTest,autobrakeArmed:q.armed,
+  autobrakeDisarmed:q.disarmLight&&!q.rtoSelfTest,antiskidOn:q.inputs.antiskidOn});
+ return display();
+};
+assert.equal(controls.RTO_SELF_TEST_MS,1500);
+assert.equal(shared.RTO_TEST_MS,1500);
+assert.equal(sync(),'OFF');
+core.select('RTO');assert.equal(sync(),'ON');
+core.advance(1499);assert.equal(sync(),'ON');
+core.advance(1);assert.equal(sync(),'OFF');
+core.update({antiskidOn:false});assert.equal(sync(),'ON','ANTISKID OFF disarms armed AUTO BRAKE');
+assert.equal(panel.evaluate().frames['main-antiskid'],'ON','ANTISKID INOP independently illuminated');
+core.select('OFF');assert.equal(sync(),'OFF');
+core.update({antiskidOn:true});
+core.select('RTO');core.update({autobrakeFault:true});
+core.advance(1500);assert.equal(sync(),'ON','RTO TOSC failure stays on until reset OFF');
+core.select('OFF');core.update({autobrakeFault:false});assert.equal(sync(),'OFF');
+core.select('RTO');core.advance(1500);
+core.update({wheelSpeedKnots:100,thrustIdle:false});
+core.update({thrustIdle:true});assert.equal(sync(),'OFF','Activated RTO braking is not a failure');
+core.update({manualBrakesApplied:true});assert.equal(sync(),'ON','Manual brake disarms RTO');
+core.select('OFF');assert.equal(sync(),'OFF');
+const src=fs.readFileSync(path.join(__dirname,'conventional-physical-controls-v1.js'),'utf8');
+const bridge=fs.readFileSync(path.join(__dirname,'autobrake-unified-v1.js'),'utf8');
+assert.ok(!src.includes('startRtoSelfTest()'),'Display cannot own a second RTO timer');
+assert.ok(src.includes('common.setSelector(next)'),'Display routes selection to shared engine');
+assert.ok(bridge.includes('win.B737AutobrakeUnified'));
+assert.ok(bridge.includes("'b737:autobrake-state'"));
+console.log('PASS: 1500ms ground RTO lamp and both displays use a single source; ANTISKID, RTO faults and manual brakes remain coupled.');

@@ -1,0 +1,17 @@
+/* MCP-0006 | Source-registered B737 Classic small metallic F/D + flat A/T ARM. */
+[data-piece="mcp"]>.mcp-hw.mcp-hw-at,[data-piece="mcp"]>.mcp-hw.mcp-hw-fd{background:none!important;box-shadow:none!important;border:0!important}
+/* Real F/D uses a very small chrome stem and head inside the existing photo socket. */
+.mcp-hw-fd-base{position:absolute;left:33%;top:43%;width:34%;height:24%;box-sizing:border-box;border-radius:50%;background:radial-gradient(ellipse at 33% 25%,#e5e0d7,#9f9f96 33%,#3b3b37 68%,#151514);border:1px solid #b7b3aa;box-shadow:0 1px 2px #000b,inset 0 1px 1px #fff7}
+.mcp-hw-fd-shaft{position:absolute;left:44%;top:24%;width:13%;height:30%;border-radius:40% 40% 20% 20%;transform-origin:50% 92%;transform:rotate(-10deg);background:linear-gradient(90deg,#555550,#f3f1e9 30%,#b9b9b2 58%,#484945);box-shadow:1px 1px 2px #0009;transition:transform .12s ease}
+.mcp-hw-fd-tip{position:absolute;left:31%;top:17%;width:34%;height:14%;border-radius:50%/48%;background:radial-gradient(ellipse at 30% 25%,#fff,#e2dfd3 22%,#b1aaa0 55%,#5b5956);border:1px solid #74726d;box-sizing:border-box;box-shadow:1px 1px 2px #0009;transition:transform .12s ease}
+.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-shaft{transform:rotate(15deg)}
+.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-tip{transform:translateX(12%) translateY(12%)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"] .mcp-hw-fd-shaft{transform:rotate(10deg)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-shaft{transform:rotate(-15deg)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-tip{transform:translateX(-12%) translateY(12%)}
+/* A/T ARM reference: short, WIDE and THIN horizontal silver paddle across the well. */
+.mcp-hw-at-hub{position:absolute;left:35%;top:25%;width:30%;height:37%;border-radius:50%;background:radial-gradient(ellipse at 46% 22%,#904536,#592d2a 36%,#181514 68%,#050707);border:1px solid #3b3531;box-sizing:border-box;box-shadow:inset 1px 2px 5px #0009}
+.mcp-hw-at-paddle{position:absolute;left:8%;top:45%;width:84%;height:16%;border-radius:3px 5px 5px 3px;background:linear-gradient(to bottom,#171b1c,#2a2b2c 21%,#747979 38%,#eee9dc 62%,#b7b8b5 84%,#555654);border:1px solid #333435;box-sizing:border-box;box-shadow:1px 3px 3px #000b,inset 0 1px 1px #fefdf9b9;transform-origin:68% 55%;transition:transform .13s ease}
+.mcp-hw-at-paddle:before{content:"";position:absolute;left:4%;right:4%;bottom:0;height:14%;border-radius:2px;background:#f9f7efc7}
+.mcp-hw-at-paddle:after{content:"";position:absolute;left:4%;right:4%;top:0;height:22%;background:#11181b90;border-radius:2px}
+.mcp-hw-at[data-state="ARM"] .mcp-hw-at-paddle{transform:translateY(-70%) rotate(-7deg)}

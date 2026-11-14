@@ -1,0 +1,876 @@
+{
+  "schema": "B737_CROSS_COCKPIT_INDICATORS_V1",
+  "basis": [
+    "engine/instruments/gauge-inventory-v1.json",
+    "engine/instruments/stage8-signal-contracts-v1.json",
+    "engine/instruments/stage34-native/*-candidates-v1.json",
+    "panel-mosaic-lab/cockpit/assembly.json",
+    "panel-mosaic-lab/cockpit/sixpack-live-integration-v1.js"
+  ],
+  "policy": "Organize all known display endpoints by aircraft SYSTEM, not panel location. Unapproved gauge photo pivots are approximate crops, not valid needle centers. Missing source status must remain UNKNOWN.",
+  "panels": {
+    "OH01": {
+      "system": "LE DEVICES / FLAP CONTROL",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.FLT CONT",
+          "label": "CAPT.FLT CONT",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH02": {
+      "system": "IRS / INERTIAL REFERENCE",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.IRS",
+          "label": "CAPT.IRS",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH03": {
+      "system": "SERVICE INTERPHONE / DOME LIGHT",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.OVERHEAD",
+          "label": "FO.OVERHEAD",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH04": {
+      "system": "AUDIO SELECTOR / MICROPHONE",
+      "displays": []
+    },
+    "OH05": {
+      "system": "ENGINE INDICATIONS / CREW OXYGEN",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.ENG",
+          "label": "FO.ENG",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH06": {
+      "system": "FLIGHT RECORDER / ELT / STALL WARN",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.OVERHEAD",
+          "label": "FO.OVERHEAD",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH07": {
+      "system": "FLIGHT CONTROLS / YAW DAMPER",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.FLT CONT",
+          "label": "CAPT.FLT CONT",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "fo.flap_position",
+          "label": "FO FLAP POSITION",
+          "zone": "MAIN",
+          "panel": "FO-INNER",
+          "photo": {
+            "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+            "width": 918,
+            "height": 1713,
+            "piece": "fo-inner"
+          },
+          "source": null,
+          "status": "requires_explicit_source",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 145,
+              "y": 290,
+              "uncertaintyPx": 22
+            }
+          }
+        }
+      ]
+    },
+    "OH08": {
+      "system": "NAV / IRS / EFIS TRANSFER",
+      "displays": []
+    },
+    "OH09": {
+      "system": "FUEL PUMPS / CROSSFEED",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.FUEL",
+          "label": "CAPT.FUEL",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.fuel_qty.center",
+          "label": "ENG FUEL QTY CENTER",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.center",
+            "unit": "kg"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 261,
+              "y": 922,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.fuel_qty.1",
+          "label": "ENG FUEL QTY 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.main1",
+            "unit": "kg"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 145,
+              "y": 1114,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.fuel_qty.2",
+          "label": "ENG FUEL QTY 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "fuel.tanksKg.main2",
+            "unit": "kg"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 332,
+              "y": 1114,
+              "uncertaintyPx": 22
+            }
+          }
+        }
+      ]
+    },
+    "OH10": {
+      "system": "ELECTRICAL AC/DC METERING",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.ELEC",
+          "label": "CAPT.ELEC",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH11": {
+      "system": "DRIVE / STANDBY POWER",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.ELEC",
+          "label": "CAPT.ELEC",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "sixpack",
+          "id": "FO.ENG",
+          "label": "FO.ENG",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.oil_pressure.1",
+          "label": "ENG OIL PRESSURE 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1050,
+              "y": 538,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.oil_pressure.2",
+          "label": "ENG OIL PRESSURE 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1174,
+              "y": 538,
+              "uncertaintyPx": 22
+            }
+          }
+        }
+      ]
+    },
+    "OH12": {
+      "system": "GENERATORS / BUS TRANSFER / APU GEN",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "CAPT.ELEC",
+          "label": "CAPT.ELEC",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "sixpack",
+          "id": "CAPT.APU",
+          "label": "CAPT.APU",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "oh.apu.egt",
+          "label": "OH APU EGT",
+          "zone": "OVERHEAD",
+          "panel": "OH12",
+          "photo": null,
+          "source": {
+            "provider": "ecu",
+            "path": "apu.egtC",
+            "unit": "°C"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": null
+          }
+        }
+      ]
+    },
+    "OH13": {
+      "system": "EQUIPMENT COOLING / CIRCUIT PANEL",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.OVERHEAD",
+          "label": "FO.OVERHEAD",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH14": {
+      "system": "EMERGENCY LIGHTS / PASSENGER SIGNS",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.OVERHEAD",
+          "label": "FO.OVERHEAD",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH15": {
+      "system": "WINDOW HEAT / PITOT / TAT",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.ANTI ICE",
+          "label": "FO.ANTI ICE",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH16": {
+      "system": "ENGINE / WING ANTI-ICE",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.ANTI ICE",
+          "label": "FO.ANTI ICE",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH17": {
+      "system": "HYDRAULIC PUMPS",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.HYD",
+          "label": "FO.HYD",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.hyd_pressure.a",
+          "label": "ENG HYD PRESSURE A",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "hydraulics.systemA.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1050,
+              "y": 1037,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.hyd_pressure.b",
+          "label": "ENG HYD PRESSURE B",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "hydraulics.systemB.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1174,
+              "y": 1037,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "fo.hyd_brake_pressure",
+          "label": "FO HYD BRAKE PRESSURE",
+          "zone": "MAIN",
+          "panel": "FO-INNER",
+          "photo": {
+            "url": "./assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+            "width": 918,
+            "height": 1713,
+            "piece": "fo-inner"
+          },
+          "source": null,
+          "status": "requires_explicit_source",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 473,
+              "y": 568,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "overhead_lamps",
+          "id": "hydraulic-overhead",
+          "zone": "OVERHEAD OH17",
+          "label": "HYDRAULIC PUMP / OVERHEAT ANNUNCIATIONS",
+          "panel": "OH17",
+          "lamps": [
+            "hyd-eng-1",
+            "hyd-eng-2",
+            "hyd-elec-1",
+            "hyd-elec-2",
+            "hyd-elec-1-overheat",
+            "hyd-elec-2-overheat"
+          ],
+          "source": "B737OverheadLights.getState",
+          "status": "SOURCE_READ_ONLY"
+        }
+      ]
+    },
+    "OH18": {
+      "system": "GROUND CALL / WIPER / RAIN REPELLENT",
+      "displays": []
+    },
+    "OH19-VOICE": {
+      "system": "VOICE RECORDER / DOOR INDICATIONS",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.DOORS",
+          "label": "FO.DOORS",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH19-DIFF": {
+      "system": "CABIN DIFF PRESS / ALT HORN",
+      "displays": []
+    },
+    "OH20": {
+      "system": "CABIN TEMPERATURE / AIR MIX",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.AIR COND",
+          "label": "FO.AIR COND",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        }
+      ]
+    },
+    "OH21": {
+      "system": "PACKS / BLEED AIR / RECIRCULATION",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.AIR COND",
+          "label": "FO.AIR COND",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "oh.duct.pressure_lr",
+          "label": "OH DUCT PRESSURE LR",
+          "zone": "OVERHEAD",
+          "panel": "OH21",
+          "photo": null,
+          "source": null,
+          "status": "requires_explicit_source",
+          "geometry": {
+            "verified": false,
+            "pivot": null
+          }
+        }
+      ]
+    },
+    "OH22": {
+      "system": "CABIN PRESSURIZATION · CPCS / DCPCS",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.AIR COND",
+          "label": "FO.AIR COND",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "oh.cabin.diff_pressure_altitude",
+          "label": "OH CABIN DIFF PRESSURE ALTITUDE",
+          "zone": "OVERHEAD",
+          "panel": "OH19-DIFF",
+          "photo": null,
+          "source": null,
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": null
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "oh.cabin.rate",
+          "label": "OH CABIN RATE",
+          "zone": "OVERHEAD",
+          "panel": "OH19-DIFF",
+          "photo": null,
+          "source": null,
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": null
+          }
+        },
+        {
+          "kind": "overhead_lamps",
+          "id": "air-systems-oh21",
+          "zone": "OVERHEAD OH21",
+          "label": "AIR SYSTEMS / BLEED TRIPS",
+          "panel": "OH21",
+          "lamps": [
+            "pack-trip-l",
+            "pack-trip-r",
+            "bleed-trip-l",
+            "bleed-trip-r",
+            "wing-body-overheat-l",
+            "wing-body-overheat-r"
+          ],
+          "source": "B737OverheadLights.getState",
+          "status": "SOURCE_READ_ONLY"
+        }
+      ]
+    },
+    "OH23": {
+      "system": "LANDING / RUNWAY / TAXI LIGHTS",
+      "displays": []
+    },
+    "OH24": {
+      "system": "APU / ENGINE START / IGNITION",
+      "displays": [
+        {
+          "kind": "sixpack",
+          "id": "FO.ENG",
+          "label": "FO.ENG",
+          "zone": "MAIN GLARESHIELD",
+          "runtime": "B737SixPack.getEffectiveState",
+          "state": "LIVE_READ_ONLY",
+          "systemLinkStatus": "SYSTEM_CATEGORY"
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.n1.1",
+          "label": "ENG N1 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.n1Percent",
+            "unit": "%"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 535,
+              "y": 553,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.n1.2",
+          "label": "ENG N1 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.n1Percent",
+            "unit": "%"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 724,
+              "y": 553,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.n2.1",
+          "label": "ENG N2 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.n2Percent",
+            "unit": "%"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 535,
+              "y": 900
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.n2.2",
+          "label": "ENG N2 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.n2Percent",
+            "unit": "%"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 724,
+              "y": 900
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.egt.1",
+          "label": "ENG EGT 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.egtC",
+            "unit": "°C"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 535,
+              "y": 723
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.egt.2",
+          "label": "ENG EGT 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.egtC",
+            "unit": "°C"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 724,
+              "y": 723
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.oil_pressure.1",
+          "label": "ENG OIL PRESSURE 1",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine1.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1050,
+              "y": 538,
+              "uncertaintyPx": 22
+            }
+          }
+        },
+        {
+          "kind": "gauge",
+          "id": "eng.oil_pressure.2",
+          "label": "ENG OIL PRESSURE 2",
+          "zone": "MAIN",
+          "panel": "ENGINE",
+          "photo": {
+            "url": "../../panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+            "width": 1235,
+            "height": 1274,
+            "piece": "engine"
+          },
+          "source": {
+            "provider": "ecu",
+            "path": "engines.engine2.oil.pressurePsi",
+            "unit": "psi"
+          },
+          "status": "source_available_training_only",
+          "geometry": {
+            "verified": false,
+            "pivot": {
+              "x": 1174,
+              "y": 538,
+              "uncertaintyPx": 22
+            }
+          }
+        }
+      ]
+    },
+    "OH25": {
+      "system": "POSITION / STROBE / EXTERIOR LIGHTS",
+      "displays": []
+    }
+  }
+}

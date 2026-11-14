@@ -1,0 +1,12 @@
+.flap-needle-overlay{position:absolute;pointer-events:none;z-index:4;overflow:visible;line-height:normal}
+.flap-needle-overlay .flap-pointer{transform-box:view-box;transform-origin:center center;transition:transform .55s cubic-bezier(.18,.72,.25,1)}
+.flap-needle-overlay .needle-body{fill:#f8f8f4;stroke:#e6e4dc;stroke-width:1}
+.flap-needle-overlay .needle-glint{fill:#fff;opacity:.75}
+.flap-needle-overlay .needle-letter{font:700 19px Arial,sans-serif;fill:#494743;text-anchor:middle;dominant-baseline:central}
+.flap-needle-overlay .needle-hub{fill:#34322e;stroke:#24221f;stroke-width:6}
+.flap-needle-tools label{display:block;margin:9px 0;direction:ltr;font:12px system-ui,Arial,sans-serif}
+.flap-needle-tools select{margin-inline-start:8px;width:100%;margin-block:4px}
+.flap-needle-tools .flap-status{direction:ltr;text-align:left;color:#ace0e8;font:11px/1.8 monospace}
+.flap-needle-tools small{color:#97aebd;display:block;line-height:1.7}
+.reference-mode .flap-needle-overlay{display:none}
+@media(prefers-reduced-motion:reduce){.flap-needle-overlay .flap-pointer{transition:none}}

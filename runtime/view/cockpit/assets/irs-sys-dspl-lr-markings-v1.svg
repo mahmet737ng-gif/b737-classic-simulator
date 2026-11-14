@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="52" viewBox="436 415 72 52" preserveAspectRatio="none">
+  <title>737 Classic IRS SYS DSPL L and R selector markings</title>
+  <desc>Non-interactive L and R lettering and white detent strokes precisely registered in the original OH01-06 image coordinate space. The existing SYS DSPL heading is not covered.</desc>
+  <!-- Original underlying L at source (x=468..477,y=431..443) is optically neutralized by a transparent-edged photo-texture clone, not by changing the locked source file. -->
+  <image x="461" y="428" width="23" height="23" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAXCAYAAADgKtSgAAACC0lEQVR42o2V3XHcMAyEv4Vov2QyTopIL3EFqSE9pK9zLy7D8YMzJ24eSPFH0l2iuxmKJAguFgtIP37+QgKAZVlYc8bZKMDZrNcrkoglyNkASMI263rFrmshIgJnY8paMhlb35HJ1zwcBgTp8QGqsyXAdV8SD3osRvSBei4ULyki6lzPxWCzoh8yRL1Q1YFNQSg3h6BtuKysJEUQzZGe5e5/Q1+jJELl1RvITsmA5gLw5+ODNG5IAvOtvM/wd/GUVYtypFm9bjl4evpMytkDX7m78Z7Ik8czdQBrzgTw6esXkoYkzAjFPx9V6twjb3CcST3Zqgh813c/XCbSTJwkAiNBsjkP3T5GMPLb3sUcvLDAgkQLRdv/Lg3HBLvPJPDa9pLXjDXzfvC3wdSNKOmazVuFWiQ7D7baSWBHkc/Ru0m3ZljGhuSDps90tmdnXovhmk19IUjgCkwIH7j1jgKViG+riNyoTFIcDfUfGkeHKi6tIAiJ3+/vpBuFfWe2qyAJuVf5EgsC3t7eSa0fVwo0JZWDhqdV7cbBflmicD5uGSPv4d7qMT3urmLXD08QtoeDbo3UPlGO5+vkuRbGH5sUJ0DS66h4DeXNfr61o0bmkGRDogqwKuQyXLKX0ExRaxXd4agyScV5fS6DoE4d67zNzJWs3l23hL5sarJqgLV0DUVqU5lP7WR3iVGtsr+vYucOaR/dZgAAAABJRU5ErkJggg==" />
+  <g fill="#f5f6f4" stroke="#35414c" stroke-width=".48" paint-order="stroke" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="13">
+    <text x="458.5" y="440.8" text-anchor="middle">L</text>
+    <text x="485.8" y="440.8" text-anchor="middle">R</text>
+  </g>
+  <g stroke="#f5f6f4" stroke-width="2.4" stroke-linecap="square" fill="none">
+    <path d="M458.6 443.5 L463.8 452.2" />
+    <path d="M485.7 443.5 L480.5 452.2" />
+  </g>
+</svg>

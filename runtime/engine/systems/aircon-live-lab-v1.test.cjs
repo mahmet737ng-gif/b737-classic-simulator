@@ -1,0 +1,123 @@
+'use strict';
+const assert=require('node:assert/strict');
+const P=require('./pneumatics-v6.js');
+const D=require('./duct-pressure-live-v1.js');
+const H=require('./aircon-ovht-hold-v1.js');
+const L=require('./aircon-live-lab-v1.js');
+let time=0,n=0,queue=new Map(),updates=0;
+const clock=()=>time;
+const schedule=(fn,delta)=>{const id=++n;queue.set(id,{at:time+delta,fn});return id};
+const cancel=id=>queue.delete(id);
+function advance(to){
+ assert.ok(to>=time);time=to;
+ for(let i=0;i<20;i++){
+  const due=[...queue.entries()].filter(([id,v])=>v.at<=time);
+  if(!due.length)break;
+  for(const [id,v]of due){queue.delete(id);v.fn()}
+ }
+}
+const model=L.create({P,pressure:D,qualification:H,clock,schedule,cancel,onChange:()=>updates++});
+assert.deepEqual(L.FAMILIES,['B737-300-500','B737-400']);
+const catalog=Object.keys(L.catalog);
+assert.ok(catalog.length>=28,'All relevant pneumatic sensors, pack/bleed valves and zone controllers selectable');
+for(const [id,f]of Object.entries(L.catalog)){
+ assert.ok(['SENSOR','FAULT','INVERTED_SENSOR'].includes(f.kind));
+ if(f.kind==='FAULT')assert.ok(P.FAULTS.includes(id),'Recognized modelled physical fault '+id);
+ else assert.ok(Object.hasOwn(P.INPUT_TYPES,id),'Recognized modeled sensor '+id);
+ model.inject(id,true);
+ assert.equal(model.selected(id),true,'Injected fault can be selected independently: '+id);
+ model.inject(id,false);
+ assert.equal(model.selected(id),false);
+}
+assert.ok(L.SCENARIOS.length>=18);
+assert.ok(updates>20,'Live update stream produced');
+model.preset('healthy');
+let s=model.snapshot();
+assert.equal(s.test.held,false);
+assert.equal(s.derived.lamps.wingBodyOverheatL,false);
+assert.equal(s.derived.lamps.wingBodyOverheatR,false);
+model.testPress();s=model.snapshot();
+assert.equal(s.test.held,true);
+assert.equal(s.test.qualified,false);
+assert.equal(s.derived.lamps.wingBodyOverheatL,false);
+advance(4999);s=model.snapshot();
+assert.equal(s.derived.lamps.wingBodyOverheatL,false);
+assert.equal(s.derived.lamps.wingBodyOverheatR,false);
+advance(5000);s=model.snapshot();
+assert.equal(s.test.qualified,true);
+assert.equal(s.derived.lamps.wingBodyOverheatL,true);
+assert.equal(s.derived.lamps.wingBodyOverheatR,true);
+assert.equal(s.immediateCaution,true);
+model.testRelease();s=model.snapshot();
+assert.equal(s.test.qualified,false);
+assert.equal(s.derived.lamps.wingBodyOverheatL,false);
+assert.equal(s.immediateCaution,false);
+model.testPress();advance(9800);model.testRelease();advance(15000);
+assert.equal(model.snapshot().derived.lamps.wingBodyOverheatL,false,'Short hold must never mature');
+
+model.inject('wingBodyLLeakDetected',true);
+s=model.snapshot();
+assert.equal(s.derived.lamps.wingBodyOverheatL,true,'Real detected leak is immediate');
+assert.equal(s.derived.lamps.wingBodyOverheatR,false);
+model.inject('wingBodyLDetectorFailed',true);
+model.testPress();advance(20000);s=model.snapshot();
+assert.equal(s.derived.lamps.wingBodyOverheatL,true,'Real leak remains illuminated even when detector test fails');
+assert.equal(s.derived.lamps.wingBodyOverheatR,true);
+model.inject('wingBodyLLeakDetected',false);
+assert.equal(model.snapshot().derived.lamps.wingBodyOverheatL,false,'Failed detector left test stays dark');
+model.testRelease();
+
+model.preset('bleed-l');
+s=model.snapshot();
+assert.equal(s.derived.lamps.bleedTrip1,true);
+assert.equal(s.derived.bleed.engine1ValveOpen,false);
+model.tripReset();assert.equal(model.snapshot().derived.lamps.bleedTrip1,true,'Active BLEED trip cannot reset');
+model.inject('bleed1Overlimit',false);
+assert.equal(model.snapshot().derived.lamps.bleedTrip1,true,'Latched until reset');
+model.tripReset();assert.equal(model.snapshot().derived.lamps.bleedTrip1,false);
+model.preset('pack-r');
+assert.equal(model.snapshot().derived.pack.R.operational,false);
+model.inject('packROverheat',false);
+assert.equal(model.snapshot().derived.lamps.packTripR,true);
+model.tripReset();assert.equal(model.snapshot().derived.lamps.packTripR,false);
+
+model.setFamily('B737-400');
+model.inject('packLPrimaryControlFailed',true);
+s=model.snapshot();
+assert.equal(s.recallOnly,true);
+assert.equal(s.immediateCaution,false);
+assert.equal(s.derived.lamps.packTripL,false);
+model.inject('packLStandbyControlFailed',true);
+s=model.snapshot();
+assert.equal(s.immediateCaution,true);
+assert.equal(s.derived.lamps.packTripL,true);
+model.preset('400-fwd');
+s=model.snapshot();
+assert.equal(s.derived.zoneTemp400.FWD.immediate,true);
+model.inject('zoneFwdOverheat',false);
+assert.equal(model.snapshot().derived.zoneTemp400.FWD.immediate,true);
+model.tripReset();
+assert.equal(model.snapshot().derived.zoneTemp400.FWD.immediate,false);
+model.setFamily('B737-300-500');
+model.preset('duct-l');
+assert.equal(model.snapshot().derived.lamps.ductOverheatL,true);
+
+model.preset('healthy');
+model.control('engineBleed1','OFF');
+model.control('engineBleed2','OFF');
+model.control('apuBleed','ON');
+model.source('engine1Running',false);model.source('engine2Running',false);
+model.source('apuRunning',true);
+s=model.snapshot();
+assert.equal(s.derived.bleed.apuBleedValveOpen,true);
+assert.ok(s.pressures?.L>15,'Lab DUCT L pressure is from same training estimator');
+model.lamp('wing-body-overheat-l','LAMP_OPEN');
+assert.equal(model.snapshot().lampFaults['wing-body-overheat-l'],'LAMP_OPEN');
+model.lamp('wing-body-overheat-l','NORMAL');
+assert.equal(model.snapshot().lampFaults['wing-body-overheat-l'],undefined);
+model.reset();
+assert.equal(Object.values(model.snapshot().faults).some(Boolean),false);
+assert.equal(model.snapshot().state.controls.aircraftFamily,'B737-300-500');
+assert.throws(()=>model.inject('fictionalEngineFire',true));
+assert.throws(()=>model.lamp('bad-lamp','LAMP_OPEN'));
+console.log('PASS: full failure catalog, simultaneous faults, true 5s hold, real instant leaks, trips, 400 recall, zone/duct, independent duct pressure and reset.');

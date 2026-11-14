@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Long cabin differential pressure pointer">
+  <title>PRESS — cabin differential pressure</title>
+  <desc>Long ivory pointer for the outer PSI scale; independent of the shorter CAB ALT pointer.</desc>
+  <defs><linearGradient id="pressFace" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c8c7bf"/><stop offset=".28" stop-color="#fffef9"/><stop offset=".73" stop-color="#f2f1e8"/><stop offset="1" stop-color="#b5b2a9"/></linearGradient></defs>
+  <path d="M252 35 L260 35 L272 143 L275 184 L286 205 Q291 211 285 218 L267 229 L266 255 Q256 266 246 255 L245 229 L227 218 Q221 211 226 205 L237 184 L240 143 Z" fill="url(#pressFace)" stroke="#252522" stroke-width="2.6" stroke-linejoin="round"/>
+  <path d="M240 186 L272 186" stroke="#34312d" stroke-width="4" opacity=".75"/>
+  <text x="256" y="214" fill="#242420" font-family="Arial, sans-serif" font-weight="900" font-size="13" text-anchor="middle" letter-spacing=".2">PRESS</text>
+</svg>

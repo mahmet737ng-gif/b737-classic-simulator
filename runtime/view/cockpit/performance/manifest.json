@@ -1,0 +1,1170 @@
+{
+  "schema": "b737.unified-performance.v1",
+  "images": {
+    "assets/main-panel.webp": {
+      "width": 2100,
+      "height": 914,
+      "sourceBytes": 300812,
+      "sourceSha256": "9d82db8f672d766f98d7bd9a129a1aae240c048706b1f11feaf8499fa1740765",
+      "levels": [
+        {
+          "width": 384,
+          "height": 167,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-384.webp",
+          "bytes": 41308,
+          "sha256": "a8ce59b4be65200ea5386b0cca4a3fd610e59cc749d4fbfa6ade9a4839d4a8c0"
+        },
+        {
+          "width": 768,
+          "height": 334,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-768.webp",
+          "bytes": 119496,
+          "sha256": "a5a8f3df7fcc9f02d163335b158a095f498539476c14fe3f4009e3b4437cdb7f"
+        },
+        {
+          "width": 1536,
+          "height": 669,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-1536.webp",
+          "bytes": 342052,
+          "sha256": "ee0e1683fb68167e76989cd5b6df585644fccbd6c503938ebffdfed2f162692d"
+        },
+        {
+          "width": 2100,
+          "height": 914,
+          "extent": 2100,
+          "url": "assets/main-panel.webp",
+          "bytes": 300812,
+          "sha256": "9d82db8f672d766f98d7bd9a129a1aae240c048706b1f11feaf8499fa1740765",
+          "original": true
+        }
+      ]
+    },
+    "assets/overhead.webp": {
+      "width": 1500,
+      "height": 2394,
+      "sourceBytes": 880614,
+      "sourceSha256": "dc503ac0276ce29f9d4b0c3409c11277e21f2044f4acc67773092b76f64ad579",
+      "levels": [
+        {
+          "width": 241,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-384.webp",
+          "bytes": 79004,
+          "sha256": "d182f3995c0dd57de7e7e8de5c32a0d308d6f77f56859e558ed21e8606da6d67"
+        },
+        {
+          "width": 481,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-768.webp",
+          "bytes": 236050,
+          "sha256": "40da4c4cf670c8f41be9de5191406e4b3120d44fa2f9dbc33edbc80c8847672e"
+        },
+        {
+          "width": 962,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-1536.webp",
+          "bytes": 743332,
+          "sha256": "c0d7176bc6f627710cdc7cb7d13eb66686223136704e46d6d2841a5d4c1609ab"
+        },
+        {
+          "width": 1500,
+          "height": 2394,
+          "extent": 2394,
+          "url": "assets/overhead.webp",
+          "bytes": 880614,
+          "sha256": "dc503ac0276ce29f9d4b0c3409c11277e21f2044f4acc67773092b76f64ad579",
+          "original": true
+        }
+      ]
+    },
+    "assets/pedestal.webp": {
+      "width": 1150,
+      "height": 2110,
+      "sourceBytes": 392730,
+      "sourceSha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
+      "levels": [
+        {
+          "width": 209,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-384.webp",
+          "bytes": 56098,
+          "sha256": "83f1ebf937b1f3d94efd27dfbf901ddc6dfedb6dcf196f8a9e3ec9bb7af66fff"
+        },
+        {
+          "width": 419,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-768.webp",
+          "bytes": 161912,
+          "sha256": "e04e70b78e1c8276d6d59e8d550ec5975d24e6fab2e4293f7343f868d8f8c9ce"
+        },
+        {
+          "width": 837,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-1536.webp",
+          "bytes": 457440,
+          "sha256": "3379ed1e9f190c4f84e7bc72da54e6c2a1109d895c013b71757c901cfae241af"
+        },
+        {
+          "width": 1150,
+          "height": 2110,
+          "extent": 2110,
+          "url": "assets/pedestal.webp",
+          "bytes": 392730,
+          "sha256": "08f7478a6a2d3e58faf5f0cbd12896e32ef97131616c5d4228e9e64594909bfe",
+          "original": true
+        }
+      ]
+    },
+    "cdu-standalone-v6/assets/cdu-approved-unlit.png": {
+      "width": 1199,
+      "height": 1312,
+      "sourceBytes": 1521149,
+      "sourceSha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+      "levels": [
+        {
+          "width": 351,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-384.webp",
+          "bytes": 29162,
+          "sha256": "25b3598133da56a5d47fdaf376bc78bec387a5218787b4b9ec9e631231ec9da2"
+        },
+        {
+          "width": 702,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-768.webp",
+          "bytes": 73866,
+          "sha256": "2fd040abb0bae892483e4f27cc26e840d4eb7c54817ed161904f9074039477c5"
+        },
+        {
+          "width": 1199,
+          "height": 1312,
+          "extent": 1312,
+          "url": "cdu-standalone-v6/assets/cdu-approved-unlit.png",
+          "bytes": 1521149,
+          "sha256": "2c60c534e6e9cd80afa721f2d82801d7bdbc54dce4bbd39b8adb3470f2df0237",
+          "original": true
+        }
+      ]
+    },
+    "file_000000006c00820ab145b3682f686256.png": {
+      "width": 1123,
+      "height": 1400,
+      "sourceBytes": 1912384,
+      "sourceSha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+      "levels": [
+        {
+          "width": 308,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-384.webp",
+          "bytes": 28310,
+          "sha256": "565b5057c64500f05ce04f608f419dc7693db272a5c580d5bfe5a6302b18b692"
+        },
+        {
+          "width": 616,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-768.webp",
+          "bytes": 85216,
+          "sha256": "cdb38d796b7646cf6f8e911a43c635f87f4a4541621e5927b653dec264701de0"
+        },
+        {
+          "width": 1123,
+          "height": 1400,
+          "extent": 1400,
+          "url": "file_000000006c00820ab145b3682f686256.png",
+          "bytes": 1912384,
+          "sha256": "b2439666f75ddbcab15835b532d26a7ad2d1ab669be5f48774d656c1b8915a3c",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
+      "width": 1145,
+      "height": 1373,
+      "sourceBytes": 2399844,
+      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+      "levels": [
+        {
+          "width": 320,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/e533f907b3826dbf8fc9-q96-384.webp",
+          "bytes": 38966,
+          "sha256": "922b1d7e6f0d53b3605dc77a15ba9a44b2fd0d1274f9bb2c1e52ecefe2992e7b"
+        },
+        {
+          "width": 640,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/e533f907b3826dbf8fc9-q96-768.webp",
+          "bytes": 141810,
+          "sha256": "ca9ae9ea81bbfaed5dd12e29bc7cdf1859f39bb314459b868ec3efd354dd42cc"
+        },
+        {
+          "width": 1145,
+          "height": 1373,
+          "extent": 1373,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
+          "bytes": 2399844,
+          "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
+      "width": 3942,
+      "height": 3591,
+      "sourceBytes": 9737911,
+      "sourceSha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+      "levels": [
+        {
+          "width": 384,
+          "height": 350,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-384.webp",
+          "bytes": 40448,
+          "sha256": "a51128cda3b4fd460c98a1f357d66eed50f1775d530244479dbb9244e9281b2d"
+        },
+        {
+          "width": 768,
+          "height": 700,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-768.webp",
+          "bytes": 118586,
+          "sha256": "06dd66289be0069e78bab5de58c08ae1b5de343c6a96194440bcc14db3db50d5"
+        },
+        {
+          "width": 1536,
+          "height": 1399,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-1536.webp",
+          "bytes": 316906,
+          "sha256": "f1239895da95013319fdd3ef07d4c4e12f7eb79c839081187671a9da80bc80ff"
+        },
+        {
+          "width": 3942,
+          "height": 3591,
+          "extent": 3942,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png",
+          "bytes": 9737911,
+          "sha256": "dea7c23ddd5d648cf51735d0fcbcc9d1e69ce37efd736ec45fb173fe766fc56b",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png": {
+      "width": 1235,
+      "height": 1274,
+      "sourceBytes": 1836633,
+      "sourceSha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+      "levels": [
+        {
+          "width": 372,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-384.webp",
+          "bytes": 49424,
+          "sha256": "2c7a062995edf978eeab5e973ca7d27b067b233fbff5670ed4f8b99e17e1d84a"
+        },
+        {
+          "width": 744,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-768.webp",
+          "bytes": 134880,
+          "sha256": "26d1d3b2f64e876dcf90240914ab97391a876c4a78571e498e1d6c126be06c49"
+        },
+        {
+          "width": 1235,
+          "height": 1274,
+          "extent": 1274,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+          "bytes": 1836633,
+          "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png": {
+      "width": 2160,
+      "height": 908,
+      "sourceBytes": 120279,
+      "sourceSha256": "709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4",
+      "levels": [
+        {
+          "width": 384,
+          "height": 161,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-384.webp",
+          "bytes": 12410,
+          "sha256": "045704e7efd7bae8ec8e4ce4ccf904546f041affb4c8345b652b51f3994710cb"
+        },
+        {
+          "width": 768,
+          "height": 323,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-768.webp",
+          "bytes": 25896,
+          "sha256": "bfbf94aae6678c59a1ca4387fc7decdbe147a7a1b035a2d845506001b3e0a822"
+        },
+        {
+          "width": 1536,
+          "height": 646,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-1536.webp",
+          "bytes": 55210,
+          "sha256": "cc43ac300ceae6ce3dd0486e3bcdd4623de3ff5d3e51d4fc6aba0c6dafb1940a"
+        },
+        {
+          "width": 2160,
+          "height": 908,
+          "extent": 2160,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png",
+          "bytes": 120279,
+          "sha256": "709ea64910a134c4199f9bed393fc65fbd8e6b44bc70f7adc03a8470d29460a4",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png": {
+      "width": 2172,
+      "height": 433,
+      "sourceBytes": 1220975,
+      "sourceSha256": "9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062",
+      "levels": [
+        {
+          "width": 384,
+          "height": 77,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-384.webp",
+          "bytes": 12078,
+          "sha256": "0ec760871414f2ec35c13cb7e50809f9ad0a4240cbb4fbbf3d4549beff161bea"
+        },
+        {
+          "width": 768,
+          "height": 153,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-768.webp",
+          "bytes": 37610,
+          "sha256": "ab6d735febbc361c5877e6539a08fc95546579da7a10815284251e70f2526602"
+        },
+        {
+          "width": 1536,
+          "height": 306,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-1536.webp",
+          "bytes": 121938,
+          "sha256": "5451ed2cf75e3d2dec90f8b3e35a949c57de1904a9049e76dc44e4cd9e856648"
+        },
+        {
+          "width": 2172,
+          "height": 433,
+          "extent": 2172,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/B737_MCP_Blank_Panel.png",
+          "bytes": 1220975,
+          "sha256": "9ee5a14d8b3bbf903e62ba65c1f0b3c52f23238abc1b1cd16fe31fea25548062",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png": {
+      "width": 918,
+      "height": 1713,
+      "sourceBytes": 2006264,
+      "sourceSha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+      "levels": [
+        {
+          "width": 206,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-384.webp",
+          "bytes": 26860,
+          "sha256": "bf212a9940e4fedd3d65c6b63d763ccc23055f30f3c14b03b02e4414921d35eb"
+        },
+        {
+          "width": 412,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-768.webp",
+          "bytes": 81216,
+          "sha256": "7c5779eba9d608b29846c11fc2393a79324a7a3c54051b5a00b868df10c8e28e"
+        },
+        {
+          "width": 823,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-1536.webp",
+          "bytes": 238640,
+          "sha256": "52beb7fbf285d2fc2bebdb34241d4a2be8cbab6a160123cdb6ad7b79c02b4c01"
+        },
+        {
+          "width": 918,
+          "height": 1713,
+          "extent": 1713,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Right_Main_Instruments_Blank.png",
+          "bytes": 2006264,
+          "sha256": "171bf9e8d21347e7a522ebc86b19cfe0b967f0503d26c483d8f3d685f719576a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png": {
+      "width": 2172,
+      "height": 724,
+      "sourceBytes": 1825903,
+      "sourceSha256": "9f3db84357a88909210c055b3a3fc174ed0e830db5c31306c6466fcd72c536cd",
+      "levels": [
+        {
+          "width": 384,
+          "height": 128,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-384.webp",
+          "bytes": 16328,
+          "sha256": "e70d7e58802b7e398adc28aef3d03a5660631ffe0b480f516b6fc686b79718be"
+        },
+        {
+          "width": 768,
+          "height": 256,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-768.webp",
+          "bytes": 57738,
+          "sha256": "94022484c213a66b2067361389286b26ccacbd8480660cc3aca5c8cc859f4fff"
+        },
+        {
+          "width": 1536,
+          "height": 512,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-1536.webp",
+          "bytes": 165642,
+          "sha256": "f1a2ef6008b0dfabe88dcdaa486b439ca8168204bb680ffb78ddd10437a0a5b7"
+        },
+        {
+          "width": 2172,
+          "height": 724,
+          "extent": 2172,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png",
+          "bytes": 1825903,
+          "sha256": "9f3db84357a88909210c055b3a3fc174ed0e830db5c31306c6466fcd72c536cd",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png": {
+      "width": 1731,
+      "height": 909,
+      "sourceBytes": 2995593,
+      "sourceSha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+      "levels": [
+        {
+          "width": 384,
+          "height": 202,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-384.webp",
+          "bytes": 21770,
+          "sha256": "b3583c16c840c3f13909264c4f6de66db1f1993e43ecac06ceada53d4bc6a3ec"
+        },
+        {
+          "width": 768,
+          "height": 403,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-768.webp",
+          "bytes": 66282,
+          "sha256": "4ed7dc50f95ae88e92eaed51f50e3f94dbac8ed7609d7b38336834038e35ce83"
+        },
+        {
+          "width": 1536,
+          "height": 807,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-1536.webp",
+          "bytes": 216640,
+          "sha256": "4241259bc59f0894daa7ad68bad5fd473ce9fb38e1d4dbd9072566b7de6e62f6"
+        },
+        {
+          "width": 1731,
+          "height": 909,
+          "extent": 1731,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+          "bytes": 2995593,
+          "sha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png": {
+      "width": 913,
+      "height": 1723,
+      "sourceBytes": 2943825,
+      "sourceSha256": "c8245831458450691a9d861cc021b047440ec67f3cce4d688c3bba37ece11c70",
+      "levels": [
+        {
+          "width": 203,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-384.webp",
+          "bytes": 24138,
+          "sha256": "f310d107ee8103ec101763989b13ee3cf5fa3727b3dc67a89b6effffcc882a05"
+        },
+        {
+          "width": 407,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-768.webp",
+          "bytes": 69588,
+          "sha256": "56c5ab12b25301f7bc6d3894464d09b214c18b755e711313566f4f281771089f"
+        },
+        {
+          "width": 814,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-1536.webp",
+          "bytes": 246014,
+          "sha256": "b4cfee68e66825f1e1177000cc8a3688bdf6994beff1e5cfef8e8e4ce307dd5c"
+        },
+        {
+          "width": 913,
+          "height": 1723,
+          "extent": 1723,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png",
+          "bytes": 2943825,
+          "sha256": "c8245831458450691a9d861cc021b047440ec67f3cce4d688c3bba37ece11c70",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png": {
+      "width": 1012,
+      "height": 1555,
+      "sourceBytes": 2979384,
+      "sourceSha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+      "levels": [
+        {
+          "width": 250,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-384.webp",
+          "bytes": 26890,
+          "sha256": "c117c446716c1b4f17d2ebc804a566332648b3ce36c959cb03da9f991c4618f1"
+        },
+        {
+          "width": 500,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-768.webp",
+          "bytes": 79248,
+          "sha256": "aee9b99af254d478852373ba29b3266bad36e14957d4650ad9ebcc01c38c409b"
+        },
+        {
+          "width": 1000,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-1536.webp",
+          "bytes": 283250,
+          "sha256": "b186004c518fa94c79251b7dc1929d5446ddb1ddca9992eef3921b2d461459e8"
+        },
+        {
+          "width": 1012,
+          "height": 1555,
+          "extent": 1555,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH09-FUEL-921977b56887.png",
+          "bytes": 2979384,
+          "sha256": "921977b568870233c9613a62101741dc369bb43f85b80b3769af07f05eeba733",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png": {
+      "width": 1095,
+      "height": 1436,
+      "sourceBytes": 2459734,
+      "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+      "levels": [
+        {
+          "width": 293,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-384.webp",
+          "bytes": 40462,
+          "sha256": "b9400d5778c760ebd8024158c7a5bd85074fb97055a064e7a51addb7e95a87ee"
+        },
+        {
+          "width": 586,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-768.webp",
+          "bytes": 125806,
+          "sha256": "400f643f271d6aa4eb77d665e905de12218b98276d51a16bf4619127d7bd061e"
+        },
+        {
+          "width": 1095,
+          "height": 1436,
+          "extent": 1436,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+          "bytes": 2459734,
+          "sha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png": {
+      "width": 1203,
+      "height": 1308,
+      "sourceBytes": 2412956,
+      "sourceSha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+      "levels": [
+        {
+          "width": 353,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-384.webp",
+          "bytes": 42018,
+          "sha256": "d54cf9aae0cafa7b129577fe3dca86a200c66cdd11b81fe41a2c8ed7b8daefa2"
+        },
+        {
+          "width": 706,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-768.webp",
+          "bytes": 138450,
+          "sha256": "b231b484e783ca1d9a412e00b77d3d6777b61f14d8193fb8e169d1f4559f09ee"
+        },
+        {
+          "width": 1203,
+          "height": 1308,
+          "extent": 1308,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH11-STANDBY-8b7d36ff3182.png",
+          "bytes": 2412956,
+          "sha256": "86cf2f1de81146756adf694b1fe01067a271c32990c1fda7752eb913442a6708",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 2593979,
+      "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-384.webp",
+          "bytes": 35662,
+          "sha256": "b68fbd6c9b6afdda20ec2453149b91632ee861d4e41559fe08b48f7cddb7938b"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-768.webp",
+          "bytes": 116232,
+          "sha256": "e7d9bc5d2972d28e0cf296ff9f2ed70ff8944c2ef05e369bb5fdae9ec491d98e"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+          "bytes": 2593979,
+          "sha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png": {
+      "width": 724,
+      "height": 2172,
+      "sourceBytes": 2307600,
+      "sourceSha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+      "levels": [
+        {
+          "width": 128,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-384.webp",
+          "bytes": 11182,
+          "sha256": "161bbee8895bf0f7285f423f7bc688f7ecf3bfeacccccfce3c18aa7afa919cd2"
+        },
+        {
+          "width": 256,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-768.webp",
+          "bytes": 39404,
+          "sha256": "6b0d7e28a2ad42765bcf2404a8dde5cc3be4b08fa448d0cbb66f434bb11658f9"
+        },
+        {
+          "width": 512,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-1536.webp",
+          "bytes": 182368,
+          "sha256": "cfbcd15e0cba1302a4d67beeb8db5ac2b26d8705904d39ea6c52ea79001c9e43"
+        },
+        {
+          "width": 724,
+          "height": 2172,
+          "extent": 2172,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH13-CIRCUIT-BREAKER-efca1c6cec9e.png",
+          "bytes": 2307600,
+          "sha256": "8fef9e3d67fd78c794d0cceb31ab2806f82076bf7d6e987e3fbdcf5e2a1c76a4",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png": {
+      "width": 1074,
+      "height": 1464,
+      "sourceBytes": 2674410,
+      "sourceSha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+      "levels": [
+        {
+          "width": 282,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-384.webp",
+          "bytes": 28078,
+          "sha256": "b16f06ace36c6d2454494cae10ee424272de21cd21d478a06441ec2ace049af3"
+        },
+        {
+          "width": 563,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-768.webp",
+          "bytes": 117858,
+          "sha256": "162634d28e05c8fb62c2b2fd8f58cbb93f290617e526a57eb972c3738a03444f"
+        },
+        {
+          "width": 1074,
+          "height": 1464,
+          "extent": 1464,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH14-EMER-EXIT-795cc819a3b3.png",
+          "bytes": 2674410,
+          "sha256": "7a707630ada8d1ae84a7377dd92e61bda95e07ccc3e71c4759da0b3dd113b3d8",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png": {
+      "width": 1280,
+      "height": 1229,
+      "sourceBytes": 2341811,
+      "sourceSha256": "b8c4ca3047fe5028093fb1f1f9e5d70eaa292f7d4d95ce664ef64f150fd1db96",
+      "levels": [
+        {
+          "width": 384,
+          "height": 369,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-384.webp",
+          "bytes": 38968,
+          "sha256": "db06be62b0ee50847448971fa200ea06331aadbd48b870c70db292abc2eb9a48"
+        },
+        {
+          "width": 768,
+          "height": 737,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-768.webp",
+          "bytes": 151896,
+          "sha256": "f30c7917e5c2264eea30d423e053f457a373085eff13fe4be6e4220cf22940ef"
+        },
+        {
+          "width": 1280,
+          "height": 1229,
+          "extent": 1280,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH15-WINDOW-PITOT-4ecfdc65f71b.png",
+          "bytes": 2341811,
+          "sha256": "b8c4ca3047fe5028093fb1f1f9e5d70eaa292f7d4d95ce664ef64f150fd1db96",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png": {
+      "width": 1639,
+      "height": 960,
+      "sourceBytes": 2616368,
+      "sourceSha256": "6009e9eba2bd5ea6e4fc8c56dbe1a6454c2f9fbce8513d2d32d84703018d56e9",
+      "levels": [
+        {
+          "width": 384,
+          "height": 225,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-384.webp",
+          "bytes": 21814,
+          "sha256": "fa020e40c43fe7def5239aabe71457302de48967877f820ae458960c3d2fa401"
+        },
+        {
+          "width": 768,
+          "height": 450,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-768.webp",
+          "bytes": 94254,
+          "sha256": "e18d919577206378537faa8d624f7564614d1f5ab76ae7f35f0521a563950340"
+        },
+        {
+          "width": 1536,
+          "height": 900,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-1536.webp",
+          "bytes": 379610,
+          "sha256": "910f8b50a0d0ed6b8e6cea55270a1f94f4c9705609f3346a95f379cd19d0df9d"
+        },
+        {
+          "width": 1639,
+          "height": 960,
+          "extent": 1639,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH16-ANTI-ICE-f59889e4efd2.png",
+          "bytes": 2616368,
+          "sha256": "6009e9eba2bd5ea6e4fc8c56dbe1a6454c2f9fbce8513d2d32d84703018d56e9",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png": {
+      "width": 1672,
+      "height": 941,
+      "sourceBytes": 2697606,
+      "sourceSha256": "96c08c4f331d5c375cb73bbc16f10cc6172433abd5e7b0a84e2826f08a2d68f8",
+      "levels": [
+        {
+          "width": 384,
+          "height": 216,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-384.webp",
+          "bytes": 27182,
+          "sha256": "eac4cfd3d9767ffb1bc4e2644d735c353daadbaba33f44d1f957794a4826aa5e"
+        },
+        {
+          "width": 768,
+          "height": 432,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-768.webp",
+          "bytes": 99228,
+          "sha256": "f7e1488dbf3a1b5d3c66db92b817c11ed2399a3215a28c70461093cf1a44f3cd"
+        },
+        {
+          "width": 1536,
+          "height": 864,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-1536.webp",
+          "bytes": 396818,
+          "sha256": "bbb8b33a5bc746a069425d156e6c67e8f734adebe7bc96169f3c2d6b7e0019bc"
+        },
+        {
+          "width": 1672,
+          "height": 941,
+          "extent": 1672,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH17-HYDRAULIC-f149122d1f5c.png",
+          "bytes": 2697606,
+          "sha256": "96c08c4f331d5c375cb73bbc16f10cc6172433abd5e7b0a84e2826f08a2d68f8",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png": {
+      "width": 816,
+      "height": 1926,
+      "sourceBytes": 2787751,
+      "sourceSha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+      "levels": [
+        {
+          "width": 163,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-384.webp",
+          "bytes": 17894,
+          "sha256": "ed4933cf4cfd32b4f230b5cfc15afd6bc4ec313dcd33939fce026757926fb8aa"
+        },
+        {
+          "width": 325,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-768.webp",
+          "bytes": 69244,
+          "sha256": "87501a9a53b59401d64f102ded6810152f9e74df2e92125039aed4f596b6dae2"
+        },
+        {
+          "width": 651,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-1536.webp",
+          "bytes": 300530,
+          "sha256": "5806b755d953cd177fe0c87fad58921a22abd1c9c8d7dd2e8cc478b873db1802"
+        },
+        {
+          "width": 816,
+          "height": 1926,
+          "extent": 1926,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH18-GROUND-CALL-5af4fdc5284b.png",
+          "bytes": 2787751,
+          "sha256": "939e9f6ed14cbe2a8a6182684fcef790607e7dba10a1bfe002a062457f83e5ee",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png": {
+      "width": 1267,
+      "height": 1241,
+      "sourceBytes": 2918832,
+      "sourceSha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+      "levels": [
+        {
+          "width": 384,
+          "height": 376,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-384.webp",
+          "bytes": 47524,
+          "sha256": "aa9634f7ffaf2bc2dc332ba31dff15c4c382d30c13312fbef605935fd15b73ae"
+        },
+        {
+          "width": 768,
+          "height": 752,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-768.webp",
+          "bytes": 197410,
+          "sha256": "4ab3c49f36e975c64108ff2b97083fad78276be5500edd429bb2c3842e76fe50"
+        },
+        {
+          "width": 1267,
+          "height": 1241,
+          "extent": 1267,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-PRESS-DIFF-ALT-HORN-d6719ce57cef.png",
+          "bytes": 2918832,
+          "sha256": "4c667d96ea7652e52784f5c06ee3cdde0879ca37631abf19969861afecc45fed",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png": {
+      "width": 1593,
+      "height": 987,
+      "sourceBytes": 2584859,
+      "sourceSha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+      "levels": [
+        {
+          "width": 384,
+          "height": 238,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-384.webp",
+          "bytes": 27740,
+          "sha256": "4edeb6d7e51de4ce00c216132238bc8eab5e92ebd1c4a7c3aac04a7bf9537b7a"
+        },
+        {
+          "width": 768,
+          "height": 476,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-768.webp",
+          "bytes": 107954,
+          "sha256": "c0564b29b1f540452acbc77371f17abf194933958cf4f20fc2dd44d542df164c"
+        },
+        {
+          "width": 1536,
+          "height": 952,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-1536.webp",
+          "bytes": 418788,
+          "sha256": "26f4db8b6f3d30d23fcd99c003e60b181c3c3d0dbcb7a0045904cc9e532447d8"
+        },
+        {
+          "width": 1593,
+          "height": 987,
+          "extent": 1593,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH19-VOICE-RECORDER-2db6785ecddc.png",
+          "bytes": 2584859,
+          "sha256": "2e012ed71ea7d656a058017494761bab7e42b3c9e102d9c22950494fd37c3358",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png": {
+      "width": 1254,
+      "height": 1254,
+      "sourceBytes": 2733770,
+      "sourceSha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+      "levels": [
+        {
+          "width": 384,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-384.webp",
+          "bytes": 62706,
+          "sha256": "5b9c70b68b40891bc3cedf7d410add3ed8bc8032d6dd224b2d1bb67d9a06836a"
+        },
+        {
+          "width": 768,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-768.webp",
+          "bytes": 235774,
+          "sha256": "cfa4915a29900f7ebf79f755c2bbadb40e5bd9220ab3f799b720f47576b9ed3b"
+        },
+        {
+          "width": 1254,
+          "height": 1254,
+          "extent": 1254,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH20-AIR-CONDITIONING-0734da6a7726.png",
+          "bytes": 2733770,
+          "sha256": "94669d21f0be8aa538b2ff3b0684683409cadf6d9fc4b55390e7147abe506121",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png": {
+      "width": 1122,
+      "height": 1402,
+      "sourceBytes": 2451832,
+      "sourceSha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-384.webp",
+          "bytes": 40282,
+          "sha256": "8dca501e0281450a8d48cb55106958663cc62e7d205fbb0ecadac903ab2408fb"
+        },
+        {
+          "width": 615,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-768.webp",
+          "bytes": 130654,
+          "sha256": "20482a90609fd185a402a2b17ae911547bb59cd38df36032c8378e7ea65e77ff"
+        },
+        {
+          "width": 1122,
+          "height": 1402,
+          "extent": 1402,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH21-BLEED-AIR-cc78219607a3.png",
+          "bytes": 2451832,
+          "sha256": "4efe8c59579e8675825ed4dabf393648cfa7f11f6c09d831d137c23f70ecfe1e",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png": {
+      "width": 1167,
+      "height": 1347,
+      "sourceBytes": 2288696,
+      "sourceSha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+      "levels": [
+        {
+          "width": 333,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-384.webp",
+          "bytes": 37676,
+          "sha256": "e746ec36f12c77e90fb7852d179c8f261b1fbe85c912f2188c27cf825c3fd939"
+        },
+        {
+          "width": 665,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-768.webp",
+          "bytes": 135586,
+          "sha256": "6003fe7c6060fcf2cec4d7d8e97d9493ddf0ee1d00be5f2d2fc36a35b3075c58"
+        },
+        {
+          "width": 1167,
+          "height": 1347,
+          "extent": 1347,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH22-CABIN-PRESSURIZATION-d1c6c39b6b33.png",
+          "bytes": 2288696,
+          "sha256": "0756878f35a9b3e4bc9ce03e98a644927edbead65d4e61f3ae4b9e0a649a2a41",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png": {
+      "width": 2170,
+      "height": 725,
+      "sourceBytes": 1552065,
+      "sourceSha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+      "levels": [
+        {
+          "width": 384,
+          "height": 128,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-384.webp",
+          "bytes": 8284,
+          "sha256": "732bec0648acbbd5f237e5787e389d8e447fa4283a606051bb73fe9d97cb95dc"
+        },
+        {
+          "width": 768,
+          "height": 257,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-768.webp",
+          "bytes": 24652,
+          "sha256": "6db0ecf66e07b6dd8942b1f618f19a7577d7c5893b0defd252542db765ea0058"
+        },
+        {
+          "width": 1536,
+          "height": 513,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-1536.webp",
+          "bytes": 89970,
+          "sha256": "1ae23c17b751b97897e200ce63b25fdbe333ee9788b1716fd93a2c4eaeec9a47"
+        },
+        {
+          "width": 2170,
+          "height": 725,
+          "extent": 2170,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/OH23-25-LOWER-CONTROLS-fad696c845df.png",
+          "bytes": 1552065,
+          "sha256": "80cb82375dccc9a127919e73cb13ebadfef198572fcbdce2ea9be8b7d7ba7f2a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png": {
+      "width": 1122,
+      "height": 1402,
+      "sourceBytes": 2681290,
+      "sourceSha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-384.webp",
+          "bytes": 45332,
+          "sha256": "742977c32ad0073b16cfdcdfea7ce85ea226d22eee6ff754328471d94773e9ef"
+        },
+        {
+          "width": 615,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-768.webp",
+          "bytes": 150758,
+          "sha256": "9a878b17d1cb0535b1f662f336b013208c35ac5ecb6e9ecc899f41be6f2ab98a"
+        },
+        {
+          "width": 1122,
+          "height": 1402,
+          "extent": 1402,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/PD-RADIO-AVIONICS-7a41044771fa.png",
+          "bytes": 2681290,
+          "sha256": "7a41044771faad1d59f509c05ed2508f75c79fde219ee9ec19696f8fb19ed533",
+          "original": true
+        }
+      ]
+    }
+  },
+  "patches": {
+    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png:838,455,14,14": "panel-mosaic-lab/cockpit/performance/patch-b9e4c59f0173e9d72804.webp",
+    "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
+  },
+  "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
+  "version": "PERF-0d974f564bca"
+}

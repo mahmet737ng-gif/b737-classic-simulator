@@ -1,0 +1,19 @@
+{
+  "version": "CONV-FULL-0001",
+  "asset": "panel-mosaic-lab/cockpit/assets/p2-conventional-full-owner-20261030.png",
+  "sourceLibraryFile": "libfile_23f1802ed2d8819185203aa9f0acfcdd",
+  "sha256": "e1b6452db215132cde1f9560861f1bb90b68e57ffc0425d1107eeb048d1450a5",
+  "dimensions": [
+    1463,
+    1075
+  ],
+  "scope": "Conventional only; QTY TEST and fuel quantity through landing gear; EIS unchanged",
+  "colorReference": "libfile_e939da628cb48191aada2890a8d942d7",
+  "paintTargetRGB": [
+    134,
+    148,
+    158
+  ],
+  "sourcePixels": "Byte-identical uploaded PNG; separate display-only paint transform excludes faces and labels",
+  "protectedControls": "No change to guarded switch geometry/assets/behavior"
+}

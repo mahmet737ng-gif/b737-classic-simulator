@@ -1,0 +1,62 @@
+/* MCP-0005 photo-registered mechanical controls. */
+[data-piece="mcp"]>.mcp-hw{
+position:absolute;z-index:6;display:block;box-sizing:border-box;
+transform:translate(-50%,-50%);outline:none;cursor:pointer;
+touch-action:none;user-select:none;pointer-events:auto;background:transparent!important;
+border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important
+}
+[data-piece="mcp"]>.mcp-hw:focus-visible{outline:2px solid #b9fff1;outline-offset:3px}
+.mcp-hw-toggle-foot{
+position:absolute;left:15%;top:24%;width:70%;height:60%;border-radius:50%;
+background:radial-gradient(ellipse at 34% 29%,#ddd7cc 0 14%,#898c89 30%,#373b3b 56%,#090c0c 73%,#343334 85%);
+border:2px solid #8b8981;box-shadow:1px 3px 7px #000a,inset 0 1px 3px #d8d4c3;
+}
+.mcp-hw-toggle-metal{
+position:absolute;left:41%;top:-60%;width:28%;height:106%;
+border-radius:28% 28% 20% 20%;transform-origin:50% 92%;
+transform:rotate(-23deg);
+background:linear-gradient(90deg,#262524,#aeb0a9 25%,#e6ded1 46%,#87837b 72%,#282725);
+box-shadow:2px 3px 4px #08080790,inset 1px 0 2px #fff9;
+transition:transform .12s cubic-bezier(.25,.8,.25,1);
+}
+.mcp-hw-toggle-head{
+position:absolute;left:-26%;top:-7%;height:21%;width:152%;border-radius:50%;
+background:radial-gradient(ellipse at 39% 30%,#e8e4d9,#96958b 53%,#292928 95%);
+border:1px solid #4c4a45;
+}
+.mcp-hw-toggle[data-state="ON"] .mcp-hw-toggle-metal,
+.mcp-hw-toggle[data-state="ARM"] .mcp-hw-toggle-metal{transform:rotate(23deg)}
+.mcp-hw-toggle[data-mcp-hardware="AT_ARM"] .mcp-hw-toggle-foot{top:20%;height:68%}
+.mcp-hw-toggle[data-mcp-hardware^="FD_"] .mcp-hw-toggle-foot{top:34%;height:49%}
+.mcp-hw-wheel-axle{
+position:absolute;left:8%;top:3%;width:84%;height:94%;overflow:hidden;border-radius:15%/4%;
+background:linear-gradient(90deg,#0d0d0e 0%,#36383a 19%,#979ca0 41%,#bac0c2 52%,#53585c 79%,#080909 98%);
+box-shadow:inset -5px 0 8px #0a0a0a,inset 2px 0 5px #ece6dc96,2px 2px 3px #06070888
+}
+.mcp-hw-wheel-tread{
+position:absolute;inset:0 4%;
+background:repeating-linear-gradient(to bottom,#202122 0 4px,#a9afb3 5px 12px,#d0d1cf 13px 18px,#4d5255 19px 23px);
+box-shadow:inset 4px 0 6px #090b0b8a,inset -5px 0 6px #080a0abd
+}
+.mcp-hw-wheel-glint{position:absolute;left:24%;top:0;height:100%;width:13%;background:#fff4;filter:blur(3px)}
+.mcp-hw-push-bezel{
+position:absolute;inset:2%;border-radius:50%;
+background:linear-gradient(135deg,#c4c5bf,#393e3d 26%,#050707 49%,#7d7d77 88%);
+box-shadow:2px 3px 4px #000a,inset 1px 1px 3px #f1ece1;
+border:1px solid #646867;
+}
+.mcp-hw-push-cap{
+position:absolute;inset:18%;border-radius:50%;
+background:radial-gradient(circle at 27% 18%,#363b3b 1%,#101414 50%,#020405 88%);
+box-shadow:inset -2px -3px 4px #000,inset 1px 1px 2px #6b6d66
+}
+.mcp-hw-push[data-state="true"] .mcp-hw-push-cap{inset:21%;background:radial-gradient(circle at 30% 25%,#383e3e,#050606 86%)}
+.mcp-v3-plain{
+background:repeating-conic-gradient(#4b4e4e 0 6deg,#c4c4bd 6deg 13deg,#777874 13deg 19deg)!important;
+box-shadow:inset 0 1px 2px #fff7,2px 5px 8px #0009!important
+}
+.mcp-v3-plain-face{
+background:radial-gradient(circle at 32% 23%,#f0efec,#bfc3c0 52%,#7d8586 84%,#515758 100%)!important;
+box-shadow:inset 2px 3px 6px #fff9,inset -4px -5px 7px #141a1c87,1px 2px 2px #0004!important
+}
+.mcp-v3-plain-face:after{content:"";position:absolute;inset:10%;border:1px solid #dddcd388;border-radius:50%}

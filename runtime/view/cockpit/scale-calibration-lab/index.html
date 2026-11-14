@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 — Gauge Scale Survey · Stage 2–4</title>
+<style>
+:root{font:14px/1.5 system-ui,Tahoma,sans-serif;color:#eaf1f6;background:#091523;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}header{padding:12px 20px;background:#10283a;border-bottom:1px solid #28485a;display:flex;gap:20px;align-items:center;justify-content:space-between}
+h1{font-size:17px;margin:0}header small{color:#acd0e0}main{display:grid;grid-template-columns:360px minmax(0,1fr);height:calc(100vh - 76px)}
+aside{overflow:auto;padding:16px;display:grid;gap:11px;align-content:start;background:#0c2030;border-left:1px solid #2d4757}
+label{display:grid;gap:5px}input,select,button,textarea{font:inherit;max-width:100%;border-radius:6px;padding:8px;background:#163447;color:#e9f1fa;border:1px solid #456579}
+button{cursor:pointer}button:hover{background:#24516c}button:disabled{opacity:.45;cursor:not-allowed}input[type=checkbox]{width:20px;height:20px}
+fieldset{display:grid;gap:8px;border:1px solid #3c5a6d;border-radius:8px;margin:0;padding:10px}legend{font-weight:700}
+.row{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.row>*{flex:1;min-width:0}.row .fixed{flex:0}
+#work{overflow:auto;position:relative;background:#071019;direction:ltr}#holder{position:relative;margin:15px;cursor:crosshair;box-shadow:0 0 0 1px #6b899a}
+#sourceImage{display:block;width:100%;height:100%;user-select:none;pointer-events:none}
+#marksOverlay{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#note{font-size:12px;background:#172c3b;padding:8px;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere}
+#marks{white-space:pre-wrap;direction:ltr;text-align:left;font:12px/1.6 ui-monospace,monospace;max-height:180px;overflow:auto}
+#status{font:12px ui-monospace,monospace;white-space:pre-wrap;direction:ltr;text-align:left}
+small{color:#b3c7d3} .warn{color:#ffd388} .ok{color:#9fefc6}
+@media(max-width:900px){main{display:flex;flex-direction:column-reverse;height:auto}aside{max-height:none}#work{height:60vh}}
+</style>
+<script src="../../../engine/instruments/gauge-scale-engine-v2.js" defer></script>
+<script src="./lab.js" defer></script>
+</head><body>
+<header><div><h1>Gauge Scale Survey — مراحل ۲، ۳ و ۴</h1><small>تصاویر اصلی دست‌نخورده · اندازه‌گیری روی پیکسل تصویر منبع · کالیبراسیون تأییدنشده تا بازبینی</small></div><div dir="ltr" id="count">Loading…</div></header>
+<main>
+<aside>
+<label>گیج / Face <select id="face"></select></label>
+<label>اسکیل مستقل <select id="scale"></select></label>
+<div id="note"></div>
+<fieldset><legend>مختصات‌گذاری</legend>
+<div class="row"><label><input type="radio" name="action" value="pivot" checked> محور نیدل</label><label><input type="radio" name="action" value="mark"> خط اسکیل</label></div>
+<label>مقدار خط (Value) <input id="value" type="number" step="any" inputmode="decimal" placeholder="eg 28"></label>
+<label>متن چاپ‌شده / Label <input id="labelText" placeholder="eg 20, 30, UP"></label>
+<label class="row"><input id="major" type="checkbox" checked> خط اصلی</label>
+<div class="row"><button id="deleteLast">حذف آخرین خط</button><button id="clearScale">پاک‌کردن این اسکیل</button></div>
+</fieldset>
+<fieldset><legend>تست حرکت عددی</legend>
+<label>جهت افزایش مقدار <select id="direction"><option value="clockwise">ساعتگرد</option><option value="counterclockwise">پادساعتگرد</option></select></label>
+<label>واحد <input id="unit" placeholder="psi / V / °C / kt"></label>
+<label>نوع نشانگر <select id="kind"><option value="rotary">دایره‌ای / Rotary</option><option value="linear">خطی / Linear</option></select></label>
+<label>ورودی انجین (فقط تست) <input id="reading" type="number" step="any"></label>
+<div class="row"><button id="preview">نمایش مقدار</button><button id="qa">تست خط‌به‌خط</button></div>
+<div id="status"></div>
+</fieldset>
+<fieldset><legend>خروجی اندازه‌گیری</legend>
+<div class="row"><button id="export">دریافت JSON اندازه‌گیری‌ها</button><button id="importButton">ورود JSON</button></div>
+<input id="import" type="file" accept="application/json,.json" hidden>
+<small>خروجی به‌صورت Draft است؛ اندازه‌گیری روی تصویر به‌تنهایی تأیید مهندسی نیست. فایل JSON وارد Technical Database نمی‌شود مگر بعد از بررسی و ثبت نسخه.</small>
+</fieldset>
+<div id="marks"></div>
+</aside>
+<section id="work"><div id="holder"><img id="sourceImage" alt="Unmodified aircraft panel"><svg id="marksOverlay"></svg></div></section>
+</main></body></html>

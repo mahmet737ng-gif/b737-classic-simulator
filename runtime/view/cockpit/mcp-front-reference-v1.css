@@ -1,0 +1,117 @@
+/* MCP-FRONT-0001 — FRONT/ORTHOGRAPHIC photo-derived mechanical hardware.
+   Existing 2172 × 433 MCP source photo, x/y/w/h pivots, IAS/MACH owner asset,
+   AFDS electrical authority and original avionics artwork stay immutable.
+   Mechanics: A/T + both F/D have UP=ARM/ON and DOWN=OFF. */
+[data-piece="mcp"]>.mcp-hw.mcp-hw-at,[data-piece="mcp"]>.mcp-hw.mcp-hw-fd{
+  overflow:visible;isolation:isolate;transform:translate(-50%,-50%)!important;
+  perspective:360px;perspective-origin:50% 50%;
+}
+/* Thin broad silver A/T paddle in a round recessed brown/black pivot well. */
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-hub{
+  left:19%;top:14%;width:62%;height:72%;border-radius:50%;
+  border:1px solid #898780;box-sizing:border-box;
+  background:radial-gradient(ellipse at 41% 32%,#b8b6a9 0%,#645e59 13%,#44302b 22%,#21191a 38%,#050709 62%,#48423d 80%,#9c9b90 92%,#262725 100%);
+  box-shadow:inset 0 2px 4px #000b,inset 0 -1px 2px #ddd7c065,1px 2px 3px #060707b3;
+}
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-paddle{
+  left:13%;top:37%;width:74%;height:24%;
+  border-radius:3px 4px 5px 3px;border:1px solid #555651;box-sizing:border-box;
+  background:linear-gradient(180deg,#f3f1e5 0%,#bcbdb7 14%,#666d6e 42%,#242a2d 64%,#7b7f7c 90%,#d3d0c2 100%);
+  box-shadow:inset 0 1px 1px #faf9efc2,inset 0 -1px 2px #080b0dc7,1px 3px 3px #020505a1;
+  transform-origin:50% 50%;
+  transition:transform 135ms cubic-bezier(.22,.75,.3,1),filter 135ms ease;
+}
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-paddle::before{
+  content:"";position:absolute;left:4%;right:4%;top:6%;height:20%;background:#e9e9d5a8;border-radius:2px;
+}
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-paddle::after{
+  content:"";position:absolute;left:4%;right:4%;bottom:6%;height:16%;background:#10191b82;border-radius:2px;
+}
+/* Explicit OFF-down: bottom tip is BELOW pivot. ARM-up: tip above pivot. */
+[data-piece="mcp"]>.mcp-hw-at[data-state="OFF"] .mcp-hw-at-paddle{
+  transform:translateY(74%) perspective(280px) rotateX(-27deg) rotate(-1deg);
+}
+[data-piece="mcp"]>.mcp-hw-at[data-state="ARM"] .mcp-hw-at-paddle{
+  transform:translateY(-76%) perspective(280px) rotateX(27deg) rotate(-1deg);
+}
+/* Small, silver left/right F/D toggle: straight front view, same geometry on
+   captain and F/O sides, no mirrored or sideways OFF state. */
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-base{
+  left:32%;top:30%;width:36%;height:42%;border-radius:50%;
+  background:radial-gradient(ellipse at 38% 32%,#e1e1d7 0%,#979c99 27%,#252c2a 48%,#080b0e 65%,#989d98 82%,#232829 100%);
+  border:1px solid #6e7470;box-shadow:inset 0 1px 2px #deded180,0 1px 2px #030404a6;
+}
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-shaft{
+  left:44%;top:34%;width:13%;height:31%;
+  border-radius:38% 38% 18% 18%;transform-origin:50% 54%;
+  background:linear-gradient(90deg,#383c39 0%,#d1d3c8 29%,#fcfbec 45%,#858c88 73%,#343839 100%);
+  transition:transform 130ms ease;box-shadow:1px 1px 2px #01020391;
+}
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-tip{
+  left:34%;width:32%;height:17%;border-radius:38% 40% 44% 43%;
+  box-sizing:border-box;border:1px solid #787d75;
+  background:linear-gradient(90deg,#444b49 0%,#bebfb4 24%,#f7f3e5 47%,#9a9b90 74%,#3d4240 100%);
+  box-shadow:inset 0 1px 1px #ffffffc0,1px 2px 2px #080807a0;
+  transition:top 130ms ease,transform 130ms ease;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-fd-shaft{
+  transform:perspective(240px) rotateX(-35deg) translateY(16%);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-fd-tip{
+  top:67%;transform:translateY(0);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-shaft{
+  transform:perspective(240px) rotateX(35deg) translateY(-16%);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-tip{
+  top:16%;transform:translateY(0);
+}
+/* Same downward OFF for F/O. Suppress historical mirrored left-right tilt. */
+[data-piece="mcp"]>.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="OFF"] .mcp-hw-fd-shaft{
+  transform:perspective(240px) rotateX(-35deg) translateY(16%);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-shaft{
+  transform:perspective(240px) rotateX(35deg) translateY(-16%);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="OFF"] .mcp-hw-fd-tip{
+  top:67%;transform:translateY(0);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-tip{
+  top:16%;transform:translateY(0);
+}
+/* The existing approved IAS/MACH knob remains the original source webp.
+   Front view of other knobs is optically centered, no sideways camera
+   projection or changed pivot/source geometry. */
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-course,
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-plain{
+  background:repeating-conic-gradient(from 4deg,#41484b 0deg 4.3deg,#c8ccd0 4.4deg 8.6deg,#7d8488 8.7deg 11.3deg,#303639 11.4deg 13deg)!important;
+  border:2px solid #485054!important;
+  box-shadow:inset 0 1px 2px #f9f9f395,inset 0 -3px 3px #111716c0,1px 2px 5px #000a!important;
+}
+[data-piece="mcp"]>.mcp-v3-course .mcp-v3-course-face,
+[data-piece="mcp"]>.mcp-v3-plain .mcp-v3-plain-face{
+  left:10%;top:10%;width:80%;height:80%;border:2px solid #dce0da;
+  background:radial-gradient(circle at 43% 35%,#edf1ec 0%,#e3e6e2 13%,#bbc1bf 30%,#8d9696 62%,#4e565a 100%);
+  box-shadow:inset 2px 2px 4px #ffffffcf,inset -4px -4px 5px #2a3136a1,0 1px 1px #080d0d8c;
+}
+[data-piece="mcp"]>.mcp-v3-course .mcp-v3-course-face svg{
+  display:block;width:100%;height:100%;transform:rotate(var(--mcp-turn,0deg));
+}
+/* Pushbuttons remain photo-native. These edits affect only the mounted
+   movable cap and never cover original Boeing-labelled panel text. */
+[data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-bezel{
+  background:radial-gradient(ellipse at 45% 39%,#11191c 0%,#080b0d 52%,#4a5152 72%,#b0b2aa 87%,#24282a 100%);
+}
+[data-piece="mcp"]>.mcp-hw-push .mcp-hw-push-cap{
+  inset:17%;border:1px solid #171d1e;
+  background:linear-gradient(155deg,#353f41 0%,#171f22 17%,#060a0c 55%,#222c2e 100%);
+  box-shadow:inset 1px 1px 2px #6772749c,inset -2px -3px 4px #000,1px 1px 1px #060a0a;
+}
+[data-piece="mcp"]>.mcp-hw-push[data-state="true"] .mcp-hw-push-cap{
+  inset:20%;filter:brightness(.84);
+}
+@media(prefers-reduced-motion:reduce){
+ [data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-shaft,
+ [data-piece="mcp"]>.mcp-hw-fd .mcp-hw-fd-tip,
+ [data-piece="mcp"]>.mcp-hw-at .mcp-hw-at-paddle{transition:none}
+}

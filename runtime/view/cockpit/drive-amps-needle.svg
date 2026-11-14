@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Shared white drive temperature and AC amps needle">
+  <title>B737 Classic shared generator drive and A.C. amps needle</title>
+  <desc>One front-view tapered ivory pointer on transparency, with pivot at 256,256; no dial or panel pixels.</desc>
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#bfc0b9"/>
+      <stop offset="0.18" stop-color="#f1f1e9"/>
+      <stop offset="0.6" stop-color="#fffefa"/>
+      <stop offset="1" stop-color="#d8d9d1"/>
+    </linearGradient>
+  </defs>
+  <path d="M256 36 L260 54 L264 96 L274 157 L291 226 Q295 243 281 256 L231 256 Q217 243 221 226 L238 157 L248 96 L252 54 Z" fill="url(#face)" stroke="#b4b5ae" stroke-width="1.4" stroke-linejoin="round"/>
+  <path d="M254 51 L255 238 L237 238 L247 150 Z" fill="#ffffff" opacity=".43"/>
+</svg>

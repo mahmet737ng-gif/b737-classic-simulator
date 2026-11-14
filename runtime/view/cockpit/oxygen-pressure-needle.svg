@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Crew oxygen pressure white tapered needle with dark central cap">
+ <title>CREW OXYGEN pressure needle</title>
+ <defs>
+  <linearGradient id="oxNeedle" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b4aaa0"/><stop offset=".26" stop-color="#fffef7"/><stop offset=".72" stop-color="#fffdf4"/><stop offset="1" stop-color="#837770"/></linearGradient>
+  <radialGradient id="oxHub" cx=".34" cy=".31" r=".76"><stop offset="0" stop-color="#33302d"/><stop offset=".68" stop-color="#292522"/><stop offset="1" stop-color="#171513"/></radialGradient>
+ </defs>
+ <path d="M254 28 L260 31 L276 150 Q276 160 267 165 L245 165 Q236 160 236 150 Z" fill="url(#oxNeedle)" stroke="#211c1a" stroke-width="3" stroke-linejoin="round"/>
+ <circle cx="256" cy="256" r="99" fill="url(#oxHub)" stroke="#241e1b" stroke-width="4"/>
+</svg>

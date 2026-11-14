@@ -1,0 +1,19 @@
+/* Same-system indicators across physical cockpit zones. Adds no panels to the main cockpit. */
+.oh-cross-indicators{margin:14px auto 4px;max-width:100%;padding:13px;border:1px solid #355b71;border-radius:7px;background:#102435;color:#e5eef6;text-align:left}
+.oh-cross-indicators[hidden]{display:none!important}
+.oh-cross-heading{font:700 12px/1.35 "Segoe UI",sans-serif;letter-spacing:.6px;color:#d8ebf4;margin:0 0 9px}
+.oh-cross-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.oh-cross-card{min-width:0;padding:10px;border-radius:6px;background:#192f40;border:1px solid #3d5d73;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.oh-cross-tag{font:10px/1.3 Consolas,monospace;color:#99c6dc;overflow-wrap:anywhere}
+.oh-cross-name{font-size:12px;color:#e7f1f5;overflow-wrap:anywhere}
+.oh-cross-source{max-width:100%;position:relative;overflow:hidden;background:#1e3543;border:1px solid #547185;border-radius:3px;flex:none}
+.oh-cross-native-photo{width:100%;height:100%;background-color:#1b303e;background-position:left top}
+.oh-cross-value{display:block;font:700 15px/1.3 Consolas,monospace;color:#9ed6ce}
+.oh-cross-value[data-on="true"]{color:#f0ba72}
+.oh-cross-quality{font:10px/1.3 Consolas,monospace;color:#adbfcd;overflow-wrap:anywhere}
+.oh-cross-note{font:11px/1.45 "Segoe UI",sans-serif;color:#9fb5c6;margin:0;overflow-wrap:anywhere}
+.oh-cross-lamps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.oh-cross-lamp{padding:4px;background:#111f2b;border:1px solid #364a5b;font:10px/1.35 Consolas,monospace;color:#a9b9c7}
+.oh-cross-lamp[data-frame="ON"],.oh-cross-lamp[data-frame="FLASH"],.oh-cross-lamp[data-frame="BRIGHT_BLUE"]{border-color:#bca258;color:#f6d99a}
+.oh-cross-error{color:#e4aaa0;font-size:12px}
+@media(max-width:580px){.oh-cross-grid{grid-template-columns:1fr}}
