@@ -1,0 +1,28 @@
+name: ATA24 Public Gateway Smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [ata24-guest-gateway]
+    paths: [.github/workflows/ata24-public-smoke.yml]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify dedicated URL and login protection
+        shell: bash
+        env:
+          SITE: https://ata24-review-gateway-production.up.railway.app
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 15); do
+            if curl --fail --max-time 12 --silent "$SITE/healthz" | grep -qx ok; then break; fi
+            sleep 4
+          done
+          test "$(curl --silent --max-time 20 --output /tmp/login --write-out '%{http_code}' "$SITE/login")" = 200
+          grep -q 'Electrical Test Bench' /tmp/login
+          test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/")" = 303
+          test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/static/app.js")" = 303
+          test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/static/mrg-classic-340-consumer-bus-index-v1.json")" = 303
+          echo "Live site responds; unauthorized access to UI, JavaScript and lab data is blocked."
