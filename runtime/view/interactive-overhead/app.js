@@ -295,7 +295,8 @@
   window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion,setInterlock:(id,enabled)=>{interlocks.set(id,!!enabled);if(!enabled)engine.release(id);const c=registry.controls.find(c=>c.id===id);if(c)refreshOne(c);}});
   window.addEventListener('blur',()=>engine.releaseAll());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)engine.releaseAll();});
-  requestAnimationFrame(()=>{const scale=byId('board').getBoundingClientRect().width/layout.canvas.width;byId('viewport').scrollTop=layout.firstLowerRowY*scale;});
+  // Guest starts at the TOP of the full overhead. No forced jump to the lower panels.
+  if(!window.frameElement || window.frameElement.id!=='overheadFrame')byId('viewport').scrollTop=0;
  }
  async function start(){
   try{

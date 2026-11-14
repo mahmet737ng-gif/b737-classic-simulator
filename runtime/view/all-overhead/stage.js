@@ -144,7 +144,7 @@ function highlight(){document.querySelectorAll('[data-key]').forEach(x=>{if(x.cl
 function pick(id,scroll){selected=id;highlight();showDetails();if(scroll){let piece=[...document.querySelectorAll('.board:not(.hidden) .atlas-piece, .board:not(.hidden) .piece')].find(x=>x.dataset.key===id);
  if(piece){const viewport=$('viewport'),board=$('board');viewport.scrollTo({left:Math.max(0,(piece.offsetLeft+piece.offsetWidth/2)*zoom-viewport.clientWidth/2),top:Math.max(0,(piece.getBoundingClientRect().top-board.getBoundingClientRect().top+piece.offsetHeight/2)*zoom-viewport.clientHeight/2),behavior:'smooth'});}}}
 function updateDimensions(){const board=$('board');const sizer=$('sizer');board.style.transform='scale('+zoom+')';sizer.style.width=Math.ceil(SOURCE_WIDTH*zoom)+'px';sizer.style.height=Math.ceil(board.offsetHeight*zoom)+'px';$('zoomLabel').textContent=Math.round(zoom*100)+'%';}
-function fit(){const viewport=$('viewport');zoom=Math.min(1,(viewport.clientWidth-34)/SOURCE_WIDTH);fitMode=true;updateDimensions();viewport.scrollTo({left:0,top:0,behavior:'instant'});}
+function fit(){const viewport=$('viewport'),board=$('board');const naturalH=board.offsetHeight||atlasLayout?.canvas?.height||3312;zoom=Math.min(1,(viewport.clientWidth-32)/SOURCE_WIDTH,(viewport.clientHeight-24)/naturalH);zoom=Math.max(MIN_ZOOM,zoom);fitMode=true;updateDimensions();viewport.scrollTo({left:0,top:0,behavior:'instant'});}
 function setZoom(value){fitMode=false;zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,value));updateDimensions();}
 function mode(next){if(!['mosaic','gallery','atlas'].includes(next))return;if(!spec||!geometry||!atlasLayout){$('status').textContent='در حال بارگذاری اطلاعات موزاییک…';return;}view=next;$('assembly').classList.toggle('hidden',next!=='mosaic');$('gallery').classList.toggle('hidden',next!=='gallery');$('atlasView').classList.toggle('hidden',next!=='atlas');
  $('modeMosaic').classList.toggle('active',next==='mosaic');$('modeGallery').classList.toggle('active',next==='gallery');$('modeAtlas').classList.toggle('active',next==='atlas');if(next==='gallery'&&!$('gallery').children.length)populateGallery();if(next==='mosaic'&&!$('atlasAbsolute').children.length)populateAssembly();highlight();if(fitMode)fit();else{updateDimensions();$('viewport').scrollTo({left:0,top:0,behavior:'instant'});}const name={mosaic:'چیدمان یکپارچه',gallery:'تصاویر مستقل',atlas:'مرجع اطلس'}[next];$('viewModeStatus').textContent='حالت فعال: '+name+' · '+spec.images.length+' تصویر';}
@@ -155,7 +155,7 @@ async function start(){
  const available=new Set(spec.images.map(x=>x.id));for(const section of spec.columns){for(const id of section.items){if(!available.has(id))throw Error('فایل موزاییک تعریف نشده: '+id);}}
  populateAssembly();fillList();summary();showDetails();
  $('status').textContent=spec.images.length+' تصویر منبع برای '+new Set(spec.images.flatMap(x=>x.panelIds)).size+' شناسهٔ پنل — نسخهٔ '+spec.version+' — چیدمان تصحیح‌شدهٔ اطلس';
- fit();mode('mosaic');if('ResizeObserver'in window){new ResizeObserver(()=>updateDimensions()).observe($('board'));}
+ fit();mode('mosaic');if('ResizeObserver'in window){new ResizeObserver(()=>{if(fitMode)fit();else updateDimensions();}).observe($('viewport'));}
  }catch(e){console.error('Overhead mosaic initialization error:',e);$('status').textContent='خطای بارگذاری داده‌های تست: '+e.message;$('status').setAttribute('role','alert');}
 }
 $('modeMosaic').onclick=()=>mode('mosaic');$('modeGallery').onclick=()=>mode('gallery');$('modeAtlas').onclick=()=>mode('atlas');

@@ -85,6 +85,19 @@ async function loadIndex(){
 }
 function start(){
  if(started)return;started=true;
+ const toggle=document.getElementById('guestTestsToggle');
+ const inspector=document.getElementById('guestOverheadInspector');
+ if(toggle&&inspector){
+  toggle.addEventListener('click',()=>{
+   const open=inspector.classList.toggle('guest-visible');
+   toggle.setAttribute('aria-expanded',String(open));
+  });
+  document.addEventListener('keydown',e=>{
+   if(e.key==='Escape'&&inspector.classList.contains('guest-visible')){
+    inspector.classList.remove('guest-visible');toggle.setAttribute('aria-expanded','false');
+   }
+  });
+ }
  ensure();
  win.addEventListener('b737:bus-failure-injection-changed',update);
  win.addEventListener('b737:cb-state-change',update);

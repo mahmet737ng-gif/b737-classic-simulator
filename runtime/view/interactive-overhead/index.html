@@ -20,7 +20,7 @@
 <section class="work-main">
 <div class="controls">
 <div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><button id="modeAtlas">مرجع اطلس</button><label><input id="borders" type="checkbox"> مرز پنل‌ها</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
-<div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT</button></div>
+<div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT ALL</button><button id="guestTestsToggle" type="button" aria-expanded="false" aria-controls="guestOverheadInspector">OVERHEAD TESTS</button></div>
 </div>
 <div class="viewport" id="viewport" role="region" aria-label="Full overhead mosaic viewer">
 <div id="sizer" class="sizer"><div id="board" class="board">
@@ -34,7 +34,7 @@
 </div></div></div>
 <div class="caption">چیدمان OH-07 تا OH-25 از روی مرزهای فیزیکی عکس OVH تنظیم شده است؛ خطوط قرمز عکس، راهنمای تراز اجزا هستند. برای مقایسه، «مرز پنل‌ها» را روشن کن. با + و −، Ctrl + چرخ ماوس یا دو انگشت زوم کن. بخش پایین نوار پایینی در عکس مرجع دیده نمی‌شود و با تصویر کامل قبلی نمایش داده شده است.</div>
 </section>
-<aside class="inspector"><section class="toggle-inspector" id="toggleInspector"><strong id="toggleCount">در حال نصب تاگل‌ها…</strong><h3 id="selectedToggle">یک سوییچ را انتخاب کن</h3><div id="toggleStates" class="toggle-state-buttons"></div><p id="toggleState" role="status" aria-live="polite"></p><label><input type="checkbox" id="toggleVisibility" checked> نمایش تاگل‌سوییچ‌های رفرنس جدید</label><button id="resetToggles">بازنشانی سوییچ‌ها</button></section>
+<aside class="inspector" id="guestOverheadInspector"><section class="toggle-inspector" id="toggleInspector"><strong id="toggleCount">در حال نصب تاگل‌ها…</strong><h3 id="selectedToggle">یک سوییچ را انتخاب کن</h3><div id="toggleStates" class="toggle-state-buttons"></div><p id="toggleState" role="status" aria-live="polite"></p><label><input type="checkbox" id="toggleVisibility" checked> نمایش تاگل‌سوییچ‌های رفرنس جدید</label><button id="resetToggles">بازنشانی سوییچ‌ها</button></section>
 <h2>وضعیت مونتاژ</h2>
 <div class="summary"><div class="metric"><b id="panelCount">—</b><small>شناسهٔ پنل با تصویر</small></div><div class="metric"><b id="sourceCount">—</b><small>فایل تصویری مستقل</small></div><div class="metric"><b id="loadedCount">—</b><small>تصویر بارگذاری‌شده</small></div><div class="metric"><b id="missingCount">۰</b><small>پنل بدون تصویر در اطلس</small></div></div>
 <div class="status" id="status">در حال خواندن دیتابیس…</div><div class="status" id="viewModeStatus" role="status">حالت فعال: چیدمان یکپارچه</div>
