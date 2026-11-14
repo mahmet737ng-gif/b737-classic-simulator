@@ -1,0 +1,32 @@
+name: ATA24 Guest Gateway QA
+on:
+  push:
+    branches: [ata24-guest-gateway]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax and dependencies
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run check
+      - name: Frontend has no links to the upstream application
+        run: |
+          if grep -inE 'unified|https?://[^" ]*(pages\.dev|github\.io)|\.\./' public/index.html public/app.js; then
+            echo "Unexpected upstream app reference"; exit 1
+          fi
+          test -s public/mrg-classic-340-consumer-bus-index-v1.json
+          node -e "const x=require('./public/mrg-classic-340-consumer-bus-index-v1.json'); if(!x||typeof x!=='object') process.exit(1)"
+      - name: Files are isolated
+        run: |
+          test ! -e panel-mosaic-lab
+          test ! -e engine
+          test -f Dockerfile
+          test -f railway.json
