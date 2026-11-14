@@ -25,4 +25,18 @@ jobs:
           test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/")" = 303
           test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/static/app.js")" = 303
           test "$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE/static/mrg-classic-340-consumer-bus-index-v1.json")" = 303
-          echo "Live site responds; unauthorized access to UI, JavaScript and lab data is blocked."
+          # The guest homepage is now the overhead portal; all embedded modules
+          # and original photo/CB assets must remain unavailable before login.
+          for path in \
+            /view/interactive-overhead/ \
+            /view/all-overhead/spec.json \
+            /view/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png \
+            /cb-panel-lab/ \
+            /cb-panel-lab/catalog.js \
+            /lab/ \
+            /static/portal.js \
+            /bridge/guest-overhead.js; do
+            status="$(curl --silent --max-time 20 --output /dev/null --write-out '%{http_code}' "$SITE$path")"
+            test "$status" = 303 || { echo "Unexpected unauthed $status on $path"; exit 1; }
+          done
+          echo "Live Railway portal: login works, all guest modules and source artwork are protected."
