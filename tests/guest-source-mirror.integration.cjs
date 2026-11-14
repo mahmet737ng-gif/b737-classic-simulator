@@ -49,6 +49,7 @@ async function read(route,cookies){
   '/panel-mosaic-lab/cockpit/overhead-bridge.js',
   '/panel-mosaic-lab/interactive-overhead/lights.json',
   '/panel-mosaic-lab/interactive-overhead/lights.js',
+  '/panel-mosaic-lab/cockpit/assets/mcp-switches/owner13-photo-part0.b64',
   '/panel-mosaic-lab/cockpit/aircraft-settings.js',
   '/panel-mosaic-lab/cockpit/failures-header-v1.js',
   '/engine/systems/electrical-v7.js',

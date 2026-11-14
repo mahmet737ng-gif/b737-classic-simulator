@@ -41,7 +41,7 @@ const ALLOWED_SOURCE_ROOTS = new Set([
 ]);
 const PROXY_EXTENSIONS = new Set(['.html','.htm','.js','.mjs','.cjs','.css','.json','.svg',
  '.png','.jpg','.jpeg','.webp','.gif','.avif','.ico','.woff','.woff2','.ttf',
- '.webmanifest','.txt','.csv','.xml','.wasm','.bin','.mp3','.mp4','.webm','.pdf']);
+ '.webmanifest','.txt','.csv','.xml','.wasm','.bin','.b64','.mp3','.mp4','.webm','.pdf']);
 const PROXY_MIME = Object.freeze({
  '.html':'text/html; charset=utf-8','.htm':'text/html; charset=utf-8',
  '.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
@@ -53,6 +53,7 @@ const PROXY_MIME = Object.freeze({
  '.webmanifest':'application/manifest+json','.txt':'text/plain; charset=utf-8',
  '.csv':'text/csv; charset=utf-8','.xml':'application/xml',
  '.wasm':'application/wasm','.bin':'application/octet-stream',
+ '.b64':'text/plain; charset=utf-8',
  '.mp3':'audio/mpeg','.mp4':'video/mp4','.webm':'video/webm','.pdf':'application/pdf'
 });
 function repoAssetPath(urlPath) {

@@ -8,7 +8,8 @@ const assert=require('node:assert/strict');
  try{
   browser=await chromium.launch({headless:true,args:['--no-sandbox']});
   const page=await browser.newPage({viewport:{width:1650,height:930},deviceScaleFactor:1});
-  page.on('pageerror',e=>unexpected.push('Uncaught JS: '+e.message));
+  page.on('pageerror',e=>unexpected.push('Uncaught JS: '+(e.stack||e.message)));
+
   page.on('response',r=>{
    if(r.status()>=400 && r.url().startsWith(base))
      unexpected.push('HTTP '+r.status()+' '+new URL(r.url()).pathname);
