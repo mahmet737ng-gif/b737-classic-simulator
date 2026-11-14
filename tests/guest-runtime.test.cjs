@@ -46,7 +46,7 @@ assert(source.includes('runtimeFiles.has(runtimePath)'),'Static route guard miss
 assert(source.includes("const ok=await authorized(req)"),'Authentication guard missing');
 const guest=fs.readFileSync(path.join(root,'runtime/view/cockpit/overhead-stage.html'),'utf8');
 assert(guest.includes('/bridge/failure-protocol.js'));
-assert(guest.includes('/bridge/cb-live.js'));
+assert(guest.includes('../cockpit/cb-unified-live-v1.js'));
 assert(guest.includes('/bridge/guest-overhead.js'));
 const portal=fs.readFileSync(path.join(root,'public/index.html'),'utf8');
 assert(portal.includes('src="/view/cockpit/overhead-stage.html"'));
