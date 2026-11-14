@@ -61,6 +61,9 @@ function repoAssetPath(urlPath) {
   try { decoded = decodeURIComponent(urlPath); } catch (_) { return null; }
   if (decoded.includes('\\') || decoded.includes('\0') || decoded.includes('//')) return null;
   const segments=decoded.split('/').filter(Boolean);
+  // A few approved photo references live directly in the repository root.
+  if(segments.length===1 && /^[A-Za-z0-9_.-]+\.(?:png|webp|svg|jpg|jpeg)$/i.test(segments[0]))
+    return segments[0];
   if (!segments.length || !ALLOWED_SOURCE_ROOTS.has(segments[0])) return null;
   if (segments.some(p=>p==='..' || p==='.' || p.startsWith('.'))) return null;
   if (segments.length===1 || decoded.endsWith('/')) segments.push('index.html');
@@ -112,6 +115,16 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
   }
   const ext=path.posix.extname(relative).toLowerCase();
   const mime=PROXY_MIME[ext]||'application/octet-stream';
+  // All original GitHub HTML documents may contain their own inline cockpit
+  // and test-lab boot scripts. Preserve those contracts on the Railway origin.
+  if(ext==='.html' || ext==='.htm') {
+    res.setHeader('Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; "+
+      "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; "+
+      "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
+      "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
+      "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
+  }
   if(cockpitDocument) {
     // The full cockpit runs with the scripts' original same-origin and inline
     // boot contracts; the separately protected static guest files only change
@@ -292,8 +305,9 @@ async function handle(req,res) {
     redirect(res,'/login',{'Set-Cookie':cookie(req,TOKEN_COOKIE,'',0)});return;
   }
   if ((req.method==='GET' || req.method==='HEAD') && url.pathname==='/') {
-    await serveGitHubSource(req,res,'panel-mosaic-lab/cockpit/index.html',{cockpitDocument:true});
-    return;
+    // Keep the original cockpit's relative location.href resolution unchanged.
+    // The full GitHub cockpit is served under the Railway origin.
+    redirect(res,'/panel-mosaic-lab/cockpit/');return;
   }
   if (req.method==='GET' || req.method==='HEAD') {
     const sourcePath=repoAssetPath(url.pathname);
