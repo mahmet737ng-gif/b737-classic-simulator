@@ -1,0 +1,62 @@
+name: ATA24 Real Overhead Browser Integration
+on:
+  push:
+    branches: [ata24-guest-gateway]
+    paths:
+      - tests/guest-overhead-browser.integration.cjs
+      - .github/workflows/ata24-overhead-browser.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-overhead:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: test-only
+          POSTGRES_DB: source_mirror
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U ci -d source_mirror"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      DATABASE_URL: postgresql://ci:test-only@127.0.0.1:5432/source_mirror
+      LAB_USER: ci-reviewer
+      PORT: 3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Browser prerequisites
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-save playwright@1.56.1 --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Start test gateway
+        shell: bash
+        run: |
+          set -euo pipefail
+          SALT="$(openssl rand -hex 16)"
+          HASH="$(node -e 'const c=require("node:crypto");process.stdout.write(c.scryptSync("ci-only-fixture",process.argv[1],64).toString("hex"))' "$SALT")"
+          LAB_PASSWORD_SCRYPT="scrypt:$SALT:$HASH" node server.js >/tmp/browser-gateway.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:3000/healthz | grep -qx ok; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/browser-gateway.log; exit 1
+      - name: Verify full current GitHub Overhead renders in browser
+        run: node tests/guest-overhead-browser.integration.cjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-original-overhead-render
+          path: original-overhead-github-through-railway.png
+          if-no-files-found: ignore
+      - name: Diagnose errors
+        if: failure()
+        run: tail -120 /tmp/browser-gateway.log
