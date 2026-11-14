@@ -50,7 +50,7 @@ const assert=require('node:assert/strict');
   const counts=await child.locator('body').evaluate(node=>{
    const document=node.ownerDocument;
    const visibleBroken=[...document.images].filter(img=>
-     img.complete&&img.naturalWidth===0&&img.getClientRects().length>0);
+     !!img.getAttribute('src')&&img.complete&&img.naturalWidth===0&&img.getClientRects().length>0);
    return {
      originalPlates:document.querySelectorAll('#atlasAbsolute .atlas-piece').length,
      physicalSwitches:document.querySelectorAll('.mounted-toggle').length,
@@ -62,6 +62,26 @@ const assert=require('node:assert/strict');
   assert(counts.originalPlates>=18,'Approved photo atlas incomplete');
   assert(counts.physicalSwitches>=25,'Physical switches unavailable');
   assert(counts.lamps>=75,'Annunciator overlays unavailable');
+  // Verify the user's mouse-wheel pan reaches the original cockpit controller
+  // through the original overhead iframe after a deliberate zoom-in.
+  await page.locator('#zoomIn').click();
+  await page.locator('#zoomIn').click();
+  const viewport=page.locator('#viewport');
+  const before=await viewport.evaluate(el=>({top:el.scrollTop,max:el.scrollHeight-el.clientHeight}));
+  if(before.max>80){
+    const frameBox=await page.locator('#overheadFrame').boundingBox();
+    assert(frameBox,'Original overhead iframe has no on-screen bounds');
+    await page.mouse.move(
+      Math.max(25,Math.min(1600,frameBox.x+frameBox.width*.12)),
+      Math.max(95,Math.min(850,frameBox.y+frameBox.height*.1))
+    );
+    const direction=before.top<before.max-30?480:-480;
+    await page.mouse.wheel(0,direction);
+    await page.waitForTimeout(650);
+    const after=await viewport.evaluate(el=>el.scrollTop);
+    console.log('ORIGINAL_MOUSE_WHEEL_PAN:',JSON.stringify({before:before.top,after,max:before.max}));
+    assert(Math.abs(after-before.top)>15,'Wheel pan did not reach the cockpit viewport');
+  }
   await page.screenshot({path:'original-overhead-github-through-railway.png'});
   // Existing upstream IRS photo cleanup applies its patch successfully,
   // but its MutationObserver callback redundantly disconnects a null watcher.
