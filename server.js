@@ -93,7 +93,7 @@ function transformCockpitHTML(content) {
   // Only presentation changes: preserve all original ordered scripts and code.
   const injection = '<base href="/panel-mosaic-lab/cockpit/">'+
     '<link rel="stylesheet" href="/static/guest-cockpit.css">'+
-    '<script src="/static/guest-cockpit.js" defer></script>';
+    '<script src="/static/guest-cockpit.js" defer></script>'+    '<script src="/static/session.js" defer></script>';
   if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
   let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
   result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
@@ -139,6 +139,13 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
     res.setHeader('Cache-Control','private, no-store');
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
     res.end(html);return;
+  }
+  if(ext==='.html' || ext==='.htm') {
+    const original=await response.text();
+    const injected=original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+    res.setHeader('Cache-Control','private, no-store');
+    res.writeHead(200,{'Content-Type':mime});
+    res.end(injected);return;
   }
   res.setHeader('Cache-Control','private, max-age=30');
   res.writeHead(200,{'Content-Type':mime});
@@ -233,8 +240,11 @@ async function body(req) {
 async function authorized(req) {
   const token = cookies(req)[TOKEN_COOKIE];
   if (!token || token.length < 30 || token.length > 128) return false;
+  // All original cockpit files are fetched independently. A read-only
+  // authorization check prevents hundreds of concurrent static requests
+  // from serializing on the same PostgreSQL row lock.
   const result = await pool.query(
-    "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 AND last_seen>now()-interval '20 minutes' RETURNING session_hash",
+    "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND last_seen>now()-interval '20 minutes'",
     [hash(token)]
   );
   return result.rowCount===1;
@@ -297,6 +307,11 @@ async function handle(req,res) {
     return;
   }
   if (req.method==='POST' && url.pathname==='/api/pulse') {
+    const token=cookies(req)[TOKEN_COOKIE];
+    if(token) await pool.query(
+      "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 AND last_seen>now()-interval '20 minutes'",
+      [hash(token)]
+    );
     res.writeHead(204);res.end();return;
   }
   if (req.method==='POST' && url.pathname==='/api/logout') {
