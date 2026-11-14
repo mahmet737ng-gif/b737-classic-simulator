@@ -1,0 +1,13 @@
+/* Guest layout contract:
+   Preserve original cockpit engine, controls, failure tools, CB and settings.
+   Do not render only the unfinished Main Instrument & Pedestal regions. */
+#region-main, #region-pedestal {
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+button[data-focus="main"],button[data-focus="pedestal"],button[data-focus="all"],
+#guestSourceOverheadFocus {display:none!important}
+#viewport{overscroll-behavior:contain!important}
+
+#guestLogoutForm{display:inline-flex!important;margin:0 5px!important}
+#guestLogoutForm button{background:#3b2430!important;border-color:#7c5362!important;color:#ffe9ed!important;white-space:nowrap!important;min-height:32px}

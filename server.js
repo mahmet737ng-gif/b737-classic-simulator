@@ -17,6 +17,125 @@ const DEVICE_COOKIE = 'ata24_device';
 const folder = path.join(__dirname, 'public');
 const runtimeDir = path.join(__dirname, 'runtime');
 const runtimeFiles = new Set(require('./runtime/manifest.json'));
+
+/* The protected guest is a live mirror of the original main-branch cockpit.
+ * Railway authenticates and serves the same source URLs under its own origin.
+ * No duplicated/stale overhead code or artwork is maintained here. */
+const {Readable} = require('node:stream');
+const GITHUB_RAW = 'https://raw.githubusercontent.com/mahmet737ng-gif/b737-classic-simulator/main/';
+const GITHUB_PAGES = 'https://mahmet737ng-gif.github.io/b737-classic-simulator/';
+const UPSTREAM_TIMEOUT_MS = 20000;
+const ALLOWED_SOURCE_ROOTS = new Set([
+  'acdc-metering-lab','approved-panel-stack','assets','audio','audio-lab',
+  'branding','bus-consumer-test-lab','cb-panel-lab','cdu-font-test',
+  'cdu-standalone','cdu-standalone-v3','cdu-standalone-v5','cdu-standalone-v6',
+  'cpcs-lab','dcpcs-lab','eadi-attitude-lab','eadi-attitude-v5',
+  'electrical-lab','electrical-load-lab','engine','fire-handle-lab',
+  'fire-protection-lab','flight-controls-panel','fuel-panel','instrument-lab',
+  'integration-lab','interactive-panel-test','isn-ecu-start-lab',
+  'isn-electrical-pack-lab','isn-start-sequence-lab','main-panel-lab',
+  'navigation','overhead-layout','panel-mosaic-lab','panels-stacked',
+  'pneumatics-lab','shared-assets','stall-warning-lab','switch-lab',
+  'systems-integration-lab','trainer-lab','vector-lab','technical-database',
+  'data','navdata','mrg','aircon-lab','anti-ice-lab','apu-lab','hydraulic-lab'
+]);
+const PROXY_EXTENSIONS = new Set(['.html','.htm','.js','.mjs','.cjs','.css','.json','.svg',
+ '.png','.jpg','.jpeg','.webp','.gif','.avif','.ico','.woff','.woff2','.ttf',
+ '.webmanifest','.txt','.csv','.xml','.wasm','.bin','.mp3','.mp4','.webm','.pdf']);
+const PROXY_MIME = Object.freeze({
+ '.html':'text/html; charset=utf-8','.htm':'text/html; charset=utf-8',
+ '.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8',
+ '.cjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8',
+ '.json':'application/json; charset=utf-8','.svg':'image/svg+xml',
+ '.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp',
+ '.gif':'image/gif','.avif':'image/avif','.ico':'image/x-icon',
+ '.woff':'font/woff','.woff2':'font/woff2','.ttf':'font/ttf',
+ '.webmanifest':'application/manifest+json','.txt':'text/plain; charset=utf-8',
+ '.csv':'text/csv; charset=utf-8','.xml':'application/xml',
+ '.wasm':'application/wasm','.bin':'application/octet-stream',
+ '.mp3':'audio/mpeg','.mp4':'video/mp4','.webm':'video/webm','.pdf':'application/pdf'
+});
+function repoAssetPath(urlPath) {
+  // Only fixed source roots; never proxy untrusted network addresses.
+  let decoded;
+  try { decoded = decodeURIComponent(urlPath); } catch (_) { return null; }
+  if (decoded.includes('\\') || decoded.includes('\0') || decoded.includes('//')) return null;
+  const segments=decoded.split('/').filter(Boolean);
+  if (!segments.length || !ALLOWED_SOURCE_ROOTS.has(segments[0])) return null;
+  if (segments.some(p=>p==='..' || p==='.' || p.startsWith('.'))) return null;
+  if (segments.length===1 || decoded.endsWith('/')) segments.push('index.html');
+  const rel=segments.join('/');
+  if (!PROXY_EXTENSIONS.has(path.posix.extname(rel).toLowerCase())) return null;
+  return rel;
+}
+async function upstreamFetch(relative) {
+  // Use source on main, not a second copied cockpit. Pages is a fallback for
+  // deployed generated assets absent from the checked-in main branch.
+  for (const origin of [GITHUB_RAW,GITHUB_PAGES]) {
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),UPSTREAM_TIMEOUT_MS);
+    try {
+      const response=await fetch(origin+relative,{signal:controller.signal,
+        headers:{'User-Agent':'ATA24-guest-training-gateway','Accept':'*/*'},
+        redirect:'follow',cache:'no-store'});
+      clearTimeout(timer);
+      if(response.ok)return response;
+      await response.body?.cancel();
+      if(response.status!==404)throw Error('GitHub upstream returned '+response.status);
+    }catch(e){clearTimeout(timer);if(origin===GITHUB_PAGES)throw e;}
+  }
+  return null;
+}
+function transformCockpitHTML(content) {
+  // Only presentation changes: preserve all original ordered scripts and code.
+  const injection = '<base href="/panel-mosaic-lab/cockpit/">'+
+    '<link rel="stylesheet" href="/static/guest-cockpit.css">'+
+    '<script src="/static/guest-cockpit.js" defer></script>';
+  if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
+  let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
+  result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
+  result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
+  result=result.replace(/<body\b[^>]*>/i,m=>m+'<button id="guestSourceOverheadFocus" type="button" data-focus="overhead" hidden aria-hidden="true"></button>');
+  return result;
+}
+async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
+  let response;
+  try { response=await upstreamFetch(relative); }
+  catch(e) {
+    console.error('GitHub source unavailable',relative,e.message);
+    res.writeHead(502,{'Content-Type':'text/plain; charset=utf-8'});
+    res.end('Source repository is temporarily unavailable');return;
+  }
+  if(!response) {
+    res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});
+    res.end('File not available in source repository');return;
+  }
+  const ext=path.posix.extname(relative).toLowerCase();
+  const mime=PROXY_MIME[ext]||'application/octet-stream';
+  if(cockpitDocument) {
+    // The full cockpit runs with the scripts' original same-origin and inline
+    // boot contracts; the separately protected static guest files only change
+    // visible panels and startup focus.
+    res.setHeader('Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; "+
+      "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; "+
+      "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
+      "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
+      "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
+    const html=transformCockpitHTML(await response.text());
+    res.setHeader('Cache-Control','private, no-store');
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
+    res.end(html);return;
+  }
+  res.setHeader('Cache-Control','private, max-age=30');
+  res.writeHead(200,{'Content-Type':mime});
+  if(req.method==='HEAD') {await response.body?.cancel();res.end();return;}
+  if(!response.body){res.end();return;}
+  const source=Readable.fromWeb(response.body);
+  source.on('error',e=>{console.error('Upstream stream interrupted',relative,e.message);res.destroy(e);});
+  source.pipe(res);
+}
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30000 });
 const attemptMap = new Map();
 const assets = Object.freeze({
@@ -24,6 +143,8 @@ const assets = Object.freeze({
   '/lab/': ['lab.html','text/html; charset=utf-8'],
   '/static/portal.css': ['portal.css','text/css; charset=utf-8'],
   '/static/portal.js': ['portal.js','text/javascript; charset=utf-8'],
+  '/static/guest-cockpit.css': ['guest-cockpit.css','text/css; charset=utf-8'],
+  '/static/guest-cockpit.js': ['guest-cockpit.js','text/javascript; charset=utf-8'],
   '/static/portal-overhead.css': ['portal-overhead.css','text/css; charset=utf-8'],
   '/static/portal-overhead.js': ['portal-overhead.js','text/javascript; charset=utf-8'],
   '/static/lab-injection.js': ['lab-injection.js','text/javascript; charset=utf-8'],
@@ -169,6 +290,19 @@ async function handle(req,res) {
     const token=cookies(req)[TOKEN_COOKIE];
     if (token) await pool.query('DELETE FROM ata24_devices WHERE session_hash=$1',[hash(token)]);
     redirect(res,'/login',{'Set-Cookie':cookie(req,TOKEN_COOKIE,'',0)});return;
+  }
+  if ((req.method==='GET' || req.method==='HEAD') && url.pathname==='/') {
+    await serveGitHubSource(req,res,'panel-mosaic-lab/cockpit/index.html',{cockpitDocument:true});
+    return;
+  }
+  if (req.method==='GET' || req.method==='HEAD') {
+    const sourcePath=repoAssetPath(url.pathname);
+    if(sourcePath) {
+      await serveGitHubSource(req,res,sourcePath,{
+        cockpitDocument:sourcePath==='panel-mosaic-lab/cockpit/index.html'
+      });
+      return;
+    }
   }
   if (req.method==='GET' && Object.hasOwn(assets,url.pathname)) {
     const [filename,type]=assets[url.pathname];
