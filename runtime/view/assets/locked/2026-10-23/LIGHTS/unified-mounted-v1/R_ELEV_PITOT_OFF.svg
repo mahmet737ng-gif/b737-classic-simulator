@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="R_ELEV_PITOT mounted OFF">
+<defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#41454a"/>
+      <stop offset=".17" stop-color="#14181a"/>
+      <stop offset=".83" stop-color="#0b0d0e"/>
+      <stop offset="1" stop-color="#34383c"/>
+    </linearGradient>
+    <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#694b40"/>
+      <stop offset=".13" stop-color="#4a3029"/>
+      <stop offset=".76" stop-color="#35231f"/>
+      <stop offset="1" stop-color="#755344"/>
+    </linearGradient>
+    <radialGradient id="glass" cx=".5" cy=".54" r=".7">
+      <stop offset="0" stop-color="#190e0e"/>
+      <stop offset=".74" stop-color="#120b0c"/>
+      <stop offset="1" stop-color="#090808"/>
+    </radialGradient>
+    <pattern id="grain" width="7" height="9" patternUnits="userSpaceOnUse">
+      <path d="M1 1h1M5 7h1M3 4h1" stroke="#66514a" stroke-width=".65" opacity=".15"/>
+    </pattern>
+  </defs>
+<rect width="600" height="300" fill="#0c0b0c"/>
+<g fill="#291a15" font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" opacity=".46">
+    <text x="300" y="138" font-size="99" textLength="384" lengthAdjust="spacingAndGlyphs">R ELEV</text>
+    <text x="300" y="254" font-size="99" textLength="334" lengthAdjust="spacingAndGlyphs">PITOT</text>
+  </g>
+</svg>

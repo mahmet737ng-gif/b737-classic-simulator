@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="FAULT amber annunciator ON">
+ <defs><filter id="glow" x="-25%" y="-40%" width="150%" height="180%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+ <rect width="600" height="300" fill="#050505"/>
+ <g fill="#ef8c20" opacity=".52" filter="url(#glow)" font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+  <text x="300" y="197" font-size="148">FAULT</text>
+ </g>
+ <g fill="#ffbf57"  font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+  <text x="300" y="197" font-size="148">FAULT</text>
+ </g>
+</svg>

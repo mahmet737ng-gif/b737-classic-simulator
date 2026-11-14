@@ -1,0 +1,37 @@
+{
+  "id": "B737-ROTARY-STANDARD-V1",
+  "family": "B737 Classic standard rotary knob",
+  "user_approval": "Second of two latest isolated rotary knob images, approved for all ordinary rotary selectors",
+  "version": "1.0.0",
+  "status": "approved",
+  "path": "switch-lab/assets/rotary-standard-v1.webp",
+  "git_blob_sha": "6748ca45440d5ea38c41076f7ebb712023746cf3",
+  "sha256": "f42c72234dd53005d7b286f18d58da140bb89ef64f0671f1c6530b38a7c686e8",
+  "resolution": {
+    "width": 288,
+    "height": 279
+  },
+  "format": "WebP RGBA with alpha transparency",
+  "master_source": {
+    "reference_file": "a_clean_studio_style_isolated_product_render_on_a.png",
+    "resolution": {
+      "width": 1274,
+      "height": 1235
+    },
+    "sha256": "bdef12edf8850f67acee9bc2b2dcd90b134cafaf1e0927bfc94beecd68eb7cde",
+    "note": "Original unmodified generated image is not included as a full-resolution PNG in this commit; the library asset is an optimized WebP derivative."
+  },
+  "rendering": {
+    "rotate_entire_sprite": true,
+    "css_transform_origin": "50% 44%",
+    "allowed_angles": "0..360 degrees; detents are selected individually by each cockpit control",
+    "do_not_add": [
+      "background",
+      "panel lettering",
+      "detent ticks",
+      "white dashed markings"
+    ]
+  },
+  "lock_policy": "IMMUTABLE_BY_CONVENTION: keep original file and sha unchanged; create a new version for any requested replacement; Git branch protection is not enforced by this file.",
+  "created_date": "2026-10-23"
+}

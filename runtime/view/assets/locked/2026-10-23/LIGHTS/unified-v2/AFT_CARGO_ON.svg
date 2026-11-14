@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="AFT CARGO amber annunciator ON">
+ <defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41454a"/><stop offset=".17" stop-color="#14181a"/><stop offset=".83" stop-color="#0b0d0e"/><stop offset="1" stop-color="#34383c"/></linearGradient>
+  <filter id="textGlow" x="-45%" y="-80%" width="190%" height="260%"><feGaussianBlur stdDeviation="8.5"/></filter>
+  <filter id="textSoft" x="-25%" y="-35%" width="150%" height="170%"><feGaussianBlur stdDeviation="2.1"/></filter>
+ </defs>
+ <rect x="2" y="2" width="596" height="296" rx="18" fill="#080909" stroke="#1c1f20" stroke-width="4"/>
+     <rect x="4" y="4" width="592" height="292" rx="15" fill="url(#metal)" stroke="#07090a" stroke-width="3"/>
+     <rect x="12" y="11" width="576" height="278" rx="10" fill="#c26b3c" stroke="#0b0b0c" stroke-width="4"/>
+     <rect x="19" y="17" width="562" height="266" rx="6" fill="#260f09" stroke="#ff990f" stroke-width="2.6"/>
+     <path d="M23 24H577" stroke="#ffda68" stroke-width="2.5" opacity="0.38"/>
+ <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff5b09" opacity="0.92" filter="url(#textGlow)"><text x="300" y="136.5" font-size="110">AFT</text><text x="300" y="252.0" font-size="110">CARGO</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff990f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="136.5" font-size="110">AFT</text><text x="300" y="252.0" font-size="110">CARGO</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ffda68"><text x="300" y="136.5" font-size="110">AFT</text><text x="300" y="252.0" font-size="110">CARGO</text></g>
+ </svg>

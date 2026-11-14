@@ -1,0 +1,98 @@
+.rg-layer{position:absolute;inset:0;pointer-events:none;z-index:90}
+.mounted-rotary{position:absolute;display:block;padding:0!important;margin:0!important;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;border-radius:50%!important;transform:translate(-50%,-50%);touch-action:none;pointer-events:auto;cursor:grab;overflow:visible}
+.mounted-rotary:active{cursor:grabbing}
+.rotary-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;transform-origin:50% 44%;transition:transform 220ms cubic-bezier(.2,.85,.3,1)}
+.mounted-rotary.dragging .rotary-picture{transition:none}
+.mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:transform 110ms cubic-bezier(.2,.85,.3,1)}
+.mounted-rotary:focus-visible{outline:2px solid #e6ce9c;outline-offset:3px}
+.rg-detent-hit{position:absolute;display:block;margin:0!important;padding:0!important;border:0!important;outline:0;background:transparent!important;box-shadow:none!important;pointer-events:auto;touch-action:manipulation;cursor:pointer;z-index:5}
+.rg-detent-hit:hover{background:rgba(247,213,134,.13)!important}
+.rg-detent-hit:focus-visible{background:rgba(247,213,134,.24)!important;outline:2px solid #ffd990}
+.rg-layer[data-debug-detents="true"] .rg-detent-hit{background:rgba(0,255,192,.18)!important;outline:1px solid rgba(0,255,192,.8)}
+.guard-node{position:absolute;width:0;height:0;pointer-events:none;overflow:visible;transform-origin:0 0}
+.guard-picture{position:absolute;display:block;max-width:none!important;max-height:none!important;pointer-events:none;user-select:none;opacity:0;transition:opacity 210ms ease}
+.guard-picture.active{opacity:1}
+.guard-hit{position:absolute;display:block;margin:0!important;padding:0!important;border:0!important;outline:0;box-shadow:none!important;background:transparent!important;border-radius:10%!important;pointer-events:auto;cursor:pointer;touch-action:none}
+.guard-hit:focus-visible{outline:2px solid #ecc68a;outline-offset:2px}
+.guard-hit:disabled{cursor:default;pointer-events:none}
+.guard-cover{z-index:3}.guard-lever{z-index:2}
+.rg-inspector{margin:0 0 18px;padding:0 0 16px;border-bottom:1px solid #486578;line-height:1.6}
+.rg-inspector>strong{display:block;color:#b2ebce;font-size:14px}
+.rg-inspector h3{font-size:13px;direction:ltr;text-align:left;margin:10px 0 7px;color:#f0f6fb}
+.rg-inspector p{direction:ltr;text-align:left;color:#eac794;font:12px/1.6 monospace;margin:7px 0}
+.rg-actions{display:flex;gap:5px;flex-wrap:wrap;direction:ltr}
+.rg-actions button{flex:1;min-width:58px;padding:6px 4px;font:11px/1.3 monospace}
+.rg-actions button.active{border-color:#e6ce9c;background:#424a42}
+#rgGuardAction{width:100%;margin:0 0 8px;font-size:12px;padding:7px}
+.mounted-toggle[aria-disabled=true]{cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){.rotary-picture,.guard-picture,.mounted-rotary.detent-motion .rotary-picture,.mounted-rotary.detent-motion.dragging .rotary-picture{transition:none}}
+
+/* Flight Recorder — TEST/NORMAL: fixed left-side vertical hinge; right free edge folds left.
+   NO vertical rise or rotateZ when opening; the 155 degree horizontal door swing is rotateY.
+   Photo UPPER x1365–1478.
+   Right OFF lamp starts at source x1485. These are separate calibrated sockets. */
+.recorder-hinge-unit{overflow:visible;z-index:1;transform:none!important;pointer-events:none;perspective:1100px;perspective-origin:10% 50%}
+.recorder-hinge-unit .recorder-hinge-cradle{position:absolute;inset:4% 1%;border:1px solid #191c1f;border-radius:4px;background:linear-gradient(180deg,#151b1e 0%,#030505 32%,#111619 100%);box-shadow:inset 0 1px 2px #3b4545,0 1px 1px #111;pointer-events:none}
+.recorder-hinge-unit .recorder-hinge-pivot{position:absolute;z-index:5;left:2%;top:11%;height:78%;width:9%;border-radius:4px;background:linear-gradient(90deg,#08090a,#566069 43%,#1e2429 60%,#060707);box-shadow:inset 1px 0 #9ba2a6,1px 0 2px #060707;pointer-events:none}
+.recorder-hinge-unit .recorder-hinge-cover{position:absolute!important;z-index:4;left:10%!important;top:7%!important;width:88%!important;height:86%!important;margin:0!important;padding:0!important;border-radius:4px!important;border:1px solid #283039!important;background:linear-gradient(180deg,#272d30 0%,#14191c 13%,#06090a 42%,#181e22 83%,#030506 100%)!important;box-shadow:inset 0 1px #546068,inset 0 -1px #050505,0 2px 4px #030303!important;cursor:pointer;pointer-events:auto;transform-origin:left center;transform:rotateY(0deg);transform-style:preserve-3d;backface-visibility:visible;transition:transform 280ms cubic-bezier(.22,.73,.23,1),filter 190ms ease}
+.recorder-hinge-unit .recorder-hinge-cover::after{content:'';position:absolute;left:14%;top:19%;width:64%;height:62%;border:1px solid #343e40;border-radius:3px;background:linear-gradient(180deg,#171d1e,#080c0e);box-shadow:inset 1px 1px #20282b}
+.recorder-hinge-unit[data-guard="open"] .recorder-hinge-cover{transform:rotateY(-155deg);filter:brightness(1.14)}
+.recorder-hinge-unit .recorder-hinge-lever{position:absolute!important;z-index:3;left:30%!important;top:16%!important;width:63%!important;height:68%!important;margin:0!important;padding:0!important;background:linear-gradient(180deg,#343d40,#07090c 28%,#13181c 65%,#050708)!important;border:1px solid #242b30!important;border-radius:3px!important;box-shadow:inset 0 1px #6c7475!important;pointer-events:auto;cursor:pointer}
+.recorder-hinge-unit .recorder-hinge-lever::after{content:'';display:block;position:absolute;left:62%;top:11%;width:21%;height:78%;border-radius:3px;background:linear-gradient(90deg,#0c0d0e,#4a565b,#08090a)}
+.recorder-hinge-unit[data-value="test"] .recorder-hinge-lever::after{left:11%}
+.recorder-hinge-unit .recorder-hinge-lever:disabled{pointer-events:none;cursor:default}
+.recorder-hinge-unit button:focus-visible{outline:2px solid #f8d591!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.recorder-hinge-unit .recorder-hinge-cover{transition:none}}
+
+/* Guard mounting audit — native-source rectangles from owner-marked OH11 screenshot.
+   These trims are confined to the independent interaction layer, not the locked atlas.
+   Do not scale a 261x359 guard sprite non-uniformly to fake a 200x418 opening. */
+.guard-housing{position:absolute;display:block;box-sizing:border-box;pointer-events:none;z-index:0;overflow:hidden;border-radius:5%;border:2px solid #141a1e;background:linear-gradient(90deg,#111719 0%,#04090c 11%,#0b1318 50%,#030608 89%,#27343b 100%);box-shadow:inset 2px 2px 5px #010304,inset -2px -1px 3px #647783,0 1px 1px #87939a}
+.guard-housing--vertical::before,.guard-housing--vertical::after{content:'';position:absolute;left:39%;width:22%;height:7%;border-radius:50%;border:1px solid #11171b;background:radial-gradient(ellipse,#020608 0 33%,#768994 39%,#263037 50%,#020406 62%);box-shadow:inset 0 1px 2px #000}
+.guard-housing--vertical::before{top:2%}.guard-housing--vertical::after{bottom:2%}
+/* STANDBY POWER has a wide three-position switch and is NOT a rotated copy
+   of the narrow vertical cover. Hinge direction is intentionally not asserted
+   until a variant-matched real-hardware photograph confirms it. */
+.guard-housing--horizontal{border-radius:8%;border:2px solid #11181d;background:linear-gradient(180deg,#66727c 0%,#11191e 9%,#070d11 36%,#090f13 84%,#53626a 100%);box-shadow:inset 2px 3px 5px #030608,inset -2px -3px 4px #030608,0 1px 2px #a0a9ae}
+.guard-housing--horizontal::before{content:'';position:absolute;left:11%;top:12%;width:78%;height:72%;box-sizing:border-box;border:1px solid #050708;border-radius:9%;background:linear-gradient(180deg,#536068 0%,#1a2229 5%,#070a0d 37%,#252c30 72%,#050709 100%);box-shadow:inset 2px 2px 2px #7f8b91,inset -3px -4px 4px #010203,0 2px 2px #030608;transition:opacity 160ms ease,transform 180ms ease}
+.guard-housing--horizontal::after{content:'';position:absolute;top:30%;left:45%;width:10%;height:34%;border-radius:18%;opacity:0;background:linear-gradient(90deg,#030608,#9aa4aa 34%,#283137 65%,#05090d);box-shadow:0 1px 3px #000;transition:opacity 160ms ease,left 110ms ease}
+.guard-node[data-guard="open"] .guard-housing--horizontal::before{opacity:.32;transform:scaleY(.35);transform-origin:center top}
+.guard-node[data-guard="open"] .guard-housing--horizontal::after{opacity:1}
+.guard-node[data-value="bat"] .guard-housing--horizontal::after{left:18%}
+.guard-node[data-value="off"] .guard-housing--horizontal::after{left:45%}
+.guard-node[data-value="auto"] .guard-housing--horizontal::after{left:72%}
+@media(prefers-reduced-motion:reduce){.guard-housing--horizontal::before,.guard-housing--horizontal::after{transition:none}}
+
+/* OH23-25 IGNITION SOURCE: a true left/center/right photographic toggle.
+   Sprite is the same approved Small White LEFT/CENTER/RIGHT asset used elsewhere.
+   Only the IGN selector is affected; the engine-start rotary selectors are unchanged. */
+.rg-layer .mounted-rotary.ignition-toggle{
+ border-radius:0!important;
+ cursor:ew-resize;
+ touch-action:none;
+ isolation:isolate;
+}
+.rg-layer .mounted-rotary.ignition-toggle .ignition-toggle-sprite{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ display:block;max-width:none;max-height:none;
+ background-size:500% 100%;background-position:25% 50%;background-repeat:no-repeat;
+ pointer-events:none;user-select:none;transition:background-position 0s;
+}
+
+/* IGN-BASE-MATTE-0001 — reduce glare exclusively on the IGN toggle's
+   metal mounting bezel. The native 1024px-per-pose Small White sprite,
+   its ivory handle, state frames and pixel geometry remain untouched.
+   No image resize, blur or downsampling. */
+.rg-layer .mounted-rotary.ignition-toggle::after{
+ content:"";
+ position:absolute;
+ left:50%;top:50%;
+ width:73%;height:77%;
+ transform:translate(-50%,-50%);
+ border-radius:50%;
+ pointer-events:none;
+ background:rgba(47,52,56,.27);
+ mix-blend-mode:multiply;
+ -webkit-mask-image:radial-gradient(circle,transparent 0 29%,#000 39% 83%,transparent 96%);
+ mask-image:radial-gradient(circle,transparent 0 29%,#000 39% 83%,transparent 96%);
+}

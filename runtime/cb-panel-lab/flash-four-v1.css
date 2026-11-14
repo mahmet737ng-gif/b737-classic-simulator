@@ -1,0 +1,28 @@
+/* CB-FOUR-FLASH-0001
+   Search-selected CB identification only: amber panel frame and CB ring
+   pulse in sync FOUR times, then viewer.js removes all highlight classes.
+   Panel artwork, CB pull/push state and camera logic remain unchanged. */
+.cb-panel.is-result.cb-flashing::after {
+  transition:none !important;
+  animation:cb-panel-identify-four 500ms linear 4 forwards;
+}
+.cb-knob.is-hit.cb-flashing {
+  animation:cb-ring-identify-four 500ms linear 4 forwards;
+}
+@keyframes cb-panel-identify-four {
+  0%,49.99% {
+    border-color:var(--amber);
+    box-shadow:0 0 0 2px #ffcf5f70,0 0 35px #f3aa3370;
+  }
+  50%,100% {border-color:transparent;box-shadow:none}
+}
+@keyframes cb-ring-identify-four {
+  0%,49.99% {
+    outline-color:var(--amber);
+    box-shadow:0 0 16px #ffbb4c8c;
+  }
+  50%,100% {
+    outline-color:transparent;
+    box-shadow:none;
+  }
+}

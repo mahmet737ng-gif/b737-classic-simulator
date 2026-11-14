@@ -1,0 +1,8 @@
+html{scroll-behavior:smooth}header{z-index:2}footer a,.inspector a,.head-actions a{display:none!important}
+.guest-power-status{margin:13px 0;padding:13px;border:1px solid #496b82;border-radius:9px;background:#102c3a;color:#d6ebf8;direction:ltr;font:12px/1.65 system-ui,Arial,sans-serif;max-width:100%;overflow-wrap:anywhere}
+.guest-power-status[data-failure="true"]{border-color:#aa5164;background:#3a2531}
+.guest-power-status strong{font-size:13px;display:block;color:#f8fafc}
+.guest-power-status small{color:#b8cddc;display:block;margin-top:6px}
+.guest-power-status details summary{cursor:pointer;color:#aaddff;font-weight:700}
+.guest-power-status .guest-device-list{margin:7px 0;max-height:210px;overflow:auto}
+.guest-power-status .guest-device-list div{padding:4px;border-bottom:1px solid #445568}

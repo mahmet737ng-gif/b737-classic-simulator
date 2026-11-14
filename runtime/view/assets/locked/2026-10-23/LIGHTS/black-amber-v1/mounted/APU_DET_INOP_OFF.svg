@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="APU DET INOP amber annunciator OFF">
+ <rect width="600" height="300" fill="#050505"/>
+ <g fill="#34291b"  font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
+  <text x="300" y="125" font-size="92">APU DET</text>
+  <text x="300" y="223" font-size="92">INOP</text>
+ </g>
+</svg>

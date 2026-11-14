@@ -1,0 +1,37 @@
+{
+  "schema": "b737.toggle-reference/v1",
+  "version": "TGL-NEWREF-0001",
+  "status": "owner-supplied reference installed; visual placement QA pending",
+  "asset": "b737-toggle-five-new-reference.webp",
+  "format": "WebP with alpha",
+  "dimensions": {
+    "width": 5120,
+    "height": 1024
+  },
+  "cell": {
+    "width": 1024,
+    "height": 1024
+  },
+  "ringDiameter": 390,
+  "anchor": {
+    "x": 512,
+    "y": 512
+  },
+  "frames": {
+    "LEFT": 0,
+    "CENTER": 1,
+    "RIGHT": 2,
+    "UP": 3,
+    "DOWN": 4
+  },
+  "sha256": "3ad98aa39742d38caed990229efd7c5aa39d59ed9b1e5a2f967b5fcfec74ca55",
+  "gitBlobSha": "6e6e1694f04bfb905d392800df100b9704d20086",
+  "sources": {
+    "leftCenterRight": "Three Metallic Switches, Three Positions(1).png",
+    "down": "ChatGPT Image Oct 26, 2026, 12_33_02 AM-2.png",
+    "up": "ChatGPT Image Oct 26, 2026, 12_32_45 AM-1.png"
+  },
+  "isolation": "Each user-supplied switch segmented separately; disconnected alpha speckles filtered; no raster black/white backgrounds, repair masks or generated mounting shadows.",
+  "preservation": "All 58 switch definitions, states, sourcePoint positions, spring returns, simulator system event bindings and immutable base photographs stay untouched.",
+  "notes": "Top-down poses are distinct: horizontal 3-position LEFT/CENTER/RIGHT; vertical 3-position UP/CENTER/DOWN; vertical 2-position OFF at UP and ON at DOWN when those are the panel labels."
+}

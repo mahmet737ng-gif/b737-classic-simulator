@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="LEFT GEAR red warning light, two lines, off">
+  <rect x="2" y="2" width="596" height="296" rx="23" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="12" y="12" width="576" height="276" rx="14" fill="#040404"/>
+  <g fill="#0f0808" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="300" y="130" font-size="150" textLength="438" lengthAdjust="spacingAndGlyphs">LEFT</text>
+    <text x="300" y="250" font-size="150" textLength="438" lengthAdjust="spacingAndGlyphs">GEAR</text>
+  </g>
+</svg>

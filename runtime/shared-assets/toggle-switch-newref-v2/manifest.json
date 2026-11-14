@@ -1,0 +1,28 @@
+{
+  "schema": "b737.toggle-reference/down-recentered/v2",
+  "version": "TGL-NEWREF-0002",
+  "purpose": "Fix the only misaligned DOWN metal socket while retaining the other four poses unchanged.",
+  "source": "vintage_toggle_switch_down_position.png",
+  "asset": "down-recentered.webp",
+  "format": "WebP lossless RGBA",
+  "width": 1024,
+  "height": 1024,
+  "gitBlob": "b2b2dba535287160369de370167dfd34cca01796",
+  "sha256": "3b71eb9632dd17a986e65f60d53fa468fbb34f1ebe02a635915aedde53fcc0b6",
+  "sourceNutCenter": {
+    "x": 625.5,
+    "y": 455.5
+  },
+  "sourceNutDiameter": 608,
+  "targetNutCenter": {
+    "x": 512,
+    "y": 512
+  },
+  "targetNutDiameter": 390,
+  "scale": 0.6414473684210527,
+  "pixelCenterAfter": {
+    "x": 512.2253,
+    "y": 512.1793
+  },
+  "noChange": "LEFT CENTER RIGHT UP artwork and logic; all aircraft control states, simulator bridges and locked photos preserved"
+}

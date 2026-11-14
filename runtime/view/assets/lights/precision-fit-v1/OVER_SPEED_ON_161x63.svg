@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="161" height="63" viewBox="0 0 766.666667 300" role="img" aria-label="OVER_SPEED mounted ON">
+<defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#41454a"/><stop offset=".17" stop-color="#14181a"/><stop offset=".83" stop-color="#0b0d0e"/><stop offset="1" stop-color="#34383c"/></linearGradient>
+  <filter id="textGlow" x="-45%" y="-80%" width="190%" height="260%"><feGaussianBlur stdDeviation="8.5"/></filter>
+  <filter id="textSoft" x="-25%" y="-35%" width="150%" height="170%"><feGaussianBlur stdDeviation="2.1"/></filter>
+ </defs>
+<rect width="766.666667" height="300" fill="#260f09"/>
+<g transform="translate(83.333333 0)" data-fit="uniform-translation-only">
+<g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff5b09" opacity="0.92" filter="url(#textGlow)"><text x="300" y="136.5" font-size="110">OVER</text><text x="300" y="252.0" font-size="110">SPEED</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ff990f" opacity="0.82" filter="url(#textSoft)"><text x="300" y="136.5" font-size="110">OVER</text><text x="300" y="252.0" font-size="110">SPEED</text></g>
+     <g font-family="Arial, Liberation Sans, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#ffda68"><text x="300" y="136.5" font-size="110">OVER</text><text x="300" y="252.0" font-size="110">SPEED</text></g>
+</g>
+</svg>

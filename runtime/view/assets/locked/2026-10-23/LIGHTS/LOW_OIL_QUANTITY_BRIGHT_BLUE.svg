@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="LOW OIL QUANTITY information light, bright blue">
+  <rect x="2" y="2" width="596" height="296" rx="23" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="12" y="12" width="576" height="276" rx="14" fill="#0e66ce"/>
+  <g fill="#ffffff" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="300" y="128" font-size="125" textLength="465" lengthAdjust="spacingAndGlyphs">LOW OIL</text>
+    <text x="300" y="242" font-size="110" textLength="505" lengthAdjust="spacingAndGlyphs">QUANTITY</text>
+  </g>
+</svg>

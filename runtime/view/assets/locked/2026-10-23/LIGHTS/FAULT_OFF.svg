@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" role="img" aria-label="FAULT annunciator, off">
+  <rect x="2" y="2" width="596" height="296" rx="23" fill="#151618" stroke="#282a2b" stroke-width="4"/>
+  <rect x="12" y="12" width="576" height="276" rx="14" fill="#040404"/>
+  <g fill="#0b0a08" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="300" y="204" font-size="139" textLength="485" lengthAdjust="spacingAndGlyphs">FAULT</text>
+  </g>
+</svg>

@@ -4,6 +4,7 @@ COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 COPY --chown=node:node server.js ./
 COPY --chown=node:node public ./public
+COPY --chown=node:node runtime ./runtime
 ENV NODE_ENV=production
 USER node
 EXPOSE 3000

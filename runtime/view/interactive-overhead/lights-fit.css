@@ -1,0 +1,7 @@
+/* LGT-PHASE1: retired the historical zoom/crop exception.
+ * Mounted annunciators use bezel-free lens assets and must keep their native
+ * SVG aspect ratios inside immutable photo-defined apertures.
+ * Never transform/scale a mounted light image to hide a fitting mismatch.
+ * Remediation for under-filled sockets requires individually reviewed
+ * reflowed face artwork, not stretching letters or touching locked mosaics.
+ */

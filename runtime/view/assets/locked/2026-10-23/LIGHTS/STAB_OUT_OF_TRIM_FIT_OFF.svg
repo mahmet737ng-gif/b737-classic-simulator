@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" role="img" aria-label="STAB OUT OF TRIM yellow annunciator, off">
+  <!-- CKP-0005: measured lens-only revision; the original bezel remains in the source image. -->
+  <rect width="300" height="300" fill="#050505"/>
+  <g fill="#0b0a08" font-family="Nimbus Sans Narrow, DejaVu Sans Condensed, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="150" y="97" font-size="83" textLength="195" lengthAdjust="spacingAndGlyphs">STAB</text>
+    <text x="150" y="178" font-size="73" textLength="255" lengthAdjust="spacingAndGlyphs">OUT OF</text>
+    <text x="150" y="258" font-size="83" textLength="195" lengthAdjust="spacingAndGlyphs">TRIM</text>
+  </g>
+</svg>

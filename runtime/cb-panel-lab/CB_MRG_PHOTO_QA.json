@@ -1,0 +1,143 @@
+{
+  "version": "CB-MRG-PHOTO-0002",
+  "source": "11 original user-supplied CB photo references embedded in archived precision-test HTML; surveyed centers extracted",
+  "view": "Original reference photos, individually surveyed clickable circles; preserved catalog, search, and CB kernel",
+  "electricalConnections": "No inferred electrical changes; original breaker network preserved",
+  "panels": {
+    "P6-1": {
+      "measuredCenters": 41,
+      "catalogBreakers": 41,
+      "photoOnly": [
+        "A7",
+        "A10",
+        "A12",
+        "A13",
+        "A16",
+        "B7",
+        "B8",
+        "B12",
+        "C15"
+      ],
+      "catalogOnly": [
+        "A1",
+        "A2",
+        "A5",
+        "A8",
+        "A14",
+        "B2",
+        "B3",
+        "B10",
+        "C17"
+      ],
+      "sourceImage": "p6-1.jpg"
+    },
+    "P6-2": {
+      "measuredCenters": 89,
+      "catalogBreakers": 88,
+      "photoOnly": [
+        "A5",
+        "A17",
+        "B4"
+      ],
+      "catalogOnly": [
+        "A1",
+        "A6"
+      ],
+      "sourceImage": "p6-2.jpg"
+    },
+    "P6-3": {
+      "measuredCenters": 70,
+      "catalogBreakers": 71,
+      "photoOnly": [
+        "E14"
+      ],
+      "catalogOnly": [
+        "D16",
+        "E13"
+      ],
+      "sourceImage": "p6-3.jpg"
+    },
+    "P6-4": {
+      "measuredCenters": 78,
+      "catalogBreakers": 73,
+      "photoOnly": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5"
+      ],
+      "catalogOnly": [],
+      "sourceImage": "p6-4.jpg"
+    },
+    "P6-5": {
+      "measuredCenters": 25,
+      "catalogBreakers": 25,
+      "photoOnly": [],
+      "catalogOnly": [],
+      "sourceImage": "p6-5.jpg"
+    },
+    "P6-11": {
+      "measuredCenters": 11,
+      "catalogBreakers": 12,
+      "photoOnly": [],
+      "catalogOnly": [
+        "B7"
+      ],
+      "sourceImage": "p6-11.jpg"
+    },
+    "P6-12": {
+      "measuredCenters": 12,
+      "catalogBreakers": 13,
+      "photoOnly": [],
+      "catalogOnly": [
+        "B7"
+      ],
+      "sourceImage": "p6-12.jpg"
+    },
+    "P18-1": {
+      "measuredCenters": 24,
+      "catalogBreakers": 24,
+      "photoOnly": [],
+      "catalogOnly": [],
+      "sourceImage": "p18-1.jpg"
+    },
+    "P18-2": {
+      "measuredCenters": 41,
+      "catalogBreakers": 41,
+      "photoOnly": [],
+      "catalogOnly": [],
+      "sourceImage": "p18-2.jpg"
+    },
+    "P18-3": {
+      "measuredCenters": 82,
+      "catalogBreakers": 84,
+      "photoOnly": [
+        "C14",
+        "C18",
+        "D14"
+      ],
+      "catalogOnly": [
+        "C13",
+        "C17",
+        "C19",
+        "D13",
+        "D17"
+      ],
+      "sourceImage": "p18-3.jpg"
+    },
+    "P6-6": {
+      "measuredCenters": 2,
+      "catalogBreakers": 2,
+      "photoOnly": [],
+      "catalogOnly": [],
+      "sourceImage": "p6-6.png"
+    }
+  },
+  "notes": [
+    "Photo-only coordinates are indexed as unverified and do not operate the electrical kernel.",
+    "Catalogue-only labels are searchable without inventing a photo location.",
+    "P6-4 DCPCS visual row G1-G5 corresponds to alternate F1-F5 addresses.",
+    "Raster image zoom is bounded by original image resolution."
+  ]
+}

@@ -15,10 +15,16 @@ const ACTIVE_FOR_MINUTES = 20;
 const TOKEN_COOKIE = 'ata24_session';
 const DEVICE_COOKIE = 'ata24_device';
 const folder = path.join(__dirname, 'public');
+const runtimeDir = path.join(__dirname, 'runtime');
+const runtimeFiles = new Set(require('./runtime/manifest.json'));
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30000 });
 const attemptMap = new Map();
 const assets = Object.freeze({
   '/': ['index.html','text/html; charset=utf-8'],
+  '/lab/': ['lab.html','text/html; charset=utf-8'],
+  '/static/portal.css': ['portal.css','text/css; charset=utf-8'],
+  '/static/portal.js': ['portal.js','text/javascript; charset=utf-8'],
+  '/static/lab-injection.js': ['lab-injection.js','text/javascript; charset=utf-8'],
   '/static/app.js': ['app.js','text/javascript; charset=utf-8'],
   '/static/session.js': ['session.js','text/javascript; charset=utf-8'],
   '/static/style.css': ['style.css','text/css; charset=utf-8'],
@@ -51,9 +57,9 @@ function commonHeaders(req,res) {
   res.setHeader('Pragma','no-cache');
   res.setHeader('Referrer-Policy','no-referrer');
   res.setHeader('X-Content-Type-Options','nosniff');
-  res.setHeader('X-Frame-Options','DENY');
+  res.setHeader('X-Frame-Options','SAMEORIGIN');
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
-  res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+  res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-src 'self'; frame-ancestors 'self'");
   if (req.headers['x-forwarded-proto'] === 'https') res.setHeader('Strict-Transport-Security','max-age=31536000; includeSubDomains');
 }
 function redirect(res,location,extraHeaders={}) {
@@ -166,6 +172,26 @@ async function handle(req,res) {
     const [filename,type]=assets[url.pathname];
     const contents=await fs.readFile(path.join(folder,filename));
     res.writeHead(200,{'Content-Type':type});
+    res.end(contents);return;
+  }
+  // Authenticated, explicit manifest only. No fallback to the upstream project.
+  // Preserve original folder structure for the photo-based overhead and CB engines.
+  const rawRuntimePath = url.pathname.endsWith('/') ? url.pathname + 'index.html' : url.pathname;
+  // Asset names may contain spaces and Unicode. Decode only after URL parsing;
+  // an exact manifest match is required before reading a filesystem path.
+  let runtimePath;
+  try { runtimePath = decodeURIComponent(rawRuntimePath); }
+  catch (_) {res.writeHead(400);res.end('Bad path');return;}
+  if (req.method==='GET' && runtimeFiles.has(runtimePath)) {
+    const rel = runtimePath.slice(1);
+    const ext = path.extname(rel).toLowerCase();
+    const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
+      '.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8',
+      '.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp',
+      '.jpg':'image/jpeg','.jpeg':'image/jpeg'}[ext];
+    if (!mime) {res.writeHead(404);res.end();return;}
+    const contents = await fs.readFile(path.join(runtimeDir,rel));
+    res.writeHead(200,{'Content-Type':mime});
     res.end(contents);return;
   }
   res.writeHead(404,{'Content-Type':'text/plain'});res.end('Not found');
