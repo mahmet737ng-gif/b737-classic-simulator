@@ -230,7 +230,10 @@ function render(canvas,state,core){
  if(!v.sg){txt(c,'SG FAIL',CX,CY+46,30,AMBER,'center');return;}
  const fma=fmaInput(state,v),speed=tapeInput(state,v,fma);
  canvas.dataset.fmaSeat=state.seat;
- flightModes(canvas,c,state.seat,fma);
+ // Unified receives authoritative MCP/FCC annunciations from its live
+ // FMA owner. Do not overwrite them with the lab demonstration projection.
+ if(canvas.dataset.eadiUnifiedFull==='true')drawFma(c,state.seat);
+ else flightModes(canvas,c,state.seat,fma);
  if(v.attitude)attitude(c,e,v);else box(c,'ATT',CX,CY);
  if(v.flags.includes('FD'))box(c,'FD',466,104);
  speedTape(c,speed);approach(c,e,v);
@@ -322,6 +325,7 @@ function renderUnifiedFull(canvas,input={}){
  p.v1Data=false;p.speedLimit=false;p.fmcTrack=false;
  state.ehsi.navType='VOR';
  state.ehsi.track=0;state.ehsi.course=0;
+ canvas.dataset.eadiUnifiedFull='true';
  render(canvas,state,core);
  canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0003';
  canvas.dataset.eadiSource=input.source||'UNKNOWN';
