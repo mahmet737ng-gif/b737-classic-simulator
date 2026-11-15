@@ -1,4 +1,4 @@
-# B737 Classic — EADI + EHSI source-audit lab (v0001)
+# B737 Classic — EADI + EHSI source-audit lab (v0002 · source-driven EHSI rebuild)
 
 **Scope:** 737-300/-400/-500 classic EFIS with EP-FSI as the first configuration to reconcile. **Training software only; not for flight.**
 
@@ -6,14 +6,14 @@
 
 - GitHub Pages: `/efis-display-lab/` relative to the cockpit project's published root.
 - Local: use a local HTTP server from the repository root, e.g. `python3 -m http.server 8000`, then open `http://localhost:8000/efis-display-lab/`.
-- `node efis-display-lab/core.test.cjs` checks documented display logic, source gating, modes and source registry.
+- `node efis-display-lab/core.test.cjs` and `node efis-display-lab/ehsi-v2.test.cjs` check logic and distinct layouts. The GitHub Actions browser job also captures separate MAP, FULL NAV and PLAN screenshots.
 
 ## Implementation
 
 - `core.js`: pure event-driven state machine; FCOM folio registry; failure gates, mode/orientation decisions, Mach hysteresis, DH/RA alert and reset, independent EADI/EHSI power, two symbol generators, source transfer.
 - `eadi.js`: composited EADI vector canvas layers. Keeps separate drawable altitude-related, speed tape, attitude, FMA, ILS, FD and alert regions. The design mirrors the approved stage-one black L aircraft datum and 10-degree-only pitch labels but **does not reuse or alter** locked Unified EADI geometry.
-- `../cdu-standalone-v6/ehsi/ehsi-engine.js`: existing EHSI renderer for seven source-described modes and MAP/PLAN/orientation display; training synthetic nav geometry only.
-- `lab.js`: interactive controls, deterministic tests, error injection, read-only JSON inspector, segment review register, local photo overlay and selected-region boxes.
+- `ehsi-v2.js`: fully separate Classic source-driven renderer for MAP (70° track-up), FULL NAV (360° compass with NAV course/CDI), and PLAN (independent 70° heading/track compass plus north-up route). The legacy 7-mode CDU renderer is *not loaded* into this lab. EXP NAV / CTR MAP / FULL VOR/ILS / EXP VOR/ILS are explicitly PENDING to avoid the old generic illustration. All figures remain visually provisional until photo overlay acceptance.
+- `lab.js`: interactive controls (including independent heading, track, and selected heading), deterministic tests, failure injection, JSON inspector, segment review register, local photo overlay and selected-region boxes.
 - `index.html`: responsive independent test rig for both screens, never mounted over the approved Unified panels.
 
 No animation loop, no background polling, and no periodic interrogation of buses. Display repaints on state changes. Existing protected overhead, guarded switches, IRS, FO panel positioning and Unified main panel files remain untouched.
@@ -25,6 +25,10 @@ No animation loop, no background polling, and no periodic interrogation of buses
 2. Existing owner EFIS control panel source and engine: `engine/efis-fcom-v2/`, `docs/EFIS_PHOTO_LOCK.md`, and `cdu-standalone-v6/ehsi/`.
 3. Cockpit Companion **Classic 3-4-5** (Leading Edge Publishing, not NG/737MAX; copyrighted): https://www.cockpitcompanion.com/pd-737.cfm . This external product's private images are **not** in this repository. Only compare user-authorized copies via the lab local file picker. No screenshot or protected illustration is committed.
 4. Cockpit photos and Classic-only external geometry examples can serve as secondary visual reference after model/operator/effectivity validation.
+
+## EHSI V2 approved implementation boundaries
+
+The production-independent lab now uses `EHSI_V2_SPEC_FA.md` as the fixed implementation and QA specification. Only 3 modes have reconstructed visuals; 4 modes are intentionally flagged as pending. Automated browser and pure tests **do not** imply FCOM-certified pixels or finished aircraft system wiring. Captured screenshots can be downloaded from the successful `EFIS EADI EHSI independent lab QA` run.
 
 ## Current acceptance level and limitations
 
