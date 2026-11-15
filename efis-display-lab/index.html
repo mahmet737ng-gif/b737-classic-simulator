@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1018">
+<title>737 Classic | EADI + EHSI Source Audit Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#090d13;--pane:#141d2a;--line:#2b3849;--fg:#ecf2f9;--muted:#a0b0c4;--blue:#68a8eb;--cyan:#77d8ef;--yellow:#eac871}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--fg);background:radial-gradient(ellipse at 35% 0%,#1a2a3b,var(--bg) 55%);font-family:Inter,"Segoe UI",Arial,sans-serif}
+h1,h2,h3,p{margin-top:0}a{color:#94caff}button,select,input{font:inherit}button{cursor:pointer}
+header{padding:22px max(18px,3vw);border-bottom:1px solid #ffffff20;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:23px;letter-spacing:.025em;margin:0}header p{color:var(--muted);font-size:13px;margin:7px 0 0}
+.corner{font-size:11px;color:var(--cyan);border:1px solid #3b5970;padding:8px 13px;border-radius:20px;letter-spacing:.04em}
+main{max-width:1740px;margin:auto;padding:20px 19px 60px}
+.info{font-size:12px;color:var(--muted);line-height:1.75}strong.accent{color:var(--cyan)}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 356px;gap:18px;align-items:start}
+.screens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{background:#141c28;border:1px solid #304157;border-radius:15px;box-shadow:0 15px 38px #0005;padding:13px;min-width:0}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;font-size:12px;letter-spacing:.08em;color:#c0d3e6}
+.head b{color:#f2f6ff}.head small{font-size:10px;color:#75cfa6}
+.display{position:relative;max-width:630px;margin:0 auto;background:#000;border:8px solid #080c14;box-shadow:0 0 0 2px #485868,0 0 0 5px #111722,0 18px 40px #0008;border-radius:24px;overflow:hidden;aspect-ratio:1}
+.display canvas,.display svg,.display .reference{width:100%;height:100%;display:block}
+.reference{position:absolute;inset:0;opacity:0;object-fit:fill;pointer-events:none}
+.highlight{position:absolute;inset:auto;border:1px solid #6ff1ec;background:rgba(86,233,228,.10);box-shadow:0 0 15px #28f5e390;pointer-events:none;display:none}
+.clipnote{padding:15px 4px 3px;color:#93a5b7;font-size:11px;line-height:1.7}
+.controls{display:flex;flex-direction:column;gap:15px}
+.controls h2,.audit h2,.diagnostics h2{font-size:16px;margin:0 0 7px}.controls h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:0 0 12px}
+.block{background:var(--pane);border:1px solid var(--line);border-radius:13px;padding:15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{color:#adbed0;font-size:11px}.field input,.field select{width:100%;min-width:0;background:#080e17;border:1px solid #3c5066;color:#fff;padding:7px 8px;border-radius:6px;font-size:13px}
+.field input[type=range]{accent-color:var(--blue);padding:0}
+.toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:#d8e6f2;min-height:26px}.toggle input{accent-color:#6dbeea;width:16px;height:16px}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.presets button,.action{border:1px solid #40617f;background:#20354a;color:#e7f3ff;padding:9px 6px;border-radius:7px;font-size:11px}.presets button:hover,.action:hover{background:#315878}
+.sources{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.small{color:#90a3b7;font-size:11px;line-height:1.7}.note{color:#d6bb7a;font-size:11px;line-height:1.6}
+.audit,.diagnostics{margin-top:20px;border:1px solid var(--line);border-radius:14px;background:#131b25;padding:18px}
+.auditheader{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+.auditheader h2{margin:0}.auditheader span{font-size:12px;color:var(--muted)}
+.tablewrap{overflow:auto;margin-top:15px}
+table{border-collapse:collapse;width:100%;font-size:12px}th{font-size:11px;color:#afc5d8;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid #3b4b5a;padding:10px}
+td{padding:9px 10px;border-bottom:1px solid #ffffff10;vertical-align:middle}tbody tr:hover{background:#1e3140}
+td button{border:none;background:none;color:#a5ddfd;font-size:12px;padding:0;text-align:left;text-decoration:underline;text-underline-offset:3px}
+td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;border-radius:5px;font-size:11px}
+.status{color:#e7c782}.verify{color:#8ce0ad}
+.diagnostics{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#testResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
+.check{padding:9px 10px;border:1px solid #324155;border-radius:8px;font-size:11px;color:#b8d3c6}.check.fail{border-color:#93444b;color:#ffb7b7}
+#stateDump{font:11px/1.5 Consolas,monospace;white-space:pre-wrap;max-height:400px;overflow:auto;color:#b6c7d5;background:#080d14;padding:14px;border-radius:9px;border:1px solid #314358}
+.upload{padding:7px 0;display:block;max-width:100%;font-size:11px}#overlayOpacity{width:100%}
+.footer{margin-top:20px;font-size:12px;color:#8199af;line-height:1.8}
+@media(max-width:1250px){.top{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
+@media(max-width:760px){header h1{font-size:17px}main{padding:13px 9px 40px}.screens,.controls,.diagnostics{grid-template-columns:1fr}#testResults{grid-template-columns:1fr}.display{max-width:480px}.card{padding:10px}}
+</style></head><body>
+<header><div><h1>B737 CLASSIC <strong class="accent">/ EADI + EHSI AUDIT ENGINE</strong></h1><p>300 / 400 / 500 · EP-FSI reference priority · isolated from Unified · event-driven</p></div><span class="corner">LAB 0001 · SIM DATA ONLY · NOT FOR FLIGHT</span></header>
+<main>
+<div class="top">
+ <section class="screens" aria-label="Independent avionics test displays">
+  <article class="card"><div class="head"><b>EADI / ELECTRONIC ATTITUDE</b><small id="eadiStatus">SIMULATED INPUT</small></div>
+   <div class="display" id="eadiStage"><canvas id="eadi" width="640" height="640" aria-label="Classic EADI vector display"></canvas><img id="eadiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="eadiHighlight"></div></div>
+   <p class="clipnote">Attitude, pitch ladder, FMA zones, speed tape, flight director, LOC/GS, RA/DH, TCAS RA, flags. Geometry remains unapproved until reference image pixel audit.</p>
+  </article>
+  <article class="card"><div class="head"><b>EHSI / ELECTRONIC HORIZONTAL</b><small id="ehsiStatus">SIMULATED ROUTE</small></div>
+   <div class="display" id="ehsiStage"><svg id="ehsi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 440" role="img" aria-label="Classic EHSI seven-mode rendering"></svg><img id="ehsiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="ehsiHighlight"></div></div>
+   <p class="clipnote">Reuses the existing Classic EHSI engine. Synthetic route for geometry testing only; no real navigation, radar, terrain or TCAS targets are generated.</p>
+  </article>
+ </section>
+ <aside class="controls">
+  <div class="block"><h2>Scenario injection</h2><p class="small">All controls drive lab state, not the aircraft.</p><div class="presets" id="presets">
+   <button data-scenario="normal">NORMAL</button><button data-scenario="approach">ILS / DH</button><button data-scenario="cruise">CRUISE</button>
+   <button data-scenario="tcas">TCAS RA</button><button data-scenario="navfail">NAV FAIL</button><button data-scenario="failure">SG FAIL</button>
+   <button data-scenario="dark">DARK</button><button id="dhReset">DH RST</button><button id="runTests">RUN TESTS</button>
+  </div></div>
+  <div class="block"><h3>Attitude / EADI</h3><div class="grid" id="eadiInputs"></div></div>
+  <div class="block"><h3>Navigation / EHSI</h3><div class="grid" id="ehsiInputs"></div><div class="sources" id="ehsiOptions" style="margin-top:14px"></div></div>
+  <div class="block"><h3>Power, source and sensor failures</h3><div class="grid" id="sourceSelects"></div><div class="sources" id="failInputs" style="margin-top:14px"></div><p class="note">SG source transfer is a test simplification. CB and aircraft source dependencies are not yet certified against EP-FSI.</p></div>
+  <div class="block"><h3>Reference pixel comparison</h3><label class="small" for="fileEadi">EADI reference image (local only)</label><input type="file" id="fileEadi" class="upload" accept="image/png,image/jpeg,image/webp">
+   <label class="small" for="fileEhsi">EHSI reference image (local only)</label><input type="file" id="fileEhsi" class="upload" accept="image/png,image/jpeg,image/webp">
+   <label class="small" for="overlayOpacity">Photo overlay opacity <output id="opacityRead">0%</output></label><input id="overlayOpacity" type="range" min="0" max="100" step="5" value="0">
+   <button class="action" id="clearRef">Clear reference images</button><p class="small">Images are shown locally in your browser; this lab does not upload or store the selected file.</p>
+  </div>
+ </aside>
+</div>
+<section class="audit"><div class="auditheader"><h2>Component / segment audit register</h2><span id="auditCount">Select a component to highlight its provisional region</span></div>
+<p class="info" style="margin-top:10px">FCOM rule grounding does <b>not</b> mean pixel-accurate acceptance. All items start as PENDING. Changing an audit status is only a local review note.</p>
+<div class="tablewrap"><table><thead><tr><th>Display</th><th>Segment</th><th>FCOM folio</th><th>Documentation</th><th>Visual review</th></tr></thead><tbody id="auditRows"></tbody></table></div></section>
+<section class="diagnostics"><div><h2>Deterministic test lab</h2><p class="small">Source-independent rule checks run without timers, polling, or frame-based aircraft logic.</p><button class="action" id="testAgain">Run all assertions</button><div id="testSummary" class="small" style="margin-top:13px"></div><div id="testResults"></div></div>
+<div><h2>Live state inspector</h2><p class="small">For MCP / IRS / ADC / EFIS / CB adapters in a later integration stage.</p><button class="action" id="copyState">Copy JSON state</button><pre id="stateDump"></pre></div></section>
+<div class="footer">References: Boeing 737-300/-400/-500 FCOM Vol. 2 Ch. 10 Sections 30–31, 40 (manual is explicitly marked NOT FOR FLIGHT), and existing Unified EFIS v6. <a id="fcomLink" target="_blank" rel="noreferrer">Reference manual</a> · <a href="../cdu-standalone-v6/ehsi/ehsi-engine.js">Existing EHSI renderer</a> · Independent educational prototype.</div>
+</main>
+<script src="../cdu-standalone-v6/ehsi/ehsi-engine.js"></script>
+<script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script>
+</body></html>
