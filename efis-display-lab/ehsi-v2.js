@@ -40,7 +40,7 @@ function model(input={}){
    name:String(p.name||'FIX'+i).slice(0,9),x:clamp(p.x,-320,320),y:clamp(p.y,-320,320)})).slice(0,24):[],activeIndex:clamp(route.activeIndex||0,0,23)},
   options:{wpt:!!opts.wpt,arpt:!!opts.arpt,navAid:!!opts.navAid,vorAdf:!!opts.vorAdf,rteData:!!opts.rteData,wxr:!!opts.wxr,terr:!!opts.terr,tfc:!!opts.tfc},
   flags:{sgValid:efis.sgValid!==false,headingValid:efis.headingValid!==false,trackValid:efis.trackValid!==false,displayPower:efis.displayPower!==false},
-  brightness:clamp(efis.brightness??1,.18,1)
+  brightness:clamp(efis.brightness??1,0,1),mapBrightness:clamp(efis.wxBrightness??1,0,1)
  };
 }
 function computeDisplay(input){
@@ -339,6 +339,11 @@ function render(svg,raw){
  if(m.options.wxr)text(layer(svg,'weather-status'),'WXR DATA UNAVAILABLE',256,397,13,COLORS.amber,'middle');
  if(m.options.terr)text(layer(svg,'terrain-status'),'TERRAIN DATA UNAVAILABLE',256,419,12,COLORS.amber,'middle');
  if(m.options.tfc)text(layer(svg,'traffic-status'),'TFC',18,92,12,COLORS.green);
+ // Inner coaxial control dims MAP/navigation/available weather-layer content only.
+ // No fictitious radar returns or traffic targets are synthesized.
+ for(const segment of ['active-route','plan-route','database-options','weather-status','terrain-status']){
+  for(const node of svg.querySelectorAll('[data-segment="'+segment+'"]'))node.style.opacity=String(m.mapBrightness);
+ }
  return s;
 }
 return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,norm,rel,model,computeDisplay,render};
