@@ -281,5 +281,51 @@ function renderUnifiedAttitude(canvas,input={}){
  c.restore();
  return true;
 }
-return {render,tapeInput,fmaInput,renderUnifiedAttitude};
+// FULL lab presentation projected from Unified avionics evidence. In contrast
+// to the earlier attitude-only bridge, this runs the real EFIS Lab EADI
+// renderer (glass, attitude, FMA, tape, flags, ILS / DH) in the cockpit.
+// The laboratory's demonstration data is NEVER allowed through unchanged.
+function renderUnifiedFull(canvas,input={}){
+ if(!canvas)return false;
+ const core=globalThis.EFISDisplayLabCore;
+ if(!core?.initial||!core?.evaluate)return false;
+ const state=core.initial(),e=state.eadi,p=state.power;
+ state.seat=input.seat==='FO'?'FO':'CAPT';
+ const finite=x=>typeof x==='number'&&Number.isFinite(x);
+ const observed=(x,def=null)=>finite(x)?x:def;
+ e.pitch=observed(input.pitch,0);e.bank=observed(input.bank,0);
+ e.slip=0;e.tcas='OFF';e.pli=false;e.flaps=0;e.demoLimits=false;
+ e.ias=observed(input.iasKt,0);e.selectedSpeed=observed(input.selectedSpeedKt,0);
+ e.mach=observed(input.mach,0);e.machVisible=finite(input.mach);
+ e.groundSpeed=observed(input.groundSpeedKt,0);
+ e.radioAlt=observed(input.radioAltFt,0);e.dh=observed(input.dhFt,-20);
+ e.fd=false;e.fdAuto=false;e.fdPitch=0;e.fdRoll=0;
+ e.locDev=observed(input.locDeviation,0);e.gsDev=observed(input.gsDeviation,0);
+ e.frontCourse=false;e.locCaptured=false;e.gsCaptured=false;
+ e.ilsSelected=false;e.windshear=false;e.pullup=false;
+ e.pitchMode='';e.rollMode='';e.at='';e.afds='';e.armedPitch='';e.armedRoll='';
+ e.phase='GROUND';e.v1=0;e.vr=0;e.vref=0;e.shaker=0;
+ e.minManeuver=0;e.vmo=0;e.acceleration=0;e.speedSource='MCP';
+ e.fmcCommandSpeed=0;e.retractSpeed=0;e.flapsUpSpeed=0;
+ e.apEngaged=false;e.descent=false;
+ p.eadi=input.powered!==false;p.ehsi=false;
+ p.sg1=true;p.sg2=true;p.att=input.attitudeValid!==false;
+ // A documented simulator attitude level datum is visible until real
+ // flight attitude telemetry is connected; it is not an IRS navigation fix.
+ p.irsLeft=input.attitudeValid!==false;
+ p.irsRight=input.attitudeValid!==false;
+ p.adc=finite(input.iasKt);p.machData=finite(input.mach);
+ p.selSpeed=finite(input.selectedSpeedKt);
+ p.nav=false;p.loc=false;p.gs=false;
+ p.ra=finite(input.radioAltFt);
+ p.fd=false;p.dhData=finite(input.dhFt);
+ p.v1Data=false;p.speedLimit=false;p.fmcTrack=false;
+ state.ehsi.navType='VOR';
+ state.ehsi.track=0;state.ehsi.course=0;
+ render(canvas,state,core);
+ canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0003';
+ canvas.dataset.eadiSource=input.source||'UNKNOWN';
+ return true;
+}
+return {render,tapeInput,fmaInput,renderUnifiedAttitude,renderUnifiedFull};
 });
