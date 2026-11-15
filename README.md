@@ -1,6 +1,6 @@
 # B737 Classic guest simulator gateway
 
-**Current design:** Railway is the authentication and same-origin source gateway for the **full original cockpit application**. It loads `panel-mosaic-lab/cockpit/index.html` and original code, systems, controls, CB and test-lab assets directly from the `main` branch of the source GitHub repository. Only the **visual regions** Main Instrument Panel and Pedestal are hidden. Their system code is not removed, disabled or rebuilt. The original Overhead is installed by its normal application bootstrap.
+**Current design:** Railway is the authentication and same-origin source gateway for the **full original cockpit application**. It loads `panel-mosaic-lab/cockpit/index.html` and original code, systems, controls, CB and test-lab assets directly from the `main` branch of the source GitHub repository. All original visual regions—Main Instrument Panel, Overhead, and Pedestal—are visible and the native focus controls work without a guest-only restriction. The original cockpit boots into its own default view; the original Overhead is installed through its normal application bootstrap.
 
 The browser starts on `/panel-mosaic-lab/cockpit/` under the Railway domain and has no direct embedded cross-origin iframe to GitHub Pages. All content routes on Railway are server-authenticated and covered by the 3-device session cap (20-minute idle expiry).
 
