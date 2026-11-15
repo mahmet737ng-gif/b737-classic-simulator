@@ -35,7 +35,9 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('[data-ehsi-mode="PLAN"]').click();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'PLAN');
   assert.equal(await page.locator('#ehsi [data-segment="true-north"]').count(),1);
-  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),0);
+  assert.equal(await page.locator('#ehsi [data-segment="plan-compass"]').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"] line[stroke-dasharray]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),0);
   assert.ok((await page.locator('#ehsi').textContent()).includes('NORTH UP'));
   await screenshot('ehsi-plan');
