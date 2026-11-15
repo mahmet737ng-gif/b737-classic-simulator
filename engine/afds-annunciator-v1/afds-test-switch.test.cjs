@@ -48,7 +48,7 @@ test("Unified has two independent three-position switches using photo bounding b
  const js=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js"),"utf8");
  const css=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css"),"utf8");
  const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
- assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0002/);
+ assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0003-FO-SOCKET-CENTER/);
  assert.match(html,/afds-annunciator-switch-v1\.css\?v=AFDS-ANN-UNIFIED-0002/);
  assert.match(js,/Small_Silver_5Positions\.webp/);
  assert.match(js,/backgroundPosition=POSE/);
@@ -69,6 +69,12 @@ test("Unified has two independent three-position switches using photo bounding b
  const api=win.B737AFDSAnnunciatorUnifiedV1;
  assert.equal(api.VERSION,"AFDS-ANN-UNIFIED-0002");
  assert.deepEqual(Object.keys(api.INSTALL).sort(),["CAPT","FO"]);
+ assert.equal(api.INSTALL.CAPT.toggle.cx,683.2,"Captain x must remain approved");
+ assert.equal(api.INSTALL.CAPT.toggle.cy,212.9,"Captain y must remain approved");
+ assert.equal(api.INSTALL.FO.toggle.cx,1532.4,"FO x must match corrected photo socket");
+ assert.equal(api.INSTALL.FO.toggle.cy,226.5,"FO y must match corrected photo socket");
+ assert.equal(api.INSTALL.FO.toggle.cell,44,"FO artwork size must not change");
+ assert.equal(api.INSTALL.FO.toggle.hit,20.8,"FO hitbox size must not change");
  for(const seat of ["CAPT","FO"]){
   const cfg=api.INSTALL[seat];
   assert.deepEqual(Array.from(cfg.lamps,x=>x.id),["AP","AT","FMC"]);
