@@ -49,9 +49,10 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 .footer{margin-top:20px;font-size:12px;color:#8199af;line-height:1.8}
 @media(max-width:1250px){.top{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
 @media(max-width:760px){header h1{font-size:17px}main{padding:13px 9px 40px}.screens,.controls,.diagnostics{grid-template-columns:1fr}#testResults{grid-template-columns:1fr}.display{max-width:480px}.card{padding:10px}}
-</style></head><body>
+</style><link rel="stylesheet" href="./efis-cp.css"></head><body>
 <header><div><h1>B737 CLASSIC <strong class="accent">/ EADI + EHSI AUDIT ENGINE</strong></h1><p>300 / 400 / 500 · EP-FSI reference priority · isolated from Unified · event-driven</p></div><span class="corner">LAB 0002 · EHSI REBUILD · NOT FOR FLIGHT</span></header>
 <main>
+<section class="efcp-shell" aria-label="Photographic EFIS control panel"><div class="efcp-heading"><div><h2>CLASSIC EFIS CONTROL PANEL / PHYSICAL TEST LAB</h2><p>Source-registered selector positions · direct clickable detents · TFC + concentric brightness · EADI/EHSI linked state</p></div><span class="efcp-tag">EFIS CP · PHOTO / INTERACTIVE</span></div><div id="efisCpMount"></div></section>
 <div class="top">
  <section class="screens" aria-label="Independent avionics test displays">
   <article class="card"><div class="head"><b>EADI / ELECTRONIC ATTITUDE</b><small id="eadiStatus">SIMULATED INPUT</small></div>
@@ -88,5 +89,5 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 <div class="footer">References: Boeing 737-300/-400/-500 FCOM Vol. 2 Ch. 10 Sections 30–31, 40 (manual is explicitly marked NOT FOR FLIGHT), and existing Unified EFIS v6. <a id="fcomLink" target="_blank" rel="noreferrer">Reference manual</a> · <a href="./ehsi-v2.js">EHSI v2 source-driven renderer</a> · Independent educational prototype.</div>
 </main>
 <script src="./ehsi-v2.js"></script>
-<script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script>
+<script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script><script src="../cdu-standalone-v6/efis-test/images.js"></script><script src="./efis-cp.js"></script>
 </body></html>
