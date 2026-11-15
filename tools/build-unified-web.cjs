@@ -45,6 +45,11 @@ function build(root,out=path.join(root,'web-dist')){
   const dest=path.join(out,b.path);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,b.content);
  }
  fs.writeFileSync(path.join(out,ENTRY),result.html);
+ // Dedicated cache-independent production-equivalent EFIS verification URL:
+ // serves the EXACT same compiled Unified HTML and code, not a lab simulation.
+ // A distinct navigation path bypasses stale URL-specific cached document bodies.
+ const efisV3Entry='panel-mosaic-lab/cockpit/unified-efis-v3.html';
+ fs.writeFileSync(path.join(out,efisV3Entry),result.html);
  fs.writeFileSync(path.join(out,OVERHEAD),result.overhead.html);
  // A/B experiment: same compiled Unified modules, separate URL, original entry untouched.
  const testEntry='panel-mosaic-lab/cockpit/unified-composite-test.html';
