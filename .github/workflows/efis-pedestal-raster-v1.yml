@@ -1,0 +1,54 @@
+name: EFIS CAPT and FO Pedestal Raster QA
+on:
+  push:
+    paths:
+      - 'panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.*'
+      - 'panel-mosaic-lab/cockpit/assets/efis-*.webp'
+      - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/efis-pedestal-raster-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  structural:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile EFIS source and validate asset geometry
+        run: |
+          node --check panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js
+          node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
+          node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.test.cjs
+      - name: Protected approved cockpit assets stay unchanged
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+  browser:
+    needs: structural
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Unified direct interaction CAPT FO
+        run: node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unified-efis-pedestal-raster-screenshots
+          path: artifacts/efis-pedestal/*.png
+          if-no-files-found: ignore
