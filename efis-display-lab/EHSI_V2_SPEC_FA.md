@@ -12,7 +12,7 @@ There are exactly **3 reconstructed geometries in phase 1**:
 |---|---|---|---|---|
 | MAP | Vol.2 10.31.2–3 | 70-degree expanded arc, circle center (256,438), radius 364, ±35° | Small **outline** triangle near (256,433); track-up; magenta selected heading bug | Synthetic active-leg magenta, off-route/background cyan |
 | FULL NAV | Vol.2 10.31.8–9 | Complete 360° rose, circle center (256,270), radius 183; 45° fixed indexes | Small **outline** triangle centered; track annunciated in header, moving rose uses heading reference per 10.32.3 | NAV course/CDI presentation, not MAP-style waypoints |
-| PLAN | Vol.2 10.31.18–19 | Independent true-north chart; no 70° or 360° MAP rose | True-north pointer at right; does not inherit an aircraft symbol from MAP | Test route in north-up east/north geometry, unaffected by heading or track inputs |
+| PLAN | Vol.2 10.31.18–19 | Independent true-north chart with a SEPARATE 70° expanded compass scale; no 360° full MAP rose | True-north pointer at right; 70° top scale; does not inherit the MAP aircraft symbol or dashed bug-to-airplane line | Test route in north-up east/north geometry, unaffected by heading or track inputs |
 
 **Crucial:** these are precisely defined internal renderer coordinates, **not aircraft OEM pixel calibration measurements**. They are candidates for pixel audit, not approved Boeing placements.
 
@@ -30,7 +30,7 @@ There are exactly **3 reconstructed geometries in phase 1**:
 - Input contract extends current lab model with `selectedHeading`; flight heading, track, course remain independent.
 - Render is event-driven, no frame polling. Each logical component has `data-segment` tags to support DOM audit.
 - Invalid SG: early amber SG fail indication; no compass. Display power OFF: black field. Invalid track/heading in track-up: suppress derived nav geometry and show invalid reference; invalid NAV: withhold synthetic route. No stale data to be painted.
-- PLAN geometry cannot rotate with heading/track changes, tested both in pure logic and in Playwright by comparing SVG route-line coordinates.
+- PLAN route geometry cannot rotate with heading/track changes; the separate top 70° compass ticks respond to track. The north-up route-line coordinates are tested in Playwright.
 - Map database WPT option (not route fixes) only when selected range ≤ 40 NM. Actual active route FIX labels not subject to WPT toggle.
 - Four modes (`EXP_NAV`, `CTR_MAP`, `FULL_VOR_ILS`, `EXP_VOR_ILS`) are visible as **PENDING MODE REBUILD** instead of falling back to the rejected generic renderer. This is intentional and honest.
 
@@ -42,7 +42,7 @@ All 3 mode-specific displays must be tested at identical EHSI dimensions; criter
 - [ ] Verify top data fields, character widths, baselines, box outline, stroke thickness, caption spacing.
 - [ ] MAP: arc top and endpoints; 70° ticks, 30°/10° labels, aircraft triangle, track line and half/quarter range positions.
 - [ ] FULL NAV: rose radius, cardinal tick positions, fixed indexes, selected course pointer, CDI dots and the aircraft outline.
-- [ ] PLAN: right-side N indication, true-north alignment, route and labels, no misleading MAP heading-bug dashed line.
+- [ ] PLAN: independent 70° expanded compass (FCOM 10.32.3), right-side N indication, true-north route and labels, heading bug with NO dashed line to an airplane.
 - [ ] Verify magenta bug + reference line when selectable; suppress when outside MAP arc.
 - [ ] Failure injection for SG1, SG2, transfer, NAV, track, heading and EHSI POWER.
 - [ ] Run automated mobile/desktop browser screenshots and 3-mode visual hashes; inspect saved workflow artifacts.
