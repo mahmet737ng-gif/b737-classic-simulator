@@ -8,8 +8,8 @@ const Core=root.B737AFDSAnnunciatorCoreV1;
 if(!Core)return;
 const VERSION="AFDS-ANN-UNIFIED-0001";
 const ASSET="../assets/locked/2026-10-23/Switches/Toggle/";
-const FRAMES=Object.freeze({TEST_1:ASSET+"b737-toggle-on.webp",
-  NEUTRAL:ASSET+"b737-toggle-center.webp",TEST_2:ASSET+"b737-toggle-off.webp"});
+const FRAMES=Object.freeze({TEST_1:ASSET+"b737-toggle-off.webp",
+  NEUTRAL:ASSET+"b737-toggle-center.webp",TEST_2:ASSET+"b737-toggle-on.webp"});
 const LAMPS=Object.freeze([
   {id:"AP",label:"A/P",x:1462.6,y:223.0,w:17.3,h:19.3},
   {id:"AT",label:"A/T",x:1484.9,y:223.0,w:17.3,h:19.3},
