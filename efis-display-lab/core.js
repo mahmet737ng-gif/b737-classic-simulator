@@ -4,7 +4,7 @@
  */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.EFISDisplayLabCore=api;})(typeof globalThis==='object'?globalThis:null,function(){
 'use strict';
-const VERSION='EFIS-DISPLAY-LAB-0001';
+const VERSION='EFIS-DISPLAY-LAB-0002';
 const MODES=['FULL_VOR_ILS','EXP_VOR_ILS','FULL_NAV','EXP_NAV','MAP','CTR_MAP','PLAN'];
 const RANGES=[10,20,40,80,160,320];
 const FCOM='https://boredaviator.com/wp-content/uploads/2025/03/B737-300-FCOM-.pdf';
@@ -40,7 +40,7 @@ function norm(v){return ((Number(v)||0)%360+360)%360;}
 function initial(){
  return {seat:'CAPT',power:{eadi:true,ehsi:true,sg1:true,sg2:true,source:'NORMAL',att:true,heading:true,track:true,adc:true,nav:true,loc:true,gs:true,ra:true,fd:true},
  eadi:{pitch:0,bank:0,slip:0,ias:220,selectedSpeed:230,mach:.55,groundSpeed:310,radioAlt:800,dh:200,descent:true,fd:true,fdPitch:4,fdRoll:0,locDev:.3,gsDev:-.3,frontCourse:true,tcas:'OFF',windshear:false,pullup:false,pli:false,at:'FMC SPD',pitchMode:'VNAV PTH',rollMode:'LNAV',afds:'CMD',machVisible:true,dhReset:false},
- ehsi:{mode:'MAP',range:40,heading:240,track:245,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1},
+ ehsi:{mode:'MAP',range:40,heading:240,track:245,selectedHeading:252,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1},
  audit:Object.fromEntries(items.map(x=>[x.display+'.'+x.id,'PENDING']))};
 }
 function activeSg(s){const which=s.power.source==='SG1'?'sg1':s.power.source==='SG2'?'sg2':s.seat==='FO'?'sg2':'sg1';return !!s.power[which];}
@@ -53,11 +53,11 @@ function evaluate(s){
 function ehsiModel(s){
  const e=s.ehsi,p=s.power;const sg=activeSg(s);const mode=MODES.includes(e.mode)?e.mode:'MAP',range=RANGES.includes(Number(e.range))?Number(e.range):40;
  const opts={...e.options,wxr:!!e.options.wxr,terr:!!e.options.terr,demoRoute:!!e.showSyntheticRoute};
- const pts=e.showSyntheticRoute&&p.nav?[{name:'ECHO',x:-12,y:-8},{name:'FIX A',x:3,y:9},{name:'FIX B',x:16,y:24},{name:'DEST',x:29,y:34}]:[];
- return {mode,range,heading:norm(e.heading),track:norm(e.track),course:norm(e.course),
+ const pts=e.showSyntheticRoute&&p.nav?[{name:'SIM0',x:-3,y:-8},{name:'TEST1',x:0,y:10},{name:'TEST2',x:5,y:21},{name:'TEST3',x:10,y:34}]:[];
+ return {mode,range,heading:norm(e.heading),track:norm(e.track),selectedHeading:norm(e.selectedHeading),course:norm(e.course),
  nav:{valid:!!p.nav,source:'VOR1',ident:'SIM VOR',dme:16.2,cdi:.65,toFrom:'TO'},
  route:{source:'SYNTHETIC_TRAINING_ROUTE',activeIndex:1,points:pts},
- options:opts,efis:{headingValid:!!p.heading,trackValid:!!p.track,sgValid:!!p.ehsi&&sg,remoteWxr:false,wxrTransmitter:false,brightness:clamp(e.brightness,.2,1)}};
+ options:opts,efis:{headingValid:!!p.heading,trackValid:!!p.track,sgValid:!!sg,displayPower:!!p.ehsi,remoteWxr:false,wxrTransmitter:false,brightness:clamp(e.brightness,.2,1)}};
 }
 function orientation(mode){return mode==='PLAN'?'TRUE_NORTH':mode.includes('VOR_ILS')?'HEADING_UP':'TRACK_UP';}
 function apply(s,patch){const x=structuredCopy(s);if(patch.type==='reset')return initial();
