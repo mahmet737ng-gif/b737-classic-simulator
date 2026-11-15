@@ -153,6 +153,27 @@
    if(frame)return;
    frame=win.requestAnimationFrame(()=>{frame=0;refresh();});
   }
+  // Two independent raster control panels installed on CAPT/FO pedestal.
+  // Keep the existing EFIS modal, EHSI render owner, and avionics feed intact.
+  win.addEventListener('b737:unified-efis-control',event=>{
+   const d=event.detail||{},seat=d.seat,p=d.state;
+   if(!SEATS.includes(seat)||!p||!state[seat])return;
+   const x=state[seat];
+   if(core.MODES.includes(p.mode))x.ehsi.mode=p.mode;
+   if(core.RANGES.includes(p.range))x.ehsi.range=p.range;
+   if(Number.isFinite(p.dh))x.eadi.dh=Math.max(-20,Math.min(999,Math.trunc(p.dh)));
+   if(p.brightness){
+    for(const [kind,target] of [['adi',x.eadi],['hsi',x.ehsi],['wxInner',x.ehsi]]){
+     const value=p.brightness[kind];
+     if(!Number.isFinite(value))continue;
+     target[kind==='adi'||kind==='hsi'?'brightness':'wxBrightness']=Math.max(0,Math.min(1,value));
+    }
+   }
+   for(const key of ['wxr','tfc','vorAdf','navAid','arpt','rteData','wpt'])
+    if(typeof p.options?.[key]==='boolean')x.ehsi.options[key]=p.options[key];
+   if(selected===seat)syncControls();
+   schedule();
+  });
   doc.getElementById('unifiedEfisOpen')?.addEventListener('click',showControls);
   doc.getElementById('unifiedEfisClose')?.addEventListener('click',()=>cockpit.close());
   doc.getElementById('unifiedEfisSeat')?.addEventListener('change',e=>select(e.target.value));
