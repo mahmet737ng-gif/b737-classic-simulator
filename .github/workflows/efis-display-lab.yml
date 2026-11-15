@@ -29,6 +29,7 @@ jobs:
           node --check efis-display-lab/ehsi-v2.js
           node --check efis-display-lab/eadi.js
           node --check efis-display-lab/lab.js
+          node --check efis-display-lab/efis-cp.js
           node --check cdu-standalone-v6/ehsi/ehsi-engine.js
       - name: Rule and registry tests
         run: |
