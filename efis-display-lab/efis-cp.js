@@ -12,7 +12,7 @@ const W=1448,H=1086,pct=(n,d)=>n/d*100+'%';
 const MODE=['FULL_NAV','FULL_VOR_ILS','EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN'];
 const MODE_DEG={FULL_NAV:-180,FULL_VOR_ILS:-135,EXP_NAV:-86,EXP_VOR_ILS:-42,MAP:0,CTR_MAP:47,PLAN:100};
 const RANGE=[10,20,40,80,160,320],RANGE_DEG={10:0,20:32,40:65,80:97,160:127,320:159};
-const KNOBS={dh:[296.5,500.5,84],adi:[292.5,892.5,72],mode:[777.5,316.5,108],hsi:[560.5,587,102],wxInner:[570,589,58],range:[1190,311,112]};
+const KNOBS={dh:[296.5,500.5,84],adi:[292.5,892.5,72],mode:[777.5,316.5,108],hsi:[560.5,587,102],wxInner:[560.5,587,55],range:[1190,311,112]};
 const BUTTONS={rst:[250,666,320,729],wxr:[1079,495,1244,661],vorAdf:[469,805,609,970],navAid:[637,805,780,970],arpt:[809,805,951,970],rteData:[979,805,1127,970],wpt:[1151,805,1294,970]};
 const OPTIONS={wxr:'wxr',vorAdf:'vorAdf',navAid:'navAid',arpt:'arpt',rteData:'rteData',wpt:'wpt'};
 const MODE_HITS={FULL_NAV:[639,389],FULL_VOR_ILS:[698,175],EXP_NAV:[647,290],EXP_VOR_ILS:[859,178],MAP:[972,276],CTR_MAP:[963,395],PLAN:[817,503]};
@@ -94,7 +94,10 @@ for(const [key,[cx,cy,r]] of Object.entries(KNOBS)){
  b.type='button';b.dataset.knob=key;b.dataset.kind=key==='wxInner'?'inner':'outer';
  b.title=key+' · click / wheel / swipe / arrows · Shift+click reverse';
  b.setAttribute('aria-label',key+' selector');
- const img=el('img','efcp-rotor',b);img.src=images['knob-'+key+'.webp'];img.alt='';img.draggable=false;
+ const img=el('img','efcp-rotor',b);
+ const redesigned={mode:'./assets/mode-rotor-v2.svg',range:'./assets/range-rotor-v2.svg',hsi:'./assets/hsi-brt-outer-v2.svg',wxInner:'./assets/map-wxr-brt-inner-v2.svg'};
+ img.src=redesigned[key]||images['knob-'+key+'.webp'];img.alt='';img.draggable=false;
+ if(redesigned[key])b.dataset.asset='full-circle-v2';
  rotorEls[key]=img;bindRotary(b,key);
 }
 for(const [key,[x1,y1,x2,y2]] of Object.entries(BUTTONS)){
@@ -103,6 +106,10 @@ for(const [key,[x1,y1,x2,y2]] of Object.entries(BUTTONS)){
  b.setAttribute('aria-label',key==='rst'?'Decision height RESET':key.toUpperCase()+' map option');
  if(key!=='rst'){
   b.setAttribute('aria-pressed','false');
+  // Entire photographed pushbutton housing is redrawn as one bounded unit.
+  // Its upper ON lens and lower unlit half stay inside the same physical box.
+  el('span','efcp-key-well',b);
+  el('span','efcp-key-bottom',b);
   el('span','efcp-on',b,'ON');
  }
  b.addEventListener('click',()=>{
@@ -111,9 +118,11 @@ for(const [key,[x1,y1,x2,y2]] of Object.entries(BUTTONS)){
  });
  pushEls[key]=b;
 }
-const tfc=pos(el('button','efcp-tfc',face,'TFC'),1156,278,69,68);
+// Fixed central recessed button: true circle; rotation of RANGE must not rotate TFC.
+const tfcSize=68;
+const tfc=pos(el('button','efcp-tfc',face,'TFC'),1190-tfcSize/2,311-tfcSize/2,tfcSize,tfcSize);
 tfc.type='button';tfc.id='efcp-tfc';tfc.setAttribute('aria-label','TFC recessed traffic display button');
-tfc.title='TFC traffic overlay select — independent of range';
+tfc.title='TFC traffic overlay select — independent of range';tfc.dataset.geometry='full-circle-360';
 tfc.setAttribute('aria-pressed','false');
 tfc.addEventListener('click',()=>option('tfc',!st.ehsi.options.tfc));
 for(const [type,values,coords] of [['mode',MODE,MODE_HITS],['range',RANGE,RANGE_HITS]]){
