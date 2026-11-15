@@ -65,3 +65,9 @@
 /* TFC is a black recessed mechanical button, not an illuminated ring. */
 .uefis-face .uefis-tfc[aria-pressed="true"]{filter:brightness(.91)}
 .uefis-face .uefis-tfc[aria-pressed="true"]:after{display:none}
+
+/* Owner-marked EFIS radio slots: faceplate starts at frame origin; expand remains accessible. */
+#region-pedestal .uefis-seat .uefis-banner{position:absolute;top:2px;right:2px;z-index:15;width:auto;height:20px;padding:0;background:transparent;border:0}
+#region-pedestal .uefis-seat .uefis-banner span{display:none}
+#region-pedestal .uefis-seat .uefis-expand{height:19px;min-width:19px;font-size:12px!important;opacity:.65}
+#region-pedestal .uefis-seat .uefis-face{width:100%;border:0}
