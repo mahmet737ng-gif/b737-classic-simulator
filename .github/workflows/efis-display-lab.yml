@@ -26,11 +26,14 @@ jobs:
       - name: JavaScript parse gate
         run: |
           node --check efis-display-lab/core.js
+          node --check efis-display-lab/ehsi-v2.js
           node --check efis-display-lab/eadi.js
           node --check efis-display-lab/lab.js
           node --check cdu-standalone-v6/ehsi/ehsi-engine.js
       - name: Rule and registry tests
-        run: node efis-display-lab/core.test.cjs
+        run: |
+          node efis-display-lab/core.test.cjs
+          node efis-display-lab/ehsi-v2.test.cjs
       - name: Ensure Unified owner-protected files not changed
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
