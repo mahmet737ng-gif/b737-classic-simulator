@@ -11,7 +11,7 @@ function api(){
 }
 test('LAN COM/NAV published ranges and frequency steps are enforced',()=>{
  const a=api();
- assert.equal(a.version,'PD-ROLLING-FREQUENCY-0001');
+ assert.equal(a.version,'PD-ROLLING-FREQUENCY-0002');
  assert.equal(a.channels.COMM.min,118000);
  assert.equal(a.channels.COMM.max,136975);
  assert.equal(a.channels.COMM.step,25);
