@@ -1,0 +1,35 @@
+name: EFIS EADI EHSI independent lab QA
+on:
+  push:
+    paths:
+      - 'efis-display-lab/**'
+      - 'cdu-standalone-v6/ehsi/ehsi-engine.js'
+      - '.github/workflows/efis-display-lab.yml'
+  pull_request:
+    paths:
+      - 'efis-display-lab/**'
+      - 'cdu-standalone-v6/ehsi/ehsi-engine.js'
+      - '.github/workflows/efis-display-lab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pure-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript parse gate
+        run: |
+          node --check efis-display-lab/core.js
+          node --check efis-display-lab/eadi.js
+          node --check efis-display-lab/lab.js
+          node --check cdu-standalone-v6/ehsi/ehsi-engine.js
+      - name: Rule and registry tests
+        run: node efis-display-lab/core.test.cjs
+      - name: Ensure Unified owner-protected files not changed
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
