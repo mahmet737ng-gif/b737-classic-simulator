@@ -71,7 +71,7 @@ test("Unified has two independent three-position switches using photo bounding b
  assert.deepEqual(Object.keys(api.INSTALL).sort(),["CAPT","FO"]);
  for(const seat of ["CAPT","FO"]){
   const cfg=api.INSTALL[seat];
-  assert.deepEqual(cfg.lamps.map(x=>x.id),["AP","AT","FMC"]);
+  assert.deepEqual(Array.from(cfg.lamps,x=>x.id),["AP","AT","FMC"]);
   const left=seat==="CAPT"?35:1222,right=seat==="CAPT"?761:1594;
   for(const lamp of cfg.lamps){
    assert.ok(lamp.x>=left && lamp.x+lamp.w<right);
