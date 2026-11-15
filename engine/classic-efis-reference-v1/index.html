@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Classic EFIS — Reference Audit Workbench v1</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,Arial}
+*{box-sizing:border-box}body{margin:0;background:#0c111a;color:#e5edf5}
+header{padding:16px 24px;border-bottom:1px solid #334054;background:#101925}
+h1{font-size:21px;margin:0 0 5px}h2{font-size:16px;margin:0 0 12px}
+p{margin:4px 0;line-height:1.5;color:#aebed0;font-size:13px}
+main{max-width:1480px;margin:auto;display:grid;grid-template-columns:minmax(310px,380px) minmax(420px,1fr);gap:16px;padding:16px}
+.panel{background:#141d2a;border:1px solid #344154;border-radius:12px;padding:15px}
+.control{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+label{display:block;font-size:12px;color:#aebbd0;margin-bottom:4px}
+input,select,button{background:#0a1320;color:#e2edf7;border:1px solid #41516b;border-radius:6px;padding:8px;width:100%;font:inherit}
+button{cursor:pointer}button:hover{border-color:#7aa3cf}
+input[type=checkbox]{width:auto;vertical-align:middle}
+input[type=range]{padding:0}
+.checks{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:13px}
+.stage{display:flex;align-items:center;justify-content:center;background:#030507;border:1px solid #344154;border-radius:9px;min-height:390px}
+.glass{position:relative;width:min(100%,600px);aspect-ratio:1;overflow:hidden}
+.glass svg,.glass img{width:100%;height:100%;position:absolute;inset:0}
+.glass img{object-fit:fill;pointer-events:none}
+.small{font-size:12px;color:#a5b5c8}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto;min-width:135px}
+#auditRows{overflow:auto;max-height:370px}
+table{border-collapse:collapse;width:100%;font-size:12px}
+td,th{padding:9px 7px;border-bottom:1px solid #2f3c4d;text-align:left}
+th{position:sticky;top:0;background:#182232;z-index:2}
+td select{padding:5px;font-size:12px}
+.status{font-size:12px;color:#edba64;margin-top:8px}
+@media(max-width:850px){main{display:block}.panel{margin-bottom:16px}}
+</style>
+</head>
+<body>
+<header><h1>737 Classic EADI / EHSI · Reference Audit Workbench</h1>
+<p>Preliminary source-controlled training prototype · no real navigation or aircraft certification · source photographs are imported locally and never uploaded.</p></header>
+<main>
+<section class="panel">
+<h2>Display inputs</h2>
+<div class="control">
+<div><label for="display">Display</label><select id="display"><option>EADI</option><option>EHSI</option></select></div>
+<div><label for="seat">Seat</label><select id="seat"><option>CAPT</option><option>FO</option></select></div>
+<div><label for="mode">EHSI mode</label><select id="mode"><option>MAP</option><option>CTR_MAP</option><option>EXP_NAV</option><option>FULL_NAV</option><option>EXP_VOR_ILS</option><option>FULL_VOR_ILS</option><option>PLAN</option></select></div>
+<div><label for="range">Range NM</label><select id="range"><option>10</option><option>20</option><option selected>40</option><option>80</option><option>160</option><option>320</option></select></div>
+<div><label for="pitch">Pitch °</label><input id="pitch" type="number" value="0" min="-90" max="90"></div>
+<div><label for="bank">Bank °</label><input id="bank" type="number" value="0" min="-180" max="180"></div>
+<div><label for="heading">Heading °</label><input id="heading" type="number" value="245" min="0" max="359"></div>
+<div><label for="track">Track °</label><input id="track" type="number" value="250" min="0" max="359"></div>
+<div><label for="ias">IAS kt</label><input id="ias" type="number" value="230" min="0" max="500"></div>
+<div><label for="selectedHeading">MCP heading °</label><input id="selectedHeading" type="number" value="270" min="0" max="359"></div>
+</div>
+<div class="checks"><label><input id="power" type="checkbox" checked> Display power</label><label><input id="sg" type="checkbox" checked> SG valid</label><label><input id="irs" type="checkbox" checked> IRS valid</label></div>
+<h2 style="margin-top:22px">Reference photo overlay</h2>
+<label for="refFile">Load a local cropped EADI/EHSI reference PNG/JPEG/WebP</label><input type="file" id="refFile" accept="image/png,image/jpeg,image/webp">
+<div class="control" style="margin-top:14px"><div><label for="opacity">Photo opacity</label><input type="range" id="opacity" min="0" max="100" value="50"></div>
+<div><label for="scale">Photo scale</label><input type="range" id="scale" min="75" max="140" value="100"></div>
+<div><label for="shiftX">Shift X %</label><input type="range" id="shiftX" min="-30" max="30" value="0"></div>
+<div><label for="shiftY">Shift Y %</label><input type="range" id="shiftY" min="-30" max="30" value="0"></div></div>
+<div class="actions"><button id="measure">Measure pixel error</button><button id="download">Export audit JSON</button></div>
+<p id="compare" class="status">Import a reference photo to begin manual visual registration. Raw pixel error is not a calibration or accuracy certification.</p>
+</section>
+<section>
+<div class="panel"><h2>Independent display preview <span class="small">(provisional geometry)</span></h2>
+<div class="stage"><div class="glass"><svg id="preview" role="img"></svg><img id="reference" alt="Locally selected source image reference" hidden></div></div>
+<p id="state" class="small"></p>
+</div>
+<div class="panel" style="margin-top:16px"><h2>Segment-by-segment audit register</h2>
+<p>Every item starts PENDING; even a visually similar rendering is not an approved match. Change review status manually after checking aircraft variant, FCOM behavior, shape, position, scale, colors and invalid-data cases.</p>
+<div id="auditRows"></div></div>
+</section>
+</main>
+<script src="./core.js"></script><script src="./renderer.js"></script>
+<script>
+(function(){
+"use strict";
+const core=window.ClassicEFISReferenceEngine;
+const render=window.ClassicEFISReferenceRenderer.render;
+const by=id=>document.getElementById(id);
+const field=(id)=>Number(by(id).value);
+const valid=value=>({valid:true,value});
+const invalid={valid:false,value:null};
+const statuses=new Map();
+let lastScene=null,sourceUrl=null;
+function state(){
+ const data=by("irs").checked?valid({pitch:field("pitch"),bank:field("bank")}):invalid;
+ const hdg=by("irs").checked?valid(field("heading")):invalid;
+ const trk=by("irs").checked?valid(field("track")):invalid;
+ return {powered:by("power").checked,sgValid:by("sg").checked,
+ mode:by("mode").value,rangeNm:field("range"),signals:{
+ attitude:data,heading:hdg,track:trk,airspeed:valid(field("ias")),
+ selectedHeading:valid(field("selectedHeading")),
+ position:by("irs").checked?valid({lat:0,lon:0}):invalid,
+ route:invalid},effectivity:"PENDING_AIRCRAFT_CONFIRMATION"};
+}
+function update(){
+ const display=by("display").value;
+ lastScene=render(by("preview"),display,state());
+ const visible=lastScene.segments.filter(x=>x.state==="READY").length;
+ by("state").textContent=by("seat").value+" · "+lastScene.orientation+
+ " · "+visible+"/"+lastScene.segments.length+" source-gated items ready · not visually approved";
+ const rows=lastScene.segments.map(x=>{
+ const key=display+":"+x.id,review=statuses.get(key)||"PENDING";
+ const options=["PENDING","MATCHED_VISUALLY","MISMATCH","NEEDS_SOURCE"].map(v=>
+  "<option value='"+v+"'"+(review===v?" selected":"")+">"+v+"</option>").join("");
+ return "<tr><td>"+x.id+"</td><td title='"+x.source+"'>"+x.source+"</td><td>"+x.state+"</td><td><select data-review='"+key+"'>"+options+"</select></td></tr>";
+ }).join("");
+ by("auditRows").innerHTML="<table><thead><tr><th>Segment</th><th>Source</th><th>Data</th><th>Visual review</th></tr></thead><tbody>"+rows+"</tbody></table>";
+}
+document.querySelectorAll("input:not([type=file]), select:not([data-review])").forEach(x=>x.addEventListener("input",update));
+by("auditRows").addEventListener("change",ev=>{
+ const key=ev.target?.dataset?.review;if(key)statuses.set(key,ev.target.value);
+});
+function referenceStyle(){
+ const img=by("reference");
+ img.style.opacity=String(field("opacity")/100);
+ img.style.transform="translate("+field("shiftX")+"%,"+field("shiftY")+"%) scale("+(field("scale")/100)+")";
+}
+["opacity","scale","shiftX","shiftY"].forEach(id=>by(id).addEventListener("input",referenceStyle));
+by("refFile").addEventListener("change",ev=>{
+ if(sourceUrl)URL.revokeObjectURL(sourceUrl);
+ const file=ev.target.files?.[0];if(!file){by("reference").hidden=true;return;}
+ sourceUrl=URL.createObjectURL(file);
+ by("reference").src=sourceUrl;by("reference").hidden=false;
+ by("compare").textContent="Reference loaded locally: "+file.name+". Align glass manually before measuring.";
+});
+async function imageToPixels(img,dim=600){
+ const canvas=document.createElement("canvas");canvas.width=dim;canvas.height=dim;
+ const c=canvas.getContext("2d",{willReadFrequently:true});c.drawImage(img,0,0,dim,dim);
+ return c.getImageData(0,0,dim,dim).data;
+}
+by("measure").addEventListener("click",async()=>{
+ const img=by("reference");
+ if(!img.src||img.hidden){by("compare").textContent="Select a local reference image first.";return;}
+ try{
+  await img.decode();
+  const xml=new XMLSerializer().serializeToString(by("preview"));
+  const svg=new Blob([xml],{type:"image/svg+xml;charset=utf-8"});
+  const url=URL.createObjectURL(svg);
+  const p=new Image();p.src=url;await p.decode();
+  const actual=await imageToPixels(p);
+  URL.revokeObjectURL(url);
+  const ref=await imageToPixels(img);
+  const metric=core.compareRGBA(ref,actual,600,600);
+  by("compare").textContent="Uncalibrated MAE: "+metric.meanAbsoluteError.toFixed(2)+
+  " / 255 · differing pixels: "+(100*metric.mismatchedFraction).toFixed(1)+
+  "% (threshold 24/channel). Excludes perspective/CRT effects. NOT AN APPROVAL.";
+ }catch(e){by("compare").textContent="Comparison unavailable: "+e.message;}
+});
+by("download").addEventListener("click",()=>{
+ const result={engine:core.VERSION,created:new Date().toISOString(),display:by("display").value,
+ seat:by("seat").value,input:state(),sourceFile:by("refFile").files?.[0]?.name||null,
+ segmentReview:lastScene.segments.map(s=>({id:s.id,source:s.source,visibility:s.state,
+ reviewerStatus:statuses.get(by("display").value+":"+s.id)||"PENDING"})),
+ approval:"NOT CERTIFIED"};
+ const blob=new Blob([JSON.stringify(result,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+ a.download="classic-efis-segment-audit.json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+});
+update();referenceStyle();
+})();
+</script>
+</body></html>
