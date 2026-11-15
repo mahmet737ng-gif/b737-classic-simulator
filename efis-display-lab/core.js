@@ -39,8 +39,8 @@ function clamp(v,min,max){const x=Number(v);return Number.isFinite(x)?Math.max(m
 function norm(v){return ((Number(v)||0)%360+360)%360;}
 function initial(){
  return {seat:'CAPT',power:{eadi:true,ehsi:true,sg1:true,sg2:true,source:'NORMAL',att:true,heading:true,track:true,adc:true,nav:true,loc:true,gs:true,ra:true,fd:true},
- eadi:{pitch:0,bank:0,slip:0,ias:220,selectedSpeed:230,mach:.55,groundSpeed:310,radioAlt:800,dh:200,descent:true,fd:true,fdPitch:4,fdRoll:0,locDev:.3,gsDev:-.3,frontCourse:true,tcas:'OFF',windshear:false,pullup:false,pli:false,at:'FMC SPD',pitchMode:'VNAV PTH',rollMode:'LNAV',afds:'CMD',machVisible:true,dhReset:false},
- ehsi:{mode:'MAP',range:40,heading:240,track:245,selectedHeading:252,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1},
+ eadi:{brightness:1,pitch:0,bank:0,slip:0,ias:220,selectedSpeed:230,mach:.55,groundSpeed:310,radioAlt:800,dh:200,descent:true,fd:true,fdPitch:4,fdRoll:0,locDev:.3,gsDev:-.3,frontCourse:true,tcas:'OFF',windshear:false,pullup:false,pli:false,at:'FMC SPD',pitchMode:'VNAV PTH',rollMode:'LNAV',afds:'CMD',machVisible:true,dhReset:false},
+ ehsi:{mode:'MAP',range:40,heading:240,track:245,selectedHeading:252,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1,wxBrightness:1},
  audit:Object.fromEntries(items.map(x=>[x.display+'.'+x.id,'PENDING']))};
 }
 function activeSg(s){const which=s.power.source==='SG1'?'sg1':s.power.source==='SG2'?'sg2':s.seat==='FO'?'sg2':'sg1';return !!s.power[which];}
@@ -57,7 +57,7 @@ function ehsiModel(s){
  return {mode,range,heading:norm(e.heading),track:norm(e.track),selectedHeading:norm(e.selectedHeading),course:norm(e.course),
  nav:{valid:!!p.nav,source:'VOR1',ident:'SIM VOR',dme:16.2,cdi:.65,toFrom:'TO'},
  route:{source:'SYNTHETIC_TRAINING_ROUTE',activeIndex:1,points:pts},
- options:opts,efis:{headingValid:!!p.heading,trackValid:!!p.track,sgValid:!!sg,displayPower:!!p.ehsi,remoteWxr:false,wxrTransmitter:false,brightness:clamp(e.brightness,.2,1)}};
+ options:opts,efis:{headingValid:!!p.heading,trackValid:!!p.track,sgValid:!!sg,displayPower:!!p.ehsi,remoteWxr:false,wxrTransmitter:false,wxBrightness:clamp(e.wxBrightness,0,1),brightness:clamp(e.brightness,0,1)}};
 }
 function orientation(mode){return mode==='PLAN'?'TRUE_NORTH':mode.includes('VOR_ILS')?'HEADING_UP':'TRACK_UP';}
 function apply(s,patch){const x=structuredCopy(s);if(patch.type==='reset')return initial();
@@ -74,6 +74,8 @@ function apply(s,patch){const x=structuredCopy(s);if(patch.type==='reset')return
  else if(patch.type==='set'){
   const path=patch.path.split('.');if(path.length!==2||!Object.hasOwn(x,path[0])||!Object.hasOwn(x[path[0]],path[1]))throw Error('BAD_PATH '+patch.path);
   x[path[0]][path[1]]=patch.value;
+  if(patch.path==='eadi.dh')x.eadi.dh=clamp(patch.value,-20,999);
+  if(['eadi.brightness','ehsi.brightness','ehsi.wxBrightness'].includes(patch.path))x[path[0]][path[1]]=clamp(patch.value,0,1);
   if(patch.path==='eadi.mach')x.eadi.machVisible=Number(patch.value)>=.40?true:Number(patch.value)<.38?false:s.eadi.machVisible;
   if(patch.path==='eadi.radioAlt'&&Number(patch.value)>x.eadi.dh+75)x.eadi.dhReset=false;
   if(patch.path==='eadi.radioAlt'&&Number(patch.value)<=0)x.eadi.dhReset=true;
