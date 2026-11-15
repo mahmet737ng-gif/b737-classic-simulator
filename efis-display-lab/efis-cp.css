@@ -1,0 +1,43 @@
+/* Source geometry: existing owner-approved 1448x1086 photographic EFIS plate and knob sprites.
+   Independent from Unified. No modifications to any frozen cockpit asset. */
+.efcp-shell{border:1px solid #42546b;border-radius:14px;background:#111a24;padding:15px;margin:0 0 22px;box-shadow:0 14px 36px #0006}
+.efcp-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+.efcp-heading h2{margin:0;font-size:17px;letter-spacing:.04em;color:#f0f5fd}
+.efcp-heading p{margin:5px 0 0;font-size:12px;color:#98afc1}
+.efcp-tag{color:#d0e5ed;font:11px ui-monospace,monospace;border:1px solid #486071;border-radius:8px;padding:6px 9px}
+.efcp-layout{display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:14px;align-items:start}
+.efcp-face{position:relative;width:100%;aspect-ratio:1448/1086;background:#626970;overflow:hidden;isolation:isolate;user-select:none;touch-action:pan-y;border-radius:7px}
+.efcp-plate,.efcp-ref{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.efcp-ref{display:none}
+.efcp-face.ref-on .efcp-plate{display:none}
+.efcp-face.ref-on .efcp-ref{display:block}
+.efcp-knob,.efcp-key,.efcp-detent,.efcp-tfc{position:absolute;z-index:3;margin:0;padding:0;border:0;appearance:none;background:none;box-shadow:none;outline-offset:2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.efcp-knob{border-radius:50%;touch-action:none;cursor:grab}
+.efcp-knob:active{cursor:grabbing}
+.efcp-rotor{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;transform-origin:50% 50%;transition:transform 120ms ease-out}
+.efcp-knob[data-kind="inner"]{z-index:7}
+.efcp-key{touch-action:manipulation;border-radius:5%;transition:filter .1s ease,transform .1s ease}
+.efcp-key:active{filter:brightness(.8);transform:translateY(1.5%)}
+.efcp-key .efcp-on{position:absolute;left:8%;right:8%;top:9%;height:40%;display:flex;align-items:center;justify-content:center;background:linear-gradient(#fffffc,#d7dbdc);border-radius:3%;border:1px solid #ffffff;box-shadow:0 0 9px #f4ffff8c,inset 0 1px 2px white;color:#080a0b;font:600 clamp(10px,1.65vw,23px)/1 Arial,sans-serif;letter-spacing:.04em;opacity:0;pointer-events:none}
+.efcp-key[aria-pressed="true"] .efcp-on{opacity:1}
+.efcp-key[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #f1faff9c}
+.efcp-tfc{z-index:9;border-radius:50%;border:2px solid #848b8d;background:radial-gradient(circle at 34% 25%,#f3f1ed 0%,#d5d5cf 43%,#9a9a9a 73%,#777 100%);color:#17191a;font:900 clamp(7px,1.6vw,25px)/1 "Arial Narrow",Arial,sans-serif;box-shadow:inset 0 -5px 6px #30303099,0 2px 4px #1119;touch-action:manipulation}
+.efcp-tfc[aria-pressed="true"]{background:radial-gradient(circle at 50% 44%,#b9d5cb,#e1e5e3 65%,#91999a);box-shadow:inset 0 4px 10px #2229,0 0 0 2px #f1fffd}
+.efcp-tfc:active{box-shadow:inset 0 6px 12px #222c}
+.efcp-detent{z-index:5;width:2.8%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:1px solid #e9f3ff45;background:#111a1940;color:transparent;touch-action:manipulation}
+.efcp-detent[aria-pressed="true"]{border:2px solid #ffffffe0;background:#e7e9df8a;box-shadow:0 0 6px #fff7}
+.efcp-detent:focus-visible,.efcp-key:focus-visible,.efcp-tfc:focus-visible,.efcp-knob:focus-visible{outline:3px solid #83e8ff;outline-offset:3px}
+.efcp-dh{position:absolute;z-index:4;left:11.6%;top:18.5%;width:15%;height:8.3%;background:#161a1d;display:grid;place-items:center;box-shadow:inset 0 0 11px #000;border:1px solid #272e33;pointer-events:none}
+.efcp-dh-val{font:300 clamp(18px,4.2vw,64px)/1.1 'Courier New',monospace;letter-spacing:-.06em;color:#f1f2ed;text-shadow:0 0 2px #cdd2d5;font-variant-numeric:tabular-nums}
+.efcp-tester{background:#0b131d;border:1px solid #314355;border-radius:9px;padding:13px;font-size:12px}
+.efcp-tester h3{font-size:13px;color:#e5f2f8;margin:0 0 10px}
+.efcp-tester dl{display:grid;grid-template-columns:1fr auto;gap:9px 5px;margin:0 0 12px;font-size:11px}
+.efcp-tester dt{color:#a9bdc8}.efcp-tester dd{margin:0;text-align:right;color:#d4f2dc;font-family:ui-monospace,monospace}
+.efcp-tester .efcp-modes{display:flex;flex-wrap:wrap;gap:5px}
+.efcp-tester button{border:1px solid #526d80;background:#183042;color:#daedf6;padding:5px;border-radius:5px;font-size:10px}
+.efcp-tester button[aria-pressed="true"]{background:#d7e6ec;color:#1b2b35;border-color:#ecf7fa;font-weight:bold}
+.efcp-tester input[type=file]{max-width:100%;font-size:11px;color:#dce7eb}
+.efcp-tester details{margin-top:14px;color:#a9bac8;line-height:1.5}
+.efcp-legend{color:#98acbd;font-size:11px;margin-top:10px;line-height:1.6}
+@media(max-width:950px){.efcp-layout{grid-template-columns:minmax(0,1fr)}.efcp-tester{display:block}.efcp-tester dl{grid-template-columns:repeat(4,1fr);gap:5px}.efcp-tester dd{text-align:left}}
+@media(max-width:520px){.efcp-shell{padding:8px;margin:0 0 13px}.efcp-tester dl{grid-template-columns:1fr auto}.efcp-dh-val{font-size:clamp(14px,4vw,21px)}.efcp-detent{min-width:11px;min-height:11px}.efcp-key .efcp-on{font-size:clamp(7px,2vw,12px)}}
