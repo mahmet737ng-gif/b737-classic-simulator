@@ -1,7 +1,7 @@
 /* B737CL EADI/EHSI test-lab controller — no recurring polling. */
 (function(){
 'use strict';
-const core=window.EFISDisplayLabCore,view=window.EFISDisplayLabEadi,engine=window.EHSI_ENGINE;
+const core=window.EFISDisplayLabCore,view=window.EFISDisplayLabEadi,engine=window.EFISClassicEHSIV2;
 const $=id=>document.getElementById(id);
 if(!core||!view||!engine){document.body.insertAdjacentHTML('afterbegin','<p style="color:red">Lab dependency missing: core/eadi/EHSI renderer</p>');return}
 let state=core.initial(),selected=null;
@@ -55,6 +55,7 @@ addSelect(ai,'AFDS status (injected)','eadi.afds',['','FD','CMD','CWS P','CWS R'
 addSelect(hi,'Display MODE','ehsi.mode',core.MODES);
 addSelect(hi,'Range NM','ehsi.range',core.RANGES.map(String));
 addNumber(hi,'Heading ° MAG','ehsi.heading',0,359,1);
+addNumber(hi,'MCP selected HDG °','ehsi.selectedHeading',0,359,1);
 addNumber(hi,'Track ° MAG','ehsi.track',0,359,1);
 addNumber(hi,'Selected CRS °','ehsi.course',0,359,1);
 addRange(hi,'EHSI brightness','ehsi.brightness',.2,1,.05);
@@ -88,11 +89,11 @@ function render(){
  const status=core.evaluate(state);
  view.render($('eadi'),state,core);
  const ehsimodel=core.ehsiModel(state);
- if(state.power.ehsi){engine.render($('ehsi'),ehsimodel);}
- else{$('ehsi').replaceChildren();$('ehsi').style.opacity='1';$('ehsi').style.background='#000'}
+ const ehsiStatus=engine.render($('ehsi'),ehsimodel);
  $('eadiStatus').textContent=!status.powered?'NO POWER':!status.sg?'SG FAILURE':'SIMULATED INPUT';
- $('ehsiStatus').textContent=!state.power.ehsi?'NO POWER':!status.sg?'SG FAILURE':core.orientation(state.ehsi.mode).replace('_',' ');
- $('stateDump').textContent=JSON.stringify({version:core.VERSION,seat:state.seat,status:{eadi:status,ehsi:state.power.ehsi?engine.computeDisplay(ehsimodel):{powered:false}},state},null,2);
+ $('ehsiStatus').textContent=!state.power.ehsi?'NO POWER':!status.sg?'SG FAILURE':!ehsiStatus.supported?'MODE REBUILD PENDING':(state.ehsi.mode+' · '+ehsiStatus.orientation.replace('_',' ')+' · V2');
+ document.querySelectorAll('[data-ehsi-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ehsiMode===state.ehsi.mode)));
+ $('stateDump').textContent=JSON.stringify({version:core.VERSION,seat:state.seat,status:{eadi:status,ehsi:ehsiStatus},state},null,2);
  $('auditCount').textContent=Object.values(state.audit).filter(x=>x==='ACCEPTED').length+' / '+core.items.length+' visually accepted (manual)';
  if(selected)showHighlight(selected);
  syncControls();
@@ -102,6 +103,11 @@ $('presets').addEventListener('click',e=>{
  if(b.dataset.scenario)state=core.apply(state,{type:'scenario',name:b.dataset.scenario});
  else if(b.id==='dhReset')state=core.apply(state,{type:'dhReset'});
  else if(b.id==='runTests')tests();
+ render();
+});
+$('ehsiQuickModes').addEventListener('click',e=>{
+ const b=e.target.closest('[data-ehsi-mode]');if(!b)return;
+ state=core.apply(state,{type:'set',path:'ehsi.mode',value:b.dataset.ehsiMode});
  render();
 });
 function row(item){
