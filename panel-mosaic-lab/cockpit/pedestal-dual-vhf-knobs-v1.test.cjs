@@ -25,7 +25,7 @@ test('VHF photographic knob geometry and independent axes',()=>{
  assert.equal(new Set(Array.from(api.slots,s=>s.id)).size,6);
  assert.equal(api.slots.filter(s=>s.kind==='NAV').length,2);
  assert.equal(api.slots.filter(s=>s.kind==='COMM').length,4);
- assert.equal(api.version,'PD-VHF-DUAL-0002');
+ assert.equal(api.version,'PD-VHF-DUAL-0003');
  assert(fs.existsSync(path.join(base,'assets/vhf-concentric-ivory-v1.webp')));
  const image=fs.readFileSync(path.join(base,'assets/vhf-concentric-ivory-v1.webp'));
  assert.equal(image.toString('ascii',0,4),'RIFF');
