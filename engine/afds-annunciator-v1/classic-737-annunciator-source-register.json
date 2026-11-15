@@ -73,23 +73,17 @@
     "controlsShared": true,
     "notes": "Panel geometry and markings must be registered to owner's photos independently for each side",
     "positions": {
-      "FO": {
-        "centerNativeMain": [
-          1537.1,
-          233.6
-        ],
-        "rectNativeMain": [
-          1527.5,
-          224,
-          19.2,
-          19.2
-        ],
-        "reference": "owner browser screenshot provided 2026-11-15",
-        "geometryStatus": "INITIAL_FO_SCREENSHOT_CANDIDATE_PIXEL_QA_PENDING"
-      },
       "CAPT": {
-        "geometryStatus": "PENDING_OWNER_PHOTO_MEASUREMENT",
-        "installed": false
+        "x": 683.2,
+        "y": 212.9,
+        "source": "captain blank 3942x3591; scaled 1536x1399",
+        "geometryStatus": "PHOTO_DERIVED_CANDIDATE"
+      },
+      "FO": {
+        "x": 1537.1,
+        "y": 233.6,
+        "source": "FO screenshot 1649x928 and source photo cutouts",
+        "geometryStatus": "PHOTO_DERIVED_CANDIDATE"
       }
     }
   },
@@ -108,15 +102,27 @@
           "AMBER"
         ],
         "installation": {
-          "FO": {
-            "x": 1462.6,
-            "y": 223,
-            "w": 17.3,
-            "h": 19.3
+          "CAPT": {
+            "x": 597,
+            "y": 202.2,
+            "w": 21.4,
+            "h": 22.3
           },
-          "CAPT": "PENDING"
+          "FO": {
+            "x": 1449.1,
+            "y": 216.9,
+            "w": 21.8,
+            "h": 21.1
+          }
         },
-        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending",
+        "rendering": {
+          "illumination": "TEXT_GLYPHS_ONLY",
+          "blackLens": "PHOTOGRAPH_UNCHANGED",
+          "upper": "A/P",
+          "lower": "P/RST",
+          "status": "photo-registered source candidates; browser visual QA pending"
+        }
       },
       {
         "key": "AT",
@@ -129,15 +135,27 @@
           "AMBER"
         ],
         "installation": {
-          "FO": {
-            "x": 1484.9,
-            "y": 223,
-            "w": 17.3,
-            "h": 19.3
+          "CAPT": {
+            "x": 623.5,
+            "y": 202.2,
+            "w": 21.4,
+            "h": 22.3
           },
-          "CAPT": "PENDING"
+          "FO": {
+            "x": 1475,
+            "y": 216.9,
+            "w": 21.8,
+            "h": 21.1
+          }
         },
-        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending",
+        "rendering": {
+          "illumination": "TEXT_GLYPHS_ONLY",
+          "blackLens": "PHOTOGRAPH_UNCHANGED",
+          "upper": "A/T",
+          "lower": "P/RST",
+          "status": "photo-registered source candidates; browser visual QA pending"
+        }
       },
       {
         "key": "FMC",
@@ -149,15 +167,27 @@
           "AMBER"
         ],
         "installation": {
-          "FO": {
-            "x": 1507.4,
-            "y": 223,
-            "w": 17.3,
-            "h": 19.3
+          "CAPT": {
+            "x": 650,
+            "y": 202.2,
+            "w": 21.4,
+            "h": 22.3
           },
-          "CAPT": "PENDING"
+          "FO": {
+            "x": 1499.9,
+            "y": 216.9,
+            "w": 22.1,
+            "h": 21.1
+          }
         },
-        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending",
+        "rendering": {
+          "illumination": "TEXT_GLYPHS_ONLY",
+          "blackLens": "PHOTOGRAPH_UNCHANGED",
+          "upper": "FMC",
+          "lower": "P/RST",
+          "status": "photo-registered source candidates; browser visual QA pending"
+        }
       }
     ],
     "testSwitch": {
@@ -185,7 +215,26 @@
         "assetStatus": "APPROVED_LOCKED",
         "draftsExcluded": true,
         "note": "Physical frame mapping observed in actual approved sprites: off.webp has tip above pivot (TEST 1 upper), on.webp has tip below pivot (TEST 2 lower), center.webp is the approved center frame. All 3 sprites are unaltered.",
-        "poseStatus": "SOURCE_FRAMES_VISUALLY_INSPECTED_IN_CHAT; FINAL_PIXEL_FIT_PENDING"
+        "poseStatus": "SOURCE_FRAMES_VISUALLY_INSPECTED_IN_CHAT; FINAL_PIXEL_FIT_PENDING",
+        "selection": "OWNER_EXPLICIT_SMALL_SILVER_2026-11-15",
+        "activeAtlas": "shared-assets/toggle-switch-small/Small_Silver_5Positions.webp",
+        "activeManifest": "shared-assets/toggle-switch-small/manifest.json",
+        "activeAtlasPoseCellIndices": {
+          "TEST_1": 3,
+          "NEUTRAL": 1,
+          "TEST_2": 4
+        },
+        "spriteCellPixels": [
+          1024,
+          1024
+        ],
+        "spriteTotalPixels": [
+          5120,
+          1024
+        ],
+        "bezelDiameterPxInCell": 390,
+        "atlasIsUnmodified": true,
+        "legacyFramesRetainedAsArchivedStandard": true
       },
       "interaction": {
         "pointer": "hold top/bottom; drag up/down; release springs to center",
@@ -449,14 +498,15 @@
     ],
     "render": "event-driven; flash animation only while an active flashing state is presented",
     "liveUnifiedMounted": true,
-    "mountScope": "FO only on screenshot-identified AFDS right panel; CAPT geometry pending",
+    "mountScope": "CAPT + FO independent TEST switches, shared annunciation reset",
     "runtimeJS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js",
     "runtimeCSS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css",
     "runtimeCore": "engine/afds-annunciator-v1/afds-test-switch-core.js",
-    "featureStatus": "INSTALLED_MAIN_AND_GITHUB_PAGES_BUILD_SUCCESS; PIXEL_QA_PENDING",
+    "featureStatus": "SOURCE_COMMITTED_V2_AWAITING_BROWSER_QA",
     "actualAFDSAlertsConnected": false,
     "testIndicationsConnected": true,
-    "preservedArt": true
+    "preservedArt": true,
+    "lampRendering": "LEGENDS_ONLY_NO_BACKGROUND_GLOW"
   },
   "unresolved": [
     "Exact native lens geometry/color/texture/photo-based dimensions per seat",
@@ -466,17 +516,17 @@
     "warning precedence when tests and alerts coincide beyond test demonstration",
     "FMC alert re-annunciation behavior after acknowledge while same message remains",
     "LAN additionally names yaw damper BITE, FCC BITE, invalid MCP in GA for steady A/P red — require effectivity and FCOM reconciliation",
-    "Unified FO screenshot coordinate candidate x1537 y234 must be manually registered at native resolution and actual screenshot"
+    "Pixel-level screenshot validation of CAPT and FO lens inner edges pending; calibration from source/reference photos is provisional"
   ],
   "audit": {
     "sourceLogic": "EXTRACTED",
-    "visualFidelity": "FO_INITIAL_SCREENSHOT_CALIBRATION_PENDING",
+    "visualFidelity": "PHOTO_BOUNDING_BOX_CANDIDATES_PENDING_BROWSER_REVIEW",
     "liveCockpit": "SOURCE_INSTALLED_ON_MAIN_BUT_NO_BROWSER_PHOTO_QA",
     "flightCertification": "NOT_APPROVED",
     "logicVerification": "PASS_4_NODE_TESTS_GITHUB_ACTIONS_RUN_43747376371",
     "lockedArtworkVerification": "PASS_GITHUB_ACTIONS_RUN_43747376371",
     "pagesDeployment": "SUCCESS_GITHUB_ACTIONS_RUN_43747376089",
-    "browserInteraction": "PENDING_MANUAL_QA"
+    "browserInteraction": "PENDING"
   },
   "electrical": {
     "status": "PARTIAL_SOURCE_TRACE_ONLY",
