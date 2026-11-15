@@ -51,12 +51,12 @@ const index=fs.readFileSync(__dirname+'/index.html','utf8');
 // the frozen Conventional FO glass registration remains unchanged.
 assert.ok(index.indexOf('conventional-eadi-socket-v1.js')<
  index.indexOf('eadi-lab-unified-v2.js'));
-assert.ok(index.includes('UNIFIED-EADI-LAB-0002'));
+assert.ok(index.includes('UNIFIED-EADI-LAB-FULL-0003'));
 assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'));
 assert.ok(index.includes('../../efis-display-lab/eadi.js'));
 const newBridge=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8');
 assert.match(newBridge,/root\.B737ConventionalEadiSocketV1/);
-assert.match(newBridge,/renderer\.renderUnifiedAttitude/);
+assert.match(newBridge,/renderer\.renderUnifiedFull/);
 assert.match(newBridge,/B737UnifiedEADIStage1=api/);
 assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0004-CONV-CRT-ISOLATED'));
 console.log('PASS: Conventional FO EADI mounted on owner CRT black glass; EIS geometry remains final and independent.');
