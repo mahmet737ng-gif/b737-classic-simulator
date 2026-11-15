@@ -1,0 +1,67 @@
+/* Five individual rolling frequency drums, positioned inside the immutable photo apertures. */
+#unified-pedestal-faceplates .pd-freq-mechanical{
+ position:absolute;box-sizing:border-box;z-index:3;pointer-events:none;
+ display:block;overflow:hidden;direction:ltr;user-select:none;
+ border-radius:4px;background:linear-gradient(180deg,#080909 0%,#151617 18%,#060809 70%,#08090b 100%);
+ box-shadow:inset 0 2px 6px #000d,inset 0 -2px 4px #000d;
+ container-type:inline-size;
+}
+#unified-pedestal-faceplates .pd-freq-glass{
+ position:absolute;inset:0 2% 0 2%;display:flex;align-items:stretch;justify-content:center;
+ overflow:hidden;gap:0;white-space:nowrap;
+}
+#unified-pedestal-faceplates .pd-freq-wheel{
+ position:relative;display:block;flex:1 1 0;min-width:0;height:100%;overflow:hidden;
+ border-right:1px solid #303134;border-left:1px solid #070707;
+ background:linear-gradient(90deg,#030405,#1e2022 18%,#18191b 47%,#0b0c0d 86%,#030405);
+ box-shadow:inset 2px 0 3px #000a,inset -2px 0 4px #0009;
+}
+#unified-pedestal-faceplates .pd-freq-strip{
+ position:absolute;left:0;top:0;height:300%;width:100%;display:flex;
+ flex-direction:column;transform:translateY(-33.333333%);
+}
+#unified-pedestal-faceplates .pd-freq-glyph{
+ display:flex;align-items:center;justify-content:center;height:33.333333%;flex:none;
+ font:700 30cqw/1 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif;
+ color:#f0f0ec;text-shadow:0 1px 1px #fff3,0 -1px 1px #0007;
+ font-variant-numeric:tabular-nums;transform:none;
+}
+#unified-pedestal-faceplates .pd-freq-dot{
+ display:flex;flex:0 0 7%;height:100%;align-items:flex-end;justify-content:center;
+ padding:0 0 7% 0;color:#f0f0eb;line-height:1;
+ font:700 23cqw/1 Arial,sans-serif;background:#0a0b0d;
+ text-shadow:0 1px 1px #fff4;
+}
+#unified-pedestal-faceplates .pd-freq-mechanical::after{
+ content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+ background:linear-gradient(180deg,#000a,transparent 24%,transparent 70%,#000a);
+ border-radius:inherit;
+}
+#unified-pedestal-faceplates .pd-freq-index{
+ position:absolute;display:none;pointer-events:none;z-index:5;
+}
+#unified-pedestal-faceplates [data-index="bar"] .pd-freq-index{
+ display:block;left:1.5%;right:1.5%;top:30%;height:3.5%;
+ background:linear-gradient(180deg,#edbd77,#ed7b35 55%,#df5219);
+ box-shadow:0 1px 1px #0009;
+}
+#unified-pedestal-faceplates [data-index="wedge"] .pd-freq-index{
+ display:block;left:0;bottom:0;width:28%;height:12%;
+ background:linear-gradient(100deg,#ef7b31,#f5a256);clip-path:polygon(0 0,100% 100%,0 100%);
+}
+#unified-pedestal-faceplates .pd-freq-roll-up{
+ animation:pd-frequency-roll-up 175ms cubic-bezier(.15,.65,.28,1) both;
+}
+#unified-pedestal-faceplates .pd-freq-roll-down{
+ animation:pd-frequency-roll-down 175ms cubic-bezier(.15,.65,.28,1) both;
+}
+@keyframes pd-frequency-roll-up{
+ from{transform:translateY(0)}to{transform:translateY(-33.333333%)}
+}
+@keyframes pd-frequency-roll-down{
+ from{transform:translateY(-66.666666%)}to{transform:translateY(-33.333333%)}
+}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-freq-roll-up,
+ #unified-pedestal-faceplates .pd-freq-roll-down{animation:none}
+}
