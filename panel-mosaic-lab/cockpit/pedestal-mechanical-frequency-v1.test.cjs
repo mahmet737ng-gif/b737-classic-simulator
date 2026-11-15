@@ -11,7 +11,7 @@ function api(){
 }
 test('LAN COM/NAV published ranges and frequency steps are enforced',()=>{
  const a=api();
- assert.equal(a.version,'PD-ROLLING-FREQUENCY-0002');
+ assert.equal(a.version,'PD-ROLLING-FREQUENCY-0003');
  assert.equal(a.channels.COMM.min,118000);
  assert.equal(a.channels.COMM.max,136975);
  assert.equal(a.channels.COMM.step,25);
@@ -45,4 +45,14 @@ test('all two COM, two NAV sets own radio slots and one AUTO per NAV',()=>{
   assert(w.rect[0]+w.rect[2]<w.dim[0]);
   assert(w.rect[1]+w.rect[3]<w.dim[1]);
  }
+});
+
+test('NAV AUTO has a valid visible training seed and can be overridden by FMC',()=>{
+ const a=api();
+ assert.equal(a.defaultNavAutoKhz,110300);
+ assert(a.valid('NAV',a.defaultNavAutoKhz));
+ assert.equal(a.display(a.defaultNavAutoKhz),'110.30');
+ assert(a.setNavAuto('CAPT',113900));
+ assert(!a.setNavAuto('FO',117975));
+ assert(!a.setNavAuto('INVALID',110300));
 });
