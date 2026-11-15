@@ -16,7 +16,7 @@ const path=require('node:path'),fs=require('node:fs');
   assert.ok(ok,'Local lab must load');
   await page.waitForFunction(()=>!!window.B737EFISDisplayLab);
   assert.equal(await page.locator('#auditRows tr').count(),25);
-  assert.ok(await page.locator('#ehsi').evaluate(e=>e.childElementCount>5));
+  assert.ok(await page.locator('#ehsi').evaluate(e=>e.querySelectorAll('*').length>20),'EHSI SVG must contain real rendered geometry');
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.runTests())).pass,true);
   await page.locator('[data-scenario="approach"]').click();
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.getState())).eadi.radioAlt,120);
