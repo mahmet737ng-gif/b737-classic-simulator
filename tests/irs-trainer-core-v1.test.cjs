@@ -142,7 +142,11 @@ one=apply(one,{type:'SELECT_MODE',side:'L',mode:'NAV'});
 one=apply(one,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'});
 assert.equal(status(one,'L').entrySource,'FMC');
 assert.equal(status(one,'R').entrySource,null,'No false R initialization while R is OFF');
-assert.throws(()=>apply(one,{type:'ISDU_LAT_ENT',side:'R',value:'N35395'}),/requires powered IRS in ALIGN/);
+// R is OFF, but L is still aligning: selecting R on the ISDU does NOT
+// prevent valid data from reaching L (SYS DSPL is display-only).
+one=apply(one,{type:'ISDU_LAT_ENT',side:'R',value:'N35395'});
+assert.equal(one.units.L.entryPending.lat,35+39.5/60);
+assert.equal(one.units.R.entryPending.lat,null);
 // High latitude from an invalid OFF -> NAV selection cannot produce NAV READY.
 let wrongHigh=initialState();
 wrongHigh=apply(wrongHigh,{type:'POWER',side:'L',available:true});
