@@ -195,7 +195,7 @@ function sync(next){
  for(const [mode,b] of Object.entries(modeBtns))b.setAttribute('aria-pressed',String(mode===e.mode));
  for(const [n,b] of Object.entries(rangeBtns))b.setAttribute('aria-pressed',String(Number(n)===Number(e.range)));
  for(const b of detents)b.setAttribute('aria-pressed',String(b.dataset.detent==='mode'?b.dataset.value===e.mode:Number(b.dataset.value)===Number(e.range)));
- const canvas=document.getElementById('eadi');if(canvas)canvas.style.opacity=String(.1+.9*Number(adi.brightness??1));
+ const canvas=document.getElementById('eadi');if(canvas)canvas.style.opacity=String(Number(adi.brightness??1));
  audit.textContent='Last: '+last+' · MODE '+e.mode+' · '+e.range+' NM · MAP '+JSON.stringify(e.options);
 }
 window.addEventListener('efislab-state',ev=>sync(ev.detail));
