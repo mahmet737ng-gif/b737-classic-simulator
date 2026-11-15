@@ -74,6 +74,34 @@ const server=http.createServer((req,res)=>{
     f.size[0]===640&&f.size[1]===640),
     'Both crew EADI CRTs must be PAINTED by the full new EFIS Lab engine: '+JSON.stringify(actualFrames));
    console.log('EFIS FULL RENDER VERIFIED',JSON.stringify(actualFrames));
+
+   // EHSI evidence: the physical displays are black without confirmed feed.
+   // Exercise the explicitly labeled instructor preview for BOTH seats to
+   // verify the full new MAP/compass artwork, never fabricate live IRS data.
+   for(const seat of ['CAPT','FO']){
+    await page.evaluate(seat=>{
+     const sel=document.getElementById('unifiedEfisSeat');
+     sel.value=seat;sel.dispatchEvent(new Event('change',{bubbles:true}));
+     const checkbox=document.getElementById('unifiedEfisDemo');
+     checkbox.checked=true;checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+    },seat);
+    await page.waitForFunction(seat=>{
+     const svg=document.getElementById('unifiedEhsi'+seat);
+     return svg?.getAttribute('data-renderer')==='EHSI-CLASSIC-REBUILD-0007'&&
+      svg?.querySelector('[data-segment="compass-rose"]')!==null;
+    },seat,{timeout:12000,polling:80});
+   }
+   await page.screenshot({path:path.join(out,'ehsi-instructor-preview.png')});
+   for(const seat of ['CAPT','FO']){
+    await page.evaluate(seat=>{
+     const sel=document.getElementById('unifiedEfisSeat');
+     sel.value=seat;sel.dispatchEvent(new Event('change',{bubbles:true}));
+     const checkbox=document.getElementById('unifiedEfisDemo');
+     checkbox.checked=false;checkbox.dispatchEvent(new Event('change',{bubbles:true}));
+    },seat);
+   }
+   console.log('EHSI-REBUILD-0007: CAPT and FO instructor map rose painted; live source kept gated');
+
    console.log('EFIS-REPLACEMENT-0002: two new EADI glasses and Classic v2 EHSI mounted');
    // COLD-DARK-EIS-0001: render 16 unlit EIS glass faces only if the
    // authoritative Electrical V7 has proven all switched aircraft buses off.
@@ -272,7 +300,7 @@ const server=http.createServer((req,res)=>{
   // A responsive Settings dialog may persist through a viewport transition.
   // Close it through its physical UI before clicking the Controls header;
   // do not bypass Playwright hit-testing or cover a genuine button overlap.
-  if(await page.evaluate(()=>document.querySelector('#aircraftSettingsDialog')?.open===true)){
+  if(await page.locator('#aircraftSettingsDialog').isVisible()){
    console.log('Mobile QA: closing already-open aircraft Settings dialog');
    await page.locator('#aircraftSettingsClose').click();
   }
