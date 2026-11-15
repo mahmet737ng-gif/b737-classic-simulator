@@ -35,3 +35,27 @@ jobs:
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
           python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+
+  browser-smoke:
+    needs: pure-rules
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: npm install --no-save --ignore-scripts playwright@1.58.2
+      - name: Screenshot and interactive browser assertions
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+          node efis-display-lab/browser.test.cjs
+      - name: Save EFIS lab desktop and mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: classic-efis-display-lab-screenshots
+          path: artifacts/efis-lab/*.png
+          if-no-files-found: ignore
