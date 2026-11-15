@@ -44,3 +44,67 @@
 .efcp-legend{color:#98acbd;font-size:11px;margin-top:10px;line-height:1.6}
 @media(max-width:950px){.efcp-layout{grid-template-columns:minmax(0,1fr)}.efcp-tester{display:block}.efcp-tester dl{grid-template-columns:repeat(4,1fr);gap:5px}.efcp-tester dd{text-align:left}}
 @media(max-width:520px){.efcp-shell{padding:8px;margin:0 0 13px}.efcp-tester dl{grid-template-columns:1fr auto}.efcp-dh-val{font-size:clamp(14px,4vw,21px)}.efcp-detent{min-width:11px;min-height:11px}.efcp-key .efcp-on{font-size:clamp(7px,2vw,12px)}}
+
+/* CP ROTOR V2: full-360 circular contours are baked into independent SVG parts.
+   No rotated mask, square photographic crop or clip is permitted. */
+.efcp-face .efcp-knob[data-asset="full-circle-v2"]{border-radius:50%;background:transparent;overflow:visible;box-shadow:none}
+.efcp-face .efcp-knob[data-asset="full-circle-v2"]>.efcp-rotor{display:block;width:100%;height:100%;inset:0;object-fit:contain;clip-path:none;border-radius:0;transform-origin:50% 50%;pointer-events:none}
+.efcp-face .efcp-knob[data-knob="hsi"]{z-index:5}
+.efcp-face .efcp-knob[data-knob="wxInner"]{z-index:7}
+.efcp-face .efcp-knob[data-knob="range"]{z-index:5}
+
+/* Every pushbutton is one full black housing; the top-half lens only lights on ON.
+   Bezel stays inside the measured physical hitbox and never forms a second box. */
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"]){
+ z-index:6;overflow:hidden;isolation:isolate;border-radius:7%;
+ border:1px solid #141719;background:linear-gradient(145deg,#1c2428 0%,#070a0d 18%,#1f2425 44%,#07090a 100%);
+ box-shadow:inset 0 0 0 2px #596063,inset 0 0 0 5px #0a0c0d,0 2px 5px #000a
+}
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])>.efcp-key-well{
+ position:absolute;z-index:0;inset:5% 6% 6%;pointer-events:none;
+ border:1px solid #555c5d;border-radius:4%;
+ background:linear-gradient(100deg,#050607,#161b1e 14%,#232a2d 42%,#101416 75%,#040506);
+ box-shadow:inset 0 3px 9px #000d,inset 2px 0 4px #707a7938,0 0 0 2px #0b0f11
+}
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])>.efcp-key-bottom{
+ position:absolute;z-index:1;left:9%;right:9%;bottom:9%;height:37%;pointer-events:none;
+ background:linear-gradient(160deg,#1f2427,#090d10 39%,#141a1e 88%,#050607);
+ border:1px solid #333b40;border-radius:2%;
+ box-shadow:inset 0 2px 7px #000a,0 1px 2px #0006;
+}
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])>.efcp-on{
+ position:absolute;z-index:2;left:9%;right:9%;top:9%;height:42%;
+ display:flex;align-items:center;justify-content:center;
+ border-radius:2%;border:1px solid #495155;
+ background:linear-gradient(168deg,#171b1e 0%,#080b0d 70%,#242b2e 100%);
+ box-shadow:inset 0 2px 6px #0009,inset 0 0 0 1px #a4a9a824;
+ color:transparent;opacity:1;font:600 2.05cqw/1 "Arial Narrow",Arial,sans-serif;
+ letter-spacing:.02em;text-shadow:none
+}
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])[aria-pressed="true"]>.efcp-on{
+ background:linear-gradient(152deg,#fffffe 0%,#f1f3f1 55%,#d7dcdc 100%);
+ color:#101416;border-color:#f0f3f1;
+ box-shadow:0 0 7px #ffffff4a,inset 0 1px 2px #ffffff,inset 0 -2px 2px #afb8b9;text-shadow:none
+}
+.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])[aria-pressed="true"]{
+ box-shadow:inset 0 0 0 2px #586162,inset 0 0 0 5px #050707,0 2px 5px #000b
+}
+.efcp-face .efcp-key[data-switch="wxr"]{border-radius:6%;}
+
+/* TFC must remain a stationary, recessed, perfectly circular 360-degree
+   pushbutton inside the rotating range selector, with its own focus/hit area. */
+.efcp-face .efcp-tfc{
+ display:flex;align-items:center;justify-content:center;
+ z-index:10;aspect-ratio:1/1;border-radius:50% !important;overflow:hidden;
+ clip-path:circle(50% at 50%);border:3px solid #4e585b;
+ background:radial-gradient(circle at 40% 30%,#f8f8f6 0%,#e1e3e1 37%,#c2c8c7 66%,#879094 88%,#4f585a 100%);
+ box-shadow:inset 0 3px 7px #0008,inset 0 0 0 3px #b9bfbd,0 3px 6px #0009;
+ color:#101416;font:800 1.65cqw/1 "Arial Narrow",Arial,sans-serif;
+ letter-spacing:.01em;text-shadow:0 1px #fff8
+}
+.efcp-face .efcp-tfc[aria-pressed="true"]{
+ background:radial-gradient(circle at 48% 56%,#bdc9c6,#dee4e0 55%,#737f80 100%);
+ box-shadow:inset 0 5px 9px #000b,inset 0 0 0 3px #d2dad6,0 1px 3px #0009
+}
+.efcp-face .efcp-tfc:active{background:radial-gradient(circle at center,#c3cccb,#878f90);box-shadow:inset 0 6px 10px #000b}
+@media(max-width:580px){.efcp-face .efcp-key[data-switch]:not([data-switch="rst"])>.efcp-on{font-size:2.35cqw}.efcp-face .efcp-tfc{font-size:2.2cqw}}
