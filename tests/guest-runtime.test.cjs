@@ -61,7 +61,7 @@ assert(portal.includes('src="/lab/"'));
 const fullCSS=fs.readFileSync(path.join(root,'public/guest-cockpit.css'),'utf8');
 const fullJS=fs.readFileSync(path.join(root,'public/guest-cockpit.js'),'utf8');
 assert(!/#region-main|#region-pedestal/.test(fullCSS),'Main and pedestal must not be hidden');
-assert(!/button\\[data-focus=/.test(fullCSS),'Native view selection buttons must remain visible');
+assert(!/button\[data-focus=/.test(fullCSS),'Native view selection buttons must remain visible');
 assert(!/focusOverhead|guestSourceOverheadFocus/.test(fullJS),'Guest startup must not force overhead-only mode');
 assert(!source.includes('guestSourceOverheadFocus'),'Gateway must not inject hidden navigation controls');
 console.log('Guest full cockpit visibility, protected resources, and injection contract: OK');
