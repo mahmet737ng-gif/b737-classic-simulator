@@ -288,6 +288,9 @@ function apply(state,cmd){
    for(const id of receiving){
     const u=s.units[id];u.entryPending.lon=coordinate;
     writePosition(s,id,{lat:u.entryPending.lat,lon:u.entryPending.lon},'ISDU',cmd.originPosition);
+    // A complete LAT+LON pair is one transaction. A second longitude
+    // requires a new latitude ENT, not a stale side-specific pending value.
+    u.entryPending={lat:null,lon:null};
    }
   }
  }else{
