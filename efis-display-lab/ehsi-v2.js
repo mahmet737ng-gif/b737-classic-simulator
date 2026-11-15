@@ -23,7 +23,7 @@ const NS='http://www.w3.org/2000/svg',W=512,H=512;
 const LAYOUT=Object.freeze({
  MAP:{name:'Expanded MAP / 70°',reference:'TRACK_UP',roseCenter:[256,438],radius:364,aircraft:[256,433],degrees:70,rose:true,route:true},
  FULL_NAV:{name:'FULL NAV / 360°',reference:'TRACK_UP',roseCenter:[256,269],radius:183,aircraft:[256,269],degrees:360,rose:true,route:false},
- PLAN:{name:'PLAN / true-north chart',reference:'TRUE_NORTH',roseCenter:null,radius:null,aircraft:null,degrees:0,rose:false,route:true}
+ PLAN:{name:'PLAN / true-north chart',reference:'TRUE_NORTH',roseCenter:null,radius:null,aircraft:null,degrees:70,rose:false,planCompass:true,route:true}
 });
 const norm=n=>((Number(n)||0)%360+360)%360;
 const rel=n=>((Number(n)+540)%360)-180;
@@ -50,7 +50,7 @@ function computeDisplay(input){
  const routeValid=!!m.nav.valid && orientationValid && m.route.points.length>0;
  return {version:VERSION,mode:m.mode,supported,orientation:ref,
   compassHeadingReference:m.mode==='FULL_NAV'?'HEADING':'TRACK',
-  has70DegreeArc:m.mode==='MAP',hasFullCompass:m.mode==='FULL_NAV',
+  has70DegreeArc:m.mode==='MAP'||m.mode==='PLAN',hasFullCompass:m.mode==='FULL_NAV',
   northUp:m.mode==='PLAN',layout:supported?LAYOUT[m.mode]:null,
   powered:m.flags.displayPower,sgValid:m.flags.sgValid,
   orientationValid,headingValid:m.flags.headingValid,trackValid:m.flags.trackValid,
@@ -296,9 +296,9 @@ function drawPlan(svg,m){
  // Unlike MAP, PLAN has no aircraft symbol or heading-bug dashed reference line.
  planArc(g,m);
  const north=layer(g,'true-north');
- text(north,'N',462,118,18,COLORS.white,'middle');
- line(north,462,140,462,178,COLORS.white,1.8);
- path(north,'M455 153 L462 140 L469 153',COLORS.white,1.8,COLORS.white);
+ text(north,'N',462,244,18,COLORS.white,'middle');
+ line(north,462,266,462,303,COLORS.white,1.8);
+ path(north,'M455 280 L462 266 L469 280',COLORS.white,1.8,COLORS.white);
  // Frame corner references remain restrained and do not imply radar range arcs.
 
  if(m.nav.valid&&m.route.points.length)planRoute(g,m);
