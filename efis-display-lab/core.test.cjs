@@ -58,4 +58,33 @@ for(const name of ['efis-cp.js','efis-cp.css'])assert.equal(fs.existsSync(__dirn
 assert.equal(fs.existsSync(__dirname+'/index.html'),true);
 assert.equal(fs.existsSync(__dirname+'/eadi.js'),true);
 assert.equal(fs.existsSync(__dirname+'/lab.js'),true);
+const {liveModel}=require('../panel-mosaic-lab/cockpit/ehsi-unified-v1.js');
+const data=value=>({quality:'VALID',value});
+const bus={
+ 'electrical.buses':data({bus:{electronic1:true,electronic2:false}}),
+ 'irs.left':data({powered:true,positionValid:true,headingDeg:340,trackDeg:345,gsKt:212}),
+ 'irs.right':data({powered:true,positionValid:false,headingDeg:121,trackDeg:128}),
+ 'mcp.state':data({powered:true,headingDeg:90,courseL:213,courseR:151}),
+ 'airdata.adc1':data({tasKt:232}),
+ 'airdata.adc2':{quality:'STALE',value:{tasKt:160}},
+ 'navigation.vor1':data({stationIdent:'SYZ',tunedFrequencyMHz:113.4}),
+ 'navigation.dme1':data({stationIdent:'ABC',distanceNm:32})
+};
+let live=liveModel(bus,core.initial(),.8);
+assert.equal(live.efis.displayPower,true);
+assert.equal(liveModel(bus,core.initial(),.8,{powered:false}).efis.displayPower,false,'Onside 115 VAC feed takes priority');
+assert.deepEqual([live.heading,live.track,live.groundSpeed,live.trueAirspeed],[340,345,212,232]);
+assert.equal(live.selectedHeading,null,'No mixed TRUE and magnetic references');
+assert.deepEqual(live.route.points,[],'Live renderer must not fabricate demo geometry');
+assert.deepEqual(live.mapObjects,[]);
+const fo=core.apply(core.initial(),{type:'seat',value:'FO'});
+live=liveModel(bus,fo,.78);
+assert.equal(live.efis.displayPower,false);
+assert.equal(live.efis.headingValid,false);
+assert.equal(live.trueAirspeed,null);
+const radio=core.apply(core.initial(),{type:'set',path:'ehsi.mode',value:'FULL_VOR_ILS'});
+live=liveModel(bus,radio,.8);
+assert.equal(live.nav.valid,true);
+assert.equal(live.nav.dme,null,'An unrelated DME must not be attributed to the tuned VOR');
+assert.equal(live.nav.cdi,null,'No synthetic centered CDI for partial VOR data');
 console.log('EFIS display lab: '+result.checks.length+' FCOM-style logic checks passed; '+core.items.length+' components registered. VISUAL pixel QA remains pending.');

@@ -1,47 +1,108 @@
-# B737 Classic — EADI + EHSI source-audit lab (v0002 · source-driven EHSI rebuild)
+# آزمایشگاه مستقل EFIS بوئینگ ۷۳۷ کلاسیک
 
-**Scope:** 737-300/-400/-500 classic EFIS with EP-FSI as the first configuration to reconcile. **Training software only; not for flight.**
+**پیکربندی مرجع: 737-33V، ثبت EP-FSI، شمارهٔ ساخت 29340.** ورودی‌های این آزمایشگاه آموزشی‌اند و به سامانهٔ پروازی متصل نیستند.
 
-## Open
+## اجرای دمو و مشاهدهٔ خروجی
 
-- GitHub Pages: `/efis-display-lab/` relative to the cockpit project's published root.
-- Local: use a local HTTP server from the repository root, e.g. `python3 -m http.server 8000`, then open `http://localhost:8000/efis-display-lab/`.
-- `node efis-display-lab/core.test.cjs` and `node efis-display-lab/ehsi-v2.test.cjs` check logic and distinct layouts. The GitHub Actions browser job also captures separate MAP, FULL NAV and PLAN screenshots.
+۱. `NORMAL` را بزنید. EADI افق، FMA، IAS، Mach، GS و راهنمای FD را نشان می‌دهد. در EHSI، فاصله و ETA به نقطهٔ فعال و مسیر نمونه را ببینید. تغییر Track مسیر را حول موقعیت هواپیما می‌چرخاند.
 
-## Implementation
+۲. از نوار زیر نمایشگر، به‌ترتیب MAP، CTR MAP، EXP NAV، FULL NAV، EXP VOR، FULL VOR، EXP ILS، FULL ILS و PLAN را انتخاب کنید. در پنل فیزیکی، VOR و ILS دو نمایش از هر دیتنت مشترک‌اند. از `Tuned radio type` می‌توان نمایش را بدون تغییر دیتنت عوض کرد.
 
-- `core.js`: pure event-driven state machine; FCOM folio registry; failure gates, mode/orientation decisions, Mach hysteresis, DH/RA alert and reset, independent EADI/EHSI power, two symbol generators, source transfer.
-- `eadi.js`: composited EADI vector canvas layers. Keeps separate drawable altitude-related, speed tape, attitude, FMA, ILS, FD and alert regions. The design mirrors the approved stage-one black L aircraft datum and 10-degree-only pitch labels but **does not reuse or alter** locked Unified EADI geometry.
-- `ehsi-v2.js`: fully separate Classic source-driven renderer for MAP (70° track-up), FULL NAV (360° compass with NAV course/CDI), and PLAN (independent 70° heading/track compass plus north-up route). The legacy 7-mode CDU renderer is *not loaded* into this lab. EXP NAV / CTR MAP / FULL VOR/ILS / EXP VOR/ILS are explicitly PENDING to avoid the old generic illustration. All figures remain visually provisional until photo overlay acceptance.
-- `lab.js`: interactive controls (including independent heading, track, and selected heading), deterministic tests, failure injection, JSON inspector, segment review register, local photo overlay and selected-region boxes.
-- `index.html`: responsive independent test rig for both screens, never mounted over the approved Unified panels.
+۳. در PLAN، Track و Heading را تغییر دهید. مقیاس بالایی با Track حرکت می‌کند و چارت جهت True North را نگه می‌دارد. `PLAN step` نقطهٔ مرکزی چارت را عوض می‌کند.
 
-No animation loop, no background polling, and no periodic interrogation of buses. Display repaints on state changes. Existing protected overhead, guarded switches, IRS, FO panel positioning and Unified main panel files remain untouched.
+۴. `ILS / DH` را بزنید. RA را از ۲۵۰۰، ۱۰۰۰، ۵۰۰، ۲۰۰ و DH عبور دهید. LOC و G/S را جداگانه نامعتبر کنید. با `DH RST` هشدار را پاک کنید. با بالا رفتن تا DH+75، سیستم برای دور بعدی آماده می‌شود.
 
-## Source hierarchy and exact folios
+۵. `TCAS RA` را بزنید. روی رنج سلکتور TFC را خاموش کنید. هدف‌ها از EHSI حذف می‌شوند و پیام TRAFFIC برای TA/RA باقی می‌ماند. روی EADI، محدودهٔ هاشورخورده از ورودی زاویهٔ RA پیروی می‌کند.
 
-1. B737CL 300/400/500 FCOM Vol.2 Ch.10: **10.30.6–8** EADI basic symbols, pitch scale, FD, GS/LOC, radio altitude, DH, rising runway; **10.30.9** TCAS RA; **10.30.10–12** EADI speed tape; **10.30.13–14** EADI failure flags; **10.31.2–6** EHSI MAP/CTR NAV examples; **10.40.9–11** EHSI seven-mode effectivity, orientation and map mode description.
-   External lookup: https://boredaviator.com/wp-content/uploads/2025/03/B737-300-FCOM-.pdf — marked DO NOT USE FOR FLIGHT.
-2. Existing owner EFIS control panel source and engine: `engine/efis-fcom-v2/`, `docs/EFIS_PHOTO_LOCK.md`, and `cdu-standalone-v6/ehsi/`.
-3. Cockpit Companion **Classic 3-4-5** (Leading Edge Publishing, not NG/737MAX; copyrighted): https://www.cockpitcompanion.com/pd-737.cfm . This external product's private images are **not** in this repository. Only compare user-authorized copies via the lab local file picker. No screenshot or protected illustration is committed.
-4. Cockpit photos and Classic-only external geometry examples can serve as secondary visual reference after model/operator/effectivity validation.
+۶. `WXR` را بزنید. قطع Forward panel WXR یا ایجاد Range Disagree لایهٔ نمونه را برمی‌دارد. تغییر ناب داخلی سطح روشنایی لایه را عوض می‌کند. `TERRAIN` سناریوی جداگانهٔ نمایش دادهٔ نمونه است.
 
-## EHSI V2 approved implementation boundaries
+۷. `SG FAIL` را بزنید، سپس EFI را به SG2 منتقل کنید. بعد EADI AC را قطع کنید. قطع برق یا حالت حرارتی BLANK فقط نمایشگر مربوط را خاموش می‌کند. با IRS Transfer و ورودی‌های opposite-side می‌توان تفاوت خرابی منبع و Comparator را دید.
 
-The production-independent lab now uses `EHSI_V2_SPEC_FA.md` as the fixed implementation and QA specification. Only 3 modes have reconstructed visuals; 4 modes are intentionally flagged as pending. Automated browser and pure tests **do not** imply FCOM-certified pixels or finished aircraft system wiring. Captured screenshots can be downloaded from the successful `EFIS EADI EHSI independent lab QA` run.
+۸. `RUN TESTS` قاعده‌های مدل را اجرا می‌کند. در Source Traceability محل مدرک و پوشش هر گروه آمده است. تصویر مرجع را می‌توان محلی روی هر نمایشگر انداخت و شفافیت آن را تنظیم کرد.
 
-## Current acceptance level and limitations
+## ترتیب استخراج و حل تعارض
 
-The **25-component audit registry is initialized PENDING**, even when a rule was located in the FCOM. A manual 'ACCEPTED' selection means only the user's browser-session review, not a declaration of verified Boeing pixel geometry. Local reference image overlays use user-selected browser files and do not upload them.
+| اولویت | منبع و locator | برداشت و کاربرد |
+| --- | --- | --- |
+| ۱ | FCOM سپهران D6-27370-300/400/500-SHI، جلد ۲، فصل ۱۰، صفحات PDF 1321–1413 | فصل‌های §30، §31، §32 و §40 به‌ترتیب برای پنل و EADI، تصاویر EHSI، شرایط نمادها و منطق سیستم خوانده شدند. برگ 10.30.7 عبارت FSI را در effectivity EADI دارد. برگ 10.30.3 عنوان FSA دارد و مبنای پنل FSI نیست. |
+| ۲ | LAN Navigation ATA 34-22، صفحات چاپی 46–106 و ATA 34-45 | معماری SG/IRU، Local/Remote brightness، خرابی ورودی، لایه‌های Raster/Vector، مسیر انتقال، Comparator و BITE. برخی صفحات پنل پنج‌حالته نشان می‌دهند. انتخاب هفت‌حالته بر اساس FCOM سپهران است. |
+| ۳ | MRG، چاپی 158 و 284–285، دادهٔ OCR | تمایز خرابی یک CRT، قطع برق، خرابی یا گرم‌شدن SG و از دست رفتن دادهٔ IRS. محل CB در MRG و CC برای تعیین نقطهٔ نصب کافی نیست و تا تطبیق WDM همان هواپیما به باس واقعی متصل نشده است. |
+| ۴ | Cockpit Companion Classic 3/4/5، نسخهٔ OCR، حدود چاپی 48–49 و مطالعهٔ EFIS و پنل کاپیتان | منطق EFI، سنسور نور، تمایز هدینگ/ترک، اثر خرابی RA بر Rising Runway و سناریوی LOC deviation. صفحات تصویری OCR ناقص‌اند. |
+| ۵ | AFM D6-8730 Rev 32 + CDL Rev 43، §§1، 2، 3.1 | محدودیت‌های پیکربندی، IRS/ATT و کاربرد FMCS/EHSI MAP. داده‌ای برای فونت، رنگ‌سنجی یا پارت‌نامبر نمایشگر در بخش‌های مرتبط یافت نشد. |
+| ۶ | گزارش رسمی BEA پرواز FSH604، شکل پنل کاپیتان؛ آموزش Classic Continental و Alteon؛ عکس کاکپیت 737-400 | کنترل فرم نمادها، چیدمان و منطق خانواده. هواپیما/اپراتور مرجع با EP-FSI یکسان نیست. منابع ویدئویی ITVV و Just Planes در فهرست مرجع‌اند و فریم کالیبرهٔ EP-FSI از آن‌ها به دست نیامد. |
 
-Functional shell supports explicit input of: aircraft pitch/bank, airspeed, Mach, simulated groundspeed, RA, DH, FD, ILS deviation, TCAS RA up/down, windshear, GPWS PULL UP, EHSI mode/heading/track/course/range/options, dual SG power and EFI transfer, selected source invalidation. They are manually injected **test vectors**.
+## استخراج EADI
 
-*Not yet implemented or source-audited*: photometric and font pixel match against the owner's Cockpit Companion photos; full EADI speed tape Vmo/Vs/flaps/bug geometry; actual AFDS MCP capture source; comparator dual-seat tolerance and failure annunciations; full TCAS/EGPWS symbol geometry; real FMC nav database, terrain and radar rendering; wiring to live IRU/ADC/CB power and aircraft source-specific circuit protection; actual EP-FSI hardware effectivity reconciliation. Therefore **do not claim 100% accuracy or complete certification**.
+| فولیو FCOM سپهران | گروه | تفسیر پیاده‌سازی |
+| --- | --- | --- |
+| 10.30.7–8 / PDF 1327–1328 | فرم FSI | چهار ناحیهٔ A/T، Pitch، Roll و AFDS در بالای نمایشگر با موتور و رندر FMA یونیفاید و ورودی MCP/FCC سناریویی، افق میانی، سرعت در چپ و G/S در راست. شکل FSA/FSU جداست. |
+| 10.30.9 / PDF 1329 | بانک، افق، Mach، GS، PLI، FD، G/S | بانک ۰، ۱۰، ۲۰، ۳۰، ۴۵ و ۶۰ درجه. خط افق و درجات سفید، مدل هواپیما سیاه با دور سفید. FD با steering معتبر. G/S در اختلاف بیش از ۹۰ درجهٔ Track و Front Course حذف می‌شود. Mach با آستانه‌های ۰٫۴۰/۰٫۳۸ کار می‌کند. |
+| 10.30.9–10 / PDF 1329–1330 | RA، DH، LOC، runway | RA عددی زیر 2500 ft. زیر 1000 ft صفحهٔ مدرج و نشانگر DH جای DH دیجیتال را می‌گیرند. هشدار DH در نزول، بازنشانی با RST یا Touchdown یا DH+75. Radio Height Alert از زیر 1000 تا 500 فعال است. نماد باند با LOC و RA معتبر دیده می‌شود و حرکت عمودی‌اش زیر 200 شروع می‌شود. |
+| 10.30.11–12 / PDF 1331–1332 | WINDSHEAR / TCAS | هشدار Windshear قرمز است. محدودهٔ قرمز RA بخش ممنوع Pitch را نشان می‌دهد. ورودی RA از کنترل مربی می‌آید. |
+| 10.30.13–15 / PDF 1333–1335 | Speed Tape | مقیاس CAS 45–420، مارکر MCP، V1، Vr، Vref، سرعت جمع‌کردن فلپ، حد پایینی، نوار Stick Shaker و Trend. موتور و رندر Speed Tape یونیفاید با جدول Flap و وضعیت Gear دوباره استفاده شده و مقادیر عملکرد سناریو تزریقی‌اند. |
+| 10.30.16–17 / PDF 1336–1337 | Flags | تفکیک SPD، ATT، FD، LOC، RA، SG FAIL و PITCH/ROLL/COMP در خروجی. SEL SPD، V1 INOP، SPD LIM، MACH و DH هم ورودی خرابی مستقل دارند. |
+| 10.40.3–8 / PDF 1402–1407 | توالی نمایش | منشأ دادهٔ GS و Mach، شرط FD، Comparator بیش از ۳ درجه، DH پیش‌فرض 200 پس از برق‌رسانی و پارامترهای Speed Tape. مدت flash هشدار DH، نرخ انیمیشن rolling digits و تأخیر پایداری comparator هنوز بر اساس سخت‌افزار تأیید نشده‌اند. |
 
-For visual review, select the EADI or EHSI image, change overlay opacity 0–100%, click a component in the audit register, and select PENDING/REVIEWED/ACCEPTED only after pixel and logic comparison. Further revisions should use approved per-segment bounding boxes before mounting to Unified. Protected source photo assets must never be modified as part of the audit.
+## استخراج EHSI
 
-## Test vectors
+| حالت | فولیو / PDF | مرجع و ترکیب |
+| --- | --- | --- |
+| MAP | 10.31.2–3 / 1339–1340 | قطاع ۷۰°، Track بالا، هواپیما نزدیک پایین، مسیر و گزینه‌های نقشه |
+| CTR MAP | 10.31.4–5 / 1341–1342 | قطاع حدود ۱۲۰° و هواپیما نزدیک مرکز، داده‌های پشت هواپیما |
+| EXP NAV | 10.31.6–7 / 1343–1344 | Track بالا، قطاع ۷۰°، Course و انحراف FMC |
+| FULL NAV | 10.31.8–9 / 1345–1346 | Track بالا، رز ۳۶۰°، Course و انحراف FMC و XTK |
+| EXP VOR / FULL VOR | 10.31.10–13 / 1347–1350 | Heading بالا، Course انتخابی MCP، DME، TO/FROM و منبع VOR |
+| EXP ILS / FULL ILS | 10.31.14–17 / 1351–1354 | Heading بالا، Course/LOC، مقیاس GS، DME و دادهٔ ILS |
+| PLAN | 10.31.18–19 / 1355–1356 | چارت True-North، انتخاب مرکز با STEP، قطاع مستقل بالا، بدون خط خط‌چین Heading Bug |
 
-`core.selfTest()` checks Mach thresholds (.40 on / .38 off), DH alert and RST, FD power gating, backcourse glideslope suppression, SG transfer, EADI blackout, EHSI orientation, WPT <=40 NM, and WXR/TERR exclusion. These are deterministic unit-style checks, **not browser screenshot tests**.
+| بخش نمادها | دسته و نتیجهٔ استخراج |
+| --- | --- |
+| 10.32.1–6 | رنگ عملکردی، Heading/Track، رز و نشانگر، خط Range، Wind و انتخاب Heading |
+| 10.32.7–13 | DME و منبع؛ انحراف به‌ازای نقطه: VOR پنج درجه، NAV دو مایل دریایی، LOC حدود یک درجه در مقیاس معمولی و نیم درجه در مقیاس باز. VOR/ADF و ADF اختیاری هنوز پوشش کامل ندارند. |
+| 10.32.14–20 | نقاط مسیر، فاصله/ETA، WPT در ۴۰ NM یا کمتر، خط فعال magenta، تغییر مسیر dashed سفید، مسیر غیرفعال dashed فیروزه‌ای، Trend در بازه‌های ۳۰، ۶۰ و ۹۰ ثانیه، Altitude Arc و VNAV Scale. نمایش Hold، Procedure Turn، FIX و نقاط پروفایل به دادهٔ FMC نیاز دارد. |
+| 10.32.21–28 | WXR و TERR، Range Rings، حالت‌ها و پیام اختلاف برد. لایه‌های فعلی از نمونهٔ عمدی استفاده می‌کنند. تولید بازتاب رادار و الگوریتم Look-Ahead Terrain در مدل وجود ندارد. |
+| 10.32.29–34 | TA دایرهٔ پر کهربایی، RA مربع پر قرمز، نزدیک لوزی پر سفید و سایر ترافیک لوزی توخالی. متن ارتفاع نسبی در واحد صد فوت، فلش در 500 fpm یا بالاتر، رفتار TRAFFIC مستقل از TFC. پیام هدف بدون Bearing و همهٔ حالت‌های Self-Test هنوز مدل نشده‌اند. |
+| 10.32.35–41 | MAP/XTK/LOC، خاموشی و Range Disagree، EFI Transfer و سنسورهای نور. همهٔ پیام‌های RNP، WXR ATT/STAB، TERR POS/INHIBIT و زمان‌بندی پس از خرابی در مدل کامل نیستند. |
+| 10.40.9–13 | هفت دیتنت، مسیرهای FMC/IRS، Track fallback، اثر پنل WXR روبه‌رو برای FSI، انتقال SG/IRU و روشنایی. |
 
-Browser API: `B737EFISDisplayLab.getState()`, `B737EFISDisplayLab.dispatch({type:'set',path:'eadi.pitch',value:5})`, `B737EFISDisplayLab.runTests()`.
+### نصب روی یونیفاید
+
+در کاکپیت یونیفاید، EHSI روی شیشهٔ عکس پنل CAPT و FO قرار می‌گیرد. از Controls → EFIS CONTROL PANEL می‌توان سمت، MODE، RANGE و روشنایی را انتخاب کرد. پیش‌فرض هر دو سمت ورودی شبکهٔ یونیفاید است. با Instructor display inputs، ورودی‌های سناریویی تنها برای سمت انتخاب‌شده فعال می‌شوند.
+
+مسیر LIVE از Electronic Bus 1/2 و دادهٔ معتبر IRS، ADC و VOR/DME همان سمت استفاده می‌کند. هندسهٔ مسیر FMC، ورودی VOR/ILS CDI، TCAS و WXR کامل هنوز در این پل تأیید نشده‌اند. نمایش نمونهٔ این ورودی‌ها در حالت Instructor در دسترس است. EADI داخل کاکپیت از لایه‌های فعلی FMA و Speed Tape یونیفاید استفاده می‌کند.
+
+ارتفاع بصری حروف شناسه‌های نقشه از دو تصویر جدید حدود ۲٫۳٪ عرض شیشه است. شناسه‌ها به ۱۶ و داده‌های ریز مسیر به ۱۳ واحد فونت در ویوباکس ۵۱۲ واحدی تنظیم شدند.
+
+### اندازه‌گیری MAP و CTR MAP از دو تصویر کاربر
+
+مختصات زیر به پیکسل تصویر ۱۹۲۰×۱۰۸۰ و مبدأ بالا-چپ تصویر هستند. محدودهٔ فعال EHSI از `(390, 64)` تا حدود `(1290, 901)` اندازه‌گیری شد. هر دو محور برای انجین به فضای ۵۱۲×۵۱۲ نرمال شدند. بدنهٔ EHSI در عکس پنل یونیفاید حدود ۳۵۰×۴۱۱ px اندازه دارد و شیشهٔ تست‌لب در هر مود با همین نسبت عمودی نمایش داده می‌شود.
+
+| جزء | MAP — 19:45:48 | CTR MAP — 19:47:09 |
+| --- | --- | --- |
+| محور عمودی و رأس مثلث هواپیما | x=840، y=740 | x=840، y=533 |
+| مرکز رز و شعاع افقی × عمودی | (840, 740)، حدود 812×606 px | (840, 533)، حدود 338×252 px |
+| خط و تیک رز | قوس بالایی، تیک‌های ۵ درجه و عدد هر ۳۰ درجه | رز ۳۶۰ درجه بدون خط محیطی، تیک هر ۱۰ درجه و جایگزینی تیک با عدد هر ۳۰ درجه |
+| نوک نشانگر هدینگ در اختلاف صفر با Track | (840, 134) | (840, 281) |
+| نیم‌برد روی محور، در تصویر | 5 در y=437 | 20 در y=407 و y=659 |
+| خط برد در بالا / پایین | از y=134 تا y=665، نیم‌برد و تیک‌های یک‌چهارم و سه‌چهارم | از y=134 تا y=470، و نیم‌برد عقب تا انتهای رز |
+| سرصفحه | TRK و M دو طرف عدد؛ NM/TAS چپ؛ ETA/GS راست | مشترک با MAP |
+| موقعیت و شکل پیام TCAS OFF | دو خط سفید، x=407، y≈473/507 | مشترک با MAP |
+
+در PLAN، EXP NAV، EXP VOR و EXP ILS شعاع و مرکز قوس MAP مشترک است. رزهای کامل CTR MAP، FULL NAV، FULL VOR و FULL ILS نسبت به بازبینی قبلی حدود ۷٫۵٪ بزرگ‌ترند. شعاع سه نمایش FULL اکنون ۲۱۶ واحد SVG است و تبدیل تصویر دایره را در شیشهٔ مستطیلی گرد نگه می‌دارد. زمینهٔ تمام مودهای EHSI مشکی است. در MAP و CTR MAP همین شعاع‌ها برای تصویرسازی برد مسیر، فرودگاه‌ها، NAVAID و ترافیک نیز اعمال می‌شوند و Heading و Selected Heading از ورودی‌های مستقل پیروی می‌کنند. تصاویر مرجع از FSX هستند. داده‌های موقعیت و مسیر موجود در آزمایشگاه مستقل از مسیر ثبت‌شده در تصاویرند. جدول FCOM بالا مرجع اولیهٔ قالب‌ها را ثبت می‌کند. برای CTR MAP، ارائهٔ تیک‌های کامل از تصویر جدید کاربر گرفته شده است.
+
+### تفکیک رنگ و تایپوگرافی
+
+| مشخصه | مبنا | وضع فعلی |
+| --- | --- | --- |
+| سفید | اعداد، Grade/Tick، مقیاس‌های انحراف، وضعیت | برداری با یک خانوادهٔ خطوط مشترک |
+| سبز | وضعیت فعال، سمت/مرجع و راهنماهای مشخص | جای‌گذاری بر اساس شکل و قاعدهٔ FCOM |
+| Magenta | مسیر فعال، فرمان، Bug و Pointer | برداری |
+| Cyan | دادهٔ غیرفعال یا پس‌زمینه، دادهٔ پایگاه و Terrain Annunciation | برداری |
+| زرد / قرمز | Flags، TA و Warning/RA | برداری و قابل تزریق |
+| فرم حرف و عدد، ارتفاع و ضخامت | مختصات مرجع 512 برای EHSI و 640 برای EADI | گلیفِ stroke با ابعاد نسبی ثابت. اندازهٔ فیزیکی، فسفر CRT، Gamma، ضخامت و RGB با ابزار واقعی EP-FSI اندازه‌گیری نشده‌اند. |
+
+## وضعیت ارائه
+
+نسخهٔ فعلی برای نمایش مهندسی و بازبینی سناریوها آماده است. پذیرش اپراتور به تطبیق پارت‌نامبر DU/SG، نسخهٔ OPS، WDM/AMM مختص MSN، نمونه‌های روشن هر ۹ فرمت و ویدئو/تصویر کالیبرهٔ همان هواپیما نیاز دارد. منطق Lab مستقل است. ورودی‌های زندهٔ FMC/ADC/IRS/AFDS/CB، مدل هواشناسی و رادار واقعی، EGPWS و حلقهٔ کامل BITE به این نسخه متصل نیستند.
+
+`node efis-display-lab/core.test.cjs`، `node efis-display-lab/ehsi-v2.test.cjs` و `node engine/efis/classic-speed-tape-engine-v1.test.cjs` آزمون‌های منطق را اجرا می‌کنند. آزمون مرورگر در `efis-display-lab/browser.test.cjs` است. پیش‌نمایش تحت HTTP، از ریشهٔ همین پروژه، در مسیر `/efis-display-lab/` باز می‌شود.

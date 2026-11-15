@@ -8,6 +8,7 @@ if(!mount)return;
 if(!M||!images['efis-plate.webp']){
  mount.textContent='EFIS CP source image or EADI/EHSI lab dependency unavailable';return;
 }
+const assetBase=document.currentScript?.src||document.baseURI;
 const W=1448,H=1086,pct=(n,d)=>n/d*100+'%';
 const MODE=['FULL_NAV','FULL_VOR_ILS','EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN'];
 const MODE_DEG={FULL_NAV:-180,FULL_VOR_ILS:-135,EXP_NAV:-86,EXP_VOR_ILS:-42,MAP:0,CTR_MAP:47,PLAN:100};
@@ -96,7 +97,7 @@ for(const [key,[cx,cy,r]] of Object.entries(KNOBS)){
  b.setAttribute('aria-label',key+' selector');
  const img=el('img','efcp-rotor',b);
  const redesigned={mode:'./assets/mode-rotor-v2.svg',range:'./assets/range-rotor-v2.svg',hsi:'./assets/hsi-brt-outer-v2.svg',wxInner:'./assets/map-wxr-brt-inner-v2.svg'};
- img.src=redesigned[key]||images['knob-'+key+'.webp'];img.alt='';img.draggable=false;
+ img.src=redesigned[key]?(assetBase?new URL(redesigned[key],assetBase).href:redesigned[key]):images['knob-'+key+'.webp'];img.alt='';img.draggable=false;
  if(redesigned[key])b.dataset.asset='full-circle-v2';
  rotorEls[key]=img;bindRotary(b,key);
 }

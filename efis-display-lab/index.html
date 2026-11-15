@@ -49,31 +49,41 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 .footer{margin-top:20px;font-size:12px;color:#8199af;line-height:1.8}
 @media(max-width:1250px){.top{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
 @media(max-width:760px){header h1{font-size:17px}main{padding:13px 9px 40px}.screens,.controls,.diagnostics{grid-template-columns:1fr}#testResults{grid-template-columns:1fr}.display{max-width:480px}.card{padding:10px}}
+.instrument-column{min-width:0}.instrument-column .efcp-shell{margin-top:16px}
+.mode-strip{margin:12px 0 0;display:flex;gap:5px}.mode-strip button{flex:1 1 85px;white-space:nowrap}
+.screens .card{background:#11171c;border-color:#303e46}.display{background:#000;border-color:#171a1b;box-shadow:0 0 0 2px #364046,0 0 0 4px #101416;border-radius:17px}
+#ehsiStage{aspect-ratio:auto}
+#ehsiStage svg{height:auto;aspect-ratio:350/411}
+.evidence-links{display:flex;flex-wrap:wrap;gap:8px 24px;padding-left:17px;font-size:12px}
+@media(min-width:1251px){main{max-width:1530px}.top{grid-template-columns:minmax(0,1fr) 345px}.efcp-layout{grid-template-columns:minmax(0,1fr) 205px}}
+@media(max-width:760px){.screens{grid-template-columns:repeat(2,minmax(0,1fr))}.head{display:block;font-size:10px}.head small{display:block;margin-top:4px}.clipnote{display:none}.display{border-width:4px;border-radius:11px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style><link rel="stylesheet" href="./efis-cp.css"></head><body>
-<header><div><h1>B737 CLASSIC <strong class="accent">/ EADI + EHSI AUDIT ENGINE</strong></h1><p>300 / 400 / 500 · EP-FSI reference priority · isolated from Unified · event-driven</p></div><span class="corner">LAB 0002 · EHSI REBUILD · NOT FOR FLIGHT</span></header>
+<header><div><h1>B737 Classic <strong class="accent">EFIS Test Lab</strong></h1><p>737-33V · EP-FSI · MSN 29340 reference configuration</p></div><span class="corner">INSTRUCTOR DEMO · SIMULATED INPUTS</span></header>
 <main>
-<section class="efcp-shell" aria-label="Photographic EFIS control panel"><div class="efcp-heading"><div><h2>CLASSIC EFIS CONTROL PANEL / PHYSICAL TEST LAB</h2><p>Source-registered selector positions · direct clickable detents · TFC + concentric brightness · EADI/EHSI linked state</p></div><span class="efcp-tag">EFIS CP · PHOTO / INTERACTIVE</span></div><div id="efisCpMount"></div></section>
 <div class="top">
- <section class="screens" aria-label="Independent avionics test displays">
+ <div class="instrument-column"><section class="screens" aria-label="Independent avionics test displays">
   <article class="card"><div class="head"><b>EADI / ELECTRONIC ATTITUDE</b><small id="eadiStatus">SIMULATED INPUT</small></div>
    <div class="display" id="eadiStage"><canvas id="eadi" width="640" height="640" aria-label="Classic EADI vector display"></canvas><img id="eadiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="eadiHighlight"></div></div>
-   <p class="clipnote">Attitude, pitch ladder, FMA zones, speed tape, flight director, LOC/GS, RA/DH, TCAS RA, flags. Geometry remains unapproved until reference image pixel audit.</p>
+   <p class="clipnote">Attitude, guidance, radio height, and warning indications.</p>
   </article>
   <article class="card"><div class="head"><b>EHSI / ELECTRONIC HORIZONTAL</b><small id="ehsiStatus">SIMULATED ROUTE</small></div>
-   <div class="quickmodes" id="ehsiQuickModes" aria-label="Select one of the three rebuilt EHSI modes"><button type="button" data-ehsi-mode="MAP" aria-pressed="true">MAP · 70°</button><button type="button" data-ehsi-mode="FULL_NAV" aria-pressed="false">FULL NAV · 360°</button><button type="button" data-ehsi-mode="PLAN" aria-pressed="false">PLAN · N UP</button></div>
-   <div class="display" id="ehsiStage"><svg id="ehsi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="B737 Classic EHSI rebuilt MAP FULL NAV PLAN source-based"></svg><img id="ehsiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="ehsiHighlight"></div></div>
-   <p class="clipnote">Rebuilt independently against Classic FCOM 10.31.2 / 10.31.8 / 10.31.18: different 70° MAP arc, FULL NAV 360° rose and true-north PLAN. Four other modes explicitly pending. Geometry and typography still require photo-level acceptance. Synthetic TEST fixes only.</p>
+   <div class="display" id="ehsiStage"><svg id="ehsi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="B737 Classic EHSI"></svg><img id="ehsiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="ehsiHighlight"></div></div>
+   <p class="clipnote">Use the selector or choose a presentation below.</p>
   </article>
  </section>
+<div class="mode-strip quickmodes" id="ehsiQuickModes" aria-label="EHSI presentations"></div>
+<section class="efcp-shell" aria-label="Photographic EFIS control panel"><div class="efcp-heading"><div><h2>EFIS control panel</h2><p>Select a detent directly or turn a knob with a swipe, wheel or arrow key.</p></div></div><div id="efisCpMount"></div></section>
+ </div>
  <aside class="controls">
-  <div class="block"><h2>Scenario injection</h2><p class="small">All controls drive lab state, not the aircraft.</p><div class="presets" id="presets">
+  <div class="block"><h2>Scenario injection</h2><p class="small">Presets reload a deterministic set of instructor inputs.</p><div class="presets" id="presets">
    <button data-scenario="normal">NORMAL</button><button data-scenario="approach">ILS / DH</button><button data-scenario="cruise">CRUISE</button>
    <button data-scenario="tcas">TCAS RA</button><button data-scenario="navfail">NAV FAIL</button><button data-scenario="failure">SG FAIL</button>
-   <button data-scenario="dark">DARK</button><button id="dhReset">DH RST</button><button id="runTests">RUN TESTS</button>
+   <button data-scenario="takeoff">TAKEOFF</button><button data-scenario="weather">WXR</button><button data-scenario="terrain">TERRAIN</button><button data-scenario="dark">DARK</button><button id="dhReset">DH RST</button><button id="runTests">RUN TESTS</button>
   </div></div>
   <div class="block"><h3>Attitude / EADI</h3><div class="grid" id="eadiInputs"></div></div>
   <div class="block"><h3>Navigation / EHSI</h3><div class="grid" id="ehsiInputs"></div><div class="sources" id="ehsiOptions" style="margin-top:14px"></div></div>
-  <div class="block"><h3>Power, source and sensor failures</h3><div class="grid" id="sourceSelects"></div><div class="sources" id="failInputs" style="margin-top:14px"></div><p class="note">SG source transfer is a test simplification. CB and aircraft source dependencies are not yet certified against EP-FSI.</p></div>
+  <div class="block"><h3>Power, source and sensor failures</h3><div class="grid" id="sourceSelects"></div><div class="sources" id="failInputs" style="margin-top:14px"></div><p class="note">Toggle onside inputs or select an EFI and IRS transfer source. Bus-level effectivity remains open.</p></div>
   <div class="block"><h3>Reference pixel comparison</h3><label class="small" for="fileEadi">EADI reference image (local only)</label><input type="file" id="fileEadi" class="upload" accept="image/png,image/jpeg,image/webp">
    <label class="small" for="fileEhsi">EHSI reference image (local only)</label><input type="file" id="fileEhsi" class="upload" accept="image/png,image/jpeg,image/webp">
    <label class="small" for="overlayOpacity">Photo overlay opacity <output id="opacityRead">0%</output></label><input id="overlayOpacity" type="range" min="0" max="100" step="5" value="0">
@@ -84,10 +94,18 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 <section class="audit"><div class="auditheader"><h2>Component / segment audit register</h2><span id="auditCount">Select a component to highlight its provisional region</span></div>
 <p class="info" style="margin-top:10px">FCOM rule grounding does <b>not</b> mean pixel-accurate acceptance. All items start as PENDING. Changing an audit status is only a local review note.</p>
 <div class="tablewrap"><table><thead><tr><th>Display</th><th>Segment</th><th>FCOM folio</th><th>Documentation</th><th>Visual review</th></tr></thead><tbody id="auditRows"></tbody></table></div></section>
-<section class="diagnostics"><div><h2>Deterministic test lab</h2><p class="small">Source-independent rule checks run without timers, polling, or frame-based aircraft logic.</p><button class="action" id="testAgain">Run all assertions</button><div id="testSummary" class="small" style="margin-top:13px"></div><div id="testResults"></div></div>
-<div><h2>Live state inspector</h2><p class="small">For MCP / IRS / ADC / EFIS / CB adapters in a later integration stage.</p><button class="action" id="copyState">Copy JSON state</button><pre id="stateDump"></pre></div></section>
-<div class="footer">References: Boeing 737-300/-400/-500 FCOM Vol. 2 Ch. 10 Sections 30–31, 40 (manual is explicitly marked NOT FOR FLIGHT), and existing Unified EFIS v6. <a id="fcomLink" target="_blank" rel="noreferrer">Reference manual</a> · <a href="./ehsi-v2.js">EHSI v2 source-driven renderer</a> · Independent educational prototype.</div>
+<section class="audit" aria-labelledby="evidenceHeading"><h2 id="evidenceHeading">Source traceability</h2><div class="tablewrap"><table><thead><tr><th>Reference</th><th>Page locator</th><th>Signal or symbol</th><th>Rule / effectivity</th><th>Coverage</th></tr></thead><tbody id="evidenceRows"></tbody></table></div><ul class="evidence-links" id="evidenceLinks"></ul></section>
+<section class="diagnostics"><div><h2>Deterministic test lab</h2><p class="small">Run model assertions against the injected-input scenarios.</p><button class="action" id="testAgain">Run all assertions</button><div id="testSummary" class="small" style="margin-top:13px"></div><div id="testResults"></div></div>
+<div><h2>Live state inspector</h2><p class="small">Inspect the current test inputs, sources and display validity.</p><button class="action" id="copyState">Copy JSON state</button><pre id="stateDump"></pre></div></section>
+<div class="footer"><a id="fcomLink" target="_blank" rel="noreferrer">Public Classic FCOM</a> · <a href="./README_FA.md">Validation and limitations</a></div>
 </main>
+<script src="./sources.js"></script>
+<script src="./glyphs.js"></script>
+<script src="../engine/efis/classic-speed-tape-engine-v1.js"></script>
+<script src="../engine/efis/classic-flap-speed-profile-v1.js"></script>
+<script src="../engine/afds/fma-mode-engine-v1.js"></script>
+<script src="../panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js"></script>
+<script src="../panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js"></script>
 <script src="./ehsi-v2.js"></script>
 <script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script><script src="../cdu-standalone-v6/efis-test/images.js"></script><script src="./efis-cp.js"></script>
 </body></html>

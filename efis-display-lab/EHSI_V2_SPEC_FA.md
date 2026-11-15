@@ -1,5 +1,7 @@
 # EHSI CLASSIC REBUILD 0002 — final implementation specification for the test lab
 
+> این یادداشت مشخصات نسخهٔ 0002 را ثبت می‌کند. برای وضعیت آزمایشگاه 0003، فرمت‌های اضافه‌شده و مراجع سپهران، [README_FA.md](README_FA.md) را ببینید.
+
 **Status:** Architecture and three display grammars are fixed. Visual *acceptance* remains open until an authorized Classic photo / FCOM overlay is manually compared. This is NOT airworthy avionics software.
 
 ## Decision

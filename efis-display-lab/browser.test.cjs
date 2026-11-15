@@ -17,10 +17,13 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.waitForFunction(()=>!!window.B737EFISDisplayLab);
   assert.equal(await page.locator('#auditRows tr').count(),25);
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.runTests())).pass,true);
-  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0002');
+  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0007');
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),1);
+  const mapArc=await page.locator('#ehsi [data-segment="compass-rose"] > polyline').getAttribute('points');
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),1);
+  const mapLabel=page.locator('#ehsi [data-segment="active-route"] [data-text="KAVIR"]');
+  assert.equal(await mapLabel.getAttribute('font-size'),'16','reference-sized map waypoint identifier');
   // Physical CP visual source, registered detents, independent coaxial shafts.
   await page.waitForFunction(()=>!!window.B737EFISCP);
   assert.equal(await page.locator('.efcp-face .efcp-knob').count(),6);
@@ -73,6 +76,8 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('.efcp-face').screenshot({path:path.join(out,'efis-physical-panel.png'),animations:'disabled'});
   const shots={};
   async function screenshot(name){
+   const backgrounds=await page.locator('#ehsi > rect').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('fill')));
+   assert.deepEqual(backgrounds,['#000'],'Every EHSI format has a black display background');
    const bytes=await page.locator('#ehsiStage').screenshot({path:path.join(out,name+'.png'),animations:'disabled'});
    shots[name]=crypto.createHash('sha256').update(bytes).digest('hex');
   }
@@ -81,15 +86,34 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'FULL_NAV');
   assert.equal(await page.locator('#ehsi [data-segment="course-deviation"]').count(),1);
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"] circle').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"] > circle').getAttribute('r'),'216');
+  const display=await page.locator('#ehsi').boundingBox();
+  assert.ok(Math.abs(display.width/display.height-350/411)<.01,'EHSI remains portrait in a FULL format');
+  const shared=await page.evaluate(()=>{
+   const api=window.B737EFISDisplayLab;
+   const value=api.getState(),core=window.EFISDisplayLabCore,eadi=window.EFISDisplayLabEadi;
+   const set=(s,path,value)=>core.apply(s,{type:'set',path,value});
+   const normal=eadi.fmaInput(value,core.evaluate(value));
+   const cws=set(value,'eadi.afds','CWS BOTH');
+   const fma=eadi.fmaInput(cws,core.evaluate(cws));
+   const flap=set(value,'eadi.flaps',30);
+   const gear=set(set(value,'eadi.gearState','EXTENDING'),'eadi.flaps',0);
+   return {normal:normal.pitch.active,cws:[fma.afds.active,fma.afds.secondary,fma.afds.tertiary],
+    flap:eadi.tapeInput(flap,core.evaluate(flap)).marks.trainingOperatingLimit.maximumKt,
+    gear:eadi.tapeInput(gear,core.evaluate(gear)).marks.trainingOperatingLimit.maximumKt};
+  });
+  assert.deepEqual(shared,{normal:'VNAV PTH',cws:['CMD','CWS P','CWS R'],flap:180,gear:270});
   await screenshot('ehsi-full-nav');
   await page.locator('[data-ehsi-mode="PLAN"]').click();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'PLAN');
   assert.equal(await page.locator('#ehsi [data-segment="true-north"]').count(),1);
   assert.equal(await page.locator('#ehsi [data-segment="plan-compass"]').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="plan-compass"] > polyline').getAttribute('points'),mapArc);
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug-vector"]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),1);
   assert.equal(await page.locator('#ehsi [data-segment="heading-bug"] line[stroke-dasharray]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),0);
-  assert.ok((await page.locator('#ehsi').textContent()).includes('NORTH UP'));
+  assert.equal(await page.locator('#ehsi [data-segment="true-north"] [data-text="N"]').count(),1);
   await screenshot('ehsi-plan');
   assert.equal(new Set(Object.values(shots)).size,3,'Three modes must produce distinct rendered screenshots');
   // PLAN: fixed true-north route must NOT turn if HDG/TRK inputs change.
@@ -98,14 +122,34 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('input[data-path="ehsi.heading"]').fill('120');
   const after=await page.locator('#ehsi [data-segment="plan-route"] line').evaluateAll(a=>a.map(x=>[x.getAttribute('x1'),x.getAttribute('y1'),x.getAttribute('x2'),x.getAttribute('y2')]));
   assert.deepEqual(after,before,'PLAN route must stay true north');
-  // Unsupported VOR presentation must never fall back to old generic map drawing.
-  await page.locator('select[data-path="ehsi.mode"]').selectOption('FULL_VOR_ILS');
-  assert.ok((await page.locator('#ehsi').textContent()).includes('PENDING MODE REBUILD'));
-  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),0);
+  // Select every remaining reference format through its normal entry point.
+  const formats=[
+   ['CTR MAP','CTR_MAP','active-route'],['EXP NAV','EXP_NAV','course-deviation'],
+   ['EXP VOR','EXP_VOR','course-deviation'],['FULL VOR','FULL_VOR','course-deviation'],
+   ['EXP ILS','EXP_ILS','glideslope'],['FULL ILS','FULL_ILS','glideslope']
+  ];
+  for(const [label,id,seg] of formats){
+   await page.getByRole('button',{name:label,exact:true}).first().click();
+   assert.equal(await page.locator('#ehsi').getAttribute('data-presentation'),id);
+   assert.equal(await page.locator('#ehsi [data-segment="'+seg+'"]').count(),1);
+   await screenshot('ehsi-'+id.toLowerCase().replaceAll('_','-'));
+  }
+  assert.equal(new Set(Object.values(shots)).size,9,'All nine formats produce distinct rendered screenshots');
+  await page.locator('[data-scenario="tcas"]').click();
+  assert.equal(await page.locator('#ehsi [data-segment="traffic-ra"]').count(),1);
+  await page.locator('#efcp-tfc').click();
+  assert.equal(await page.locator('#ehsi [data-segment="traffic-ra"]').count(),0);
+  assert.ok((await page.locator('#ehsi').textContent()).includes('TRAFFIC'));
+  await page.locator('[data-scenario="weather"]').click();
+  assert.equal(await page.locator('#ehsi [data-segment="weather-returns"]').count(),1);
+  await page.locator('input[data-path="power.remoteWxr"]').uncheck();
+  assert.equal(await page.locator('#ehsi [data-segment="weather-returns"]').count(),0);
+  await page.locator('[data-scenario="terrain"]').click();
+  assert.equal(await page.locator('#ehsi [data-segment="terrain-returns"]').count(),1);
   await page.locator('[data-ehsi-mode="MAP"]').click();
   await page.locator('[data-scenario="navfail"]').click();
   assert.equal(await page.locator('#ehsi [data-segment="active-route"]').count(),0);
-  assert.ok((await page.locator('#ehsi').textContent()).includes('HEADING / TRACK INVALID'));
+  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),0);
   await page.locator('[data-scenario="normal"]').click();
   await page.locator('input[data-path="power.ehsi"]').uncheck();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
@@ -113,6 +157,7 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('[data-scenario="normal"]').click();
   await page.locator('[data-scenario="approach"]').click();
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.getState())).eadi.radioAlt,120);
+  await page.locator('#eadiStage').screenshot({path:path.join(out,'eadi-approach.png'),animations:'disabled'});
   await page.locator('input[data-path="power.eadi"]').uncheck();
   assert.equal(await page.locator('#eadiStatus').textContent(),'NO POWER');
   await page.locator('[data-scenario="normal"]').click();
@@ -121,6 +166,6 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.screenshot({path:path.join(out,'mobile.png'),animations:'disabled'});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+2),'Mobile no horizontal overflow');
   assert.deepEqual(errors,[],'No unhandled browser JS errors');
-  console.log('EFIS EHSI V2 BROWSER PASS: MAP/FULL NAV/PLAN distinct, north-up stable, unsupported gate, failures, desktop/mobile.');
+  console.log('EFIS BROWSER PASS: nine visual formats, selectors, TCAS, WXR, terrain, source failures and desktop/mobile.');
  }finally{if(browser)await browser.close();server.kill('SIGTERM')}
 })().catch(e=>{console.error(e);process.exitCode=1});
