@@ -72,7 +72,52 @@ approx(distanceNm(status(s,'L').position,prior),0,0.000001);
 assert.equal(status(s,'L').warning,'NAV_FRAME_MISSING');
 assert.throws(()=>tick(s,{dtSec:200,stationary:false,valid:true,gsKt:180,trueTrackDeg:0}),/substep/);
 assert.throws(()=>apply(s,{type:'FMC_SET_IRS_POS',position:'N35395 E051254'}),/No powered IRS is eligible/);
-// A separately entered selected-side PPOS must not change the other system.
+// LAN 737 Classic ATA 34-28 p.126: either ISDU SYS DSPL side broadcasts
+// latitude and longitude to ALL eligible units; alignment remains independent.
+for(const displaySide of ['L','R']){
+ let both=initialState();
+ for(const id of ['L','R']){
+  both=apply(both,{type:'POWER',side:id,available:true});
+  both=apply(both,{type:'SELECT_MODE',side:id,mode:id==='L'?'ALIGN':'NAV'});
+ }
+ both=apply(both,{type:'ISDU_LAT_ENT',side:displaySide,value:'N35395'});
+ for(const id of ['L','R']){
+  assert.equal(both.units[id].entryPending.lat,35+39.5/60,'LAT ENT broadcasts to '+id);
+  assert.equal(status(both,id).entrySource,null,'Latitude alone cannot initialize '+id);
+ }
+ both=apply(both,{type:'ISDU_LON_ENT',side:displaySide,value:'E051254'});
+ for(const id of ['L','R']){
+  assert.equal(status(both,id).entrySource,'ISDU','One position entry initializes '+id);
+  assert.deepEqual(status(both,id).enteredPosition,status(both,displaySide).enteredPosition);
+ }
+ assert.equal(status(both,'L').mode,'ALIGN');
+ assert.equal(status(both,'R').mode,'NAV');
+ assert.equal(status(both,'L').positionValid,false);
+ assert.equal(status(both,'R').positionValid,false);
+}
+// If a second IRS is switched on AFTER latitude ENT, it cannot pick up
+// an incomplete coordinate; first entered unit can finish uninterrupted.
+let stagger=initialState();
+stagger=apply(stagger,{type:'POWER',side:'L',available:true});
+stagger=apply(stagger,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+stagger=apply(stagger,{type:'ISDU_LAT_ENT',side:'R',value:'N35395'});
+stagger=apply(stagger,{type:'POWER',side:'R',available:true});
+stagger=apply(stagger,{type:'SELECT_MODE',side:'R',mode:'NAV'});
+stagger=apply(stagger,{type:'ISDU_LON_ENT',side:'R',value:'E051254'});
+assert.equal(status(stagger,'L').entrySource,'ISDU');
+assert.equal(status(stagger,'R').entrySource,null,'Late power-on R needs its own complete coordinate entry');
+// A selected display on an OFF unit does not prevent an aligning IRU
+// from receiving the shared position when the core is addressed directly.
+let oneISDU=initialState();
+oneISDU=apply(oneISDU,{type:'POWER',side:'L',available:true});
+oneISDU=apply(oneISDU,{type:'SELECT_MODE',side:'L',mode:'NAV'});
+oneISDU=apply(oneISDU,{type:'ISDU_LAT_ENT',side:'R',value:'N35395'});
+oneISDU=apply(oneISDU,{type:'ISDU_LON_ENT',side:'R',value:'E051254'});
+assert.equal(status(oneISDU,'L').entrySource,'ISDU');
+assert.equal(status(oneISDU,'R').entrySource,null);
+assert.throws(()=>apply(oneISDU,{type:'ISDU_LON_ENT',side:'L',value:'E051254'}),/latitude/);
+
+// When only one IRS is powered, ISDU must not initialize the other system.
 let t=initialState();
 t=apply(t,{type:'POWER',side:'R',available:true});
 t=apply(t,{type:'SELECT_MODE',side:'R',mode:'NAV'});
