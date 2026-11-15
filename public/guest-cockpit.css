@@ -1,12 +1,5 @@
-/* Guest layout contract:
-   Preserve original cockpit engine, controls, failure tools, CB and settings.
-   Do not render only the unfinished Main Instrument & Pedestal regions. */
-#region-main, #region-pedestal {
- visibility:hidden!important;
- pointer-events:none!important;
-}
-button[data-focus="main"],button[data-focus="pedestal"],button[data-focus="all"],
-#guestSourceOverheadFocus {display:none!important}
+/* Railway gateway: show the full original Unified cockpit and every focus tab.
+   Only guest session styling is customized; original panel geometry is intact. */
 #viewport{overscroll-behavior:contain!important}
 
 #guestLogoutForm{display:inline-flex!important;margin:0 5px!important}
