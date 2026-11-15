@@ -10,8 +10,8 @@ test('two COMM, two NAV and one centered transponder fit native pedestal bays',(
   readyState:'loading',addEventListener:()=>{}};
  vm.runInNewContext(script,{window,document,URL,location:{href:'https://example.test'}});
  const api=window.B737UnifiedPedestalFaceplates;
- const panels=Array.from(api.panels,p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h}));
- assert.equal(api.version,'PEDESTAL-FACEPLATES-0003');
+ const panels=Array.from(api.panels,p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,sourceWidth:p.sourceWidth,sourceHeight:p.sourceHeight,bayY:p.bayY,bayHeight:p.bayHeight}));
+ assert.equal(api.version,'PEDESTAL-FACEPLATES-0004');
  assert.equal(panels.length,6); // 5 radio faceplates + unaffected cargo/fire panel
  const comm=panels.filter(p=>p.id.startsWith('vhf-comm-'));
  const nav=panels.filter(p=>p.id.startsWith('vhf-nav-'));
@@ -19,16 +19,23 @@ test('two COMM, two NAV and one centered transponder fit native pedestal bays',(
  assert.equal(comm.length,2);
  assert.equal(nav.length,2);
  assert.equal(xpdr.length,1);
- assert.equal(comm[0].y,comm[1].y);
- assert.equal(comm[0].h,comm[1].h);
- assert.equal(nav[0].y,nav[1].y);
- assert.equal(nav[0].h,nav[1].h);
- assert.equal(xpdr[0].y,nav[0].y);
- assert.equal(xpdr[0].h,nav[0].h);
+ const centerY=p=>p.y+p.h/2;
+ assert(Math.abs(centerY(comm[0])-centerY(comm[1]))<1e-8);
+ assert(Math.abs(centerY(nav[0])-centerY(nav[1]))<1e-8);
+ assert(Math.abs(centerY(xpdr[0])-centerY(nav[0]))<1e-8);
  assert.equal(nav[0].x+nav[0].w,xpdr[0].x);
  assert.equal(xpdr[0].x+xpdr[0].w,nav[1].x);
  assert.equal(comm[0].x,nav[0].x);
  assert.equal(comm[1].x,nav[1].x);
- for(const p of panels){assert(p.x>=0&&p.y>=0&&p.x+p.w<=1150&&p.y+p.h<=2273);}
+ for(const p of panels){
+  assert(p.x>=0&&p.y>=0&&p.x+p.w<=1150&&p.y+p.h<=2273);
+  // Never distort natural bitmap circles to fill a too-tall bay.
+  assert(Math.abs(p.w/p.h-p.sourceWidth/p.sourceHeight)<1e-9,p.id+' natural aspect ratio');
+  assert(p.y>=p.bayY-1e-9,p.id+' within slot top');
+  assert(p.y+p.h<=p.bayY+p.bayHeight+1e-9,p.id+' within slot bottom');
+ }
+ assert.equal(xpdr[0].sourceWidth,1799);
+ assert.equal(xpdr[0].sourceHeight,699);
+ assert(xpdr[0].h<145,'TCAS panel must not vertically stretch the circular knob cutouts');
  assert(!panels.some(p=>p.id==='transponder-tcas'&&p.y<900));
 });
