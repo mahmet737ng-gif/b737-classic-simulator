@@ -125,6 +125,28 @@ for(const [type,values,coords] of [['mode',MODE,MODE_HITS],['range',RANGE,RANGE_
   detents.push(b);
  }
 }
+function segmentsSVG(n){
+ const glyph={0:'abcdef',1:'bc',2:'abdeg',3:'abcdg',4:'bcfg',5:'acdfg',6:'acdefg',7:'abc',8:'abcdefg',9:'abcdfg','-':'g'};
+ const path={
+  a:'M11 3 H47 L41 9 H17 Z',
+  b:'M49 5 L54 11 V42 L48 47 L45 40 V15 Z',
+  c:'M49 54 L54 60 V88 L48 94 L45 87 V60 Z',
+  d:'M17 91 H41 L47 97 H11 Z',
+  e:'M8 54 L13 60 V87 L8 94 L3 88 V60 Z',
+  f:'M8 5 L13 15 V40 L8 47 L3 42 V11 Z',
+  g:'M12 47 H46 L40 53 H18 Z'
+ };
+ const str=String(Math.trunc(Number(n)||0)).padStart(3,'0').slice(-3);
+ let inner='';
+ for(let i=0;i<str.length;i++){
+  const active=glyph[str[i]]||'';
+  inner+='<g transform="translate('+(i*60)+',0)">';
+  for(const [id,d] of Object.entries(path))
+   inner+='<path d="'+d+'" fill="'+(active.includes(id)?'#f5f5f2':'#434648')+'" opacity="'+(active.includes(id)?'1':'.10')+'"/>';
+  inner+='</g>';
+ }
+ return '<svg viewBox="0 0 180 100" aria-label="DH '+n+' feet" role="img" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
+}
 const dh=el('div','efcp-dh',face),dhValue=el('span','efcp-dh-val',dh,'200');
 dh.setAttribute('role','status');dh.setAttribute('aria-label','DH REF feet');
 const sidebar=el('div','efcp-tester',layout);
@@ -155,7 +177,7 @@ function sync(next){
  if(lastDH!==adi.dh){dhAngular+=(adi.dh-lastDH)*11;lastDH=adi.dh;}
  const angles={mode:MODE_DEG[e.mode]??0,range:RANGE_DEG[e.range]??0,dh:dhAngular,adi:-110+Number(adi.brightness??1)*220,hsi:-110+Number(e.brightness??1)*220,wxInner:-110+Number(e.wxBrightness??1)*220};
  for(const [key,img] of Object.entries(rotorEls))img.style.transform='rotate('+angles[key]+'deg)';
- dhValue.textContent=String(Math.trunc(Number(adi.dh))).padStart(3,'0');
+ dhValue.innerHTML=segmentsSVG(adi.dh);
  for(const [key,b] of Object.entries(pushEls))if(key!=='rst')b.setAttribute('aria-pressed',String(!!e.options[key]));
  tfc.setAttribute('aria-pressed',String(!!e.options.tfc));
  values.mode.textContent=e.mode.replaceAll('_',' ');
