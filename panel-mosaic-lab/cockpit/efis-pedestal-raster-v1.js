@@ -9,8 +9,8 @@ const src=document.currentScript?.src||location.href;
 const asset=(name)=>new URL('./assets/'+name,src).href;
 const PHOTO={plate:asset('efis-cp-photo-plate-v1.webp'),
  mode:asset('efis-rose-mode-v1.webp'),range:asset('efis-range-tfc-v1.webp'),
- tfc:asset('efis-tfc-center-v2.webp'),dh:asset('dcpcs-altitude-knob-front-v1.webp'),
- adi:asset('dcpcs-altitude-knob-front-v1.webp'),
+ tfc:asset('efis-tfc-center-v2.webp'),dh:new URL('./dcpcs-altitude-knob-front-v1.webp',src).href,
+ adi:new URL('./dcpcs-altitude-knob-front-v1.webp',src).href,
  hsi:asset('existing-knob-hsi.webp'),wxInner:asset('existing-knob-wxInner.webp')};
 const W=1448,H=1086;
 const MODE=['FULL_NAV','FULL_VOR_ILS','EXP_NAV','EXP_VOR_ILS','MAP','CTR_MAP','PLAN'];
