@@ -95,7 +95,8 @@ function header(svg,m,status){
  const g=layer(svg,'header');
  const named=m.route.points[m.route.activeIndex]||m.route.points[0];
  if(m.nav.valid&&named){
-  text(g,'16.2 NM',18,19,17,COLORS.white);
+  const distance=Math.hypot(named.x,named.y).toFixed(1);
+  text(g,distance+' NM',18,19,17,COLORS.white);
   text(g,named.name,18,43,15,COLORS.magenta);
  } else {
   text(g,m.nav.valid?'DME ----':'---.- NM',18,19,15,COLORS.white);
@@ -119,7 +120,7 @@ function bottom(svg,m,mode){
   text(g,'NORTH UP',494,489,13,COLORS.cyan,'end');
   return;
  }
- text(g,'240°/20',18,454,14,COLORS.white);
+ text(g,'---°/--',18,454,14,COLORS.dim);
  text(g,mode==='FULL_NAV'?'NAV':'FMC',18,478,16,COLORS.green);
  if(mode==='MAP')text(g,'DME ----',18,499,12,COLORS.dim);
  if(mode==='FULL_NAV')text(g,'0.5',430,458,13,COLORS.white,'end');
@@ -129,7 +130,7 @@ function headingBug(svg,cx,cy,r,delta,drawLine=true){
  const g=layer(svg,'heading-bug');
  // A bracket around the selected heading on the ring plus a magenta dashed radial.
  const a=rel(delta);
- if(Math.abs(a)>90)return g;
+ if(drawLine==='ARC'&&Math.abs(a)>35)return g;
  const marker=make(g,'g',{transform:'rotate('+a+' '+cx+' '+cy+')'});
  const y=cy-r;
  path(marker,'M'+(cx-10)+' '+(y-9)+' V'+(y+4)+' H'+(cx+10)+' V'+(y-9),COLORS.magenta,2.6);
@@ -223,7 +224,7 @@ function routeExpanded(svg,m){
 function drawMap(svg,m){
  const g=layer(svg,'map-presentation'),{cx,cy,r}=arcRose(g,m);
  headingPointer(g,cx,cy,r,rel(m.heading-m.track));
- headingBug(g,cx,cy,r,rel(m.selectedHeading-m.track),true);
+ if(Math.abs(rel(m.selectedHeading-m.track))<=35)headingBug(g,cx,cy,r,rel(m.selectedHeading-m.track),true);
  if(m.nav.valid&&m.route.points.length)routeExpanded(g,m);
  if(m.nav.valid)navOptions(g,m,cx,cy,r/m.range);
  plane(g,cx,432);
