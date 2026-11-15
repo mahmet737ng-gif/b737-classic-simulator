@@ -48,16 +48,32 @@ const server=http.createServer((req,res)=>{
    // continues to use the new Classic v2 rose/map renderer.
    await page.waitForFunction(()=>{
     const eadi=window.B737UnifiedEADI?.snapshot?.();
-    return eadi?.version==='UNIFIED-EADI-LAB-0002'&&
-     eadi.renderer==='EFISDisplayLabEadi'&&eadi.mounted===true&&
-     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-0002"] canvas')&&
-     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-0002"] canvas')&&
+    return eadi?.version==='UNIFIED-EADI-LAB-FULL-0003'&&
+     eadi.renderer==='EFISDisplayLabEadiFull'&&eadi.mounted===true&&
+     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0003"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0003"] canvas')&&
      window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0007'&&
      !!document.getElementById('unifiedEhsiCAPT')&&
      !!document.getElementById('unifiedEhsiFO');
    },null,{timeout:20000,polling:100});
    const activeEadiScripts=await page.locator('script[src*="eadi-stage1-unified-v1.js"]').count();
    assert.equal(activeEadiScripts,0,'Legacy Stage1 EADI must never execute in Unified');
+   const actualFrames=await page.evaluate(()=>['CAPT','FO'].map(seat=>{
+    const host=document.querySelector('[data-eadi-stage1-seat="'+seat+'"]');
+    const canvas=host?.querySelector('canvas');
+    return {seat,owner:host?.dataset.eadiPainter,
+     paintCount:Number(host?.dataset.eadiPaintCount||0),
+     error:host?.dataset.eadiError||null,
+     engine:canvas?.dataset.eadiRenderer,
+     size:canvas?[canvas.width,canvas.height]:null,
+     source:canvas?.dataset.eadiSource};
+   }));
+   assert.ok(actualFrames.every(f=>
+    f.owner==='EFIS_LAB_FULL_0003'&&f.paintCount>0&&
+    !f.error&&f.engine==='EFIS-LAB-FULL-0003'&&
+    f.size[0]===640&&f.size[1]===640),
+    'Both crew EADI CRTs must be PAINTED by the full new EFIS Lab engine: '+JSON.stringify(actualFrames));
+   console.log('EFIS FULL RENDER VERIFIED',JSON.stringify(actualFrames));
    console.log('EFIS-REPLACEMENT-0002: two new EADI glasses and Classic v2 EHSI mounted');
    // COLD-DARK-EIS-0001: render 16 unlit EIS glass faces only if the
    // authoritative Electrical V7 has proven all switched aircraft buses off.
