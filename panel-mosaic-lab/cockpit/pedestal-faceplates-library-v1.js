@@ -1,4 +1,4 @@
-/* PEDESTAL FACEPLATES 0003
+/* PEDESTAL FACEPLATES 0004
  * Layout registered against the existing RADIO / NAV / AUDIO / TRIM pedestal.
  * Upper: COMM CAPT | existing audio (unchanged) | COMM FO.
  * Lower: NAV CAPT | one Transponder/TCAS | NAV FO.
@@ -7,17 +7,35 @@
  */
 (function(root){
 'use strict';
-const VERSION='PEDESTAL-FACEPLATES-0003';
+const VERSION='PEDESTAL-FACEPLATES-0004';
 const scriptUrl=document.currentScript?.src||location.href;
 const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
-const PANELS=Object.freeze([
+// Images were measured directly from the archived user-provided PNG files:
+ // Cargo 1009x457; COMM 1799x815; NAV 1799x813; XPDR/TCAS 1799x699.
+ // The assigned radio bays are wider/taller than these native ratios. Stretching
+ // them vertically turned circular rotary apertures into obvious ellipses.
+ // Fit each faceplate at natural aspect ratio and center it in its old bay.
+const SOURCE_DIMENSIONS=Object.freeze({
+ 'Cargo_Fire_Control_bare_faceplate.png':[1009,457],
+ 'VHF_COMM_bare_faceplate.png':[1799,815],
+ 'VHF_NAV_MANUAL_bare_faceplate.png':[1799,813],
+ 'Transponder_TCAS_bare_faceplate.png':[1799,699]
+});
+const BAYS=[
  {"id":"cargo-fire","label":"Cargo Fire Control","file":"Cargo_Fire_Control_bare_faceplate.png","x":14,"y":145,"w":244,"h":111,"bay":"AUX LEFT"},
  {"id":"vhf-comm-capt","label":"VHF COMM — Captain","file":"VHF_COMM_bare_faceplate.png","x":58,"y":927,"w":360,"h":178,"bay":"RADIO LEFT TOP"},
  {"id":"vhf-comm-fo","label":"VHF COMM — First Officer","file":"VHF_COMM_bare_faceplate.png","x":766,"y":927,"w":355,"h":178,"bay":"RADIO RIGHT TOP"},
  {"id":"vhf-nav-capt","label":"VHF NAV / MANUAL — Captain","file":"VHF_NAV_MANUAL_bare_faceplate.png","x":58,"y":1109,"w":360,"h":184,"bay":"RADIO LEFT SECOND ROW"},
  {"id":"transponder-tcas","label":"Transponder / TCAS","file":"Transponder_TCAS_bare_faceplate.png","x":418,"y":1109,"w":348,"h":184,"bay":"RADIO CENTER SECOND ROW"},
  {"id":"vhf-nav-fo","label":"VHF NAV / MANUAL — First Officer","file":"VHF_NAV_MANUAL_bare_faceplate.png","x":766,"y":1109,"w":355,"h":184,"bay":"RADIO RIGHT SECOND ROW"}
-]);
+];
+const PANELS=Object.freeze(BAYS.map(plate=>{
+ const [pixelWidth,pixelHeight]=SOURCE_DIMENSIONS[plate.file];
+ const height=plate.w*pixelHeight/pixelWidth;
+ return Object.freeze({...plate,y:plate.y+(plate.h-height)/2,h:height,
+  sourceWidth:pixelWidth,sourceHeight:pixelHeight,
+  bayY:plate.y,bayHeight:plate.h});
+}));
 function mount(){
  const native=document.querySelector('#region-pedestal .region-native');
  if(!native)return false;
@@ -40,7 +58,7 @@ function mount(){
    img.alt=plate.label+' — empty authentic faceplate, no switches installed';
    img.decoding='async';img.draggable=false;
    Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',
-    objectFit:'fill',userSelect:'none',pointerEvents:'none'});
+    objectFit:'contain',userSelect:'none',pointerEvents:'none'});
    img.addEventListener('error',()=>{frame.hidden=true;console.warn('Missing pedestal faceplate:',plate.file);},{once:true});
    frame.append(img);layer.append(frame);
  }
