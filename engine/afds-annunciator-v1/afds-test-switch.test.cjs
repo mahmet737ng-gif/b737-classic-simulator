@@ -28,31 +28,70 @@ test("Test override does not clear or invent live system alerts",()=>{
  assert.equal(core.reduce(restored,{type:"SET_ALERT",id:"FMC",status:"STEADY_RED"}),restored);
  assert.equal(core.reduce(restored,{type:"PRESS_TEST",detent:"INVALID"}),restored);
 });
-test("Canonical locked image states are real files and not front-view drafts",()=>{
+test("Owner-selected Small Silver atlas is the only runtime sprite",()=>{
  const reg=JSON.parse(fs.readFileSync(path.resolve(__dirname,"classic-737-annunciator-source-register.json"),"utf8"));
- const visual=reg.physical.testSwitch.visualSource;
- assert.equal(visual.canonicalFamily,"b737-cockpit-toggle-v1");
- assert.equal(visual.assetStatus,"APPROVED_LOCKED");
- assert.equal(visual.draftsExcluded,true);
- for(const state of core.DETENTS)assert.ok(fs.existsSync(path.resolve(root,visual.stateMap[state])),state);
- const toggleStandard=JSON.parse(fs.readFileSync(path.resolve(root,visual.registry),"utf8"));
- assert.equal(toggleStandard.status,"locked");
- assert.equal(toggleStandard.id,visual.canonicalFamily);
+ const v=reg.physical.testSwitch.visualSource;
+ assert.equal(v.activeAtlas,"shared-assets/toggle-switch-small/Small_Silver_5Positions.webp");
+ assert.equal(v.selection,"OWNER_EXPLICIT_SMALL_SILVER_2026-11-15");
+ assert.deepEqual(v.activeAtlasPoseCellIndices,{TEST_1:3,NEUTRAL:1,TEST_2:4});
+ assert.ok(fs.existsSync(path.resolve(root,v.activeAtlas)));
+ const man=JSON.parse(fs.readFileSync(path.resolve(root,v.activeManifest),"utf8"));
+ assert.equal(man.family,"Small");
+ assert.equal(man.atlas.width,5120);
+ assert.equal(man.atlas.cellWidth,1024);
+ assert.equal(man.variants.find(x=>x.name==="Small Silver").asset,"Small_Silver_5Positions.webp");
+ // No changes to the previous default asset family.
+ assert.equal(JSON.parse(fs.readFileSync(path.resolve(root,"panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/toggle-standard.json"),"utf8")).status,"locked");
 });
-test("Unified wires independent FO switch and source-light overlays without touching frozen photo",()=>{
- const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
+test("Unified has two independent three-position switches using photo bounding boxes",()=>{
+ const vm=require("node:vm");
  const js=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js"),"utf8");
  const css=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css"),"utf8");
- assert.match(html,/afds-test-switch-core\.js\?v=AFDS-ANN-TEST-0001/);
- assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0001/);
- assert.match(html,/afds-annunciator-switch-v1\.css\?v=AFDS-ANN-UNIFIED-0001/);
- assert.match(js,/#region-main \.region-native/);
+ const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
+ assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0002/);
+ assert.match(html,/afds-annunciator-switch-v1\.css\?v=AFDS-ANN-UNIFIED-0002/);
+ assert.match(js,/Small_Silver_5Positions\.webp/);
+ assert.match(js,/backgroundPosition=POSE/);
  assert.match(js,/pointercancel/);
  assert.match(js,/lostpointercapture/);
- assert.match(js,/visibilitychange/);
  assert.match(js,/ArrowUp/);
  assert.match(js,/ArrowDown/);
- assert.match(js,/b737:afds-annunciator-state/);
- assert.match(css,/afds-toggle-frame/);
- assert.ok(!js.includes("Front_View_Draft"));
+ assert.match(css,/background-size:500% 100%/);
+ assert.match(css,/background:transparent!important/);
+ assert.doesNotMatch(css,/radial-gradient/);
+ assert.doesNotMatch(js,/b737-toggle-(?:off|center|on)\.webp/);
+ const listeners={};const win={B737AFDSAnnunciatorCoreV1:core,
+  addEventListener:(id,fn)=>listeners[id]=fn,
+  dispatchEvent:()=>{},
+  document:{readyState:"loading",addEventListener:()=>{}}
+ };
+ vm.runInNewContext(js,{window:win,CustomEvent:class{constructor(x,o){this.type=x;this.detail=o.detail}}});
+ const api=win.B737AFDSAnnunciatorUnifiedV1;
+ assert.equal(api.VERSION,"AFDS-ANN-UNIFIED-0002");
+ assert.deepEqual(Object.keys(api.INSTALL).sort(),["CAPT","FO"]);
+ for(const seat of ["CAPT","FO"]){
+  const cfg=api.INSTALL[seat];
+  assert.deepEqual(cfg.lamps.map(x=>x.id),["AP","AT","FMC"]);
+  const left=seat==="CAPT"?35:1222,right=seat==="CAPT"?761:1594;
+  for(const lamp of cfg.lamps){
+   assert.ok(lamp.x>=left && lamp.x+lamp.w<right);
+   assert.ok(lamp.y>=0&&lamp.y+lamp.h<920);
+   assert.ok(lamp.w>20&&lamp.w<25);
+  }
+  assert.ok(cfg.toggle.cx>left&&cfg.toggle.cx<right);
+ }
+ api.press("TEST_1","CAPT");
+ assert.equal(api.getState("CAPT").lamps.AP,"STEADY_AMBER");
+ assert.equal(api.getState("FO").lamps.AP,"OFF");
+ api.press("TEST_2","FO");
+ assert.equal(api.getState("FO").lamps.AP,"STEADY_RED");
+ assert.equal(api.getState("FO").lamps.FMC,"STEADY_AMBER");
+ api.release("CAPT");api.release("FO");
+ assert.equal(api.getState("CAPT").detent,"NEUTRAL");
+ assert.equal(api.getState("FO").detent,"NEUTRAL");
+ api.setAlert("AT","FLASH_RED");
+ assert.equal(api.getState("CAPT").lamps.AT,"FLASH_RED");
+ assert.equal(api.getState("FO").lamps.AT,"FLASH_RED");
+ api.acknowledge("AT");
+ assert.equal(api.getState("FO").lamps.AT,"OFF");
 });
