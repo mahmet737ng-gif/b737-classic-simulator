@@ -211,8 +211,9 @@ function routeExpanded(svg,m){
  // SVG clip prevents a route leg from spilling into upper textual headings.
  const g=make(map,'g',{'clip-path':'url(#classic-ehsi-map-clip)'});
  for(let i=1;i<pts.length;i++){
-  const a=pts[i-1],b=pts[i],active=i-1<=m.route.activeIndex;
-  line(g,a.x,a.y,b.x,b.y,active?COLORS.magenta:COLORS.cyan,2.0,active?{}:{'stroke-dasharray':'6 6'});
+  const a=pts[i-1],b=pts[i];
+  // Every remaining flight-plan leg belongs to the active route (magenta).
+  line(g,a.x,a.y,b.x,b.y,COLORS.magenta,2.0);
  }
  for(let i=0;i<pts.length;i++){
   const p=pts[i];
@@ -262,7 +263,7 @@ function planRoute(svg,m){
  const positions=pts.map(coord);
  for(let i=1;i<positions.length;i++){
   const [x1,y1]=positions[i-1],[x2,y2]=positions[i];
-  line(g,x1,y1,x2,y2,i-1<=m.route.activeIndex?COLORS.magenta:COLORS.cyan,2.0);
+  line(g,x1,y1,x2,y2,COLORS.magenta,2.0);
  }
  for(let i=0;i<positions.length;i++){
   const [x,y]=positions[i];if(x<35||x>470||y<78||y>465)continue;
@@ -270,18 +271,36 @@ function planRoute(svg,m){
  }
  return positions;
 }
+function planArc(svg,m){
+ const g=layer(svg,'plan-compass'),cx=256,cy=432,r=348,ref=m.track;
+ // FCOM 10.32.3 includes PLAN in the expanded 70° compass group.
+ // This upper compass scale is separate from the true-north route chart.
+ const points=[];
+ for(let a=-35;a<=35;a+=1){const p=polar(cx,cy,a,r);points.push((a===-35?'M':'L')+p[0].toFixed(2)+' '+p[1].toFixed(2))}
+ path(g,points.join(' '),COLORS.white,1.6);
+ for(let hdg=0;hdg<360;hdg+=5){
+  const delta=rel(hdg-ref);if(Math.abs(delta)>35)continue;
+  const major=hdg%10===0,first=polar(cx,cy,delta,r),second=polar(cx,cy,delta,r-(major?13:7));
+  line(g,first[0],first[1],second[0],second[1],COLORS.white,major?1.8:1.0);
+  if(major){const t=polar(cx,cy,delta,r-31);text(g,String(hdg/10),t[0],t[1]+2,17,COLORS.white,'middle')}
+ }
+ headingPointer(g,cx,cy,r,rel(m.heading-m.track));
+ // Heading BUG appears in PLAN, but never has a dashed line to an airplane symbol.
+ const bugDelta=rel(m.selectedHeading-m.track);
+ if(Math.abs(bugDelta)<=35)headingBug(g,cx,cy,r,bugDelta,false);
+ return g;
+}
 function drawPlan(svg,m){
  const g=layer(svg,'plan-presentation');
- // The PLAN page does not inherit the expanded/map compass rose, range circles,
- // track-up airplane or magenta heading-to-airplane dashed line.
- // Heading/track info stays in the fixed header; route geometry is north up.
+ // Separate 70-degree compass scale at top; true-north route map below.
+ // Unlike MAP, PLAN has no aircraft symbol or heading-bug dashed reference line.
+ planArc(g,m);
  const north=layer(g,'true-north');
  text(north,'N',462,118,18,COLORS.white,'middle');
  line(north,462,140,462,178,COLORS.white,1.8);
  path(north,'M455 153 L462 140 L469 153',COLORS.white,1.8,COLORS.white);
  // Frame corner references remain restrained and do not imply radar range arcs.
- line(g,40,82,472,82,COLORS.dim,.8,{opacity:.35});
- line(g,40,463,472,463,COLORS.dim,.8,{opacity:.35});
+
  if(m.nav.valid&&m.route.points.length)planRoute(g,m);
  bottom(g,m,'PLAN');
 }
