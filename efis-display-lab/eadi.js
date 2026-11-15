@@ -3,6 +3,10 @@
  const api=factory(root.EFISLabGlyphs,root.B737ClassicSpeedTapeEngineV1,root.B737ClassicFlapSpeedProfileV1,root.B737UnifiedSpeedTapeV1,root.B737FmaModeEngineV1,root.B737EADIFMAFcomV2);
  if(typeof module==='object'&&module.exports)module.exports=api;
  root.EFISDisplayLabEadi=api;
+ // Allow Unified to repaint when a deferred source finishes loading; DOM
+ // readiness and paint readiness are separate states.
+ if(root.document&&root.dispatchEvent&&root.CustomEvent)
+  root.dispatchEvent(new root.CustomEvent('b737:efis-lab-eadi-ready'));
 })(globalThis,function(glyph,speedEngine,flaps,speedLayer,fmaEngine,fmaLayer){
 'use strict';
 const W=640,H=640,CX=328,CY=310,SCALE=6;
