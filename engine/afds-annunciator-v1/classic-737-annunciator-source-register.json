@@ -453,7 +453,7 @@
     "runtimeJS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js",
     "runtimeCSS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css",
     "runtimeCore": "engine/afds-annunciator-v1/afds-test-switch-core.js",
-    "featureStatus": "INTEGRATED_SOURCE_CODE_BROWSER_QA_PENDING",
+    "featureStatus": "INSTALLED_MAIN_AND_GITHUB_PAGES_BUILD_SUCCESS; PIXEL_QA_PENDING",
     "actualAFDSAlertsConnected": false,
     "testIndicationsConnected": true,
     "preservedArt": true
@@ -470,10 +470,13 @@
   ],
   "audit": {
     "sourceLogic": "EXTRACTED",
-    "visualFidelity": "UNVERIFIED_FO_APPROXIMATE",
+    "visualFidelity": "FO_INITIAL_SCREENSHOT_CALIBRATION_PENDING",
     "liveCockpit": "SOURCE_INSTALLED_ON_MAIN_BUT_NO_BROWSER_PHOTO_QA",
     "flightCertification": "NOT_APPROVED",
-    "logicVerification": "TEST_CORE_REGRESSION_PENDING"
+    "logicVerification": "PASS_4_NODE_TESTS_GITHUB_ACTIONS_RUN_43747376371",
+    "lockedArtworkVerification": "PASS_GITHUB_ACTIONS_RUN_43747376371",
+    "pagesDeployment": "SUCCESS_GITHUB_ACTIONS_RUN_43747376089",
+    "browserInteraction": "PENDING_MANUAL_QA"
   },
   "electrical": {
     "status": "PARTIAL_SOURCE_TRACE_ONLY",
