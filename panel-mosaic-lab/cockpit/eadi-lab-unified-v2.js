@@ -5,7 +5,7 @@
  */
 (function(root){
  'use strict';
- const VERSION='UNIFIED-EADI-LAB-0002';
+ const VERSION='UNIFIED-EADI-LAB-FULL-0003';
  const WIDTH=900,HEIGHT=720;
  const slots=Object.freeze(['fma','speedTape','mach','localizer','glideslope',
    'radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
@@ -32,39 +32,49 @@
   if(!slot?.nativeRect)throw Error('FO Conventional EADI glass registration unavailable');
   return slot.nativeRect;
  }
+ function observed(snapshot,topic){
+  const record=snapshot?.[topic];
+  return record?.quality==='VALID'?record.value:null;
+ }
  function paint(seat){
-  const s=stations[seat],display=screen[seat],renderer=root.EFISDisplayLabEadi;
+  const station=stations[seat],display=screen[seat];
+  const renderer=root.EFISDisplayLabEadi;
   if(!display?.canvas?.isConnected)return false;
-  if(typeof renderer?.renderUnifiedAttitude!=='function'){
-   // No fallback to the retired EADI painter. The new engine must be present.
-   display.host.dataset.eadiError='NEW_RENDERER_MISSING';
-   const c=display.canvas.getContext('2d');
-   if(c){c.fillStyle='#000';c.fillRect(0,0,WIDTH,HEIGHT);}
+  if(typeof renderer?.renderUnifiedFull!=='function'){
+   display.host.dataset.eadiError='NEW_FULL_RENDERER_MISSING';
+   const ctx=display.canvas.getContext('2d');
+   if(ctx){ctx.fillStyle='#000';ctx.fillRect(0,0,display.canvas.width,display.canvas.height);}
    return false;
   }
-  delete display.host.dataset.eadiError;
-  const painted=renderer.renderUnifiedAttitude(display.canvas,{
-   pitch:s.pitch,bank:s.bank,powered:s.powered,attitudeValid:s.attitudeValid,
-   fdValid:s.fdValid===true,fdPitch:s.fdPitch,fdRoll:s.fdRoll
+  const snapshot=root.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
+  const n=seat==='CAPT'?1:2,adc=observed(snapshot,'airdata.adc'+n);
+  const mcp=observed(snapshot,'mcp.state');
+  const irs=observed(snapshot,seat==='CAPT'?'irs.left':'irs.right');
+  const numeric=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
+  const painted=renderer.renderUnifiedFull(display.canvas,{
+   seat,pitch:station.pitch,bank:station.bank,
+   powered:station.powered,attitudeValid:station.attitudeValid,
+   source:station.source,
+   iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),
+   mach:numeric(adc?.mach),
+   selectedSpeedKt:mcp?.powered===true?numeric(mcp?.selectedSpeedKt):null,
+   groundSpeedKt:irs?.powered===true&&irs?.positionValid===true?
+    numeric(irs.gsKt):null,
+   radioAltFt:null,dhFt:null,locDeviation:null,gsDeviation:null
   });
   if(painted!==true){
-   display.host.dataset.eadiError='RENDER_FAILED';
-   return false;
+   display.host.dataset.eadiError='NEW_FULL_RENDER_FAILED';return false;
   }
-  display.host.dataset.eadiPainter='EFIS_DISPLAY_LAB';
+  delete display.host.dataset.eadiError;
+  display.host.dataset.eadiPainter='EFIS_LAB_FULL_0003';
   display.host.dataset.eadiPaintCount=String(
    Number(display.host.dataset.eadiPaintCount||0)+1);
-  // The data below is instrumentation only, never a fake flight instrument.
-  const sample=display.canvas.getContext('2d')?.getImageData?.(450,220,1,1)?.data;
-  display.host.dataset.eadiSkyPixel=sample?
-   [sample[0],sample[1],sample[2]].join(','):'UNREADABLE';
-  if(s.powered){
-   const ctx=display.canvas.getContext('2d');
-   for(const callback of hooks[seat].values()){
-    try{callback(ctx,Object.freeze({seat,pitch:s.pitch,bank:s.bank,version:VERSION}));}
-    catch(error){root.console?.warn?.('Unified EADI extension paint:',error);}
-   }
-  }
+  const ctx=display.canvas.getContext('2d');
+  const pixel=ctx?.getImageData?.(328,235,1,1)?.data;
+  display.host.dataset.eadiSkyPixel=pixel?[pixel[0],pixel[1],pixel[2]].join(','):'UNREADABLE';
+  // Full lab engine paints its own live FMA and speed-tape presentation.
+  // Legacy hook callbacks remain registered for source notifications but
+  // MUST NOT draw the retired attitude-only / duplicate FMA or tape layers.
   return true;
  }
  function make(seat,native){
@@ -145,7 +155,7 @@
   return ()=>{hooks[key].delete(id);paint(key);};
  }
  function snapshot(){
-  return {version:VERSION,renderer:root.EFISDisplayLabEadi?.renderUnifiedAttitude?'EFISDisplayLabEadi':'MISSING',
+  return {version:VERSION,renderer:root.EFISDisplayLabEadi?.renderUnifiedFull?'EFISDisplayLabEadiFull':'MISSING',
    paints:{CAPT:Number(screen.CAPT?.host?.dataset.eadiPaintCount||0),FO:Number(screen.FO?.host?.dataset.eadiPaintCount||0)},
    mode:mode(),mounted:!!screen.CAPT?.host?.isConnected&&!!screen.FO?.host?.isConnected,
    activeGlass:{CAPT:position('CAPT'),FO:position('FO')},
@@ -165,6 +175,19 @@
   if(screen.CAPT?.host?.isConnected)paint('CAPT');
   if(screen.FO?.host?.isConnected)paint('FO');
  });
+ let refreshScheduled=false;
+ function scheduleLive(){
+  if(refreshScheduled)return;
+  refreshScheduled=true;
+  root.requestAnimationFrame(()=>{
+   refreshScheduled=false;
+   for(const seat of ['CAPT','FO'])if(screen[seat]?.host?.isConnected)paint(seat);
+  });
+ }
+ root.addEventListener('b737:avionics-data',event=>{
+  if(/^(airdata\.adc[12]|irs\.(left|right)|mcp\.state)$/.test(event.detail?.topic||''))scheduleLive();
+ });
+ root.addEventListener('b737:bus-consumer-snapshot',scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')
