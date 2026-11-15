@@ -145,3 +145,50 @@ test('consumer port requires an explicit bus and CB; a definite open gate always
  assert.equal(N.supply(n,{bus:'UNKNOWN',cbClosed:false}).operating,false);
  assert.equal(N.supply(n,{bus:'transfer1',cbClosed:true,switchOn:false}).operating,false);
 });
+
+
+test('APU generator terminal AC VOLTS and CPS are live while APU GEN OFF BUS with both engines stopped',()=>{
+ let s=control(control(cold(),'batterySwitch',true),'apuRunning',true);
+ const generator={ready:true,voltageV:115.6,frequencyHz:399.4};
+ const n=net(s,{apuGenerator:generator});
+ assert.equal(n.nodes.APU.available,true);
+ assert.equal(n.nodes.APU.busContactorClosed,false);
+ assert.deepEqual(n.nodes.APU.connectedBusSides,[]);
+ assert.equal(n.meterSources.AC['APU GEN'].volts,115.6);
+ assert.equal(n.meterSources.AC['APU GEN'].cps,399.4);
+ assert.equal(n.meterSources.AC.GEN1.volts,0);
+ assert.equal(n.meterSources.AC.GEN2.cps,0);
+ assert.equal(n.nodes.GENERATOR_BUS_1.powered,false);
+ assert.equal(n.nodes.GENERATOR_BUS_2.powered,false);
+ assert.equal(n.meterSources.AC['STBY PWR'].volts,0,'standby BUS remains dead, source APU is separately energized');
+ // Starting either main engine never changes APU source-terminal measurements.
+ s=control(s,'engine1Running',true);
+ const after1=net(s,{apuGenerator:generator});
+ assert.equal(after1.meterSources.AC['APU GEN'].volts,115.6);
+ assert.equal(after1.meterSources.AC['APU GEN'].cps,399.4);
+ assert.equal(after1.meterSources.AC.GEN1.volts,115);
+ assert.equal(after1.meterSources.AC.GEN2.volts,0);
+ s=control(s,'engine2Running',true);
+ assert.equal(net(s,{apuGenerator:generator}).meterSources.AC['APU GEN'].cps,399.4);
+});
+test('APU ECU ready, failure, and BUS connection are independent instrument dimensions',()=>{
+ let s=control(control(cold(),'batterySwitch',true),'apuRunning',true);
+ const generator={ready:true,voltageV:116,frequencyHz:401};
+ assert.equal(net(s).meterSources.AC['APU GEN'].volts,115,'legacy nominal fallback is still valid');
+ assert.equal(net(s,{numericMode:'SENSOR_ONLY',apuGenerator:generator}).meterSources.AC['APU GEN'].cps,401);
+ // A ready ECU generator remains measurable even if the electrical V7
+ // running flag has not yet synchronized; this does not energize any bus.
+ const unsynced=net(cold(),{apuGenerator:generator});
+ assert.equal(unsynced.nodes.APU.volts,116);
+ assert.equal(unsynced.nodes.GENERATOR_BUS_1.powered,false);
+ s=select(s,'APU',1);
+ const connected=net(s,{apuGenerator:generator});
+ assert.equal(connected.nodes.APU.volts,116);
+ assert.equal(connected.nodes.GENERATOR_BUS_1.powered,true);
+ assert.deepEqual(connected.nodes.APU.connectedBusSides,[1]);
+ assert.equal(net(s,{apuGenerator:{ready:false,voltageV:0,frequencyHz:0}}).nodes.APU.volts,0);
+ const failed=fault(s,'APU_FAILED');
+ assert.equal(net(failed,{apuGenerator:generator}).meterSources.AC['APU GEN'].volts,0);
+ assert.equal(net(failed,{apuGenerator:generator}).nodes.GENERATOR_BUS_1.powered,false);
+ assert.throws(()=>net(s,{apuGenerator:{ready:true,voltageV:NaN,frequencyHz:400}}),/Invalid APU/);
+});
