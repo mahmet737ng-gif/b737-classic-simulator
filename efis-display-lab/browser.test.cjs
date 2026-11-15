@@ -21,6 +21,32 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),1);
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),1);
+  // Physical CP visual source, registered detents, independent coaxial shafts.
+  await page.waitForFunction(()=>!!window.B737EFISCP);
+  assert.equal(await page.locator('.efcp-face .efcp-knob').count(),6);
+  assert.equal(await page.locator('.efcp-face .efcp-detent').count(),13);
+  assert.equal(await page.locator('.efcp-face .efcp-key').count(),7);
+  assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).eadi.dh,200);
+  await page.locator('[data-detent="mode"][data-value="PLAN"]').click();
+  assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).ehsi.mode,'PLAN');
+  await page.locator('[data-detent="range"][data-value="320"]').click();
+  assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).ehsi.range,320);
+  await page.locator('#efcp-tfc').click();
+  assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).ehsi.options.tfc,true);
+  assert.equal(await page.locator('#efcp-tfc').getAttribute('aria-pressed'),'true');
+  await page.locator('[data-switch="wxr"]').click();
+  assert.equal(await page.locator('[data-switch="wxr"]').getAttribute('aria-pressed'),'true');
+  const outer=page.locator('.efcp-knob[data-knob="hsi"]'),outerBox=await outer.boundingBox();
+  await outer.click({position:{x:outerBox.width*.15,y:outerBox.height*.5},modifiers:['Shift']});
+  let physical=await page.evaluate(()=>window.B737EFISCP.getState());
+  assert.equal(physical.ehsi.brightness,.96);
+  assert.equal(physical.ehsi.wxBrightness,1,'outer must not turn inner');
+  await page.locator('.efcp-knob[data-knob="wxInner"]').click({modifiers:['Shift']});
+  physical=await page.evaluate(()=>window.B737EFISCP.getState());
+  assert.equal(physical.ehsi.brightness,.96,'inner must not turn outer');
+  assert.equal(physical.ehsi.wxBrightness,.96);
+  await page.locator('[data-scenario="normal"]').click();
+  await page.locator('.efcp-face').screenshot({path:path.join(out,'efis-physical-panel.png'),animations:'disabled'});
   const shots={};
   async function screenshot(name){
    const bytes=await page.locator('#ehsiStage').screenshot({path:path.join(out,name+'.png'),animations:'disabled'});
