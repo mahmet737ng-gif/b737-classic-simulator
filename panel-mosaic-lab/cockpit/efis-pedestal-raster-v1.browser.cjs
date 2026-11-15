@@ -14,7 +14,7 @@ const fs=require('node:fs'),path=require('node:path');
   let loaded=false;
   for(let i=0;i<15&&!loaded;i++){try{await page.goto('http://127.0.0.1:18778/panel-mosaic-lab/cockpit/',{timeout:8000,waitUntil:'domcontentloaded'});loaded=true}catch{await new Promise(r=>setTimeout(r,500))}}
   assert.ok(loaded,'Unified must open');
-  await page.waitForFunction(()=>!!window.B737UnifiedEFISPedestalV1&&document.querySelectorAll('[data-uefis-seat]').length===2,{timeout:60000});
+  await page.waitForFunction(()=>!!window.B737UnifiedEFISPedestalV1&&document.querySelectorAll('[data-uefis-seat]').length===2,null,{timeout:60000});
   const panel=page.locator('#region-pedestal');
   assert.equal(await panel.locator('.uefis-seat').count(),2);
   assert.equal(await panel.locator('.uefis-face').count(),2);
@@ -37,7 +37,7 @@ const fs=require('node:fs'),path=require('node:path');
   assert.equal(await page.evaluate(()=>window.B737UnifiedEFISPedestalV1.getState('CAPT').options.tfc),true);
   await dialog.locator('[data-push="wxr"]').click();
   assert.equal(await dialog.locator('[data-push="wxr"]').getAttribute('aria-pressed'),'true');
-  await page.waitForFunction(()=>window.B737EFISDisplayLab?.getState()?.ehsi?.mode==='PLAN',{timeout:25000});
+  await page.waitForFunction(()=>window.B737EFISDisplayLab?.getState()?.ehsi?.mode==='PLAN',null,{timeout:25000});
   assert.equal(await page.evaluate(()=>window.B737EFISDisplayLab.getState().ehsi.range),320);
   await dialog.locator('.uefis-knob.uefis-dh').click({modifiers:['Shift']});
   assert.equal(await page.evaluate(()=>window.B737UnifiedEFISPedestalV1.getState('CAPT').dh),199);
