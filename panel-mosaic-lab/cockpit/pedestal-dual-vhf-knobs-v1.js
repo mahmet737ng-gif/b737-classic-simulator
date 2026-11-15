@@ -3,7 +3,7 @@
    Visual overlay only; frequency change events are available for radio wiring. */
 (function(root){
 'use strict';
-const VERSION='PD-VHF-DUAL-0001';
+const VERSION='PD-VHF-DUAL-0003';
 const source=document.currentScript?.src||location.href;
 const ASSET=new URL('./assets/vhf-concentric-ivory-v1.webp',source).href;
 // Source pixel coordinates; COMM is 1799x815, NAV is 1799x813.
@@ -110,7 +110,21 @@ function start(){
 root.addEventListener('b737:cockpit-mounted',mount);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
 else start();
-root.B737UnifiedVHFDualV1=Object.freeze({version:VERSION,slots:SLOTS,asset:ASSET,mount,
+function setFrequency(id,khz){
+ const slot=SLOTS.find(x=>x.id===id),s=state.get(id);
+ if(!slot||!s||!Number.isInteger(khz))return false;
+ const [min,max]=minMax[slot.kind],spacing=slot.kind==='COMM'?25:50;
+ if(khz<min||khz>max||khz%spacing!==0)return false;
+ if(s.khz===khz)return true;
+ s.khz=khz;s.root.dataset.frequency=(khz/1000).toFixed(3);
+ root.dispatchEvent(new CustomEvent('b737:unified-vhf-frequency',{detail:{
+  version:VERSION,id:slot.id,kind:slot.kind,seat:slot.seat,position:slot.position,part:'external',
+  whole:Math.floor(khz/1000),fractionKhz:khz%1000,frequencyKhz:khz,
+  frequencyMhz:Number((khz/1000).toFixed(3))
+ }}));
+ return true;
+}
+root.B737UnifiedVHFDualV1=Object.freeze({version:VERSION,slots:SLOTS,asset:ASSET,mount,setFrequency,spec:Object.freeze({COMM:{minKhz:118000,maxKhz:136975,stepKhz:25},NAV:{minKhz:108000,maxKhz:117950,stepKhz:50}}),
  tune:(id,part,dir)=>{
   const s=SLOTS.find(x=>x.id===id);return !!s&&['outer','inner'].includes(part)&&step(s,part,dir);
  },getState:(id)=>{const s=state.get(id);return s?Object.freeze({frequencyKhz:s.khz,frequencyMhz:s.khz/1000,...s.angle}):null;}});
