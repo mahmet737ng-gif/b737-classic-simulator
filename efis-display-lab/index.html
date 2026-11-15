@@ -29,7 +29,7 @@ main{max-width:1740px;margin:auto;padding:20px 19px 60px}
 .field label{color:#adbed0;font-size:11px}.field input,.field select{width:100%;min-width:0;background:#080e17;border:1px solid #3c5066;color:#fff;padding:7px 8px;border-radius:6px;font-size:13px}
 .field input[type=range]{accent-color:var(--blue);padding:0}
 .toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:#d8e6f2;min-height:26px}.toggle input{accent-color:#6dbeea;width:16px;height:16px}
-.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.presets button,.action{border:1px solid #40617f;background:#20354a;color:#e7f3ff;padding:9px 6px;border-radius:7px;font-size:11px}.presets button:hover,.action:hover{background:#315878}
+.quickmodes{display:flex;gap:7px;margin:-2px 0 12px;flex-wrap:wrap}.quickmodes button{flex:1 1 28%;border:1px solid #315269;background:#0d2030;color:#bedbef;border-radius:7px;padding:8px 5px;font-size:11px;letter-spacing:.04em;cursor:pointer}.quickmodes button[aria-pressed=true]{border-color:#5bcbe8;color:#fff;background:#224861;box-shadow:inset 0 0 0 1px #507a92}.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.presets button,.action{border:1px solid #40617f;background:#20354a;color:#e7f3ff;padding:9px 6px;border-radius:7px;font-size:11px}.presets button:hover,.action:hover{background:#315878}
 .sources{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .small{color:#90a3b7;font-size:11px;line-height:1.7}.note{color:#d6bb7a;font-size:11px;line-height:1.6}
 .audit,.diagnostics{margin-top:20px;border:1px solid var(--line);border-radius:14px;background:#131b25;padding:18px}
@@ -50,7 +50,7 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 @media(max-width:1250px){.top{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
 @media(max-width:760px){header h1{font-size:17px}main{padding:13px 9px 40px}.screens,.controls,.diagnostics{grid-template-columns:1fr}#testResults{grid-template-columns:1fr}.display{max-width:480px}.card{padding:10px}}
 </style></head><body>
-<header><div><h1>B737 CLASSIC <strong class="accent">/ EADI + EHSI AUDIT ENGINE</strong></h1><p>300 / 400 / 500 · EP-FSI reference priority · isolated from Unified · event-driven</p></div><span class="corner">LAB 0001 · SIM DATA ONLY · NOT FOR FLIGHT</span></header>
+<header><div><h1>B737 CLASSIC <strong class="accent">/ EADI + EHSI AUDIT ENGINE</strong></h1><p>300 / 400 / 500 · EP-FSI reference priority · isolated from Unified · event-driven</p></div><span class="corner">LAB 0002 · EHSI REBUILD · NOT FOR FLIGHT</span></header>
 <main>
 <div class="top">
  <section class="screens" aria-label="Independent avionics test displays">
@@ -59,8 +59,9 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
    <p class="clipnote">Attitude, pitch ladder, FMA zones, speed tape, flight director, LOC/GS, RA/DH, TCAS RA, flags. Geometry remains unapproved until reference image pixel audit.</p>
   </article>
   <article class="card"><div class="head"><b>EHSI / ELECTRONIC HORIZONTAL</b><small id="ehsiStatus">SIMULATED ROUTE</small></div>
-   <div class="display" id="ehsiStage"><svg id="ehsi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 440" role="img" aria-label="Classic EHSI seven-mode rendering"></svg><img id="ehsiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="ehsiHighlight"></div></div>
-   <p class="clipnote">Reuses the existing Classic EHSI engine. Synthetic route for geometry testing only; no real navigation, radar, terrain or TCAS targets are generated.</p>
+   <div class="quickmodes" id="ehsiQuickModes" aria-label="Select one of the three rebuilt EHSI modes"><button type="button" data-ehsi-mode="MAP" aria-pressed="true">MAP · 70°</button><button type="button" data-ehsi-mode="FULL_NAV" aria-pressed="false">FULL NAV · 360°</button><button type="button" data-ehsi-mode="PLAN" aria-pressed="false">PLAN · N UP</button></div>
+   <div class="display" id="ehsiStage"><svg id="ehsi" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="B737 Classic EHSI rebuilt MAP FULL NAV PLAN source-based"></svg><img id="ehsiRef" class="reference" alt="User-provided reference image overlay"><div class="highlight" id="ehsiHighlight"></div></div>
+   <p class="clipnote">Rebuilt independently against Classic FCOM 10.31.2 / 10.31.8 / 10.31.18: different 70° MAP arc, FULL NAV 360° rose and true-north PLAN. Four other modes explicitly pending. Geometry and typography still require photo-level acceptance. Synthetic TEST fixes only.</p>
   </article>
  </section>
  <aside class="controls">
@@ -84,8 +85,8 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 <div class="tablewrap"><table><thead><tr><th>Display</th><th>Segment</th><th>FCOM folio</th><th>Documentation</th><th>Visual review</th></tr></thead><tbody id="auditRows"></tbody></table></div></section>
 <section class="diagnostics"><div><h2>Deterministic test lab</h2><p class="small">Source-independent rule checks run without timers, polling, or frame-based aircraft logic.</p><button class="action" id="testAgain">Run all assertions</button><div id="testSummary" class="small" style="margin-top:13px"></div><div id="testResults"></div></div>
 <div><h2>Live state inspector</h2><p class="small">For MCP / IRS / ADC / EFIS / CB adapters in a later integration stage.</p><button class="action" id="copyState">Copy JSON state</button><pre id="stateDump"></pre></div></section>
-<div class="footer">References: Boeing 737-300/-400/-500 FCOM Vol. 2 Ch. 10 Sections 30–31, 40 (manual is explicitly marked NOT FOR FLIGHT), and existing Unified EFIS v6. <a id="fcomLink" target="_blank" rel="noreferrer">Reference manual</a> · <a href="../cdu-standalone-v6/ehsi/ehsi-engine.js">Existing EHSI renderer</a> · Independent educational prototype.</div>
+<div class="footer">References: Boeing 737-300/-400/-500 FCOM Vol. 2 Ch. 10 Sections 30–31, 40 (manual is explicitly marked NOT FOR FLIGHT), and existing Unified EFIS v6. <a id="fcomLink" target="_blank" rel="noreferrer">Reference manual</a> · <a href="./ehsi-v2.js">EHSI v2 source-driven renderer</a> · Independent educational prototype.</div>
 </main>
-<script src="../cdu-standalone-v6/ehsi/ehsi-engine.js"></script>
+<script src="./ehsi-v2.js"></script>
 <script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script>
 </body></html>
