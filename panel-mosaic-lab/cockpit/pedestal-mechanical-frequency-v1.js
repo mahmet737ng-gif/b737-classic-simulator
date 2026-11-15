@@ -6,7 +6,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='PD-ROLLING-FREQUENCY-0002';
+const VERSION='PD-ROLLING-FREQUENCY-0003';
 const CHANNELS={COMM:{min:118000,max:136975,step:25},NAV:{min:108000,max:117950,step:50}};
 const WINDOWS=[
  {id:'comm-capt-left',plate:'vhf-comm-capt',kind:'COMM',seat:'CAPT',rect:[215,167,395,161],dim:[1799,815],index:'bar'},
@@ -18,7 +18,13 @@ const WINDOWS=[
  {id:'nav-capt-auto',plate:'vhf-nav-capt',kind:'NAV',seat:'CAPT',rect:[214,142,458,182],dim:[1799,813],index:'none',automatic:true},
  {id:'nav-fo-auto',plate:'vhf-nav-fo',kind:'NAV',seat:'FO',rect:[214,142,458,182],dim:[1799,813],index:'none',automatic:true}
 ];
-const live=new Map(),auto=new Map();
+// The legacy mechanical NAV AUTO readout must not show unsupported dashes on
+// initial mount. 110.30 MHz is a training seed until a valid FMC auto-tune
+// event provides the actual current AUTO selection for that seat.
+const DEFAULT_NAV_AUTO_KHZ=110300;
+const live=new Map(),auto=new Map([
+ ['CAPT',DEFAULT_NAV_AUTO_KHZ],['FO',DEFAULT_NAV_AUTO_KHZ]
+]),autoFromFmc=new Set();
 function valid(kind,khz){
  const c=CHANNELS[kind];
  return !!c&&Number.isInteger(khz)&&khz>=c.min&&khz<=c.max&&khz%c.step===0;
@@ -93,7 +99,9 @@ function create(spec,frame){
  const item={spec,root:box,wheels,shown:null,value:null};
  live.set(spec.id,item);
  const state=root.B737UnifiedVHFDualV1?.getState?.(spec.id);
- const preset=spec.automatic?(auto.get(spec.seat)??null):(state?.frequencyKhz??(spec.kind==='COMM'?118000:110300));
+ const preset=spec.automatic?(auto.get(spec.seat)??DEFAULT_NAV_AUTO_KHZ):
+  (state?.frequencyKhz??(spec.kind==='COMM'?118000:110300));
+ if(spec.automatic)box.dataset.autoSource=autoFromFmc.has(spec.seat)?'fmc':'training-seed';
  refresh(item,preset);
  return true;
 }
@@ -114,8 +122,9 @@ root.addEventListener('b737:nav-auto-frequency',event=>{
  const d=event.detail||{};
  if(!['CAPT','FO'].includes(d.seat)||!valid('NAV',d.frequencyKhz))return;
  auto.set(d.seat,d.frequencyKhz);
+ autoFromFmc.add(d.seat);
  const item=live.get('nav-'+d.seat.toLowerCase()+'-auto');
- if(item)refresh(item,d.frequencyKhz);
+ if(item){item.root.dataset.autoSource='fmc';refresh(item,d.frequencyKhz);}
 });
 function start(){
  if(mount())return;
@@ -125,12 +134,15 @@ function start(){
 root.addEventListener('b737:cockpit-mounted',mount);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 root.B737UnifiedMechanicalFrequencyV1=Object.freeze({
- version:VERSION,windows:WINDOWS,channels:CHANNELS,mount,display,valid,
- getState:id=>{const item=live.get(id);return item?{frequencyKhz:item.value,display:item.shown}:null;},
+ version:VERSION,windows:WINDOWS,channels:CHANNELS,defaultNavAutoKhz:DEFAULT_NAV_AUTO_KHZ,mount,display,valid,
+ getState:id=>{const item=live.get(id);return item?{frequencyKhz:item.value,display:item.shown,
+  source:item.spec.automatic?(autoFromFmc.has(item.spec.seat)?'fmc':'training-seed'):'manual'}:null;},
  setNavAuto:(seat,khz)=>{
   if(!['CAPT','FO'].includes(seat)||!valid('NAV',khz))return false;
-  auto.set(seat,khz);const item=live.get('nav-'+seat.toLowerCase()+'-auto');
-  if(item)refresh(item,khz);return true;
+  auto.set(seat,khz);autoFromFmc.add(seat);
+  const item=live.get('nav-'+seat.toLowerCase()+'-auto');
+  if(item){item.root.dataset.autoSource='fmc';refresh(item,khz);}
+  return true;
  }
 });
 })(window);
