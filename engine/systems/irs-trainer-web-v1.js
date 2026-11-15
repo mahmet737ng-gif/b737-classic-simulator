@@ -4,8 +4,9 @@
  * sandbox, NO real IRS sensor physics / no aircraft navigation certification.
  *
  * FCOM D6-27370-300/400/500-SHI 11.20.7-10 / SP.11.4-5:
- * - FMC POS INIT -> SET IRS POS (LSK 4R), or selected L/R ISDU PPOS
- *   hemisphere latitude ENT, hemisphere longitude ENT;
+ * - FMC POS INIT -> SET IRS POS (LSK 4R), or either L/R ISDU PPOS
+ *   hemisphere latitude ENT, hemisphere longitude ENT; both ISDU ENT actions
+ *   address ALL eligible aligning IRUs (LAN ATA 34-28, printed p.126).
  * - full alignment stationary, normal ~10min; high latitude 17min;
  * - L/R independently powered, aligned, initialized and navigated;
  * - OFF, ALIGN, NAV, ATT are separate operating selections.
@@ -261,6 +262,34 @@ function apply(state,cmd){
   // unit is OFF/failed, the other must still receive SET IRS POS.
   if(sides.length===0)throw new Error('No powered IRS is eligible for FMC position initialization');
   for(const id of sides)writePosition(s,id,p,'FMC',cmd.originPosition);
+ }else if(cmd.type==='ISDU_LAT_ENT'||cmd.type==='ISDU_LON_ENT'){
+  // LAN 737 Classic ATA 34-28 p.126: the physical SYS DSPL L/R chooses
+  // display only. Latitude ENT and longitude ENT each go to BOTH IRUs that
+  // are currently aligning, even when only one is displayed.
+  // OFF, ATT, NAV_READY, failed or unpowered units remain independent.
+  if(cmd.side!==undefined)get(s,cmd.side); // validate optional display side
+  const isLat=cmd.type==='ISDU_LAT_ENT';
+  const coordinate=parseCoordinate(cmd.value,isLat?'lat':'lon');
+  const eligible=SIDES.filter(id=>{
+   const u=s.units[id];
+   return u.powered&&
+    ['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase)&&
+    u.alignFault!=='INTERNAL_POSITION_CHECK_FAILURE';
+  });
+  if(eligible.length===0)throw new Error('ISDU position entry requires powered IRS in ALIGN');
+  if(isLat){
+   for(const id of eligible){
+    s.units[id].entryPending.lat=coordinate;
+    emit(s,id,'ISDU_LAT_ACCEPTED');
+   }
+  }else{
+   const receiving=eligible.filter(id=>s.units[id].entryPending.lat!==null);
+   if(receiving.length===0)throw new Error('Enter latitude before longitude');
+   for(const id of receiving){
+    const u=s.units[id];u.entryPending.lon=coordinate;
+    writePosition(s,id,{lat:u.entryPending.lat,lon:u.entryPending.lon},'ISDU',cmd.originPosition);
+   }
+  }
  }else{
   const u=get(s,cmd.side);
   switch(cmd.type){
@@ -377,18 +406,6 @@ function apply(state,cmd){
      u.internalChecks[key]=value;
     }
     emit(s,u.id,'IRS_POSITION_CHECK_EVIDENCE');break;
-   }
-   case 'ISDU_LAT_ENT':{
-    if(!u.powered||!['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(u.phase))
-      throw new Error('ISDU position entry requires selected powered IRS in ALIGN');
-    u.entryPending.lat=parseCoordinate(cmd.value,'lat');
-    emit(s,u.id,'ISDU_LAT_ACCEPTED');break;
-   }
-   case 'ISDU_LON_ENT':{
-    u.entryPending.lon=parseCoordinate(cmd.value,'lon');
-    if(u.entryPending.lat===null)throw new Error('Enter latitude before longitude');
-    writePosition(s,u.id,{lat:u.entryPending.lat,lon:u.entryPending.lon},'ISDU',cmd.originPosition);
-    break;
    }
    default:throw new RangeError('Unknown IRS command type '+cmd.type);
   }
