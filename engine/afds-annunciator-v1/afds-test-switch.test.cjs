@@ -1,0 +1,58 @@
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const path=require("node:path");
+const {test}=require("node:test");
+const core=require("./afds-test-switch-core.js");
+const root=path.resolve(__dirname,"../..");
+test("Classic momentary switch has three detents and neutral reset",()=>{
+ assert.deepEqual(core.DETENTS,["TEST_1","NEUTRAL","TEST_2"]);
+ const s=core.initial();
+ assert.equal(s.detent,"NEUTRAL");
+ assert.deepEqual(core.lamps(s),{AP:"OFF",AT:"OFF",FMC:"OFF"});
+ const one=core.reduce(s,{type:"PRESS_TEST",detent:"TEST_1"});
+ assert.deepEqual(core.lamps(one),{AP:"STEADY_AMBER",AT:"STEADY_AMBER",FMC:"STEADY_AMBER"});
+ const released=core.reduce(one,{type:"RELEASE_TEST"});
+ assert.equal(released.detent,"NEUTRAL");
+ const two=core.reduce(released,{type:"PRESS_TEST",detent:"TEST_2"});
+ assert.deepEqual(core.lamps(two),{AP:"STEADY_RED",AT:"STEADY_RED",FMC:"STEADY_AMBER"});
+ assert.deepEqual(core.lamps(core.reduce(two,{type:"CANCEL_TEST"})),core.lamps(s));
+});
+test("Test override does not clear or invent live system alerts",()=>{
+ const current=core.reduce(core.initial(),{type:"SET_ALERT",id:"AP",status:"FLASH_RED"});
+ const forced=core.reduce(current,{type:"PRESS_TEST",detent:"TEST_1"});
+ assert.equal(core.lamps(forced).AP,"STEADY_AMBER");
+ const restored=core.reduce(forced,{type:"RELEASE_TEST"});
+ assert.equal(core.lamps(restored).AP,"FLASH_RED");
+ assert.equal(core.reduce(restored,{type:"ACKNOWLEDGE",id:"AP"}).alerts.AP,"OFF");
+ assert.equal(core.reduce(restored,{type:"SET_ALERT",id:"FMC",status:"STEADY_RED"}),restored);
+ assert.equal(core.reduce(restored,{type:"PRESS_TEST",detent:"INVALID"}),restored);
+});
+test("Canonical locked image states are real files and not front-view drafts",()=>{
+ const reg=JSON.parse(fs.readFileSync(path.resolve(__dirname,"classic-737-annunciator-source-register.json"),"utf8"));
+ const visual=reg.physical.testSwitch.visualSource;
+ assert.equal(visual.canonicalFamily,"b737-cockpit-toggle-v1");
+ assert.equal(visual.assetStatus,"APPROVED_LOCKED");
+ assert.equal(visual.draftsExcluded,true);
+ for(const state of core.DETENTS)assert.ok(fs.existsSync(path.resolve(root,visual.stateMap[state])),state);
+ const toggleStandard=JSON.parse(fs.readFileSync(path.resolve(root,visual.registry),"utf8"));
+ assert.equal(toggleStandard.status,"locked");
+ assert.equal(toggleStandard.id,visual.canonicalFamily);
+});
+test("Unified wires independent FO switch and source-light overlays without touching frozen photo",()=>{
+ const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
+ const js=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js"),"utf8");
+ const css=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css"),"utf8");
+ assert.match(html,/afds-test-switch-core\.js\?v=AFDS-ANN-TEST-0001/);
+ assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0001/);
+ assert.match(html,/afds-annunciator-switch-v1\.css\?v=AFDS-ANN-UNIFIED-0001/);
+ assert.match(js,/#region-main \.region-native/);
+ assert.match(js,/pointercancel/);
+ assert.match(js,/lostpointercapture/);
+ assert.match(js,/visibilitychange/);
+ assert.match(js,/ArrowUp/);
+ assert.match(js,/ArrowDown/);
+ assert.match(js,/b737:afds-annunciator-state/);
+ assert.match(css,/afds-toggle-frame/);
+ assert.ok(!js.includes("Front_View_Draft"));
+});
