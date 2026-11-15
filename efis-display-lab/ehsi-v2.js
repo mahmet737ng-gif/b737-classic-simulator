@@ -287,7 +287,7 @@ function drawPlan(svg,m){
 }
 function render(svg,raw){
  if(!svg)return null;
- const m=model(raw),s=computeDisplay(m);
+ const m=model(raw),s=computeDisplay(raw); // Preserve raw EFIS flags; never normalize a normalized model twice.
  svg.replaceChildren();
  svg.setAttribute('viewBox','0 0 512 512');
  svg.setAttribute('data-renderer',VERSION);
