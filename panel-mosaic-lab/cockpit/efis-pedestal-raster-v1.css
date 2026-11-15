@@ -61,3 +61,7 @@
 
 /* Non-destructive range legend correction: original photo plate is immutable. */
 .uefis-face .uefis-range80{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(110deg,#414a51,#3e474f);color:#f7f7f4;font:700 3.35cqw/1 'Arial Narrow',Arial,sans-serif;letter-spacing:-.045em}
+
+/* TFC is a black recessed mechanical button, not an illuminated ring. */
+.uefis-face .uefis-tfc[aria-pressed="true"]{filter:brightness(.91)}
+.uefis-face .uefis-tfc[aria-pressed="true"]:after{display:none}
