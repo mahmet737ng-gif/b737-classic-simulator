@@ -53,7 +53,7 @@ function evaluate(s){
 function ehsiModel(s){
  const e=s.ehsi,p=s.power;const sg=activeSg(s);const mode=MODES.includes(e.mode)?e.mode:'MAP',range=RANGES.includes(Number(e.range))?Number(e.range):40;
  const opts={...e.options,wxr:!!e.options.wxr,terr:!!e.options.terr,demoRoute:!!e.showSyntheticRoute};
- const pts=e.showSyntheticRoute&&p.nav?[{name:'SIM0',x:-3,y:-8},{name:'TEST1',x:0,y:10},{name:'TEST2',x:5,y:21},{name:'TEST3',x:10,y:34}]:[];
+ const pts=e.showSyntheticRoute&&p.nav?[{name:'SIM0',x:0,y:0},{name:'TEST1',x:0,y:10},{name:'TEST2',x:5,y:19},{name:'TEST3',x:10,y:27}]:[];
  return {mode,range,heading:norm(e.heading),track:norm(e.track),selectedHeading:norm(e.selectedHeading),course:norm(e.course),
  nav:{valid:!!p.nav,source:'VOR1',ident:'SIM VOR',dme:16.2,cdi:.65,toFrom:'TO'},
  route:{source:'SYNTHETIC_TRAINING_ROUTE',activeIndex:1,points:pts},
