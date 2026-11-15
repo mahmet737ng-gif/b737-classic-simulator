@@ -47,12 +47,17 @@
   const profileStart=profiler?performance.now():0;
   const p=owner();if(!p?.getElectricalState||!p?.getState)return null;
   const state=p.getElectricalState(),electrical=p.getState().state.electrical;
+  const sourceAPU=p.getECUState?.()?.apu?.generator;
+  // Read ONLY the authoritative APU ECU generator terminal values, never the
+  // GEN1/GEN2 status or selected BUS. Null preserves legacy model fallback.
+  const apuGenerator=sourceAPU&&typeof sourceAPU.ready==='boolean'?
+   {ready:sourceAPU.ready,voltageV:sourceAPU.voltageV,frequencyHz:sourceAPU.frequencyHz}:null;
   const key=state.rev+':'+numericMode;
   // Reset can reuse a revision. Include effective inputs/result so a reset
   // cannot leave stale energized instruments on the display.
-  const signature=key+':'+JSON.stringify([state.config,state.source,state.faults,electrical.bus,state.battery]);
+  const signature=key+':'+JSON.stringify([state.config,state.source,state.faults,electrical.bus,state.battery,apuGenerator]);
   if(signature===lastKey)return snapshot();
-  const next=Core.project(state,electrical,{numericMode});
+  const next=Core.project(state,electrical,{numericMode,apuGenerator});
   const projectionDone=profiler?performance.now():0;
   current=next;lastKey=signature;buildPanel();updateMeters(next);
   // The electrical state, network notifications and real meter readings
