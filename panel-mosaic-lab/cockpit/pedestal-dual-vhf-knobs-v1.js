@@ -1,9 +1,9 @@
-/* PD-VHF-DUAL-0002: photographic, concentric COMM/NAV tuning knobs.
+/* PD-VHF-DUAL-0004: independent, cyclic whole-MHz and fractional tuning knobs.
    Hole registration is measured on immutable 1799px source faceplates.
    Visual overlay only; frequency change events are available for radio wiring. */
 (function(root){
 'use strict';
-const VERSION='PD-VHF-DUAL-0003';
+const VERSION='PD-VHF-DUAL-0004';
 const source=document.currentScript?.src||location.href;
 const ASSET=new URL('./assets/vhf-concentric-ivory-v1.webp',source).href;
 // Source pixel coordinates; COMM is 1799x815, NAV is 1799x813.
@@ -18,17 +18,32 @@ const SLOTS=Object.freeze([
 const state=new Map();
 const minMax={COMM:[118000,136975],NAV:[108000,117950]};
 const initial={COMM:118000,NAV:110300};
+const channelStep={COMM:25,NAV:50};
+// Both shafts operate independent cyclic number bands. Neither shaft carries into
+// the other: NAV 108<->117 MHz and 00<->95 (50-kHz); COMM 118<->136
+// MHz and 000<->975 (25-kHz). Counter-clockwise/left swipe decrements.
+function nextFrequency(kind,khz,part,dir){
+ const limits=minMax[kind],spacing=channelStep[kind];
+ if(!limits||!['outer','inner'].includes(part)||!Number.isInteger(khz)||
+  khz<limits[0]||khz>limits[1]||khz%spacing!==0||!Number.isFinite(dir)||!dir)return null;
+ const whole=Math.floor(khz/1000),fraction=khz%1000,sign=Math.sign(dir);
+ const wrap=(n,count)=>((n%count)+count)%count;
+ if(part==='outer'){
+  const first=Math.floor(limits[0]/1000),last=Math.floor(limits[1]/1000);
+  return (first+wrap(whole-first+sign,last-first+1))*1000+fraction;
+ }
+ return whole*1000+wrap(fraction/spacing+sign,1000/spacing)*spacing;
+}
 function step(slot,part,dir){
  const s=state.get(slot.id);if(!s||!dir)return false;
- const unit=part==='outer'?1000:slot.kind==='COMM'?25:50;
- const [min,max]=minMax[slot.kind];
- const next=Math.min(max,Math.max(min,s.khz+unit*Math.sign(dir)));
- if(next===s.khz)return false;
- s.khz=next;s.angle[part]=(s.angle[part]+Math.sign(dir)*(part==='outer'?12:16))%360;
+ const next=nextFrequency(slot.kind,s.khz,part,dir);
+ if(next===null||next===s.khz)return false;
+ const direction=Math.sign(dir);
+ s.khz=next;s.angle[part]=(s.angle[part]+direction*(part==='outer'?12:16))%360;
  s.images[part].style.transform='rotate('+s.angle[part]+'deg)';
  s.root.dataset.frequency=(next/1000).toFixed(3);
  root.dispatchEvent(new CustomEvent('b737:unified-vhf-frequency',{detail:{
-  version:VERSION,id:slot.id,kind:slot.kind,seat:slot.seat,position:slot.position,part,
+  version:VERSION,id:slot.id,kind:slot.kind,seat:slot.seat,position:slot.position,part,direction,
   whole:Math.floor(next/1000),fractionKhz:next%1000,
   frequencyKhz:next,frequencyMhz:Number((next/1000).toFixed(3))
  }}));
@@ -124,7 +139,7 @@ function setFrequency(id,khz){
  }}));
  return true;
 }
-root.B737UnifiedVHFDualV1=Object.freeze({version:VERSION,slots:SLOTS,asset:ASSET,mount,setFrequency,spec:Object.freeze({COMM:{minKhz:118000,maxKhz:136975,stepKhz:25},NAV:{minKhz:108000,maxKhz:117950,stepKhz:50}}),
+root.B737UnifiedVHFDualV1=Object.freeze({version:VERSION,slots:SLOTS,asset:ASSET,mount,setFrequency,nextFrequency,spec:Object.freeze({COMM:{minKhz:118000,maxKhz:136975,stepKhz:25},NAV:{minKhz:108000,maxKhz:117950,stepKhz:50}}),
  tune:(id,part,dir)=>{
   const s=SLOTS.find(x=>x.id===id);return !!s&&['outer','inner'].includes(part)&&step(s,part,dir);
  },getState:(id)=>{const s=state.get(id);return s?Object.freeze({frequencyKhz:s.khz,frequencyMhz:s.khz/1000,...s.angle}):null;}});
