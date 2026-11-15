@@ -88,7 +88,9 @@ for(const seat of ['CAPT','FO']){
 }
 assert.ok(redraw.some(x=>x[0]==='CAPT'));
 assert.ok(redraw.some(x=>x[0]==='FO'));
-const start=index.indexOf('eadi-stage1-unified-v1.js');
+const start=index.indexOf('eadi-lab-unified-v2.js');
+assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'),
+ 'Retired EADI visual source must not execute');
 const plug=index.indexOf('eadi-fma-four-v1.js');
 assert.ok(start>=0&&plug>start,'FMA script must run AFTER EADI extension slots');
 assert.ok(index.includes('EADI-FMA-FOUR-0001'));
