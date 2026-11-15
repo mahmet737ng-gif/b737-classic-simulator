@@ -9,7 +9,7 @@ const src=document.currentScript?.src||location.href;
 const asset=(name)=>new URL('./assets/'+name,src).href;
 const PHOTO={plate:asset('efis-cp-photo-plate-v1.webp'),
  mode:asset('efis-rose-mode-v1.webp'),range:asset('efis-range-tfc-v1.webp'),
- tfc:asset('efis-tfc-center-v1.webp'),dh:asset('dcpcs-altitude-knob-front-v1.webp'),
+ tfc:asset('efis-tfc-center-v2.webp'),dh:asset('dcpcs-altitude-knob-front-v1.webp'),
  adi:asset('dcpcs-altitude-knob-front-v1.webp'),
  hsi:asset('existing-knob-hsi.webp'),wxInner:asset('existing-knob-wxInner.webp')};
 const W=1448,H=1086;
@@ -80,6 +80,7 @@ function gestures(b,seat,key){
 function physicalPanel(seat,host,zoomed=false){
  const panel=elm('div','uefis-face',host);panel.dataset.seat=seat;panel.dataset.zoomed=String(zoomed);
  const photo=elm('img','uefis-photo',panel);photo.src=PHOTO.plate;photo.alt='737 Classic EFIS panel';photo.draggable=false;
+ const stencil=elm('span','uefis-range80',panel);pos(stencil,[1073,139,56,51]);stencil.textContent='80';
  const parts={knobs:{},push:{},tfc:null,readout:null};
  for(const [key,[cx,cy,r]] of Object.entries(ROTORS)){
   const b=button(panel,seat+' '+key+' selector');b.className='uefis-knob uefis-'+key;
@@ -89,7 +90,7 @@ function physicalPanel(seat,host,zoomed=false){
  }
  // Stationary pushbutton exactly over the rotating RANGE rotor's center.
  const tfc=button(panel,seat+' TFC traffic overlay');tfc.className='uefis-tfc';
- tfc.dataset.push='tfc';pos(tfc,[1190-51,311-51,102,102]);
+ tfc.dataset.push='tfc';pos(tfc,[1192-55,314-55,110,110]);
  const ti=elm('img','uefis-tfc-image',tfc);ti.src=PHOTO.tfc;ti.alt='';ti.draggable=false;
  tfc.setAttribute('aria-pressed','false');
  tfc.addEventListener('click',e=>{e.stopPropagation();change(seat,'tfc',!states[seat].options.tfc)});
