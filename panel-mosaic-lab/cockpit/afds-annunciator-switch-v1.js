@@ -30,7 +30,7 @@ const INSTALL=Object.freeze({
       {id:"AT",x:1475.0,y:216.9,w:21.8,h:21.1},
       {id:"FMC",x:1499.9,y:216.9,w:22.1,h:21.1}
     ]),
-    toggle:{cx:1537.1,cy:233.6,cell:44,hit:20.8}
+    toggle:{cx:1532.4,cy:226.5,cell:44,hit:20.8}
   })
 });
 const states={CAPT:Core.initial(),FO:Core.initial()};
