@@ -172,9 +172,9 @@
         "registry": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/toggle-standard.json",
         "canonicalFamily": "b737-cockpit-toggle-v1",
         "stateMap": {
-          "TEST_1": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.webp",
+          "TEST_1": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.webp",
           "NEUTRAL": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp",
-          "TEST_2": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.webp"
+          "TEST_2": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.webp"
         },
         "assetBlobs": {
           "b737-toggle-on.webp": "fa55e13ef2f8d1d8b7adcde2cb2cd12f870ec300",
@@ -184,7 +184,8 @@
         "referenceStillLocked": true,
         "assetStatus": "APPROVED_LOCKED",
         "draftsExcluded": true,
-        "note": "Frames reused without replacing or editing the original; photo geometry FO initial candidate"
+        "note": "Physical frame mapping observed in actual approved sprites: off.webp has tip above pivot (TEST 1 upper), on.webp has tip below pivot (TEST 2 lower), center.webp is the approved center frame. All 3 sprites are unaltered.",
+        "poseStatus": "SOURCE_FRAMES_VISUALLY_INSPECTED_IN_CHAT; FINAL_PIXEL_FIT_PENDING"
       },
       "interaction": {
         "pointer": "hold top/bottom; drag up/down; release springs to center",
