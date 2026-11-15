@@ -43,7 +43,12 @@ jobs:
       - name: Install Playwright
         run: |
           npm install --no-save --ignore-scripts playwright@1.58.2
-          npx playwright install --with-deps chromium
+          CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -n "$CHROME_PATH" ]; then
+            echo "CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+          else
+            npx playwright install chromium
+          fi
       - name: Unified direct interaction CAPT FO
         run: node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.browser.cjs
       - uses: actions/upload-artifact@v4
