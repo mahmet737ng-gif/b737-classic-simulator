@@ -1,127 +1,170 @@
-/* AFDS-ANN-UNIFIED-0001: photo-registered three-detent, spring-return TEST switch.
- * Only new DOM overlays; no edits to owner artwork, guards, EADI, MCP or lights registry.
- * FO installation initial position is PHOTO-CANDIDATE, not final pixel approval.
+/* AFDS-ANN-UNIFIED-0002 — 737 Classic CAPT/FO physical P/RST test.
+ * Five-pose Small Silver sprite is explicitly owner-selected here.
+ * Photo apertures remain untouched. All coordinates are native MAIN 2100x920.
+ * Sign legends alone illuminate. No invented auto-flight warning source.
  */
 (function(root){
 "use strict";
 const Core=root.B737AFDSAnnunciatorCoreV1;
 if(!Core)return;
-const VERSION="AFDS-ANN-UNIFIED-0001";
-const ASSET="../assets/locked/2026-10-23/Switches/Toggle/";
-const FRAMES=Object.freeze({TEST_1:ASSET+"b737-toggle-off.webp",
-  NEUTRAL:ASSET+"b737-toggle-center.webp",TEST_2:ASSET+"b737-toggle-on.webp"});
-const LAMPS=Object.freeze([
-  {id:"AP",label:"A/P",x:1462.6,y:223.0,w:17.3,h:19.3},
-  {id:"AT",label:"A/T",x:1484.9,y:223.0,w:17.3,h:19.3},
-  {id:"FMC",label:"FMC",x:1507.4,y:223.0,w:17.3,h:19.3}
-]);
-const SWITCH=Object.freeze({seat:"FO",x:1527.5,y:224.0,w:19.2,h:19.2,
-  source:"owner screenshot 2026-11-15, estimated native 2100x920 mapping; pixel QA pending"});
-let state=Core.initial(),mountRoot=null,lever=null,activePointer=null,activeKey=null;
-const frames=new Map(),lights=new Map();
-function emit(){
- root.dispatchEvent(new CustomEvent("b737:afds-annunciator-state",{detail:{...Core.status(state),seat:"FO"}}));
+const VERSION="AFDS-ANN-UNIFIED-0002";
+const SPRITE="../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp";
+// Sprite cells LEFT, CENTER, RIGHT, UP, DOWN (1024 square each).
+const POSE=Object.freeze({TEST_1:"75% 0%",NEUTRAL:"25% 0%",TEST_2:"100% 0%"});
+const INSTALL=Object.freeze({
+  CAPT:Object.freeze({
+    source:"captain 3942x3591 source / 1536x1399 photo apertures",
+    sourcePiece:"captain",
+    lamps:Object.freeze([
+      {id:"AP",x:597.0,y:202.2,w:21.4,h:22.3},
+      {id:"AT",x:623.5,y:202.2,w:21.4,h:22.3},
+      {id:"FMC",x:650.0,y:202.2,w:21.4,h:22.3}
+    ]),
+    toggle:{cx:683.2,cy:212.9,cell:42,hit:21}
+  }),
+  FO:Object.freeze({
+    source:"owner 1649x928 screenshot 2026-11-15; photo black apertures, native inverse zoom",
+    sourcePiece:"fo-inner",
+    lamps:Object.freeze([
+      {id:"AP",x:1449.1,y:216.9,w:21.8,h:21.1},
+      {id:"AT",x:1475.0,y:216.9,w:21.8,h:21.1},
+      {id:"FMC",x:1499.9,y:216.9,w:22.1,h:21.1}
+    ]),
+    toggle:{cx:1537.1,cy:233.6,cell:44,hit:20.8}
+  })
+});
+const states={CAPT:Core.initial(),FO:Core.initial()};
+const visual=new Map(),lamps={CAPT:new Map(),FO:new Map()};
+const held={CAPT:null,FO:null};
+let mountRoot=null;
+function nameFor(id){return id==="AP"?"A/P":id==="AT"?"A/T":"FMC";}
+function dispatch(seat){
+ root.dispatchEvent(new CustomEvent("b737:afds-annunciator-state",
+  {detail:{...Core.status(states[seat]),seat,version:VERSION}}));
 }
-function paint(){
- const outputs=Core.lamps(state);
- if(lever){
-  lever.dataset.detent=state.detent;
-  lever.setAttribute("aria-valuetext",state.detent.replace("_"," "));
-  for(const [key,img]of frames)img.classList.toggle("afds-is-active",key===state.detent);
- }
- for(const [id,button]of lights){
-  const mode=outputs[id]||"OFF";
+function paint(seat){
+ const output=Core.lamps(states[seat]),v=visual.get(seat);
+ if(v){v.dataset.detent=states[seat].detent;
+  v.style.backgroundPosition=POSE[states[seat].detent];}
+ for(const [id,button]of lamps[seat]){
+  const mode=output[id]||"OFF";
   button.dataset.lamp=mode;
-  button.setAttribute("aria-label",id+" P/RST "+mode.replaceAll("_"," "));
+  button.setAttribute("aria-label",nameFor(id)+" P/RST "+mode.replaceAll("_"," "));
  }
- emit();
+ dispatch(seat);
 }
-function transition(action){
- const next=Core.reduce(state,action);if(next===state)return Core.status(state);
- state=next;paint();return Core.status(state);
+function transition(seat,action){
+ if(!INSTALL[seat])return null;
+ const next=Core.reduce(states[seat],action);
+ if(next!==states[seat]){states[seat]=next;paint(seat);}
+ return Core.status(states[seat]);
 }
-function selectDetent(value){if(value==="TEST_1"||value==="TEST_2")transition({type:"PRESS_TEST",detent:value});
-  else transition({type:"RELEASE_TEST"});}
-function posForPointer(e){
- const rect=lever.getBoundingClientRect();
- const delta=e.clientY-(rect.top+rect.height/2);
- // Touch gestures use up/down of the switch's CENTER as signed selection.
- return delta<0?"TEST_1":"TEST_2";
+function release(seat){
+ held[seat]=null;
+ return transition(seat,{type:"RELEASE_TEST"});
 }
-function releasePointer(e){
- if(activePointer===null||e?.pointerId!==undefined&&e.pointerId!==activePointer)return;
- if(lever&&activePointer!==null&&lever.hasPointerCapture?.(activePointer)){
-  try{lever.releasePointerCapture(activePointer);}catch(_){}
- }
- activePointer=null;
- selectDetent("NEUTRAL");
+function releaseAll(){for(const seat of Object.keys(INSTALL))release(seat);}
+function select(seat,detent){
+ return transition(seat,detent==="TEST_1"||detent==="TEST_2"
+  ?{type:"PRESS_TEST",detent}:{type:"RELEASE_TEST"});
 }
-function makeLever(doc){
- const btn=doc.createElement("button");
- btn.type="button";btn.className="afds-fo-test-lever";btn.id="afdsFoTestLever";
- btn.setAttribute("aria-label","First Officer AFDS TEST switch, momentary up TEST 1, down TEST 2");
+function acknowledge(id){
+ // Real A/P, A/T, FMC alerts are mirrored to both crew sides.
+ for(const seat of Object.keys(INSTALL))transition(seat,{type:"ACKNOWLEDGE",id});
+}
+function setAlert(id,status){
+ for(const seat of Object.keys(INSTALL))transition(seat,{type:"SET_ALERT",id,status});
+ return Core.status(states.CAPT);
+}
+function createToggle(doc,seat,def){
+ const {cx,cy,cell,hit}=def.toggle;
+ const art=doc.createElement("span");
+ art.className="afds-silver-toggle";
+ art.dataset.afdsSeat=seat;
+ art.dataset.detent="NEUTRAL";
+ art.setAttribute("aria-hidden","true");
+ art.style.left=(cx-cell/2)+"px";art.style.top=(cy-cell/2)+"px";
+ art.style.width=cell+"px";art.style.height=cell+"px";
+ art.style.backgroundImage='url("'+SPRITE+'")';
+ art.style.backgroundPosition=POSE.NEUTRAL;
+ const btn=doc.createElement("button");btn.type="button";
+ btn.className="afds-toggle-hit";
+ btn.dataset.afdsSeat=seat;
+ btn.id="afds"+(seat==="CAPT"?"Capt":"Fo")+"TestLever";
+ btn.style.left=(cx-hit/2)+"px";btn.style.top=(cy-hit/2)+"px";
+ btn.style.width=hit+"px";btn.style.height=hit+"px";
+ btn.setAttribute("aria-label",seat+" AFDS TEST 1 / neutral / TEST 2; spring loaded");
  btn.setAttribute("aria-keyshortcuts","ArrowUp ArrowDown");
- Object.assign(btn.style,{left:SWITCH.x+"px",top:SWITCH.y+"px",
-   width:SWITCH.w+"px",height:SWITCH.h+"px"});
- for(const [detent,url]of Object.entries(FRAMES)){
-  const img=doc.createElement("img");img.alt="";img.draggable=false;
-  img.src=url;img.dataset.detent=detent;
-  img.className="afds-toggle-frame"+(detent==="NEUTRAL"?" afds-is-active":"");
-  btn.append(img);frames.set(detent,img);
- }
+ const detentFrom=(e)=>{
+  const rect=btn.getBoundingClientRect();
+  return e.clientY < rect.top+rect.height/2?"TEST_1":"TEST_2";
+ };
  btn.addEventListener("pointerdown",e=>{
-  if(e.button!==0 || activePointer!==null)return;
-  e.preventDefault();activePointer=e.pointerId;
+  if(e.button!==0||held[seat]!==null)return;
+  e.preventDefault();held[seat]={kind:"pointer",id:e.pointerId};
   try{btn.setPointerCapture(e.pointerId);}catch(_){}
-  selectDetent(posForPointer(e));
+  select(seat,detentFrom(e));
  });
  btn.addEventListener("pointermove",e=>{
-  if(activePointer!==e.pointerId)return;
-  e.preventDefault();
-  // Slow drag and rapid tap/swipe both select the detent indicated by finger direction.
-  selectDetent(posForPointer(e));
+  if(held[seat]?.kind!=="pointer"||held[seat].id!==e.pointerId)return;
+  e.preventDefault();select(seat,detentFrom(e));
  });
- for(const ev of ["pointerup","pointercancel","lostpointercapture"])btn.addEventListener(ev,releasePointer);
+ function up(e){
+  if(held[seat]?.kind!=="pointer"||held[seat].id!==e.pointerId)return;
+  held[seat]=null;select(seat,"NEUTRAL");
+  try{if(btn.hasPointerCapture(e.pointerId))btn.releasePointerCapture(e.pointerId);}catch(_){}
+ }
+ for(const ev of ["pointerup","pointercancel","lostpointercapture"])btn.addEventListener(ev,up);
  btn.addEventListener("keydown",e=>{
   if(e.code!=="ArrowUp"&&e.code!=="ArrowDown")return;
   e.preventDefault();if(e.repeat)return;
-  activeKey=e.code;selectDetent(e.code==="ArrowUp"?"TEST_1":"TEST_2");
+  held[seat]={kind:"key",id:e.code};
+  select(seat,e.code==="ArrowUp"?"TEST_1":"TEST_2");
  });
  btn.addEventListener("keyup",e=>{
-  if(e.code===activeKey){e.preventDefault();activeKey=null;selectDetent("NEUTRAL");}
+  if(held[seat]?.kind==="key"&&held[seat].id===e.code){
+    e.preventDefault();release(seat);
+  }
  });
- btn.addEventListener("blur",()=>{activeKey=null;releasePointer();selectDetent("NEUTRAL");});
+ btn.addEventListener("blur",()=>release(seat));
  btn.addEventListener("click",e=>e.preventDefault());
- return btn;
+ visual.set(seat,art);
+ return [art,btn];
 }
-function makeLamp(doc,item){
+function createLamp(doc,seat,rect){
  const btn=doc.createElement("button");btn.type="button";
- btn.className="afds-fo-pshrst";btn.dataset.afdsLight=item.id;
- btn.id="afdsFoLight"+item.id;
- btn.title=item.label+" P/RST — press to acknowledge active alert";
- Object.assign(btn.style,{left:item.x+"px",top:item.y+"px",width:item.w+"px",height:item.h+"px"});
- const title=doc.createElement("span");title.className="afds-lamp-upper";title.textContent=item.label;
- const reset=doc.createElement("span");reset.className="afds-lamp-lower";reset.textContent="P/RST";
- btn.append(title,reset);
- btn.addEventListener("click",()=>{transition({type:"ACKNOWLEDGE",id:item.id});});
- lights.set(item.id,btn);
- return btn;
+ btn.className="afds-legend-window";
+ btn.dataset.afdsSeat=seat;btn.dataset.afdsLight=rect.id;
+ btn.id="afds"+(seat==="CAPT"?"Capt":"Fo")+"Light"+rect.id;
+ btn.title=nameFor(rect.id)+" P/RST — acknowledge";
+ Object.assign(btn.style,{left:rect.x+"px",top:rect.y+"px",
+  width:rect.w+"px",height:rect.h+"px"});
+ const upper=doc.createElement("span");upper.className="afds-legend-main";
+ upper.textContent=nameFor(rect.id);
+ const lower=doc.createElement("span");lower.className="afds-legend-reset";
+ lower.textContent="P/RST";
+ btn.append(upper,lower);
+ btn.addEventListener("click",()=>acknowledge(rect.id));
+ lamps[seat].set(rect.id,btn);return btn;
 }
 function mount(){
  const native=root.document.querySelector("#region-main .region-native");
  if(!native)return false;
- if(mountRoot===native&&lever?.isConnected)return true;
- if(mountRoot&&mountRoot!==native){frames.clear();lights.clear();lever=null;activePointer=null;}
- mountRoot=native;
- // All elements are siblings of existing photo layers, so the established
- // F/O proportional scaling follows the same native coordinate correction.
- for(const l of LAMPS)native.append(makeLamp(root.document,l));
- lever=makeLever(root.document);
- native.append(lever);
- paint();
+ if(mountRoot===native&&visual.get("FO")?.isConnected&&visual.get("CAPT")?.isConnected)return true;
+ if(mountRoot!==native){
+  mountRoot=native;visual.clear();lamps.CAPT.clear();lamps.FO.clear();
+ }
+ // Avoid duplicate controls on reentry; preserve previous test state.
+ for(const seat of Object.keys(INSTALL)){
+  native.querySelectorAll('[data-afds-seat="'+seat+'"].afds-silver-toggle, [data-afds-seat="'+seat+'"].afds-toggle-hit, [data-afds-seat="'+seat+'"].afds-legend-window').forEach(x=>x.remove());
+  lamps[seat].clear();
+  for(const lamp of INSTALL[seat].lamps)native.append(createLamp(root.document,seat,lamp));
+  for(const node of createToggle(root.document,seat,INSTALL[seat]))native.append(node);
+  paint(seat);
+ }
  return true;
 }
-function attach(){
+function start(){
  if(mount())return;
  const stage=root.document.getElementById("scene")||root.document.body;
  if(!stage||!root.MutationObserver)return;
@@ -130,18 +173,19 @@ function attach(){
  });
  observer.observe(stage,{subtree:true,childList:true});
 }
-const api=Object.freeze({VERSION,SWITCH,FRAMES,LAMPS,
- state:()=>Core.status(state),press:detent=>transition({type:"PRESS_TEST",detent}),
- release:()=>transition({type:"RELEASE_TEST"}),
- setAlert:(id,status)=>transition({type:"SET_ALERT",id,status}),
- acknowledge:id=>transition({type:"ACKNOWLEDGE",id}),
- mount});
-root.B737AFDSAnnunciatorUnifiedV1=api;
-root.addEventListener("blur",()=>{activeKey=null;releasePointer();selectDetent("NEUTRAL");});
-root.document.addEventListener("visibilitychange",()=>{if(root.document.hidden){activeKey=null;releasePointer();selectDetent("NEUTRAL");}});
-root.addEventListener("pagehide",()=>{activeKey=null;releasePointer();selectDetent("NEUTRAL");});
+root.B737AFDSAnnunciatorUnifiedV1=Object.freeze({
+ VERSION,SPRITE,POSE,INSTALL,
+ state:seat=>Core.status(states[seat||"FO"]),
+ getState:seat=>Core.status(states[seat||"FO"]),
+ press:(detent,seat="FO")=>select(seat,detent),
+ release:(seat="FO")=>release(seat),
+ setAlert,acknowledge,mount
+});
+root.addEventListener("blur",releaseAll);
+root.document.addEventListener("visibilitychange",()=>{if(root.document.hidden)releaseAll();});
+root.addEventListener("pagehide",releaseAll);
 root.addEventListener("b737:cockpit-mounted",mount);
 root.addEventListener("b737:engine-indication-view",mount);
-if(root.document.readyState==="loading")root.document.addEventListener("DOMContentLoaded",attach,{once:true});
-else attach();
+if(root.document.readyState==="loading")root.document.addEventListener("DOMContentLoaded",start,{once:true});
+else start();
 })(window);
