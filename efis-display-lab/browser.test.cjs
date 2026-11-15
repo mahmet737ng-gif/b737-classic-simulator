@@ -45,6 +45,7 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   physical=await page.evaluate(()=>window.B737EFISCP.getState());
   assert.equal(physical.ehsi.brightness,.96,'inner must not turn outer');
   assert.equal(physical.ehsi.wxBrightness,.96);
+  assert.equal(await page.locator('#ehsi [data-segment="plan-route"]').first().evaluate(n=>n.style.opacity),'0.96','inner BRT actually dims map geometry');
   await page.locator('[data-scenario="normal"]').click();
   await page.locator('.efcp-face').screenshot({path:path.join(out,'efis-physical-panel.png'),animations:'disabled'});
   const shots={};
