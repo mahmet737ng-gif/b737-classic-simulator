@@ -43,6 +43,22 @@ const server=http.createServer((req,res)=>{
    await page.goto(url,{waitUntil:'commit',timeout:60000});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000,polling:25});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedSharpMs,null,{timeout:30000,polling:100});
+   // EFIS replacement regression: both crew glasses must use the new EADI
+   // renderer, with the retired Stage1 visual script fully excluded. EHSI
+   // continues to use the new Classic v2 rose/map renderer.
+   await page.waitForFunction(()=>{
+    const eadi=window.B737UnifiedEADI?.snapshot?.();
+    return eadi?.version==='UNIFIED-EADI-LAB-0002'&&
+     eadi.renderer==='EFISDisplayLabEadi'&&eadi.mounted===true&&
+     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-0002"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-0002"] canvas')&&
+     window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0007'&&
+     !!document.getElementById('unifiedEhsiCAPT')&&
+     !!document.getElementById('unifiedEhsiFO');
+   },null,{timeout:20000,polling:100});
+   const activeEadiScripts=await page.locator('script[src*="eadi-stage1-unified-v1.js"]').count();
+   assert.equal(activeEadiScripts,0,'Legacy Stage1 EADI must never execute in Unified');
+   console.log('EFIS-REPLACEMENT-0002: two new EADI glasses and Classic v2 EHSI mounted');
    // COLD-DARK-EIS-0001: render 16 unlit EIS glass faces only if the
    // authoritative Electrical V7 has proven all switched aircraft buses off.
    await page.waitForFunction(()=>window.B737EISColdDarkGlassV1?.snapshot?.().mounted===true,
@@ -237,6 +253,13 @@ const server=http.createServer((req,res)=>{
   const ordered=[...mobile.buttons].sort((a,b)=>a.left-b.left);
   assert.ok(ordered.every((b,i)=>i===0||b.left>=ordered[i-1].right-1),
    'Mobile top-bar buttons must not overlap');
+  // A responsive Settings dialog may persist through a viewport transition.
+  // Close it through its physical UI before clicking the Controls header;
+  // do not bypass Playwright hit-testing or cover a genuine button overlap.
+  if(await page.evaluate(()=>document.querySelector('#aircraftSettingsDialog')?.open===true)){
+   console.log('Mobile QA: closing already-open aircraft Settings dialog');
+   await page.locator('#aircraftSettingsClose').click();
+  }
   // Earlier engine-control QA leaves Controls open; close before capturing the
   // unobstructed header, then reopen to validate the battery meter.
   if(await page.evaluate(()=>document.body.classList.contains('side-open')))
