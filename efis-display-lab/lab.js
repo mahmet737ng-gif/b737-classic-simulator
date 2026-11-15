@@ -97,6 +97,7 @@ function render(){
  $('auditCount').textContent=Object.values(state.audit).filter(x=>x==='ACCEPTED').length+' / '+core.items.length+' visually accepted (manual)';
  if(selected)showHighlight(selected);
  syncControls();
+ window.dispatchEvent(new CustomEvent('efislab-state',{detail:state}));
 }
 $('presets').addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
