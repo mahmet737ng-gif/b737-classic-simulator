@@ -47,8 +47,16 @@ assert.match(eadi,/root\.B737ConventionalEadiSocketV1/);
 assert.match(eadi,/stations\[seat\]\.host\.dataset\.eadiMode!==activeMode\(\)/);
 assert.match(eadi,/host\.dataset\.eadiMode=mode/);
 const index=fs.readFileSync(__dirname+'/index.html','utf8');
+// The new EFIS Lab cockpit adapter replaces the retired Stage1 loader;
+// the frozen Conventional FO glass registration remains unchanged.
 assert.ok(index.indexOf('conventional-eadi-socket-v1.js')<
- index.indexOf('eadi-stage1-unified-v1.js'));
-assert.ok(index.includes('EADI-STAGE1-0012-PURE-BLACK-SURROUND'));
+ index.indexOf('eadi-lab-unified-v2.js'));
+assert.ok(index.includes('UNIFIED-EADI-LAB-0002'));
+assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'));
+assert.ok(index.includes('../../efis-display-lab/eadi.js'));
+const newBridge=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8');
+assert.match(newBridge,/root\\.B737ConventionalEadiSocketV1/);
+assert.match(newBridge,/renderer\\.renderUnifiedAttitude/);
+assert.match(newBridge,/B737UnifiedEADIStage1=api/);
 assert.ok(index.includes('FO-PROPORTIONAL-SCALE-0004-CONV-CRT-ISOLATED'));
 console.log('PASS: Conventional FO EADI mounted on owner CRT black glass; EIS geometry remains final and independent.');
