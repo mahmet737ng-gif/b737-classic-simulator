@@ -43,10 +43,21 @@
    return false;
   }
   delete display.host.dataset.eadiError;
-  renderer.renderUnifiedAttitude(display.canvas,{
+  const painted=renderer.renderUnifiedAttitude(display.canvas,{
    pitch:s.pitch,bank:s.bank,powered:s.powered,attitudeValid:s.attitudeValid,
    fdValid:s.fdValid===true,fdPitch:s.fdPitch,fdRoll:s.fdRoll
   });
+  if(painted!==true){
+   display.host.dataset.eadiError='RENDER_FAILED';
+   return false;
+  }
+  display.host.dataset.eadiPainter='EFIS_DISPLAY_LAB';
+  display.host.dataset.eadiPaintCount=String(
+   Number(display.host.dataset.eadiPaintCount||0)+1);
+  // The data below is instrumentation only, never a fake flight instrument.
+  const sample=display.canvas.getContext('2d')?.getImageData?.(450,220,1,1)?.data;
+  display.host.dataset.eadiSkyPixel=sample?
+   [sample[0],sample[1],sample[2]].join(','):'UNREADABLE';
   if(s.powered){
    const ctx=display.canvas.getContext('2d');
    for(const callback of hooks[seat].values()){
@@ -135,6 +146,7 @@
  }
  function snapshot(){
   return {version:VERSION,renderer:root.EFISDisplayLabEadi?.renderUnifiedAttitude?'EFISDisplayLabEadi':'MISSING',
+   paints:{CAPT:Number(screen.CAPT?.host?.dataset.eadiPaintCount||0),FO:Number(screen.FO?.host?.dataset.eadiPaintCount||0)},
    mode:mode(),mounted:!!screen.CAPT?.host?.isConnected&&!!screen.FO?.host?.isConnected,
    activeGlass:{CAPT:position('CAPT'),FO:position('FO')},
    stations:Object.fromEntries(Object.entries(stations).map(([seat,s])=>
@@ -148,6 +160,11 @@
  // Compatibility only for existing live FMA / speed-tape extensions.
  // This alias NEVER loads or paints eadi-stage1-unified-v1.js.
  root.B737UnifiedEADIStage1=api;
+ root.addEventListener('b737:efis-lab-eadi-ready',()=>{
+  // Defer load order must not leave an empty new EADI canvas.
+  if(screen.CAPT?.host?.isConnected)paint('CAPT');
+  if(screen.FO?.host?.isConnected)paint('FO');
+ });
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')
