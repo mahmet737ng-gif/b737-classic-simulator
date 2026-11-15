@@ -1,34 +1,57 @@
-/* Unified pedestal photographic faceplate library. Existing cockpit controls and EFIS CP remain unchanged. */
-(function(){
+/* PEDESTAL FACEPLATES 0002
+ * Four source-verified owner's PNG assets mounted on the native Unified pedestal.
+ * No locked textures are modified. All positions are native 1150 x 2273 coordinates.
+ * Radio plates cover matching radio slots; cargo/TCAS use clear auxiliary side bays
+ * pending owner-approved final aviation-specific location. Noninteractive stage.
+ */
+(function(root){
 'use strict';
-const base='../assets/locked/';
-const plates=[
- ['Cargo Fire Control','Cargo_Fire_Control_bare_faceplate.png'],
- ['Transponder / TCAS','Transponder_TCAS_bare_faceplate.png'],
- ['VHF NAV / MANUAL','VHF_NAV_MANUAL_bare_faceplate.png'],
- ['VHF COMM','VHF_COMM_bare_faceplate.png']
-];
+const VERSION='PEDESTAL-FACEPLATES-0002';
+const scriptUrl=document.currentScript?.src||location.href;
+const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
+const PANELS=Object.freeze([
+ {id:'cargo-fire',label:'Cargo Fire Control',file:'Cargo_Fire_Control_bare_faceplate.png',x:14,y:145,w:244,h:111,bay:'AUX LEFT'},
+ {id:'transponder-tcas',label:'Transponder / TCAS',file:'Transponder_TCAS_bare_faceplate.png',x:892,y:145,w:244,h:95,bay:'AUX RIGHT'},
+ {id:'vhf-comm',label:'VHF COMM',file:'VHF_COMM_bare_faceplate.png',x:58,y:927,w:360,h:163,bay:'RADIO LEFT TOP'},
+ {id:'vhf-nav',label:'VHF NAV / MANUAL',file:'VHF_NAV_MANUAL_bare_faceplate.png',x:766,y:1128,w:355,h:160,bay:'RADIO RIGHT MIDDLE'}
+]);
 function mount(){
- const region=document.querySelector('#region-pedestal');
- if(!region||region.querySelector('#unified-pedestal-faceplates'))return !!region;
- const wrap=document.createElement('div');wrap.id='unified-pedestal-faceplates';
- wrap.style.cssText='position:absolute;right:10px;bottom:10px;z-index:70;direction:ltr;pointer-events:auto';
- const toggle=document.createElement('button');toggle.type='button';toggle.textContent='RADIO / FIRE PANELS';toggle.setAttribute('aria-expanded','false');
- toggle.style.cssText='padding:7px 10px;background:#182b36;color:#f1f5f6;border:1px solid #78909b;border-radius:5px;cursor:pointer;font:700 12px Arial';
- const tray=document.createElement('div');tray.hidden=true;
- tray.style.cssText='position:absolute;right:0;bottom:36px;width:min(560px,80vw);max-height:65vh;overflow:auto;padding:10px;background:#101920f5;border:1px solid #71808b;border-radius:7px;box-shadow:0 8px 28px #000b;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px';
- for(const [label,file] of plates){
-  const card=document.createElement('div');card.style.cssText='min-width:0;color:#fff;font:12px Arial';
-  const img=document.createElement('img');img.src=new URL(base+file,document.currentScript?.src||location.href).href;
-  img.alt=label;img.loading='lazy';img.style.cssText='display:block;width:100%;height:auto;object-fit:contain;background:#333';
-  const caption=document.createElement('div');caption.textContent=label;caption.style.cssText='padding:4px 0';
-  card.append(img,caption);tray.append(card);
+ const native=document.querySelector('#region-pedestal .region-native');
+ if(!native)return false;
+ let layer=native.querySelector('#unified-pedestal-faceplates');
+ if(layer)return true;
+ // This raster layer never captures touches: existing radio, EFIS and engine controls remain accessible.
+ layer=document.createElement('div');
+ layer.id='unified-pedestal-faceplates';
+ layer.dataset.version=VERSION;
+ layer.style.cssText='position:absolute;inset:0;z-index:22;pointer-events:none;direction:ltr';
+ for(const plate of PANELS){
+   const frame=document.createElement('div');
+   frame.className='unified-pedestal-faceplate';
+   frame.dataset.faceplate=plate.id;
+   frame.dataset.bay=plate.bay;
+   Object.assign(frame.style,{position:'absolute',left:plate.x+'px',top:plate.y+'px',
+    width:plate.w+'px',height:plate.h+'px',pointerEvents:'none',lineHeight:'0',overflow:'hidden'});
+   const img=document.createElement('img');
+   img.src=source(plate.file);
+   img.alt=plate.label+' — empty authentic faceplate, no switches installed';
+   img.decoding='async';img.draggable=false;
+   Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',
+    objectFit:'fill',userSelect:'none',pointerEvents:'none'});
+   img.addEventListener('error',()=>{frame.hidden=true;console.warn('Missing pedestal faceplate:',plate.file);},{once:true});
+   frame.append(img);layer.append(frame);
  }
- tray.style.display='none';
- toggle.onclick=()=>{const open=tray.style.display==='none';tray.style.display=open?'grid':'none';toggle.setAttribute('aria-expanded',String(open));};
- wrap.append(toggle,tray);region.append(wrap);return true;
+ native.append(layer);
+ root.dispatchEvent(new CustomEvent('b737:pedestal-faceplates-mounted',{detail:{version:VERSION,count:PANELS.length}}));
+ return true;
 }
-function retry(){if(mount())return;const observer=new MutationObserver(()=>{if(mount())observer.disconnect()});observer.observe(document.body,{childList:true,subtree:true});}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',retry,{once:true});else retry();
-window.B737UnifiedPedestalFaceplates={plates:plates.map(([label,file])=>({label,file})),mount};
-})();
+function start(){
+ if(mount())return;
+ const observer=new MutationObserver(()=>{if(mount())observer.disconnect()});
+ observer.observe(document.body,{childList:true,subtree:true});
+}
+root.addEventListener('b737:cockpit-mounted',mount);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+root.B737UnifiedPedestalFaceplates=Object.freeze({version:VERSION,
+ panels:PANELS.map(p=>Object.freeze({...p,url:source(p.file)})),mount});
+})(window);
