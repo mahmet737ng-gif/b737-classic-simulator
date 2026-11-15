@@ -1,0 +1,483 @@
+{
+  "schema": "classic-afds-annunciator-spec/v1",
+  "status": "SOURCE_EXTRACTED_VISUAL_CALIBRATION_PENDING",
+  "scope": [
+    "B737-300",
+    "B737-400",
+    "B737-500"
+  ],
+  "purpose": "Non-certified training simulator; verify aircraft option/effectivity and photo geometry before live use",
+  "reference": [
+    {
+      "id": "CL_FCOM_2002",
+      "type": "primary",
+      "url": "https://studylib.net/doc/27713912/737-300-400-500-operations-manual-the-bo",
+      "sections": [
+        "Volume 2 4.10.14",
+        "4.10.15",
+        "4.10.16",
+        "11.10.5",
+        "11.60.1"
+      ]
+    },
+    {
+      "id": "CL_FCOM_2018",
+      "type": "primary",
+      "url": "https://boredaviator.com/wp-content/uploads/2025/03/B737-300-FCOM-.pdf",
+      "sections": [
+        "4.10.15",
+        "4.10.16",
+        "11.10.5"
+      ],
+      "note": "Revision uses 'on some airplanes' effectivity for amber flashing"
+    },
+    {
+      "id": "LAN_ATA22",
+      "type": "secondary_technical",
+      "url": "https://www.scribd.com/document/636589203/ata22",
+      "sections": [
+        "22-00 pp.17-18",
+        "22-14 pp.110-113"
+      ]
+    },
+    {
+      "id": "USAIR_300_400",
+      "type": "secondary_classic",
+      "url": "https://data.ntsb.gov/Docket/Document/docBLOB?FileExtension=pdf&FileName=Operations+2-Group+Chairman+Factual+Report-Appendix+C-B737-300-400+Auto+Flight+System+Description-Master.pdf&ID=1455642",
+      "sections": [
+        "14-60-1",
+        "14-60-2",
+        "14-55-4"
+      ]
+    },
+    {
+      "id": "CLASSIC_COMPANION",
+      "type": "secondary_private",
+      "name": "737 COMBI Cockpit Companion OCR -300/-400/-500 parts only",
+      "sections": [
+        "FMC / AFDS contextual crosscheck"
+      ],
+      "note": "Do not import NG-only text"
+    }
+  ],
+  "installation": {
+    "qty": 2,
+    "independentUnitIds": [
+      "N170_CPT",
+      "N171_FO"
+    ],
+    "position": {
+      "CAPT": "P1 upper right",
+      "FO": "P3 upper left"
+    },
+    "controlsShared": true,
+    "notes": "Panel geometry and markings must be registered to owner's photos independently for each side",
+    "positions": {
+      "FO": {
+        "centerNativeMain": [
+          1537.1,
+          233.6
+        ],
+        "rectNativeMain": [
+          1527.5,
+          224,
+          19.2,
+          19.2
+        ],
+        "reference": "owner browser screenshot provided 2026-11-15",
+        "geometryStatus": "INITIAL_FO_SCREENSHOT_CANDIDATE_PIXEL_QA_PENDING"
+      },
+      "CAPT": {
+        "geometryStatus": "PENDING_OWNER_PHOTO_MEASUREMENT",
+        "installed": false
+      }
+    }
+  },
+  "physical": {
+    "face": "dark-gray beveled truncated-corner rectangular panel",
+    "geometryStatus": "PROVISIONAL_FROM_PHOTO_AND_SUPPLIER_NOT_OEM_VERIFIED",
+    "lamps": [
+      {
+        "key": "AP",
+        "topLegend": "A/P",
+        "lowerLegend": "P/RST",
+        "type": "momentary push-to-reset internally illuminated rectangular lightcap",
+        "unlit": "black",
+        "allowedColors": [
+          "RED",
+          "AMBER"
+        ],
+        "installation": {
+          "FO": {
+            "x": 1462.6,
+            "y": 223,
+            "w": 17.3,
+            "h": 19.3
+          },
+          "CAPT": "PENDING"
+        },
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+      },
+      {
+        "key": "AT",
+        "topLegend": "A/T",
+        "lowerLegend": "P/RST",
+        "type": "momentary push-to-reset internally illuminated rectangular lightcap",
+        "unlit": "black",
+        "allowedColors": [
+          "RED",
+          "AMBER"
+        ],
+        "installation": {
+          "FO": {
+            "x": 1484.9,
+            "y": 223,
+            "w": 17.3,
+            "h": 19.3
+          },
+          "CAPT": "PENDING"
+        },
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+      },
+      {
+        "key": "FMC",
+        "topLegend": "FMC",
+        "lowerLegend": "P/RST",
+        "type": "momentary push-to-reset internally illuminated rectangular lightcap",
+        "unlit": "black",
+        "allowedColors": [
+          "AMBER"
+        ],
+        "installation": {
+          "FO": {
+            "x": 1507.4,
+            "y": 223,
+            "w": 17.3,
+            "h": 19.3
+          },
+          "CAPT": "PENDING"
+        },
+        "note": "Unlit/illuminated overlay fitted to photo aperture approximately; final pixel registration pending"
+      }
+    ],
+    "testSwitch": {
+      "key": "TEST",
+      "kind": "3-position toggle",
+      "top": "TEST_1",
+      "middle": "NEUTRAL",
+      "bottom": "TEST_2",
+      "mechanical": "spring loaded to center; both ends momentary",
+      "onRelease": "return to NEUTRAL; restore real alert indications",
+      "visualSource": {
+        "registry": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/toggle-standard.json",
+        "canonicalFamily": "b737-cockpit-toggle-v1",
+        "stateMap": {
+          "TEST_1": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.webp",
+          "NEUTRAL": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-center.webp",
+          "TEST_2": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.webp"
+        },
+        "assetBlobs": {
+          "b737-toggle-on.webp": "fa55e13ef2f8d1d8b7adcde2cb2cd12f870ec300",
+          "b737-toggle-center.webp": "fa0c8cf84fb8fe622e89adc7f71fb78ebf1b62c7",
+          "b737-toggle-off.webp": "2651ebeb934f2c247bf53a5dc437d79f8ed778bf"
+        },
+        "referenceStillLocked": true,
+        "assetStatus": "APPROVED_LOCKED",
+        "draftsExcluded": true,
+        "note": "Frames reused without replacing or editing the original; photo geometry FO initial candidate"
+      },
+      "interaction": {
+        "pointer": "hold top/bottom; drag up/down; release springs to center",
+        "keyboard": "ArrowUp/ArrowDown hold, keyup return",
+        "pointerCancel": "NEUTRAL",
+        "windowBlur": "NEUTRAL",
+        "visibilityLost": "NEUTRAL",
+        "unpoweredBehavior": "circuit not yet verified, no electrical state claimed"
+      }
+    },
+    "colorSamples": {
+      "status": "TO_BE_MEASURED_FROM_OWNER_PHOTO",
+      "note": "Do not treat consumer-device images or internet lamp screenshots as calibrated color values"
+    }
+  },
+  "logic": {
+    "test": {
+      "TEST_1": {
+        "AP": "STEADY_AMBER",
+        "AT": "STEADY_AMBER",
+        "FMC": "STEADY_AMBER",
+        "duration": "while-held"
+      },
+      "NEUTRAL": {
+        "AP": "AIRCRAFT_STATE",
+        "AT": "AIRCRAFT_STATE",
+        "FMC": "AIRCRAFT_STATE"
+      },
+      "TEST_2": {
+        "AP": "STEADY_RED",
+        "AT": "STEADY_RED",
+        "FMC": "STEADY_AMBER",
+        "duration": "while-held"
+      },
+      "note": "Test is an overlay on existing alerts, not a reset of latched events"
+    },
+    "AP": [
+      {
+        "id": "ap_disengage",
+        "output": "FLASH_RED",
+        "when": "last_engaged_autopilot_disengages_from_CMD_or_CWS",
+        "aural": {
+          "warning": "A/P disengage tone",
+          "minimumSeconds": 2
+        },
+        "reset": [
+          "press either A/P P/RST lamp",
+          "press either yoke A/P disengage switch"
+        ],
+        "note": "Does not mean any mode changes trigger AP disconnect",
+        "additionalResetFromLAN": "Reengagement of an A/P in CWS or CMD may also reset; verify FCOM and actual variant"
+      },
+      {
+        "id": "ap_stab_out_of_trim",
+        "output": "STEADY_RED",
+        "when": "dual_channel_approach && radio_altitude_ft<800 && stabilizer_out_of_trim",
+        "details": "LAN notes specific 100 ft passage memory; confirm effectivity",
+        "additionalDetailFromLAN": "Below 800 ft to 100 ft RA, if illuminated before 100 ft remains until STAB TRIM WARN extinguished; LAN ATA22 p112"
+      },
+      {
+        "id": "ap_ga_alt_acq_inhibit",
+        "output": "STEADY_RED",
+        "when": "ap_go_around && alt_acq_inhibited_due_to_stabilizer_not_trimmed_for_single_ap"
+      },
+      {
+        "id": "ap_ground_test_fail",
+        "output": "STEADY_RED",
+        "when": "automatic_ground_system_test_failed"
+      },
+      {
+        "id": "lan_yaw_damper_bite",
+        "output": "STEADY_RED",
+        "when": "yaw_damper_armed_for_BITE",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
+      },
+      {
+        "id": "lan_fcc_bite",
+        "output": "STEADY_RED",
+        "when": "FCC_BITE_in_progress",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
+      },
+      {
+        "id": "lan_invalid_mcp_during_ga",
+        "output": "STEADY_RED",
+        "when": "invalid_MCP_data_while_AP_GO_AROUND_active",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
+      },
+      {
+        "id": "ap_cws_reversion",
+        "output": "FLASH_AMBER",
+        "when": "autopilot_in_CMD_automatically_reverts_pitch_or_roll_to_CWS",
+        "effectivity": "SOME_AIRCRAFT",
+        "reset": [
+          "press either A/P light",
+          "select another engaged mode"
+        ]
+      },
+      {
+        "id": "ap_test1",
+        "output": "STEADY_AMBER",
+        "when": "test switch held TEST_1"
+      },
+      {
+        "id": "ap_test2",
+        "output": "STEADY_RED",
+        "when": "test switch held TEST_2"
+      }
+    ],
+    "AT": [
+      {
+        "id": "at_disengage",
+        "output": "FLASH_RED",
+        "when": "autothrottle_disengaged",
+        "actions": [
+          "A/T ARM moves OFF"
+        ],
+        "reset": [
+          "press either A/T P/RST",
+          "press either throttle A/T disconnect switch again",
+          "A/T ARM back to ARM when permitted"
+        ],
+        "exceptions": [
+          "automatic A/T disengagement after touchdown does not light A/T warning in USAir 737-300/400 handbook"
+        ],
+        "aural": {
+          "status": "NO_A/T_DISENGAGE_TONE_SPECIFIED"
+        }
+      },
+      {
+        "id": "at_speed_error",
+        "output": "FLASH_AMBER",
+        "when": {
+          "flight": true,
+          "flaps": "NOT_UP",
+          "mode": [
+            "MCP_SPD",
+            "FMC_SPD"
+          ],
+          "autothrottleEngaged": true,
+          "iasErrorKnots": {
+            "overSelectedStrictly": 10,
+            "underSelectedStrictly": -5
+          }
+        },
+        "effectivity": "SOME_AIRCRAFT",
+        "time": {
+          "status": "no distinct delay verified for actual speed-error alert"
+        }
+      },
+      {
+        "id": "at_flash_selftest",
+        "output": "FLASH_AMBER_SEQUENCE",
+        "when": {
+          "flight": true,
+          "flaps": "NOT_UP",
+          "mode": [
+            "MCP_SPD",
+            "FMC_SPD"
+          ],
+          "autothrottleEngaged": true,
+          "elapsedAfterLiftoffSecondsGreaterThan": 150
+        },
+        "effectivity": "CONFIGURATION_DEPENDENT",
+        "sequenceSeconds": [
+          {
+            "start": 0,
+            "end": 2,
+            "output": "FLASH_AMBER"
+          },
+          {
+            "start": 2,
+            "end": 4,
+            "output": "OFF"
+          },
+          {
+            "start": 4,
+            "end": 6,
+            "output": "FLASH_AMBER"
+          }
+        ],
+        "flashFrequencyHz": null,
+        "note": "FCOM gives phase durations but not individual flash frequency, do not invent Hz"
+      },
+      {
+        "id": "at_test1",
+        "output": "STEADY_AMBER",
+        "when": "test switch held TEST_1"
+      },
+      {
+        "id": "at_test2",
+        "output": "STEADY_RED",
+        "when": "test switch held TEST_2"
+      }
+    ],
+    "FMC": [
+      {
+        "id": "fmc_fail",
+        "output": "STEADY_AMBER",
+        "when": "both CDU FAIL indicators illuminated",
+        "effectivity": "CDU configured"
+      },
+      {
+        "id": "fmc_alert",
+        "output": "STEADY_AMBER",
+        "when": "FMC alerting message present for both CDUs",
+        "actions": [
+          "MSG on both CDUs",
+          "message in CDU scratchpad"
+        ],
+        "note": "not all CDU entry errors and advisories are cockpit FMC alert conditions"
+      },
+      {
+        "id": "fmc_test",
+        "output": "STEADY_AMBER",
+        "when": "TEST_1 or TEST_2 held"
+      },
+      {
+        "id": "fmc_reset",
+        "input": "press FMC P/RST on either seat",
+        "effect": "extinguish FMC alert lamps on both sides",
+        "doesNot": "clear FMC failure or necessarily clear underlying CDU scratchpad message"
+      }
+    ]
+  },
+  "timeAndPriority": {
+    "autopilotDisconnectAuralMinSeconds": 2,
+    "atFlashAutoTestSeconds": 6,
+    "atFlashPhaseDurationsSeconds": [
+      2,
+      2,
+      2
+    ],
+    "atFlashFrequencyHz": null,
+    "steadyLampsTimedOffSeconds": null,
+    "warningPriorityBetweenMultipleSimultaneousAircraftAlerts": "NOT_YET_DOCUMENTED",
+    "fmcLampTestDelaySeconds": null,
+    "implementationRule": "Do not fabricate durations, relay priorities, or delays without source"
+  },
+  "integration": {
+    "FMA": "SEPARATE FROM THIS PANEL; separate roll/pitch/AT mode boxes",
+    "aircraftEvents": [
+      "lastAPDisengaged",
+      "APAutoRevertCWS",
+      "APGroundTestFailed",
+      "dualChannelStabTrimFault",
+      "gaAltAcqInhibit",
+      "ATDisengaged",
+      "ATSpeedError",
+      "ATFlashSelfTest",
+      "FMCCDUAlert",
+      "FMCBothCDUFail",
+      "APReset",
+      "ATReset",
+      "FMCReset",
+      "TEST1Pressed",
+      "TEST2Pressed",
+      "TESTReleased"
+    ],
+    "render": "event-driven; flash animation only while an active flashing state is presented",
+    "liveUnifiedMounted": true,
+    "mountScope": "FO only on screenshot-identified AFDS right panel; CAPT geometry pending",
+    "runtimeJS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js",
+    "runtimeCSS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css",
+    "runtimeCore": "engine/afds-annunciator-v1/afds-test-switch-core.js",
+    "featureStatus": "INTEGRATED_SOURCE_CODE_BROWSER_QA_PENDING",
+    "actualAFDSAlertsConnected": false,
+    "testIndicationsConnected": true,
+    "preservedArt": true
+  },
+  "unresolved": [
+    "Exact native lens geometry/color/texture/photo-based dimensions per seat",
+    "exact power/CB feed from wiring effectivity",
+    "CWS and A/T amber warning option applicability to EP-FSI / S/N 29340",
+    "blink cycle frequency and phase",
+    "warning precedence when tests and alerts coincide beyond test demonstration",
+    "FMC alert re-annunciation behavior after acknowledge while same message remains",
+    "LAN additionally names yaw damper BITE, FCC BITE, invalid MCP in GA for steady A/P red — require effectivity and FCOM reconciliation",
+    "Unified FO screenshot coordinate candidate x1537 y234 must be manually registered at native resolution and actual screenshot"
+  ],
+  "audit": {
+    "sourceLogic": "EXTRACTED",
+    "visualFidelity": "UNVERIFIED_FO_APPROXIMATE",
+    "liveCockpit": "SOURCE_INSTALLED_ON_MAIN_BUT_NO_BROWSER_PHOTO_QA",
+    "flightCertification": "NOT_APPROVED",
+    "logicVerification": "TEST_CORE_REGRESSION_PENDING"
+  },
+  "electrical": {
+    "status": "PARTIAL_SOURCE_TRACE_ONLY",
+    "source": "LAN ATA22 22-00 p11 DC power distribution, 22-14 p113 A/P red warning",
+    "candidateSupply": "28V DC SWITCHED HOT BATTERY BUS",
+    "note": "Do not wire all lamps and CB consumer mapping from this reference without checking exact S/N WDM/SSM and A/P/A/T/FMC-specific power paths"
+  }
+}
