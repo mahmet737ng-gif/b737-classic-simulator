@@ -1,0 +1,30 @@
+name: Classic AFDS P-RST TEST switch QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/afds-annunciator-v1/**'
+      - 'panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.*'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/afds-annunciator-v1.yml'
+  workflow_dispatch:
+jobs:
+  afds-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax of three-position hardware and live frontend
+        run: |
+          node --check engine/afds-annunciator-v1/afds-test-switch-core.js
+          node --check panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js
+      - name: Actual AFDS lamp/test state machine and asset checks
+        run: node --test engine/afds-annunciator-v1/afds-test-switch.test.cjs
+      - name: Verify locked cockpit artwork before accepting change
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
