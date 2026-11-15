@@ -88,8 +88,8 @@ const bothKeySequence=['2','3','5','3','9','5','ENT','6','0','5','1','2','5','4'
 for(const key of bothKeySequence)trainer.pressISDU(key);
 assert.equal(trainer.getState().units.L.entrySource,'ISDU');
 assert.equal(trainer.getState().units.R.entrySource,'ISDU');
-assert.equal(trainer.getState().units.L.enteredPosition.lat,35+39.5/60);
-assert.equal(trainer.getState().units.R.enteredPosition.lon,51+25.4/60);
+assert.equal(trainer.getCoreState().units.L.enteredPosition.lat,35+39.5/60);
+assert.equal(trainer.getCoreState().units.R.enteredPosition.lon,51+25.4/60);
 trainer.setPowerMode('AIRCRAFT');
 assert.equal(trainer.getState().units.L.powered,false,'No live electrical telemetry MUST fail closed');
 assert.equal(trainer.getState().units.R.powered,false);
