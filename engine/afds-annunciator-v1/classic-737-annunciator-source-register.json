@@ -158,13 +158,15 @@
           "press either A/P P/RST lamp",
           "press either yoke A/P disengage switch"
         ],
-        "note": "Does not mean any mode changes trigger AP disconnect"
+        "note": "Does not mean any mode changes trigger AP disconnect",
+        "additionalResetFromLAN": "Reengagement of an A/P in CWS or CMD may also reset; verify FCOM and actual variant"
       },
       {
         "id": "ap_stab_out_of_trim",
         "output": "STEADY_RED",
         "when": "dual_channel_approach && radio_altitude_ft<800 && stabilizer_out_of_trim",
-        "details": "LAN notes specific 100 ft passage memory; confirm effectivity"
+        "details": "LAN notes specific 100 ft passage memory; confirm effectivity",
+        "additionalDetailFromLAN": "Below 800 ft to 100 ft RA, if illuminated before 100 ft remains until STAB TRIM WARN extinguished; LAN ATA22 p112"
       },
       {
         "id": "ap_ga_alt_acq_inhibit",
@@ -175,6 +177,27 @@
         "id": "ap_ground_test_fail",
         "output": "STEADY_RED",
         "when": "automatic_ground_system_test_failed"
+      },
+      {
+        "id": "lan_yaw_damper_bite",
+        "output": "STEADY_RED",
+        "when": "yaw_damper_armed_for_BITE",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
+      },
+      {
+        "id": "lan_fcc_bite",
+        "output": "STEADY_RED",
+        "when": "FCC_BITE_in_progress",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
+      },
+      {
+        "id": "lan_invalid_mcp_during_ga",
+        "output": "STEADY_RED",
+        "when": "invalid_MCP_data_while_AP_GO_AROUND_active",
+        "reference": "LAN ATA22 22-14 p112",
+        "effectivity": "TECHNICAL_SOURCE_ADDITIONAL_VERIFY_AIRCRAFT"
       },
       {
         "id": "ap_cws_reversion",
@@ -356,12 +379,19 @@
     "CWS and A/T amber warning option applicability to EP-FSI / S/N 29340",
     "blink cycle frequency and phase",
     "warning precedence when tests and alerts coincide beyond test demonstration",
-    "FMC alert re-annunciation behavior after acknowledge while same message remains"
+    "FMC alert re-annunciation behavior after acknowledge while same message remains",
+    "LAN additionally names yaw damper BITE, FCC BITE, invalid MCP in GA for steady A/P red — require effectivity and FCOM reconciliation"
   ],
   "audit": {
     "sourceLogic": "EXTRACTED",
     "visualFidelity": "PENDING_PHOTO_REGISTRATION",
     "liveCockpit": "NOT_CHANGED",
     "flightCertification": "NOT_APPROVED"
+  },
+  "electrical": {
+    "status": "PARTIAL_SOURCE_TRACE_ONLY",
+    "source": "LAN ATA22 22-00 p11 DC power distribution, 22-14 p113 A/P red warning",
+    "candidateSupply": "28V DC SWITCHED HOT BATTERY BUS",
+    "note": "Do not wire all lamps and CB consumer mapping from this reference without checking exact S/N WDM/SSM and A/P/A/T/FMC-specific power paths"
   }
 }
