@@ -80,10 +80,10 @@
         "geometryStatus": "PHOTO_DERIVED_CANDIDATE"
       },
       "FO": {
-        "x": 1537.1,
-        "y": 233.6,
-        "source": "FO screenshot 1649x928 and source photo cutouts",
-        "geometryStatus": "PHOTO_DERIVED_CANDIDATE"
+        "x": 1532.4,
+        "y": 226.5,
+        "source": "owner 2026-11-15 browser screenshot, visual circle center manually inspected at 1920x1080; EIS native main placement",
+        "geometryStatus": "SCREENSHOT_CENTER_ALIGNMENT_ESTIMATE_NEEDS_BROWSER_CONFIRMATION"
       }
     }
   },
@@ -502,7 +502,7 @@
     "runtimeJS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js",
     "runtimeCSS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css",
     "runtimeCore": "engine/afds-annunciator-v1/afds-test-switch-core.js",
-    "featureStatus": "SOURCE_COMMITTED_V2_AWAITING_BROWSER_QA",
+    "featureStatus": "FO_TOGGLE_POSITION_CORRECTED_NATIVE_COORDINATES_MANUAL_BROWSER_QA_PENDING",
     "actualAFDSAlertsConnected": false,
     "testIndicationsConnected": true,
     "preservedArt": true,
@@ -520,7 +520,7 @@
   ],
   "audit": {
     "sourceLogic": "EXTRACTED",
-    "visualFidelity": "PHOTO_BOUNDING_BOX_CANDIDATES_PENDING_BROWSER_REVIEW",
+    "visualFidelity": "FO_SWITCH_2026_11_15_POSITION_CORRECTED_PHOTO_ESTIMATE",
     "liveCockpit": "SOURCE_INSTALLED_ON_MAIN_BUT_NO_BROWSER_PHOTO_QA",
     "flightCertification": "NOT_APPROVED",
     "logicVerification": "PASS_4_NODE_TESTS_GITHUB_ACTIONS_RUN_43747376371",
