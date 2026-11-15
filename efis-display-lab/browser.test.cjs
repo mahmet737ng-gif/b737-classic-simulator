@@ -26,6 +26,29 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   assert.equal(await page.locator('.efcp-face .efcp-knob').count(),6);
   assert.equal(await page.locator('.efcp-face .efcp-detent').count(),13);
   assert.equal(await page.locator('.efcp-face .efcp-key').count(),7);
+  // Full-circle physical assets and geometry: not a partially clipped sprite.
+  for(const kind of ['mode','range','hsi','wxInner']){
+   const rotor=page.locator('.efcp-knob[data-knob="'+kind+'"] .efcp-rotor');
+   assert.ok((await rotor.getAttribute('src')).endsWith('-v2.svg'));
+   assert.equal(await rotor.evaluate(i=>i.complete&&i.naturalWidth===240&&i.naturalHeight===240),true,'SVG complete circle '+kind);
+  }
+  const circle=await page.locator('#efcp-tfc').evaluate(b=>{
+   const rect=b.getBoundingClientRect(),st=getComputedStyle(b);
+   return {w:rect.width,h:rect.height,radius:st.borderRadius,cx:rect.x+rect.width/2,cy:rect.y+rect.height/2};
+  });
+  const rangeCircle=await page.locator('.efcp-knob[data-knob="range"]').evaluate(b=>{
+   const rect=b.getBoundingClientRect();return {cx:rect.x+rect.width/2,cy:rect.y+rect.height/2};
+  });
+  assert.ok(Math.abs(circle.w-circle.h)<1,'TFC must be a full 360 circle');
+  assert.equal(circle.radius,'50%','TFC physical bezel is circular');
+  assert.ok(Math.abs(circle.cx-rangeCircle.cx)<1 && Math.abs(circle.cy-rangeCircle.cy)<1,'TFC precisely centered within range knob');
+  for(const key of ['wxr','vorAdf','navAid','arpt','rteData','wpt']){
+   const button=page.locator('.efcp-key[data-switch="'+key+'"]');
+   assert.equal(await button.locator('.efcp-key-well').count(),1);
+   assert.equal(await button.locator('.efcp-key-bottom').count(),1);
+   assert.equal(await button.locator('.efcp-on').count(),1);
+  }
+
   assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).eadi.dh,200);
   await page.locator('[data-detent="mode"][data-value="PLAN"]').click();
   assert.equal((await page.evaluate(()=>window.B737EFISCP.getState())).ehsi.mode,'PLAN');
