@@ -1,4 +1,4 @@
-/* PD-VHF-DUAL-0001: photographic, concentric COMM/NAV tuning knobs.
+/* PD-VHF-DUAL-0002: photographic, concentric COMM/NAV tuning knobs.
    Hole registration is measured on immutable 1799px source faceplates.
    Visual overlay only; frequency change events are available for radio wiring. */
 (function(root){
@@ -8,9 +8,12 @@ const source=document.currentScript?.src||location.href;
 const ASSET=new URL('./assets/vhf-concentric-ivory-v1.webp',source).href;
 // Source pixel coordinates; COMM is 1799x815, NAV is 1799x813.
 const SLOTS=Object.freeze([
- Object.freeze({id:'comm-left',plate:'vhf-comm',kind:'COMM',cx:404,cy:575,d:315,sw:1799,sh:815}),
- Object.freeze({id:'comm-right',plate:'vhf-comm',kind:'COMM',cx:1349,cy:575,d:315,sw:1799,sh:815}),
- Object.freeze({id:'nav-manual',plate:'vhf-nav',kind:'NAV',cx:1338.5,cy:541,d:315,sw:1799,sh:813})
+ Object.freeze({"id":"comm-capt-left","plate":"vhf-comm-capt","kind":"COMM","seat":"CAPT","position":"left","cx":404,"cy":575,"d":315,"sw":1799,"sh":815}),
+ Object.freeze({"id":"comm-capt-right","plate":"vhf-comm-capt","kind":"COMM","seat":"CAPT","position":"right","cx":1349,"cy":575,"d":315,"sw":1799,"sh":815}),
+ Object.freeze({"id":"comm-fo-left","plate":"vhf-comm-fo","kind":"COMM","seat":"FO","position":"left","cx":404,"cy":575,"d":315,"sw":1799,"sh":815}),
+ Object.freeze({"id":"comm-fo-right","plate":"vhf-comm-fo","kind":"COMM","seat":"FO","position":"right","cx":1349,"cy":575,"d":315,"sw":1799,"sh":815}),
+ Object.freeze({"id":"nav-capt-manual","plate":"vhf-nav-capt","kind":"NAV","seat":"CAPT","position":"manual","cx":1338.5,"cy":541,"d":315,"sw":1799,"sh":813}),
+ Object.freeze({"id":"nav-fo-manual","plate":"vhf-nav-fo","kind":"NAV","seat":"FO","position":"manual","cx":1338.5,"cy":541,"d":315,"sw":1799,"sh":813})
 ]);
 const state=new Map();
 const minMax={COMM:[118000,136975],NAV:[108000,117950]};
@@ -25,7 +28,7 @@ function step(slot,part,dir){
  s.images[part].style.transform='rotate('+s.angle[part]+'deg)';
  s.root.dataset.frequency=(next/1000).toFixed(3);
  root.dispatchEvent(new CustomEvent('b737:unified-vhf-frequency',{detail:{
-  version:VERSION,id:slot.id,kind:slot.kind,part,
+  version:VERSION,id:slot.id,kind:slot.kind,seat:slot.seat,position:slot.position,part,
   whole:Math.floor(next/1000),fractionKhz:next%1000,
   frequencyKhz:next,frequencyMhz:Number((next/1000).toFixed(3))
  }}));

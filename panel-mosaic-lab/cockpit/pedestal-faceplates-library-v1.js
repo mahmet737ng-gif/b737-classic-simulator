@@ -1,19 +1,22 @@
-/* PEDESTAL FACEPLATES 0002
- * Four source-verified owner's PNG assets mounted on the native Unified pedestal.
- * No locked textures are modified. All positions are native 1150 x 2273 coordinates.
- * Radio plates cover matching radio slots; cargo/TCAS use clear auxiliary side bays
- * pending owner-approved final aviation-specific location. Noninteractive stage.
+/* PEDESTAL FACEPLATES 0003
+ * Layout registered against the existing RADIO / NAV / AUDIO / TRIM pedestal.
+ * Upper: COMM CAPT | existing audio (unchanged) | COMM FO.
+ * Lower: NAV CAPT | one Transponder/TCAS | NAV FO.
+ * Positions are native 1150 x 2273. Locked texture files remain unchanged.
+ * This overlay changes only faceplates, not the underlying radio or audio systems.
  */
 (function(root){
 'use strict';
-const VERSION='PEDESTAL-FACEPLATES-0002';
+const VERSION='PEDESTAL-FACEPLATES-0003';
 const scriptUrl=document.currentScript?.src||location.href;
 const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
 const PANELS=Object.freeze([
- {id:'cargo-fire',label:'Cargo Fire Control',file:'Cargo_Fire_Control_bare_faceplate.png',x:14,y:145,w:244,h:111,bay:'AUX LEFT'},
- {id:'transponder-tcas',label:'Transponder / TCAS',file:'Transponder_TCAS_bare_faceplate.png',x:892,y:145,w:244,h:95,bay:'AUX RIGHT'},
- {id:'vhf-comm',label:'VHF COMM',file:'VHF_COMM_bare_faceplate.png',x:58,y:927,w:360,h:163,bay:'RADIO LEFT TOP'},
- {id:'vhf-nav',label:'VHF NAV / MANUAL',file:'VHF_NAV_MANUAL_bare_faceplate.png',x:766,y:1128,w:355,h:160,bay:'RADIO RIGHT MIDDLE'}
+ {"id":"cargo-fire","label":"Cargo Fire Control","file":"Cargo_Fire_Control_bare_faceplate.png","x":14,"y":145,"w":244,"h":111,"bay":"AUX LEFT"},
+ {"id":"vhf-comm-capt","label":"VHF COMM — Captain","file":"VHF_COMM_bare_faceplate.png","x":58,"y":927,"w":360,"h":178,"bay":"RADIO LEFT TOP"},
+ {"id":"vhf-comm-fo","label":"VHF COMM — First Officer","file":"VHF_COMM_bare_faceplate.png","x":766,"y":927,"w":355,"h":178,"bay":"RADIO RIGHT TOP"},
+ {"id":"vhf-nav-capt","label":"VHF NAV / MANUAL — Captain","file":"VHF_NAV_MANUAL_bare_faceplate.png","x":58,"y":1109,"w":360,"h":184,"bay":"RADIO LEFT SECOND ROW"},
+ {"id":"transponder-tcas","label":"Transponder / TCAS","file":"Transponder_TCAS_bare_faceplate.png","x":418,"y":1109,"w":348,"h":184,"bay":"RADIO CENTER SECOND ROW"},
+ {"id":"vhf-nav-fo","label":"VHF NAV / MANUAL — First Officer","file":"VHF_NAV_MANUAL_bare_faceplate.png","x":766,"y":1109,"w":355,"h":184,"bay":"RADIO RIGHT SECOND ROW"}
 ]);
 function mount(){
  const native=document.querySelector('#region-pedestal .region-native');
