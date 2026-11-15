@@ -82,6 +82,14 @@ now=1000;interval();now=2000;interval();now=3000;interval();now=4000;interval();
 assert.equal(trainer.getState().units.L.onDcLamp,false);
 assert.equal(trainer.getState().units.L.alignLamp,true);
 assert.equal(core.hdgStsCountdown(trainer.getCoreState(),'L').value,7);
+// Actual photographed keypad bridge: a single pair of ENT presses must set
+// BOTH aligning units without touching the locked display/keypad scripts.
+const bothKeySequence=['2','3','5','3','9','5','ENT','6','0','5','1','2','5','4','ENT'];
+for(const key of bothKeySequence)trainer.pressISDU(key);
+assert.equal(trainer.getState().units.L.entrySource,'ISDU');
+assert.equal(trainer.getState().units.R.entrySource,'ISDU');
+assert.equal(trainer.getState().units.L.enteredPosition.lat,35+39.5/60);
+assert.equal(trainer.getState().units.R.enteredPosition.lon,51+25.4/60);
 trainer.setPowerMode('AIRCRAFT');
 assert.equal(trainer.getState().units.L.powered,false,'No live electrical telemetry MUST fail closed');
 assert.equal(trainer.getState().units.R.powered,false);
