@@ -99,7 +99,6 @@ function transformCockpitHTML(content) {
   let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
   result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
   result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
-  result=result.replace(/<body\b[^>]*>/i,m=>m+'<button id="guestSourceOverheadFocus" type="button" data-focus="overhead" hidden aria-hidden="true"></button>');
   return result;
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
