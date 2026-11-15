@@ -245,5 +245,37 @@ function render(canvas,state,core){
  circle(c,CX+clamp(e.slip,-10,10)*3.4,601,6,'#758179','#151716',1.7);
  return {fma,speedTape:speed};
 }
-return {render,tapeInput,fmaInput};
+// Unified adapter: use the same new Classic EADI attitude renderer without
+// instructor-only FMA, IAS, ILS, TCAS, or fabricated flight data. The
+// established Unified FMA and speed-tape publishers own those live layers.
+// Canvas coordinates deliberately remain 900x720 for both crew sockets.
+function renderUnifiedAttitude(canvas,input={}){
+ if(!canvas)return false;
+ const c=canvas.getContext('2d',{alpha:false});
+ if(!c)return false;
+ const w=canvas.width,h=canvas.height;
+ c.save();
+ c.setTransform(1,0,0,1,0,0);
+ c.fillStyle='#000';c.fillRect(0,0,w,h);
+ if(input.powered===false){c.restore();return true;}
+ if(input.attitudeValid===false){
+  // Fail closed rather than drawing a false level horizon.
+  box(c,'ATT',w/2,h*.515,27);
+  c.restore();return true;
+ }
+ const pitch=Number.isFinite(input.pitch)?Math.max(-90,Math.min(90,input.pitch)):0;
+ const bank=Number.isFinite(input.bank)?Math.max(-180,Math.min(180,input.bank)):0;
+ // Existing owner-approved native glass rectangles are unchanged.
+ // New EADI attitude card occupies ~45% glass width / ~70% glass height.
+ c.translate(w*.5,h*.515);
+ c.scale(w/900*1.35,h/720*1.25);
+ c.translate(-CX,-CY);
+ attitude(c,{pitch,bank,tcas:'OFF',flaps:0,pli:false,
+   fdPitch:Number.isFinite(input.fdPitch)?input.fdPitch:0,
+   fdRoll:Number.isFinite(input.fdRoll)?input.fdRoll:0},
+   {raster:true,fd:input.fdValid===true});
+ c.restore();
+ return true;
+}
+return {render,tapeInput,fmaInput,renderUnifiedAttitude};
 });
