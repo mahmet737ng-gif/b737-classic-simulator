@@ -6,7 +6,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='PD-ROLLING-FREQUENCY-0001';
+const VERSION='PD-ROLLING-FREQUENCY-0002';
 const CHANNELS={COMM:{min:118000,max:136975,step:25},NAV:{min:108000,max:117950,step:50}};
 const WINDOWS=[
  {id:'comm-capt-left',plate:'vhf-comm-capt',kind:'COMM',seat:'CAPT',rect:[215,167,395,161],dim:[1799,815],index:'bar'},
@@ -52,14 +52,18 @@ function setWheel(wheel,next,old,forward){
    node('span','pd-freq-glyph',strip).textContent=glyph;
  }
 }
-function refresh(item,khz){
+function refresh(item,khz,motion){
  if(khz!=null&&!valid(item.spec.kind,khz))return false;
  const shown=display(khz),prior=item.shown;
  if(prior===shown&&item.value===khz)return true;
- const forward=khz!=null&&item.value!=null?khz>item.value:true;
+ // Use the physical rotation direction even at the numeric wrap-around: e.g.
+ // 108 <- 117 (left swipe) must roll backward although the total MHz increases.
+ const forward=motion?.direction?motion.direction>0:
+   (khz!=null&&item.value!=null?khz>item.value:true);
  for(let i=0,j=0;i<shown.length;i++){
   if(i===3)continue;
-  setWheel(item.wheels[j++],shown[i],prior?prior[i]:null,forward);
+  if(!prior||shown[i]!==prior[i])setWheel(item.wheels[j],shown[i],prior?prior[i]:null,forward);
+  j++;
  }
  item.shown=shown;item.value=khz;
  item.root.dataset.frequencyKhz=khz===null?'':String(khz);
@@ -103,7 +107,7 @@ function mount(){
 }
 root.addEventListener('b737:unified-vhf-frequency',event=>{
  const d=event.detail||{},item=live.get(d.id);
- if(item&&d.kind===item.spec.kind&&valid(d.kind,d.frequencyKhz))refresh(item,d.frequencyKhz);
+ if(item&&d.kind===item.spec.kind&&valid(d.kind,d.frequencyKhz))refresh(item,d.frequencyKhz,d);
 });
 // FMC/avionics can supply NAV AUTO without changing manual tuning.
 root.addEventListener('b737:nav-auto-frequency',event=>{
