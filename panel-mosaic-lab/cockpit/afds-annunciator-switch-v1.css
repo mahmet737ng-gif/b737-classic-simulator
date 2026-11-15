@@ -1,57 +1,54 @@
-/* B737 Classic AFDS visual overlay — source photo remains immutable. */
-#region-main .region-native .afds-fo-test-lever,
-#region-main .region-native .afds-fo-pshrst {
- position:absolute;box-sizing:border-box;display:block;border:0;outline:0;
- padding:0;margin:0;user-select:none;-webkit-user-select:none;
- -webkit-tap-highlight-color:transparent;touch-action:none;
+/* AFDS-ANN-UNIFIED-0002 — preserve photographed sockets and metal face.
+ * Only text in A/P, A/T, FMC lenses illuminates; Small Silver atlas is original.
+ */
+#region-main .region-native .afds-silver-toggle,
+#region-main .region-native .afds-toggle-hit,
+#region-main .region-native .afds-legend-window {
+ position:absolute;box-sizing:border-box;margin:0;padding:0;border:0;
+ -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
 }
-#region-main .region-native .afds-fo-test-lever {
- z-index:39;cursor:ns-resize;background:transparent;overflow:visible;
- border-radius:50%;appearance:none;
+#region-main .region-native .afds-silver-toggle {
+ z-index:39;display:block;pointer-events:none;background-repeat:no-repeat;
+ background-size:500% 100%;background-color:transparent;
 }
-#region-main .region-native .afds-toggle-frame {
- position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:fill;
- opacity:0;pointer-events:none;transition:opacity 90ms ease-out;
+#region-main .region-native .afds-toggle-hit {
+ z-index:40;display:block;cursor:ns-resize;border-radius:50%;
+ appearance:none;background:transparent;outline:none;touch-action:none;
 }
-#region-main .region-native .afds-toggle-frame.afds-is-active{opacity:1}
-#region-main .region-native .afds-fo-test-lever:focus-visible {
- outline:1px dashed rgba(225,232,243,.65);outline-offset:1px;
+#region-main .region-native .afds-toggle-hit:focus-visible {
+ outline:1px dotted #dfe9f7;outline-offset:1px;
 }
-#region-main .region-native .afds-fo-pshrst {
- z-index:35;cursor:pointer;display:flex;flex-direction:column;
- align-items:center;justify-content:center;gap:0;
- border-radius:1.5px;background:rgba(0,0,0,.08);color:#777f86;
- font-family:Arial,sans-serif;letter-spacing:-.04em;text-align:center;
- line-height:1.02;overflow:hidden;
+#region-main .region-native .afds-legend-window {
+ z-index:37;display:flex;flex-direction:column;justify-content:center;
+ align-items:center;overflow:hidden;appearance:none;cursor:pointer;
+ background:transparent!important;box-shadow:none!important;
+ outline:none;border-radius:0;touch-action:manipulation;
+ font-family:Arial,Helvetica,sans-serif;font-weight:600;
+ line-height:1.05;text-align:center;letter-spacing:.02em;
+ color:#241614; /* Unlit, nearly invisible against ORIGINAL black lens */
+ text-shadow:none;
 }
-#region-main .region-native .afds-fo-pshrst .afds-lamp-upper{
- font-size:4.2px;font-weight:800;opacity:.42;
+#region-main .region-native .afds-legend-window .afds-legend-main {
+ display:block;font-size:7.05px;line-height:1.13;white-space:nowrap;
 }
-#region-main .region-native .afds-fo-pshrst .afds-lamp-lower{
- font-size:3.3px;font-weight:700;opacity:.42;
+#region-main .region-native .afds-legend-window .afds-legend-reset {
+ display:block;font-size:4.5px;line-height:1.2;white-space:nowrap;
 }
-#region-main .region-native .afds-fo-pshrst[data-lamp="STEADY_AMBER"],
-#region-main .region-native .afds-fo-pshrst[data-lamp="FLASH_AMBER"] {
- background:radial-gradient(ellipse,#ffca56 0%,#d1840b 85%);
- box-shadow:inset 0 0 3px #fcdca7,0 0 2px #e49d35;color:#241b0b;
+#region-main .region-native .afds-legend-window[data-lamp$="AMBER"] {
+ color:#ffb841;text-shadow:0 0 1px #ffc76e,0 0 3px #b47a13;
 }
-#region-main .region-native .afds-fo-pshrst[data-lamp="STEADY_RED"],
-#region-main .region-native .afds-fo-pshrst[data-lamp="FLASH_RED"] {
- background:radial-gradient(ellipse,#ff7062 0%,#b91e17 85%);
- box-shadow:inset 0 0 3px #ffc6a8,0 0 3px #e33d2d;color:#1f0908;
+#region-main .region-native .afds-legend-window[data-lamp$="RED"] {
+ color:#ff433e;text-shadow:0 0 1px #f77c6a,0 0 3px #ad100b;
 }
-#region-main .region-native .afds-fo-pshrst[data-lamp="FLASH_RED"],
-#region-main .region-native .afds-fo-pshrst[data-lamp="FLASH_AMBER"] {
- animation:afds-warning-blink 1s steps(1,end) infinite;
+/* Blink just the letter glyphs. Never illuminate the photographed lens body. */
+#region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-main,
+#region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-reset {
+ animation:afds-legend-flash 1s steps(1,end) infinite;
 }
-#region-main .region-native .afds-fo-pshrst:not([data-lamp="OFF"]) .afds-lamp-upper,
-#region-main .region-native .afds-fo-pshrst:not([data-lamp="OFF"]) .afds-lamp-lower {opacity:1}
-@keyframes afds-warning-blink {
- 0%,49.999%{filter:brightness(1)}
- 50%,100%{filter:brightness(.08)}
-}
+@keyframes afds-legend-flash{0%,49.999%{opacity:1}50%,100%{opacity:.13}}
 @media (prefers-reduced-motion:reduce){
- #region-main .region-native .afds-fo-pshrst[data-lamp^="FLASH"]{
-  animation:none;border:1px dashed currentColor;
+ #region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-main,
+ #region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-reset{
+ animation:none;text-decoration:underline;
  }
 }
