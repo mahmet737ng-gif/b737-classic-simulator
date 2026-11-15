@@ -4,7 +4,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EFIS-PEDESTAL-RASTER-0001';
+const VERSION='EFIS-PEDESTAL-RASTER-0002';
 const src=document.currentScript?.src||location.href;
 const asset=(name)=>new URL('./assets/'+name,src).href;
 const PHOTO={plate:asset('efis-cp-photo-plate-v1.webp'),
@@ -142,7 +142,7 @@ function open(seat){
 function mount(){
  const native=document.querySelector('#region-pedestal .region-native');if(!native)return false;
  if(native.querySelectorAll('[data-uefis-seat]').length===2){mounted=true;return true;}
- const layout=[{seat:'CAPT',x:14,y:32,w:244},{seat:'FO',x:892,y:32,w:244}];
+ const layout=[{seat:'CAPT',x:55,y:1290,w:365},{seat:'FO',x:735,y:1290,w:365}];
  for(const g of layout){
   if(native.querySelector('[data-uefis-seat="'+g.seat+'"]'))continue;
   const frame=elm('div','uefis-seat',native);frame.dataset.uefisSeat=g.seat;
@@ -161,5 +161,5 @@ function mountOnce(){mount();}
 root.addEventListener('b737:cockpit-mounted',mountOnce);
 root.addEventListener('b737:engine-indication-view',()=>{for(const seat of ['CAPT','FO'])emit(seat,'engine-view')});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOnce,{once:true});else mount();
-root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[14,32,244],FO:[892,32,244]},mount,open,getState:(seat)=>copy(states[seat]),operate:change});
+root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},mount,open,getState:(seat)=>copy(states[seat]),operate:change});
 })(window);
