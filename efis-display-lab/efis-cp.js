@@ -86,6 +86,9 @@ function bindRotary(btn,key){
 const layout=el('div','efcp-layout',mount);
 const face=el('div','efcp-face',layout);face.setAttribute('aria-label','Classic EFIS physical control panel');
 const base=el('img','efcp-plate',face);base.src=images['efis-plate.webp'];base.alt='Approved Classic EFIS photographic plate';base.draggable=false;
+// The archived approved plate says 60; the Classic six-step selector is 10/20/40/80/160/320.
+// Correct only the superimposed stencil, leaving the versioned source image untouched.
+el('div','efcp-range80',face,'80');
 for(const [key,[cx,cy,r]] of Object.entries(KNOBS)){
  const b=pos(el('button','efcp-knob',face),cx-r,cy-r,2*r,2*r);
  b.type='button';b.dataset.knob=key;b.dataset.kind=key==='wxInner'?'inner':'outer';
