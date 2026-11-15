@@ -57,4 +57,11 @@ assert(guest.includes('/bridge/failure-protocol.js'),'Overhead must subscribe to
 assert(fs.readFileSync(path.join(root,'public/index.html'),'utf8').includes('/static/portal-overhead.js'));
 assert(portal.includes('src="/cb-panel-lab/"'));
 assert(portal.includes('src="/lab/"'));
-console.log('Guest overhead, photos, CB, lab, protected resources, and injection contract: OK');
+// Regression: the Railway guest must display every original Unified cockpit panel.
+const fullCSS=fs.readFileSync(path.join(root,'public/guest-cockpit.css'),'utf8');
+const fullJS=fs.readFileSync(path.join(root,'public/guest-cockpit.js'),'utf8');
+assert(!/#region-main|#region-pedestal/.test(fullCSS),'Main and pedestal must not be hidden');
+assert(!/button\\[data-focus=/.test(fullCSS),'Native view selection buttons must remain visible');
+assert(!/focusOverhead|guestSourceOverheadFocus/.test(fullJS),'Guest startup must not force overhead-only mode');
+assert(!source.includes('guestSourceOverheadFocus'),'Gateway must not inject hidden navigation controls');
+console.log('Guest full cockpit visibility, protected resources, and injection contract: OK');
