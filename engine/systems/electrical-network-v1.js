@@ -16,11 +16,23 @@
  const copy=v=>JSON.parse(JSON.stringify(v));
  const tri=v=>v===true||v===false||v===null;
  const status=v=>v===null?'UNKNOWN':v?'ENERGIZED':'DEENERGIZED';
- function project(state,electrical,{numericMode='NOMINAL_MODEL',measurements={}}={}){
+ function project(state,electrical,{numericMode='NOMINAL_MODEL',measurements={},apuGenerator=null}={}){
   if(state?.schema!=='b737-electrical/7'||electrical?.schema!=='B737_ELECTRICAL_V7_RESULT'||
    state.rev!==electrical.revision)throw Error('Matching shared Electrical Pack state/result required');
   if(!['NOMINAL_MODEL','SENSOR_ONLY'].includes(numericMode))throw Error('Invalid numeric mode');
   if(!measurements||typeof measurements!=='object'||Array.isArray(measurements))throw Error('Invalid measurements');
+  // APU ECU owns the independently-excited generator output. A ready APU can
+  // deliver source-terminal voltage/frequency while its BUS contactors are OPEN.
+  // The electrical V7 source selection still exclusively owns BUS distribution.
+  if(apuGenerator!==null&&(
+    typeof apuGenerator!=='object'||Array.isArray(apuGenerator)||
+    typeof apuGenerator.ready!=='boolean'||
+    !Number.isFinite(apuGenerator.voltageV)||apuGenerator.voltageV<0||
+    !Number.isFinite(apuGenerator.frequencyHz)||apuGenerator.frequencyHz<0
+  ))throw Error('Invalid APU generator ECU observation');
+  const sourceMeasurements={...measurements};
+  if(apuGenerator?.ready===true&&!Object.hasOwn(sourceMeasurements,'APU'))
+   sourceMeasurements.APU={volts:apuGenerator.voltageV,hz:apuGenerator.frequencyHz};
   const c=state.config,f=state.faults,e=electrical,nodes={},edges=[];
   function node(id,kind,powered,feeds=[],nominal=null,reason=null){
    if(!tri(powered))throw Error('Invalid electrical power status');
@@ -30,7 +42,7 @@
    else if(powered===true&&numericMode==='NOMINAL_MODEL'&&nominal){
     n.volts=nominal.volts;n.hz=kind==='AC'?nominal.hz:null;n.numericQuality='NOMINAL_MODEL';
    }
-   const sample=measurements[id];
+   const sample=sourceMeasurements[id];
    if(sample!==undefined){
     if(!sample||typeof sample!=='object'||Array.isArray(sample))throw Error('Invalid sensor '+id);
     for(const [key,value]of Object.entries(sample)){
@@ -57,21 +69,26 @@
    // speed + excited field; an injected generator failure, or an opened
    // generator-control CB, inhibits that modeled output. FCOM 6.10.3:
    // AC meter selector GEN1/GEN2 reads SOURCE terminals, not bus contactors.
-   // APU/EXT retain their previous behavior and separate source rules.
+   // Each generator SOURCE is metered upstream of its BUS contactor.
+   // APU generator readiness comes from its own ECU plant when available, NOT
+   // from GEN1/GEN2 running state or whether an APU GEN switch is ON BUS.
    const engineGenerator=id==='GEN1'||id==='GEN2';
+   const apuSource=id==='APU';
+   const modeledReady=apuSource&&apuGenerator!==null?
+     apuGenerator.ready&&!f.APU_FAILED&&!e.apuAutomaticShutdownRequested:available;
    const field=engineGenerator?
     (globalThis.B737UnifiedCB?.gate('electrical.gen'+id.slice(-1)+'Control',available)??available):
-    null;
-   const outputReady=engineGenerator?field===true:available;
-   const powered=engineGenerator?outputReady:
+    apuSource?(globalThis.B737UnifiedCB?.gate('electrical.apuGenControl',modeledReady)??modeledReady):null;
+   const outputReady=engineGenerator||apuSource?field===true:available;
+   const powered=engineGenerator||apuSource?outputReady:
     !available?false:id==='EXT'||sides.length>0?true:null;
-   const reason=engineGenerator?(outputReady?
-    'RATED_DRIVE_EXCITED_NOMINAL_OUTPUT_INDEPENDENT_OF_BUS_CONTACTOR':
+   const reason=engineGenerator||apuSource?(outputReady?
+    (apuSource?'APU_ECU_SOURCE_OUTPUT_INDEPENDENT_OF_BUS_CONTACTOR':'RATED_DRIVE_EXCITED_NOMINAL_OUTPUT_INDEPENDENT_OF_BUS_CONTACTOR'):
     'STOPPED_FAILED_OR_FIELD_CONTROL_UNAVAILABLE'):
     powered===null?'DISCONNECTED_GENERATOR_FIELD_UNVERIFIED':null;
    node(id,'AC',powered,[],{volts:115,hz:400},reason);
-   Object.assign(nodes[id],{available:outputReady,driveAtOperatingSpeed:engineGenerator?Boolean(readiness[id]):null,
-    electricallyExcited:engineGenerator?outputReady:null,connectedBusSides:sides,
+   Object.assign(nodes[id],{available:outputReady,driveAtOperatingSpeed:engineGenerator?Boolean(readiness[id]):apuSource?apuGenerator?.ready??Boolean(readiness[id]):null,
+    electricallyExcited:engineGenerator||apuSource?outputReady:null,connectedBusSides:sides,
     busContactorClosed:sides.length>0});
   }
   node('BATTERY','DC',readiness.BATTERY,[],{volts:24});
