@@ -129,6 +129,16 @@
   for(const frame of frames())frame.addEventListener('load',()=>{
    if(connected)try{frame.contentWindow?.B737CDUAttachCduSgV1?.()}catch(_){}
   });
+  // CDU iframes are often created long after DOMContentLoaded. The native
+  // iframe sends 'ready' after all 70 keys/owner artwork finish mounting.
+  root.addEventListener('message',event=>{
+   const d=event.data;
+   if(!connected||event.origin!==root.location.origin||
+      d?.type!=='b737:unified-cdu'||d?.kind!=='ready'||
+      !['CAPT','FO'].includes(d.seat)||
+      !frames().some(frame=>frame.contentWindow===event.source))return;
+   try{event.source.B737CDUAttachCduSgV1?.()}catch(_){}
+  });
   if(railway)void connect(); // Existing authenticated Railway sessions reconnect automatically.
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
