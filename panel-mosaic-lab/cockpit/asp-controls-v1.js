@@ -102,7 +102,9 @@
  function notify(button){paint(button);root.dispatchEvent(new CustomEvent('b737:asp-control',{detail:{...button.dataset,...state.snapshot(button.dataset.seat,button.dataset.kind,button.dataset.channel)}}));}
  function toggle(button){const d=button.dataset;state.toggle(d.seat,d.kind,d.channel);notify(button);}
  function volume(button,value){const d=button.dataset;state.setVolume(d.seat,d.channel,value);notify(button);}
- function pointerAngle(button,e){const b=button.getBoundingClientRect();return Math.atan2(e.clientX-b.left-b.width/2,-(e.clientY-b.top-b.height/2))*180/Math.PI;}
+ // A tap is a receiver-selector action. Deliberate displacement rotates
+ // its 270-degree volume rotor; finger/mouse contact jitter never rotates it.
+ const ASP_VOLUME_DRAG_START_PX=12,ASP_VOLUME_PIXELS_PER_PERCENT=7;
  function wire(button){
   let gesture=null,suppressClickUntil=0;
   for(const type of ['pointerdown','pointermove','pointerup','pointercancel','touchstart','touchmove','touchend'])button.addEventListener(type,preventPan);
@@ -110,16 +112,41 @@
   if(button.dataset.kind!=='volume')return;
   button.addEventListener('pointerdown',e=>{
    if(e.pointerType==='mouse'&&e.button!==0)return;
-   gesture={id:e.pointerId,x:e.clientX,y:e.clientY,last:pointerAngle(button,e),moved:false};button.setPointerCapture(e.pointerId);
+   gesture={id:e.pointerId,startX:e.clientX,startY:e.clientY,
+    lastX:e.clientX,lastY:e.clientY,moved:false,axis:null};
+   button.dataset.aspGesture='TAP_PENDING';
+   try{button.setPointerCapture(e.pointerId);}catch(_){}
   });
   button.addEventListener('pointermove',e=>{
    if(!gesture||gesture.id!==e.pointerId)return;
-   const next=pointerAngle(button,e),delta=model.angularDelta(gesture.last,next);gesture.last=next;
-   if(!gesture.moved&&Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)<3)return;
-   gesture.moved=true;e.preventDefault();
-   volume(button,state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume+delta/2.7);
+   const g=gesture,totalX=e.clientX-g.startX,totalY=e.clientY-g.startY;
+   const dx=e.clientX-g.lastX,dy=e.clientY-g.lastY;
+   g.lastX=e.clientX;g.lastY=e.clientY;
+   if(!g.moved){
+    if(Math.hypot(totalX,totalY)<ASP_VOLUME_DRAG_START_PX)return;
+    g.moved=true;
+    g.axis=Math.abs(totalX)>=Math.abs(totalY)?'x':'y';
+    button.dataset.aspGesture='ROTATING';
+    const initial=g.axis==='x'?totalX:-totalY;
+    if(initial){
+     e.preventDefault();
+     volume(button,state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume+
+      initial/ASP_VOLUME_PIXELS_PER_PERCENT);
+    }
+    return;
+   }
+   const distance=g.axis==='x'?dx:-dy;
+   if(!distance)return;
+   e.preventDefault();
+   volume(button,state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume+
+    distance/ASP_VOLUME_PIXELS_PER_PERCENT);
   });
-  const finish=e=>{if(gesture?.id!==e.pointerId)return;if(gesture.moved)suppressClickUntil=performance.now()+300;gesture=null;if(button.hasPointerCapture(e.pointerId))button.releasePointerCapture(e.pointerId);};
+  const finish=e=>{
+   if(gesture?.id!==e.pointerId)return;
+   if(gesture.moved)suppressClickUntil=performance.now()+450;
+   gesture=null;button.dataset.aspGesture='IDLE';
+   try{if(button.hasPointerCapture(e.pointerId))button.releasePointerCapture(e.pointerId);}catch(_){}
+  };
   button.addEventListener('pointerup',finish);button.addEventListener('pointercancel',finish);
   button.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const s=state.snapshot(button.dataset.seat,'volume',button.dataset.channel);volume(button,s.volume+(e.deltaY<0?2:e.deltaY>0?-2:0));},{passive:false});
   button.addEventListener('keydown',e=>{
