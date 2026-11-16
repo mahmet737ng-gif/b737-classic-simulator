@@ -60,15 +60,35 @@
   const numeric=v=>Number.isFinite(v)?v:null;
   const radAlt=numeric(src.ra?.heightFt),front=src.frontCourse;
   const adc=src.adc;
+  const smooth=root.B737UnifiedFlightDisplayMotionV1?.sample?.();
+  const validSmooth=smooth?.schema==='B737_FLIGHT_SCENARIO_STATE_V1'&&
+   root.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true;
+  // No bypass of IRS/ADC validity or an explicit pilot-attitude injection.
+  const smoothAttitude=validSmooth&&!injected&&src.attitude===true;
+  const smoothIas=validSmooth&&(
+   numeric(adc?.iasKt)!==null||numeric(adc?.casKt)!==null);
+  const originalSpeedView=root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat);
+  let speedView=originalSpeedView;
+  if(smoothIas&&originalSpeedView?.casKt!=null){
+   const speed=smooth.iasKt,center=Math.max(45,Math.min(420,speed)),radius=42;
+   const range={minKt:center-radius,maxKt:center+radius};
+   speedView={...originalSpeedView,casKt:speed,tapeCenterKt:center,range,
+    lowSpeedDefault:speed<=45,
+    commandedPosition:originalSpeedView.command?
+      originalSpeedView.command.speedKt>range.maxKt?'ABOVE':
+      originalSpeedView.command.speedKt<range.minKt?'BELOW':'ON_TAPE':null};
+  }
   const painted=renderer.renderUnifiedFull(display.canvas,{
-   seat,pitch:injected?station.pitch:src.pitch,bank:injected?station.bank:src.bank,
+   seat,pitch:smoothAttitude?smooth.pitchDeg:injected?station.pitch:src.pitch,
+   bank:smoothAttitude?smooth.bankDeg:injected?station.bank:src.bank,
    powered,attitudeValid:injected?station.attitudeValid:src.attitude,
    source:injected?station.source:'IRS '+(src.irs===1?'L':'R'),
    comparison:src.comparison,brightness:cp?.brightness.adi??1,
     selectedSpeedKt:src.mcp?.selectedSpeedKt??null,
     selectedSpeedValid:src.mcp?.powered===true,
-   iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),mach:numeric(adc?.mach),
-   speedView:root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat),
+   iasKt:smoothIas?smooth.iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),
+   mach:numeric(adc?.mach),
+   speedView,
    groundSpeedKt:src.groundSpeed,radioAltFt:radAlt,dhFt:cp?.dh??null,dhLatched:trackDh(seat,cp,radAlt,powered),
    ils:!!src.ils,frontCourse:front===true,
    locDeviation:front===false&&Number.isFinite(src.ils?.localizerDots)?-src.ils.localizerDots:numeric(src.ils?.localizerDots),
@@ -211,7 +231,7 @@
  root.addEventListener('b737:avionics-data',event=>{
   if(/^(airdata\.(adc|radioAltitude)[12]|navigation\.ils[12]|afds\.director[12]|irs\.(left|right)|mcp\.state|fmc\.computed|electrical\.buses)$/.test(event.detail?.topic||''))scheduleLive();
  });
- for(const event of ['b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
+ for(const event of ['b737:flight-presentation-frame','b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')
