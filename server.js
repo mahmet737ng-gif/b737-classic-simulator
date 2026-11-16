@@ -30,6 +30,7 @@ const ALLOWED_SOURCE_ROOTS = new Set([
   'branding','bus-consumer-test-lab','cb-panel-lab','cdu-font-test',
   'cdu-standalone','cdu-standalone-v3','cdu-standalone-v5','cdu-standalone-v6',
   'cpcs-lab','dcpcs-lab','eadi-attitude-lab','eadi-attitude-v5',
+  'efis-display-lab', // EADI/EHSI renderers, glyphs, reference geometry
   'electrical-lab','electrical-load-lab','engine','fire-handle-lab',
   'fire-protection-lab','flight-controls-panel','fuel-panel','instrument-lab',
   'integration-lab','interactive-panel-test','isn-ecu-start-lab',
