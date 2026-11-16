@@ -169,6 +169,21 @@ test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
   x=>[250+1000*x,250],anchor),1);
  assert.equal(status(),'ACT REF');
 });
+test('EHSI PLAN centers selected runway threshold, MAP keeps valid actual aircraft position',()=>{
+ const ehsi=require('../ehsi-unified-v1.js');
+ const selected={lat:35.68,lon:51.31};
+ const mapPosition={lat:35.69,lon:51.30};
+ const runway={modified:{geometries:{'RUNWAY_DEP@OIII':{kind:'RUNWAY',fixes:[{
+  ident:'RW29L',lat:35.681,lon:51.312
+ }]}}}};
+ assert.deepEqual(ehsi.referenceAnchor('PLAN',{points:[]},null,selected,runway),
+  {lat:35.681,lon:51.312,source:'VERIFIED_RUNWAY_THRESHOLD'});
+ assert.equal(ehsi.referenceAnchor('CTR_MAP',{points:[]},mapPosition,selected,runway),mapPosition);
+ assert.equal(ehsi.referenceAnchor('MAP',{points:[]},null,selected,runway),selected);
+ assert.equal(ehsi.referenceAnchor('MAP',{points:[]},null,null,runway).source,'VERIFIED_RUNWAY_THRESHOLD');
+ assert.equal(ehsi.referenceAnchor('PLAN',{points:[]},null,null,{modified:{geometries:{}}}),null);
+});
+
 test('EHSI runway selection marks the verified threshold before SID selection',()=>{
  const renderer=require('../cdu-sg-ehsi-preview-v1.js'),route=routeAPI.create();
  route.setConnected(true);route.setContext({origin:'OIII'});
