@@ -9,7 +9,9 @@ function photo(){
   constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.style={};this.textContent='';this.listeners={};this.parentNode=null;}
   setAttribute(k,v){this.attrs[k]=String(v);}
   getAttribute(k){return this.attrs[k]??null;}
-  append(child){this.children.push(child);child.parentNode=this;return child;}
+  append(child){if(child.parentNode)child.parentNode.children=
+    child.parentNode.children.filter(n=>n!==child);
+   this.children.push(child);child.parentNode=this;return child;}
   addEventListener(k,f){this.listeners[k]=f;}
  }
  const document={baseURI:'https://example.invalid/panel-mosaic-lab/cockpit/instrument-lab/',
