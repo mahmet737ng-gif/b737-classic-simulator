@@ -5,7 +5,7 @@
  if(root?.document)root.B737UnifiedEHSI=api.mount(root);
 })(globalThis,function(){
  'use strict';
- const VERSION='UNIFIED-EHSI-0003-MCP-SELECT';
+ const VERSION='UNIFIED-EHSI-0004-HEADING-REFERENCE';
  const NS='http://www.w3.org/2000/svg';
  // Apertures measured inside the source glass. Children inherit each photo's
  // existing registration, including the FO mode-specific transform and lift.
@@ -148,6 +148,7 @@
     // Selected HDG is shared MCP, selected CRS follows SG 1 or SG 2 and
     // the COURSE 2 battery feed (not a fabricated localizer capture).
     screen.host.dataset.mcpHeadingBug=src.selectedHeading==null?'':String(src.selectedHeading);
+    screen.host.dataset.mcpHeadingReference=src.headingReferenceSource||'UNAVAILABLE';
     screen.host.dataset.mcpCourse=src.course==null?'':String(src.course);
     screen.host.dataset.mcpHeadingPower=String(src.mcp?.powered===true);
     screen.host.dataset.mcpCourse2Power=String(src.mcp?.course2Powered===true);
@@ -221,6 +222,7 @@
      mcpHeadingBug:screens[seat].host.dataset.mcpHeadingBug===''?null:Number(screens[seat].host.dataset.mcpHeadingBug),
      mcpCourse:screens[seat].host.dataset.mcpCourse===''?null:Number(screens[seat].host.dataset.mcpCourse),
      mcpPower:screens[seat].host.dataset.mcpHeadingPower==='true',
+     mcpHeadingReference:screens[seat].host.dataset.mcpHeadingReference,
      mcpCourse2Power:screens[seat].host.dataset.mcpCourse2Power==='true'}:null});
  }
  return Object.freeze({VERSION,liveModel,mount});
