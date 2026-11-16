@@ -163,7 +163,7 @@
      model.mapObjects=location.mapObjects(center,origin.ehsi.options,origin.ehsi.range,extra);
      // Preview landmarks around a selected point before IRS alignment.
      // Real IRS positionValid and navigation quality remain unchanged.
-     if(chosen&&!src.mapPosition)model.nav.valid=true;
+     if(chosen||src.mapPosition)model.nav.valid=true; // Chart landmarks need a valid map anchor, not an FMC route
     }
     screen.host.dataset.sg=String(src.sg);
     screen.host.dataset.irs=src.irs===1?'L':'R';
