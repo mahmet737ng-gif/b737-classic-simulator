@@ -55,10 +55,24 @@
    if(!SEATS.includes(seat))return;
    selected=seat;syncControls();
   }
+  // A change made from the top EFIS inspector also turns the virtual
+  // knob for the selected receiving seat; the pedestal and glass stay synced.
   function dispatch(event){
+   const paths={'eadi.dh':'dh','eadi.brightness':'adi',
+    'ehsi.mode':'mode','ehsi.range':'range',
+    'ehsi.brightness':'hsi','ehsi.wxBrightness':'wxInner'};
+   const pedestal=win.B737UnifiedEFISPedestalV1;
+   if(pedestal?.operate&&event?.type==='set'&&Object.hasOwn(paths,event.path)){
+    pedestal.operate(selected,paths[event.path],event.value);
+    return state[selected];
+   }
+   if(pedestal?.operate&&event?.type==='option'&&
+      ['wxr','tfc','vorAdf','navAid','arpt','rteData','wpt'].includes(event.name)){
+    pedestal.operate(selected,event.name,event.value);
+    return state[selected];
+   }
    state[selected]=core.apply(state[selected],event);
-   syncControls();
-   schedule();
+   syncControls();schedule();
    return state[selected];
   }
   // Same controller contract used by the standalone EFIS controls.
