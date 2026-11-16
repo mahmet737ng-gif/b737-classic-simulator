@@ -54,6 +54,7 @@ test('EIS photo instrument centers are the original measured glass-source center
   [p.piece,p.width,p.height,p.pivot.x,p.pivot.y,p.tipRadius]);
 });
 test('F/O Conventional analog gauges are mounted to the real approved owner photo, not hidden EIS textures',()=>{
+ assert(Object.isFrozen(owner.pivots),'approved owner socket centers must be immutable');
  for(const kind of Reg.kinds){
   const p=Reg.get('CONVENTIONAL','firstOfficer',kind);
   assert.equal(p.piece,'fo-owner');
