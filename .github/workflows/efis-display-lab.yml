@@ -35,6 +35,7 @@ jobs:
         run: |
           node efis-display-lab/core.test.cjs
           node efis-display-lab/ehsi-v2.test.cjs
+          node --test efis-display-lab/ehsi-expanded-heading-360.test.cjs
       - name: Ensure Unified owner-protected files not changed
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
