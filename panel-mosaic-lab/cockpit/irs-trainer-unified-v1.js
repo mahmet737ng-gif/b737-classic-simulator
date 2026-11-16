@@ -383,6 +383,7 @@ function boot(){
  // Explicit same-page simulator telemetry contract. External bridges must
  // validate source identity and provide GS/TRK and timestamp per frame.
  root.addEventListener('b737:flight-location-reference',e=>{
+  if(e.detail?.source==='FLIGHT_SCENARIO_LIVE_POSITION')return; // motion is supplied through telemetry, not IRS POS INIT
   try{setScenarioPosition(e.detail);}
   catch(error){lastError='FLT PHASE POS: '+cleanErr(error);}
  });
