@@ -33,7 +33,9 @@
   if(!r.ok)throw Error(body.error||'PRIVATE SOURCE UNAVAILABLE');return body;
  }
  const routePages=['RTE','FLIGHT_PLAN','ACTIVATE','LEGS'];
- const canExecute=()=>Boolean(state.routeActivated||state.navdbActive||state.stage5Committed);
+ // Reference-only EXEC commits the SG preview state, never an operational FMC route.
+ // Native Route activation and source-only reference acceptance are separate.
+ const hasReferenceChanges=()=>Boolean(shared.snapshot().modified);
  function visible(v,snapshot=shared.snapshot()){
   const role=v.departure?'DEP':'ARR',slot=role+'@'+v.airport;
   const runway=snapshot.runways?.[slot],fits=item=>!runway||!item.item?.runways?.length||item.item.runways.includes(runway);
@@ -219,11 +221,14 @@
   return fromCatalogKey(k);
  }
  function afterKey(code){
-  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!shared.snapshot().modified)return;
-  if(canExecute())shared.execute();
-  else issue('ACTIVATE ROUTE FIRST');
+  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!hasReferenceChanges())return;
+  // The shared state is a verified display reference, not a flight-leg
+  // execution or the activation of the aircraft FMC/LNAV. EXEC changes
+  // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.
+  shared.execute();
+  state.message='';
  }
- function execLit(){return canExecute()&&Boolean(shared.snapshot().modified);}
+ function execLit(){return attached&&hasReferenceChanges();}
  function attach(){
   if(attached)return;attached=true;
   if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView){
