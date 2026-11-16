@@ -187,11 +187,11 @@ body > header.unified-minimal-header .header-settings>button{
  <fieldset class="unified-efis-presets">
   <legend>IRS / EFIS training presets</legend>
   <div class="unified-efis-selectors">
-   <button type="button" data-efis-preset="FULL_ALIGN" aria-pressed="false">FULL ALIGN</button>
+   <button type="button" data-efis-preset="FULL_ALIGN" aria-pressed="true">FULL ALIGN</button>
    <button type="button" data-efis-preset="COLD_DARK" aria-pressed="false">COLD &amp; DARK</button>
-   <button type="button" data-efis-preset="LIVE" aria-pressed="true">AIRCRAFT</button>
+   <button type="button" data-efis-preset="LIVE" aria-pressed="false">AIRCRAFT</button>
   </div>
-  <output id="unifiedEfisPresetStatus" aria-live="polite">Aircraft power and manual IRS operation.</output>
+  <output id="unifiedEfisPresetStatus" aria-live="polite">FULL ALIGN · initializing IRS L/R…</output>
  </fieldset>
  <div class="unified-efis-selectors" dir="ltr">
   <label>Seat <select id="unifiedEfisSeat"><option value="CAPT">Captain</option><option value="FO">First Officer</option></select></label>
@@ -268,7 +268,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="../../efis-display-lab/core.js?v=UNIFIED-EHSI-0001" defer></script>
 <script src="../../efis-display-lab/ehsi-v2.js?v=EHSI-0007" defer></script>
 <script src="./ehsi-unified-v1.js?v=UNIFIED-EFIS-0004" defer></script>
-<script src="./efis-training-presets-v1.js?v=EFIS-PRESETS-0001" defer></script>
+<script src="./efis-training-presets-v1.js?v=EFIS-PRESETS-DEFAULT-FULL-0002" defer></script>
 
 <link rel="stylesheet" href="./efis-pedestal-raster-v1.css?v=EFIS-PED-0002"><script src="./efis-pedestal-raster-v1.js?v=EFIS-PED-0002" defer></script>
 <script src="./pedestal-faceplates-library-v1.js?v=PED-FACEPLATES-0006" defer></script>
