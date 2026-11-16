@@ -36,8 +36,10 @@
    if(!isIcao(airport)||!['SID','STAR','APP'].includes(kind)||!isIdent(ident)||!permitted(kind,airport))
     throw Error('NOT ON ROUTE');
    if(procedure?.airport!==airport||procedure?.kind!==kind||procedure?.ident!==ident||
-      procedure?.fmc_executable!==false||procedure?.requires_runway_selection===true||
-      procedure?.requires_transition_selection===true||!Array.isArray(procedure?.runway_options)||
+      procedure?.fmc_executable!==false||
+      (procedure?.requires_runway_selection===true&&!runway)||
+      (procedure?.requires_transition_selection===true&&!transition)||
+      !Array.isArray(procedure?.runway_options)||
       !Array.isArray(procedure?.transition_options))throw Error('UNVERIFIED PROCEDURE');
    if(runway&&!procedure.runway_options.includes(runway)||transition&&!procedure.transition_options.includes(transition)||
       procedure.runway_options.length>1&&!runway||procedure.transition_options.length>1&&!transition)
