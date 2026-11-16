@@ -27,6 +27,13 @@
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
+ // Center/width/height of the *printed lettering* relative to the
+ // knob diameter (not a 45-degree polar placement of the knob).
+ const PRINTED=Object.freeze({
+  RTO:[-.70,.34,.32,.19],OFF:[-.83,0,.32,.19],
+  '1':[-.59,-.51,.16,.19],'2':[0,-.75,.16,.19],
+  '3':[.56,-.51,.16,.19],MAX:[.84,0,.38,.20]
+ });
  function placement(rect){
   if(!rect||![rect.x,rect.y,rect.w,rect.h].every(Number.isFinite)||
     rect.w<=0||rect.h<=0)throw Error('EIS FO-inner placement is required');
@@ -114,10 +121,17 @@
    return knob;
   }
   function placeDetentLabels(host,target){
-   // Six text hit areas are fixed around the ORIGINAL AUTO BRAKE bezel;
-   // their positions derive from the same true detent angles as the rotor.
-   // No new visible labels, no image edits and no detached selector state.
-   for(const detent of DETENTS){
+   const geometry=win.B737DetentHitGeometryV1;
+   if(!geometry?.build)throw Error('B737DetentHitGeometryV1 must load before AUTOBRAKE');
+   const boxes=geometry.build(DETENTS.map(value=>{
+    const [dx,dy,tw,th]=PRINTED[value];
+    return {id:value,cx:target.x+dx*target.w,cy:target.y+dy*target.h,
+     w:tw*target.w,h:th*target.h};
+   }),{paddingPx:5});
+   // Exact text-centered invisible zones. Expansions are clamped against
+   // neighboring detent labels by the common geometry owner.
+   for(const box of boxes){
+    const detent=box.id;
     let label=detentLabels.get(detent);
     if(!label){
      label=doc.createElement('button');label.type='button';
@@ -128,9 +142,8 @@
      label.setAttribute('aria-pressed','false');
      label.title='AUTO BRAKE · '+detent+' (tap printed marking)';
      Object.assign(label.style,{position:'absolute',zIndex:'55',padding:'0',
-      border:'0',margin:'0',borderRadius:'6px',background:'transparent',
-      boxShadow:'none',touchAction:'manipulation',cursor:'pointer',
-      transform:'translate(-50%,-50%)'});
+      border:'0',margin:'0',borderRadius:'4px',background:'transparent',
+      boxShadow:'none',touchAction:'manipulation',cursor:'pointer'});
      label.addEventListener('pointerdown',e=>e.stopPropagation());
      label.addEventListener('click',e=>{
       if(mode()!=='EIS')return;
@@ -138,14 +151,12 @@
      });
      detentLabels.set(detent,label);
     }
-    const a=ANGLES[detent]*Math.PI/180;
-    const radius=target.w*.89;
     Object.assign(label.style,{
-     left:(target.x+Math.sin(a)*radius).toFixed(3)+'px',
-     top:(target.y-Math.cos(a)*target.h*.89).toFixed(3)+'px',
-     width:(target.w*.63).toFixed(3)+'px',
-     height:(target.h*.43).toFixed(3)+'px'
+     left:box.x.toFixed(3)+'px',top:box.y.toFixed(3)+'px',
+     width:box.w.toFixed(3)+'px',height:box.h.toFixed(3)+'px',
+     transform:'none'
     });
+    label.dataset.hitPaddingPx=box.paddingPx.toFixed(2);
     if(label.parentElement!==host)host.append(label);
     label.setAttribute('aria-pressed',String(selected()===detent));
    }
