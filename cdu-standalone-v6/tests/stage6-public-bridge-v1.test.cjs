@@ -57,3 +57,48 @@ test('public connector carries no embedded NAVDATA or persistent token storage',
  assert.doesNotMatch(connector,/localStorage|sessionStorage|document\.cookie|IndexedDB|\.sqlite|\.zip/);
  assert.match(connector,/B737CDUDetachPublicNavDataV1/);
 });
+
+test('Chapter 11 reads exact private source names and selects SID, runway and transition as reference only',async()=>{
+ const make=require('../stage6-selector.js');
+ const pages=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/page-definitions.json'),'utf8')).pages;
+ const state=core.makeState('DEP_ARR');
+ state.active.ORIGIN='OIII';state.active.DEST='OIMM';state.chapter11RoutePages=true;
+ const urls=[];
+ const fetcher=async(url)=>{
+  urls.push(url);
+  if(url.includes('/catalog?')){
+   return {ok:true,json:async()=>({
+    airac:'2610',airport:'OIII',kind:'SID',fmc_executable:false,
+    items:[{ident:'TEST1A',runways:['29R'],transitions:['TESTFIX'],
+      status:'SOURCE_ONLY_NOT_FMC_EXECUTABLE'}]
+   })};
+  }
+  if(url.includes('/navdata?kind=runways')){
+   return {ok:true,json:async()=>({
+    airac:'2610',mode:'SOURCE_REFERENCE_ONLY',fmc_executable:false,
+    lookup:{has_more:false,rows:[{runway_ident:'29R'}]}
+   })};
+  }
+  throw Error('No unsupported requests: '+url);
+ };
+ const api=make({validate(){throw Error('Must not execute simulator navigation')}},state,core,pages,fetcher,()=>{});
+ assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),true);
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(state.page,'DEPARTURES');
+ assert.equal(state.stage6View.mode,'CATALOG');
+ assert.equal(api.chapter11CatalogView().rows[0].valueL,'TEST1A');
+ assert.equal(api.chapter11CatalogView().rows[0].valueR,'29R');
+ assert.equal(api.chapter11CatalogView().rows.length,6);
+ assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),true);
+ assert.equal(state.stage6View.mode,'RUNWAY');
+ assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),true);
+ assert.equal(state.stage6View.mode,'TRANSITION');
+ assert.equal(api.beforeKey('CDU_CAPT_LSK_L1'),true);
+ assert.equal(state.navdataReferenceProcedures['SID@OIII'].ident,'TEST1A');
+ assert.equal(state.navdataReferenceProcedures['SID@OIII'].runway,'29R');
+ assert.equal(state.navdataReferenceProcedures['SID@OIII'].transition,'TESTFIX');
+ assert.equal(state.navdataReferenceProcedures['SID@OIII'].fmc_executable,false);
+ assert.equal(state.stage6PendingPlan,undefined);
+ assert.equal(state.routeActivated,undefined);
+ assert.equal(urls.length,2);
+});
