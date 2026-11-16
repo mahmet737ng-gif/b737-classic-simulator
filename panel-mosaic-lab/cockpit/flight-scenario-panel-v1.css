@@ -24,3 +24,8 @@
 #flightScenarioDialog .flight-status{color:#b7e8f6;font-size:12px;line-height:1.5;min-height:20px}
 #flightScenarioDialog .flight-status[data-error=true]{color:#ffad9c}
 @media(max-width:600px){#flightScenarioDialog{padding:12px}#flightScenarioDialog .flight-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#flightScenarioDialog .flight-numbers{grid-template-columns:repeat(2,minmax(0,1fr))}#flightScenarioDialog .flight-telemetry{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#flightScenarioDialog .flight-at-panel{border-top:1px solid #436377;margin-top:18px;padding-top:4px}
+#flightScenarioDialog .flight-at-mode{padding:10px 12px;border:1px solid #566f80;background:#152736;border-radius:7px;color:#ffca99;font:700 12px ui-monospace,Consolas,monospace;letter-spacing:.03em}
+#flightScenarioDialog .flight-at-mode[data-active=true]{color:#9decc2;border-color:#449876;background:#153328}
+#flightScenarioDialog #flightAtInstructorRun{border-color:#8d704c;background:#473622;color:#f9d1a2;font-size:11px}
