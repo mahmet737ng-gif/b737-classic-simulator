@@ -4,6 +4,17 @@ on:
     branches: [main]
     paths:
       - 'engine/flight/**'
+      - 'engine/instruments/flight-display-motion-v1.js'
+      - 'engine/instruments/mechanical-number-wheels-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-display-motion-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/instrument-lab/gauges.js'
+      - 'panel-mosaic-lab/cockpit/instrument-lab/unified.js'
+      - 'panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js'
+      - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
+      - 'tests/flight-control-laws-v1.test.cjs'
+      - 'tests/flight-display-motion-v1.test.cjs'
+      - 'tests/mechanical-number-wheels-v1.test.cjs'
+      - 'tests/photo-gauge-mcp-speed-bugs-v1.test.cjs'
       - 'engine/instruments/flight-dynamics-gauge-model-v1.js'
       - 'engine/efis/wmm2025-magnetic-model-v1.js'
       - 'engine/efis/selected-heading-reference-v1.js'
@@ -54,6 +65,14 @@ jobs:
           node-version: '22'
       - name: Static JavaScript checks
         run: |
+          node --check engine/flight/flight-control-laws-v1.js
+          node --check engine/instruments/flight-display-motion-v1.js
+          node --check engine/instruments/mechanical-number-wheels-v1.js
+          node --check panel-mosaic-lab/cockpit/flight-display-motion-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/instrument-lab/gauges.js
+          node --check panel-mosaic-lab/cockpit/instrument-lab/unified.js
+          node --check panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js
+          node --check panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js
           node --check engine/flight/flight-scenario-core-v1.js
           node --check engine/instruments/flight-dynamics-gauge-model-v1.js
           node --check engine/efis/wmm2025-magnetic-model-v1.js
@@ -75,4 +94,4 @@ jobs:
           node --check panel-mosaic-lab/cockpit/autothrottle-unified-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs
+        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/flight-display-motion-v1.test.cjs tests/mechanical-number-wheels-v1.test.cjs tests/photo-gauge-mcp-speed-bugs-v1.test.cjs
