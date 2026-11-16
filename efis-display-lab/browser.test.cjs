@@ -17,7 +17,7 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.waitForFunction(()=>!!window.B737EFISDisplayLab);
   assert.equal(await page.locator('#auditRows tr').count(),25);
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.runTests())).pass,true);
-  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0008');
+  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0009-EXPANDED-HEADING-360');
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),1);
   const mapArc=await page.locator('#ehsi [data-segment="compass-rose"] > polyline').getAttribute('points');
