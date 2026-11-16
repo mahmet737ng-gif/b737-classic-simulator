@@ -91,3 +91,15 @@ test('MCP powered and both pilot seats get same heading bug but each IRQ selecte
  const x=Sources.resolve(snap,'CAPT',{},{1:true,2:true},{});
  assert.equal(x.selectedHeading,null);
 });
+
+test('a WMM-tagged IRS value is recomputed at moving scenario coordinates, not frozen at origin',()=>{
+ const origin=WMM.evaluate({lat:35.689175,lon:51.314392}).declinationDeg;
+ const x=src({magVar:origin,magSource:'NOAA_NCEI_BGS_WMM2025',
+  lat:35.689175,lon:51.314392,track:100},
+  {lat:29.5392,lon:52.589802,altitudeFt:15000,icao:'OISS'});
+ const newVar=WMM.evaluate({lat:29.5392,lon:52.589802,altitudeFt:15000}).declinationDeg;
+ near(x.magneticVariationDeg,newVar);
+ assert.equal(x.selectedHeading,134);
+ assert.equal(x.trueRef,false);
+ assert.equal(x.headingReferenceSource,'NOAA_NCEI_BGS_WMM2025');
+});
