@@ -64,7 +64,9 @@ test('IRS L and R OFF/ALIGN/NAV/ATT labels go through trainer safety and power m
  assert.match(irs,/owner\.setMode\(side,mode\)/);
  assert.match(irs,/root\.B737IRSRotaryIndices\?\.angles/);
  assert.match(irs,/b737:irs-trainer-state/);
- assert.match(html,/irs-msu-detent-labels-v1\.js\?v=IRS-MSU-LABEL-TAPS-0001/);
+ assert.match(html,/irs-msu-detent-labels-v1\.js\?v=IRS-PRINTED-LABEL-TAPS-0002/);
+ assert.match(irs,/const UPPER_MODES=Object\.freeze\(\['TEST','TK\/GS','PPOS','WIND','HDG\/STS'\]\)/);
+ assert.match(irs,/api\.setMode\(mode,'printed-label-tap'\)/);
  const protectedSrc=read('panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.js');
  assert.match(protectedSrc,/IRS-INDEX-0002/);
 });
