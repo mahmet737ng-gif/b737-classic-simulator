@@ -12,6 +12,13 @@ on:
       - 'panel-mosaic-lab/cockpit/app.js'
       - 'panel-mosaic-lab/cockpit/index.html'
       - '.github/workflows/cdu-sg-private-integration-v1.yml'
+  pull_request:
+    paths:
+      - 'engine/fmc/sg-source-geometry-v1.js'
+      - 'cdu-standalone-v6/cdu-sg-selector-v1.js'
+      - 'panel-mosaic-lab/cockpit/cdu-sg-*'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/sg-source-geometry-v1.test.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -27,12 +34,14 @@ jobs:
           node --check panel-mosaic-lab/cockpit/cdu-sg-route-state-v1.js
           node --check panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js
           node --check panel-mosaic-lab/cockpit/cdu-sg-ehsi-preview-v1.js
+          node --check engine/fmc/sg-source-geometry-v1.js
           node --check cdu-standalone-v6/cdu-sg-selector-v1.js
           node --check cdu-standalone-v6/app.js
           node --check panel-mosaic-lab/cockpit/app.js
           node --check panel-mosaic-lab/cockpit/cdu-session.js
           node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
       - run: |
+          node --test tests/sg-source-geometry-v1.test.cjs
           node --test panel-mosaic-lab/cockpit/tests/cdu-sg-private-integration-v1.test.cjs
           node --test cdu-standalone-v6/tests/dep-arr-fcom-114032.test.cjs
           node panel-mosaic-lab/cockpit/cdu-session.test.cjs

@@ -1,71 +1,18 @@
-/* Unified CDU/SG private catalog.
- * GitHub Pages: owner's token-protected localhost 8768 reader.
- * Railway: session-authenticated same-origin PostgreSQL source, with a one-time
- * owner-supplied JSON import. Neither source is committed into public GitHub.
+/* Unified CDU/SG NAVDATA adapter, not an independent CDU application.
+ * Railway provides the authenticated entry to the same Unified cockpit.
+ * Once inside that gateway, NAVDATA reads are same-origin; no extra login,
+ * cross-origin popup or relay session is required by either CDU.
+ * Optional private localhost source remains available for development.
+ * Licensed navigation records are never committed to the public repository.
  */
 (function(root){
  'use strict';
  const BASE='http://127.0.0.1:8768',DOMAIN='mahmet737ng-gif.github.io';
  const RAILWAY='ata24-review-gateway-production.up.railway.app';
  const RAILWAY_ORIGIN='https://'+RAILWAY;
- const RELAY_PROTOCOL='b737:private-navdata-relay-v1';
  const railway=root.location.hostname===RAILWAY,github=root.location.hostname===DOMAIN;
  const ROUTES=/^\/api\/(?:cdu\/(?:airport|catalog|procedure|lookup)|sg\/(?:procedure|airway|airport)\.geojson)\?/;
- let token='',connected=false,relayWindow=null,relayNonce='',relayReady=false,relaySequence=0,relayHandshake=null;
- const relayInflight=new Map();
- function relayPath(path){
-  return typeof path==='string'&&path.length<=440&&
-   /^\/api\/(?:source\/status|cdu\/(?:airport|catalog|procedure)|sg\/procedure\.geojson)(?:\?[^#]*)?$/.test(path)&&
-   !path.includes('..')&&!/%2f|%5c/i.test(path);
- }
- function clearRelay(){
-  relayReady=false;
-  if(relayHandshake){clearTimeout(relayHandshake.timer);relayHandshake.reject(Error('RELAY_CLOSED'));relayHandshake=null;}
-  for(const [id,item] of relayInflight){clearTimeout(item.timer);item.reject(Error('RELAY_CLOSED'));relayInflight.delete(id);}
-  if(relayWindow&&!relayWindow.closed)try{relayWindow.close()}catch(_){}
-  relayWindow=null;relayNonce='';
- }
- function handleRelayMessage(event){
-  if(event.origin!==RAILWAY_ORIGIN||event.source!==relayWindow||
-     event.data?.type!==RELAY_PROTOCOL||event.data.nonce!==relayNonce)return;
-  const msg=event.data;
-  if(msg.kind==='READY'){
-   relayReady=true;
-   if(relayHandshake){clearTimeout(relayHandshake.timer);relayHandshake.resolve();relayHandshake=null;}
-   return;
-  }
-  if(msg.kind==='CLOSED'){disconnect();return;}
-  if(msg.kind!=='RESULT'||!Number.isSafeInteger(msg.id)||!relayInflight.has(msg.id))return;
-  const pending=relayInflight.get(msg.id);relayInflight.delete(msg.id);clearTimeout(pending.timer);
-  if(msg.status===401){pending.reject(Error('RAILWAY_SESSION_EXPIRED'));disconnect();return;}
-  const status=Number(msg.status)||503;
-  pending.resolve({ok:status>=200&&status<300,status,json:async()=>msg.body});
- }
- root.addEventListener('message',handleRelayMessage);
- function openRailwayRelay(){
-  if(!github)return Promise.reject(Error('NOT_GITHUB_ORIGIN'));
-  clearRelay();
-  const bytes=new Uint8Array(16);root.crypto.getRandomValues(bytes);
-  relayNonce=Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('');
-  // Open synchronously from the user click; background popups are blocked.
-  relayWindow=root.open(RAILWAY_ORIGIN+'/navdata-relay/start?nonce='+relayNonce,
-    'b737NavdataRelay','popup=yes,width=520,height=410,resizable=yes');
-  if(!relayWindow)return Promise.reject(Error('ALLOW_POPUP_FOR_RAILWAY'));
-  return new Promise((resolve,reject)=>{
-   const timer=setTimeout(()=>{relayHandshake=null;reject(Error('RAILWAY_LOGIN_REQUIRED'))},20000);
-   relayHandshake={resolve,reject,timer};
-  });
- }
- function relayRequest(path){
-  if(!relayReady||!relayWindow||relayWindow.closed){disconnect();return Promise.reject(Error('RAILWAY_RELAY_CLOSED'));}
-  if(!relayPath(path))return Promise.reject(Error('READ_ONLY_PATH_REJECTED'));
-  const id=++relaySequence;
-  return new Promise((resolve,reject)=>{
-   const timer=setTimeout(()=>{relayInflight.delete(id);reject(Error('RAILWAY_RELAY_TIMEOUT'))},15000);
-   relayInflight.set(id,{resolve,reject,timer});
-   relayWindow.postMessage({type:RELAY_PROTOCOL,nonce:relayNonce,kind:'GET',id,path},RAILWAY_ORIGIN);
-  });
- }
+ let token='',connected=false;
  const $=id=>document.getElementById(id);
  const frames=()=>[...document.querySelectorAll('iframe.cdu-frame')];
  function announce(action){for(const f of frames())try{f.contentWindow?.[action]?.()}catch(_){}}
@@ -75,26 +22,24 @@
   if($('cduSgPrivateDisconnect'))$('cduSgPrivateDisconnect').disabled=!connected;
  }
  function disconnect(){
-  token='';connected=false;clearRelay();root.B737CduSgRouteV1?.setConnected(false);
+  token='';connected=false;root.B737CduSgRouteV1?.setConnected(false);
   announce('B737CDUDetachCduSgV1');
   refreshStatus('قطع · منبع CDU/SG غیرفعال است');
  }
  async function status(){
   return railway?fetch('/api/source/status',{method:'GET',credentials:'same-origin',cache:'no-store'}):
-   github&&relayReady?relayRequest('/api/source/status'):
    fetch(BASE+'/api/source/status',{method:'GET',cache:'no-store',mode:'cors',
     credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',
     targetAddressSpace:'loopback',headers:{'X-CDU-SG-Token':token}});
  }
  const bridge=Object.freeze({
-  isConnected:()=>connected&&(railway||!!token||relayReady),
-  source:railway?'RAILWAY_PRIVATE_POSTGRES':github?'RAILWAY_POPUP_OR_LOCAL':'CDU_SG_SOURCE_NAVDB_V1',
+  isConnected:()=>connected&&(railway||!!token),
+  source:railway?'UNIFIED_SAME_ORIGIN':github?'UNIFIED_GATEWAY':'CDU_SG_SOURCE_NAVDB_V1',
   async request(path){
    if(!connected||!this.isConnected())throw Error('PRIVATE CDU/SG NAVDB DISCONNECTED');
    if(typeof path!=='string'||path.length>420||!ROUTES.test(path)||
       path.includes('#')||path.includes('..'))throw Error('READ ONLY PATH REJECTED');
    return railway?fetch(path,{method:'GET',cache:'no-store',credentials:'same-origin'}):
-    github&&relayReady?relayRequest(path):
     fetch(BASE+path,{method:'GET',cache:'no-store',mode:'cors',credentials:'omit',
      redirect:'error',referrerPolicy:'no-referrer',targetAddressSpace:'loopback',
      headers:{'X-CDU-SG-Token':token}});
@@ -104,15 +49,11 @@
  async function connect(){
   if(!railway&&!github){refreshStatus('This source is unavailable on this host');return;}
   if(github){
-   const field=$('cduSgPrivateToken'),submitted=String(field?.value||'').trim();
-   if(field)field.value='';
-   if(submitted&&submitted.length<24){refreshStatus('توکن محلی معتبر نیست');return;}
-   if(submitted){token=submitted;}
-   else{
-    refreshStatus('در حال اتصال امن به Railway…');
-    try{await openRailwayRelay()}
-    catch(error){disconnect();refreshStatus('ابتدا وارد Railway شو و Popup را فعال کن: '+error.message);return;}
-   }
+   // GitHub Pages and Railway do not host separate CDUs. Open the same
+   // canonical Unified cockpit behind its authenticated gateway instead of
+   // asking the user to approve a second popup/relay session.
+   root.location.assign(RAILWAY_ORIGIN+'/panel-mosaic-lab/cockpit/index.html');
+   return;
   }
   const button=$('cduSgPrivateConnect');if(button)button.disabled=true;
   refreshStatus('در حال خواندن منبع ناوبری…');
@@ -134,7 +75,7 @@
    disconnect();
    refreshStatus(e.message==='IMPORT_REQUIRED'?
     'بانک نصب نشده؛ فایل CDU_3_AIRPORTS.json را در قسمت زیر وارد کن':
-    'اتصال برقرار نشد؛ وضعیت Railway و Popup را بررسی کن');
+    'منبع ناوبری مشترک در دسترس نیست؛ ورود یا نصب بانک را بررسی کن');
   }finally{if(button)button.disabled=connected;}
  }
  async function importJson(input){
@@ -162,18 +103,18 @@
   if(!panel||$('cduSgPrivateConnect'))return;
   const section=document.createElement('section');section.className='private-nav-bridge';
   section.style.cssText='margin-top:12px;padding:12px;border:1px solid #456070;border-radius:8px;display:grid;gap:8px';
-  const h=document.createElement('strong');h.textContent='CDU / SG · '+(railway?'Railway Private NAVDATA':github?'Secure Railway NAVDATA':'Private SQLite');
+  const h=document.createElement('strong');h.textContent='CDU / SG · Unified NAVDATA';
   const p=document.createElement('small');p.textContent=railway?
-   'بانک سه فرودگاه در PostgreSQL خصوصی Railway قرار دارد.':github?
-   'ابتدا در Railway وارد حساب شو، سپس Connect Railway را بزن. پنجره امن بازشده را هنگام کار باز نگه دار.':
-   'برای خواندن داده‌ها سرویس محلی روی همین کامپیوتر اجرا شود.';
+   'CDU و SG از بانک ناوبری مشترک Unified استفاده می‌کنند. اتصال با نشست ورود فعلی انجام می‌شود.':github?
+   'برای دسترسی به NAVDATA خصوصی، Unified را از درگاه ورود کنترل‌شده باز کن؛ پنجره یا لاگین دوم CDU لازم نیست.':
+   'برای خواندن داده‌های خصوصی، سرویس محلی ناوبری را اجرا کن.';
   const input=document.createElement('input');input.type='password';input.id='cduSgPrivateToken';
   input.autocomplete='off';input.dir='ltr';input.placeholder='Optional local token (port 8768)';
   if(railway)input.hidden=true;
   if(github){input.hidden=true;}
   const connectButton=document.createElement('button');connectButton.type='button';
   connectButton.id='cduSgPrivateConnect';
-  connectButton.textContent=railway?'Connect Railway NAVDATA':github?'Connect Railway NAVDATA':'Connect CDU / SG SQLite';
+  connectButton.textContent=railway?'Check Unified NAVDATA':github?'Open Unified Gateway':'Connect Unified NAVDATA';
   const dis=document.createElement('button');dis.type='button';dis.id='cduSgPrivateDisconnect';
   dis.textContent='Disconnect';dis.disabled=true;
   const s=document.createElement('p');s.id='cduSgPrivateStatus';s.setAttribute('role','status');
