@@ -26,6 +26,24 @@ const BUTTONS={rst:[250,666,320,729],wxr:[1079,495,1244,661],
 const LABELS={wxr:'WXR',vorAdf:'VOR/ADF',navAid:'NAV AID',arpt:'ARPT',rteData:'RTE DATA',wpt:'WPT'};
 const MODE_HITS={FULL_NAV:[639,389],FULL_VOR_ILS:[698,175],EXP_NAV:[647,290],EXP_VOR_ILS:[859,178],MAP:[972,276],CTR_MAP:[963,395],PLAN:[817,503]};
 const RANGE_HITS={10:[1034,439],20:[1006,363],40:[1024,278],80:[1079,203],160:[1190,166],320:[1311,205]};
+const LABEL_HIT_SIZE={
+ mode:{FULL_NAV:[104,72],FULL_VOR_ILS:[154,74],EXP_NAV:[106,70],
+  EXP_VOR_ILS:[154,74],MAP:[112,74],CTR_MAP:[128,78],PLAN:[128,76]},
+ range:{10:[86,69],20:[86,69],40:[86,69],80:[90,69],160:[110,69],320:[112,69]}
+};
+// All positions are native pixels of the approved 1448x1086 EFIS plate.
+// The photograph, knob art and their established detent angles are immutable.
+function nearestLabel(x,y){
+ let best=null;
+ for(const [kind,locations]of [['mode',MODE_HITS],['range',RANGE_HITS]])
+  for(const [value,[cx,cy]]of Object.entries(locations)){
+   const [w,h]=LABEL_HIT_SIZE[kind][value],dx=(x-cx)/(w*.70),dy=(y-cy)/(h*.75);
+   const distance=dx*dx+dy*dy;
+   if(distance<=1&&(!best||distance<best.distance))
+    best={kind,value:kind==='range'?Number(value):value,distance};
+  }
+ return best;
+}
 const states={CAPT:initial(),FO:initial()},instances=new Map();
 let dialog=null,dialogSeat='CAPT',mounted=false;
 function initial(){return {mode:'MAP',range:40,dh:200,brightness:{adi:1,hsi:1,wxInner:1},options:{wxr:false,tfc:false,vorAdf:false,navAid:false,arpt:false,rteData:false,wpt:false},dhResetCount:0};}
@@ -105,7 +123,18 @@ function physicalPanel(seat,host,zoomed=false){
  const panel=elm('div','uefis-face',host);panel.dataset.seat=seat;panel.dataset.zoomed=String(zoomed);
  const photo=elm('img','uefis-photo',panel);photo.src=PHOTO.plate;photo.alt='737 Classic EFIS panel';photo.draggable=false;
  const stencil=elm('span','uefis-range80',panel);pos(stencil,[1073,139,56,51]);stencil.textContent='80';
- const parts={knobs:{},push:{},tfc:null,readout:null};
+ const parts={knobs:{},push:{},tfc:null,readout:null,detents:[]};
+ // Tap on printed legend text routes to the actual seat-specific detent.
+ // The face-photo background is the fallback for letters beyond the small
+ // standalone hit areas; controls/rotors/buttons take precedence.
+ panel.addEventListener('click',event=>{
+  if(event.target.closest?.('button'))return;
+  const rect=panel.getBoundingClientRect();
+  if(rect.width<=0||rect.height<=0)return;
+  const hit=nearestLabel((event.clientX-rect.left)*W/rect.width,
+   (event.clientY-rect.top)*H/rect.height);
+  if(hit){event.stopPropagation();change(seat,hit.kind,hit.value);}
+ });
  for(const [key,[cx,cy,r]] of Object.entries(ROTORS)){
   const b=button(panel,seat+' '+key+' selector');b.className='uefis-knob uefis-'+key;
   b.dataset.rotor=key;pos(b,[cx-r,cy-r,r*2,r*2]);
@@ -130,8 +159,13 @@ function physicalPanel(seat,host,zoomed=false){
   for(const [value,[x,y]] of Object.entries(locations)){
    const b=button(panel,seat+' '+kind+' '+value.replaceAll('_',' '));
    b.className='uefis-detent';b.dataset.detent=kind;b.dataset.value=value;
-   b.style.left=pct(x,W);b.style.top=pct(y,H);
+   const [hitWidth,hitHeight]=LABEL_HIT_SIZE[kind][value];
+   Object.assign(b.style,{left:pct(x,W),top:pct(y,H),
+    width:pct(hitWidth,W),height:pct(hitHeight,H)});
+   b.setAttribute('aria-label',seat+' EFIS '+kind+' detent '+value.replaceAll('_',' '));
+   b.setAttribute('aria-pressed','false');
    b.addEventListener('click',e=>{e.stopPropagation();change(seat,kind,kind==='range'?Number(value):value)});
+   parts.detents.push(b);
   }
  }
  const disp=elm('div','uefis-dh-window',panel);
@@ -149,6 +183,8 @@ function renderPanel(entry){
  for(const [key,img] of Object.entries(p.knobs))img.style.transform='rotate('+angles[key]+'deg)';
  p.tfc.setAttribute('aria-pressed',String(s.options.tfc));
  for(const [key,b] of Object.entries(p.push))if(key!=='rst')b.setAttribute('aria-pressed',String(s.options[key]));
+ for(const b of p.detents)b.setAttribute('aria-pressed',String(
+  b.dataset.detent==='mode'?s.mode===b.dataset.value:String(s.range)===b.dataset.value));
  p.readout.textContent=String(s.dh).padStart(3,'0');
 }
 function renderSeat(seat){for(const item of instances.get(seat)||[])if(item.panel.isConnected)renderPanel(item);}
@@ -185,5 +221,6 @@ function mountOnce(){mount();}
 root.addEventListener('b737:cockpit-mounted',mountOnce);
 root.addEventListener('b737:engine-indication-view',()=>{for(const seat of ['CAPT','FO'])emit(seat,'engine-view')});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOnce,{once:true});else mount();
-root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},mount,open,getState:(seat)=>Object.hasOwn(states,seat)?copy(states[seat]):null,operate:change});
+root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},
+ detentHitSizes:LABEL_HIT_SIZE,nearestLabel,mount,open,getState:(seat)=>Object.hasOwn(states,seat)?copy(states[seat]):null,operate:change});
 })(window);
