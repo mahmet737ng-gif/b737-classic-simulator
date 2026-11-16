@@ -157,7 +157,7 @@ function selectedHeadingPresentation(m,l){
  const onArc=delta!==null&&Math.abs(delta)<=l.degrees/2;
  return {delta,onArc,offScale:delta!==null&&!onArc,
   vectorVisible:delta!==null&&!l.planCompass&&(l.route||l.degrees===70),
-  vectorLength:onArc?.92:1.25};
+  vectorLength:onArc ? 0.92 : 1.25};
 }
 function compass(svg,m,l){
  const g=layer(svg,l.planCompass?'plan-compass':'compass-rose');
