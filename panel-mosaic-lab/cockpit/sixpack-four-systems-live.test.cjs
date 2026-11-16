@@ -29,7 +29,7 @@ test('AIR COND retains PACK, BLEED, DUCT, pressurization and 400 zone fault path
  const oh=overhead({'pack-trip-l':'ON','bleed-trip-r':'ON','duct-overheat-l':'ON','dual-bleed':'ON'});
  for(const id of ['pack-trip-l','bleed-trip-r','duct-overheat-l'])
   assert.ok(contains(oh,'FO.AIR COND','OH:'+id));
- assert.ok(!contains(oh,'FO.AIR COND','OH:dual-bleed')); // configuration annunciation, not injected as failure
+ assert.ok(contains(oh,'FO.AIR COND','OH:dual-bleed')); // FCOM 15.20.4: DUAL BLEED = AIR COND
  assert.ok(contains(bridge.pressurization({system:'CPCS',lamps:{autoFail:true,offSchedDescent:false}}),
   'FO.AIR COND','PRESS:CPCS:AUTO_FAIL'));
  assert.ok(contains(bridge.airconZones({family:'B737-400',zoneFaults:{'cont-cab':true}}),
