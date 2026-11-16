@@ -10,6 +10,15 @@
  const SensorIngress=root.B737AvionicsSensorIngressV2;
  const network=Network.createNetwork({onError:e=>root.console?.warn('AVIONICS SUBSCRIBER ERROR',e)});
  const owners=new Map(),faults=[];
+ let irsMotion=null;
+ root.addEventListener('b737:simulator-telemetry',({detail:f})=>{
+  const age=Date.now()-f?.sourceTimestampMs;
+  if(f?.valid!==true||!Number.isFinite(f.gsKt)||f.gsKt<0||f.gsKt>750||
+   !Number.isFinite(f.trueTrackDeg)||!Number.isFinite(age)||age< -1000||age>3000||
+   f.sourceTimestampMs<=(irsMotion?.sourceTimestampMs??-Infinity))return;
+  irsMotion=structuredClone(f);
+  scheduleRefresh();
+ });
  let refreshPending=false;
  const enqueue=root.queueMicrotask?fn=>root.queueMicrotask(fn):fn=>Promise.resolve().then(fn);
  function scheduleRefresh(){
@@ -42,12 +51,27 @@
  function irs(){
   const state=snapshotFns.irs();
   if(!state?.units)return;
+  const bench=state.motionSource==='BENCH_SIM';
+  const frame=state.motionSource==='EXTERNAL_TELEMETRY'&&irsMotion&&
+   Date.now()-irsMotion.sourceTimestampMs<=3000?irsMotion:null;
+  const number=(v,min,max)=>Number.isFinite(v)&&v>=min&&v<=max?v:null;
   for(const [side,topic] of [['L','irs.left'],['R','irs.right']]){
    const u=state.units[side];if(!u)continue;
    const position=u.positionValid===true?u.position:null;
+   const sample=frame?.iru?.[side]??frame;
+   const nav=u.powered===true&&u.positionValid===true;
+   const att=nav||u.powered===true&&u.phase==='ATT'&&sample?.attRecoveryValid===true;
+   const pitchDeg=att?number(sample?.pitchDeg??(bench?0:null),-90,90):null;
+   const rollDeg=att?number(sample?.rollDeg??(bench?0:null),-180,180):null;
+   const heading=nav?number(sample?.trueHeadingDeg??((frame||bench)?u.trueHeadingDeg:null),0,360):
+    att&&sample?.attHeadingValid===true?number(sample.trueHeadingDeg,0,360):null;
    send('IRS',topic,{mode:u.mode,phase:u.phase,powered:u.powered===true,
-    positionValid:u.positionValid===true,lat:position?.lat??null,lon:position?.lon??null,
-    gsKt:u.gsKt??null,trackDeg:u.trueTrackDeg??null,headingDeg:u.trueHeadingDeg??null,
+    positionValid:nav,lat:position?.lat??null,lon:position?.lon??null,
+    gsKt:nav&&!!(frame||bench)?number(sample?.gsKt??u.gsKt,0,750):null,
+    trackDeg:nav&&!!(frame||bench)?number(sample?.trueTrackDeg??u.trueTrackDeg,0,360):null,
+    headingDeg:heading,pitchDeg,rollDeg,attitudeValid:pitchDeg!==null&&rollDeg!==null,
+    magneticVariationDeg:att?number(sample?.magneticVariationDeg,-180,180):null,
+    windFromDeg:nav?number(sample?.windFromDeg,0,360):null,windKt:nav?number(sample?.windKt,0,250):null,
     source:state.motionSource,trainerOnly:state.trainerOnly===true},
     state.motionSource==='EXTERNAL_TELEMETRY'?'SIMULATOR_TELEMETRY':'TRAINING_SCENARIO');
   }
@@ -66,12 +90,14 @@
  }
  function fmcFeedsAndRoute(){
   const s=snapshotFns.fmc();if(!s)return;
+  const mode=window.B737UnifiedBusConsumerLiveV1?.getDevice?.('FMC')?.state;
   if(s.power)send('FMC_FEEDS','electrical.fmcFeeds',{FMC1:s.power.FMC1, FMC2:s.power.FMC2,
    CDU_CAPT:s.power.CDU_CAPT,CDU_FO:s.power.CDU_FO,
-   verification:'PER_UNIT_FEED_EVIDENCE_FROM_FMC_BRIDGE'},'LIVE_SYSTEM');
+   modeledSupply:mode==='NORMAL'?true:mode==='OFF'?false:null,failed:s.fmcFailure===true,
+   verification:'INDIVIDUAL_FEEDS_AND_MRG_AGGREGATE'},'LIVE_SYSTEM');
   const r=s.route;
   if(r)send('CDU','crew.flightplan',{origin:r.origin||'',dest:r.dest||'',active:r.active===true,
-   legsVerified:r.legsVerified===true,discontinuitiesUnknown:r.discontinuitiesUnknown!==false,
+   displayRoute:r.displayRoute??null,legsVerified:r.legsVerified===true,discontinuitiesUnknown:r.discontinuitiesUnknown!==false,
    routeSource:'DUAL_CDU_SHARED_SESSION',transactional:true},'CREW_ENTRY');
  }
  function engine(){
@@ -202,7 +228,7 @@
  // Old FMC/IRS frontend and driver remain the authoritative writers.
  // Consume existing change events, with a 250ms health poll for non-event sources.
  for(const event of ['b737:irs-trainer-state','b737:mcp-afds-state','b737:isn-start-indications',
-  'b737:fmc-systems-state','b737:aircraft-profile-change']){
+  'b737:fmc-systems-state','b737:aircraft-profile-change','b737:bus-consumer-snapshot']){
   root.addEventListener(event,scheduleRefresh);
  }
  root.addEventListener('b737:cockpit-mounted',refresh);

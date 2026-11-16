@@ -31,6 +31,7 @@
   fields:seats[seat]||model()?.blank?.(),fccObserved:!!fcc[seat]}));}
  function repaint(seat){
   const eadi=win?.B737UnifiedEADIStage1;
+  if(eadi?.requestPaint){eadi.requestPaint();return;}
   const state=eadi?.snapshot?.()?.stations?.[seat];
   if(state)eadi.setAttitude(seat,state.pitch,state.bank);
  }

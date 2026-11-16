@@ -19,7 +19,7 @@ const fs=require('node:fs'),path=require('node:path');
   assert.equal(await panel.locator('.uefis-seat').count(),2);
   assert.equal(await panel.locator('.uefis-face').count(),2);
   const mounts=await page.evaluate(()=>window.B737UnifiedEFISPedestalV1.positions);
-  assert.deepEqual(mounts,{CAPT:[14,32,244],FO:[892,32,244]});
+  assert.deepEqual(mounts,{CAPT:[55,1290,365],FO:[735,1290,365]});
   const api=()=>window.B737UnifiedEFISPedestalV1;
   assert.equal(await page.evaluate(()=>window.B737UnifiedEFISPedestalV1.getState('CAPT').dh),200);
   await page.evaluate(()=>window.B737UnifiedEFISPedestalV1.open('CAPT'));

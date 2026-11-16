@@ -179,7 +179,7 @@ function diamond(c,x,y,color=MAGENTA){
  shape(c,[[x-8,y],[x,y-10],[x+8,y],[x,y+10]],{fill:'#060606',stroke:color,width:2.3});
 }
 function approach(c,e,v){
- if(v.gsScale){
+ if(v.gsScale&&(!e.suppressGsScale)){
   for(const i of [-2,-1,1,2])circle(c,566,CY+i*25,3.8);
   line(c,556,CY,576,CY,WHITE,1.6);
   if(v.gs)diamond(c,566,CY+clamp(e.gsDev,-2.3,2.3)*25);
@@ -218,7 +218,7 @@ function approach(c,e,v){
   txt(c,Math.round(v.radioAlt),x,y,27,color,'center');
  }else txt(c,Math.round(v.radioAlt),572,544,23,color,'right');
 }
-function render(canvas,state,core){
+function render(canvas,state,core,live){
  if(!canvas)return;
  const c=canvas.getContext('2d'),e=state.eadi,v=core.evaluate(state);
  if(canvas.width!==W)canvas.width=W;
@@ -228,24 +228,26 @@ function render(canvas,state,core){
  canvas.dataset.fmaSeat='';
  if(!v.powered)return;
  if(!v.sg){txt(c,'SG FAIL',CX,CY+46,30,AMBER,'center');return;}
- const fma=fmaInput(state,v),speed=tapeInput(state,v,fma);
+ const fma=live?null:fmaInput(state,v),speed=live?live.speedView:tapeInput(state,v,fma);
  canvas.dataset.fmaSeat=state.seat;
  // Unified receives authoritative MCP/FCC annunciations from its live
  // FMA owner. Do not overwrite them with the lab demonstration projection.
- if(canvas.dataset.eadiUnifiedFull==='true')drawFma(c,state.seat);
+ if(live)drawFma(c,state.seat);
  else flightModes(canvas,c,state.seat,fma);
  if(v.attitude)attitude(c,e,v);else box(c,'ATT',CX,CY);
  if(v.flags.includes('FD'))box(c,'FD',466,104);
- speedTape(c,speed);approach(c,e,v);
+ if(speed)speedTape(c,speed);
+ approach(c,e,v);
  if(v.ias&&v.mach)txt(c,Number(e.mach).toFixed(3).slice(1),104,539,22,WHITE,'right');
  if(v.flags.includes('MACH'))box(c,'MACH',81,539,16);
  const gs=clamp(e.groundSpeed,0,999);
- if(state.power.fmcTrack||v.source.irsValid){
+ if(live?Number.isFinite(e.groundSpeed):state.power.fmcTrack||v.source.irsValid){
   txt(c,'GS',129,517,14);txt(c,Math.round(gs),129,539,21);
  }
  if(e.windshear)txt(c,'WINDSHEAR',CX,463,33,RED,'center');
  else if(e.pullup)txt(c,'PULL UP',CX,463,33,RED,'center');
- for(const [i,flag] of v.comparison.entries())box(c,flag,CX+(i-(v.comparison.length-1)/2)*78,566);
+ const comparison=live?.comparison??v.comparison;
+ for(const [i,flag] of comparison.entries())box(c,flag,CX+(i-(comparison.length-1)/2)*78,566);
  c.strokeStyle='#809189';c.lineWidth=1.5;
  c.strokeRect(CX-47,592,94,18);
  line(c,CX-9,593,CX-9,609,WHITE,1.35);line(c,CX+9,593,CX+9,609,WHITE,1.35);
@@ -300,17 +302,19 @@ function renderUnifiedFull(canvas,input={}){
  e.slip=0;e.tcas='OFF';e.pli=false;e.flaps=0;e.demoLimits=false;
  e.ias=observed(input.iasKt,0);e.selectedSpeed=observed(input.selectedSpeedKt,0);
  e.mach=observed(input.mach,0);e.machVisible=finite(input.mach);
- e.groundSpeed=observed(input.groundSpeedKt,0);
+ e.groundSpeed=observed(input.groundSpeedKt);
+ e.brightness=observed(input.brightness,1);
  e.radioAlt=observed(input.radioAltFt,0);e.dh=observed(input.dhFt,-20);
- e.fd=false;e.fdAuto=false;e.fdPitch=0;e.fdRoll=0;
+ e.fd=!!input.director?.enabled&&finite(input.director.pitchDeg)&&finite(input.director.rollDeg);
+ e.fdAuto=false;e.fdPitch=observed(input.director?.pitchDeg,0);e.fdRoll=observed(input.director?.rollDeg,0);
  e.locDev=observed(input.locDeviation,0);e.gsDev=observed(input.gsDeviation,0);
- e.frontCourse=false;e.locCaptured=false;e.gsCaptured=false;
+ e.frontCourse=input.frontCourse===true;e.suppressGsScale=input.frontCourse!==true;e.locCaptured=input.director?.locCaptured===true;e.gsCaptured=input.director?.gsCaptured===true;
  e.ilsSelected=false;e.windshear=false;e.pullup=false;
  e.pitchMode='';e.rollMode='';e.at='';e.afds='';e.armedPitch='';e.armedRoll='';
  e.phase='GROUND';e.v1=0;e.vr=0;e.vref=0;e.shaker=0;
  e.minManeuver=0;e.vmo=0;e.acceleration=0;e.speedSource='MCP';
  e.fmcCommandSpeed=0;e.retractSpeed=0;e.flapsUpSpeed=0;
- e.apEngaged=false;e.descent=false;
+ e.apEngaged=false;e.descent=false;e.dhLatched=input.dhLatched===true;
  p.eadi=input.powered!==false;p.ehsi=false;
  p.sg1=true;p.sg2=true;p.att=input.attitudeValid!==false;
  // A documented simulator attitude level datum is visible until real
@@ -319,14 +323,14 @@ function renderUnifiedFull(canvas,input={}){
  p.irsRight=input.attitudeValid!==false;
  p.adc=finite(input.iasKt);p.machData=finite(input.mach);
  p.selSpeed=finite(input.selectedSpeedKt);
- p.nav=false;p.loc=false;p.gs=false;
+ p.nav=false;p.loc=finite(input.locDeviation);p.gs=finite(input.gsDeviation);
  p.ra=finite(input.radioAltFt);
- p.fd=false;p.dhData=finite(input.dhFt);
+ p.fd=e.fd;p.dhData=finite(input.dhFt);
  p.v1Data=false;p.speedLimit=false;p.fmcTrack=false;
- state.ehsi.navType='VOR';
+ state.ehsi.navType=input.ils===true?'ILS':'VOR';
  state.ehsi.track=0;state.ehsi.course=0;
  canvas.dataset.eadiUnifiedFull='true';
- render(canvas,state,core);
+ render(canvas,state,core,input);
  canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0003';
  canvas.dataset.eadiSource=input.source||'UNKNOWN';
  return true;

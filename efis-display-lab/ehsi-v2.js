@@ -252,7 +252,7 @@ function projection(m,l,plan=false){
  const scale=(plan?198:l.radius)/m.range,scaleX=plan?scale:(l.radiusX??l.radius)/m.range;
  const anchor=plan?m.route.points[clamp(m.route.centerIndex,0,m.route.points.length-1)]:null;
  return (east,north)=>{
-  const a=rad(plan?0:m.reference);
+  const a=rad(plan?0:m.geoTrack??m.reference);
   const e=east-(anchor?.x??0),n=north-(anchor?.y??0);
   return [cx+scaleX*(e*Math.cos(a)-n*Math.sin(a)),cy-scale*(n*Math.cos(a)+e*Math.sin(a))];
  };
@@ -301,6 +301,7 @@ function drawRoute(svg,m,l,status,plan){
   const segments=layer(g,'route-segments');
   positions.slice(1).forEach((to,i)=>{
    const leg=points[i+1].leg||'ACTIVE';
+   if(leg==='DISCONTINUITY')return;
    const styles={ACTIVE:[colors.magenta,null],MOD:[colors.white,'6 5'],INACTIVE:[colors.cyan,'12 8'],OFFSET:[colors.magenta,'10 4 2 4']};
    const [color,dash]=styles[leg]||styles.ACTIVE;
    line(segments,...positions[i],...to,color,2.1,{'stroke-dasharray':dash});

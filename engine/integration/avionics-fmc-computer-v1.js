@@ -50,14 +50,21 @@
   const fmcFeed=valid(feeds)?feeds.value:null;
   const primary=fmcFeed?.FMC1?.feed??'UNKNOWN',secondary=fmcFeed?.FMC2?.feed??'UNKNOWN';
   data.fmcFeeds={FMC1:primary,FMC2:secondary,provenance:feeds?.origin||'UNVERIFIED'};
-  const powerReady=[primary,secondary].includes('PRESENT');
+  const provenPower=[primary,secondary].includes('PRESENT');
+  const operational=fmcFeed?.failed!==true&&(provenPower||
+   (fmcFeed?.modeledSupply===true&&[primary,secondary].includes('UNKNOWN')));
+  const powerReady=provenPower&&fmcFeed?.failed!==true;
   if(!powerReady)issues.push('FMC_EQUIPMENT_FEED_NOT_PROVEN_PRESENT');
   const route=valid(plan)?plan.value:{};
   const active=route?.active===true&&/^[A-Z]{4}$/.test(route.origin||'')&&
    /^[A-Z]{4}$/.test(route.dest||'')&&route.origin!==route.dest;
   data.route={origin:route?.origin||'',dest:route?.dest||'',active,legsVerified:route?.legsVerified===true,
+   displayRoute:operational&&active?route?.displayRoute??null:null,
    discontinuitiesUnknown:route?.discontinuitiesUnknown!==false,source:valid(plan)?plan.origin:'UNVERIFIED'};
   if(!active||!data.route.legsVerified||data.route.discontinuitiesUnknown)issues.push('ROUTE_LEGS_NOT_AUDITED');
+  const velocity=operational&&fix&&Number.isFinite(fix.value.trackDeg)&&Number.isFinite(fix.value.gsKt)?fix.value:null;
+  const motion=velocity?{trueTrackDeg:velocity.trackDeg,gsKt:velocity.gsKt,
+   windFromDeg:velocity.windFromDeg??null,windKt:velocity.windKt??null,source:fix.topic}:null;
   const mcp=inputs['mcp.state'];data.mcp=valid(mcp)?{altitudeFt:mcp.value.altitudeFt??null,
     selectedSpeedKt:mcp.value.selectedSpeedKt??null,source:mcp.origin}:{quality:'UNKNOWN'};
   data.autoflight={mcp:valid(mcp),afds:valid(inputs['afds.state']),
@@ -69,7 +76,7 @@
   const ready=powerReady&&!!fix&&active&&data.route.legsVerified&&!data.route.discontinuitiesUnknown;
   data.guidance={routeEvidenceReady:ready,canCommandAircraft:false,authority:'ADVISORY_ONLY',
    reason:ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
-  return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,
+  return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,motion,operational,failed:fmcFeed?.failed===true,
    radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,
    route:data.route,mcp:data.mcp,autoflight:data.autoflight,predictions:data.predictions,
    guidance:data.guidance,issues,sourceQuality:Object.fromEntries(INPUTS.map(t=>[t,inputs[t].quality]))};
@@ -81,7 +88,7 @@
    if(updating)return null;
    updating=true;
    try{const value=project(network),fingerprint=JSON.stringify(value);
-    if(previous!==fingerprint){previous=fingerprint;out.publish('fmc.computed',value,{origin:'TRAINING_SCENARIO'});}
+    if(previous!==fingerprint||network.read('fmc.computed').quality!=='VALID'){previous=fingerprint;out.publish('fmc.computed',value,{origin:'TRAINING_SCENARIO'});}
     return value;
    }finally{updating=false;}
   }

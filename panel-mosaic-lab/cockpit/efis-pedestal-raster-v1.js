@@ -36,9 +36,6 @@ function pos(e,c){const[x,y,w,h]=c;Object.assign(e.style,{left:pct(x,W),top:pct(
 function emit(seat,control){
  const snap=copy(states[seat]);
  root.dispatchEvent(new CustomEvent('b737:unified-efis-control',{detail:{version:VERSION,seat,control,state:snap}}));
- const eadi=root.B737UnifiedEADIStage1;
- const glass=document.querySelector('#region-main [data-eadi-stage1-seat="'+seat+'"] canvas');
- if(glass)glass.style.opacity=String(states[seat].brightness.adi);
  // No synthetic traffic/radar/FMC content is generated. A downstream EHSI may subscribe.
  renderSeat(seat);
 }

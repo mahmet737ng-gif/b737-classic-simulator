@@ -38,10 +38,14 @@
  });
  function snapshot(){
   const a=state.active||{},p=state.pending||{},staged=state.stagedRoute||{};
+  const nav=state.navdbActive;
+  const displayRoute=window.CDU_NAV_MAP?.acceptedRoute(nav)&&nav.origin===a.ORIGIN&&nav.destination===a.DEST?
+   {source:nav.sourceId,points:[{name:nav.origin,...nav.originPosition},
+    ...nav.legs.map(l=>({name:l.to,lat:l.lat,lon:l.lon,leg:l.discontinuity?'DISCONTINUITY':'ACTIVE'}))]}:null;
   return {type:'b737:fmc-cdu-snapshot',seat,version:1,page:state.page,
    active:{ORIGIN:String(a.ORIGIN||''),DEST:String(a.DEST||''),IRS_POS:String(a.IRS_POS||''),CRZ_ALT:String(a.CRZ_ALT||''),RUNWAY:String(a.RUNWAY||'')},
    routeTransactionPending:Object.keys(p).length>0||Object.keys(staged).length>0,
-   hasNavDb:Boolean(state.navdbActive),hasVerifiedLegs:false,
+   hasNavDb:Boolean(state.navdbActive),hasVerifiedLegs:false,displayRoute,
    scratchpadMessage:state.message||null};
  }
  function send(){

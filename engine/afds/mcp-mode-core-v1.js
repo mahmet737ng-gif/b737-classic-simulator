@@ -182,6 +182,13 @@ function transition(state,action){
   // Backward-compatible rejection for old training clients; no power mutation.
   return rejected(s,"MCP_POWER_OWNED_BY_ELECTRICAL_V7");
  }
+ if(action.type==="EFIS_SOURCE_TRANSFER"){
+  // FCOM 4.20: repositioning EFI transfer disengages the autopilot.
+  if(!s.modes.autopilot)return state;
+  s.modes.autopilot=null;s.override.pitch=false;s.override.roll=false;
+  s.targets.pitch=null;s.targets.roll=null;
+  return done();
+ }
  if(action.type==="EVIDENCE"){
   if(!["fmcRouteReady","approachCapture"].includes(action.key)||![true,false,null].includes(action.value))throw Error("Unrecognized AFDS evidence");
   s.evidence[action.key]=action.value;

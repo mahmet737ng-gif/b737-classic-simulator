@@ -41,6 +41,14 @@
  ].map(x=>Object.freeze({...x,verification:'PHOTO_LABEL_CANDIDATE_ONLY',bus:'UNVERIFIED',activeTripEffect:false})));
  const clone=x=>JSON.parse(JSON.stringify(x));
  const invalid=x=>{throw Error(x);};
+ function validateDisplayRoute(route,origin,dest){
+  if(route?.source!=='PMDG_WORLD_2610_WITH_PROCEDURES_R1'||!Array.isArray(route.points)||
+    route.points.length<2||route.points.length>251||route.points[0]?.name!==origin||route.points.at(-1)?.name!==dest)return null;
+  const valid=route.points.every(p=>p&&/^[A-Z0-9]{2,8}$/.test(p.name)&&
+   Number.isFinite(p.lat)&&Math.abs(p.lat)<=90&&Number.isFinite(p.lon)&&Math.abs(p.lon)<=180);
+  return valid?{source:route.source,points:route.points.map(p=>({name:p.name,lat:p.lat,lon:p.lon,
+   leg:p.leg==='DISCONTINUITY'?'DISCONTINUITY':'ACTIVE'}))}:null;
+ }
  function createState(){
   return {schema:'B737_FMC_SYSTEMS_V1',revision:0,profile:'EP-FSI_737_CLASSIC',power: Object.fromEntries(UNIT_IDS.map(x=>[x,{feed:'UNKNOWN',sinceMs:null,lastDurationMs:null}])),
    phase:'GROUND',route:{origin:'',dest:'',active:false,legsVerified:false,discontinuitiesUnknown:true},irs:{leftValid:null,rightValid:null},
@@ -95,6 +103,7 @@
    if(!event.route||typeof event.route!=='object')invalid('ROUTE_EVIDENCE_MISSING');
    const r=event.route;
    for(const k of ['origin','dest'])if(r[k]!==undefined)s.route[k]=String(r[k]).toUpperCase().slice(0,4);
+   if('displayRoute' in r)s.route.displayRoute=validateDisplayRoute(r.displayRoute,s.route.origin,s.route.dest);
    for(const k of ['active','legsVerified','discontinuitiesUnknown'])if(r[k]!==undefined){if(typeof r[k]!=='boolean')invalid('ROUTE_EVIDENCE_INVALID');s.route[k]=r[k]}
   }else if(event.type==='FMC_FAILURE'){
    if(typeof event.failed!=='boolean')invalid('FMC_FAILURE_INVALID');
@@ -125,5 +134,5 @@
    return val.padEnd(24,' ');
   });
  }
- return Object.freeze({UNIT_IDS,POWER_BUSES,BREAKERS,createState,apply,globalPower,mcpEvidence,screenGrid});
+ return Object.freeze({validateDisplayRoute,UNIT_IDS,POWER_BUSES,BREAKERS,createState,apply,globalPower,mcpEvidence,screenGrid});
 });

@@ -75,12 +75,14 @@
   }
   if(!changed)return false;
   seats[id]=upcoming;
-  if(ready)host?.B737UnifiedEADIStage1?.mount?.(); // existing canvas remains mounted
   // The EADI render hook is invoked through a no-op future-mode refresh.
   // setAttitude re-paints but MUST preserve current pitch and bank.
   const eadi=host?.B737UnifiedEADIStage1;
-  const snap=eadi?.snapshot?.()?.stations?.[id];
-  if(snap) eadi.setAttitude(id,snap.pitch,snap.bank);
+  if(eadi?.requestPaint)eadi.requestPaint();
+  else{
+   const snap=eadi?.snapshot?.()?.stations?.[id];
+   if(snap)eadi.setAttitude(id,snap.pitch,snap.bank);
+  }
   if(timers[id]!==null){
    host?.clearTimeout?.(timers[id]);
    timers[id]=null;
@@ -91,7 +93,8 @@
     timers[id]=null;
     // Exactly one repaint after 10s; no polling or repeated timer.
     const current=eadi?.snapshot?.()?.stations?.[id];
-    if(current)eadi.setAttitude(id,current.pitch,current.bank);
+    if(eadi?.requestPaint)eadi.requestPaint();
+    else if(current)eadi.setAttitude(id,current.pitch,current.bank);
    },Math.max(0,expiry-now));
   }
   return true;

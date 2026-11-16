@@ -27,6 +27,7 @@
  function getView(seat){validateSeat(seat);return model().view(states[seat]);}
  function repaint(seat){
   const eadi=win?.B737UnifiedEADIStage1;
+  if(eadi?.requestPaint){eadi.requestPaint();return;}
   const display=eadi?.snapshot?.()?.stations?.[seat];
   if(display)eadi.setAttitude(seat,display.pitch,display.bank);
  }

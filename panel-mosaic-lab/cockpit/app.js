@@ -196,6 +196,12 @@
   if(d.kind==='aircon400-temperature-reading'&&Number.isFinite(d.celsius)){window.B737UnifiedCabinTemperatureNeedle?.setTemperature(d.celsius);}
   if(d.kind==='visual-state'){visualOverheadCount=d.active?d.count:0;byId('visualLampStatus').textContent=visualTest?(visualOverheadCount===112?'تست تصویری ۱۴۲ چراغ فعال':'تست تصویری فعال · اورهد در حال اتصال'):'';}
   if(d.kind==='state'){snapshot=d;renderLights();}
+  if(d.kind==='controls-state')window.dispatchEvent(new CustomEvent('b737:efis-overhead-selectors',{detail:d.toggles}));
+  if(d.kind==='control-event'&&d.event?.kind==='toggle'){
+   const {id,next}=d.event;
+   if(['efi-transfer','irs-transfer','vhf-nav'].includes(id))
+    window.dispatchEvent(new CustomEvent('b737:efis-overhead-selectors',{detail:{[id]:next}}));
+  }
   if(d.kind==='selected-light'){byId('lampSelect').value=d.id;renderLights();}
   if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='pan-start'&&Number.isFinite(d.screenX)&&Number.isFinite(d.screenY)){

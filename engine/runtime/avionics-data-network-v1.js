@@ -29,6 +29,9 @@
   'autothrottle.state':{owner:'AUTOTHROTTLE',ttl:2000},
   'navigation.database':{owner:'NAVDB',ttl:86400000},
   'performance.database':{owner:'PERFDB',ttl:86400000},
+  'navigation.ils1':{owner:'ILS',ttl:2000},'navigation.ils2':{owner:'ILS',ttl:2000},
+  'airdata.radioAltitude1':{owner:'RADIO_ALTIMETER',ttl:2000},'airdata.radioAltitude2':{owner:'RADIO_ALTIMETER',ttl:2000},
+  'afds.director1':{owner:'FCC',ttl:1500},'afds.director2':{owner:'FCC',ttl:1500},
   'datalink.acars':{owner:'ACARS',ttl:60000},
   'cb.observations':{owner:'CB',ttl:3000},
   'fmc.computed':{owner:'FMC',ttl:2000}
@@ -43,6 +46,9 @@
   const n=(key,lo,hi)=>{if(value[key]!==undefined&&value[key]!==null&&!number(value[key],lo,hi))throw Error('SIGNAL_RANGE_'+topic+'.'+key)};
   if(/^airdata\.adc/.test(topic)){n('pressureAltitudeFt',-2000,70000);n('casKt',0,600);n('tasKt',0,850);n('mach',0,1.5);n('tatC',-100,100);n('satC',-100,80);}
   if(/^navigation\.gps|^irs\./.test(topic)){n('lat',-90,90);n('lon',-180,180);n('gsKt',0,850);n('trackDeg',0,360);}
+  if(/^navigation\.ils/.test(topic)){n('localizerDots',-10,10);n('glideslopeDots',-10,10);n('tunedFrequencyMHz',108.1,111.95);}
+  if(/^airdata\.radioAltitude/.test(topic))n('heightFt',-20,5000);
+  if(/^afds\.director/.test(topic)){n('pitchDeg',-90,90);n('rollDeg',-180,180);}
   if(/^navigation\.dme/.test(topic))n('distanceNm',0,500);
   if(/^navigation\.vor/.test(topic))n('bearingDeg',0,360);
   if(topic==='fuel.quantity'){n('totalKg',0,50000);n('totalLb',0,110000);}

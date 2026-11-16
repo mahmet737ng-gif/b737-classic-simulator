@@ -14,45 +14,37 @@
   EIS:{parent:'[data-piece="fo-outer"]',box:[26,215,153,200],photo:[475,592.164]},
   CONVENTIONAL:{parent:'#fo-owner-panel-v1',box:[452,522,344,370],photo:[1286,1223]}
  };
- const TOPICS=new Set(['electrical.buses','irs.left','irs.right','mcp.state',
-  'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2']);
+ const TOPICS=new Set(['electrical.buses','irs.left','irs.right','mcp.state','fmc.computed',
+  'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',
+  'navigation.ils1','navigation.ils2']);
  const SEATS=['CAPT','FO'];
  const number=v=>Number.isFinite(v)?v:null;
- function signal(snapshot,key){
-  const s=snapshot?.[key];
-  return s?.quality==='VALID'?s.value:null;
- }
- function liveModel(snapshot,state,aspect,acBus){
-  const seat=state.seat,isCaptain=seat==='CAPT',n=isCaptain?1:2,d=state.ehsi;
-  const bus=signal(snapshot,'electrical.buses')?.bus;
-  const powered=(acBus?.powered??bus?.['electronic'+n])===true;
-  const irs=signal(snapshot,isCaptain?'irs.left':'irs.right');
-  const validIrs=irs?.powered===true&&irs.positionValid===true;
-  const heading=validIrs?number(irs.headingDeg):null,track=validIrs?number(irs.trackDeg):null;
-  const mcp=signal(snapshot,'mcp.state'),variation=number(irs?.magneticVariationDeg);
-  const mcpTrue=value=>mcp?.powered===true&&variation!==null&&Number.isFinite(value)?((value+variation)%360+360)%360:null;
-  const vor=signal(snapshot,'navigation.vor'+n),dme=signal(snapshot,'navigation.dme'+n);
-  const matchedDme=dme&&(!vor||dme.stationIdent===vor.stationIdent)?number(dme.distanceNm):null;
-  const radio=d.mode.includes('VOR_ILS');
-  return {mode:d.mode,range:d.range,heading,track,selectedHeading:mcpTrue(mcp?.headingDeg),
-   course:radio?mcpTrue(isCaptain?mcp?.courseL:mcp?.courseR):null,
-   trueRef:true,trueAirspeed:number(signal(snapshot,'airdata.adc'+n)?.tasKt),
-   groundSpeed:validIrs?number(irs.gsKt):null,
-   nav:{type:'VOR',valid:radio&&!!vor,source:'VOR '+n,frequency:number(vor?.tunedFrequencyMHz),dme:matchedDme,cdi:null},
-   route:{points:[],activeIndex:0,centerIndex:0},
-   mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
-   efis:{displayPower:powered,sgValid:powered,headingValid:heading!==null,trackValid:track!==null,
-    brightness:d.brightness,wxBrightness:d.wxBrightness,displayAspect:aspect}};
+ function liveModel(src,setup,physical,aspect,route){
+  const d=setup.ehsi,radio=d.mode.includes('VOR_ILS');
+  const nav=src.ils||src.vor;
+  const dme=src.dme&&(nav?.stationIdent===src.dme.stationIdent||!nav)?number(src.dme.distanceNm):null;
+  const loc=number(src.ils?.localizerDots),gs=number(src.ils?.glideslopeDots);
+  const mapValid=src.fmc?.operational===true&&(d.mode==='PLAN'||src.fmc.position?.quality==='VALID');
+  const cdi=src.ils?loc:number(src.vor?.deviationDots);
+  return {mode:d.mode,range:d.range,heading:src.heading,track:src.track,geoTrack:src.trueTrack,
+   selectedHeading:src.selectedHeading,course:radio?src.course:null,trueRef:src.trueRef,
+   trueAirspeed:number(src.adc?.tasKt),groundSpeed:src.groundSpeed,bank:src.bank,
+   windDirection:src.windDirection,windSpeed:src.windSpeed,
+   nav:{type:src.ils?'ILS':'VOR',valid:radio?(src.ils?loc!==null:!!src.vor):mapValid,
+    source:(src.ils?'ILS ':'VOR ')+src.vhf,frequency:number(nav?.tunedFrequencyMHz),dme,cdi,
+    gsValid:src.frontCourse===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
+   route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
+   efis:{displayPower:src.displayPowered&&src.video,sgValid:src.video,
+    headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,
+    brightness:physical.ehsi.brightness,wxBrightness:physical.ehsi.wxBrightness,displayAspect:aspect}};
  }
  function mount(win){
-  const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer}=win;
-  if(!core||!renderer)return null;
+  const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer,B737UnifiedEfisSources:sources}=win;
+  if(!core||!renderer||!sources)return null;
   const state={},instructor={},screens={},painted={};
   for(const seat of SEATS){state[seat]=core.initial();state[seat].seat=seat;instructor[seat]=false;}
-  let selected='CAPT',frame=0,expiry=0,controlLoad=null;
+  let selected='CAPT',frame=0,expiry=0;
   const cockpit=doc.getElementById('unifiedEfisDialog');
-  const base=new URL('../../efis-display-lab/',doc.baseURI);
-  const controlMount=doc.getElementById('efisCpMount');
   function syncControls(){
    const button=doc.getElementById('unifiedEfisDemo');
    if(button){button.checked=instructor[selected];}
@@ -70,31 +62,8 @@
   }
   // Same controller contract used by the standalone EFIS controls.
   win.B737EFISDisplayLab=Object.freeze({getState:()=>JSON.parse(JSON.stringify(state[selected])),dispatch});
-  function css(href){
-   const link=doc.createElement('link');
-   link.rel='stylesheet';link.href=href;doc.head.append(link);
-   return link;
-  }
-  function script(src){
-   return new Promise((resolve,reject)=>{
-    const tag=doc.createElement('script');
-    tag.src=src;tag.onload=resolve;tag.onerror=()=>{tag.remove();reject(Error('EFIS control assets unavailable'));};
-    doc.head.append(tag);
-   });
-  }
   function showControls(){
    if(!cockpit?.open)cockpit?.showModal();
-   if(controlLoad)return;
-   controlMount.textContent='Loading EFIS controls…';
-   if(!doc.querySelector('link[data-unified-efis-controls]')){
-    css(new URL('efis-cp.css?v=UNIFIED-EHSI-0001',base)).dataset.unifiedEfisControls='true';
-   }
-   controlLoad=(async()=>{
-    if(!win.EFIS_TEST_IMAGES)await script(new URL('../cdu-standalone-v6/efis-test/images.js',base));
-    controlMount.textContent='';
-    await script(new URL('efis-cp.js?v=UNIFIED-EHSI-0001',base));
-    syncControls();
-   })().catch(()=>{controlLoad=null;controlMount.textContent='Could not load EFIS controls. Reopen to retry.';});
   }
   function slot(seat){
    return seat==='CAPT'?CAPT:FO[doc.documentElement.dataset.engineIndication==='CONVENTIONAL'?'CONVENTIONAL':'EIS'];
@@ -132,12 +101,18 @@
    if(!native)return;
    const snapshot=win.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
    trackExpiry(snapshot);
+   const diagnostics=[];
    for(const seat of SEATS){
     const screen=display(seat,native);
     if(!screen)continue;
     const setup=state[seat],preview=instructor[seat];
-    const feed=win.B737UnifiedBusConsumerLiveV1?.getBus?.(seat==='CAPT'?'electronic1':'electronic2','115VAC');
-    const model=preview?core.ehsiModel(setup):liveModel(snapshot,setup,screen.aspect,feed);
+    const src=sources.project(seat,snapshot),origin=state[src.sourceSeat];
+    const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
+    const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route);
+    screen.host.dataset.sg=String(src.sg);
+    screen.host.dataset.irs=src.irs===1?'L':'R';
+    diagnostics.push(seat+' · SG '+src.sg+' · IRS '+screen.host.dataset.irs+
+     ' · '+(src.trackSource||'NO TRK')+' · '+(src.fmc?.operational?'FMC ON':'FMC UNAVAILABLE'));
     model.efis.displayAspect=screen.aspect;
     const signature=JSON.stringify(model);
     if(painted[seat]!==signature){
@@ -145,9 +120,10 @@
      painted[seat]=signature;
     }
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
-    const adi=native.querySelector('[data-eadi-stage1-seat="'+seat+'"] canvas');
-    if(adi&&adi.style.opacity!==String(setup.eadi.brightness))adi.style.opacity=String(setup.eadi.brightness);
    }
+   const output=doc.getElementById('unifiedEfisSources');
+   const status=diagnostics.join(' / ');
+   if(output&&output.textContent!==status)output.textContent=status;
   }
   function schedule(){
    if(frame)return;
@@ -171,16 +147,28 @@
    }
    for(const key of ['wxr','tfc','vorAdf','navAid','arpt','rteData','wpt'])
     if(typeof p.options?.[key]==='boolean')x.ehsi.options[key]=p.options[key];
+   x.eadi.dhResetCount=p.dhResetCount;
    if(selected===seat)syncControls();
    schedule();
   });
   doc.getElementById('unifiedEfisOpen')?.addEventListener('click',showControls);
+  doc.getElementById('unifiedEfisPhysical')?.addEventListener('click',()=>{
+   cockpit.close();win.B737UnifiedEFISPedestalV1?.open?.(selected);
+  });
+  for(const dir of [-1,1])doc.getElementById(dir<0?'unifiedPlanPrev':'unifiedPlanNext')?.addEventListener('click',()=>{
+   const src=sources.project(selected),setup=state[src.sourceSeat];
+   const length=src.fmc?.route?.displayRoute?.points?.length??0;
+   if(!length||setup.ehsi.mode!=='PLAN')return;
+   setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
+   schedule();
+  });
   doc.getElementById('unifiedEfisClose')?.addEventListener('click',()=>cockpit.close());
   doc.getElementById('unifiedEfisSeat')?.addEventListener('change',e=>select(e.target.value));
   doc.getElementById('unifiedEfisDemo')?.addEventListener('change',e=>{
    instructor[selected]=e.target.checked;schedule();
   });
-  for(const event of ['b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot'])win.addEventListener(event,schedule);
+  for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
+  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
   return Object.freeze({version:VERSION,refresh});

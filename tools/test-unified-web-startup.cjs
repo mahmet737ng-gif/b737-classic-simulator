@@ -48,10 +48,10 @@ const server=http.createServer((req,res)=>{
    // continues to use the new Classic v2 rose/map renderer.
    await page.waitForFunction(()=>{
     const eadi=window.B737UnifiedEADI?.snapshot?.();
-    return eadi?.version==='UNIFIED-EADI-LAB-FULL-0003'&&
+    return eadi?.version==='UNIFIED-EADI-LAB-FULL-0004'&&
      eadi.renderer==='EFISDisplayLabEadiFull'&&eadi.mounted===true&&
-     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0003"] canvas')&&
-     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0003"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
      window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0007'&&
      !!document.getElementById('unifiedEhsiCAPT')&&
      !!document.getElementById('unifiedEhsiFO');

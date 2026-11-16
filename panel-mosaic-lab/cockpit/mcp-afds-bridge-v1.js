@@ -158,6 +158,9 @@ function decorate(){
 window.addEventListener("b737:cockpit-mounted",()=>{decorate();project();electrical()});
  window.addEventListener("b737:mcp-hardware-change",hardwareCommand);
 window.addEventListener("b737:mcp-button-request",visualRequest);
+ window.addEventListener('b737:efis-transfer-ap-disconnect',()=>{
+  if(state.modes.autopilot)send({type:'EFIS_SOURCE_TRANSFER'});
+ });
 window.addEventListener("b737:mcp-value-change",visualValue);
  // Flight-model observations update the *same* AFDS state as MCP commands.
  // Event-driven only; unconfirmed telemetry cannot drive a false capture.

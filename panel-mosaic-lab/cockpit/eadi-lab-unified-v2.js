@@ -11,12 +11,14 @@
    'radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
  const stations={
   CAPT:{name:'Captain',x:327.20,y:218.20,w:198.00,h:159.30,
-   pitch:0,bank:0,powered:true,attitudeValid:true,source:'TRAINING_LEVEL_DATUM'},
+   pitch:0,bank:0,powered:null,attitudeValid:false,source:'IRS'},
   FO:{name:'First Officer',x:1612.75,y:263.40,w:173.44,h:147.14,
-   pitch:0,bank:0,powered:true,attitudeValid:true,source:'TRAINING_LEVEL_DATUM'}
+   pitch:0,bank:0,powered:null,attitudeValid:false,source:'IRS'}
  };
  const hooks={CAPT:new Map(),FO:new Map()};
  const screen={CAPT:null,FO:null};
+ const dh={CAPT:{},FO:{}};
+ let refreshScheduled=false;
  function mode(){
   return root.document.documentElement.dataset.engineIndication==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
  }
@@ -32,9 +34,12 @@
   if(!slot?.nativeRect)throw Error('FO Conventional EADI glass registration unavailable');
   return slot.nativeRect;
  }
- function observed(snapshot,topic){
-  const record=snapshot?.[topic];
-  return record?.quality==='VALID'?record.value:null;
+ function trackDh(seat,cp,ra,powered){
+  const s=dh[seat],setting=cp?.dh??-20,count=cp?.dhResetCount??0;
+  if(!powered||s.setting!==setting||s.count!==count)s.latched=false;
+  else if(ra!==null&&s.previous>setting&&ra<=setting&&ra>0&&setting>=0)s.latched=true;
+  s.setting=setting;s.count=count;s.previous=ra;
+  return s.latched;
  }
  function paint(seat){
   const station=stations[seat],display=screen[seat];
@@ -46,22 +51,29 @@
    if(ctx){ctx.fillStyle='#000';ctx.fillRect(0,0,display.canvas.width,display.canvas.height);}
    return false;
   }
-  const snapshot=root.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
-  const n=seat==='CAPT'?1:2,adc=observed(snapshot,'airdata.adc'+n);
-  const mcp=observed(snapshot,'mcp.state');
-  const irs=observed(snapshot,seat==='CAPT'?'irs.left':'irs.right');
-  const numeric=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
+  const src=root.B737UnifiedEfisSources?.project(seat);
+  if(!src)return false;
+  const cp=root.B737UnifiedEFISPedestalV1?.getState?.(seat);
+  const powered=station.powered??(src.displayPowered&&src.video);
+  const injected=station.source==='SIMULATOR_INJECTION';
+  const numeric=v=>Number.isFinite(v)?v:null;
+  const radAlt=numeric(src.ra?.heightFt),front=src.frontCourse;
+  const adc=src.adc;
   const painted=renderer.renderUnifiedFull(display.canvas,{
-   seat,pitch:station.pitch,bank:station.bank,
-   powered:station.powered,attitudeValid:station.attitudeValid,
-   source:station.source,
-   iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),
-   mach:numeric(adc?.mach),
-   selectedSpeedKt:mcp?.powered===true?numeric(mcp?.selectedSpeedKt):null,
-   groundSpeedKt:irs?.powered===true&&irs?.positionValid===true?
-    numeric(irs.gsKt):null,
-   radioAltFt:null,dhFt:null,locDeviation:null,gsDeviation:null
+   seat:src.sourceSeat,pitch:injected?station.pitch:src.pitch,bank:injected?station.bank:src.bank,
+   powered,attitudeValid:injected?station.attitudeValid:src.attitude,
+   source:injected?station.source:'IRS '+(src.irs===1?'L':'R'),
+   comparison:src.comparison,brightness:cp?.brightness.adi??1,
+   iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),mach:numeric(adc?.mach),
+   speedView:root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat),
+   groundSpeedKt:src.groundSpeed,radioAltFt:radAlt,dhFt:cp?.dh??null,dhLatched:trackDh(seat,cp,radAlt,powered),
+   ils:!!src.ils,frontCourse:front===true,
+   locDeviation:front===false&&Number.isFinite(src.ils?.localizerDots)?-src.ils.localizerDots:numeric(src.ils?.localizerDots),
+   gsDeviation:numeric(src.ils?.glideslopeDots),
+   director:src.director
   });
+  display.host.dataset.sg=String(src.sg);
+  display.host.dataset.irs=src.irs===1?'L':'R';
   if(painted!==true){
    display.host.dataset.eadiError='NEW_FULL_RENDER_FAILED';return false;
   }
@@ -69,9 +81,6 @@
   display.host.dataset.eadiPainter='EFIS_LAB_FULL_0003';
   display.host.dataset.eadiPaintCount=String(
    Number(display.host.dataset.eadiPaintCount||0)+1);
-  const ctx=display.canvas.getContext('2d');
-  const pixel=ctx?.getImageData?.(328,235,1,1)?.data;
-  display.host.dataset.eadiSkyPixel=pixel?[pixel[0],pixel[1],pixel[2]].join(','):'UNREADABLE';
   // Full lab engine paints its own live FMA and speed-tape presentation.
   // Legacy hook callbacks remain registered for source notifications but
   // MUST NOT draw the retired attitude-only / duplicate FMA or tape layers.
@@ -165,7 +174,7 @@
    futureSlots:[...slots]};
  }
  const api=Object.freeze({version:VERSION,mount,setAttitude,setAttitudeValid,
-  setPower,registerLayer,snapshot});
+  setPower,registerLayer,snapshot,requestPaint:scheduleLive});
  root.B737UnifiedEADI=api;
  // Compatibility only for existing live FMA / speed-tape extensions.
  // This alias NEVER loads or paints eadi-stage1-unified-v1.js.
@@ -175,7 +184,6 @@
   if(screen.CAPT?.host?.isConnected)paint('CAPT');
   if(screen.FO?.host?.isConnected)paint('FO');
  });
- let refreshScheduled=false;
  function scheduleLive(){
   if(refreshScheduled)return;
   refreshScheduled=true;
@@ -185,9 +193,9 @@
   });
  }
  root.addEventListener('b737:avionics-data',event=>{
-  if(/^(airdata\.adc[12]|irs\.(left|right)|mcp\.state)$/.test(event.detail?.topic||''))scheduleLive();
+  if(/^(airdata\.(adc|radioAltitude)[12]|navigation\.ils[12]|afds\.director[12]|irs\.(left|right)|mcp\.state|fmc\.computed|electrical\.buses)$/.test(event.detail?.topic||''))scheduleLive();
  });
- root.addEventListener('b737:bus-consumer-snapshot',scheduleLive);
+ for(const event of ['b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control'])root.addEventListener(event,scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')

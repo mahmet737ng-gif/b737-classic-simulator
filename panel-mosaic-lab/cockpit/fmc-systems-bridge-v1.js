@@ -73,8 +73,9 @@
   if(!['CAPT','FO'].includes(d.seat)||!frame||e.source!==frame.contentWindow)return;
   seatState.set(d.seat,d);
   const a=d.active||{},origin=String(a.ORIGIN||''),dest=String(a.DEST||'');
-  const activated=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest&&!d.routeTransactionPending;
-  const next={origin,dest,active:activated,legsVerified:false,discontinuitiesUnknown:true};
+  const activated=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest&&(!d.routeTransactionPending||network.route.active&&network.route.origin===origin&&network.route.dest===dest);
+  const displayRoute=activated?model.validateDisplayRoute(d.displayRoute,origin,dest):null;
+  const next={origin,dest,active:activated,displayRoute,legsVerified:false,discontinuitiesUnknown:true};
   const signature=JSON.stringify(next);
   if(signature!==lastRouteSig){
    lastRouteSig=signature;transition({type:'ROUTE',route:next});transmitToMCP();

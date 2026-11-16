@@ -18,10 +18,9 @@ assert.equal((source.match(/dcpcs-altitude-knob-front-v1.webp/g)||[]).length,2,'
 assert.ok(source.includes("tfc:asset('efis-tfc-center-v2.webp')"));
 assert.ok(source.includes("const ROTORS=")&&source.includes("const RANGES="));
 assert.ok(source.includes("['CAPT','FO']")&&source.includes("states={CAPT:initial(),FO:initial()}"));
-assert.ok(source.includes("const layout=[{seat:'CAPT',x:14,y:32,w:244},{seat:'FO',x:892,y:32,w:244}]"));
-assert.ok(14+244<=272,'CAPT EFIS must fit in free pedestal margin before throttle image x=272');
-assert.ok(892>=878,'FO EFIS starts after throttle image x=878');
-assert.ok(892+244<=1150,'FO EFIS fits native pedestal width');
+assert.ok(source.includes("const layout=[{seat:'CAPT',x:55,y:1290,w:365},{seat:'FO',x:735,y:1290,w:365}]"));
+assert.ok(55+365<735,'CAPT and FO EFIS footprints remain separate');
+assert.ok(735+365<=1150,'FO EFIS fits native pedestal width');
 assert.ok(source.includes("root.dispatchEvent(new CustomEvent('b737:unified-efis-control'"));
 assert.ok(bridge.includes("win.addEventListener('b737:unified-efis-control'"));
 assert.ok(bridge.includes("state[seat]")&&bridge.includes("x.ehsi.mode=p.mode"));
