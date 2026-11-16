@@ -85,7 +85,8 @@
     // V/S command immediately after engagement.
     const selected=v.altitude,remaining=selected-flight.altitudeFt;
     const approaching=(remaining>0&&targetVS>0)||(remaining<0&&targetVS<0);
-    if(valid(selected)&&approaching&&Math.abs(remaining)<250){
+    if(valid(selected)&&
+      (approaching&&Math.abs(remaining)<250||out.state.altitudeCapture===true&&Math.abs(remaining)<250)){
      out.state.altitudeCapture=true;out.altAcquireConfirmed=true;
      out.actions.push({type:'ALTITUDE',value:selected});
      if(Math.abs(remaining)<35&&Math.abs(flight.vsFpm)<500){
@@ -118,7 +119,9 @@
   }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
   // FCOM 4.20.4: both commanded pitch and roll modes must be available.
   // CWS forced handover retracts FD bars on the overridden axis.
-  const validBars=out.pitchValid&&out.rollValid&&pAxis!=='CWS'&&rAxis!=='CWS';
+  const flareRetract=mcp.nav?.loc===true&&mcp.nav?.gs===true&&
+   valid(flight.radioAltitudeFt)&&flight.radioAltitudeFt<=50;
+  const validBars=out.pitchValid&&out.rollValid&&pAxis!=='CWS'&&rAxis!=='CWS'&&!flareRetract;
   out.fd.captain=fdCommand(mcp.controls?.fd?.left)&&validBars;
   out.fd.firstOfficer=fdCommand(mcp.controls?.fd?.right)&&validBars;
   // With no engaged autopilot, the F/D may still display command guidance,
