@@ -11,6 +11,7 @@
   'airdata.adc1':{owner:'ADC',ttl:2000},'airdata.adc2':{owner:'ADC',ttl:2000},
   'navigation.gps1':{owner:'GPS',ttl:3000},'navigation.gps2':{owner:'GPS',ttl:3000},
   'navigation.vor1':{owner:'VHF_NAV',ttl:4000},'navigation.vor2':{owner:'VHF_NAV',ttl:4000},
+  'navigation.adf1':{owner:'ADF',ttl:4000},'navigation.adf2':{owner:'ADF',ttl:4000},
   'navigation.dme1':{owner:'DME',ttl:4000},'navigation.dme2':{owner:'DME',ttl:4000},
   'fuel.quantity':{owner:'FUEL',ttl:3000},'fuel.pumps':{owner:'FUEL',ttl:2000},
   'flightcontext.state':{owner:'FLIGHT_CONTEXT',ttl:2000},
@@ -50,7 +51,9 @@
   if(/^airdata\.radioAltitude/.test(topic))n('heightFt',-20,5000);
   if(/^afds\.director/.test(topic)){n('pitchDeg',-90,90);n('rollDeg',-180,180);}
   if(/^navigation\.dme/.test(topic))n('distanceNm',0,500);
-  if(/^navigation\.vor/.test(topic))n('bearingDeg',0,360);
+  if(/^navigation\.(vor|adf)/.test(topic))n('bearingDeg',0,360);
+  if(/^navigation\.adf/.test(topic)&&value.bearingReference!==undefined&&
+     !['TRUE','MAGNETIC','RELATIVE'].includes(value.bearingReference))throw Error('SIGNAL_ADF_REFERENCE_'+topic);
   if(topic==='fuel.quantity'){n('totalKg',0,50000);n('totalLb',0,110000);}
   if(/^propulsion\.engine/.test(topic)){n('n1Percent',0,125);n('n2Percent',0,125);n('egtC',-100,1200);n('fuelFlowKgHr',0,10000);}
   if(topic==='environment.tat')n('tatC',-100,100);

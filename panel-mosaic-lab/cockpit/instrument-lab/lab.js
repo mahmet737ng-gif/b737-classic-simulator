@@ -9,7 +9,10 @@
   }).map(([kind,label])=>{
     const figure=document.createElement('figure');
     rack.append(figure);
-    const gauge=createGauge(figure,kind,{label});
+    const gauge=createGauge(figure,kind,{label,onChange:(key,value,initial)=>{
+      if(key==='cursorManual'&&value) state.cursor=initial;
+      write(key,value); sync(); render();
+    }});
     const caption=document.createElement('figcaption');
     caption.textContent=label;
     figure.append(caption);
@@ -17,20 +20,24 @@
   });
   function render() {
     gauges.forEach(gauge=>gauge.render(state,raw.checked));
+    const {mach,tasKt}=window.B737PhotoGauges.airData(state.ias,state.altitude,state.oat);
+    const alt=window.B737PhotoGauges.indicatedAltitude(state.altitude,state.qnh);
+    document.getElementById('computed').textContent=`TAS ${tasKt.toFixed(1)} kt · Mach ${mach.toFixed(3)} · ALT ${Math.round(alt)} ft · BARO Δ ${Math.round(alt-state.altitude)} ft`;
+
   }
   const groups = {
     'Air data': [
-      ['ias','IAS (kt)',0,400,1],['mach','Mach',0,0.99,0.01],['limit','Limit pointer (kt)',60,400,1],
-      ['altitude','Altitude (ft)',-1000,45000,20],['qnh','QNH (hPa)',870,1085,0.25],
+      ['ias','IAS (kt)',0,400,1],['oat','Static air temperature (°C)',-85,60,1],['limit','Limit pointer (kt)',60,400,1],
+      ['altitude','Pressure altitude (ft)',-1000,45000,20],['qnh','QNH (hPa)',870,1085,0.25],
       ['vs','Vertical speed (fpm)',-6000,6000,100],['altitudeBug','Altitude bug (ft)',0,45000,20]
     ],
     'Standby': [
-      ['standbyAltitude','Altitude (ft)',-1000,45000,20],['standbyQnh','QNH (hPa)',870,1085,0.25],
-      ['standbyIasOff','IAS striped flag']
+      ['standbyAltitude','Pressure altitude (ft)',-1000,45000,20],['standbyQnh','QNH (hPa)',870,1085,0.25]
     ],
     'RMI': [
-      ['hdg','Magnetic heading (°)',0,360,1],['bearing1','Bearing 1 (°)',0,360,1],
-      ['bearing2','Bearing 2 (°)',0,360,1],['dme1','DME 1 (NM)',0,999.9,0.1],['dme2','DME 2 (NM)',0,999.9,0.1],
+      ['hdg','Magnetic heading (°)',0,360,1],['bearing1','VOR 1 bearing (°)',0,360,1],
+      ['bearing2','VOR 2 bearing (°)',0,360,1],['dme1','DME 1 (NM)',0,999.9,0.1],['dme2','DME 2 (NM)',0,999.9,0.1],
+      ['adfBearing1','ADF 1 bearing (°)',0,360,1],['adfBearing2','ADF 2 bearing (°)',0,360,1],
       ['headingFlag','HDG'],['bearingFlag','Bearing flag'],['adfInop','ADF INOP']
     ],
     'Airspeed bugs': [
@@ -72,19 +79,18 @@
     }
   }
   const presets={
-    normal:{},climb:{ias:215,mach:0.36,altitude:7340,standbyAltitude:7340,vs:1800,hdg:315},
-    descent:{ias:180,mach:0.29,altitude:4780,standbyAltitude:4780,vs:-1200,hdg:105,qnh:1004,standbyQnh:1004},
+    normal:{},climb:{ias:260,oat:-10,altitude:7340,standbyAltitude:7340,vs:1800,hdg:315},
+    descent:{ias:180,oat:5,altitude:4780,standbyAltitude:4780,vs:-1200,hdg:105,qnh:1004,standbyQnh:1004},
     failed:{altFlag:true,ivsiOff:true,headingFlag:true,bearingFlag:true,adfInop:true,
-      airDataOff:true,standbyIasOff:true,dme1:null,dme2:null,ias:0}
+      airDataOff:true,dme1:null,dme2:null,ias:0}
   };
-  function preset(name) {
-    state={...defaults,...presets[name]};
+  function sync() {
     for(const input of form.querySelectorAll('input')){
       if(input.type==='checkbox') input.checked=read(input.name);
       else input.value=read(input.name)??'';
     }
-    render();
   }
+  function preset(name) { state={...defaults,...presets[name]}; sync(); render(); }
   document.querySelectorAll('[data-preset]').forEach(btn=>btn.addEventListener('click',()=>preset(btn.dataset.preset)));
   raw.addEventListener('change',render);
   form.addEventListener('submit',event=>event.preventDefault());

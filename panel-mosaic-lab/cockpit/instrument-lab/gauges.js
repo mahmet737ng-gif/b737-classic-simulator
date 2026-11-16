@@ -6,12 +6,41 @@
   const ns = 'http://www.w3.org/2000/svg';
   let nextClipId=0;
   const defaults = Object.freeze({
-    ias: 145, mach: 0.24, limit: 340, altitude: 2380, standbyAltitude: 2380,
+    ias: 145, oat: null, cursor: 145, cursorManual: false, adf1: false, adf2: false, adfBearing1: 230, adfBearing2: 300, limit: 340, altitude: 2380, standbyAltitude: 2380,
     qnh: 1013.25, standbyQnh: 1013.25, vs: 0, hdg: 0, bearing1: 90, bearing2: 30,
     dme1: 12.4, dme2: 19.2, altitudeBug: 2500, bugs: [80, 95, 120, 145],
     orangeBugs: [160, 165], headingFlag: false, bearingFlag: false,
-    ivsiOff: false, altFlag: false, airDataOff: false, standbyIasOff: false, adfInop: false
+    ivsiOff: false, altFlag: false, airDataOff: false, adfInop: false
   });
+  const STD = 1013.25;
+  const INHG = 33.8638866667;
+  const T0 = 288.15, lapse = 0.0065, tropopause = 11000;
+  const exponent = 9.80665 / (287.05287 * lapse);
+  const standardSound = Math.sqrt(1.4 * 287.05287 * T0);
+  function pressureAt(feet) {
+    const meters=feet*.3048;
+    const t=T0-lapse*Math.min(meters,tropopause);
+    return STD*(t/T0)**exponent*Math.exp(-9.80665*Math.max(0,meters-tropopause)/(287.05287*t));
+  }
+  function indicatedAltitude(pressureAltitude, qnh) {
+    const ratio=pressureAt(pressureAltitude)/qnh;
+    const tt=T0-lapse*tropopause;
+    const tropRatio=(tt/T0)**exponent;
+    const meters=ratio>=tropRatio ? (T0/lapse)*(1-ratio**(1/exponent)) :
+      tropopause-287.05287*tt/9.80665*Math.log(ratio/tropRatio);
+    return meters/.3048;
+  }
+  function airData(ias, pressureAltitude, oat) {
+    const p=pressureAt(pressureAltitude);
+    const impact=STD*((1+.2*(ias*.5144444444/standardSound)**2)**3.5-1);
+    const mach=Math.sqrt(5*((1+impact/p)**(2/7)-1));
+    const temperature=Number.isFinite(oat) ? oat+273.15 : T0-lapse*Math.min(tropopause,pressureAltitude*.3048);
+    return {mach,tasKt:mach*Math.sqrt(1.4*287.05287*temperature)/.5144444444};
+  }
+  function calibratedSpeed(mach,pressureAltitude) {
+    const impact=pressureAt(pressureAltitude)*((1+.2*mach**2)**3.5-1);
+    return standardSound*Math.sqrt(5*((1+impact/STD)**(2/7)-1))/.5144444444;
+  }
   const iasScale = [[60,0],[80,22],[100,52],[120,90],[140,120],[160,149],
     [180,167],[200,186],[250,229],[300,256],[350,282],[400,313]];
   const vsiScale = [[0,0],[500,31],[1000,61],[2000,103],[4000,151],[6000,180]];
@@ -62,18 +91,92 @@
       nodes[1].textContent=(qnh*0.029529983).toFixed(2);
     }
     const altitudeText = value => Math.round(value/20)*20;
-    let update;
+    let state, update;
+    const change = (key,value) => options.onChange?.(key,value);
+    const clamp = (v,min,max) => Math.min(max,Math.max(min,v));
+    function control(x,y,w,h,label, onClick, onTurn, onPosition) {
+      const hit=svg(movable,'rect',{x,y,width:w,height:h,rx:5,fill:'transparent',
+        tabindex:0,role:onClick&&!onTurn?'button':'slider','aria-label':label});
+      Object.assign(hit.style,{pointerEvents:'all',touchAction:'none',cursor:onClick?'pointer':'grab'});
+      let drag;
+      hit.addEventListener('pointerdown',event=>{
+        if(event.button!==0) return;
+        event.stopPropagation();
+        hit.setPointerCapture(event.pointerId);
+        drag={x:event.clientX,y:event.clientY,moved:false};
+      });
+      hit.addEventListener('pointermove',event=>{
+        if(!drag) return;
+        const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+        if(Math.hypot(dx,dy)<4) return;
+        drag.moved=true;
+        if(onPosition) onPosition(event);
+        else onTurn?.(Math.trunc((Math.abs(dx)>Math.abs(dy)?dx:-dy)/4),event);
+        drag.x=event.clientX; drag.y=event.clientY;
+      });
+      hit.addEventListener('pointerup',event=>{
+        if(!drag) return;
+        event.stopPropagation();
+        if(!drag.moved) onClick?.();
+        drag=null;
+      });
+      hit.addEventListener('lostpointercapture',()=>{drag=null;});
+      hit.addEventListener('wheel',event=>{
+        if(!onTurn) return;
+        event.preventDefault(); event.stopPropagation();
+        onTurn(Math.sign(-event.deltaY),event);
+      },{passive:false});
+      hit.addEventListener('keydown',event=>{
+        if(['Enter',' '].includes(event.key)&&onClick){event.preventDefault();onClick();}
+        if(['ArrowLeft','ArrowDown','ArrowRight','ArrowUp'].includes(event.key)&&onTurn){
+          event.preventDefault();onTurn(['ArrowLeft','ArrowDown'].includes(event.key)?-1:1,event);
+        }
+      });
+      return hit;
+    }
+    const knob=(name,label,onTurn,onClick) => control(...def.parts[name].box,label,onClick,onTurn);
+    function baroTurn(key) {
+      return (delta,event)=>change(key,clamp(state[key]+delta*(event.shiftKey ? INHG/100 : 1),870,1085));
+    }
+    function jumpBug(key,index,value) {
+      change(key,state[key].map((old,i)=>i===index?clamp(Math.round(value),60,400):old));
+    }
+    const inverseScale=iasScale.map(([speed,angle])=>[angle,speed]);
+    const angleFromPointer=event=>{
+      const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(canvas.getScreenCTM().inverse());
+      return (Math.atan2(point.x-cx,cy-point.y)*180/Math.PI+360)%360;
+    };
+    function bugControl(name,key,index) {
+      const [x,y,w,h]=def.parts[name].box;
+      return control(x-8,y-8,w+16,h+16,name,undefined,
+        delta=>jumpBug(key,index,state[key][index]+delta),
+        event=>{const a=angleFromPointer(event);jumpBug(key,index,a>336?60:interpolate(a,inverseScale));});
+    }
     switch(kind) {
       case 'altimeter': {
-        const alt = text(1005,1295,139);
+        const alt = text(1000,1299,155);
+        const caution = text(930,1280,90,'#ffb744');
+        const neg = text(750,1277,67);
+        caution.textContent='OFF'; neg.textContent='NEG';
         const qnh = pressure(783,1046,1601,62);
         ['alt-flag','bug','needle','baro-knob','bug-knob'].forEach(place);
+        if(options.onChange){
+          knob('baro-knob','BARO',baroTurn('qnh'));
+          knob('bug-knob','Altitude reference',d=>change('altitudeBug',clamp(state.altitudeBug+d*20,0,45000)));
+        }
         update = s => {
-          alt.textContent=s.altFlag?'':altitudeText(s.altitude).toLocaleString('en-US');
-          setVisible(sprite['alt-flag'],s.altFlag);
+          const altitude=indicatedAltitude(s.altitude,s.qnh);
+          const small=altitude>=0&&altitude<10000;
+          const digits=Math.abs(altitudeText(altitude));
+          alt.setAttribute('x', small||altitude<0 ? 1000-offset[0] : 948-offset[0]);
+          alt.setAttribute('font-size',digits>=10000?'145':'155');
+          setVisible(caution,s.altFlag);
+          setVisible(neg,!s.altFlag&&altitude<0);
+          alt.textContent=s.altFlag?'':String(small?Math.min(9980,digits):digits).padStart(4,'0');
+          setVisible(sprite['alt-flag'],!s.altFlag&&small);
           setVisible(sprite.needle,!s.altFlag);
           baro(qnh,s.qnh);
-          rotate('needle',(s.altitudeAngle ?? s.altitude*0.36)-290);
+          rotate('needle',(s.altitudeAngle ?? altitude*0.36)-290);
           rotate('bug',s.altitudeBug*0.36-180);
           rotate('baro-knob',(s.qnh-1013)*6,161,961);
           rotate('bug-knob',s.altitudeBug*.1,959,961);
@@ -84,15 +187,34 @@
         const mach=text(504,682,41), ias=text(504,893,49,'#b4f77a');
         const bugNames=['bug-1','bug-2','bug-3','bug-4'], oranges=['orange-1','orange-2'];
         [...bugNames,...oranges,'limit-needle','ias-needle','set-knob'].forEach(place);
+        const cursor=svg(movable,'path',{d:`M ${cx-13} ${cy-251} l 13 -18 l 13 18 l -13 19 Z`,fill:'#f5f3e7',stroke:'#202327','stroke-width':3});
+        const manual=svg(movable,'text',{x:143,y:662,fill:'#ffcc79','font-size':16});
+        manual.textContent='MAN';
+        const hit={};
+        if(options.onChange){
+          [...bugNames,...oranges].forEach((name,i)=>{
+            hit[name]=bugControl(name,i<4?'bugs':'orangeBugs',i<4?i:i-4);
+          });
+          knob('set-knob','Pull to set airspeed cursor',d=>{
+            if(state.cursorManual) change('cursor',clamp(Math.round(state.cursor)+d,60,400));
+          },()=>options.onChange('cursorManual',!state.cursorManual,state.autoCursor??state.cursor));
+        }
         update=s=>{
-          mach.textContent=s.airDataOff?'':s.mach.toFixed(2).slice(1);
-          ias.textContent=s.airDataOff?'':Math.round(s.ias);
+          const air=airData(s.ias,s.altitude,s.oat);
+          mach.textContent=s.airDataOff||air.mach<.4?'':Math.min(.99,air.mach).toFixed(2).slice(1);
+          cursor.setAttribute('transform',`rotate(${interpolate(s.cursorManual?s.cursor:(s.autoCursor??s.cursor),iasScale)} ${cx} ${cy})`);
+          setVisible(manual,s.cursorManual);
+          ias.textContent=s.airDataOff||s.ias<=45?'':Math.round(s.ias);
           setVisible(sprite['ias-needle'],!s.airDataOff);
           rotate('ias-needle',interpolate(s.ias,iasScale));
-          rotate('set-knob',(s.bugs[0]-80)*3,100,630);
+          rotate('set-knob',(s.cursor-145)*3,100,630);
+          sprite['set-knob'].setAttribute('transform',(s.cursorManual?'translate(0 5) ':'')+sprite['set-knob'].getAttribute('transform'));
           rotate('limit-needle',interpolate(s.limit,iasScale)-276);
-          bugNames.forEach((name,i)=>rotate(name,interpolate(s.bugs[i],iasScale)-[30,35,40,46][i]));
-          oranges.forEach((name,i)=>rotate(name,interpolate(s.orangeBugs[i],iasScale)-[152,148][i]));
+          [...bugNames,...oranges].forEach((name,i)=>{
+            const speed=i<4?s.bugs[i]:s.orangeBugs[i-4];
+            rotate(name,interpolate(speed,iasScale)-[30,35,40,46,152,148][i]);
+            hit[name]?.setAttribute('transform',sprite[name].getAttribute('transform'));
+          });
         };
         break;
       }
@@ -112,14 +234,22 @@
         ['card','double-needle','single-needle','hub','hdg-flag','bearing-flag'].forEach(place);
         const placard=image('adf-inop',240,660,166,26);
         movable.append(placard);
+        const selectors=[[78,564,56,43,45],[507,564,56,43,-45]].map(([x,y,w,h,angle],i)=>{
+          const key='adf'+(i+1);
+          const label=svg(movable,'text',{x,y:y+5,transform:`rotate(${angle} ${x} ${y})`,'text-anchor':'middle','font-size':18,fill:'#fff'});
+          if(options.onChange) control(x-55,y+19,w+45,h+55,'VOR/ADF '+(i+1),()=>change(key,!state[key]));
+          return label;
+        });
         update=s=>{
+          selectors.forEach((label,i)=>label.textContent=s['adf'+(i+1)]?'ADF':'VOR');
           rotate('card',-s.hdg);
-          rotate('single-needle',s.bearingAngle1 ?? s.bearing1-s.hdg-90);
-          rotate('double-needle',s.bearingAngle2 ?? s.bearing2-s.hdg-30);
+          rotate('single-needle',s.adf1 ? s.adfBearing1-s.hdg-90 : (s.bearingAngle1 ?? s.bearing1-s.hdg-90));
+          rotate('double-needle',s.adf2 ? s.adfBearing2-s.hdg-30 : (s.bearingAngle2 ?? s.bearing2-s.hdg-30));
           setVisible(sprite['hdg-flag'],s.headingFlag);
           setVisible(sprite['bearing-flag'],s.bearingFlag);
           setVisible(placard,s.adfInop);
-          setVisible(sprite['double-needle'],!s.bearingFlag&&!s.adfInop);
+          setVisible(sprite['double-needle'],!s.bearingFlag&&(!s.adf2||!s.adfInop)&&Number.isFinite(s.adf2?s.adfBearing2:s.bearing2));
+          setVisible(sprite['single-needle'],(!s.adf1||!s.adfInop)&&Number.isFinite(s.adf1?s.adfBearing1:s.bearing1));
           [s.dme1,s.dme2].forEach((value,i)=>{
             const chars=Number.isFinite(value)?Math.round(value*10).toString().padStart(4,'0').slice(-4):'––––';
             dme[i].forEach((node,j)=>{node.textContent=chars[j];});
@@ -144,26 +274,33 @@
           if (major) svg(ticks,'text',{x,y:47,fill:'#fff','font-size':46,'font-family':'Arial','text-anchor':'middle'}).textContent=speed;
         }
         ['ias-stripes','alt-stripes','needle','baro-knob'].forEach(place);
+        viewport.append(sprite['ias-stripes']);
+        sprite['ias-stripes'].setAttribute('x',0);
+        sprite['ias-stripes'].setAttribute('y',7);
+        ticks.prepend(sprite['ias-stripes']);
+        sprite['ias-stripes'].setAttribute('x',-222);
+        if(options.onChange) knob('baro-knob','Standby BARO',baroTurn('standbyQnh'));
         update=s=>{
-          alt.textContent=String(altitudeText(s.standbyAltitude)).padStart(4,'0');
-          setVisible(sprite['alt-stripes'],s.standbyAltitude>=0&&s.standbyAltitude<10000);
+          const altitude=indicatedAltitude(s.standbyAltitude,s.standbyQnh);
+          alt.textContent=String(altitudeText(altitude)).padStart(4,'0');
+          setVisible(sprite['alt-stripes'],altitude>=0&&altitude<10000);
           baro(qnh,s.standbyQnh);
-          rotate('needle',s.standbyAltitude*0.36);
+          rotate('needle',altitude*0.36);
           rotate('baro-knob',(s.standbyQnh-1013)*6,162,915);
           const travel = s.ias<60 ? s.ias*68/60 : 68+4.2*(s.ias-60);
           ticks.setAttribute('transform',`translate(${224-travel} 0)`);
-          setVisible(tape,!s.standbyIasOff);
-          setVisible(sprite['ias-stripes'],s.standbyIasOff||s.ias<60);
+
         };
         break;
       }
     }
-    const render = (state, raw = false) => {
+    const render = (sample, raw = false) => {
+      state=sample;
       update(state);
       setVisible(movable,!raw);
     };
     render(defaults,true);
     return {canvas,render};
   }
-  window.B737PhotoGauges = {createGauge,defaults,geometry};
+  window.B737PhotoGauges = {createGauge,defaults,geometry,airData,calibratedSpeed,indicatedAltitude};
 })();
