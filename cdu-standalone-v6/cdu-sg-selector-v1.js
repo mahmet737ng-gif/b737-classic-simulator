@@ -183,6 +183,10 @@
  }
  function attach(){
   if(attached)return;attached=true;
+  // The CDU may already be sitting on an offline DEP/ARR child page when the
+  // Railway import finishes. Return to INDEX so a fresh LSK opens the source.
+  if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView)
+   core.choose(state,pages,'DEP_ARR');
   unsubscribe=shared.subscribe(()=>{if(attached&&['DEPARTURES','ARRIVALS'].includes(state.page))update();});
  }
  function detach(){
