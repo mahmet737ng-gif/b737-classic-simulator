@@ -51,7 +51,12 @@ const index=fs.readFileSync(__dirname+'/index.html','utf8');
 // the frozen Conventional FO glass registration remains unchanged.
 assert.ok(index.indexOf('conventional-eadi-socket-v1.js')<
  index.indexOf('eadi-lab-unified-v2.js'));
-assert.ok(index.includes('UNIFIED-EADI-LAB-FULL-0004'));
+// Cache revision must match the current live EADI adapter, not a retired
+// revision number; protected EIS/Conventional geometry checks stay exact.
+const activeEadiVersion=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8')
+ .match(/const VERSION='(UNIFIED-EADI-LAB-FULL-[^']+)'/)?.[1];
+assert.ok(activeEadiVersion&&index.includes('eadi-lab-unified-v2.js?v='+activeEadiVersion),
+ 'Unified must load the currently active full EADI renderer');
 assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'));
 assert.ok(index.includes('../../efis-display-lab/eadi.js'));
 const newBridge=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8');
