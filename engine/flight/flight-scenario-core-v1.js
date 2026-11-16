@@ -148,7 +148,7 @@
    }else if(target.verticalMode==='GLIDEPATH'){
     const distance=distanceNm(s,s.threshold);
     const height=s.elevationFt+50+Math.tan(3*RAD)*distance*FT_PER_NM;
-    wantVS=clamp((height-s.altitudeFt)*2,-2000,2000);
+    wantVS=clamp(-Math.max(0,s.gsKt)*5.307+clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
    s.vsFpm+=clamp(wantVS-s.vsFpm,-900*dt,900*dt);
    const oldAlt=s.altitudeFt;
