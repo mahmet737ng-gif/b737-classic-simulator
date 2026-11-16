@@ -27,6 +27,7 @@ test('MCP electrical loss, A/T disarm, target mode blank and manual override inh
  }
  assert.equal(runServo({inhibited:true}).reason,'MANUAL_OVERRIDE');
  assert.equal(runServo({paused:true}).reason,'SCENARIO_PAUSED');
+ assert.equal(runServo({flight:{iasKt:0,vsFpm:0,airborne:false}}).reason,'ON_GROUND_SPEED_SERVO_INHIBITED');
  assert.equal(runServo({flight:{iasKt:null,vsFpm:0}}).reason,'MEASURED_AIRSPEED_UNAVAILABLE');
 });
 test('only running engines receive commands, and no synthetic engine start is allowed',()=>{
