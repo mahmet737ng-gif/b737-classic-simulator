@@ -15,7 +15,7 @@
  const relayInflight=new Map();
  function relayPath(path){
   return typeof path==='string'&&path.length<=440&&
-   /^\\/api\\/(?:source\\/status|cdu\\/(?:airport|catalog|procedure)|sg\\/procedure\\.geojson)(?:\\?[^#]*)?$/.test(path)&&
+   /^\/api\/(?:source\/status|cdu\/(?:airport|catalog|procedure)|sg\/procedure\.geojson)(?:\?[^#]*)?$/.test(path)&&
    !path.includes('..')&&!/%2f|%5c/i.test(path);
  }
  function clearRelay(){
