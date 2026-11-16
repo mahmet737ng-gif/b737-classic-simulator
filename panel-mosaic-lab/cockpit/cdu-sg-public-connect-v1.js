@@ -1,7 +1,9 @@
-/* Unified CDU/SG private catalog.
- * GitHub Pages: owner's token-protected localhost 8768 reader.
- * Railway: session-authenticated same-origin PostgreSQL source, with a one-time
- * owner-supplied JSON import. Neither source is committed into public GitHub.
+/* Unified CDU/SG NAVDATA adapter, not an independent CDU application.
+ * Railway provides the authenticated entry to the same Unified cockpit.
+ * Once inside that gateway, NAVDATA reads are same-origin; no extra login,
+ * cross-origin popup or relay session is required by either CDU.
+ * Optional private localhost source remains available for development.
+ * Licensed navigation records are never committed to the public repository.
  */
 (function(root){
  'use strict';
