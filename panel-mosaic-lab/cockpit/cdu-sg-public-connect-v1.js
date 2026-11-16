@@ -88,7 +88,7 @@
  }
  const bridge=Object.freeze({
   isConnected:()=>connected&&(railway||!!token||relayReady),
-  source:railway?'RAILWAY_PRIVATE_POSTGRES':github?'RAILWAY_POPUP_OR_LOCAL':'CDU_SG_SOURCE_NAVDB_V1',
+  source:railway?'UNIFIED_SAME_ORIGIN':github?'UNIFIED_GATEWAY':'CDU_SG_SOURCE_NAVDB_V1',
   async request(path){
    if(!connected||!this.isConnected())throw Error('PRIVATE CDU/SG NAVDB DISCONNECTED');
    if(typeof path!=='string'||path.length>420||!ROUTES.test(path)||
@@ -104,15 +104,11 @@
  async function connect(){
   if(!railway&&!github){refreshStatus('This source is unavailable on this host');return;}
   if(github){
-   const field=$('cduSgPrivateToken'),submitted=String(field?.value||'').trim();
-   if(field)field.value='';
-   if(submitted&&submitted.length<24){refreshStatus('توکن محلی معتبر نیست');return;}
-   if(submitted){token=submitted;}
-   else{
-    refreshStatus('در حال اتصال امن به Railway…');
-    try{await openRailwayRelay()}
-    catch(error){disconnect();refreshStatus('ابتدا وارد Railway شو و Popup را فعال کن: '+error.message);return;}
-   }
+   // GitHub Pages and Railway do not host separate CDUs. Open the same
+   // canonical Unified cockpit behind its authenticated gateway instead of
+   // asking the user to approve a second popup/relay session.
+   root.location.assign(RAILWAY_ORIGIN+'/panel-mosaic-lab/cockpit/index.html');
+   return;
   }
   const button=$('cduSgPrivateConnect');if(button)button.disabled=true;
   refreshStatus('در حال خواندن منبع ناوبری…');
@@ -134,7 +130,7 @@
    disconnect();
    refreshStatus(e.message==='IMPORT_REQUIRED'?
     'بانک نصب نشده؛ فایل CDU_3_AIRPORTS.json را در قسمت زیر وارد کن':
-    'اتصال برقرار نشد؛ وضعیت Railway و Popup را بررسی کن');
+    'منبع ناوبری مشترک در دسترس نیست؛ ورود یا نصب بانک را بررسی کن');
   }finally{if(button)button.disabled=connected;}
  }
  async function importJson(input){
@@ -162,18 +158,18 @@
   if(!panel||$('cduSgPrivateConnect'))return;
   const section=document.createElement('section');section.className='private-nav-bridge';
   section.style.cssText='margin-top:12px;padding:12px;border:1px solid #456070;border-radius:8px;display:grid;gap:8px';
-  const h=document.createElement('strong');h.textContent='CDU / SG · '+(railway?'Railway Private NAVDATA':github?'Secure Railway NAVDATA':'Private SQLite');
+  const h=document.createElement('strong');h.textContent='CDU / SG · Unified NAVDATA';
   const p=document.createElement('small');p.textContent=railway?
-   'بانک سه فرودگاه در PostgreSQL خصوصی Railway قرار دارد.':github?
-   'ابتدا در Railway وارد حساب شو، سپس Connect Railway را بزن. پنجره امن بازشده را هنگام کار باز نگه دار.':
-   'برای خواندن داده‌ها سرویس محلی روی همین کامپیوتر اجرا شود.';
+   'CDU و SG از بانک ناوبری مشترک Unified استفاده می‌کنند. اتصال با نشست ورود فعلی انجام می‌شود.':github?
+   'برای دسترسی به NAVDATA خصوصی، Unified را از درگاه ورود کنترل‌شده باز کن؛ پنجره یا لاگین دوم CDU لازم نیست.':
+   'برای خواندن داده‌های خصوصی، سرویس محلی ناوبری را اجرا کن.';
   const input=document.createElement('input');input.type='password';input.id='cduSgPrivateToken';
   input.autocomplete='off';input.dir='ltr';input.placeholder='Optional local token (port 8768)';
   if(railway)input.hidden=true;
   if(github){input.hidden=true;}
   const connectButton=document.createElement('button');connectButton.type='button';
   connectButton.id='cduSgPrivateConnect';
-  connectButton.textContent=railway?'Connect Railway NAVDATA':github?'Connect Railway NAVDATA':'Connect CDU / SG SQLite';
+  connectButton.textContent=railway?'Check Unified NAVDATA':github?'Open Unified Gateway':'Connect Unified NAVDATA';
   const dis=document.createElement('button');dis.type='button';dis.id='cduSgPrivateDisconnect';
   dis.textContent='Disconnect';dis.disabled=true;
   const s=document.createElement('p');s.id='cduSgPrivateStatus';s.setAttribute('role','status');
