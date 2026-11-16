@@ -38,7 +38,7 @@ test('instructor controls and runway selections use MAG, not TRUE heading number
  assert.ok(f.get('flightRunway').options.every(x=>x.label.includes('MAG')));
  assert.notEqual(Number(f.get('flightHeading').value),a.runways[a.defaultRunway]);
  assert.equal(Number(f.get('flightHeading').value),Math.round(WMM.trueToMag(
-  a.runways[a.defaultRunway],WMM.evaluate({lat:a.lat,lon:a.lon,altitudeFt:a.elevationFt}).declinationDeg))%360));
+  a.runways[a.defaultRunway],WMM.evaluate({lat:a.lat,lon:a.lon,altitudeFt:a.elevationFt}).declinationDeg))%360);
 });
 test('manual magnetic 134 generates TRUE flight state and magnetic live readout; targets convert again',()=>{
  const f=fixture();
