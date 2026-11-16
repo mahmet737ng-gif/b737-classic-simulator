@@ -18,7 +18,8 @@
   const measured=finite(observedVariationDeg)&&Math.abs(observedVariationDeg)<=180;
   let variation=measured?observedVariationDeg:null;
   let source=measured?(observedSource||'IRS_SUPPLIED_MAGNETIC_VARIATION'):'MAGNETIC_VARIATION_UNAVAILABLE';
-  let modeled=false,decimalYear=null;
+  let modeled=measured&&typeof observedSource==='string'&&
+   observedSource.includes('WMM2025'),decimalYear=null;
   if(!measured&&positionValid===true){
    const model=globalThis.B737WMM2025V1?.evaluate?.({lat,lon,altitudeFt,date});
    if(model?.valid===true){
