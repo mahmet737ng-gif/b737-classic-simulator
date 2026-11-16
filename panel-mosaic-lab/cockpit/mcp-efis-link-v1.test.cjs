@@ -8,6 +8,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const Sources=require('./unified-efis-sources-v1.js');
 const Fma=require('../../engine/afds/fma-mode-engine-v1.js');
+const EHSI=require('../../efis-display-lab/ehsi-v2.js');
 const rec=value=>({quality:'VALID',value,receivedAtMs:1000,origin:'TRAINING_SCENARIO'});
 const irs={powered:true,attitudeValid:true,positionValid:true,pitchDeg:0,rollDeg:0,
  headingDeg:100,trackDeg:100,magneticVariationDeg:5,gsKt:0};
@@ -70,6 +71,37 @@ test('VNAV/MACH blank is not interpreted as IAS or as a manufactured CAS speed',
  assert.equal(c.mcp.speedBlank,true);
  assert.equal(c.mcp.speedDisplayMode,'MACH');
  assert.equal(c.mcp.selectedSpeedKt,null);
+});
+test('Regression: FULL ALIGN 090 TRUE track with MCP HDG 109 renders a visible EHSI heading bug',()=>{
+ const bench={...irs,headingDeg:90,trackDeg:90,magneticVariationDeg:null,
+  source:'BENCH_SIM',trainerOnly:true};
+ const mcp={...selected,headingDeg:109};
+ const data={'irs.left':rec(bench),'irs.right':rec(bench),'mcp.state':rec(mcp)};
+ for(const seat of ['CAPT','FO']){
+  const src=Sources.resolve(data,seat,{}, {1:true,2:true},{1:false,2:false});
+  assert.equal(src.track,90);
+  assert.equal(src.selectedHeading,109,'Selected MCP HDG must reach glass');
+  assert.equal(src.headingReferenceSource,'TRAINING_ZERO_VARIATION');
+  assert.equal(src.trueRef,false,'Training display is magnetic-equivalent only under explicit 0-degree reference');
+  const model=EHSI.model({mode:'MAP',range:40,
+   heading:src.heading,track:src.track,selectedHeading:src.selectedHeading,
+   efis:{displayPower:true,sgValid:true,trackValid:true,headingValid:true}});
+  const angle=EHSI.rel(model.selectedHeading-model.reference);
+  assert.equal(angle,19);
+  assert.ok(Math.abs(angle)<=EHSI.LAYOUT.MAP.degrees/2,
+   '109 selected must be inside visible 70-degree MAP arc around 090');
+ }
+});
+test('Do not invent magnetic reference or heading bug in real aircraft if variation unavailable',()=>{
+ const noVar={...irs,magneticVariationDeg:null,source:'EXTERNAL_TELEMETRY',trainerOnly:true};
+ const real={'irs.left':rec(noVar),'irs.right':rec(noVar),'mcp.state':rec({...selected,headingDeg:109})};
+ const c=Sources.resolve(real,'CAPT',{}, {1:true,2:true},{1:false,2:false});
+ assert.equal(c.selectedHeading,null);
+ assert.equal(c.headingReferenceSource,'UNAVAILABLE');
+ assert.equal(c.trueRef,true);
+ const impostor={...noVar,source:'BENCH_SIM',trainerOnly:false};
+ const faux={'irs.left':rec(impostor),'irs.right':rec(impostor),'mcp.state':rec(selected)};
+ assert.equal(Sources.resolve(faux,'CAPT',{}, {1:true,2:true},{1:false,2:false}).selectedHeading,null);
 });
 test('No MCP or no magnetic reference suppresses course/heading symbols',()=>{
  const c=Sources.resolve({'irs.left':rec(irs),'irs.right':rec(irs)},'CAPT',{},
