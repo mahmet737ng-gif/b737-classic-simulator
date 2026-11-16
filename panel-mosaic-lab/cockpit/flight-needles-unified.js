@@ -7,6 +7,18 @@
  function svg(parent,tag,attrs={}){const el=document.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))el.setAttribute(key,String(value));parent.append(el);return el;}
  function paint(station,key){const blade=blades[station]?.[key],angle=state[station]?.[key];if(blade)blade.style.transform=`rotate(${angle}deg)`;const control=controls[station]?.[key];if(control){control.input.value=String(angle);control.output.textContent=`${angle}°`;}}
  function setAngle(station,key,value){if(!state[station]||!model.needles[key])throw Error('Unknown station or needle');const n=model.angle(value);state[station][key]=n;paint(station,key);return n;}
+ // Animated simulator-only continuous revolutions: altitude's hundred-foot
+ // hand must NOT reverse 359 degrees when it passes a 1000-foot boundary.
+ // The existing inspector slider/setAngle remain bounded physical tests.
+ function setContinuousAngle(station,key,angle,{instant=false}={}){
+  if(!state[station]||!['altimeter','verticalSpeed'].includes(key)||
+    !Number.isFinite(angle)||Math.abs(angle)>36000)throw Error('Invalid live instrument angle');
+  const blade=blades[station]?.[key];
+  if(instant&&blade)blade.style.transition='none';
+  state[station][key]=angle;paint(station,key);
+  if(instant&&blade)requestAnimationFrame(()=>{if(blade.isConnected)blade.style.transition='transform 320ms ease-out';});
+  return angle;
+ }
  function addNeedle(layer,station,key,gauge){
   const isRmi=key==='rmi1'||key==='rmi2';
   // Resize, but never redraw, the two photographed RMI assets. Both share the
@@ -39,7 +51,7 @@
   const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت عقربه‌ها به موقعیت مرجع';reset.addEventListener('click',()=>{for(const station of Object.keys(state))for(const [key,def] of Object.entries(model.needles))setAngle(station,key,def.initialAngle);});section.append(reset);
   const previous=document.querySelector('#unifiedAirspeedPointers');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
  }
- window.B737UnifiedFlightNeedles=Object.freeze({getAngles:()=>({captain:{...state.captain},firstOfficer:{...state.firstOfficer}}),setAngle});
+ window.B737UnifiedFlightNeedles=Object.freeze({getAngles:()=>({captain:{...state.captain},firstOfficer:{...state.firstOfficer}}),setAngle,setContinuousAngle});
  window.addEventListener('b737:flight-needle-angle',event=>{try{const {station,key,angle}=event.detail||{};setAngle(station,key,angle);}catch(error){console.error(error);}});
  window.addEventListener('b737:cockpit-mounted',mount);mount();if(document.querySelector('.inspector'))inspector();
 })();
