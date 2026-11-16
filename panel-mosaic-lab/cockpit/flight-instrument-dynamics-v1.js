@@ -11,6 +11,7 @@
  const doc=win.document,VERSION='UNIFIED_FLIGHT_GAUGE_BRIDGE_0001';
  const by=id=>doc.getElementById(id);
  let last=null,active=false,previous=null,latest=null,queued=false,paints=0,error=null;
+ let accumulatedAltitudeAngle=null;
  const stations=['captain','firstOfficer'];
  const clone=x=>x===null?null:JSON.parse(JSON.stringify(x));
  const validApi=()=>typeof win.B737UnifiedFlightNeedles?.setAngle==='function'&&
@@ -57,9 +58,21 @@
   if(!sample||!validApi())return false;
   capture();
   const fn=win.B737UnifiedFlightNeedles,asi=win.B737UnifiedAirspeedPointers;
+  const first=accumulatedAltitudeAngle===null;
+  if(first)accumulatedAltitudeAngle=sample.altimeterNeedleDeg;
+  else{
+   const previousWrapped=((accumulatedAltitudeAngle%360)+360)%360;
+   const smallestDelta=((sample.altimeterNeedleDeg-previousWrapped+540)%360)-180;
+   accumulatedAltitudeAngle+=smallestDelta;
+  }
   for(const station of stations){
-   fn.setAngle(station,'altimeter',sample.altimeterNeedleDeg);
-   fn.setAngle(station,'verticalSpeed',sample.ivsiNeedleDeg);
+   if(typeof fn.setContinuousAngle==='function'){
+    fn.setContinuousAngle(station,'altimeter',accumulatedAltitudeAngle,{instant:first});
+    fn.setContinuousAngle(station,'verticalSpeed',sample.ivsiNeedleDeg,{instant:first});
+   }else{
+    fn.setAngle(station,'altimeter',sample.altimeterNeedleDeg);
+    fn.setAngle(station,'verticalSpeed',sample.ivsiNeedleDeg);
+   }
    asi.setAirspeedKts(sample.airspeedPointerKt,station);
   }
   last=sample;active=true;paints++;
@@ -87,14 +100,18 @@
   });
  }
  function stopped(){
-  latest=null;active=false;last=null;
+  latest=null;active=false;last=null;accumulatedAltitudeAngle=null;
   if(previous&&validApi()){
    const fn=win.B737UnifiedFlightNeedles,asi=win.B737UnifiedAirspeedPointers;
    try{
     for(const station of stations){
      for(const key of ['altimeter','verticalSpeed'])
-      if(Number.isFinite(previous.angles?.[station]?.[key]))
-       fn.setAngle(station,key,previous.angles[station][key]);
+      if(Number.isFinite(previous.angles?.[station]?.[key])){
+       const angle=previous.angles[station][key];
+       if(typeof fn.setContinuousAngle==='function')
+        fn.setContinuousAngle(station,key,angle,{instant:true});
+       else fn.setAngle(station,key,angle);
+      }
      if(Number.isFinite(previous.airspeed?.[station]?.airspeedKts))
       asi.setAirspeedKts(previous.airspeed[station].airspeedKts,station);
     }
