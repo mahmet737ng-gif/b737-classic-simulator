@@ -1,0 +1,25 @@
+name: EFIS default FULL ALIGN boot QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/efis-training-presets-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/efis-default-full-align.test.cjs'
+      - '.github/workflows/efis-default-full-align-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  startup-alignment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check EFIS startup JS syntax
+        run: node --check panel-mosaic-lab/cockpit/efis-training-presets-v1.js
+      - name: Test actual L/R IRS alignment and operator controls
+        run: node --test tests/efis-default-full-align.test.cjs
