@@ -328,6 +328,21 @@ async function handle(req,res) {
     res.end(loginHTML(url.searchParams.get('e')));return;
   }
   if (req.method==='POST' && url.pathname==='/api/login') { await signIn(req,res);return; }
+  // Public shell only: first top-level navigation changes the popup's site
+  // from GitHub Pages to Railway, then a SAME-SITE navigation lets Strict
+  // Railway session cookies be sent. The data endpoint remains protected.
+  if(req.method==='GET'&&url.pathname==='/navdata-relay/start'){
+    const nonce=url.searchParams.get('nonce');
+    if(!/^[a-f0-9]{32}$/.test(nonce||'')){
+      res.writeHead(400,{'Content-Type':'text/plain'});res.end('INVALID_NONCE');return;
+    }
+    res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    res.setHeader('Cross-Origin-Opener-Policy','unsafe-none');
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});
+    res.end('<!doctype html><html><head><meta charset="utf-8"></head><body>'+ 
+      '<script>location.replace("/navdata-relay?nonce='+nonce+'");</script></body></html>');
+    return;
+  }
   const ok=await authorized(req);
   if (!ok) {
     // Redirect only actual document navigations. Serving login HTML as a
