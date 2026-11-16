@@ -81,6 +81,31 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
    const bytes=await page.locator('#ehsiStage').screenshot({path:path.join(out,name+'.png'),animations:'disabled'});
    shots[name]=crypto.createHash('sha256').update(bytes).digest('hex');
   }
+  // Browser-level 737 Classic reference: off-scale MCP selected heading
+  // keeps the magenta vector on the glass; a 70-degree arc is NOT the whole
+  // rose, but it must remain continuous through 359 -> 000 rotation.
+  await page.evaluate(()=>window.B737EFISDisplayLab.dispatch({
+   type:'set',path:'ehsi.selectedHeading',value:340}));
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),0,
+   '95° offscale MCP heading does not paint an impossible on-arc bug');
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug-vector"][data-heading-offscale="true"]').count(),1,
+   'Offscale 95° still shows the magenta radial selected heading line');
+  await page.locator('#ehsiStage').screenshot({
+   path:path.join(out,'ehsi-expanded-heading-offscale-95.png'),animations:'disabled'});
+  await page.evaluate(()=>{
+   const lab=window.B737EFISDisplayLab;
+   lab.dispatch({type:'set',path:'ehsi.track',value:359});
+   lab.dispatch({type:'set',path:'ehsi.heading',value:359});
+   lab.dispatch({type:'set',path:'ehsi.selectedHeading',value:2});
+  });
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),1,
+   '359° to 002° wraps into the visible arc');
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug-vector"][data-relative-heading="3"]').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"] [data-text="0"]').count(),1,
+   'Zero-degree compass index crosses 359-to-000 smoothly');
+  await page.locator('#ehsiStage').screenshot({
+   path:path.join(out,'ehsi-expanded-heading-wrap-359-to-002.png'),animations:'disabled'});
+  await page.locator('[data-scenario="normal"]').click();
   await screenshot('ehsi-map');
   await page.locator('[data-ehsi-mode="FULL_NAV"]').click();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'FULL_NAV');
