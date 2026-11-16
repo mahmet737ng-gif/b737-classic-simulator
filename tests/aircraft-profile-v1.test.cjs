@@ -64,8 +64,8 @@ assert.equal(approvedPanel.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', '
 const labHtml = fs.readFileSync(path.join(__dirname, '../dcpcs-lab/index.html'), 'utf8');
 assert.ok(labHtml.includes('../' + dcpcsAsset), 'DCPCS lab must show approved image, not generated placeholder');
 const settingsUi = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/aircraft-settings.js'), 'utf8');
-assert.ok(settingsUi.includes('selected?.backgroundAsset'), 'Settings must use selected pressurization artwork');
-assert.ok(settingsUi.includes('ownerPreview.hidden = !source'), 'CPCS must not show DCPCS image');
+assert.ok(!settingsUi.includes('ownerPreview'), 'Settings must not mount the blank DCPCS artwork preview');
+assert.ok(!settingsUi.includes('showPressureArtwork'), 'Settings preview loader must be removed');
 assert.ok(settingsUi.includes("action:'pressurization-background'"), 'Settings must command actual Unified OH22 background to switch');
 const overheadBridge = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/overhead-bridge.js'), 'utf8');
 assert.ok(overheadBridge.includes('DCPCS_Background_Owner.png'), 'Embedded overhead must show exact owner-uploaded asset');
@@ -83,9 +83,21 @@ const html = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/cockpit/i
 for (const id of ['aircraftSettingsOpen','aircraftSettingsDialog','aircraftSettingsForm','activeAircraftFamily','activePressurization','activeEngineInstruments','openSelectedPressurizationPanel','selectedPressureFrame']) {
   assert.ok(html.includes('id="' + id + '"'), 'Unified settings element missing: ' + id);
 }
-for (const field of profile.FIELDS) for (const option of profile.CATALOG[field]) {
+for (const field of ['aircraftFamily','pressurization','engineInstruments']) for (const option of profile.CATALOG[field]) {
   assert.ok(html.includes('name="' + field + '" value="' + option.id + '"'), 'Missing selectable option: ' + option.id);
 }
+for(const field of ['aircraftModel','engineVariant'])assert.ok(!html.includes('name="'+field+'"'),field+' must not be selectable in Settings');
+assert.ok(!html.includes('id="airacDatabaseStatus"'));
+assert.ok(!html.includes('id="fmcAiracCycleStatus"'));
+for(const family of ['B737-300-500','B737-400']){
+ store.set({aircraftFamily:family});
+ const q=store.resolve();
+ assert.equal(q.aircraftModel.id,family==='B737-400'?'737-400':'737-300');
+ assert.equal(q.engineVariant.rating,family==='B737-400'?'22K':'20K');
+}
+const legacy=profile.resolve({...profile.DEFAULTS,aircraftFamily:'B737-400',aircraftModel:'737-500',engineVariant:'CFM56-3C1'});
+assert.equal(legacy.aircraftModel.id,'737-400');
+assert.equal(legacy.engineVariant.rating,'22K');
 assert.ok(html.includes('aircraft-profile-v1.js'));
 assert.ok(html.includes('aircraft-settings.js'));
 assert.ok(!fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab/all-overhead/final-lock.json'), 'utf8').includes('aircraft-settings'));
