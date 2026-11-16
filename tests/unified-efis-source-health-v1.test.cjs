@@ -41,7 +41,7 @@ test('missing IRS/ADC/RA signals are reported as UNKNOWN, never disguised as dis
  assert.equal(src.health.sgVideo,true);
 });
 test('receiving display power and SG video are diagnosed independently',()=>{
- const src=Sources.resolve(snapshot(),'CAPT',{}, {1:false,2:true},{1:true,2:false},{});
+ const src=Sources.resolve(snapshot(),'CAPT',{'efi-transfer':'BOTH ON 2'}, {1:false,2:true},{1:true,2:false},{});
  assert.equal(src.health.displayPowered,false);
  assert.equal(src.health.sgVideo,true);
 });
