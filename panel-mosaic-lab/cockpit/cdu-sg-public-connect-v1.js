@@ -125,6 +125,18 @@
    section.append(note,file);
   }
   panel.append(section);
+  if(railway&&!$('cduSgQuickOpen')){
+   const header=$('inspectorToggle')?.parentElement;
+   if(header){
+    const quick=document.createElement('button');quick.id='cduSgQuickOpen';
+    quick.type='button';quick.textContent='NAV DATA';quick.setAttribute('aria-label','Open CDU NAVDATA import and connection');
+    quick.addEventListener('click',()=>{
+     if(!document.body.classList.contains('side-open'))$('inspectorToggle')?.click();
+     section.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    header.insertBefore(quick,$('inspectorToggle'));
+   }
+  }
   connectButton.addEventListener('click',()=>void connect());dis.addEventListener('click',disconnect);
   for(const frame of frames())frame.addEventListener('load',()=>{
    if(connected)try{frame.contentWindow?.B737CDUAttachCduSgV1?.()}catch(_){}
