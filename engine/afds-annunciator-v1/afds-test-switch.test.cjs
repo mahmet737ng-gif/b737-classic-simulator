@@ -48,7 +48,7 @@ test("Unified has two independent three-position switches using photo bounding b
  const js=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js"),"utf8");
  const css=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css"),"utf8");
  const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
- assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0003-FO-SOCKET-CENTER/);
+ assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0004-NONEIS-FO-REGISTRATION/);
  assert.match(html,/afds-annunciator-switch-v1\.css\?v=AFDS-ANN-UNIFIED-0002/);
  assert.match(js,/Small_Silver_5Positions\.webp/);
  assert.match(js,/backgroundPosition=POSE/);
@@ -67,7 +67,7 @@ test("Unified has two independent three-position switches using photo bounding b
  };
  vm.runInNewContext(js,{window:win,CustomEvent:class{constructor(x,o){this.type=x;this.detail=o.detail}}});
  const api=win.B737AFDSAnnunciatorUnifiedV1;
- assert.equal(api.VERSION,"AFDS-ANN-UNIFIED-0002");
+ assert.equal(api.VERSION,"AFDS-ANN-UNIFIED-0004-NONEIS-FO-REGISTRATION");
  assert.deepEqual(Object.keys(api.INSTALL).sort(),["CAPT","FO"]);
  assert.equal(api.INSTALL.CAPT.toggle.cx,683.2,"Captain x must remain approved");
  assert.equal(api.INSTALL.CAPT.toggle.cy,212.9,"Captain y must remain approved");
@@ -75,6 +75,27 @@ test("Unified has two independent three-position switches using photo bounding b
  assert.equal(api.INSTALL.FO.toggle.cy,226.5,"FO y must match corrected photo socket");
  assert.equal(api.INSTALL.FO.toggle.cell,44,"FO artwork size must not change");
  assert.equal(api.INSTALL.FO.toggle.hit,20.8,"FO hitbox size must not change");
+ // Non-EIS must use a distinct photographic registration while leaving
+ // the approved Captain and EIS FO coordinates byte-for-byte intact.
+ assert.equal(api.FO_NON_EIS_SHIFT.x,22.0);
+ assert.equal(api.FO_NON_EIS_SHIFT.y,-8.8);
+ const eis=api.layoutFor("EIS"),non=api.layoutFor("CONVENTIONAL");
+ assert.equal(eis,api.INSTALL.FO);
+ assert.equal(non.sourcePiece,"fo-owner");
+ assert.equal(non.toggle.cx,1554.4);
+ assert.equal(non.toggle.cy,217.7);
+ assert.equal(non.toggle.cell,eis.toggle.cell);
+ assert.equal(non.toggle.hit,eis.toggle.hit);
+ for(let n=0;n<3;n++){
+   assert.equal(non.lamps[n].id,eis.lamps[n].id);
+   assert.ok(Math.abs(non.lamps[n].x-eis.lamps[n].x-22)<1e-8);
+   assert.ok(Math.abs(non.lamps[n].y-eis.lamps[n].y+8.8)<1e-8);
+   assert.equal(non.lamps[n].w,eis.lamps[n].w);
+   assert.equal(non.lamps[n].h,eis.lamps[n].h);
+ }
+ assert.deepEqual(Object.keys(api.INSTALL).sort(),["CAPT","FO"]);
+ assert.equal(api.INSTALL.CAPT.toggle.cx,683.2);
+ assert.equal(api.INSTALL.CAPT.toggle.cy,212.9);
  for(const seat of ["CAPT","FO"]){
   const cfg=api.INSTALL[seat];
   assert.deepEqual(Array.from(cfg.lamps,x=>x.id),["AP","AT","FMC"]);
@@ -100,4 +121,16 @@ test("Unified has two independent three-position switches using photo bounding b
  assert.equal(api.getState("FO").lamps.AT,"FLASH_RED");
  api.acknowledge("AT");
  assert.equal(api.getState("FO").lamps.AT,"OFF");
+});
+
+test("Settings exposes Non-EIS while preserving CONVENTIONAL persistence and data-mode identifiers",()=>{
+ const html=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/index.html"),"utf8");
+ const profile=fs.readFileSync(path.resolve(root,"engine/config/aircraft-profile-v1.js"),"utf8");
+ const settings=fs.readFileSync(path.resolve(root,"panel-mosaic-lab/cockpit/aircraft-settings.js"),"utf8");
+ assert.match(html,/name="engineInstruments" value="CONVENTIONAL"><span><b>Non-EIS<\/b>/);
+ assert.match(html,/Analog Engine Instruments/);
+ assert.match(profile,/id: 'CONVENTIONAL', label: 'Non-EIS · Analog Engine Instruments'/);
+ assert.match(settings,/selected\.engineInstruments\.id === 'EIS' \? 'EIS' : 'Non-EIS'/);
+ assert.match(html,/afds-annunciator-switch-v1\.js\?v=AFDS-ANN-UNIFIED-0004-NONEIS-FO-REGISTRATION/);
+ assert.match(html,/name="engineInstruments" value="EIS"/);
 });
