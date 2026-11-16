@@ -5,6 +5,11 @@ on:
       - 'panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.*'
       - 'panel-mosaic-lab/cockpit/assets/efis-*.webp'
       - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js'
+      - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
+      - 'panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs'
+      - 'efis-display-lab/eadi.js'
       - 'panel-mosaic-lab/cockpit/index.html'
       - '.github/workflows/efis-pedestal-raster-v1.yml'
   workflow_dispatch:
@@ -24,7 +29,12 @@ jobs:
         run: |
           node --check panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js
           node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js
+          node --check panel-mosaic-lab/cockpit/unified-efis-sources-v1.js
+          node --check panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js
+          node --check efis-display-lab/eadi.js
           node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.test.cjs
+          node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
       - name: Protected approved cockpit assets stay unchanged
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
