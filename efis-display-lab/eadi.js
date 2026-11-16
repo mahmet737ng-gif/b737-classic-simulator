@@ -322,7 +322,10 @@ function renderUnifiedFull(canvas,input={}){
  p.irsLeft=input.attitudeValid!==false;
  p.irsRight=input.attitudeValid!==false;
  p.adc=finite(input.iasKt);p.machData=finite(input.mach);
- p.selSpeed=finite(input.selectedSpeedKt);
+ // MCP numeric value is blank in VNAV and may represent Mach rather
+  // than CAS; that is not a failed selected-speed source. The real
+  // MCP electrical state, not the current numeric window, validates it.
+  p.selSpeed=input.selectedSpeedValid===true;
  p.nav=false;p.loc=finite(input.locDeviation);p.gs=finite(input.gsDeviation);
  p.ra=finite(input.radioAltFt);
  p.fd=e.fd;p.dhData=finite(input.dhFt);
@@ -331,7 +334,7 @@ function renderUnifiedFull(canvas,input={}){
  state.ehsi.track=0;state.ehsi.course=0;
  canvas.dataset.eadiUnifiedFull='true';
  render(canvas,state,core,input);
- canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0004';
+ canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0005-MCP';
  canvas.dataset.eadiSource=input.source||'UNKNOWN';
  return true;
 }
