@@ -4,7 +4,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EFIS-PEDESTAL-RASTER-0002';
+const VERSION='EFIS-PEDESTAL-RASTER-0003-SEAT';
 const src=document.currentScript?.src||location.href;
 const asset=(name)=>new URL('./assets/'+name,src).href;
 const PHOTO={plate:asset('efis-cp-photo-plate-v1.webp'),
@@ -40,6 +40,7 @@ function emit(seat,control){
  renderSeat(seat);
 }
 function change(seat,control,value){
+ if(!Object.hasOwn(states,seat))throw Error('Invalid EFIS seat');
  const s=states[seat];
  if(control==='mode'){if(!MODE.includes(value))throw Error('Bad EFIS mode');s.mode=value;}
  else if(control==='range'){if(!RANGES.includes(value))throw Error('Bad EFIS range');s.range=value;}
@@ -62,17 +63,43 @@ function step(seat,key,dir){
 }
 function button(c,aria){const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',aria);b.dataset.control='efis';b.title=aria;b.addEventListener('pointerdown',e=>e.stopPropagation());return c.appendChild(b)}
 function gestures(b,seat,key){
- let start=null,moved=false,skip=false;
- b.addEventListener('wheel',e=>{e.stopPropagation();e.preventDefault();step(seat,key,e.deltaY<0?1:-1)},{passive:false});
- b.addEventListener('pointerdown',e=>{if(e.button!==0)return;e.stopPropagation();start={id:e.pointerId,x:e.clientX,y:e.clientY};moved=false;b.setPointerCapture?.(e.pointerId)});
- b.addEventListener('pointermove',e=>{if(!start||e.pointerId!==start.id)return;let dx=e.clientX-start.x,dy=e.clientY-start.y,delta=Math.abs(dx)>Math.abs(dy)?dx:-dy;
-  const threshold=['mode','range'].includes(key)?20:11;const n=Math.trunc(delta/threshold);
-  if(n){moved=true;for(let i=0;i<Math.min(16,Math.abs(n));i++)step(seat,key,Math.sign(n));start.x=e.clientX;start.y=e.clientY;}
+ let track=null;
+ // No synthetic click-to-rotate: tap merely focuses the selector.
+ // Each pointer gesture ends immediately on release/cancel, without timers.
+ function release(id){
+  const prev=track;track=null;
+  if(prev&&id===prev.id&&b.hasPointerCapture?.(id))b.releasePointerCapture(id);
+ }
+ b.addEventListener('wheel',e=>{
+  e.stopPropagation();e.preventDefault();step(seat,key,e.deltaY<0?1:-1);
+ },{passive:false});
+ b.addEventListener('pointerdown',e=>{
+  if(e.button!==0)return;
+  e.stopPropagation();
+  track={id:e.pointerId,x:e.clientX,y:e.clientY,acc:0};
+  b.setPointerCapture?.(e.pointerId);
  });
- b.addEventListener('pointerup',()=>{skip=moved;start=null});
- b.addEventListener('pointercancel',()=>{start=null;skip=true});
- b.addEventListener('click',e=>{e.stopPropagation();if(skip){skip=false;return;}step(seat,key,e.shiftKey?-1:1)});
- b.addEventListener('keydown',e=>{if(['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].includes(e.key)){e.preventDefault();step(seat,key,['ArrowUp','ArrowRight'].includes(e.key)?1:-1)}});
+ b.addEventListener('pointermove',e=>{
+  if(!track||track.id!==e.pointerId)return;
+  const dx=e.clientX-track.x,dy=e.clientY-track.y;
+  track.x=e.clientX;track.y=e.clientY;
+  track.acc+=(Math.abs(dx)>Math.abs(dy)?dx:-dy);
+  const threshold=['mode','range'].includes(key)?18:11;
+  const n=Math.trunc(track.acc/threshold);
+  if(n){
+   e.preventDefault();e.stopPropagation();
+   track.acc-=n*threshold;
+   for(let i=0;i<Math.min(16,Math.abs(n));i++)step(seat,key,Math.sign(n));
+  }
+ });
+ b.addEventListener('pointerup',e=>{if(track?.id===e.pointerId){e.stopPropagation();release(e.pointerId);}});
+ b.addEventListener('pointercancel',e=>{if(track?.id===e.pointerId)release(e.pointerId);});
+ b.addEventListener('lostpointercapture',()=>{track=null;});
+ b.addEventListener('click',e=>{e.stopPropagation();}); // selection only; rotation requires drag/wheel/key
+ b.addEventListener('keydown',e=>{
+  if(!['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].includes(e.key))return;
+  e.preventDefault();step(seat,key,['ArrowUp','ArrowRight'].includes(e.key)?1:-1);
+ });
 }
 function physicalPanel(seat,host,zoomed=false){
  const panel=elm('div','uefis-face',host);panel.dataset.seat=seat;panel.dataset.zoomed=String(zoomed);
@@ -158,5 +185,5 @@ function mountOnce(){mount();}
 root.addEventListener('b737:cockpit-mounted',mountOnce);
 root.addEventListener('b737:engine-indication-view',()=>{for(const seat of ['CAPT','FO'])emit(seat,'engine-view')});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOnce,{once:true});else mount();
-root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},mount,open,getState:(seat)=>copy(states[seat]),operate:change});
+root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},mount,open,getState:(seat)=>Object.hasOwn(states,seat)?copy(states[seat]):null,operate:change});
 })(window);
