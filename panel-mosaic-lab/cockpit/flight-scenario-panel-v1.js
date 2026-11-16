@@ -14,7 +14,7 @@
   <div class="flight-grid">
    <label>Airport / فرودگاه<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
    <label>Runway / باند<select id="flightRunway"></select></label>
-   <label>Aircraft status<select id="flightAirGround"><option value="GROUND">GROUND</option><option value="AIRBORNE">AIRBORNE</option></select></label>
+   <label>FLT PHASE<select id="flightAirGround"><option value="GROUND">GROUND</option><option value="AIRBORNE">AIRBORNE</option></select></label>
    <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
   </div>
   <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
@@ -24,6 +24,8 @@
    <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
    <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
    <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
+   <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
+   <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
   </div>
   <div class="flight-actions">
    <button type="button" id="flightLoad" class="flight-primary">LOAD SCENARIO</button>
@@ -74,6 +76,16 @@
   const mag=magneticHeading(trueDeg,point);
   return Number.isFinite(mag)?String(Math.round(mag)%360).padStart(3,'0')+'° MAG':'MAG N/A';
  };
+ function publishSelectedReference(){
+  const a=Core.AIRPORTS[by('flightAirport').value];
+  if(!a)return;
+  const manual=by('flightPreset').value==='MANUAL';
+  const lat=manual?Number(by('flightLat').value):a.lat;
+  const lon=manual?Number(by('flightLon').value):a.lon;
+  if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
+  try{win.B737UnifiedFlightLocationV1?.choose({lat,lon,icao:a.icao,source:'FLIGHT_PHASE_SELECTION'});}
+  catch(error){status('INVALID POSITION: '+String(error.message||error),true);}
+ }
  function airportChanged(){
   const a=Core.AIRPORTS[by('flightAirport').value];
   const rw=by('flightRunway'),previous=rw.value;
@@ -84,10 +96,12 @@
   rw.value=Object.hasOwn(a.runways,previous)?previous:a.defaultRunway;
   const manual=by('flightPreset').value==='MANUAL';
   if(!manual){
+   by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
    const mag=magneticHeading(a.runways[rw.value],airportPoint(a));
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
    by('flightAlt').value=a.elevationFt+(by('flightPreset').value==='RUNWAY_READY'?0:3000);
   }
+  publishSelectedReference();
  }
  function presetChanged(){
   const kind=by('flightPreset').value;
@@ -101,7 +115,9 @@
    by('flightSpeed').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?155:170;
    by('flightVS').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?-823:-902;
    by('flightBank').value=0;
+   by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
   }
+  publishSelectedReference();
  }
  function airGroundChanged(){
   const g=by('flightAirGround').value==='GROUND',p=by('flightPreset');
@@ -151,6 +167,7 @@
    lat:state.lat,lon:state.lon,source:'UNIFIED_SCENARIO_ENGINE'};
   win.dispatchEvent(new CustomEvent('b737:simulator-telemetry',{detail:sample}));
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-state',{detail:snapshot()}));
+  win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_LIVE_POSITION'});
   sendAvionics();
  }
  function updateUI(){
@@ -212,7 +229,11 @@
     config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
     config.speedKt=v('Speed');config.vsFpm=v('VS');config.bankDeg=v('Bank');
    }
+   if(preset==='MANUAL'){
+    config.lat=v('Lat');config.lon=v('Lon');
+   }
    state=Core.newScenario(config);
+   win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
@@ -320,7 +341,7 @@
   const header=doc.querySelector('.unified-minimal-header .header-settings');
   if(!header)return;
   const launch=doc.createElement('button');
-  launch.id='flightScenarioHeader';launch.textContent='GROUND / AIRBORNE';
+  launch.id='flightScenarioHeader';launch.textContent='FLT PHASE';
   launch.setAttribute('aria-haspopup','dialog');launch.setAttribute('aria-controls','flightScenarioDialog');
   header.appendChild(launch);
   const dlg=doc.createElement('dialog');
@@ -332,6 +353,7 @@
   by('flightRunway').addEventListener('change',presetChanged);
   by('flightPreset').addEventListener('change',presetChanged);
   by('flightAirGround').addEventListener('change',airGroundChanged);
+  for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(by('flightPreset').value==='MANUAL')publishSelectedReference();});
   by('flightLoad').addEventListener('click',load);
   by('flightTargets').addEventListener('click',targets);
   by('flightTakeoff').addEventListener('click',()=>{
@@ -345,7 +367,7 @@
   timer=win.setInterval(tick,100);
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,
-  loadScenario:config=>{state=Core.newScenario(config);active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
+  loadScenario:config=>{state=Core.newScenario(config);win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   pause:value=>{pause=value===true;updateUI();},stop,
