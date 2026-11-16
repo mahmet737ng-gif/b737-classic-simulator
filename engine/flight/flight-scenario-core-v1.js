@@ -108,7 +108,7 @@
   }
   return next;
  }
- function step(state,dtSeconds){
+ function step(state,dtSeconds,propulsion=null){
   const dt=finite(dtSeconds,0,2,'DT_SECONDS');
   if(state.paused||dt===0)return state;
   const s={...state,target:{...state.target},revision:state.revision+1,elapsedSec:state.elapsedSec+dt};
@@ -120,7 +120,26 @@
   const groundRoll=s.phase==='TAKEOFF_ROLL',landingRoll=s.phase==='LANDING_ROLL';
   const commandedSpeed=landingRoll?0:groundRoll?165:target.speedKt;
   const rate=groundRoll?2.4:landingRoll?1.8:s.iasKt<commandedSpeed?1.2:1;
-  s.iasKt=Math.max(0,s.iasKt+clamp(commandedSpeed-s.iasKt,-rate*dt,rate*dt));
+  // If a shared ISN-18 ECU observation is available, N1 (not target speed)
+  // drives the airspeed derivative. Without a linked engine, the original
+  // kinematic trainer remains an explicitly approximate fallback.
+  const observed=propulsion?.valid===true&&Array.isArray(propulsion.engines)&&
+   propulsion.engines.length===2&&propulsion.engines.every(e=>
+    typeof e?.running==='boolean'&&Number.isFinite(e.n1Percent)&&
+    e.n1Percent>=0&&e.n1Percent<=120);
+  if(observed&&s.airborne&&!landingRoll){
+   const n1Equivalent=32+propulsion.engines.reduce((sum,e)=>
+    sum+(e.running?clamp(e.n1Percent-32,0,65):0),0)/2;
+   const requiredN1=clamp(42+.105*s.iasKt+.0002*s.iasKt*s.iasKt+
+    3*s.vsFpm/1000,32,92);
+   const accelerationKtSec=clamp((n1Equivalent-requiredN1)*.065,-2,1.8);
+   s.iasKt=clamp(s.iasKt+accelerationKtSec*dt,0,450);
+   s.propulsion={source:'ISN18_OBSERVED_N1_TRAINING_PLANT',
+    n1Equivalent,requiredN1,accelerationKtSec};
+  }else{
+   s.iasKt=Math.max(0,s.iasKt+clamp(commandedSpeed-s.iasKt,-rate*dt,rate*dt));
+   s.propulsion={source:'KINEMATIC_TRAINING_FALLBACK'};
+  }
   // Simplified TAS=IAS approximation; density/weight/thrust modeling is deferred.
   s.tasKt=s.iasKt;
   if(groundRoll){
