@@ -32,6 +32,7 @@ const cockpit='panel-mosaic-lab/cockpit/';
    cockpit+'unified-efis-sources-v1.js',cockpit+'cdu-sg-route-state-v1.js',
    cockpit+'cdu-sg-ehsi-preview-v1.js',cockpit+'ehsi-unified-v1.js'
   ])await page.addScriptTag({path:path.join(root,script)});
+  assert.equal(await page.evaluate(()=>typeof window.B737UnifiedEfisSources.offsets),'function');
   await page.evaluate(()=>{
    const state=window.B737CduSgRouteV1;
    state.setConnected(true);

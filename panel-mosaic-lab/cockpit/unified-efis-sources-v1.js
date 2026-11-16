@@ -200,7 +200,7 @@
     lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt,icao:state.icao}:null;
    return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults,scenarioPosition);
   }
-  return Object.freeze({project,route,getPreset:()=>preset,trainingSupply,
+  return Object.freeze({project,route,offsets,getPreset:()=>preset,trainingSupply,
    setPreset(value){
     if(!['FULL_ALIGN','COLD_DARK','LIVE'].includes(value))throw Error('Invalid EFIS preset');
     preset=value;
