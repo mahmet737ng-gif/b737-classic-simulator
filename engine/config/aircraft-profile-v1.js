@@ -35,7 +35,7 @@
     ]),
     engineInstruments: Object.freeze([
       Object.freeze({id: 'EIS', label: 'EIS · Electronic Engine Instruments', imageStatus: 'AWAITING_APPROVED_ASSETS'}),
-      Object.freeze({id: 'CONVENTIONAL', label: 'Conventional Engine Instruments', imageStatus: 'AWAITING_APPROVED_ASSETS'})
+      Object.freeze({id: 'CONVENTIONAL', label: 'Non-EIS · Analog Engine Instruments', imageStatus: 'AWAITING_APPROVED_ASSETS'})
     ])
   });
   // Deliberate simulator defaults, not an EP-FSI installation declaration.
