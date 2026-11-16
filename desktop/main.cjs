@@ -8,6 +8,7 @@ const CONTENT_ROOT=app.isPackaged?path.join(process.resourcesPath,'app-content')
 const ENTRY='panel-mosaic-lab/desktop-shell/index.html';
 const smoke=process.argv.includes('--startup-smoke');
 const profiling=process.argv.includes('--startup-profile');
+const runtimeAudit=process.argv.includes('--performance-audit');
 const software=process.argv.includes('--software-rendering');
 if(software)app.disableHardwareAcceleration();
 const timeline={moduleLoaded:performance.now()-processBegan};
@@ -62,8 +63,17 @@ handle('desktop:ready',async input=>{
  }
  await fs.promises.writeFile(path.join(app.getPath('userData'),'startup-report.json'),JSON.stringify(report,null,2));
  // Update networking and the updater dependency stay out of the startup path.
- if(!smoke)updaterTimer=setTimeout(()=>updates.check(),15000);
- else setTimeout(()=>app.quit(),100);
+ if(!smoke&&!runtimeAudit)updaterTimer=setTimeout(()=>updates.check(),15000);
+ if(runtimeAudit&&!smoke){
+  // Begin after startup and allow the instructor to select the overhead.
+  // Opt-in only: no runtime cost and no cockpit state changes in normal mode.
+  updaterTimer=setTimeout(()=>{
+   require('./runtime-performance-audit.cjs').capture(window.webContents)
+    .then(data=>fs.promises.writeFile(path.join(app.getPath('userData'),'runtime-performance-audit.json'),JSON.stringify(data,null,2)))
+    .catch(error=>fs.promises.writeFile(path.join(app.getPath('userData'),'runtime-performance-audit-error.txt'),String(error.stack||error)).catch(()=>{}));
+  },30000);
+ }
+ if(smoke)setTimeout(()=>app.quit(),100);
  return report;
 });
 async function createWindow(){
