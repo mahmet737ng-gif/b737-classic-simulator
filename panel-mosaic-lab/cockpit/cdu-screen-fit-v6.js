@@ -233,6 +233,7 @@
    line.style.setProperty('overflow','visible','important');
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
+    if(span.classList.contains('cdu-square-glyphs'))continue;
     if(ownerIdent){
      typography(span,px);
      span.style.setProperty('font-family',label?'"BoeingCDUSmall"':'"BoeingCDULarge"','important');
@@ -253,7 +254,7 @@
     typography(span,effectivePx);
     // Physical reference: no per-field squeeze or stretch of letterforms.
     // The 24-column width is set by the scratchpad metric, not by contents.
-    span.style.setProperty('overflow','hidden','important');
+    span.style.setProperty('overflow',span.classList.contains('cdu-square-entry')?'visible':'hidden','important');
     span.style.setProperty('transform','none','important');
    }
   }

@@ -15,25 +15,31 @@ const state=(page='RTE')=>Object.assign(engine.makeState(page),{chapter11RoutePa
 const press=(s,key)=>engine.press(s,pages,'CDU_CAPT_'+key);
 const type=(s,code,key)=>{s.scratch=code;press(s,key);};
 
-test('FCOM RTE page 1 fields, two VIA/TO rows and activation at R6',()=>{
+test('RTE header and VIA/TO use separate pages, including on a blank route',()=>{
  const s=state();
  assert.equal(ui.view(s).title,'RTE');
- assert.equal(ui.view(s).count,1);
+ assert.equal(ui.view(s).count,2);
  assert.equal(ui.view(s).rows[0].valueL,'□□□□');
  assert.equal(ui.view(s).rows[5].valueR,'');
  type(s,'OIII','LSK_L1');type(s,'OIMM','LSK_R1');
- assert.equal(ui.view(s).rows[5].valueR,'');
- type(s,'FIX01','LSK_R4');
- assert.equal(ui.view(s).rows[3].valueL,'DIRECT');
- assert.equal(ui.view(s).rows[3].valueR,'FIX01');
- type(s,'FIX02','LSK_R5');
- assert.equal(ui.view(s).rows[4].valueR,'FIX02');
- assert.equal(ui.view(s).rows[5].valueR,'ACTIVATE>');
+ type(s,'IR123','LSK_R2');
+ assert.equal(ui.view(s).rows[1].valueR,'IR123');
+ for(const row of ui.view(s).rows.slice(3,5))assert.deepEqual(Object.values(row),['','','','']);
+ assert.equal(ui.routeCell(s,'LSK_R4'),null);
  press(s,'NEXT_PAGE');
  assert.equal(ui.view(s).number,2);
- assert.equal(ui.routeCell(s,'LSK_R1').field,'TO3');
+ assert.equal(ui.view(s).rows[0].labelL,'VIA');
+ assert.equal(ui.view(s).rows[0].labelR,'TO');
+ assert.equal(ui.routeCell(s,'LSK_R1').field,'TO1');
+ type(s,'FIX01','LSK_R1');
+ assert.equal(ui.view(s).rows[0].valueL,'DIRECT');
+ assert.equal(ui.view(s).rows[0].valueR,'FIX01');
+ type(s,'FIX02','LSK_R2');
+ assert.equal(ui.view(s).rows[1].valueR,'FIX02');
+ assert.equal(ui.view(s).rows[5].valueR,'ACTIVATE>');
  press(s,'PREV_PAGE');
  assert.equal(ui.view(s).number,1);
+ assert.equal(ui.view(s).rows[1].valueR,'IR123');
  press(s,'LSK_R6');
  assert.equal(s.routeActivationArmed,true);
  assert.equal(ui.view(s).title,'MOD RTE');
@@ -46,13 +52,32 @@ test('FCOM RTE page 1 fields, two VIA/TO rows and activation at R6',()=>{
  assert.equal(s.page,'PERF_INIT');
 });
 
+test('a full five-row path page leaves a continuation for the next entry',()=>{
+ const s=state();
+ press(s,'NEXT_PAGE');
+ for(let i=1;i<=5;i++)type(s,'FIX0'+i,'LSK_R'+i);
+ assert.equal(ui.view(s).rows[4].valueR,'FIX05');
+ assert.equal(ui.view(s).count,3);
+ press(s,'NEXT_PAGE');
+ assert.equal(ui.view(s).number,3);
+ assert.equal(ui.routeCell(s,'LSK_R1').field,'TO6');
+ type(s,'FIX06','LSK_R1');
+ assert.equal(ui.view(s).rows[0].valueR,'FIX06');
+ press(s,'PREV_PAGE');
+ assert.equal(ui.view(s).rows[0].valueR,'FIX01');
+ press(s,'PREV_PAGE');
+ assert.equal(ui.view(s).number,1);
+ assert.equal(ui.view(s).rows[3].valueR,'');
+});
+
 test('shared route activation, EXEC and ERASE preserve independent CDU pages and scratchpads',()=>{
  const shared=session.create(),fo=state(),capt=state('LEGS');
  function register(seat,s){
   return shared.attach(seat,{read:()=>s,write:data=>session.apply(s,data),refresh(){}});
  }
  const foSession=register('FO',fo),captSession=register('CAPT',capt);
- type(fo,'OIII','LSK_L1');type(fo,'OIMM','LSK_R1');type(fo,'FIX01','LSK_R4');
+ type(fo,'OIII','LSK_L1');type(fo,'OIMM','LSK_R1');
+ press(fo,'NEXT_PAGE');type(fo,'FIX01','LSK_R1');
  fo.navFixEvidence={ORIGIN:{ident:'OIII',lat:35,lon:51},DEST:{ident:'OIMM',lat:36,lon:59},
   TO1:{ident:'FIX01',lat:36,lon:55}};
  fo.scratch='A';foSession.publish();
@@ -66,12 +91,12 @@ test('shared route activation, EXEC and ERASE preserve independent CDU pages and
  assert.equal(ui.view(fo).title,'ACT RTE');
  assert.equal(fo.routeRevision,1);
  assert.deepEqual(ui.activeReferenceRoute(fo).points.map(x=>x.name),['OIII','FIX01','OIMM']);
- type(fo,'FIX02','LSK_R4');foSession.publish();
+ type(fo,'FIX02','LSK_R1');foSession.publish();
  assert.equal(ui.view(capt).title,'MOD RTE LEGS');
  assert.deepEqual(ui.activeReferenceRoute(capt).points.map(x=>x.name),['OIII','FIX01','OIMM']);
  press(capt,'LSK_L6');captSession.publish();
  assert.equal(ui.view(fo).title,'ACT RTE');
- assert.equal(ui.view(fo).rows[3].valueR,'FIX01');
+ assert.equal(ui.view(fo).rows[0].valueR,'FIX01');
  assert.equal(fo.routeRevision,1);
 });
 
@@ -98,9 +123,12 @@ test('DEP/ARR uses separately ordered source columns and L6/R6 prompts',async()=
   STAR:[{ident:'STAR2',status:'SOURCE_ONLY_NOT_FMC_EXECUTABLE'},{ident:'STAR1',status:'SOURCE_ONLY_NOT_FMC_EXECUTABLE'}],
   APP:[{ident:'ILS32R',status:'SOURCE_ONLY_NOT_FMC_EXECUTABLE'}]
  };
+ for(const records of Object.values(fixtures))for(const record of records){
+  record.runways=[];record.transitions=[];
+ }
  const api=adapter({},s,engine,pages,async value=>{
   const url=new URL(value,'http://localhost'),kind=url.searchParams.get('kind');
-  const body=kind==='runways'?{airac:'2610',mode:'SOURCE_REFERENCE_ONLY',lookup:{rows:[{runway_ident:'32R'}]}}:
+  const body=kind==='runways'?{airac:'2610',mode:'SOURCE_REFERENCE_ONLY',fmc_executable:false,lookup:{rows:[{runway_ident:'32R'}]}}:
    {airport:'OIMM',kind,airac:'2610',fmc_executable:false,items:fixtures[kind]};
   return {ok:true,json:async()=>body};
  });
@@ -110,9 +138,9 @@ test('DEP/ARR uses separately ordered source columns and L6/R6 prompts',async()=
  assert.equal(view.title,'OIMM ARRIVALS');
  assert.equal(view.rows[0].valueL,'STAR1');
  assert.equal(view.rows[0].valueR,'ILS32R');
- assert.equal(view.rows[1].valueR,'RW32R');
+ assert.equal(view.rows[1].valueR,'32R');
  assert.equal(view.rows[5].valueL,'<INDEX');
- assert.equal(view.rows[5].valueR,'ROUTE>');
+ assert.equal(view.rows[5].valueR,'RTE>');
  assert.equal(api.beforeKey('CDU_CAPT_LSK_R6'),true);
  assert.equal(s.page,'RTE');
 });

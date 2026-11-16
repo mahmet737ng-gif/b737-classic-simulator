@@ -9,6 +9,7 @@
  const SOURCE='PMDG_WORLD_2610_WITH_PROCEDURES_R1';
  const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|(?:VIA|TO)\d+)$/;
  const DASH='------------';
+ const ROUTE_ROWS=5,MAX_ROUTE_ROWS=250;
  const empty=()=>({labelL:'',valueL:'',labelR:'',valueR:''});
  const pair=(labelL='',valueL='',labelR='',valueR='',extra={})=>({labelL,valueL,labelR,valueR,...extra});
  const limits={ORIGIN:'ICAO',DEST:'ICAO',CO_ROUTE:'ROUTE',FLIGHT:'FLIGHT',RUNWAY:'RUNWAY'};
@@ -39,17 +40,18 @@
   }
   const keys=new Set([...Object.keys(s.active),...Object.keys(s.pending),...Object.keys(s.stagedRoute)]);
   const last=Math.max(0,...[...keys].map(k=>/^(?:VIA|TO)(\d+)$/.exec(k)).filter(Boolean)
-   .map(m=>Number(m[1])).filter(n=>n<=250&&(entered(s,'VIA'+n)||entered(s,'TO'+n))));
+   .map(m=>Number(m[1])).filter(n=>n<=MAX_ROUTE_ROWS&&(entered(s,'VIA'+n)||entered(s,'TO'+n))));
   return Array.from({length:last},(_,i)=>{
    const via=entered(s,'VIA'+(i+1)),to=entered(s,'TO'+(i+1));
    return {via:via==='DCT'||(!via&&to)?'DIRECT':via,to};
   });
  }
- function routeCount(list){
-  return list.length<2?1:1+Math.ceil((list.length-1)/5);
+ function routeCount(s,list){
+  const entryRow=sourcePlan(s)||currentNav(s)||list.length>=MAX_ROUTE_ROWS?0:1;
+  return 1+Math.max(1,Math.ceil((list.length+entryRow)/ROUTE_ROWS));
  }
  function routeNumber(s,list){
-  return s.page==='FLIGHT_PLAN'?Math.min(routeCount(list),Math.max(2,s.subpage||2)):1;
+  return s.page==='FLIGHT_PLAN'?Math.min(routeCount(s,list),Math.max(2,s.subpage||2)):1;
  }
  function canActivate(s,list=segments(s)){
   return !s.routeActivated&&!modified(s)&&/^[A-Z]{4}$/.test(entered(s,'ORIGIN'))&&
@@ -71,7 +73,7 @@
   return null;
  }
  function routeRow(list,n,head){
-  const entry=list[n-1],next=n===list.length+1;
+  const entry=list[n-1],next=n===list.length+1&&n<=MAX_ROUTE_ROWS;
   return pair(head?'VIA':'',entry?.via||(next?'---':''),head?'TO':'',
    entry?.to||(entry?.via?'□□□□□':next?'---':''));
  }
@@ -80,26 +82,26 @@
   if(number===1){
    rows.push(pair('ORIGIN',entered(s,'ORIGIN')||'□□□□','DEST',entered(s,'DEST')||'□□□□'));
    rows.push(pair('CO ROUTE',entered(s,'CO_ROUTE')||'----------','FLT NO.',entered(s,'FLIGHT')||'--------'));
-   rows.push(pair('RUNWAY',entered(s,'RUNWAY')||'-----'));
+   rows.push(pair('RUNWAY',entered(s,'RUNWAY')||'-----'),empty(),empty());
+  }else{
+   const first=1+(number-2)*ROUTE_ROWS;
+   for(let i=0;i<ROUTE_ROWS;i++)rows.push(routeRow(list,first+i,i===0));
   }
-  const first=number===1?1:3+(number-2)*5;
-  const count=number===1?2:5;
-  for(let i=0;i<count;i++)rows.push(routeRow(list,first+i,i===0));
   const action=routeAction(s,list);
   const needsActivation=s.stage6PendingPlan&&!s.stage6AwaitingExec;
   rows.push(pair(DASH,action?.side==='L'?action.label:'',DASH,
    needsActivation?'ACTIVATE>':action?.side==='R'?action.label:''));
-  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(list),rows};
+  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,list),rows};
  }
  function routeCell(s,k){
   if(!RTE.has(s.page)||!/^LSK_[LR][1-5]$/.test(k))return null;
   const side=k[4],line=Number(k[5]),list=segments(s),number=routeNumber(s,list);
-  if(number===1&&line<=3){
+  if(number===1){
    const name={L1:'ORIGIN',R1:'DEST',L2:'CO_ROUTE',R2:'FLIGHT',L3:'RUNWAY'}[side+line];
    return name?field(side,name,limits[name],line===1):null;
   }
-  const n=number===1?line-3:3+(number-2)*5+line-1;
-  if(n>list.length+1||sourcePlan(s)||currentNav(s))return null;
+  const n=(number-2)*ROUTE_ROWS+line;
+  if(n>MAX_ROUTE_ROWS||n>list.length+1||sourcePlan(s)||currentNav(s))return null;
   return side==='L'?field(side,'VIA'+n,'AIRWAY'):field(side,'TO'+n,'WAYPOINT');
  }
  function activeReferenceRoute(s){
@@ -177,7 +179,7 @@
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){
    const change=key==='NEXT_PAGE'?1:-1;
    if(rte&&s.page!=='ACTIVATE'){
-    const list=segments(s),count=routeCount(list);
+    const list=segments(s),count=routeCount(s,list);
     const number=(routeNumber(s,list)-1+change+count)%count+1;
     core.choose(s,pages,number===1?'RTE':'FLIGHT_PLAN');s.subpage=number;
     return true;

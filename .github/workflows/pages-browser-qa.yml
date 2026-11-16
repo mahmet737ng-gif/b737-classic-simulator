@@ -39,6 +39,10 @@ jobs:
           export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
           if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
           node tools/test-unified-cdu-ehsi-map.cjs
+      - name: Verify CDU RTE pages and doubled entry squares
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node tools/test-unified-cdu-rte.cjs
       - name: Measure compiled web startup and live controls
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"

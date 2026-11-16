@@ -54,7 +54,20 @@ function isNavigationLSKText(text){
  const s=String(text??'').trim();
  return /^[<]/.test(s)||/[>]$/.test(s);
 }
-function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){for(const span of [l,r]){if(isEntryPromptText(span.textContent))span.classList.add('cdu-entry-placeholder');else if(isNavigationLSKText(span.textContent))span.classList.add('cdu-lsk-prompt');}} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+function markEntryPlaceholder(span){
+ span.classList.add('cdu-entry-placeholder');
+ if(!/^□+$/.test(span.textContent))return;
+ span.classList.add('cdu-square-entry');
+ const glyphs=document.createElement('span');
+ glyphs.className='cdu-square-glyphs';
+ glyphs.textContent=span.textContent;
+ glyphs.style.display='inline-block';
+ glyphs.style.transform='scale(2)';
+ glyphs.style.transformOrigin=span.classList.contains('fmc-right')?'right center':'left center';
+ span.style.overflow='visible';
+ span.replaceChildren(glyphs);
+}
+function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){for(const span of [l,r]){if(isEntryPromptText(span.textContent))markEntryPlaceholder(span);else if(isNavigationLSKText(span.textContent))span.classList.add('cdu-lsk-prompt');}} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
 /* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
  * page, not a generic route-field menu. Keep the approved photo & LSK map.
  */
@@ -175,6 +188,7 @@ function applyCDUScreenTypography(box){
   const isHeader=el.classList.contains('fmc-header');
   const size=isScratch||isHeader?px:small?labelSize:pageSize;
   for(const node of [el,...el.querySelectorAll('*')]){
+   if(node.classList?.contains('cdu-square-glyphs'))continue;
    node.style.setProperty('color',green,'important');
    node.style.setProperty('font-family',f,'important');
    const entry=node.classList?.contains('cdu-entry-placeholder');
