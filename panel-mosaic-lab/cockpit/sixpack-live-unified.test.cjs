@@ -180,9 +180,15 @@ test('IRS live source excludes normal alignment and SELFTEST ON DC; captures bot
  assert.equal(mapper.irs(normal)['CAPT.IRS'].length,0);
  normal.units.L.faultLamp=true;
  normal.units.R.alignLampFlashing=true;normal.units.R.alignStatusCode=7;
- assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:L:FAULT','IRS:R:ALIGN_BLOCK_7']);
+ assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:L:FAULT'],
+  'White flashing ALIGN must not create amber IRS MASTER CAUTION');
+ normal.units.R.onDcLamp=true;normal.units.R.phase='SELFTEST';
+ assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:L:FAULT'],
+  'Momentary ON DC in alignment self-test is normal');
+ normal.units.R.phase='NAV_READY';normal.units.R.dcFailLamp=true;
+ assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:L:FAULT','IRS:R:ON_DC','IRS:R:DC_FAIL']);
  normal.units.L.powered=false;
- assert.equal(mapper.irs(normal)['CAPT.IRS'].length,1);
+ assert.deepEqual(mapper.irs(normal)['CAPT.IRS'],['IRS:R:ON_DC','IRS:R:DC_FAIL']);
 });
 test('Window Heat live output drives ANTI-ICE only for illuminated supplied amber OVERHEAT',()=>{
  const packet={schema:'B737_WINDOW_HEAT_V1_RESULT',channels:{
