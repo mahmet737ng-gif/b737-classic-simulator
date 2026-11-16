@@ -52,7 +52,9 @@ function patchPositionPages(){
   const L=snapshot.units.L,R=snapshot.units.R;
   const position=u=>u?.positionValid&&u.position?fmt(u.position).join(' '):'-----';
   const speed=u=>u?.positionValid&&Number.isFinite(u.gsKt)?u.gsKt.toFixed(1)+'KT':'-----';
-  paint(0,'FMC POS','GS');paint(1,'-----','-----');
+  const trainingRef=(()=>{try{return parent.B737UnifiedFlightLocationV1?.getLocation?.()}catch{return null}})();
+  paint(0,trainingRef?'FLT PHASE REF':'FMC POS','GS');
+  paint(1,trainingRef?fmt(trainingRef).join(' '):'-----','-----');
   paint(2,'IRS L','GS');paint(3,position(L),speed(L));
   paint(4,'IRS R','GS');paint(5,position(R),speed(R));
   paint(6,'GPS L','');paint(7,'-----','');
@@ -109,5 +111,8 @@ setInterval(()=>{
  }
  if(alertChanged)update();
 },1100);
+try{parent.addEventListener('b737:flight-location-reference',()=>{
+ if(state.page==='POS_REF')patchPositionPages();
+});}catch(_){/* CDU iframe on a different origin cannot read the parent */ }
 window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence});
 })();
