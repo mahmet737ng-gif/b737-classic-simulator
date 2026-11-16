@@ -66,10 +66,15 @@
    if(manuallyChanged)return;
    try{
     const current=win.B737UnifiedEfisSources?.getPreset?.();
-    if(current&&current!=='LIVE')return; // An earlier explicit owner already chose.
+    if(current&&current!=='LIVE'){
+     showPreset(current); // Preserve an earlier explicit mode.
+     return;
+    }
     apply(win,'FULL_ALIGN');
     showPreset('FULL_ALIGN');
    }catch(error){
+    // Never claim aligned when alignment failed, e.g. a pulled IRS CB.
+    showPreset(win.B737UnifiedEfisSources?.getPreset?.()||'LIVE');
     status.textContent='FULL ALIGN NOT READY · '+String(error?.message||error);
    }
   };
