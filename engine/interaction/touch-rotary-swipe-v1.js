@@ -20,13 +20,14 @@
     '.irs-msu-mini',
     '.irs-live-msu-control',
     '.asp-vbr-selector',
-    '[data-acdc-selector]',
-    '.asp-photo-control[data-kind="volume"]'
+    '[data-acdc-selector]'
   ].join(',');
+  // ASP volume controls own their pointer lifecycle. In particular, a global
+  // capture-phase listener must NEVER steal their pointerup and leave the
+  // page's pan controller waiting for a stale finger.
   const ASP_VOLUME = '.asp-photo-control[data-kind="volume"]';
-  const ASP_SWIPE_START_PX = 12; // Ignore finger-contact jitter; tap means SELECT.
-  const isAspVolume = el => !!el?.matches?.(ASP_VOLUME);
-  const REVERSE = '.mcp-ias-mach-knob,.mcp-v3-knob,.irs-upper-brt,' + ASP_VOLUME;
+  const ASP_SWIPE_START_PX = 12;
+  const REVERSE = '.mcp-ias-mach-knob,.mcp-v3-knob,.irs-upper-brt';
 
   // Both distance and finger velocity matter: deliberate swipes produce fine
   // adjustment while quick strokes produce several existing backend steps.
@@ -90,16 +91,8 @@
       if (e) stop(e);
       suppressClicks.set(current.el, (typeof performance === 'object' ? performance.now() : Date.now()) + 650);
       if (!cancelled && !current.moved) {
-        if (isAspVolume(current.el)) {
-          // ASP receiver knobs are TWO separate controls: TAP latches the
-          // receiver lamp; ONLY deliberate DRAG changes the volume. The
-          // document capture handler stopped the native pointer/click chain,
-          // so issue exactly one genuine button click for the selector.
-          current.el.click();
-        } else {
-          const x = e && Number.isFinite(e.clientX) ? e.clientX : current.startX;
-          step(current.el, tapDirection(x, current.el.getBoundingClientRect()));
-        }
+        const x = e && Number.isFinite(e.clientX) ? e.clientX : current.startX;
+        step(current.el, tapDirection(x, current.el.getBoundingClientRect()));
       }
       try {
         if (current.el.hasPointerCapture?.(current.id))
@@ -115,13 +108,16 @@
         return;
       }
       if (e.isPrimary === false || e.button !== 0) return;
+      // Native ASP controller handles both touch and mouse with a single
+      // pointer capture owner; never intercept its events at document capture.
+      if (e.target?.closest?.(ASP_VOLUME)) return;
       const el = e.target?.closest?.(SELECTOR);
       if (!el || el.disabled || el.getAttribute('aria-disabled') === 'true') return;
       stop(e);
       active = {
         el, id: e.pointerId, startX: e.clientX, startY: e.clientY,
-        lastX: e.clientX, lastY: e.clientY, lastTime: e.timeStamp,
-        startTime: e.timeStamp, axis: null, moved: false, motion: createMotion()
+        lastX: e.clientX, lastTime: e.timeStamp,
+        moved: false, motion: createMotion()
       };
       try { el.setPointerCapture(e.pointerId); } catch (_) {}
       el.focus?.({ preventScroll: true });
@@ -130,32 +126,14 @@
       if (!active || e.pointerId !== active.id) return;
       stop(e);
       const item = active;
-      const asp = isAspVolume(item.el);
       const dx = e.clientX - item.lastX;
-      const dy = e.clientY - item.lastY;
       const dt = e.timeStamp - item.lastTime;
-      const totalX = e.clientX - item.startX;
-      const totalY = e.clientY - item.startY;
       item.lastX = e.clientX;
-      item.lastY = e.clientY;
       item.lastTime = e.timeStamp;
-      if (!item.moved) {
-        const distance = Math.hypot(totalX, totalY);
-        if (distance < (asp ? ASP_SWIPE_START_PX : 5)) return;
+      if (Math.hypot(e.clientX - item.startX, e.clientY - item.startY) > 5)
         item.moved = true;
-        if (asp) {
-          // Lock to the deliberate swipe's dominant axis. Up/right increase,
-          // down/left decrease; a slight diagonal jitter does not reverse it.
-          item.axis = Math.abs(totalX) >= Math.abs(totalY) ? 'x' : 'y';
-          const travel = item.axis === 'x' ? totalX : -totalY;
-          const count = item.motion.feed(travel, e.timeStamp - item.startTime);
-          if (count) step(item.el, count);
-          return;
-        }
-      }
-      const travel = asp ? (item.axis === 'x' ? dx : -dy) : dx;
-      if (!travel) return;
-      const count = item.motion.feed(travel, dt);
+      if (!item.moved || !dx) return;
+      const count = item.motion.feed(dx, dt);
       if (count) step(item.el, count);
     }, true);
     doc.addEventListener('pointerup', e => clear(e, false), true);
