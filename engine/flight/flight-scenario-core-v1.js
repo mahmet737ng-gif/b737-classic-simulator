@@ -11,6 +11,9 @@
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const RAD=Math.PI/180, EARTH_NM=3440.065, KT_TO_MPS=.514444, FT_PER_NM=6076.1155;
+ const Laws=(typeof globalThis==='object'?globalThis.B737FlightControlLawsV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('./flight-control-laws-v1.js'):null);
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -153,18 +156,6 @@
   if(!s.airborne){
    s.bankDeg=0;s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;
   }else{
-   let wantBank=0;
-   if(target.lateralMode==='BANK')wantBank=target.bankCommandDeg;
-   else{
-    // MCP BANK ANGLE detent constrains HDG SEL flight-control demand.
-    const err=angle(s.trueHeadingDeg,target.headingDeg);
-    const limit=Number.isFinite(target.bankLimitDeg)?clamp(target.bankLimitDeg,10,30):25;
-    wantBank=clamp(err*.75,-limit,limit);
-   }
-   s.bankDeg+=clamp(wantBank-s.bankDeg,-6*dt,6*dt);
-   const velocity=Math.max(s.tasKt*KT_TO_MPS,50);
-   const turnDegPerSec=(9.80665*Math.tan(s.bankDeg*RAD)/velocity)/RAD;
-   s.trueHeadingDeg=wrap(s.trueHeadingDeg+turnDegPerSec*dt);
    let wantVS=target.vsFpm;
    if(target.verticalMode==='ALTITUDE'){
     const diff=target.altitudeFt-s.altitudeFt;
@@ -172,17 +163,42 @@
    }else if(target.verticalMode==='GLIDEPATH'){
     const distance=distanceNm(s,s.threshold);
     const height=s.elevationFt+50+Math.tan(3*RAD)*distance*FT_PER_NM;
-    wantVS=clamp(-Math.max(0,s.gsKt)*5.307+clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
+    wantVS=clamp(-Math.max(0,s.gsKt)*5.307+
+     clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
-   s.vsFpm+=clamp(wantVS-s.vsFpm,-900*dt,900*dt);
+   const commanded={...target,verticalMode:'VS',vsFpm:wantVS};
+   const control=Laws?.stepAttitude(s,commanded,dt);
+   if(control){
+    // Pitch, vertical response, and bank are one physical control chain.
+    // Same pitch/bank targets are used by FCC flight-director bars.
+    s.bankDeg=control.bankDeg;s.pitchDeg=control.pitchDeg;
+    s.vsFpm=control.vsFpm;
+    s.flightControl={source:'FCC_SHARED_TRAINING_CONTROL_LAWS',
+     desiredBankDeg:control.desiredBankDeg,
+     desiredPitchDeg:control.desiredPitchDeg,
+     desiredVsFpm:control.desiredVsFpm};
+   }else{
+    // Fallback for isolated fixture environments without the new module.
+    const limit=Number.isFinite(target.bankLimitDeg)?target.bankLimitDeg:25;
+    const error=angle(s.trueHeadingDeg,target.headingDeg);
+    const bank=target.lateralMode==='BANK'?target.bankCommandDeg:clamp(error*.65,-limit,limit);
+    s.bankDeg+=clamp(bank-s.bankDeg,-3.2*dt,3.2*dt);
+    const desiredPitch=clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
+    s.pitchDeg+=clamp(desiredPitch-s.pitchDeg,-1.15*dt,1.15*dt);
+    const actualVs=clamp(Math.tan((s.pitchDeg-2)*RAD)*Math.max(s.tasKt*KT_TO_MPS,35)*60/.3048,-5000,5000);
+    s.vsFpm+=clamp(actualVs-s.vsFpm,-420*dt,420*dt);
+   }
+   // Gravity coordinated-turn relation, using the RATE-LIMITED bank angle.
+   const velocity=Math.max(s.tasKt*KT_TO_MPS,50);
+   const turnDegPerSec=(9.80665*Math.tan(s.bankDeg*RAD)/velocity)/RAD;
+   s.trueHeadingDeg=wrap(s.trueHeadingDeg+turnDegPerSec*dt);
    const oldAlt=s.altitudeFt;
    s.altitudeFt=Math.max(s.elevationFt,s.altitudeFt+s.vsFpm/60*dt);
-   if(target.verticalMode==='ALTITUDE'&&(target.altitudeFt-oldAlt)*(target.altitudeFt-s.altitudeFt)<=0){
+   if(target.verticalMode==='ALTITUDE'&&
+      (target.altitudeFt-oldAlt)*(target.altitudeFt-s.altitudeFt)<=0){
     s.altitudeFt=target.altitudeFt;s.vsFpm=0;
    }
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);
-   const pitchTarget=clamp(Math.atan2(s.vsFpm/60*.3048,velocity)*1/RAD+2,-10,15);
-   s.pitchDeg+=clamp(pitchTarget-s.pitchDeg,-2.8*dt,2.8*dt);
    if(s.preset.startsWith('FINAL_')&&distanceNm(s,s.threshold)<.09&&s.radioAltitudeFt<80){
     s.phase='LANDING_ROLL';s.airborne=false;s.iasKt=Math.min(s.iasKt,145);
     s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;s.pitchDeg=0;s.bankDeg=0;
