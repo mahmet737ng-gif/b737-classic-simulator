@@ -1,0 +1,30 @@
+name: ASP receiver tap-select and swipe-volume QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/interaction/touch-rotary-swipe-v1.js'
+      - 'engine/interaction/touch-rotary-swipe-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/asp-controls-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs'
+      - '.github/workflows/asp-tap-volume-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  asp-input-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Confirm ASP touch and mouse input syntax
+        run: |
+          node --check engine/interaction/touch-rotary-swipe-v1.js
+          node --check panel-mosaic-lab/cockpit/asp-controls-v1.js
+      - name: Verify tap changes SELECT, dead zone ignores jitter, swipe rotates VOLUME
+        run: |
+          node engine/interaction/touch-rotary-swipe-v1.test.cjs
+          node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
