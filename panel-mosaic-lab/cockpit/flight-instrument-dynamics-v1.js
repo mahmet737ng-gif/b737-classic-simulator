@@ -29,6 +29,13 @@
    flightGaugeStandby:sample?Math.round(sample.standbyAltitudeFt).toLocaleString('en-US')+' FT':'—'
   };
   for(const [id,v] of Object.entries(widgets))if(by(id))by(id).textContent=v;
+  // Independent standby altimeter trainer dial. The source photo's actual
+  // center/radius have not been surveyed, so this is intentionally in the lab
+  // rather than positioned speculatively over another physical instrument.
+  const hand=by('flightGaugeStandbyHand');
+  if(hand)hand.setAttribute('transform','translate(80 80) rotate('+String(sample?.standbyNeedleDeg??0)+')');
+  const thousands=by('flightGaugeStandbyThousands');
+  if(thousands)thousands.textContent=sample?Math.floor(sample.standbyAltitudeFt/1000).toString()+'K':'—';
   const label=by('flightGaugeSource');
   if(label)label.textContent=sample?
    'SCENARIO ACTIVE · CAPT + FO NEEDLES · STBY ALT DATA LIVE':
@@ -47,6 +54,25 @@
      <div><span>AIRSPEED INDICATORS</span><strong id="flightGaugeSpeed">—</strong></div>
      <div><span>IVSI / VERTICAL SPEED</span><strong id="flightGaugeVSI">—</strong></div>
      <div><span>STANDBY ALTIMETER*</span><strong id="flightGaugeStandby">—</strong></div>
+    </div>
+    <div class="flight-standby-row">
+     <svg class="flight-standby-dial" viewBox="0 0 160 160" role="img" aria-label="Independent training standby altimeter pointer">
+      <circle cx="80" cy="80" r="72" fill="#11171a" stroke="#6b7375" stroke-width="4"/>
+      <circle cx="80" cy="80" r="61" fill="none" stroke="#c8d1d0" stroke-width="1.5"/>
+      <g stroke="#e1e5dc" stroke-width="2">
+       <path d="M80 18v12 M115 30l-6 10 M142 80h-12 M115 130l-6 -10 M80 142v-12 M45 130l6 -10 M18 80h12 M45 30l6 10"/>
+      </g>
+      <g fill="#e7ece9" font-size="12" font-family="Arial" text-anchor="middle">
+       <text x="80" y="46">0</text><text x="112" y="79">2</text><text x="96" y="116">4</text><text x="48" y="102">7</text>
+      </g>
+      <g id="flightGaugeStandbyHand" transform="translate(80 80) rotate(0)">
+       <path d="M-3 7 L-3 -48 L0 -59 L3 -48 L3 7Z" fill="#f4f4e6" stroke="#313639" stroke-width="1"/>
+      </g>
+      <circle cx="80" cy="80" r="5" fill="#8b9494"/>
+      <rect x="57" y="93" width="46" height="19" rx="2" fill="#030507" stroke="#a3aaa2"/>
+      <text id="flightGaugeStandbyThousands" x="80" y="107" font-family="monospace" font-weight="bold" font-size="13" text-anchor="middle" fill="#f5f6e8">—</text>
+     </svg>
+     <div><strong>STANDBY ALT · INSTRUCTOR DIAL</strong><p>Independent dynamic simulated reading · physical photo needle registration pending verified center/pivot measurements</p></div>
     </div>
     <p class="flight-sub">Primary CAPT and F/O altimeter, airspeed and IVSI pointers track the same simulated flight state. STANDBY ALT is independently published here; the physical standby dial photo has not yet been registered/calibrated. *MSL ≠ barometrically corrected indicated altitude until BARO is modeled. When IAS is below 60 kt the photographed ASI pointer stays at its lowest printed scale.</p>
   `;
