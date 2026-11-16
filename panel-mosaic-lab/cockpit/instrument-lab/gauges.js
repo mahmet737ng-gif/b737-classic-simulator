@@ -303,7 +303,8 @@
         break;
       }
       case 'standby': {
-        const alt = text(883,1186,64);
+        const alt4=rollingReadout(883,1186,64,4);
+        const alt5=rollingReadout(875,1186,61,5);
         const qnh = pressure(608,1169,1418,61);
         const clipId = 'b737-standby-tape-'+(++nextClipId);
         const clip = svg(svg(canvas,'defs',{}),'clipPath',{id:clipId});
@@ -327,7 +328,8 @@
         if(options.onChange) knob('baro-knob','Standby BARO',baroTurn('standbyQnh'));
         update=s=>{
           const altitude=indicatedAltitude(s.standbyAltitude,s.standbyQnh);
-          alt.textContent=String(altitudeText(altitude)).padStart(4,'0');
+          alt4.set(Math.abs(altitude),Math.abs(altitude)<10000);
+          alt5.set(Math.abs(altitude),Math.abs(altitude)>=10000);
           setVisible(sprite['alt-stripes'],altitude>=0&&altitude<10000);
           baro(qnh,s.standbyQnh);
           rotate('needle',altitude*0.36);
