@@ -8,7 +8,10 @@
  if(root)root.B737FccFlightGuidanceV1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
- const VERSION='B737_FCC_SCENARIO_GUIDANCE_0001';
+ const VERSION='B737_FCC_SCENARIO_GUIDANCE_0002';
+ const Laws=(typeof globalThis==='object'?globalThis.B737FlightControlLawsV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('../flight/flight-control-laws-v1.js'):null);
  const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
  const norm=x=>((x%360)+360)%360;
  const delta=(from,to)=>((to-from+540)%360)-180;
@@ -40,6 +43,13 @@
   const fdCommand=fn=>fn===true&&mcp.flightDirectorBarsRetracted!==true;
   const bankLimit=[10,15,20,25,30].includes(mcp.bankAngleLimit)?mcp.bankAngleLimit:20;
   const direction=m.lateral;
+  const speedForPitch=valid(flight.tasKt)?flight.tasKt:flight.iasKt;
+  const pitchForVs=vs=>Laws?.pitchForVs(vs,speedForPitch)??clamp(
+   2+Math.atan2(vs*.3048/60,Math.max(speedForPitch*.514444,35))*180/Math.PI,-10,15);
+  const bankForHeading=trueTarget=>Laws?.bankForHeading(flight.trueHeadingDeg,trueTarget,bankLimit)??
+   clamp(delta(flight.trueHeadingDeg,trueTarget)*.65,-bankLimit,bankLimit);
+  const altitudeVs=alt=>Laws?.altitudeVs(flight.altitudeFt,alt)??
+   clamp((alt-flight.altitudeFt)*2,-2500,2500);
   // CWS axes retain the attitude/heading at hand-off. No fabricated manual
   // yoke force: only an existing MCP CWS state can enable this hold.
   if(rAxis==='CWS'){
@@ -53,19 +63,19 @@
     const targetTrue=norm(v.heading+nav.magneticVariationDeg);
     out.actions.push({type:'HEADING',value:targetTrue});
     out.actions.push({type:'BANK_LIMIT',value:bankLimit});
-    out.rollCommandDeg=clamp(delta(flight.trueHeadingDeg,targetTrue)*.75,-bankLimit,bankLimit);
+    out.rollCommandDeg=bankForHeading(targetTrue);
     out.rollValid=true;
    }else out.reasons.push('HDG_SEL_MAGNETIC_VARIATION_UNAVAILABLE');
   }else if(direction==='LNAV'){
    if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
-    out.rollCommandDeg=clamp(delta(flight.trueHeadingDeg,nav.trackDeg)*.75,-bankLimit,bankLimit);
+    out.rollCommandDeg=bankForHeading(nav.trackDeg);
     out.rollValid=true;
    }else out.reasons.push('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED');
   }else if(direction==='VOR_LOC'||mcp.capture?.roll==='VOR_LOC'){
    if(nav?.courseTrackValid===true&&valid(nav.courseDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.courseDeg)});
-    out.rollCommandDeg=clamp(delta(flight.trueHeadingDeg,nav.courseDeg)*.75,-bankLimit,bankLimit);
+    out.rollCommandDeg=bankForHeading(nav.courseDeg);
     out.rollValid=true;
    }else out.reasons.push('VOR_LOC_CAPTURE_SOURCE_UNVERIFIED');
   }else if(active)out.reasons.push('ROLL_MODE_CWS_OR_NO_COMMAND');
@@ -73,53 +83,67 @@
   if(pAxis==='CWS'){
    if(!valid(out.state.cwsAltitudeFt))out.state.cwsAltitudeFt=flight.altitudeFt;
    out.actions.push({type:'ALTITUDE',value:out.state.cwsAltitudeFt});
-   out.pitchCommandDeg=flight.pitchDeg;out.pitchValid=true;
+   out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.cwsAltitudeFt));out.pitchValid=true;
   }else if(pitchMode==='ALT_HLD'||mcp.capture?.pitch==='ALT_HOLD'){
    if(!valid(out.state.altitudeHoldFt))out.state.altitudeHoldFt=flight.altitudeFt;
    out.actions.push({type:'ALTITUDE',value:out.state.altitudeHoldFt});
-   const deltaAlt=out.state.altitudeHoldFt-flight.altitudeFt;
-   out.pitchCommandDeg=clamp(flight.pitchDeg+clamp(deltaAlt*.012,-3,3)-flight.vsFpm*.00065,-10,20);
+   out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.altitudeHoldFt));
    out.pitchValid=true;
   }else if(pitchMode==='VS'){
    if(valid(v.verticalSpeed)){
     const targetVS=clamp(v.verticalSpeed,-5000,5000);
-    out.actions.push({type:'VS',value:targetVS});
-    out.pitchCommandDeg=clamp(flight.pitchDeg+clamp((targetVS-flight.vsFpm)*.002,-6,6),-10,20);
-    out.pitchValid=true;
-    // Selected MCP altitude is a *capture boundary*, not a replacement for
-    // V/S command immediately after engagement.
     const selected=v.altitude,remaining=selected-flight.altitudeFt;
     const approaching=(remaining>0&&targetVS>0)||(remaining<0&&targetVS<0);
-    if(valid(selected)&&
-      (approaching&&Math.abs(remaining)<250||out.state.altitudeCapture===true&&Math.abs(remaining)<250)){
+    const acquiring=valid(selected)&&
+      (out.state.altitudeCapture===true||
+       mcp.capture?.pitch==='ALT_ACQ'||
+       approaching&&Math.abs(remaining)<300);
+    if(acquiring){
+     // Capture is LATCHED until ALT HLD or an actual mode change. Never
+     // send VS then ALT alternating each FCC 100ms cycle.
      out.state.altitudeCapture=true;out.altAcquireConfirmed=true;
      out.actions.push({type:'ALTITUDE',value:selected});
-     if(Math.abs(remaining)<35&&Math.abs(flight.vsFpm)<500){
+     out.pitchCommandDeg=pitchForVs(altitudeVs(selected));
+     if(Math.abs(remaining)<30&&Math.abs(flight.vsFpm)<300){
       out.state.altitudeHeld=true;out.altitudeHoldConfirmed=true;
      }
+    }else{
+     out.actions.push({type:'VS',value:targetVS});
+     out.pitchCommandDeg=pitchForVs(targetVS);
     }
+    out.pitchValid=true;
    }
   }else if(pitchMode==='LVL_CHG'){
    if(valid(v.speed)&&valid(v.altitude)&&mcp.speedDisplayMode==='IAS'){
     const climb=Math.sign(v.altitude-flight.altitudeFt);
     const iasError=v.speed-flight.iasKt;
-    const climbRate=clamp((climb*1700)-iasError*20,-2500,2500);
+    // LVL CHG regulates IAS with pitch. A climb clearance must not
+    // accidentally turn into descent merely because target IAS is high.
+    const climbRate=climb>0?clamp(1700-iasError*12,0,2400):
+     climb<0?clamp(-1700-iasError*12,-2400,0):0;
     out.actions.push({type:'SPEED',value:v.speed});
-    out.actions.push({type:'VS',value:Math.abs(v.altitude-flight.altitudeFt)<120?0:climbRate});
-    out.pitchCommandDeg=clamp(flight.pitchDeg+clamp((climbRate-flight.vsFpm)*.0015,-6,6),-10,20);
+    const gap=v.altitude-flight.altitudeFt;
+    if(Math.abs(gap)<300||out.state.altitudeCapture){
+     out.state.altitudeCapture=true;out.altAcquireConfirmed=true;
+     out.actions.push({type:'ALTITUDE',value:v.altitude});
+     out.pitchCommandDeg=pitchForVs(altitudeVs(v.altitude));
+     if(Math.abs(gap)<30&&Math.abs(flight.vsFpm)<300)
+      {out.state.altitudeHeld=true;out.altitudeHoldConfirmed=true;}
+    }else{
+     out.actions.push({type:'VS',value:climbRate});
+     out.pitchCommandDeg=pitchForVs(climbRate);
+    }
     out.pitchValid=true;
-    if(Math.abs(v.altitude-flight.altitudeFt)<250&&climb!==0)
-     {out.altAcquireConfirmed=true;out.actions.push({type:'ALTITUDE',value:v.altitude});}
    }else out.reasons.push('LVL_CHG_VALID_IAS_AND_ALTITUDE_REQUIRED');
   }else if(pitchMode==='VNAV'){
    if(nav?.fmcVerticalValid===true&&valid(nav.vsFpm)){
     out.actions.push({type:'VS',value:clamp(nav.vsFpm,-5000,5000)});
-    out.pitchCommandDeg=clamp(flight.pitchDeg+(nav.vsFpm-flight.vsFpm)*.002,-10,20);
+    out.pitchCommandDeg=pitchForVs(clamp(nav.vsFpm,-5000,5000));
     out.pitchValid=true;
    }else out.reasons.push('VNAV_FMC_VERTICAL_PROFILE_UNVERIFIED');
   }else if(mcp.capture?.pitch==='ALT_ACQ'&&valid(v.altitude)){
    out.actions.push({type:'ALTITUDE',value:v.altitude});
-   out.pitchCommandDeg=clamp(flight.pitchDeg+(v.altitude-flight.altitudeFt)*.018,-10,20);
+   out.pitchCommandDeg=pitchForVs(altitudeVs(v.altitude));
    out.pitchValid=true;
   }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
   // FCOM 4.20.4: both commanded pitch and roll modes must be available.
