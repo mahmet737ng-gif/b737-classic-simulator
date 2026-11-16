@@ -15,7 +15,7 @@ const originalCduScripts=scripts(original)
  .filter(src=>!omitted.has(src)&&src!=='../engine/ch11/fmc-airac-banks-v1.js?v=AIRAC-2611-BANKS-0001')
  .map(src=>src.replace(preflight,preflight+'-ENGINE-IDENT-0001'));
 const expectedCduScripts=[...originalCduScripts];
-const sourceAdapter='cdu-sg-selector-v1.js?v=CDU-SG-SQLITE-0001-CDU-SG-MOD-0001';
+const sourceAdapter='cdu-sg-selector-v1.js?v=CDU-SG-SQLITE-0001-CDU-SG-MOD-0001-LOCAL-INSTALL-0001';
 const oldSelector=expectedCduScripts.findIndex(src=>src.startsWith('stage6-selector.js?v='));
 assert.ok(oldSelector>=0,'Existing Stage6 source selector must remain loaded');
 expectedCduScripts.splice(oldSelector+1,0,sourceAdapter);

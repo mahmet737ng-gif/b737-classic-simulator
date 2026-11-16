@@ -226,10 +226,13 @@
  function execLit(){return canExecute()&&Boolean(shared.snapshot().modified);}
  function attach(){
   if(attached)return;attached=true;
-  // The CDU may already be sitting on an offline DEP/ARR child page when the
-  // local import finishes. Return to INDEX so a fresh LSK opens the source.
-  if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView)
+  if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView){
+   const {source,mode}=state.depArrSelection||{};
+   const key=source==='ORIGIN'?(mode==='DEP'?'LSK_L1':'LSK_R1'):
+    source==='DEST'?'LSK_R2':null;
    core.choose(state,pages,'DEP_ARR');
+   if(key)indexKey(key);
+  }
   unsubscribe=shared.subscribe(()=>{if(attached)update();});
  }
  function detach(){

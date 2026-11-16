@@ -137,7 +137,71 @@ test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
  assert.equal(status(),undefined);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project),0);
 });
-test('public cockpit and both CDU views share one opt-in connector but no data package',()=>{
+test('authenticated installation connects both CDUs and the next launch uses only the saved bank',async()=>{
+ const loader=require('../cdu-sg-public-connect-v1.js');
+ const connected=[];
+ const data={schema:'CDU_SG_CATALOG_V1',source_cycle:status,reference_only:true,fmc_executable:false,
+  airports:Object.fromEntries(['OIII','OIMM','OISS'].map(icao=>[icao,{
+   airport:{icao,runways:[],published_runways:[]},
+   catalogs:{SID:{items:[]},STAR:{items:[]},APP:{items:[]}},
+   procedures:{SID:[],STAR:[],APP:[]}
+  }]))};
+ const seed='/api/navdata/local-reference',saved=new Map(),visits=[];
+ function mount(path=seed){
+  const nodes=[];
+  const element=()=>{const events={};return {events,append(...children){nodes.push(...children);},
+   insertBefore(){},setAttribute(){},addEventListener(type,fn){events[type]=fn;}};};
+  const panel=element(),frames=['CAPT','FO'].map(seat=>({contentWindow:{
+    B737CDUAttachCduSgV1(){connected.push(seat);},
+    B737CDUDetachCduSgV1(){}
+  }}));
+  const root={document:{readyState:'complete',createElement:element,
+    getElementById:id=>nodes.find(n=>n.id===id),
+    querySelector:q=>q.startsWith('meta')?{content:path}:panel,
+    querySelectorAll:()=>frames},addEventListener(){},
+   localStorage:{getItem:k=>saved.get(k),setItem:(k,v)=>saved.set(k,v),removeItem:k=>saved.delete(k)},
+   B737CduSgRouteV1:routeAPI.create(),
+   async fetch(url,options){visits.push(url);
+    assert.equal(options.mode,'same-origin');
+    assert.equal(options.headers['X-Unified-Navdata'],'local-reference');
+    return {ok:true,text:async()=>JSON.stringify(data)};
+   }
+  };
+  loader.mount(root);
+  return root;
+ }
+ const first=mount();await tick();
+ assert.equal(first.B737CduSgBridgeV1.isConnected(),true);
+ assert.deepEqual(connected,['CAPT','FO']);
+ assert.equal((await (await first.B737CduSgBridgeV1.request('/api/cdu/airport?icao=OIII')).json()).icao,'OIII');
+ const second=mount();await tick();
+ assert.equal(second.B737CduSgRouteV1.snapshot().connected,true);
+ assert.deepEqual(visits,[seed]);
+ second.document.getElementById('cduSgPrivateDisconnect').events.click();
+ const third=mount();await tick();
+ assert.equal(third.B737CduSgBridgeV1.isConnected(),false);
+ assert.deepEqual(visits,[seed]);
+ saved.clear();
+ const untrusted=mount('//external.test/seed');await tick();
+ assert.equal(untrusted.B737CduSgBridgeV1.isConnected(),false);
+ assert.deepEqual(visits,[seed]);
+});
+test('an open departures page fills its current catalog when the bank becomes available',async()=>{
+ const route=routeAPI.create();route.setConnected(true);
+ const state={page:'DEPARTURES',active:{ORIGIN:'OIII'},scratch:'',
+  depArrSelection:{source:'ORIGIN',mode:'DEP',airport:'OIII'}};
+ const core={choose(s,_p,page){s.page=page;},readValue:(s,k)=>s.active[k]};
+ const request=async url=>({ok:true,json:async()=>url.includes('/airport?')?
+  {icao:'OIII',runways:[],published_runways:[]}:
+  {airport:'OIII',kind:'SID',cycle:status,fmc_executable:false,
+   items:[{ident:'DAXI1A',runways:[],transitions:[],fmc_executable:false}]}});
+ const selector=makeSelector(state,core,{}, {isConnected:()=>true,request},route);
+ selector.attach();await tick();
+ assert.equal(state.page,'DEPARTURES');
+ assert.equal(selector.chapter11CatalogView().rows[0].valueL,'DAXI1A');
+ selector.detach();
+});
+test('public cockpit and both CDU views use the same local connector without bundling the bank',()=>{
  const html=read('panel-mosaic-lab/cockpit/index.html');
  const stage=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  const app=read('cdu-standalone-v6/app.js');
@@ -150,7 +214,8 @@ test('public cockpit and both CDU views share one opt-in connector but no data p
  assert.match(read('panel-mosaic-lab/cockpit/ehsi-unified-v1.js'),/B737CduSgEHSIPreviewV1/);
  const adapter=read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js');
  assert.match(adapter,/UNIFIED_LOCAL_NAVDATA/);
- assert.doesNotMatch(adapter,/location\.(?:assign|replace)|fetch\(|up\.railway\.app/);
+ assert.doesNotMatch(adapter,/location\.(?:assign|replace)|up\.railway\.app/);
+ assert.match(adapter,/unified-navdata-seed/);
  assert.match(html,/unified-gateway-entry-v1/);
  assert.match(read('panel-mosaic-lab/cockpit/cdu-session.js'),/function notify/);
  assert.match(read('panel-mosaic-lab/cockpit/app.js'),/fmcSession.subscribe/);

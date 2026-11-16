@@ -1,4 +1,4 @@
-/* Unified CDU data loaded entirely from the user's local JSON. */
+/* Unified CDU data reads use the local bank after installation. */
 (function(root,factory){
  const api=factory();
  if(typeof module==='object'&&module.exports)module.exports=api;
@@ -6,6 +6,7 @@
 })(typeof window==='undefined'?null:window,function(){
  'use strict';
  const CYCLE='UNSPECIFIED_IN_UPLOADED_FILES', KEY='b737.unified.cduCatalog.v1';
+ const AUTO_OFF=KEY+'.autoInstallOff';
  const AIRPORTS=['OIII','OIMM','OISS'], KINDS=['SID','STAR','APP'];
  function createCatalog(data){
   if(data?.schema!=='CDU_SG_CATALOG_V1'||data.source_cycle!==CYCLE||
@@ -65,7 +66,12 @@
  function mount(root){
   const doc=root.document,$=id=>doc.getElementById(id);
   const frames=()=>[...doc.querySelectorAll('iframe.cdu-frame')];
-  let catalog=null;
+  let catalog=null,attempt=0;
+  const storage={
+   read(key){try{return root.localStorage.getItem(key);}catch(_){return null;}},
+   save(key,value){try{root.localStorage.setItem(key,value);return true;}catch(_){return false;}},
+   remove(key){try{root.localStorage.removeItem(key);}catch(_){}}
+  };
   function announce(action){
    for(const f of frames())try{f.contentWindow?.[action]?.()}catch(_){}
   }
@@ -90,30 +96,61 @@
    catalog=next;root.B737CduSgRouteV1?.setConnected(true);
    announce('B737CDUAttachCduSgV1');
   }
+  function save(raw){
+   install(raw);
+   status(storage.save(KEY,raw)?'بانک OIII، OIMM و OISS فعال است.':
+    'بانک فعال است. ذخیره برای بازدید بعدی در این مرورگر ممکن نیست.');
+  }
+  async function seedFromPage(path){
+   if(!/^\/[a-zA-Z0-9][a-zA-Z0-9/_-]*$/.test(path||''))return;
+   const current=++attempt;
+   status('در حال خواندن بانک نصب‌شدهٔ یونیفاید…');
+   try{
+    const response=await root.fetch(path,{credentials:'same-origin',mode:'same-origin',
+     cache:'no-store',redirect:'error',headers:{Accept:'application/json','X-Unified-Navdata':'local-reference'}});
+    if(!response.ok)throw Error('NAV DATA UNAVAILABLE');
+    const raw=await response.text();
+    if(current!==attempt)return;
+    if(raw.length>2_900_000)throw Error('INVALID NAV DATA');
+    save(raw);
+   }catch(_){
+    if(current===attempt)status('بانک نصب‌شده در دسترس نیست. فایل CDU_3_AIRPORTS.json را انتخاب کن.');
+   }
+  }
   function init(){
    const panel=doc.querySelector('section.cdu-tools');
    if(!panel||$('cduSgPrivateStatus'))return;
    const section=doc.createElement('section');section.className='private-nav-bridge';
    const title=doc.createElement('strong');title.textContent='CDU / SG · NAV DATA';
    const file=doc.createElement('input');file.type='file';file.accept='.json,application/json';
+   file.id='cduSgPrivateFile';
    file.setAttribute('aria-label','Import CDU_3_AIRPORTS.json');
    const remove=doc.createElement('button');remove.type='button';remove.id='cduSgPrivateDisconnect';
    remove.textContent='حذف بانک محلی';
    const label=doc.createElement('p');label.id='cduSgPrivateStatus';label.setAttribute('role','status');
    section.append(title,file,remove,label);panel.append(section);
+   const seed=doc.querySelector('meta[name="unified-navdata-seed"]')?.content;
+   if(seed){
+    const restore=doc.createElement('button');restore.type='button';
+    restore.textContent='بازخوانی بانک نصب‌شده';
+    restore.addEventListener('click',()=>{storage.remove(AUTO_OFF);void seedFromPage(seed);});
+    section.insertBefore(restore,remove);
+   }
    status('فایل CDU_3_AIRPORTS.json را انتخاب کن.');
    file.addEventListener('change',async()=>{
     const selected=file.files?.[0];file.value='';
     if(!selected)return;
+    const current=++attempt;
     if(selected.size>2_900_000){status('حجم فایل معتبر نیست.');return;}
     try{
-     const raw=await selected.text();install(raw);
-     try{root.localStorage.setItem(KEY,raw);status('بانک OIII، OIMM و OISS فعال است.');}
-     catch(_){status('بانک فعال است. ذخیره برای بازدید بعدی در این مرورگر ممکن نیست.');}
-    }catch(err){status('ورود بانک ناموفق بود · '+err.message);}
+     const raw=await selected.text();
+     if(current===attempt)save(raw);
+    }catch(err){if(current===attempt)status('ورود بانک ناموفق بود · '+err.message);}
    });
    remove.addEventListener('click',()=>{
-    catalog=null;try{root.localStorage.removeItem(KEY)}catch(_){}
+    ++attempt;catalog=null;
+    storage.remove(KEY);
+    if(seed)storage.save(AUTO_OFF,'1');
     root.B737CduSgRouteV1?.setConnected(false);announce('B737CDUDetachCduSgV1');
     status('بانک محلی برداشته شد.');
    });
@@ -133,7 +170,12 @@
      try{event.source.B737CDUAttachCduSgV1?.()}catch(_){}
     }
    });
-   try{const saved=root.localStorage.getItem(KEY);if(saved){install(saved);status('بانک OIII، OIMM و OISS فعال است.');}}catch(_){}
+   const saved=storage.read(KEY);
+   if(saved)try{
+    install(saved);
+    status('بانک OIII، OIMM و OISS فعال است.');
+   }catch(_){storage.remove(KEY);}
+   if(!catalog&&seed&&storage.read(AUTO_OFF)!=='1')void seedFromPage(seed);
   }
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',init,{once:true});else init();
  }
