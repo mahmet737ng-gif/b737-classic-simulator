@@ -6,7 +6,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const efis=read('panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js');
 const overhead=read('panel-mosaic-lab/interactive-overhead/rotary-guards.js');
 const vbr=read('panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js');
-const irs=read('panel-mosaic-lab/cockpit/irs-msu-detent-labels-v1.js');
+
 const html=read('panel-mosaic-lab/cockpit/index.html');
 const stage=read('panel-mosaic-lab/cockpit/overhead-stage.html');
 const EIS=require('../panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js');
@@ -59,16 +59,10 @@ test('Both ASP stations and OBS printed V/B/R labels route through actual rotor 
  assert.match(html,/asp-vbr-selector-v1\.js\?v=ASP-VBR-LABEL-TAPS-0002/);
 });
 
-test('IRS L and R OFF/ALIGN/NAV/ATT labels go through trainer safety and power model',()=>{
- assert.match(irs,/const MODES=Object\.freeze\(\['OFF','ALIGN','NAV','ATT'\]\)/);
- assert.match(irs,/owner\.setMode\(side,mode\)/);
- assert.match(irs,/root\.B737IRSRotaryIndices\?\.angles/);
- assert.match(irs,/b737:irs-trainer-state/);
- assert.match(html,/irs-msu-detent-labels-v1\.js\?v=IRS-PRINTED-LABEL-TAPS-0002/);
- assert.match(irs,/const UPPER_MODES=Object\.freeze\(\['TEST','TK\/GS','PPOS','WIND','HDG\/STS'\]\)/);
- assert.match(irs,/api\.setMode\(mode,'printed-label-tap'\)/);
- const protectedSrc=read('panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.js');
- assert.match(protectedSrc,/IRS-INDEX-0002/);
+test('Approved IRS physical Red Zone remains unchanged',()=>{
+ assert.doesNotMatch(html,/irs-msu-detent-labels-v1\.js/,
+  'Frozen IRS hardware import list cannot be extended without owner unlock');
+ assert.match(html,/irs-rotary-detent-indices-v1\.js\?v=IRS-INDEX-0002/);
 });
 
 test('Overhead labels preserve source-measured polygons, otherwise choose real detent-angle targets',()=>{
