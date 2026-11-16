@@ -29,7 +29,7 @@ test('non-pos source pages remain unchanged in 24x14 render contract',()=>{
  assert.equal(grid.length,14);
  assert(grid.every(line=>String(line).length<=24));
  assert.equal(pages.IDENT.rows[3][0].label,'OP PROGRAM');
- assert.equal(pages.IDENT.rows[4][1].label,'SUPP DATA');
+ assert.equal(pages.IDENT.rows[4][1].label,'SUP DATA'); // exact owner-approved IDENT face
 });
 test('POS REF cannot create fake live GPS coordinates',()=>{
  for(const row of pages.POS_REF.rows){
