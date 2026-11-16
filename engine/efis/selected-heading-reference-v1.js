@@ -15,17 +15,24 @@
   observedSource=null,positionValid=false,lat=null,lon=null,
   altitudeFt=0,date}={}){
   const mcp=finite(selectedMagDeg)&&selectedMagDeg>=0&&selectedMagDeg<=360;
-  const measured=finite(observedVariationDeg)&&Math.abs(observedVariationDeg)<=180;
+  const sourceModeled=typeof observedSource==='string'&&observedSource.includes('WMM2025');
+  const observedValid=finite(observedVariationDeg)&&Math.abs(observedVariationDeg)<=180;
+  // A real sensor or injected IRS variation wins. An IRS WMM estimate is
+  // already modeled data: recompute it at *this display's current position*
+  // (scenario may have advanced since the last IRU refresh).
+  const measured=observedValid&&!sourceModeled;
   let variation=measured?observedVariationDeg:null;
   let source=measured?(observedSource||'IRS_SUPPLIED_MAGNETIC_VARIATION'):'MAGNETIC_VARIATION_UNAVAILABLE';
-  let modeled=measured&&typeof observedSource==='string'&&
-   observedSource.includes('WMM2025'),decimalYear=null;
+  let modeled=false,decimalYear=null;
   if(!measured&&positionValid===true){
    const model=globalThis.B737WMM2025V1?.evaluate?.({lat,lon,altitudeFt,date});
    if(model?.valid===true){
     variation=model.declinationDeg;source=model.source;
     decimalYear=model.decimalYear;modeled=true;
    }else if(model?.reason)source=model.reason;
+  }
+  if(!finite(variation)&&observedValid&&sourceModeled){
+   variation=observedVariationDeg;source=observedSource;modeled=true;
   }
   return Object.freeze({selectedDisplayDeg:mcp&&finite(variation)?norm(selectedMagDeg):null,
    declinationDeg:variation,referenceSource:source,reference:'MAGNETIC',
