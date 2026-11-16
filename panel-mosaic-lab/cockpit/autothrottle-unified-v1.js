@@ -18,7 +18,11 @@
   const status=scenario?.getDiagnostics?.();
   const flight=status?.active===true?scenario.getState?.():null;
   const owner=win.B737ISNCockpitV1;
-  const chain=owner?.getStartState?.(),ecu=owner?.getECUState?.();
+  // Keep idle-window overhead negligible: ISN ECU snapshots contain large
+  // diagnostics trees and are only required when A/T can run or panel is open.
+  const needEngines=activeMode(mcp)||by('flightScenarioDialog')?.open===true;
+  const chain=needEngines?owner?.getStartState?.():null;
+  const ecu=needEngines?owner?.getECUState?.():null;
   const engines={};
   for(const n of [1,2]){
    const id='engine'+n;
@@ -28,10 +32,14 @@
   }
   // When the Scenario Lab is not running, accept only a VALID ADC source.
   // The external producer remains responsible for moving IAS in that case.
-  const adc=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.adc1');
+  const network=win.B737UnifiedAvionicsNetworkV1;
+  const adc=!flight&&activeMode(mcp)?network?.getSignal?.('airdata.adc1'):null;
+  const airGround=!flight&&activeMode(mcp)?network?.getSignal?.('aircraft.airground'):null;
   const ias=Number.isFinite(flight?.iasKt)?flight.iasKt:
    adc?.quality==='VALID'?(adc.value?.iasKt??adc.value?.casKt):null;
-  return {mcp,flight:{iasKt:ias,vsFpm:flight?.vsFpm??0},
+  const airborne=flight?flight.airborne:
+   airGround?.quality==='VALID'&&airGround.value?.onGround===true?false:null;
+  return {mcp,flight:{iasKt:ias,vsFpm:flight?.vsFpm??0,airborne},
    engines,scenarioActive:status?.active===true,paused:status?.paused===true,
    ecu,owner};
  }
