@@ -17,23 +17,34 @@ function draw({mode='MAP',track=91,heading=91,selectedHeading=139}={}){
  const find=segment=>all.find(x=>x.attrs['data-segment']===segment);
  return {svg,view,find,all};
 }
-test('selected HDG 139 true on TRK 091 full cockpit expanded display is NOT invisible',()=>{
+test('offscale heading above right edge has only dashed vector, no triangle or arrow',()=>{
  const r=draw();assert.equal(r.view.compassValid,true);
- const cue=r.find('heading-bug-offscale');
  const vector=r.find('heading-bug-vector');
- assert.ok(cue,'magenta heading bug edge cue must be present');
- assert.ok(vector,'true radial heading vector must be present');
+ assert.ok(vector,'dashed heading vector must remain');
+ assert.equal(r.find('heading-bug-offscale'),undefined);
+ assert.equal(r.find('heading-bug'),undefined);
  assert.equal(vector.attrs['data-relative-heading'],'48');
  assert.equal(vector.attrs['data-heading-offscale'],'true');
- assert.ok(cue.attrs.transform.includes('translate(456.'),'cue must be on right edge');
- const colorPaths=r.all.filter(x=>x.attrs.stroke==='#e649e7');
- assert.ok(colorPaths.length>=2,'magenta heading elements must be rendered');
+ assert.equal(vector.attrs['stroke-dasharray'],'8 18');
+ const magenta=r.all.filter(x=>x.attrs.stroke==='#e649e7'&&
+  (x.tag==='polygon'||x.attrs['data-heading-selected']));
+ assert.equal(magenta.length,0,'no extra magenta offscale arrow/triangle');
 });
-test('offscale heading below left edge also retains marker and true vector',()=>{
+test('offscale heading past left edge also retains only dashed vector',()=>{
  const r=draw({selectedHeading:25});
- assert.ok(r.find('heading-bug-offscale'));
+ assert.equal(r.find('heading-bug-offscale'),undefined);
+ assert.equal(r.find('heading-bug'),undefined);
  assert.equal(r.find('heading-bug-vector').attrs['data-relative-heading'],'-66');
- assert.ok(r.find('heading-bug-offscale').attrs.transform.includes('translate(55.'));
+ assert.equal(r.find('heading-bug-vector').attrs['stroke-dasharray'],'8 18');
+});
+test('boundary: bug appears only after heading enters ±35 degree visible scale',()=>{
+ const outside=draw({selectedHeading:126.01,heading:91,track:91});
+ assert.equal(outside.find('heading-bug'),undefined);
+ assert.equal(outside.find('heading-bug-offscale'),undefined);
+ assert.ok(outside.find('heading-bug-vector'));
+ const inside=draw({selectedHeading:124.99,heading:91,track:91});
+ assert.ok(inside.find('heading-bug'));
+ assert.equal(inside.find('heading-bug-offscale'),undefined);
 });
 test('in-range heading uses actual ring position, not an offscale fake',()=>{
  const r=draw({selectedHeading:111});
