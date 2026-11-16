@@ -63,10 +63,19 @@
   const width=size[0]*ratio,height=size[1]*ratio;
   if([x,y,width,height].some(v=>!Number.isFinite(v))||width<=0||height<=0)
    throw Error('INVALID_PHOTO_GAUGE_RECT');
+  // An inner-panel photographic RMI bezel extends across the panel seam
+  // in the old renderer. The overlay cannot paint on the neighboring EHSI
+  // glass or other owner's texture. Clip in *native source photo* space,
+  // leaving the needle pivot and accepted aircraft reference untouched.
+  const clip=Object.freeze({
+   left:100*Math.max(0,-x)/width,top:100*Math.max(0,-y)/height,
+   right:100*Math.max(0,x+width-entry.width)/width,
+   bottom:100*Math.max(0,y+height-entry.height)/height
+  });
   return Object.freeze({x,y,width,height,
    left:100*x/entry.width,top:100*y/entry.height,
    widthPct:100*width/entry.width,heightPct:100*height/entry.height,
-   centerX:entry.x,centerY:entry.y});
+   centerX:entry.x,centerY:entry.y,clip});
  }
  return Object.freeze({VERSION,ref,kinds,layouts,modeOf,get,selector,rectangle});
 });
