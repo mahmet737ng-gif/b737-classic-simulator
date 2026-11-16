@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unified · تست‌لب گیج‌های پرواز</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101419;color:#e4ecf1}
+body{max-width:1240px;margin:auto;padding:24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-size:1.5rem;margin:0}a{color:#a0d2ff}
+#rack{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:12px;direction:ltr;margin:22px 0}
+figure{background:#191e24;border:1px solid #303d48;border-radius:10px;margin:0;padding:12px;display:grid;align-content:start;justify-items:center;gap:8px}
+figure svg{width:100%;height:clamp(150px,20vw,240px);display:block}figcaption{font-size:.85rem}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(225px,100%),1fr));gap:13px}
+fieldset{border:1px solid #374652;border-radius:8px;margin:0;min-width:0}legend{color:#b6cddd}
+label.input{display:grid;grid-template-columns:1fr 76px;align-items:center;gap:12px;margin:6px 0}
+label.check{display:flex;gap:8px;margin:8px 0}
+input[type=number],button{background:#202a34;color:inherit;border:1px solid #465969;border-radius:5px;padding:6px;min-width:0}
+button{cursor:pointer;padding:8px 14px}button:hover{background:#304358}
+.buttons{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:12px 0 20px}
+</style>
+<header><h1>تست‌لب گیج‌های پرواز 737 Classic</h1><a href="../">کاکپیت Unified</a></header>
+<main>
+<section id="rack" aria-label="پنج گیج پرواز"></section>
+<section class="buttons" aria-label="سناریوها">
+<button data-preset="normal">پرواز هم‌سطح</button>
+<button data-preset="climb">صعود</button>
+<button data-preset="descent">نزول</button>
+<button data-preset="failed">نمایش فلگ‌ها</button>
+<label class="check"><input id="raw" type="checkbox"> فقط تصویر خام</label>
+</section>
+<form id="inputs" class="controls" dir="ltr"></form>
+</main>
+<script src="gauges.js" defer></script>
+<script src="lab.js" defer></script>
+</html>

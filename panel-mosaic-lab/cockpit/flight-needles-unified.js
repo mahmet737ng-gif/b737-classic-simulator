@@ -5,7 +5,7 @@
  for(const station of Object.keys(state))for(const [key,def] of Object.entries(model.needles))state[station][key]=def.initialAngle;
  const images=Object.fromEntries(Object.entries(model.needles).map(([key,def])=>[key,new URL('./'+def.asset+'?v=FLN-0004',document.baseURI).href]));
  function svg(parent,tag,attrs={}){const el=document.createElementNS(ns,tag);for(const [key,value]of Object.entries(attrs))el.setAttribute(key,String(value));parent.append(el);return el;}
- function paint(station,key){const blade=blades[station]?.[key],angle=state[station]?.[key];if(blade)blade.style.transform=`rotate(${angle}deg)`;const control=controls[station]?.[key];if(control){control.input.value=String(angle);control.output.textContent=`${angle}°`;}}
+ function paint(station,key){const blade=blades[station]?.[key],angle=state[station]?.[key];if(blade)blade.style.transform=`rotate(${angle}deg)`;const control=controls[station]?.[key];if(control){control.input.value=String(angle);control.output.textContent=`${angle}°`;}window.dispatchEvent(new Event('b737:photo-needle-update'));}
  function setAngle(station,key,value){if(!state[station]||!model.needles[key])throw Error('Unknown station or needle');const n=model.angle(value);state[station][key]=n;paint(station,key);return n;}
  // Animated simulator-only continuous revolutions: altitude's hundred-foot
  // hand must NOT reverse 359 degrees when it passes a 1000-foot boundary.

@@ -8,6 +8,7 @@
   if(state.blades.airspeed)state.blades.airspeed.style.transform=`rotate(${model.bearing(state.airspeedKts,station)}deg)`;
   if(state.blades.vmoMmo)state.blades.vmoMmo.style.transform=`rotate(${model.vmoBearing(state.vmoMmoKts,station)}deg)`;
   for(const kind of ['airspeed','vmoMmo']){const value=state[kind+'Kts'];if(state.inputs[kind])state.inputs[kind].value=String(value);if(state.outputs[kind])state.outputs[kind].textContent=`${value} KT${kind==='vmoMmo'?' · visual limit':''}`;}
+  window.dispatchEvent(new Event('b737:photo-airspeed-update'));
  }
  function setValue(kind,value,station){const n=model.speed(value);const targets=station?[station]:Object.keys(stations);for(const target of targets){if(!stations[target])throw Error('Unknown airspeed station');stations[target][kind+'Kts']=n;paint(target);}return n;}
  function setAirspeedKts(value,station){return setValue('airspeed',value,station);}
