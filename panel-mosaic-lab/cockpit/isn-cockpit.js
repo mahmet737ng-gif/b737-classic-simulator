@@ -528,6 +528,14 @@
  },100);
  let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+  getPropulsionSnapshot:()=>({
+   schema:'B737_ISN_PROPULSION_SNAPSHOT_V1',source:'SHARED_ISN18_ECU',
+   onGround:ecu.aircraft.onGround,
+   engines:Object.fromEntries(['engine1','engine2'].map(id=>[id,{
+    phase:ecu.chain.phase[id],running:ecu.chain.phase[id]==='RUNNING',
+    throttle:ecu.chain.throttle[id],n1Percent:ecu.coast[id]?.n1??null
+   }]))
+  }),
   // Keep the existing ISN-18 ECU as sole engine-dynamics owner. The A/T
   // controller is only permitted to move RUNNING engines in MCP A/T SPEED.
   autoThrottleCommand:({engine,value,controller}={})=>{
@@ -537,9 +545,9 @@
    const mcp=window.B737McpAFDSBridgeV1?.getOutput?.();
    if(mcp?.power!==true||mcp.controls?.atArm!==true||mcp.modes?.thrust!=='SPEED')
     return {accepted:false,reason:'MCP_A/T_SPEED_NOT_ENGAGED'};
-   if(chain.get().phase[engine]!=='RUNNING')
+   if(ecu.chain.phase[engine]!=='RUNNING')
     return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
-   ecu.setThrottle(engine,value);
+   ecu.setAutothrottle(engine,value);
    // The existing 100ms ISN owner tick repaints EIS and Conventional gauges.
    return {accepted:true,engine,throttle:value};
   },
