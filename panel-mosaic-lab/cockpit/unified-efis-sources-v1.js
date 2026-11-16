@@ -35,7 +35,13 @@
   const direction=deg=>Number.isFinite(deg)?norm(deg-(variation??0)):null;
   const magCourse=deg=>Number.isFinite(deg)?norm(deg+(variation===null?0:variation)):null;
   const mcp=signal(snapshot,'mcp.state');
-  const radioCourse=mcp?.powered===true?value(sg===1?mcp.courseL:mcp.courseR):null;
+  const mcpPowered=mcp?.powered===true;
+  // MRG CL IV.6 p.186: COURSE 2 is an independent battery-fed MCP
+  // circuit. A live FO source must never display an unpowered CRS 2.
+  const coursePowered=sg===1?mcpPowered:mcp?.course2Powered===true;
+  const radioCourse=coursePowered?value(sg===1?mcp.courseL:mcp.courseR):null;
+  const selectedSpeedKt=mcpPowered&&mcp?.speedDisplayMode==='IAS'&&
+    mcp?.speedBlank!==true?value(mcp.selectedSpeedKt):null;
   const common=selected('efi-transfer',0)!==0||selected('irs-transfer',0)!==0;
   const comparison=common||!attitude||!peerAttitude?['COMP']:
    [Math.abs(iru.pitchDeg-peer.pitchDeg)>3?'PITCH':null,Math.abs(delta(iru.rollDeg-peer.rollDeg))>3?'ROLL':null].filter(Boolean);
@@ -43,8 +49,23 @@
    video:feeds[sg]===true&&faults[sg]!==true,
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
    heading:direction(heading),track:direction(trueTrack),trueTrack,trueRef:variation===null,
-   selectedHeading:variation!==null&&mcp?.powered===true?value(mcp.headingDeg):null,
+   selectedHeading:variation!==null&&mcpPowered?value(mcp.headingDeg):null,
    course:variation!==null?radioCourse:null,
+   // These targets are MCP selections, never a claim of FD servo movement,
+   // NAV capture, pitch/roll attitude, or measured aircraft altitude.
+   mcp:{powered:mcpPowered,course2Powered:mcp?.course2Powered===true,
+    selectedHeadingDeg:mcpPowered?value(mcp.headingDeg):null,
+    courseDeg:radioCourse,selectedSpeedKt,
+    speedDisplayMode:mcpPowered?mcp.speedDisplayMode:null,
+    speedBlank:mcp?.speedBlank===true,
+    altitudeSelectedFt:mcpPowered?value(mcp.altitudeFt):null,
+    verticalSpeedSelectedFpm:mcpPowered?value(mcp.verticalSpeedFpm):null,
+    lateralMode:mcpPowered?mcp.lateralMode:null,
+    verticalMode:mcpPowered?mcp.verticalMode:null,
+    thrustMode:mcpPowered?mcp.thrustMode:null,
+    autopilotMode:mcpPowered?mcp.autopilotMode:null,
+    fdLeft:mcpPowered&&mcp.fdLeft===true,
+    fdRight:mcpPowered&&mcp.fdRight===true},
    frontCourse:trueTrack!==null&&variation!==null&&radioCourse!==null?Math.abs(delta(trueTrack-magCourse(radioCourse)))<=90:null,
    trackSource:Number.isFinite(fmcMotion?.trueTrackDeg)?'FMC':trueTrack!==null?'IRS '+(irs===1?'L':'R'):null,
    groundSpeed:value(fmcMotion?.gsKt)??(nav?value(iru.gsKt):null),

@@ -79,10 +79,20 @@
  function mcp(){
   const s=snapshotFns.mcp();if(s?.schema!=='B737_MCP_AFDS_OUTPUT_V1')return;
   const c=s.controls||{},m=s.modes||{},v=s.values||{};
-  send('MCP','mcp.state',{powered:s.power,feedEvidence:s.powerEvidence,
-   altitudeFt:v.altitude??null,selectedSpeedKt:v.speed??null,
-   headingDeg:v.heading??null,verticalSpeedFpm:v.verticalSpeed??null,courseL:v.courseL??null,courseR:v.courseR??null,
-   lateralMode:m.lateral??null,verticalMode:m.vertical??null,pending:s.pending||{}},'TRAINING_SCENARIO');
+  // MCP is the authoritative selected-value and AFDS mode owner; the
+  // COURSE 2 window has its own battery-bus feed and must not be treated
+  // as powered simply because MCP's main feed is present.
+  send('MCP','mcp.state',{powered:s.power,course2Powered:s.course2Power,
+   feedEvidence:s.powerEvidence,altitudeFt:v.altitude??null,
+   selectedSpeedKt:v.speed??null,selectedMachHundredths:v.machHundredths??null,
+   speedDisplayMode:s.speedDisplayMode??null,speedBlank:s.displayBlank?.speed===true,
+   headingDeg:v.heading??null,verticalSpeedFpm:v.verticalSpeed??null,
+   courseL:v.courseL??null,courseR:v.courseR??null,
+   lateralMode:m.lateral??null,verticalMode:m.vertical??null,
+   thrustMode:m.thrust??null,autopilotMode:m.autopilot??null,
+   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,
+   atArm:c.atArm===true,axisControl:s.axisControl||null,
+   armed:s.armed||{},capture:s.capture||{},pending:s.pending||{}},'TRAINING_SCENARIO');
   send('AFDS','afds.state',{lateralMode:m.lateral??null,verticalMode:m.vertical??null,autopilotMode:m.autopilot??null,
    fdLeft:c.fd?.left??null,fdRight:c.fd?.right??null,power:s.power},'TRAINING_SCENARIO');
   send('AUTOTHROTTLE','autothrottle.state',{armed:c.atArm===true,mode:m.thrust??null,
