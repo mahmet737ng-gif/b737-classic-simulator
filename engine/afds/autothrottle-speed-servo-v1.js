@@ -51,13 +51,13 @@
   if(!running.length)return deactivated('NO_RUNNING_ENGINES');
   const fresh=previous.active===true&&previous.engineCount===running.length;
   let integral=fresh?previous.integral:0;
-  const kp=.48,ki=.014;
+  const kp=.75,ki=.006;
   const feedforward=holdN1(out.iasKt,flight.vsFpm??0);
   // Anti-windup: integrate only where the N1 range permits correction,
   // or when the error would move the demand back into the permitted range.
   const unsaturated=feedforward+kp*out.errorKt+ki*integral;
   const wouldWindup=unsaturated>92&&out.errorKt>0||unsaturated<IDLE_N1&&out.errorKt<0;
-  if(!wouldWindup)integral=clamp(integral+dt*out.errorKt,-600,600);
+  if(!wouldWindup)integral=clamp(integral+dt*out.errorKt,-300,300);
   const n1=clamp(feedforward+kp*out.errorKt+ki*integral,IDLE_N1,92);
   const required=throttleForN1(n1);
   const measured=running.reduce((sum,id)=>sum+engines[id].throttle,0)/running.length;
