@@ -65,5 +65,5 @@ win.B737FoOwnerPanelV1={version:'FO-OWNER-20261030',source,rect,guards,inspect:(
 function queue(){if(pending)return;pending=true;win.requestAnimationFrame(()=>{pending=false;mount();});}
 win.addEventListener('b737:engine-indication-view',queue);win.addEventListener('b737:aircraft-profile-change',queue);win.addEventListener('b737:cockpit-mounted',queue);win.addEventListener('resize',queue);new win.MutationObserver(queue).observe(doc.getElementById('scene')||doc.body,{childList:true,subtree:true});queue();
 }
-return {source,rect,guards,placement,install};
+return {source,rect,guards,pivots:Object.freeze(pivots),placement,install};
 });
