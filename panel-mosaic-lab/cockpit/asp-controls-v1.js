@@ -106,12 +106,50 @@
  // its 270-degree volume rotor; finger/mouse contact jitter never rotates it.
  const ASP_VOLUME_DRAG_START_PX=12,ASP_VOLUME_PIXELS_PER_PERCENT=7;
  function wire(button){
-  let gesture=null,suppressClickUntil=0;
-  for(const type of ['pointerdown','pointermove','pointerup','pointercancel','touchstart','touchmove','touchend'])button.addEventListener(type,preventPan);
-  button.addEventListener('click',e=>{e.stopPropagation();if(performance.now()<suppressClickUntil)return;toggle(button);});
+  let gesture=null,queuedVolume=null,queuedFrame=0,lastDragClick=null;
+  const schedule=root.requestAnimationFrame?.bind(root);
+  const cancel=root.cancelAnimationFrame?.bind(root);
+  function flushVolume(commit){
+   if(queuedFrame&&cancel)cancel(queuedFrame);
+   queuedFrame=0;
+   const final=queuedVolume;queuedVolume=null;
+   if(commit&&final!==null)volume(button,final);
+  }
+  function addTravel(distance){
+   if(!Number.isFinite(distance)||!distance)return;
+   const current=queuedVolume??state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume;
+   queuedVolume=Math.max(0,Math.min(100,current+distance/ASP_VOLUME_PIXELS_PER_PERCENT));
+   if(!schedule){flushVolume(true);return;}
+   if(!queuedFrame)queuedFrame=schedule(()=>{
+    queuedFrame=0;
+    const next=queuedVolume;queuedVolume=null;
+    if(next!==null)volume(button,next);
+   });
+  }
+  // The native ASP handler is the sole owner of pointer input: the generic
+  // cockpit touch-router intentionally excludes receiver volume knobs.
+  // Clicking only selects; rotation never selects a receiver.
+  button.addEventListener('click',e=>{
+   e.stopPropagation();
+   // Consume only the browser-generated click belonging to the drag that
+   // just ended, not the next independent tap (even if it is immediate).
+   if(lastDragClick){
+    const samePointer=Number.isFinite(e.pointerId)&&e.pointerId===lastDragClick.id;
+    const legacyClick=!Number.isFinite(e.pointerId)&&
+     e.timeStamp>=lastDragClick.time&&e.timeStamp-lastDragClick.time<80;
+    lastDragClick=null;
+    if(samePointer||legacyClick){e.preventDefault();return;}
+   }
+   toggle(button);
+  });
+  for(const type of ['pointerdown','pointermove','pointerup','pointercancel','touchstart','touchmove','touchend'])
+   button.addEventListener(type,preventPan);
   if(button.dataset.kind!=='volume')return;
   button.addEventListener('pointerdown',e=>{
    if(e.pointerType==='mouse'&&e.button!==0)return;
+   // A new finger owns a new gesture, regardless of when the last ended.
+   lastDragClick=null;
+   if(gesture)return;
    gesture={id:e.pointerId,startX:e.clientX,startY:e.clientY,
     lastX:e.clientX,lastY:e.clientY,moved:false,axis:null};
    button.dataset.aspGesture='TAP_PENDING';
@@ -127,28 +165,36 @@
     g.moved=true;
     g.axis=Math.abs(totalX)>=Math.abs(totalY)?'x':'y';
     button.dataset.aspGesture='ROTATING';
-    const initial=g.axis==='x'?totalX:-totalY;
-    if(initial){
-     e.preventDefault();
-     volume(button,state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume+
-      initial/ASP_VOLUME_PIXELS_PER_PERCENT);
-    }
+    e.preventDefault();
+    addTravel(g.axis==='x'?totalX:-totalY);
     return;
    }
    const distance=g.axis==='x'?dx:-dy;
    if(!distance)return;
    e.preventDefault();
-   volume(button,state.snapshot(button.dataset.seat,'volume',button.dataset.channel).volume+
-    distance/ASP_VOLUME_PIXELS_PER_PERCENT);
+   addTravel(distance);
   });
-  const finish=e=>{
-   if(gesture?.id!==e.pointerId)return;
-   if(gesture.moved)suppressClickUntil=performance.now()+450;
-   gesture=null;button.dataset.aspGesture='IDLE';
-   try{if(button.hasPointerCapture(e.pointerId))button.releasePointerCapture(e.pointerId);}catch(_){}
-  };
-  button.addEventListener('pointerup',finish);button.addEventListener('pointercancel',finish);
-  button.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const s=state.snapshot(button.dataset.seat,'volume',button.dataset.channel);volume(button,s.volume+(e.deltaY<0?2:e.deltaY>0?-2:0));},{passive:false});
+  function finish(e,cancelled=false){
+   if(!gesture||(e&&gesture.id!==e.pointerId))return;
+   const completed=gesture;
+   gesture=null;
+   button.dataset.aspGesture='IDLE';
+   // ALWAYS release ownership before any backend/render work.
+   try{if(button.hasPointerCapture?.(completed.id))
+    button.releasePointerCapture(completed.id);}catch(_){}
+   flushVolume(!cancelled);
+   if(completed.moved&&!cancelled)
+    lastDragClick={id:completed.id,time:e?.timeStamp??performance.now()};
+  }
+  button.addEventListener('pointerup',e=>finish(e));
+  button.addEventListener('pointercancel',e=>finish(e,true));
+  button.addEventListener('lostpointercapture',e=>finish(e,true));
+  root.addEventListener('blur',()=>finish(null,true));
+  button.addEventListener('wheel',e=>{
+   e.preventDefault();e.stopPropagation();
+   const s=state.snapshot(button.dataset.seat,'volume',button.dataset.channel);
+   volume(button,s.volume+(e.deltaY<0?2:e.deltaY>0?-2:0));
+  },{passive:false});
   button.addEventListener('keydown',e=>{
    const s=state.snapshot(button.dataset.seat,'volume',button.dataset.channel);
    const actions={ArrowRight:s.volume+1,ArrowUp:s.volume+1,ArrowLeft:s.volume-1,ArrowDown:s.volume-1,PageUp:s.volume+10,PageDown:s.volume-10,Home:0,End:100};
