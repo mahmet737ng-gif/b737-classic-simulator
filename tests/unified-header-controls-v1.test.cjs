@@ -6,8 +6,11 @@ const html=read('index.html');
 const header=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/header>/)?.[1];
 assert.ok(header,'Main Unified top bar exists');
 const ids=[...header.matchAll(/<button\b[^>]*\bid="([^"]+)"/g)].map(m=>m[1]);
-assert.deepEqual(ids,['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
- 'Only Controls, Settings, CB PNL, Ground Power and FAILURES can be in header');
+assert.deepEqual(ids,['inspectorToggle','aircraftSettingsOpen','unifiedEfisHeader','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
+ 'The top bar includes EFIS CONTROL alongside the existing controls');
+assert.match(header,/<button[^>]*id="unifiedEfisHeader"[^>]*aria-controls="unifiedEfisDialog"[^>]*>EFIS CONTROL<\/button>/);
+for(const preset of ['FULL_ALIGN','COLD_DARK','LIVE'])
+ assert.ok(html.includes('data-efis-preset="'+preset+'"'),'EFIS preset '+preset+' must be reachable');
 const controlStart=html.indexOf('<section id="unifiedControlCenter"'),controlEnd=html.indexOf('</section>',controlStart);
 assert.ok(controlStart>0,'Controls drawer must exist');
 const controlBlock=html.slice(controlStart,html.indexOf('<section class="aircraft-profile-summary"',controlStart));
@@ -45,4 +48,4 @@ assert.ok(!gpu.includes("holder.querySelector('#liveBatteryRecharge')"),
  'Ground Power must not move behind drawer battery button');
 assert.ok(html.includes("battery-panel-live-v1.js?v=BAT-CONTROLS-0001"),'Battery meter cache bumped');
 assert.ok(html.includes("battery-recharge-header-v1.js?v=BAT-CONTROLS-0001"),'Battery recharge cache bumped');
-console.log('PASS: strict 5-button header; rechargeable live battery volt/amp meter and tests remain under Controls');
+console.log('PASS: strict header with EFIS access; rechargeable live battery volt/amp meter and tests remain under Controls');
