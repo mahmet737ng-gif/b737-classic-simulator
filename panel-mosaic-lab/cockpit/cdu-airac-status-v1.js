@@ -4,7 +4,7 @@
 (function(root){
  'use strict';
  const model=root.B737FMCAiracBanksV1,output=root.document.getElementById('fmcAiracCycleStatus');
- if(!model||!output)return;
+ if(!model)return;
  const seats=new Map();
  const today=()=>new Date().toISOString().slice(0,10);
  function render(){
@@ -12,6 +12,7 @@
   const period=model.dateRange('2611');
   const reports=[...seats.entries()];
   const active=reports.map(([seat,x])=>seat+': '+(x.activeCycle||'NOT LOADED'));
+  if(!output)return; // AIRAC status is internal; no Settings text is rendered.
   output.textContent='AIRAC calendar: '+(schedule.calendarCurrentCycle||'UNKNOWN')+
    ' · 2611 '+period+
    ' · 2611 NAVDATA: '+(reports.some(([,x])=>x.installedCycles?.includes('2611'))?'PRIVATE SOURCE INSTALLED':'SOURCE NOT PROVIDED')+
