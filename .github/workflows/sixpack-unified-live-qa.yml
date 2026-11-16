@@ -5,6 +5,8 @@ on:
       - 'panel-mosaic-lab/cockpit/sixpack-glareshield-v1.js'
       - 'panel-mosaic-lab/cockpit/sixpack-live-integration-v1.js'
       - 'panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs'
+      - 'panel-mosaic-lab/cockpit/sixpack-four-systems-live.test.cjs'
+      - 'panel-mosaic-lab/cockpit/master-caution-fcom15-regression-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/redundancy-caution-unified.test.cjs'
       - 'panel-mosaic-lab/cockpit/redundancy-physical-recall-v1.js'
       - 'engine/systems/classic-redundancy-caution-v1.js'
@@ -18,6 +20,8 @@ on:
       - 'panel-mosaic-lab/cockpit/sixpack-glareshield-v1.js'
       - 'panel-mosaic-lab/cockpit/sixpack-live-integration-v1.js'
       - 'panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs'
+      - 'panel-mosaic-lab/cockpit/sixpack-four-systems-live.test.cjs'
+      - 'panel-mosaic-lab/cockpit/master-caution-fcom15-regression-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/redundancy-caution-unified.test.cjs'
       - 'panel-mosaic-lab/cockpit/redundancy-physical-recall-v1.js'
       - 'engine/systems/classic-redundancy-caution-v1.js'
@@ -48,4 +52,4 @@ jobs:
           node --check panel-mosaic-lab/cockpit/pressurization-oh22.js
           node --check panel-mosaic-lab/cockpit/aircon-400-overlay.js
       - name: Integration tests - 4096 combinations, acknowledge, recall, electrical, fire
-        run: node --test panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs panel-mosaic-lab/cockpit/redundancy-caution-unified.test.cjs
+        run: node --test panel-mosaic-lab/cockpit/sixpack-live-unified.test.cjs panel-mosaic-lab/cockpit/sixpack-four-systems-live.test.cjs panel-mosaic-lab/cockpit/master-caution-fcom15-regression-v1.test.cjs panel-mosaic-lab/cockpit/redundancy-caution-unified.test.cjs
