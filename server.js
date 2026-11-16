@@ -92,9 +92,16 @@ async function upstreamFetch(relative) {
 }
 function transformCockpitHTML(content) {
   // Only presentation changes: preserve all original ordered scripts and code.
-  const injection = '<base href="/panel-mosaic-lab/cockpit/">'+
+  // Start an immediate same-origin session renewal BEFORE the hundreds of
+  // original deferred cockpit assets. If a cached page survives expiry,
+  // show login rather than leaving a partially loaded white cockpit.
+  const preflight='<script>(function(){fetch("/api/pulse",{method:"POST",credentials:"same-origin",cache:"no-store"})'+
+    '.then(function(r){if(r.status===401)location.replace("/login?e=expired");})'+
+    '.catch(function(){})})();</script>';
+  const injection = '<base href="/panel-mosaic-lab/cockpit/">'+preflight+
     '<link rel="stylesheet" href="/static/guest-cockpit.css">'+
-    '<script src="/static/guest-cockpit.js" defer></script>'+    '<script src="/static/session.js" defer></script>';
+    '<script src="/static/guest-cockpit.js" defer></script>'+
+    '<script src="/static/session.js" defer></script>';
   if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
   let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
   result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
@@ -218,7 +225,8 @@ function verifyPassword(pass) {
   } catch (_) { return false; }
 }
 function loginHTML(error) {
-  const errorHTML = error === 'full' ? '<div class="notice" role="alert">All three device slots are currently occupied. Sign out from another device or retry after its session expires.</div>'
+  const errorHTML = error === 'expired' ? '<div class="notice" role="alert">Your previous session expired. Sign in again to load all simulator panels.</div>'
+    : error === 'full' ? '<div class="notice" role="alert">All three device slots are currently occupied. Sign out from another device or retry after its session expires.</div>'
     : error === 'invalid' ? '<div class="notice" role="alert">Incorrect username or password.</div>'
     : error === 'rate' ? '<div class="notice" role="alert">Too many attempts. Retry in 15 minutes.</div>' : '';
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -302,8 +310,19 @@ async function handle(req,res) {
   if (req.method==='POST' && url.pathname==='/api/login') { await signIn(req,res);return; }
   const ok=await authorized(req);
   if (!ok) {
-    if (req.method==='GET') redirect(res,'/login');
-    else {res.writeHead(401,{'Content-Type':'application/json'});res.end('{"error":"unauthorized"}');}
+    // Redirect only actual document navigations. Serving login HTML as a
+    // redirected .js/.css/.image response previously produced a blank page
+    // and hundreds of GET /login requests after an expired guest session.
+    const dest=String(req.headers['sec-fetch-dest']||'');
+    const accept=String(req.headers.accept||'');
+    const isDocument=dest==='document'||dest==='iframe'||
+      (!dest&&accept.includes('text/html'));
+    if (req.method==='GET'&&isDocument) redirect(res,'/login?e=expired');
+    else {
+      res.writeHead(401,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'});
+      if(req.method==='HEAD')res.end();
+      else res.end('Guest session expired; sign in again');
+    }
     return;
   }
   if (req.method==='POST' && url.pathname==='/api/pulse') {
