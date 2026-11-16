@@ -19,96 +19,47 @@ assert.ok(selector.includes('.mounted-rotary'));
 console.log('TOUCH-ROTARY-0001 motion tests passed');
 
 
-// Real capture-phase gesture routing regression. The generic Unified touch
-// router previously consumed pointerup and turned EVERY ASP tap into a wheel
-// tick. This compact fake DOM exercises the actual installed event handlers,
-// including the synthesized click and duplicate-click suppression.
+// ASP is deliberately EXCLUDED from the generic document-capture router.
+// The physical ASP button must receive its own pointerdown/up and return
+// touch ownership immediately. A subsequent inert-panel gesture must be
+// free to reach the cockpit's pinch/pan controller.
 assert.equal(ASP_SWIPE_START_PX,12);
 assert.equal(ASP_VOLUME,'.asp-photo-control[data-kind="volume"]');
+assert.equal(selector.includes(ASP_VOLUME),false,
+ 'There must be just ONE ASP gesture owner (the native ASP control)');
 {
-  const handlers=new Map();
-  const previousWheelEvent=globalThis.WheelEvent;
-  globalThis.WheelEvent=class{
-    constructor(type,options){this.type=type;Object.assign(this,options);}
-  };
-  try {
-    const doc={
-      head:{appendChild(){}},
-      createElement(){return {id:'',textContent:''};},
-      addEventListener(type,cb){handlers.set(type,cb);},
-      defaultView:{addEventListener(){}}
-    };
-    assert.equal(install(doc),true);
-    assert.equal(install(doc),false,'touch router installs once, avoiding double taps');
-    let clicks=0,volumeTicks=0,volumeDirection=0;
-    const volumeKnob={
-      disabled:false,captured:null,
-      getAttribute(){return null;},
-      closest(selector){return selector.includes(ASP_VOLUME)?this:null;},
-      matches(selector){return selector.includes(ASP_VOLUME);},
-      setPointerCapture(id){this.captured=id;},
-      hasPointerCapture(id){return this.captured===id;},
-      releasePointerCapture(){this.captured=null;},
-      getBoundingClientRect(){return {left:0,top:0,width:90,height:90};},
-      focus(){},
-      dispatchEvent(event){if(event.type==='wheel'){volumeTicks++;volumeDirection+=-Math.sign(event.deltaY);}return true;},
-      click(){
-        const ev={detail:0,target:this,cancelable:true,
-          preventDefault(){},stopImmediatePropagation(){}};
-        handlers.get('click')(ev);
-        clicks++;
-      }
-    };
-    const pointer=(target,x,y,time,id=1)=>({
-      target,pointerType:'touch',pointerId:id,isPrimary:true,button:0,
-      clientX:x,clientY:y,timeStamp:time,cancelable:true,
-      prevented:false,stopped:false,
-      preventDefault(){this.prevented=true;},
-      stopImmediatePropagation(){this.stopped=true;}
-    });
-    const trigger=(name,e)=>handlers.get(name)(e);
-    function touchTap(x=42,y=42,id=1){
-      trigger('pointerdown',pointer(volumeKnob,x,y,0,id));
-      trigger('pointerup',pointer(volumeKnob,x,y,80,id));
-    }
-    touchTap();
-    assert.equal(clicks,1,'ASP touch tap must select receiver once');
-    assert.equal(volumeTicks,0,'ASP touch tap must NEVER rotate the volume');
-    touchTap(67,45,2);
-    assert.equal(clicks,2,'second tap toggles the same selection back off');
-    assert.equal(volumeTicks,0,'tap on right edge also must not rotate');
-    trigger('pointerdown',pointer(volumeKnob,40,40,100,3));
-    trigger('pointermove',pointer(volumeKnob,46,45,112,3));
-    trigger('pointerup',pointer(volumeKnob,46,45,145,3));
-    assert.equal(clicks,3,'small finger jitter is still a tap to select');
-    assert.equal(volumeTicks,0,'sub-12px jitter must not rotate');
-    trigger('pointerdown',pointer(volumeKnob,40,40,200,4));
-    trigger('pointermove',pointer(volumeKnob,76,40,230,4));
-    trigger('pointerup',pointer(volumeKnob,76,40,260,4));
-    assert.equal(clicks,3,'deliberate swipe must not change receiver selection');
-    assert.ok(volumeTicks>0,'swipe beyond dead-zone rotates knob');
-    assert.ok(volumeDirection>0,'right swipe increases ASP volume');
-    const beforeReverse=volumeDirection;
-    trigger('pointerdown',pointer(volumeKnob,72,40,300,5));
-    trigger('pointermove',pointer(volumeKnob,35,40,330,5));
-    trigger('pointerup',pointer(volumeKnob,35,40,360,5));
-    assert.ok(volumeDirection<beforeReverse,'left swipe reverses volume');
-    const beforeUp=volumeDirection;
-    trigger('pointerdown',pointer(volumeKnob,45,70,400,6));
-    trigger('pointermove',pointer(volumeKnob,45,20,440,6));
-    trigger('pointerup',pointer(volumeKnob,45,20,480,6));
-    assert.ok(volumeDirection>beforeUp,'upward swipe also rotates clockwise');
-    assert.equal(clicks,3,'none of the swipes toggled receiver selection');
-    trigger('pointerdown',pointer(volumeKnob,45,45,500,7));
-    trigger('pointercancel',pointer(volumeKnob,45,45,510,7));
-    assert.equal(clicks,3,'cancelled gesture does not select or rotate');
-    const possibleGhost=pointer(volumeKnob,45,45,520,7);
-    possibleGhost.detail=1;
-    trigger('click',possibleGhost);
-    assert.equal(possibleGhost.stopped,true,'ghost click after touch must be suppressed');
-  } finally {
-    if(previousWheelEvent===undefined)delete globalThis.WheelEvent;
-    else globalThis.WheelEvent=previousWheelEvent;
-  }
+ const handlers=new Map();
+ const doc={
+  head:{appendChild(){}},
+  createElement(){return {id:'',textContent:''}},
+  addEventListener(type,cb){handlers.set(type,cb)},
+  defaultView:{addEventListener(){}}
+ };
+ assert.equal(install(doc),true);
+ let stopCalls=0,rotaryWheelCalls=0;
+ const asp={
+  disabled:false,getAttribute(){return null},
+  closest(query){return query===ASP_VOLUME?this:null},
+  matches(query){return query===ASP_VOLUME},
+  setPointerCapture(){throw Error('Generic router must not capture ASP')},
+  focus(){throw Error('Generic router must not focus ASP')},
+  dispatchEvent(){rotaryWheelCalls++},
+  getBoundingClientRect(){return {left:0,width:80}}
+ };
+ const inert={
+  closest(){return null}
+ };
+ const event=(target,id=1)=>({
+  target,pointerType:'touch',pointerId:id,isPrimary:true,button:0,
+  clientX:25,clientY:25,timeStamp:100,cancelable:true,
+  preventDefault(){stopCalls++},stopImmediatePropagation(){stopCalls++}
+ });
+ handlers.get('pointerdown')(event(asp,1));
+ handlers.get('pointerup')(event(asp,1));
+ handlers.get('pointerdown')(event(inert,2));
+ handlers.get('pointermove')(event(inert,2));
+ handlers.get('pointerup')(event(inert,2));
+ assert.equal(stopCalls,0,'A new pan touch must not be intercepted after an ASP touch');
+ assert.equal(rotaryWheelCalls,0,'Generic gesture router may not turn any ASP volume');
 }
-console.log('ASP tap-select/swipe-volume touch regression passed');
+console.log('ASP gesture lifecycle: native control owns touch; next pan immediately free');
