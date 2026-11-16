@@ -432,6 +432,20 @@ async function start() {
   }catch(error){
     console.error('Private CDU/SG NAVDATA import rejected:',String(error.message||error));
   }
+  // Confirm that private PostgreSQL still contains source data after
+  // deployment/restart, including when the one-time transfer is removed.
+  try{
+    const make=path=>new URL('http://localhost'+path);
+    const status=await navdata.lookup(make('/api/source/status'));
+    if(status.status===200){
+      const sid=await navdata.lookup(make('/api/cdu/catalog?airport=OIII&kind=SID'));
+      const approach=await navdata.lookup(make('/api/cdu/catalog?airport=OISS&kind=APP'));
+      if(sid.status!==200||approach.status!==200||
+         sid.body?.items?.length!==33||approach.body?.items?.length!==17)
+        throw Error('PRIVATE_NAVDATA_CATALOG_CHECK_FAILED');
+      console.log('Private CDU/SG NAVDATA READY: source status 200; OIII SID 33; OISS APP 17; source only');
+    }else console.warn('Private CDU/SG NAVDATA pending import; status',status.status);
+  }catch(error){console.error('Private CDU/SG NAVDATA validation failed:',String(error.message||error));}
   http.createServer((req,res)=>handle(req,res).catch(e=>{
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
