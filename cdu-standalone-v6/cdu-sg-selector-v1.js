@@ -1,6 +1,4 @@
-/* Private CDU/SG SQLite catalogue: FCOM-compatible six-row page + source-only selection.
- * No AIRAC 2610 assumption; no ARINC leg synthesis or FMC EXEC activation.
- */
+/* Shared CDU/SG terminal selection and Chapter 11 page presentation for source references. */
 (function(root,factory){
  'use strict';
  if(typeof module==='object'&&module.exports)module.exports=factory;
@@ -229,7 +227,7 @@
  function attach(){
   if(attached)return;attached=true;
   // The CDU may already be sitting on an offline DEP/ARR child page when the
-  // Railway import finishes. Return to INDEX so a fresh LSK opens the source.
+  // local import finishes. Return to INDEX so a fresh LSK opens the source.
   if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView)
    core.choose(state,pages,'DEP_ARR');
   unsubscribe=shared.subscribe(()=>{if(attached)update();});

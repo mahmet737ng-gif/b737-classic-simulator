@@ -95,6 +95,26 @@ test('SG preview only draws valid references and removes them after source loss'
  assert.equal(renderer.collect(a.snapshot()).length,1);
  assert.equal(renderer.collect({...a.snapshot(),connected:false}).length,0);
 });
+test('overfly fixes retain their positions when an approach has a separate runway reference',()=>{
+ const provider=require('../cdu-sg-public-connect-v1.js');
+ const airport=icao=>({
+  airport:{icao,runways:[],published_runways:[]},
+  catalogs:{SID:{items:[]},STAR:{items:[]},APP:{items:[]}},
+  procedures:{SID:[],STAR:[],APP:[]}
+ });
+ const airports=Object.fromEntries(['OIII','OIMM','OISS'].map(icao=>[icao,airport(icao)]));
+ airports.OIII.procedures.APP.push({ident:'TEST29R',fmc_executable:false,
+  runway_options:['29R'],transition_options:[],transitions:[],
+  variants:[{runway:'29R',source_line:1,
+   commands:[{kind:'FIX',value:'OVERFLY TEST1'},{kind:'FIX',value:'TEST2'}],
+   refs:[{kind:'RNW',role:'RUNWAY_POINT',ident:'29R'},
+    ...['TEST1','TEST2'].map((ident,i)=>({kind:'FIX',role:'ROUTE_POINT',ident,
+     source_resolution:'LOCAL_AIRPORT_FIX',lat:35+i,lon:50}))]}]});
+ const result=provider.createCatalog({schema:'CDU_SG_CATALOG_V1',source_cycle:status,
+  fmc_executable:false,reference_only:true,airports})
+  .request('/api/cdu/procedure?airport=OIII&kind=APP&ident=TEST29R&runway=29R');
+ assert.deepEqual(result.segments[0].events.map(event=>event.fix?.ident),['TEST1','TEST2']);
+});
 test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
  const renderer=require('../cdu-sg-ehsi-preview-v1.js');
  const route=routeAPI.create();route.setConnected(true);route.setContext({origin:'OIII'});

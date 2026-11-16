@@ -19,14 +19,16 @@
   function events(part){
    if(!Array.isArray(part.commands)||!Array.isArray(part.refs)||!Number.isInteger(part.source_line))
     throw Error('PROCEDURE SOURCE INCOMPLETE');
+   const fixes=part.refs.filter(ref=>ref.kind==='FIX');
    let idx=0;
    return part.commands.map(cmd=>{
     if(cmd.kind==='SPEED')return {kind:'SPEED_TOKEN'};
     if(cmd.kind!=='FIX')return {kind:String(cmd.kind||'UNKNOWN')};
-    const ref=part.refs[idx++];
-    if(ref?.ident!==cmd.value||ref.source_resolution!=='LOCAL_AIRPORT_FIX'||
+    const ident=String(cmd.value||'').trim().replace(/^OVERFLY\s+/,'');
+    const ref=fixes[idx++];
+    if(ref?.ident!==ident||ref.source_resolution!=='LOCAL_AIRPORT_FIX'||
        !['ROUTE_POINT','DIRECT_FIX'].includes(ref.role)||!Number.isFinite(ref.lat)||!Number.isFinite(ref.lon))
-     return {kind:'UNRESOLVED_FIX',values:{ident:cmd.value}};
+     return {kind:'UNRESOLVED_FIX',values:{ident}};
     return {kind:'FIX_PASSAGE',values:{ident:ref.ident},reference_status:'LOCAL_FIX_COORDINATE_VERIFIED',
      fix:{ident:ref.ident,lat:ref.lat,lon:ref.lon}};
    });
