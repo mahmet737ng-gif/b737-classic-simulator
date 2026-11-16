@@ -334,7 +334,7 @@
     const family = selected.aircraftModel.label;
     const installedEngine = selected.engineVariant;
     const pressure = selected.pressurization.id;
-    const instruments = selected.engineInstruments.id === 'EIS' ? 'EIS' : 'CONVENTIONAL';
+    const instruments = selected.engineInstruments.id === 'EIS' ? 'EIS' : 'Non-EIS';
     byId('aircraftProfileHeader').textContent = family + ' · ' + installedEngine.label + ' (' + installedEngine.rating + ')' + ' · ' + pressure + ' · ' + instruments;
     byId('activeAircraftFamily').textContent = family;
     byId('activePressurization').textContent = pressure;
