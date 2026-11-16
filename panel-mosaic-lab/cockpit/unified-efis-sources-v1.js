@@ -39,8 +39,20 @@
   const benchZeroVariation=observedVariation===null&&nav&&
    iru?.source==='BENCH_SIM'&&iru?.trainerOnly===true;
   const variation=benchZeroVariation?0:observedVariation;
-  const headingReferenceSource=benchZeroVariation?'TRAINING_ZERO_VARIATION':
-   observedVariation!==null?'OBSERVED_VARIATION':'UNAVAILABLE';
+  // On a TRUE-referenced EHSI, the MCP-selected MAG heading needs a
+  // declination conversion. The previous null guard silently erased it.
+  const selectedMcpMag=signal(snapshot,'mcp.state');
+  const headingReference=globalThis.B737SelectedHeadingReferenceV1?.resolve({
+   selectedMagDeg:selectedMcpMag?.powered===true?value(selectedMcpMag.headingDeg):null,
+   displayTrueRef:variation===null,
+   observedVariationDeg:observedVariation,
+   benchZeroVariation,
+   trainerOnly:iru?.trainerOnly===true,
+   positionValid:nav,lat:value(iru?.lat),lon:value(iru?.lon)
+  })||{selectedDisplayDeg:variation!==null&&selectedMcpMag?.powered===true?
+    value(selectedMcpMag.headingDeg):null,referenceSource:'LEGACY_SOURCE_NO_REFERENCE_ENGINE',
+    estimated:false};
+  const headingReferenceSource=headingReference.referenceSource;
   const direction=deg=>Number.isFinite(deg)?norm(deg-(variation??0)):null;
   const magCourse=deg=>Number.isFinite(deg)?norm(deg+(variation===null?0:variation)):null;
   const mcp=signal(snapshot,'mcp.state');
@@ -74,7 +86,9 @@
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
    heading:direction(heading),track:direction(trueTrack),trueTrack,trueRef:variation===null,
    headingReferenceSource,
-   selectedHeading:variation!==null&&mcpPowered?value(mcp.headingDeg):null,
+   selectedHeading:mcpPowered?headingReference.selectedDisplayDeg:null,
+   selectedHeadingEstimated:headingReference.estimated===true,
+   selectedHeadingDeclinationDeg:headingReference.declinationDeg??null,
    course:variation!==null?radioCourse:null,
    // These targets are MCP selections, never a claim of FD servo movement,
    // NAV capture, pitch/roll attitude, or measured aircraft altitude.
