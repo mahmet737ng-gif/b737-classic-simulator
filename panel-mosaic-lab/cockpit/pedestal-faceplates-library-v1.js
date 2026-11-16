@@ -1,13 +1,13 @@
-/* PEDESTAL FACEPLATES 0004
+/* PEDESTAL FACEPLATES 0005
  * Layout registered against the existing RADIO / NAV / AUDIO / TRIM pedestal.
- * Upper: COMM CAPT | existing audio (unchanged) | COMM FO.
+ * Upper: COMM CAPT | CARGO FIRE CONTROL | COMM FO.
  * Lower: NAV CAPT | one Transponder/TCAS | NAV FO.
  * Positions are native 1150 x 2273. Locked texture files remain unchanged.
  * This overlay changes only faceplates, not the underlying radio or audio systems.
  */
 (function(root){
 'use strict';
-const VERSION='PEDESTAL-FACEPLATES-0004';
+const VERSION='PEDESTAL-FACEPLATES-0005';
 const scriptUrl=document.currentScript?.src||location.href;
 const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
 // Images were measured directly from the archived user-provided PNG files:
@@ -22,7 +22,7 @@ const SOURCE_DIMENSIONS=Object.freeze({
  'Transponder_TCAS_bare_faceplate.png':[1799,699]
 });
 const BAYS=[
- {"id":"cargo-fire","label":"Cargo Fire Control","file":"Cargo_Fire_Control_bare_faceplate.png","x":14,"y":145,"w":244,"h":111,"bay":"AUX LEFT"},
+ {"id":"cargo-fire","label":"Cargo Fire Control","file":"Cargo_Fire_Control_bare_faceplate.png","x":418,"y":927,"w":348,"h":178,"bay":"RADIO CENTER TOP"},
  {"id":"vhf-comm-capt","label":"VHF COMM — Captain","file":"VHF_COMM_bare_faceplate.png","x":58,"y":927,"w":360,"h":178,"bay":"RADIO LEFT TOP"},
  {"id":"vhf-comm-fo","label":"VHF COMM — First Officer","file":"VHF_COMM_bare_faceplate.png","x":766,"y":927,"w":355,"h":178,"bay":"RADIO RIGHT TOP"},
  {"id":"vhf-nav-capt","label":"VHF NAV / MANUAL — Captain","file":"VHF_NAV_MANUAL_bare_faceplate.png","x":58,"y":1109,"w":360,"h":184,"bay":"RADIO LEFT SECOND ROW"},
