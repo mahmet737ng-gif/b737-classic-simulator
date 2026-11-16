@@ -5,7 +5,7 @@
  if(root?.document)root.B737UnifiedEHSI=api.mount(root);
 })(globalThis,function(){
  'use strict';
- const VERSION='UNIFIED-EHSI-0001';
+ const VERSION='UNIFIED-EHSI-0002-SEAT-BOUND';
  const NS='http://www.w3.org/2000/svg';
  // Apertures measured inside the source glass. Children inherit each photo's
  // existing registration, including the FO mode-specific transform and lift.
@@ -123,11 +123,14 @@
     const screen=display(seat,native);
     if(!screen)continue;
     const setup=state[seat],preview=instructor[seat]&&sources.getPreset()!=='COLD_DARK';
-    const src=sources.project(seat,snapshot),origin=state[src.sourceSeat];
+    const src=sources.project(seat,snapshot),origin=state[seat]; // knobs belong to receiving seat regardless of SG transfer
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
     screen.host.dataset.sg=String(src.sg);
     screen.host.dataset.irs=src.irs===1?'L':'R';
+    screen.host.dataset.controlSeat=seat;
+    screen.host.dataset.controlMode=origin.ehsi.mode;
+    screen.host.dataset.controlRange=String(origin.ehsi.range);
     diagnostics.push(seat+' · SG '+src.sg+' · IRS '+screen.host.dataset.irs+
      ' · '+(src.trackSource||'NO TRK')+' · '+(src.fmc?.operational?'FMC ON':'FMC UNAVAILABLE'));
     model.efis.displayAspect=screen.aspect;
@@ -178,7 +181,7 @@
    cockpit.close();win.B737UnifiedEFISPedestalV1?.open?.(selected);
   });
   for(const dir of [-1,1])doc.getElementById(dir<0?'unifiedPlanPrev':'unifiedPlanNext')?.addEventListener('click',()=>{
-   const src=sources.project(selected),setup=state[src.sourceSeat];
+   const src=sources.project(selected),setup=state[selected];
    const length=src.fmc?.route?.displayRoute?.points?.length??0;
    if(!length||setup.ehsi.mode!=='PLAN')return;
    setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
@@ -194,7 +197,7 @@
   for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
-  return Object.freeze({version:VERSION,refresh});
+  return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange)}:null});
  }
  return Object.freeze({VERSION,liveModel,mount});
 });

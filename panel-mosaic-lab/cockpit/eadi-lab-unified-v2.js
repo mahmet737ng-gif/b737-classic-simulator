@@ -5,7 +5,7 @@
  */
 (function(root){
  'use strict';
- const VERSION='UNIFIED-EADI-LAB-FULL-0004';
+ const VERSION='UNIFIED-EADI-LAB-FULL-0005-EFIS-BOUND';
  const WIDTH=900,HEIGHT=720;
  const slots=Object.freeze(['fma','speedTape','mach','localizer','glideslope',
    'radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
@@ -54,20 +54,20 @@
   const src=root.B737UnifiedEfisSources?.project(seat);
   if(!src)return false;
   const panel=root.B737UnifiedEFISPedestalV1;
-  const cp=panel?.getState?.(seat),sourceControls=src.sourceSeat===seat?cp:panel?.getState?.(src.sourceSeat);
+  const cp=panel?.getState?.(seat); // DH/dimmer always belong to the receiving pilot
   const powered=root.B737UnifiedEfisSources.getPreset()!=='COLD_DARK'&&(station.powered??(src.displayPowered&&src.video));
   const injected=station.source==='SIMULATOR_INJECTION';
   const numeric=v=>Number.isFinite(v)?v:null;
   const radAlt=numeric(src.ra?.heightFt),front=src.frontCourse;
   const adc=src.adc;
   const painted=renderer.renderUnifiedFull(display.canvas,{
-   seat:src.sourceSeat,pitch:injected?station.pitch:src.pitch,bank:injected?station.bank:src.bank,
+   seat,pitch:injected?station.pitch:src.pitch,bank:injected?station.bank:src.bank,
    powered,attitudeValid:injected?station.attitudeValid:src.attitude,
    source:injected?station.source:'IRS '+(src.irs===1?'L':'R'),
    comparison:src.comparison,brightness:cp?.brightness.adi??1,
    iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),mach:numeric(adc?.mach),
    speedView:root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat),
-   groundSpeedKt:src.groundSpeed,radioAltFt:radAlt,dhFt:sourceControls?.dh??null,dhLatched:trackDh(seat,sourceControls,radAlt,powered),
+   groundSpeedKt:src.groundSpeed,radioAltFt:radAlt,dhFt:cp?.dh??null,dhLatched:trackDh(seat,cp,radAlt,powered),
    ils:!!src.ils,frontCourse:front===true,
    locDeviation:front===false&&Number.isFinite(src.ils?.localizerDots)?-src.ils.localizerDots:numeric(src.ils?.localizerDots),
    gsDeviation:numeric(src.ils?.glideslopeDots),
@@ -75,6 +75,9 @@
   });
   display.host.dataset.sg=String(src.sg);
   display.host.dataset.irs=src.irs===1?'L':'R';
+   display.host.dataset.controlSeat=seat;
+   display.host.dataset.controlDh=cp?.dh==null?'':String(cp.dh);
+   display.host.dataset.controlBrightness=cp?.brightness?.adi==null?'':String(cp.brightness.adi);
   display.host.dataset.eadiPower=String(powered);
   display.host.dataset.eadiAttitude=String(injected?station.attitudeValid:src.attitude);
   if(painted!==true){
