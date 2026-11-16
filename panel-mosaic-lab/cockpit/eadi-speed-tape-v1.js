@@ -104,11 +104,23 @@
   ctx.beginPath();ctx.rect(x+3,top+2,edge-x-5,bottom-top-4);ctx.clip();
   if(view.lowSpeedDefault)write('45',edge-7,y,COLOR.white,41,'right');
   else{
-   const speed=view.casKt,whole=Math.floor(speed),f=speed-whole;
-   write(String(Math.floor(whole/10)),edge-24,y,COLOR.white,41,'right');
-   for(const roll of [-1,0,1]){
-    const digit=(whole+roll+10)%10;
-    write(String(digit),edge-4,y+(f-roll)*31,COLOR.white,38,'right');
+   const speed=Math.max(0,view.casKt);
+   const model=globalThis.B737MechanicalNumberWheelsV1;
+   const frames=model?.frames(speed,3)??[100,10,1].map(magnitude=>{
+    const x=speed/magnitude,whole=Math.floor(x),digit=whole%10;
+    const lower=x-whole,phase=magnitude===1?lower:
+     Math.max(0,Math.min(1,(lower-.82)/.18));
+    return {digit,previous:(digit+9)%10,next:(digit+1)%10,fraction:phase};
+   });
+   // Three independent vertical drums. The two most significant digits
+   // roll only on carry; ones follow continuous fractional IAS.
+   const centers=[edge-53,edge-29,edge-7];
+   for(let i=0;i<3;i++){
+    const f=frames[i],x=centers[i];
+    ctx.save();ctx.beginPath();ctx.rect(x-12,y-31,25,62);ctx.clip();
+    for(const [j,digit]of [[-1,f.previous],[0,f.digit],[1,f.next]])
+     write(String(digit),x+10,y+(j-f.fraction)*34,COLOR.white,37,'right');
+    ctx.restore();
    }
   }
   ctx.restore();
