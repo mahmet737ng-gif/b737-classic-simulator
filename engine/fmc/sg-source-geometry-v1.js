@@ -59,7 +59,7 @@
    if(!Array.isArray(tokens))throw Error('SG_TOKEN_ARRAY_INVALID');
    for(const [eventIndex,node] of tokens.entries()){
     const type=node?.kind,values=node?.values||{};
-    if(type==='SPEED_TOKEN')continue;
+    if(type==='SPEED_TOKEN'||type==='ALTITUDE_CONSTRAINT')continue;
     if(type!=='FIX_PASSAGE'){
      previous=null;previousFix='';
      if(type!=='RUNWAY_REFERENCE')warnings.push({group:groupIndex,event:eventIndex,kind:String(type||'UNKNOWN')});

@@ -55,3 +55,16 @@ test('procedure text FIX identifiers join directly to verified local NAVDATA coo
   BRAV:[...ast.local_fixes.BRAV,{ident:'BRAV',lat:38,lon:57,post_marker_line:9}]}};
  assert.equal(sg.compile(ambiguous,selection).features.filter(f=>f.geometry.type==='LineString').length,0);
 });
+
+test('verified fixes remain connected across a fix altitude constraint',()=>{
+ const stops={...selection,ident:'TEST2C'};
+ const source={...stops,fmc_executable:false,segments:[{events:[
+  {kind:'TRK'},{kind:'TURN'},pos('ALFA',35.4,51),
+  {kind:'ALTITUDE_CONSTRAINT'},pos('BRAV',35.5,51.1)
+ ]}]};
+ const g=sg.compile(source,stops);
+ const lines=g.features.filter(f=>f.geometry.type==='LineString');
+ assert.equal(lines.length,1);
+ assert.equal(lines[0].properties.from,'ALFA');
+ assert.equal(lines[0].properties.to,'BRAV');
+});

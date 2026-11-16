@@ -24,6 +24,8 @@
    let idx=0;
    return part.commands.map(cmd=>{
     if(cmd.kind==='SPEED')return {kind:'SPEED_TOKEN'};
+    if(cmd.kind==='AT'&&/^(?:OR (?:ABOVE|BELOW) )?\d{3,5}$/.test(cmd.value))
+     return {kind:'ALTITUDE_CONSTRAINT'};
     if(cmd.kind!=='FIX')return {kind:String(cmd.kind||'UNKNOWN')};
     const ident=String(cmd.value||'').trim().replace(/^OVERFLY\s+/,'');
     const ref=fixes[idx++];

@@ -13,6 +13,8 @@
  const signal=(snap,key)=>snap?.[key]?.quality==='VALID'?snap[key].value:null;
  const value=v=>Number.isFinite(v)?v:null;
  const norm=v=>((v%360)+360)%360;
+ const coordinate=(lat,lon,source)=>Number.isFinite(lat)&&Math.abs(lat)<=90&&
+  Number.isFinite(lon)&&Math.abs(lon)<=180?{lat,lon,source}:null;
  const delta=v=>norm(v+180)-180;
  const irsTopic=n=>n===1?'irs.left':'irs.right';
  function resolve(snapshot,seat,toggles={},feeds={},faults={},scenarioPosition=null){
@@ -32,6 +34,10 @@
   const nav=iru?.powered===true&&iru.positionValid===true;
   const fmc=signal(snapshot,'fmc.computed');
   const fmcMotion=fmc?.operational===true?fmc.motion:null;
+  const fmcFix=fmc?.position;
+  const mapPosition=(fmcFix?.quality==='VALID'&&fmc.failed!==true?
+   coordinate(fmcFix.latitudeDeg,fmcFix.longitudeDeg,'FMC'):null)??
+   (nav?coordinate(iru.lat,iru.lon,irs===1?'IRS L':'IRS R'):null);
   const heading=iru?.powered===true?value(iru.headingDeg):null;
   const trueTrack=value(fmcMotion?.trueTrackDeg)??(nav?value(iru.trackDeg):null);
   // Flight instruments always display magnetic (M), not TRU.
@@ -91,7 +97,7 @@
   return {display,sg,irs,vhf,bearings,sourceSeat:SEATS[sg-1],displayPowered:feeds[display]===true,
    video:feeds[sg]===true&&faults[sg]!==true,
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
-   heading:direction(heading),track:direction(trueTrack),trueTrack,
+   heading:direction(heading),track:direction(trueTrack),trueTrack,mapPosition,
    trueRef:false,reference:'MAGNETIC',magneticVariationDeg:variation,
    magneticVariationSource:headingReferenceSource,
    headingReferenceSource,

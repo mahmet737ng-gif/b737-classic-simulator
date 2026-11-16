@@ -133,6 +133,8 @@
    trackExpiry(snapshot);
    const failure=fmcFailure(snapshot);
    const diagnostics=[];
+   const sg=win.B737CduSgRouteV1?.snapshot();
+   const reference=win.B737CduSgEHSIPreviewV1;
    for(const seat of SEATS){
     const screen=display(seat,native);
     if(!screen)continue;
@@ -181,13 +183,13 @@
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
-    const mode=origin.ehsi.mode,sg=win.B737CduSgRouteV1?.snapshot();
-    const planAnchor=route.points?.[route.centerIndex],position=src.fmc?.position;
-    const anchor=mode==='PLAN'?(planAnchor&&{lat:planAnchor.lat,lon:planAnchor.lon}):
-     position?.quality==='VALID'&&Number.isFinite(src.trueTrack)?
-      {lat:position.latitudeDeg,lon:position.longitudeDeg}:null;
-    win.B737CduSgEHSIPreviewV1?.draw(screen.svg,sg,mode,origin.ehsi.range,
-      src.displayPowered===true&&src.video===true&&!preview,sources.offsets,renderer.routeProjection(model),anchor);
+    const mode=origin.ehsi.mode;
+    // PLAN can be reviewed before position/track is available. MAP remains
+    // aircraft-centered, including when the source is the selected IRS.
+    const anchor=mode==='PLAN'?route.points?.[route.centerIndex]:src.mapPosition;
+    const project=mode==='PLAN'||Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
+    reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
+     src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor);
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
    const output=doc.getElementById('unifiedEfisSources');
@@ -253,6 +255,7 @@
      mcpPower:screens[seat].host.dataset.mcpHeadingPower==='true',
      mcpHeadingReference:screens[seat].host.dataset.mcpHeadingReference,
      displayReference:'MAGNETIC',
+     routeReference:screens[seat].svg.querySelector('[data-cdu-sg-status]')?.textContent??null,
      magneticVariationDeg:screens[seat].host.dataset.magneticVariationDeg===''?null:
       Number(screens[seat].host.dataset.magneticVariationDeg),
      headingMagneticDeg:screens[seat].host.dataset.headingMagnetic===''?null:

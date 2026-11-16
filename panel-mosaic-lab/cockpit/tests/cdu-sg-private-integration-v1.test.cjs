@@ -136,6 +136,14 @@ test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,false,offset,project,anchor),0);
  assert.equal(status(),undefined);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project),0);
+ assert.equal(status(),'ACT REF NO POS');
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,null,anchor),0);
+ assert.equal(status(),'ACT REF NO TRK');
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,()=>[900,900],anchor),0);
+ assert.equal(status(),'ACT REF OFF MAP');
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,
+  x=>[250+1000*x,250],anchor),1);
+ assert.equal(status(),'ACT REF');
 });
 test('authenticated installation connects both CDUs and the next launch uses only the saved bank',async()=>{
  const loader=require('../cdu-sg-public-connect-v1.js');
