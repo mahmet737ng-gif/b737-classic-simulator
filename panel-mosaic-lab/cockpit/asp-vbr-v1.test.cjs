@@ -27,7 +27,7 @@ test('Small Silver skin changes only ASP toggle pictures and retains original ph
  assert(!css.includes('guard-owner'));assert(!css.includes('irs-'));
  for(const name of ['index.html','overhead-stage.html']){
   const html=fs.readFileSync(path.join(__dirname,name),'utf8');
-  assert(html.includes('asp-vbr-selector-v1.js?v=ASP-VBR-SILVER-0001'));
+  assert(html.includes('asp-vbr-selector-v1.js?v=ASP-VBR-LABEL-TAPS-0002'));
   assert(html.includes('asp-physical-controls-v1.js?v=ASP-PHYSICAL-0001'));
  }
 });
