@@ -60,9 +60,21 @@
     segments.push(pts.map(p=>[p[0],p[1]]));
     if(segments.length>=300)break;
    }
+   // Source coordinate fixes are display symbols, not inferred flyable legs.
+   const fixes=[];
+   for(const feature of geometry.features){
+    if(feature?.geometry?.type!=='Point'||!validPoint(feature.geometry.coordinates)||
+       typeof feature.properties?.ident!=='string'||!isIdent(feature.properties.ident)||
+       feature.properties?.fmc_executable!==false)continue;
+    const [lon,lat]=feature.geometry.coordinates;
+    fixes.push({ident:feature.properties.ident,lon,lat});
+    if(fixes.length>=150)break;
+   }
    const key=kind+'@'+airport;
    selections[key]={airport,kind,ident,runway,transition,cycle:CYCLE,sourceOnly:true,fmcExecutable:false};
-   geometries[key]={airport,kind,ident,segments,renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
+   geometries[key]={airport,kind,ident,segments,fixes,
+    warnings:Array.isArray(meta?.warnings)?meta.warnings.slice(0,100):[],
+    renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
    if(runway)runways[airport]=runway;
    return publish();
   }
