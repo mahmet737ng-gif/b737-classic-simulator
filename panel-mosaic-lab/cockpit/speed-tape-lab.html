@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unified · B737 Classic Speed Tape Test Lab</title>
 <style>
 :root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#080e16;color:#f1f5f9}
@@ -26,26 +26,26 @@ pre{font-size:11px;direction:ltr;text-align:left;white-space:pre-wrap;word-break
 </head><body>
 <h1>B737 Classic — Speed Tape Test Lab</h1>
 <p class="note"><a style="color:#9ed6ff" href="./speed-limit-ch4-lab.html">FCOM Chapter 4 — Speed Limits / Mode Reversion Test Lab</a></p>
-<p class="note">آزمایشگاه مستقل و تعاملی Unified، بر اساس FCOM 10.30 و 10.40. همه اعداد اولیه در این صفحه صرفاً <strong>سناریوی آموزشی ساختگی</strong> هستند؛ هیچ داده‌ای به هواپیمای واقعی یا شبیه‌ساز اصلی ارسال نمی‌شود. به Cockpit اصلی آسیبی نمی‌رسد.</p>
+<p class="note">Standalone interactive Unified test lab based on FCOM 10.30 and 10.40. All initial values are <strong>synthetic training scenarios</strong> only. No data is sent to a real aircraft or the main simulator. The primary cockpit remains unchanged.</p>
 <main>
 <section class="card">
 <div class="screen"><canvas id="preview" width="900" height="720" aria-label="B737 Classic EFIS speed tape preview"></canvas></div>
-<p class="note" style="text-align:center;margin:10px 0 0">پیش‌نمایش اختصاصی Speed Tape (ناحیه چپ EADI)؛ نمایش کامل EADI در <a href="./index.html" style="color:#8dd0ff">پنل Unified</a> است.</p>
+<p class="note" style="text-align:center;margin:10px 0 0">Independent Speed Tape preview (EADI left side). The complete EADI is displayed in the <a href="./index.html" style="color:#8dd0ff">Unified Panel</a> .</p>
 <pre id="diag" aria-live="polite"></pre>
 </section>
 <section class="card controls">
-<label>سرعت فعلی ADC / IAS <span id="iasValue" class="value">227 kt</span><input type="range" id="ias" min="0" max="420" value="227" step=".1"></label>
-<label>سرعت انتخابی MCP <span id="mcpValue" class="value">230 kt</span><input type="range" id="mcp" min="110" max="340" value="230" step="1"></label>
-<label>منبع سرعت
+<label>Current ADC / IAS <span id="iasValue" class="value">227 kt</span><input type="range" id="ias" min="0" max="420" value="227" step=".1"></label>
+<label>Selected MCP Speed <span id="mcpValue" class="value">230 kt</span><input type="range" id="mcp" min="110" max="340" value="230" step="1"></label>
+<label>Airspeed Source
 <select id="source"><option value="MCP">MCP IAS</option><option value="FMC">FMC / VNAV</option></select></label>
-<label>وضعیت فلپ
+<label>Flap Position
 <select id="flaps"><option value="0">UP</option><option value="1">1</option><option value="2">2</option><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="25">25</option><option value="30">30</option><option value="40">40</option></select></label>
 <label>Flaps 30 maximum<select id="flap30Variant"><option value="180">180 kt (screenshot)</option><option value="185">185 kt (written list)</option></select></label>
 <p class="note" id="flapProfileInfo">UP — no flap cap</p>
 <div class="line"><label><input id="gear" type="checkbox"> Gear Extended</label><label><input id="high" type="checkbox"> Above FL250</label></div>
 <div class="line"><label><input id="adcFailure" type="checkbox"> ADC Failure (SPD)</label><label><input id="limitFailure" type="checkbox"> SPD LIM Failure</label></div>
 <div class="line"><button id="takeoff">Takeoff Markers</button><button id="landing">Approach / VREF</button><button id="reset">Reset Demo</button></div>
-<p class="note">با حرکت‌دادن IAS، Speed Tape و Rolling Digits تغییر می‌کنند. حرکت سریع IAS، Trend Arrow را فعال می‌کند. با تغییر MCP، نشانگر Magenta حرکت می‌کند. در Test Lab فقط داده‌های مجاز در موتور محاسباتی اعمال می‌شوند.</p>
+<p class="note">Moving IAS updates the speed tape and rolling digits. A rapid IAS change activates the trend arrow. The magenta selected-speed marker follows MCP changes. Only valid training inputs reach the computation engine.</p>
 </section>
 </main>
 <script>
