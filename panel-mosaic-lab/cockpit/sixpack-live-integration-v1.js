@@ -1,4 +1,4 @@
-/* SIXPACK-LIVE-0007: read-only adapter from existing Unified system outputs.
+/* SIXPACK-LIVE-0008 FCOM 15.20: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
  * Training approximation: uses verified illuminated category-related OH annunciators.
  */
@@ -11,17 +11,23 @@
  'use strict';
  const groups=Object.freeze({
   'CAPT.FLT CONT':['flight-pressure-a','flight-pressure-b','stby-pressure','stby-quantity','stby-rudder','feel-diff','speed-trim','mach-trim','auto-slat','yaw-damper'],
-  'CAPT.ELEC':['standby-power-off','transferBusOff1','transferBusOff2','busOff1','busOff2','gen-off-bus-1','gen-off-bus-2','apu-gen-off-bus'],
+  // FCOM 15.20.3 ELEC: IDG/drive oil warnings, STANDBY POWER OFF,
+   // TRANSFER BUS OFF and BUS OFF. Blue GEN OFF BUS is advisory.
+   'CAPT.ELEC':['drive-1-drive-pressure','drive-2-drive-pressure',
+    'drive-1-drive-temperature','drive-2-drive-temperature',
+    'standby-power-off','transferBusOff1','transferBusOff2','busOff1','busOff2'],
   'CAPT.IRS':['irs-l-fault','irs-r-fault','irs-l-dc-fail','irs-r-dc-fail'],
   'CAPT.APU':['apu-low-pressure','apu-high-oil-temp','apu-overspeed','apu-low-oil-quantity'],
   'CAPT.FUEL':['filter-1','filter-2','fuel-center-l','fuel-center-r','fuel-1-aft','fuel-1-fwd','fuel-2-fwd','fuel-2-aft'],
   'CAPT.OVHT/DET':[],
   'FO.ANTI ICE':['window-l-side-overheat','window-l-fwd-overheat','window-r-fwd-overheat','window-r-side-overheat','cowl-anti-ice-1','cowl-anti-ice-2','probe-capt-ps','probe-fo-static','probe-l-elev','probe-l-alpha','probe-fo-ps','probe-capt-static','probe-r-elev','probe-r-alpha'],
-  'FO.ENG':['reverser-1','reverser-2','low-idle','drive-1-drive-pressure','drive-2-drive-pressure','drive-1-drive-temperature','drive-2-drive-temperature'],
+  // FCOM 15.20.3 ENG = REVERSER, PMC INOP and LOW IDLE.
+   'FO.ENG':['reverser-1','reverser-2','pmc-inop-1','pmc-inop-2','low-idle'],
   'FO.HYD':['hyd-eng-1','hyd-eng-2','hyd-elec-1','hyd-elec-2','hyd-elec-1-overheat','hyd-elec-2-overheat'],
-  'FO.OVERHEAD':['equip-supply-off','equip-exhaust-off','flight-recorder-off','emergency-not-armed'],
+  'FO.OVERHEAD':['equip-supply-off','equip-exhaust-off','flight-recorder-off','emergency-not-armed','pass-oxygen'],
   'FO.DOORS':['door-fwd-entry','door-aft-entry','door-fwd-service','door-aft-service','door-fwd-cargo','door-aft-cargo','door-air-stair','door-equip'],
-  'FO.AIR COND':['duct-overheat-l','duct-overheat-r','pack-trip-l','pack-trip-r','wing-body-overheat-l','wing-body-overheat-r','bleed-trip-l','bleed-trip-r','press-auto-fail','press-off-sched-descent']
+  // FCOM 15.20.4: amber DUAL BLEED is an AIR COND master caution.
+   'FO.AIR COND':['duct-overheat-l','duct-overheat-r','dual-bleed','pack-trip-l','pack-trip-r','wing-body-overheat-l','wing-body-overheat-r','bleed-trip-l','bleed-trip-r','press-auto-fail','press-off-sched-descent']
  });
  const empty=()=>Object.fromEntries(Object.keys(groups).map(k=>[k,[]]));
  const validOn=v=>v==='ON'||v==='FLASH';
@@ -42,24 +48,21 @@
   }
   return result;
  }
- // Derive cautions from actual Electrical V7 annunciator outputs. A bus
- // failure by itself is not necessarily a Master Caution condition.
- // Match overhead IDs so the same lamp is not counted twice.
+ // FCOM 15.20.3: only observed amber system annunciators trigger ELEC.
+ // Internal ECU faults (GEN FAILED, relay failed, etc.) are not independent
+ // system-annunciator evidence. Blue GEN OFF BUS is informational, not caution.
+ // Map only positive actual V7 annunciator lamp evidence; overhead merge
+ // deduplicates identical OH:<id> reason tokens from the physical lens.
  const electricalAnnunciators=Object.freeze({
   standbyPowerOff:'standby-power-off',
   transferBusOff1:'transferBusOff1',transferBusOff2:'transferBusOff2',
-  busOff1:'busOff1',busOff2:'busOff2',
-  genOffBus1:'gen-off-bus-1',genOffBus2:'gen-off-bus-2'
+  busOff1:'busOff1',busOff2:'busOff2'
  });
  function electrical(packet){
-  const result=empty(),state=packet?.state||packet,lamps=packet?.evaluated?.lamps;
-  if(!state||typeof state!=='object'||!state.faults)return result;
-  // Explicit ECU fault bits are independent of the selected power source.
-  for(const id of ['GEN1_FAILED','GEN2_FAILED','TRANSFER1_RELAY_FAILED','TRANSFER2_RELAY_FAILED','TR1_FAILED','TR2_FAILED','TR3_FAILED','STATIC_INVERTER_FAILED'])
-   if(state.faults[id]===true)result['CAPT.ELEC'].push('ELEC:'+id);
-  if(state.faults.APU_FAILED===true)result['CAPT.APU'].push('ELEC:APU_FAILED');
-  for(const [id,overheadId]of Object.entries(electricalAnnunciators))
-   if(lamps?.[id]===true)result['CAPT.ELEC'].push('OH:'+overheadId);
+  const result=empty(),lamps=packet?.evaluated?.lamps??packet?.lamps;
+  if(!lamps||typeof lamps!=='object')return result;
+  for(const [id,overheadId] of Object.entries(electricalAnnunciators))
+   if(lamps[id]===true)result['CAPT.ELEC'].push('OH:'+overheadId);
   return result;
  }
  function fire(packet){
@@ -248,7 +251,7 @@
    last=signature;updates++;
    win.B737SixPack?.setLiveConditions?.(combined,'UNIFIED_SYSTEMS');
    win.dispatchEvent(new win.CustomEvent('b737:sixpack-live-status',{
-    detail:{version:'SIXPACK-LIVE-0007',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
+    detail:{version:'SIXPACK-LIVE-0008-FCOM15',updates,sources:{...activeSource},active:Object.fromEntries(Object.entries(combined).map(([k,v])=>[k,v.length]))}
    }));
   }
   function update(kind,data){
@@ -333,7 +336,7 @@
    fireWarningFrom('external',e.detail?.active);
   });
   win.B737SixPackLiveV1=Object.freeze({
-   version:'SIXPACK-LIVE-0007',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
+   version:'SIXPACK-LIVE-0008-FCOM15',deriveOverhead:overhead,deriveElectrical:electrical,deriveFire:fire,
     deriveIRS:irs,deriveWindowHeat:windowHeat,deriveTAT:tatProbe,
     derivePressurization:pressurization,deriveAircon400:airconZones,deriveAPUECU:apuECU,
     setChannelFailure,setSystemFailures,
