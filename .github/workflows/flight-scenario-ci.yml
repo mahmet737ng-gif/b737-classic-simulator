@@ -10,6 +10,15 @@ on:
       - 'tests/flight-dynamics-gauges-v1.test.cjs'
       - 'tests/flight-instrument-bridge-v1.test.cjs'
       - 'engine/afds/autothrottle-speed-servo-v1.js'
+      - 'engine/afds/fcc-flight-guidance-v1.js'
+      - 'engine/afds/fcom-ch4-ap-protection-v1.js'
+      - 'engine/afds/mcp-mode-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-hardware-v1.js'
+      - 'tests/fcc-flight-guidance-v1.test.cjs'
+      - 'tests/fcom-ch4-ap-protection-v1.test.cjs'
+      - 'tests/fcom-ch4-mcp-disengagement-v1.test.cjs'
       - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
       - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
       - 'panel-mosaic-lab/cockpit/autothrottle-unified-v1.js'
@@ -40,9 +49,14 @@ jobs:
           node --check panel-mosaic-lab/cockpit/flight-instrument-dynamics-v1.js
           node --check panel-mosaic-lab/cockpit/flight-needles-unified.js
           node --check engine/afds/autothrottle-speed-servo-v1.js
+          node --check engine/afds/fcc-flight-guidance-v1.js
+          node --check engine/afds/fcom-ch4-ap-protection-v1.js
+          node --check panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-hardware-v1.js
           node --check engine/integration/isn-13-18-ecu-testbench-v1.js
           node --check panel-mosaic-lab/cockpit/isn-cockpit.js
           node --check panel-mosaic-lab/cockpit/autothrottle-unified-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs
+        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs
