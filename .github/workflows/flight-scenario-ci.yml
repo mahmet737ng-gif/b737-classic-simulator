@@ -9,6 +9,7 @@ on:
       - 'efis-display-lab/ehsi-v2.js'
       - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
       - 'tests/selected-heading-reference-v1.test.cjs'
+      - 'tests/ehsi-selected-heading-svg-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/flight-instrument-dynamics-v1.js'
       - 'panel-mosaic-lab/cockpit/flight-needles-unified.js'
       - 'tests/flight-dynamics-gauges-v1.test.cjs'
@@ -66,4 +67,4 @@ jobs:
           node --check panel-mosaic-lab/cockpit/autothrottle-unified-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs
+        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs
