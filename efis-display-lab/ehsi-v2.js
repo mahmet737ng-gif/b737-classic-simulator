@@ -182,7 +182,7 @@ function compass(svg,m,l){
   polygon(mark,[[0,-6],[4,0],[0,6],[-4,0]],PHOTO_COLORS.white,'none',1.7);
  }
  const heading=selectedHeadingPresentation(m,l);
- if(heading.onArc){
+ if(heading.onArc&&!l.planCompass){
   const bug=mapMarker(g,l,heading.delta,'heading-bug');
   const size=full?8:7;
   polygon(bug,[[0,-2],[-size,12],[size,12]],PHOTO_COLORS.magenta,'none',1.9);
