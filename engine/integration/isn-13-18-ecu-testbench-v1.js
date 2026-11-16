@@ -348,6 +348,16 @@ class Testbench{
  setThrottle(engine,throttle){checkEngine(engine);if(!finite(throttle)||throttle<0||throttle>1)throw Error('throttle 0..1');
   if(this.chain.get().phase[engine]!=='RUNNING')throw Error('Engine must be RUNNING');
   this.chain.setThrottle(engine,throttle);this.log('THROTTLE',{engine,throttle});return this.get();}
+ // Motorized A/T servo hot path: identical authoritative ISN-03 throttle
+ // owner and running guard, without an expensive full ECU snapshot per tick.
+ setAutothrottle(engine,throttle){
+  checkEngine(engine);
+  if(!finite(throttle)||throttle<0||throttle>1)throw Error('throttle 0..1');
+  if(this.chain.phase[engine]!=='RUNNING')throw Error('Engine must be RUNNING');
+  this.chain.setThrottle(engine,throttle);
+  this.log('AT_SPEED_THROTTLE',{engine,throttle,origin:'TRAINING_AFDS_SERVO'});
+  return {accepted:true,engine,throttle};
+ }
  planThrust(engine,{mode='CRZ',targetIasKt=null,accelTimeSec=null,verticalSpeedFpm=0,windSpeedKt=0,windFromDeg=0,trackTrueDeg=0}={}){
   checkEngine(engine);if(this.aircraft.iasKt<100)throw Error('Set airborne IAS before N1 speed planning');
   const snap=this.chain.get();const n=['engine1','engine2'].filter(id=>snap.phase[id]==='RUNNING').length;
