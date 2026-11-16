@@ -5,7 +5,7 @@
  */
 (function(root){
  'use strict';
- const VERSION='UNIFIED-EADI-LAB-FULL-0005-EFIS-BOUND';
+ const VERSION='UNIFIED-EADI-LAB-FULL-0006-MCP-EFIS';
  const WIDTH=900,HEIGHT=720;
  const slots=Object.freeze(['fma','speedTape','mach','localizer','glideslope',
    'radioAltitude','decisionHeight','flightDirector','tcasRA','windshear','comparators']);
@@ -65,6 +65,8 @@
    powered,attitudeValid:injected?station.attitudeValid:src.attitude,
    source:injected?station.source:'IRS '+(src.irs===1?'L':'R'),
    comparison:src.comparison,brightness:cp?.brightness.adi??1,
+    selectedSpeedKt:src.mcp?.selectedSpeedKt??null,
+    selectedSpeedValid:src.mcp?.powered===true,
    iasKt:numeric(adc?.iasKt)??numeric(adc?.casKt),mach:numeric(adc?.mach),
    speedView:root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat),
    groundSpeedKt:src.groundSpeed,radioAltFt:radAlt,dhFt:cp?.dh??null,dhLatched:trackDh(seat,cp,radAlt,powered),
@@ -78,6 +80,14 @@
    display.host.dataset.controlSeat=seat;
    display.host.dataset.controlDh=cp?.dh==null?'':String(cp.dh);
    display.host.dataset.controlBrightness=cp?.brightness?.adi==null?'':String(cp.brightness.adi);
+   // Read-only MCP-to-glass traces. The real speed tape and the FMA engine
+   // keep sole authority for speed bug and annunciation drawing.
+   display.host.dataset.mcpSelectedSpeed=src.mcp?.selectedSpeedKt==null?'':String(src.mcp.selectedSpeedKt);
+   display.host.dataset.mcpSpeedMode=src.mcp?.speedDisplayMode||'OFF';
+   display.host.dataset.mcpVertical=src.mcp?.verticalMode||'';
+   display.host.dataset.mcpLateral=src.mcp?.lateralMode||'';
+   display.host.dataset.mcpSelectedAltitude=src.mcp?.altitudeSelectedFt==null?'':String(src.mcp.altitudeSelectedFt);
+   display.host.dataset.mcpSelectedVs=src.mcp?.verticalSpeedSelectedFpm==null?'':String(src.mcp.verticalSpeedSelectedFpm);
   display.host.dataset.eadiPower=String(powered);
   display.host.dataset.eadiAttitude=String(injected?station.attitudeValid:src.attitude);
   if(painted!==true){
@@ -201,7 +211,7 @@
  root.addEventListener('b737:avionics-data',event=>{
   if(/^(airdata\.(adc|radioAltitude)[12]|navigation\.ils[12]|afds\.director[12]|irs\.(left|right)|mcp\.state|fmc\.computed|electrical\.buses)$/.test(event.detail?.topic||''))scheduleLive();
  });
- for(const event of ['b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control'])root.addEventListener(event,scheduleLive);
+ for(const event of ['b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')
