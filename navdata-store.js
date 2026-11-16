@@ -53,6 +53,32 @@ function create(pool){
   cached=validate(r.rows[0].payload);
   return cached;
  }
+ // Transfer only the fields the Unified browser uses to render the reference.
+ function localReference(data){
+  const segment=p=>({source_line:p.source_line,runway:p.runway,ident:p.ident,
+   commands:(p.commands||[]).map(({kind,value})=>({kind,value})),
+   refs:(p.refs||[]).map(({kind,ident,role,source_resolution,lat,lon})=>
+    ({kind,ident,role,source_resolution,lat,lon}))});
+  const airports={};
+  for(const icao of AIRPORTS){
+   const node=data.airports[icao],{published_runways,runways}=node.airport;
+   const catalogs={},procedures={};
+   for(const kind of KINDS){
+    catalogs[kind]={airport:icao,kind,cycle:CYCLE,fmc_executable:false,
+     items:node.catalogs[kind].items.map(({ident,runways,transitions})=>
+      ({ident,runways,transitions,fmc_executable:false}))};
+    procedures[kind]=node.procedures[kind].map(p=>({airport:icao,kind,ident:p.ident,
+     requires_runway_selection:p.requires_runway_selection,
+     requires_transition_selection:p.requires_transition_selection,
+     runway_options:p.runway_options,transition_options:p.transition_options,
+     fmc_executable:false,variants:p.variants.map(segment),transitions:p.transitions.map(segment)}));
+   }
+   airports[icao]={airport:{icao,published_runways,
+    runways:runways.map(({runway,threshold_lat,threshold_lon})=>({runway,threshold_lat,threshold_lon}))},
+    catalogs,procedures};
+  }
+  return {schema:SCHEMA,source_cycle:CYCLE,reference_only:true,fmc_executable:false,airports};
+ }
  function referenceSegments(procedure,runway,transition){
   const selected=procedure.variants.filter(v=>!runway||v.runway===runway);
   const features=[];
@@ -93,6 +119,7 @@ function create(pool){
   const data=await getData();
   if(!data)return {status:503,body:{status:'NAVDATA_IMPORT_REQUIRED',fmc_executable:false}};
   const pathname=url.pathname;
+  if(pathname==='/api/navdata/local-reference')return {status:200,body:localReference(data)};
   if(pathname==='/api/source/status')return {status:200,body:{
    status:'SOURCE_CONNECTED_READ_ONLY',metadata:{schema:'CDU_SG_SOURCE_NAVDB_V1',
      airac:CYCLE,fmc_executable:false},airports:AIRPORTS,fmc_executable:false,

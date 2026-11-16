@@ -103,6 +103,7 @@ function transformCockpitHTML(content) {
     '.then(function(r){if(r.status===401)location.replace("/login?e=expired");})'+
     '.catch(function(){})})();</script>';
   const injection = '<base href="/panel-mosaic-lab/cockpit/">'+preflight+
+    '<meta name="unified-navdata-seed" content="/api/navdata/local-reference">'+
     '<link rel="stylesheet" href="/static/guest-cockpit.css">'+
     '<script src="/static/guest-cockpit.js" defer></script>'+
     '<script src="/static/session.js" defer></script>';
@@ -395,6 +396,19 @@ async function handle(req,res) {
    res.setHeader('Cross-Origin-Opener-Policy','unsafe-none');
    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'private, no-store'});
    res.end(html);return;
+  }
+  // This authenticated import advertises only the local CDU/EHSI reference fields.
+  if(req.method==='GET'&&url.pathname==='/api/navdata/local-reference'){
+    const site=req.headers['sec-fetch-site'];
+    if(req.headers['x-unified-navdata']!=='local-reference'||(site&&site!=='same-origin')){
+      res.writeHead(403,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
+      res.end('{"error":"CROSS_ORIGIN_DENIED"}');return;
+    }
+    const {status,body}=await navdata.lookup(url);
+    res.writeHead(status,{'Content-Type':'application/json; charset=utf-8',
+      'Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin',
+      'X-Content-Type-Options':'nosniff'});
+    res.end(JSON.stringify(body));return;
   }
   if(req.method==='GET'&&navdata.supports(url.pathname)){
     const {status,body}=await navdata.lookup(url);
