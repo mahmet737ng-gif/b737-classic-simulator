@@ -21,14 +21,17 @@
   // Keep idle-window overhead negligible: ISN ECU snapshots contain large
   // diagnostics trees and are only required when A/T can run or panel is open.
   const needEngines=activeMode(mcp)||by('flightScenarioDialog')?.open===true;
-  const chain=needEngines?owner?.getStartState?.():null;
-  const ecu=needEngines?owner?.getECUState?.():null;
+  const propulsion=needEngines?owner?.getPropulsionSnapshot?.():null;
+  const chain=needEngines&&!propulsion?owner?.getStartState?.():null;
+  const ecu=needEngines&&!propulsion?owner?.getECUState?.():null;
   const engines={};
   for(const n of [1,2]){
    const id='engine'+n;
-   engines[id]={running:chain?.phase?.[id]==='RUNNING',
-    n1Percent:ecu?.engines?.[id]?.n1Percent??null,
-    throttle:chain?.runningEnvelope?.throttle?.[id]??null};
+   engines[id]=propulsion?.engines?.[id]?
+    {...propulsion.engines[id]}:
+    {running:chain?.phase?.[id]==='RUNNING',
+     n1Percent:ecu?.engines?.[id]?.n1Percent??null,
+     throttle:chain?.runningEnvelope?.throttle?.[id]??null};
   }
   // When the Scenario Lab is not running, accept only a VALID ADC source.
   // The external producer remains responsible for moving IAS in that case.
