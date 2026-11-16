@@ -1,0 +1,45 @@
+name: Rotary printed detent direct-tap QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js'
+      - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js'
+      - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.css'
+      - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js'
+      - 'panel-mosaic-lab/cockpit/irs-msu-detent-labels-v1.js'
+      - 'panel-mosaic-lab/interactive-overhead/rotary-guards.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/interactive-overhead/index.html'
+      - 'tests/rotary-printed-detent-taps-v1.test.cjs'
+      - '.github/workflows/rotary-printed-detent-taps-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  detent-mapping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check all updated tap routing scripts
+        run: |
+          for f in \
+            panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js \
+            panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js \
+            panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js \
+            panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js \
+            panel-mosaic-lab/cockpit/irs-msu-detent-labels-v1.js \
+            panel-mosaic-lab/interactive-overhead/rotary-guards.js; do
+            node --check "$f"
+          done
+      - name: Ensure tapping printed mode, range and autobrake legends selects real detents
+        run: |
+          node --test tests/rotary-printed-detent-taps-v1.test.cjs
+          node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.test.cjs
+          node panel-mosaic-lab/cockpit/asp-vbr-v1.test.cjs
