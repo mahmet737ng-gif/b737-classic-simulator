@@ -155,7 +155,7 @@
       !frames().some(frame=>frame.contentWindow===event.source))return;
    try{event.source.B737CDUAttachCduSgV1?.()}catch(_){}
   });
-  if(railway)void connect(); // Existing authenticated Railway sessions reconnect automatically.
+  if(railway||github)void connect(); // Same Unified entry: Railway reconnects; Pages redirects without an extra click.
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
