@@ -47,6 +47,7 @@ function mode(side,value){
  syncPower();
  if(powered(side)!==true&&value!=='OFF')throw Error('IRS '+side+' NO VALID POWER');
  state=Core.apply(state,{type:'SELECT_MODE',side,mode:value});
+ if(pendingFlightReference)try{setScenarioPosition(pendingFlightReference);}catch(error){lastError='FLT PHASE POS: '+cleanErr(error);}
  update();return get(side);
 }
 function fmcPosition(value,originPosition){
@@ -60,7 +61,7 @@ function fmcPosition(value,originPosition){
 }
 // FLT PHASE provides an initial-position suggestion to both aligning IRS units.
  // It never bypasses power, ALIGN, or NAV validity logic.
- let lastFlightReference='';
+ let lastFlightReference='',pendingFlightReference=null;
  function setScenarioPosition(point){
   if(!point||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||
       Math.abs(point.lat)>90||Math.abs(point.lon)>180)return {ok:false,reason:'INVALID_LOCATION'};
@@ -70,8 +71,8 @@ function fmcPosition(value,originPosition){
   if(!eligible.length)return {ok:false,reason:'IRS_NOT_ALIGNING'};
   const text=positionFormat(point);
   const key=text+'@'+eligible.join(',');
-  if(key===lastFlightReference)return {ok:true,unchanged:true,sides:eligible};
-  state=Core.apply(state,{type:'FMC_SET_IRS_POS',position:text,sides:eligible,originPosition:point.icao||null});
+  if(key===lastFlightReference&&eligible.every(x=>!!state.units[x].enteredPosition))return {ok:true,unchanged:true,sides:eligible};
+  state=Core.apply(state,{type:'FMC_SET_IRS_POS',position:text,sides:eligible,originPosition:null});
   lastFlightReference=key;
   lastCDUSource='FLT PHASE INITIAL REFERENCE';
   update();
@@ -384,6 +385,7 @@ function boot(){
  // validate source identity and provide GS/TRK and timestamp per frame.
  root.addEventListener('b737:flight-location-reference',e=>{
   if(e.detail?.source==='FLIGHT_SCENARIO_LIVE_POSITION')return; // motion is supplied through telemetry, not IRS POS INIT
+  pendingFlightReference=e.detail;
   try{setScenarioPosition(e.detail);}
   catch(error){lastError='FLT PHASE POS: '+cleanErr(error);}
  });
@@ -395,7 +397,9 @@ function boot(){
   const now=performance.now();
   const dt=lastT?Math.min(2,Math.max(0,(now-lastT)/1000)):0;
   lastT=now;
-  if(dt>0.05){tick(dt);update();}
+  if(dt>0.05){tick(dt);
+   if(pendingFlightReference)try{setScenarioPosition(pendingFlightReference);}catch(error){lastError='FLT PHASE POS: '+cleanErr(error);}
+   update();}
  };
  clock=root.setInterval(step,250);
  update();
