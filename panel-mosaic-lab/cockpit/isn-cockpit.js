@@ -110,7 +110,9 @@
    catch(error){byId('isnQuickError').textContent=error.message;}
   };
   byId('isnQuickPower'+n).oninput=event=>{
-   try{ecu.setThrottle('engine'+n,Number(event.target.value)/100);byId('isnQuickError').textContent='';render();}
+   try{ecu.setThrottle('engine'+n,Number(event.target.value)/100);
+    window.dispatchEvent(new CustomEvent('b737:manual-engine-throttle',{detail:{engine:n,percent:Number(event.target.value),source:'INSTRUCTOR_SLIDER'}}));
+    byId('isnQuickError').textContent='';render();}
    catch(error){byId('isnQuickError').textContent=error.message;}
   };
  }
