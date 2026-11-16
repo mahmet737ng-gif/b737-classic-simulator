@@ -9,6 +9,7 @@
  const doc=win.document,by=id=>doc.getElementById(id);
  const VERSION='B737_UNIFIED_FCC_FLIGHT_RUNTIME_0001';
  let fcc=Guidance.createState(),protect=Protection.initial(),last=null;
+ let directorServo={pitch:null,roll:null,lastMs:null};
  let owner=null,sourceError=null,lastAp=null,lastProtectionMs=0;
  const faults={hydA:false,hydB:false,irsL:false,irsR:false,criticalSensor:false,radioAlt:false};
  const clone=x=>JSON.parse(JSON.stringify(x));
@@ -41,11 +42,30 @@
  function paintDirector(frame){
   const out=mcp(),view=guidance(frame,out),p=directorPublisher();
   if(!view||!p)return;
+  // The same command demand drives FCC director bars and the flight plant.
+  // Limit bar motion independently to avoid abrupt mode-change visual jumps.
+  const now=performance.now();
+  const dt=directorServo.lastMs===null?.1:
+   Math.min(.5,Math.max(0,(now-directorServo.lastMs)/1000));
+  directorServo.lastMs=now;
+  const slew=(from,to,rate)=>Math.abs(to-from)<=dt*rate?to:
+   from+Math.sign(to-from)*dt*rate;
+  const hasFD=view.fd.captain||view.fd.firstOfficer;
+  if(hasFD){
+   if(Number.isFinite(view.pitchCommandDeg))
+    directorServo.pitch=directorServo.pitch===null?frame.pitchDeg:
+     slew(directorServo.pitch,view.pitchCommandDeg,2.2);
+   if(Number.isFinite(view.rollCommandDeg))
+    directorServo.roll=directorServo.roll===null?frame.bankDeg:
+     slew(directorServo.roll,view.rollCommandDeg,5.2);
+  }else{
+   directorServo.pitch=null;directorServo.roll=null;
+  }
   for(const [n,side] of [[1,'captain'],[2,'firstOfficer']]){
    const enabled=view.fd[side]===true;
    const value={enabled,
-    pitchDeg:enabled?view.pitchCommandDeg:null,
-    rollDeg:enabled?view.rollCommandDeg:null,
+    pitchDeg:enabled?directorServo.pitch:null,
+    rollDeg:enabled?directorServo.roll:null,
     locCaptured:out?.nav?.loc===true,gsCaptured:out?.nav?.gs===true,
     source:'SIMULATED_FCC_FCOM_CH4_TRAINING',seat:side==='captain'?'CAPT':'FO'};
    try{p.publish('afds.director'+n,value,{quality:'VALID',origin:'TRAINING_SCENARIO'});}
@@ -173,6 +193,7 @@
  });
  win.addEventListener('b737:flight-scenario-stopped',()=>{
   releaseDirector();fcc=Guidance.createState();protect=Protection.initial();last=null;
+  directorServo={pitch:null,roll:null,lastMs:null};
  });
  win.addEventListener('b737:afds-hardware-disconnect',e=>{
   if(e.detail?.source==='MCP_HARDWARE'&&e.detail?.reason==='AP_DISENGAGE_BAR_DOWN')
