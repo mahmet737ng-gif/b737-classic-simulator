@@ -156,7 +156,14 @@
  function updateUI(){
   if(!by('flightOutPhase'))return;
   const put=(name,value)=>{by('flightOut'+name).textContent=value;};
-  if(!state){put('Phase','NOT ACTIVE');return;}
+  if(!state){
+   put('Phase','NOT ACTIVE');
+   if(by('flightStop'))by('flightStop').disabled=true;
+   if(by('flightPause'))by('flightPause').disabled=true;
+   return;
+  }
+  if(by('flightStop'))by('flightStop').disabled=state.airborne===true;
+  if(by('flightPause'))by('flightPause').disabled=false;
   const n=(x,d=0)=>Number(x).toFixed(d);
   put('Phase',state.phase.replaceAll('_',' '));
   put('IAS',n(state.iasKt)+' kt');put('Alt',n(state.altitudeFt)+' ft');
@@ -175,6 +182,12 @@
   by('flightPause').textContent=pause?'RESUME':'PAUSE';
  }
  function stop(){
+  // Never withdraw the only IRS/ADC/RA telemetry source while the aircraft
+  // is airborne. Core STOP already prohibits this; the panel/API must match.
+  if(active&&state?.airborne===true){
+   status('STOP FEED BLOCKED WHILE AIRBORNE · land first; use PAUSE if required.',true);
+   return false;
+  }
   try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
   catch(error){console.warn('ISN flight context restore',error);}
   active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;
@@ -188,6 +201,7 @@
   status('Scenario feed stopped. IFR/IRS consumers will use their existing sources or show source unavailable.');
   updateUI();
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-stopped',{detail:{version:VERSION}}));
+  return true;
  }
  function load(){
   try{
@@ -335,7 +349,10 @@
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   pause:value=>{pause=value===true;updateUI();},stop,
-  getDiagnostics:()=>({active,paused:pause,mcpFollow,producers:Object.keys(producers),producerErrors:{...producerErrors}})});
+  getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
+   phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
+   lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,
+   mcpFollow,producers:Object.keys(producers),producerErrors:{...producerErrors}})});
  win.B737UnifiedFlightScenarioV1=api;
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })(window);
