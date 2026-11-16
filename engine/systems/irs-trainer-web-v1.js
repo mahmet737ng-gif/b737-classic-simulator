@@ -32,6 +32,7 @@ const DEG=Math.PI/180;
 const SIDES=Object.freeze(['L','R']);
 const MODES=Object.freeze(['OFF','ALIGN','NAV','ATT']);
 const MAX_STEP=5;
+const FULL_ALIGN_REFERENCE=Symbol('EFIS instructor alignment');
 const CAL=Object.freeze({
   normalAlignSeconds:600,
   highLatitudeAlignSeconds:1020,
@@ -245,6 +246,27 @@ function ready(s,u){
   emit(s,u.id,'NAV_READY');
  }
 }
+// Only the in-cockpit preset can create this reference. The locked IRS
+// controller passes it through the normal SET IRS POS transaction.
+function trainingAlignmentReference(position,heading){
+ if(!finite(heading)||heading<0||heading>=360)throw new RangeError('Invalid training heading');
+ return Object.freeze({...checkPosition(position),[FULL_ALIGN_REFERENCE]:heading});
+}
+function completeTrainingAlignment(s,side,position,heading){
+ const u=get(s,side);
+ if(!u.powered||u.mode!=='NAV')throw new Error('IRS '+side+' needs power and NAV');
+ const alignHold=requiresAlignHold(position.lat,s.config);
+ begin(u,s.config,alignHold?'ALIGN':'NAV');
+ writePosition(s,side,position,'EFIS_INSTRUCTOR_PRESET',null);
+ u.computedLatitudeDeg=position.lat;
+ u.computedLatitudeSource='INSTRUCTOR_PRESET';
+ u.powerTestElapsedSec=CAL.powerTestSeconds;
+ u.alignmentElapsedSec=u.alignmentDurationSec;
+ u.mode='NAV';
+ ready(s,u);
+ u.groundSpeedKt=0;u.trueHeadingDeg=heading;u.trueTrackDeg=heading;
+ emit(s,side,'EFIS_INSTRUCTOR_FULL_ALIGN');
+}
 function apply(state,cmd){
  let s=clone(state);
  if(!cmd||!cmd.type)throw new TypeError('IRS command with type required');
@@ -261,7 +283,13 @@ function apply(state,cmd){
   // FMC broadcast should initialize each ELIGIBLE IRS independently. If one
   // unit is OFF/failed, the other must still receive SET IRS POS.
   if(sides.length===0)throw new Error('No powered IRS is eligible for FMC position initialization');
-  for(const id of sides)writePosition(s,id,p,'FMC',cmd.originPosition);
+  const presetHeading=cmd.originPosition?.[FULL_ALIGN_REFERENCE];
+  if(presetHeading===undefined){
+   for(const id of sides)writePosition(s,id,p,'FMC',cmd.originPosition);
+  }else{
+   if(SIDES.some(side=>!sides.includes(side)))throw new Error('Both IRS units must be available for FULL ALIGN');
+   for(const side of SIDES)completeTrainingAlignment(s,side,p,presetHeading);
+  }
  }else if(cmd.type==='ISDU_LAT_ENT'||cmd.type==='ISDU_LON_ENT'){
   // LAN 737 Classic ATA 34-28 p.126: the physical SYS DSPL L/R chooses
   // display only. Latitude ENT and longitude ENT each go to BOTH IRUs that
@@ -556,6 +584,6 @@ function hdgStsCountdown(s,selectedIRS){
  return getHDGStatusAlignmentTime({displayMode:'HDG/STS',selectedIRS,irsStates});
 }
 return Object.freeze({CAL,initialState,apply,tick,status,comparison,hdgStsCountdown,
- parseCoordinate,parseFmcPosition,move,distanceNm,resolveMotion});
+ trainingAlignmentReference,parseCoordinate,parseFmcPosition,move,distanceNm,resolveMotion});
 
 });

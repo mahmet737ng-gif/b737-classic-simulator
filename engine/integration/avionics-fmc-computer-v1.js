@@ -51,7 +51,7 @@
   const primary=fmcFeed?.FMC1?.feed??'UNKNOWN',secondary=fmcFeed?.FMC2?.feed??'UNKNOWN';
   data.fmcFeeds={FMC1:primary,FMC2:secondary,provenance:feeds?.origin||'UNVERIFIED'};
   const provenPower=[primary,secondary].includes('PRESENT');
-  const operational=fmcFeed?.failed!==true&&(provenPower||
+  const operational=fmcFeed?.failed!==true&&(provenPower||fmcFeed?.trainingEfisSupply===true||
    (fmcFeed?.modeledSupply===true&&[primary,secondary].includes('UNKNOWN')));
   const powerReady=provenPower&&fmcFeed?.failed!==true;
   if(!powerReady)issues.push('FMC_EQUIPMENT_FEED_NOT_PROVEN_PRESENT');

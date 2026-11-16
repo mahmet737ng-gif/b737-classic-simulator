@@ -91,9 +91,12 @@
  function fmcFeedsAndRoute(){
   const s=snapshotFns.fmc();if(!s)return;
   const mode=window.B737UnifiedBusConsumerLiveV1?.getDevice?.('FMC')?.state;
+  const efisSupply=root.B737UnifiedEfisSources?.trainingSupply;
+  const trainingEfisSupply=['electronic1','electronic2','standby'].some(bus=>efisSupply?.(bus,'115VAC'))&&
+   ['FMC1','FMC2'].some(unit=>root.B737UnifiedCB?.available('fmc.'+unit)!==false);
   if(s.power)send('FMC_FEEDS','electrical.fmcFeeds',{FMC1:s.power.FMC1, FMC2:s.power.FMC2,
    CDU_CAPT:s.power.CDU_CAPT,CDU_FO:s.power.CDU_FO,
-   modeledSupply:mode==='NORMAL'?true:mode==='OFF'?false:null,failed:s.fmcFailure===true,
+   modeledSupply:mode==='NORMAL'?true:mode==='OFF'?false:null,trainingEfisSupply,failed:s.fmcFailure===true,
    verification:'INDIVIDUAL_FEEDS_AND_MRG_AGGREGATE'},'LIVE_SYSTEM');
   const r=s.route;
   if(r)send('CDU','crew.flightplan',{origin:r.origin||'',dest:r.dest||'',active:r.active===true,
@@ -228,7 +231,7 @@
  // Old FMC/IRS frontend and driver remain the authoritative writers.
  // Consume existing change events, with a 250ms health poll for non-event sources.
  for(const event of ['b737:irs-trainer-state','b737:mcp-afds-state','b737:isn-start-indications',
-  'b737:fmc-systems-state','b737:aircraft-profile-change','b737:bus-consumer-snapshot']){
+  'b737:fmc-systems-state','b737:aircraft-profile-change','b737:bus-consumer-snapshot','b737:efis-preset-change']){
   root.addEventListener(event,scheduleRefresh);
  }
  root.addEventListener('b737:cockpit-mounted',refresh);

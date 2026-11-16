@@ -122,7 +122,7 @@
    for(const seat of SEATS){
     const screen=display(seat,native);
     if(!screen)continue;
-    const setup=state[seat],preview=instructor[seat];
+    const setup=state[seat],preview=instructor[seat]&&sources.getPreset()!=='COLD_DARK';
     const src=sources.project(seat,snapshot),origin=state[src.sourceSeat];
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
@@ -168,7 +168,12 @@
    if(selected===seat)syncControls();
    schedule();
   });
-  doc.getElementById('unifiedEfisOpen')?.addEventListener('click',showControls);
+  for(const id of ['unifiedEfisOpen','unifiedEfisHeader'])doc.getElementById(id)?.addEventListener('click',showControls);
+  win.addEventListener('b737:efis-preset-change',()=>{
+   for(const seat of SEATS)instructor[seat]=false;
+   syncControls();
+   schedule();
+  });
   doc.getElementById('unifiedEfisPhysical')?.addEventListener('click',()=>{
    cockpit.close();win.B737UnifiedEFISPedestalV1?.open?.(selected);
   });

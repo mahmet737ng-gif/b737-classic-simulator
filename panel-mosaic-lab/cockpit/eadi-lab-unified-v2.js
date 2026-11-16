@@ -55,7 +55,7 @@
   if(!src)return false;
   const panel=root.B737UnifiedEFISPedestalV1;
   const cp=panel?.getState?.(seat),sourceControls=src.sourceSeat===seat?cp:panel?.getState?.(src.sourceSeat);
-  const powered=station.powered??(src.displayPowered&&src.video);
+  const powered=root.B737UnifiedEfisSources.getPreset()!=='COLD_DARK'&&(station.powered??(src.displayPowered&&src.video));
   const injected=station.source==='SIMULATOR_INJECTION';
   const numeric=v=>Number.isFinite(v)?v:null;
   const radAlt=numeric(src.ra?.heightFt),front=src.frontCourse;

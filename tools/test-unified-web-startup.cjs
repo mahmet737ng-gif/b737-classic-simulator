@@ -184,13 +184,13 @@ const server=http.createServer((req,res)=>{
     return {mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
-   // Five approved header controls: Controls, Settings, CB, GPU and the
+   // Header controls: Controls, Settings, EFIS, CB, GPU and the
    // electrical Failure injector. This is an explicit UI contract, not a
    // relaxed count; removing or duplicating a control must still fail CI.
    const topButtons=await page.locator('header.unified-minimal-header .header-settings > button')
     .evaluateAll(nodes=>nodes.map(n=>n.id));
    assert.deepEqual(topButtons,
-    ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen']);
+    ['inspectorToggle','aircraftSettingsOpen','unifiedEfisHeader','cbPanelOpen','groundPowerHeader','failuresHeaderOpen']);
    await page.locator('#inspectorToggle').click();
    await page.locator('#unifiedControlCenter').waitFor({state:'visible'});
    const rechargeButton=page.locator('#batteryRechargeControlSlot #liveBatteryRecharge');
@@ -277,12 +277,12 @@ const server=http.createServer((req,res)=>{
   await page.waitForFunction(()=>window.B737ISNCockpitV1.getECUState().engines.engine2.n1Percent>40,null,{timeout:15000});
   await page.screenshot({path:path.join(out,'quick-engine-controls.png')});
   console.log('PASS visible Controls engine buttons and independent live power sliders');
-  // All five approved header controls must remain visible on mobile.
+  // All approved header controls must remain visible on mobile.
   // No off-screen button, overlap, or battery readout over the cockpit.
   await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>{
    const bar=document.querySelector('.unified-minimal-header .header-settings');
-   const nodes=[...bar.querySelectorAll(':scope > button')];
+   const nodes=[...bar.querySelectorAll(':scope > button,:scope > #busConsumerTestLabOpen')];
    const bounds=nodes.map(node=>({id:node.id,left:node.getBoundingClientRect().left,
     right:node.getBoundingClientRect().right,scrollWidth:node.scrollWidth,
     clientWidth:node.clientWidth}));
@@ -290,7 +290,7 @@ const server=http.createServer((req,res)=>{
     batteryInViewport:!!document.querySelector('#viewport #liveBatteryReadout')};
   });
   assert.deepEqual(mobile.buttons.map(x=>x.id),
-   ['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen']);
+   ['inspectorToggle','aircraftSettingsOpen','unifiedEfisHeader','cbPanelOpen','busConsumerTestLabOpen','groundPowerHeader','failuresHeaderOpen']);
   assert.equal(mobile.batteryInViewport,false,'Battery meter may not float over the cockpit');
   assert.ok(mobile.buttons.every(b=>b.left>=-1&&b.right<=mobile.width+1),
    'Mobile top-bar buttons must fit the device width');
@@ -308,7 +308,25 @@ const server=http.createServer((req,res)=>{
   // unobstructed header, then reopen to validate the battery meter.
   if(await page.evaluate(()=>document.body.classList.contains('side-open')))
    await page.locator('#inspectorToggle').click();
-  await page.screenshot({path:path.join(out,'mobile-five-button-header.png')});
+  await page.screenshot({path:path.join(out,'mobile-header.png')});
+  await page.getByRole('button',{name:'EFIS CONTROL',exact:true}).click();
+  await page.getByRole('button',{name:'FULL ALIGN',exact:true}).click();
+  await page.waitForFunction(()=>{
+   const nav=window.B737IRSTrainerUnified.getState().units;
+   return ['L','R'].every(i=>nav[i].mode==='NAV'&&nav[i].positionValid===true)&&
+    ['CAPT','FO'].every(i=>document.querySelector('[data-eadi-stage1-seat="'+i+'"]').dataset.eadiAttitude==='true'&&
+     document.querySelector('#unifiedEhsi'+i+' [data-segment="aircraft"]'));
+  },null,{timeout:10000});
+  await page.getByRole('button',{name:'COLD & DARK',exact:true}).click();
+  await page.waitForFunction(()=>{
+   const nav=window.B737IRSTrainerUnified.getState().units;
+   return ['L','R'].every(i=>nav[i].mode==='OFF'&&nav[i].positionValid===false)&&
+    ['CAPT','FO'].every(i=>document.querySelector('[data-eadi-stage1-seat="'+i+'"]').dataset.eadiPower==='false'&&
+     !document.querySelector('#unifiedEhsi'+i+' [data-segment="plot"]'));
+  },null,{timeout:10000});
+  await page.getByRole('button',{name:'AIRCRAFT',exact:true}).click();
+  await page.getByRole('button',{name:'Close EFIS controls',exact:true}).click();
+  console.log('PASS EFIS mobile header, quick dual IRS alignment, and cold dark');
   await page.locator('#inspectorToggle').click();
   await page.locator('#batteryMeterControlSlot #liveBatteryReadout')
    .waitFor({state:'visible',timeout:20000});

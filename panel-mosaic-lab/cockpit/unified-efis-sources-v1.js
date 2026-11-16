@@ -72,13 +72,16 @@
   return {source:data.source,points:anchor?points.map(p=>({...p,...offsets(anchor,p)})):[],activeIndex:-1,centerIndex};
  }
  function bind(win){
-  let requested={},applied={};
+  let requested={},applied={},preset='LIVE';
   const faults={1:false,2:false};
   const notify=()=>win.dispatchEvent(new CustomEvent('b737:efis-source-change'));
+  function trainingSupply(bus,voltage){
+   return preset==='FULL_ALIGN'&&win.B737UnifiedBusFailureInjectionV1?.live?.isUnavailable(bus,voltage)!==true;
+  }
   function applySelection(snapshot){
    const supply=win.B737UnifiedBusConsumerLiveV1;
    const bus=signal(snapshot,'electrical.buses')?.bus;
-   if((supply?.getBus?.('battery','28VDC')?.powered??bus?.battery)!==true)return;
+   if((supply?.getBus?.('battery','28VDC')?.powered??bus?.battery)!==true&&!trainingSupply('battery','28VDC'))return;
    const changed=['efi-transfer','irs-transfer'].some(key=>(applied[key]??'NORMAL')!==(requested[key]??'NORMAL'));
    applied={...requested};
    if(changed)win.dispatchEvent(new CustomEvent('b737:efis-transfer-ap-disconnect'));
@@ -99,10 +102,20 @@
   function project(seat,snapshot=win.B737UnifiedAvionicsNetworkV1?.getSnapshot?.()){
    const bus=signal(snapshot,'electrical.buses')?.bus;
    const supply=win.B737UnifiedBusConsumerLiveV1;
-   const powered=(id,voltage)=>(supply?.getBus?.(id,voltage)?.powered??bus?.[id])===true;
+   const powered=(id,voltage)=>preset!=='COLD_DARK'&&
+    ((supply?.getBus?.(id,voltage)?.powered??bus?.[id])===true||trainingSupply(id,voltage));
    return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults);
   }
-  return Object.freeze({project,route,setSgFailure(n,on){if(![1,2].includes(n))throw Error('Invalid SG');faults[n]=on===true;notify();}});
+  return Object.freeze({project,route,getPreset:()=>preset,trainingSupply,
+   setPreset(value){
+    if(!['FULL_ALIGN','COLD_DARK','LIVE'].includes(value))throw Error('Invalid EFIS preset');
+    preset=value;
+    applySelection(win.B737UnifiedAvionicsNetworkV1?.getSnapshot?.());
+    win.dispatchEvent(new CustomEvent('b737:efis-preset-change',{detail:{preset}}));
+    notify();
+   },
+   setSgFailure(n,on){if(![1,2].includes(n))throw Error('Invalid SG');faults[n]=on===true;notify();}
+  });
  }
  return Object.freeze({resolve,route,offsets,bind});
 });
