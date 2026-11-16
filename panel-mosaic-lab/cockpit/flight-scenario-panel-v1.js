@@ -10,7 +10,7 @@
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
-  <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / TRUE heading. Not for navigation, performance or operational flight planning.</p>
+  <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
   <div class="flight-grid">
    <label>Airport / فرودگاه<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
    <label>Runway / باند<select id="flightRunway"></select></label>
@@ -20,7 +20,7 @@
   <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
   <div class="flight-grid flight-numbers">
    <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
-   <label>Heading TRUE (°)<input id="flightHeading" type="number" min="0" max="360" step="1" value="314"></label>
+   <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
    <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
    <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
    <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
@@ -39,7 +39,8 @@
    <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
    <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
    <div><span>VS</span><strong id="flightOutVS">—</strong></div>
-   <div><span>TRUE HDG</span><strong id="flightOutHDG">—</strong></div>
+   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
+   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
    <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
    <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
    <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
@@ -53,17 +54,37 @@
  `;
  const fields=['Alt','Heading','Speed','VS','Bank'];
  const v=id=>Number(by('flight'+id).value);
+ const wmm=win.B737WMM2025V1;
+ const airportPoint=a=>({lat:a.lat,lon:a.lon,altitudeFt:a.elevationFt});
+ function magneticVariation(point){
+  const result=wmm?.evaluate?.({lat:point?.lat,lon:point?.lon,
+   altitudeFt:point?.altitudeFt??0});
+  return result?.valid===true?result.declinationDeg:null;
+ }
+ function magneticHeading(trueHeading,point){
+  const variation=magneticVariation(point);
+  return Number.isFinite(variation)?wmm.trueToMag(trueHeading,variation):null;
+ }
+ function trueHeading(magHeading,point){
+  const variation=magneticVariation(point);
+  if(!Number.isFinite(variation))throw Error('WMM2025 magnetic variation unavailable at current position/date');
+  return wmm.magToTrue(magHeading,variation);
+ }
+ const magLabel=(trueDeg,point)=>{
+  const mag=magneticHeading(trueDeg,point);
+  return Number.isFinite(mag)?String(Math.round(mag)%360).padStart(3,'0')+'° MAG':'MAG N/A';
+ };
  function airportChanged(){
   const a=Core.AIRPORTS[by('flightAirport').value];
   const rw=by('flightRunway'),previous=rw.value;
   rw.replaceChildren();
   for(const [id,hdg] of Object.entries(a.runways)){
-   const opt=new Option('RWY '+id+' · '+hdg+'° TRUE',id);rw.add(opt);
+   const opt=new Option('RWY '+id+' · '+magLabel(hdg,airportPoint(a)),id);rw.add(opt);
   }
   rw.value=Object.hasOwn(a.runways,previous)?previous:a.defaultRunway;
   const manual=by('flightPreset').value==='MANUAL';
   if(!manual){
-   by('flightHeading').value=a.runways[rw.value];
+   by('flightHeading').value=Math.round(magneticHeading(a.runways[rw.value],airportPoint(a))??0)%360;
    by('flightAlt').value=a.elevationFt+(by('flightPreset').value==='RUNWAY_READY'?0:3000);
   }
  }
@@ -73,7 +94,7 @@
   else if(kind==='FINAL_5'||kind==='FINAL_10')by('flightAirGround').value='AIRBORNE';
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(kind!=='MANUAL'){
-   by('flightHeading').value=a.runways[by('flightRunway').value];
+   by('flightHeading').value=Math.round(magneticHeading(a.runways[by('flightRunway').value],airportPoint(a))??0)%360;
    by('flightAlt').value=Math.round(a.elevationFt+(kind==='RUNWAY_READY'?0:kind==='FINAL_5'?1643:3236));
    by('flightSpeed').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?155:170;
    by('flightVS').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?-823:-902;
@@ -137,7 +158,10 @@
   const n=(x,d=0)=>Number(x).toFixed(d);
   put('Phase',state.phase.replaceAll('_',' '));
   put('IAS',n(state.iasKt)+' kt');put('Alt',n(state.altitudeFt)+' ft');
-  put('VS',n(state.vsFpm)+' fpm');put('HDG',String(Math.round(state.trueHeadingDeg)).padStart(3,'0')+'°');
+  put('VS',n(state.vsFpm)+' fpm');put('HDG',magLabel(state.trueHeadingDeg,state));
+  const magVariation=magneticVariation(state);
+  put('Var',Number.isFinite(magVariation)?
+   Math.abs(magVariation).toFixed(2)+'° '+(magVariation<0?'W':'E'):'N/A');
   put('Bank',n(state.bankDeg,1)+'°');put('Pitch',n(state.pitchDeg,1)+'°');
   put('AGL',n(state.radioAltitudeFt)+' ft');put('Lat',n(state.lat,5));
   put('Lon',n(state.lon,5));put('GS',n(state.gsKt)+' kt');
@@ -169,14 +193,14 @@
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
     airborne:by('flightAirGround').value==='AIRBORNE'};
    if(preset==='MANUAL'){
-    config.altitudeFt=v('Alt');config.headingDeg=v('Heading');
+    config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
     config.speedKt=v('Speed');config.vsFpm=v('VS');config.bankDeg=v('Bank');
    }
    state=Core.newScenario(config);
    active=true;pause=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
-    by('flightHeading').value=Math.round(state.trueHeadingDeg);
+    by('flightHeading').value=Math.round(magneticHeading(state.trueHeadingDeg,state)??0)%360;
     by('flightSpeed').value=Math.round(state.iasKt);
     by('flightVS').value=Math.round(state.vsFpm);
     by('flightBank').value=0;
@@ -190,7 +214,7 @@
   try{
    state=Core.command(state,{type:'SPEED',value:v('Speed')});
    if(v('Bank')!==0)state=Core.command(state,{type:'BANK',value:v('Bank')});
-   else state=Core.command(state,{type:'HEADING',value:v('Heading')});
+   else state=Core.command(state,{type:'HEADING',value:trueHeading(v('Heading'),state)});
    state=Core.command(state,{type:'VS',value:v('VS')});
    // Manual VS and altitude target are alternate vertical guidance modes.
    // ALT field in scenario load is the current altitude; this button
