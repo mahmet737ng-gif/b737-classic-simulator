@@ -4,7 +4,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='EFIS-PEDESTAL-RASTER-0003-SEAT';
+const VERSION='EFIS-PEDESTAL-RASTER-0004-TIGHT-DETENTS';
 const src=document.currentScript?.src||location.href;
 const asset=(name)=>new URL('./assets/'+name,src).href;
 const PHOTO={plate:asset('efis-cp-photo-plate-v1.webp'),
@@ -26,23 +26,30 @@ const BUTTONS={rst:[250,666,320,729],wxr:[1079,495,1244,661],
 const LABELS={wxr:'WXR',vorAdf:'VOR/ADF',navAid:'NAV AID',arpt:'ARPT',rteData:'RTE DATA',wpt:'WPT'};
 const MODE_HITS={FULL_NAV:[639,389],FULL_VOR_ILS:[698,175],EXP_NAV:[647,290],EXP_VOR_ILS:[859,178],MAP:[972,276],CTR_MAP:[963,395],PLAN:[817,503]};
 const RANGE_HITS={10:[1034,439],20:[1006,363],40:[1024,278],80:[1079,203],160:[1190,166],320:[1311,205]};
+// Tight measured printed-text boxes in native photo pixels, not large
+// radial touch zones. Exactly 5 CSS pixels of padding is attempted and
+// reduced if nearby label zones would otherwise overlap.
 const LABEL_HIT_SIZE={
- mode:{FULL_NAV:[104,72],FULL_VOR_ILS:[154,74],EXP_NAV:[106,70],
-  EXP_VOR_ILS:[154,74],MAP:[112,74],CTR_MAP:[128,78],PLAN:[128,76]},
- range:{10:[86,69],20:[86,69],40:[86,69],80:[90,69],160:[110,69],320:[112,69]}
+ mode:{FULL_NAV:[84,42],FULL_VOR_ILS:[128,46],EXP_NAV:[84,42],
+  EXP_VOR_ILS:[128,46],MAP:[68,40],CTR_MAP:[104,44],PLAN:[78,42]},
+ range:{10:[38,34],20:[38,34],40:[38,34],80:[40,34],160:[62,34],320:[62,34]}
 };
 // All positions are native pixels of the approved 1448x1086 EFIS plate.
-// The photograph, knob art and their established detent angles are immutable.
-function nearestLabel(x,y){
- let best=null;
- for(const [kind,locations]of [['mode',MODE_HITS],['range',RANGE_HITS]])
-  for(const [value,[cx,cy]]of Object.entries(locations)){
-   const [w,h]=LABEL_HIT_SIZE[kind][value],dx=(x-cx)/(w*.70),dy=(y-cy)/(h*.75);
-   const distance=dx*dx+dy*dy;
-   if(distance<=1&&(!best||distance<best.distance))
-    best={kind,value:kind==='range'?Number(value):value,distance};
-  }
- return best;
+// The photograph, knob art and established detent angles remain unchanged.
+const geometry=root.B737DetentHitGeometryV1;
+if(!geometry?.build)throw Error('B737DetentHitGeometryV1 must load before EFIS CP');
+const detentText=()=>[['mode',MODE_HITS],['range',RANGE_HITS]].flatMap(([kind,locations])=>
+ Object.entries(locations).map(([value,[cx,cy]])=>{
+  const [w,h]=LABEL_HIT_SIZE[kind][value];
+  return {id:kind+':'+value,kind,value:kind==='range'?Number(value):value,cx,cy,w,h};
+ }));
+function labelBoxes(panelWidth=365,panelHeight=365*H/W){
+ return geometry.build(detentText(),{
+  scaleX:panelWidth/W,scaleY:panelHeight/H,paddingPx:5});
+}
+function nearestLabel(x,y,panelWidth=365,panelHeight=365*H/W){
+ const hits=labelBoxes(panelWidth,panelHeight).filter(box=>geometry.at(box,x,y));
+ return hits[0]?{kind:hits[0].kind,value:hits[0].value,distance:0}:null;
 }
 const states={CAPT:initial(),FO:initial()},instances=new Map();
 let dialog=null,dialogSeat='CAPT',mounted=false;
@@ -124,17 +131,9 @@ function physicalPanel(seat,host,zoomed=false){
  const photo=elm('img','uefis-photo',panel);photo.src=PHOTO.plate;photo.alt='737 Classic EFIS panel';photo.draggable=false;
  const stencil=elm('span','uefis-range80',panel);pos(stencil,[1073,139,56,51]);stencil.textContent='80';
  const parts={knobs:{},push:{},tfc:null,readout:null,detents:[]};
- // Tap on printed legend text routes to the actual seat-specific detent.
- // The face-photo background is the fallback for letters beyond the small
- // standalone hit areas; controls/rotors/buttons take precedence.
- panel.addEventListener('click',event=>{
-  if(event.target.closest?.('button'))return;
-  const rect=panel.getBoundingClientRect();
-  if(rect.width<=0||rect.height<=0)return;
-  const hit=nearestLabel((event.clientX-rect.left)*W/rect.width,
-   (event.clientY-rect.top)*H/rect.height);
-  if(hit){event.stopPropagation();change(seat,hit.kind,hit.value);}
- });
+ // Every label uses only its own small invisible exact text hit box.
+ // No broad faceplate click fallback: blank spaces never select a detent.
+ // The physical rotor drag/wheel and stationary pushbuttons remain unchanged.
  for(const [key,[cx,cy,r]] of Object.entries(ROTORS)){
   const b=button(panel,seat+' '+key+' selector');b.className='uefis-knob uefis-'+key;
   b.dataset.rotor=key;pos(b,[cx-r,cy-r,r*2,r*2]);
@@ -155,19 +154,35 @@ function physicalPanel(seat,host,zoomed=false){
   b.addEventListener('click',e=>{e.stopPropagation();if(key==='rst')change(seat,'rst');else change(seat,key,!states[seat].options[key])});
   parts.push[key]=b;
  }
- for(const [kind,locations] of [['mode',MODE_HITS],['range',RANGE_HITS]]){
-  for(const [value,[x,y]] of Object.entries(locations)){
-   const b=button(panel,seat+' '+kind+' '+value.replaceAll('_',' '));
-   b.className='uefis-detent';b.dataset.detent=kind;b.dataset.value=value;
-   const [hitWidth,hitHeight]=LABEL_HIT_SIZE[kind][value];
-   Object.assign(b.style,{left:pct(x,W),top:pct(y,H),
-    width:pct(hitWidth,W),height:pct(hitHeight,H)});
-   b.setAttribute('aria-label',seat+' EFIS '+kind+' detent '+value.replaceAll('_',' '));
-   b.setAttribute('aria-pressed','false');
-   b.addEventListener('click',e=>{e.stopPropagation();change(seat,kind,kind==='range'?Number(value):value)});
-   parts.detents.push(b);
-  }
+ const hitButtons=new Map();
+ for(const spec of detentText()){
+  const kind=spec.kind,value=String(spec.value);
+  const b=button(panel,seat+' '+kind+' '+value.replaceAll('_',' '));
+  b.className='uefis-detent';b.dataset.detent=kind;b.dataset.value=value;
+  b.setAttribute('aria-label',seat+' EFIS '+kind+' detent '+value.replaceAll('_',' '));
+  b.setAttribute('aria-pressed','false');
+  b.addEventListener('click',e=>{e.stopPropagation();change(seat,kind,spec.value)});
+  parts.detents.push(b);hitButtons.set(spec.id,b);
  }
+ const fitTextHitAreas=()=>{
+  if(!panel.isConnected)return;
+  const rect=panel.getBoundingClientRect();
+  const width=rect.width||(zoomed?900:365),height=rect.height||(zoomed?900*H/W:365*H/W);
+  for(const box of labelBoxes(width,height)){
+   const b=hitButtons.get(box.id);
+   Object.assign(b.style,{left:pct(box.cx,W),top:pct(box.cy,H),
+    width:pct(box.w,W),height:pct(box.h,H)});
+   b.dataset.hitPaddingPx=box.paddingPx.toFixed(2);
+  }
+ };
+ fitTextHitAreas();
+ if(root.ResizeObserver){
+  const observer=new root.ResizeObserver(fitTextHitAreas);
+  observer.observe(panel);
+  // Dialog instances are removed on close; release the observer as well.
+  if(zoomed)dialog?.addEventListener('close',()=>observer.disconnect(),{once:true});
+ }
+ root.requestAnimationFrame?.(fitTextHitAreas);
  const disp=elm('div','uefis-dh-window',panel);
  pos(disp,[169,201,215,90]);disp.setAttribute('role','status');disp.setAttribute('aria-label','Decision height feet');
  parts.readout=disp;
@@ -222,5 +237,5 @@ root.addEventListener('b737:cockpit-mounted',mountOnce);
 root.addEventListener('b737:engine-indication-view',()=>{for(const seat of ['CAPT','FO'])emit(seat,'engine-view')});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOnce,{once:true});else mount();
 root.B737UnifiedEFISPedestalV1=Object.freeze({version:VERSION,PHOTO,MODE,RANGES,ROTORS,BUTTONS,positions:{CAPT:[55,1290,365],FO:[735,1290,365]},
- detentHitSizes:LABEL_HIT_SIZE,nearestLabel,mount,open,getState:(seat)=>Object.hasOwn(states,seat)?copy(states[seat]):null,operate:change});
+ detentHitSizes:LABEL_HIT_SIZE,labelBoxes,nearestLabel,mount,open,getState:(seat)=>Object.hasOwn(states,seat)?copy(states[seat]):null,operate:change});
 })(window);
