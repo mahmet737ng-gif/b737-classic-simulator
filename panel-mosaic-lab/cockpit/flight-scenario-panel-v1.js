@@ -4,7 +4,7 @@
  const Core=win.B737FlightScenarioCoreV1;
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
- let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0;
+ let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
@@ -77,6 +77,7 @@
   return Number.isFinite(mag)?String(Math.round(mag)%360).padStart(3,'0')+'° MAG':'MAG N/A';
  };
  function publishSelectedReference(){
+  if(!choiceArmed)return;
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(!a)return;
   const manual=by('flightPreset').value==='MANUAL';
@@ -349,11 +350,11 @@
   dlg.setAttribute('dir','ltr');dlg.innerHTML=html;doc.body.appendChild(dlg);
   launch.addEventListener('click',()=>dlg.showModal());
   by('flightScenarioClose').addEventListener('click',()=>dlg.close());
-  by('flightAirport').addEventListener('change',()=>{airportChanged();presetChanged();});
-  by('flightRunway').addEventListener('change',presetChanged);
-  by('flightPreset').addEventListener('change',presetChanged);
-  by('flightAirGround').addEventListener('change',airGroundChanged);
-  for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(by('flightPreset').value==='MANUAL')publishSelectedReference();});
+  by('flightAirport').addEventListener('change',()=>{choiceArmed=true;airportChanged();presetChanged();});
+  by('flightRunway').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
+  by('flightPreset').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
+  by('flightAirGround').addEventListener('change',()=>{choiceArmed=true;airGroundChanged();});
+  for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(by('flightPreset').value==='MANUAL'){choiceArmed=true;publishSelectedReference();}});
   by('flightLoad').addEventListener('click',load);
   by('flightTargets').addEventListener('click',targets);
   by('flightTakeoff').addEventListener('click',()=>{
