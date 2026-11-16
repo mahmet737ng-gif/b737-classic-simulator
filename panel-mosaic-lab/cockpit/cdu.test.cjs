@@ -14,8 +14,13 @@ const preflight='cdu-preflight-evidence-v1.js?v=FCOM-PREFLIGHT-0001';
 const originalCduScripts=scripts(original)
  .filter(src=>!omitted.has(src)&&src!=='../engine/ch11/fmc-airac-banks-v1.js?v=AIRAC-2611-BANKS-0001')
  .map(src=>src.replace(preflight,preflight+'-ENGINE-IDENT-0001'));
-assert.deepEqual(bodyScripts.slice(0,-integrationScripts.length),originalCduScripts,
- 'Embedded CDU must retain the original CDU script order and cache versions.');
+const expectedCduScripts=[...originalCduScripts];
+const sourceAdapter='cdu-sg-selector-v1.js?v=CDU-SG-SQLITE-0001';
+const oldSelector=expectedCduScripts.findIndex(src=>src.startsWith('stage6-selector.js?v='));
+assert.ok(oldSelector>=0,'Existing Stage6 source selector must remain loaded');
+expectedCduScripts.splice(oldSelector+1,0,sourceAdapter);
+assert.deepEqual(bodyScripts.slice(0,-integrationScripts.length),expectedCduScripts,
+ 'Original CDU script order and cache versions must be preserved; only verified additive SQLite selector is allowed.');
 for(const src of omitted)assert.ok(!bodyScripts.includes(src),'Unused standalone renderer imported: '+src);
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
 assert.ok(!css.includes('font-family'),'Locked BoeingCDU font faces must not change');
