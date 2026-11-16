@@ -221,13 +221,15 @@
  function propulsionObservation(now){
   if(now-lastPropulsionAt<180)return lastPropulsion;
   lastPropulsionAt=now;
-  const owner=win.B737ISNCockpitV1,chain=owner?.getStartState?.();
-  if(!chain?.phase){lastPropulsion=null;return null;}
-  const ecu=owner.getECUState?.();
+  const owner=win.B737ISNCockpitV1;
+  const fast=owner?.getPropulsionSnapshot?.();
+  const chain=!fast?owner?.getStartState?.():null;
+  if(!fast&&!chain?.phase){lastPropulsion=null;return null;}
+  const ecu=!fast?owner.getECUState?.():null;
   const engines=[1,2].map(n=>{
    const id='engine'+n;
-   return {running:chain.phase[id]==='RUNNING',
-    n1Percent:ecu?.engines?.[id]?.n1Percent??null};
+   return {running:fast?.engines?.[id]?.running??(chain?.phase?.[id]==='RUNNING'),
+    n1Percent:fast?.engines?.[id]?.n1Percent??ecu?.engines?.[id]?.n1Percent??null};
   });
   lastPropulsion=engines.every(e=>Number.isFinite(e.n1Percent))?
    {valid:true,engines}:null;
