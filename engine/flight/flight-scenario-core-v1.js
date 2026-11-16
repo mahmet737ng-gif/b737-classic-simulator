@@ -100,6 +100,15 @@
    case 'ALTITUDE':next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');next.target.verticalMode='ALTITUDE';break;
    case 'VS':next.target.vsFpm=finite(action.value,-5000,5000,'VS');next.target.verticalMode='VS';break;
    case 'SPEED':next.target.speedKt=finite(action.value,0,450,'SPEED');break;
+   case 'MANUAL_HOLD':
+    // Autopilot disconnect: preserve last observed bank and vertical motion.
+    // Do not let obsolete HDG SEL / ALT targets keep steering the aircraft.
+    next.target.lateralMode='BANK';
+    next.target.bankCommandDeg=next.bankDeg;
+    next.target.verticalMode='VS';
+    next.target.vsFpm=next.vsFpm;
+    next.target.flightControlOwner='MANUAL_TRIM_NO_AP';
+    break;
    case 'WIND':next.windFromDeg=wrap(finite(action.direction,0,360,'WIND_DIR'));next.windKt=finite(action.speed,0,150,'WIND_KT');break;
    case 'TAKEOFF_ROLL':
     if(state.phase!=='GROUND_READY')throw Error('NOT_GROUND_READY');
