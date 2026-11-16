@@ -129,11 +129,15 @@
   const ecu=snapshotFns.ecu();
   if(!ecu)return;
   const aircraft=ecu.aircraft;
-  if(aircraft&&typeof aircraft==='object')
+  const scenarioApi=root.B737UnifiedFlightScenarioV1;
+  const scenario=scenarioApi?.getDiagnostics?.()?.active===true?scenarioApi.getState?.():null;
+  if(scenario||(aircraft&&typeof aircraft==='object'))
    send('FLIGHT_CONTEXT','flightcontext.state',{
-    pressureAltitudeFt:aircraft.pressureAltitudeFt??null,iasKt:aircraft.iasKt??null,
-    oatC:aircraft.oatC??null,massKg:aircraft.massKg??null,onGround:aircraft.onGround??null,
-    source:'ISN13_18_TRAINING_FLIGHT_CONDITIONS_NOT_ADC'},'TRAINING_SCENARIO');
+    pressureAltitudeFt:scenario?.altitudeFt??aircraft?.pressureAltitudeFt??null,
+    iasKt:scenario?.iasKt??aircraft?.iasKt??null,
+    oatC:aircraft?.oatC??null,massKg:aircraft?.massKg??null,
+    onGround:scenario?!scenario.airborne:aircraft?.onGround??null,
+    source:scenario?'FLIGHT_SCENARIO_INSTRUCTOR_OVERRIDE':'ISN13_18_TRAINING_FLIGHT_CONDITIONS_NOT_ADC'},'TRAINING_SCENARIO');
   if(ecu.apu&&typeof ecu.apu==='object')
    send('APU','apu.state',{...ecu.apu,source:'ISN13_18_APU_TRAINING_MODEL'},'TRAINING_SCENARIO');
   if(ecu.hydraulics&&typeof ecu.hydraulics==='object')
@@ -154,10 +158,12 @@
    trainingModel:true},'TRAINING_SCENARIO');
  }
  function airGround(){
+  const scenarioApi=root.B737UnifiedFlightScenarioV1;
+  const scenario=scenarioApi?.getDiagnostics?.()?.active===true?scenarioApi.getState?.():null;
   const a=snapshotFns.ecu()?.aircraft;
-  if(typeof a?.onGround==='boolean'){
-   send('AIRGROUND','aircraft.airground',{onGround:a.onGround,
-    source:'ISN13_18_TRAINING_FLIGHT_CONTEXT'},'TRAINING_SCENARIO');
+  if(scenario||typeof a?.onGround==='boolean'){
+   send('AIRGROUND','aircraft.airground',{onGround:scenario?!scenario.airborne:a.onGround,
+    source:scenario?'FLIGHT_SCENARIO_INSTRUCTOR_OVERRIDE':'ISN13_18_TRAINING_FLIGHT_CONTEXT'},'TRAINING_SCENARIO');
   }
  }
  function pneumatics(){
