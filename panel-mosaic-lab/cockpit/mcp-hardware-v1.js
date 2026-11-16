@@ -15,6 +15,7 @@ const controls=Object.freeze([
  {id:"FD_LEFT",kind:"toggle",x:203,y:321,w:36,h:51,caption:"F/D captain",state:"OFF"},
  {id:"FD_RIGHT",kind:"toggle",x:1903,y:321,w:36,h:51,caption:"F/D first officer",state:"OFF"},
  {id:"VS_WHEEL",kind:"wheel",x:1490,y:281,w:49,h:177,caption:"VERT SPEED wheel",state:0},
+ {id:"AP_DISENGAGE_BAR",kind:"bar",x:1760,y:373,w:234,h:47,caption:"A/P disengage bar",state:false},
  {id:"CO",kind:"push",x:460,y:246,w:52,h:52,caption:"C/O",state:false},
  {id:"SPD_INTV",kind:"push",x:735,y:260,w:41,h:41,caption:"SPD INTV",state:false},
  {id:"ALT_INTV",kind:"push",x:1370,y:258,w:41,h:41,caption:"ALT INTV",state:false}
@@ -54,7 +55,12 @@ function mountControl(parent,c){
  el.style.top=(c.y/H*100)+"%";
  el.style.width=(c.w/W*100)+"%";
  el.style.height=(c.h/H*100)+"%";
- if(c.kind==="toggle"){
+ if(c.kind==="bar"){
+  const release=()=>window.dispatchEvent(new CustomEvent('b737:afds-hardware-disconnect',{
+   detail:{source:'MCP_HARDWARE',reason:'AP_DISENGAGE_BAR_DOWN',confirmed:true}}));
+  on(el,'click',e=>{e.stopPropagation();release()});
+  on(el,'keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();release()}});
+ }else if(c.kind==="toggle"){
   el.innerHTML='<span class="mcp-hw-real-face" aria-hidden="true"></span>';
   on(el,"click",e=>{e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","click")});
   on(el,"keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();e.stopPropagation();change(c.id,state[c.id]==="OFF"?(c.id==="AT_ARM"?"ARM":"ON"):"OFF","keyboard")}});
