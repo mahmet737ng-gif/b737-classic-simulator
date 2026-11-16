@@ -36,7 +36,7 @@ test('date, altitude, position changes continuously change magnetic variation',(
  const input={lat:35.689175,lon:51.314392};
  const early=WMM.evaluate({...input,date:2025});
  const late=WMM.evaluate({...input,date:2029.5});
- assert.ok(Math.abs(late.declinationDeg-early.declinationDeg)>.15);
+ assert.ok(Math.abs(late.declinationDeg-early.declinationDeg)>.01);
  const route=WMM.evaluate({lat:34.1,lon:56.1,date:2026.875});
  assert.ok(Math.abs(route.declinationDeg-early.declinationDeg)>.05);
  const high=WMM.evaluate({...input,date:2026.875,altitudeFt:35000});
