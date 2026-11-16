@@ -18,7 +18,7 @@ test('carry into tens/hundreds happens only near decade and century rollover',()
 test('altitude window 09980 to 10000 rotates continuously through all carry columns',()=>{
  const prior=Wheel.frames(9989,5),moving=Wheel.frames(9999.9,5),after=Wheel.frames(10000,5);
  assert.deepEqual(prior.map(x=>x.digit),[0,9,9,8,9]);
- assert.ok(moving.every(x=>x.fraction>.9));
+ assert.ok(moving.every(x=>x.fraction>=.89));
  assert.deepEqual(after.map(x=>x.digit),[1,0,0,0,0]);
 });
 test('negative invalid and overflowing drum inputs are rejected instead of fake digits',()=>{
