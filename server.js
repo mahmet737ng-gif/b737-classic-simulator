@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
+const NavdataRelay=require('./navdata-relay.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const USER = process.env.LAB_USER || 'Ali.m';
@@ -370,6 +371,15 @@ async function handle(req,res) {
       res.writeHead(422,{'Content-Type':'application/json','Cache-Control':'no-store'});
       res.end(JSON.stringify({error:String(e.message||'INVALID_NAVDATA').slice(0,120)}));return;
     }
+  }
+  // Session-gated top-level popup for private NAVDATA on GitHub Pages.
+  if(req.method==='GET'&&url.pathname==='/navdata-relay'){
+   const html=NavdataRelay.relayHtml(url.searchParams.get('nonce'));
+   if(!html){res.writeHead(400,{'Content-Type':'text/plain'});res.end('INVALID_NONCE');return;}
+   res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
+   res.setHeader('Cross-Origin-Opener-Policy','unsafe-none');
+   res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'private, no-store'});
+   res.end(html);return;
   }
   if(req.method==='GET'&&navdata.supports(url.pathname)){
     const {status,body}=await navdata.lookup(url);
