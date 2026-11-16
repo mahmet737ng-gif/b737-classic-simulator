@@ -6,7 +6,7 @@
  root.EFISClassicEHSIV2=api;
 })(globalThis,function(glyph,G){
 'use strict';
-const VERSION='EHSI-CLASSIC-REBUILD-0008';
+const VERSION='EHSI-CLASSIC-REBUILD-0009-EXPANDED-HEADING-360';
 const COLORS=glyph.colors;
 const W=512,H=512,NS='http://www.w3.org/2000/svg';
 // Active EHSI aperture in the two 1920 x 1080 owner-supplied reference frames.
@@ -147,6 +147,18 @@ function mapMarker(p,l,angle,id,fraction=1){
  const [x,y]=rosePoint(l,angle,fraction);
  return layer(p,id,{transform:'translate('+x+' '+y+') rotate('+roseTangent(l,angle)+')'});
 }
+function selectedHeadingPresentation(m,l){
+ // The expanded compass displays only 70° at a time, but the selected MCP
+ // heading is a circular 000...359° command. Never gate the radial magenta
+ // heading vector on whether its triangle currently fits on that 70° arc.
+ // See owner FSX reference: an off-scale selected heading retains its dashed
+ // direction cue inside the glass while the off-arc triangle is withheld.
+ const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-m.reference):null;
+ const onArc=delta!==null&&Math.abs(delta)<=l.degrees/2;
+ return {delta,onArc,offScale:delta!==null&&!onArc,
+  vectorVisible:delta!==null&&!l.planCompass&&(l.route||l.degrees===70),
+  vectorLength:onArc?.92:1.25};
+}
 function compass(svg,m,l){
  const g=layer(svg,l.planCompass?'plan-compass':'compass-rose');
  const half=l.degrees/2,centered=m.mode==='CTR_MAP',full=l.degrees===360,ref=l.planCompass?0:m.reference;
@@ -169,13 +181,23 @@ function compass(svg,m,l){
   const mark=mapMarker(g,l,otherAngle,'heading-pointer',1.035);
   polygon(mark,[[0,-6],[4,0],[0,6],[-4,0]],PHOTO_COLORS.white,'none',1.7);
  }
- const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-ref):null;
- if(delta!==null&&Math.abs(delta)<=half){
-  const bug=mapMarker(g,l,delta,'heading-bug');
+ const heading=selectedHeadingPresentation(m,l);
+ if(heading.onArc){
+  const bug=mapMarker(g,l,heading.delta,'heading-bug');
   const size=full?8:7;
   polygon(bug,[[0,-2],[-size,12],[size,12]],PHOTO_COLORS.magenta,'none',1.9);
-  if(l.route&&!l.planCompass)line(g,...rosePoint(l,delta,.92),...rosePoint(l,delta,.08),
-   PHOTO_COLORS.magenta,1.5,{'stroke-dasharray':'8 18','data-segment':'heading-bug-vector'});
+ }
+ if(heading.vectorVisible){
+  // Clip the vector to the calibrated EHSI glass, NOT to the ±35° compass
+  // arc. A selected heading at 100/180/260 degrees off the bow still gives
+  // an angular directional cue (even after crossing 359° -> 000°).
+  const vector=layer(g,'selected-heading-vector',{
+   'clip-path':'url(#'+(svg.id||'ehsi')+'-plot)'});
+  line(vector,...rosePoint(l,heading.delta,heading.vectorLength),
+   ...rosePoint(l,heading.delta,.08),PHOTO_COLORS.magenta,1.5,
+   {'stroke-dasharray':'8 18','data-segment':'heading-bug-vector',
+    'data-heading-offscale':String(heading.offScale),
+    'data-relative-heading':heading.delta});
  }
 }
 function navPointers(svg,m,l){
@@ -475,5 +497,5 @@ function render(svg,raw){
  if(m.weather.disagreement)text(w,m.weather.disagreement+' RANGE DISAGREE',256,386,17,COLORS.amber,'middle');
  return s;
 }
-return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,model,computeDisplay,render};
+return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render};
 });
