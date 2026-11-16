@@ -1,0 +1,44 @@
+name: Pilot gauge native-photo socket visual survey
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pilot-gauge-socket-survey.yml'
+permissions:
+  contents: read
+jobs:
+  survey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow
+      - name: Read native source photo windows without altering the photos
+        run: |
+          python - <<'PY'
+          import os, base64, io, json
+          from PIL import Image,ImageOps,ImageDraw
+          paths={
+           'captain':'panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png',
+           'fo-inner':'panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png'
+          }
+          stations={
+           'captain':{'airspeed':(1108,973,505),'altimeter':(3082,980,390),
+                      'ivsi':(3080,1610,395),'rmi':(1183,1838,520)},
+           'fo-inner':{'airspeed':(741,577,340),'rmi':(771,954,340)}
+          }
+          for station,locations in stations.items():
+           photo=Image.open(paths[station]).convert('RGB')
+           print('ORIGINAL_SOURCE',station,photo.size,flush=True)
+           for label,(x,y,r) in locations.items():
+            bbox=(max(0,x-r),max(0,y-r),min(photo.width,x+r),min(photo.height,y+r))
+            crop=photo.crop(bbox)
+            crop.thumbnail((580,580))
+            canvas=io.BytesIO();crop.save(canvas,format='JPEG',quality=74,optimize=True)
+            b64=base64.b64encode(canvas.getvalue()).decode()
+            print('PHOTO_SURVEY',station,label,'bbox',bbox,'displaySize',crop.size,'B64',b64,flush=True)
+          PY
