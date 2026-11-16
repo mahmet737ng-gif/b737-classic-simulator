@@ -41,7 +41,9 @@ test('cockpit uses FLT PHASE title and shares selected location between IRS/CDU/
  assert.ok(panel.includes('config.lon=v('));
  const index=read('panel-mosaic-lab/cockpit/index.html');
  assert.ok(index.includes('flight-location-reference-v1.js'));
- assert.ok(read('panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js').includes('setScenarioPosition'));
+ assert.ok(read('panel-mosaic-lab/cockpit/flight-location-irs-bridge-v1.js').includes('setFmcPosition'));
+ assert.ok(index.includes('flight-location-irs-bridge-v1.js'));
+ assert.ok(!read('panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js').includes('setScenarioPosition'));
  assert.ok(read('panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js').includes('FLT PHASE REF'));
  assert.ok(read('panel-mosaic-lab/cockpit/ehsi-unified-v1.js').includes('location.mapObjects('));
 });
@@ -58,4 +60,22 @@ test('source-backed local Iranian VORs and airports appear around OIII without R
  const onlyVor=location.mapObjects(airports.OIII,{arpt:false,navAid:true,wpt:false},40);
  assert.deepEqual(onlyVor.map(x=>x.name),['TRN','IKA','PIM']);
  assert.ok(onlyVor.every(x=>x.shape==='nav'));
+});
+
+
+test('FLT PHASE origin waits for actual IRS alignment and writes through public trainer API only',()=>{
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),root=path.resolve(__dirname,'..');
+ const bridge=fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/flight-location-irs-bridge-v1.js'),'utf8');
+ const handlers=new Map(),sent=[],entered=[];
+ const trainer={getState:()=>({units:{L:{powered:true,phase:'OFF'},R:{powered:true,phase:'OFF'}}}),
+  setFmcPosition(value){entered.push(value);return {sides:['L','R']};}};
+ const win={B737IRSTrainerUnified:trainer,addEventListener:(type,fn)=>handlers.set(type,fn),
+  dispatchEvent:e=>sent.push(e),CustomEvent:class{constructor(type,data){this.type=type;this.detail=data.detail;}}};
+ vm.runInNewContext(bridge,{window:win,CustomEvent:win.CustomEvent});
+ handlers.get('b737:flight-location-reference')({detail:{lat:35.689,lon:51.314,icao:'OIII',source:'FLIGHT_PHASE_SELECTION'}});
+ assert.equal(entered.length,0,'OFF IRS must never be secretly aligned');
+ trainer.getState=()=>({units:{L:{powered:true,phase:'WAIT_POSITION'},R:{powered:false,phase:'OFF'}}});
+ handlers.get('b737:irs-trainer-state')();
+ assert.equal(entered.length,1);assert.match(entered[0],/^N\d{5} E\d{6}$/);
+ assert.equal(sent[0].detail.status,'ENTERED_FOR_ALIGNMENT');
 });
