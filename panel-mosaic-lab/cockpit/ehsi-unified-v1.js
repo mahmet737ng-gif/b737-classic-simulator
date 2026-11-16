@@ -181,9 +181,13 @@
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
-    win.B737CduSgEHSIPreviewV1?.draw(screen.svg,
-      win.B737CduSgRouteV1?.snapshot(),origin.ehsi.mode,origin.ehsi.range,
-      src.displayPowered===true&&src.video===true&&!preview,sources.offsets);
+    const mode=origin.ehsi.mode,sg=win.B737CduSgRouteV1?.snapshot();
+    const planAnchor=route.points?.[route.centerIndex],position=src.fmc?.position;
+    const anchor=mode==='PLAN'?(planAnchor&&{lat:planAnchor.lat,lon:planAnchor.lon}):
+     position?.quality==='VALID'&&Number.isFinite(src.trueTrack)?
+      {lat:position.latitudeDeg,lon:position.longitudeDeg}:null;
+    win.B737CduSgEHSIPreviewV1?.draw(screen.svg,sg,mode,origin.ehsi.range,
+      src.displayPowered===true&&src.video===true&&!preview,sources.offsets,renderer.routeProjection(model),anchor);
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
    const output=doc.getElementById('unifiedEfisSources');

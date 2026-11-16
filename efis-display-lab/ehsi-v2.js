@@ -501,5 +501,9 @@ function render(svg,raw){
  if(m.weather.disagreement)text(w,m.weather.disagreement+' RANGE DISAGREE',256,386,17,COLORS.amber,'middle');
  return s;
 }
-return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render};
+function routeProjection(input){
+ const m=model({...input,route:{points:[]}});
+ return ['PLAN','MAP','CTR_MAP'].includes(m.mode)?projection(m,LAYOUT[m.mode],m.mode==='PLAN'):null;
+}
+return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render,routeProjection};
 });

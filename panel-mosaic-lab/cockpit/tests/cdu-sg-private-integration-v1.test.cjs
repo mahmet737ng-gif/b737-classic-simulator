@@ -3,6 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path');
 const routeAPI=require('../cdu-sg-route-state-v1.js');
 const makeSelector=require('../../../cdu-standalone-v6/cdu-sg-selector-v1.js');
+const converter=require('../../../engine/fmc/sg-source-geometry-v1.js');
 const root=path.resolve(__dirname,'../../..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const status='UNSPECIFIED_IN_UPLOADED_FILES';
@@ -15,7 +16,7 @@ const geo={type:'FeatureCollection',metadata:{airport:'OIII',kind:'SID',ident:'D
  coordinates:[[50.905,35.445],[49.581,34.859]]},
  properties:{render_style:'dashed_reference_not_actual_flight_path',fmc_executable:false}}]};
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-test('shared route revisions, cycle uncertainty and disconnect never claim FMC ACTIVE',()=>{
+test('shared route revisions preserve the approved source-only classification',()=>{
  const a=routeAPI.create(),events=[];a.subscribe(s=>events.push(s.revision));
  a.setConnected(true);a.setContext({origin:'OIII',destination:'OIMM'});
  const selection=a.select({airport:'OIII',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo});
@@ -38,10 +39,10 @@ test('only published source runways and procedure variants can be referenced',()
  assert.equal(a.snapshot().runways.OIII,'29L');
  assert.throws(()=>a.select({airport:'OISS',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo}),/NOT ON ROUTE/);
 });
-test('private source selector renders the real runway/SID and commits a shared reference to both seats',async()=>{
+test('CDU stages runway and SID on both seats, executes and erases independently',async()=>{
  const shared=routeAPI.create();shared.setConnected(true);
- const states=[{page:'DEP_ARR',scratch:'',active:{ORIGIN:'OIII',DEST:'OIMM'}},
-  {page:'IDENT',scratch:'',active:{ORIGIN:'OIII',DEST:'OIMM'}}];
+ const states=[{page:'DEP_ARR',scratch:'',routeActivated:true,active:{ORIGIN:'OIII',DEST:'OIMM'}},
+  {page:'IDENT',scratch:'',routeActivated:true,active:{ORIGIN:'OIII',DEST:'OIMM'}}];
  let refreshes=0;
  const core={readValue:(s,k)=>s.active[k]||'',choose:(s,_p,p)=>{s.page=p;s.message='';}};
  const calls=[];
@@ -51,15 +52,17 @@ test('private source selector renders the real runway/SID and commits a shared r
    items:[{ident:'DAXI1A',runways:['29L','29R'],transitions:[],fmc_executable:false}]};
   else if(url.startsWith('/api/cdu/airport?'))body={icao:'OIII',
    published_runways:['29L','29R'],runways:[{runway:'29L'},{runway:'29R'}]};
-  else if(url.startsWith('/api/cdu/procedure?'))body=procedure;
-  else if(url.startsWith('/api/sg/procedure.geojson?'))body=geo;
+  else if(url.startsWith('/api/cdu/procedure?'))body={...procedure,segments:[{events:[
+   {kind:'FIX_PASSAGE',reference_status:'LOCAL_FIX_COORDINATE_VERIFIED',fix:{ident:'RUS',lat:35.445,lon:50.905}},
+   {kind:'FIX_PASSAGE',reference_status:'LOCAL_FIX_COORDINATE_VERIFIED',fix:{ident:'DAXIL',lat:34.859,lon:49.581}}
+  ]}]};
   else throw Error('Unexpected URL '+url);
   return {ok:true,json:async()=>body};
  };
  const bridge={isConnected:()=>true,request:response};
  const pages={DEP_ARR:{},DEPARTURES:{},ARRIVALS:{},RTE:{}};
- const a=makeSelector(states[0],core,pages,bridge,shared,()=>refreshes++);
- const b=makeSelector(states[1],core,pages,bridge,shared,()=>refreshes++);
+ const a=makeSelector(states[0],core,pages,bridge,shared,()=>refreshes++,converter);
+ const b=makeSelector(states[1],core,pages,bridge,shared,()=>refreshes++,converter);
  a.attach();b.attach();
  assert.equal(a.beforeKey('CDU_CAPT_LSK_L1'),true);
  await tick();await tick();
@@ -73,16 +76,46 @@ test('private source selector renders the real runway/SID and commits a shared r
  // FO sees the exact same shared revision with independent page and scratchpad.
  assert.equal(states[1].page,'IDENT');assert.equal(states[1].scratch,'');
  assert.equal(shared.snapshot().geometries['SID@OIII'].segments.length,1);
+ assert.equal(a.chapter11CatalogView().rows[0].valueL,'DAXI1A <SEL>');
+ assert.equal(a.execLit(),true);
+ b.afterKey('EXEC');assert.equal(a.chapter11CatalogView().rows[0].valueL,'DAXI1A <ACT>');
+ assert.equal(a.execLit(),false);
+ a.beforeKey('LSK_R2');assert.equal(shared.snapshot().modified.runways['DEP@OIII'],'29R');
+ assert.equal(a.chapter11CatalogView().rows[5].valueL,'<ERASE');
+ a.beforeKey('LSK_L6');assert.equal(shared.snapshot().runways['DEP@OIII'],'29L');
+ assert.equal(shared.snapshot().modified,null);
  assert.ok(calls.some(s=>s.includes('runway=29L')));
  assert.equal(shared.snapshot().fmcExecutable,false);
  a.detach();b.detach();
 });
-test('SG reference preview requires plan mode and source-only data',()=>{
+test('SG preview only draws valid references and removes them after source loss',()=>{
  const renderer=require('../cdu-sg-ehsi-preview-v1.js');
  const a=routeAPI.create();a.setConnected(true);a.setContext({origin:'OIII',destination:'OIMM'});
  a.select({airport:'OIII',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo});
  assert.equal(renderer.collect(a.snapshot()).length,1);
  assert.equal(renderer.collect({...a.snapshot(),connected:false}).length,0);
+});
+test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
+ const renderer=require('../cdu-sg-ehsi-preview-v1.js');
+ const route=routeAPI.create();route.setConnected(true);route.setContext({origin:'OIII'});
+ route.select({airport:'OIII',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo});
+ const nodes=[];
+ const make=tag=>({tag,attrs:{},appendChild(){},remove(){nodes.splice(0);},
+  setAttribute(key,value){this.attrs[key]=value;}});
+ const svg={id:'cpt',ownerDocument:{createElementNS(_ns,tag){const el=make(tag);nodes.push(el);return el;}},
+  appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference']);}};
+ const status=()=>nodes.find(n=>n.attrs['data-cdu-sg-status'])?.textContent;
+ const offset=(a,b)=>({x:b.lon-a.lon,y:b.lat-a.lat});
+ const project=(x,y)=>[250+x,290-y];
+ assert.equal(renderer.draw(svg,route.snapshot(),'PLAN',40,true,offset,project),1);
+ assert.equal(status(),'MOD REF');
+ route.execute();
+ const anchor={lon:50.905,lat:35.445};
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project,anchor),1);
+ assert.equal(status(),'ACT REF');
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,false,offset,project,anchor),0);
+ assert.equal(status(),undefined);
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project),0);
 });
 test('public cockpit and both CDU views share one opt-in connector but no data package',()=>{
  const html=read('panel-mosaic-lab/cockpit/index.html');
@@ -95,34 +128,11 @@ test('public cockpit and both CDU views share one opt-in connector but no data p
  assert.match(app,/CDU_SG_API\?\.beforeKey/);
  assert.match(app,/CDU_SG_API\?\.chapter11CatalogView/);
  assert.match(read('panel-mosaic-lab/cockpit/ehsi-unified-v1.js'),/B737CduSgEHSIPreviewV1/);
- assert.match(read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js'),/X-CDU-SG-Token/);
- assert.doesNotMatch(read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js'),/localStorage|sessionStorage|IndexedDB/);
+ const adapter=read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js');
+ assert.match(adapter,/UNIFIED_LOCAL_NAVDATA/);
+ assert.doesNotMatch(adapter,/location\.(?:assign|replace)|fetch\(|up\.railway\.app/);
+ assert.match(html,/unified-gateway-entry-v1/);
  assert.match(read('panel-mosaic-lab/cockpit/cdu-session.js'),/function notify/);
  assert.match(read('panel-mosaic-lab/cockpit/app.js'),/fmcSession.subscribe/);
 });
 
-
-test('public Unified cockpit enters Railway before CDU graphics; Railway reconnects in place',()=>{
- const html=read('panel-mosaic-lab/cockpit/index.html');
- const marker='<script id="unified-gateway-entry-v1">';
- const open=html.indexOf(marker),close=html.indexOf('</script>',open);
- assert.ok(open>=0 && close>open,'Early gateway entry is missing');
- assert.ok(open<html.indexOf('src="../../cb-panel-lab/catalog.js'),'Gateway must precede CDU/graphics');
- const code=html.slice(open+marker.length,close),vm=require('node:vm');
- const cases=[
-  ['mahmet737ng-gif.github.io','/b737-classic-simulator/panel-mosaic-lab/cockpit/',true],
-  ['mahmet737ng-gif.github.io','/b737-classic-simulator/panel-mosaic-lab/cockpit/index.html',true],
-  ['mahmet737ng-gif.github.io','/b737-classic-simulator/cdu-standalone-v6/',false],
-  ['ata24-review-gateway-production.up.railway.app','/panel-mosaic-lab/cockpit/',false],
-  ['localhost','/b737-classic-simulator/panel-mosaic-lab/cockpit/',false]
- ];
- for(const [hostname,pathname,expected] of cases){
-  const redirects=[];
-  vm.runInNewContext(code,{window:{location:{hostname,pathname,replace:url=>redirects.push(url)}}});
-  assert.equal(redirects.length,expected?1:0,hostname+pathname);
-  if(expected)assert.equal(redirects[0],
-   'https://ata24-review-gateway-production.up.railway.app/panel-mosaic-lab/cockpit/');
- }
- const adapter=read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js');
- assert.ok(adapter.includes('if(railway||github)void connect()'),'Pages fallback and Railway reconnect must run without clicking');
-});

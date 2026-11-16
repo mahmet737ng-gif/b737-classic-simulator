@@ -12,7 +12,7 @@
    const bridge=root.parent.B737CduSgBridgeV1,route=root.parent.B737CduSgRouteV1;
    if(!bridge?.isConnected?.()||!route||typeof state==='undefined'||typeof core==='undefined')return false;
    if(adapter)return true;
-   adapter=factory(state,core,root.CDU_PAGES,bridge,route,()=>root.updateStage5View?.());
+   adapter=factory(state,core,root.CDU_PAGES,bridge,route,()=>root.updateStage5View?.(),root.parent.B737UnifiedSGSourceGeometryV1);
    root.CDU_SG_API=adapter;
    adapter.attach();root.updateStage5View?.();return true;
   }catch(_){return false;}
@@ -22,7 +22,7 @@
   adapter.detach();adapter=null;delete root.CDU_SG_API;
   root.updateStage5View?.();return true;
  };
-})(typeof window==='undefined'?null:window,function(state,core,pages,bridge,shared,refresh){
+})(typeof window==='undefined'?null:window,function(state,core,pages,bridge,shared,refresh,converter){
  'use strict';
  let serial=0,unsubscribe=null,attached=false;
  const CYCLE='UNSPECIFIED_IN_UPLOADED_FILES';
@@ -34,8 +34,27 @@
   const r=await bridge.request(path),body=await r.json();
   if(!r.ok)throw Error(body.error||'PRIVATE SOURCE UNAVAILABLE');return body;
  }
- function sourceSelected(kind,airport){
-  return shared.snapshot().selections[kind+'@'+airport]||null;
+ const routePages=['RTE','FLIGHT_PLAN','ACTIVATE','LEGS'];
+ const canExecute=()=>Boolean(state.routeActivated||state.navdbActive||state.stage5Committed);
+ function visible(v,snapshot=shared.snapshot()){
+  const role=v.departure?'DEP':'ARR',slot=role+'@'+v.airport;
+  const runway=snapshot.runways?.[slot],fits=item=>!runway||!item.item?.runways?.length||item.item.runways.includes(runway);
+  return {slot,runway,left:v.left.filter(fits),right:v.right.filter(fits)};
+ }
+ function marker(snapshot,field,key,ident){
+  const value=bank=>field==='runways'?bank?.runways?.[key]:bank?.selections?.[key]?.ident;
+  if(value(snapshot.modified)===ident&&value(snapshot.active)!==ident)return '<SEL>';
+  return value(snapshot.active)===ident?'<ACT>':'';
+ }
+ function routeView(base){
+  if(!base||!routePages.includes(state.page))return base;
+  const snap=shared.snapshot();
+  if(!snap.modified&&!Object.keys(snap.runways).length)return base;
+  const rows=base.rows.map(row=>({...row}));
+  const runway=snap.runways['DEP@'+snap.origin];
+  if(state.page==='RTE'&&base.number===1&&runway)rows[2].valueL=runway;
+  if(snap.modified)rows[5].valueL='<ERASE';
+  return {...base,rows,title:snap.modified?'MOD '+base.title.replace(/^(ACT|MOD) /,''):base.title};
  }
  function indexKey(k){
   const slots={LSK_L1:['ORIGIN','DEP'],LSK_R1:['ORIGIN','ARR'],
@@ -82,14 +101,15 @@
   })();
   return true;
  }
- function count(v){return Math.max(1,Math.ceil(Math.max(
-  v.mode==='CATALOG'?v.left.length:v.mode==='RUNWAY'||v.mode==='TRANSITION'?v.options.length:0,
-  v.mode==='CATALOG'?v.right.length:0)/5))}
+ function count(v,catalog=visible(v)){return Math.max(1,Math.ceil(Math.max(
+  v.mode==='CATALOG'?catalog.left.length:v.mode==='RUNWAY'||v.mode==='TRANSITION'?v.options.length:0,
+  v.mode==='CATALOG'?catalog.right.length:0)/5))}
  function catalogView(){
   const v=state.cduSgView;
   if(!v||!['DEPARTURES','ARRIVALS'].includes(state.page))return null;
   const blank=()=>({labelL:'',labelR:'',valueL:'',valueR:''});
-  const rows=Array.from({length:6},blank),start=(v.page-1)*5;
+  const snapshot=shared.snapshot(),catalog=visible(v,snapshot),total=count(v,catalog);
+  const number=Math.min(v.page,total),rows=Array.from({length:6},blank),start=(number-1)*5;
   if(v.mode==='LOADING'||v.mode==='ERROR'||v.mode==='VERIFYING'){
    rows[0]={labelL:v.departure?'SIDS':'STARS',labelR:v.departure?'RUNWAYS':'APPROACHES',valueL:'',valueR:''};
    rows[2]={...blank(),labelL:'NAV DATA',valueL:v.mode==='LOADING'?'LOADING':
@@ -102,43 +122,57 @@
    }
   }else{
    for(let i=0;i<5;i++){
-    const l=v.left[start+i],r=v.right[start+i],previous=v.right[start+i-1];
+    const l=catalog.left[start+i],r=catalog.right[start+i],previous=catalog.right[start+i-1];
+    const lm=l?marker(snapshot,'selections',l.kind+'@'+v.airport,l.ident):'';
+    const rm=r?marker(snapshot,r.kind==='RUNWAY'?'runways':'selections',
+     r.kind==='RUNWAY'?catalog.slot:r.kind+'@'+v.airport,r.ident):'';
     rows[i]={
      labelL:i===0?(v.departure?'SIDS':'STARS'):'',
-     valueL:l?(sourceSelected(l.kind,v.airport)?.ident===l.ident?'>':'')+l.ident:'',
+     valueL:l?l.ident+(lm?' '+lm:''):'',
      labelR:r?.kind==='RUNWAY'&&(i===0||previous?.kind!=='RUNWAY')?'RUNWAYS':
       i===0?(v.departure?'RUNWAYS':'APPROACHES'):'',
-     valueR:r?(shared.snapshot().runways[v.airport]===r.ident?'>':'')+r.ident:''
+     valueR:r?(rm?rm+' ':'')+r.ident:''
     };
    }
   }
-  rows[5]={...blank(),valueL:'<INDEX',valueR:'RTE>'};
-  return {title:v.airport+' '+state.page,number:v.page,count:count(v),rows};
+  rows[5]={...blank(),valueL:!v.referenceOnly&&snapshot.modified?'<ERASE':'<INDEX',valueR:'ROUTE>'};
+  return {title:v.airport+' '+state.page,number,count:total,rows};
  }
  function fromCatalogKey(k){
   const v=state.cduSgView;
   if(!v||!['DEPARTURES','ARRIVALS'].includes(state.page))return false;
-  if(k==='LSK_L6'){++serial;delete state.cduSgView;core.choose(state,pages,'DEP_ARR');update();return true;}
+  if(k==='LSK_L6'){
+   ++serial;state.message='';
+   if(!v.referenceOnly&&shared.snapshot().modified){
+    shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;
+   }else{delete state.cduSgView;core.choose(state,pages,'DEP_ARR');}
+   update();return true;
+  }
   if(k==='LSK_R6'){++serial;delete state.cduSgView;core.choose(state,pages,'RTE');update();return true;}
   if(k==='PREV_PAGE'||k==='NEXT_PAGE'){
-   const pagesCount=count(v);v.page=(v.page-1+(k==='NEXT_PAGE'?1:-1)+pagesCount)%pagesCount+1;
+   const pagesCount=count(v);v.page=(Math.min(v.page,pagesCount)-1+(k==='NEXT_PAGE'?1:-1)+pagesCount)%pagesCount+1;
    update();return true;
   }
   const m=/^LSK_([LR])([1-5])$/.exec(k);if(!m)return false;
-  const row=(v.page-1)*5+Number(m[2])-1;
+  const catalog=visible(v);
+  const row=(Math.min(v.page,count(v,catalog))-1)*5+Number(m[2])-1;
   if(v.mode==='LOADING'||v.mode==='ERROR'||v.mode==='VERIFYING'){issue('NAV SOURCE UNAVAILABLE');return true;}
   if(v.mode==='CATALOG'){
-   const entry=(m[1]==='L'?v.left:v.right)[row];
+   const entry=(m[1]==='L'?catalog.left:catalog.right)[row];
    if(!entry){issue('KEY INACTIVE');return true;}
    if(v.referenceOnly){issue('NOT ON ROUTE');return true;}
    if(entry.kind==='RUNWAY'){
-    try{shared.chooseRunway({airport:v.airport,runway:entry.ident,airportRecord:v.airportRecord});
-     state.message='RWY REF ONLY';update();}catch(e){issue(e.message);}
+    try{
+     shared.chooseRunway({airport:v.airport,runway:entry.ident,airportRecord:v.airportRecord,role:v.departure?'DEP':'ARR'});
+     v.page=1;state.message='';update();
+    }catch(e){issue(e.message);}
     return true;
    }
    v.candidate=entry;v.runway=null;v.transition=null;
    v.runways=entry.item.runways;v.transitions=entry.item.transitions;
-   if(v.runways.length){v.mode='RUNWAY';v.options=v.runways;v.page=1;update();}
+   if(catalog.runway&&v.runways.includes(catalog.runway))v.runway=catalog.runway;
+   else if(v.runways.length===1)v.runway=v.runways[0];
+   if(v.runways.length&&!v.runway){v.mode='RUNWAY';v.options=v.runways;v.page=1;update();}
    else if(v.transitions.length){v.mode='TRANSITION';v.options=v.transitions;v.page=1;update();}
    else void confirm(v);
    return true;
@@ -161,23 +195,14 @@
    (v.runway?'&runway='+encoded(v.runway):'')+(v.transition?'&transition='+encoded(v.transition):'');
   try{
    const procedure=await request('/api/cdu/procedure?'+query);
-   // The converter belongs to Unified, not a Railway or standalone CDU service.
-   // If the verified source already carries local fixes, SG needs no extra
-   // geometry endpoint. Otherwise preserve the existing read-only fallback.
-   const converter=typeof window!=='undefined'?
-    window.parent?.B737UnifiedSGSourceGeometryV1:null;
-   let geometry=null;
-   if(converter?.hasSource?.(procedure)){
-    const candidate=converter.compile(procedure,{airport:v.airport,kind:entry.kind,
-     ident:entry.ident,runway:v.runway,transition:v.transition});
-    if(candidate.features.some(f=>f.geometry?.type==='LineString'))geometry=candidate;
-   }
-   if(!geometry)geometry=await request('/api/sg/procedure.geojson?'+query);
+   if(!converter?.hasSource?.(procedure))throw Error('PROCEDURE SOURCE INCOMPLETE');
+   const geometry=converter.compile(procedure,{airport:v.airport,kind:entry.kind,
+    ident:entry.ident,runway:v.runway,transition:v.transition});
    if(ticket!==serial||state.cduSgView!==v)return;
    shared.select({airport:v.airport,kind:entry.kind,ident:entry.ident,
-    runway:v.runway,transition:v.transition,procedure,geometry});
+    runway:v.runway,transition:v.transition,procedure,geometry,airportRecord:v.airportRecord});
    v.mode='CATALOG';v.page=1;v.candidate=null;
-   state.message=entry.kind+' REF ONLY';update();
+   state.message='';update();
   }catch(err){
    if(ticket===serial&&state.cduSgView===v){
     v.mode='CATALOG';v.page=1;issue(err.message);
@@ -188,20 +213,31 @@
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
   if(state.page==='DEP_ARR')return indexKey(k);
+  if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified){
+   shared.erase();
+   if(core.pendingCount?.(state)||state.routeActivationArmed)core.press(state,pages,code);
+   state.message='';return true;
+  }
   return fromCatalogKey(k);
  }
+ function afterKey(code){
+  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!shared.snapshot().modified)return;
+  if(canExecute())shared.execute();
+  else issue('ACTIVATE ROUTE FIRST');
+ }
+ function execLit(){return canExecute()&&Boolean(shared.snapshot().modified);}
  function attach(){
   if(attached)return;attached=true;
   // The CDU may already be sitting on an offline DEP/ARR child page when the
   // Railway import finishes. Return to INDEX so a fresh LSK opens the source.
   if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView)
    core.choose(state,pages,'DEP_ARR');
-  unsubscribe=shared.subscribe(()=>{if(attached&&['DEPARTURES','ARRIVALS'].includes(state.page))update();});
+  unsubscribe=shared.subscribe(()=>{if(attached)update();});
  }
  function detach(){
   ++serial;attached=false;unsubscribe?.();unsubscribe=null;
   if(state.cduSgView){delete state.cduSgView;if(['DEPARTURES','ARRIVALS'].includes(state.page))
    core.choose(state,pages,'DEP_ARR');}
  }
- return Object.freeze({attach,detach,beforeKey,chapter11CatalogView:catalogView});
+ return Object.freeze({attach,detach,beforeKey,afterKey,execLit,routeView,chapter11CatalogView:catalogView});
 });

@@ -222,7 +222,7 @@ function applyCDUScreenTypography(box){
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??chapter11RoutePages?.view(state)??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
@@ -310,7 +310,7 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  box.dataset.sourceVerified=String(output.sourceVerified);
  box.dataset.compositorVersion=output.version;
  box.style.opacity=state.brightness;
- const all=core.lights(state);if(state.stage6AwaitingExec)all.EXEC=true;
+ const all=core.lights(state);if(state.stage6AwaitingExec||window.CDU_SG_API?.execLit?.())all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;
  const review=contract.compile(pages,state.page);
@@ -338,7 +338,7 @@ function send(k){
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
  window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
- window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);update()
+ window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);window.CDU_SG_API?.afterKey?.(k);update()
  }finally{
   if(prior)try{procedureLedger.record(k,prior,procedureLedger.capture(state))}
   catch(err){console.warn('CDU PROCEDURE TRACE ERROR',err);}

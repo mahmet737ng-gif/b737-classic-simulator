@@ -1,4 +1,4 @@
-/* Non-executable CDU/SG reference geometry for the EHSI PLAN screen. */
+/* Non-executable CDU/SG reference geometry for the EHSI MAP and PLAN screens. */
 (function(root,factory){
  const api=factory();
  if(typeof module==='object'&&module.exports)module.exports=api;
@@ -17,44 +17,49 @@
    (x.fixes||[]):[]).filter(x=>x&&Number.isFinite(x.lon)&&Number.isFinite(x.lat)&&
      Math.abs(x.lon)<=180&&Math.abs(x.lat)<=90&&typeof x.ident==='string').slice(0,150);
  }
- function draw(svg,source,mode,range,powered,offset){
+ function draw(svg,source,mode,range,powered,offset,project,anchor){
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
-  if(!powered||mode!=='PLAN'||!Number.isFinite(range)||range<=0||typeof offset!=='function')return 0;
+  if(!powered||!['PLAN','MAP','CTR_MAP'].includes(mode)||!Number.isFinite(range)||range<=0||
+     typeof offset!=='function'||(mode!=='PLAN'&&(!anchor||typeof project!=='function')))return 0;
   const segments=collect(source),fixes=collectFixes(source);
   if(!segments.length&&!fixes.length)return 0;
   const make=(parent,name,attrs)=>{const el=svg.ownerDocument.createElementNS(NS,name);
    for(const [k,v] of Object.entries(attrs||{}))el.setAttribute(k,String(v));
    parent.appendChild(el);return el};
   const group=make(svg,'g',{'data-cdu-sg-reference':'true','pointer-events':'none',
-   'aria-label':'Unverified reference chords, not aircraft LNAV path'});
+   'data-route-state':source.modified?'MOD':'ACT','aria-label':'Reference geometry'});
   const clip='cdu-sg-ref-clip-'+(svg.id||'SG'),def=make(group,'clipPath',{id:clip});
   make(def,'rect',{x:17,y:73,width:478,height:391});
   const lines=make(group,'g',{'clip-path':'url(#'+clip+')'});
   const [firstLon,firstLat]=segments.length?segments[0][0]:[fixes[0].lon,fixes[0].lat];
-  const anchor={lat:firstLat,lon:firstLon},scale=178/range;
+  const ref=Number.isFinite(anchor?.lat)&&Number.isFinite(anchor?.lon)?anchor:{lat:firstLat,lon:firstLon};
+  const scale=178/range, color=source.modified?'#ffffff':'#ff47e1';
+  const xyFor=(lon,lat)=>{
+   const d=offset(ref,{lat,lon});
+   return typeof project==='function'?project(d.x,d.y):[252+d.x*scale,294-d.y*scale];
+  };
   let count=0;
   for(const pair of segments.slice(0,300)){
-   const xy=pair.map(([lon,lat])=>{const d=offset(anchor,{lat,lon});return [252+d.x*scale,294-d.y*scale]});
+   const xy=pair.map(([lon,lat])=>xyFor(lon,lat));
    if(xy.some(pt=>!pt.every(Number.isFinite)))continue;
    make(lines,'path',{d:'M'+xy[0].join(' ')+' L'+xy[1].join(' '),fill:'none',
-    stroke:'#6ce6f2','stroke-width':1.5,'stroke-dasharray':'5 5',
+    stroke:color,'stroke-width':1.5,'stroke-dasharray':'5 5',
     'stroke-opacity':0.8,'data-reference-only':'true'});
    count++;
   }
   let marked=0;
   for(const fix of fixes){
-   const d=offset(anchor,{lat:fix.lat,lon:fix.lon});
-   const x=252+d.x*scale,y=294-d.y*scale;
+   const [x,y]=xyFor(fix.lon,fix.lat);
    if(!Number.isFinite(x)||!Number.isFinite(y)||x<20||x>492||y<76||y>460)continue;
-   make(lines,'circle',{cx:x,cy:y,r:3.2,fill:'#6ce6f2','data-sourced-fix':'true'});
-   const tag=make(lines,'text',{x:x+6,y:y-5,fill:'#7beaf0','font-size':11,
+   make(lines,'circle',{cx:x,cy:y,r:3.2,fill:color,'data-sourced-fix':'true'});
+   const tag=make(lines,'text',{x:x+6,y:y-5,fill:color,'font-size':11,
     'font-family':'monospace','data-source-ident':'true'});
    tag.textContent=fix.ident;marked++;
   }
-  const label=make(group,'text',{x:476,y:99,fill:'#6ce6f2',
+  const label=make(group,'text',{x:476,y:99,fill:color,
    'font-size':13,'text-anchor':'end','data-cdu-sg-status':'REFERENCE_ONLY'});
-  label.textContent='REF ONLY';return count+marked;
+  label.textContent=source.modified?'MOD REF':'ACT REF';return count+marked;
  }
  return Object.freeze({VERSION,collect,collectFixes,draw});
 });
