@@ -2,7 +2,7 @@
 'use strict';
 const GH_ORIGIN='https://mahmet737ng-gif.github.io';
 const PROTOCOL='b737:private-navdata-relay-v1';
-const PATTERN=/^\\/api\\/(?:source\\/status|cdu\\/(?:airport|catalog|procedure)|sg\\/procedure\\.geojson)(?:\\?[^#]*)?$/;
+const PATTERN=/^\/api\/(?:source\/status|cdu\/(?:airport|catalog|procedure)|sg\/procedure\.geojson)(?:\?[^#]*)?$/;
 function allowedPath(p){
  if(typeof p!=='string'||p.length>440||!PATTERN.test(p)||p.includes('..')||/%2f|%5c/i.test(p))return false;
  const u=new URL(p,'https://railway.local');
@@ -17,6 +17,6 @@ function relayHtml(nonce){
   '<style>body{margin:0;min-height:100vh;background:#0c1824;color:#b5e3f7;font:15px/1.6 system-ui,sans-serif;display:grid;place-items:center;padding:24px}main{max-width:420px;padding:25px;border:1px solid #50748a;border-radius:12px}h2{color:#fff;font-size:18px}small{color:#8fb0c4}</style></head><body><main>'+
   '<h2>Secure NAVDATA · Railway</h2><p id="state">Starting protected connection…</p>'+
   '<small>Read-only • OIII / OIMM / OISS • Training reference, not FMC navigation</small>'+
-  '</main><script>'+CLIENT.replace(/<\\/script/gi,'<\\\\/script')+'</script></body></html>';
+  '</main><script>'+CLIENT.replace(/<\/script/gi,'<\\/script')+'</script></body></html>';
 }
 module.exports={GH_ORIGIN,PROTOCOL,allowedPath,relayHtml};
