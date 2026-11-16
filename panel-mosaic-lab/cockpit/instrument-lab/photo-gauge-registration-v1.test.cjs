@@ -15,7 +15,7 @@ const originals=require('../flight-needles-model.js');
 const airspeed=require('../airspeed-pointers-model.js');
 const owner=require('../fo-owner-panel-v1.js');
 test('Every photo gauge canvas uses exact single pivot and uniform source-photo units',()=>{
- assert.equal(Reg.VERSION,'PHOTO-GAUGE-REGISTRATION-0001');
+ assert.equal(Reg.VERSION,'PHOTO-GAUGE-REGISTRATION-0002-NATIVE-BEZEL');
  for(const mode of ['EIS','CONVENTIONAL'])for(const seat of ['captain','firstOfficer'])
   for(const kind of Reg.kinds){
    const entry=Reg.get(mode,seat,kind);
@@ -46,8 +46,10 @@ test('EIS photo instrument centers are the original measured glass-source center
   ['rmi','rmi','firstOfficerInner']]){
   const a=Reg.get('EIS','firstOfficer',kind),b=originals.sources[place];
   const ref=b.gauges[key];
-  assert.deepEqual([a.piece,a.width,a.height,a.x,a.y,a.radius],
-   [b.piece,b.width,b.height,ref.x,ref.y,ref.radius],kind);
+  assert.deepEqual([a.piece,a.width,a.height,a.x,a.y],
+   [b.piece,b.width,b.height,ref.x,ref.y],kind);
+  // Needle tip radius and photographic face/border radius are different.
+  if(kind!=='rmi')assert.equal(a.radius,ref.radius);
  }
  const p=airspeed.firstOfficer,s=Reg.get('EIS','firstOfficer','airspeed');
  assert.deepEqual([s.piece,s.width,s.height,s.x,s.y,s.radius],
@@ -67,21 +69,35 @@ test('F/O Conventional analog gauges are mounted to the real approved owner phot
   assert.deepEqual([x.x,x.y,x.radius],ref);
  }
 });
-test('F/O EIS RMI is clipped at its own right photo edge, never obscuring EHSI',()=>{
- const r=Reg.get('EIS','firstOfficer','rmi');
- const b=Reg.rectangle(r,geometry.rmi);
- assert(b.x+b.width>r.width,'verify old photo overflow reproduced');
- assert(b.clip.right>8&&b.clip.right<13,'only out-of-piece bezel region gets clipped');
- assert.equal(b.clip.left,0);
- const renderedRight=b.x+b.width*(1-b.clip.right/100);
- assert(Math.abs(renderedRight-r.width)<.000001);
- // Airspeed and outboard analog faces stay unaltered unless they cross a source seam.
- for(const kind of ['airspeed','altimeter','ivsi']){
-  const e=Reg.get('EIS','firstOfficer',kind);
-  const v=Reg.rectangle(e,geometry[kind]);
-  assert.equal(v.clip.left+v.clip.right+v.clip.top+v.clip.bottom,0,kind);
+test('Captain photo face width matches original panel bezels and never covers the next gauge',()=>{
+ const gauges={airspeed:[340,790,825],altimeter:[249,590,630],
+  ivsi:[248,600,635],rmi:[223,610,645]};
+ for(const [kind,[radius,min,max]]of Object.entries(gauges)){
+  const entry=Reg.get('EIS','captain',kind),r=Reg.rectangle(entry,geometry[kind]);
+  assert.equal(entry.radius,radius);
+  assert(r.width>=min&&r.width<=max,kind+' full-size photographed face');
+  assert.equal(entry.piece,'captain');
+  assert.equal(Object.values(r.clip).reduce((a,b)=>a+b,0),0);
+ }
+ for(const [one,two]of [['airspeed','rmi'],['altimeter','ivsi']]){
+  const a=Reg.rectangle(Reg.get('EIS','captain',one),geometry[one]);
+  const b=Reg.rectangle(Reg.get('EIS','captain',two),geometry[two]);
+  assert(b.y-a.y-a.height>=6,'Captain faces separated '+one+'/'+two);
  }
 });
+test('FO photo RMI fits original ~281px bezel and cannot overlap ASI',()=>{
+ const asi=Reg.get('EIS','firstOfficer','airspeed');
+ const rmi=Reg.get('EIS','firstOfficer','rmi');
+ const a=Reg.rectangle(asi,geometry.airspeed),b=Reg.rectangle(rmi,geometry.rmi);
+ assert.equal(rmi.radius,100);
+ assert.equal(rmi.piece,asi.piece);
+ assert(b.width>=275&&b.width<=285);
+ assert(b.x+b.width<=rmi.width,'FO RMI inside own photo piece');
+ assert.equal(Object.values(b.clip).reduce((a,b)=>a+b,0),0);
+ assert(b.y-a.y-a.height>=1.5,'No physical ASI/RMI overlap');
+ assert(b.y-a.y-a.height<12,'Small real metal seam retained');
+});
+
 test('Unified cannot leave FO gauges mounted on invisible EIS photo when switching to Conventional',()=>{
  const impl=read('instrument-lab/unified.js');
  const page=read('index.html');
