@@ -5,6 +5,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { Pool } = require('pg');
+const PrivateNavData=require('./navdata-store.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const USER = process.env.LAB_USER || 'Ali.m';
@@ -165,6 +166,7 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
 }
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30000 });
+const navdata=PrivateNavData.create(pool);
 const attemptMap = new Map();
 const assets = Object.freeze({
   '/': ['index.html','text/html; charset=utf-8'],
@@ -300,6 +302,21 @@ async function signIn(req,res) {
     cookie(req,TOKEN_COOKIE,token,60*60*24*7)
   ]});
 }
+async function readPrivateNavData(req){
+ if(!String(req.headers['content-type']||'').startsWith('application/json'))throw Error('JSON_REQUIRED');
+ if(Number(req.headers['content-length']||0)>3_000_000)throw Error('NAVDATA_TOO_LARGE');
+ const chunks=[];let length=0;
+ for await(const chunk of req){length+=chunk.length;if(length>3_000_000)throw Error('NAVDATA_TOO_LARGE');chunks.push(chunk);}
+ return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+}
+function sameOriginRequest(req){
+ try{
+  const origin=req.headers.origin;
+  if(!origin||(req.headers['sec-fetch-site']&&req.headers['sec-fetch-site']!=='same-origin'))return false;
+  const u=new URL(origin);return u.host===req.headers.host&&u.protocol==='https:';
+ }catch{return false;}
+}
+
 async function handle(req,res) {
   commonHeaders(req,res);
   const url=new URL(req.url,'http://localhost');
@@ -338,6 +355,26 @@ async function handle(req,res) {
     const token=cookies(req)[TOKEN_COOKIE];
     if (token) await pool.query('DELETE FROM ata24_devices WHERE session_hash=$1',[hash(token)]);
     redirect(res,'/login',{'Set-Cookie':cookie(req,TOKEN_COOKIE,'',0)});return;
+  }
+  // Source files stay in Railway PostgreSQL and require the established user session.
+  if(req.method==='POST'&&url.pathname==='/api/navdata/import'){
+    if(!sameOriginRequest(req)){
+      res.writeHead(403,{'Content-Type':'application/json'});res.end('{"error":"CROSS_ORIGIN_DENIED"}');return;
+    }
+    try{
+      const input=await readPrivateNavData(req),result=await navdata.importData(input);
+      res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});
+      res.end(JSON.stringify(result));return;
+    }catch(e){
+      res.writeHead(422,{'Content-Type':'application/json','Cache-Control':'no-store'});
+      res.end(JSON.stringify({error:String(e.message||'INVALID_NAVDATA').slice(0,120)}));return;
+    }
+  }
+  if(req.method==='GET'&&navdata.supports(url.pathname)){
+    const {status,body}=await navdata.lookup(url);
+    res.writeHead(status,{'Content-Type':'application/json; charset=utf-8',
+      'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'});
+    res.end(JSON.stringify(body));return;
   }
   if ((req.method==='GET' || req.method==='HEAD') && url.pathname==='/') {
     // Keep the original cockpit's relative location.href resolution unchanged.
@@ -384,6 +421,7 @@ async function handle(req,res) {
 async function start() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required: attach a Postgres service.');
   await pool.query('CREATE TABLE IF NOT EXISTS ata24_devices(device_hash text PRIMARY KEY,session_hash text UNIQUE NOT NULL,last_seen timestamptz NOT NULL DEFAULT now())');
+  await navdata.initialize();
   http.createServer((req,res)=>handle(req,res).catch(e=>{
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
