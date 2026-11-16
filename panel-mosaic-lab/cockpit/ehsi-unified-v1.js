@@ -39,6 +39,21 @@
     headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,verticalFailure:failure.active,mapFailurePending:failure.mapPending,
     brightness:physical.ehsi.brightness,wxBrightness:physical.ehsi.wxBrightness,displayAspect:aspect}};
  }
+ // Selecting an airport/runway in DEP/ARR provides a verified PLAN anchor.
+ // MAP and CTR MAP remain aircraft-centered when a real IRS/FMC position exists.
+ function referenceAnchor(mode,route,aircraftPosition,flightLocation,sg){
+  const working=sg?.modified||sg?.active;
+  const runway=Object.values(working?.geometries||{}).find(g=>
+   g?.kind==='RUNWAY'&&g.fixes?.some(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)));
+  const fix=runway?.fixes?.find(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+  const threshold=fix?{lat:fix.lat,lon:fix.lon,source:'VERIFIED_RUNWAY_THRESHOLD'}:null;
+  const selected=flightLocation&&Number.isFinite(flightLocation.lat)&&Number.isFinite(flightLocation.lon)?
+   flightLocation:null;
+  const live=aircraftPosition&&Number.isFinite(aircraftPosition.lat)&&Number.isFinite(aircraftPosition.lon)?
+   aircraftPosition:null;
+  if(mode==='PLAN')return route?.points?.[route.centerIndex]??threshold??selected??live;
+  return live??selected??threshold;
+ }
  function mount(win){
   const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer,B737UnifiedEfisSources:sources}=win;
   if(!core||!renderer||!sources)return null;
@@ -200,7 +215,8 @@
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
-    const anchor=mode==='PLAN'?route.points?.[route.centerIndex]:src.mapPosition;
+    const anchor=referenceAnchor(mode,route,src.mapPosition,
+     win.B737UnifiedFlightLocationV1?.getLocation?.(),sg);
     const project=mode==='PLAN'||Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
     reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
      src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor);
@@ -278,5 +294,5 @@
       Number(screens[seat].host.dataset.trackMagnetic),
      mcpCourse2Power:screens[seat].host.dataset.mcpCourse2Power==='true'}:null});
  }
- return Object.freeze({VERSION,liveModel,mount});
+ return Object.freeze({VERSION,liveModel,mount,referenceAnchor});
 });
