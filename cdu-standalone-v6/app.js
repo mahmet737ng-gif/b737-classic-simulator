@@ -95,14 +95,40 @@ function lskTextTops(number){
  return {label:percent(labelY),value:percent(valueY)};
 }
 function renderDepArrIndex(box){
- const airport=(name)=>String(core.readValue(state,name,'RTE')||'').toUpperCase();
-
- // L1 / R1: departure and arrival for ORIGIN; R2: DEST arrival only.
- box.appendChild(makeDepArrTriplet(lskTextTops(1).value,'<DEP',airport('ORIGIN'),'ARR>'));
- box.appendChild(makeDepArrTriplet(lskTextTops(2).value,'',airport('DEST'),'ARR>'));
- // L6 / R6: reference-only OTHER airport entry via scratchpad.
- box.appendChild(makeDepArrTriplet(lskTextTops(6).label,'DEP','OTHER','ARR',true));
- box.appendChild(makeDepArrTriplet(lskTextTops(6).value,'<----','','---->'));
+ // Use EXACTLY the same six small-title + six large-value DOM rows as IDENT.
+ // Four custom rows previously caused the 24-column screen fitter to classify
+ // DEP/ARR as a nonstandard overlay and scale its glyphs differently.
+ const airport=name=>String(core.readValue(state,name,'RTE')||'').toUpperCase();
+ for(let row=1;row<=6;row++){
+  const {label,value}=lskTextTops(row);
+  const small=makePairRow(label,row===6?'DEP':'',row===6?'ARR':'',false,true);
+  const large=makePairRow(value,
+   row===1?'<DEP':row===6?'<----':'',
+   row===1||row===2?'ARR>':row===6?'---->':'');
+  function center(target,text){
+   const el=document.createElement('span');el.className='fmc-center';
+   el.textContent=text;
+   Object.assign(el.style,{position:'absolute',left:'32%',width:'36%',
+    top:'0',textAlign:'center',whiteSpace:'pre',overflow:'visible',
+    font:'inherit',lineHeight:'inherit',color:'inherit'});
+   target.appendChild(el);
+  }
+  if(row===1)center(large,airport('ORIGIN'));
+  if(row===2)center(large,airport('DEST'));
+  if(row===6)center(small,'OTHER');
+  box.appendChild(small);box.appendChild(large);
+ }
+}
+function sourceOfflineCatalog(){
+ if(!['DEPARTURES','ARRIVALS'].includes(state.page)||
+    window.CDU_STAGE6_API?.chapter11CatalogView?.())return null;
+ const airport=state.depArrSelection?.airport||'----';
+ const labels=state.page==='DEPARTURES'?'SIDS':'STARS';
+ const rows=Array.from({length:6},()=>({labelL:'',valueL:'',labelR:'',valueR:''}));
+ rows[0]={labelL:labels,valueL:'',labelR:state.page==='ARRIVALS'?'APPROACHES':'RUNWAYS',valueR:''};
+ rows[2]={labelL:'NAV DATA',valueL:'NOT CONNECTED',labelR:'',valueR:''};
+ rows[5]={labelL:'',valueL:'<INDEX',labelR:'',valueR:'RTE>'};
+ return {title:airport+' '+state.page,number:1,count:1,rows};
 }
 function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
 // Force the user-approved green Boeing CDU typography on the LIVE rows.
@@ -196,7 +222,7 @@ function applyCDUScreenTypography(box){
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const chapter11=chapter11RoutePages?.view(state)??window.CDU_STAGE6_API?.chapter11CatalogView?.(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const chapter11=chapter11RoutePages?.view(state)??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
