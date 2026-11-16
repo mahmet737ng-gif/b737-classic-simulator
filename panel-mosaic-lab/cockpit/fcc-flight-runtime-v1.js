@@ -15,14 +15,20 @@
  const isActive=()=>win.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true;
  const mcp=()=>win.B737McpAFDSBridgeV1?.getOutput?.()||null;
  const flight=()=>isActive()?win.B737UnifiedFlightScenarioV1?.getState?.():null;
- function navInput(){
+ function navInput(frame){
   // Not enough evidence that a position/symbol is an active valid FMC leg:
   // do not steer LNAV/VNAV merely because a route was typed into the CDU.
-  return {fmcTrackValid:false,fmcVerticalValid:false,courseTrackValid:false};
+  // MCP HDG SEL, however, has a genuine MAG->TRUE conversion at the current
+  // location via WMM2025; never treat magnetic selector as true heading.
+  const field=win.B737WMM2025V1?.evaluate?.({
+   lat:frame?.lat,lon:frame?.lon,altitudeFt:frame?.altitudeFt});
+  return {fmcTrackValid:false,fmcVerticalValid:false,courseTrackValid:false,
+   magneticVariationDeg:field?.valid===true?field.declinationDeg:null,
+   magneticVariationSource:field?.source??null};
  }
  function guidance(frame,output){
   if(!frame||!output)return null;
-  const res=Guidance.evaluate(fcc,output,frame,navInput());
+  const res=Guidance.evaluate(fcc,output,frame,navInput(frame));
   fcc=res.state;last=res;
   return res;
  }
