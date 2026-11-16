@@ -15,7 +15,9 @@ const frozen=read('panel-mosaic-lab/all-overhead/stage.js');const embedded=read(
 const changes={"img.src=asset.url;":"window.B737ImageLoader.assign(img,asset.url);","img.src=assetById('UPPER').url;":"window.B737ImageLoader.assign(img,assetById('UPPER').url);","photo.src=asset.url;":"window.B737ImageLoader.assign(photo,asset.url);","photo.cloneNode(false)":"window.B737ImageLoader.clone(photo)","'./spec.json?ts='+Date.now()":"'./spec.json?v=UPD-0012'","'../upper-oh/geometry.json?ts='+Date.now()":"'../upper-oh/geometry.json?v=UPD-0012'","'./atlas-layout.json?ts='+Date.now()":"'./atlas-layout.json?v=UPD-0012'","{cache:'no-store'}":"{cache:'default'}"};
 let restored=embedded.slice(embedded.indexOf('\n')+1);for(const [before,after]of Object.entries(changes))restored=restored.split(after).join(before);assert.equal(restored,frozen,'Embedded renderer must retain every frozen geometry/input statement');
 const html=read('panel-mosaic-lab/cockpit/index.html');assert.ok(html.indexOf('performance-loader.js')<html.indexOf('./app.js?'));
-const child=read('panel-mosaic-lab/cockpit/cdu-stage.html');for(const source of ['ehsi/ehsi-engine.js','ehsi/photo-panel.js','nav-map-overlay.js','stage5-map.js'])assert.ok(!child.includes('src="'+source+'"'));
+const child=read('panel-mosaic-lab/cockpit/cdu-stage.html');for(const source of ['ehsi/ehsi-engine.js','ehsi/photo-panel.js','stage5-map.js'])assert.ok(!child.includes('src="'+source+'"'));
+// The embedded CDU uses the nav-map helper to validate routed fixes; EHSI renders in the parent.
+assert.ok(child.includes('src="nav-map-overlay.js"'));
 assert.ok(child.includes('engine/cdu-engine.js'));assert.ok(child.includes('cdu-bridge.js'));assert.ok(!read('panel-mosaic-lab/cockpit/flap-lever-test.js').includes('sourceImage=new Image'));
 // Service-worker contracts: no install download, immutable reuse, fresh mutable text,
 // API isolation and removal of only this route's outdated cache namespace.
