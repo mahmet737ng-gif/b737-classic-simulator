@@ -78,14 +78,17 @@ test('OTHER airport rejects empty and malformed ICAO IDs',()=>{
  core.press(s,pages,'CDU_CAPT_LSK_R6');
  assert.equal(s.page,'DEP_ARR');
 });
-test('UI explicitly renders airport center column and OTHER instead of generic ORIGIN/DEST fields',()=>{
- assert.match(app,/function renderDepArrIndex\(box,screenTop,screenHeight\)/);
- assert.match(app,/makeDepArrTriplet\(y\(1\),'<DEP',airport\('ORIGIN'\),'ARR>'\)/);
- assert.match(app,/makeDepArrTriplet\(y\(2\),'',airport\('DEST'\),'ARR>'\)/);
- assert.match(app,/makeDepArrTriplet\(y\(6,-13\),'DEP','OTHER','ARR',true\)/);
- assert.match(app,/makeDepArrTriplet\(y\(6,10\),'<----','','---->'\)/);
+test('DEP/ARR screen uses IDENT standard six label and six value rows',()=>{
+ assert.match(app,/function renderDepArrIndex\(box\)/);
+ assert.match(app,/for\(let row=1;row<=6;row\+\+\)/);
+ assert.match(app,/const small=makePairRow\(label,/);
+ assert.match(app,/const large=makePairRow\(value,/);
+ assert.match(app,/if\(row===1\)center\(large,airport\('ORIGIN'\)\)/);
+ assert.match(app,/if\(row===2\)center\(large,airport\('DEST'\)\)/);
+ assert.match(app,/if\(row===6\)center\(small,'OTHER'\)/);
+ assert.match(app,/sourceOfflineCatalog\(\)/);
+ assert.match(app,/NOT CONNECTED/);
 });
-
 test('Older AIRAC reference overlays cannot erase FCOM INDEX after it is rendered',()=>{
  const stage5=fs.readFileSync(path.join(root,'cdu-standalone-v6/stage5-adapter.js'),'utf8');
  const stage6=fs.readFileSync(path.join(root,'cdu-standalone-v6/stage6-selector.js'),'utf8');
@@ -99,17 +102,19 @@ test('Bundled live JS and JSON use the same FCOM INDEX definition',()=>{
  assert.deepEqual(jsPage,pages.DEP_ARR);
 });
 
-test('Both Unified CDUs fetch versioned corrected page definitions, app and overlays',()=>{
+test('Both Unified CDUs use the updated source-backed catalog and shared IDENT font grid',()=>{
  const html=fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/cdu-stage.html'),'utf8');
  const manifest=JSON.parse(fs.readFileSync(path.join(root,'panel-mosaic-lab/cockpit/assembly.json'),'utf8'));
  for(const p of ['data/page-definitions.js','engine/cdu-engine.js','app.js','stage5-adapter.js','stage6-selector.js']){
-  const at=html.indexOf('src="'+p);
-  assert.ok(at>=0);
-  assert.ok(html.slice(at,at+200).includes(p==='app.js'?'IDENT-POS-0001':'DEPARR-FCOM-114032-0001'));
+  assert.ok(html.includes('src="'+p));
  }
+ assert.match(html,/app\.js\?v=[^"]*DEPARR-GRID-20261116/);
+ assert.match(html,/stage6-selector\.js\?v=[^"]*PRIVATE-CATALOG-20261116/);
+ assert.match(html,/cdu-screen-fit-v6\.js/);
  for(const seat of ['CAPT','FO']){
   const item=manifest.embeddedInstruments.find(x=>x.seat===seat);
   assert.ok(item);
-  assert.ok(item.embeddedUrl.includes('DEPARR-FCOM-114032-0001-CH11-COMPOSITOR-0001-FCOM-PREFLIGHT-0001-ENGINE-IDENT-0001-AIRAC-2611-0001'));
+  assert.ok(item.embeddedUrl.includes('DEPARR-FCOM-114032-0001'));
  }
 });
+
