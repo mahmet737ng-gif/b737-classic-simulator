@@ -5,106 +5,103 @@ const root=path.resolve(__dirname,'../../..'),read=p=>fs.readFileSync(path.join(
 const Profile=require('../aircraft-profile-v1.js');
 const Install=require('../cdu-ident-installation-v1.js');
 const Preflight=require('../../ch11/cdu-preflight-evidence-v1.js');
-const profileDefaults=Profile.DEFAULTS;
-test('CFM56-3 B1/B3/C1 map to 18.5K/20K/23.5K exactly',()=>{
- assert.equal(Install.select(Profile.DEFAULTS).engineRating,'20K');
- assert.equal(Profile.DEFAULTS.aircraftModel,'737-300');
- for(const [engine,rating,lbf] of [
-  ['CFM56-3B1','18.5K',18500],['CFM56-3B3','20K',20000],['CFM56-3C1','23.5K',23500]
+test('737-300/500 family automatically selects 737-300 / 20K and 737-400 selects 737-400 / 22K',()=>{
+ for(const [family,model,engine,rating,thrust] of [
+  ['B737-300-500','737-300','CFM56-3B3','20K',20000],
+  ['B737-400','737-400','CFM56-3B2','22K',22000]
  ]){
-  const p=Profile.resolve({...profileDefaults,engineVariant:engine});
-  const s=Install.select(p.profile);
-  assert.equal(s.engineRating,rating);assert.equal(s.ratingLbf,lbf);
-  assert.equal(Preflight.identValue('ENG_RATING',{ENG_RATING:s.ENG_RATING}),rating);
-  assert.equal(Install.verify(s),true);
-  assert.equal(s.provenance,'USER_SELECTED_TRAINER_CONFIGURATION');
+  const profile=Profile.resolve({...Profile.DEFAULTS,aircraftFamily:family,aircraftModel:'737-500',engineVariant:'CFM56-3C1'});
+  const selected=Install.select(profile.profile);
+  assert.equal(selected.aircraftModel,model);
+  assert.equal(selected.engineVariant,engine);
+  assert.equal(selected.engineRating,rating);
+  assert.equal(selected.ratingLbf,thrust);
+  assert.equal(selected.provenance,'FAMILY_DERIVED_TRAINER_CONFIGURATION');
+  assert.equal(Preflight.identValue('ENG_RATING',{ENG_RATING:selected.ENG_RATING}),rating);
+  assert.equal(Preflight.identValue('MODEL',{MODEL:selected.MODEL}),model);
+  assert.equal(Install.verify(selected),true);
  }
 });
-test('IDENT MODEL shows exact 737-300/400/500 variant instead of ambiguous 300/500 family',()=>{
- for(const m of Install.MODELS){
-  const family=m==='737-400'?'B737-400':'B737-300-500';
-  const selected=Install.select({...profileDefaults,aircraftModel:m,aircraftFamily:family});
-  assert.equal(Preflight.identValue('MODEL',{MODEL:selected.MODEL}),m);
-  assert.equal(selected.aircraftFamily,family);
- }
-});
-test('Bad rating or forged model from an iframe is rejected',()=>{
- const original=Install.select(profileDefaults);
+test('Reject forged or manually selected engine ratings and 737-500 IDENT variant',()=>{
+ const original=Install.select(Profile.DEFAULTS);
  assert.equal(Install.verify({...original,engineRating:'23.5K'}),false);
  assert.equal(Install.verify({...original,MODEL:{...original.MODEL,value:'737-400'}}),false);
- assert.equal(Install.verify({...original,provenance:'VERIFIED_AIRCRAFT_INSTALLATION'}),false);
- assert.throws(()=>Install.select({...profileDefaults,aircraftModel:'737-400'}),/INCONSISTENT/);
+ assert.equal(Install.verify({...original,provenance:'USER_SELECTED_TRAINER_CONFIGURATION'}),false);
+ assert.throws(()=>Install.select({...Profile.DEFAULTS,aircraftModel:'737-400'}),/INCONSISTENT/);
+ assert.throws(()=>Install.select({...Profile.DEFAULTS,engineVariant:'CFM56-3C1'}),/ENGINE_RATING/);
+ assert.throws(()=>Install.select({...Profile.DEFAULTS,aircraftModel:'737-500'}),/737-300/);
 });
-test('Existing saved family 400 migrates correctly and new engine choice persists',()=>{
+test('Legacy persisted exact model and thrust are migrated to automatic family mapping',()=>{
  const storage=new Map([['b737classic.aircraft-profile.v1',JSON.stringify({
-  schema:Profile.SCHEMA,aircraftFamily:'B737-400',pressurization:'CPCS',engineInstruments:'CONVENTIONAL'
+  schema:Profile.SCHEMA,aircraftFamily:'B737-400',aircraftModel:'737-500',
+  engineVariant:'CFM56-3C1',pressurization:'CPCS',engineInstruments:'CONVENTIONAL'
  })]]);
  const io={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)};
  const store=Profile.createStore({storage:io});
  assert.equal(store.get().aircraftModel,'737-400');
- store.set({engineVariant:'CFM56-3C1'});
- const restored=Profile.createStore({storage:io});
- assert.equal(restored.resolve().engineVariant.rating,'23.5K');
- assert.equal(restored.get().aircraftModel,'737-400');
+ assert.equal(store.resolve().engineVariant.rating,'22K');
+ store.set({engineVariant:'CFM56-3C1'}); // programmatic attempts cannot override family.
+ assert.equal(store.resolve().engineVariant.rating,'22K');
  store.set({aircraftFamily:'B737-300-500'});
  assert.equal(store.get().aircraftModel,'737-300');
+ assert.equal(store.resolve().engineVariant.rating,'20K');
  store.set({aircraftModel:'737-500'});
  assert.equal(store.get().aircraftFamily,'B737-300-500');
+ assert.equal(store.get().aircraftModel,'737-300');
 });
-test('Both CDU seats accept a live parent-profile message and retain it after reset',()=>{
+test('Both CDU seats accept parent-profile installation and retain it after reset',()=>{
  const js=read('panel-mosaic-lab/cockpit/cdu-ident-profile-receiver-v1.js');
  for(const seat of ['CAPT','FO']){
   let updates=0;
-  const listeners=new Map(),messages=[],parent={postMessage:(msg)=>messages.push(msg)};
+  const listeners=new Map(),messages=[],parent={postMessage:msg=>messages.push(msg)};
   const ctx={parent,location:{search:'?seat='+seat,origin:'https://example.test'},
    B737CDUIdentInstallationV1:Install,state:{preflightEvidence:{}},
-   update(){updates++;},
-   addEventListener:(name,fn)=>listeners.set(name,fn)};
+   update(){updates++;},addEventListener:(name,fn)=>listeners.set(name,fn)};
   ctx.window=ctx;ctx.URLSearchParams=URLSearchParams;
   vm.runInNewContext(js,ctx,{timeout:1000});
   assert.equal(messages[0].seat,seat);
-  const installed=Install.select({...profileDefaults,engineVariant:'CFM56-3C1',aircraftModel:'737-500'});
+  const installed=Install.select(Profile.resolve({...Profile.DEFAULTS,aircraftFamily:'B737-400'}).profile);
   listeners.get('message')({origin:ctx.location.origin,source:parent,
    data:{type:'b737:cdu-installation-v1',seat,installation:installed}});
-  assert.equal(ctx.state.preflightEvidence.ENG_RATING.value,'23.5K');
-  assert.equal(ctx.state.preflightEvidence.MODEL.value,'737-500');
-  ctx.state={preflightEvidence:{}};
-  ctx.update();assert.equal(ctx.state.preflightEvidence.ENG_RATING.value,'23.5K');
+  assert.equal(ctx.state.preflightEvidence.ENG_RATING.value,'22K');
+  assert.equal(ctx.state.preflightEvidence.MODEL.value,'737-400');
+  ctx.state={preflightEvidence:{}};ctx.update();
+  assert.equal(ctx.state.preflightEvidence.ENG_RATING.value,'22K');
   const before=updates;
   listeners.get('message')({origin:'https://untrusted.test',source:parent,
-   data:{type:'b737:cdu-installation-v1',seat,installation:Install.select(profileDefaults)}});
+   data:{type:'b737:cdu-installation-v1',seat,installation:Install.select(Profile.DEFAULTS)}});
   assert.equal(updates,before);
  }
 });
-test('Parent broadcasts selected engine to both mounted CDUs on change and request',()=>{
+test('Parent broadcasts family-derived IDENT installation to both mounted CDUs',()=>{
  const js=read('panel-mosaic-lab/cockpit/cdu-ident-profile-bridge-v1.js');
- const profiles=[{...profileDefaults}],events=new Map(),sent=[],subscribers=[];
+ const profiles=[{...Profile.DEFAULTS}],events=new Map(),sent=[],subscribers=[];
  const frames=Object.fromEntries(['CAPT','FO'].map(seat=>['cduFrame'+seat,{contentWindow:{
-  postMessage:(msg,origin)=>sent.push({seat,msg,origin})
- }}]));
+  postMessage:(msg,origin)=>sent.push({seat,msg,origin})}}]));
  const ctx={B737CDUIdentInstallationV1:Install,
   B737AircraftProfileStore:{get:()=>profiles[0],subscribe:cb=>subscribers.push(cb)},
   document:{getElementById:id=>frames[id]||null,addEventListener:(k,cb)=>events.set('document-'+k,cb)},
-  location:{origin:'https://example.test'},addEventListener:(k,cb)=>events.set(k,cb),
-  console:{error:()=>{}}};ctx.window=ctx;
+  location:{origin:'https://example.test'},addEventListener:(k,cb)=>events.set(k,cb),console:{error:()=>{}}};
+ ctx.window=ctx;
  vm.runInNewContext(js,ctx,{timeout:1000});
  assert.equal(sent.length,2);
- profiles[0]={...profileDefaults,engineVariant:'CFM56-3B3'};
+ profiles[0]=Profile.resolve({...Profile.DEFAULTS,aircraftFamily:'B737-400'}).profile;
  subscribers[0]();
  assert.equal(sent.length,4);
- assert.equal(sent[2].msg.installation.engineRating,'20K');
+ assert.equal(sent[2].msg.installation.engineRating,'22K');
+ assert.equal(sent[3].msg.installation.MODEL.value,'737-400');
  const fromFO=frames.cduFrameFO.contentWindow;
  events.get('message')({origin:ctx.location.origin,source:fromFO,
   data:{type:'b737:cdu-installation-request-v1',seat:'FO'}});
  assert.equal(sent.at(-1).seat,'FO');
- assert.equal(sent.at(-1).msg.installation.MODEL.value,'737-300');
 });
-test('Settings form and both iframe scripts are actually wired',()=>{
+test('Settings exposes only family selection; CDU script order remains valid',()=>{
  const settings=read('panel-mosaic-lab/cockpit/index.html');
  const stage=read('panel-mosaic-lab/cockpit/cdu-stage.html');
  const manifest=JSON.parse(read('panel-mosaic-lab/cockpit/assembly.json'));
- for(const value of ['CFM56-3B1','CFM56-3B3','CFM56-3C1','737-300','737-400','737-500'])
-  assert.match(settings,new RegExp('value="'+value+'"'));
+ for(const family of ['B737-300-500','B737-400'])
+  assert.match(settings,new RegExp('value="'+family+'"'));
+ for(const field of ['engineVariant','aircraftModel'])assert.doesNotMatch(settings,new RegExp('name="'+field+'"'));
  assert.ok(settings.indexOf('cdu-ident-installation-v1.js')<settings.indexOf('cdu-ident-profile-bridge-v1.js'));
  assert.ok(stage.indexOf('cdu-ident-installation-v1.js')<stage.indexOf('cdu-ident-profile-receiver-v1.js'));
  for(const seat of ['CAPT','FO']){
