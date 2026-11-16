@@ -8,11 +8,15 @@
  const observerOnly=root.B737ASPOnlyObserver===true,seats=observerOnly?['OBS']:['CAPT','FO'];
  const state=model.create(),mounted=new Map();
  const source=new URL('./assets/asp-vbr-v1/vbr-selector-owner.png',document.currentScript.src).href;
+ const LEGEND=Object.freeze({V:[647,679],B:[702,658],R:[756,679]});
+ const legendButtons=new Map();
  function show(button){const s=state.read(button.dataset.seat);button.dataset.position=s.position;button.dataset.angle=String(s.angle);
   button.setAttribute('aria-valuenow',String(s.index));button.setAttribute('aria-valuetext',s.position);
   button.setAttribute('aria-label','ASP '+s.seat+' V/B/R selector');
   button.title='V/B/R: '+s.position+' · click / drag / wheel / arrow keys';
   button.querySelector('.asp-vbr-rotor').style.transform='rotate('+s.angle+'deg)';
+  for(const [position,b]of legendButtons.get(s.seat)||[])
+   b.setAttribute('aria-pressed',String(position===s.position));
  }
  function choose(button,index){state.select(button.dataset.seat,index);show(button);
   root.dispatchEvent(new CustomEvent('b737:asp-vbr-select',{detail:state.read(button.dataset.seat)}));
@@ -25,6 +29,35 @@
   Object.assign(button.style,{left:p.x+'px',top:p.y+'px',width:size+'px',height:size+'px'});
   Object.assign(button.querySelector('img').style,{width:model.image.width*scale+'px',height:model.image.height*scale+'px',
    left:size/2-model.image.pivotX*scale+'px',top:size/2-model.image.pivotY*scale+'px'});
+ }
+ function mountLabels(host,rotor,seat){
+  const face=host.querySelector(':scope > img');
+  const w=face?.offsetWidth||host.clientWidth,h=face?.offsetHeight||host.clientHeight;
+  if(!(w>0&&h>0))return;
+  const frame=registrar.viewport(w,h,face?.offsetLeft||0,face?.offsetTop||0);
+  const nodes=legendButtons.get(seat)||new Map();
+  for(const [position,coords]of Object.entries(LEGEND)){
+   let label=nodes.get(position);
+   if(!label||!label.isConnected){
+    label=document.createElement('button');label.type='button';
+    label.className='asp-vbr-detent-label';label.dataset.aspVbrDetent=position;
+    label.dataset.seat=seat;
+    label.setAttribute('aria-label','ASP '+seat+' V/B/R detent '+position);
+    label.title='V/B/R · '+position+' · tap printed marking';
+    Object.assign(label.style,{position:'absolute',zIndex:'13',padding:'0',
+     margin:'0',border:'0',background:'transparent',boxShadow:'none',
+     touchAction:'manipulation',cursor:'pointer',transform:'translate(-50%,-50%)'});
+    label.addEventListener('pointerdown',e=>e.stopPropagation());
+    label.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();
+      choose(rotor,model.positions.indexOf(position));});
+    host.append(label);nodes.set(position,label);
+   }
+   const p=frame.point(coords[0],coords[1]);
+   Object.assign(label.style,{left:p.x+'px',top:p.y+'px',
+    width:(48*frame.scale)+'px',height:(49*frame.scale)+'px'});
+   label.setAttribute('aria-pressed',String(state.read(seat).position===position));
+  }
+  legendButtons.set(seat,nodes);
  }
  function wire(button){
   let drag=null,ignoreClick=0;
@@ -65,8 +98,9 @@
    const rotor=document.createElement('span');rotor.className='asp-vbr-rotor';
    const image=document.createElement('img');image.className='asp-vbr-photo';image.src=source;image.alt='';image.draggable=false;
    rotor.append(image);button.append(rotor);host.append(button);wire(button);place(host,button);show(button);
+   mountLabels(host,button,seat);
    mounted.set(seat,host);host.dataset.aspVbrVersion=model.version;
-   new ResizeObserver(()=>place(host,button)).observe(host);
+   new ResizeObserver(()=>{place(host,button);mountLabels(host,button,seat);}).observe(host);
   }
  }
  root.B737ASPVBR=Object.freeze({version:model.version,inspect:()=>seats.map(seat=>state.read(seat))});
