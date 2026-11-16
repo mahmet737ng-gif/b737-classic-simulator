@@ -65,12 +65,24 @@
    const rollDeg=att?number(sample?.rollDeg??(bench?0:null),-180,180):null;
    const heading=nav?number(sample?.trueHeadingDeg??((frame||bench)?u.trueHeadingDeg:null),0,360):
     att&&sample?.attHeadingValid===true?number(sample.trueHeadingDeg,0,360):null;
+   const suppliedVariation=att?number(sample?.magneticVariationDeg,-180,180):null;
+   const lat=nav?number(sample?.lat??position?.lat,-90,90):null;
+   const lon=nav?number(sample?.lon??position?.lon,-180,180):null;
+   const altitudeFt=number(sample?.altitudeFt,-1000,65000)??0;
+   const model=att&&lat!==null&&lon!==null&&suppliedVariation===null?
+    root.B737WMM2025V1?.evaluate?.({lat,lon,altitudeFt}):null;
+   const variation=suppliedVariation??(model?.valid===true?model.declinationDeg:null);
+   const variationSource=suppliedVariation!==null?'EXTERNAL_IRS_TELEMETRY':
+    model?.valid===true?'NOAA_NCEI_BGS_WMM2025':
+    'NO_VALID_MAGNETIC_VARIATION';
    send('IRS',topic,{mode:u.mode,phase:u.phase,powered:u.powered===true,
-    positionValid:nav,lat:position?.lat??null,lon:position?.lon??null,
+    positionValid:nav,lat:lat??null,lon:lon??null,
     gsKt:nav&&!!(frame||bench)?number(sample?.gsKt??u.gsKt,0,750):null,
     trackDeg:nav&&!!(frame||bench)?number(sample?.trueTrackDeg??u.trueTrackDeg,0,360):null,
     headingDeg:heading,pitchDeg,rollDeg,attitudeValid:pitchDeg!==null&&rollDeg!==null,
-    magneticVariationDeg:att?number(sample?.magneticVariationDeg,-180,180):null,
+    magneticVariationDeg:att?variation:null,
+    magneticVariationSource:variationSource,
+    magneticVariationMode:'MAGNETIC_REFERENCE_ALWAYS',
     windFromDeg:nav?number(sample?.windFromDeg,0,360):null,windKt:nav?number(sample?.windKt,0,250):null,
     source:state.motionSource,trainerOnly:state.trainerOnly===true},
     state.motionSource==='EXTERNAL_TELEMETRY'?'SIMULATOR_TELEMETRY':'TRAINING_SCENARIO');
