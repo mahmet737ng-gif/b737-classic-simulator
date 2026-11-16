@@ -104,10 +104,13 @@ test('No invented magenta heading vector when MCP heading missing or PLAN select
   assert.equal(d.named('heading-bug').length,0);
   assert.equal(d.named('heading-bug-vector').length,0);
  }
- const plan=draw('PLAN',166,260);
- assert.equal(plan.named('heading-bug').length,0);
- assert.equal(plan.named('heading-bug-vector').length,0);
- assert.equal(V.selectedHeadingPresentation(V.model(fixture('PLAN',166,260)),V.LAYOUT.PLAN).vectorVisible,false);
+ for(const selection of [260,2,0,15,359]){
+  const plan=draw('PLAN',166,selection);
+  assert.equal(plan.named('heading-bug').length,0,
+   'PLAN has no MCP heading bug even if selected value is inside its north-up compass');
+  assert.equal(plan.named('heading-bug-vector').length,0);
+  assert.equal(V.selectedHeadingPresentation(V.model(fixture('PLAN',166,selection)),V.LAYOUT.PLAN).vectorVisible,false);
+ }
 });
 test('360 FULL NAV remains distinct from 70 expanded, no fabricated offscale indicator',()=>{
  const full=draw('FULL_NAV',166,260);
