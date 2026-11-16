@@ -145,6 +145,62 @@ test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
   x=>[250+1000*x,250],anchor),1);
  assert.equal(status(),'ACT REF');
 });
+test('EHSI runway selection marks the verified threshold before SID selection',()=>{
+ const renderer=require('../cdu-sg-ehsi-preview-v1.js'),route=routeAPI.create();
+ route.setConnected(true);route.setContext({origin:'OIII'});
+ route.chooseRunway({airport:'OIII',runway:'29L',
+  airportRecord:{icao:'OIII',runways:[
+   {runway:'29L',threshold_lat:35.68,threshold_lon:51.31},
+   {runway:'11R',threshold_lat:35.69,threshold_lon:51.30}]}});
+ const nodes=[],make=(tag)=>({tag,attrs:{},appendChild(){},remove(){nodes.splice(0);},
+  setAttribute(k,v){this.attrs[k]=v;}});
+ const svg={id:'EH1',ownerDocument:{createElementNS(_ns,tag){const o=make(tag);nodes.push(o);return o;}},
+  appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference']);}};
+ const offset=(a,b)=>({x:(b.lon-a.lon)*50,y:(b.lat-a.lat)*50});
+ const project=(x,y)=>[250+x,290-y],anchorPoint={lat:35.68,lon:51.31};
+ assert.equal(route.snapshot().modified.runways['DEP@OIII'],'29L');
+ assert.ok(renderer.draw(svg,route.snapshot(),'CTR_MAP',40,true,offset,project,anchorPoint)>0);
+ assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-runway']==='29L'));
+ assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-geometry']==='RUNWAY'&&
+  n.attrs['stroke']==='#00c8f2'&&n.attrs['stroke-dasharray']==='7 5'));
+ assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'MOD');
+ assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-status']).textContent,'MOD REF');
+ route.execute();
+ renderer.draw(svg,route.snapshot(),'CTR_MAP',40,true,offset,project,anchorPoint);
+ assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-geometry']==='RUNWAY'&&
+  n.attrs['stroke']==='#ff47e1'&&n.attrs['stroke-dasharray']===undefined));
+ assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'ACT');
+ assert.equal(route.snapshot().fmcExecutable,false);
+});
+test('EHSI procedure remains cyan dashed until EXEC then solid magenta; ERASE restores ACT',()=>{
+ const renderer=require('../cdu-sg-ehsi-preview-v1.js'),route=routeAPI.create();
+ route.setConnected(true);route.setContext({origin:'OIII'});
+ const nodes=[],make=tag=>({tag,attrs:{},appendChild(){},remove(){nodes.splice(0);},
+  setAttribute(k,v){this.attrs[k]=v;}});
+ const svg={id:'EH2',ownerDocument:{createElementNS(_ns,tag){const o=make(tag);nodes.push(o);return o;}},
+  appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference']);}};
+ const offset=(a,b)=>({x:(b.lon-a.lon)*50,y:(b.lat-a.lat)*50});
+ const project=(x,y)=>[250+x,290-y],anchor={lat:35.445,lon:50.905};
+ route.select({airport:'OIII',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo});
+ renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project,anchor);
+ const pendingPaths=nodes.filter(n=>n.tag==='path'&&n.attrs['data-cdu-sg-geometry']==='PROCEDURE');
+ assert.equal(pendingPaths.length,1);
+ assert.equal(pendingPaths[0].attrs.stroke,'#00c8f2');
+ assert.equal(pendingPaths[0].attrs['stroke-dasharray'],'7 5');
+ assert.equal(route.snapshot().modified.selections['SID@OIII'].ident,'DAXI1A');
+ route.erase();
+ assert.equal(route.snapshot().modified,null);
+ assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project,anchor),0);
+ route.select({airport:'OIII',kind:'SID',ident:'DAXI1A',runway:'29L',procedure,geometry:geo});
+ route.execute();
+ renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project,anchor);
+ const activePaths=nodes.filter(n=>n.tag==='path'&&n.attrs['data-cdu-sg-geometry']==='PROCEDURE');
+ assert.equal(activePaths.length,1);
+ assert.equal(activePaths[0].attrs.stroke,'#ff47e1');
+ assert.equal(activePaths[0].attrs['stroke-dasharray'],undefined);
+ assert.equal(route.snapshot().modified,null);
+});
+
 test('authenticated installation connects both CDUs and the next launch uses only the saved bank',async()=>{
  const loader=require('../cdu-sg-public-connect-v1.js');
  const connected=[];
