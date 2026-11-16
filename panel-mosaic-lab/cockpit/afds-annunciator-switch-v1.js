@@ -7,7 +7,7 @@
 "use strict";
 const Core=root.B737AFDSAnnunciatorCoreV1;
 if(!Core)return;
-const VERSION="AFDS-ANN-UNIFIED-0002";
+const VERSION="AFDS-ANN-UNIFIED-0004-NONEIS-FO-REGISTRATION";
 const SPRITE="../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp";
 // Sprite cells LEFT, CENTER, RIGHT, UP, DOWN (1024 square each).
 const POSE=Object.freeze({TEST_1:"75% 0%",NEUTRAL:"25% 0%",TEST_2:"100% 0%"});
@@ -33,8 +33,22 @@ const INSTALL=Object.freeze({
     toggle:{cx:1532.4,cy:226.5,cell:44,hit:20.8}
   })
 });
-const states={CAPT:Core.initial(),FO:Core.initial()};
-const visual=new Map(),lamps={CAPT:new Map(),FO:new Map()};
+// Non-EIS uses the independent FO owner panorama, not the EIS FO-inner photo.
+ // Screenshot-registered displacement, measured in native MAIN 2100x920 units;
+ // CAPT and EIS FO baseline coordinates MUST remain unchanged.
+ const FO_NON_EIS_SHIFT=Object.freeze({x:22.0,y:-8.8,
+   reference:"owner screenshot 2026-11-16 1920x1080, AFDS lens and TEST fitting",
+   status:"SCREENSHOT_REGISTERED_BROWSER_PIXEL_QA_PENDING"});
+ function layoutFor(mode){
+  if(mode!=="CONVENTIONAL")return INSTALL.FO;
+  const dx=FO_NON_EIS_SHIFT.x,dy=FO_NON_EIS_SHIFT.y,base=INSTALL.FO;
+  return {source:"FO Non-EIS owner panorama, screenshot-calibrated",
+   sourcePiece:"fo-owner",
+   lamps:base.lamps.map(l=>({...l,x:l.x+dx,y:l.y+dy})),
+   toggle:{...base.toggle,cx:base.toggle.cx+dx,cy:base.toggle.cy+dy}};
+ }
+ const states={CAPT:Core.initial(),FO:Core.initial()};
+const visual=new Map(),toggleHits=new Map(),lamps={CAPT:new Map(),FO:new Map()};
 const held={CAPT:null,FO:null};
 let mountRoot=null;
 function nameFor(id){return id==="AP"?"A/P":id==="AT"?"A/T":"FMC";}
@@ -128,7 +142,7 @@ function createToggle(doc,seat,def){
  });
  btn.addEventListener("blur",()=>release(seat));
  btn.addEventListener("click",e=>e.preventDefault());
- visual.set(seat,art);
+ visual.set(seat,art);toggleHits.set(seat,btn);
  return [art,btn];
 }
 function createLamp(doc,seat,rect){
@@ -147,12 +161,34 @@ function createLamp(doc,seat,rect){
  btn.addEventListener("click",()=>acknowledge(rect.id));
  lamps[seat].set(rect.id,btn);return btn;
 }
+function reflowFo(){
+ const mode=root.document.documentElement.dataset.engineIndication==="CONVENTIONAL"?"CONVENTIONAL":"EIS";
+ const def=layoutFor(mode);
+ for(const l of def.lamps){
+  const button=lamps.FO.get(l.id);
+  if(!button)continue;
+  Object.assign(button.style,{left:l.x+"px",top:l.y+"px",width:l.w+"px",height:l.h+"px"});
+ }
+ const art=visual.get("FO"),hit=toggleHits.get("FO");
+ if(art){
+  Object.assign(art.style,{left:(def.toggle.cx-def.toggle.cell/2)+"px",
+   top:(def.toggle.cy-def.toggle.cell/2)+"px",
+   width:def.toggle.cell+"px",height:def.toggle.cell+"px"});
+ }
+ if(hit){
+  Object.assign(hit.style,{left:(def.toggle.cx-def.toggle.hit/2)+"px",
+   top:(def.toggle.cy-def.toggle.hit/2)+"px",
+   width:def.toggle.hit+"px",height:def.toggle.hit+"px"});
+ }
+ if(art)art.dataset.afdsFoGeometry=mode==="CONVENTIONAL"?"NON_EIS_FO_OWNER":"EIS_FO_APPROVED";
+ return def;
+}
 function mount(){
  const native=root.document.querySelector("#region-main .region-native");
  if(!native)return false;
  if(mountRoot===native&&visual.get("FO")?.isConnected&&visual.get("CAPT")?.isConnected)return true;
  if(mountRoot!==native){
-  mountRoot=native;visual.clear();lamps.CAPT.clear();lamps.FO.clear();
+  mountRoot=native;visual.clear();toggleHits.clear();lamps.CAPT.clear();lamps.FO.clear();
  }
  // Avoid duplicate controls on reentry; preserve previous test state.
  for(const seat of Object.keys(INSTALL)){
@@ -162,6 +198,7 @@ function mount(){
   for(const node of createToggle(root.document,seat,INSTALL[seat]))native.append(node);
   paint(seat);
  }
+ reflowFo();
  return true;
 }
 function start(){
@@ -174,7 +211,7 @@ function start(){
  observer.observe(stage,{subtree:true,childList:true});
 }
 root.B737AFDSAnnunciatorUnifiedV1=Object.freeze({
- VERSION,SPRITE,POSE,INSTALL,
+ VERSION,SPRITE,POSE,INSTALL,FO_NON_EIS_SHIFT,layoutFor,reflowFo,
  state:seat=>Core.status(states[seat||"FO"]),
  getState:seat=>Core.status(states[seat||"FO"]),
  press:(detent,seat="FO")=>select(seat,detent),
@@ -185,7 +222,10 @@ root.addEventListener("blur",releaseAll);
 root.document.addEventListener("visibilitychange",()=>{if(root.document.hidden)releaseAll();});
 root.addEventListener("pagehide",releaseAll);
 root.addEventListener("b737:cockpit-mounted",mount);
-root.addEventListener("b737:engine-indication-view",mount);
+root.addEventListener("b737:engine-indication-view",()=>{
+ mount();
+ reflowFo();
+});
 if(root.document.readyState==="loading")root.document.addEventListener("DOMContentLoaded",start,{once:true});
 else start();
 })(window);
