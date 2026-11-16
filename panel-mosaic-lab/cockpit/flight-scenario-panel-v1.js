@@ -6,6 +6,7 @@
  const doc=win.document,by=id=>doc.getElementById(id);
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0;
  let producers={},producerErrors={},timer=null,mcpFollow=false;
+ let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
@@ -148,7 +149,10 @@
   by('flightPause').textContent=pause?'RESUME':'PAUSE';
  }
  function stop(){
+  try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
+  catch(error){console.warn('ISN flight context restore',error);}
   active=false;pause=false;state=null;lastTick=0;
+  lastPropulsionAt=0;lastPropulsion=null;lastEngineContextAt=0;
   win.B737IRSTrainerUnified?.stopMotion?.();
   for(const owner of Object.keys(producers)){
    for(const topic of producers[owner].topics)
@@ -214,14 +218,36 @@
     state=Core.command(state,{type:'ALTITUDE',value:o.values.altitude});
   }catch(_){}
  }
+ function propulsionObservation(now){
+  if(now-lastPropulsionAt<180)return lastPropulsion;
+  lastPropulsionAt=now;
+  const owner=win.B737ISNCockpitV1,chain=owner?.getStartState?.();
+  if(!chain?.phase){lastPropulsion=null;return null;}
+  const ecu=owner.getECUState?.();
+  const engines=[1,2].map(n=>{
+   const id='engine'+n;
+   return {running:chain.phase[id]==='RUNNING',
+    n1Percent:ecu?.engines?.[id]?.n1Percent??null};
+  });
+  lastPropulsion=engines.every(e=>Number.isFinite(e.n1Percent))?
+   {valid:true,engines}:null;
+  return lastPropulsion;
+ }
  function tick(){
   const now=performance.now();
   if(active&&state){
    const dt=lastTick?Math.min(.3,Math.max(0,(now-lastTick)/1000)):0;
    lastTick=now;
    if(!pause){
+    if(now-lastEngineContextAt>=900){
+     lastEngineContextAt=now;
+     try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({
+      active:true,onGround:!state.airborne,iasKt:state.iasKt,
+      altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'});}
+     catch(error){console.warn('ISN scenario flight context',error);}
+    }
     followMcp();
-    if(dt>0)state=Core.step(state,dt);
+    if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
    }
    if(now-lastPublish>=250){publish();lastPublish=now;}
    if(now-lastUI>=400){updateUI();lastUI=now;}
