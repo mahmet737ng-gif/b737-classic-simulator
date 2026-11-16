@@ -151,6 +151,20 @@
     }
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
+    // Shared flight-position reference is an instructor chart anchor,
+    // not automatically a valid aligned IRS NAV solution.
+    const location=win.B737UnifiedFlightLocationV1;
+    const chosen=location?.getLocation?.();
+    const center=src.mapPosition||chosen;
+    if(!preview&&center&&['MAP','CTR_MAP','PLAN'].includes(origin.ehsi.mode)){
+     const extra=[],vor=src.vor;
+     if(vor?.stationIdent&&Number.isFinite(vor.stationLat)&&Number.isFinite(vor.stationLon))
+      extra.push({type:'VOR',ident:vor.stationIdent,lat:vor.stationLat,lon:vor.stationLon});
+     model.mapObjects=location.mapObjects(center,origin.ehsi.options,origin.ehsi.range,extra);
+     // Preview landmarks around a selected point before IRS alignment.
+     // Real IRS positionValid and navigation quality remain unchanged.
+     if(chosen&&!src.mapPosition)model.nav.valid=true;
+    }
     screen.host.dataset.sg=String(src.sg);
     screen.host.dataset.irs=src.irs===1?'L':'R';
     screen.host.dataset.controlSeat=seat;
@@ -246,7 +260,7 @@
   });
   doc.getElementById('unifiedFmcFail')?.addEventListener('change',e=>win.B737FmcSystemsBridgeV1?.setFailure?.(e.target.checked));
   for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
-  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state'])win.addEventListener(event,schedule);
+  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state','b737:flight-location-reference'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
   return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange),
