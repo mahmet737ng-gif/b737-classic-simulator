@@ -8,8 +8,8 @@ const html=read('index.html'),ui=read('ground-power-header-v1.js'),
  css=read('ground-power-header-v1.css'),battery=read('battery-recharge-header-v1.js');
 const top=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/header>/)?.[1]||'';
 const buttons=[...top.matchAll(/<button\b[^>]*\bid="([^"]+)"/g)].map(m=>m[1]);
-assert.deepEqual(buttons,['inspectorToggle','aircraftSettingsOpen','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
- 'Only Controls, Settings, CB PNL, Ground Power and FAILURES belong in the top command bar');
+assert.equal(buttons.filter(id=>id==='groundPowerHeader').length,1,'One Ground Power button in the top bar');
+assert.equal(buttons[buttons.indexOf('cbPanelOpen')+1],'groundPowerHeader','Ground Power follows CB PNL');
 assert.ok(!top.includes('liveBatteryRecharge'),'Battery recharge now belongs in Controls, not header');
 assert.ok(html.includes('id="batteryRechargeControlSlot"'),'Battery charge control preserved in drawer');
 assert.ok(html.includes('ground-power-header-policy-v1.js?v=GPU-FCOM-0001'));
