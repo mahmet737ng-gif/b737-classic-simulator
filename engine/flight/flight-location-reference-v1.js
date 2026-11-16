@@ -6,7 +6,7 @@
  'use strict';
  const api=factory();
  if(typeof module==='object'&&module.exports)module.exports=api;
- if(root?.document)root.B737UnifiedFlightLocationV1=api.create(root);
+ if(root?.document)root.B737UnifiedFlightLocationV1=api.create(root,root.B737FlightScenarioCoreV1?.AIRPORTS);
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
  const R=Math.PI/180,EARTH_NM=3440.065;
