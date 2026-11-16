@@ -45,3 +45,17 @@ test('cockpit uses FLT PHASE title and shares selected location between IRS/CDU/
  assert.ok(read('panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js').includes('FLT PHASE REF'));
  assert.ok(read('panel-mosaic-lab/cockpit/ehsi-unified-v1.js').includes('location.mapObjects('));
 });
+
+
+test('source-backed local Iranian VORs and airports appear around OIII without Railway',()=>{
+ const publicFacilities=require('../engine/flight/iran-nav-reference-v1.js');
+ const location=Location.create(null,airports);
+ assert.equal(location.setCatalog(publicFacilities),8);
+ const nearby=location.mapObjects(airports.OIII,{arpt:true,navAid:true,wpt:false},40);
+ for(const ident of ['TRN','IKA','PIM','OIIE','OIIP'])
+  assert.ok(nearby.some(x=>x.name===ident),'Missing '+ident);
+ assert.ok(!nearby.some(x=>x.name==='MSD'));
+ const onlyVor=location.mapObjects(airports.OIII,{arpt:false,navAid:true,wpt:false},40);
+ assert.deepEqual(onlyVor.map(x=>x.name),['TRN','IKA','PIM']);
+ assert.ok(onlyVor.every(x=>x.shape==='nav'));
+});
