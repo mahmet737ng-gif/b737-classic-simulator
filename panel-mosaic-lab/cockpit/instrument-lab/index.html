@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unified · تست‌لب گیج‌های پرواز</title>
+<title>Unified · Flight Instrument Test Lab</title>
 <style>
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101419;color:#e4ecf1}
 body{max-width:1240px;margin:auto;padding:24px}
@@ -19,15 +19,15 @@ input[type=number],button{background:#202a34;color:inherit;border:1px solid #465
 button{cursor:pointer;padding:8px 14px}button:hover{background:#304358}
 .buttons{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:12px 0 20px}
 </style>
-<header><h1>تست‌لب گیج‌های پرواز 737 Classic</h1><a href="../">کاکپیت Unified</a></header>
+<header><h1>737 Classic Flight Instrument Test Lab</h1><a href="../">Unified Cockpit</a></header>
 <main>
-<section id="rack" aria-label="پنج گیج پرواز"></section>
-<section class="buttons" aria-label="سناریوها">
-<button data-preset="normal">پرواز هم‌سطح</button>
-<button data-preset="climb">صعود</button>
-<button data-preset="descent">نزول</button>
-<button data-preset="failed">نمایش فلگ‌ها</button>
-<label class="check"><input id="raw" type="checkbox"> فقط تصویر خام</label>
+<section id="rack" aria-label="Five Flight Instruments"></section>
+<section class="buttons" aria-label="Scenarios">
+<button data-preset="normal">Level Flight</button>
+<button data-preset="climb">Climb</button>
+<button data-preset="descent">Descent</button>
+<button data-preset="failed">Show Flags</button>
+<label class="check"><input id="raw" type="checkbox"> Source Photo Only</label>
 </section>
 <p dir="ltr"><output id="computed"></output></p>
 <form id="inputs" class="controls" dir="ltr"></form>
