@@ -110,6 +110,15 @@
    display.host.dataset.mcpSelectedVs=src.mcp?.verticalSpeedSelectedFpm==null?'':String(src.mcp.verticalSpeedSelectedFpm);
   display.host.dataset.eadiPower=String(powered);
   display.host.dataset.eadiAttitude=String(injected?station.attitudeValid:src.attitude);
+  const health=src.health||{};
+  display.host.dataset.irsQuality=health.irsQuality||'UNKNOWN';
+  display.host.dataset.irsPhase=health.irsPhase||'UNKNOWN';
+  display.host.dataset.irsPowered=String(health.irsPowered===true);
+  display.host.dataset.adcQuality=health.adcQuality||'UNKNOWN';
+  display.host.dataset.radioAltQuality=health.radioAltQuality||'UNKNOWN';
+  display.host.dataset.sgVideo=String(health.sgVideo===true);
+  display.host.dataset.displayPowered=String(health.displayPowered===true);
+  display.host.dataset.trackSource=src.trackSource||'NO TRK';
   if(painted!==true){
    display.host.dataset.eadiError='NEW_FULL_RENDER_FAILED';return false;
   }
