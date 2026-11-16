@@ -1,0 +1,31 @@
+name: Flight Scenario Engine Checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/flight/**'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/flight-scenario-core-v1.test.cjs'
+      - '.github/workflows/flight-scenario-ci.yml'
+  pull_request:
+    paths:
+      - 'engine/flight/**'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'tests/flight-scenario-core-v1.test.cjs'
+jobs:
+  flight-scenario:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static JavaScript checks
+        run: |
+          node --check engine/flight/flight-scenario-core-v1.js
+          node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
+      - name: Deterministic flight scenario acceptance tests
+        run: node --test tests/flight-scenario-core-v1.test.cjs
