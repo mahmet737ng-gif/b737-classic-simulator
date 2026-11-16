@@ -40,6 +40,7 @@
   if(m.modes?.thrust!=='SPEED')return deactivated('AT_SPEED_NOT_ENGAGED');
   if(m.speedDisplayMode!=='IAS'||m.displayBlank?.speed===true)return deactivated('IAS_TARGET_UNAVAILABLE');
   if(!finite(m.values?.speed,80,450))return deactivated('INVALID_SELECTED_IAS');
+  if(flight.airborne===false)return deactivated('ON_GROUND_SPEED_SERVO_INHIBITED');
   if(input.inhibited===true)return deactivated('MANUAL_OVERRIDE');
   if(input.paused===true)return deactivated('SCENARIO_PAUSED');
   if(!finite(flight.iasKt,0,450)||!finite(flight.vsFpm??0,-6000,6000))
