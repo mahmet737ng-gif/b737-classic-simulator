@@ -5,6 +5,8 @@ on:
     paths:
       - 'engine/flight/**'
       - 'engine/afds/autothrottle-speed-servo-v1.js'
+      - 'engine/integration/isn-13-18-ecu-testbench-v1.js'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
       - 'panel-mosaic-lab/cockpit/autothrottle-unified-v1.js'
       - 'tests/autothrottle-speed-servo-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
@@ -30,6 +32,8 @@ jobs:
         run: |
           node --check engine/flight/flight-scenario-core-v1.js
           node --check engine/afds/autothrottle-speed-servo-v1.js
+          node --check engine/integration/isn-13-18-ecu-testbench-v1.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
           node --check panel-mosaic-lab/cockpit/autothrottle-unified-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
       - name: Deterministic flight scenario acceptance tests
