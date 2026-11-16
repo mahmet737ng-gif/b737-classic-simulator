@@ -8,6 +8,7 @@ on:
       - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.css'
       - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
       - 'panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js'
+      - 'panel-mosaic-lab/cockpit/asp-vbr-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/irs-msu-detent-labels-v1.js'
       - 'panel-mosaic-lab/interactive-overhead/rotary-guards.js'
       - 'panel-mosaic-lab/cockpit/index.html'
