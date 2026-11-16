@@ -10,7 +10,7 @@ class SVGNode{
 function draw({mode='MAP',track=91,heading=91,selectedHeading=139}={}){
  const document={createElementNS:(_,tag)=>new SVGNode(document,tag)};
  const svg=new SVGNode(document,'svg');svg.setAttribute('id','ehsi-regression');
- const view=Renderer.render(svg,{mode,range:40,heading,track,selectedHeading,trueRef:true,
+ const view=Renderer.render(svg,{mode,range:40,heading,track,selectedHeading,trueRef:false,
   nav:{valid:false},efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true,brightness:1,wxBrightness:1},
   route:{points:[],activeIndex:0},weather:{visible:false},options:{},traffic:{mode:'OFF',targets:[]}});
  const all=[];function visit(node){all.push(node);for(const child of node.children)visit(child);}visit(svg);
@@ -51,4 +51,13 @@ test('wrap 359 to 000 degrees preserves relative heading sign and no invisible g
  const r=draw({mode:'EXP_NAV',track:355,heading:355,selectedHeading:15});
  assert.ok(r.find('heading-bug'));
  assert.equal(r.find('heading-bug-vector').attrs['data-relative-heading'],'20');
+});
+
+test('live EHSI heading / track readout displays MAG M and never TRU',()=>{
+ for(const mode of ['MAP','EXP_NAV','FULL_NAV','EXP_VOR_ILS','FULL_VOR_ILS']){
+  const screen=draw({mode,track:86.03,heading:86.03,selectedHeading:134});
+  const texts=screen.all.map(n=>n.attrs?.['data-text']).filter(Boolean);
+  assert.ok(texts.includes('M'),'missing MAG label in '+mode);
+  assert.equal(texts.includes('TRU'),false);
+ }
 });
