@@ -40,7 +40,7 @@ function norm(v){return ((Number(v)||0)%360+360)%360;}
 function initial(){
  return {seat:'CAPT',power:{eadi:true,ehsi:true,sg1:true,sg2:true,source:'NORMAL',att:true,heading:true,track:true,adc:true,nav:true,loc:true,gs:true,ra:true,fd:true,dhData:true,selSpeed:true,v1Data:true,speedLimit:true,machData:true,irsLeft:true,irsRight:true,irsSource:'NORMAL',eadiThermal:'NORMAL',ehsiThermal:'NORMAL',fmcTrack:true,remoteWxr:false,wxrHealthy:true,terrainHealthy:true,mapRange:true,wxrRange:true,terrainRange:true},
  eadi:{brightness:1,pitch:0,bank:0,slip:0,ias:220,selectedSpeed:230,mach:.55,groundSpeed:310,radioAlt:800,dh:200,descent:true,fd:true,fdPitch:4,fdRoll:0,locDev:.3,gsDev:-.3,frontCourse:true,tcas:'OFF',windshear:false,pullup:false,pli:false,at:'FMC SPD',pitchMode:'VNAV PTH',rollMode:'LNAV',afds:'CMD',machVisible:true,dhReset:false,heightReset:false,dhLatched:false,otherPitch:0,otherBank:0,fdAuto:false,locCaptured:false,gsCaptured:false,fmcVerticalValid:true,altAcquire:false,apEngaged:false,locExcessive:false,tcasLimit:6,phase:'CRUISE',flaps:0,armedPitch:'',armedRoll:'',acceleration:0,pliAngle:17,v1:121,vr:125,vref:136,demoLimits:false,minManeuver:135,shaker:120,vmo:340,gearState:'UP',flap30MaximumKt:180,speedSource:'AUTO',fmcCommandSpeed:230,retractSpeed:155,flapsUpSpeed:205},
- ehsi:{mode:'MAP',range:40,heading:240,track:245,selectedHeading:252,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1,wxBrightness:1,navType:'VOR',vorFreq:116.8,ilsFreq:110.1,autoTune:false,dme:13.5,fmcCourse:238,xtk:.7,vorDev:2.5,toFrom:'FROM',vnav:0,vnavActive:false,planStep:1,wxrReturns:false,terrainReturns:false,tcMode:'TA_RA',traffic:false,trueAirspeed:230,windDirection:127,windSpeed:20,trueRef:false,altitude:8500,selectedAltitude:10000,verticalSpeed:1400,altitudeArc:false,tcFailSuppressed:false},
+ ehsi:{mode:'MAP',range:40,heading:240,track:245,selectedHeading:252,course:233,options:{wpt:true,arpt:false,navAid:false,vorAdf:false,rteData:false,tfc:false,wxr:false,terr:false},showSyntheticRoute:true,brightness:1,wxBrightness:1,navType:'VOR',vorFreq:116.8,ilsFreq:110.1,autoTune:false,dme:13.5,fmcCourse:238,xtk:.7,vorDev:2.5,toFrom:'FROM',vnav:0,vnavActive:false,planStep:1,wxrReturns:false,terrainReturns:false,tcMode:'TA_RA',traffic:false,trueAirspeed:230,windDirection:127,windSpeed:20,trueRef:false,altitude:8500,selectedAltitude:10000,verticalSpeed:1400,altitudeArc:false,tcFailSuppressed:false,nav1Bearing:72,nav2Bearing:212,nav1Valid:false,nav2Valid:false},
  audit:Object.fromEntries(items.map(x=>[x.display+'.'+x.id,'PENDING']))};
 }
 function activeSg(s){const which=s.power.source==='SG1'?'sg1':s.power.source==='SG2'?'sg2':s.seat==='FO'?'sg2':'sg1';return !!s.power[which];}
@@ -103,6 +103,8 @@ function ehsiModel(s){
    cdi:mode.includes('VOR_ILS')?(e.navType==='ILS'?s.eadi.locDev:e.vorDev/5):e.xtk/2,
    gsDev:s.eadi.gsDev,gsValid:e.navType==='ILS'&&p.gs&&e.frontCourse&&Math.abs(((e.track-e.course+540)%360)-180)<=90,
    toFrom:e.toFrom,vnavActive:e.vnavActive,vnav:e.vnav},
+  bearings:[{channel:1,angle:e.nav1Bearing,valid:e.nav1Valid},{channel:2,angle:e.nav2Bearing,valid:e.nav2Valid}]
+   .filter(candidate=>candidate.valid),
   route:{source:'SYNTHETIC',activeIndex:1,centerIndex:e.planStep,points:pts},
   options:opts,weather:{selected:wxrSelected,healthy:p.wxrHealthy,
    visible:wxrSelected&&p.wxrHealthy&&p.wxrRange&&e.wxrReturns&&p.ehsiThermal==='NORMAL',
@@ -131,6 +133,18 @@ function apply(s,patch){const x=structuredCopy(s);if(patch.type==='reset')return
   if(patch.name==='terrain'){h.options.terr=true;h.terrainReturns=true;}
   if(patch.name==='failure'){p.sg1=false;}
   if(patch.name==='dark'){p.eadi=false;p.ehsi=false;}
+  if(['ref-cmd','ref-cws-r','ref-cws-p','ref-312'].includes(patch.name)){
+   const high=patch.name==='ref-312';
+   Object.assign(e,{pitch:high?0:12,fdPitch:high?0:12,fdRoll:0,otherPitch:high?0:12,
+    ias:high?312:201.5,selectedSpeed:high?340:201.5,mach:high?.675:.36,
+    groundSpeed:high?398:336,radioAlt:patch.name==='ref-cmd'?2200:2900,at:high?'MCP SPD':'N1',pitchMode:high?'V/S':'MCP SPD',
+    rollMode:'HDG SEL',afds:patch.name==='ref-cws-r'?'CWS R':patch.name==='ref-cws-p'?'CWS P':'CMD',
+    speedSource:'MCP',demoLimits:true,minManeuver:high?180:190,shaker:high?150:158,
+    vmo:high?340:400,flapsUpSpeed:210,acceleration:high?1.4:0});
+   Object.assign(h,{heading:81,track:81,selectedHeading:81,windDirection:215,windSpeed:32,
+    trueAirspeed:374,mode:'CTR_MAP',range:20,nav1Valid:true,nav2Valid:true,nav1Bearing:103,nav2Bearing:265});
+   h.options.vorAdf=true;h.options.tfc=true;h.options.rteData=true;
+  }
   if(patch.name==='navfail'){p.nav=false;p.heading=false;p.track=false;}
   return fresh;
  } else if(patch.type==='seat'){

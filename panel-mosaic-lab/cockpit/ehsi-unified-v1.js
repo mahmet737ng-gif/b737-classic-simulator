@@ -34,7 +34,7 @@
    nav:{type:src.ils?'ILS':'VOR',valid:radio?(src.ils?loc!==null:!!src.vor):mapValid,
     source:(src.ils?'ILS ':'VOR ')+src.vhf,frequency:number(nav?.tunedFrequencyMHz),dme,cdi,
     gsValid:src.frontCourse===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
-   route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
+   bearings:src.bearings,route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
    efis:{displayPower:src.displayPowered&&src.video,sgValid:src.video,
     headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,verticalFailure:failure.active,mapFailurePending:failure.mapPending,
     brightness:physical.ehsi.brightness,wxBrightness:physical.ehsi.wxBrightness,displayAspect:aspect}};
@@ -138,6 +138,15 @@
     if(!screen)continue;
     const setup=state[seat],preview=instructor[seat]&&sources.getPreset()!=='COLD_DARK';
     const src=sources.project(seat,snapshot),origin=state[seat]; // knobs belong to receiving seat regardless of SG transfer
+    if(src.heading!==null&&src.displayPowered){
+     const gauges=win.B737UnifiedFlightNeedles;
+     const station=seat==='CAPT'?'captain':'firstOfficer';
+     const last=gauges?.getAngles()?.[station];
+     for(const pointer of src.bearings){
+      const angle=((pointer.angle-src.heading+540)%360)-180,key='rmi'+pointer.channel;
+      if(last?.[key]!==angle)gauges?.setAngle(station,key,angle);
+     }
+    }
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
     screen.host.dataset.sg=String(src.sg);

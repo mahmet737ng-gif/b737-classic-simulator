@@ -54,7 +54,22 @@
   const common=selected('efi-transfer',0)!==0||selected('irs-transfer',0)!==0;
   const comparison=common||!attitude||!peerAttitude?['COMP']:
    [Math.abs(iru.pitchDeg-peer.pitchDeg)>3?'PITCH':null,Math.abs(delta(iru.rollDeg-peer.rollDeg))>3?'ROLL':null].filter(Boolean);
-  return {display,sg,irs,vhf,sourceSeat:SEATS[sg-1],displayPowered:feeds[display]===true,
+  const bearings=[];
+  for(const channel of [1,2]){
+   const station=signal(snapshot,'navigation.vor'+channel);
+   if(!station)continue;
+   const b=value(station.bearingDeg);
+   let angle=null;
+   if(b!==null&&station.bearingReference==='TRUE')angle=direction(b);
+   if(b!==null&&station.bearingReference==='MAGNETIC'&&variation!==null)angle=norm(b);
+   if(b!==null&&station.bearingReference==='RELATIVE'&&heading!==null)angle=direction(heading+b);
+   if(angle===null&&nav&&[iru.lat,iru.lon,station.stationLat,station.stationLon].every(Number.isFinite)){
+    const to=offsets({lat:iru.lat,lon:iru.lon},{lat:station.stationLat,lon:station.stationLon});
+    if(Math.hypot(to.x,to.y)>.001)angle=direction(Math.atan2(to.x,to.y)*180/Math.PI);
+   }
+   if(angle!==null)bearings.push({channel,angle});
+  }
+  return {display,sg,irs,vhf,bearings,sourceSeat:SEATS[sg-1],displayPowered:feeds[display]===true,
    video:feeds[sg]===true&&faults[sg]!==true,
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
    heading:direction(heading),track:direction(trueTrack),trueTrack,trueRef:variation===null,

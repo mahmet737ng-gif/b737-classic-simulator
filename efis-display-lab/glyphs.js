@@ -22,25 +22,25 @@
   '(':'3,0 1,2 1,5 3,7',')':'1,0 3,2 3,5 1,7','?':'0,1 1,0 3,0 4,1 4,2 2,4 2,5|2,7 2.2,7'
  };
  const strokes=Object.fromEntries(Object.entries(shapes).map(([char,s])=>[char,s.split('|').map(line=>line.split(' ').map(point=>point.split(',').map(Number)))]));
- function visit(value,x,y,size,align,draw){
-  const letters=String(value).toUpperCase(), scale=size/10, step=6.1*scale;
-  if(align==='middle'||align==='center') x-=(letters.length*step-2.1*scale)/2;
-  if(align==='end'||align==='right') x-=letters.length*step-2.1*scale;
+ function visit(value,x,y,size,align,draw,aspect=1){
+  const letters=String(value).toUpperCase(), scale=size/10, step=6.1*scale*aspect;
+  if(align==='middle'||align==='center') x-=(letters.length*step-2.1*scale*aspect)/2;
+  if(align==='end'||align==='right') x-=letters.length*step-2.1*scale*aspect;
   y-=3.5*scale;
   for(const char of letters){
    for(const points of strokes[char]||(char===' '?[]:strokes['?'])){
-    draw(points.map(([px,py])=>[x+px*scale,y+py*scale]));
+    draw(points.map(([px,py])=>[x+px*scale*aspect,y+py*scale]));
    }
    x+=step;
   }
  }
- function svg(value,x,y,size,align){
+ function svg(value,x,y,size,align,aspect){
   let d='';
-  visit(value,x,y,size,align,points=>{d+='M'+points.map(([px,py])=>px.toFixed(2)+','+py.toFixed(2)).join('L');});
+  visit(value,x,y,size,align,points=>{d+='M'+points.map(([px,py])=>px.toFixed(2)+','+py.toFixed(2)).join('L');},aspect);
   return d;
  }
- function canvas(c,value,x,y,size,color,align){
-  c.beginPath();visit(value,x,y,size,align,points=>points.forEach(([px,py],i)=>i?c.lineTo(px,py):c.moveTo(px,py)));
+ function canvas(c,value,x,y,size,color,align,aspect){
+  c.beginPath();visit(value,x,y,size,align,points=>points.forEach(([px,py],i)=>i?c.lineTo(px,py):c.moveTo(px,py)),aspect);
   c.strokeStyle=color;c.lineWidth=Math.max(1,size/11);c.lineJoin='round';c.lineCap='round';c.stroke();
  }
  const colors=Object.freeze({white:'#f0f4ec',green:'#62ee79',magenta:'#ed68df',cyan:'#6adcf4',amber:'#ffca43',red:'#ff504f',black:'#000'});

@@ -78,6 +78,7 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
  <aside class="controls">
   <div class="block"><h2>Scenario injection</h2><p class="small">Presets reload a deterministic set of instructor inputs.</p><div class="presets" id="presets">
    <button data-scenario="normal">NORMAL</button><button data-scenario="approach">ILS / DH</button><button data-scenario="cruise">CRUISE</button>
+   <button data-scenario="ref-cmd">REF CMD</button><button data-scenario="ref-cws-r">REF CWS R</button><button data-scenario="ref-cws-p">REF CWS P</button><button data-scenario="ref-312">REF 312 KT</button>
    <button data-scenario="tcas">TCAS RA</button><button data-scenario="navfail">NAV FAIL</button><button data-scenario="failure">SG FAIL</button>
    <button data-scenario="takeoff">TAKEOFF</button><button data-scenario="weather">WXR</button><button data-scenario="terrain">TERRAIN</button><button data-scenario="dark">DARK</button><button id="dhReset">DH RST</button><button id="runTests">RUN TESTS</button>
   </div></div>
@@ -100,12 +101,13 @@ td select{background:#0c1520;border:1px solid #394d61;color:#e9f3fc;padding:6px;
 <div class="footer"><a id="fcomLink" target="_blank" rel="noreferrer">Public Classic FCOM</a> · <a href="./README_FA.md">Validation and limitations</a></div>
 </main>
 <script src="./sources.js"></script>
-<script src="./glyphs.js"></script>
+<script src="./reference-geometry.js?v=EFIS-REF-0008"></script>
+<script src="./glyphs.js?v=EFIS-REF-0008"></script>
 <script src="../engine/efis/classic-speed-tape-engine-v1.js"></script>
 <script src="../engine/efis/classic-flap-speed-profile-v1.js"></script>
 <script src="../engine/afds/fma-mode-engine-v1.js"></script>
-<script src="../panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js"></script>
-<script src="../panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js"></script>
-<script src="./ehsi-v2.js"></script>
-<script src="./core.js"></script><script src="./eadi.js"></script><script src="./lab.js"></script><script src="../cdu-standalone-v6/efis-test/images.js"></script><script src="./efis-cp.js"></script>
+<script src="../panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js?v=EFIS-REF-0008"></script>
+<script src="../panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js?v=EFIS-REF-0008"></script>
+<script src="./ehsi-v2.js?v=EFIS-REF-0008"></script>
+<script src="./core.js?v=EFIS-REF-0008"></script><script src="./eadi.js?v=EFIS-REF-0008"></script><script src="./lab.js?v=EFIS-REF-0008"></script><script src="../cdu-standalone-v6/efis-test/images.js"></script><script src="./efis-cp.js"></script>
 </body></html>

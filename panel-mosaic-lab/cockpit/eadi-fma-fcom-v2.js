@@ -212,6 +212,41 @@
   }
   ctx.restore();
  }
+ // Reference glass layout used by both the live EADI and standalone lab.
+ function renderReference(ctx,seat,metrics,glyph,now=Date.now()){
+  validate(seat);
+  const state=seats[seat]||model()?.blank?.();
+  if(!state)return;
+  const {centers,dividers,dividerTop,dividerBottom,primaryY,cwsY,cwsWidth,cwsHeight}=metrics;
+  const color={...COLOR,green:'#26ed36',yellow:'#e5d63e'};
+  ctx.save();
+  ctx.fillStyle=color.black;
+  ctx.fillRect(67,36,520,49);
+  ctx.fillRect(470,cwsY-cwsHeight/2-2,104,cwsHeight*2+9);
+  ctx.strokeStyle=color.white;ctx.lineWidth=2;
+  for(const x of dividers){
+   ctx.beginPath();ctx.moveTo(x,dividerTop);ctx.lineTo(x,dividerBottom);ctx.stroke();
+  }
+  FIELDS.forEach((field,i)=>{
+   const v=state[field],cx=centers[i];
+   if(!v)return;
+   const ink=color[model().color(field,v.active)]||color.green;
+   if(v.active)glyph.canvas(ctx,v.active,cx,primaryY,37,ink,'center',.74);
+   if(v.armed)glyph.canvas(ctx,v.armed,cx,primaryY+32,21,color.white,'center',.76);
+   if(highlights[seat][field]>now&&v.active&&!v.secondary){
+    ctx.strokeStyle=ink;ctx.lineWidth=1.7;ctx.strokeRect(cx-64,primaryY-17,128,34);
+   }
+   [v.secondary,v.tertiary].filter(Boolean).forEach((label,row)=>{
+    const y=cwsY+row*(cwsHeight+4);
+    if(highlights[seat][field]>now){
+     ctx.strokeStyle=color.yellow;ctx.lineWidth=1.8;
+     ctx.strokeRect(cx-cwsWidth/2,y-cwsHeight/2,cwsWidth,cwsHeight);
+    }
+    glyph.canvas(ctx,label,cx,y,33,color.yellow,'center',.77);
+   });
+  });
+  ctx.restore();
+ }
  function bind(root){
   if(ready)return true;
   const eadi=root.B737UnifiedEADIStage1;
@@ -243,5 +278,5 @@
   return true;
  }
  return Object.freeze({VERSION,FIELDS,SECTION,LAYOUT,COLOR,
-  accept,projectMcp,refreshFromMcp,hardwareReconciled,inspectLink,observeFcc,render,getState,bind});
+  accept,projectMcp,refreshFromMcp,hardwareReconciled,inspectLink,observeFcc,render,renderReference,getState,bind});
 });

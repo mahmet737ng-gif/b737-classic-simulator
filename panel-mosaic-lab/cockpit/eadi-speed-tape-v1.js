@@ -95,6 +95,24 @@
  }
  // Magnified 45-kt low speed default: a fixed window, not rolling digits.
  // The window masks the 40-kt numeral when the tape rests at 45.
+ function referenceDigits(ctx,view,write){
+  const y=TAPE.centerY,x=99,edge=TAPE.axis-19,tip=TAPE.axis,top=y-36,bottom=y+36;
+  ctx.save();ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(edge,top);
+  ctx.lineTo(edge,y-13);ctx.lineTo(tip,y);ctx.lineTo(edge,y+13);
+  ctx.lineTo(edge,bottom);ctx.lineTo(x,bottom);ctx.closePath();
+  ctx.fillStyle=COLOR.black;ctx.fill();ctx.strokeStyle=COLOR.white;ctx.lineWidth=2.5;ctx.stroke();
+  ctx.beginPath();ctx.rect(x+3,top+2,edge-x-5,bottom-top-4);ctx.clip();
+  if(view.lowSpeedDefault)write('45',edge-7,y,COLOR.white,41,'right');
+  else{
+   const speed=view.casKt,whole=Math.floor(speed),f=speed-whole;
+   write(String(Math.floor(whole/10)),edge-24,y,COLOR.white,41,'right');
+   for(const roll of [-1,0,1]){
+    const digit=(whole+roll+10)%10;
+    write(String(digit),edge-4,y+(f-roll)*31,COLOR.white,38,'right');
+   }
+  }
+  ctx.restore();
+ }
  function lowSpeed45(ctx){
   const y=TAPE.centerY,x=91,w=108,h=67;
   ctx.save();
@@ -108,11 +126,12 @@
   text(ctx,'45',x+w-12,y,COLOR.white,43,'right');
   ctx.restore();
  }
- function mark(ctx,label,value,view,color=COLOR.green){
+ function mark(ctx,label,value,view,color=COLOR.green,write){
   if(!Number.isFinite(value))return;
   const y=yFor(value,view);if(!visible(y,9))return;
   segment(ctx,214,y,228,y,color,3);
-  text(ctx,label,234,y,color,18,'left');
+  if(write)write(label,234,y,color,23,'left');
+  else text(ctx,label,234,y,color,18,'left');
  }
  function band(ctx,endSpeed,view,{x,w,direction,color='yellow',striped=false,placard=false}){
   if(!Number.isFinite(endSpeed))return;
@@ -163,14 +182,19 @@
   segment(ctx,x,yTop,x,yBottom,COLOR.yellow,3);
   if(visible(upper))segment(ctx,x-arm,upper,x,upper,COLOR.yellow,3);
  }
- function draw(ctx,view){
+ function draw(ctx,view,style={}){
   if(!view||view.schema!=='B737_CLASSIC_SPEED_TAPE_VIEW_V1')return;
+  const ref=style.reference===true&&!!style.glyph;
+  const write=(value,x,y,color=COLOR.white,size=25,align='right')=>{
+   if(ref)style.glyph.canvas(ctx,value,x,y,size,color,align,.94);
+   else text(ctx,value,x,y,color,size,align);
+  };
   ctx.save();
   // Layer uses the reserved speedTape canvas region; FMA and attitude windows
   // have their own independent rendering and fixed center datum.
-  ctx.beginPath();ctx.rect(TAPE.left,TAPE.top,TAPE.right-TAPE.left,TAPE.bottom-TAPE.top);ctx.clip();
+  ctx.beginPath();ctx.rect(TAPE.left,TAPE.top-2,TAPE.right-TAPE.left,TAPE.bottom-TAPE.top+4);ctx.clip();
   if(view.casKt===null){
-   if(view.flags.SPD)text(ctx,'SPD',TAPE.axis-20,TAPE.centerY,COLOR.yellow,35,'center');
+   if(view.flags.SPD)write('SPD',TAPE.axis-20,TAPE.centerY,COLOR.yellow,35,'center');
    ctx.restore();return;
   }
   const low=view.range.minKt,high=view.range.maxKt;
@@ -178,20 +202,23 @@
   for(let k=40;k<=420;k+=10){
    if(k<low-3||k>high+3)continue;
    const y=yFor(k,view);
-   segment(ctx,k%20===0?TAPE.axis-31:TAPE.axis-17,y,TAPE.axis,y,COLOR.white,2.6);
+   segment(ctx,TAPE.axis-(ref?18:k%20===0?31:17),y,TAPE.axis,y,COLOR.white,ref?3.3:2.6);
    if(k%20===0&&!(view.lowSpeedDefault&&k===40))
-     text(ctx,k,TAPE.axis-40,y,COLOR.white,30,'right');
+     write(k,TAPE.axis-(ref?26:40),y,COLOR.white,ref?40:30,'right');
   }
   segment(ctx,TAPE.axis,TAPE.top,TAPE.axis,TAPE.bottom,'#e5e9e9',2.5);
+  if(ref)for(const y of [TAPE.top,TAPE.bottom])segment(ctx,87,y,242,y,COLOR.white,3);
   const m=view.marks;
   // Only source-verified limits are drawn, never fixed performance estimates.
   stallBufferBracket(ctx,m.minimumManeuverKt,m.stickShakerKt,view);
   band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
+  if(ref&&Number.isFinite(m.stickShakerKt)&&visible(yFor(m.stickShakerKt,view)))
+   segment(ctx,POLE_X,yFor(m.stickShakerKt,view),POLE_X+20,yFor(m.stickShakerKt,view),COLOR.red,4);
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});
   band(ctx,m.maximumOperatingKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',
-   placard:view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
-   striped:view.maxLimitReason==='VMO_MMO'});
+   placard:ref||view.maxLimitReason==='FLAPS'||view.maxLimitReason==='GEAR',
+   striped:!ref&&view.maxLimitReason==='VMO_MMO'});
   // Instructor gear/flap states are presentation overlays, not verified
   // aircraft configuration and never control AFDS or the autothrottle.
   // The stricter of overlapping visual gear/flap limits is drawn.
@@ -199,7 +226,7 @@
   if(Number.isFinite(trn?.maximumKt)){
    band(ctx,trn.maximumKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'HIGH',placard:true});
    const caption=trn.reason==='GEAR'?'TRN GEAR '+trn.state:'TRN FL'+trn.detent;
-   text(ctx,caption,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
+   write(caption,TAPE.left+7,TAPE.top+18,COLOR.yellow,15,'left');
   }
   // Draw on top of red blocks so the attachment at the center of the
   // last block is continuous, with no 8px horizontal air gap.
@@ -207,44 +234,54 @@
   if(Number.isFinite(m.flapsUpKt)){
    const y=yFor(m.flapsUpKt,view);
    if(visible(y,9)){
-    ctx.strokeStyle=COLOR.green;ctx.lineWidth=3;ctx.beginPath();ctx.arc(212,y,10,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle=COLOR.green;ctx.lineWidth=3;ctx.beginPath();ctx.arc(ref?205:212,y,10,0,Math.PI*2);ctx.stroke();
    }
   }
-  mark(ctx,'F',m.retractKt,view);
-  mark(ctx,'R',m.vrefKt,view);
-  mark(ctx,'1',m.v1Kt,view);
+  mark(ctx,'F',m.retractKt,view,COLOR.green,ref?write:null);
+  mark(ctx,'R',m.vrefKt,view,COLOR.green,ref?write:null);
+  mark(ctx,'1',m.v1Kt,view,COLOR.green,ref?write:null);
   // VR and VREF both use an R cue, but takeoff VR is not a VREF reference.
-  mark(ctx,'R',m.vrKt,view);
+  mark(ctx,'R',m.vrKt,view,COLOR.green,ref?write:null);
   if(Number.isFinite(m.v1Kt)&&m.v1Kt>high)
-   text(ctx,'V1 '+Math.round(m.v1Kt),TAPE.axis+51,TAPE.top+20,COLOR.green,21,'right');
+   write('V1 '+Math.round(m.v1Kt),TAPE.axis+51,TAPE.top+20,COLOR.green,21,'right');
   // Trend arrow: the pure engine handles 4-kt/3-kt hysteresis.
   if(view.trend){
    const target=Math.max(TAPE.top,Math.min(TAPE.bottom,yFor(view.trend.predictedKt,view)));
    const tipDirection=target<TAPE.centerY?-1:1;
-   segment(ctx,207,TAPE.centerY,207,target,COLOR.green,3);
-   segment(ctx,207,target,202,target-tipDirection*9,COLOR.green,2);
-   segment(ctx,207,target,212,target-tipDirection*9,COLOR.green,2);
+   const x=ref?189:207;
+   segment(ctx,x,TAPE.centerY,x,target,COLOR.green,ref?4:3);
+   if(ref){
+    ctx.beginPath();ctx.moveTo(x,target);ctx.lineTo(x-10,target-tipDirection*15);
+    ctx.lineTo(x+10,target-tipDirection*15);ctx.closePath();ctx.fillStyle=COLOR.green;ctx.fill();
+   }else{
+    segment(ctx,x,target,x-5,target-tipDirection*9,COLOR.green,2);
+    segment(ctx,x,target,x+5,target-tipDirection*9,COLOR.green,2);
+   }
   }
   // Only the active source appears: MCP or FMC, never concurrent bugs.
   if(view.command){
    const k=view.command.speedKt;
    if(view.commandedPosition==='ON_TAPE'){
     const y=yFor(k,view);
-    segment(ctx,199,y-4,228,y-4,COLOR.magenta,3);
-    segment(ctx,199,y+4,228,y+4,COLOR.magenta,3);
+    if(ref)segment(ctx,199,y,241,y,'#ee43e7',5);
+    else{
+     segment(ctx,199,y-4,228,y-4,COLOR.magenta,3);
+     segment(ctx,199,y+4,228,y+4,COLOR.magenta,3);
+    }
    }else{
-    text(ctx,String(Math.round(k)),TAPE.axis+51,
+    write(String(Math.round(k)),TAPE.axis+51,
      view.commandedPosition==='ABOVE'?TAPE.top+13:TAPE.bottom-14,COLOR.magenta,23,'right');
    }
   }
-  if(view.rollingDigitsVisible)digits(ctx,view.casKt);
+  if(ref&&(view.rollingDigitsVisible||view.lowSpeedDefault))referenceDigits(ctx,view,write);
+  else if(view.rollingDigitsVisible)digits(ctx,view.casKt);
    else if(view.lowSpeedDefault)lowSpeed45(ctx);
   // Visible provenance: never masquerade instructor IAS as ADC equipment.
   if(view.provenance==='TRAINING_SCENARIO')
-   text(ctx,'TRN',TAPE.left+7,TAPE.bottom-13,COLOR.yellow,15,'left');
-  if(view.flags.SEL_SPD_INOP)text(ctx,'SEL SPD',TAPE.axis-7,TAPE.top+45,COLOR.yellow,17,'right');
-  if(view.flags.V1_INOP)text(ctx,'V1',TAPE.axis+30,TAPE.top+46,COLOR.yellow,18,'left');
-  if(view.flags.SPD_LIM)text(ctx,'SPD LIM',TAPE.axis+38,TAPE.bottom-22,COLOR.yellow,17,'right');
+   write('TRN',TAPE.left+7,TAPE.bottom-13,COLOR.yellow,15,'left');
+  if(view.flags.SEL_SPD_INOP)write('SEL SPD',TAPE.axis-7,TAPE.top+45,COLOR.yellow,17,'right');
+  if(view.flags.V1_INOP)write('V1',TAPE.axis+30,TAPE.top+46,COLOR.yellow,18,'left');
+  if(view.flags.SPD_LIM)write('SPD LIM',TAPE.axis+38,TAPE.bottom-22,COLOR.yellow,17,'right');
   ctx.restore();
  }
  function cancelExpiry(seat){if(expiry[seat]!==null&&win?.clearTimeout)win.clearTimeout(expiry[seat]);expiry[seat]=null;}

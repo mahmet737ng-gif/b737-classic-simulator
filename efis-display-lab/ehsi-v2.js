@@ -1,34 +1,26 @@
 /* Classic EHSI render pipeline, grounded in Sepehran FCOM 10.31–10.32 and 10.40. */
 (function(root,factory){
- const api=factory(typeof module==='object'&&module.exports?require('./glyphs.js'):root.EFISLabGlyphs);
+ const api=factory(typeof module==='object'&&module.exports?require('./glyphs.js'):root.EFISLabGlyphs,
+  typeof module==='object'&&module.exports?require('./reference-geometry.js').ehsi:root.B737EfisReferenceGeometry.ehsi);
  if(typeof module==='object'&&module.exports)module.exports=api;
  root.EFISClassicEHSIV2=api;
-})(globalThis,function(glyph){
+})(globalThis,function(glyph,G){
 'use strict';
-const VERSION='EHSI-CLASSIC-REBUILD-0007';
+const VERSION='EHSI-CLASSIC-REBUILD-0008';
 const COLORS=glyph.colors;
 const W=512,H=512,NS='http://www.w3.org/2000/svg';
 // Active EHSI aperture in the two 1920 x 1080 owner-supplied reference frames.
 const FRAME=Object.freeze({left:390,top:64,width:900,height:837});
 const px=n=>n*W/FRAME.width,py=n=>n*H/FRAME.height;
-const screenX=n=>px(n-FRAME.left),screenY=n=>py(n-FRAME.top);
-const atPixel=(x,y)=>[screenX(x),screenY(y)];
-const PHOTO_COLORS=Object.freeze({white:'#ffffff',green:'#29ff84',cyan:'#00b5ff',magenta:'#ff00ff'});
-function mapLayout(centerY,radiusX,radiusY,degrees){
- const center=atPixel(840,centerY);
- return {roseCenter:center,radius:py(radiusY),radiusX:px(radiusX),degrees,route:true,
-  aircraft:center,calibrated:true};
-}
+const PHOTO_COLORS=Object.freeze({...COLORS,...G.palette});
 const DISPLAY_ASPECT=350/411;
-// Reference map identifiers have a cap height of approximately 2.3% of glass width.
-const MAP_ID_SIZE=16,MAP_DETAIL_SIZE=13;
-const EXPANDED=mapLayout(740,812,606,70);
-const FULL_ROSE_SCALE=1.075;
-const FULL=Object.freeze({roseCenter:[256,256],radius:Math.round(201*FULL_ROSE_SCALE),degrees:360,route:false,aircraft:[256,256],full:true});
-const PLAN={...EXPANDED,aircraft:null,rose:false,planCompass:true,calibrated:false};
+const MAP_ID_SIZE=G.labels.waypoint,MAP_DETAIL_SIZE=G.labels.detail;
+const EXPANDED=Object.freeze({...G.expanded,route:true,aircraft:G.expanded.roseCenter,calibrated:true});
+const FULL=Object.freeze({...G.full,route:false,aircraft:G.full.roseCenter,full:true});
+const PLAN={...EXPANDED,aircraft:null,rose:false,planCompass:true};
 const LAYOUT=Object.freeze({
  MAP:EXPANDED,
- CTR_MAP:mapLayout(533,338*FULL_ROSE_SCALE,252*FULL_ROSE_SCALE,360),
+ CTR_MAP:{...G.centerMap,route:true,aircraft:G.centerMap.roseCenter,calibrated:true},
  EXP_NAV:{...EXPANDED,route:false},
  FULL_NAV:FULL,
  EXP_VOR_ILS:{...EXPANDED,route:false},
@@ -96,151 +88,120 @@ function stroke(p,points,color=COLORS.white,w=1.65,attrs={}){
 }
 function text(p,value,x,y,size=17,color=COLORS.white,align='start'){
  if(value===null||value===undefined||value==='')return;
- const g=make(p,'g',{'data-text':String(value),'aria-label':String(value)});
+ const g=make(p,'g',{'data-text':String(value),'aria-label':String(value),'font-size':size});
  make(g,'title',{},value);
- return make(g,'path',{d:glyph.svg(value,x,y,size,align),fill:'none',stroke:color,'stroke-width':Math.max(.8,size/12.5),'stroke-linecap':'round','stroke-linejoin':'round'});
+ return make(g,'path',{d:glyph.svg(value,x,y,size,align,.84),fill:'none',stroke:color,'stroke-width':Math.max(.8,size/12.5),'stroke-linecap':'round','stroke-linejoin':'round'});
 }
 function flag(p,value,x,y){
  const width=value.length*11+12;
  make(p,'rect',{x:x-width/2,y:y-12,width,height:24,fill:COLORS.black,stroke:COLORS.amber,'stroke-width':1.3});
  text(p,value,x,y,17,COLORS.amber,'middle');
 }
-function photoText(p,value,x,y,size,color=PHOTO_COLORS.white,align='start'){
- if(value===null||value===undefined||value==='')return;
- return make(p,'text',{x,y,fill:color,'font-family':'Arial, Liberation Sans, sans-serif',
-  'font-size':size,'font-weight':'bold','text-anchor':align,'dominant-baseline':'central','data-text':String(value)},value);
-}
-const photoAt=(p,value,x,y,size,color,align)=>photoText(p,value,screenX(x),screenY(y),py(size),color,align);
-function mapHeader(svg,m,status){
- const g=layer(svg,'header'),active=m.nav.valid?m.route.points[m.route.activeIndex]:null;
- const distance=active?Math.hypot(active.x,active.y).toFixed(1):'- - -';
- const eta=active?.eta?String(active.eta).replace(/^(\d{4})Z$/,'$1.0Z'):'- - - -.-Z';
- const upperLeft=m.radio?(m.nav.valid&&Number.isFinite(m.nav.dme)?'DME '+m.nav.dme.toFixed(1):'DME - - -'):distance+' NM';
- photoAt(g,upperLeft,574,99,35,PHOTO_COLORS.white,'end');
- if(!m.radio)photoAt(g,eta,1272,99,35,PHOTO_COLORS.white,'end');
- if(m.mode!=='PLAN'){
-  photoAt(g,'TAS',407,130,32);
-  photoAt(g,Number.isFinite(m.trueAirspeed)?Math.round(m.trueAirspeed):'---',553,130,32,PHOTO_COLORS.white,'end');
-  photoAt(g,'GS',1152,130,32);
-  photoAt(g,Number.isFinite(m.groundSpeed)?Math.round(m.groundSpeed):'---',1272,130,32,PHOTO_COLORS.white,'end');
- }
- const key=m.radio?'HDG':'TRK';
- if(!status.compassValid){flag(g,key,screenX(840),screenY(99));return;}
- const index=layer(g,'track-readout');
- stroke(index,[[780,84],[780,114],[814,114],[840,134],[866,114],[901,114],[901,84]].map(([x,y])=>atPixel(x,y)),PHOTO_COLORS.white,1.9);
- photoAt(index,key,771,103,36,PHOTO_COLORS.green,'end');
- photoAt(index,direction(m.reference),840,98,42,PHOTO_COLORS.white,'middle');
- photoAt(index,m.trueRef?'TRU':'M',917,103,36,PHOTO_COLORS.green);
-}
+const photoText=(p,value,x,y,size,color=PHOTO_COLORS.white,align='start')=>text(p,value,x,y,size,color,align);
+const numberText=(n,digits=0)=>Number.isFinite(n)?n.toFixed(digits):'---';
 function header(svg,m,status){
- const l=LAYOUT[m.mode];
- if(l.calibrated||l.planCompass){mapHeader(svg,m,status);return;}
-
- const g=layer(svg,'header'),active=m.route.points[m.route.activeIndex];
- if(m.radio){
-  if(m.nav.valid&&Number.isFinite(m.nav.dme))text(g,'DME '+Number(m.nav.dme).toFixed(1),18,26,19);
- }else if(m.nav.valid&&active){
-  text(g,Math.hypot(active.x,active.y).toFixed(1)+' NM',18,26,19);
-  if(m.mode.endsWith('NAV'))text(g,active.name,18,46,18,COLORS.magenta);
-  text(g,(active.eta||'').replace('Z','.0Z'),495,26,18,COLORS.white,'end');
+ const l=LAYOUT[m.mode],h=G.header;
+ const active=m.nav.valid?m.route.points[m.route.activeIndex]:null;
+ const distance=active?Math.hypot(active.x,active.y):null;
+ const left=m.radio?'DME'+numberText(m.nav.valid?m.nav.dme:null,1):numberText(distance,1)+'NM';
+ const g=layer(svg,'header');
+ photoText(g,left,h.left+70,h.top,23,PHOTO_COLORS.white,'end');
+ if(!m.radio){
+  const eta=active?.eta?String(active.eta):'----Z';
+  photoText(g,eta,h.right,h.top,23,PHOTO_COLORS.white,'end');
  }
- text(g,m.radio?'HDG':'TRK',214,29,17,COLORS.green,'end');
- if(status.compassValid){
-  stroke(g,[[224,17],[286,17],[286,42],[263,42],[255,50],[247,42],[224,42],[224,17]],COLORS.white);
-  text(g,direction(m.reference),255,29,24,COLORS.white,'middle');
-  text(g,m.trueRef?'TRU':'M',296,29,16,COLORS.green);
- }else flag(g,m.radio?'HDG':'TRK',254,30);
+ if(m.mode==='PLAN')return;
+ photoText(g,'TAS'+numberText(m.trueAirspeed),h.left,h.second,22);
+ photoText(g,'GS'+numberText(m.groundSpeed),h.right,h.second,22,PHOTO_COLORS.white,'end');
+ const key=m.radio?'HDG':'TRK',y=l.full?h.radioFullHeading:h.heading;
+ if(!status.compassValid){flag(g,key,256,y);return;}
+ const index=layer(g,'track-readout');
+ stroke(index,[[225,y-17],[225,y+14],[241,y+14],[256,y+26],[271,y+14],[287,y+14],[287,y-17]],PHOTO_COLORS.white,1.75);
+ photoText(index,key,219,y+2,23,PHOTO_COLORS.green,'end');
+ photoText(index,direction(m.reference),256,y,27,PHOTO_COLORS.white,'middle');
+ photoText(index,m.trueRef?'TRU':'M',294,y+2,23,PHOTO_COLORS.green);
+ const end=l.roseCenter[1]-l.radius;
+ const spine=l.route?l.roseCenter[1]-4:end-6;
+ if(spine>y+26)line(index,256,y+26,256,spine,PHOTO_COLORS.white,1.5);
 }
 function mapRange(svg,m,l){
- const g=layer(svg,'range-scale'),[cx]=l.roseCenter,half=rosePoint(l,0,.5)[1];
+ const g=layer(svg,'range-scale'),[cx,cy]=l.roseCenter;
  const centered=m.mode==='CTR_MAP';
- line(g,cx,screenY(134),cx,screenY(centered?470:665),PHOTO_COLORS.white,2.2);
- for(const fraction of centered?[.5]:[.25,.5,.75]){
-  const y=rosePoint(l,0,fraction)[1];
-  line(g,cx-px(17),y,cx+px(17),y,PHOTO_COLORS.white,1.65);
+ if(!centered){
+  for(const fraction of [.25,.5,.75]){
+   const edge=Math.asin(Math.min(1,198/(l.radiusX*fraction)))*180/Math.PI;
+   stroke(g,Array.from({length:61},(_,i)=>rosePoint(l,edge*(i/30-1),fraction)),PHOTO_COLORS.white,1.65);
+  }
  }
- photoText(g,String(m.range/2),cx-px(18),half-(centered?0:py(17)),py(35),PHOTO_COLORS.white,'end');
+ const half=rosePoint(l,0,.5)[1];
+ photoText(g,String(m.range/2),cx-6,half-(centered?0:13),23,PHOTO_COLORS.white,'end');
  if(centered){
-  const y=rosePoint(l,180,.5)[1];
-  line(g,cx,y,cx,rosePoint(l,180)[1],PHOTO_COLORS.white,2.2);
-  line(g,cx-px(17),y,cx+px(17),y,PHOTO_COLORS.white,1.65);
-  photoText(g,String(m.range/2),cx-px(18),y,py(35),PHOTO_COLORS.white,'end');
+  line(g,cx-8,half,cx+6,half,PHOTO_COLORS.white,1.6);
+  const bottom=rosePoint(l,180,.5)[1];
+  line(g,cx-8,bottom,cx+6,bottom,PHOTO_COLORS.white,1.6);
+  line(g,cx,bottom,cx,cy+l.radius-4,PHOTO_COLORS.white,1.6);
+  photoText(g,String(m.range/2),cx-9,bottom,23,PHOTO_COLORS.white,'end');
  }
 }
-function mapMarker(p,l,angle,id){
- const [x,y]=rosePoint(l,angle);
+function mapMarker(p,l,angle,id,fraction=1){
+ const [x,y]=rosePoint(l,angle,fraction);
  return layer(p,id,{transform:'translate('+x+' '+y+') rotate('+roseTangent(l,angle)+')'});
 }
-function mapCompass(svg,m,l){
- const g=layer(svg,l.planCompass?'plan-compass':'compass-rose'),half=l.degrees/2,centered=m.mode==='CTR_MAP';
- if(!centered){
-  const points=Array.from({length:l.degrees+1},(_,i)=>rosePoint(l,i-half));
-  stroke(g,points,PHOTO_COLORS.white,1.95);
- }
- const step=centered?10:5;
- for(let bearing=0;bearing<360;bearing+=step){
-  const angle=rel(bearing-m.reference);
+function compass(svg,m,l){
+ const g=layer(svg,l.planCompass?'plan-compass':'compass-rose');
+ const half=l.degrees/2,centered=m.mode==='CTR_MAP',full=l.degrees===360,ref=l.planCompass?0:m.reference;
+ if(!full)stroke(g,Array.from({length:l.degrees+1},(_,i)=>rosePoint(l,i-half)),PHOTO_COLORS.white,1.9);
+ for(let bearing=0;bearing<360;bearing+=centered?10:5){
+  const angle=rel(bearing-ref);
   if(Math.abs(angle)>half)continue;
-  const length=centered ? .104 : bearing%10===0 ? .055 : .027;
-  const numbered=bearing%30===0;
-  if(!centered||!numbered)line(g,...rosePoint(l,angle),...rosePoint(l,angle,1-length),PHOTO_COLORS.white,centered?2:1.9);
+  const numbered=bearing%30===0,major=bearing%10===0;
+  const length=centered?.054:full?(major?.15:.09):(major?.058:.027);
+  if(!centered||!numbered)line(g,...rosePoint(l,angle),...rosePoint(l,angle,1-length),PHOTO_COLORS.white,1.65);
   if(!numbered)continue;
-  const [x,y]=rosePoint(l,angle,centered ? .914 : .904);
+  const [x,y]=rosePoint(l,angle,centered?1.008:full?.73:.855);
   const label=make(g,'g',{transform:'rotate('+roseTangent(l,angle)+' '+x+' '+y+')'});
-  photoText(label,String(bearing/10),x,y,py(centered?35:42),PHOTO_COLORS.white,'middle');
+  photoText(label,String(bearing/10),x,y,full?(centered?G.labels.center:G.labels.full):G.labels.expanded,PHOTO_COLORS.white,'middle');
  }
- if(!l.planCompass)mapRange(g,m,l);
- const heading=rel((m.radio?m.track:m.heading)-m.reference);
+ if(l.route&&!l.planCompass)mapRange(g,m,l);
+ const otherAngle=rel((m.radio?m.track:m.heading)-ref);
  const known=m.radio?m.efis.trackValid!==false:m.efis.headingValid!==false;
- if(known&&Math.abs(heading)<=half){
-  const pointer=mapMarker(g,l,heading,'heading-pointer');
-  polygon(pointer,[[0,0],[-px(27),py(29)],[-px(27),py(40)],[px(27),py(40)],[px(27),py(29)]],PHOTO_COLORS.white,'none',1.9);
-  line(pointer,-px(27),py(29),px(27),py(29),PHOTO_COLORS.white,1.65);
+ if(!l.planCompass&&known&&Math.abs(otherAngle)<=half){
+  const mark=mapMarker(g,l,otherAngle,'heading-pointer',1.035);
+  polygon(mark,[[0,-6],[4,0],[0,6],[-4,0]],PHOTO_COLORS.white,'none',1.7);
  }
- const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-m.reference):null;
+ const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-ref):null;
  if(delta!==null&&Math.abs(delta)<=half){
   const bug=mapMarker(g,l,delta,'heading-bug');
-  polygon(bug,[[-px(27),0],[px(27),0],[px(27),-py(18)],[-px(27),-py(18)]],PHOTO_COLORS.magenta,'none',1.9);
-  line(bug,0,0,0,-py(18),PHOTO_COLORS.magenta,1.7);
+  const size=full?8:7;
+  polygon(bug,[[0,-2],[-size,12],[size,12]],PHOTO_COLORS.magenta,'none',1.9);
+  if(l.route&&!l.planCompass)line(g,...rosePoint(l,delta,.92),...rosePoint(l,delta,.08),
+   PHOTO_COLORS.magenta,1.5,{'stroke-dasharray':'8 18','data-segment':'heading-bug-vector'});
  }
- if(l.planCompass||delta===null)return;
- const from=rosePoint(l,delta,.96),to=rosePoint(l,delta,.12);
- line(g,...from,...to,PHOTO_COLORS.magenta,1.55,{'stroke-dasharray':'12 15','data-segment':'heading-bug-vector'});
 }
-function fullCompass(svg,m,l){
- const g=layer(svg,'compass-rose'),[cx,cy]=l.roseCenter,r=l.radius;
- circle(g,cx,cy,r);
- for(let n=0;n<360;n+=5){
-  const a=rel(n-m.reference),major=n%30===0;
-  const first=polar(cx,cy,a,r),second=polar(cx,cy,a,r-(major?13:7));
-  line(g,...first,...second);
-  if(!major)continue;
-  const [x,y]=polar(cx,cy,a,r-28);
-  text(make(g,'g',{transform:'rotate('+a+' '+x+' '+y+')'}),String(n?n/10:36),x,y,22,COLORS.white,'middle');
- }
- const topY=cy-r;
- if(!m.radio&&m.efis.headingValid!==false){
-  const a=rel(m.heading-m.reference);
-  const pointer=layer(g,'heading-pointer',{transform:'rotate('+a+' '+cx+' '+cy+')'});
-  polygon(pointer,[[cx,topY+4],[cx-13,topY+24],[cx+13,topY+24]]);
- }
- const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-m.reference):null;
- if(delta!==null){
-  const bug=layer(svg,'heading-bug',{transform:'rotate('+delta+' '+cx+' '+cy+')'});
-  stroke(bug,[[cx-11,topY-5],[cx-11,topY+4],[cx-5,topY+4],[cx,topY],[cx+5,topY+4],[cx+11,topY+4],[cx+11,topY-5]],COLORS.magenta,2);
-  line(bug,cx,topY+11,cx,cy-21,COLORS.magenta,1.25,{'stroke-dasharray':'7 7'});
- }
- if(m.radio&&m.efis.trackValid!==false){
-  const drift=rel(m.track-m.heading);
-  const p=polar(cx,cy,drift,r-4),left=polar(cx,cy,drift-3,r-19),right=polar(cx,cy,drift+3,r-19);
-  polygon(layer(g,'drift'),[p,left,right]);
+function navPointers(svg,m,l){
+ if(m.mode==='PLAN'||(l.route&&!m.options.vorAdf))return;
+ const g=layer(svg,'nav-bearing-pointers'),limit=l.degrees/2;
+ for(const entry of m.bearings||[]){
+  if(!Number.isFinite(entry.angle)||![1,2].includes(entry.channel))continue;
+  const angle=rel(entry.angle-m.reference);
+  if(Math.abs(angle)<=limit){
+   const h=mapMarker(g,l,angle,'nav'+entry.channel+'-head',1.035);
+   if(entry.channel===1)stroke(h,[[-5,2],[0,-5],[5,2],[0,-5],[0,26]],PHOTO_COLORS.green,1.9);
+   else polygon(h,[[0,-6],[-5,1],[-5,24],[5,24],[5,1]],PHOTO_COLORS.green,'none',1.8);
+  }
+  const tailAngle=rel(angle+180);
+  if(Math.abs(tailAngle)>limit)continue;
+  const t=mapMarker(g,l,tailAngle,'nav'+entry.channel+'-tail',1.02);
+  const base=entry.channel===1?[[-9,-10],[-3,-10],[-3,-3],[3,-3],[3,-10],[9,-10],[9,-4],[4,2],[4,23],[0,27],[-4,23],[-4,2],[-9,-4]]:
+   [[-9,-10],[0,-5],[9,-10],[9,-2],[4,4],[4,23],[0,27],[-4,23],[-4,4],[-9,-2]];
+  polygon(t,base,PHOTO_COLORS.green,'none',1.85);
  }
 }
 function aircraft(svg,l,full){
  if(!l.aircraft)return;
  const [cx,cy]=l.aircraft,g=layer(svg,'aircraft');
  if(l.calibrated){
-  polygon(g,[[cx,cy],[cx-px(37),cy+py(82)],[cx+px(37),cy+py(82)]],PHOTO_COLORS.white,'none',1.9);
+  polygon(g,[[cx,cy],[cx-13,cy+33],[cx+13,cy+33]],PHOTO_COLORS.white,'none',1.7);
  }else if(full){
   line(g,cx,cy-24,cx,cy+26,COLORS.white,2.5);
   line(g,cx-23,cy+3,cx+23,cy+3,COLORS.white,2.5);
@@ -249,7 +210,7 @@ function aircraft(svg,l,full){
 }
 function projection(m,l,plan=false){
  const [cx,cy]=plan?[252,294]:l.roseCenter;
- const scale=(plan?198:l.radius)/m.range,scaleX=plan?scale:(l.radiusX??l.radius)/m.range;
+ const scale=l.radius/m.range,scaleX=(l.radiusX??l.radius)/m.range;
  const anchor=plan?m.route.points[clamp(m.route.centerIndex,0,m.route.points.length-1)]:null;
  return (east,north)=>{
   const a=rad(plan?0:m.geoTrack??m.reference);
@@ -267,11 +228,12 @@ function mapWaypoint(g,x,y,pt,color,showData,shape){
   polygon(mark,place(vertices),color,'none',1.75);
   for(const spoke of [[[-12,-11],[-27,-17],[-37,-5],[-18,0]],[[12,-11],[27,-17],[37,-5],[18,0]],[[-11,14],[-11,27],[11,27],[11,14]]])
    stroke(mark,place(spoke),color,1.75);
- }else polygon(g,Array.from({length:8},(_,i)=>{
-  const angle=rad(i*45),size=i%2?7:24;
-  return [x+px(Math.sin(angle)*size),y+py(Math.cos(angle)*size*.78)];
- }),color,'none',1.75);
- const dx=px(shape==='nav'?40:shape==='airport'?35:27),labelY=y+py(15);
+ }else if(pt.symbol==='CONSTRAINT')circle(g,x,y,5.8,color);
+ else polygon(g,Array.from({length:8},(_,i)=>{
+  const angle=rad(i*45),radius=i%2?2.2:9.5;
+  return [x+Math.sin(angle)*radius,y+Math.cos(angle)*radius];
+ }),color,'none',1.55);
+ const dx=shape==='nav'?19:shape==='airport'?16:10,labelY=y+3;
  photoText(g,pt.name,x+dx,labelY,MAP_ID_SIZE,color);
  if(showData){
   photoText(g,pt.altitude,x+dx,labelY+14,MAP_DETAIL_SIZE,color);
@@ -333,10 +295,6 @@ function drawRoute(svg,m,l,status,plan){
    else text(a,'SIMX',x+11,y+12,15);
   }
  }
- if(m.options.vorAdf&&!plan&&m.showSyntheticBearing!==false){
-  const [x,y]=l.roseCenter,to=rosePoint(l,rel(224-m.reference),.64);
-  line(layer(db,'bearing-radial'),x,y,...to,COLORS.green,1.4,{'stroke-dasharray':'7 5'});
- }
 }
 function course(svg,m,l){
  const [cx,cy]=l.roseCenter,r=l.radius,full=l.degrees===360;
@@ -346,10 +304,10 @@ function course(svg,m,l){
  const stretch=l.radiusX?l.radiusX/l.radius:1;
  const rotation='translate('+cx+' '+cy+') scale('+stretch+' 1) rotate('+delta+') scale('+(1/stretch)+' 1) translate('+(-cx)+' '+(-cy)+')';
  const n=make(g,'g',{transform:rotation});
- const tip=cy-r+19,stub=full?52:48;
+ const tip=cy-r+20,stub=full?52:48;
  if(full&&m.radio){
-  polygon(n,[[cx,tip],[cx-9,tip+16],[cx-4,tip+16],[cx-4,cy-stub],[cx+4,cy-stub],[cx+4,tip+16],[cx+9,tip+16]],COLORS.white);
-  polygon(n,[[cx-4,cy+stub],[cx+4,cy+stub],[cx+4,cy+r-20],[cx-4,cy+r-20]],COLORS.white);
+  polygon(n,[[cx,tip],[cx-4,tip+8],[cx-4,cy-stub],[cx+4,cy-stub],[cx+4,tip+8]],PHOTO_COLORS.white,'none',1.6);
+  polygon(n,[[cx-4,cy+stub],[cx+4,cy+stub],[cx+4,cy+r-20],[cx-4,cy+r-20]],PHOTO_COLORS.white,'none',1.6);
  }else{
   polygon(n,[[cx,tip],[cx-8,tip+12],[cx+8,tip+12]],COLORS.white);
   line(n,cx,tip+13,cx,cy-stub,COLORS.magenta,2.2);
@@ -358,7 +316,8 @@ function course(svg,m,l){
  if(m.nav.valid&&Number.isFinite(m.nav.cdi)){
   for(const i of [-2,-1,1,2])circle(n,cx+i*spacing,cy,3);
   const x=cx+clamp(m.nav.cdi||0,-2.4,2.4)*spacing;
-  line(n,x,cy-stub,x,cy+stub,COLORS.magenta,3.2);
+  if(full)polygon(n,[[x-3,cy-stub],[x+3,cy-stub],[x+3,cy+stub],[x-3,cy+stub]],PHOTO_COLORS.magenta,'none',1.8);
+  else line(n,x,cy-stub,x,cy+stub,PHOTO_COLORS.magenta,2.2);
   if(m.radio&&m.nav.type==='VOR'&&m.nav.toFrom){
    if(full)polygon(n,[[cx+14,cy-12],[cx+21,cy-2],[cx+7,cy-2]].map(([x1,y])=>[x1,m.nav.toFrom==='TO'?y:2*cy-y]),COLORS.white);
    text(g,m.nav.toFrom,489,448,17,COLORS.white,'end');
@@ -376,21 +335,23 @@ function vertical(svg,m){
  if(vnav&&Math.abs(m.nav.vnav)>400)text(g,Math.abs(m.nav.vnav),489,385,14,COLORS.white,'end');
 }
 function wind(svg,m){
- if(m.mode==='PLAN'||!Number.isFinite(m.windSpeed)||m.windSpeed<=0)return;
- const g=layer(svg,'wind');
- text(g,direction(m.windDirection)+'°/'+m.windSpeed,17,455,17);
+ if(m.mode==='PLAN'||!Number.isFinite(m.windDirection)||!Number.isFinite(m.windSpeed)||m.windSpeed<=0)return;
+ const l=LAYOUT[m.mode],g=layer(svg,'wind');
+ const [x,y]=l.full?G.wind.full:m.mode==='CTR_MAP'?G.wind.center:G.wind.expanded;
+ photoText(g,direction(m.windDirection)+'°/'+Math.round(m.windSpeed),x,y,23);
  if(m.windSpeed<6)return;
- const arrow=make(g,'g',{transform:'rotate('+rel(m.windDirection+180-m.reference)+' 40 420)'});
- line(arrow,40,435,40,406);stroke(arrow,[[34,414],[40,405],[46,414]]);
+ const ax=x+13,ay=y-33;
+ const arrow=make(g,'g',{transform:'translate('+ax+' '+ay+') rotate('+rel(m.windDirection+180-m.reference)+')'});
+ line(arrow,0,15,0,-15,PHOTO_COLORS.white,1.8);stroke(arrow,[[-5,-8],[0,-15],[5,-8]],PHOTO_COLORS.white,1.8);
 }
 function footer(svg,m){
  const g=layer(svg,'lower-data');
  wind(g,m);
  if(m.radio){
-  text(g,m.nav.source,17,483,18,COLORS.green);
-  if(m.nav.frequency!=null)text(g,Number(m.nav.frequency).toFixed(2),493,483,19,COLORS.white,'end');
- }else if(m.mode.endsWith('NAV'))text(g,'NAV',17,483,18,COLORS.green);
-
+  const x=LAYOUT[m.mode].full?75:57;
+  photoText(g,m.nav.source,x,459,22,PHOTO_COLORS.green);
+  if(m.nav.frequency!=null)photoText(g,Number(m.nav.frequency).toFixed(2),440,459,23,PHOTO_COLORS.green,'end');
+ }else if(m.mode.endsWith('NAV'))photoText(g,'NAV',72,459,21,PHOTO_COLORS.green);
 }
 function radar(svg,m,l,status){
  if(!status.wxrVisible&&!status.terrainVisible)return;
@@ -431,13 +392,13 @@ function traffic(svg,m,l,status){
  if(advisories.length)text(g,'TRAFFIC',402,68,19,alerts,'middle');
  const labels={OFF:'TCAS OFF',FAIL:'TCAS FAIL',TA_ONLY:'TA ONLY',TEST:'TCAS TEST'};
  if(mode==='OFF'&&l.calibrated){
-  photoAt(g,'TCAS',407,473,35);
-  photoAt(g,'OFF',407,507,35);
+  photoText(g,'TCAS',64,205,22);
+  photoText(g,'OFF',64,226,22);
  }else if(labels[mode]&&(mode!=='FAIL'||!m.traffic.failSuppressed)){
   text(g,labels[mode],494,88,17,mode==='OFF'||mode==='FAIL'?COLORS.amber:COLORS.white,'end');
  }
  if(!status.trafficOverlay)return;
- text(g,'TFC',18,76,16);
+ photoText(g,'TFC',G.header.left,m.mode==='CTR_MAP'?200:205,21,PHOTO_COLORS.green);
  let offscale=null;
  for(const t of visible){
   const delta=rel(t.bearing-m.reference);
@@ -463,10 +424,6 @@ function traffic(svg,m,l,status){
  }
  if(offscale)text(g,'OFFSCALE',494,106,16,offscale,'end');
 }
-function fullLayer(svg,l,aspect){
- const y=l.roseCenter[1];
- return layer(svg,'full-projection',{transform:'translate(0 '+y*(1-aspect)+') scale(1 '+aspect+')'});
-}
 function render(svg,raw){
  if(!svg)return null;
  const m=model(raw),s=computeDisplay(raw),l=LAYOUT[m.mode];
@@ -486,13 +443,11 @@ function render(svg,raw){
  const clip=make(defs,'clipPath',{id:clipId});
  make(clip,'rect',l.calibrated?{x:0,y:49,width:W,height:H-49,rx:px(25),ry:py(25)}:{x:13,y:73,width:486,height:391});
  const plot=layer(svg,'plot',{'clip-path':'url(#'+clipId+')'});
- const aspect=m.efis.displayAspect??DISPLAY_ASPECT;
- const rose=l.full?fullLayer(svg,l,aspect):svg;
  header(svg,m,s);
  radar(plot,m,l,s);
  if(s.compassValid){
-  if(l.full)fullCompass(rose,m,l);
-  else mapCompass(svg,m,l);
+  compass(svg,m,l);
+  navPointers(svg,m,l);
  }
  if(l.route&&s.orientationValid)drawRoute(plot,m,l,s,m.mode==='PLAN');
  if(m.mode==='PLAN'){
@@ -501,10 +456,10 @@ function render(svg,raw){
   text(n,'N',472,295,17,COLORS.white,'middle');
  }
  if(s.compassValid&&m.mode!=='PLAN'){
-  if(!l.route)course(l.full?fullLayer(plot,l,aspect):plot,m,l);
+  if(!l.route)course(plot,m,l);
   trend(plot,m,l);
   altitudeArc(plot,m,l);
-  aircraft(rose,l,l.degrees===360);
+  aircraft(svg,l,l.degrees===360);
  }
  if(m.efis.verticalFailure&&!m.radio&&m.mode!=='PLAN')flag(svg,'VTK',473,341);
  if(l.route&&!m.nav.valid&&!m.efis.mapFailurePending&&!m.weather.disagreement?.includes('MAP'))flag(svg,'MAP',256,291);

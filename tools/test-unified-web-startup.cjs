@@ -52,7 +52,7 @@ const server=http.createServer((req,res)=>{
      eadi.renderer==='EFISDisplayLabEadiFull'&&eadi.mounted===true&&
      document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
      document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
-     window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0007'&&
+     window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0008'&&
      !!document.getElementById('unifiedEhsiCAPT')&&
      !!document.getElementById('unifiedEhsiFO');
    },null,{timeout:20000,polling:100});
@@ -87,7 +87,7 @@ const server=http.createServer((req,res)=>{
     },seat);
     await page.waitForFunction(seat=>{
      const svg=document.getElementById('unifiedEhsi'+seat);
-     return svg?.getAttribute('data-renderer')==='EHSI-CLASSIC-REBUILD-0007'&&
+     return svg?.getAttribute('data-renderer')==='EHSI-CLASSIC-REBUILD-0008'&&
       svg?.querySelector('[data-segment="compass-rose"]')!==null;
     },seat,{timeout:12000,polling:80});
    }

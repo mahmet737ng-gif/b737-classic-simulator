@@ -40,7 +40,11 @@
   if(kind.startsWith('vor')){
    const stationIdent=String(data.stationIdent||'').toUpperCase();
    if(!/^[A-Z0-9]{2,5}$/.test(stationIdent))throw Error('VOR_STATION_IDENT_REQUIRED');
+   const bearingReference=data.bearingReference;
+   if(bearingReference!==undefined&&!['TRUE','MAGNETIC','RELATIVE'].includes(bearingReference))
+    throw Error('VOR_BEARING_REFERENCE_INVALID');
    return {quality:'VALID',value:{stationIdent,bearingDeg:field(data,'bearingDeg',0,360,true),
+    ...(bearingReference===undefined?{}:{bearingReference}),
     stationLat:field(data,'stationLat',-90,90),stationLon:field(data,'stationLon',-180,180),
     tunedFrequencyMHz:field(data,'tunedFrequencyMHz',108,117.95),
     source:'SIMULATOR_VOR_CHANNEL_'+kind.slice(-1)}};

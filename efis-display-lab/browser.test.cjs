@@ -17,13 +17,13 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.waitForFunction(()=>!!window.B737EFISDisplayLab);
   assert.equal(await page.locator('#auditRows tr').count(),25);
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.runTests())).pass,true);
-  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0007');
+  assert.equal(await page.locator('#ehsi').getAttribute('data-renderer'),'EHSI-CLASSIC-REBUILD-0008');
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),1);
   const mapArc=await page.locator('#ehsi [data-segment="compass-rose"] > polyline').getAttribute('points');
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),1);
   const mapLabel=page.locator('#ehsi [data-segment="active-route"] [data-text="KAVIR"]');
-  assert.equal(await mapLabel.getAttribute('font-size'),'16','reference-sized map waypoint identifier');
+  assert.equal(await mapLabel.getAttribute('font-size'),'20','reference-sized map waypoint identifier');
   // Physical CP visual source, registered detents, independent coaxial shafts.
   await page.waitForFunction(()=>!!window.B737EFISCP);
   assert.equal(await page.locator('.efcp-face .efcp-knob').count(),6);
@@ -85,8 +85,9 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('[data-ehsi-mode="FULL_NAV"]').click();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'FULL_NAV');
   assert.equal(await page.locator('#ehsi [data-segment="course-deviation"]').count(),1);
-  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"] circle').count(),1);
-  assert.equal(await page.locator('#ehsi [data-segment="compass-rose"] > circle').getAttribute('r'),'216');
+  const fullRose=page.locator('#ehsi [data-segment="compass-rose"]');
+  assert.equal(await fullRose.locator(':scope > line').count(),72);
+  assert.equal(await fullRose.locator(':scope > [transform^="rotate"]').count(),12);
   const display=await page.locator('#ehsi').boundingBox();
   assert.ok(Math.abs(display.width/display.height-350/411)<.01,'EHSI remains portrait in a FULL format');
   const shared=await page.evaluate(()=>{
@@ -110,7 +111,7 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   assert.equal(await page.locator('#ehsi [data-segment="plan-compass"]').count(),1);
   assert.equal(await page.locator('#ehsi [data-segment="plan-compass"] > polyline').getAttribute('points'),mapArc);
   assert.equal(await page.locator('#ehsi [data-segment="heading-bug-vector"]').count(),0);
-  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),1);
+  assert.equal(await page.locator('#ehsi [data-segment="heading-bug"]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="heading-bug"] line[stroke-dasharray]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="aircraft"]').count(),0);
   assert.equal(await page.locator('#ehsi [data-segment="true-north"] [data-text="N"]').count(),1);
@@ -154,7 +155,20 @@ const path=require('node:path'),fs=require('node:fs'),crypto=require('node:crypt
   await page.locator('input[data-path="power.ehsi"]').uncheck();
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'MAP');
   assert.equal(await page.locator('#ehsi [data-segment="compass-rose"]').count(),0);
-  await page.locator('[data-scenario="normal"]').click();
+  for(const [name,ias,axis] of [['ref-cmd',201.5,null],['ref-cws-r',201.5,'CWS R'],
+   ['ref-cws-p',201.5,'CWS P'],['ref-312',312,null]]){
+   await page.locator('[data-scenario="'+name+'"]').click();
+   const values=await page.evaluate(()=>{
+    const s=window.B737EFISDisplayLab.getState();
+    const v=window.EFISDisplayLabCore.evaluate(s);
+    return {ias:s.eadi.ias,axis:window.EFISDisplayLabEadi.fmaInput(s,v).afds.secondary||null};
+   });
+   assert.deepEqual(values,{ias,axis});
+   for(const ch of [1,2]){
+    assert.equal(await page.locator('#ehsi [data-segment="nav'+ch+'-head"]').count(),1);
+    assert.equal(await page.locator('#ehsi [data-segment="nav'+ch+'-tail"]').count(),1);
+   }
+  }
   await page.locator('[data-scenario="approach"]').click();
   assert.equal((await page.evaluate(()=>window.B737EFISDisplayLab.getState())).eadi.radioAlt,120);
   await page.locator('#eadiStage').screenshot({path:path.join(out,'eadi-approach.png'),animations:'disabled'});

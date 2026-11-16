@@ -1,15 +1,16 @@
 /* Classic EADI display. Canvas coordinates follow the FSI figure in FCOM 10.30.7. */
 (function(root,factory){
- const api=factory(root.EFISLabGlyphs,root.B737ClassicSpeedTapeEngineV1,root.B737ClassicFlapSpeedProfileV1,root.B737UnifiedSpeedTapeV1,root.B737FmaModeEngineV1,root.B737EADIFMAFcomV2);
+ const api=factory(root.EFISLabGlyphs,root.B737ClassicSpeedTapeEngineV1,root.B737ClassicFlapSpeedProfileV1,root.B737UnifiedSpeedTapeV1,root.B737FmaModeEngineV1,root.B737EADIFMAFcomV2,root.B737EfisReferenceGeometry??(typeof require==='function'?require('./reference-geometry.js'):null));
  if(typeof module==='object'&&module.exports)module.exports=api;
  root.EFISDisplayLabEadi=api;
  // Allow Unified to repaint when a deferred source finishes loading; DOM
  // readiness and paint readiness are separate states.
  if(root.document&&root.dispatchEvent&&root.CustomEvent)
   root.dispatchEvent(new root.CustomEvent('b737:efis-lab-eadi-ready'));
-})(globalThis,function(glyph,speedEngine,flaps,speedLayer,fmaEngine,fmaLayer){
+})(globalThis,function(glyph,speedEngine,flaps,speedLayer,fmaEngine,fmaLayer,geometry){
 'use strict';
-const W=640,H=640,CX=328,CY=310,SCALE=6;
+const G=geometry.eadi;
+const W=640,H=640,[CX,CY]=G.center,SCALE=G.attitude.pitchPerDeg;
 const C=glyph?.colors;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number(n)||0));
 const rad=n=>n*Math.PI/180;
@@ -18,7 +19,7 @@ function line(c,x,y,X,Y,color=WHITE,width=2){
  c.beginPath();c.moveTo(x,y);c.lineTo(X,Y);c.strokeStyle=color;c.lineWidth=width;c.stroke();
 }
 function txt(c,value,x,y,size=18,color=WHITE,align='left'){
- if(value!==null&&value!==undefined&&value!=='')glyph.canvas(c,value,x,y,size,color,align);
+ if(value!==null&&value!==undefined&&value!=='')glyph.canvas(c,value,x,y,size,color,align,.83);
 }
 function shape(c,points,{fill=null,stroke=WHITE,width=2}={}){
  c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();
@@ -37,24 +38,27 @@ function box(c,value,x,y,size=19){
  txt(c,value,x,y,size,AMBER,'center');
 }
 function aperture(c){
- c.beginPath();c.moveTo(177,259);c.bezierCurveTo(177,174,241,119,CX,119);
- c.bezierCurveTo(413,119,478,174,478,259);c.lineTo(478,410);
- c.bezierCurveTo(478,479,409,518,CX,518);c.bezierCurveTo(245,518,177,479,177,410);
+ const {left,right,top,bottom,shoulder,heel}=G.attitude;
+ c.beginPath();c.moveTo(left,shoulder);
+ c.bezierCurveTo(211,155,264,top,CX,top);
+ c.bezierCurveTo(376,top,427,155,right,shoulder);c.lineTo(right,heel);
+ c.bezierCurveTo(428,514,377,bottom,CX,bottom);
+ c.bezierCurveTo(263,bottom,212,514,left,heel);
  c.closePath();
 }
 function attitude(c,e,v){
  const bank=clamp(e.bank,-180,180),pitch=clamp(e.pitch,-90,90)*SCALE;
  c.save();aperture(c);c.clip();
- if(v.raster){c.fillStyle='#1766b4';c.fillRect(0,0,W,H);}
+ if(v.raster){c.fillStyle='#123862';c.fillRect(0,0,W,H);}
  c.save();c.translate(CX,CY);c.rotate(-rad(bank));
- if(v.raster){c.fillStyle='#825122';c.fillRect(-1200,pitch,2400,1700);}
+ if(v.raster){c.fillStyle='#623818';c.fillRect(-1200,pitch,2400,1700);}
  line(c,-1200,pitch,1200,pitch,WHITE,3.2);
  for(let marking=-90;marking<=90;marking+=2.5){
   if(marking===0)continue;
   const a=Math.abs(marking),y=pitch-marking*SCALE,major=a%10===0;
-  const width=major?57:a%5===0?29:13;
+  const t=G.attitudeTicks,width=major?t.major:a%5===0?t.intermediate:t.minor;
   line(c,-width,y,width,y,WHITE,major?2.7:1.9);
-  if(major){txt(c,a,-width-8,y,19,WHITE,'right');txt(c,a,width+8,y,19);}
+  if(major){txt(c,a,-width-8,y,t.labelSize,WHITE,'right');txt(c,a,width+8,y,t.labelSize);}
  }
  if(e.tcas!=='OFF'){
   const boundary=pitch-clamp(e.tcasLimit,-35,35)*SCALE;
@@ -73,26 +77,31 @@ function attitude(c,e,v){
   }
  }
  c.restore();
+ for(const side of [-1,1]){
+  const points=[[31,-6],[104,-6],[108,-3],[108,6],[37,6],[37,37],[29,37],[29,-2]].map(([x,y])=>[CX+x*side,CY+y]);
+  shape(c,points,{fill:'#080a0c',width:2.6});
+ }
+ circle(c,CX,CY,5.8,WHITE,'#080a0c',2);
  if(v.fd){
   const y=CY-clamp(e.fdPitch-e.pitch,-23,23)*SCALE;
   const x=CX+clamp(e.fdRoll-e.bank,-31,31)*3.8;
-  line(c,CX-95,y,CX+95,y,MAGENTA,4);
-  line(c,x,CY-94,x,CY+94,MAGENTA,4);
+  const d=G.director,cue='#ee43e7';
+  if(v.fdPitch!==false)line(c,CX-d.halfHorizontal,y,CX+d.halfHorizontal,y,cue,d.stroke);
+  if(v.fdRoll!==false)line(c,x,CY-d.halfVertical,x,CY+d.halfVertical,cue,d.stroke);
  }
- for(const side of [-1,1]){
-  const points=[[37,-5],[112,-5],[112,6],[51,6],[51,25],[37,25]].map(([x,y])=>[CX+x*side,CY+y]);
-  shape(c,points,{fill:'#030303',width:2.4});
- }
- circle(c,CX,CY,8,WHITE,'#030303',2.2);
  c.restore();
- for(const a of [-60,-45,-30,-20,-10,0,10,20,30,45,60]){
-  const r=192,r2=r+([0,30,60].includes(Math.abs(a))?17:11);
-  line(c,CX+Math.sin(rad(a))*r,CY-Math.cos(rad(a))*r,CX+Math.sin(rad(a))*r2,CY-Math.cos(rad(a))*r2,WHITE,2.5);
+ for(const a of [-60,-45,-30,-20,-10,10,20,30,45,60]){
+  const t=rad(a),inner=a%30===0?214:216,outer=a%30===0?244:234;
+  line(c,CX+Math.sin(t)*inner*.72,CY-Math.cos(t)*inner,
+         CX+Math.sin(t)*outer*.72,CY-Math.cos(t)*outer,WHITE,a%30===0?3:2.1);
  }
- c.save();c.translate(CX,CY);c.rotate(-rad(bank));
- shape(c,[[-9,-176],[9,-176],[0,-192]],{fill:WHITE,stroke:null});
+ const bankMark=G.movingBank,fixed=G.fixedBank;
+ shape(c,[[CX-fixed.width/2,fixed.top],[CX+fixed.width/2,fixed.top],[CX,fixed.tip]],{fill:WHITE,stroke:null});
+ c.save();c.translate(CX,CY);c.scale(.72,1);c.rotate(-rad(bank));
+ const tip=-bankMark.radius;
+ shape(c,[[0,tip+4],[-bankMark.width/1.44,tip+bankMark.height],[bankMark.width/1.44,tip+bankMark.height]],{width:2.5});
  c.restore();
- shape(c,[[CX-9,91],[CX+9,91],[CX,104]],{width:2.1});
+
 }
 function fmaInput(state,v){
  const {eadi:e,power:p,seat}=state;
@@ -149,18 +158,16 @@ function tapeInput(state,v,fma=fmaInput(state,v)){
  return engine.view(s);
 }
 function speedTape(c,view){
- const scale=.665;
+ const {axis,centerY,scaleX,scaleY}=G.tape;
  c.save();
- c.translate(135-speedLayer.TAPE.axis*scale,CY-speedLayer.TAPE.centerY*scale);
- c.scale(scale,scale);
- speedLayer.draw(c,view);
+ c.translate(axis-speedLayer.TAPE.axis*scaleX,centerY-speedLayer.TAPE.centerY*scaleY);
+ c.scale(scaleX,scaleY);
+ speedLayer.draw(c,view,{reference:true,glyph});
  c.restore();
 }
 const fmaTimers=new WeakMap();
 function drawFma(c,seat){
- c.save();c.translate(7,13);c.scale(.696,.69);
- fmaLayer.render(c,seat);
- c.restore();
+ fmaLayer.renderReference(c,seat,G.fma,glyph);
 }
 function flightModes(canvas,c,seat,fields){
  const changed=fmaLayer.accept(seat,fields);
@@ -199,7 +206,7 @@ function approach(c,e,v){
    }
   }else if(v.locFlag)box(c,'LOC',CX,y);
  }
- if(v.dhDigital)txt(c,'DH'+e.dh,568,510,20,GREEN,'right');
+ if(v.dhDigital)txt(c,'DH'+e.dh,G.dh.x,G.dh.y,G.dh.size,'#26ed36');
  else if(v.flags.includes('DH'))box(c,'DH',566,445);
  if(!v.ra){if(v.radioAlt===null)box(c,'RA',552,546);return;}
  const color=v.dhAlert?AMBER:WHITE;
@@ -216,7 +223,7 @@ function approach(c,e,v){
   }
   if(v.heightAlert){c.strokeStyle=WHITE;c.lineWidth=1.5;c.strokeRect(508,489,58,26);}
   txt(c,Math.round(v.radioAlt),x,y,27,color,'center');
- }else txt(c,Math.round(v.radioAlt),572,544,23,color,'right');
+ }else txt(c,Math.round(v.radioAlt),G.radioAltitude.x,G.radioAltitude.y,G.radioAltitude.size,color);
 }
 function render(canvas,state,core,live){
  if(!canvas)return;
@@ -234,16 +241,16 @@ function render(canvas,state,core,live){
  // FMA owner. Do not overwrite them with the lab demonstration projection.
  if(live)drawFma(c,state.seat);
  else flightModes(canvas,c,state.seat,fma);
- if(v.attitude)attitude(c,e,v);else box(c,'ATT',CX,CY);
+ const fields=live?fmaLayer.getState(state.seat).fields:fma;
+ const axes=[fields?.afds?.secondary,fields?.afds?.tertiary];
+ if(v.attitude)attitude(c,e,{...v,fdPitch:e.fdPitchValid!==false&&!axes.includes('CWS P'),fdRoll:e.fdRollValid!==false&&!axes.includes('CWS R')});else box(c,'ATT',CX,CY);
  if(v.flags.includes('FD'))box(c,'FD',466,104);
  if(speed)speedTape(c,speed);
  approach(c,e,v);
- if(v.ias&&v.mach)txt(c,Number(e.mach).toFixed(3).slice(1),104,539,22,WHITE,'right');
+ const mach=live?speed?.actualMach??(v.mach?e.mach:null):v.ias&&v.mach?e.mach:null;
+ if(Number.isFinite(mach)&&mach>=.4&&!speed?.flags?.MACH)
+  txt(c,mach.toFixed(3).replace(/^0/,''),G.mach.x,G.mach.y,G.mach.size);
  if(v.flags.includes('MACH'))box(c,'MACH',81,539,16);
- const gs=clamp(e.groundSpeed,0,999);
- if(live?Number.isFinite(e.groundSpeed):state.power.fmcTrack||v.source.irsValid){
-  txt(c,'GS',129,517,14);txt(c,Math.round(gs),129,539,21);
- }
  if(e.windshear)txt(c,'WINDSHEAR',CX,463,33,RED,'center');
  else if(e.pullup)txt(c,'PULL UP',CX,463,33,RED,'center');
  const comparison=live?.comparison??v.comparison;
@@ -305,7 +312,8 @@ function renderUnifiedFull(canvas,input={}){
  e.groundSpeed=observed(input.groundSpeedKt);
  e.brightness=observed(input.brightness,1);
  e.radioAlt=observed(input.radioAltFt,0);e.dh=observed(input.dhFt,-20);
- e.fd=!!input.director?.enabled&&finite(input.director.pitchDeg)&&finite(input.director.rollDeg);
+ e.fdPitchValid=finite(input.director?.pitchDeg);e.fdRollValid=finite(input.director?.rollDeg);
+ e.fd=input.director?.enabled===true&&(e.fdPitchValid||e.fdRollValid);
  e.fdAuto=false;e.fdPitch=observed(input.director?.pitchDeg,0);e.fdRoll=observed(input.director?.rollDeg,0);
  e.locDev=observed(input.locDeviation,0);e.gsDev=observed(input.gsDeviation,0);
  e.frontCourse=input.frontCourse===true;e.suppressGsScale=input.frontCourse!==true;e.locCaptured=input.director?.locCaptured===true;e.gsCaptured=input.director?.gsCaptured===true;
