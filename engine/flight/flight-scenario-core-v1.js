@@ -73,7 +73,7 @@
   const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
   const vs=ground?0:vsInput;
   const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
-   headingDeg:heading,bankCommandDeg:bank,altitudeFt:ground?airport.elevationFt+3000:alt,
+   headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?airport.elevationFt+3000:alt,
    vsFpm:ground?1500:vs,speedKt:ground?150:speed};
   return {schema:'B737_FLIGHT_SCENARIO_STATE_V1',revision:1,
    icao,airportName:airport.name,runway,runwayHeadingTrueDeg:hdg,threshold:anchor,
@@ -93,6 +93,7 @@
   switch(action.type){
    case 'HEADING':next.target.headingDeg=wrap(finite(action.value,0,360,'HEADING'));next.target.lateralMode='HEADING';break;
    case 'BANK':next.target.bankCommandDeg=finite(action.value,-30,30,'BANK');next.target.lateralMode='BANK';break;
+   case 'BANK_LIMIT':next.target.bankLimitDeg=finite(action.value,10,30,'BANK_LIMIT');break;
    case 'ALTITUDE':next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');next.target.verticalMode='ALTITUDE';break;
    case 'VS':next.target.vsFpm=finite(action.value,-5000,5000,'VS');next.target.verticalMode='VS';break;
    case 'SPEED':next.target.speedKt=finite(action.value,0,450,'SPEED');break;
@@ -155,9 +156,10 @@
    let wantBank=0;
    if(target.lateralMode==='BANK')wantBank=target.bankCommandDeg;
    else{
-    // Heading error drives a proportional roll target, limited to 25 degrees.
+    // MCP BANK ANGLE detent constrains HDG SEL flight-control demand.
     const err=angle(s.trueHeadingDeg,target.headingDeg);
-    wantBank=clamp(err*.75,-25,25);
+    const limit=Number.isFinite(target.bankLimitDeg)?clamp(target.bankLimitDeg,10,30):25;
+    wantBank=clamp(err*.75,-limit,limit);
    }
    s.bankDeg+=clamp(wantBank-s.bankDeg,-6*dt,6*dt);
    const velocity=Math.max(s.tasKt*KT_TO_MPS,50);
