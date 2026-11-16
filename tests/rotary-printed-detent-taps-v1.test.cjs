@@ -78,5 +78,5 @@ test('Overhead labels preserve source-measured polygons, otherwise choose real d
  assert.match(overhead,/METER_ALIAS/);
  assert.match(overhead,/owner\.choose\(side,mapped\)/);
  assert.ok(!overhead.includes("if(c.mode==='continuous')mountLegendTargets"),'Continuous dimmers are not discrete labeled detents');
- assert.match(stage,/LABEL-DETENT-FALLBACK-0002/);
+ assert.match(stage,/LABEL-DETENT-METER-SYNC-0003/);
 });
