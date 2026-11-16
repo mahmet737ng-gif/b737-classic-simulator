@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - 'panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.*'
+      - 'panel-mosaic-lab/cockpit/detent-hit-geometry-v1.*'
+      - 'panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js'
+      - 'panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js'
       - 'panel-mosaic-lab/cockpit/assets/efis-*.webp'
       - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
       - 'panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js'
@@ -27,12 +30,16 @@ jobs:
           node-version: '22'
       - name: Compile EFIS source and validate asset geometry
         run: |
+          node --check panel-mosaic-lab/cockpit/detent-hit-geometry-v1.js
+          node --check panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.js
+          node --check panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js
           node --check panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js
           node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
           node --check panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js
           node --check panel-mosaic-lab/cockpit/unified-efis-sources-v1.js
           node --check panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js
           node --check efis-display-lab/eadi.js
+          node --test panel-mosaic-lab/cockpit/detent-hit-geometry-v1.test.cjs
           node panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.test.cjs
           node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
       - name: Protected approved cockpit assets stay unchanged
