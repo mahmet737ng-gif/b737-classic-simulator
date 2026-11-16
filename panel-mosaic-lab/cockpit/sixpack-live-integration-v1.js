@@ -79,8 +79,15 @@
   for(const side of ['L','R']){
    const u=packet.units[side];if(u.powered!==true)continue;
    if(u.faultLamp===true)out['CAPT.IRS'].push('IRS:'+side+':FAULT');
-   if(u.alignLampFlashing===true&&u.alignStatusCode!==null&&u.alignStatusCode!==undefined)
-    out['CAPT.IRS'].push('IRS:'+side+':ALIGN_BLOCK_'+u.alignStatusCode);
+   // FCOM 11.10.18-20: flashing ALIGN is a white alignment-status
+   // indication, not an amber IRS system caution. Momentary ON DC
+   // during SELFTEST is normal, and does not generate MASTER CAUTION.
+   // A sustained ON DC or DC FAIL from an actual powered IRS can
+   // trigger IRS, once those authoritative lamp bits are provided.
+   if(u.onDcLamp===true&&u.phase!=='SELFTEST')
+    out['CAPT.IRS'].push('IRS:'+side+':ON_DC');
+   if(u.dcFailLamp===true)
+    out['CAPT.IRS'].push('IRS:'+side+':DC_FAIL');
   }
   return out;
  }
