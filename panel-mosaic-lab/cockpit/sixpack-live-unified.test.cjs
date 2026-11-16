@@ -128,10 +128,13 @@ test('overhead mapper ignores unpowered, alignment, blue valves, and lamp test',
  assert.equal(mapper.overhead({frames,power:false})['FO.DOORS'].length,0);
  assert.equal(mapper.overhead({frames,power:true,lampTest:true}),null);
 });
-test('electrical and fire take named real fault/indicator signals only',()=>{
- const elec=mapper.electrical({state:{faults:{GEN1_FAILED:true,APU_FAILED:true,MADE_UP:true}}});
- assert.deepEqual(elec['CAPT.ELEC'],['ELEC:GEN1_FAILED']);
- assert.deepEqual(elec['CAPT.APU'],['ELEC:APU_FAILED']);
+test('electrical alarms require a real amber lamp; raw generator/relay/APU faults and blue GEN OFF BUS are not MC',()=>{
+ const elec=mapper.electrical({state:{faults:{GEN1_FAILED:true,APU_FAILED:true,MADE_UP:true}},
+  evaluated:{lamps:{genOffBus1:true,genOffBus2:true,apuGenOffBus:true,
+   standbyPowerOff:true,transferBusOff1:true,busOff1:true}}});
+ assert.deepEqual(elec['CAPT.ELEC'],['OH:standby-power-off','OH:transferBusOff1','OH:busOff1']);
+ assert.deepEqual(elec['CAPT.APU'],[]);
+ assert.deepEqual(mapper.electrical({state:{faults:{GEN1_FAILED:true,APU_FAILED:true}}})['CAPT.ELEC'],[]);
  const f=mapper.fire({indications:{ENG1_OVERHEAT:true,WHEEL_WELL:true}});
  assert.deepEqual(f['CAPT.OVHT/DET'],['FIRE:ENG1_OVERHEAT']);
 });
@@ -155,8 +158,8 @@ test('live integration authenticates overhead iframe and merges electrical/fire 
  assert.equal(writes.length,baseline);
  message(iframe,window.location.origin,overhead({'door-fwd-entry':'ON'}));
  assert.deepEqual(writes.at(-1)['FO.DOORS'],['OH:door-fwd-entry']);
- dispatch('b737:electrical-v7-state',{state:{faults:{GEN1_FAILED:true}}});
- assert.deepEqual(writes.at(-1)['CAPT.ELEC'],['ELEC:GEN1_FAILED']);
+ dispatch('b737:electrical-v7-state',{state:{faults:{GEN1_FAILED:true}},evaluated:{lamps:{genOffBus1:true,standbyPowerOff:true}}});
+ assert.deepEqual(writes.at(-1)['CAPT.ELEC'],['OH:standby-power-off']);
  dispatch('b737:unified-fire-indicators-state',{indications:{ENG2_OVERHEAT:true,WHEEL_WELL:true}});
  assert.deepEqual(writes.at(-1)['CAPT.OVHT/DET'],['FIRE:ENG2_OVERHEAT']);
  assert.equal(warnings.at(-1),true);
@@ -197,11 +200,15 @@ test('TAT normal ground amber excluded; demanded heat failure routed as ANTI-ICE
   ['TAT:HEAT_DEMAND_UNSATISFIED']);
  assert.equal(mapper.tatProbe({...normal,heaterRequested:true,lampPower:false})['FO.ANTI ICE'].length,0);
 });
-test('real Electrical V7 relay IDs work and nonexistent old names cannot cause alert',()=>{
- const elec=mapper.electrical({state:{faults:{TRANSFER1_RELAY_FAILED:true,
-  TRANSFER2_RELAY_FAILED:true,STATIC_INVERTER_FAILED:true,TRANSFER_BUS_1_FAILED:true}}});
+test('real Electrical V7 relay faults remain internal unless matching amber annunciator illuminates',()=>{
+ const faults={TRANSFER1_RELAY_FAILED:true,TRANSFER2_RELAY_FAILED:true,
+  STATIC_INVERTER_FAILED:true,GEN1_FAILED:true};
+ assert.deepEqual(mapper.electrical({state:{faults}})['CAPT.ELEC'],[]);
+ const elec=mapper.electrical({state:{faults},evaluated:{lamps:{
+  transferBusOff1:true,transferBusOff2:true,busOff2:true,genOffBus1:true,genOffBus2:true
+ }}}); 
  assert.deepEqual(elec['CAPT.ELEC'],[
-  'ELEC:TRANSFER1_RELAY_FAILED','ELEC:TRANSFER2_RELAY_FAILED','ELEC:STATIC_INVERTER_FAILED']);
+  'OH:transferBusOff1','OH:transferBusOff2','OH:busOff2']);
 });
 test('live IRS and Window Heat take priority over OH approximations; no duplicate caution',()=>{
  const listeners=new Map(),latest=[],iframe={};
