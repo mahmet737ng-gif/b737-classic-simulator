@@ -17,6 +17,16 @@ const STATES=Object.freeze({UNVERIFIED:"UNVERIFIED",ABSENT:"ABSENT",INSTRUCTOR_O
 const lateral=Object.freeze(["HDG_SEL","LNAV","VOR_LOC"]);
 const vertical=Object.freeze(["LVL_CHG","ALT_HLD","VS","VNAV"]);
 const thrust=Object.freeze(["N1","SPEED"]);
+const FCOM_AP_DISCONNECT_REASONS=Object.freeze([
+ "CONTROL_WHEEL_AP_DISCONNECT","AP_DISENGAGE_BAR_DOWN",
+ "AP_ENGAGE_PADDLE_OFF","ILLUMINATED_AP_ENGAGE_SWITCH",
+ "TOGA_BELOW_2000_RA","DUAL_AP_TOGA_AFTER_TOUCHDOWN",
+ "CONTROL_WHEEL_TRIM","STAB_TRIM_AUTOPILOT_CUTOUT",
+ "AP_A_HYDRAULIC_PRESSURE_LOST","AP_B_HYDRAULIC_PRESSURE_LOST",
+ "LEFT_IRS_FAILURE","RIGHT_IRS_FAILURE","ELECTRICAL_POWER_LOST",
+ "CRITICAL_SENSOR_INPUT_LOST","EFI_TRANSFER_REPOSITIONED",
+ "RADIO_ALT_FAILURE_AFTER_LOC_GS_2S"
+]);
 // FCOM 4.10.4–4.10.11: one active command per A/T, pitch, roll, and
 // AFDS channel. New selections replace the previous mode atomically.
 // SPEED is A/T; LVL CHG is pitch MCP SPD, NOT another A/T SPEED command.
@@ -41,7 +51,7 @@ function initialState(){return {
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
  nav:{loc:false,gs:false},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
- lastRejection:null
+ lastRejection:null,lastAutopilotDisengagement:null
 };}
 function globalPowerPossible(bus){
  if(!bus||typeof bus!=="object")return null;
@@ -118,6 +128,18 @@ function transition(state,action){
  let s=clone(state);
  const done=()=>{s.lastRejection=null;s.revision++;return s;};
  if(action.type==="RESET")return initialState();
+ if(action.type==="AP_DISENGAGE_CONFIRMED"){
+  if(!["COCKPIT_HARDWARE","SIMULATED_FCC"].includes(action.source)||
+    action.confirmed!==true||!FCOM_AP_DISCONNECT_REASONS.includes(action.reason))
+   return rejected(s,"UNVERIFIED_AP_DISCONNECT_EVENT");
+  if(!s.modes.autopilot)return rejected(s,"AUTOPILOT_NOT_ENGAGED");
+  s.lastAutopilotDisengagement={reason:action.reason,source:action.source};
+  s.modes.autopilot=null;s.override={pitch:false,roll:false,altHold:false};
+  s.targets={pitch:null,roll:null};
+  // FCOM: switching the A/P off does NOT turn F/D select switches off;
+  // command bars may stay visible with valid pitch+roll F/D modes.
+  return done();
+ }
  if(action.type==="ELECTRICAL"){
   const source=action.snapshot;
   if(!source||source.schema!=="B737_ELECTRICAL_V7_RESULT"||!source.bus)throw Error("Electrical V7 evaluated snapshot required");
@@ -130,7 +152,11 @@ function transition(state,action){
    trit(source.bus.electronic1):s.electrical.dc1;
   s.electrical.batteryBus=trit(source.bus.battery);
   s.electrical=projectPower(s);
-  if(s.electrical.mcpPower!==true)clearModes(s);
+  if(s.electrical.mcpPower!==true){
+   if(s.modes.autopilot)s.lastAutopilotDisengagement={
+    reason:"ELECTRICAL_POWER_LOST",source:"SIMULATED_FCC"};
+   clearModes(s);
+  }
   return done();
  }
  if(action.type==="SPEED_LIMIT_FCC"){
@@ -185,6 +211,7 @@ function transition(state,action){
  if(action.type==="EFIS_SOURCE_TRANSFER"){
   // FCOM 4.20: repositioning EFI transfer disengages the autopilot.
   if(!s.modes.autopilot)return state;
+  s.lastAutopilotDisengagement={reason:"EFI_TRANSFER_REPOSITIONED",source:"COCKPIT_HARDWARE"};
   s.modes.autopilot=null;s.override.pitch=false;s.override.roll=false;
   s.targets.pitch=null;s.targets.roll=null;
   return done();
@@ -353,6 +380,9 @@ function transition(state,action){
   if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
   const selected=s.modes.autopilot;
   s.modes.autopilot=selected===id?null:id;
+  if(selected===id)s.lastAutopilotDisengagement={
+   reason:"ILLUMINATED_AP_ENGAGE_SWITCH",source:"COCKPIT_HARDWARE"};
+  else s.lastAutopilotDisengagement=null;
   s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
   // Dual-channel autoland, CWS capture and servo are not modeled.
@@ -426,6 +456,7 @@ function output(s){
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
+  lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
   modes:{...s.modes},axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
