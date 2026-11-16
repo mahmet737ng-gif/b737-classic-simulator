@@ -21,8 +21,7 @@ async function read(route,cookies){
 }
 (async()=>{
  const auth=await get('/panel-mosaic-lab/cockpit/');
- assert.equal(auth.status,303,'Protected cockpit must reject guests');
- assert.equal(auth.headers.get('location'),'/login');
+ assert.equal(auth.status,401,'Unauthenticated non-document requests must fail closed');
  for(const originalResource of [
    '/panel-mosaic-lab/cockpit/overhead-stage.html',
    '/panel-mosaic-lab/cockpit/app.js',
@@ -32,8 +31,7 @@ async function read(route,cookies){
    '/panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png'
  ]) {
    const unauthorized=await get(originalResource);
-   assert.equal(unauthorized.status,303,'Unprotected original resource: '+originalResource);
-   assert.equal(unauthorized.headers.get('location'),'/login');
+   assert.equal(unauthorized.status,401,'Unprotected original resource: '+originalResource);
  }
  const first=await login();
  assert.equal(first.status,303);
