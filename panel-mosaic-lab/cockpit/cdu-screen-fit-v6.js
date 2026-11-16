@@ -50,7 +50,30 @@
    })
   };
  }
- let scheduled=false,lastResult=null;
+ let scheduled=false,lastResult=null,lockedCalibration=null;
+ // Native physical CDU width is fixed at 1199px. The same scratchpad must
+ // NEVER be remeasured against the freshly repainted page's temporary CSS.
+ // Recalibrate only when the actual glyph family or width really changes.
+ function cachedModel(available,family,smallFamily){
+  if(!lockedCalibration)return null;
+  if(Math.abs(lockedCalibration.widthPx-available)>.5||
+     lockedCalibration.fontFamily!==family||
+     lockedCalibration.smallFontFamily!==smallFamily)return null;
+  return lockedCalibration;
+ }
+ function lockFontGrid(model){
+  // fmc-lines survives box.replaceChildren(), unlike its fresh 14 rows.
+  // CSS variables therefore give new rows the calibrated font sizes in the
+  // SAME paint as their insertion; the observer may later register LSK tops.
+  for(const [name,value] of Object.entries({
+   '--cdu-locked-value-size':model.mainPx,
+   '--cdu-locked-label-size':model.labelPx,
+   '--cdu-locked-header-size':model.headerPx,
+   '--cdu-locked-prompt-size':model.promptPx,
+   '--cdu-locked-scratch-size':model.scratchPx
+  }))box.style.setProperty(name,Number(value.toFixed(2))+'px');
+  box.dataset && (box.dataset.cduFontGridLocked='true');
+ }
  function size(el,px){
   if(!el)return;
   el.style.setProperty('font-size',Number(px.toFixed(2))+'px','important');
@@ -155,6 +178,8 @@
   const available=left.getBoundingClientRect().width;
   if(!(available>100))return {ready:false,reason:'SCREEN_WIDTH_NOT_MEASURABLE'};
   const family=fontFace(left),smallFamily=small===left?'BoeingCDUSmall':fontFace(small);
+  const cached=cachedModel(available,family,smallFamily);
+  if(cached)return cached;
   const fonts=root.document.fonts;
   if(fonts&&typeof fonts.check==='function'&&
      (!fonts.check('100px "BoeingCDULarge"',Metrics.TEST)||
@@ -163,15 +188,18 @@
   const large=Metrics.calibrate(ctx,available,family);
   const little=Metrics.calibrate(ctx,available,smallFamily);
   if(!large.valid||!little.valid)return {ready:false,reason:'FONT_NOT_READY_OR_METRIC_MISMATCH',large,little};
-  return {ready:true,large,little,fontFamily:family,smallFontFamily:smallFamily,
+  lockedCalibration={ready:true,large,little,fontFamily:family,smallFontFamily:smallFamily,
    widthPx:available,mainPx:large.fontSizePx,
    labelPx:labelSize(large.fontSizePx,little.fontSizePx,family,smallFamily),
    headerPx:large.fontSizePx*PHOTO_PROFILE.headerToLarge,
    promptPx:large.fontSizePx*PHOTO_PROFILE.lskPromptToLarge,
    scratchPx:large.fontSizePx};
+  lockFontGrid(lockedCalibration);
+  return lockedCalibration;
  }
  function apply(){
   const model=calibrate();if(!model.ready){lastResult=model;return model;}
+  lockFontGrid(model); // Persist across all 14-row DOM replacements.
   const lines=[...box.querySelectorAll('.fmc-line')];
   const header=lines.find(l=>l.classList.contains('fmc-header'));
   const pairs=lines.filter(l=>l.classList.contains('fmc-pairline')&&!l.classList.contains('scratch'));

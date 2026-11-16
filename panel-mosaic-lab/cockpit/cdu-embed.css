@@ -41,3 +41,36 @@ main,.cockpit-stack,.cockpit{display:block!important;width:1199px!important;max-
   text-shadow:0 0 .035em rgba(41,255,49,.13)!important;
 }
 /* Keep original Boeing CDU font family policy and 24-column/L-R alignment. */
+
+/* Stable 24-column CDU typography across atomic screen redraws.
+ * The runtime calibrates once against the approved Boeing fonts and sets
+ * these variables on the persistent #fmc-lines element. New RTE/IDENT/LEGS
+ * rows inherit the same measured sizes BEFORE the next RAF/MutationObserver.
+ * No changes to physical bezel, seat scaling, LSK hitboxes or font binaries. */
+html body #cdu-stage #fmc-screen #fmc-lines{
+  font-size:var(--cdu-locked-value-size, 2.90cqw)!important;
+}
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line.fmc-pairline:not(.fmc-small):not(.scratch){
+  font-size:var(--cdu-locked-value-size, 2.90cqw)!important;
+  line-height:.90!important;
+}
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line.fmc-pairline.fmc-small{
+  font-size:var(--cdu-locked-label-size, 2.10cqw)!important;
+  line-height:.90!important;
+}
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line.fmc-header{
+  font-size:var(--cdu-locked-header-size, 2.73cqw)!important;
+  line-height:.90!important;
+}
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line.scratch{
+  font-size:var(--cdu-locked-scratch-size, 2.90cqw)!important;
+  line-height:.90!important;
+}
+/* A fresh row's field spans must use its own frozen role, never the old
+ * cqw entry-placeholder/LSK sizing during the one frame before JS applies. */
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line span,
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line span.cdu-entry-placeholder,
+html body #cdu-stage #fmc-screen #fmc-lines .fmc-line span.cdu-lsk-prompt {
+  font-size:inherit!important;
+  line-height:inherit!important;
+}
