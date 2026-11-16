@@ -4,6 +4,8 @@ on:
     branches: [main, cdu/photo-text-hierarchy-fo-20261031]
     paths:
       - 'panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js'
+      - 'panel-mosaic-lab/cockpit/cdu-embed.css'
+      - 'panel-mosaic-lab/cockpit/tests/cdu-font-flash-regression.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/cdu.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-photo-type-hierarchy.test.cjs'
@@ -26,5 +28,7 @@ jobs:
         run: node panel-mosaic-lab/cockpit/cdu.test.cjs
       - name: Captain CDU remains disabled; FO only
         run: node panel-mosaic-lab/cockpit/cdu-fo-only-performance.test.cjs
+      - name: Repeated RTE repaint must preserve calibrated CDU font pixels
+        run: node --test panel-mosaic-lab/cockpit/tests/cdu-font-flash-regression.test.cjs
       - name: Screen-fit JavaScript syntax check
         run: node --check panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js
