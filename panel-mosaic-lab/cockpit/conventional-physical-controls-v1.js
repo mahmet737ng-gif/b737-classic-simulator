@@ -36,6 +36,7 @@
  function install(win){
   const doc=win.document;
   let knob=null,guard=null,style=null,watcher=null,lastSignature='',ready=false;
+  const detentLabels=new Map();
   let selected='OFF';
   // Shared mode-independent engine owns the timed TOSC and disarm logic.
   const shared=()=>win.B737AutobrakeUnified;
@@ -113,6 +114,7 @@
    knob.setAttribute('aria-valuetext',selected);
    knob.setAttribute('aria-valuenow',String(DETENTS.indexOf(selected)));
    knob.querySelector('img').style.transform='rotate('+ANGLES[selected]+'deg)';
+   for(const [value,button]of detentLabels)button.setAttribute('aria-pressed',String(value===selected));
   }
   function set(next,origin='api'){
    if(!DETENTS.includes(next))throw Error('Invalid AUTO BRAKE detent '+next);
@@ -163,6 +165,44 @@
    render();
    return knob;
   }
+  function placeDetentLabels(main,l){
+   // Source coordinates for the six 737 Classic AUTOBRAKE detents are derived
+   // from the same owner-registered photo center and real rotor angles.
+   const center=point(l,REF.autobrake.center);
+   const xRadius=REF.autobrake.diameter*.92*Math.abs(l.matrix[0]);
+   const yRadius=REF.autobrake.diameter*.92*Math.abs(l.matrix[3]);
+   const width=REF.autobrake.diameter*.7*Math.abs(l.matrix[0]);
+   const height=REF.autobrake.diameter*.52*Math.abs(l.matrix[3]);
+   for(const value of DETENTS){
+    let b=detentLabels.get(value);
+    if(!b){
+     b=doc.createElement('button');b.type='button';
+     b.className='b737-autobrake-detent-label';
+     b.dataset.autobrakeInstallation='CONVENTIONAL';b.dataset.autobrakeLabel=value;
+     b.setAttribute('aria-label','AUTO BRAKE → '+value);
+     b.title='AUTO BRAKE '+value+' · tap printed detent';
+     Object.assign(b.style,{position:'absolute',zIndex:'55',padding:'0',margin:'0',
+      border:'0',background:'transparent',boxShadow:'none',
+      touchAction:'manipulation',cursor:'pointer',
+      transform:'translate(-50%,-50%)'});
+     b.addEventListener('pointerdown',event=>event.stopPropagation());
+     b.addEventListener('click',event=>{
+      if(mode()!=='CONVENTIONAL')return;
+      event.preventDefault();event.stopPropagation();
+      set(value,'printed-label-tap');
+     });
+     detentLabels.set(value,b);
+    }
+    const a=ANGLES[value]*Math.PI/180;
+    Object.assign(b.style,{
+     left:(center.x+Math.sin(a)*xRadius).toFixed(3)+'px',
+     top:(center.y-Math.cos(a)*yRadius).toFixed(3)+'px',
+     width:width.toFixed(3)+'px',height:height.toFixed(3)+'px'
+    });
+    if(b.parentElement!==main)main.append(b);
+    b.setAttribute('aria-pressed',String(value===selected));
+   }
+  }
   function update(){
    const main=native(),l=layout();
    if(!main||!l)return false;
@@ -188,6 +228,7 @@
     width:kw.toFixed(3)+'px',height:kh.toFixed(3)+'px'
    });
    if(knobEl.parentElement!==main)main.append(knobEl);
+   placeDetentLabels(main,l);
    ready=true;
    doc.documentElement.dataset.conventionalControlsReady='true';
    return true;
