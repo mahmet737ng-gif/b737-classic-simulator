@@ -11,7 +11,7 @@
  if(root)root.B737PhotoGaugeRegistrationV1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(){
  'use strict';
- const VERSION='PHOTO-GAUGE-REGISTRATION-0001';
+ const VERSION='PHOTO-GAUGE-REGISTRATION-0002-NATIVE-BEZEL';
  const ref=Object.freeze({airspeed:304,altimeter:456,ivsi:240,rmi:213});
  const kinds=Object.freeze(['airspeed','altimeter','ivsi','rmi']);
  const layouts=Object.freeze({
