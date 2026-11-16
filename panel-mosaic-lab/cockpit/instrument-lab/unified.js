@@ -42,6 +42,10 @@
       overflow:'visible',pointerEvents:'none',zIndex:'4'
     });
     gauge.canvas.setAttribute('preserveAspectRatio','xMidYMid meet');
+    const clip=rect.clip;
+    gauge.canvas.style.clipPath='inset('+[
+      clip.top,clip.right,clip.bottom,clip.left
+    ].map(n=>n.toFixed(5)+'%').join(' ')+')';
     gauge.canvas.dataset.gaugeRegistration=registration.VERSION;
     gauge.canvas.dataset.gaugePiece=entry.piece;
     gauge.canvas.dataset.gaugeMode=mode;
