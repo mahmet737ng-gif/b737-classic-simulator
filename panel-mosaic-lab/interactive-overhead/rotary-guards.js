@@ -176,11 +176,33 @@
   Object.assign(pic.style,{left:'calc(50% - '+(w*pivot[0])+'px)',top:'calc(50% - '+(h*pivot[1])+'px)',width:w+'px',height:h+'px',transformOrigin:(pivot[0]*100)+'% '+(pivot[1]*100)+'%'});
   b.append(pic);rotaryInput(c,b,pic);return b;
  }
+ function unmeasuredLegendTargets(c,placement){
+  // For rotary detents without source-measured text polygons, place a
+  // conservative touch target at the published hardware detent bearing.
+  // Owner-measured legendAreas ALWAYS take precedence; nothing is painted.
+  if(c.mode!=='detent'||!Array.isArray(c.states)||!c.states.length||
+   !Number.isFinite(c.bezelSourceDiameter)||!Array.isArray(c.sourcePoint))return [];
+  const p=c.sourcePoint,r=c.bezelSourceDiameter*.69;
+  return model.detentAngles(c).map((angle,i)=>{
+   const rad=angle*Math.PI/180;
+   const center=points.mapPoint({...c,bezelSourceDiameter:0,
+    sourcePoint:[p[0]+Math.sin(rad)*r,p[1]-Math.cos(rad)*r]},placement);
+   const size=points.mapPoint({...c,bezelSourceDiameter:0,
+    sourcePoint:[p[0]+c.bezelSourceDiameter*.36,p[1]+c.bezelSourceDiameter*.24]},placement);
+   const origin=points.mapPoint({...c,bezelSourceDiameter:0,sourcePoint:p},placement);
+   const width=Math.abs(size.x-origin.x),height=Math.abs(size.y-origin.y);
+   return {state:c.states[i],left:center.x-width/2,top:center.y-height/2,
+    width,height,clipPath:'none',source:'DETECTOR_ANGLE_FALLBACK'};
+  }).filter(hit=>hit.width>0&&hit.height>0);
+ }
  function mountLegendTargets(c,placement){
   const targets=[];
-  for(const hit of model.legendHotspots(c,placement,points.mapPoint)){
+  const hits=c.legendAreas?model.legendHotspots(c,placement,points.mapPoint)
+    :unmeasuredLegendTargets(c,placement);
+  for(const hit of hits){
    const button=document.createElement('button');button.type='button';button.className='rg-detent-hit';
    button.dataset.control=c.id;button.dataset.detent=hit.state;
+   button.dataset.legendRegistration=hit.source||'SOURCE_POLYGON';
    button.setAttribute('aria-label',c.label+' → '+hit.state);
    button.setAttribute('aria-pressed',String(engine.rotary(c.id)===hit.state));
    button.title=c.label+' · '+hit.state;
@@ -318,7 +340,9 @@
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
   for(const c of [...registry.rotaries,...registry.guards]){const p=points.mapPoint(c,placements.get(c.placementId)),node=c.id==='ignition-source'?ignitionToggle(c,p):c.kind==='rotary'?rotary(c,p):c.presentation='flight-recorder-left-hinge'?recorderHinged(c,placements.get(c.placementId)):guarded(c,p,placements.get(c.placementId));widgets.set(c.id,node);layer.append(node);render(c);}
-  for(const c of registry.rotaries)if(c.legendAreas)mountLegendTargets(c,placements.get(c.placementId));
+  for(const c of registry.rotaries)
+   if(c.mode==='detent'&&c.id!=='ignition-source')
+    mountLegendTargets(c,placements.get(c.placementId));
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));
