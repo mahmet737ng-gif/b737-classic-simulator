@@ -85,6 +85,74 @@
         "source": "owner 2026-11-15 browser screenshot, visual circle center manually inspected at 1920x1080; EIS native main placement",
         "geometryStatus": "SCREENSHOT_CENTER_ALIGNMENT_ESTIMATE_NEEDS_BROWSER_CONFIRMATION"
       }
+    },
+    "nonEisFoOverlay": {
+      "modeIdentifier": "CONVENTIONAL",
+      "displayLabel": "Non-EIS",
+      "sourcePhoto": "panel-mosaic-lab/cockpit/assets/fo-efis-rd-owner-20261030-v1.png",
+      "modeSpecific": true,
+      "usesApprovedEisBaseline": false,
+      "baseEisFo": {
+        "lamps": [
+          {
+            "x": 1449.1,
+            "y": 216.9,
+            "w": 21.8,
+            "h": 21.1
+          },
+          {
+            "x": 1475,
+            "y": 216.9,
+            "w": 21.8,
+            "h": 21.1
+          },
+          {
+            "x": 1499.9,
+            "y": 216.9,
+            "w": 22.1,
+            "h": 21.1
+          }
+        ],
+        "toggle": {
+          "cx": 1532.4,
+          "cy": 226.5,
+          "cell": 44,
+          "hit": 20.8
+        }
+      },
+      "shiftNativeMain": {
+        "x": 22,
+        "y": -8.8
+      },
+      "geometryStatus": "SCREENSHOT_REGISTERED_PENDING_BROWSER_VISUAL_QA",
+      "computedLamps": [
+        {
+          "x": 1471.1,
+          "y": 208.1,
+          "w": 21.8,
+          "h": 21.1
+        },
+        {
+          "x": 1497,
+          "y": 208.1,
+          "w": 21.8,
+          "h": 21.1
+        },
+        {
+          "x": 1521.9,
+          "y": 208.1,
+          "w": 22.1,
+          "h": 21.1
+        }
+      ],
+      "computedToggle": {
+        "cx": 1554.4,
+        "cy": 217.7,
+        "cell": 44,
+        "hit": 20.8
+      },
+      "screenshot": "user screenshot 2026-11-16, Railway hosted 1920x1080; windows and screw socket measured from image",
+      "note": "Move only FO AFDS control overlay in Non-EIS; preserve photo, captain and EIS positions"
     }
   },
   "physical": {
@@ -498,11 +566,11 @@
     ],
     "render": "event-driven; flash animation only while an active flashing state is presented",
     "liveUnifiedMounted": true,
-    "mountScope": "CAPT + FO independent TEST switches, shared annunciation reset",
+    "mountScope": "CAPT EIS unchanged, FO EIS unchanged, FO Non-EIS separately calibrated",
     "runtimeJS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.js",
     "runtimeCSS": "panel-mosaic-lab/cockpit/afds-annunciator-switch-v1.css",
     "runtimeCore": "engine/afds-annunciator-v1/afds-test-switch-core.js",
-    "featureStatus": "FO_TOGGLE_POSITION_CORRECTED_NATIVE_COORDINATES_MANUAL_BROWSER_QA_PENDING",
+    "featureStatus": "FO_NonEIS_MODE_SPECIFIC_OVERLAY_COMMITTED_TESTS_RUNNING",
     "actualAFDSAlertsConnected": false,
     "testIndicationsConnected": true,
     "preservedArt": true,
@@ -520,13 +588,13 @@
   ],
   "audit": {
     "sourceLogic": "EXTRACTED",
-    "visualFidelity": "FO_SWITCH_2026_11_15_POSITION_CORRECTED_PHOTO_ESTIMATE",
+    "visualFidelity": "FO_NON_EIS_SCREENSHOT_REGISTERED_MANUAL_BROWSER_QA_PENDING",
     "liveCockpit": "SOURCE_INSTALLED_ON_MAIN_BUT_NO_BROWSER_PHOTO_QA",
     "flightCertification": "NOT_APPROVED",
     "logicVerification": "PASS_4_NODE_TESTS_GITHUB_ACTIONS_RUN_43747376371",
     "lockedArtworkVerification": "PASS_GITHUB_ACTIONS_RUN_43747376371",
     "pagesDeployment": "SUCCESS_GITHUB_ACTIONS_RUN_43747376089",
-    "browserInteraction": "PENDING"
+    "browserInteraction": "PENDING_NON_EIS_ONLINE_VISUAL_TEST"
   },
   "electrical": {
     "status": "PARTIAL_SOURCE_TRACE_ONLY",
