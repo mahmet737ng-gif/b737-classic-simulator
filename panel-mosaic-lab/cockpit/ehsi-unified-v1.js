@@ -169,6 +169,9 @@
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
+    win.B737CduSgEHSIPreviewV1?.draw(screen.svg,
+      win.B737CduSgRouteV1?.snapshot(),origin.ehsi.mode,origin.ehsi.range,
+      src.displayPowered===true&&src.video===true&&!preview,sources.offsets);
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
    const output=doc.getElementById('unifiedEfisSources');
@@ -202,6 +205,7 @@
    schedule();
   });
   for(const id of ['unifiedEfisOpen','unifiedEfisHeader'])doc.getElementById(id)?.addEventListener('click',showControls);
+  win.B737CduSgRouteV1?.subscribe?.(()=>schedule());
   win.addEventListener('b737:efis-preset-change',()=>{
    for(const seat of SEATS)instructor[seat]=false;
    syncControls();
