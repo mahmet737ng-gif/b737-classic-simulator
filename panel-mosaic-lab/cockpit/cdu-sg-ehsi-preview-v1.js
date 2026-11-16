@@ -51,7 +51,9 @@
    JSON.stringify(value)!==JSON.stringify(active[key]))):null;
   const valid=x=>x?.renderStyle==='DASHED_REFERENCE_CHORDS_ONLY';
   const layers=[
-   {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.values(active).filter(valid)},
+   {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.entries(active)
+    .filter(([k,g])=>valid(g)&&!(g.kind==='RUNWAY'&&pending?.[k]&&
+      JSON.stringify(g)!==JSON.stringify(pending[k]))).map(([,g])=>g)},
    ...(changed?[{stage:'MOD',color:'#00c8f2',dash:'7 5',
     geometries:Object.values(changed).filter(valid)}]:[])
   ].filter(layer=>layer.geometries.length);
@@ -90,6 +92,47 @@
   for(const layer of layers){
    const plot=make(group,'g',{'data-cdu-sg-plot':'true','data-reference-stage':layer.stage});
    for(const g of layer.geometries){
+    if(g.kind==='RUNWAY'){
+     const axis=g.segments?.[0],threshold=g.fixes?.[0];
+     const shape=make(plot,'g',{'data-cdu-sg-runway':g.ident,'data-airport':g.airport,
+      'data-reference-stage':layer.stage,'data-reference-only':'true'});
+     if(Array.isArray(axis)&&axis.length===2&&axis.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))){
+      const a=xyFor(...axis[0]),b=xyFor(...axis[1]);
+      const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy);
+      if(Number.isFinite(len)&&len>.25){
+       const ux=dx/len,uy=dy/len,nx=-uy,ny=ux,half=Math.max(3,Math.min(5,len*.22));
+       const edge=(p,k)=>[p[0]+k*nx*half,p[1]+k*ny*half];
+       const corners=[edge(a,1),edge(b,1),edge(b,-1),edge(a,-1)];
+       make(shape,'path',{d:corners.map((p,i)=>(i?'L':'M')+p.join(' ')).join(' ')+' Z',
+        fill:'none',stroke:'#f4f7fa','stroke-width':2.1,
+        'data-cdu-sg-geometry':'RUNWAY','data-runway-outline':'true'});count++;
+       const extension=Math.max(45,Math.min(150,1200/range));
+       for(const [name,from,to] of [
+        ['FINAL',[a[0]-ux*extension,a[1]-uy*extension],a],
+        ['UPWIND',b,[b[0]+ux*extension,b[1]+uy*extension]]
+       ]){
+        const line=clipSegment([from,to]);if(!line)continue;
+        make(shape,'path',{d:'M'+line[0].join(' ')+' L'+line[1].join(' '),
+         fill:'none',stroke:'#f4f7fa','stroke-width':2,'stroke-dasharray':'10 8',
+         'data-runway-extension':name,'data-reference-only':'true'});count++;
+       }
+      }
+     }
+     if(Number.isFinite(threshold?.lon)&&Number.isFinite(threshold?.lat)){
+      const xy=xyFor(threshold.lon,threshold.lat);
+      if(onPlot(xy,7)){
+       const [x,y]=xy,right=x>450;
+       if(!axis?.length){
+        make(shape,'circle',{cx:x,cy:y,r:5,stroke:'#f4f7fa',fill:'none',
+         'data-runway-threshold-only':'true'});count++;
+       }
+       const name=make(shape,'text',{x:x+(right?-12:12),y:y-9,fill:'#f4f7fa',
+        'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace'});
+       name.textContent=g.airport+' '+g.ident;count++;
+      }
+     }
+     continue;
+    }
     for(const segment of (g.segments||[]).slice(0,300)){
      if(!Array.isArray(segment)||segment.length!==2||!segment.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)))continue;
      const xy=clipSegment(segment.map(([lon,lat])=>xyFor(lon,lat)));
@@ -97,7 +140,7 @@
      make(plot,'path',{d:'M'+xy[0].join(' ')+' L'+xy[1].join(' '),fill:'none',
       stroke:layer.color,'stroke-width':2.1,'stroke-dasharray':layer.dash,
       'data-reference-stage':layer.stage,'data-reference-only':'true',
-      'data-cdu-sg-geometry':g.kind==='RUNWAY'?'RUNWAY':'PROCEDURE'});
+      'data-cdu-sg-geometry':'PROCEDURE'});
      count++;
     }
     for(const point of (g.fixes||[]).slice(0,150)){
@@ -105,16 +148,7 @@
      const xy=xyFor(point.lon,point.lat);
      if(!onPlot(xy,7))continue;
      const [x,y]=xy,right=x>450;
-     if(g.kind==='RUNWAY'){
-      // Source threshold marker: not a fabricated centerline or turn arc.
-      const pin=make(plot,'g',{'data-cdu-sg-runway':g.ident,'data-airport':g.airport,
-       'data-reference-stage':layer.stage,'data-reference-only':'true'});
-      make(pin,'path',{d:'M'+x+' '+(y-9)+' L'+(x-8)+' '+(y+7)+' L'+(x+8)+' '+(y+7)+' Z',
-       fill:'none',stroke:layer.color,'stroke-width':1.9});
-      const t=make(pin,'text',{x:x+(right?-12:12),y:y-4,fill:layer.color,'font-size':13,
-       'text-anchor':right?'end':'start','font-family':'monospace'});
-      t.textContent=g.airport+' RWY '+g.ident;
-     }else{
+     {
       make(plot,'circle',{cx:x,cy:y,r:3.2,fill:layer.color,'data-sourced-fix':'true'});
       const t=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:layer.color,
        'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace',

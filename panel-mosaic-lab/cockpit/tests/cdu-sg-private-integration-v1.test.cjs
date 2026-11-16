@@ -201,13 +201,15 @@ test('EHSI runway selection marks the verified threshold before SID selection',(
  assert.ok(renderer.draw(svg,route.snapshot(),'CTR_MAP',40,true,offset,project,anchorPoint)>0);
  assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-runway']==='29L'));
  assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-geometry']==='RUNWAY'&&
-  n.attrs['stroke']==='#00c8f2'&&n.attrs['stroke-dasharray']==='7 5'));
+  n.attrs.stroke==='#f4f7fa'&&n.attrs['data-runway-outline']==='true'));
+ assert.deepEqual(nodes.filter(n=>n.attrs['data-runway-extension'])
+  .map(n=>n.attrs['data-runway-extension']).sort(),['FINAL','UPWIND']);
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'MOD');
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-status']).textContent,'MOD REF');
  route.execute();
  renderer.draw(svg,route.snapshot(),'CTR_MAP',40,true,offset,project,anchorPoint);
  assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-geometry']==='RUNWAY'&&
-  n.attrs['stroke']==='#ff47e1'&&n.attrs['stroke-dasharray']===undefined));
+  n.attrs.stroke==='#f4f7fa'&&n.attrs['data-runway-outline']==='true'));
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'ACT');
  assert.equal(route.snapshot().fmcExecutable,false);
 });
@@ -324,3 +326,40 @@ test('public cockpit and both CDU views use the same local connector without bun
  assert.match(read('panel-mosaic-lab/cockpit/app.js'),/fmcSession.subscribe/);
 });
 
+
+test('selected SID is displayed as VIA DHN3A TO DHN on the second RTE page',()=>{
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const route=routeAPI.create();route.setConnected(true);
+ route.setContext({origin:'OIII',destination:'OIMM'});
+ const sid={...procedure,ident:'DHN3A'};
+ const geom={...geo,metadata:{...geo.metadata,ident:'DHN3A'},
+  features:[{type:'Feature',geometry:{type:'Point',coordinates:[51.3,35.6]},
+   properties:{ident:'DHN',fmc_executable:false}},...geo.features]};
+ route.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',procedure:sid,geometry:geom});
+ const s={page:'FLIGHT_PLAN',subpage:2,active:{ORIGIN:'OIII',DEST:'OIMM'},
+  stagedRoute:{},pending:{},routeActivated:false,cduSgReference:route.snapshot()};
+ const page=ch11.view(s);
+ assert.equal(page.number,2);assert.equal(page.rows[0].labelL,'VIA');
+ assert.equal(page.rows[0].valueL,'DHN3A');assert.equal(page.rows[0].labelR,'TO');
+ assert.equal(page.rows[0].valueR,'DHN');
+ assert.equal(ch11.routeCell(s,'LSK_L1'),null);
+ assert.equal(ch11.routeCell(s,'LSK_R2').field,'TO1');
+ assert.equal(s.routeActivated,false);
+ route.execute();s.cduSgReference=route.snapshot();
+ assert.equal(ch11.view(s).rows[0].valueL,'DHN3A');
+});
+test('one known threshold does not fabricate a runway rectangle',()=>{
+ const draw=require('../cdu-sg-ehsi-preview-v1.js'),route=routeAPI.create();
+ route.setConnected(true);route.setContext({origin:'OIII'});
+ route.chooseRunway({airport:'OIII',runway:'29L',
+  airportRecord:{icao:'OIII',runways:[{runway:'29L',threshold_lat:35.68,threshold_lon:51.31}]}});
+ const nodes=[],make=tag=>({tag,attrs:{},appendChild(){},remove(){nodes.splice(0)},
+  setAttribute(k,v){this.attrs[k]=v}});
+ const svg={ownerDocument:{createElementNS(_ns,tag){const n=make(tag);nodes.push(n);return n}},
+  appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference'])}};
+ const offset=(a,b)=>({x:(b.lon-a.lon)*50,y:(b.lat-a.lat)*50});
+ draw.draw(svg,route.snapshot(),'PLAN',10,true,offset,(x,y)=>[250+x,280-y]);
+ assert.equal(nodes.filter(n=>n.attrs['data-runway-outline']).length,0);
+ assert.equal(nodes.filter(n=>n.attrs['data-runway-extension']).length,0);
+ assert.equal(nodes.filter(n=>n.attrs['data-runway-threshold-only']).length,1);
+});

@@ -46,9 +46,35 @@
    return {via:via==='DCT'||(!via&&to)?'DIRECT':via,to};
   });
  }
+ // Display-only procedures never become FMC flight plan legs.
+ function displaySegments(s,native=segments(s)){
+  let source=s.cduSgReference;
+  if(!source)try{
+   if(root?.parent&&root.parent!==root)source=root.parent.B737CduSgRouteV1?.snapshot?.();
+  }catch(_){/* Different-origin embed. */}
+  const origin=entered(s,'ORIGIN'),dest=entered(s,'DEST');
+  const bank=source?.modified||source?.active;
+  const valid=source?.connected===true&&source.sourceOnly===true&&
+   source.fmcExecutable===false&&source.origin===origin&&source.destination===dest;
+  function procedure(kind,airport){
+   if(!valid||!airport)return null;
+   const key=kind+'@'+airport,sel=bank?.selections?.[key],geo=bank?.geometries?.[key];
+   if(!sel||!geo||sel.ident!==geo.ident||sel.sourceOnly!==true||
+      geo.renderStyle!=='DASHED_REFERENCE_CHORDS_ONLY')return null;
+   const verified=(geo.fixes||[]).filter(f=>typeof f?.ident==='string'&&
+    /^[A-Z0-9._-]{2,16}$/.test(f.ident)&&Number.isFinite(f.lat)&&Number.isFinite(f.lon));
+   return {via:sel.ident,to:verified.at(-1)?.ident||'-----',sourceOnly:true};
+  }
+  const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
+  if(sid)rows.push(sid);
+  native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
+  if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
+   rows.push({via:'---',to:'---',nativeIndex:native.length+1});
+  if(star)rows.push(star);
+  return rows;
+ }
  function routeCount(s,list){
-  const entryRow=sourcePlan(s)||currentNav(s)||list.length>=MAX_ROUTE_ROWS?0:1;
-  return 1+Math.max(1,Math.ceil((list.length+entryRow)/ROUTE_ROWS));
+  return 1+Math.max(1,Math.ceil(displaySegments(s,list).length/ROUTE_ROWS));
  }
  function routeNumber(s,list){
   return s.page==='FLIGHT_PLAN'?Math.min(routeCount(s,list),Math.max(2,s.subpage||2)):1;
@@ -73,12 +99,12 @@
   return null;
  }
  function routeRow(list,n,head){
-  const entry=list[n-1],next=n===list.length+1&&n<=MAX_ROUTE_ROWS;
-  return pair(head?'VIA':'',entry?.via||(next?'---':''),head?'TO':'',
-   entry?.to||(entry?.via?'□□□□□':next?'---':''));
+  const entry=list[n-1];
+  return pair(head?'VIA':'',entry?.via||'',head?'TO':'',
+   entry?.to||(entry?.via?'□□□□□':''));
  }
  function route(s){
-  const list=segments(s),number=routeNumber(s,list),rows=[];
+  const native=segments(s),list=displaySegments(s,native),number=routeNumber(s,native),rows=[];
   if(number===1){
    rows.push(pair('ORIGIN',entered(s,'ORIGIN')||'□□□□','DEST',entered(s,'DEST')||'□□□□'));
    rows.push(pair('CO ROUTE',entered(s,'CO_ROUTE')||'----------','FLT NO.',entered(s,'FLIGHT')||'--------'));
@@ -95,13 +121,13 @@
  }
  function routeCell(s,k){
   if(!RTE.has(s.page)||!/^LSK_[LR][1-5]$/.test(k))return null;
-  const side=k[4],line=Number(k[5]),list=segments(s),number=routeNumber(s,list);
+  const side=k[4],line=Number(k[5]),native=segments(s),list=displaySegments(s,native),number=routeNumber(s,native);
   if(number===1){
    const name={L1:'ORIGIN',R1:'DEST',L2:'CO_ROUTE',R2:'FLIGHT',L3:'RUNWAY'}[side+line];
    return name?field(side,name,limits[name],line===1):null;
   }
-  const n=(number-2)*ROUTE_ROWS+line;
-  if(n>MAX_ROUTE_ROWS||n>list.length+1||sourcePlan(s)||currentNav(s))return null;
+  const entry=list[(number-2)*ROUTE_ROWS+line-1],n=entry?.nativeIndex;
+  if(!n||entry.sourceOnly||n>MAX_ROUTE_ROWS||sourcePlan(s)||currentNav(s))return null;
   return side==='L'?field(side,'VIA'+n,'AIRWAY'):field(side,'TO'+n,'WAYPOINT');
  }
  function activeReferenceRoute(s){
