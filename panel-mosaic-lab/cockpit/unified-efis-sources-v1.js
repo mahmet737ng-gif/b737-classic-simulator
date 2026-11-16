@@ -23,6 +23,9 @@
   };
   const sg=selected('efi-transfer',display);
   const irs=selected('irs-transfer',sg),vhf=selected('vhf-nav',sg);
+  const irsRecord=snapshot?.[irsTopic(irs)]??null;
+  const adcRecord=snapshot?.['airdata.adc'+sg]??null;
+  const raRecord=snapshot?.['airdata.radioAltitude'+sg]??null;
   const iru=signal(snapshot,irsTopic(irs)),peer=signal(snapshot,irsTopic(irs===1?2:1));
   const validAtt=u=>u?.powered===true&&u.attitudeValid===true&&Number.isFinite(u.pitchDeg)&&Number.isFinite(u.rollDeg);
   const attitude=validAtt(iru),peerAttitude=validAtt(peer);
@@ -120,7 +123,20 @@
    fmc,adc:signal(snapshot,'airdata.adc'+sg),
    vor:signal(snapshot,'navigation.vor'+vhf),dme:signal(snapshot,'navigation.dme'+vhf),
    ils:signal(snapshot,'navigation.ils'+vhf),ra:signal(snapshot,'airdata.radioAltitude'+sg),
-   director:signal(snapshot,'afds.director'+sg)};
+   director:signal(snapshot,'afds.director'+sg),
+   health:{
+    irsQuality:irsRecord?.quality??'UNKNOWN',
+    irsPhase:iru?.phase??'UNKNOWN',irsPowered:iru?.powered===true,
+    irsPositionValid:iru?.positionValid===true,attitudeValid:attitude,
+    trackDisplayValid:direction(trueTrack)!==null,
+    motionSource:iru?.source??'UNKNOWN',
+    adcQuality:adcRecord?.quality??'UNKNOWN',
+    adcCasKt:value(adcRecord?.value?.casKt),adcMach:value(adcRecord?.value?.mach),
+    radioAltQuality:raRecord?.quality??'UNKNOWN',
+    radioAltitudeFt:value(raRecord?.value?.heightFt),
+    displayPowered:feeds[display]===true,
+    sgVideo:feeds[sg]===true&&faults[sg]!==true
+   }};
  }
  function offsets(from,to){
   const r=Math.PI/180,a=from.lat*r,b=to.lat*r,dl=delta(to.lon-from.lon)*r;
