@@ -19,10 +19,15 @@
   scheduled=false;
   const raw=readRaw();
   if(!raw){reset();return;}
+  if(win.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.paused===true){
+   if(!frame)frame=Model.stepFrame(null,raw,0);
+   lastTime=null;
+   return; // pause needs no continuous RAF/repainting
+  }
   const dt=lastTime===null?0:Math.min(1.5,Math.max(0,(now-lastTime)/1000));
   lastTime=now;active=true;
   frame=Model.stepFrame(frame,raw,dt);
-  if(now-lastPaint>=1000/30){
+  if(now-lastPaint>=1000/(win.document?.hidden?8:30)){
    lastPaint=now;paints++;
    win.dispatchEvent(new CustomEvent('b737:flight-presentation-frame',{
     detail:{schema:'B737_FLIGHT_PRESENTATION_FRAME_V1',source:VERSION,
