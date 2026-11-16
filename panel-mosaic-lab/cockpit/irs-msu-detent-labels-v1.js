@@ -5,7 +5,8 @@
 (function(root){
  'use strict';
  const MODES=Object.freeze(['OFF','ALIGN','NAV','ATT']);
- const seats=['L','R'],mounted=new Map();
+ const seats=['L','R'],mounted=new Map(),upperLabels=new Map();
+ const UPPER_MODES=Object.freeze(['TEST','TK/GS','PPOS','WIND','HDG/STS']);
  function geometry(){
   const g=root.B737IRSRotaryIndices?.angles;
   return g&&g.msu?.length===4?g:null;
@@ -17,8 +18,41 @@
   owner.setMode(side,mode);
   sync();return owner.getState().units[side].mode;
  }
+ function mountUpper(){
+  const api=root.B737IRSDisplaySelector;
+  const g=api?.geometry,host=api?.getElement?.();
+  if(!g||!host||!Array.isArray(g.modeAngles)||g.modeAngles.length!==UPPER_MODES.length)return false;
+  const size=g.size.width;
+  for(let i=0;i<UPPER_MODES.length;i++){
+   const mode=UPPER_MODES[i];
+   let button=upperLabels.get(mode);
+   if(!button||!button.isConnected){
+    button=root.document.createElement('button');button.type='button';
+    button.className='irs-upper-detent-label';button.dataset.irsUpperLabel=mode;
+    button.setAttribute('aria-label','IRS DSPL SEL → '+mode);
+    button.title='IRS display selector · '+mode+' (tap printed legend)';
+    Object.assign(button.style,{position:'absolute',zIndex:'10',padding:'0',margin:'0',
+     background:'transparent',border:'0',boxShadow:'none',cursor:'pointer',
+     touchAction:'manipulation',pointerEvents:'auto',borderRadius:'5px',
+     transform:'translate(-50%,-50%)'});
+    button.addEventListener('pointerdown',e=>e.stopPropagation());
+    button.addEventListener('click',e=>{
+     e.preventDefault();e.stopPropagation();
+     api.setMode(mode,'printed-label-tap');sync();
+    });
+    host.append(button);upperLabels.set(mode,button);
+   }
+   const angle=(180+g.modeAngles[i])*Math.PI/180,r=size*.75;
+   Object.assign(button.style,{left:(size/2+Math.cos(angle)*r)+'px',
+    top:(size/2+Math.sin(angle)*r)+'px',
+    width:(size*.53)+'px',height:(size*.4)+'px'});
+  }
+  return true;
+ }
  function sync(){
   const state=root.B737IRSTrainerUnified?.getState?.();
+  const upper=root.B737IRSDisplaySelector?.getState?.()?.mode;
+  for(const [mode,button]of upperLabels)button.setAttribute('aria-pressed',String(mode===upper));
   if(!state)return;
   for(const [side,labels]of mounted){
    const active=state.units?.[side]?.mode;
@@ -29,6 +63,7 @@
   }
  }
  function mount(){
+  mountUpper();
   const owner=root.B737IRSTrainerUnified,g=geometry(),
    panel=root.document.getElementById('irsTrainerMSU');
   if(!owner||!g||!panel)return false;
@@ -76,10 +111,12 @@
  }
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:irs-trainer-state',sync);
+ root.addEventListener('b737:irs-upper-visual-change',sync);
  if(root.document.readyState==='loading')
   root.document.addEventListener('DOMContentLoaded',mount,{once:true});
  else mount();
- root.B737IRSPrintedDetentTaps=Object.freeze({version:'IRS-MSU-DETENT-TAPS-0001',mount,
+ root.B737IRSPrintedDetentTaps=Object.freeze({version:'IRS-PRINTED-DETENT-TAPS-0002',
+  upperModes:UPPER_MODES,mount,
   setMode,getState:()=>Object.fromEntries(seats.map(side=>[
    side,{mode:root.B737IRSTrainerUnified?.getState?.()?.units?.[side]?.mode,
     taps:mounted.get(side)?.size||0}
