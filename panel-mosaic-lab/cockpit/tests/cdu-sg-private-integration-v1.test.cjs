@@ -100,3 +100,29 @@ test('public cockpit and both CDU views share one opt-in connector but no data p
  assert.match(read('panel-mosaic-lab/cockpit/cdu-session.js'),/function notify/);
  assert.match(read('panel-mosaic-lab/cockpit/app.js'),/fmcSession.subscribe/);
 });
+
+
+test('public Unified cockpit enters Railway before CDU graphics; Railway reconnects in place',()=>{
+ const html=read('panel-mosaic-lab/cockpit/index.html');
+ const marker='<script id="unified-gateway-entry-v1">';
+ const open=html.indexOf(marker),close=html.indexOf('</script>',open);
+ assert.ok(open>=0 && close>open,'Early gateway entry is missing');
+ assert.ok(open<html.indexOf('src="../../cb-panel-lab/catalog.js'),'Gateway must precede CDU/graphics');
+ const code=html.slice(open+marker.length,close),vm=require('node:vm');
+ const cases=[
+  ['mahmet737ng-gif.github.io','/b737-classic-simulator/panel-mosaic-lab/cockpit/',true],
+  ['mahmet737ng-gif.github.io','/b737-classic-simulator/panel-mosaic-lab/cockpit/index.html',true],
+  ['mahmet737ng-gif.github.io','/b737-classic-simulator/cdu-standalone-v6/',false],
+  ['ata24-review-gateway-production.up.railway.app','/panel-mosaic-lab/cockpit/',false],
+  ['localhost','/b737-classic-simulator/panel-mosaic-lab/cockpit/',false]
+ ];
+ for(const [hostname,pathname,expected] of cases){
+  const redirects=[];
+  vm.runInNewContext(code,{window:{location:{hostname,pathname,replace:url=>redirects.push(url)}}});
+  assert.equal(redirects.length,expected?1:0,hostname+pathname);
+  if(expected)assert.equal(redirects[0],
+   'https://ata24-review-gateway-production.up.railway.app/panel-mosaic-lab/cockpit/');
+ }
+ const adapter=read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js');
+ assert.ok(adapter.includes('if(railway||github)void connect()'),'Pages fallback and Railway reconnect must run without clicking');
+});
