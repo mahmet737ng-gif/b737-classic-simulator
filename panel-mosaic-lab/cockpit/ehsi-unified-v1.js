@@ -155,7 +155,7 @@
     // not automatically a valid aligned IRS NAV solution.
     const location=win.B737UnifiedFlightLocationV1;
     const chosen=location?.getLocation?.();
-    const center=src.mapPosition||chosen;
+    const center=chosen||src.mapPosition; // Instructor-selected chart center has priority for preview
     if(!preview&&center&&['MAP','CTR_MAP','PLAN'].includes(origin.ehsi.mode)){
      const extra=[],vor=src.vor;
      if(vor?.stationIdent&&Number.isFinite(vor.stationLat)&&Number.isFinite(vor.stationLon))
