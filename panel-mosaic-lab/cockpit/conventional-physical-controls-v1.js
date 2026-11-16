@@ -20,6 +20,13 @@
  });
  const DETENTS=Object.freeze(['RTO','OFF','1','2','3','MAX']);
  const ANGLES=Object.freeze({RTO:-135,OFF:-90,'1':-45,'2':0,'3':45,MAX:90});
+ // Printed-label extents relative to native knob diameter. Text center
+ // is deliberately different from the mechanical rotor angle.
+ const PRINTED=Object.freeze({
+  RTO:[-.70,.34,.32,.19],OFF:[-.83,0,.32,.19],
+  '1':[-.59,-.51,.16,.19],'2':[0,-.75,.16,.19],
+  '3':[.56,-.51,.16,.19],MAX:[.84,0,.38,.20]
+ });
  const STORE='b737.conventional.autobrake.selector.v1';
  const RTO_SELF_TEST_MS=1500;
  const cssId='b737-conventional-physical-controls-register-v1';
@@ -166,14 +173,18 @@
    return knob;
   }
   function placeDetentLabels(main,l){
-   // Source coordinates for the six 737 Classic AUTOBRAKE detents are derived
-   // from the same owner-registered photo center and real rotor angles.
+   const geometry=win.B737DetentHitGeometryV1;
+   if(!geometry?.build)throw Error('B737DetentHitGeometryV1 must load before AUTOBRAKE');
    const center=point(l,REF.autobrake.center);
-   const xRadius=REF.autobrake.diameter*.92*Math.abs(l.matrix[0]);
-   const yRadius=REF.autobrake.diameter*.92*Math.abs(l.matrix[3]);
-   const width=REF.autobrake.diameter*.7*Math.abs(l.matrix[0]);
-   const height=REF.autobrake.diameter*.52*Math.abs(l.matrix[3]);
-   for(const value of DETENTS){
+   const dx=REF.autobrake.diameter*Math.abs(l.matrix[0]);
+   const dy=REF.autobrake.diameter*Math.abs(l.matrix[3]);
+   const boxes=geometry.build(DETENTS.map(value=>{
+    const [xx,yy,tw,th]=PRINTED[value];
+    return {id:value,cx:center.x+xx*dx,cy:center.y+yy*dy,
+     w:tw*dx,h:th*dy};
+   }),{paddingPx:5});
+   for(const box of boxes){
+    const value=box.id;
     let b=detentLabels.get(value);
     if(!b){
      b=doc.createElement('button');b.type='button';
@@ -183,8 +194,7 @@
      b.title='AUTO BRAKE '+value+' · tap printed detent';
      Object.assign(b.style,{position:'absolute',zIndex:'55',padding:'0',margin:'0',
       border:'0',background:'transparent',boxShadow:'none',
-      touchAction:'manipulation',cursor:'pointer',
-      transform:'translate(-50%,-50%)'});
+      touchAction:'manipulation',cursor:'pointer'});
      b.addEventListener('pointerdown',event=>event.stopPropagation());
      b.addEventListener('click',event=>{
       if(mode()!=='CONVENTIONAL')return;
@@ -193,12 +203,12 @@
      });
      detentLabels.set(value,b);
     }
-    const a=ANGLES[value]*Math.PI/180;
     Object.assign(b.style,{
-     left:(center.x+Math.sin(a)*xRadius).toFixed(3)+'px',
-     top:(center.y-Math.cos(a)*yRadius).toFixed(3)+'px',
-     width:width.toFixed(3)+'px',height:height.toFixed(3)+'px'
+     left:box.x.toFixed(3)+'px',top:box.y.toFixed(3)+'px',
+     width:box.w.toFixed(3)+'px',height:box.h.toFixed(3)+'px',
+     transform:'none'
     });
+    b.dataset.hitPaddingPx=box.paddingPx.toFixed(2);
     if(b.parentElement!==main)main.append(b);
     b.setAttribute('aria-pressed',String(value===selected));
    }
