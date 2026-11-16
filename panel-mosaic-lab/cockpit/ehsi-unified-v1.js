@@ -5,7 +5,7 @@
  if(root?.document)root.B737UnifiedEHSI=api.mount(root);
 })(globalThis,function(){
  'use strict';
- const VERSION='UNIFIED-EHSI-0002-SEAT-BOUND';
+ const VERSION='UNIFIED-EHSI-0003-MCP-SELECT';
  const NS='http://www.w3.org/2000/svg';
  // Apertures measured inside the source glass. Children inherit each photo's
  // existing registration, including the FO mode-specific transform and lift.
@@ -145,6 +145,12 @@
     screen.host.dataset.controlSeat=seat;
     screen.host.dataset.controlMode=origin.ehsi.mode;
     screen.host.dataset.controlRange=String(origin.ehsi.range);
+    // Selected HDG is shared MCP, selected CRS follows SG 1 or SG 2 and
+    // the COURSE 2 battery feed (not a fabricated localizer capture).
+    screen.host.dataset.mcpHeadingBug=src.selectedHeading==null?'':String(src.selectedHeading);
+    screen.host.dataset.mcpCourse=src.course==null?'':String(src.course);
+    screen.host.dataset.mcpHeadingPower=String(src.mcp?.powered===true);
+    screen.host.dataset.mcpCourse2Power=String(src.mcp?.course2Powered===true);
     diagnostics.push(seat+' · SG '+src.sg+' · IRS '+screen.host.dataset.irs+
      ' · '+(src.trackSource||'NO TRK')+' · '+(src.fmc?.operational?'FMC ON':'FMC UNAVAILABLE'));
     model.efis.displayAspect=screen.aspect;
@@ -208,10 +214,14 @@
   });
   doc.getElementById('unifiedFmcFail')?.addEventListener('change',e=>win.B737FmcSystemsBridgeV1?.setFailure?.(e.target.checked));
   for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
-  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot'])win.addEventListener(event,schedule);
+  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
-  return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange)}:null});
+  return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange),
+     mcpHeadingBug:screens[seat].host.dataset.mcpHeadingBug===''?null:Number(screens[seat].host.dataset.mcpHeadingBug),
+     mcpCourse:screens[seat].host.dataset.mcpCourse===''?null:Number(screens[seat].host.dataset.mcpCourse),
+     mcpPower:screens[seat].host.dataset.mcpHeadingPower==='true',
+     mcpCourse2Power:screens[seat].host.dataset.mcpCourse2Power==='true'}:null});
  }
  return Object.freeze({VERSION,liveModel,mount});
 });
