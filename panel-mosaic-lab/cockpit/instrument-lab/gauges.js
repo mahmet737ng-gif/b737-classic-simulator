@@ -85,6 +85,46 @@
       x:x-offset[0],y:y-offset[1],fill,'font-size':size,'font-family':'Arial, sans-serif',
       'font-variant-numeric':'tabular-nums','text-anchor':'middle'
     });
+    function rollingReadout(x,y,size,digits,fill='#f3f2ea'){
+      const roller=window.B737MechanicalNumberWheelsV1;
+      if(!roller)throw Error('MECHANICAL_WHEEL_ENGINE_MISSING');
+      const baseX=x-offset[0],baseline=y-offset[1];
+      const charWidth=size*.61,stride=size*1.045;
+      const all=svg(movable,'g',{'data-rolling-digits':kind,
+       'data-rolling-count':digits,'aria-label':kind+' rolling number'});
+      const tracks=[];
+      for(let i=0;i<digits;i++){
+        const cx=baseX+(i-(digits-1)/2)*charWidth;
+        const id='b737-wheel-'+(++nextClipId);
+        const clipping=svg(svg(canvas,'defs',{}),'clipPath',{id});
+        svg(clipping,'rect',{x:cx-charWidth/2-2,y:baseline-size*.86,
+          width:charWidth+4,height:size*1.08});
+        const clipped=svg(all,'g',{'clip-path':'url(#'+id+')'});
+        const moving=svg(clipped,'g',{'data-rolling-column':i});
+        const glyphs=[];
+        for(const relative of [-1,0,1]){
+          const node=svg(moving,'text',{x:cx,y:baseline+relative*stride,
+            fill,'font-size':size,'font-family':'Arial, sans-serif',
+            'font-variant-numeric':'tabular-nums','text-anchor':'middle'});
+          glyphs.push(node);
+        }
+        tracks.push({moving,glyphs});
+      }
+      return {element:all,set(value,visible=true){
+        setVisible(all,visible);
+        if(!visible||!Number.isFinite(value))return;
+        const frames=roller.frames(Math.max(0,value),digits);
+        frames.forEach((f,i)=>{
+          const t=tracks[i];
+          // Values progress upward. Lower place rotates continuously; upper
+          // places roll across 9 -> 0 only when the lower digits carry.
+          t.glyphs[0].textContent=String(f.previous);
+          t.glyphs[1].textContent=String(f.digit);
+          t.glyphs[2].textContent=String(f.next);
+          t.moving.setAttribute('transform','translate(0 '+(-f.fraction*stride)+')');
+        });
+      }};
+    }
     const pressure = (x1,x2,y,size) => [text(x1,y,size),text(x2,y,size)];
     function baro(nodes,qnh) {
       nodes[0].textContent=Math.round(qnh);
@@ -154,7 +194,8 @@
     }
     switch(kind) {
       case 'altimeter': {
-        const alt = text(1000,1299,155);
+        const alt4=rollingReadout(1000,1299,155,4);
+        const alt5=rollingReadout(948,1299,145,5);
         const caution = text(930,1280,90,'#ffb744');
         const neg = text(750,1277,67);
         caution.textContent='OFF'; neg.textContent='NEG';
@@ -167,12 +208,13 @@
         update = s => {
           const altitude=indicatedAltitude(s.altitude,s.qnh);
           const small=altitude>=0&&altitude<10000;
-          const digits=Math.abs(altitudeText(altitude));
-          alt.setAttribute('x', small||altitude<0 ? 1000-offset[0] : 948-offset[0]);
-          alt.setAttribute('font-size',digits>=10000?'145':'155');
+          const digits=Math.abs(altitude);
+          const useFive=digits>=10000;
+          alt4.set(Math.min(digits,9999.999),!s.altFlag&&!useFive);
+          alt5.set(Math.min(digits,99999.999),!s.altFlag&&useFive);
           setVisible(caution,s.altFlag);
           setVisible(neg,!s.altFlag&&altitude<0);
-          alt.textContent=s.altFlag?'':String(small?Math.min(9980,digits):digits).padStart(4,'0');
+
           setVisible(sprite['alt-flag'],!s.altFlag&&small);
           setVisible(sprite.needle,!s.altFlag);
           baro(qnh,s.qnh);
@@ -184,7 +226,7 @@
         break;
       }
       case 'airspeed': {
-        const mach=text(504,682,41), ias=text(504,893,49,'#b4f77a');
+        const mach=text(504,682,41),ias=rollingReadout(504,893,49,3,'#b4f77a');
         const bugNames=['bug-1','bug-2','bug-3','bug-4'], oranges=['orange-1','orange-2'];
         [...bugNames,...oranges,'limit-needle','ias-needle','set-knob'].forEach(place);
         const cursor=svg(movable,'path',{d:`M ${cx-13} ${cy-251} l 13 -18 l 13 18 l -13 19 Z`,fill:'#f5f3e7',stroke:'#202327','stroke-width':3});
@@ -192,7 +234,8 @@
         manual.textContent='MAN';
         const hit={};
         if(options.onChange){
-          [...bugNames,...oranges].forEach((name,i)=>{
+          const editableBugs=options.lockOrangeBugs===true?bugNames:[...bugNames,...oranges];
+          editableBugs.forEach((name,i)=>{
             hit[name]=bugControl(name,i<4?'bugs':'orangeBugs',i<4?i:i-4);
           });
           knob('set-knob','Pull to set airspeed cursor',d=>{
@@ -204,15 +247,17 @@
           mach.textContent=s.airDataOff||air.mach<.4?'':Math.min(.99,air.mach).toFixed(2).slice(1);
           cursor.setAttribute('transform',`rotate(${interpolate(s.cursorManual?s.cursor:(s.autoCursor??s.cursor),iasScale)} ${cx} ${cy})`);
           setVisible(manual,s.cursorManual);
-          ias.textContent=s.airDataOff||s.ias<=45?'':Math.round(s.ias);
+          ias.set(Math.max(0,Math.min(s.ias,999.999)),!s.airDataOff&&s.ias>45);
           setVisible(sprite['ias-needle'],!s.airDataOff);
           rotate('ias-needle',interpolate(s.ias,iasScale));
           rotate('set-knob',(s.cursor-145)*3,100,630);
           sprite['set-knob'].setAttribute('transform',(s.cursorManual?'translate(0 5) ':'')+sprite['set-knob'].getAttribute('transform'));
           rotate('limit-needle',interpolate(s.limit,iasScale)-276);
           [...bugNames,...oranges].forEach((name,i)=>{
-            const speed=i<4?s.bugs[i]:s.orangeBugs[i-4];
-            rotate(name,interpolate(speed,iasScale)-[30,35,40,46,152,148][i]);
+            const speed=i<4?s.bugs?.[i]:s.orangeBugs?.[i-4];
+            setVisible(sprite[name],Number.isFinite(speed));
+            if(Number.isFinite(speed))
+              rotate(name,interpolate(speed,iasScale)-[30,35,40,46,152,148][i]);
             hit[name]?.setAttribute('transform',sprite[name].getAttribute('transform'));
           });
         };
