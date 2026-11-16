@@ -41,3 +41,17 @@ test('Unified route bus shares SG segments and fix labels without a second CDU e
  route.setConnected(false);
  assert.equal(preview.collectFixes(route.snapshot()).length,0);
 });
+
+test('procedure text FIX identifiers join directly to verified local NAVDATA coordinates',()=>{
+ const ast={...v,segments:[{ast:[
+  {kind:'FIX_PASSAGE',values:{ident:'ALFA'}},
+  {kind:'FIX_PASSAGE',values:{ident:'BRAV'}}
+ ]}],local_fixes:{
+  ALFA:[{ident:'ALFA',lat:35.4,lon:51,post_marker_line:4}],
+  BRAV:[{ident:'BRAV',lat:35.5,lon:51.1,post_marker_line:6}]
+ }};
+ assert.equal(sg.compile(ast,selection).features.filter(f=>f.geometry.type==='LineString').length,1);
+ const ambiguous={...ast,local_fixes:{...ast.local_fixes,
+  BRAV:[...ast.local_fixes.BRAV,{ident:'BRAV',lat:38,lon:57,post_marker_line:9}]}};
+ assert.equal(sg.compile(ambiguous,selection).features.filter(f=>f.geometry.type==='LineString').length,0);
+});
