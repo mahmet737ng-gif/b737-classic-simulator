@@ -53,12 +53,34 @@
   if(!status||!buttons.length)return;
   const descriptions={FULL_ALIGN:'IRS L/R aligned · EFIS training supply enabled.',
    COLD_DARK:'IRS L/R OFF · EADI and EHSI dark.',LIVE:'Aircraft power and manual IRS operation.'};
+  const showPreset=preset=>{
+   for(const item of buttons)item.setAttribute('aria-pressed',String(item.dataset.efisPreset===preset));
+   status.textContent=descriptions[preset];
+  };
+  let manuallyChanged=false;
+  // The EFIS training mode defaults to FULL ALIGN on every fresh Unified load.
+  // Run the actual IRS L/R alignment shortcut, not merely the selected button
+  // visual or the EFIS source preset. This is an instructor simulation default
+  // and must not bypass a pulled circuit breaker or a failed alignment.
+  const bootDefault=()=>{
+   if(manuallyChanged)return;
+   try{
+    const current=win.B737UnifiedEfisSources?.getPreset?.();
+    if(current&&current!=='LIVE')return; // An earlier explicit owner already chose.
+    apply(win,'FULL_ALIGN');
+    showPreset('FULL_ALIGN');
+   }catch(error){
+    status.textContent='FULL ALIGN NOT READY · '+String(error?.message||error);
+   }
+  };
+  if(doc.readyState==='complete')bootDefault();
+  else doc.addEventListener('DOMContentLoaded',bootDefault,{once:true});
   for(const button of buttons)button.addEventListener('click',()=>{
    const preset=button.dataset.efisPreset;
+   manuallyChanged=true;
    try{
     apply(win,preset);
-    for(const item of buttons)item.setAttribute('aria-pressed',String(item===button));
-    status.textContent=descriptions[preset];
+    showPreset(preset);
    }catch(error){status.textContent=error.message;}
   });
  }
