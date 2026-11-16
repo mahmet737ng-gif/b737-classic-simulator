@@ -73,3 +73,16 @@ test('ALT HLD holds captured altitude with a gently damped pitch command',()=>{
  assert.equal(r.actions.find(x=>x.type==='ALTITUDE').value,7000);
  assert.ok(r.pitchCommandDeg<2);
 });
+
+test('A/P disengagement stops stale MCP guidance while retaining current trim state',()=>{
+ let s=frame({headingDeg:90,altitudeFt:6000,vsFpm:1300,bankDeg:12});
+ s=Flight.command(s,{type:'HEADING',value:160});
+ s=Flight.command(s,{type:'ALTITUDE',value:11000});
+ const free=Flight.command(s,{type:'MANUAL_HOLD'});
+ assert.equal(free.target.flightControlOwner,'MANUAL_TRIM_NO_AP');
+ assert.equal(free.target.lateralMode,'BANK');
+ assert.equal(free.target.bankCommandDeg,12);
+ assert.equal(free.target.verticalMode,'VS');
+ assert.equal(free.target.vsFpm,1300);
+ assert.ok(free.target.altitudeFt===11000,'old selection retained for metadata only');
+});
