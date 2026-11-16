@@ -31,7 +31,7 @@ const RANGE_HITS={10:[1034,439],20:[1006,363],40:[1024,278],80:[1079,203],160:[1
 // reduced if nearby label zones would otherwise overlap.
 const LABEL_HIT_SIZE={
  mode:{FULL_NAV:[84,42],FULL_VOR_ILS:[128,46],EXP_NAV:[84,42],
-  EXP_VOR_ILS:[128,46],MAP:[68,40],CTR_MAP:[104,44],PLAN:[78,42]},
+  EXP_VOR_ILS:[128,46],MAP:[54,36],CTR_MAP:[96,22],PLAN:[78,42]},
  range:{10:[38,34],20:[38,34],40:[38,34],80:[40,34],160:[62,34],320:[62,34]}
 };
 // All positions are native pixels of the approved 1448x1086 EFIS plate.
