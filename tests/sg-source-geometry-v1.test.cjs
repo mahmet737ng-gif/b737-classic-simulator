@@ -26,3 +26,18 @@ test('source identity and unsafe executable data fail closed',()=>{
  assert.throws(()=>sg.compile(v,{...selection,airport:'OIMM'}),/UNVERIFIED/);
  assert.throws(()=>sg.compile({segments:[]},selection),/UNVERIFIED/);
 });
+
+test('Unified route bus shares SG segments and fix labels without a second CDU engine',()=>{
+ const route=require('../panel-mosaic-lab/cockpit/cdu-sg-route-state-v1.js').create();
+ const preview=require('../panel-mosaic-lab/cockpit/cdu-sg-ehsi-preview-v1.js');
+ route.setConnected(true);route.setContext({origin:'OIII',destination:'OIMM'});
+ const procedure={...v,requires_runway_selection:false,requires_transition_selection:false,
+  runway_options:['29R'],transition_options:[]};
+ const geometry=sg.compile(procedure,selection);
+ const snap=route.select({airport:'OIII',kind:'SID',ident:'TEST1A',runway:'29R',procedure,geometry});
+ assert.equal(preview.collect(snap).length,2);
+ assert.equal(preview.collectFixes(snap).length,4);
+ assert.equal(snap.selections['SID@OIII'].fmcExecutable,false);
+ route.setConnected(false);
+ assert.equal(preview.collectFixes(route.snapshot()).length,0);
+});
