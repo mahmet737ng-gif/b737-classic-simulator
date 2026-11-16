@@ -84,7 +84,8 @@
   rw.value=Object.hasOwn(a.runways,previous)?previous:a.defaultRunway;
   const manual=by('flightPreset').value==='MANUAL';
   if(!manual){
-   by('flightHeading').value=Math.round(magneticHeading(a.runways[rw.value],airportPoint(a))??0)%360;
+   const mag=magneticHeading(a.runways[rw.value],airportPoint(a));
+    by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
    by('flightAlt').value=a.elevationFt+(by('flightPreset').value==='RUNWAY_READY'?0:3000);
   }
  }
@@ -94,7 +95,8 @@
   else if(kind==='FINAL_5'||kind==='FINAL_10')by('flightAirGround').value='AIRBORNE';
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(kind!=='MANUAL'){
-   by('flightHeading').value=Math.round(magneticHeading(a.runways[by('flightRunway').value],airportPoint(a))??0)%360;
+   const mag=magneticHeading(a.runways[by('flightRunway').value],airportPoint(a));
+    by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
    by('flightAlt').value=Math.round(a.elevationFt+(kind==='RUNWAY_READY'?0:kind==='FINAL_5'?1643:3236));
    by('flightSpeed').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?155:170;
    by('flightVS').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?-823:-902;
@@ -200,7 +202,8 @@
    active=true;pause=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
-    by('flightHeading').value=Math.round(magneticHeading(state.trueHeadingDeg,state)??0)%360;
+    const mag=magneticHeading(state.trueHeadingDeg,state);
+     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
     by('flightSpeed').value=Math.round(state.iasKt);
     by('flightVS').value=Math.round(state.vsFpm);
     by('flightBank').value=0;
