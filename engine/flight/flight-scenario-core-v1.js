@@ -62,14 +62,17 @@
   const latitude=manual&&config.lat!==undefined?finite(config.lat,-90,90,'LAT'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lat:anchor.lat;
   const longitude=manual&&config.lon!==undefined?finite(config.lon,-180,180,'LON'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lon:anchor.lon;
   const defaultAlt=airport.elevationFt+(isFinal?Math.tan(3*RAD)*finalNm*FT_PER_NM+50:ground?0:3000);
-  const alt=manual&&config.altitudeFt!==undefined?finite(config.altitudeFt,-1000,65000,'ALTITUDE_FT'):defaultAlt;
+  const altitudeInput=manual&&config.altitudeFt!==undefined?finite(config.altitudeFt,-1000,65000,'ALTITUDE_FT'):defaultAlt;
+  const alt=ground?airport.elevationFt:altitudeInput;
   if(alt<airport.elevationFt-.01)throw RangeError('ALTITUDE_BELOW_AIRPORT_SURFACE');
-  const speed=manual&&config.speedKt!==undefined?finite(config.speedKt,0,450,'IAS_KT'):isFinal?(finalNm===5?155:170):ground?0:220;
+  const speedInput=manual&&config.speedKt!==undefined?finite(config.speedKt,0,450,'IAS_KT'):isFinal?(finalNm===5?155:170):ground?0:220;
+  const speed=ground?0:speedInput;
   if(!ground&&speed<80)throw RangeError('AIRBORNE_IAS_BELOW_TRAINING_MINIMUM');
   const heading=manual&&config.headingDeg!==undefined?wrap(finite(config.headingDeg,0,360,'HEADING_DEG')):hdg;
   const bank=manual&&config.bankDeg!==undefined?finite(config.bankDeg,-30,30,'BANK_DEG'):0;
-  const vs=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
-  const guidance={lateralMode:'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
+  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
+  const vs=ground?0:vsInput;
+  const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
    headingDeg:heading,bankCommandDeg:bank,altitudeFt:ground?airport.elevationFt+3000:alt,
    vsFpm:ground?1500:vs,speedKt:ground?150:speed};
   return {schema:'B737_FLIGHT_SCENARIO_STATE_V1',revision:1,
