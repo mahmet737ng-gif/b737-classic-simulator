@@ -95,33 +95,46 @@ async function openCatalog(kind,options={}){
 async function openChapter11Catalog(selection){
  const {airport,mode,source}=selection;
  const ticket=++serial,departure=mode==='DEP',page=departure?'DEPARTURES':'ARRIVALS';
- const variant=mode==='DEP'?'SID':'STAR';
- const view={mode:'LOADING',chapter11:true,airport,page:1,departure,left:[],right:[]};
+ const variant=departure?'SID':'STAR';
+ const view={mode:'LOADING',chapter11:true,airport,page:1,departure,
+  source,referenceOnly:source==='OTHER',left:[],right:[],candidate:null,
+  runways:[],transitions:[]};
  state.stage6View=view;state.depArrSelection=selection;
  core.choose(state,pages,page);updates();
  try{
   const catalog=kind=>json('/api/stage6/catalog?airport='+encodeURIComponent(airport)+'&kind='+kind).then(result=>{
    if(result.airac!=='2610'||result.airport!==airport||result.kind!==kind||
-     result.fmc_executable!==false||!Array.isArray(result.items))throw Error('Invalid AIRAC catalogue');
-   return result.items.filter(x=>/^[A-Z0-9._-]{2,12}$/.test(x.ident)&&
-    x.status==='SOURCE_ONLY_NOT_FMC_EXECUTABLE');
+      result.fmc_executable!==false||!Array.isArray(result.items))
+    throw Error('INVALID NAV DATA SOURCE');
+   // The private source, never a hardcoded demo or inferred chart name,
+   // is the sole authority for visible and selectable procedure records.
+   if(result.items.some(x=>!x||!/^[A-Z0-9._-]{2,12}$/.test(x.ident)||
+      !Array.isArray(x.runways)||!Array.isArray(x.transitions)||
+      x.status!=='SOURCE_ONLY_NOT_FMC_EXECUTABLE'))
+    throw Error('UNVERIFIED PROCEDURE');
+   return result.items;
   });
   const [procedures,approaches,runways]=await Promise.all([
-   catalog(variant),departure?[]:catalog('APP'),json(lookupUrl('runways','airport',airport))
+   catalog(variant),departure?Promise.resolve([]):catalog('APP'),
+   json(lookupUrl('runways','airport',airport))
   ]);
   if(serial!==ticket||state.page!==page||state.stage6View!==view)return;
   if(runways.airac!=='2610'||runways.mode!=='SOURCE_REFERENCE_ONLY'||
-   runways.lookup?.has_more||!Array.isArray(runways.lookup?.rows))throw Error('Invalid runway catalogue');
-  const rwys=[...new Set(runways.lookup.rows.map(x=>x.runway_ident).filter(x=>core.validate('RUNWAY',x)))];
+    runways.fmc_executable!==false||runways.lookup?.has_more||
+    !Array.isArray(runways.lookup?.rows))throw Error('INVALID RUNWAY CATALOG');
+  const rwys=[...new Set(runways.lookup.rows.map(x=>x.runway_ident)
+   .filter(x=>core.validate('RUNWAY',x)))].sort();
   const sorted=list=>[...list].sort((a,b)=>a.ident.localeCompare(b.ident));
   view.left=sorted(procedures).map(record=>({ident:record.ident,kind:variant,record}));
-  const existing=departure?[]:sorted(approaches).map(record=>({ident:record.ident,kind:'APP',record}));
-  view.right=[...existing,...rwys.map(ident=>({ident:departure?ident:'RW'+ident,kind:'RUNWAY',runway:ident}))];
-  view.mode='CATALOG';
+  view.right=[...sorted(approaches).map(record=>({ident:record.ident,kind:'APP',record})),
+   ...rwys.map(ident=>({ident,kind:'RUNWAY',runway:ident}))];
+  view.mode='CATALOG';view.page=1;
   if(source==='OTHER')state.scratch='';
   updates();
  }catch(e){
-  if(serial===ticket&&state.page===page&&state.stage6View===view){view.mode='ERROR';error(e.message);}
+  if(serial===ticket&&state.page===page&&state.stage6View===view){
+   view.mode='ERROR';view.error=String(e.message||'SOURCE UNAVAILABLE');error(view.error);
+  }
  }
 }
 function chapter11RouteIndex(k){
@@ -135,47 +148,115 @@ function chapter11RouteIndex(k){
  const referenceOnly=source==='OTHER';
  void openChapter11Catalog({airport,mode,source,referenceOnly});return true;
 }
+function chapter11PageCount(f){
+ const left=f.mode==='CATALOG'?f.left:f.mode==='RUNWAY'?f.runways:
+  f.mode==='TRANSITION'?f.transitions:[];
+ const right=f.mode==='CATALOG'?f.right:[];
+ return Math.max(1,Math.ceil(Math.max(left.length,right.length)/5));
+}
 function chapter11CatalogView(){
  const f=state.stage6View;
  if(!f?.chapter11||!['DEPARTURES','ARRIVALS'].includes(state.page))return null;
- const count=Math.max(1,Math.ceil(Math.max(f.left.length,f.right.length)/5));
- const rows=[];
- for(let i=0;i<5;i++){
-  const at=(f.page-1)*5+i,right=f.right[at];
-  rows.push({
-   labelL:i===0?(f.departure?'SIDS':'STARS'):'',
-   valueL:f.left[at]?.ident||'',
-   labelR:right?.kind==='RUNWAY'&&f.right[at-1]?.kind!=='RUNWAY'?'RUNWAYS':
-    i===0?(f.departure?'RUNWAYS':'APPROACHES'):'',
-   valueR:right?.ident||''
-  });
+ const count=chapter11PageCount(f);
+ const rows=Array.from({length:6},()=>({labelL:'',valueL:'',labelR:'',valueR:''}));
+ const start=(f.page-1)*5;
+ if(f.mode==='ERROR'||f.mode==='LOADING'){
+  rows[0]={labelL:f.departure?'SIDS':'STARS',valueL:'',
+   labelR:f.departure?'RUNWAYS':'APPROACHES',valueR:''};
+  rows[1]={labelL:'NAV DATA',valueL:f.mode==='ERROR'?'UNAVAILABLE':'LOADING',labelR:'',valueR:''};
+ }else if(f.mode==='RUNWAY'||f.mode==='TRANSITION'){
+  const list=f.mode==='RUNWAY'?f.runways:f.transitions;
+  for(let i=0;i<5;i++)rows[i]={
+   labelL:i===0?(f.mode==='RUNWAY'?'RUNWAY':'TRANS'):'',
+   valueL:list[start+i]||'',labelR:'',valueR:''
+  };
+ }else{
+  for(let i=0;i<5;i++){
+   const a=f.left[start+i],b=f.right[start+i];
+   const prev=f.right[start+i-1];
+   const selected=a&&state.navdataReferenceProcedures?.[a.kind+'@'+f.airport]?.ident===a.ident;
+   rows[i]={
+    labelL:i===0?(f.departure?'SIDS':'STARS'):'',
+    valueL:a?(selected?'>':'')+a.ident:'',
+    labelR:b?.kind==='RUNWAY'&&(i===0||prev?.kind!=='RUNWAY')?'RUNWAYS':
+     i===0?(f.departure?'RUNWAYS':'APPROACHES'):'',
+    valueR:b?(b.kind==='RUNWAY'?b.runway:b.ident):''
+   };
+  }
  }
- rows.push({labelL:'------------',labelR:'------------',valueL:'<INDEX',valueR:'ROUTE>'});
+ rows[5]={labelL:'',valueL:'<INDEX',labelR:'',valueR:'RTE>'};
  return {title:f.airport+' '+state.page,number:f.page,count,rows};
+}
+function confirmChapter11Reference(f){
+ const choice=f.candidate;
+ if(!choice||f.referenceOnly){error('NOT ON ROUTE');return;}
+ const selection={ident:choice.ident,runway:f.chosenRunway||null,
+  transition:f.chosenTransition||null,airac:'2610',
+  source:'PRIVATE_SOURCE_REFERENCE',fmc_executable:false};
+ state.navdataReferenceProcedures={
+  ...(state.navdataReferenceProcedures||{}),
+  [choice.kind+'@'+f.airport]:selection
+ };
+ f.mode='CATALOG';f.candidate=null;f.page=1;
+ state.message=choice.kind+' REF SELECTED';
+ updates();
+}
+function selectChapter11Procedure(f,entry){
+ if(f.referenceOnly){error('NOT ON ROUTE');return;}
+ if(entry.kind==='RUNWAY'){
+  state.navdataReferenceRunways={
+   ...(state.navdataReferenceRunways||{}),[f.airport]:entry.runway
+  };
+  if(f.departure){
+   // The runway is an exact record from the private airport catalogue;
+   // update only the normal RTE runway entry, not any synthetic FMC legs.
+   const previousPage=state.page,previousScratch=state.scratch;
+   state.page='RTE';state.scratch=entry.runway;
+   core.press(state,pages,'CDU_CAPT_LSK_L3');
+   state.page=previousPage;state.scratch=previousScratch;
+  }
+  state.message='RWY REF SELECTED';updates();return;
+ }
+ const record=entry.record;
+ if(!record||!Array.isArray(record.runways)||!Array.isArray(record.transitions)){
+  error('UNVERIFIED PROCEDURE');return;
+ }
+ f.candidate=entry;f.chosenRunway=null;f.chosenTransition=null;
+ f.runways=[...new Set(record.runways.map(x=>String(x).trim().toUpperCase()))];
+ f.transitions=[...new Set(record.transitions.map(x=>String(x).trim().toUpperCase()))];
+ f.page=1;
+ if(f.runways.length){f.mode='RUNWAY';updates();return;}
+ if(f.transitions.length){f.mode='TRANSITION';updates();return;}
+ confirmChapter11Reference(f);
 }
 function chapter11CatalogKey(k,f){
  if(k==='LSK_L6'){++serial;openMenu();return true;}
  if(k==='LSK_R6'){++serial;delete state.stage6View;core.choose(state,pages,'RTE');updates();return true;}
  if(k==='PREV_PAGE'||k==='NEXT_PAGE'){
-  const {count}=chapter11CatalogView();
-  f.page=(f.page-1+(k==='NEXT_PAGE'?1:-1)+count)%count+1;updates();return true;
+  const count=chapter11PageCount(f);
+  f.page=(f.page-1+(k==='NEXT_PAGE'?1:-1)+count)%count+1;
+  updates();return true;
  }
- const key=/^LSK_([LR])([1-5])$/.exec(k);
- if(!key)return false;
- const row=(f.page-1)*5+Number(key[2])-1;
- const entry=(key[1]==='L'?f.left:f.right)[row];
- if(!entry){error('KEY INACTIVE');return true;}
- if(state.depArrSelection?.referenceOnly){error('NOT ON ROUTE');return true;}
- if(entry.kind==='RUNWAY'&&f.departure){
-  const page=state.page,scratch=state.scratch;
-  state.page='RTE';state.scratch=entry.runway;
-  core.press(state,pages,'CDU_CAPT_LSK_L3');
-  state.page=page;state.scratch=scratch;updates();return true;
+ const match=/^LSK_([LR])([1-5])$/.exec(k);
+ if(!match)return false;
+ if(f.mode!=='CATALOG'&&f.mode!=='RUNWAY'&&f.mode!=='TRANSITION'){
+  error('NAV DATA UNAVAILABLE');return true;
  }
- // Preserve the source selection workflow for a verified saved reference plan.
- // A catalogue row alone does not give the FMC path terminators or leg data.
- error('PROCEDURE SOURCE ONLY');
- return true;
+ const index=(f.page-1)*5+Number(match[2])-1;
+ if(f.mode==='CATALOG'){
+  const entry=(match[1]==='L'?f.left:f.right)[index];
+  if(!entry){error('KEY INACTIVE');return true;}
+  selectChapter11Procedure(f,entry);return true;
+ }
+ if(match[1]!=='L'){error('KEY INACTIVE');return true;}
+ if(f.referenceOnly){error('NOT ON ROUTE');return true;}
+ const value=(f.mode==='RUNWAY'?f.runways:f.transitions)[index];
+ if(!value){error('KEY INACTIVE');return true;}
+ if(f.mode==='RUNWAY'){
+  f.chosenRunway=value;
+  if(f.transitions.length){f.mode='TRANSITION';f.page=1;updates();return true;}
+ }else f.chosenTransition=value;
+ confirmChapter11Reference(f);return true;
 }
 function makeChoice(item){
  const screen=state.stage6View;
@@ -379,6 +460,9 @@ function paint(box){
  // FCOM 11.40.32 must remain the native DEP/ARR INDEX even if an optional
  // private laboratory has loaded reference-only procedures.
  if(state.page==='DEP_ARR')return;
+ // The Chapter-11 source catalogue already uses the 12-row IDENT renderer.
+ // Never replace it with the legacy arbitrary-position overlay.
+ if(state.stage6View?.chapter11&&['DEPARTURES','ARRIVALS'].includes(state.page))return;
  const page=state.page,f=state.stage6View||{};
  const plan=summaryPlan();
  if(page==='DEP_ARR'&&prior()){
