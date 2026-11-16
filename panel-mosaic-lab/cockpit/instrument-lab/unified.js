@@ -1,13 +1,11 @@
 (() => {
   'use strict';
   const photos=window.B737PhotoGauges;
-  const source=window.B737FlightNeedlesModel?.sources;
   const airspeed=window.B737AirspeedPointersModel;
-  if(!photos||!source||!airspeed) return;
+  const registration=window.B737PhotoGaugeRegistrationV1;
+  if(!photos||!airspeed||!registration)return;
   const stations=['captain','firstOfficer'];
   const gauges=new Map();
-  const radii={airspeed:304, altimeter:456, ivsi:240, rmi:213};
-  const type={altimeter:'altimeter',verticalSpeed:'ivsi',rmi:'rmi'};
   const settings={captain:{},firstOfficer:{},standby:{}};
   let standby, queued=false;
   function change(station,key,value,initial){
@@ -15,40 +13,57 @@
     settings[station][key]=value;
     repaint();
   }
-  function mountGauge(station,kind,piece,width,height,x,y,radius){
-    const key=`${station}:${kind}`;
-    const host=document.querySelector(`.texture-piece[data-piece="${piece}"]`);
-    if(!host||gauges.get(key)?.canvas.parentNode===host) return;
-    const gauge=photos.createGauge(host,kind,{
-      label:`${station} ${kind}`,
-      lockOrangeBugs:kind==='airspeed',
-      onChange:(...args)=>change(station,...args)
-    });
-    const {size,pivot}=photos.geometry[kind];
-    const scale=radius/radii[kind];
-    Object.assign(gauge.canvas.style,{
-      position:'absolute',left:`${(x-pivot[0]*scale)*100/width}%`,
-      top:`${(y-pivot[1]*scale)*100/height}%`,
-      width:`${size[0]*scale*100/width}%`,height:`${size[1]*scale*100/height}%`,
-      overflow:'visible',pointerEvents:'none',zIndex:4
-    });
-    gauge.canvas.setAttribute('preserveAspectRatio','none');
-    gauges.set(key,gauge);
-    if(kind==='airspeed') host.querySelector('[data-airspeed-pointers]')?.setAttribute('aria-hidden','true');
-    const oldKind={altimeter:['altimeter'],ivsi:['verticalSpeed'],rmi:['rmi1','rmi2']}[kind]||[];
-    for(const old of oldKind) host.querySelector(`[data-flight-needle="${old}"]`)?.setAttribute('display','none');
-    if(kind==='airspeed') host.querySelector('[data-airspeed-pointers]')?.setAttribute('display','none');
-  }
-  function mount(){
-    for(const [group,panel] of Object.entries(source)){
-      const station=group==='captain'?'captain':'firstOfficer';
-      for(const [key,{x,y,radius}] of Object.entries(panel.gauges)){
-        if(type[key]) mountGauge(station,type[key],panel.piece,panel.width,panel.height,x,y,radius);
-      }
+  function mountGauge(station,kind,mode){
+    const key=station+':'+kind;
+    const entry=registration.get(mode,station,kind);
+    const host=document.querySelector(registration.selector(entry));
+    const original=gauges.get(key);
+    // The EIS outer photo is deliberately hidden in Conventional mode.
+    // Never retain its overlay instead of painting on the visible owner photo.
+    if(!host){
+      if(original){original.canvas.remove();gauges.delete(key);}
+      return false;
     }
-    const pilot=airspeed.source,fo=airspeed.firstOfficer;
-    mountGauge('captain','airspeed',pilot.piece,pilot.width,pilot.height,airspeed.pivot.x,airspeed.pivot.y,airspeed.pointers.airspeed.tipRadius);
-    mountGauge('firstOfficer','airspeed',fo.piece,fo.width,fo.height,fo.pivot.x,fo.pivot.y,fo.tipRadius);
+    const rect=registration.rectangle(entry,photos.geometry[kind]);
+    let gauge=original;
+    if(!gauge||gauge.canvas.parentNode!==host){
+      gauge?.canvas.remove();
+      gauge=photos.createGauge(host,kind,{
+        label:station+' '+kind,
+        lockOrangeBugs:kind==='airspeed',
+        onChange:(...args)=>change(station,...args)
+      });
+      gauges.set(key,gauge);
+    }
+    Object.assign(gauge.canvas.style,{
+      position:'absolute',
+      left:rect.left.toFixed(7)+'%',top:rect.top.toFixed(7)+'%',
+      width:rect.widthPct.toFixed(7)+'%',height:rect.heightPct.toFixed(7)+'%',
+      overflow:'visible',pointerEvents:'none',zIndex:'4'
+    });
+    gauge.canvas.setAttribute('preserveAspectRatio','xMidYMid meet');
+    gauge.canvas.dataset.gaugeRegistration=registration.VERSION;
+    gauge.canvas.dataset.gaugePiece=entry.piece;
+    gauge.canvas.dataset.gaugeMode=mode;
+    gauge.canvas.dataset.gaugeCenter=entry.x+','+entry.y;
+    gauge.canvas.dataset.gaugeSource=entry.anchor;
+    if(kind==='airspeed')
+      host.querySelectorAll('[data-airspeed-pointers]').forEach(layer=>{
+        layer.setAttribute('display','none');
+        layer.setAttribute('aria-hidden','true');
+      });
+    const oldKind={altimeter:['altimeter'],ivsi:['verticalSpeed'],rmi:['rmi1','rmi2']}[kind]||[];
+    for(const old of oldKind)
+      host.querySelectorAll('[data-flight-needle="'+old+'"]').forEach(n=>n.setAttribute('display','none'));
+    return true;
+  }
+  let lastMode=null;
+  function mount(){
+    const mode=registration.modeOf(document);
+    for(const station of stations)
+      for(const kind of registration.kinds)
+        mountGauge(station,kind,mode);
+    lastMode=mode;
     const slot=document.querySelector('.flight-gauge-bridge .flight-standby-row');
     if(slot && standby?.canvas.parentNode!==slot){
       standby=photos.createGauge(slot,'standby',{label:'Standby altimeter and IAS',onChange:(...args)=>change('standby',...args)});
@@ -132,10 +147,36 @@
     'b737:standby-altimeter-sample','b737:flight-scenario-stopped','b737:mcp-afds-state','b737:avionics-data']){
     window.addEventListener(name,repaint);
   }
-  window.addEventListener('b737:cockpit-mounted',mount);
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount,{once:true});
-  else mount();
+  // Owner F/O image and mode transforms mount in an animation frame.
+  // The second frame is event-driven and handles an asynchronously created
+  // owner photo without polling or changing any accepted photo layers.
+  let mountQueued=false;
+  function scheduleMount(){
+    if(mountQueued)return;
+    mountQueued=true;
+    requestAnimationFrame(()=>{
+      mountQueued=false;
+      mount();
+      requestAnimationFrame(()=>{
+        const mode=registration.modeOf(document);
+        const expected=mode==='CONVENTIONAL'?'fo-owner':'fo-inner';
+        if(gauges.get('firstOfficer:airspeed')?.canvas?.dataset.gaugePiece!==expected)mount();
+      });
+    });
+  }
+  for(const event of ['b737:cockpit-mounted','b737:engine-indication-view',
+    'b737:aircraft-profile-change'])window.addEventListener(event,scheduleMount);
+  if(document.readyState==='loading')
+    document.addEventListener('DOMContentLoaded',scheduleMount,{once:true});
+  else scheduleMount();
   window.B737UnifiedPhotoGaugeBridgeV1=Object.freeze({
+    getPlacements:()=>Object.fromEntries([...gauges].map(([key,g])=>[key,{
+      piece:g.canvas.dataset.gaugePiece,
+      mode:g.canvas.dataset.gaugeMode,
+      center:g.canvas.dataset.gaugeCenter,
+      source:g.canvas.dataset.gaugeSource,
+      connected:g.canvas.isConnected
+    }])),
     getMcpSelectedCas:()=>{
       const mcp=window.B737UnifiedAvionicsNetworkV1?.getSnapshot?.()?.['mcp.state']?.value;
       if(mcp?.powered!==true||mcp.speedBlank===true)return null;
