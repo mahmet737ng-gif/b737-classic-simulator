@@ -6,6 +6,33 @@
  const SWIPE={firstThreshold:12,nextThreshold:28,minTravelPixels:9,tapSlopPixels:2.5};
  let registry,engine,layer,selected=null;
  const widgets=new Map(),angles=new Map(),legendWidgets=new Map();
+ // OH10 has a separate authoritative AC/DC meter-source runtime in Unified.
+ // Printed label taps must update that live source, not only this rotor sprite.
+ const METER_ALIAS=Object.freeze({
+  DC:Object.freeze({'STBY PWR':'STBY PWR','BAT BUS':'BAT BUS',BAT:'BAT',
+   'APU BAT':'APU BAT',TR1:'TR1',TR2:'TR2',TR3:'TR3'}),
+  AC:Object.freeze({'STBY PWR':'STBY PWR','GRD PWR':'GND PWR',
+   'GEN 1':'GEN1','APU GEN':'APU GEN','GEN 2':'GEN2',INV:'INV',TEST:'TEST'})
+ });
+ function nativeMeters(){
+  try{return window.parent?.B737UnifiedAcDcSelectors||window.B737UnifiedAcDcSelectors;}
+  catch(_){return null;}
+ }
+ function projectMeter(id,value){
+  const side=id==='dc-meter'?'DC':id==='ac-meter'?'AC':null;
+  if(!side)return;
+  const mapped=METER_ALIAS[side][value],owner=nativeMeters();
+  if(!mapped||!owner?.choose)return;
+  if(owner.read(side).position!==mapped)owner.choose(side,mapped);
+ }
+ function acceptMeterSource(detail){
+  if(!engine||!detail)return;
+  const side=detail.side;
+  if(!['AC','DC'].includes(side))return;
+  const external=Object.entries(METER_ALIAS[side]).find(([,v])=>v===detail.position)?.[0];
+  if(external)engine.setRotary(side==='DC'?'dc-meter':'ac-meter',external,'meter-owner-sync');
+ }
+
  const persist=()=>{try{localStorage.setItem(STORAGE,JSON.stringify(engine.snapshot()));}catch{}};
  const name=value=>String(value).toUpperCase();
  function interlocks(){
@@ -347,6 +374,17 @@
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));
   const label=byId('toggleVisibility').parentElement;label.lastChild.textContent=' نمایش کنترل‌ها';byId('resetToggles').textContent='بازنشانی کنترل‌ها';
+  // Keep the photo rotors synchronized with the meter instrument source even
+  // when the pilot operates the dedicated OH10 physical hotspot instead.
+  try{
+   const host=window.parent||window;
+   if(!window.__b737MeterSourceLabelBridge){
+    window.__b737MeterSourceLabelBridge=true;
+    host.addEventListener('b737:ac-dc-selector-change',event=>acceptMeterSource(event.detail));
+   }
+   const owner=nativeMeters();
+   if(owner)for(const side of ['AC','DC'])acceptMeterSource(owner.read(side));
+  }catch(_){}
   window.B737RotaryGuards=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),
    // Narrow 737-400 adapter: retain existing pneumatic control channel for outer two zones.
    // No geometry or behavior change for 737-300/500 when this adapter is not called.
@@ -380,7 +418,7 @@
    changeAirconDetents(profileAirconFamily());
    const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
-   engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
+   engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();if(event.kind==='rotary')projectMeter(event.id,event.next);window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
    const root=byId('atlasAbsolute'),ready=()=>root.querySelector('.atlas-piece')&&window.B737OverheadToggles;
    if(ready())mount(layout);else{const observer=new MutationObserver(()=>{if(ready()){observer.disconnect();mount(layout);}});observer.observe(root,{childList:true,subtree:true});}
   }catch(error){console.error(error);const note=document.createElement('p');note.textContent='خطا در نصب ناب و گارد: '+error.message;note.setAttribute('role','alert');byId('toggleInspector').append(note);}
