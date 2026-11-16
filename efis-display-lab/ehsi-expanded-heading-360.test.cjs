@@ -32,7 +32,11 @@ function dom(){
 }
 function draw(mode,reference,heading){
  const doc=dom();
- V.render(doc.svg,fixture(mode,reference,heading));
+ // Preserve an explicitly missing heading (undefined), which a default
+ // function argument would otherwise turn into a valid synthetic target.
+ const data=fixture(mode,reference,heading);
+ data.selectedHeading=heading;
+ V.render(doc.svg,data);
  return doc;
 }
 test('Classic expanded rose remains a 70-degree viewport over a seamless 360-degree heading ring',()=>{
