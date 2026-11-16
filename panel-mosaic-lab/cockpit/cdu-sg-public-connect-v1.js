@@ -48,7 +48,7 @@
   const bytes=new Uint8Array(16);root.crypto.getRandomValues(bytes);
   relayNonce=Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('');
   // Open synchronously from the user click; background popups are blocked.
-  relayWindow=root.open(RAILWAY_ORIGIN+'/navdata-relay?nonce='+relayNonce,
+  relayWindow=root.open(RAILWAY_ORIGIN+'/navdata-relay/start?nonce='+relayNonce,
     'b737NavdataRelay','popup=yes,width=520,height=410,resizable=yes');
   if(!relayWindow)return Promise.reject(Error('ALLOW_POPUP_FOR_RAILWAY'));
   return new Promise((resolve,reject)=>{
