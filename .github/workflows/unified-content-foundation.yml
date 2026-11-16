@@ -1,0 +1,32 @@
+name: Unified encrypted content foundation
+on:
+  pull_request:
+    paths:
+      - 'distribution/**'
+      - '.github/workflows/unified-content-foundation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'distribution/**'
+      - '.github/workflows/unified-content-foundation.yml'
+permissions:
+  contents: read
+jobs:
+  content-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static JS syntax
+        run: |
+          node --check distribution/content-core.cjs
+          node --check distribution/build-content.cjs
+          node --check distribution/encrypted-vault.cjs
+      - name: Verify release crypto, delta cache, rollback, resilience
+        run: node --test distribution/*.test.cjs
