@@ -190,6 +190,8 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  observePower:()=>Core.output(state), // compatibility: read-only, no manual power injection
  setEvidence:(key,value)=>send({type:"EVIDENCE",key,value}),
  observeFlight:sample=>send({type:"FLIGHT_OBSERVATION",sample}),
+ observeAltitudeCapture:sample=>send({type:"FCC_ALTITUDE_CAPTURE",...sample}),
+ disconnectConfirmed:sample=>send({type:"AP_DISENGAGE_CONFIRMED",...sample}),
  press:requestMode,
  reset:()=>send({type:"RESET"})
 });
