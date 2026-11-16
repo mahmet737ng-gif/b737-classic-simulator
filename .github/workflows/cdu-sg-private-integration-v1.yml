@@ -11,7 +11,7 @@ on:
       - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
       - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
       - 'panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js'
-      - 'panel-mosaic-lab/cockpit/flight-location-irs-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-phase-position-bridge-v1.js'
       - 'engine/flight/iran-nav-reference-v1.js'
       - 'panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js'
       - 'engine/flight/flight-location-reference-v1.js'
@@ -50,7 +50,7 @@ jobs:
           node --check engine/flight/flight-location-reference-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
           node --check panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js
-          node --check panel-mosaic-lab/cockpit/flight-location-irs-bridge-v1.js
+          node --check panel-mosaic-lab/cockpit/flight-phase-position-bridge-v1.js
           node --check engine/flight/iran-nav-reference-v1.js
           node --check panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js
       - run: |
