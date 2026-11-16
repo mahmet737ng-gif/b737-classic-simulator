@@ -16,7 +16,7 @@
 |---|---|---|---|
 | Captain | FLT CONT | LOW QUANTITY/PRESSURE, STBY RUD ON, FEEL DIFF PRESS, SPEED TRIM FAIL, MACH TRIM FAIL, AUTO SLAT FAIL, YAW DAMPER | Existing overhead amber-lamp state |
 | Captain | ELEC | LOW OIL PRESSURE, HIGH OIL TEMP, STANDBY PWR OFF, TRANSFER BUS OFF, BUS OFF | Drive/IDG oil lamps and verified electrical overhead lamps only |
-| Captain | IRS | FAULT, ON DC, DC FAIL, GPS | IRS live fault adapter and overhead. GPS-only variant rules remain **unverified/not simulated** |
+| Captain | IRS | FAULT, ON DC, DC FAIL, GPS | IRS FAULT from live source, qualified sustained ON DC / DC FAIL (only when actual indications exist), GPS-specific failure logic **not yet simulated** |
 | Captain | APU | LOW OIL PRESSURE, HIGH OIL TEMP, FAULT, OVERSPEED | Existing ECU/overhead lamp evidence. APU FAULT specific source **not established** |
 | Captain | FUEL | LOW PRESSURE, FILTER BYPASS | Physical pump lamps and qualified recall logic |
 | Captain | OVHT/DET | ENG 1 / ENG 2 OVERHEAT, APU DET INOP | Fire-protection indications, independent of red FIRE WARN |
@@ -46,5 +46,9 @@ The FCOM locates electric-drive LOW OIL PRESSURE / HIGH OIL TEMP under ELEC, whi
 ## Verified implementation contracts
 
 The main annunciator already has per-cause acknowledgment, recall-only reasons, dual master lamps, pressed-to-test, and CB/power gating. No change to the underlying annunciator artwork or protected panels is needed. The source adapter now feeds actual validated overhead lamp states via `sixpack-live-integration-v1.js`; reasons are deduplicated across Electrical V7 and Overhead. Structural and end-to-end automated regression exercises blue advisory exclusion, DUAL BLEED→AIR COND→both MASTER CAUTION, acknowledge/new event/recall, and inventory of all 12 categories.
+
+### 4. IRS false-caution correction — FCOM 11.10.18–20
+
+The IRS `ALIGN` lamp is **white**; its flashing alignment/position error is not itself listed under the amber IRS annunciator triggers in FCOM 15.20.3. A short `ON DC` illumination is expressly normal during IRS alignment self-test (FCOM 11.10.19). The live adapter now suppresses these two normal/white cases. It accepts actual powered `FAULT`, sustained non-SELFTEST `ON DC`, and `DC FAIL` signals when present. The current IRS trainer produces ON DC only in SELFTEST, and does not yet supply a separately verified sustained backup-DC caution telemetry channel; these caution modes are therefore contingent on future authoritative inputs.
 
 **Remaining source-backed work:** Full per-modification caution inhibit schedules, GPS-only recall specifics, missing APU FAULT and LAV SMOKE physical indicators, direct IDG lamp differentiation for each aircraft, and complete CB wiring require additional confirmed FCOM/WDM/fleet data. Do not treat the present matrix as fully certified wiring.
