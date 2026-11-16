@@ -15,7 +15,7 @@ function boot(){
   B737IRSTrainerUnified:{stopMotion:()=>stoppedMotion++},
   B737ISNCockpitV1:{setFlightScenarioContext(){} }};
  class CustomEvent{constructor(type,options={}){this.type=type;this.detail=options.detail;}}
- vm.runInNewContext(source,{window:win,CustomEvent,console:{error(){},warn(){}}});
+ vm.runInNewContext(source,{window:win,CustomEvent,performance:{now:()=>1000},console:{error(){},warn(){}}});
  return {api:win.B737UnifiedFlightScenarioV1,status,pause,stop,
   get stoppedMotion(){return stoppedMotion},get stoppedEvent(){return stoppedEvent}};
 }
