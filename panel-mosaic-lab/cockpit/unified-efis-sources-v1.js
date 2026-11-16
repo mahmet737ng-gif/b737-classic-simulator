@@ -15,7 +15,7 @@
  const norm=v=>((v%360)+360)%360;
  const delta=v=>norm(v+180)-180;
  const irsTopic=n=>n===1?'irs.left':'irs.right';
- function resolve(snapshot,seat,toggles={},feeds={},faults={}){
+ function resolve(snapshot,seat,toggles={},feeds={},faults={},scenarioAirportICAO=null){
   const display=seat==='CAPT'?1:2;
   const selected=(key,fallback)=>{
    const i=SWITCHES[key].indexOf(toggles[key]);
@@ -48,7 +48,8 @@
    observedVariationDeg:observedVariation,
    benchZeroVariation,
    trainerOnly:iru?.trainerOnly===true,
-   positionValid:nav,lat:value(iru?.lat),lon:value(iru?.lon)
+   positionValid:nav,lat:value(iru?.lat),lon:value(iru?.lon),
+   scenarioAirportICAO
   })||{selectedDisplayDeg:variation!==null&&selectedMcpMag?.powered===true?
     value(selectedMcpMag.headingDeg):null,referenceSource:'LEGACY_SOURCE_NO_REFERENCE_ENGINE',
     estimated:false};
@@ -164,7 +165,10 @@
    const supply=win.B737UnifiedBusConsumerLiveV1;
    const powered=(id,voltage)=>preset!=='COLD_DARK'&&
     ((supply?.getBus?.(id,voltage)?.powered??bus?.[id])===true||trainingSupply(id,voltage));
-   return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults);
+   const scenario=win.B737UnifiedFlightScenarioV1;
+   const icao=scenario?.getDiagnostics?.()?.active===true?
+    scenario.getState?.()?.icao:null;
+   return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults,icao);
   }
   return Object.freeze({project,route,getPreset:()=>preset,trainingSupply,
    setPreset(value){
