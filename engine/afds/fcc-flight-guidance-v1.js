@@ -47,10 +47,15 @@
    out.actions.push({type:'HEADING',value:norm(out.state.cwsHeadingDeg)});
    out.rollCommandDeg=0;out.rollValid=true;
   }else if(direction==='HDG_SEL'&&valid(v.heading)){
-   out.actions.push({type:'HEADING',value:norm(v.heading)});
-   out.actions.push({type:'BANK_LIMIT',value:bankLimit});
-   out.rollCommandDeg=clamp(delta(flight.trueHeadingDeg,v.heading)*.75,-bankLimit,bankLimit);
-   out.rollValid=true;
+   // MCP selector and EHSI bug are MAGNETIC. The flight plant uses TRUE
+   // heading. Only a valid observed/WMM2025 variation may bridge them.
+   if(valid(nav?.magneticVariationDeg)){
+    const targetTrue=norm(v.heading+nav.magneticVariationDeg);
+    out.actions.push({type:'HEADING',value:targetTrue});
+    out.actions.push({type:'BANK_LIMIT',value:bankLimit});
+    out.rollCommandDeg=clamp(delta(flight.trueHeadingDeg,targetTrue)*.75,-bankLimit,bankLimit);
+    out.rollValid=true;
+   }else out.reasons.push('HDG_SEL_MAGNETIC_VARIATION_UNAVAILABLE');
   }else if(direction==='LNAV'){
    if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
