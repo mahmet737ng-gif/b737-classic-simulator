@@ -19,7 +19,11 @@
     const key=`${station}:${kind}`;
     const host=document.querySelector(`.texture-piece[data-piece="${piece}"]`);
     if(!host||gauges.get(key)?.canvas.parentNode===host) return;
-    const gauge=photos.createGauge(host,kind,{label:`${station} ${kind}`,onChange:(...args)=>change(station,...args)});
+    const gauge=photos.createGauge(host,kind,{
+      label:`${station} ${kind}`,
+      lockOrangeBugs:kind==='airspeed',
+      onChange:(...args)=>change(station,...args)
+    });
     const {size,pivot}=photos.geometry[kind];
     const scale=radius/radii[kind];
     Object.assign(gauge.canvas.style,{
@@ -64,16 +68,23 @@
     queued=true;
     requestAnimationFrame(()=>{
       queued=false;
-      const live=window.B737UnifiedFlightGaugeBridgeV1?.getState()?.sample;
-      const scene=live?window.B737UnifiedFlightScenarioV1?.getState?.():null;
+      const source=window.B737UnifiedFlightDisplayMotionV1?.sample?.();
+      const original=window.B737UnifiedFlightGaugeBridgeV1?.getState()?.sample;
+      const live=source?{
+        indicatedSpeedKt:source.iasKt,altitudeFt:source.altitudeFt,
+        standbyAltitudeFt:source.altitudeFt,verticalSpeedFpm:source.vsFpm
+       }:original;
+      const scene=source|| (live?window.B737UnifiedFlightScenarioV1?.getState?.():null);
       const needles=window.B737UnifiedFlightNeedles?.getAngles?.();
       const speeds=window.B737UnifiedAirspeedPointers?.getValues?.();
       const snapshot=window.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
-      const mcp=snapshot?.['mcp.state']?.value;
+      const mcp=snapshot?.['mcp.state']?.quality==='VALID'?
+        snapshot['mcp.state'].value:null;
       const fmc=snapshot?.['fmc.computed']?.value;
       const valid=(topic)=>snapshot?.[topic]?.quality==='VALID'?snapshot[topic].value:null;
       const base={...photos.defaults, ias:0, mach:0, altitude:0, standbyAltitude:0,
-        altitudeBug:500, dme1:null, dme2:null, ivsiOff:false, bugs:[85,92,100,107]};
+        altitudeBug:500, dme1:null, dme2:null, ivsiOff:false,
+        bugs:[85,92,100,107],orangeBugs:[null,null]};
       for(const station of stations){
         const angles=needles?.[station];
         const speedsForStation=speeds?.[station];
@@ -90,13 +101,17 @@
           return signal.bearingDeg;
         };
         const altitude=live?.altitudeFt??adc?.pressureAltitudeFt??0;
+        const selectedCas=mcp?.powered===true&&mcp.speedBlank!==true?
+          (mcp.speedDisplayMode==='MACH'&&Number.isFinite(mcp.selectedMachHundredths)?
+           photos.calibratedSpeed(mcp.selectedMachHundredths/100,altitude):
+           mcp.speedDisplayMode==='IAS'?mcp.selectedSpeedKt:null):null;
         const state={...base,...settings[station],
+          orangeBugs:Number.isFinite(selectedCas)?[selectedCas,selectedCas]:[null,null],
           ias:live?.indicatedSpeedKt??adc?.casKt??speedsForStation?.airspeedKts??0,
           limit:speedsForStation?.vmoMmoKts??base.limit,
           altitude,
           vs:live?.verticalSpeedFpm??0,
-          autoCursor:mcp?.powered&&!mcp.speedBlank ? (mcp.speedDisplayMode==='MACH'&&Number.isFinite(mcp.selectedMachHundredths)
-            ? photos.calibratedSpeed(mcp.selectedMachHundredths/100,altitude) : mcp.selectedSpeedKt) : fmc?.targets?.speedKt,
+          autoCursor:Number.isFinite(selectedCas)?selectedCas:fmc?.targets?.speedKt,
           oat:adc?.satC??scene?.oatC??null,hdg,
           bearing1:bearing(1),bearing2:bearing(2),
           adfBearing1:adf(1),adfBearing2:adf(2),
@@ -112,11 +127,22 @@
       standby?.render({...base,...settings.standby,ias:live?.indicatedSpeedKt??0,standbyAltitude:live?.standbyAltitudeFt??0});
     });
   }
-  for(const name of ['b737:photo-needle-update','b737:photo-airspeed-update',
+  for(const name of ['b737:flight-presentation-frame',
+    'b737:photo-needle-update','b737:photo-airspeed-update',
     'b737:standby-altimeter-sample','b737:flight-scenario-stopped','b737:mcp-afds-state','b737:avionics-data']){
     window.addEventListener(name,repaint);
   }
   window.addEventListener('b737:cockpit-mounted',mount);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount,{once:true});
   else mount();
+  window.B737UnifiedPhotoGaugeBridgeV1=Object.freeze({
+    getMcpSelectedCas:()=>{
+      const mcp=window.B737UnifiedAvionicsNetworkV1?.getSnapshot?.()?.['mcp.state']?.value;
+      if(mcp?.powered!==true||mcp.speedBlank===true)return null;
+      if(mcp.speedDisplayMode==='IAS')return Number.isFinite(mcp.selectedSpeedKt)?mcp.selectedSpeedKt:null;
+      const alt=window.B737UnifiedFlightDisplayMotionV1?.sample?.()?.altitudeFt??0;
+      return mcp.speedDisplayMode==='MACH'&&Number.isFinite(mcp.selectedMachHundredths)?
+       photos.calibratedSpeed(mcp.selectedMachHundredths/100,alt):null;
+    }
+  });
 })();
