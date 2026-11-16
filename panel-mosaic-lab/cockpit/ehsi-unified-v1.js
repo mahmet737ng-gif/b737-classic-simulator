@@ -158,6 +158,11 @@
     // the COURSE 2 battery feed (not a fabricated localizer capture).
     screen.host.dataset.mcpHeadingBug=src.selectedHeading==null?'':String(src.selectedHeading);
     screen.host.dataset.mcpHeadingReference=src.headingReferenceSource||'UNAVAILABLE';
+    screen.host.dataset.magneticDisplay='true';
+    screen.host.dataset.magneticVariationDeg=Number.isFinite(src.magneticVariationDeg)?
+     src.magneticVariationDeg.toFixed(3):'';
+    screen.host.dataset.headingMagnetic=Number.isFinite(src.heading)?String(src.heading):'';
+    screen.host.dataset.trackMagnetic=Number.isFinite(src.track)?String(src.track):'';
     screen.host.dataset.mcpCourse=src.course==null?'':String(src.course);
     screen.host.dataset.mcpHeadingPower=String(src.mcp?.powered===true);
     screen.host.dataset.mcpCourse2Power=String(src.mcp?.course2Powered===true);
@@ -236,6 +241,13 @@
      mcpCourse:screens[seat].host.dataset.mcpCourse===''?null:Number(screens[seat].host.dataset.mcpCourse),
      mcpPower:screens[seat].host.dataset.mcpHeadingPower==='true',
      mcpHeadingReference:screens[seat].host.dataset.mcpHeadingReference,
+     displayReference:'MAGNETIC',
+     magneticVariationDeg:screens[seat].host.dataset.magneticVariationDeg===''?null:
+      Number(screens[seat].host.dataset.magneticVariationDeg),
+     headingMagneticDeg:screens[seat].host.dataset.headingMagnetic===''?null:
+      Number(screens[seat].host.dataset.headingMagnetic),
+     trackMagneticDeg:screens[seat].host.dataset.trackMagnetic===''?null:
+      Number(screens[seat].host.dataset.trackMagnetic),
      mcpCourse2Power:screens[seat].host.dataset.mcpCourse2Power==='true'}:null});
  }
  return Object.freeze({VERSION,liveModel,mount});
