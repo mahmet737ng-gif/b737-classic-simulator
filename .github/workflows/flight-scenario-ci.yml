@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'engine/flight/**'
+      - 'engine/afds/autothrottle-speed-servo-v1.js'
+      - 'panel-mosaic-lab/cockpit/autothrottle-unified-v1.js'
+      - 'tests/autothrottle-speed-servo-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
       - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css'
       - 'panel-mosaic-lab/cockpit/index.html'
@@ -26,6 +29,8 @@ jobs:
       - name: Static JavaScript checks
         run: |
           node --check engine/flight/flight-scenario-core-v1.js
+          node --check engine/afds/autothrottle-speed-servo-v1.js
+          node --check panel-mosaic-lab/cockpit/autothrottle-unified-v1.js
           node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs
+        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs
