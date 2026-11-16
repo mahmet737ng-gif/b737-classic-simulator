@@ -58,3 +58,15 @@ test('approved PNGs retain original full resolution, alpha and exact source byte
   assert.equal(b[25],6,'RGBA PNG required');
  }
 });
+
+test('native ASP mouse/touch fallback requires deliberate swipe before rotation',()=>{
+ const src=fs.readFileSync(path.join(__dirname,'asp-controls-v1.js'),'utf8');
+ assert.match(src,/ASP_VOLUME_DRAG_START_PX=12/);
+ assert.match(src,/Math\.hypot\(totalX,totalY\)<ASP_VOLUME_DRAG_START_PX/);
+ assert.match(src,/button\.dataset\.aspGesture='TAP_PENDING'/);
+ assert.match(src,/button\.dataset\.aspGesture='ROTATING'/);
+ assert.match(src,/if\(gesture\.moved\)suppressClickUntil=/);
+ assert.match(src,/button\.addEventListener\('click',e=>\{e\.stopPropagation\(\);if\(performance\.now\(\)<suppressClickUntil\)return;toggle\(button\);\}\)/);
+ assert.doesNotMatch(src,/pointerAngle\(button,e\)/,
+  'Old immediate-angle calculation could rotate the knob on finger-down jitter');
+});
