@@ -186,22 +186,11 @@ function compass(svg,m,l){
   const bug=mapMarker(g,l,heading.delta,'heading-bug');
   const size=full?8:7;
   polygon(bug,[[0,-2],[-size,12],[size,12]],PHOTO_COLORS.magenta,'none',1.9);
- }else if(heading.offScale&&!l.planCompass&&l.degrees===70){
-  // An MCP selected heading outside ±35° must not disappear. The real
-  // angular vector remains 360°-aware; this small edge cue indicates which
-  // side of the *visible arc* contains the off-scale heading without
-  // pretending the heading equals the arc boundary.
-  const edge=Math.sign(heading.delta)*(l.degrees/2-2);
-  const pinned=mapMarker(g,l,edge,'heading-bug-offscale',.99);
-  make(pinned,'title',{},'MCP selected heading '+direction(m.selectedHeading)+
-   ' off visible arc '+(heading.delta<0?'left':'right'));
-  polygon(pinned,[[0,-5],[-8,10],[8,10]],PHOTO_COLORS.magenta,'none',2.3);
-  make(pinned,'path',{d:heading.delta<0?'M 11 0 L 20 0 L 15 -5 M 20 0 L 15 5':
-    'M -11 0 L -20 0 L -15 -5 M -20 0 L -15 5',
-   stroke:PHOTO_COLORS.magenta,'stroke-width':2,fill:'none',
-   'data-heading-selected':direction(m.selectedHeading),
-   'data-heading-offscale':'true'});
  }
+
+ // Off-scale: ONLY the dashed heading vector remains. Neither a
+ // magenta edge triangle nor an arrow is drawn until the selected MCP
+ // heading re-enters the visible compass arc.
  if(heading.vectorVisible){
   // Clip the vector to the calibrated EHSI glass, NOT to the ±35° compass
   // arc. A selected heading at 100/180/260 degrees off the bow still gives
