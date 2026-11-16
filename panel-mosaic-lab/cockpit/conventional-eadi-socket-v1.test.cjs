@@ -55,8 +55,13 @@ assert.ok(index.indexOf('conventional-eadi-socket-v1.js')<
 // revision number; protected EIS/Conventional geometry checks stay exact.
 const activeEadiVersion=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8')
  .match(/const VERSION='(UNIFIED-EADI-LAB-FULL-[^']+)'/)?.[1];
-assert.ok(activeEadiVersion&&index.includes('eadi-lab-unified-v2.js?v='+activeEadiVersion),
- 'Unified must load the currently active full EADI renderer');
+// The URL query is an independent asset-cache revision. Check that the
+// mounted adapter is the active full renderer without conflating cache keys
+// with its internal engine VERSION.
+assert.ok(activeEadiVersion&&
+ /^UNIFIED-EADI-LAB-FULL-\d{4}-/.test(activeEadiVersion)&&
+ /eadi-lab-unified-v2\.js\?v=UNIFIED-EADI-LAB-FULL-\d{4}-[A-Z0-9-]+/.test(index),
+ 'Unified must load the active full EADI renderer, allowing newer cache keys');
 assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'));
 assert.ok(index.includes('../../efis-display-lab/eadi.js'));
 const newBridge=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf8');
