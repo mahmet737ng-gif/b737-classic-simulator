@@ -15,7 +15,7 @@
  const norm=v=>((v%360)+360)%360;
  const delta=v=>norm(v+180)-180;
  const irsTopic=n=>n===1?'irs.left':'irs.right';
- function resolve(snapshot,seat,toggles={},feeds={},faults={},scenarioAirportICAO=null){
+ function resolve(snapshot,seat,toggles={},feeds={},faults={},scenarioPosition=null){
   const display=seat==='CAPT'?1:2;
   const selected=(key,fallback)=>{
    const i=SWITCHES[key].indexOf(toggles[key]);
@@ -31,31 +31,34 @@
   const fmcMotion=fmc?.operational===true?fmc.motion:null;
   const heading=iru?.powered===true?value(iru.headingDeg):null;
   const trueTrack=value(fmcMotion?.trueTrackDeg)??(nav?value(iru.trackDeg):null);
+  // Flight instruments always display magnetic (M), not TRU.
+  // IRS magneticVariationDeg may be an observed sensor or a labeled WMM2025
+  // model value. When absent, evaluate WMM at the current aircraft position.
   const observedVariation=iru?.powered===true?value(iru.magneticVariationDeg):null;
-  // FULL ALIGN supplies a clearly labeled zero-variation BENCH reference.
-  // Without this explicit trainer datum, MCP magnetic HDG was suppressed
-  // although the simulated IRS heading/track and MCP display were valid.
-  // Never assume 0 deg in LIVE aircraft/telemetry with unknown variation.
-  const benchZeroVariation=observedVariation===null&&nav&&
-   iru?.source==='BENCH_SIM'&&iru?.trainerOnly===true;
-  const variation=benchZeroVariation?0:observedVariation;
-  // On a TRUE-referenced EHSI, the MCP-selected MAG heading needs a
-  // declination conversion. The previous null guard silently erased it.
+  const scenarioValid=Number.isFinite(scenarioPosition?.lat)&&
+   Number.isFinite(scenarioPosition?.lon);
+  const positionLat=scenarioValid?scenarioPosition.lat:value(iru?.lat);
+  const positionLon=scenarioValid?scenarioPosition.lon:value(iru?.lon);
+  const sampleAlt=signal(snapshot,'flightcontext.state')?.pressureAltitudeFt;
+  const positionAlt=Number.isFinite(scenarioPosition?.altitudeFt)?
+   scenarioPosition.altitudeFt:Number.isFinite(sampleAlt)?sampleAlt:0;
   const selectedMcpMag=signal(snapshot,'mcp.state');
   const headingReference=globalThis.B737SelectedHeadingReferenceV1?.resolve({
    selectedMagDeg:selectedMcpMag?.powered===true?value(selectedMcpMag.headingDeg):null,
-   displayTrueRef:variation===null,
    observedVariationDeg:observedVariation,
-   benchZeroVariation,
-   trainerOnly:iru?.trainerOnly===true,
-   positionValid:nav,lat:value(iru?.lat),lon:value(iru?.lon),
-   scenarioAirportICAO
-  })||{selectedDisplayDeg:variation!==null&&selectedMcpMag?.powered===true?
-    value(selectedMcpMag.headingDeg):null,referenceSource:'LEGACY_SOURCE_NO_REFERENCE_ENGINE',
-    estimated:false};
+   observedSource:iru?.magneticVariationSource??null,
+   positionValid:scenarioValid||nav,
+   lat:positionLat,lon:positionLon,altitudeFt:positionAlt
+  })||{declinationDeg:observedVariation,selectedDisplayDeg:
+   observedVariation!==null&&selectedMcpMag?.powered===true?
+    value(selectedMcpMag.headingDeg):null,
+   referenceSource:'MAGNETIC_REFERENCE_MODULE_MISSING',estimated:false};
+  const variation=headingReference.declinationDeg;
   const headingReferenceSource=headingReference.referenceSource;
-  const direction=deg=>Number.isFinite(deg)?norm(deg-(variation??0)):null;
-  const magCourse=deg=>Number.isFinite(deg)?norm(deg+(variation===null?0:variation)):null;
+  const direction=deg=>Number.isFinite(deg)&&Number.isFinite(variation)?
+   norm(deg-variation):null;
+  const magCourse=deg=>Number.isFinite(deg)&&Number.isFinite(variation)?
+   norm(deg+variation):null;
   const mcp=signal(snapshot,'mcp.state');
   const mcpPowered=mcp?.powered===true;
   // MRG CL IV.6 p.186: COURSE 2 is an independent battery-fed MCP
@@ -85,10 +88,13 @@
   return {display,sg,irs,vhf,bearings,sourceSeat:SEATS[sg-1],displayPowered:feeds[display]===true,
    video:feeds[sg]===true&&faults[sg]!==true,
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
-   heading:direction(heading),track:direction(trueTrack),trueTrack,trueRef:variation===null,
+   heading:direction(heading),track:direction(trueTrack),trueTrack,
+   trueRef:false,reference:'MAGNETIC',magneticVariationDeg:variation,
+   magneticVariationSource:headingReferenceSource,
    headingReferenceSource,
    selectedHeading:mcpPowered?headingReference.selectedDisplayDeg:null,
-   selectedHeadingEstimated:headingReference.estimated===true,
+   selectedHeadingEstimated:headingReference.estimated===true||
+    headingReference.quality==='WMM2025_MODELED',
    selectedHeadingDeclinationDeg:headingReference.declinationDeg??null,
    course:variation!==null?radioCourse:null,
    // These targets are MCP selections, never a claim of FD servo movement,
@@ -166,9 +172,11 @@
    const powered=(id,voltage)=>preset!=='COLD_DARK'&&
     ((supply?.getBus?.(id,voltage)?.powered??bus?.[id])===true||trainingSupply(id,voltage));
    const scenario=win.B737UnifiedFlightScenarioV1;
-   const icao=scenario?.getDiagnostics?.()?.active===true?
-    scenario.getState?.()?.icao:null;
-   return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults,icao);
+   const state=scenario?.getDiagnostics?.()?.active===true?
+    scenario.getState?.():null;
+   const scenarioPosition=state?{
+    lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt,icao:state.icao}:null;
+   return resolve(snapshot,seat,applied,{1:powered('electronic1','115VAC'),2:powered('electronic2','115VAC')},faults,scenarioPosition);
   }
   return Object.freeze({project,route,getPreset:()=>preset,trainingSupply,
    setPreset(value){
