@@ -160,10 +160,19 @@
   const query='airport='+encoded(v.airport)+'&kind='+encoded(entry.kind)+'&ident='+encoded(entry.ident)+
    (v.runway?'&runway='+encoded(v.runway):'')+(v.transition?'&transition='+encoded(v.transition):'');
   try{
-   const [procedure,geometry]=await Promise.all([
-    request('/api/cdu/procedure?'+query),
-    request('/api/sg/procedure.geojson?'+query)
-   ]);
+   const procedure=await request('/api/cdu/procedure?'+query);
+   // The converter belongs to Unified, not a Railway or standalone CDU service.
+   // If the verified source already carries local fixes, SG needs no extra
+   // geometry endpoint. Otherwise preserve the existing read-only fallback.
+   const converter=typeof window!=='undefined'?
+    window.parent?.B737UnifiedSGSourceGeometryV1:null;
+   let geometry=null;
+   if(converter?.hasSource?.(procedure)){
+    const candidate=converter.compile(procedure,{airport:v.airport,kind:entry.kind,
+     ident:entry.ident,runway:v.runway,transition:v.transition});
+    if(candidate.features.some(f=>f.geometry?.type==='LineString'))geometry=candidate;
+   }
+   if(!geometry)geometry=await request('/api/sg/procedure.geojson?'+query);
    if(ticket!==serial||state.cduSgView!==v)return;
    shared.select({airport:v.airport,kind:entry.kind,ident:entry.ident,
     runway:v.runway,transition:v.transition,procedure,geometry});
