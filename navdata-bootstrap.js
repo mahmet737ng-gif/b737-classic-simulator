@@ -21,7 +21,7 @@ function decodeLZW16(bytes){
   previous=value;
  }
  const decoded=output.join('');
- if(decoded.length>MAX_SOURCE_BYTES||/[^\\x00-\\x7F]/.test(decoded))
+ if(decoded.length>MAX_SOURCE_BYTES||/[^\x00-\x7F]/.test(decoded))
   throw Error('NAVDATA_INVALID_DECODED_TEXT');
  return decoded;
 }
