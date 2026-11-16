@@ -83,10 +83,13 @@
   const a=mcp();if(!/^(CMD|CWS)_[AB]$/.test(a?.modes?.autopilot||''))return;
    // System-specific hydraulic failure is provided only by source-observed
   // hydraulic data. A simulated <500 PSI threshold is not an AFM trip value.
-  const hydraulicSignal=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('hydraulics.state');
-  const measured=hydraulicSignal?.quality==='VALID'?hydraulicSignal.value:null;
-  const systemA=measured?.systemA?.pressurePsi;
-  const systemB=measured?.systemB?.pressurePsi;
+  // Read full ATA29 *system* pressure, including electric backup pumps.
+  // ISN18's generic hydraulics.state currently exposes engine-driven pump
+  // pressure only, which must NOT falsely trip an operating electric-pump-fed
+  // hydraulic system when an engine is stopped.
+  const hydraulicLab=win.B737HydraulicLabV1?.getOutput?.();
+  const systemA=hydraulicLab?.pressurePsi?.A;
+  const systemB=hydraulicLab?.pressurePsi?.B;
   const hydVerified=Number.isFinite(systemA)&&Number.isFinite(systemB);
   const raSignal=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.radioAltitude1');
   const irs=win.B737IRSTrainerUnified?.getState?.();
