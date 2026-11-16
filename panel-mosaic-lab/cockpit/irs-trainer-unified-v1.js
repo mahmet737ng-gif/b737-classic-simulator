@@ -58,7 +58,26 @@ function fmcPosition(value,originPosition){
  lastCDUSource='FMC POS INIT LSK 4R';
  update();return {ok:true,position:parsed,sides:eligible};
 }
-function positionFormat(p){
+// FLT PHASE provides an initial-position suggestion to both aligning IRS units.
+ // It never bypasses power, ALIGN, or NAV validity logic.
+ let lastFlightReference='';
+ function setScenarioPosition(point){
+  if(!point||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||
+      Math.abs(point.lat)>90||Math.abs(point.lon)>180)return {ok:false,reason:'INVALID_LOCATION'};
+  syncPower();
+  const eligible=SIDES.filter(x=>state.units[x].powered&&
+   ['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'].includes(state.units[x].phase));
+  if(!eligible.length)return {ok:false,reason:'IRS_NOT_ALIGNING'};
+  const text=positionFormat(point);
+  const key=text+'@'+eligible.join(',');
+  if(key===lastFlightReference)return {ok:true,unchanged:true,sides:eligible};
+  state=Core.apply(state,{type:'FMC_SET_IRS_POS',position:text,sides:eligible,originPosition:point.icao||null});
+  lastFlightReference=key;
+  lastCDUSource='FLT PHASE INITIAL REFERENCE';
+  update();
+  return {ok:true,sides:eligible};
+ }
+ function positionFormat(p){
  function fmt(v,deg){const sig=v<0?(deg===2?'S':'W'):(deg===2?'N':'E');
   const whole=Math.floor(Math.abs(v)),minutes=Math.round((Math.abs(v)-whole)*600)/10;
   const minutesCapped=minutes>=60?0:minutes;
@@ -363,7 +382,11 @@ function boot(){
  root.addEventListener('b737:cockpit-mounted',()=>{mountMsu();update();});
  // Explicit same-page simulator telemetry contract. External bridges must
  // validate source identity and provide GS/TRK and timestamp per frame.
- root.addEventListener('b737:simulator-telemetry',e=>{
+ root.addEventListener('b737:flight-location-reference',e=>{
+  try{setScenarioPosition(e.detail);}
+  catch(error){lastError='FLT PHASE POS: '+cleanErr(error);}
+ });
+  root.addEventListener('b737:simulator-telemetry',e=>{
   try{validMotion(e.detail)}catch(err){show('TELEMETRY REJECTED: '+cleanErr(err));}
  });
  syncPower();
@@ -377,7 +400,7 @@ function boot(){
  update();
 }
 root.B737IRSTrainerUnified=Object.freeze({
-  setMode:mode,setFmcPosition:fmcPosition,pressISDU:isduPress,getState:snapshot,
+  setMode:mode,setFmcPosition:fmcPosition,setScenarioPosition,pressISDU:isduPress,getState:snapshot,
   publishMotion:validMotion,setPowerMode(x){if(!['BENCH','AIRCRAFT'].includes(x))throw RangeError('Power mode');source=x;syncPower();update();},
   setBenchMotion(frame){simulatedMotion={...frame,valid:true,source:'BENCH_SIM'};update();},
   stopMotion(){simulatedMotion=null;update();},
