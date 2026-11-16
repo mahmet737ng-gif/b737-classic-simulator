@@ -189,7 +189,12 @@
   button.addEventListener('pointerup',e=>finish(e));
   button.addEventListener('pointercancel',e=>finish(e,true));
   button.addEventListener('lostpointercapture',e=>finish(e,true));
+  // Fallback for mobile browsers which terminate a touch stream without
+  // delivering its corresponding pointerup to the original button.
+  button.addEventListener('touchend',e=>{if(e.touches.length===0)finish(null);});
+  button.addEventListener('touchcancel',e=>{if(e.touches.length===0)finish(null,true);});
   root.addEventListener('blur',()=>finish(null,true));
+  root.addEventListener('pagehide',()=>finish(null,true));
   button.addEventListener('wheel',e=>{
    e.preventDefault();e.stopPropagation();
    const s=state.snapshot(button.dataset.seat,'volume',button.dataset.channel);
