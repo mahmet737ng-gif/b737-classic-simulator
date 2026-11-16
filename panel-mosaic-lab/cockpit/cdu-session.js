@@ -6,19 +6,23 @@
  function extract(state){const shared={};for(const key of keys)if(Object.hasOwn(state,key))shared[key]=copy(state[key]);return shared;}
  function apply(state,shared){for(const key of keys){if(Object.hasOwn(shared,key))state[key]=copy(shared[key]);else delete state[key];}}
  function create(){
-  const peers=new Map();let shared=null,revision=0;
+  const peers=new Map(),subscribers=new Set();let shared=null,revision=0;
+  function notify(){const value=copy(shared||{});for(const fn of [...subscribers])try{fn(value)}catch(_){/* Subscriber isolation */}}
   function deliver(peer){peer.write(copy(shared));peer.refresh();}
   function attach(seat,peer){
    if(!['CAPT','FO'].includes(seat)||!peer||!['read','write','refresh'].every(k=>typeof peer[k]==='function'))throw Error('Invalid CDU session peer');
    if(shared===null)shared=extract(peer.read());
-   peers.set(seat,peer);deliver(peer);
+   peers.set(seat,peer);deliver(peer);notify();
    return Object.freeze({
-    publish(){if(peers.get(seat)!==peer)return;const next=extract(peer.read());if(JSON.stringify(next)===JSON.stringify(shared))return;shared=next;revision++;for(const [other,p]of peers)if(other!==seat)deliver(p);},
+    publish(){if(peers.get(seat)!==peer)return;const next=extract(peer.read());if(JSON.stringify(next)===JSON.stringify(shared))return;shared=next;revision++;for(const [other,p]of peers)if(other!==seat)deliver(p);notify();},
     snapshot:()=>copy(shared),
     revision:()=>revision
    });
   }
-  return Object.freeze({attach});
+  return Object.freeze({attach,snapshot:()=>copy(shared||{}),subscribe(fn){
+    if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
+    subscribers.add(fn);fn(copy(shared||{}));return ()=>subscribers.delete(fn);
+   }});
  }
  return Object.freeze({create,extract,apply,keys});
 });

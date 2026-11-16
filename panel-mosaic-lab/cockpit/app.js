@@ -4,6 +4,12 @@
  let assembly,zoom=.2,focused='main',frame,drag=null,dragged=false,lightDefinitions=[],snapshot=null,ready=false,visualTest=false,visualOverheadCount=0;const loaded=new Set(),failed=new Set(),cduFrames=new Map(),cduStates=new Map();
  const cduSeats=window.B737UnifiedNoCduTest?[]:['CAPT','FO'];
  const fmcSession=window.B737CduSession.create();
+  // The private CDU/SG reference state follows the actual shared RTE context;
+  // staged origin/destination changes invalidate prior previews, never FMC active legs.
+  fmcSession.subscribe?.(data=>{
+   const value=key=>String(data.pending?.[key]??data.stagedRoute?.[key]??data.active?.[key]??'').toUpperCase();
+   window.B737CduSgRouteV1?.setContext({origin:value('ORIGIN'),destination:value('DEST')});
+  });
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
  let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false,overheadIdleTimer=0;

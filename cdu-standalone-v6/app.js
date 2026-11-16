@@ -222,7 +222,7 @@ function applyCDUScreenTypography(box){
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const chapter11=chapter11RoutePages?.view(state)??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const chapter11=chapter11RoutePages?.view(state)??window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
@@ -333,7 +333,8 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
 function send(k){
  const prior=procedureLedger?.capture(state)||null;
  try{const before=state.page;
- if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
+ if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
+  if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
  window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
