@@ -298,36 +298,8 @@
     sync:()=>publishPressureState()
   });
 
-  // Render the owner background for the selected pressurization type only.
-  // The image is a preview; no original panel source or cockpit geometry is modified.
-  const pressureField = form.querySelector('input[name="pressurization"]')?.closest('fieldset');
-  const ownerPreview = document.createElement('figure');
-  ownerPreview.className = 'aircraft-pressure-owner-preview';
-  ownerPreview.id = 'aircraftPressureOwnerPreview';
-  const ownerImage = document.createElement('img');
-  ownerImage.id = 'aircraftPressureOwnerImage';
-  ownerImage.alt = 'Owner-approved DCPCS background';
-  ownerImage.loading = 'lazy';
-  const ownerCaption = document.createElement('figcaption');
-  ownerCaption.textContent = 'DCPCS · تصویر تأییدشدهٔ مرجع (بدون تغییر)';
-  ownerPreview.append(ownerImage, ownerCaption);
-  pressureField?.append(ownerPreview);
-  function showPressureArtwork(pressureId) {
-    const selected = api.CATALOG.pressurization.find(item => item.id === pressureId);
-    const source = selected?.backgroundAsset;
-    ownerPreview.hidden = !source;
-    if (source) {
-      const uri = new URL('../../' + source, document.baseURI).href;
-      if (ownerImage.src !== uri) ownerImage.src = uri;
-    } else {
-      ownerImage.removeAttribute('src');
-    }
-  }
-  form.querySelectorAll('input[name="pressurization"]').forEach(input => {
-    input.addEventListener('change', () => {
-      if (input.checked) showPressureArtwork(input.value);
-    });
-  });
+  // No bare DCPCS/CPCS artwork preview is mounted in Settings.
+  // Keep owner-approved OH22 artwork selection inside the cockpit itself.
 
   function render(detail) {
     const selected = detail.resolved;
@@ -349,18 +321,18 @@
         type:'b737:cockpit-command', action:'aircon-background', family:selected.family.id
       }, location.origin);
     }
-    byId('openSelectedPressurizationPanel').textContent = 'باز کردن پنل ' + pressure + ' برای تست';
+    byId('openSelectedPressurizationPanel').textContent = 'Open '+pressure+' Pressure Panel';
     try {
       activeSession = getPressureSession(pressure);
       window.B737ActivePressurization = activeSession;
       publishPressureState(pressure);
-      byId('activeProfileStatus').textContent = 'سیستم ' + pressure + ' V' + activeSession.engineVersion + ' فعال است؛ کنترل‌ها، نمایشگرها و چراغ‌های OH22 از موتور اختصاصی همین سیستم فرمان می‌گیرند. مدل آموزشی فشار کابین و حرکت Outflow Valve به‌صورت حلقه‌بسته فعال است؛ ضرایب، منبع قطعی تغذیه و نرخ واقعی موتور هنوز کالیبره نشده‌اند.';
+      byId('activeProfileStatus').textContent = pressure+' V'+activeSession.engineVersion+' active. OH22 indications use the selected pressure controller. Cabin-pressure plant is a training model; coefficients and actuator timing are not aircraft-validated.';
     } catch (error) {
       window.B737ActivePressurization = null;
-      byId('activeProfileStatus').textContent = 'موتور انتخاب‌شده در دسترس نیست: ' + error.message;
+      byId('activeProfileStatus').textContent = 'Selected pressure controller unavailable: '+error.message;
     }
     if (pressureDialog.open) {
-      byId('selectedPressureTitle').textContent = 'پنل ' + pressure + ' · سیستم فشار کابین';
+      byId('selectedPressureTitle').textContent = pressure+' · Cabin Pressurization';
       pressureFrame.src = '../../' + selected.pressurization.lab;
     }
   }
@@ -369,29 +341,8 @@
   render({resolved: store.resolve()});
   updatePressureDiagnostics();
 
-  // Preserve the established 300/500 vs 400 family selection used by
-  // physical cockpit panels; select an exact 737 variant for the CDU IDENT.
-  form.querySelectorAll('input[name="aircraftFamily"]').forEach(input=>{
-    input.addEventListener('change',()=>{
-      if(!input.checked)return;
-      const selected=form.querySelector('input[name="aircraftModel"]:checked');
-      if(input.value==='B737-400'){
-        const model=form.querySelector('input[name="aircraftModel"][value="737-400"]');
-        if(model)model.checked=true;
-      }else if(!selected||selected.value==='737-400'){
-        const model=form.querySelector('input[name="aircraftModel"][value="737-300"]');
-        if(model)model.checked=true;
-      }
-    });
-  });
-  form.querySelectorAll('input[name="aircraftModel"]').forEach(input=>{
-    input.addEventListener('change',()=>{
-      if(!input.checked)return;
-      const family=input.value==='737-400'?'B737-400':'B737-300-500';
-      const control=form.querySelector('input[name="aircraftFamily"][value="'+family+'"]');
-      if(control)control.checked=true;
-    });
-  });
+  // Aircraft family is the only selectable aircraft/IDENT model source.
+  // ProfileStore derives 737-300 / 20K and 737-400 / 22K automatically.
 
   function showSettings() {
     const profile = store.get();
@@ -399,7 +350,6 @@
       const control = form.querySelector('input[name="' + field + '"][value="' + profile[field] + '"]');
       if (control) control.checked = true;
     }
-    showPressureArtwork(profile.pressurization);
     byId('aircraftSettingsError').hidden = true;
     settings.showModal();
   }
@@ -409,20 +359,21 @@
   form.addEventListener('submit', event => {
     event.preventDefault();
     const values = new FormData(form);
-    const changes = Object.fromEntries(api.FIELDS.map(field => [field, values.get(field)]));
+    const editableFields = ['aircraftFamily','pressurization','engineInstruments'];
+    const changes = Object.fromEntries(editableFields.map(field => [field, values.get(field)]));
     try {
       store.set(changes);
       settings.close();
     } catch (error) {
       const notice = byId('aircraftSettingsError');
       notice.hidden = false;
-      notice.textContent = 'تنظیمات ذخیره نشد: ' + error.message;
+      notice.textContent = 'Settings not saved: '+error.message;
     }
   });
 
   byId('openSelectedPressurizationPanel').addEventListener('click', () => {
     const selected = store.resolve().pressurization;
-    byId('selectedPressureTitle').textContent = 'پنل ' + selected.id + ' · سیستم فشار کابین';
+    byId('selectedPressureTitle').textContent = selected.id+' · Cabin Pressurization';
     pressureFrame.src = '../../' + selected.lab;
     pressureDialog.showModal();
   });
