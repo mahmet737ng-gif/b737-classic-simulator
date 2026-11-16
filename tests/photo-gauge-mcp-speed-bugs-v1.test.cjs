@@ -4,7 +4,7 @@ const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
 const code=fs.readFileSync(path.resolve(__dirname,'../panel-mosaic-lab/cockpit/instrument-lab/unified.js'),'utf8');
 function boot(mcpValues){
  const renders=[],created=[],events={};
- const host={querySelector:()=>null};
+ const host={querySelector:()=>null,querySelectorAll:()=>[]};
  const geometry={altimeter:{size:[1000,1000],pivot:[500,500]},
   airspeed:{size:[700,700],pivot:[350,350]},
   rmi:{size:[600,700],pivot:[300,300]},
@@ -13,8 +13,8 @@ function boot(mcpValues){
   altitudeBug:2000,qnh:1013.25,standbyQnh:1013.25},
   calibratedSpeed:()=>200,
   createGauge:(parent,kind,opts)=>{
-   created.push({kind,opts});return {canvas:{parentNode:parent,style:{},
-    setAttribute(){}},render:args=>renders.push({kind,options:opts,state:args})};
+   created.push({kind,opts});return {canvas:{parentNode:parent,style:{},dataset:{},isConnected:true,
+    setAttribute(){},remove(){this.isConnected=false;this.parentNode=null;}},render:args=>renders.push({kind,options:opts,state:args})};
   }};
  const source={captain:{piece:'captain',width:1600,height:1600,
   gauges:{altimeter:{x:500,y:500,radius:200},verticalSpeed:{x:500,y:500,radius:200},rmi:{x:500,y:500,radius:200}}},
@@ -26,6 +26,7 @@ function boot(mcpValues){
   'airdata.adc2':{quality:'VALID',value:{casKt:190}}};
  const win={
   B737PhotoGauges:photos,B737FlightNeedlesModel:{sources:source},
+  B737PhotoGaugeRegistrationV1:require('../panel-mosaic-lab/cockpit/instrument-lab/photo-gauge-registration-v1.js'),
   B737AirspeedPointersModel:{source:{piece:'captain',width:1600,height:1600},
     pivot:{x:400,y:400},pointers:{airspeed:{tipRadius:200}},
     firstOfficer:{piece:'fo-inner',width:1600,height:1600,pivot:{x:400,y:400},tipRadius:200}},
@@ -38,7 +39,8 @@ function boot(mcpValues){
   B737UnifiedEfisSources:{project:()=>({heading:100,bearings:[]})},
   addEventListener:(k,f)=>events[k]=f
  };
- const document={readyState:'complete',querySelector:q=>q.startsWith('.texture-piece')?host:null};
+ const document={readyState:'complete',documentElement:{dataset:{engineIndication:'EIS'}},
+  querySelector:q=>q.startsWith('.texture-piece')?host:null};
  vm.runInNewContext(code,{window:win,document,requestAnimationFrame:f=>f(),console});
  return {renders,created,snapshot,win,refresh:()=>events['b737:avionics-data']?.({detail:{topic:'mcp.state'}})};
 }
