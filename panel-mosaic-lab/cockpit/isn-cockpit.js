@@ -524,7 +524,49 @@
   render();
   profileDone('ISN 100ms active tick',tickStarted);
  },100);
+ let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+  // Keep the existing ISN-18 ECU as sole engine-dynamics owner. The A/T
+  // controller is only permitted to move RUNNING engines in MCP A/T SPEED.
+  autoThrottleCommand:({engine,value,controller}={})=>{
+   if(controller!=='B737_AT_SPEED_SERVO_0001'||!['engine1','engine2'].includes(engine)||
+      !Number.isFinite(value)||value<0||value>1)
+    throw Error('Invalid A/T speed servo command');
+   const mcp=window.B737McpAFDSBridgeV1?.getOutput?.();
+   if(mcp?.power!==true||mcp.controls?.atArm!==true||mcp.modes?.thrust!=='SPEED')
+    return {accepted:false,reason:'MCP_A/T_SPEED_NOT_ENGAGED'};
+   if(chain.get().phase[engine]!=='RUNNING')
+    return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
+   ecu.setThrottle(engine,value);
+   // The existing 100ms ISN owner tick repaints EIS and Conventional gauges.
+   return {accepted:true,engine,throttle:value};
+  },
+  // Explicit training scenario controls ECU flight-idle/altitude/IAS context,
+  // not real LRU data. Restore instructor values once the scenario stops.
+  setFlightScenarioContext:({active,onGround,iasKt,altitudeFt,source}={})=>{
+   if(source!=='FLIGHT_SCENARIO_ENGINE')throw Error('Unrecognized flight context owner');
+   if(active!==true){
+    if(flightScenarioBaseline){
+     if(ecu.aircraft.onGround!==flightScenarioBaseline.onGround)
+      ecu.setOnGround(flightScenarioBaseline.onGround);
+     ecu.setFlightInputs({pressureAltitudeFt:flightScenarioBaseline.pressureAltitudeFt,
+      iasKt:flightScenarioBaseline.iasKt});
+     flightScenarioBaseline=null;
+    }
+    return {active:false};
+   }
+   if(window.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active!==true)
+    throw Error('Flight scenario not active');
+   if(typeof onGround!=='boolean'||!Number.isFinite(iasKt)||iasKt<0||iasKt>360||
+      !Number.isFinite(altitudeFt)||altitudeFt< -1000||altitudeFt>40000)
+    return {active:false,reason:'SCENARIO_OUTSIDE_ISN18_INPUT_ENVELOPE'};
+   if(!flightScenarioBaseline)flightScenarioBaseline={...ecu.aircraft};
+   if(ecu.aircraft.onGround!==onGround)ecu.setOnGround(onGround);
+   if(Math.abs(ecu.aircraft.iasKt-iasKt)>.5||
+      Math.abs(ecu.aircraft.pressureAltitudeFt-altitudeFt)>20)
+    ecu.setFlightInputs({iasKt,pressureAltitudeFt:altitudeFt});
+   return {active:true,onGround,iasKt,altitudeFt,origin:'TRAINING_SCENARIO'};
+  },
     getFuelSystem:()=>ecu.get().fuel?.system??null,
    reconcileElectricalConsumers:reason=>reconcileElectricalConsumers(reason),
    refreshElectricalAnnunciations:()=>{render();return true;},
