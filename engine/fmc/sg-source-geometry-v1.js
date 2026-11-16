@@ -22,6 +22,18 @@
   const h=Math.sin(x/2)**2+Math.cos(radians(a[1]))*Math.cos(radians(b[1]))*Math.sin(y/2)**2;
   return 3440.065*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));
  }
+ function resolveLocalFix(source,name){
+  const table=source.local_fixes||source.localFixes;
+  const selected=Array.isArray(table)?table.filter(x=>x?.ident===name):
+   table&&typeof table==='object'?table[name]:null;
+  const rows=Array.isArray(selected)?selected:selected?[selected]:[];
+  // Local FIX records must carry original source-line provenance.
+  if(!rows.length||!rows.every(r=>r?.ident===name&&validFix(r)&&
+    Number.isInteger(r.post_marker_line)&&r.post_marker_line>0))return null;
+  if(rows.some(r=>nm([r.lon,r.lat],[rows[0].lon,rows[0].lat])>.027))
+   return null; // Conflicting duplicate identifiers must never be guessed.
+  return {ident:name,lat:rows[0].lat,lon:rows[0].lon};
+ }
  function hasSource(source){return Array.isArray(source?.segments)&&source.segments.some(s=>
   Array.isArray(s?.events)||Array.isArray(s?.ast));}
  function compile(source,{airport,kind,ident:procedureIdent,runway=null,transition=null}={}){
@@ -55,7 +67,8 @@
     }
     const name=node.fix?.ident||values.ident;
     // Only a verified source-local fix may determine a coordinate.
-    const record=node.fix&&node.reference_status==='LOCAL_FIX_COORDINATE_VERIFIED'?node.fix:null;
+    const record=node.fix&&node.reference_status==='LOCAL_FIX_COORDINATE_VERIFIED'?
+      node.fix:resolveLocalFix(source,name);
     const current=record?point({ident:name,lat:record.lat,lon:record.lon},[groupIndex,eventIndex]):null;
     if(!current){
      previous=null;previousFix='';
