@@ -6,6 +6,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
+const NavdataBootstrap=require('./navdata-bootstrap.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const USER = process.env.LAB_USER || 'Ali.m';
@@ -422,6 +423,15 @@ async function start() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required: attach a Postgres service.');
   await pool.query('CREATE TABLE IF NOT EXISTS ata24_devices(device_hash text PRIMARY KEY,session_hash text UNIQUE NOT NULL,last_seen timestamptz NOT NULL DEFAULT now())');
   await navdata.initialize();
+  // Imports owner-provided reference data into private PostgreSQL once;
+  // never sends the source outside Railway or exposes it as a static asset.
+  try{
+    const result=await NavdataBootstrap.bootstrapPrivateNavdata(navdata);
+    if(result.imported)console.log('Private CDU/SG NAVDATA imported:',result.airports.join(','),'procedures:',result.counts,
+      'sha256:',result.sha256);
+  }catch(error){
+    console.error('Private CDU/SG NAVDATA import rejected:',String(error.message||error));
+  }
   http.createServer((req,res)=>handle(req,res).catch(e=>{
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
