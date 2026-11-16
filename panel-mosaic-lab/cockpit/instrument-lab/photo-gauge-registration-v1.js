@@ -1,4 +1,4 @@
-/* PHOTO-GAUGE-REGISTRATION-0001 — exact photo-source coordinate spaces.
+/* PHOTO-GAUGE-REGISTRATION-0002-NATIVE-BEZEL — exact photo-source coordinate spaces.
  * Mount a photo gauge on the visible native photo, never an EIS piece hidden
  * by the F/O conventional owner plate. All positions are image SOURCE pixels:
  * the existing assembly and FO proportional-scale engine own final transforms.
@@ -17,16 +17,21 @@
  const layouts=Object.freeze({
   EIS:Object.freeze({
    captain:Object.freeze({
-    airspeed:['captain',3942,3591,1108,973,328],
-    altimeter:['captain',3942,3591,3082,980,207],
-    ivsi:['captain',3942,3591,3080,1610,196],
-    rmi:['captain',3942,3591,1183,1838,215]
+    // Calibrated to the original 3942 x 3591 cockpit photo bezel,
+    // not to the legacy airspeed needle's 328px tip-radius.
+    airspeed:['captain',3942,3591,1108,973,340],
+    altimeter:['captain',3942,3591,3082,980,249],
+    ivsi:['captain',3942,3591,3080,1610,248],
+    rmi:['captain',3942,3591,1183,1838,223]
    }),
    firstOfficer:Object.freeze({
     airspeed:['fo-inner',918,1713,741,577,145],
     altimeter:['fo-outer',1123,1400,618,343,106],
     ivsi:['fo-outer',1123,1400,619,611,102],
-    rmi:['fo-inner',918,1713,771,954,128]
+    // F/O RMI original photographed housing is ~281 native source px
+    // across; 128 was a NEEDLE radius and enlarged its 598x725 face
+    // to ~359px, physically colliding with the ASI/DME face above.
+    rmi:['fo-inner',918,1713,771,954,100]
    })
   }),
   CONVENTIONAL:Object.freeze({
@@ -44,7 +49,9 @@
  function get(mode,station,kind){
   if(!['EIS','CONVENTIONAL'].includes(mode))throw Error('UNKNOWN_GAUGE_MODE');
   if(!['captain','firstOfficer'].includes(station)||!kinds.includes(kind))throw Error('UNKNOWN_GAUGE_TARGET');
-  const a=(layouts[mode][station]||layouts.EIS.captain)[kind];
+  const seatLayout=layouts[mode][station]||
+   (mode==='CONVENTIONAL'&&station==='captain'?layouts.EIS.captain:null);
+  const a=seatLayout?.[kind];
   if(!a)throw Error('UNREGISTERED_PHOTO_GAUGE');
   const [piece,width,height,x,y,radius]=a;
   return Object.freeze({mode,station,kind,piece,width,height,x,y,radius,
