@@ -104,6 +104,12 @@ jobs:
           node panel-mosaic-lab/cockpit/eis-main-final-layout-v1.test.cjs
       - name: Verify unified cockpit assembly
         run: |
+          # ASP: a bare tap must SELECT, never emit a volume wheel tick.
+          # The three ASP panels use the same event router and artwork.
+          node --check engine/interaction/touch-rotary-swipe-v1.js
+          node engine/interaction/touch-rotary-swipe-v1.test.cjs
+          node --check panel-mosaic-lab/cockpit/asp-controls-v1.js
+          node --test panel-mosaic-lab/cockpit/asp-controls-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/fo-proportional-scale-v1.js
           node panel-mosaic-lab/cockpit/fo-proportional-scale-v1.test.cjs
           node --check panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js
