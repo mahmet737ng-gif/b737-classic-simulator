@@ -81,8 +81,7 @@
   const now=Date.now();if(now-lastProtectionMs<200)return;
   lastProtectionMs=now;
   const a=mcp();if(!/^(CMD|CWS)_[AB]$/.test(a?.modes?.autopilot||''))return;
-  const hyd=win.B737ISNCockpitV1?.getPropulsionSnapshot?.();
-  // System-specific hydraulic failure is provided only by source-observed
+   // System-specific hydraulic failure is provided only by source-observed
   // hydraulic data. A simulated <500 PSI threshold is not an AFM trip value.
   const hydraulicSignal=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('hydraulics.state');
   const measured=hydraulicSignal?.quality==='VALID'?hydraulicSignal.value:null;
@@ -90,12 +89,17 @@
   const systemB=measured?.systemB?.pressurePsi;
   const hydVerified=Number.isFinite(systemA)&&Number.isFinite(systemB);
   const raSignal=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.radioAltitude1');
-  const obs={radioAltitudeFt:frame?.radioAltitudeFt??null,
+  const irs=win.B737IRSTrainerUnified?.getState?.();
+  const left=irs?.units?.L,right=irs?.units?.R;
+  const actualLeftFault=left?.phase==='FAULT'||left?.faultLight==='ON'||left?.fault===true;
+  const actualRightFault=right?.phase==='FAULT'||right?.faultLight==='ON'||right?.fault===true;
+  const obs={radioAltitudeFt:frame?.radioAltitudeFt??raSignal?.value?.heightFt??null,
    hydraulicAAvailable:faults.hydA?false:hydVerified?systemA>=500:null,
    hydraulicBAvailable:faults.hydB?false:hydVerified?systemB>=500:null,
    hydraulicsVerified:faults.hydA||faults.hydB||hydVerified,
-   leftIrsFault:faults.irsL,rightIrsFault:faults.irsR,
-   irsVerified:faults.irsL||faults.irsR,
+   leftIrsFault:faults.irsL||actualLeftFault,
+   rightIrsFault:faults.irsR||actualRightFault,
+   irsVerified:faults.irsL||faults.irsR||actualLeftFault||actualRightFault,
    criticalSensorFailureVerified:faults.criticalSensor,
    criticalSensorFailed:faults.criticalSensor,
    raFailureVerified:faults.radioAlt||
@@ -108,7 +112,8 @@
  function confirmedHardware(reason,extra={}){
   const frame=flight(),output=mcp();
   if(!output)return false;
-  const input={...extra,radioAltitudeFt:frame?.radioAltitudeFt??null,
+  const ra=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.radioAltitude1');
+  const input={...extra,radioAltitudeFt:frame?.radioAltitudeFt??ra?.value?.heightFt??null,
     hardware:{source:'COCKPIT_HARDWARE',reason,confirmed:true}};
   const result=Protection.evaluate(protect,output,input,Date.now());
   protect=result.state;
@@ -146,6 +151,9 @@
    input.addEventListener('change',()=>{faults[input.dataset.fccFault]=input.checked;
     protectFlight(flight());});
  }
+ // Hydraulic, IRS and electrical protections apply during any powered A/P
+ // session, not only when instructor flight dynamics is actively loaded.
+ win.setInterval(()=>protectFlight(flight()),400);
  win.addEventListener('b737:flight-scenario-state',e=>{
   const frame=e.detail;
   if(frame?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||!isActive())return;
