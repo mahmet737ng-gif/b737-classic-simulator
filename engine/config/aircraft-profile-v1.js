@@ -27,6 +27,7 @@
     engineVariant: Object.freeze([
       Object.freeze({id:'CFM56-3B1',label:'CFM56-3 B1',rating:'18.5K',ratingLbf:18500}),
       Object.freeze({id:'CFM56-3B3',label:'CFM56-3 B3',rating:'20K',ratingLbf:20000}),
+      Object.freeze({id:'CFM56-3B2',label:'CFM56-3 B2',rating:'22K',ratingLbf:22000}),
       Object.freeze({id:'CFM56-3C1',label:'CFM56-3 C1',rating:'23.5K',ratingLbf:23500})
     ]),
     pressurization: Object.freeze([
@@ -41,6 +42,9 @@
   // Deliberate simulator defaults, not an EP-FSI installation declaration.
   const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', aircraftModel:'737-300', engineVariant:'CFM56-3B3', pressurization: 'DCPCS', engineInstruments: 'EIS'});
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+  // Simulator-specific fixed IDENT configuration. Family is the only editable aircraft model choice.
+  const assignedModel = family => family === 'B737-400' ? '737-400' : '737-300';
+  const assignedEngine = family => family === 'B737-400' ? 'CFM56-3B2' : 'CFM56-3B3';
 
   function validate(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Aircraft profile must be an object');
@@ -49,8 +53,10 @@
     for (const key of FIELDS) {
       if (!CATALOG[key].some(option => option.id === value[key])) throw Error('Invalid aircraft profile option: ' + key);
     }
-    if (CATALOG.aircraftModel.find(x=>x.id===value.aircraftModel).family!==value.aircraftFamily)
-      throw Error('Aircraft model and family selection must agree');
+    if (value.aircraftModel !== assignedModel(value.aircraftFamily))
+      throw Error('IDENT aircraft model must match the selected family');
+    if (value.engineVariant !== assignedEngine(value.aircraftFamily))
+      throw Error('IDENT engine rating must match the selected family');
     return true;
   }
   function normalize(data) {
@@ -58,11 +64,9 @@
     if (data && data.schema === SCHEMA) for (const field of FIELDS) {
       if (CATALOG[field].some(option => option.id === data[field])) result[field] = data[field];
     }
-    // Migration: older saved profiles had no exact 300/500 model.
-    if(data?.schema===SCHEMA&&!CATALOG.aircraftModel.some(x=>x.id===data.aircraftModel))
-      result.aircraftModel=result.aircraftFamily==='B737-400'?'737-400':'737-300';
-    if(CATALOG.aircraftModel.find(x=>x.id===result.aircraftModel).family!==result.aircraftFamily)
-      result.aircraftModel=result.aircraftFamily==='B737-400'?'737-400':'737-300';
+    // Always migrate old saved manual selections to the family-derived IDENT model/rating.
+    result.aircraftModel=assignedModel(result.aircraftFamily);
+    result.engineVariant=assignedEngine(result.aircraftFamily);
     return result;
   }
   function resolve(input) {
@@ -97,11 +101,14 @@
       if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw Error('Invalid aircraft profile update');
       for (const key of Object.keys(patch)) if (!FIELDS.includes(key)) throw Error('Cannot update aircraft profile field: ' + key);
       const next = {...current, ...patch};
-      if (Object.hasOwn(patch,'aircraftModel')&&!Object.hasOwn(patch,'aircraftFamily'))
-        next.aircraftFamily=CATALOG.aircraftModel.find(x=>x.id===next.aircraftModel).family;
-      else if (Object.hasOwn(patch,'aircraftFamily')&&!Object.hasOwn(patch,'aircraftModel')&&
-         CATALOG.aircraftModel.find(x=>x.id===next.aircraftModel).family!==next.aircraftFamily)
-        next.aircraftModel=next.aircraftFamily==='B737-400'?'737-400':'737-300';
+      if (has(patch,'aircraftModel') && !has(patch,'aircraftFamily')) {
+        const model=CATALOG.aircraftModel.find(x=>x.id===patch.aircraftModel);
+        if(!model)throw Error('Unknown aircraft model');
+        next.aircraftFamily=model.family;
+      }
+      // No independent model or thrust-rating selection: engine / IDENT always follow family.
+      next.aircraftModel=assignedModel(next.aircraftFamily);
+      next.engineVariant=assignedEngine(next.aircraftFamily);
       validate(next);
       if (FIELDS.every(key => next[key] === current[key])) return {...current};
       if (storage) storage.setItem(STORAGE_KEY, JSON.stringify(next));
