@@ -81,7 +81,7 @@ test('Duplicate cycle cannot be simultaneously ACTIVE and INACTIVE',()=>{
 test('Unified links calendar status and verified banks to both mounted CDU frames',()=>{
  const html=source('panel-mosaic-lab/cockpit/index.html'),stage=source('panel-mosaic-lab/cockpit/cdu-stage.html');
  const manifest=JSON.parse(source('panel-mosaic-lab/cockpit/assembly.json'));
- assert.match(html,/id="airacDatabaseStatus"/);
+ assert.doesNotMatch(html,/id="airacDatabaseStatus"/, 'AIRAC status text must not appear in Settings');
  assert.match(html,/cdu-airac-status-bridge-v1.js/);
  assert.match(stage,/cdu-airac-bank-receiver-v1.js/);
  assert.ok(stage.indexOf('cdu-airac-banks-v1.js')<stage.indexOf('cdu-airac-bank-receiver-v1.js'));
