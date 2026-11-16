@@ -156,7 +156,7 @@
     const location=win.B737UnifiedFlightLocationV1;
     const chosen=location?.getLocation?.();
     const center=chosen||src.mapPosition; // Instructor-selected chart center has priority for preview
-    if(!preview&&center&&['MAP','CTR_MAP','PLAN'].includes(origin.ehsi.mode)){
+    if(!preview&&location&&center&&['MAP','CTR_MAP','PLAN'].includes(origin.ehsi.mode)){
      const extra=[],vor=src.vor;
      if(vor?.stationIdent&&Number.isFinite(vor.stationLat)&&Number.isFinite(vor.stationLon))
       extra.push({type:'VOR',ident:vor.stationIdent,lat:vor.stationLat,lon:vor.stationLon});
