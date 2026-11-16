@@ -69,7 +69,7 @@ assert(!source.includes('guestSourceOverheadFocus'),'Gateway must not inject hid
 // before loading all original deferred files.
 const session=fs.readFileSync(path.join(root,'public/session.js'),'utf8');
 assert(source.includes('const preflight='),'Missing synchronous cockpit auth renewal bootstrap');
-assert(source.includes('location.replace(\\"/login?e=expired\\")'),'Preflight must redirect on expiry');
+assert(source.includes('location.replace("/login?e=expired")'),'Preflight must redirect on expiry');
 assert(source.includes("dest==='document'||dest==='iframe'"),'Only top-level documents may redirect to login');
 assert(source.includes('res.writeHead(401'),'Expired subresources must receive 401 instead of login HTML');
 assert(session.includes('ping();'),'Heartbeat must start immediately');
