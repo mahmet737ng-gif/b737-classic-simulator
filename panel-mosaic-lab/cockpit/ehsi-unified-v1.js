@@ -166,8 +166,15 @@
     screen.host.dataset.mcpCourse=src.course==null?'':String(src.course);
     screen.host.dataset.mcpHeadingPower=String(src.mcp?.powered===true);
     screen.host.dataset.mcpCourse2Power=String(src.mcp?.course2Powered===true);
-    diagnostics.push(seat+' · SG '+src.sg+' · IRS '+screen.host.dataset.irs+
-     ' · '+(src.trackSource||'NO TRK')+' · '+(src.fmc?.operational?'FMC ON':'FMC UNAVAILABLE'));
+    const h=src.health||{};
+    diagnostics.push(seat+' · SG '+src.sg+
+     ' · IRS '+(h.irsPowered?'PWR':'NO PWR')+'/'+h.irsPhase+
+     ' · ATT '+(h.attitudeValid?'VALID':'INVALID')+
+     ' · TRK '+(h.trackDisplayValid?'VALID':'INVALID')+
+     ' · ADC '+h.adcQuality+' · RA '+h.radioAltQuality+
+     ' · EFIS '+(h.displayPowered?'PWR':'NO PWR')+
+     ' · SG VIDEO '+(h.sgVideo?'OK':'FAIL')+
+     ' · '+(src.fmc?.operational?'FMC ON':'FMC UNAVAILABLE'));
     model.efis.displayAspect=screen.aspect;
     const signature=JSON.stringify(model);
     if(painted[seat]!==signature){
