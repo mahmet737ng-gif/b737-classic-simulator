@@ -29,3 +29,21 @@ html[data-engine-indication="EIS"] #region-main .region-native>.b737-eis-autobra
 @media(prefers-reduced-motion:reduce){
  #region-main .b737-eis-autobrake-rotary>img{transition:none}
 }
+
+/* Transparent hit surfaces above photographed AUTOBRAKE detent lettering.
+ * These are NOT independent switches: both installations call the same
+ * B737AutobrakeUnified.setSelector and share the real selector status.
+ * Suppress inactive-installation hit zones absolutely on mode changes. */
+#region-main .region-native > .b737-autobrake-detent-label{
+ display:none;pointer-events:none;opacity:0;user-select:none;
+ -webkit-tap-highlight-color:transparent;
+}
+html[data-engine-indication="EIS"] #region-main .region-native >
+ .b737-autobrake-detent-label[data-autobrake-installation="EIS"],
+html[data-engine-indication="CONVENTIONAL"] #region-main .region-native >
+ .b737-autobrake-detent-label[data-autobrake-installation="CONVENTIONAL"]{
+ display:block;pointer-events:auto;
+}
+#region-main .region-native > .b737-autobrake-detent-label:focus-visible{
+ opacity:1;outline:2px solid #81ddeb!important;outline-offset:0;
+}
