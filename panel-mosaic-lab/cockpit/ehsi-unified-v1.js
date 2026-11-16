@@ -18,8 +18,9 @@
   'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',
   'navigation.ils1','navigation.ils2']);
  const SEATS=['CAPT','FO'];
+ const FMC_MAP_TIMEOUT_MS=27500;
  const number=v=>Number.isFinite(v)?v:null;
- function liveModel(src,setup,physical,aspect,route){
+ function liveModel(src,setup,physical,aspect,route,failure={}){
   const d=setup.ehsi,radio=d.mode.includes('VOR_ILS');
   const nav=src.ils||src.vor;
   const dme=src.dme&&(nav?.stationIdent===src.dme.stationIdent||!nav)?number(src.dme.distanceNm):null;
@@ -35,7 +36,7 @@
     gsValid:src.frontCourse===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
    route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
    efis:{displayPower:src.displayPowered&&src.video,sgValid:src.video,
-    headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,
+    headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,verticalFailure:failure.active,mapFailurePending:failure.mapPending,
     brightness:physical.ehsi.brightness,wxBrightness:physical.ehsi.wxBrightness,displayAspect:aspect}};
  }
  function mount(win){
@@ -43,7 +44,7 @@
   if(!core||!renderer||!sources)return null;
   const state={},instructor={},screens={},painted={};
   for(const seat of SEATS){state[seat]=core.initial();state[seat].seat=seat;instructor[seat]=false;}
-  let selected='CAPT',frame=0,expiry=0;
+  let selected='CAPT',frame=0,expiry=0,fmcFailureStarted=null,fmcTimeout=0;
   const cockpit=doc.getElementById('unifiedEfisDialog');
   function syncControls(){
    const button=doc.getElementById('unifiedEfisDemo');
@@ -96,11 +97,27 @@
     .filter(deadline=>Number.isFinite(deadline));
    if(deadlines.length)expiry=win.setTimeout(schedule,Math.max(1,Math.min(...deadlines)-now+1));
   }
+  function fmcFailure(snapshot){
+   const record=snapshot?.['fmc.computed'];
+   const active=record?.quality==='VALID'&&record.value?.failed===true;
+   if(!active){
+    fmcFailureStarted=null;
+    if(fmcTimeout)win.clearTimeout(fmcTimeout);
+    fmcTimeout=0;
+    return {active:false,mapPending:false};
+   }
+   if(fmcFailureStarted===null){
+    fmcFailureStarted=Date.now();
+    fmcTimeout=win.setTimeout(()=>{fmcTimeout=0;schedule();},FMC_MAP_TIMEOUT_MS);
+   }
+   return {active:true,mapPending:Date.now()-fmcFailureStarted<FMC_MAP_TIMEOUT_MS};
+  }
   function refresh(){
    const native=doc.querySelector('#region-main .region-native');
    if(!native)return;
    const snapshot=win.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
    trackExpiry(snapshot);
+   const failure=fmcFailure(snapshot);
    const diagnostics=[];
    for(const seat of SEATS){
     const screen=display(seat,native);
@@ -108,7 +125,7 @@
     const setup=state[seat],preview=instructor[seat];
     const src=sources.project(seat,snapshot),origin=state[src.sourceSeat];
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
-    const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route);
+    const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
     screen.host.dataset.sg=String(src.sg);
     screen.host.dataset.irs=src.irs===1?'L':'R';
     diagnostics.push(seat+' · SG '+src.sg+' · IRS '+screen.host.dataset.irs+
@@ -167,6 +184,7 @@
   doc.getElementById('unifiedEfisDemo')?.addEventListener('change',e=>{
    instructor[selected]=e.target.checked;schedule();
   });
+  doc.getElementById('unifiedFmcFail')?.addEventListener('change',e=>win.B737FmcSystemsBridgeV1?.setFailure?.(e.target.checked));
   for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
   for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});

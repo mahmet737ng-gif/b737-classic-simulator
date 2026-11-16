@@ -69,8 +69,8 @@ const server=http.createServer((req,res)=>{
      source:canvas?.dataset.eadiSource};
    }));
    assert.ok(actualFrames.every(f=>
-    f.owner==='EFIS_LAB_FULL_0003'&&f.paintCount>0&&
-    !f.error&&f.engine==='EFIS-LAB-FULL-0003'&&
+    f.owner==='EFIS_LAB_FULL_0004'&&f.paintCount>0&&
+    !f.error&&f.engine==='EFIS-LAB-FULL-0004'&&
     f.size[0]===640&&f.size[1]===640),
     'Both crew EADI CRTs must be PAINTED by the full new EFIS Lab engine: '+JSON.stringify(actualFrames));
    console.log('EFIS FULL RENDER VERIFIED',JSON.stringify(actualFrames));

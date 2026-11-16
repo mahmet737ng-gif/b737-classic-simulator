@@ -331,7 +331,7 @@ function renderUnifiedFull(canvas,input={}){
  state.ehsi.track=0;state.ehsi.course=0;
  canvas.dataset.eadiUnifiedFull='true';
  render(canvas,state,core,input);
- canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0003';
+ canvas.dataset.eadiRenderer='EFIS-LAB-FULL-0004';
  canvas.dataset.eadiSource=input.source||'UNKNOWN';
  return true;
 }

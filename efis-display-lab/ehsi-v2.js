@@ -506,7 +506,8 @@ function render(svg,raw){
   altitudeArc(plot,m,l);
   aircraft(rose,l,l.degrees===360);
  }
- if(l.route&&!m.nav.valid&&!m.weather.disagreement?.includes('MAP'))flag(svg,'MAP',256,291);
+ if(m.efis.verticalFailure&&!m.radio&&m.mode!=='PLAN')flag(svg,'VTK',473,341);
+ if(l.route&&!m.nav.valid&&!m.efis.mapFailurePending&&!m.weather.disagreement?.includes('MAP'))flag(svg,'MAP',256,291);
  vertical(svg,m);
  footer(svg,m);
  traffic(svg,m,l,s);
