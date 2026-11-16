@@ -38,24 +38,30 @@
    for(let j=i+1;j<boxes.length;j++)
     if(overlaps(boxes[i],boxes[j]))
      throw Error('PRINTED_DETENT_TEXT_BOXES_OVERLAP_'+specs[i].id+'_'+specs[j].id);
-  // Binary search global safe expansion: one mathematically provable
-  // non-overlapping padding for every label, never a nearest-label halo.
-  function fits(p){
-   const b=specs.map(d=>rect(d,p/scaleX,p/scaleY));
-   for(let i=0;i<b.length;i++)
-    for(let j=i+1;j<b.length;j++)
-     if(overlaps(b[i],b[j]))return false;
-   return true;
-  }
-  let low=0,high=paddingPx;
-  if(!fits(high))for(let i=0;i<28;i++){
-   const mid=(low+high)/2;
-   if(fits(mid))low=mid;else high=mid;
-  }
-  else low=high;
-  // Reserve a 0.2 physical pixel safety gap for scaling/rounding.
-  const safe=Math.max(0,low-.2);
-  const result=specs.map(d=>Object.freeze({...rect(d,safe/scaleX,safe/scaleY),paddingPx:safe}));
+  // The closest diagonal label pairs need smaller margins; all other
+  // labels retain up to the full requested 5 screen pixels. A pair is
+  // disjoint if separated in X OR Y. Share that pair's remaining screen
+  // pixel clearance symmetrically, keeping a .35px safety gutter.
+  const pads=specs.map(()=>paddingPx);
+  for(let i=0;i<specs.length;i++)
+   for(let j=i+1;j<specs.length;j++){
+    const a=specs[i],b=specs[j];
+    const gapX=(Math.abs(a.cx-b.cx)-(a.w+b.w)/2)*scaleX;
+    const gapY=(Math.abs(a.cy-b.cy)-(a.h+b.h)/2)*scaleY;
+    const maxPairPadding=Math.max(0,Math.max(gapX,gapY)-.35);
+    if(pads[i]+pads[j]>maxPairPadding){
+     const each=maxPairPadding/2;
+     pads[i]=Math.min(pads[i],each);
+     pads[j]=Math.min(pads[j],each);
+    }
+   }
+  const result=specs.map((d,i)=>Object.freeze({
+   ...rect(d,pads[i]/scaleX,pads[i]/scaleY),paddingPx:pads[i]
+  }));
+  for(let i=0;i<result.length;i++)
+   for(let j=i+1;j<result.length;j++)
+    if(overlaps(result[i],result[j]))
+     throw Error('DETENT_HIT_AREA_OVERLAP_'+result[i].id+'_'+result[j].id);
   return Object.freeze(result);
  }
  function at(box,x,y){
