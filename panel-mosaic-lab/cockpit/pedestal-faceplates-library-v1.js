@@ -1,4 +1,4 @@
-/* PEDESTAL FACEPLATES 0005
+/* PEDESTAL FACEPLATES 0006
  * Layout registered against the existing RADIO / NAV / AUDIO / TRIM pedestal.
  * Upper: COMM CAPT | CARGO FIRE CONTROL | COMM FO.
  * Lower: NAV CAPT | one Transponder/TCAS | NAV FO.
@@ -7,14 +7,15 @@
  */
 (function(root){
 'use strict';
-const VERSION='PEDESTAL-FACEPLATES-0005';
+const VERSION='PEDESTAL-FACEPLATES-0006';
 const scriptUrl=document.currentScript?.src||location.href;
 const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
 // Images were measured directly from the archived user-provided PNG files:
  // Cargo 1009x457; COMM 1799x815; NAV 1799x813; XPDR/TCAS 1799x699.
  // The assigned radio bays are wider/taller than these native ratios. Stretching
  // them vertically turned circular rotary apertures into obvious ellipses.
- // Fit each faceplate at natural aspect ratio and center it in its old bay.
+ // Keep holes circular. Cargo Fire REPLACES the 348 x 178 center COMM bay; its
+ // photo is letterboxed within a full-size opaque mounting frame.
 const SOURCE_DIMENSIONS=Object.freeze({
  'Cargo_Fire_Control_bare_faceplate.png':[1009,457],
  'VHF_COMM_bare_faceplate.png':[1799,815],
@@ -31,8 +32,10 @@ const BAYS=[
 ];
 const PANELS=Object.freeze(BAYS.map(plate=>{
  const [pixelWidth,pixelHeight]=SOURCE_DIMENSIONS[plate.file];
- const height=plate.w*pixelHeight/pixelWidth;
- return Object.freeze({...plate,y:plate.y+(plate.h-height)/2,h:height,
+ const photoHeight=plate.w*pixelHeight/pixelWidth;
+ const fullBay=plate.id==='cargo-fire';
+ return Object.freeze({...plate,y:fullBay?plate.y:plate.y+(plate.h-photoHeight)/2,
+  h:fullBay?plate.h:photoHeight,photoHeight,
   sourceWidth:pixelWidth,sourceHeight:pixelHeight,
   bayY:plate.y,bayHeight:plate.h});
 }));
@@ -40,13 +43,18 @@ function mount(){
  const native=document.querySelector('#region-pedestal .region-native');
  if(!native)return false;
  let layer=native.querySelector('#unified-pedestal-faceplates');
- if(layer)return true;
+ const oldCargo=native.querySelector('#unified-pedestal-cargo-replacement');
+ if(layer?.dataset.version===VERSION&&oldCargo?.dataset.version===VERSION)return true;
+ // Replace a stale layout in the same SPA without leaving a duplicate top-left panel.
+ if(layer)layer.remove();
+ if(oldCargo)oldCargo.remove();
  // This raster layer never captures touches: existing radio, EFIS and engine controls remain accessible.
  layer=document.createElement('div');
  layer.id='unified-pedestal-faceplates';
  layer.dataset.version=VERSION;
  layer.style.cssText='position:absolute;inset:0;z-index:22;pointer-events:none;direction:ltr';
  for(const plate of PANELS){
+   if(plate.id==='cargo-fire')continue; // this panel uses a separate topmost replacement
    const frame=document.createElement('div');
    frame.className='unified-pedestal-faceplate';
    frame.dataset.faceplate=plate.id;
@@ -63,6 +71,40 @@ function mount(){
    frame.append(img);layer.append(frame);
  }
  native.append(layer);
+ // The original center LEFT MCDU/audio photograph is baked into the underlying
+ // RADIO / AVIONICS texture. It must be completely occluded, not merely overlaid
+ // by a smaller aspect-fitted PNG (which leaves old lettering at top and bottom).
+ const cargo=PANELS.find(p=>p.id==='cargo-fire');
+ const backing=document.createElement('div');
+ backing.id='unified-pedestal-cargo-replacement';
+ backing.dataset.version=VERSION;
+ backing.dataset.faceplate=cargo.id;
+ backing.dataset.bay=cargo.bay;
+ Object.assign(backing.style,{
+  position:'absolute',left:cargo.x+'px',top:cargo.y+'px',
+  width:cargo.w+'px',height:cargo.h+'px',boxSizing:'border-box',
+  // Full opaque coverage of original 348x178 bay; no transparent strips.
+  background:'linear-gradient(180deg,#52565e,#626671 12%,#626671 88%,#52565e)',
+  border:'1px solid #34373f',boxShadow:'inset 0 0 0 1px #7c838b',
+  overflow:'hidden',lineHeight:'0',pointerEvents:'none',zIndex:'95'
+ });
+ const cargoImage=document.createElement('img');
+ cargoImage.src=source(cargo.file);
+ cargoImage.alt='Cargo Fire Control replaces the existing center COMM panel';
+ cargoImage.decoding='async';cargoImage.draggable=false;
+ Object.assign(cargoImage.style,{
+  position:'absolute',left:'0',top:(cargo.h-cargo.photoHeight)/2+'px',
+  width:cargo.w+'px',height:cargo.photoHeight+'px',maxWidth:'none',
+  display:'block',objectFit:'contain',userSelect:'none',pointerEvents:'none'
+ });
+ cargoImage.addEventListener('error',()=>{
+  console.warn('Unable to load Cargo Fire faceplate:',cargo.file);
+ },{once:true});
+ backing.append(cargoImage);
+ native.append(backing);
+ // Existing rotary controls can remount if a stale faceplate library was replaced.
+ root.B737UnifiedVHFDualV1?.mount?.();
+ root.B737UnifiedMechanicalFrequencyV1?.mount?.();
  root.dispatchEvent(new CustomEvent('b737:pedestal-faceplates-mounted',{detail:{version:VERSION,count:PANELS.length}}));
  return true;
 }
