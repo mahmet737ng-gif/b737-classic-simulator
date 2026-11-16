@@ -1,60 +1,56 @@
 'use strict';
-/* This test executes the real Unified CDU mounting loop with a minimal DOM,
- * ensuring the Captain iframe is never constructed or assigned a URL. */
+/* Execute Unified's production CDU mount path and its no-CDU diagnostic. */
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
 const assembly=JSON.parse(fs.readFileSync(path.join(__dirname,'assembly.json'),'utf8'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+const seatPolicy=source.match(/const cduSeats=[^;]+;/)?.[0];
 const start=source.indexOf('for(const item of assembly.embeddedInstruments||[])');
-// Stop at the mount() closing brace, not at the next named function:
-// zoom may introduce independently named helpers without changing CDU mount.
 const end=source.indexOf('\n }\n',start);
-assert.ok(start>=0&&end>start,'CDU mounting loop still exists independently of the lazy gallery');
+assert.ok(start>=0&&end>start&&seatPolicy);
 const loop=source.slice(start,end);
-assert.match(source,/function mountGallery\(\)/,'PERF-0002 gallery is mounted on demand');
-assert.match(source,/const ENABLED_CDU_SEAT=window\.B737UnifiedNoCduTest\?'NONE':'FO'/);
-assert.match(loop,/if\(item\.seat!==ENABLED_CDU_SEAT\)/);
-assert.ok(loop.indexOf('continue;')<loop.indexOf("document.createElement('iframe')"),
- 'Captain must exit before creating its iframe');
-assert.ok(loop.indexOf("document.createElement('iframe')")<loop.indexOf('cduFrames.set('),
- 'Only a loaded FO frame can register with FMC peer session');
+assert.match(source,/function mountGallery\(\)/,'Gallery must remain on demand.');
 
-const nodes=[],iframes=[];
-function node(tag){
- const el={tag,children:[],style:{},dataset:{},attributes:{},className:'',textContent:'',
-  classList:{values:new Set(),add(...names){names.forEach(n=>this.values.add(n))},contains(n){return this.values.has(n)}},
-  append(child){this.children.push(child)},
-  setAttribute(name,value){this.attributes[name]=value},
-  querySelector(selector){if(selector==='.region-native')return this.native;return null}};
- nodes.push(el);
- if(tag==='iframe')iframes.push(el);
- return el;
+function mount(noCdu){
+ const iframes=[];
+ function node(tag){
+  const el={tag,children:[],style:{},dataset:{},attributes:{},className:'',textContent:'',
+   classList:{values:new Set(),add(...names){names.forEach(n=>this.values.add(n))},contains(n){return this.values.has(n)}},
+   append(child){this.children.push(child)},
+   setAttribute(name,value){this.attributes[name]=value},
+   querySelector(selector){return selector==='.region-native'?this.native:null}};
+  if(tag==='iframe')iframes.push(el);
+  return el;
+ }
+ const native=node('native'),region=node('section');region.native=native;
+ const frames=new Map();
+ const view={instrumentPresentation:i=>({left:0,top:0,scaleX:i.w/i.nativeWidth,scaleY:i.h/i.nativeHeight})};
+ new Function('window','assembly','document','model','byId','cduFrames',seatPolicy+'\n'+loop)(
+  {B737UnifiedNoCduTest:noCdu},assembly,{createElement:node},view,id=>id==='region-main'?region:null,frames);
+ return {iframes,frames,native};
 }
-const native=node('native'),region=node('section');region.native=native;
-const doc={createElement:node},frames=new Map();
-const view={instrumentPresentation:i=>({left:0,top:0,scaleX:i.w/i.nativeWidth,scaleY:i.h/i.nativeHeight})};
-new Function('assembly','document','model','byId','cduFrames','ENABLED_CDU_SEAT',loop)(
- assembly,doc,view,id=>id==='region-main'?region:null,frames,'FO');
-assert.equal(iframes.length,1,'Only one iframe must be created');
-assert.equal(iframes[0].id,'cduFrameFO');
-assert.match(iframes[0].src,/seat=FO/);
-assert.equal(frames.size,1);
-assert.ok(frames.has('FO'));
-assert.equal(frames.has('CAPT'),false);
-const captain=native.children.find(n=>n.id==='cdu-captain');
-assert.ok(captain,'Captain footprint must remain registered');
-assert.equal(captain.dataset.runtime,'OFF');
-assert.equal(captain.style.pointerEvents,'none');
-assert.ok(captain.classList.contains('cdu-disabled'));
-assert.equal(captain.children.some(n=>n.tag==='iframe'),false);
-assert.equal(captain.children.at(-1).textContent,'CDU OFF');
-const officer=native.children.find(n=>n.id==='cdu-first-officer');
-assert.ok(officer.children.some(n=>n.tag==='div'&&n.className==='cdu-frame-window'));
-assert.match(html,/<button data-focus="cdu-first-officer">نمایش CDU فرست‌آفیسر<\/button>/);
-assert.match(html,/<button id="resetCduCaptain" type="button" hidden disabled/);
-assert.match(html,/app\.js\?v=[^"]*FO-ONLY-20261031/);
-assert.match(source,/const c=cduFrames.get\(ENABLED_CDU_SEAT\)/);
-assert.equal(assembly.embeddedInstruments.length,2,
- 'Retain both approved reference footprints without editing image registration');
-assert.deepEqual([...frames.keys()],['FO']);
-console.log('PASS: CAPT iframe=0 / FO iframe=1; no captain DOM runtime or network URL; FO session and layout retained');
+
+assert.equal(assembly.embeddedInstruments.length,2);
+const live=mount(false);
+assert.deepEqual([...live.frames.keys()],['CAPT','FO']);
+for(const seat of ['CAPT','FO']){
+ const {item,child,station}=live.frames.get(seat);
+ assert.equal(child.id,'cduFrame'+seat);
+ assert.match(child.src,new RegExp('[?&]seat='+seat+'(?:&|$)'));
+ assert.equal(child.loading,'lazy');
+ assert.equal(station.id,item.id);
+ assert.ok(station.children.some(n=>n.tag==='div'&&n.className==='cdu-frame-window'));
+ assert.match(html,new RegExp('data-focus="'+item.id+'"'));
+}
+assert.equal(live.iframes.length,2);
+assert.match(html,/data-focus="cdu-both"/);
+assert.match(html,/<button id="resetCduCaptain" type="button" disabled>/);
+assert.match(html,/app\.js\?v=[^"]*DUAL-CDU-CH11-ROUTE-PAGES-0001/);
+assert.match(source,/if\(id===item\.id\|\|id==='cdu-both'\)child\.loading='eager'/);
+
+const diagnostic=mount(true);
+assert.equal(diagnostic.iframes.length,0);
+assert.equal(diagnostic.frames.size,0);
+assert.deepEqual(diagnostic.native.children.map(n=>[n.dataset.seat,n.dataset.runtime]),
+ [['CAPT','OFF'],['FO','OFF']]);
+console.log('PASS: CAPT and FO mount lazily in production; no-CDU diagnostic mounts neither iframe.');

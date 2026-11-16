@@ -73,7 +73,10 @@
   if(!['CAPT','FO'].includes(d.seat)||!frame||e.source!==frame.contentWindow)return;
   seatState.set(d.seat,d);
   const a=d.active||{},origin=String(a.ORIGIN||''),dest=String(a.DEST||'');
-  const activated=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest&&(!d.routeTransactionPending||network.route.active&&network.route.origin===origin&&network.route.dest===dest);
+  const airportsValid=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest;
+  const legacyActive=!d.routeTransactionPending||network.route.active&&
+   network.route.origin===origin&&network.route.dest===dest;
+  const activated=airportsValid&&(typeof d.routeActivated==='boolean'?d.routeActivated:legacyActive);
   const displayRoute=activated?model.validateDisplayRoute(d.displayRoute,origin,dest):null;
   const next={origin,dest,active:activated,displayRoute,legsVerified:false,discontinuitiesUnknown:true};
   const signature=JSON.stringify(next);

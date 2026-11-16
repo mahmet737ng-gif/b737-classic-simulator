@@ -42,13 +42,15 @@ case 'CLASS':return /^[A-Z]{4}$/.test(s);
 case 'AIRWAY':return /^[A-Z0-9]{2,8}$/.test(s);
 case 'TEXT':return s.length>0&&s.length<=24;
 default:return s.length>0&&s.length<=24;}}
+function getRouteScreens(st){return st.chapter11RoutePages?globalThis.CDU_CH11_ROUTE_PAGES:null;}
 function isRouteField(field){return ROUTE_FIELDS.has(field);}
+function routeField(st,field){return isRouteField(field)||getRouteScreens(st)?.isRouteField(field);}
 function hasStagedRoute(st){return Object.keys(st.stagedRoute).length>0;}
 function pendingCount(st){return Object.keys(st.pending).filter(k=>st.pending[k]!==st.active[k]).length;}
 function readValue(st,key,pageName=''){if(Object.prototype.hasOwnProperty.call(st.pending,key))return st.pending[key]??''; if(ROUTE_PAGES.has(pageName||st.page)&&Object.prototype.hasOwnProperty.call(st.stagedRoute,key))return st.stagedRoute[key]??''; return st.active[key]??'';}
 function addMessage(st,msg){st.message=msg;st.history.unshift(msg);st.history=st.history.slice(0,30);}
 function clearPending(st){st.pending={};}
-function clearRoutePending(st){for(const key of Object.keys(st.pending)){if(isRouteField(key)) delete st.pending[key];}}
+function clearRoutePending(st){for(const key of Object.keys(st.pending)){if(routeField(st,key)) delete st.pending[key];}}
 function choose(st,pages,page){if(!pages[page]){addMessage(st,'KEY INACTIVE');return;}st.page=page;st.message='';st.subpage=1;}
 function stageRouteField(st,cell){const f=cell.field; if(!f) return; if(st.scratch==='DELETE'){st.stagedRoute[f]=''; st.scratch=''; st.message=''; return;} if(!st.scratch){const existing=readValue(st,f,'RTE'); if(existing){st.scratch=String(existing)} else addMessage(st,'INVALID ENTRY'); return;} const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} const activeNow=st.active[f]??''; if(value===activeNow) delete st.stagedRoute[f]; else st.stagedRoute[f]=value; st.scratch=''; st.message=''; if(f==='RUNWAY'){const num=parseInt(value,10); if(!Number.isNaN(num)){st.ehsi.course=(num*10)%360;}}
 }
@@ -137,8 +139,23 @@ function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)
  if(item.action?.type==='erase'){clearPending(st);st.scratch='';st.message='';return;}
  addMessage(st,'KEY INACTIVE');}
 function press(st,pages,key,options={}){const k=key.replace(/^CDU_CAPT_/,'');st.lastKey=k;st.events.push({key:k,page:st.page});if(st.events.length>300)st.events.shift();
+ const routeScreens=getRouteScreens(st);
+ if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
- if(k==='EXEC'){ if(pendingCount(st)){ for(const [f,v] of Object.entries(st.pending)){if(v==='')delete st.active[f];else st.active[f]=v;} clearPending(st); st.message=''; if(st.page==='ACTIVATE') choose(st,pages,'RTE'); } return st; }
+ if(k==='EXEC'){
+  if(pendingCount(st)){
+   const routeChanged=routeScreens&&(st.routeActivationArmed===true||st.routeActivated===true&&
+    Object.keys(st.pending).some(routeScreens.isRouteField));
+   for(const [f,v] of Object.entries(st.pending)){if(v==='')delete st.active[f];else st.active[f]=v;}
+   clearPending(st);st.message='';
+   if(routeChanged){
+    st.routeActivated=true;st.routeActivationArmed=false;st.routeRevision=(st.routeRevision||0)+1;
+    st.activeNavFixEvidence={...st.navFixEvidence};
+   }
+   if(st.page==='ACTIVATE')choose(st,pages,'RTE');
+  }
+  return st;
+ }
  if(k==='DIM_BRT'){st.brightness=st.brightness>0.86?0.4:Math.round((st.brightness+0.2)*100)/100;return st;}
  if(k==='KEY_CLR'){ if(st.message){st.message='';return st;} if(options.longPress)st.scratch='';else st.scratch=st.scratch.slice(0,-1); return st; }
  if(k==='KEY_DEL'){st.scratch='DELETE';st.message='';return st;}

@@ -92,6 +92,91 @@ async function openCatalog(kind,options={}){
   state.stage6View={mode:'CATALOG',kind,airport,page:1,items:result.items,referenceOnly};updates();
  }catch(e){state.stage6View={mode:'ERROR',kind,items:[],error:e.message,page:1};error(e.message)}
 }
+async function openChapter11Catalog(selection){
+ const {airport,mode,source}=selection;
+ const ticket=++serial,departure=mode==='DEP',page=departure?'DEPARTURES':'ARRIVALS';
+ const variant=mode==='DEP'?'SID':'STAR';
+ const view={mode:'LOADING',chapter11:true,airport,page:1,departure,left:[],right:[]};
+ state.stage6View=view;state.depArrSelection=selection;
+ core.choose(state,pages,page);updates();
+ try{
+  const catalog=kind=>json('/api/stage6/catalog?airport='+encodeURIComponent(airport)+'&kind='+kind).then(result=>{
+   if(result.airac!=='2610'||result.airport!==airport||result.kind!==kind||
+     result.fmc_executable!==false||!Array.isArray(result.items))throw Error('Invalid AIRAC catalogue');
+   return result.items.filter(x=>/^[A-Z0-9._-]{2,12}$/.test(x.ident)&&
+    x.status==='SOURCE_ONLY_NOT_FMC_EXECUTABLE');
+  });
+  const [procedures,approaches,runways]=await Promise.all([
+   catalog(variant),departure?[]:catalog('APP'),json(lookupUrl('runways','airport',airport))
+  ]);
+  if(serial!==ticket||state.page!==page||state.stage6View!==view)return;
+  if(runways.airac!=='2610'||runways.mode!=='SOURCE_REFERENCE_ONLY'||
+   runways.lookup?.has_more||!Array.isArray(runways.lookup?.rows))throw Error('Invalid runway catalogue');
+  const rwys=[...new Set(runways.lookup.rows.map(x=>x.runway_ident).filter(x=>core.validate('RUNWAY',x)))];
+  const sorted=list=>[...list].sort((a,b)=>a.ident.localeCompare(b.ident));
+  view.left=sorted(procedures).map(record=>({ident:record.ident,kind:variant,record}));
+  const existing=departure?[]:sorted(approaches).map(record=>({ident:record.ident,kind:'APP',record}));
+  view.right=[...existing,...rwys.map(ident=>({ident:departure?ident:'RW'+ident,kind:'RUNWAY',runway:ident}))];
+  view.mode='CATALOG';
+  if(source==='OTHER')state.scratch='';
+  updates();
+ }catch(e){
+  if(serial===ticket&&state.page===page&&state.stage6View===view){view.mode='ERROR';error(e.message);}
+ }
+}
+function chapter11RouteIndex(k){
+ const choices={LSK_L1:['ORIGIN','DEP'],LSK_R1:['ORIGIN','ARR'],LSK_R2:['DEST','ARR'],
+  LSK_L6:['OTHER','DEP'],LSK_R6:['OTHER','ARR']};
+ const choice=choices[k];
+ if(!choice)return false;
+ const [source,mode]=choice;
+ const airport=(source==='OTHER'?state.scratch:core.readValue(state,source,'RTE')).trim().toUpperCase();
+ if(!validAirport(airport))return false;
+ const referenceOnly=source==='OTHER';
+ void openChapter11Catalog({airport,mode,source,referenceOnly});return true;
+}
+function chapter11CatalogView(){
+ const f=state.stage6View;
+ if(!f?.chapter11||!['DEPARTURES','ARRIVALS'].includes(state.page))return null;
+ const count=Math.max(1,Math.ceil(Math.max(f.left.length,f.right.length)/5));
+ const rows=[];
+ for(let i=0;i<5;i++){
+  const at=(f.page-1)*5+i,right=f.right[at];
+  rows.push({
+   labelL:i===0?(f.departure?'SIDS':'STARS'):'',
+   valueL:f.left[at]?.ident||'',
+   labelR:right?.kind==='RUNWAY'&&f.right[at-1]?.kind!=='RUNWAY'?'RUNWAYS':
+    i===0?(f.departure?'RUNWAYS':'APPROACHES'):'',
+   valueR:right?.ident||''
+  });
+ }
+ rows.push({labelL:'------------',labelR:'------------',valueL:'<INDEX',valueR:'ROUTE>'});
+ return {title:f.airport+' '+state.page,number:f.page,count,rows};
+}
+function chapter11CatalogKey(k,f){
+ if(k==='LSK_L6'){++serial;openMenu();return true;}
+ if(k==='LSK_R6'){++serial;delete state.stage6View;core.choose(state,pages,'RTE');updates();return true;}
+ if(k==='PREV_PAGE'||k==='NEXT_PAGE'){
+  const {count}=chapter11CatalogView();
+  f.page=(f.page-1+(k==='NEXT_PAGE'?1:-1)+count)%count+1;updates();return true;
+ }
+ const key=/^LSK_([LR])([1-5])$/.exec(k);
+ if(!key)return false;
+ const row=(f.page-1)*5+Number(key[2])-1;
+ const entry=(key[1]==='L'?f.left:f.right)[row];
+ if(!entry){error('KEY INACTIVE');return true;}
+ if(state.depArrSelection?.referenceOnly){error('NOT ON ROUTE');return true;}
+ if(entry.kind==='RUNWAY'&&f.departure){
+  const page=state.page,scratch=state.scratch;
+  state.page='RTE';state.scratch=entry.runway;
+  core.press(state,pages,'CDU_CAPT_LSK_L3');
+  state.page=page;state.scratch=scratch;updates();return true;
+ }
+ // Preserve the source selection workflow for a verified saved reference plan.
+ // A catalogue row alone does not give the FMC path terminators or leg data.
+ error('PROCEDURE SOURCE ONLY');
+ return true;
+}
 function makeChoice(item){
  const screen=state.stage6View;
  if(!screen||!screen.kind)throw Error('No selected procedure kind');
@@ -141,29 +226,38 @@ async function finishSelection(clear=false){
 function lookupUrl(kind,field,value){
  return '/api/stage6/navdata?kind='+encodeURIComponent(kind)+'&'+field+'='+encodeURIComponent(value);
 }
+function chapter11Cell(k){
+ return state.chapter11RoutePages?globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k):null;
+}
 async function validateRteEntry(k){
- const field=state.page==='RTE'?({LSK_L1:'ORIGIN',LSK_R1:'DEST',LSK_L3:'RUNWAY'})[k]:null;
+ const cell=chapter11Cell(k);
+ const field=cell?(['ORIGIN','DEST','RUNWAY'].includes(cell.field)?cell.field:null):
+  state.page==='RTE'?({LSK_L1:'ORIGIN',LSK_R1:'DEST',LSK_L3:'RUNWAY'})[k]:null;
  const match=state.page==='FLIGHT_PLAN'?/^LSK_([LR])([1-4])$/.exec(k):null;
- const name=field||(match?(match[1]==='L'?'VIA':'TO')+match[2]:null);
+ const name=cell?.field||field||(match?(match[1]==='L'?'VIA':'TO')+match[2]:null);
  if(!name||!state.scratch||state.scratch==='DELETE')return false;
  const input=String(state.scratch).trim().toUpperCase();
- const type=field==='ORIGIN'||field==='DEST'?'ICAO':
-   field==='RUNWAY'?'RUNWAY':name.startsWith('VIA')?'AIRWAY':'WAYPOINT';
+ const type=cell?.format||(field==='ORIGIN'||field==='DEST'?'ICAO':
+   field==='RUNWAY'?'RUNWAY':name.startsWith('VIA')?'AIRWAY':'WAYPOINT');
+ if(!['ICAO','RUNWAY','AIRWAY','WAYPOINT'].includes(type)||(type==='AIRWAY'&&['DCT','DIRECT'].includes(input)))return false;
  if(!core.validate(type,input))return false;
  if(lookupBusy){error('NAV DATA LOOKUP BUSY');return true}
  lookupBusy=true;const ticket=++lookupSerial,page=state.page,previous=state.scratch;
+ const origin=field==='RUNWAY'?core.readValue(state,'ORIGIN','RTE'):null;
  state.message='VERIFY NAV DATA';updates();
  try{
   let requests=[];
   if(field==='ORIGIN'||field==='DEST')requests=[lookupUrl('airport','ident',input)];
   else if(field==='RUNWAY'){
-   const airport=core.readValue(state,'ORIGIN','RTE');
-   if(!validAirport(airport))throw Error('ENTER ORIGIN FIRST');
-   requests=[lookupUrl('runways','airport',airport)];
+   if(!validAirport(origin))throw Error('ENTER ORIGIN FIRST');
+   requests=[lookupUrl('runways','airport',origin)];
   }else if(name.startsWith('VIA'))requests=[lookupUrl('airways','ident',input)];
-  else requests=[lookupUrl('waypoints','ident',input),lookupUrl('navaids','ident',input)];
+  else requests=[lookupUrl('waypoints','ident',input),lookupUrl('navaids','ident',input),
+   ...(state.chapter11RoutePages&&validAirport(input)?[lookupUrl('airport','ident',input)]:[])];
   const results=await Promise.all(requests.map(u=>json(u)));
-  if(ticket!==lookupSerial||page!==state.page||previous!==state.scratch)return true;
+  if(ticket!==lookupSerial||page!==state.page||previous!==state.scratch||
+   (cell&&chapter11Cell(k)?.field!==name))return true;
+  if(origin&&origin!==core.readValue(state,'ORIGIN','RTE'))throw Error('ORIGIN CHANGED');
   for(const value of results)if(value.airac!=='2610'||value.mode!=='SOURCE_REFERENCE_ONLY'||
    value.fmc_executable!==false||value.lookup?.fmc_executable!==false||
    !Array.isArray(value.lookup?.rows))throw Error('NAV DATA SOURCE REJECTED');
@@ -176,12 +270,20 @@ async function validateRteEntry(k){
   else if(name.startsWith('VIA'))exact=results[0].lookup.rows.filter(r=>r.ident===input);
   else {
    if(results.some(r=>r.lookup.has_more))throw Error('DUPLICATE WAYPOINT');
-   exact=results.flatMap(r=>r.lookup.rows).filter(r=>r.ident===input);
+   exact=results.flatMap(r=>r.lookup.rows).filter(r=>(r.ident??r.icao)===input);
   }
   if(!exact.length)throw Error('NOT IN NAV DATA');
   if(!field&&!name.startsWith('VIA')&&exact.length!==1)throw Error('DUPLICATE WAYPOINT');
   if((field==='ORIGIN'||field==='DEST')&&exact.length!==1)throw Error('AMBIGUOUS AIRPORT');
-  state.message='';core.press(state,pages,'CDU_CAPT_'+k);updates();
+  state.message='';core.press(state,pages,'CDU_CAPT_'+k);
+  if(cell&&(type==='ICAO'||type==='WAYPOINT')&&!state.scratch&&core.readValue(state,name,'RTE')===input){
+   const {lat,lon}=exact[0];
+   if(Number.isFinite(lat)&&Number.isFinite(lon)){
+    const fixes=state.navFixEvidence||{};
+    state.navFixEvidence={...fixes,[name]:{ident:input,lat,lon}};
+   }
+  }
+  updates();
  }catch(e){
   if(ticket===lookupSerial&&page===state.page&&previous===state.scratch)error(e.message);
  }finally{lookupBusy=false}
@@ -190,15 +292,16 @@ async function validateRteEntry(k){
 function handlesStage6Key(k){
  if(lookupBusy&&/^LSK_[LR][1-6]$/.test(k)){error('NAV DATA LOOKUP BUSY');return true;}
  if((state.page==='RTE'||state.page==='FLIGHT_PLAN')&&state.scratch&&state.scratch!=='DELETE'){
-  const routeKey=state.page==='RTE'?['LSK_L1','LSK_R1','LSK_L3'].includes(k):
-   /^LSK_[LR][1-4]$/.test(k);
-  if(routeKey){
-   const field=state.page==='RTE'?({LSK_L1:'ICAO',LSK_R1:'ICAO',LSK_L3:'RUNWAY'})[k]:
-    k.startsWith('LSK_L')?'AIRWAY':'WAYPOINT';
-   if(!core.validate(field,state.scratch))return false;
+  const cell=chapter11Cell(k);
+  const field=state.chapter11RoutePages?cell?.format:state.page==='RTE'?
+   ({LSK_L1:'ICAO',LSK_R1:'ICAO',LSK_L3:'RUNWAY'})[k]:
+   /^LSK_[LR][1-4]$/.test(k)?(k.startsWith('LSK_L')?'AIRWAY':'WAYPOINT'):null;
+  if(['ICAO','RUNWAY','AIRWAY','WAYPOINT'].includes(field)){
+   if(!core.validate(field,state.scratch)||field==='AIRWAY'&&['DCT','DIRECT'].includes(state.scratch))return false;
    void validateRteEntry(k);return true;
   }
  }
+ if(state.chapter11RoutePages&&state.page==='DEP_ARR'&&!prior()&&!state.stage5Pending&&chapter11RouteIndex(k))return true;
  if(state.page==='DEP_ARR'&&['LSK_L1','LSK_R1','LSK_R2'].includes(k)&&
     !prior()&&!state.stage5Pending){
   const isDeparture=k==='LSK_L1';
@@ -210,18 +313,21 @@ function handlesStage6Key(k){
   void openCatalog(isDeparture?'SID':'STAR',{referenceOnly:true,airport});
   return true;
  }
- if(state.page==='RTE'&&k==='LSK_L5'&&state.stage6PendingPlan){
+ if((state.page==='RTE'||state.chapter11RoutePages&&state.page==='LEGS')&&
+    k===(state.chapter11RoutePages?'LSK_R6':'LSK_L5')&&state.stage6PendingPlan){
   try{guardedPlan();state.stage6AwaitingExec=true;core.choose(state,pages,'ACTIVATE');state.message='';}
   catch(e){error(e.message)}
   return true;
  }
- if(state.page==='ACTIVATE'&&state.stage6PendingPlan&&k==='LSK_L5'){
+ if(state.stage6PendingPlan&&((state.page==='ACTIVATE'&&k==='LSK_L5'&&!state.chapter11RoutePages)||
+    (k==='LSK_L6'&&state.chapter11RoutePages&&['RTE','ACTIVATE','LEGS'].includes(state.page)))){
   delete state.stage6PendingPlan;state.stage6AwaitingExec=false;state.stage6Selections={};core.choose(state,pages,'RTE');state.message='';return true;
  }
  if(k==='EXEC'&&state.stage6PendingPlan){
   if(!state.stage6AwaitingExec){error('NAVDB ACTIVATE FIRST');return true;}
   try{guardedPlan();model.validate(state.stage6PendingPlan);
    state.stage5Committed=copy(state.stage6PendingPlan);
+   if(state.chapter11RoutePages)state.routeRevision=(state.routeRevision||0)+1;
    delete state.stage6PendingPlan;state.stage6AwaitingExec=false;state.stage6Page=1;
    state.stage5Page=1;state.message='';core.choose(state,pages,'RTE');updates();
   }catch(e){error(e.message)}
@@ -240,6 +346,7 @@ function handlesStage6Key(k){
  }
  const f=state.stage6View;
  if(!f||!['DEPARTURES','ARRIVALS'].includes(state.page))return false;
+ if(f.chapter11)return chapter11CatalogKey(k,f);
  if(k==='LSK_L6'){++serial;openMenu();return true}
  if(k==='NEXT_PAGE'||k==='PREV_PAGE'){
   const source=f.mode==='CATALOG'?f.items:f.mode==='RUNWAY'?f.runways:f.mode==='TRANSITION'?f.transitions:[];
@@ -327,5 +434,5 @@ function cancelPendingPrivate(){
 }
 function snapshot(){return {mode:state.stage6AwaitingExec?'WAIT_EXEC':state.stage6PendingPlan?'MOD_REFERENCE_ONLY':'SOURCE_ONLY',
  ready:!!state.stage6BasePlanId,discontinuities:summaryPlan()?.qa?.discontinuity_count||0,activeGuidance:false};}
-return Object.freeze({setBasePlanId,beforeKey,afterKey,afterPage,paint,openCatalog,snapshot,cancelPendingPrivate});
+return Object.freeze({chapter11CatalogView,setBasePlanId,beforeKey,afterKey,afterPage,paint,openCatalog,snapshot,cancelPendingPrivate});
 });

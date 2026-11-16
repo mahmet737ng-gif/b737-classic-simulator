@@ -34,7 +34,8 @@
     reason:'RADIO_FIX_REQUIRES_VALIDATED_NAVAID_GEOMETRY_AND_TUNING'};
   if(!fix)issues.push('POSITION_SOURCE_MISSING');
   data.airData=adc?{source:adc.topic,pressureAltitudeFt:adc.value.pressureAltitudeFt??null,
-    casKt:adc.value.casKt??null,tasKt:adc.value.tasKt??null,mach:adc.value.mach??null,origin:adc.origin}:
+    casKt:adc.value.casKt??null,tasKt:adc.value.tasKt??null,mach:adc.value.mach??null,
+    satC:adc.value.satC??null,origin:adc.origin,quality:'VALID'}:
     {source:null,quality:'UNKNOWN'};
   if(!adc)issues.push('ADC_SIGNAL_MISSING');
   data.trainingFlightContext=valid(inputs['flightcontext.state'])?{
@@ -45,7 +46,7 @@
    note:'TRAINING_REFERENCE_NOT_AN_ADC_INPUT'}:{quality:'UNKNOWN'};
 
   data.fuel=valid(fuel)?{totalKg:fuel.value.totalKg??null,totalLb:fuel.value.totalLb??null,
-    source:fuel.topic,origin:fuel.origin}: {totalKg:null,totalLb:null,source:null,quality:'UNKNOWN'};
+    source:fuel.topic,origin:fuel.origin,quality:'VALID'}: {totalKg:null,totalLb:null,source:null,quality:'UNKNOWN'};
   if(!valid(fuel))issues.push('FUEL_SUMMATION_MISSING');
   const fmcFeed=valid(feeds)?feeds.value:null;
   const primary=fmcFeed?.FMC1?.feed??'UNKNOWN',secondary=fmcFeed?.FMC2?.feed??'UNKNOWN';

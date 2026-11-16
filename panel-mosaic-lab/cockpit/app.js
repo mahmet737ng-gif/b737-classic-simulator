@@ -2,8 +2,7 @@
  'use strict';
  const model=window.B737CockpitView,byId=id=>document.getElementById(id),vp=byId('viewport'),scene=byId('scene'),sizer=byId('sizer');
  let assembly,zoom=.2,focused='main',frame,drag=null,dragged=false,lightDefinitions=[],snapshot=null,ready=false,visualTest=false,visualOverheadCount=0;const loaded=new Set(),failed=new Set(),cduFrames=new Map(),cduStates=new Map();
- // Performance policy: only First Officer CDU is instantiated. CAPT stays inert.
- const ENABLED_CDU_SEAT=window.B737UnifiedNoCduTest?'NONE':'FO';
+ const cduSeats=window.B737UnifiedNoCduTest?[]:['CAPT','FO'];
  const fmcSession=window.B737CduSession.create();
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
@@ -76,12 +75,11 @@
   }
   model.validateInstruments(assembly);
   for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);
-   if(item.seat!==ENABLED_CDU_SEAT){
-    // Preserve approved physical panel registration, but never create/load the
-    // Captain iframe, CDU engine, typography, telemetry, listeners or timers.
+   if(!cduSeats.includes(item.seat)){
+    // The no-CDU performance diagnostic keeps both panel footprints inert.
     station.classList.add('ready','cdu-disabled');
     station.dataset.runtime='OFF';
-    station.setAttribute('aria-label','Captain CDU deactivated for performance');
+    station.setAttribute('aria-label',item.label+' deactivated for performance testing');
     station.style.pointerEvents='none';
     const off=document.createElement('div');off.className='cdu-disabled-face';
     off.setAttribute('aria-hidden','true');off.textContent='CDU OFF';
@@ -176,9 +174,8 @@
   }
  });
  function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();
-  // A user requesting FO CDU takes priority over background lazy loading.
-  if(id==='cdu-first-officer'||id==='cdu-both'){
-   const fo=cduFrames.get('FO');if(fo?.child)fo.child.loading='eager';
+  for(const {item,child} of cduFrames.values()){
+   if(id===item.id||id==='cdu-both')child.loading='eager';
   }wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'تمام کاکپیت',overhead:'اورهد تعاملی',main:'مین‌پنل',pedestal:'پدستال','cdu-captain':'CDU کپتن','cdu-first-officer':'CDU فرست‌آفیسر','cdu-both':'CDU کپتن و فرست‌آفیسر'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'همان CDU تأییدشده با ۷۰ دکمه؛ صفحه مستقل و اطلاعات FMC مشترک است':id==='overhead'?'۱۱۰ چراغ و کنترل‌های تعاملی نسخهٔ تأییدشده':id==='pedestal'?'پنل جدید و خام Throttle Quadrant، فایر پنل و رادیوها در چیدمان مستقل و بدون هم‌پوشانی':'مونتاژ تصاویر اصلی با حفظ نسبت طول و عرض';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
  function panWheel(payload){if(drag)return false;return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
@@ -214,9 +211,10 @@
   if(d.kind==='pan-end'&&drag?.source==='iframe')drag=null;
   if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
  });
- function updateCduStatus(){byId('cduStatus').textContent='کاپیتان: OFF (بارگذاری صفر) · '+['FO'].map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ');}
+ function updateCduStatus(){byId('cduStatus').textContent=cduSeats.map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'کپتن':'فرست')+': '+(s?.error?'خطای بارگذاری':s?.ready?(s.page||'آماده'):'در حال بارگذاری')+font;}).join(' · ')||'CDU OFF';}
+ updateCduStatus();
  window.addEventListener('message',e=>{const d=e.data,c=d&&cduFrames.get(d.seat);if(e.origin!==location.origin||!c||e.source!==c.child.contentWindow||d.type!=='b737:unified-cdu')return;const previous=cduStates.get(d.seat)||{};
-  if(d.kind==='ready'&&d.controls===70){if(d.seat==='FO')performance.mark('b737:fo-cdu-ready');cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;}
+  if(d.kind==='ready'&&d.controls===70){if(d.seat==='FO')performance.mark('b737:fo-cdu-ready');cduStates.set(d.seat,{...previous,ready:true});c.station.classList.add('ready');byId(d.seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer').disabled=false;byId('resetSharedFmc').disabled=false;}
   if(d.kind==='state'&&typeof d.page==='string')cduStates.set(d.seat,{...previous,page:d.page.slice(0,50)});
   if(d.kind==='error')cduStates.set(d.seat,{...previous,error:true});
   if(d.kind==='typography'&&d.version==='CDU-24COL-0006')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.actualFontPx,labelPx:d.labelPx,color:d.color,columns:d.columns,width24Px:d.width24Px,width25Px:d.width25Px,widthPx:d.widthPx}});
@@ -224,8 +222,13 @@
   if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
   updateCduStatus();
  });
- for(const [seat,id]of [['FO','resetCduFirstOfficer']]){byId(id).disabled=true;byId(id).onclick=()=>{const c=cduFrames.get(seat);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat,action:'reset'},location.origin);};}
- byId('resetSharedFmc').onclick=()=>{const c=cduFrames.get(ENABLED_CDU_SEAT);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat:c.item.seat,action:'reset-fmc'},location.origin);};
+ for(const seat of cduSeats){
+  const id=seat==='CAPT'?'resetCduCaptain':'resetCduFirstOfficer';
+  byId(id).disabled=true;byId(id).onclick=()=>{const c=cduFrames.get(seat);if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat,action:'reset'},location.origin);};}
+ byId('resetSharedFmc').onclick=()=>{
+  const c=[...cduFrames.values()].find(({item})=>cduStates.get(item.seat)?.ready);
+  if(c)c.child.contentWindow.postMessage({type:'b737:unified-cdu-command',seat:c.item.seat,action:'reset-fmc'},location.origin);
+ };
  for(const b of document.querySelectorAll('[data-focus]'))b.onclick=()=>focus(b.dataset.focus);
  byId('fit').onclick=()=>focus(focused);byId('zoomIn').onclick=()=>applyZoom(zoom*1.25);byId('zoomOut').onclick=()=>applyZoom(zoom/1.25);byId('native').onclick=()=>applyZoom(1);
  byId('panMode').onclick=e=>{const active=!scene.classList.contains('pan-mode');scene.classList.toggle('pan-mode',active);e.currentTarget.setAttribute('aria-pressed',String(active));};

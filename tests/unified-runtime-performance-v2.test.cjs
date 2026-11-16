@@ -110,7 +110,7 @@ test('PERF-0003 only starts overhead on focus/visibility or after quiet prewarm;
  assert.match(app,/setTimeout\(startOverheadFrame,24000\)/);
  assert.match(app,/requestIdleCallback/);
  assert.match(app,/if\(id==='overhead'\|\|id==='all'\)startOverheadFrame\(\)/);
- assert.match(app,/ENABLED_CDU_SEAT=window\.B737UnifiedNoCduTest\?'NONE':'FO'/);
+ assert.match(app,/cduSeats=window\.B737UnifiedNoCduTest\?\[\]:\['CAPT','FO'\]/);
 });
 test('PERF-0003 reports both first interactive paint and sharp first-panel paint',()=>{
  const metrics=read(base+'performance-metrics.js');
