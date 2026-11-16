@@ -36,7 +36,8 @@
   return candidates[0].distanceNm<=LIMIT_NM?candidates[0]:null;
  }
  function resolve({selectedMagDeg,displayTrueRef,observedVariationDeg=null,
-   benchZeroVariation=false,trainerOnly=false,positionValid=false,lat=null,lon=null}={}){
+   benchZeroVariation=false,trainerOnly=false,positionValid=false,lat=null,lon=null,
+   scenarioAirportICAO=null}={}){
   if(!number(selectedMagDeg)||selectedMagDeg<0||selectedMagDeg>360)
    return {selectedDisplayDeg:null,referenceSource:'MCP_SELECTED_HEADING_UNAVAILABLE',estimated:false};
   if(number(observedVariationDeg)&&Math.abs(observedVariationDeg)<=180){
@@ -48,12 +49,15 @@
     declinationDeg:0,estimated:true};
   // The rest of the EHSI is TRUE-referenced. Converting the MCP MAG command
   // requires a nonzero explicit estimate. Never silently equate MAG to TRUE.
-  if(displayTrueRef===true&&trainerOnly===true&&positionValid===true){
-   const site=nearest(lat,lon);
+  if(displayTrueRef===true&&trainerOnly===true){
+   const nearby=positionValid===true?nearest(lat,lon):null;
+   const origin=typeof scenarioAirportICAO==='string'?
+     AIRPORTS.find(a=>a.icao===scenarioAirportICAO):null;
+   const site=nearby||origin;
    if(site)return {selectedDisplayDeg:norm(selectedMagDeg+site.variationE),
-    referenceSource:'TRAINING_WMM2020_ESTIMATE_'+site.icao,
-    declinationDeg:site.variationE,site:site.icao,distanceNm:site.distanceNm,
-    estimated:true};
+    referenceSource:(nearby?'TRAINING_NEARBY_WMM2020_ESTIMATE_':'TRAINING_SCENARIO_ORIGIN_ESTIMATE_')+site.icao,
+    declinationDeg:site.variationE,site:site.icao,
+    distanceNm:nearby?site.distanceNm:null,estimated:true};
   }
   return {selectedDisplayDeg:null,referenceSource:'MAG_TO_TRUE_REFERENCE_UNAVAILABLE',estimated:false};
  }
