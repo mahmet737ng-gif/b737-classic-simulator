@@ -40,16 +40,30 @@
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
   if(!powered||!['PLAN','MAP','CTR_MAP'].includes(mode)||!Number.isFinite(range)||range<=0||
-     typeof offset!=='function')return 0;
-  const segments=collect(source),fixes=collectFixes(source);
-  if(!segments.length&&!fixes.length)return 0;
-  const make=(parent,name,attrs)=>{const el=svg.ownerDocument.createElementNS(NS,name);
-   for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));
-   parent.appendChild(el);return el};
-  const state=source.modified?'MOD':'ACT';
-  const color=source.modified?'#ffffff':'#ff47e1';
+     typeof offset!=='function'||source?.connected!==true||source?.sourceOnly!==true||
+     source?.fmcExecutable!==false)return 0;
+
+  // ACT is the last confirmed, reference-only plan. MOD is a preview overlay:
+  // unchanged elements of the confirmed plan remain solid magenta while new
+  // or altered geometry is cyan dashed. EXEC promotes MOD to ACT atomically.
+  const active=source.active?.geometries||{},pending=source.modified?.geometries||null;
+  const changed=pending?Object.fromEntries(Object.entries(pending).filter(([key,value])=>
+   JSON.stringify(value)!==JSON.stringify(active[key]))):null;
+  const valid=x=>x?.renderStyle==='DASHED_REFERENCE_CHORDS_ONLY';
+  const layers=[
+   {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.values(active).filter(valid)},
+   ...(changed?[{stage:'MOD',color:'#00c8f2',dash:'7 5',
+    geometries:Object.values(changed).filter(valid)}]:[])
+  ].filter(layer=>layer.geometries.length);
+  if(!layers.length)return 0;
+  const state=pending?'MOD':'ACT',color=pending?'#00c8f2':'#ff47e1';
+  const make=(parent,name,attrs={})=>{
+   const el=svg.ownerDocument.createElementNS(NS,name);
+   for(const [k,v] of Object.entries(attrs))if(v!==null&&v!==undefined)el.setAttribute(k,String(v));
+   parent.appendChild(el);return el;
+  };
   const group=make(svg,'g',{'data-cdu-sg-reference':'true','pointer-events':'none',
-   'data-route-state':state,'aria-label':'Reference geometry'});
+   'data-route-state':state,'data-source-only':'true','aria-label':'Non-executable CDU route reference'});
   function label(reason=''){
    const tag=make(group,'text',{x:475,y:386,fill:color,'font-size':14,
     'text-anchor':'end','data-cdu-sg-status':reason||'REFERENCE_ONLY'});
@@ -59,36 +73,61 @@
   if(mode!=='PLAN'&&(!positioned||typeof project!=='function')){
    label(positioned?'NO TRK':'NO POS');return 0;
   }
-  const runway=Object.values(source.geometries).find(g=>g.kind==='RUNWAY')?.fixes?.[0];
-  const [lon,lat]=segments[0]?.[0]??[fixes[0].lon,fixes[0].lat];
-  const ref=positioned?anchor:runway??{lat,lon};
-  const scale=178/range;
+  // Prefer the selected runway threshold when there is no active PLAN anchor.
+  // Never manufacture a leg from a single unsourced airport point.
+  const all=layers.flatMap(x=>x.geometries);
+  const runway=all.find(x=>x.kind==='RUNWAY'&&x.fixes?.length)?.fixes[0];
+  const fix=all.find(x=>x.fixes?.length)?.fixes[0];
+  const pair=all.find(x=>x.segments?.length)?.segments[0]?.[0];
+  const first=runway||fix||(pair&&{lon:pair[0],lat:pair[1]});
+  if(!first){label('NO VERIFIED POINT');return 0;}
+  const ref=positioned?anchor:first,scale=178/range;
   const xyFor=(lon,lat)=>{
    const d=offset(ref,{lat,lon});
    return typeof project==='function'?project(d.x,d.y):[252+d.x*scale,294-d.y*scale];
   };
-  const plot=make(group,'g',{'data-cdu-sg-plot':'true'});
   let count=0;
-  for(const pair of segments.slice(0,300)){
-   const xy=clipSegment(pair.map(([lon,lat])=>xyFor(lon,lat)));
-   if(!xy)continue;
-   make(plot,'path',{d:'M'+xy[0].join(' ')+' L'+xy[1].join(' '),fill:'none',
-    stroke:color,'stroke-width':1.8,'stroke-dasharray':'5 5',
-    'data-reference-only':'true'});
-   count++;
-  }
-  for(const fix of fixes){
-   const xy=xyFor(fix.lon,fix.lat);
-   if(!onPlot(xy,5))continue;
-   const [x,y]=xy,right=x>450;
-   make(plot,'circle',{cx:x,cy:y,r:3.2,fill:color,'data-sourced-fix':'true'});
-   const tag=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:color,'font-size':12,
-    'text-anchor':right?'end':'start','font-family':'monospace','data-source-ident':'true'});
-   tag.textContent=fix.ident;
-   count++;
+  for(const layer of layers){
+   const plot=make(group,'g',{'data-cdu-sg-plot':'true','data-reference-stage':layer.stage});
+   for(const g of layer.geometries){
+    for(const segment of (g.segments||[]).slice(0,300)){
+     if(!Array.isArray(segment)||segment.length!==2||!segment.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)))continue;
+     const xy=clipSegment(segment.map(([lon,lat])=>xyFor(lon,lat)));
+     if(!xy)continue;
+     make(plot,'path',{d:'M'+xy[0].join(' ')+' L'+xy[1].join(' '),fill:'none',
+      stroke:layer.color,'stroke-width':2.1,'stroke-dasharray':layer.dash,
+      'data-reference-stage':layer.stage,'data-reference-only':'true',
+      'data-cdu-sg-geometry':g.kind==='RUNWAY'?'RUNWAY':'PROCEDURE'});
+     count++;
+    }
+    for(const point of (g.fixes||[]).slice(0,150)){
+     if(!Number.isFinite(point.lon)||!Number.isFinite(point.lat))continue;
+     const xy=xyFor(point.lon,point.lat);
+     if(!onPlot(xy,7))continue;
+     const [x,y]=xy,right=x>450;
+     if(g.kind==='RUNWAY'){
+      // Source threshold marker: not a fabricated centerline or turn arc.
+      const pin=make(plot,'g',{'data-cdu-sg-runway':g.ident,'data-airport':g.airport,
+       'data-reference-stage':layer.stage,'data-reference-only':'true'});
+      make(pin,'path',{d:'M'+x+' '+(y-9)+' L'+(x-8)+' '+(y+7)+' L'+(x+8)+' '+(y+7)+' Z',
+       fill:'none',stroke:layer.color,'stroke-width':1.9});
+      const t=make(pin,'text',{x:x+(right?-12:12),y:y-4,fill:layer.color,'font-size':13,
+       'text-anchor':right?'end':'start','font-family':'monospace'});
+      t.textContent=g.airport+' RWY '+g.ident;
+     }else{
+      make(plot,'circle',{cx:x,cy:y,r:3.2,fill:layer.color,'data-sourced-fix':'true'});
+      const t=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:layer.color,
+       'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace',
+       'data-source-ident':'true'});
+      t.textContent=point.ident;
+     }
+     count++;
+    }
+   }
   }
   label(count?'':'OFF MAP');
   return count;
  }
+
  return Object.freeze({VERSION,collect,collectFixes,draw});
 });
