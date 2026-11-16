@@ -74,4 +74,13 @@ assert(source.includes("dest==='document'||dest==='iframe'"),'Only top-level doc
 assert(source.includes('res.writeHead(401'),'Expired subresources must receive 401 instead of login HTML');
 assert(session.includes('ping();'),'Heartbeat must start immediately');
 assert(session.includes("window.addEventListener('pageshow'"),'Back-forward cache revalidation missing');
+// Railway must proxy the authentic EFIS renderer scripts from main. Prior
+// Gateway allowlist accidentally omitted /efis-display-lab/, giving 404 for
+// five essential EADI/EHSI scripts and four black screens.
+assert(source.includes("'efis-display-lab'"),'EFIS upstream path must be allowlisted');
+const efisImports=['reference-geometry.js','glyphs.js','core.js','ehsi-v2.js','eadi.js'];
+for(const name of efisImports){
+ const url='/efis-display-lab/'+name;
+ assert(source.includes("'efis-display-lab'"),'Railway blocks '+url);
+}
 console.log('Guest full cockpit visibility, protected resources, and injection contract: OK');
