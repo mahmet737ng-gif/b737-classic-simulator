@@ -233,6 +233,7 @@ function render(canvas,state,core,live){
  canvas.style.opacity=String(e.brightness);
  c.fillStyle='#000';c.fillRect(0,0,W,H);
  canvas.dataset.fmaSeat='';
+ canvas.dataset.efisReferenceGeometry='B733-20261116';
  if(!v.powered)return;
  if(!v.sg){txt(c,'SG FAIL',CX,CY+46,30,AMBER,'center');return;}
  const fma=live?null:fmaInput(state,v),speed=live?live.speedView:tapeInput(state,v,fma);

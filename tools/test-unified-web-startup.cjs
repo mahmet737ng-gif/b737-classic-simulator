@@ -48,10 +48,10 @@ const server=http.createServer((req,res)=>{
    // continues to use the new Classic v2 rose/map renderer.
    await page.waitForFunction(()=>{
     const eadi=window.B737UnifiedEADI?.snapshot?.();
-    return eadi?.version==='UNIFIED-EADI-LAB-FULL-0004'&&
+    return eadi?.version==='UNIFIED-EADI-LAB-FULL-0006-MCP-EFIS'&&
      eadi.renderer==='EFISDisplayLabEadiFull'&&eadi.mounted===true&&
-     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
-     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0004"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="CAPT"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0006-MCP-EFIS"] canvas')&&
+     document.querySelector('[data-eadi-stage1-seat="FO"][data-eadi-version="UNIFIED-EADI-LAB-FULL-0006-MCP-EFIS"] canvas')&&
      window.EFISClassicEHSIV2?.VERSION==='EHSI-CLASSIC-REBUILD-0008'&&
      !!document.getElementById('unifiedEhsiCAPT')&&
      !!document.getElementById('unifiedEhsiFO');
@@ -66,12 +66,12 @@ const server=http.createServer((req,res)=>{
      error:host?.dataset.eadiError||null,
      engine:canvas?.dataset.eadiRenderer,
      size:canvas?[canvas.width,canvas.height]:null,
-     source:canvas?.dataset.eadiSource};
+     source:canvas?.dataset.eadiSource,geometry:canvas?.dataset.efisReferenceGeometry};
    }));
    assert.ok(actualFrames.every(f=>
     f.owner==='EFIS_LAB_FULL_0004'&&f.paintCount>0&&
-    !f.error&&f.engine==='EFIS-LAB-FULL-0004'&&
-    f.size[0]===640&&f.size[1]===640),
+    !f.error&&f.engine==='EFIS-LAB-FULL-0005-MCP'&&
+    f.geometry==='B733-20261116'&&f.size?.[0]===640&&f.size?.[1]===640),
     'Both crew EADI CRTs must be PAINTED by the full new EFIS Lab engine: '+JSON.stringify(actualFrames));
    console.log('EFIS FULL RENDER VERIFIED',JSON.stringify(actualFrames));
 
@@ -100,7 +100,7 @@ const server=http.createServer((req,res)=>{
      checkbox.checked=false;checkbox.dispatchEvent(new Event('change',{bubbles:true}));
     },seat);
    }
-   console.log('EHSI-REBUILD-0007: CAPT and FO instructor map rose painted; live source kept gated');
+   console.log('EHSI-REBUILD-0008: CAPT and FO instructor map rose painted; live source kept gated');
 
    console.log('EFIS-REPLACEMENT-0002: two new EADI glasses and Classic v2 EHSI mounted');
    // COLD-DARK-EIS-0001: render 16 unlit EIS glass faces only if the
