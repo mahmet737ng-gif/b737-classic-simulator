@@ -31,7 +31,16 @@
   const fmcMotion=fmc?.operational===true?fmc.motion:null;
   const heading=iru?.powered===true?value(iru.headingDeg):null;
   const trueTrack=value(fmcMotion?.trueTrackDeg)??(nav?value(iru.trackDeg):null);
-  const variation=iru?.powered===true?value(iru.magneticVariationDeg):null;
+  const observedVariation=iru?.powered===true?value(iru.magneticVariationDeg):null;
+  // FULL ALIGN supplies a clearly labeled zero-variation BENCH reference.
+  // Without this explicit trainer datum, MCP magnetic HDG was suppressed
+  // although the simulated IRS heading/track and MCP display were valid.
+  // Never assume 0 deg in LIVE aircraft/telemetry with unknown variation.
+  const benchZeroVariation=observedVariation===null&&nav&&
+   iru?.source==='BENCH_SIM'&&iru?.trainerOnly===true;
+  const variation=benchZeroVariation?0:observedVariation;
+  const headingReferenceSource=benchZeroVariation?'TRAINING_ZERO_VARIATION':
+   observedVariation!==null?'OBSERVED_VARIATION':'UNAVAILABLE';
   const direction=deg=>Number.isFinite(deg)?norm(deg-(variation??0)):null;
   const magCourse=deg=>Number.isFinite(deg)?norm(deg+(variation===null?0:variation)):null;
   const mcp=signal(snapshot,'mcp.state');
@@ -49,6 +58,7 @@
    video:feeds[sg]===true&&faults[sg]!==true,
    attitude,pitch:attitude?iru.pitchDeg:null,bank:attitude?iru.rollDeg:null,comparison,
    heading:direction(heading),track:direction(trueTrack),trueTrack,trueRef:variation===null,
+   headingReferenceSource,
    selectedHeading:variation!==null&&mcpPowered?value(mcp.headingDeg):null,
    course:variation!==null?radioCourse:null,
    // These targets are MCP selections, never a claim of FD servo movement,
