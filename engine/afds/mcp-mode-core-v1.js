@@ -128,6 +128,25 @@ function transition(state,action){
  let s=clone(state);
  const done=()=>{s.lastRejection=null;s.revision++;return s;};
  if(action.type==="RESET")return initialState();
+ if(action.type==="FCC_ALTITUDE_CAPTURE"){
+  if(action.confirmed!==true||action.source!=="SIMULATED_FCC"||
+     !["ACQUIRE","HOLD"].includes(action.stage))
+   return rejected(s,"UNVERIFIED_FCC_ALTITUDE_CAPTURE");
+  if(s.electrical.mcpPower!==true||!/^CMD_[AB]$/.test(s.modes.autopilot||""))
+   return rejected(s,"NO_POWERED_CMD_FOR_ALT_CAPTURE");
+  if(action.stage==="ACQUIRE"){
+   if(!["VS","LVL_CHG"].includes(s.modes.vertical))
+    return rejected(s,"ALT_ACQ_REQUIRES_VS_OR_LEVEL_CHANGE");
+   s.capture.pitch="ALT_ACQ";s.armed.pitch=null;
+  }else{
+   if(s.capture.pitch!=="ALT_ACQ")
+    return rejected(s,"ALT_HOLD_REQUIRES_CONFIRMED_ACQ");
+   s.capture.pitch="ALT_HOLD";s.modes.vertical="ALT_HLD";
+   s.armed.pitch=null;s.override.pitch=false;
+   if(s.autoThrottleArm){s.modes.thrust="SPEED";s.autoThrustByPitch=true;}
+  }
+  return done();
+ }
  if(action.type==="AP_DISENGAGE_CONFIRMED"){
   if(!["COCKPIT_HARDWARE","SIMULATED_FCC"].includes(action.source)||
     action.confirmed!==true||!FCOM_AP_DISCONNECT_REASONS.includes(action.reason))
