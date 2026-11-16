@@ -29,3 +29,11 @@
 #flightScenarioDialog .flight-at-mode{padding:10px 12px;border:1px solid #566f80;background:#152736;border-radius:7px;color:#ffca99;font:700 12px ui-monospace,Consolas,monospace;letter-spacing:.03em}
 #flightScenarioDialog .flight-at-mode[data-active=true]{color:#9decc2;border-color:#449876;background:#153328}
 #flightScenarioDialog #flightAtInstructorRun{border-color:#8d704c;background:#473622;color:#f9d1a2;font-size:11px}
+
+#flightScenarioDialog .flight-gauge-bridge{border-top:1px solid #3a566a;margin-top:15px;padding-top:4px}
+#flightScenarioDialog .flight-gauge-source{font:700 11px/1.6 ui-monospace,Consolas,monospace;color:#9cd8ea}
+#flightScenarioDialog .flight-standby-row{display:flex;gap:15px;align-items:center;margin:12px 0;border:1px solid #30475b;background:#0a1824;border-radius:8px;padding:10px}
+#flightScenarioDialog .flight-standby-dial{width:145px;height:145px;flex:0 0 145px}
+#flightScenarioDialog .flight-standby-row strong{font-size:12px;color:#d9edf7}
+#flightScenarioDialog .flight-standby-row p{font-size:11px;color:#90aebc;line-height:1.65}
+@media(max-width:420px){#flightScenarioDialog .flight-standby-dial{width:110px;height:110px;flex-basis:110px}#flightScenarioDialog .flight-standby-row{gap:8px}}
