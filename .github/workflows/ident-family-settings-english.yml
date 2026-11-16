@@ -1,0 +1,50 @@
+name: IDENT Family Settings and English UI
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/config/aircraft-profile-v1.js'
+      - 'engine/config/cdu-ident-installation-v1.js'
+      - 'engine/config/tests/cdu-ident-installation-v1.test.cjs'
+      - 'tests/aircraft-profile-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/aircraft-settings.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/cdu-airac-status-v1.js'
+      - 'engine/ch11/tests/cdu-airac-banks-v1.test.cjs'
+      - '.github/workflows/ident-family-settings-english.yml'
+  workflow_dispatch:
+jobs:
+  idents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: |
+          node --check engine/config/aircraft-profile-v1.js
+          node --check engine/config/cdu-ident-installation-v1.js
+          node --check panel-mosaic-lab/cockpit/aircraft-settings.js
+          node --check panel-mosaic-lab/cockpit/cdu-airac-status-v1.js
+      - name: Family-only automatic 20K and 22K CDU IDENT, pressurization and AIRAC privacy
+        run: |
+          node --test tests/aircraft-profile-v1.test.cjs
+          node --test engine/config/tests/cdu-ident-installation-v1.test.cjs
+          node --test engine/ch11/tests/cdu-airac-banks-v1.test.cjs
+      - name: English-only Unified Settings and no hidden manual engine or NAV DATA paragraphs
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('panel-mosaic-lab/cockpit/index.html','utf8');
+          const js=fs.readFileSync('panel-mosaic-lab/cockpit/aircraft-settings.js','utf8');
+          for(const [file,text] of [['Unified cockpit',html],['Settings',js]])
+            assert.doesNotMatch(text,/[\u0600-\u06FF]/,file+' contains prohibited Persian text');
+          for(const id of ['airacDatabaseStatus','fmcAiracCycleStatus','aircraftPressureOwnerPreview','aircraftPressureOwnerImage'])
+            assert.ok(!html.includes('id="'+id+'"'),'Unexpected status/preview in Settings: '+id);
+          for(const field of ['engineVariant','aircraftModel'])
+            assert.ok(!html.includes('name="'+field+'"'),'Manual IDENT selection still visible: '+field);
+          for(const field of ['aircraftFamily','pressurization','engineInstruments'])
+            assert.ok(html.includes('name="'+field+'"'),'Required Settings selection absent: '+field);
+          assert.doesNotMatch(js,/ownerPreview|showPressureArtwork/);
+          NODE
