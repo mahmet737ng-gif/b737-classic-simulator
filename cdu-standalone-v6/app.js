@@ -2,6 +2,8 @@
 const $=id=>document.getElementById(id);
 const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
 const state=core.makeState('IDENT');
+const chapter11RoutePages=window.CDU_CH11_ROUTE_PAGES;
+if(chapter11RoutePages)state.chapter11RoutePages=true;
 // A factual SOURCE preview does not install or activate an FMC NAVDATA bank.
 // Default IDENT still shows the owner's 2610 display until opt-in.
 const regionalSource=window.B737Airac2611MiddleEastPreviewV1;
@@ -194,13 +196,19 @@ function applyCDUScreenTypography(box){
 }
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const chapter11=chapter11RoutePages?.view(state)??window.CDU_STAGE6_API?.chapter11CatalogView?.(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
- const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=(TITLE_PLAIN.has(state.page)?'':tag)+page.title;
- const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(page.page_number||1)+'/'+page.page_count; header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
+ const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
+ const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
- else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);
+ else if(chapter11){
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR},index)=>{
+     const {label,value}=lskTextTops(index+1);
+     frame.appendChild(makePairRow(label,labelL,labelR,false,true));
+     frame.appendChild(makePairRow(value,valueL,valueR));
+   });
+ }else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
    let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
    if(state.page==='INDEX'){
@@ -309,7 +317,7 @@ function send(k){
   catch(err){console.warn('CDU PROCEDURE TRACE ERROR',err);}
  }
 }
-function reset(){const fresh=core.makeState('IDENT');Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
+function reset(){const fresh=core.makeState('IDENT');if(chapter11RoutePages)fresh.chapter11RoutePages=true;Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
 function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();
  // Optional informational source preview button outside the approved CDU
  // picture and hitboxes. No FMC bank state, routes or IRS data is mutated.

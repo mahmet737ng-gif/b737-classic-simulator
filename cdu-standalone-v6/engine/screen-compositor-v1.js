@@ -20,6 +20,10 @@
   const p=st.page;
   // Explicit FCOM canonical INDEX cannot be replaced by a reference plan.
   if(CANONICAL.includes(p))return {owner:'FCOM_NATIVE',reason:'FCOM_11.40.32_LAYOUT'};
+  if(st.chapter11RoutePages&&['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2'].includes(p))
+   return {owner:'FCOM_NATIVE',reason:'CHAPTER_11_PAGE_LAYOUT'};
+  if(['DEPARTURES','ARRIVALS'].includes(p)&&st.stage6View?.chapter11)
+   return {owner:'FCOM_NATIVE',reason:'CHAPTER_11_PROCEDURE_CATALOG'};
   if(['DEPARTURES','ARRIVALS'].includes(p)&&st.stage6View?.mode)
    return {owner:'STAGE6',reason:'NAVDB_PROCEDURE_SELECTOR'};
   if(['RTE','LEGS','ACTIVATE'].includes(p)&&activePlan(st))
@@ -58,7 +62,7 @@
     }
    }
   }
-  if(state.page==='LEGS'&&state.stage10Advisory){
+  if(state.page==='LEGS'&&state.stage10Advisory&&!state.chapter11RoutePages){
    try{renderers.STAGE10_ADVISORY?.(frame);}
    catch(err){errors.push('ADVISORY_ERROR:'+String(err?.message||err));}
   }

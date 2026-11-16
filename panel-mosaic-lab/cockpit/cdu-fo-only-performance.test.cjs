@@ -13,7 +13,7 @@ assert.ok(start>=0&&end>start,'CDU mounting loop still exists independently of t
 const loop=source.slice(start,end);
 assert.match(source,/function mountGallery\(\)/,'PERF-0002 gallery is mounted on demand');
 assert.match(source,/const ENABLED_CDU_SEAT=window\.B737UnifiedNoCduTest\?'NONE':'FO'/);
-assert.match(loop,/if\(item\.seat!==ENABLED_CDU_SEAT\)/);
+assert.match(loop,/if\(!cduSeats\.includes\(item\.seat\)\)/);
 assert.ok(loop.indexOf('continue;')<loop.indexOf("document.createElement('iframe')"),
  'Captain must exit before creating its iframe');
 assert.ok(loop.indexOf("document.createElement('iframe')")<loop.indexOf('cduFrames.set('),
@@ -33,8 +33,8 @@ function node(tag){
 const native=node('native'),region=node('section');region.native=native;
 const doc={createElement:node},frames=new Map();
 const view={instrumentPresentation:i=>({left:0,top:0,scaleX:i.w/i.nativeWidth,scaleY:i.h/i.nativeHeight})};
-new Function('assembly','document','model','byId','cduFrames','ENABLED_CDU_SEAT',loop)(
- assembly,doc,view,id=>id==='region-main'?region:null,frames,'FO');
+new Function('assembly','document','model','byId','cduFrames','cduSeats',loop)(
+ assembly,doc,view,id=>id==='region-main'?region:null,frames,['FO']);
 assert.equal(iframes.length,1,'Only one iframe must be created');
 assert.equal(iframes[0].id,'cduFrameFO');
 assert.match(iframes[0].src,/seat=FO/);

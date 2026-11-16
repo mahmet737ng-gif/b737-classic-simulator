@@ -31,7 +31,11 @@ function beforeKey(key){
 function afterKey(key,pageBefore){
  if(!state.stage5Pending)return;
  const k=key.replace(/^CDU_CAPT_/,'');
- if(k==='LSK_L5'&&pageBefore==='RTE'&&state.page==='ACTIVATE'&&core.pendingCount(state)>0)state.stage5AwaitingExec=true;
+ if(state.chapter11RoutePages){
+  if(k==='LSK_R6'&&state.routeActivationArmed)state.stage5AwaitingExec=true;
+ }else if(k==='LSK_L5'&&pageBefore==='RTE'&&state.page==='ACTIVATE'&&core.pendingCount(state)>0){
+  state.stage5AwaitingExec=true;
+ }
  if(k==='EXEC'&&state.stage5AwaitingExec){
   if(core.pendingCount(state)!==0||core.hasStagedRoute(state)||state.active.ORIGIN!==state.stage5Pending.origin||state.active.DEST!==state.stage5Pending.destination)
     {state.message='NAVDB MOD NOT EXECUTED';return;}
