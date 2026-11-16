@@ -5,7 +5,7 @@
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0;
- let producers={},producerErrors={},timer=null,mcpFollow=false;
+ let producers={},producerErrors={},timer=null,mcpFollow=true;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
  const html=`
@@ -32,7 +32,7 @@
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
   </div>
-  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox"> Follow powered MCP HDG SEL / V/S / ALT HOLD selections (training approximation)</label>
+  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
   <div class="flight-heading">LIVE AIRCRAFT STATE</div>
   <div class="flight-telemetry" id="flightTelemetry">
    <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
@@ -202,21 +202,34 @@
  }
  function followMcp(){
   if(!mcpFollow||!active||!state?.airborne)return;
-  const o=win.B737McpAFDSBridgeV1?.getOutput?.();
-  if(o?.power!==true||!o.modes?.autopilot||!o.modes.autopilot.startsWith('CMD'))return;
-  try{
-   if(o.modes.lateral==='HDG_SEL'&&Number.isFinite(o.values?.heading)&&
-     Core.angle(state.target.headingDeg,o.values.heading)>.05||
-      o.modes.lateral==='HDG_SEL'&&Number.isFinite(o.values?.heading)&&
-      Core.angle(state.target.headingDeg,o.values.heading)<-.05)
-    state=Core.command(state,{type:'HEADING',value:o.values.heading});
-   if(o.modes.vertical==='VS'&&Number.isFinite(o.values?.verticalSpeed)&&
-      (state.target.verticalMode!=='VS'||state.target.vsFpm!==o.values.verticalSpeed))
-    state=Core.command(state,{type:'VS',value:o.values.verticalSpeed});
-   if(o.modes.vertical==='ALT_HLD'&&Number.isFinite(o.values?.altitude)&&
-     (state.target.verticalMode!=='ALTITUDE'||state.target.altitudeFt!==o.values.altitude))
-    state=Core.command(state,{type:'ALTITUDE',value:o.values.altitude});
-  }catch(_){}
+  const fcc=win.B737UnifiedFccFlightV1;
+  const mcp=win.B737McpAFDSBridgeV1;
+  if(!fcc?.follow||!mcp?.getOutput)return;
+  const output=mcp.getOutput();
+  if(output?.power!==true||!output.modes?.autopilot)return;
+  const commands=fcc.follow(state);
+  if(!commands?.actions?.length)return;
+  const matches=action=>{
+   const t=state.target;
+   switch(action.type){
+    case 'HEADING':return t.lateralMode==='HEADING'&&Math.abs(Core.angle(t.headingDeg,action.value))<.01;
+    case 'BANK_LIMIT':return t.bankLimitDeg===action.value;
+    case 'VS':return t.verticalMode==='VS'&&t.vsFpm===action.value;
+    case 'ALTITUDE':return t.verticalMode==='ALTITUDE'&&Math.abs(t.altitudeFt-action.value)<.01;
+    case 'SPEED':return Math.abs(t.speedKt-action.value)<.01;
+    default:return false;
+   }
+  };
+  for(const command of commands.actions){
+   if(matches(command))continue;
+   try{state=Core.command(state,command);}
+   catch(error){console.warn('FCC flight command rejected',command,error);}
+  }
+  if(commands.altAcquireConfirmed&&
+     output.capture?.pitch!=='ALT_ACQ'&&output.capture?.pitch!=='ALT_HOLD')
+   mcp.observeAltitudeCapture?.({stage:'ACQUIRE',confirmed:true,source:'SIMULATED_FCC'});
+  if(commands.altitudeHoldConfirmed&&output.capture?.pitch!=='ALT_HOLD')
+   mcp.observeAltitudeCapture?.({stage:'HOLD',confirmed:true,source:'SIMULATED_FCC'});
  }
  function propulsionObservation(now){
   if(now-lastPropulsionAt<180)return lastPropulsion;
