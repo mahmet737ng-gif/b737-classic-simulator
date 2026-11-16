@@ -5,7 +5,7 @@
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0;
- let producers={},producerErrors={},timer=null,mcpFollow=true;
+ let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
  const html=`
@@ -177,7 +177,7 @@
  function stop(){
   try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
   catch(error){console.warn('ISN flight context restore',error);}
-  active=false;pause=false;state=null;lastTick=0;
+  active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;
   lastPropulsionAt=0;lastPropulsion=null;lastEngineContextAt=0;
   win.B737IRSTrainerUnified?.stopMotion?.();
   for(const owner of Object.keys(producers)){
@@ -199,7 +199,7 @@
     config.speedKt=v('Speed');config.vsFpm=v('VS');config.bankDeg=v('Bank');
    }
    state=Core.newScenario(config);
-   active=true;pause=false;lastTick=performance.now();lastPublish=0;
+   active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
     const mag=magneticHeading(state.trueHeadingDeg,state);
@@ -228,12 +228,18 @@
   }catch(error){status('INVALID TARGET: '+String(error.message||error),true);}
  }
  function followMcp(){
-  if(!mcpFollow||!active||!state?.airborne)return;
+  if(!active||!state?.airborne)return;
   const fcc=win.B737UnifiedFccFlightV1;
-  const mcp=win.B737McpAFDSBridgeV1;
-  if(!fcc?.follow||!mcp?.getOutput)return;
-  const output=mcp.getOutput();
-  if(output?.power!==true||!output.modes?.autopilot)return;
+  const output=win.B737McpAFDSBridgeV1?.getOutput?.();
+  if(!mcpFollow||output?.power!==true||!output.modes?.autopilot){
+   if(previouslyCoupled){
+    state=Core.command(state,{type:'MANUAL_HOLD'});
+    previouslyCoupled=false;
+   }
+   return;
+  }
+  if(!fcc?.follow)return;
+  previouslyCoupled=true;
   const commands=fcc.follow(state);
   if(!commands?.actions?.length)return;
   const matches=action=>{
@@ -325,7 +331,7 @@
   timer=win.setInterval(tick,100);
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,
-  loadScenario:config=>{state=Core.newScenario(config);active=true;pause=false;lastTick=performance.now();publish();updateUI();return snapshot();},
+  loadScenario:config=>{state=Core.newScenario(config);active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();updateUI();return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   pause:value=>{pause=value===true;updateUI();},stop,
