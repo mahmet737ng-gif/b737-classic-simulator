@@ -345,7 +345,7 @@
   timer=win.setInterval(tick,100);
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,
-  loadScenario:config=>{state=Core.newScenario(config);active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();updateUI();return snapshot();},
+  loadScenario:config=>{state=Core.newScenario(config);active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   pause:value=>{pause=value===true;updateUI();},stop,
