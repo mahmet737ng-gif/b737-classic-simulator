@@ -10,8 +10,8 @@ test('two COMM, two NAV and one centered transponder fit native pedestal bays',(
   readyState:'loading',addEventListener:()=>{}};
  vm.runInNewContext(script,{window,document,URL,location:{href:'https://example.test'}});
  const api=window.B737UnifiedPedestalFaceplates;
- const panels=Array.from(api.panels,p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,sourceWidth:p.sourceWidth,sourceHeight:p.sourceHeight,bayY:p.bayY,bayHeight:p.bayHeight}));
- assert.equal(api.version,'PEDESTAL-FACEPLATES-0005');
+ const panels=Array.from(api.panels,p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,sourceWidth:p.sourceWidth,sourceHeight:p.sourceHeight,bayY:p.bayY,bayHeight:p.bayHeight,photoHeight:p.photoHeight}));
+ assert.equal(api.version,'PEDESTAL-FACEPLATES-0006');
  assert.equal(panels.length,6); // 2 COMM, 2 NAV, center TCAS and center Cargo Fire
  const comm=panels.filter(p=>p.id.startsWith('vhf-comm-'));
  const nav=panels.filter(p=>p.id.startsWith('vhf-nav-'));
@@ -37,7 +37,17 @@ test('two COMM, two NAV and one centered transponder fit native pedestal bays',(
  for(const p of panels){
   assert(p.x>=0&&p.y>=0&&p.x+p.w<=1150&&p.y+p.h<=2273);
   // Never distort natural bitmap circles to fill a too-tall bay.
-  assert(Math.abs(p.w/p.h-p.sourceWidth/p.sourceHeight)<1e-9,p.id+' natural aspect ratio');
+  if(p.id==='cargo-fire'){
+   assert.equal(p.x,418,'cargo replaces the exact original center slot');
+   assert.equal(p.y,927,'cargo top coincides with existing center slot');
+   assert.equal(p.w,348,'cargo replaces full 348px-wide center slot');
+   assert.equal(p.h,178,'cargo replaces full 178px-high center slot');
+   assert(Math.abs(p.w/p.photoHeight-p.sourceWidth/p.sourceHeight)<1e-9,
+     'cargo inner photo remains round, with source aspect ratio');
+   assert(p.photoHeight<p.h,'letterbox inside the opaque exact-size replacement housing');
+  }else{
+   assert(Math.abs(p.w/p.h-p.sourceWidth/p.sourceHeight)<1e-9,p.id+' natural aspect ratio');
+  }
   assert(p.y>=p.bayY-1e-9,p.id+' within slot top');
   assert(p.y+p.h<=p.bayY+p.bayHeight+1e-9,p.id+' within slot bottom');
  }
@@ -45,4 +55,15 @@ test('two COMM, two NAV and one centered transponder fit native pedestal bays',(
  assert.equal(xpdr[0].sourceHeight,699);
  assert(xpdr[0].h<145,'TCAS panel must not vertically stretch the circular knob cutouts');
  assert(!panels.some(p=>p.id==='transponder-tcas'&&p.y<900));
+});
+
+test('Cargo Fire occupies a separate fully opaque topmost replacement and removes legacy center panel',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'pedestal-faceplates-library-v1.js'),'utf8');
+ assert.match(source,/id='unified-pedestal-cargo-replacement'/);
+ assert.match(source,/zIndex:'95'/);
+ assert.match(source,/background:'linear-gradient/);
+ assert.match(source,/if\(plate\.id==='cargo-fire'\)continue/);
+ assert.match(source,/backing\.append\(cargoImage\)/);
+ assert.match(source,/native\.append\(backing\)/);
+ assert.match(source,/if\(oldCargo\)oldCargo\.remove\(\)/);
 });
