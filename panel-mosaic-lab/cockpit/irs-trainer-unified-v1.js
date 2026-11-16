@@ -71,9 +71,11 @@ function fmcPosition(value,originPosition){
   if(!eligible.length)return {ok:false,reason:'IRS_NOT_ALIGNING'};
   const text=positionFormat(point);
   const key=text+'@'+eligible.join(',');
-  if(key===lastFlightReference&&eligible.every(x=>!!state.units[x].enteredPosition))return {ok:true,unchanged:true,sides:eligible};
+  if(key===lastFlightReference&&eligible.every(x=>!!state.units[x].enteredPosition)){
+   pendingFlightReference=null;return {ok:true,unchanged:true,sides:eligible};
+  }
   state=Core.apply(state,{type:'FMC_SET_IRS_POS',position:text,sides:eligible,originPosition:null});
-  lastFlightReference=key;
+  lastFlightReference=key;pendingFlightReference=null;
   lastCDUSource='FLT PHASE INITIAL REFERENCE';
   update();
   return {ok:true,sides:eligible};
