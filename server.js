@@ -460,12 +460,19 @@ async function handle(req,res) {
       res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
       res.end('{"available":false,"error":"NAV DATA UNAVAILABLE"}');return;
     }
+    const fromIndices=Array.isArray(route)?route.flatMap((ident,i)=>ident===from?[i]:[]):[];
+    const toIndices=Array.isArray(route)?route.flatMap((ident,i)=>ident===to?[i]:[]):[];
+    const unambiguous=to===null||(fromIndices.length===1&&toIndices.length===1);
+    const pathFixes=to!==null&&unambiguous&&fromIndices[0]!==toIndices[0]?
+      (fromIndices[0]<toIndices[0]?
+       route.slice(fromIndices[0]+1,toIndices[0]+1):
+       route.slice(toIndices[0],fromIndices[0]).reverse()):[];
     const valid=near&&record.airways.includes(airway)&&
-      (to===null||(route.includes(from)&&route.includes(to)&&from!==to));
+      (to===null||(unambiguous&&pathFixes.length>0&&pathFixes.at(-1)===to));
     res.writeHead(200,{'Content-Type':'application/json; charset=utf-8',
       'Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin'});
     res.end(JSON.stringify({source:'OWNER_WPNAVRTE_VERIFIED',fmc_executable:false,
-      available:true,valid,from,airway,...(to!==null?{to}:{})}));return;
+      available:true,valid,from,airway,...(to!==null?{to,fixes:valid?pathFixes:[]}:{})}));return;
   }
   if(req.method==='GET'&&navdata.supports(url.pathname)){
     const {status,body}=await navdata.lookup(url);
