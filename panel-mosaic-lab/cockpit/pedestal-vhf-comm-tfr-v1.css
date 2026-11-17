@@ -1,0 +1,34 @@
+/* PD-COMM-TFR-0001 — the reference orange bar is active-side only. */
+#unified-pedestal-faceplates .pd-freq-mechanical[data-kind="COMM"] .pd-freq-index{display:none}
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="left"] .pd-freq-mechanical[data-mechanical-frequency$="-left"] .pd-freq-index,
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="right"] .pd-freq-mechanical[data-mechanical-frequency$="-right"] .pd-freq-index{
+ display:block;left:5%;right:5%;top:40%;bottom:auto;width:auto;height:14%;
+ clip-path:none;border-radius:2px;
+ background:linear-gradient(180deg,#ffd0a0 0%,#ff9656 18%,#fc884d 56%,#f67d38 85%,#d65c26 100%);
+ box-shadow:0 1px 2px #000b,0 -1px 1px #ffcf924d;pointer-events:none;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr{
+ position:absolute;left:43.5%;top:8.1%;width:13%;height:12.5%;z-index:6;
+ display:block;box-sizing:border-box;padding:0;margin:0;border:0;border-radius:30px;
+ background:transparent;outline:none;appearance:none;-webkit-appearance:none;
+ cursor:ew-resize;touch-action:none;pointer-events:auto;user-select:none;
+ -webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr:focus-visible{outline:2px solid #79dbfa;outline-offset:2px}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-track{
+ display:block;position:absolute;left:17%;right:17%;top:43%;height:14%;
+ border-radius:30px;
+ background:linear-gradient(180deg,#191c1f,#838c95 27%,#c7ced2 48%,#65717a 77%,#25292d);
+ box-shadow:0 1px 2px #000b,inset 0 1px 2px #070809;pointer-events:none;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-knob{
+ display:block;position:absolute;left:28%;top:50%;width:22%;aspect-ratio:1/1;
+ transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+ background:radial-gradient(circle at 33% 27%,#fffff7 0%,#f5f4e8 30%,#e7e5d4 58%,#b1b4ad 84%,#727a79 100%);
+ box-shadow:0 2px 5px #000a,1px 1px 2px #000b,inset 1px 1px 2px #fff9;
+ transition:left 90ms ease-out;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr[data-side="right"] .pd-tfr-knob{left:72%}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-knob{transition:none}
+}
