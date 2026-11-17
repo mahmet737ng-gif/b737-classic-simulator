@@ -100,13 +100,13 @@
   }
   function save(raw){
    install(raw);
-   status(storage.save(KEY,raw)?'بانک OIII، OIMM و OISS فعال است.':
-    'بانک فعال است. ذخیره برای بازدید بعدی در این مرورگر ممکن نیست.');
+   status(storage.save(KEY,raw)?'OIII, OIMM and OISS reference bank is active.':
+    'Bank is active but browser persistence is unavailable.');
   }
   async function seedFromPage(path){
    if(!/^\/[a-zA-Z0-9][a-zA-Z0-9/_-]*$/.test(path||''))return;
    const current=++attempt;
-   status('در حال خواندن بانک نصب‌شدهٔ یونیفاید…');
+   status('Loading Installed Unified Reference Bank…');
    try{
     const response=await root.fetch(path,{credentials:'same-origin',mode:'same-origin',
      cache:'no-store',redirect:'error',headers:{Accept:'application/json','X-Unified-Navdata':'local-reference'}});
@@ -116,7 +116,7 @@
     if(raw.length>2_900_000)throw Error('INVALID NAV DATA');
     save(raw);
    }catch(_){
-    if(current===attempt)status('بانک نصب‌شده در دسترس نیست. فایل CDU_3_AIRPORTS.json را انتخاب کن.');
+    if(current===attempt)status('Installed reference bank unavailable. Select CDU_3_AIRPORTS.json.');
    }
   }
   function init(){
@@ -128,33 +128,33 @@
    file.id='cduSgPrivateFile';
    file.setAttribute('aria-label','Import CDU_3_AIRPORTS.json');
    const remove=doc.createElement('button');remove.type='button';remove.id='cduSgPrivateDisconnect';
-   remove.textContent='حذف بانک محلی';
+   remove.textContent='Remove Local Bank';
    const label=doc.createElement('p');label.id='cduSgPrivateStatus';label.setAttribute('role','status');
    section.append(title,file,remove,label);panel.append(section);
    const seed=doc.querySelector('meta[name="unified-navdata-seed"]')?.content;
    if(seed){
     const restore=doc.createElement('button');restore.type='button';
-    restore.textContent='بازخوانی بانک نصب‌شده';
+    restore.textContent='Reload Installed Bank';
     restore.addEventListener('click',()=>{storage.remove(AUTO_OFF);void seedFromPage(seed);});
     section.insertBefore(restore,remove);
    }
-   status('فایل CDU_3_AIRPORTS.json را انتخاب کن.');
+   status('Select CDU_3_AIRPORTS.json.');
    file.addEventListener('change',async()=>{
     const selected=file.files?.[0];file.value='';
     if(!selected)return;
     const current=++attempt;
-    if(selected.size>2_900_000){status('حجم فایل معتبر نیست.');return;}
+    if(selected.size>2_900_000){status('Invalid file size.');return;}
     try{
      const raw=await selected.text();
      if(current===attempt)save(raw);
-    }catch(err){if(current===attempt)status('ورود بانک ناموفق بود · '+err.message);}
+    }catch(err){if(current===attempt)status('Bank import failed · '+err.message);}
    });
    remove.addEventListener('click',()=>{
     ++attempt;catalog=null;
     storage.remove(KEY);
     if(seed)storage.save(AUTO_OFF,'1');
     root.B737CduSgRouteV1?.setConnected(false);announce('B737CDUDetachCduSgV1');
-    status('بانک محلی برداشته شد.');
+    status('Local bank removed.');
    });
    const inspector=$('inspectorToggle'),header=inspector?.parentElement;
    if(header&&!$('cduSgQuickOpen')){
@@ -175,7 +175,7 @@
    const saved=storage.read(KEY);
    if(saved)try{
     install(saved);
-    status('بانک OIII، OIMM و OISS فعال است.');
+    status('OIII, OIMM and OISS reference bank is active.');
    }catch(_){storage.remove(KEY);}
    if(!catalog&&seed&&storage.read(AUTO_OFF)!=='1')void seedFromPage(seed);
   }
