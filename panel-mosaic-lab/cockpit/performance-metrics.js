@@ -51,7 +51,7 @@
   const samples=resources();const bytes=samples.reduce((n,e)=>n+(e.bytes||0),0),sharp=sharpStatus();
   const texture=window.B737ImageLoader?.stats();
   out.dataset.measurement=JSON.stringify({mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp,texture,elapsedMs:performance.now(),transferBytes:bytes,encodedBytes:samples.reduce((n,e)=>n+(e.body||0),0),requests:samples.length,largeOriginals:samples.filter(e=>/\.png(?:[?]|$)/.test(e.url)&&e.body>500000).map(e=>({url:e.url,bytes:e.body,transfer:e.bytes}))});
-  out.textContent=(mainReady===null?'نمای اصلی در حال آماده‌شدن':'نمای اصلی: '+(mainReady/1000).toFixed(1)+' ثانیه')+' · وضوح: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' ثانیه')+' · Decode هم‌زمان: '+(texture?.decoding??0)+' · انتقال: '+(bytes/1e6).toFixed(2)+' MB';}
+  out.textContent=(mainReady===null?'Main view loading':'Main view: '+(mainReady/1000).toFixed(1)+' seconds')+' · Sharpness: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' seconds')+' · Concurrent Decode: '+(texture?.decoding??0)+' · Transfer: '+(bytes/1e6).toFixed(2)+' MB';}
  const timer=setInterval(()=>{ready();trySharp();render();},1000);
  setTimeout(()=>{clearInterval(timer);render();},60000);
  window.addEventListener('b737:texture-ready',()=>{trySharp();render();});
