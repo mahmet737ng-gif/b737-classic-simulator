@@ -615,3 +615,48 @@ test('Unified CDU frame boots the SG source adapter before CDU ready event',()=>
  assert.match(read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js'),
   /B737CDUAttachCduSgV1/);
 });
+
+
+test('LEGS enumerates runway and every sourced DHN3A fix without synthetic altitude fix',()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const src=routeAPI.create();
+ src.setConnected(true);src.setContext({origin:'OIII',destination:'OIMM'});
+ const airport={icao:'OIII',runways:[
+  {runway:'29L',threshold_lat:35.682414,threshold_lon:51.333628},
+  {runway:'11R',threshold_lat:35.692703,threshold_lon:51.298344}]};
+ const proc={airport:'OIII',kind:'SID',ident:'DHN3A',fmc_executable:false,
+  requires_runway_selection:true,requires_transition_selection:false,
+  runway_options:['29L'],transition_options:[]};
+ const fixes=[
+  {ident:'D107O',lat:35.61001388333333,lon:51.571452783333335},
+  {ident:'DHN',lat:35.25416666666667,lon:52.72}
+ ];
+ const geometry={type:'FeatureCollection',metadata:{airport:'OIII',kind:'SID',
+  ident:'DHN3A',airac:routeAPI.CYCLE,selected_runway:'29L',selected_transition:null,
+  fmc_executable:false,source_only:true,version:'TEST',
+  pathProgram:{version:'SG-PROCEDURE-TRAJECTORY-0001',sourceOnly:true,
+   fmcExecutable:false,runway:'29L',trackMagneticDeg:285,altitudeMSLFt:4360,fixes}},
+  features:fixes.map(p=>({type:'Feature',geometry:{type:'Point',
+   coordinates:[p.lon,p.lat]},properties:{ident:p.ident,fmc_executable:false}}))};
+ src.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',
+  procedure:proc,geometry,airportRecord:airport});
+ const state=Object.assign(engine.makeState('LEGS'),{
+  chapter11RoutePages:true,active:{ORIGIN:'OIII',DEST:'OIMM'},subpage:1,
+  cduSgReference:src.snapshot()});
+ const displayed=ch11.view(state);
+ assert.equal(displayed.count,1);
+ assert.deepEqual(displayed.rows.slice(0,3).map(x=>x.valueL),
+  ['RW29L','D107O','DHN']);
+ assert.equal(displayed.rows[0].labelL,'285°M');
+ assert.equal(displayed.rows[0].valueR,'UNTIL 4360');
+ assert.equal(displayed.rows.filter(x=>x.valueL==='ALT4360').length,0);
+ src.execute();state.cduSgReference=src.snapshot();
+ assert.deepEqual(ch11.view(state).rows.slice(0,3).map(x=>x.valueL),
+  ['RW29L','D107O','DHN']);
+});
+test('CDU update does not replace the same rendered title and scratchpad each refresh',()=>{
+ const source=read('cdu-standalone-v6/app.js');
+ assert.match(source,/nextVisualMarkup!==lastCduVisualMarkup/);
+ assert.match(source,/lastCduVisualMarkup=nextVisualMarkup/);
+});
