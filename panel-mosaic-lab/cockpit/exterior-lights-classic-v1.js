@@ -84,14 +84,14 @@ if(isChild){
    card.querySelector('.ext-state').textContent=v||'—';
    for(const b of card.querySelectorAll('button[data-detent]'))b.setAttribute('aria-pressed',String(v===b.dataset.detent));
   }
-  readout.textContent=Object.keys(snapshot).length===defs.length?'۱۳ کنترل به پنل واقعی اورهد متصل هستند.':'برای اتصال، ابتدا نمای Overhead را در یونیفاید باز کن.';
+  readout.textContent=Object.keys(snapshot).length===defs.length?'13 controls connected to the physical overhead panel.':'Open the Unified Overhead view to connect the controls.';
  }
  function open(){
   if(!dialog){
    dialog=document.createElement('dialog');dialog.id='b737ExteriorLightsDialog';dialog.className='extl-unified-dialog';
    dialog.setAttribute('aria-label','B737 Classic Exterior Lights');
    const title=document.createElement('h2');title.textContent='B737 CLASSIC · EXTERIOR LIGHTS (P5)';
-   const close=document.createElement('button');close.type='button';close.className='extl-close';close.textContent='بستن ×';close.onclick=()=>dialog.close();
+   const close=document.createElement('button');close.type='button';close.className='extl-close';close.textContent='Close ×';close.onclick=()=>dialog.close();
    readout=document.createElement('p');readout.className='extl-status';readout.setAttribute('role','status');
    const grid=document.createElement('div');grid.className='extl-grid';
    for(const def of defs){
@@ -105,7 +105,7 @@ if(isChild){
     }
     card.append(label,state,choices);grid.append(card);
    }
-   const note=document.createElement('p');note.className='extl-note';note.textContent='تغییر وضعیت‌ها از طریق همان سوئیچ‌های موجود روی موزاییک انجام می‌شود. منطق برق و CB بدون تغییر مانده است.';
+   const note=document.createElement('p');note.className='extl-note';note.textContent='Change states using the existing mosaic switches. Electrical and CB logic are unchanged.';
    dialog.append(close,title,readout,grid,note);document.body.append(dialog);
   }
   refresh();dialog.showModal();command('query');
