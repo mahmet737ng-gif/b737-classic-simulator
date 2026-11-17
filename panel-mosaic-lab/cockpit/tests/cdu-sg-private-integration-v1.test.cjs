@@ -148,26 +148,27 @@ test('EHSI PLAN and MAP show a distinct pending and executed reference',()=>{
   setAttribute(key,value){this.attrs[key]=value;}});
  const svg={id:'cpt',ownerDocument:{createElementNS(_ns,tag){const el=make(tag);nodes.push(el);return el;}},
   appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference']);}};
- const status=()=>nodes.find(n=>n.attrs['data-cdu-sg-status'])?.textContent;
+ const status=()=>nodes.find(n=>n.attrs['data-cdu-sg-reference'])?.attrs['data-route-state'];
+ const visibleRef=()=>nodes.some(n=>typeof n.textContent==='string'&&/\b(ACT|MOD) REF\b/.test(n.textContent));
  const offset=(a,b)=>({x:b.lon-a.lon,y:b.lat-a.lat});
  const project=(x,y)=>[250+x,290-y];
  assert.equal(renderer.draw(svg,route.snapshot(),'PLAN',40,true,offset,project),1);
- assert.equal(status(),'MOD REF');
+ assert.equal(status(),'MOD');assert.equal(visibleRef(),false);
  route.execute();
  const anchor={lon:50.905,lat:35.445};
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project,anchor),1);
- assert.equal(status(),'ACT REF');
+ assert.equal(status(),'ACT');assert.equal(visibleRef(),false);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,false,offset,project,anchor),0);
  assert.equal(status(),undefined);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,project),0);
- assert.equal(status(),'ACT REF NO POS');
+ assert.equal(status(),'ACT');assert.equal(visibleRef(),false);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,null,anchor),0);
- assert.equal(status(),'ACT REF NO TRK');
+ assert.equal(status(),'ACT');assert.equal(visibleRef(),false);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,()=>[900,900],anchor),0);
- assert.equal(status(),'ACT REF OFF MAP');
+ assert.equal(status(),'ACT');assert.equal(visibleRef(),false);
  assert.equal(renderer.draw(svg,route.snapshot(),'MAP',40,true,offset,
   x=>[250+1000*x,250],anchor),1);
- assert.equal(status(),'ACT REF');
+ assert.equal(status(),'ACT');assert.equal(visibleRef(),false);
 });
 test('EHSI PLAN centers selected runway threshold, MAP keeps valid actual aircraft position',()=>{
  const ehsi=require('../ehsi-unified-v1.js');
@@ -205,7 +206,7 @@ test('EHSI runway selection marks the verified threshold before SID selection',(
  assert.deepEqual(nodes.filter(n=>n.attrs['data-runway-extension'])
   .map(n=>n.attrs['data-runway-extension']).sort(),['FINAL','UPWIND']);
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'MOD');
- assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-status']).textContent,'MOD REF');
+ assert.equal(nodes.some(n=>/^(MOD|ACT) REF$/.test(n.textContent||'')),false);
  route.execute();
  renderer.draw(svg,route.snapshot(),'CTR_MAP',40,true,offset,project,anchorPoint);
  assert.ok(nodes.some(n=>n.attrs['data-cdu-sg-geometry']==='RUNWAY'&&
@@ -498,4 +499,91 @@ test('direct core.press cannot bypass airway TO membership verification',()=>{
  assert.equal(state.message,'NOT IN DATABASE');
  assert.equal(state.scratch,'IMKEN');
  assert.equal(state.stagedRoute.TO1,undefined);
+});
+
+
+test('OIII DHN3A exact source commands produce verified magnetic track, altitude and 2 fixes',()=>{
+ const provider=require('../cdu-sg-public-connect-v1.js');
+ const trajectory=require('../../../engine/fmc/sg-procedure-trajectory-v1.js');
+ const airportRecord={icao:'OIII',runways:[
+  {runway:'29L',threshold_lat:35.682414,threshold_lon:51.333628,
+   magnetic_heading_deg:285,airport_elevation_ft:3962,length_ft:13238},
+  {runway:'11R',threshold_lat:35.692703,threshold_lon:51.298344,
+   magnetic_heading_deg:105,airport_elevation_ft:3962,length_ft:13238}]};
+ const makeAirport=icao=>({airport:icao==='OIII'?airportRecord:
+  {icao,runways:[],published_runways:[]},
+  catalogs:{SID:{items:[]},STAR:{items:[]},APP:{items:[]}},
+  procedures:{SID:[],STAR:[],APP:[]}});
+ const airports=Object.fromEntries(['OIII','OIMM','OISS'].map(icao=>[icao,makeAirport(icao)]));
+ airports.OIII.procedures.SID.push({ident:'DHN3A',fmc_executable:false,
+  runway_options:['29L'],transition_options:[],transitions:[],
+  variants:[{runway:'29L',source_line:85,commands:[
+   {kind:'TRK',value:'285',raw_text:'TRK 285'},
+   {kind:'UNTIL',value:'4360',raw_text:'UNTIL 4360'},
+   {kind:'TURN',value:'LEFT',raw_text:'TURN LEFT'},
+   {kind:'DIRECT',value:'',raw_text:'DIRECT'},
+   {kind:'FIX',value:'D107O',raw_text:'FIX D107O'},
+   {kind:'FIX',value:'DHN',raw_text:'FIX DHN'}
+  ],refs:[
+   {kind:'FIX',ident:'D107O',role:'DIRECT_FIX',source_resolution:'LOCAL_AIRPORT_FIX',
+    lat:35.61001388333333,lon:51.571452783333335},
+   {kind:'FIX',ident:'DHN',role:'ROUTE_POINT',source_resolution:'LOCAL_AIRPORT_FIX',
+    lat:35.25416666666667,lon:52.72}]}]});
+ const nav=provider.createCatalog({schema:'CDU_SG_CATALOG_V1',source_cycle:status,
+  fmc_executable:false,reference_only:true,airports})
+  .request('/api/cdu/procedure?airport=OIII&kind=SID&ident=DHN3A&runway=29L');
+ assert.deepEqual(nav.segments[0].events.map(e=>e.kind),
+  ['TRK','UNTIL','TURN','DIRECT','FIX_PASSAGE','FIX_PASSAGE']);
+ const compiled=converter.compile(nav,{airport:'OIII',kind:'SID',ident:'DHN3A',
+  runway:'29L',airportRecord});
+ assert.equal(compiled.features.filter(x=>x.geometry.type==='LineString').length,0,
+  'Do not draw a fake fix-to-fix chord for a conditional turn');
+ const p=compiled.metadata.pathProgram;
+ assert.equal(p.trackMagneticDeg,285);
+ assert.equal(p.altitudeMSLFt,4360);
+ assert.equal(p.runwayElevationFt,3962);
+ assert.equal(p.turnDirection,'LEFT');
+ assert.deepEqual(p.fixes.map(f=>f.ident),['D107O','DHN']);
+ assert.ok(p.variationDeg>0&&p.variationDeg<10);
+ const model=trajectory.trajectory(p);
+ assert.deepEqual(model.segments.map(s=>s.type),
+  ['TRACK_TO_ALTITUDE','TURN_LEFT','DIRECT_FIX','NEXT_FIX']);
+ assert.ok(model.segments[1].points.length>=25);
+ assert.equal(model.segments[2].points.at(-1).lat,p.fixes[0].lat);
+ assert.equal(model.segments[3].points.at(-1).lon,p.fixes[1].lon);
+ assert.ok(model.assumptions.bankDeg===25&&model.profile==='NOMINAL_TRAINING_PREVIEW');
+ const climbA=trajectory.trajectory(p,{airborne:true,gsKt:160,vsFpm:800});
+ const climbB=trajectory.trajectory(p,{airborne:true,gsKt:160,vsFpm:2400});
+ assert.ok(trajectory.distanceNM(p.start,climbA.altitudeTurnPoint)>
+  trajectory.distanceNM(p.start,climbB.altitudeTurnPoint),
+  'Higher climb gradient shortens track-to-altitude distance');
+ // A selected source procedure keeps its ordered program through EXEC.
+ const shared=routeAPI.create();shared.setConnected(true);
+ shared.setContext({origin:'OIII',destination:'OIMM'});
+ const proc={airport:'OIII',kind:'SID',ident:'DHN3A',fmc_executable:false,
+  requires_runway_selection:true,requires_transition_selection:false,
+  runway_options:['29L'],transition_options:[]};
+ shared.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',
+  procedure:proc,geometry:compiled,airportRecord});
+ assert.equal(shared.snapshot().modified.geometries['SID@OIII'].program.altitudeMSLFt,4360);
+ const renderer=require('../cdu-sg-ehsi-preview-v1.js');
+ const nodes=[],make=tag=>({tag,attrs:{},appendChild(){},remove(){nodes.splice(0);},
+  setAttribute(key,value){this.attrs[key]=value;}});
+ const svg={ownerDocument:{createElementNS(_ns,tag){const el=make(tag);nodes.push(el);return el;}},
+  appendChild(){},querySelector(){return nodes.find(n=>n.attrs['data-cdu-sg-reference']);}};
+ const offset=(a,b)=>({x:(b.lon-a.lon)*60*Math.cos(35.68*Math.PI/180),
+  y:(b.lat-a.lat)*60});
+ const project=(x,y)=>[252+x*9,294-y*9];
+ assert.ok(renderer.draw(svg,shared.snapshot(),'PLAN',40,true,offset,project,
+  {lat:35.682414,lon:51.333628})>0);
+ assert.ok(nodes.some(n=>n.attrs['data-trajectory-leg']==='TURN_LEFT'));
+ assert.ok(nodes.some(n=>n.attrs['data-trajectory-leg']==='DIRECT_FIX'));
+ assert.equal(nodes.some(n=>/\b(?:ACT|MOD) REF\b/.test(n.textContent||'')),false);
+ assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'MOD');
+ shared.execute();renderer.draw(svg,shared.snapshot(),'PLAN',40,true,offset,project,
+  {lat:35.682414,lon:51.333628});
+ const arc=nodes.find(n=>n.attrs['data-trajectory-leg']==='TURN_LEFT');
+ assert.equal(arc.attrs.stroke,'#ff47e1');
+ assert.equal(arc.attrs['stroke-dasharray'],undefined);
+ assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'ACT');
 });
