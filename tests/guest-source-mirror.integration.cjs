@@ -81,6 +81,17 @@ async function read(route,cookies){
   {headers:{Cookie:first.cookies}});
  assert.equal(validAirway.status,200);
  assert.equal((await validAirway.json()).valid,true,'B411 must connect to source DHN');
+ const acceptedExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=GIBAB&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal(acceptedExit.status,200);
+ assert.equal((await acceptedExit.json()).valid,true,'GIBAB is on B411 after DHN');
+ const wrongExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=IMKEN&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal(wrongExit.status,200);
+ assert.equal((await wrongExit.json()).valid,false,'IMKEN does not belong to B411');
+ const sameExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=DHN&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal((await sameExit.json()).valid,false,'TO must advance beyond the entry fix');
  const absent=await get('/api/cdu/airway-check?from=DHN&airway=B11&lat=35.254167&lon=52.72',
   {headers:{Cookie:first.cookies}});
  assert.equal(absent.status,200);

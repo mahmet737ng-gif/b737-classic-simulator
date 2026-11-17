@@ -18,6 +18,10 @@ const MAX_DEVICES = 3;
 // Never publish the route database as part of the public GitHub repository.
 const AIRWAY_REFERENCE=(()=>{try{return JSON.parse(process.env.LAB_AIRWAY_DHN_VERIFIED||'{}');}
  catch(_){return {};}})();
+// Owner's wpNavRTE.txt ordered fixes, populated privately in Railway. Unknown
+// topology must fail closed; a global waypoint-name match is not sufficient.
+const AIRWAY_POINTS=(()=>{try{return JSON.parse(process.env.LAB_AIRWAY_DHN_ROUTE_POINTS_V1||'{}');}
+ catch(_){return {};}})();
 const UNLIMITED_USER = 'Taregh';
 // Disabled unless Railway provides the salted verifier via a protected variable.
 const UNLIMITED_PASSWORD_SCRYPT = process.env.LAB_TAREGH_PASSWORD_SCRYPT || '';
@@ -432,11 +436,13 @@ async function handle(req,res) {
   if(req.method==='GET'&&url.pathname==='/api/cdu/airway-check'){
     const from=String(url.searchParams.get('from')||'').toUpperCase();
     const airway=String(url.searchParams.get('airway')||'').toUpperCase();
+    const toRaw=url.searchParams.get('to'),to=toRaw===null?null:String(toRaw).toUpperCase();
     const latitude=url.searchParams.get('lat'),longitude=url.searchParams.get('lon');
     const record=Object.hasOwn(AIRWAY_REFERENCE,from)?AIRWAY_REFERENCE[from]:null;
     const supplied=latitude!==null&&longitude!==null&&latitude!==''&&longitude!=='';
     const lat=supplied?Number(latitude):NaN,lon=supplied?Number(longitude):NaN;
-    if(!/^[A-Z0-9]{2,8}$/.test(from)||!/^[A-Z0-9]{2,8}$/.test(airway)){
+    if(!/^[A-Z0-9]{2,8}$/.test(from)||!/^[A-Z0-9]{2,8}$/.test(airway)||
+       (to!==null&&!/^[A-Z0-9]{2,8}$/.test(to))){
       res.writeHead(400,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
       res.end('{"error":"INVALID ENTRY"}');return;
     }
@@ -446,11 +452,20 @@ async function handle(req,res) {
     }
     const near=Number.isFinite(lat)&&Number.isFinite(lon)&&
       Math.abs(lat-record.lat)<=0.02&&Math.abs(lon-record.lon)<=0.02;
-    const valid=near&&record.airways.includes(airway);
+    const route=Object.hasOwn(AIRWAY_POINTS,airway)?AIRWAY_POINTS[airway]:null;
+    // A VIA-only lookup verifies the entry; a VIA/TO lookup additionally
+    // verifies that the exit fix is a *different* fix on the same ordered
+    // airway segment. The source does not encode one-way restrictions.
+    if(to!==null&&(!Array.isArray(route)||!route.every(x=>typeof x==='string'))){
+      res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
+      res.end('{"available":false,"error":"NAV DATA UNAVAILABLE"}');return;
+    }
+    const valid=near&&record.airways.includes(airway)&&
+      (to===null||(route.includes(from)&&route.includes(to)&&from!==to));
     res.writeHead(200,{'Content-Type':'application/json; charset=utf-8',
       'Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin'});
     res.end(JSON.stringify({source:'OWNER_WPNAVRTE_VERIFIED',fmc_executable:false,
-      available:true,valid,from,airway}));return;
+      available:true,valid,from,airway,...(to!==null?{to}:{})}));return;
   }
   if(req.method==='GET'&&navdata.supports(url.pathname)){
     const {status,body}=await navdata.lookup(url);
