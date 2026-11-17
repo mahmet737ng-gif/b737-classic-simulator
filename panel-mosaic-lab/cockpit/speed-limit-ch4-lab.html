@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Unified · FCOM Ch4 Speed Limits Test Lab</title>
 <style>
 :root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#080d15;color:#edf2fa}
@@ -33,9 +33,9 @@ a{color:#97caff}
 <script defer src="./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0012"></script>
 </head><body>
 <h1>Speed Limits · Boeing 737 Classic · FCOM Chapter 4</h1>
-<p class="note">آزمایشگاه مستقل برای 737-300/400/500 — صفحات 4.10.3–5 و 4.20.31–35. اعداد زیر صرفاً داده آزمایشی و قابل‌تغییر هستند، نه حدود تأییدشده AFM. هیچ فرمانی از این صفحه به کابین یا AFDS اصلی ارسال نمی‌شود.</p>
+<p class="note">Independent 737-300/400/500 lab — FCOM 4.10.3–5 and 4.20.31–35. Values are editable test inputs, not approved AFM limits. No commands reach the operational cockpit or AFDS.</p>
 <main><section class="card">
-<h2>Speed Tape و وضعیت محدودسازی</h2>
+<h2>Speed Tape and Limit States</h2>
 <div class="screen"><canvas id="tape" width="900" height="720" aria-label="Training Speed Tape"></canvas></div>
 <div class="stat"><span>IAS/MACH speed condition</span><span id="symbol" class="sym">—</span></div>
 <div class="stat"><span>Effective AFS command</span><b id="effective">—</b></div>
@@ -46,10 +46,10 @@ a{color:#97caff}
 <div class="stat"><span>Minimum (≈1.3 Vs)</span><b id="minimum">—</b></div>
 <div class="stat"><span>AFDS / A/T directive</span><b id="reversion">—</b></div>
 <div class="stat"><span>Minimum reversion excluded by</span><b id="exclusion">—</b></div>
-<p class="note">علامت A چشمک‌زن برای Underspeed/Performance، علامت 8 برای Overspeed است. هندسه این پیش‌نمایش صرفاً مربوط به آزمایشگاه است.</p>
+<p class="note">Flashing A denotes underspeed/performance; 8 denotes overspeed. Preview geometry applies only to this lab.</p>
 </section>
 <section class="card">
-<h2>داده‌های سناریو · Instructor Training</h2>
+<h2>Scenario Inputs · Instructor Training</h2>
 <div class="controls">
 <label class="wide">Actual IAS — <output id="iasO">230 kt</output><input id="ias" type="range" min="0" max="420" step=".1" value="230"></label>
 <label class="wide">MCP Selected IAS — <output id="selO">235 kt</output><input id="sel" type="range" min="110" max="340" step="1" value="235"></label>
@@ -95,10 +95,10 @@ a{color:#97caff}
 <button id="reset" type="button">Reset</button>
 </div>
 </div>
-<p class="note">حدود چرخ: DOWN = 320 kt / M0.82؛ EXTENDING = 270 kt / M0.82؛ RETRACTING = 235 kt. Mach بدون اطلاعات معتبر به CAS تبدیل نمی‌شود و مقدار Mach برای جمع‌کردن چرخ مشخص نشده است.</p>
-<p class="note">جدول Flap Max/Buffer توسط کاربر ارائه شده است و هنوز داده تأییدشده AFM نیست. بافر زرد پایین‌تر از حد قرمز رسم می‌شود؛ این با High Speed Buffet و Next Flap Placard فرق دارد. برای «slightly before limit» از تیک FCC استفاده کن، چون FCOM آستانه عددی نداده است.</p>
+<p class="note">Landing gear limits: DOWN 320 kt / M0.82; EXTENDING 270 kt / M0.82; RETRACTING 235 kt. Mach is not converted to CAS without validated data; retraction Mach is unspecified.</p>
+<p class="note">Flap max/buffer values are user-provided, not AFM verified. The yellow buffer lies below the red limit and differs from high-speed buffet or next-flap placards. The FCC tick represents 'slightly before limit' because FCOM provides no numeric threshold.</p>
 <pre id="diagnostics" aria-live="polite"></pre>
-<p class="note"><a href="./index.html">بازگشت به Unified</a> — <a href="./speed-tape-lab.html">آزمایشگاه Speed Tape</a></p>
+<p class="note"><a href="./index.html">Return to Unified</a> — <a href="./speed-tape-lab.html">Speed Tape Test Lab</a></p>
 </section></main>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
