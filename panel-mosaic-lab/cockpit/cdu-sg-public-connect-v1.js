@@ -68,7 +68,7 @@
     requires_runway_selection:procedure.requires_runway_selection,
     requires_transition_selection:procedure.requires_transition_selection,
     runway_options:procedure.runway_options,transition_options:procedure.transition_options,
-    segments:parts.map(part=>({events:events(part)}))};
+    segments:parts.map(part=>({source_line:part.source_line,events:events(part)}))};
   }
   return Object.freeze({request});
  }

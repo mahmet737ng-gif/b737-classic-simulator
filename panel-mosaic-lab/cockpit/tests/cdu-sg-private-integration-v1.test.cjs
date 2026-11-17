@@ -546,12 +546,26 @@ test('OIII DHN3A exact source commands produce verified magnetic track, altitude
  assert.equal(p.altitudeMSLFt,4360);
  assert.equal(p.runwayElevationFt,3962);
  assert.equal(p.turnDirection,'LEFT');
+ assert.equal(p.sourceLine,85);
+ assert.equal(p.airport,'OIII');
  assert.deepEqual(p.fixes.map(f=>f.ident),['D107O','DHN']);
  assert.ok(p.variationDeg>0&&p.variationDeg<10);
  const model=trajectory.trajectory(p);
  assert.deepEqual(model.segments.map(s=>s.type),
   ['TRACK_TO_ALTITUDE','TURN_LEFT','DIRECT_FIX','NEXT_FIX']);
  assert.ok(model.segments[1].points.length>=25);
+ // Aircraft track, sampled left-hand arc, and DIRECT inbound leg are
+ // continuously joined in position and tangent direction.
+ const magDifference=(a,b)=>Math.abs(((a-b+540)%360)-180);
+ const initial=trajectory.bearing(model.segments[0].points[0],model.segments[0].points[1]);
+ const turn=model.segments[1].points;
+ const firstArc=trajectory.bearing(turn[0],turn[1]);
+ const lastArc=trajectory.bearing(turn.at(-2),turn.at(-1));
+ const direct=trajectory.bearing(model.segments[2].points[0],
+  model.segments[2].points[1]);
+ assert.ok(magDifference(initial,firstArc)<3,'Track and turn must join tangent');
+ assert.ok(magDifference(lastArc,direct)<3,'Turn and DIRECT fix must join tangent');
+ assert.ok(((firstArc-lastArc+360)%360)>100,'Track must perform significant LEFT turn');
  assert.equal(model.segments[2].points.at(-1).lat,p.fixes[0].lat);
  assert.equal(model.segments[3].points.at(-1).lon,p.fixes[1].lon);
  assert.ok(model.assumptions.bankDeg===25&&model.profile==='NOMINAL_TRAINING_PREVIEW');

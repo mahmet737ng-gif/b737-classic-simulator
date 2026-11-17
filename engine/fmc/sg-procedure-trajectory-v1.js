@@ -10,13 +10,12 @@
  if(root)root.B737UnifiedSGProcedureTrajectoryV1=api;
 })(typeof globalThis==='undefined'?null:globalThis,function(){
  'use strict';
- const VERSION='SG-PROCEDURE-TRAJECTORY-0001',RAD=Math.PI/180,TO_RAD=Math.PI/180;
+ const VERSION='SG-PROCEDURE-TRAJECTORY-0001',RAD=Math.PI/180;
  const FT_PER_NM=6076.1155,EARTH_KT_TO_MPS=0.514444;
  const finite=Number.isFinite;
  const wrap=v=>(v%360+360)%360;
  const diff=(a,b)=>((a-b+540)%360)-180;
  const point=p=>p&&finite(p.lon)&&finite(p.lat)&&Math.abs(p.lon)<=180&&Math.abs(p.lat)<=90;
- const pick=(arr,kind)=>arr.find(e=>e.kind===kind);
  const radians=d=>d*RAD;
  function distanceNM(a,b){
   const x=(b.lon-a.lon)*60*Math.cos(radians((a.lat+b.lat)/2));
@@ -74,7 +73,9 @@
       first.values?.ident!==first.fix.ident||last.values?.ident!==last.fix.ident||
       !first.fix.ident||!last.fix.ident)continue;
    return {version:VERSION,kind:'TRACK_UNTIL_ALTITUDE_TURN_DIRECT',
-    runway,source:'OIII_PUBLISHED_TEXT_REFERENCE',sourceOnly:true,fmcExecutable:false,
+    runway,source:'LOCAL_AIRPORT_PROCEDURE_TEXT',sourceLine:segment.source_line||null,
+    airport:source.airport||airportRecord.icao,
+    sourceOnly:true,fmcExecutable:false,
     trackMagneticDeg:magneticTrack,altitudeMSLFt:altitude,
     runwayElevationFt:runwayRecord.airport_elevation_ft,
     runwayLengthFt:finite(runwayRecord.length_ft)?runwayRecord.length_ft:null,
