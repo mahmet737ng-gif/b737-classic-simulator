@@ -250,7 +250,7 @@ function makePanel(){
  '<label>POWER <select id="irsTrainerPower"><option value="INSTRUCTOR">INSTRUCTOR TEST POWER</option><option value="ELECTRICAL">ELECTRICAL BUS STATE (source-gated)</option></select></label>'+
  '<label>TIME <select id="irsTrainerSpeed"><option value="1">1× REALTIME</option><option value="10">10× TRAINING</option><option value="60">60× TRAINING</option></select></label>'+
  '<div class="irs-live-modes"></div><p id="irsTrainerStatus" role="status"></p>'+
- '<p class="irs-live-help">ISDU: DSPL SEL PPOS → N/2 یا S/8 → ۵ رقم → ENT → E/6 یا W/4 → ۶ رقم → ENT. FMC: POS INIT → SET IRS POS (4R).</p>'+
+ '<p class="irs-live-help">ISDU: DSPL SEL PPOS → N/2 or S/8 → 5 digits → ENT → E/6 or W/4 → 6 digits → ENT. FMC: POS INIT → SET IRS POS (4R).</p>'+
  '<label><input id="irsMotionEnable" type="checkbox"> INSTRUCTOR MOTION (not live sim)</label>'+
  '<div class="irs-live-motion"></div>'+
  '<p id="irsTrainerReadout" class="irs-live-readout" dir="ltr"></p>';
