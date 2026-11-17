@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>B737 Classic — OH-10 Photo Overlay & Pixel Calibration</title>
 <style>
@@ -47,15 +47,15 @@ footer{padding:18px;text-align:center;color:#889eab;font-size:11px}
 @media(max-width:970px){.work{grid-template-columns:1fr}.viewport{height:65vh;min-height:360px}}
 </style></head>
 <body>
-<header><div><b>B737 CLASSIC · P5-13 · PHOTO-CALIBRATION LAB</b><small>OH-10 · 1095×1436 native pixels · real locked owner artwork, no replacement</small></div><div class="row"><a href="./">نسخه اول</a><a href="../panel-mosaic-lab/electrical-stack/">الکتریکال استک</a><a href="../panel-mosaic-lab/all-overhead/">Full Overhead</a></div></header>
+<header><div><b>B737 CLASSIC · P5-13 · PHOTO-CALIBRATION LAB</b><small>OH-10 · 1095×1436 native pixels · real locked owner artwork, no replacement</small></div><div class="row"><a href="./">Version 1</a><a href="../panel-mosaic-lab/electrical-stack/">Electrical Stack</a><a href="../panel-mosaic-lab/all-overhead/">Full Overhead</a></div></header>
 <main>
-<div class="notice"><strong>نسخه آزمایشی، نه نصب نهایی:</strong> تصویر اصلی پنل بدون هیچ دستکاری نمایش داده می‌شود. مرکز چهار گیج از مدل موجود Unified خوانده شده، ولی محل قطعات دیگر هنوز «پیشنهادی» است. در حالت کالیبراسیون می‌توانی هر نشانگر را حرکت بدهی، اندازه‌اش را اصلاح کنی و مختصات دقیق را خروجی بگیری. هیچ کنترل قفل‌شده یا نمای اصلی Unified در این صفحه تغییر نمی‌کند. در حالت عادی فقط عکس واقعی دیده می‌شود و هیچ نشانگر، صفحه گیج و کلید جدیدی روی آن رسم نمی‌شود.</div>
+<div class="notice"><strong>Prototype, not installed:</strong> The source panel photo is untouched. Four gauge centers come from Unified, but other placements remain provisional. Calibration mode allows moving, resizing and exporting component coordinates. Locked controls and the main Unified view remain unchanged; normal mode displays only the original photo.</div>
 <div class="work">
 <div class="stage">
 <div class="tools" role="toolbar" aria-label="Photo calibration controls">
-<button id="operate" class="active">تست عملکرد</button><button id="calibrate">کالیبراسیون پیکسلی</button>
-<span class="photo-label">نمای اصلی، بدون ترسیم مصنوعی</span><label><input id="overlay" type="checkbox" checked> نمایش عقربه‌های متحرک اصلی</label>
-<label><input id="markers" type="checkbox"> راهنمای ظریف کالیبراسیون</label>
+<button id="operate" class="active">Functional Test</button><button id="calibrate">Pixel Calibration</button>
+<span class="photo-label">Source Photo Without Synthetic Overlay</span><label><input id="overlay" type="checkbox" checked> Show Original Animated Needles</label>
+<label><input id="markers" type="checkbox"> Fine Calibration Guides</label>
 <button id="zoomout" title="Zoom out">−</button><input id="zoom" type="range" min="30" max="250" step="5" value="70"><button id="zoomin" title="Zoom in">+</button><b id="zoomlabel">70%</b>
 <button id="fit">FIT</button>
 </div>
@@ -69,21 +69,21 @@ footer{padding:18px;text-align:center;color:#889eab;font-size:11px}
 </div></div>
 </div>
 <div class="sidebar">
-<section><h2>پیش‌نمایش سیستم برق</h2>
+<section><h2>Electrical System Preview</h2>
 <div class="row"><button data-mode="dark">Cold &amp; Dark</button><button data-mode="ground">Ground Power</button><button data-mode="engines" class="active">Engines Running</button></div>
 <div class="row" style="margin-top:8px"><button id="genfail">GEN 1 FAIL</button><button id="trfail">TR 1 FAIL</button><button id="restart">Reset</button></div>
-<p>چهار گیج تصویر اصلی و فایل عقربه قبلی Unified بدون تغییر هستند. هر چهار عقربه به اسکیل حرکت متصل شده‌اند؛ DC AMPS و DC VOLTS از درجات عکس استخراج شده‌اند، اما CPS و AC VOLTS همچنان مقیاس آزمایشی و نیازمند ممیزی تصویری هستند. مقدارهای عددی کناری دمو هستند.</p>
+<p>All four source gauges and the existing Unified needle assets remain unchanged. Needle animations follow calibrated scales: DC AMPS/VOLTS use source-photo ticks, while CPS and AC VOLTS remain provisional. Adjacent numeric values are demonstrations.</p>
 <div class="metrics"><div class="metric"><strong id="dcamps">—</strong><small>DC AMPS</small></div><div class="metric"><strong id="freq">—</strong><small>CPS FREQ</small></div><div class="metric"><strong id="dcvolts">—</strong><small>DC VOLTS</small></div><div class="metric"><strong id="acvolts">—</strong><small>AC VOLTS</small></div></div>
-<p id="selectorstate" class="mini"></p><div class="status" id="status">در حال بارگذاری...</div></section>
-<section><h2>تطبیق محل دقیق قطعات</h2>
-<div>قطعه انتخاب‌شده: <b id="selected">—</b></div>
-<div class="row" style="margin:9px 0"><button id="left">←</button><button id="right">→</button><button id="up">↑</button><button id="down">↓</button><button id="smaller">اندازه −</button><button id="bigger">اندازه +</button></div>
-<p>برای ویرایش مرکزها «کالیبراسیون پیکسلی» و سپس «راهنمای ظریف کالیبراسیون» را فعال کن. راهنماها در حالت عادی کاملاً مخفی‌اند. نشانگر کوچک هر قطعه را بکش یا مقدار X/Y را مستقیم تغییر بده. کلیدهای جهت‌دار 0.5 پیکسل حرکت می‌دهند (Shift: پنج پیکسل).</p>
+<p id="selectorstate" class="mini"></p><div class="status" id="status">Loading…</div></section>
+<section><h2>Precision Component Registration</h2>
+<div>Selected Component: <b id="selected">—</b></div>
+<div class="row" style="margin:9px 0"><button id="left">←</button><button id="right">→</button><button id="up">↑</button><button id="down">↓</button><button id="smaller">Size −</button><button id="bigger">Size +</button></div>
+<p>To edit pivots, enable Pixel Calibration and Fine Calibration Guides. Guides are hidden in normal mode. Drag a component handle or edit X/Y directly. Arrow keys move 0.5 px; Shift moves 5 px.</p>
 <div id="coordinates"><table><thead><tr><th>PART</th><th>X px</th><th>Y px</th><th>R px</th></tr></thead><tbody id="coordrows"></tbody></table></div>
-<div class="row" style="margin-top:12px"><button id="export">خروجی JSON</button><button id="copy">کپی مختصات</button><button id="resetgeometry">بازگشت به نقاط اولیه</button></div>
+<div class="row" style="margin-top:12px"><button id="export">Export JSON</button><button id="copy">Copy Coordinates</button><button id="resetgeometry">Restore Initial Positions</button></div>
 <p class="mini" id="sourceStatus"></p></section>
-<section><h2>ثبت ممیزی</h2>
-<div id="events" aria-live="polite"></div><p>مختصات تغییر یافته فقط روی همین دستگاه ذخیره می‌شوند. نصب در Unified تا زمان تأیید مرکز و ابعاد تمام قطعات و کنترل رنگ و یکپارچگی قفل است.</p></section>
+<section><h2>Record Audit</h2>
+<div id="events" aria-live="polite"></div><p>Modified coordinates are saved only on this device. Unified installation remains locked until geometry, colors, and source integrity are verified.</p></section>
 </div>
 </div>
 </main>
