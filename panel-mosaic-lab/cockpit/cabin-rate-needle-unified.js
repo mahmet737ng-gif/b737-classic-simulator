@@ -21,11 +21,11 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedCabinRateNeedle';
   const title=document.createElement('h2');title.textContent='Cabin rate · CABIN CLIMB';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='نیدل مستقل گیج پایین؛ پیش‌فرض دقیقاً روی صفر است. حرکت فعلاً فقط برای تست تصویری است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='Independent lower-gauge needle defaults precisely to zero. Movement is for visual testing only.';section.append(note);
   const label=document.createElement('label');label.textContent='Angle offset from ZERO';label.style.display='block';label.style.direction='ltr';
   input=document.createElement('input');Object.assign(input,{type:'range',min:'-145',max:'145',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';input.addEventListener('input',()=>setOffset(Number(input.value)));
   output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';label.append(input,output);section.append(label);
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به صفر';reset.addEventListener('click',()=>setOffset(0));section.append(reset);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Return to Zero';reset.addEventListener('click',()=>setOffset(0));section.append(reset);
   const previous=document.querySelector('#unifiedCabinDualNeedles');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);paint();
  }
  window.B737UnifiedCabinRateNeedle=Object.freeze({getOffset:()=>currentOffset,setOffset});
