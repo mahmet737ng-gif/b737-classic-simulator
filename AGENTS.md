@@ -101,3 +101,35 @@ are authorized or implied. Future powered/navigation-data bindings must
 expose reliable validity and must not alter the exact locked front-end.
 The separately locked LOWER IRS SYS DSPL L/R switch stays independently
 frozen at all times.
+
+## ENGLISH-ONLY USER-FACING COCKPIT AND TEST LABS (2026-11-17)
+
+Owner directive: **every newly created or modified test lab and cockpit UI must
+display English only. Do not introduce Persian labels, explanations, errors,
+status messages, hints, buttons, prompts, sample text or trainer notices.**
+This covers static HTML and dynamically generated JavaScript UI. Preserve
+technical source terms and accepted identifiers (e.g., internal
+`CONVENTIONAL`), but display **Non-EIS** in Settings. Retain Unicode
+normalization for user-entered searches; input processing is not UI output.
+
+**Settings / CDU IDENT contract:** Offer only aircraft family,
+pressurization (CPCS/DCPCS) and engine instruments (EIS/Non-EIS).
+The 737-300/500 family automatically yields IDENT MODEL 737-300 / 20K;
+the 737-400 family automatically yields IDENT MODEL 737-400 / 22K.
+Do not add independent engine type or thrust-rating controls, a blank
+DCPCS panel photo preview, pressure-system explanatory paragraphs or the
+deprecated AIRAC calendar/import text to Settings. Do not delete NAV DATA
+or override actual licensed navigation-bank installation state.
+
+Required checks:
+`node tools/qa-english-only-labs.cjs --strict`
+`node --test engine/config/tests/cdu-ident-installation-v1.test.cjs`
+`node --test tests/aircraft-profile-v1.test.cjs`.
+
+**Frozen-material exception:** `panel-mosaic-lab/all-overhead/index.html` and
+`stage.js` are protected by the earlier UPD-0012 immutable hash lock.
+They may still contain older UI text; do not edit or dynamically reskin them
+as part of a general language cleanup. A separate explicit owner
+authorization for changing those locked sources is required before touching
+the approved originals. This exception is tracked explicitly and must not be
+mistaken for an English-only approval of those two files.
