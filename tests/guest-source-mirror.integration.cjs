@@ -54,9 +54,9 @@ async function read(route,cookies){
  ]) assert(html.includes(part),'Missing original cockpit / guest integration: '+part);
  assert(html.includes('src="./app.js'),'Original cockpit script absent');
  const css=(await read('/static/guest-cockpit.css',first.cookies)).bytes.toString('utf8');
- assert(css.includes('#region-main')&&css.includes('#region-pedestal'));
+ assert(css.includes('#viewport')&&css.includes('#guestLogoutForm'));
  const js=(await read('/static/guest-cockpit.js',first.cookies)).bytes.toString('utf8');
- assert(js.includes("window.addEventListener('b737:cockpit-mounted'"));
+ assert(js.includes('mountLogout')&&js.includes('SIGN OUT'));
  const resources=[
   '/panel-mosaic-lab/cockpit/app.js',
   '/panel-mosaic-lab/cockpit/overhead-stage.html',
