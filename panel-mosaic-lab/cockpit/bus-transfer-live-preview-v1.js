@@ -16,11 +16,11 @@
  function command(next){
   if(!connected||awaiting)return;
   if(!document.querySelector('.station.opened')){
-   statusText('اول گارد را باز کن، بعد سوئیچ را تغییر بده.');
+   statusText('Open the guard before changing the switch.');
    return;
   }
-  if(value===next){statusText('این حالت همین حالا فعال است.');return;}
-  awaiting=true;sequence++;show();statusText('فرمان به سیستم برق فرستاده شد…');
+  if(value===next){statusText('This state is already selected.');return;}
+  awaiting=true;sequence++;show();statusText('Command sent to the electrical system…');
   send({type:'b737:bus-transfer-preview-command',value:next,guard:'open',sequence});
  }
  // The 3D opened cover can overlap its neighbor's pointer hitbox in Chromium.
@@ -29,11 +29,11 @@
  document.getElementById('busTransferGuardOpen')?.addEventListener('click',()=>{
   const s=document.querySelectorAll('.station')[1];
   if(s&&!s.classList.contains('opened'))s.querySelector('.cover')?.click();
-  statusText('گارد باز شد. می‌توانی AUTO یا OFF را انتخاب کنی.');
+  statusText('Guard opened. AUTO or OFF can now be selected.');
  });
  document.getElementById('busTransferGuardClose')?.addEventListener('click',()=>{
   document.querySelectorAll('.station.opened .cover').forEach(c=>c.click());
-  statusText('گارد بسته شد. تغییر حالت مجاز نیست.');
+  statusText('Guard closed. Switching is inhibited.');
  });
  auto.addEventListener('click',()=>command('auto'));
  off.addEventListener('click',()=>command('off'));
@@ -43,11 +43,11 @@
   if(m?.type!=='b737:bus-transfer-preview-state')return;
   if(m.sequence!==undefined&&m.sequence!==sequence)return; // stale answer
   if(m.value!=='auto'&&m.value!=='off'){
-   awaiting=false;connected=false;show();statusText('پاسخ سیستم برق معتبر نیست.');return;
+   awaiting=false;connected=false;show();statusText('Invalid response from the electrical system.');return;
   }
   connected=true;awaiting=false;value=m.value;show();
-  if(m.accepted===false)statusText('فرمان رد شد: '+String(m.reason||'نامشخص').slice(0,130));
-  else statusText('وضعیت واقعی برق: '+value.toUpperCase());
+  if(m.accepted===false)statusText('Command rejected: '+String(m.reason||'Unknown').slice(0,130));
+  else statusText('Actual electrical state: '+value.toUpperCase());
  });
  show();
  send({type:'b737:bus-transfer-preview-ready'});
