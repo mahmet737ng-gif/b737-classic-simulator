@@ -22,7 +22,7 @@
  };
 })(typeof window==='undefined'?null:window,function(state,core,pages,bridge,shared,refresh,converter){
  'use strict';
- let serial=0,unsubscribe=null,attached=false;
+ let serial=0,unsubscribe=null,attached=false,airwayBusy=false,airwayTicket=0;
  const CYCLE='UNSPECIFIED_IN_UPLOADED_FILES';
  const allowedAirport=s=>typeof s==='string'&&/^[A-Z0-9]{4}$/.test(s);
  const encoded=s=>encodeURIComponent(s);
@@ -212,9 +212,66 @@
    }
   }
  }
+
+ // A VIA airway must be present at the previous verified source fix, not just
+ // somewhere in the world NAV database.
+ function precedingFix(field){
+  const n=Number(/^VIA(\d+)$/.exec(field)?.[1]);
+  if(!Number.isInteger(n)||n<1)return null;
+  if(n>1){
+   const from=String(core.readValue(state,'TO'+(n-1),'FLIGHT_PLAN')||'').toUpperCase().trim();
+   if(!from)return null;
+   const proof=state.navFixEvidence?.['TO'+(n-1)]||state.activeNavFixEvidence?.['TO'+(n-1)];
+   return {ident:from,lat:proof?.ident===from?proof.lat:null,
+    lon:proof?.ident===from?proof.lon:null};
+  }
+  const snap=shared.snapshot(),origin=core.readValue(state,'ORIGIN','RTE');
+  const dest=core.readValue(state,'DEST','RTE'),bank=snap.modified||snap.active;
+  if(snap.connected!==true||snap.origin!==origin||snap.destination!==dest)return null;
+  const sid=bank?.selections?.['SID@'+origin],geo=bank?.geometries?.['SID@'+origin];
+  if(!sid||sid.ident!==geo?.ident)return null;
+  const fix=(geo.fixes||[]).filter(p=>typeof p.ident==='string'&&
+   Number.isFinite(p.lat)&&Number.isFinite(p.lon)).at(-1);
+  return fix?{ident:fix.ident,lat:fix.lat,lon:fix.lon}:null;
+ }
+ async function verifyAirwayKey(key,cell){
+  if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
+  const from=precedingFix(cell.field),value=String(state.scratch||'').trim().toUpperCase();
+  if(!from||!value){issue('NOT IN DATABASE');return;}
+  airwayBusy=true;const ticket=++airwayTicket,revision=shared.snapshot().revision;
+  state.message='VERIFY NAV DATA';update();
+  try{
+   const url='/api/cdu/airway-check?from='+encoded(from.ident)+'&airway='+encoded(value)+
+    (Number.isFinite(from.lat)&&Number.isFinite(from.lon)?
+     '&lat='+encoded(from.lat)+'&lon='+encoded(from.lon):'');
+   const response=await bridge.request(url),data=await response.json();
+   if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||
+      String(state.scratch||'').toUpperCase().trim()!==value||
+      shared.snapshot().revision!==revision||
+      globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
+   if(!response.ok||data?.available!==true){issue('NAV DATA UNAVAILABLE');return;}
+   if(data.valid!==true||data.from!==from.ident||data.airway!==value){
+    issue('NOT IN DATABASE');return;
+   }
+   state.verifiedAirwayEntries={...(state.verifiedAirwayEntries||{}),
+    [cell.field]:{airway:value,from:from.ident,
+     origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE'),
+     source:'OWNER_WPNAVRTE_VERIFIED'}};
+   state.message='';
+   core.press(state,pages,'CDU_CAPT_'+key);update();
+  }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
+  finally{if(ticket===airwayTicket)airwayBusy=false;}
+ }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(state.page==='FLIGHT_PLAN'&&/^LSK_L[1-5]$/.test(k)&&state.scratch&&
+     !['DELETE','DCT','DIRECT'].includes(state.scratch.trim().toUpperCase())){
+   const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
+   if(cell?.format==='AIRWAY'&&core.validate?.('AIRWAY',state.scratch)){
+    void verifyAirwayKey(k,cell);return true;
+   }
+  }
   if(state.page==='DEP_ARR')return indexKey(k);
   if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified){
    shared.erase();
@@ -244,7 +301,7 @@
   unsubscribe=shared.subscribe(()=>{if(attached)update();});
  }
  function detach(){
-  ++serial;attached=false;unsubscribe?.();unsubscribe=null;
+  ++serial;++airwayTicket;airwayBusy=false;attached=false;unsubscribe?.();unsubscribe=null;
   if(state.cduSgView){delete state.cduSgView;if(['DEPARTURES','ARRIVALS'].includes(state.page))
    core.choose(state,pages,'DEP_ARR');}
  }

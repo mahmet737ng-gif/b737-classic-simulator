@@ -249,6 +249,14 @@
     core.addMessage(s,'INVALID ENTRY');return true;
    }
    if(cell.field.startsWith('VIA')&&['DCT','DIRECT'].includes(s.scratch))s.scratch='DIRECT';
+   if(cell.field.startsWith('VIA')&&s.scratch&&s.scratch!=='DELETE'&&s.scratch!=='DIRECT'){
+    const proof=s.verifiedAirwayEntries?.[cell.field],input=String(s.scratch).toUpperCase();
+    if(proof?.airway!==input||proof?.origin!==entered(s,'ORIGIN')||
+       proof?.destination!==entered(s,'DEST')||
+       proof?.source!=='OWNER_WPNAVRTE_VERIFIED'){
+     core.addMessage(s,'NOT IN DATABASE');return true;
+    }
+   }
    const before=entered(s,cell.field),input=s.scratch;
    if(s.routeActivated)core.field(s,cell);
    else core.stageRouteField(s,cell);

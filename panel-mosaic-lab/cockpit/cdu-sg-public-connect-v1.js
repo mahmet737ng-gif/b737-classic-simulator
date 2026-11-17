@@ -85,6 +85,9 @@
    isConnected:()=>!!catalog,source:'UNIFIED_LOCAL_NAVDATA',
    async request(path){
     if(!catalog)throw Error('NAV DATA UNAVAILABLE');
+    if(typeof path==='string'&&/^\/api\/cdu\/airway-check\?[^#]{1,250}$/.test(path))
+     return root.fetch(path,{credentials:'same-origin',cache:'no-store',redirect:'error',
+      headers:{Accept:'application/json'}});
     try{const body=catalog.request(path);return {ok:true,json:async()=>body};}
     catch(err){return {ok:false,json:async()=>({error:err.message})};}
    }
