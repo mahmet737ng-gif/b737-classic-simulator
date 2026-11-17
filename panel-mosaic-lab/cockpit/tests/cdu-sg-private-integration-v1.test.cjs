@@ -505,7 +505,7 @@ test('direct core.press cannot bypass airway TO membership verification',()=>{
 test('OIII DHN3A exact source commands produce verified magnetic track, altitude and 2 fixes',()=>{
  const provider=require('../cdu-sg-public-connect-v1.js');
  const trajectory=require('../../../engine/fmc/sg-procedure-trajectory-v1.js');
- const airportRecord={icao:'OIII',runways:[
+ const airportRecord={icao:'OIII',published_runways:['29L','11R'],runways:[
   {runway:'29L',threshold_lat:35.682414,threshold_lon:51.333628,
    magnetic_heading_deg:285,airport_elevation_ft:3962,length_ft:13238},
   {runway:'11R',threshold_lat:35.692703,threshold_lon:51.298344,
