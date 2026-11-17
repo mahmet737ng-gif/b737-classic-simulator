@@ -603,6 +603,18 @@ test('OIII DHN3A exact source commands produce verified magnetic track, altitude
  assert.equal(arc.attrs.stroke,'#ff47e1');
  assert.equal(arc.attrs['stroke-dasharray'],undefined);
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'ACT');
+ // A real expanded MAP can display the initial altitude track before the
+ // D107O/DHN fixes disappear outside the selected forward map aperture.
+ const physical=require('../../../efis-display-lab/ehsi-v2.js');
+ const nav=require('../unified-efis-sources-v1.js');
+ const modeled={mode:'MAP',range:40,geoTrack:289.75,track:285,
+  route:{points:[],activeIndex:-1,centerIndex:0}};
+ const mapProject=physical.routeProjection(modeled);
+ const count=renderer.draw(svg,shared.snapshot(),'MAP',40,true,nav.offsets,
+  mapProject,{lat:35.682414,lon:51.333628});
+ assert.ok(count>0,'MAP must show at least a segment of DHN3A at runway origin');
+ assert.ok(nodes.some(n=>n.attrs['data-trajectory-leg']==='TRACK_TO_ALTITUDE'),
+  'MAP must draw the 285-degree altitude-conditional departure track');
 });
 
 
