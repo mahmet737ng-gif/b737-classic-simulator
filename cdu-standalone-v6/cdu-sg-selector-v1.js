@@ -295,9 +295,12 @@
       proof.airway!==via||proof.to!==input){
     issue('NOT IN DATABASE');return;
    }
+   const fixes=Array.isArray(proof.fixes)&&proof.fixes.length<=250&&
+    proof.fixes.every(f=>typeof f==='string'&&/^[A-Z0-9._-]{2,16}$/.test(f))&&
+    proof.fixes.at(-1)===input?proof.fixes.slice():[input];
    state.verifiedToEntries={...(state.verifiedToEntries||{}),
     [cell.field]:{to:input,airway:via,from:from.ident,origin,destination,
-     source:'OWNER_WPNAVRTE_VERIFIED'}};
+     fixes,source:'OWNER_WPNAVRTE_VERIFIED'}};
    state.message='';
    core.press(state,pages,'CDU_CAPT_'+key);update();
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}

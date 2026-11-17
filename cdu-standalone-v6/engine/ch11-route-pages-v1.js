@@ -231,8 +231,25 @@
    }
    return result;
   }
+  function expandedRouteLegs(s){
+   if(sourcePlan(s)||currentNav(s))return navLegs(s);
+   const rows=segments(s),expanded=[];
+   for(let i=0;i<rows.length;i++){
+    const row=rows[i],proof=s.verifiedToEntries?.['TO'+(i+1)];
+    if(!row?.to)continue;
+    const verified=row.via&&row.via!=='DIRECT'&&row.via!=='DCT'&&
+     proof?.airway===row.via&&proof?.to===row.to&&
+     proof.source==='OWNER_WPNAVRTE_VERIFIED'&&
+     proof.origin===entered(s,'ORIGIN')&&proof.destination===entered(s,'DEST');
+    const fixes=verified&&Array.isArray(proof.fixes)&&proof.fixes.at(-1)===row.to&&
+     proof.fixes.length<=250&&proof.fixes.every(x=>typeof x==='string'&&
+      /^[A-Z0-9._-]{2,16}$/.test(x))?proof.fixes:[row.to];
+    for(const ident of fixes)expanded.push({ident,sourceOnly:verified});
+   }
+   return expanded;
+  }
   function visibleLegs(s){
-   const native=navLegs(s),source=sourceSnapshot(s);
+   const native=expandedRouteLegs(s),source=sourceSnapshot(s);
    if(!source)return native;
    const origin=entered(s,'ORIGIN'),dest=entered(s,'DEST');
    const sid=sourceProcedureLegs(s,source,'SID',origin);
