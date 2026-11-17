@@ -111,6 +111,6 @@ document.getElementById('fit').onclick=fit;
 document.getElementById('reset').onclick=()=>{for(const b of cb)b.pulled=false;render();status.textContent='P6-1 · All 41 mapped CBs PUSHED (visual preview only)';};
 window.addEventListener('resize',fit);
 image.onload=()=>{loaded=true;fit();render();status.textContent='P6-1 · original reference loaded · 41 photographed CB centers';};
-image.onerror=()=>{status.textContent='خطا در بارگذاری تصویر مرجع P6-1';};
+image.onerror=()=>{status.textContent='Failed to load P6-1 reference photo';};
 image.src=data.sourceImage.dataUrl;
 })();
