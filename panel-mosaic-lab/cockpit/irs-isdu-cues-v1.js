@@ -60,7 +60,7 @@
         const b=panel.querySelector('[data-irs-cue-key="'+key+'"][data-irs-cue-index="'+i+'"]');
         if(b){
           b.setAttribute('aria-pressed',String(effectiveLit(key,i)));
-          b.textContent=(i===0?'چپ':'راست')+(effectiveLit(key,i)?' · ON':' · OFF');
+          b.textContent=(i===0?'Left':'Right')+(effectiveLit(key,i)?' · ON':' · OFF');
         }
       }
     }
@@ -110,10 +110,10 @@
     panel.id='irsCueTestPanel';
     panel.setAttribute('aria-label','IRS ISDU cue light test controls');
     const heading=document.createElement('h2');
-    heading.textContent='IRS · تست چراغ‌های ENT / CLR';
+    heading.textContent='IRS · ENT / CLR Lamp Test';
     panel.append(heading);
     const note=document.createElement('p');
-    note.textContent='هر کلید دو چراغ سفید مستقل دارد. فقط تست ظاهری است؛ اتصال واقعی به IRS بعداً انجام می‌شود.';
+    note.textContent='Each key has two independent white lamps. Visual test only; IRS logic is not yet connected.';
     panel.append(note);
     for(const key of KEYS){
       const row=document.createElement('div');
@@ -135,10 +135,10 @@
     const actions=document.createElement('div');
     actions.className='irs-cue-actions';
     for(const [label,act] of [
-      ['ENT هر دو',()=>setCue('ENT',!state.ENT.every(Boolean))],
-      ['CLR هر دو',()=>setCue('CLR',!state.CLR.every(Boolean))],
-      ['همه روشن',()=>setAll(true)],
-      ['همه خاموش',()=>setAll(false)]
+      ['ENT Both',()=>setCue('ENT',!state.ENT.every(Boolean))],
+      ['CLR Both',()=>setCue('CLR',!state.CLR.every(Boolean))],
+      ['All On',()=>setAll(true)],
+      ['All Off',()=>setAll(false)]
     ]){
       const b=document.createElement('button');
       b.type='button';b.textContent=label;b.addEventListener('click',act);actions.append(b);
