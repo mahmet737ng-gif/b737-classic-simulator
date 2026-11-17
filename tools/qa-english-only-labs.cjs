@@ -29,8 +29,12 @@ function walk(dir,files){
  }
 }
 const files=[];for(const root of roots)walk(root,files);
+// Immutable UPD-0012 overhead mosaic is separately hash-locked by its owner.
+// Do not modify or retranslate this page as an incidental global UI cleanup.
+const protectedOverhead=new Set(["panel-mosaic-lab/all-overhead/index.html","panel-mosaic-lab/all-overhead/stage.js"]);
+const activeFiles=files.filter(f=>!protectedOverhead.has(f.replaceAll(path.sep,"/")));
 const flagged=[];let scanned=0;
-for(const f of files){
+for(const f of activeFiles){
  const src=fs.readFileSync(f,"utf8"),matches=[...src.matchAll(/[\u0600-\u06FF]/g)];
  scanned++;if(!matches.length)continue;
  // Two CB viewers preserve Persian/Arabic search normalization as INPUT processing;
@@ -45,5 +49,5 @@ for(const f of files){
  flagged.push({path:f.replaceAll(path.sep,"/"),chars:matches.length,examples});
 }
 flagged.sort((a,b)=>b.chars-a.chars);
-console.log(JSON.stringify({scan:"English-only active test-lab HTML/JS/CSS",filesScanned:scanned,filesFlagged:flagged.length,flagged:flagged.slice(0,150)},null,2));
+console.log(JSON.stringify({scan:"English-only active test-lab HTML/JS/CSS (excluding immutably locked UPD-0012 source)",filesScanned:scanned,filesFlagged:flagged.length,flagged:flagged.slice(0,150)},null,2));
 if(process.argv.includes("--strict")&&flagged.length)process.exitCode=1;
