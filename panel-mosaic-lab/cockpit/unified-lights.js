@@ -22,7 +22,7 @@
   card.image.onerror=()=>{card.health.textContent='MISSING '+file;card.health.classList.add('bad');};
   card.image.src=mountedV2||assetRoot+file.split('/').map(encodeURIComponent).join('/')+'?v='+encodeURIComponent(version);
   card.image.alt=c.lines.join(' ')+' '+state;
-  card.stage.setAttribute('aria-label',c.id+' · '+state+' · کلیک برای حالت بعدی');
+  card.stage.setAttribute('aria-label',c.id+' · '+state+' · Click for next state');
   for(const button of card.buttons)button.setAttribute('aria-pressed',String(button.dataset.state===state));
  }
  function set(id,value,notify=true){
@@ -50,30 +50,30 @@
    card.append(heading,id,stage,buttons,health);grid.append(card);
    cards.set(c.id,{image:img,buttons:bs,stage,health});if(!states.has(c.id))states.set(c.id,'OFF');update(c);
   }
-  byId('unifiedLightStats').textContent=lights.length+' نوع چراغ · '+lights.filter(c=>c.states.includes('DIM_BLUE')).length+' نوع آبی سه‌حالته · '+shown.length+' نمایش داده‌شده · '+version;
+  byId('unifiedLightStats').textContent=lights.length+' lamp types · '+lights.filter(c=>c.states.includes('DIM_BLUE')).length+' three-state blue types · '+shown.length+' displayed · '+version;
  }
  // The single canonical gallery registry is also Unified's library. Do not duplicate
  // 193 SVG files or make a blocking GitHub API call on startup.
  function announceReady(){
   const count=lights.length;
   const open=byId('unifiedLightsOpen');
-  open.textContent='تست چراغ‌ها ('+count+')';
-  open.setAttribute('aria-label','کتابخانهٔ یونیفاید · '+count+' نوع چراغ');
+  open.textContent='Lamp Test ('+count+')';
+  open.setAttribute('aria-label','Unified Library · '+count+' lamp types');
   window.dispatchEvent(new CustomEvent('b737:unified-light-library-ready',{
    detail:{version,count,states:lights.reduce((n,c)=>n+c.states.length,0)}
   }));
  }
  function validateRegistry(reg){
-  if(!reg||!Array.isArray(reg.lights)||!reg.lights.length)throw Error('رجیستری فاقد چراغ است');
+  if(!reg||!Array.isArray(reg.lights)||!reg.lights.length)throw Error('No lamps in registry');
   const ids=new Set();
   for(const c of reg.lights){
-   if(ids.has(c.id))throw Error('شناسهٔ تکراری: '+c.id);
+   if(ids.has(c.id))throw Error('Duplicate ID: '+c.id);
    ids.add(c.id);
-   if(!c.assets?.OFF||!c.states?.includes('OFF')||!c.states.some(s=>s!=='OFF'))throw Error('حالت ناقص: '+c.id);
-   if(!c.face||c.face.width<=0||c.face.height<=0)throw Error('ابعاد نامعتبر: '+c.id);
+   if(!c.assets?.OFF||!c.states?.includes('OFF')||!c.states.some(s=>s!=='OFF'))throw Error('Incomplete State: '+c.id);
+   if(!c.face||c.face.width<=0||c.face.height<=0)throw Error('Invalid Dimensions: '+c.id);
    for(const state of c.states){
     const path=c.assets[state];
-    if(typeof path!=='string'||!/^[-a-zA-Z0-9_./]+\.svg$/.test(path)||path.includes('..')||path.startsWith('/'))throw Error('مسیر SVG نامعتبر: '+c.id+' '+state);
+    if(typeof path!=='string'||!/^[-a-zA-Z0-9_./]+\.svg$/.test(path)||path.includes('..')||path.startsWith('/'))throw Error('Invalid SVG path: '+c.id+' '+state);
    }
   }
  }
@@ -88,7 +88,7 @@
   loadPromise=(async()=>{
    try{
     const response=await fetch('../lights-test/registry.json?ts='+Date.now(),{cache:'no-store'});
-    if(!response.ok)throw Error('رجیستری چراغ‌ها در دسترس نیست');
+    if(!response.ok)throw Error('Lamp registry unavailable');
     const reg=await response.json();
     validateRegistry(reg);
     version=reg.version;registered=new Set(reg.lights.map(c=>c.id));
@@ -97,8 +97,8 @@
     loaded=true;loadError='';announceReady();
    }catch(error){
     loadError=error.message;
-    if(!loaded)byId('unifiedLightsOpen').textContent='چراغ‌ها · خطای اتصال';
-    byId('unifiedLightStats').textContent='خطای همگام‌سازی: '+loadError;
+    if(!loaded)byId('unifiedLightsOpen').textContent='Lamps · Connection Error';
+    byId('unifiedLightStats').textContent='Synchronization Error: '+loadError;
    }finally{button.disabled=false;}
   })();
   try{await loadPromise;}finally{loadPromise=null;}
