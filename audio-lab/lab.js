@@ -127,7 +127,7 @@
     if (realReady && realBank.has(soundKey)) {
       clearSound();
       realBank.play(soundKey, Number(byId("reviewVolume").value) / 100).catch(err => {
-        byId("realImportStatus").textContent = "خطا در پخش فایل واقعی: " + err.message;
+        byId("realImportStatus").textContent = "Real audio playback failed: " + err.message;
       });
       return;
     }
@@ -236,14 +236,14 @@
     byId("reviewTitle").textContent = title;
     const liveKey = keyFor(id,SOUND_TESTS[reviewIndex][3]);
     byId("reviewDescription").textContent = desc +
-       (realReady && realBank.has(liveKey) ? " · فایل واردشده: " + realBank.getSummary(liveKey).name
-         : " · صدای اصلی بارگذاری نشده (نسخه مصنوعی)");
+       (realReady && realBank.has(liveKey) ? " · Imported file: " + realBank.getSummary(liveKey).name
+         : " · No licensed recording; synthetic test tone");
 
     byId("reviewNote").value = curReview().note || "";
     byId("reviewProgressFill").style.width = (100 * complete / SOUND_TESTS.length) + "%";
-    byId("reviewSummary").textContent = "ارزیابی‌شده: " + complete + " از " + SOUND_TESTS.length +
-      " | تأیید: " + approved + " | نیاز به اصلاح: " + fix +
-      " | وضعیت فعلی: " + ({ approved: "تأیید", fix: "اصلاح", untested: "تست‌نشده" }[curReview().status] || "تست‌نشده");
+    byId("reviewSummary").textContent = "Reviewed: " + complete + " of " + SOUND_TESTS.length +
+      " | Approved: " + approved + " | Needs revision: " + fix +
+      " | Current status: " + ({ approved: "Approved", fix: "Needs Revision", untested: "Not Tested" }[curReview().status] || "Not Tested");
     byId("reviewPrev").disabled = reviewIndex === 0;
     byId("reviewNext").disabled = reviewIndex === SOUND_TESTS.length - 1;
     byId("reviewApprove").style.borderColor = curReview().status === "approved" ? "#80e4bd" : "";
@@ -294,8 +294,8 @@
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(report);
       else {const t=document.createElement("textarea");t.value=report;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();}
-      byId("reviewSummary").textContent = "گزارش کپی شد؛ می‌توانی آن را در چت بفرستی.";
-    } catch (_) { byId("reviewSummary").textContent = "کپی خودکار ممکن نیست؛ از دانلود JSON استفاده کن."; }
+      byId("reviewSummary").textContent = "Report copied; it can be shared in chat.";
+    } catch (_) { byId("reviewSummary").textContent = "Automatic copy failed; download the JSON report."; }
   });
   byId("reviewDownload").addEventListener("click", () => {
     const data = new Blob([JSON.stringify(reportReview(),null,2)],{type:"application/json"});
@@ -305,7 +305,7 @@
     setTimeout(()=>URL.revokeObjectURL(url),250);
   });
   byId("reviewReset").addEventListener("click", () => {
-    if (!confirm("تمام نتایج تست صدا پاک شوند؟")) return;
+    if (!confirm("Clear all sound test results?")) return;
     review = []; reviewIndex = 0; saveReview(); clearSound(); renderReview();
   });
 
@@ -323,17 +323,17 @@
     const key=byId("realTarget").value;
     const entry=realReady?realBank.getSummary(key):null;
     byId("realImportStatus").textContent = realReady
-      ? "فایل‌های واقعی واردشده در این مرورگر: "+realBank.count+" / "+optionKeys.size+
-      " | بقیه هشدارها صدای آزمایشی دارند."
-      : "IndexedDB در دسترس نیست؛ می‌توان صداها را به صورت مصنوعی تست کرد.";
+      ? "Imported recordings in this browser: "+realBank.count+" / "+optionKeys.size+
+      " | Other warnings use synthetic test tones."
+      : "IndexedDB unavailable; synthetic sounds can still be tested.";
     byId("realCurrentClip").textContent = entry
-      ? "فایل انتخابی: "+entry.name+" ("+Math.round(entry.bytes/1024)+" KB)"
-      : "برای این هشدار هنوز فایل واقعی وارد نشده است.";
+      ? "Selected file: "+entry.name+" ("+Math.round(entry.bytes/1024)+" KB)"
+      : "No recording imported for this warning.";
     renderReview();
   }
   const persistOne=async(key,file)=>{
     if(!realReady)throw Error("Browser database not ready");
-    if(!validAudioFile(file))throw Error("فرمت فایل نامعتبر است یا حجم آن بیش از ۴۰ مگابایت است.");
+    if(!validAudioFile(file))throw Error("Unsupported file format or size greater than 40 MB.");
     // Decode before saving to catch invalid WAV/MP3. Decode also acts as a playback integrity check.
     const AC=window.AudioContext||window.webkitAudioContext;
     if(!AC)throw Error("No audio decoder supported");
@@ -355,9 +355,9 @@
     if(!file)return;
     try{
       const duration=await persistOne(byId("realTarget").value,file);
-      byId("realImportStatus").textContent = "بارگذاری و دیکد موفق: "+file.name+" ("+duration+")";
+      byId("realImportStatus").textContent = "Loaded and decoded: "+file.name+" ("+duration+")";
       refreshImportUI();
-    }catch(e){byId("realImportStatus").textContent="خطا: "+e.message;}
+    }catch(e){byId("realImportStatus").textContent="Error: "+e.message;}
     input.value="";
   });
   byId("realMultipleFiles").addEventListener("change",async()=>{
@@ -366,30 +366,30 @@
     const failed=[];
     for(const file of files){
       const key=suggestKey(file.name,SOUND_TESTS);
-      if(!key||!optionKeys.has(key)){failed.push(file.name+": نام قابل تطبیق نیست");continue;}
+      if(!key||!optionKeys.has(key)){failed.push(file.name+": filename has no matching warning ID");continue;}
       try{await persistOne(key,file);success++;}catch(e){failed.push(file.name+": "+e.message);}
     }
     refreshImportUI();
-    byId("realImportStatus").textContent="ورود دسته‌جمعی: "+success+" فایل ثبت شد. "+(failed.length? "موارد ناموفق: "+failed.join(" | "):"");
+    byId("realImportStatus").textContent="Batch Import: "+success+" files imported. "+(failed.length? "Failures: "+failed.join(" | "):"");
     input.value="";
   });
 
   byId("diagnoseImported").addEventListener("click",async()=>{
     if(!realReady||realBank.count===0){
-      byId("realDiagnostics").textContent="هیچ فایل واقعی برای آزمایش وارد نشده است.";
+      byId("realDiagnostics").textContent="No recordings have been imported for testing.";
       return;
     }
     const AC=window.AudioContext||window.webkitAudioContext;
-    if(!AC){byId("realDiagnostics").textContent="مرورگر AudioContext ندارد.";return;}
+    if(!AC){byId("realDiagnostics").textContent="AudioContext unavailable in this browser.";return;}
     const ctx=new AC();
     let pass=0;const issues=[];
     try{
       for(const [key,item] of realBank.cache.entries()){
-        byId("realDiagnostics").textContent="آزمون "+(pass+issues.length+1)+" / "+realBank.count+": "+item.name;
+        byId("realDiagnostics").textContent="Test "+(pass+issues.length+1)+" / "+realBank.count+": "+item.name;
         try{
           const decoded=await ctx.decodeAudioData(await item.blob.arrayBuffer());
           if(!decoded||!Number.isFinite(decoded.duration)||decoded.duration<=0)
-            throw Error("زمان یا دادهٔ نامعتبر");
+            throw Error("Invalid duration or audio data");
           let peak=0,energy=0,n=0,hardClip=0;
           for(let ch=0;ch<decoded.numberOfChannels;ch++){
             const samples=decoded.getChannelData(ch);
@@ -401,21 +401,21 @@
             }
           }
           const rms=n?Math.sqrt(energy/n):0;
-          if(rms<.0003)issues.push(item.name+": تقریباً بی‌صداست");
-          else if(hardClip>n*.02)issues.push(item.name+": احتمال کلیپینگ شدید");
+          if(rms<.0003)issues.push(item.name+": is nearly silent");
+          else if(hardClip>n*.02)issues.push(item.name+": possible severe clipping");
           else pass++;
         }catch(e){issues.push(item.name+": "+e.message);}
       }
     }finally{await ctx.close().catch(()=>{});}
-    byId("realDiagnostics").textContent="بررسی پایان یافت: "+pass+" سالم از "+
-      realBank.count+" فایل. "+(issues.length?"هشدار: "+issues.join(" | "):"هیچ اشکال اولیه‌ای تشخیص داده نشد.")+
-      " (این تست اصالت ضبط یا صحت صدای 737 را تأیید نمی‌کند.)";
+    byId("realDiagnostics").textContent="Analysis completed: "+pass+" healthy of "+
+      realBank.count+" files. "+(issues.length?"Warnings: "+issues.join(" | "):"No preliminary issues detected.")+
+      " (This test does not verify the origin or accuracy of 737 sounds.)";
   });
 
   byId("deleteCurrent").addEventListener("click",async()=>{
     if(!realReady)return;
     try{await realBank.remove(byId("realTarget").value);refreshImportUI();}
-    catch(e){byId("realImportStatus").textContent="خطا: "+e.message;}
+    catch(e){byId("realImportStatus").textContent="Error: "+e.message;}
   });
   realBank.init().then(()=>{realReady=true;refreshImportUI();})
     .catch((e)=>{realReady=false;refreshImportUI();
