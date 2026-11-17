@@ -33,6 +33,10 @@ const flagged=[];let scanned=0;
 for(const f of files){
  const src=fs.readFileSync(f,"utf8"),matches=[...src.matchAll(/[\u0600-\u06FF]/g)];
  scanned++;if(!matches.length)continue;
+ // Two CB viewers preserve Persian/Arabic search normalization as INPUT processing;
+ // these characters are never UI labels and must not be altered or removed.
+ if(/cb-panel-lab\/(?:viewer|photo-viewer-v2)\.js$/.test(f.replaceAll(path.sep,"/")) &&
+    src.split("\n").filter(line=>/[\u0600-\u06FF]/.test(line)).every(line=>line.includes("function normalize(s)")))continue;
  const lines=src.split("\n"),examples=[];
  for(let i=0;i<lines.length;i++)if(/[\u0600-\u06FF]/.test(lines[i])){
   examples.push({line:i+1,excerpt:lines[i].trim().slice(0,160)});
