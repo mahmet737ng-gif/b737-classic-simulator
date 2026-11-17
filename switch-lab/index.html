@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -61,12 +61,12 @@ main{max-width:1260px;margin:auto;padding:18px}.controls{display:flex;align-item
 </style>
 </head>
 <body>
-<header><h1>B737 Classic — Switch Design Lab</h1><p>آزمایش مستقل سوییچ‌های کاکپیت، با استفاده از تصاویر و منطق موجود در مخزن؛ بدون تغییر پنل‌های قفل‌شده.</p></header>
+<header><h1>B737 Classic — Switch Design Lab</h1><p>Independent cockpit switch lab using existing source assets and logic without changing locked panels.</p></header>
 <main>
-<div class="controls"><button id="reset">بازنشانی همه</button><button id="copy">کپی وضعیت JSON</button><a href="../fuel-panel/" target="_blank" rel="noopener">پنل سوخت</a><a href="../flight-controls-panel/" target="_blank" rel="noopener">Flight Controls</a><a href="registry.json" target="_blank" rel="noopener">رجیستری سوییچ‌ها</a><span class="version">SWITCH LAB v0.1.1</span></div>
+<div class="controls"><button id="reset">Reset All</button><button id="copy">Copy State JSON</button><a href="../fuel-panel/" target="_blank" rel="noopener">Fuel Panel</a><a href="../flight-controls-panel/" target="_blank" rel="noopener">Flight Controls</a><a href="registry.json" target="_blank" rel="noopener">Switch Registry</a><span class="version">SWITCH LAB v0.1.1</span></div>
 <div class="grid" id="grid" aria-live="off"></div>
-<section class="log"><div><p>آخرین رویداد</p><div id="status" aria-live="polite">در حال بارگذاری رجیستری...</div><p>این آزمایشگاه صرفاً رفتار کنترل‌ها را آزمایش می‌کند؛ هنوز به مدل سیستم‌های هواپیما متصل نشده است.</p></div><div><p>وضعیت فعلی تمام سوییچ‌ها</p><pre id="stateView">{}</pre></div></section>
-<footer>عکس‌های تأییدشده از مسیرهای اصلی فراخوانی می‌شوند و هیچ فایلی از Fuel Panel، Flight Controls یا Vector Lab بازنویسی نمی‌شود. مدل روتاری و دکمه فشاری نمونه آزمایشی هستند، نه گرافیک نهایی مصوب. استفاده برای آموزش/توسعه شبیه‌ساز؛ نه ناوبری عملیاتی.</footer>
+<section class="log"><div><p>Last Event</p><div id="status" aria-live="polite">Loading Switch Registry…</div><p>This lab tests interaction behavior only; aircraft systems are not yet connected.</p></div><div><p>Current State of All Switches</p><pre id="stateView">{}</pre></div></section>
+<footer>Approved images are loaded from their original paths. No Fuel Panel, Flight Controls or Vector Lab assets are changed. Rotary and pushbutton models are prototypes, not final approved graphics. Simulator training and development only.</footer>
 </main>
 <script src="../flight-controls-panel/fcom-control-mechanics.js"></script>
 <script>
@@ -109,7 +109,7 @@ function frames(type,c){
  return '<button class="sprite '+(type==="toggle-3-horizontal"?"nav":type==="toggle-spring"?"spring":"")+'" id="control-'+c.id+'" aria-label="'+c.label+'">'+pictures.map(([p,src])=>'<img data-pos="'+p+'" src="'+src+'" draggable="false" alt="">').join("")+'</button>';
 }
 function visual(c){
- if(c.type==="guarded")return '<div class="guard-assembly" id="assembly-'+c.id+'">'+frames("guarded",c)+'<button class="guard-lid" id="lid-'+c.id+'" aria-label="باز یا بسته کردن گارد"><i></i></button></div>';
+ if(c.type==="guarded")return '<div class="guard-assembly" id="assembly-'+c.id+'">'+frames("guarded",c)+'<button class="guard-lid" id="lid-'+c.id+'" aria-label="Open or Close Guard"><i></i></button></div>';
  if(c.type==="rotary")return '<button class="dial standard-asset" id="control-'+c.id+'" aria-label="Rotary selector"><img class="knob-asset" src="'+asset("rotary_standard")+'" alt="" draggable="false"></button>';
  if(c.type==="momentary")return '<button class="pushbutton" id="control-'+c.id+'">PRESS<br>TEST</button>';
  return frames(c.type,c);
@@ -209,7 +209,7 @@ function mount(){
   card.innerHTML='<div class="card-header"><div><h2>'+c.label+'</h2><div class="sub">'+c.type.toUpperCase()+'</div></div><div class="sub">'+c.id+'</div></div>'+
     '<div class="stage"><div class="socket-label">B737 CLASSIC</div>'+visual(c)+'</div>'+
     '<div class="state"><b>—</b><small>—</small></div><div class="actions"></div>'+
-    '<p class="note">'+(c.note||({"toggle-2":"دارایی OFF/ON تأییدشده؛ قاب و محور ثابت.","toggle-3-horizontal":"سه وضعیت افقی واقعی؛ بدون تغییر تصاویر مصوب.","guarded":"در حالت بسته دسترسی به اهرم محدود است."}[c.type]||"نمونهٔ آزمایش تعامل."))+'</p>';
+    '<p class="note">'+(c.note||({"toggle-2":"Approved OFF/ON artwork; fixed bezel and pivot.","toggle-3-horizontal":"Real three-position horizontal toggle; source images unchanged.","guarded":"Closed guard restricts switch access."}[c.type]||"Interaction prototype."))+'</p>';
   grid.appendChild(card);eventButtons(c,card);
  });
  registry.controls.forEach(bind);render();
@@ -221,11 +221,11 @@ try{
  registry.controls.forEach(c=>{const v=saved[c.id],valid=c.type==="guarded"?(v&&c.states.includes(v.value)&&["open","closed"].includes(v.guard)):c.states.includes(v);
   state[c.id]=valid?v:c.type==="guarded"?{value:c.default,guard:c.guard_default}:c.default;
  });
- mount();announced("رجیستری بارگذاری شد — "+registry.controls.length+" مدل تعاملی آمادهٔ تست");
+ mount();announced("Registry loaded — "+registry.controls.length+" interactive control models available for testing");
  $("#reset").onclick=()=>{registry.controls.forEach(c=>state[c.id]=c.type==="guarded"?{value:c.default,guard:c.guard_default}:c.default);persist();render();announced("RESET — all prototype switches restored")};
- $("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(state,null,2));announced("وضعیت JSON کپی شد")}catch(e){announced("کپی خودکار مجاز نیست؛ از پنجرهٔ وضعیت کپی کنید")}};
+ $("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(state,null,2));announced("State JSON copied")}catch(e){announced("Automatic copying is not permitted; copy from the state panel.")}};
  window.B737SwitchLab={getState:()=>JSON.parse(JSON.stringify(state)),getRegistry:()=>registry};
-}catch(e){announced("خطا در بارگذاری رجیستری: "+e.message);}
+}catch(e){announced("Registry load error: "+e.message);}
 })();
 </script>
 </body></html>
