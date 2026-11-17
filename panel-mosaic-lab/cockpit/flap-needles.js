@@ -32,7 +32,7 @@
  function independent(p){const state=engine.setIndependent(p);paint();return state;}
  function controls(){
   const section=document.createElement('section');section.className='flap-needle-tools';section.id='unifiedFlapNeedles';
-  section.innerHTML='<h2>Flap Indicator · L / R</h2><p class="muted">R همیشه زیر L است؛ در حرکت یکسان، R دیده نمی‌شود.</p><label>LEFT (L)<select id="flapLeftTest"></select></label><label>RIGHT (R)<select id="flapRightTest"></select></label><output class="flap-status" id="flapNeedleStatus"></output><button type="button" id="flapFollowCommon">بازگشت به سیگنال مشترک فلپ</button><small>اختلاف دو نیدل فقط تست تصویری است. تشخیص و هشدار FLAP SPLIT تابع آستانه‌های مستند سیستم فلپ خواهد بود.</small>';
+  section.innerHTML='<h2>Flap Indicator · L / R</h2><p class="muted">R is always underneath L; when both indications match, R is hidden.</p><label>LEFT (L)<select id="flapLeftTest"></select></label><label>RIGHT (R)<select id="flapRightTest"></select></label><output class="flap-status" id="flapNeedleStatus"></output><button type="button" id="flapFollowCommon">Return to Common Flap Signal</button><small>Independent needle deflection is a visual test only. FLAP SPLIT detection and warnings require documented thresholds.</small>';
   const before=document.querySelector('.cdu-tools')||document.querySelector('.overhead-tools');before.before(section);
   leftInput=section.querySelector('#flapLeftTest');rightInput=section.querySelector('#flapRightTest');status=section.querySelector('#flapNeedleStatus');
   for(const sel of [leftInput,rightInput])for(const stop of model.stops){const o=document.createElement('option');o.value=String(stop.value);o.textContent=stop.value===0?'UP':String(stop.value);sel.append(o);}
