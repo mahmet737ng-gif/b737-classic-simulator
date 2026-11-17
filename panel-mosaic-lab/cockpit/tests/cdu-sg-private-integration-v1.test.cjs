@@ -391,3 +391,58 @@ test('source-only STAR populates last VIA/TO row and MOD becomes ACT on EXEC',()
  assert.equal(adapter.routeView(page).title,'ACT RTE');
  assert.equal(state.routeActivated,false);
 });
+
+
+test('VIA B11 at source SID DHN rejects with NOT IN DATABASE and preserves scratchpad',async()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const shared=routeAPI.create();shared.setConnected(true);
+ shared.setContext({origin:'OIII',destination:'OIMM'});
+ const sid={...procedure,ident:'DHN3A'};
+ const g={...geo,metadata:{...geo.metadata,ident:'DHN3A'},
+  features:[{type:'Feature',geometry:{type:'Point',coordinates:[52.72,35.254167]},
+   properties:{ident:'DHN',fmc_executable:false}}]};
+ shared.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',procedure:sid,geometry:g});
+ const state=Object.assign(engine.makeState('FLIGHT_PLAN'),{subpage:2,
+  chapter11RoutePages:true,active:{ORIGIN:'OIII',DEST:'OIMM'},
+  scratch:'B11'});
+ const pages={FLIGHT_PLAN:{}};
+ let called=0;
+ const bridge={isConnected:()=>true,async request(url){
+  const q=new URL(url,'https://localhost');
+  assert.equal(q.pathname,'/api/cdu/airway-check');
+  assert.equal(q.searchParams.get('from'),'DHN');
+  assert.equal(q.searchParams.get('lat'),'35.254167');
+  assert.equal(q.searchParams.get('lon'),'52.72');
+  const airway=q.searchParams.get('airway');
+  called++;
+  return {ok:true,json:async()=>({available:true,valid:airway==='B411',
+   from:'DHN',airway})};
+ }};
+ const api=makeSelector(state,engine,pages,bridge,shared,()=>{},converter);
+ api.attach();
+ assert.equal(ch11.routeCell(state,'LSK_L2').field,'VIA1');
+ assert.equal(api.beforeKey('LSK_L2'),true);
+ await tick();await tick();
+ assert.equal(state.message,'NOT IN DATABASE');
+ assert.equal(state.scratch,'B11');
+ assert.equal(state.stagedRoute.VIA1,undefined);
+ state.scratch='B411';
+ assert.equal(api.beforeKey('LSK_L2'),true);
+ await tick();await tick();
+ assert.equal(state.stagedRoute.VIA1,'B411');
+ assert.equal(state.scratch,'');
+ assert.equal(state.message,'');
+ assert.equal(called,2);
+ api.detach();
+});
+test('a direct CDU LSK cannot insert an unverified airway into RTE',()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const state=Object.assign(engine.makeState('FLIGHT_PLAN'),{subpage:2,
+  chapter11RoutePages:true,active:{ORIGIN:'OIII',DEST:'OIMM'},scratch:'B11'});
+ engine.press(state,{FLIGHT_PLAN:{}},'CDU_CAPT_LSK_L1');
+ assert.equal(state.message,'NOT IN DATABASE');
+ assert.equal(state.scratch,'B11');
+ assert.equal(state.stagedRoute.VIA1,undefined);
+});
