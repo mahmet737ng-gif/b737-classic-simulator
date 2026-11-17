@@ -1,7 +1,7 @@
-/* PD-COMM-TFR-0001 — the reference orange bar is active-side only. */
+/* PD-COMM-TFR-0002 — orange bar marks the INACTIVE/STANDBY display. */
 #unified-pedestal-faceplates .pd-freq-mechanical[data-kind="COMM"] .pd-freq-index{display:none}
-#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="left"] .pd-freq-mechanical[data-mechanical-frequency$="-left"] .pd-freq-index,
-#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="right"] .pd-freq-mechanical[data-mechanical-frequency$="-right"] .pd-freq-index{
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="left"] .pd-freq-mechanical[data-mechanical-frequency$="-right"] .pd-freq-index,
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="right"] .pd-freq-mechanical[data-mechanical-frequency$="-left"] .pd-freq-index{
  display:block;left:5%;right:5%;top:40%;bottom:auto;width:auto;height:14%;
  clip-path:none;border-radius:2px;
  background:linear-gradient(180deg,#ffd0a0 0%,#ff9656 18%,#fc884d 56%,#f67d38 85%,#d65c26 100%);

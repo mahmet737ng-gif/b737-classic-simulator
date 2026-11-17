@@ -1,0 +1,24 @@
+/* PD-COMM-TEST-0001: 98px recessed button centered over 1799x815 original COMM test hole. */
+#unified-pedestal-faceplates .pd-vhf-comm-test{
+ position:absolute;left:48.36%;top:81.72%;width:5.45%;aspect-ratio:1/1;
+ height:auto;transform:translate(-50%,-50%);z-index:7;box-sizing:border-box;
+ appearance:none;-webkit-appearance:none;display:block;margin:0;padding:0;
+ background:radial-gradient(circle at 47% 44%,#090c0f 0 67%,#7e8892 75%,#262b30 82%,#15191c 100%);
+ border:0;border-radius:50%;
+ box-shadow:inset 0 2px 4px #000a,0 1px 2px #141719;
+ cursor:pointer;touch-action:none;pointer-events:auto;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test .pd-comm-test-cap{
+ position:absolute;inset:13%;border-radius:50%;pointer-events:none;
+ background:radial-gradient(circle at 33% 28%,#40464b 0%,#282e32 30%,#171b1e 64%,#090b0d 96%);
+ box-shadow:inset 0 2px 4px #000a,inset 0 -1px 1px #87919a44,0 0 0 1px #0d1013;
+ transition:inset 65ms ease-out,box-shadow 65ms ease-out;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test[data-pressed="true"] .pd-comm-test-cap{
+ inset:17%;background:radial-gradient(circle at 46% 38%,#22272a,#0a0d0f 80%);
+ box-shadow:inset 0 2px 5px #000e,0 0 0 1px #0e1113;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test:focus-visible{outline:2px solid #83d2ef;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-vhf-comm-test .pd-comm-test-cap{transition:none}
+}
