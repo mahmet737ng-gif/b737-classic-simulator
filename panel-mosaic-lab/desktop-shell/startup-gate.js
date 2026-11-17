@@ -21,7 +21,7 @@
     result.main=result.main&&d.documentElement.dataset.engineIndication==='CONVENTIONAL'&&photos.every(img=>img&&img.complete&&img.naturalWidth>0);
    }
    result.controls=!!w.B737ISNCockpitV1&&!!d.querySelector('[data-mcp-hardware="AT_ARM"]');
-   result.overhead=!!d.querySelector('#overheadStatus')?.textContent?.includes('متصل');
+   result.overhead=!!d.querySelector('#overheadStatus')?.textContent?.includes('Connected');
    result.cdu=!!d.querySelector('.cdu-station[data-seat="CAPT"].ready')&&!!d.querySelector('.cdu-station[data-seat="FO"].ready');
    result.usable=result.profile&&result.main&&result.controls;
   }catch{}
