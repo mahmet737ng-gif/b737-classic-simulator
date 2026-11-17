@@ -51,7 +51,7 @@
    flightLocation:null;
   const live=aircraftPosition&&Number.isFinite(aircraftPosition.lat)&&Number.isFinite(aircraftPosition.lon)?
    aircraftPosition:null;
-  if(mode==='PLAN')return route?.points?.[route.centerIndex]??threshold??selected??live;
+  if(mode==='PLAN')return threshold??route?.points?.[route.centerIndex]??selected??live;
   return live??selected??threshold;
  }
  function mount(win){
@@ -150,6 +150,10 @@
    const diagnostics=[];
    const sg=win.B737CduSgRouteV1?.snapshot();
    const reference=win.B737CduSgEHSIPreviewV1;
+    const scenario=win.B737UnifiedFlightScenarioV1;
+    const scenarioState=scenario?.getDiagnostics?.().active===true?
+     scenario.getState?.():null;
+    const trajectoryFlight=scenarioState?.icao===sg?.origin?scenarioState:null;
    for(const seat of SEATS){
     const screen=display(seat,native);
     if(!screen)continue;
@@ -219,7 +223,7 @@
      win.B737UnifiedFlightLocationV1?.getLocation?.(),sg);
     const project=mode==='PLAN'||Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
     reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
-     src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor);
+     src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor,trajectoryFlight);
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
    const output=doc.getElementById('unifiedEfisSources');
@@ -276,7 +280,7 @@
   });
   doc.getElementById('unifiedFmcFail')?.addEventListener('change',e=>win.B737FmcSystemsBridgeV1?.setFailure?.(e.target.checked));
   for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
-  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state','b737:flight-location-reference'])win.addEventListener(event,schedule);
+  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state','b737:flight-location-reference','b737:flight-scenario-state'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
   return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange),
@@ -285,7 +289,7 @@
      mcpPower:screens[seat].host.dataset.mcpHeadingPower==='true',
      mcpHeadingReference:screens[seat].host.dataset.mcpHeadingReference,
      displayReference:'MAGNETIC',
-     routeReference:screens[seat].svg.querySelector('[data-cdu-sg-status]')?.textContent??null,
+     routeReference:screens[seat].svg.querySelector('[data-cdu-sg-reference]')?.getAttribute('data-route-state')??null,
      magneticVariationDeg:screens[seat].host.dataset.magneticVariationDeg===''?null:
       Number(screens[seat].host.dataset.magneticVariationDeg),
      headingMagneticDeg:screens[seat].host.dataset.headingMagnetic===''?null:
