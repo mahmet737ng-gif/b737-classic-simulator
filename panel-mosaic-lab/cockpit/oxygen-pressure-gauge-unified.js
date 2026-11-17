@@ -25,11 +25,11 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedOxygenPressureGauge';
   const title=document.createElement('h2');title.textContent='CREW OXYGEN · PRESSURE';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='گیج و نیدل مستقل بر اساس عکس مرجع؛ مقدار ۱۲۰۰ PSI فقط پیش‌فرضِ تست تصویری است و هنوز به سیستم اکسیژن متصل نیست.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='Independent gauge and needle from the source photo. The 1200 PSI value is a visual test default and is not connected to the aircraft oxygen system.';section.append(note);
   const label=document.createElement('label');label.textContent='Oxygen pressure (PSI)';label.style.display='block';label.style.direction='ltr';
   input=document.createElement('input');Object.assign(input,{type:'range',min:'0',max:'2000',step:'10'});input.style.width='100%';input.style.accentColor='#f4eee2';input.addEventListener('input',()=>setPressurePsi(Number(input.value)));
   output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';label.append(input,output);section.append(label);
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به مقدار عکس مرجع';reset.addEventListener('click',()=>setPressurePsi(model.initialPsi));section.append(reset);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Restore Source Photo Value';reset.addEventListener('click',()=>setPressurePsi(model.initialPsi));section.append(reset);
   const previous=document.querySelector('#unifiedDuctPressureNeedles');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);paint();
  }
  window.B737UnifiedOxygenPressureGauge=Object.freeze({getPressurePsi:()=>currentPsi,setPressurePsi});
