@@ -51,7 +51,7 @@
         </div>
         <div class="irs-isdu-unit-footer">ISDU · AFT OVERHEAD</div>
       </div>
-      <p class="irs-isdu-disclaimer" dir="rtl">این مرحله فقط نمایش ظاهری و واکنش بصری کلیدهاست. هیچ مختصات یا فرمانی هنوز به موتور IRS، FMC یا برق ارسال نمی‌شود. چیدمان اورهد و ۱۸ سوئیچ محافظ‌دار قفل‌شده بدون تغییر باقی می‌مانند.</p>
+      <p class="irs-isdu-disclaimer" dir="ltr">This stage demonstrates only display and key visual feedback. No positions or commands are sent to IRS, FMC or electrical systems. The overhead layout and 18 protected guarded switches remain unchanged.</p>
       <div class="irs-isdu-key-status" role="status" dir="ltr">VISUAL PREVIEW · NO IRS BACKEND</div>`;
     document.body.append(dlg);
     const unit=dlg.querySelector('.irs-isdu-unit');
