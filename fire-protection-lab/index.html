@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B737 Classic | Fire Protection Panel — V3</title>
@@ -50,21 +50,21 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 </head>
 <body>
 <header>
-<div><h1>B737 CLASSIC · FIRE PROTECTION</h1><p>پنل آزمایشی مستقل با تصاویر اصلی دیتابیس، تست خرابی‌ها، حلقه‌های تشخیص و هندل‌های اطفای حریق</p></div>
+<div><h1>B737 CLASSIC · FIRE PROTECTION</h1><p>Independent fire-protection test panel with source photos, fault injection, detection loops and fire handles</p></div>
 <div class="row"><a href="../fire-handle-lab/" target="_blank" rel="noopener">Fire Handle Lab</a><span class="status">FCOM 8.10 / 8.20 · V3.2 QA</span></div>
 </header>
 <main>
 <section class="viewer">
-<div class="row"><h2>تصویر پایه و لایه‌های دینامیک</h2><div class="row"><button id="edit" aria-pressed="false">تنظیم موقعیت تصاویر</button><button id="layout-reset">بازنشانی چیدمان</button></div></div>
+<div class="row"><h2>Base Photo and Dynamic Layers</h2><div class="row"><button id="edit" aria-pressed="false">Adjust Source Positions</button><button id="layout-reset">Reset Layout</button></div></div>
 <div class="board-wrap"><div id="board"><img id="base" src="../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png" alt="Approved Fire Protection blank cockpit background"><div id="overlays"></div></div></div>
-<p class="small">موقعیت‌ها از روی تصویر ارسالی اندازه‌گیری و برای هر خانه مستقل تنظیم شده‌اند. تأیید پیکسلی نهایی همچنان باز است؛ ویرایش موقعیت تنها در مرورگر ذخیره می‌شود و هیچ تصویر قفل‌شده‌ای تغییر نمی‌کند.</p>
+<p class="small">Positions were measured from the user reference photo and independently registered for each aperture. Final pixel-level approval is pending; edits are stored locally and locked source photos remain unchanged.</p>
 <div class="legend"><span>RED · Fire / Wheel Well</span><span>AMBER · OVHT / Fault / Bottle</span><span>GREEN · EXT circuit tests</span></div>
-<details class="group"><summary>خروجی‌های سیستم و هشدار (باز کردن)</summary><div id="indicators" class="indicators"></div></details>
+<details class="group"><summary>System and Warning Outputs (Expand)</summary><div id="indicators" class="indicators"></div></details>
 </section>
 <aside class="control-panel">
 <div class="row"><h2>Fire Protection · Test Bench</h2><button id="reset" class="reset">RESET ALL</button></div>
 <div class="group">
-<h3>OVHT DET · دو موتور مستقل</h3><div id="loop-controls"><div class="small">ENG 1 · OVHT DET</div><div class="buttons"><button data-unit="ENG1" data-selector="A">A</button><button data-unit="ENG1" data-selector="NORMAL">NORMAL</button><button data-unit="ENG1" data-selector="B">B</button></div><div class="small">ENG 2 · OVHT DET</div><div class="buttons"><button data-unit="ENG2" data-selector="A">A</button><button data-unit="ENG2" data-selector="NORMAL">NORMAL</button><button data-unit="ENG2" data-selector="B">B</button></div></div>
+<h3>OVHT DET · Two Independent Engines</h3><div id="loop-controls"><div class="small">ENG 1 · OVHT DET</div><div class="buttons"><button data-unit="ENG1" data-selector="A">A</button><button data-unit="ENG1" data-selector="NORMAL">NORMAL</button><button data-unit="ENG1" data-selector="B">B</button></div><div class="small">ENG 2 · OVHT DET</div><div class="buttons"><button data-unit="ENG2" data-selector="A">A</button><button data-unit="ENG2" data-selector="NORMAL">NORMAL</button><button data-unit="ENG2" data-selector="B">B</button></div></div>
 <h3>Spring-loaded Tests</h3><div class="buttons" id="tests"><button data-test="EXT_1">EXT 1</button><button data-test="EXT_2">EXT 2</button><button data-test="FAULT_INOP">FAULT/INOP</button><button data-test="OVHT_FIRE">OVHT/FIRE</button></div>
 <button id="cutout">FIRE WARN · BELL CUTOUT</button>
 </div>
@@ -74,9 +74,9 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 <details class="group"><summary>Event / Interlock feedback</summary><div id="message">Ready</div><pre id="log">READY · simulated airplane</pre></details>
 </aside>
 <section class="bottom">
-<h2>محدوده اعتبار نسخه</h2>
-<p>منطق نمایشی بر اساس FCOM فصل ۸، صفحات چاپی 8.10.1 تا 8.10.4 و 8.20.1 تا 8.20.8 است. تصاویر واقعی ENG 1/2 OVERHEAT، FAULT، APU DET INOP، BOTTLE DISCHARGED، WHEEL WELL و هندل‌های FIRE مستقیماً از دیتابیس مخزن بارگذاری می‌شوند. چراغ APU BOTTLE DISCHARGED اکنون یک جفت تصویر ON/OFF اختصاصی دارد و در ردیف چهارم ستون مرکزی قرار گرفته است. سه نشانگر سبز EXT TEST به صورت لنزهای مستقل نمایش داده می‌شوند. تطبیق ابعاد با تصویر واقعی هنوز نیازمند تأیید بصری است.</p>
-<p>خروجی قطع سوخت، هیدرولیک، Bleed و Generator در وضعیت شبیه‌ساز این آزمایشگاه محاسبه می‌شود، اما هنوز به موتورهای اصلی هواپیما متصل نشده است. این صفحه جایگزین بازبینی تصویری، استانداردهای ایمنی یا اعتبارسنجی عملکرد هواپیمای واقعی نیست.</p>
+<h2>Version Validation Limits</h2>
+<p>Display logic refers to FCOM Chapter 8, pp.8.10.1–8.10.4 and 8.20.1–8.20.8. ENG 1/2 OVERHEAT, FAULT, APU DET INOP, BOTTLE DISCHARGED, WHEEL WELL and FIRE handle photos are loaded from source assets. APU BOTTLE DISCHARGED has dedicated ON/OFF images in the central fourth row; three green EXT TEST lenses remain separate. Physical sizes still require visual approval.</p>
+<p>Fuel, hydraulic, bleed and generator cutout outputs are calculated by this lab, but not yet connected to the primary aircraft system engines. This is not a substitute for visual QA, safety standards or certified aircraft verification.</p>
 </section>
 </main>
 <script src="./engine.js"></script><script src="./geometry-v2.js"></script>
