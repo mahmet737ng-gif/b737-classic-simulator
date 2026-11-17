@@ -615,6 +615,15 @@ test('OIII DHN3A exact source commands produce verified magnetic track, altitude
  assert.ok(count>0,'MAP must show at least a segment of DHN3A at runway origin');
  assert.ok(nodes.some(n=>n.attrs['data-trajectory-leg']==='TRACK_TO_ALTITUDE'),
   'MAP must draw the 285-degree altitude-conditional departure track');
+ for(const mode of ['EXP_NAV','FULL_NAV']){
+  const preset={...modeled,mode};
+  const displayed=renderer.draw(svg,shared.snapshot(),mode,40,true,navSources.offsets,
+   physical.routeProjection(preset),{lat:35.682414,lon:51.333628});
+  assert.ok(displayed>0,mode+' must draw sourced route paths');
+  assert.ok(nodes.some(n=>n.attrs['data-trajectory-leg']==='TRACK_TO_ALTITUDE'),
+   mode+' must display runway heading/altitude track');
+ }
+
 });
 
 
@@ -671,4 +680,20 @@ test('CDU update does not replace the same rendered title and scratchpad each re
  const source=read('cdu-standalone-v6/app.js');
  assert.match(source,/nextVisualMarkup!==lastCduVisualMarkup/);
  assert.match(source,/lastCduVisualMarkup=nextVisualMarkup/);
+});
+
+
+test('all verified intermediate airway points reach LEGS in order, then the STAR fixes',()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const s=Object.assign(engine.makeState('LEGS'),{
+  chapter11RoutePages:true,active:{ORIGIN:'OIII',DEST:'OIMM'},
+  stagedRoute:{VIA1:'B411',TO1:'RABAM'},
+  verifiedToEntries:{TO1:{airway:'B411',to:'RABAM',origin:'OIII',destination:'OIMM',
+   source:'OWNER_WPNAVRTE_VERIFIED',fixes:['GIBAB','ITELO','MUSEG','RABAM']}}});
+ const first=ch11.view(s);
+ assert.equal(first.count,1);
+ assert.deepEqual(first.rows.slice(0,4).map(x=>x.valueL),
+  ['GIBAB','ITELO','MUSEG','RABAM']);
+ assert.ok(first.rows.every(x=>!x.valueL||x.valueL!=='IMKEN'));
 });
