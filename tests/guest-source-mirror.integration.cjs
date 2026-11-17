@@ -84,7 +84,20 @@ async function read(route,cookies){
  const acceptedExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=GIBAB&lat=35.254167&lon=52.72',
   {headers:{Cookie:first.cookies}});
  assert.equal(acceptedExit.status,200);
- assert.equal((await acceptedExit.json()).valid,true,'GIBAB is on B411 after DHN');
+ const firstSegment=await acceptedExit.json();
+ assert.equal(firstSegment.valid,true,'GIBAB is on B411 after DHN');
+ assert.deepEqual(firstSegment.fixes,['GIBAB']);
+ const fullExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=RABAM&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal(fullExit.status,200);
+ const fullRoute=await fullExit.json();
+ assert.equal(fullRoute.valid,true);
+ assert.deepEqual(fullRoute.fixes,['GIBAB','ITELO','MUSEG','RABAM'],
+  'Every intermediate waypoint must be preserved in order');
+ const opposite=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=NAGIN&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.deepEqual((await opposite.json()).fixes,['NAGIN'],
+  'Reverse airway traversal retains ordered source waypoint membership');
  const wrongExit=await get('/api/cdu/airway-check?from=DHN&airway=B411&to=IMKEN&lat=35.254167&lon=52.72',
   {headers:{Cookie:first.cookies}});
  assert.equal(wrongExit.status,200);
