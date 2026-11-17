@@ -287,7 +287,7 @@
    }
   }
   byId('atlasAbsolute').append(layer);
-  byId('toggleCount').textContent=registry.controls.length+' تاگل تعاملی · رفرنس جدید · '+registry.version;
+  byId('toggleCount').textContent=registry.controls.length+' interactive toggles · new references · '+registry.version;
   byId('toggleVisibility').onchange=e=>layer.classList.toggle('hidden',!e.target.checked);
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));
@@ -318,7 +318,7 @@
    const root=byId('atlasAbsolute');
    if(root.querySelector('.atlas-piece'))mount(layout);
    else{const observer=new MutationObserver(()=>{if(root.querySelector('.atlas-piece')){observer.disconnect();mount(layout);}});observer.observe(root,{childList:true});}
-  }catch(error){console.error(error);byId('toggleCount').textContent='خطا در نصب سوییچ‌ها: '+error.message;byId('toggleCount').setAttribute('role','alert');}
+  }catch(error){console.error(error);byId('toggleCount').textContent='Switch installation error: '+error.message;byId('toggleCount').setAttribute('role','alert');}
  }
  start();
 })();
