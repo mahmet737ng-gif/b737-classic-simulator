@@ -14,6 +14,9 @@ const USER = process.env.LAB_USER || 'Ali.m';
 const BUILTIN_SCRYPT = 'scrypt:e16e63d5777399754f7b87d6666a7768:575fd8471f434a6e088f38abde8e62ce9a9cec892bd70b69ff07593d0abed044b99e0b5cd93f36bd4c83e340e96fdc9d4ce2bbe2a762d6aa3098d2b1d680ba89';
 const PASSWORD_HASH = process.env.LAB_PASSWORD_SCRYPT || BUILTIN_SCRYPT;
 const MAX_DEVICES = 3;
+const UNLIMITED_USER = 'Taregh';
+// Disabled unless Railway provides the salted verifier via a protected variable.
+const UNLIMITED_PASSWORD_SCRYPT = process.env.LAB_TAREGH_PASSWORD_SCRYPT || '';
 const ACTIVE_FOR_MINUTES = 20;
 const TOKEN_COOKIE = 'ata24_session';
 const DEVICE_COOKIE = 'ata24_device';
@@ -221,9 +224,9 @@ function commonHeaders(req,res) {
 function redirect(res,location,extraHeaders={}) {
   res.writeHead(303,{Location:location,...extraHeaders});res.end();
 }
-function verifyPassword(pass) {
+function verifyPassword(pass, verifier=PASSWORD_HASH) {
   try {
-    const bits = PASSWORD_HASH.split(':');
+    const bits = verifier.split(':');
     if (bits.length!==3 || bits[0]!=='scrypt') return false;
     const target = Buffer.from(bits[2],'hex');
     const actual = crypto.scryptSync(String(pass),bits[1],target.length);
@@ -238,7 +241,7 @@ function loginHTML(error) {
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<meta name="robots" content="noindex,nofollow"><title>Secure Access | B737 Classic Simulator</title>'
     + '<style>*,*::before,*::after{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0%,#17384d,#09131f 55%,#060c14);color:#f1f6fa;font-family:system-ui,Arial,sans-serif;display:grid;place-items:center;padding:24px}.card{width:min(100%,425px);background:#101f2c;border:1px solid #31556e;border-radius:18px;padding:34px;box-shadow:0 24px 80px #0008}.eyebrow{color:#67c8f8;font:700 11px monospace;letter-spacing:.16em}h1{font-size:27px;line-height:1.2;margin:10px 0 7px}p{color:#9eb6c7;font-size:13px;line-height:1.6;margin:0 0 26px}label{display:block;font-size:12px;font-weight:650;color:#bcd2e2;margin:17px 0 7px}input{width:100%;padding:13px 14px;border-radius:9px;background:#0a1723;color:#fff;border:1px solid #39566b;font:inherit}input:focus{outline:2px solid #63bdf7}button{width:100%;padding:14px;border-radius:10px;background:#2689ba;color:#fff;border:0;font-weight:750;cursor:pointer;margin-top:23px}button:hover{background:#3aa8dd}.foot{font:11px monospace;color:#789aac;text-align:center;margin-top:23px}.notice{color:#ffbfbf;background:#4a2029;border:1px solid #a24b59;border-radius:8px;padding:12px;font-size:12px;margin-bottom:16px}</style></head>'
-    + '<body><main class="card"><span class="eyebrow">B737 CLASSIC / ATA 24</span><h1>B737 Classic Simulator</h1><p>Authorized access to the complete simulator. Up to three active browser devices.</p>'
+    + '<body><main class="card"><span class="eyebrow">B737 CLASSIC / ATA 24</span><h1>B737 Classic Simulator</h1><p>Authorized access to the complete simulator. Guest accounts allow three active devices; unlimited accounts have no concurrent-device cap.</p>'
     + errorHTML + '<form method="post" action="/api/login" autocomplete="on"><label for="user">Username</label><input id="user" name="username" autocomplete="username" required maxlength="100" autofocus>'
     + '<label for="pass">Password</label><input id="pass" name="password" type="password" autocomplete="current-password" required maxlength="200">'
     + '<button type="submit">SIGN IN</button></form><div class="foot">SESSION PROTECTED · INDEPENDENT TEST ENVIRONMENT</div></main></body></html>';
@@ -258,7 +261,7 @@ async function authorized(req) {
   // authorization check prevents hundreds of concurrent static requests
   // from serializing on the same PostgreSQL row lock.
   const result = await pool.query(
-    "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND last_seen>now()-interval '20 minutes'",
+    "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes')",
     [hash(token)]
   );
   return result.rowCount===1;
@@ -272,8 +275,10 @@ async function signIn(req,res) {
   const payload=new URLSearchParams(await body(req));
   const username=String(payload.get('username')||'');
   const password=String(payload.get('password')||'');
-  const valid=verifyPassword(password) && username===USER;
-  if (!valid) {
+  const tier=(username===UNLIMITED_USER&&UNLIMITED_PASSWORD_SCRYPT&&
+    verifyPassword(password,UNLIMITED_PASSWORD_SCRYPT))?'unlimited':
+    (username===USER&&verifyPassword(password,PASSWORD_HASH))?'guest':null;
+  if (!tier) {
     bucket.n++;attemptMap.set(ip,bucket);
     redirect(res,'/login?e=invalid');return;
   }
@@ -286,12 +291,15 @@ async function signIn(req,res) {
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(73724003)');
-    await client.query("DELETE FROM ata24_devices WHERE last_seen <= now() - interval '20 minutes'");
-    const same=await client.query('SELECT device_hash FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
-    const count=await client.query('SELECT count(*)::int AS total FROM ata24_devices');
-    if (same.rowCount>0 || count.rows[0].total<MAX_DEVICES) {
+    // Guest cap is independent: unlimited sessions never occupy guest slots.
+    await client.query("DELETE FROM ata24_devices WHERE account_tier='guest' AND last_seen <= now() - interval '20 minutes'");
+    const same=await client.query('SELECT account_tier FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
+    const count=await client.query("SELECT count(*)::int AS total FROM ata24_devices WHERE account_tier='guest'");
+    if (tier==='unlimited'||(same.rowCount>0&&same.rows[0].account_tier==='guest')||
+        count.rows[0].total<MAX_DEVICES) {
       await client.query('DELETE FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
-      await client.query('INSERT INTO ata24_devices(device_hash,session_hash,last_seen) VALUES($1,$2,now())',[hash(device),hash(token)]);
+      await client.query('INSERT INTO ata24_devices(device_hash,session_hash,last_seen,account_tier) VALUES($1,$2,now(),$3)',
+        [hash(device),hash(token),tier]);
       allowed=true;
     }
     await client.query('COMMIT');
@@ -302,7 +310,7 @@ async function signIn(req,res) {
   if (!allowed) { redirect(res,'/login?e=full');return; }
   redirect(res,'/',{'Set-Cookie':[
     cookie(req,DEVICE_COOKIE,device,60*60*24*30),
-    cookie(req,TOKEN_COOKIE,token,60*60*24*7)
+    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?60*60*24*30:60*60*24*7)
   ]});
 }
 async function readPrivateNavData(req){
@@ -363,10 +371,15 @@ async function handle(req,res) {
   }
   if (req.method==='POST' && url.pathname==='/api/pulse') {
     const token=cookies(req)[TOKEN_COOKIE];
-    if(token) await pool.query(
-      "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 AND last_seen>now()-interval '20 minutes'",
-      [hash(token)]
-    );
+    if(token) {
+      const updated=await pool.query(
+        "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes') RETURNING account_tier",
+        [hash(token)]
+      );
+      // Sliding renewal keeps an active unlimited session signed in.
+      if(updated.rows[0]?.account_tier==='unlimited')
+        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,60*60*24*30));
+    }
     res.writeHead(204);res.end();return;
   }
   if (req.method==='POST' && url.pathname==='/api/logout') {
@@ -461,6 +474,8 @@ async function handle(req,res) {
 async function start() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required: attach a Postgres service.');
   await pool.query('CREATE TABLE IF NOT EXISTS ata24_devices(device_hash text PRIMARY KEY,session_hash text UNIQUE NOT NULL,last_seen timestamptz NOT NULL DEFAULT now())');
+  // Migration preserves existing guest sessions and their original cap.
+  await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS account_tier text NOT NULL DEFAULT 'guest'");
   await navdata.initialize();
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.

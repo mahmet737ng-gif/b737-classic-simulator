@@ -4,16 +4,18 @@ const fs=require('node:fs');
 const BASE='http://127.0.0.1:3000';
 const USER='ci-reviewer';
 const PASSWORD='ci-only-fixture';
+const UNLIMITED_USER='Taregh',UNLIMITED_PASSWORD='ci-unlimited-fixture';
 async function get(route,opts={}){
   return await fetch(BASE+route,{redirect:'manual',signal:AbortSignal.timeout(60000),...opts});
 }
-async function login(cookies=''){
+async function loginAs(username,password,cookies=''){
   const r=await get('/api/login',{method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded',...(cookies?{Cookie:cookies}:{})},
-    body:new URLSearchParams({username:USER,password:PASSWORD}).toString()});
+    body:new URLSearchParams({username,password}).toString()});
   const jar=r.headers.getSetCookie().map(x=>x.split(';')[0]).join('; ');
   return {status:r.status,location:r.headers.get('location'),cookies:jar};
 }
+const login=(cookies='')=>loginAs(USER,PASSWORD,cookies);
 async function read(route,cookies){
   const response=await get(route,{headers:{Cookie:cookies}});
   assert.equal(response.status,200,route+' HTTP '+response.status);
@@ -82,7 +84,20 @@ async function read(route,cookies){
  assert.equal(out.status,303);
  const retry=await login();
  assert.equal(retry.location,'/','Logout must free a device slot');
- console.log('AUTH: PASS, 3-device cap: PASS, logout: PASS');
+ const owners=await Promise.all(Array.from({length:7},()=>loginAs(UNLIMITED_USER,UNLIMITED_PASSWORD)));
+ assert.equal(owners.length,7);
+ for(const owner of owners){
+  assert.equal(owner.status,303);
+  assert.equal(owner.location,'/','Unlimited account must accept concurrent devices');
+  assert.match(owner.cookies,/ata24_session=/);
+ }
+ const online=await get('/api/pulse',{method:'POST',headers:{Cookie:owners[6].cookies}});
+ assert.equal(online.status,204,'Unlimited account must remain online');
+ const blocked=await login();
+ assert.equal(blocked.location,'/login?e=full','Unlimited sessions must not loosen guest device cap');
+ const ownerContent=await get('/static/session.js',{headers:{Cookie:owners[6].cookies}});
+ assert.equal(ownerContent.status,200);
+ console.log('AUTH: PASS, 3-device guest cap: PASS, unlimited concurrent sessions: PASS, logout: PASS');
  console.log('ORIGINAL SOURCE ROUTES:',JSON.stringify(results));
  console.log('ORIGINAL OVERHEAD PHOTO:',image.bytes.length,'bytes, PNG signature OK');
  console.log('LIVE GITHUB MIRROR: PASS');
