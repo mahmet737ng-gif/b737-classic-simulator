@@ -85,7 +85,7 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedDriveAmpsNeedles';
   const title=document.createElement('h2');title.textContent='GEN DRIVE / A.C. AMPS · 5 Needles';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='A.C. AMPS 1 و 2: مقدار اسلایدر آمپر واقعی روی اسکیل چاپی (0–200 A، هر تقسیم 10 A) است؛ مرکز نیدل از تقاطع ۲۱ خط اسکیل هر گیج محاسبه شده. GEN DRIVE و APU AMPS فقط تست زاویه‌ای هستند؛ محور مکانیکی پنهان هنوز تأیید نشده است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='AC AMPS 1/2 sliders show actual amperes on the 0–200 A printed scale, with 10 A intervals. Pivot is derived from 21 tick intersections per gauge. GEN DRIVE and APU AMPS are angle tests only; the concealed mechanical pivot is not yet validated.';section.append(note);
   for(const needle of model.needles){
    const calibrated=ampsMeter(needle.id);
    const label=document.createElement('label');label.textContent=needle.label+(calibrated?' · PRINTED SCALE (A)':' · QA ANGLE ONLY (°)');label.style.display='block';label.style.direction='ltr';
@@ -94,7 +94,7 @@
    input.addEventListener('input',()=>calibrated?setAmps(needle.id,Number(input.value)):setAngle(needle.id,Number(input.value)));
    label.append(input,output);section.append(label);inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
   }
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به تصویر مرجع';
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Restore Source Photo Position';
   reset.addEventListener('click',()=>{for(const needle of model.needles)setAngle(needle.id,needle.initialAngle);});section.append(reset);
   const previous=document.querySelector('#unifiedAcDcMeteringNeedles');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
  }
