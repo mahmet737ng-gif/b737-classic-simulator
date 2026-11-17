@@ -172,17 +172,99 @@
   });
   return segments(s).filter(x=>x.to).map(x=>({ident:x.to}));
  }
+
+  // CDU LEGS is a sequenced display of the selected source procedure, not
+  // merely the native FMC's unexpanded VIA/TO entries. Reference-only fixes
+  // are explicitly kept separate from active flight-director guidance.
+  function sourceSnapshot(s){
+   let snap=s.cduSgReference;
+   if(!snap)try{
+    if(root?.parent&&root.parent!==root)snap=root.parent.B737CduSgRouteV1?.snapshot?.();
+   }catch(_){return null;}
+   return snap?.connected===true&&snap.sourceOnly===true&&snap.fmcExecutable===false&&
+    snap.origin===entered(s,'ORIGIN')&&snap.destination===entered(s,'DEST')?
+    snap:null;
+  }
+  function legCourse(from,to){
+   if(!from||!to||![from.lat,from.lon,to.lat,to.lon].every(Number.isFinite))return null;
+   const rad=Math.PI/180,a=from.lat*rad,b=to.lat*rad,dl=(to.lon-from.lon)*rad;
+   return (Math.atan2(Math.sin(dl)*Math.cos(b),
+    Math.cos(a)*Math.sin(b)-Math.sin(a)*Math.cos(b)*Math.cos(dl))/rad+360)%360;
+  }
+  function legDistance(from,to){
+   if(!from||!to||![from.lat,from.lon,to.lat,to.lon].every(Number.isFinite))return null;
+   const r=Math.PI/180,a=from.lat*r,b=to.lat*r,d=(to.lon-from.lon)*r;
+   const h=Math.sin((b-a)/2)**2+Math.cos(a)*Math.cos(b)*Math.sin(d/2)**2;
+   return 3440.065*2*Math.asin(Math.min(1,Math.sqrt(Math.max(0,h))));
+  }
+  function sourceProcedureLegs(s,snap,kind,airport){
+   const bank=snap?.modified||snap?.active;
+   const key=kind+'@'+airport,selected=bank?.selections?.[key],g=bank?.geometries?.[key];
+   if(!selected||!g||g.ident!==selected.ident||
+      g.renderStyle!=='DASHED_REFERENCE_CHORDS_ONLY')return [];
+   const result=[],program=g.program;
+   const runway=selected.runway&&bank?.geometries?.['RUNWAY_'+(kind==='SID'?'DEP':'ARR')+'@'+airport];
+   let previous=null;
+   if(kind==='SID'&&runway?.fixes?.[0]){
+    const rw=runway.fixes[0];
+    if(Number.isFinite(rw.lat)&&Number.isFinite(rw.lon)){
+     previous=rw;
+     result.push({ident:'RW'+selected.runway,courseMag:Number.isFinite(program?.trackMagneticDeg)?
+      program.trackMagneticDeg:null,
+      constraint:Number.isFinite(program?.altitudeMSLFt)?
+       'UNTIL '+Math.round(program.altitudeMSLFt):'',
+      sourceOnly:true});
+    }
+   }
+   // program.fixes carries the exact order from the airport's variant source;
+   // the geometry fallback retains only verified FIX_PASSAGE records.
+   const fixes=program?.fixes?.length?program.fixes:g.fixes||[];
+   for(const fix of fixes){
+    if(!fix||typeof fix.ident!=='string'||!Number.isFinite(fix.lat)||
+       !Number.isFinite(fix.lon)||!/^[-A-Z0-9._]{2,16}$/.test(fix.ident))continue;
+    const current={ident:fix.ident,lat:fix.lat,lon:fix.lon};
+    result.push({ident:fix.ident,
+     course:previous?.lat!==undefined?legCourse(previous,current):null,
+     distance:previous?.lat!==undefined?legDistance(previous,current):null,
+     sourceOnly:true});
+    previous=current;
+   }
+   return result;
+  }
+  function visibleLegs(s){
+   const native=navLegs(s),source=sourceSnapshot(s);
+   if(!source)return native;
+   const origin=entered(s,'ORIGIN'),dest=entered(s,'DEST');
+   const sid=sourceProcedureLegs(s,source,'SID',origin);
+   const star=sourceProcedureLegs(s,source,'STAR',dest);
+   // Preserve enroute rows, with consecutive source boundary duplicates
+   // collapsed. A segment's every sourced intermediate fix remains visible.
+   const all=[];
+   for(const item of [...sid,...native,...star]){
+    if(!item?.ident&&!item?.gap)continue;
+    if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap){
+     // The pending source row can carry geometry the native row lacks.
+     if(!all.at(-1).sourceOnly&&item.sourceOnly)all[all.length-1]=item;
+     continue;
+    }
+    all.push(item);
+   }
+   return all;
+  }
  const track=n=>Number.isFinite(n)?String(Math.round(n)%360).padStart(3,'0')+'°T':'';
  const nm=n=>Number.isFinite(n)&&n>=0?String(Math.round(n))+'NM':'';
  function legs(s){
-  const all=navLegs(s),count=Math.max(1,Math.ceil((all.length+1)/5));
+  const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const at=(number-1)*5;
   for(let i=0;i<5;i++){
    const leg=all[at+i];
    if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
-   rows.push(pair(track(leg.course),leg.ident,nm(leg.distance),s.active['LEG_CONSTRAINT_'+(at+i)]||''));
+   rows.push(pair(Number.isFinite(leg.courseMag)?
+    String(Math.round(leg.courseMag)%360).padStart(3,'0')+'°M':
+    track(leg.course),leg.ident,nm(leg.distance),
+    leg.constraint||s.active['LEG_CONSTRAINT_'+(at+i)]||''));
   }
   const action=routeAction(s);
   const right=canActivate(s)||s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
@@ -290,7 +372,7 @@
    return true;
   }
   if(legPage&&/^LSK_/.test(key)){
-   const index=(legs(s).number-1)*5+Number(key[5])-1,leg=navLegs(s)[index];
+   const index=(legs(s).number-1)*5+Number(key[5])-1,leg=visibleLegs(s)[index];
    if(key.startsWith('LSK_L')&&Number(key[5])<=5&&leg&&!leg.gap&&!s.scratch){
     s.scratch=leg.ident;s.message='';
    }else core.addMessage(s,'KEY INACTIVE');
