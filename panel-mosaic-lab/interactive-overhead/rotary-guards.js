@@ -45,7 +45,7 @@
   byId('rgValue').textContent=c.kind==='rotary'?name(value)+(c.mode==='continuous'?(c.unit==='deg'?'°':'%'):''):name(value)+' · GUARD '+engine.guard(c.id).guard.toUpperCase();
   for(const button of byId('rgStates').children){button.classList.toggle('active',button.dataset.value===String(value));button.disabled=c.kind==='guarded'&&engine.guard(c.id).guard!=='open';}
   const action=byId('rgGuardAction');action.classList.toggle('hidden',c.kind!=='guarded');
-  if(c.kind==='guarded')action.textContent=engine.guard(c.id).guard==='closed'?'باز کردن گارد':'بستن گارد';
+  if(c.kind==='guarded')action.textContent=engine.guard(c.id).guard==='closed'?'Open Guard':'Close Guard';
  }
  function choose(c){
   selected=c;byId('rgSelected').textContent=c.label;const root=byId('rgStates');root.replaceChildren();
@@ -362,7 +362,7 @@
   if(e.key==='b737classic.aircraft-profile.v1')changeAirconDetents(profileAirconFamily());
  });
  function mount(layout){
-  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>۲۰ روتری‌ناب · ۰ گارد · منتظر نسخه جدید</strong><h3 id="rgSelected">یک ناب یا گارد را انتخاب کن</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
+  const section=document.createElement('section');section.className='rg-inspector';section.innerHTML='<strong>20 Rotary Knobs · 0 Guards · Awaiting New Version</strong><h3 id="rgSelected">Select a Knob or Guard</h3><button id="rgGuardAction" class="hidden"></button><div id="rgStates" class="rg-actions"></div><p id="rgValue" role="status" aria-live="polite"></p>';
   byId('toggleInspector').after(section);
   layer=document.createElement('div');layer.className='rg-layer';layer.id='rotaryGuardLayer';const placements=new Map(layout.placements.map(p=>[p.id,p]));
   layer.dataset.debugDetents=String(new URLSearchParams(location.search).get('debugDetents')==='1');
@@ -373,7 +373,7 @@
   layer.classList.toggle('hidden',!byId('toggleVisibility').checked);byId('atlasAbsolute').append(layer);interlocks();
   byId('resetToggles').addEventListener('click',()=>{engine.reset();interlocks();persist();});
   byId('toggleVisibility').addEventListener('change',e=>layer.classList.toggle('hidden',!e.target.checked));
-  const label=byId('toggleVisibility').parentElement;label.lastChild.textContent=' نمایش کنترل‌ها';byId('resetToggles').textContent='بازنشانی کنترل‌ها';
+  const label=byId('toggleVisibility').parentElement;label.lastChild.textContent=' Show Controls';byId('resetToggles').textContent='Reset Controls';
   // Keep the photo rotors synchronized with the meter instrument source even
   // when the pilot operates the dedicated OH10 physical hotspot instead.
   try{
@@ -421,7 +421,7 @@
    engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();if(event.kind==='rotary')projectMeter(event.id,event.next);window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
    const root=byId('atlasAbsolute'),ready=()=>root.querySelector('.atlas-piece')&&window.B737OverheadToggles;
    if(ready())mount(layout);else{const observer=new MutationObserver(()=>{if(ready()){observer.disconnect();mount(layout);}});observer.observe(root,{childList:true,subtree:true});}
-  }catch(error){console.error(error);const note=document.createElement('p');note.textContent='خطا در نصب ناب و گارد: '+error.message;note.setAttribute('role','alert');byId('toggleInspector').append(note);}
+  }catch(error){console.error(error);const note=document.createElement('p');note.textContent='Knob/Guard Installation Error: '+error.message;note.setAttribute('role','alert');byId('toggleInspector').append(note);}
  }
  start();
 })();
