@@ -59,7 +59,7 @@ function make(tag,parent,text,className){
 }
 function setFailure(error){
  $('labError').hidden=false;
- $('labError').textContent='خطا در بارگذاری Test Lab: '+(error?.message||String(error));
+ $('labError').textContent='Test Lab load failed: '+(error?.message||String(error));
  console.error('B737 BUS TEST LAB',error);
 }
 function busLabel(key){
@@ -177,14 +177,14 @@ function renderConsumers(){
  $('metricOn').textContent=counts.NORMAL;
  $('metricOff').textContent=counts.OFF;
  $('metricOther').textContent=counts.DEGRADED+counts.UNKNOWN+counts.NOT_INSTALLED;
- $('resultCount').textContent='نمایش '+entries.length+' از '+all.length+
-  (view==='rows'?' ردیف مصرف‌کننده':' تجهیز منطقی');
+ $('resultCount').textContent='Showing '+entries.length+' of '+all.length+
+  (view==='rows'?' consumer rows':' logical devices');
  const body=$('consumerBody');
  const fragment=document.createDocumentFragment();
  for(const entry of entries)fragment.appendChild(displayRow(entry));
  if(!entries.length){
   const tr=make('tr',fragment);
-  const td=make('td',tr,'با فیلتر فعلی مصرف‌کننده‌ای پیدا نشد.');
+  const td=make('td',tr,'No consumers match the current filter.');
   td.colSpan=6;
  }
  body.replaceChildren(fragment);
@@ -212,7 +212,7 @@ function injectCockpit(){
  if(!Protocol||!session)throw Error('Bus failure injection protocol unavailable');
  const off=Object.keys(session.busStates).filter(key=>session.busStates[key]===false);
  if(!off.length){
-  $('injectionStatus').textContent='هیچ باسی قطع نیست. ابتدا حداقل یک باس را OFF کن؛ برای پاک‌کردن خرابی قبلی از Clear استفاده کن.';
+  $('injectionStatus').textContent='No buses are isolated. Set at least one bus OFF before injecting. Use Clear to remove previous failures.';
   return null;
  }
  if(session.buses.length!==Protocol.BUS_KEYS.length||
