@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0e1723">
 <title>B737 Classic · OH-15 through OH-18</title>
 <style>
@@ -21,38 +21,38 @@ main{max-width:1480px;padding:24px 17px 40px;margin:auto}h1{margin:0 0 10px;font
 footer{font-size:12px;color:#91abbc;padding-top:16px;line-height:1.85}
 @media(max-width:750px){.cards{grid-template-columns:1fr}.image img{max-height:64vh}}
 </style></head>
-<body><header><div><strong>B737 CLASSIC · OVERHEAD SOURCE PANELS</strong><small>OH-15 → OH-18 · UPD-0005 · مستندات موزاییکی</small></div><div class="links"><button id="reload">↻ بررسی فایل‌ها</button><a href="../">اطلس اصلی</a></div></header>
-<main><h1>پنل‌های ثبت‌شدهٔ OH-15 تا OH-18</h1>
-<p>تصاویر با همان بایت‌های آپلودشده در GitHub و نام‌های ثابت ثبت می‌شوند. هر تصویر قبل از نمایش با SHA-256 و تعداد بایت بررسی می‌شود. ساختار برش‌ها و اتصالات فیزیکی هنوز مرحلهٔ تأیید هندسی دارد.</p>
-<div id="status" class="status">در حال بررسی…</div><section class="cards" id="cards"></section>
-<footer>OH-18 با مراجعه به تصویر اصلی اطلس شناسایی شده است: ATTEND / GRD CALL / RAIN REPELLENT / WIPER. جای آن در نمایش موزاییکی زیر OH-14 قرار دارد؛ مرزها هنوز نیازمند تأیید هستند. این شماره‌گذاری نباید به معنی تأیید هندسهٔ مستطیلی قدیمی اطلس برداشت شود.</footer></main>
+<body><header><div><strong>B737 CLASSIC · OVERHEAD SOURCE PANELS</strong><small>OH-15 → OH-18 · UPD-0005 · Mosaic Documentation</small></div><div class="links"><button id="reload">↻ Verify Files</button><a href="../">Source Atlas</a></div></header>
+<main><h1>Registered OH-15 through OH-18 Panels</h1>
+<p>Photos retain the original uploaded bytes and canonical names. SHA-256 and byte length are checked before rendering. Crop geometry and physical seams still require approval.</p>
+<div id="status" class="status">Checking…</div><section class="cards" id="cards"></section>
+<footer>OH-18 is identified in the original atlas as ATTEND / GRD CALL / RAIN REPELLENT / WIPER, beneath OH-14. The joints remain provisional; this numbering does not certify the older rectangular atlas geometry.</footer></main>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
 const el=(tag,cls,value)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n};
 function toHex(b){return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
 async function display(){
-$('cards').replaceChildren();$('status').textContent='در حال تأیید فایل‌ها…';
+$('cards').replaceChildren();$('status').textContent='Verifying Files…';
 try{
  const res=await fetch('spec.json?v='+Date.now(),{cache:'no-store'});if(!res.ok)throw Error('HTTP spec '+res.status);
  const data=await res.json();let verified=0;
  for(const item of data.panels){
  const card=el('article','card'),head=el('div','head'),image=el('div','image'),info=el('div','info');
  head.append(el('code','',item.id),el('span','',item.title));card.append(head,image,info);$('cards').append(card);
- if(item.classification!=='verified')info.append(el('div','warn','طبقه‌بندی سیستم: موقت / نیازمند تأیید بصری'));
+ if(item.classification!=='verified')info.append(el('div','warn','System classification: provisional; visual approval pending'));
  try{
  const r=await fetch(item.path+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP image '+r.status);
  const raw=await r.arrayBuffer();if(raw.byteLength!==item.bytes)throw Error('file size mismatch');
  if(!crypto.subtle)throw Error('SHA-256 unavailable');const hash=toHex(await crypto.subtle.digest('SHA-256',raw));
  if(hash!==item.sha256)throw Error('SHA-256 mismatch');
  const obj=URL.createObjectURL(new Blob([raw],{type:'image/png'})),im=el('img');im.src=obj;im.alt=item.title;im.onload=()=>URL.revokeObjectURL(obj);image.append(im);
- info.append(el('div','ok','✓ فایل اصلی بدون تغییر و با SHA-256 معتبر'));verified++;
- }catch(e){image.append(el('p','warn','عدم نمایش: '+e.message))}
+ info.append(el('div','ok','✓ Original file unmodified; SHA-256 verified'));verified++;
+ }catch(e){image.append(el('p','warn','Not displayed: '+e.message))}
  info.append(el('div','',item.sourceOriginal),el('code','',item.sha256));
- const link=el('a','','مشاهدهٔ PNG در مخزن ↗');link.href=item.path;link.target='_blank';link.rel='noopener';info.append(link);
+ const link=el('a','','View PNG in Repository');link.href=item.path;link.target='_blank';link.rel='noopener';info.append(link);
  }
- $('status').textContent=verified+' از '+data.panels.length+' تصویر با SHA-256 تأیید شده و قابل مشاهده است';
-}catch(e){$('status').textContent='خطا: '+e.message}
+ $('status').textContent=verified+' of '+data.panels.length+' verified source images available for viewing';
+}catch(e){$('status').textContent='Error: '+e.message}
 }
 $('reload').onclick=display;display();
 </script></body></html>
