@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head>
+<html lang="en" dir="rtl"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B737 — Gauge Scale Survey · Stage 2–4</title>
 <style>
@@ -23,31 +23,31 @@ small{color:#b3c7d3} .warn{color:#ffd388} .ok{color:#9fefc6}
 <script src="../../../engine/instruments/gauge-scale-engine-v2.js" defer></script>
 <script src="./lab.js" defer></script>
 </head><body>
-<header><div><h1>Gauge Scale Survey — مراحل ۲، ۳ و ۴</h1><small>تصاویر اصلی دست‌نخورده · اندازه‌گیری روی پیکسل تصویر منبع · کالیبراسیون تأییدنشده تا بازبینی</small></div><div dir="ltr" id="count">Loading…</div></header>
+<header><div><h1>Gauge Scale Survey — Stages 2, 3 and 4</h1><small>Source images unchanged · Measurements on source pixels · Calibration pending review</small></div><div dir="ltr" id="count">Loading…</div></header>
 <main>
 <aside>
-<label>گیج / Face <select id="face"></select></label>
-<label>اسکیل مستقل <select id="scale"></select></label>
+<label>Gauge / Face <select id="face"></select></label>
+<label>Independent Scale <select id="scale"></select></label>
 <div id="note"></div>
-<fieldset><legend>مختصات‌گذاری</legend>
-<div class="row"><label><input type="radio" name="action" value="pivot" checked> محور نیدل</label><label><input type="radio" name="action" value="mark"> خط اسکیل</label></div>
-<label>مقدار خط (Value) <input id="value" type="number" step="any" inputmode="decimal" placeholder="eg 28"></label>
-<label>متن چاپ‌شده / Label <input id="labelText" placeholder="eg 20, 30, UP"></label>
-<label class="row"><input id="major" type="checkbox" checked> خط اصلی</label>
-<div class="row"><button id="deleteLast">حذف آخرین خط</button><button id="clearScale">پاک‌کردن این اسکیل</button></div>
+<fieldset><legend>Coordinate Registration</legend>
+<div class="row"><label><input type="radio" name="action" value="pivot" checked> Needle Pivot</label><label><input type="radio" name="action" value="mark"> Scale Tick</label></div>
+<label>Tick Value <input id="value" type="number" step="any" inputmode="decimal" placeholder="eg 28"></label>
+<label>Printed Label <input id="labelText" placeholder="eg 20, 30, UP"></label>
+<label class="row"><input id="major" type="checkbox" checked> Major Tick</label>
+<div class="row"><button id="deleteLast">Delete Last Tick</button><button id="clearScale">Clear This Scale</button></div>
 </fieldset>
-<fieldset><legend>تست حرکت عددی</legend>
-<label>جهت افزایش مقدار <select id="direction"><option value="clockwise">ساعتگرد</option><option value="counterclockwise">پادساعتگرد</option></select></label>
-<label>واحد <input id="unit" placeholder="psi / V / °C / kt"></label>
-<label>نوع نشانگر <select id="kind"><option value="rotary">دایره‌ای / Rotary</option><option value="linear">خطی / Linear</option></select></label>
-<label>ورودی انجین (فقط تست) <input id="reading" type="number" step="any"></label>
-<div class="row"><button id="preview">نمایش مقدار</button><button id="qa">تست خط‌به‌خط</button></div>
+<fieldset><legend>Numeric Motion Test</legend>
+<label>Increasing-Value Direction <select id="direction"><option value="clockwise">Clockwise</option><option value="counterclockwise">Counterclockwise</option></select></label>
+<label>Unit <input id="unit" placeholder="psi / V / °C / kt"></label>
+<label>Indicator Type <select id="kind"><option value="rotary">Rotary</option><option value="linear">Linear</option></select></label>
+<label>Engine Input (Test Only) <input id="reading" type="number" step="any"></label>
+<div class="row"><button id="preview">Display Value</button><button id="qa">Tick-by-Tick Test</button></div>
 <div id="status"></div>
 </fieldset>
-<fieldset><legend>خروجی اندازه‌گیری</legend>
-<div class="row"><button id="export">دریافت JSON اندازه‌گیری‌ها</button><button id="importButton">ورود JSON</button></div>
+<fieldset><legend>Measurement Output</legend>
+<div class="row"><button id="export">Download Measurement JSON</button><button id="importButton">Import JSON</button></div>
 <input id="import" type="file" accept="application/json,.json" hidden>
-<small>خروجی به‌صورت Draft است؛ اندازه‌گیری روی تصویر به‌تنهایی تأیید مهندسی نیست. فایل JSON وارد Technical Database نمی‌شود مگر بعد از بررسی و ثبت نسخه.</small>
+<small>Output remains a draft. Source-photo measurements alone do not constitute engineering approval. JSON is not imported into Technical Database before review and version registration.</small>
 </fieldset>
 <div id="marks"></div>
 </aside>
