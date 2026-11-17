@@ -42,7 +42,7 @@
   readout=document.createElement('section');readout.id='liveBatteryReadout';readout.dir='ltr';
   readout.setAttribute('aria-label','Live aircraft battery voltage current charge and consumption');
   readout.style.cssText='position:static;width:100%;max-width:100%;padding:9px 10px;border:1px solid #668270;border-radius:7px;background:#0b191eee;color:#d9f2de;font:12px/1.6 system-ui;box-shadow:0 2px 9px #0005';
-  readout.innerHTML='<b>BATTERY <span data-battery-percent></span></b> <span data-battery-status></span><div style="display:flex;gap:12px;flex-wrap:wrap;font:600 15px/1.7 monospace"><span data-battery-volts></span><span data-battery-amps></span><span data-battery-watts></span></div><div style="font-size:10px;color:#adc0c1"><span data-battery-used></span> · 40 Ah مدل آموزشی</div>';
+  readout.innerHTML='<b>BATTERY <span data-battery-percent></span></b> <span data-battery-status></span><div style="display:flex;gap:12px;flex-wrap:wrap;font:600 15px/1.7 monospace"><span data-battery-volts></span><span data-battery-amps></span><span data-battery-watts></span></div><div style="font-size:10px;color:#adc0c1"><span data-battery-used></span> · 40 Ah training model</div>';
   // Battery meter and charger stay together in the Controls drawer.
   slot.append(readout);
  }
@@ -59,8 +59,8 @@
   set('volts',current.voltageV.toFixed(2)+' V');
   set('amps',(current.ammeterA>=0?'+':'')+current.ammeterA.toFixed(2)+' A');
   set('watts',(current.voltageV*current.dischargeA).toFixed(1)+' W');
-  set('used','مصرف '+current.dischargedAh.toFixed(3)+' Ah / '+current.dischargedWh.toFixed(2)+' Wh');
-  set('status',current.status==='EMPTY'?'باتری خالی':current.status==='CHARGING'?'در حال شارژ':current.status==='DISCHARGING'?'در حال مصرف':'آماده');
+  set('used','Used '+current.dischargedAh.toFixed(3)+' Ah / '+current.dischargedWh.toFixed(2)+' Wh');
+  set('status',current.status==='EMPTY'?'Battery Empty':current.status==='CHARGING'?'Charging':current.status==='DISCHARGING'?'Discharging':'Ready');
   readout.dataset.status=current.status;readout.dataset.restored=String(restored);
   readout.style.borderColor=current.percent<=10?'#da6c45':'#668270';
  }
