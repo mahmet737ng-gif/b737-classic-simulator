@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>B737 Classic | 142 Annunciator Socket-Fit QA</title>
 <style>
@@ -29,22 +29,22 @@ button{cursor:pointer}button:hover{background:#24475a}label{display:grid;gap:3px
 #status{color:#eab56e}a{color:#8bdeff}
 @media(max-width:750px){main{grid-template-columns:1fr;grid-template-rows:260px 1fr;height:calc(100vh - 90px)}aside{border-left:0;border-bottom:1px solid #567;display:grid;grid-template-columns:185px minmax(0,1fr)}.controls{overflow:auto}#lampList{min-height:0}.bar{padding:5px}.bar button{padding:5px}}
 </style></head>
-<body><header><h1>737 Classic · ممیزی فیت واقعی ۱۴۲ چراغ روی عکس پنل</h1>
-<p>اندازه‌گیری از مستطیل‌های ثبت‌شده در عکس مرجع؛ حالت‌های OFF / DIM / BRIGHT با هندسهٔ مشترک. فایل‌های قفل‌شده و منطق سیستم‌ها تغییری نکرده‌اند.</p></header>
+<body><header><h1>737 Classic · Photo Fit Audit of 142 Lamp Sockets</h1>
+<p>Measured rectangles from the source photo; OFF / DIM / BRIGHT share the same geometry. Locked assets and system logic are unchanged.</p></header>
 <main><aside><div class="controls">
-<div class="two"><label>بخش<select id="panel"><option value="ALL">همهٔ چراغ‌ها</option><option value="OH">Overhead — 112</option><option value="MP">Main Panel — 30</option></select></label><label>حالت نور<select id="state"><option value="BRIGHT">BRIGHT</option><option value="DIM">DIM</option><option value="OFF">OFF</option></select></label></div>
-<label>جست‌وجو در نام چراغ<input id="search" type="search" placeholder="LOW PRESSURE, STAB..."></label>
-<label>افزایش پوشش لبهٔ قاب، پیکسل عکس اصلی: <output id="padValue">2.5</output><input id="pad" type="range" min="0" max="5" step="0.5" value="2.5"></label>
-<label>بزرگ‌نمایی عکس<select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option><option value="2">200%</option><option value="3">300%</option></select></label>
-<div class="two"><button id="csv">خروجی CSV اندازه‌ها</button><button id="geo">نمایش مرز اصلی</button></div>
-<small id="status">در حال خواندن فایل‌های مرجع…</small>
+<div class="two"><label>Section<select id="panel"><option value="ALL">All Lamps</option><option value="OH">Overhead — 112</option><option value="MP">Main Panel — 30</option></select></label><label>Lamp State<select id="state"><option value="BRIGHT">BRIGHT</option><option value="DIM">DIM</option><option value="OFF">OFF</option></select></label></div>
+<label>Search Lamp Names<input id="search" type="search" placeholder="LOW PRESSURE, STAB..."></label>
+<label>Expand Frame Edge Coverage (source pixels): <output id="padValue">2.5</output><input id="pad" type="range" min="0" max="5" step="0.5" value="2.5"></label>
+<label>Photo Zoom<select id="zoom"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option><option value="2">200%</option><option value="3">300%</option></select></label>
+<div class="two"><button id="csv">Export Dimensions CSV</button><button id="geo">Show Original Boundary</button></div>
+<small id="status">Loading Source Files…</small>
 </div><div id="lampList"></div></aside>
 <section class="viewer">
 <div class="bar">
-<button id="previous">قبلی</button><button id="next">بعدی</button>
-<button id="kind" aria-pressed="true">چراغ جدید</button><button id="unified" aria-pressed="false">نمای یکپارچه (تست)</button><button id="blueMode" aria-pressed="false">آبی DIM / BRIGHT</button>
+<button id="previous">Previous</button><button id="next">Next</button>
+<button id="kind" aria-pressed="true">New Lamp</button><button id="unified" aria-pressed="false">Unified View (Test)</button><button id="blueMode" aria-pressed="false">DIM / BRIGHT Blue</button>
 <strong id="activeName" dir="ltr">—</strong>
-<a target="_blank" href="../cockpit/?debugLights=1">یونیفاید اصلی</a>
+<a target="_blank" href="../cockpit/?debugLights=1">Primary Unified</a>
 </div>
 <div id="photoViewport"><iframe id="unifiedFrame" title="Unified cockpit with non-destructive lamp-fit preview" style="display:none;width:100%;height:100%;min-height:420px;border:0;background:#0c151a"></iframe><div id="photoSpace"><img id="photo" alt="Original untouched source cockpit panel">
 <div id="lampOverlay"><img id="face" alt="Calibrated fitted annunciator"></div>
@@ -91,7 +91,7 @@ function list(){
  const arr=validRows(),list=Q('lampList');list.replaceChildren();
  const frag=document.createDocumentFragment();
  for(const x of arr){const b=document.createElement('button');b.className='item'+(selected===x?' active':'');b.textContent=x.bank+' / '+x.id+'   ['+x.sourceRect[2]+'×'+x.sourceRect[3]+']';b.onclick=()=>pick(x);frag.appendChild(b);}list.appendChild(frag);
- Q('status').textContent=arr.length+' از ۱۴۲ جایگاه | اندازه‌های عکس اصلی؛ تأیید چهار لبهٔ همهٔ جایگاه‌ها هنوز نهایی نیست.';
+ Q('status').textContent=arr.length+' of 142 sockets | Source-photo dimensions; all four edges of each socket still require final approval.';
 }
 function boundedPadding(row,val){
  const [x,y,w,h]=row.sourceRect;
@@ -199,7 +199,7 @@ async function originalSource(row){
  return new URL(x.url,row.bank==='OH'?new URL(baseOH,location.href):new URL(baseMP,location.href)).href;
 }
 function go(step){const all=validRows();if(!all.length)return;let i=all.indexOf(selected);pick(all[(i+step+all.length)%all.length]).catch(error=>errorBox(error))}
-function errorBox(err){Q('status').textContent='خطا: '+err.message;console.error(err)}
+function errorBox(err){Q('status').textContent='Error: '+err.message;console.error(err)}
 function redraw(){if(unifiedOn){syncUnified();return;}if(selected)pick(selected).catch(errorBox)}
 function exportCSV(){
  const headers=['bank','lamp_id','photo','asset','source_x','source_y','source_width','source_height','fit_x','fit_y','fit_width','fit_height','border_extension_l','border_extension_r','border_extension_t','border_extension_b'];
@@ -221,7 +221,7 @@ async function init(){
  Q('zoom').onchange=redraw;
  Q('unified').onclick=toggleUnified;
  Q('previous').onclick=()=>go(-1);Q('next').onclick=()=>go(1);
- Q('kind').onclick=()=>{showNew=!showNew;Q('kind').setAttribute('aria-pressed',String(showNew));Q('kind').textContent=showNew?'چراغ جدید':'چراغ قبلی';redraw()};
+ Q('kind').onclick=()=>{showNew=!showNew;Q('kind').setAttribute('aria-pressed',String(showNew));Q('kind').textContent=showNew?'New Lamp':'Previous Lamp';redraw()};
  Q('geo').onclick=()=>{showDebug=!showDebug;redraw()};
  Q('blueMode').onclick=()=>{blueDim=!blueDim;Q('blueMode').setAttribute('aria-pressed',String(blueDim));redraw()};
  Q('csv').onclick=exportCSV;
@@ -242,7 +242,7 @@ async function syncUnified(){
  const frame=Q('unifiedFrame');
  if(!frame.contentDocument)return;
  const nodes=[];collectLampNodes(frame.contentDocument,nodes);
- if(!nodes.length){Q('status').textContent='یونیفاید در حال بارگذاری موقعیت چراغ‌ها است…';return}
+ if(!nodes.length){Q('status').textContent='Unified is loading lamp positions…';return}
  unifiedWork=true;let added=0,visible=0,failed=0;
  try{
   // Preserve physical controls, originals, power bus inputs, and all event listeners.
@@ -268,13 +268,13 @@ async function syncUnified(){
    art.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(visualSVG(row,inf,p,state));
    art.dataset.lastFitKey=key;visible++;
   }
-  Q('status').textContent='یونیفاید آزمایشی: '+visible+' چراغ از ۱۴۲ با طرح متناسبِ جایگاه نصب شدند'+(failed?' | مورد نامشخص: '+failed:'')+'. بدون تغییر در منطق یا منابع قفل‌شده.';
+  Q('status').textContent='Unified Test: '+visible+' of 142 lamps mounted using their registered socket geometry'+(failed?' | Unknown items: '+failed:'')+'. No changes to system logic or locked sources.';
  }catch(e){errorBox(e)}finally{unifiedWork=false}
 }
 function toggleUnified(){
  unifiedOn=!unifiedOn;
  Q('unified').setAttribute('aria-pressed',String(unifiedOn));
- Q('unified').textContent=unifiedOn?'بازگشت به عکس مرجع':'نمای یکپارچه (تست)';
+ Q('unified').textContent=unifiedOn?'Return to Source Photo':'Unified View (Test)';
  Q('photoSpace').style.display=unifiedOn?'none':'block';
  Q('unifiedFrame').style.display=unifiedOn?'block':'none';
  if(unifiedOn){
