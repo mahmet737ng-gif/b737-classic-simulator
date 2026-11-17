@@ -8,9 +8,9 @@
  if(!settings||!nav||!toolbar)return;
  const mobileQuery=window.matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
  const labels=[
-  ['views','☰','انتخاب پنل'],
-  ['tools','⌕','ابزارها و زوم'],
-  ['engines','N1','وضعیت APU و موتورها']
+  ['views','☰','Choose Panel'],
+  ['tools','⌕','Tools and Zoom'],
+  ['engines','N1','APU and Engine Status']
  ];
  const buttons={};
  const targetFor=name=>name==='views'?nav:name==='tools'?toolbar:document.getElementById('isnStartIndications');
@@ -35,7 +35,7 @@
  // Preserve the original inspector logic; this button is a mobile entry point.
  const inspectorOpen=document.createElement('button');
  inspectorOpen.id='mobileInspectorOpen';inspectorOpen.className='mobile-inspector-close';
- inspectorOpen.textContent='کنترل‌ها و اطلاعات فنی';inspectorOpen.type='button';
+ inspectorOpen.textContent='Controls and Technical Information';inspectorOpen.type='button';
  toolbar.append(inspectorOpen);
  inspectorOpen.addEventListener('click',()=>{
   closeAll();
@@ -45,7 +45,7 @@
  if(inspector){
   const dismiss=document.createElement('button');
   dismiss.type='button';dismiss.className='mobile-inspector-close';
-  dismiss.textContent='×  بستن کنترل‌ها';dismiss.setAttribute('aria-label','بستن کنترل‌ها');
+  dismiss.textContent='×  Close Controls';dismiss.setAttribute('aria-label','Close Controls');
   inspector.prepend(dismiss);
   dismiss.addEventListener('click',()=>{
    if(document.body.classList.contains('side-open'))document.getElementById('inspectorToggle')?.click();
