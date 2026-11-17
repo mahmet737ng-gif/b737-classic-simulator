@@ -62,10 +62,10 @@
   if(panel?.isConnected)return;
   panel=document.createElement('details');panel.id='liveLoadLedgerV1';panel.dir='ltr';
   panel.style.cssText='margin:12px 0;padding:9px;border:1px solid #526f7b;border-radius:7px;font:12px/1.45 system-ui;color:#dce8ea';
-  const heading=document.createElement('summary');heading.textContent='ATA 24 · مصرف تقریبی زنده هر سیستم / AC & DC LOAD';heading.style.cursor='pointer';
+  const heading=document.createElement('summary');heading.textContent='ATA 24 · Estimated Live System Loads / AC & DC LOAD';heading.style.cursor='pointer';
   head=document.createElement('p');head.style.cssText='font:600 13px/1.7 monospace;white-space:normal';panel.append(heading,head);
   summary=document.createElement('p');summary.style.cssText='font-size:11px;color:#edc87b';
-  summary.textContent='اعداد آموزشی و تقریبی هستند؛ اتصال فیزیکی هر مصرف‌کننده به باسِ EP-FSI تأیید WDM ندارد. AC آمپر معادل گیج ژنراتور و DC آمپر 28V است. مجموع مستقیم این دو مجاز نیست.';
+  summary.textContent='Values are approximate training estimates. EP-FSI bus assignments are not WDM verified. AC amperes represent generator gauge equivalents; DC amperes are at 28 V. Do not sum AC and DC currents directly.';
   panel.append(summary);
   const demand=document.createElement('div');demand.style.cssText='display:grid;gap:7px;margin:7px 0';
   const addDemandSlider=(name,initial,onValue)=>{
