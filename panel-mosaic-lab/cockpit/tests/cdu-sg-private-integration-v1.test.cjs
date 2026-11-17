@@ -446,3 +446,56 @@ test('a direct CDU LSK cannot insert an unverified airway into RTE',()=>{
  assert.equal(state.scratch,'B11');
  assert.equal(state.stagedRoute.VIA1,undefined);
 });
+
+
+test('TO IMKEN cannot be entered via B411 from DHN; verified GIBAB succeeds',async()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const shared=routeAPI.create();shared.setConnected(true);
+ shared.setContext({origin:'OIII',destination:'OIMM'});
+ const sid={...procedure,ident:'DHN3A'};
+ const geometry={...geo,metadata:{...geo.metadata,ident:'DHN3A'},
+  features:[{type:'Feature',geometry:{type:'Point',coordinates:[52.72,35.254167]},
+   properties:{ident:'DHN',fmc_executable:false}}]};
+ shared.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',procedure:sid,geometry});
+ const state=Object.assign(engine.makeState('FLIGHT_PLAN'),{subpage:2,chapter11RoutePages:true,
+  active:{ORIGIN:'OIII',DEST:'OIMM'},cduSgReference:shared.snapshot(),
+  stagedRoute:{VIA1:'B411'},scratch:'IMKEN',
+  verifiedAirwayEntries:{VIA1:{airway:'B411',from:'DHN',origin:'OIII',
+   destination:'OIMM',source:'OWNER_WPNAVRTE_VERIFIED'}}});
+ const pages={FLIGHT_PLAN:{}},requests=[];
+ const bridge={isConnected:()=>true,async request(path){
+  const query=new URL(path,'https://localhost');
+  assert.equal(query.pathname,'/api/cdu/airway-check');
+  assert.equal(query.searchParams.get('from'),'DHN');
+  assert.equal(query.searchParams.get('airway'),'B411');
+  assert.equal(query.searchParams.get('lat'),'35.254167');
+  assert.equal(query.searchParams.get('lon'),'52.72');
+  const to=query.searchParams.get('to');requests.push(to);
+  return {ok:true,json:async()=>({available:true,valid:to==='GIBAB',
+   from:'DHN',airway:'B411',to})};
+ }};
+ const adapter=makeSelector(state,engine,pages,bridge,shared,()=>{},converter);
+ adapter.attach();
+ assert.equal(ch11.routeCell(state,'LSK_R2').field,'TO1');
+ assert.equal(adapter.beforeKey('LSK_R2'),true);await tick();await tick();
+ assert.equal(state.message,'NOT IN DATABASE');
+ assert.equal(state.scratch,'IMKEN');
+ assert.equal(state.stagedRoute.TO1,undefined);
+ state.scratch='GIBAB';
+ assert.equal(adapter.beforeKey('LSK_R2'),true);await tick();await tick();
+ assert.equal(state.message,'');
+ assert.equal(state.scratch,'');
+ assert.equal(state.stagedRoute.TO1,'GIBAB');
+ assert.deepEqual(requests,['IMKEN','GIBAB']);
+ adapter.detach();
+});
+test('direct core.press cannot bypass airway TO membership verification',()=>{
+ const engine=require('../../../cdu-standalone-v6/engine/cdu-engine.js');
+ const state=Object.assign(engine.makeState('FLIGHT_PLAN'),{subpage:2,chapter11RoutePages:true,
+  active:{ORIGIN:'OIII',DEST:'OIMM'},stagedRoute:{VIA1:'B411'},scratch:'IMKEN'});
+ engine.press(state,{FLIGHT_PLAN:{}},'CDU_CAPT_LSK_R1');
+ assert.equal(state.message,'NOT IN DATABASE');
+ assert.equal(state.scratch,'IMKEN');
+ assert.equal(state.stagedRoute.TO1,undefined);
+});
