@@ -139,7 +139,7 @@
   const section=document.createElement('section');section.id='unifiedDuctPressureNeedles';
   const title=document.createElement('h2');title.textContent='DUCT PRESSURE · L / R';section.append(title);
   const note=document.createElement('p');note.className='muted';
-  note.textContent='OH21 · 0–100 PSI · حرکت نرم و محدودشدهٔ عقربه · مصرف منطقی PACK / STARTER / TAI با محاسبهٔ فشار تخمینی؛ سنسور واقعی اولویت دارد.';
+  note.textContent='OH21 · 0–100 PSI · Smooth, constrained needle response. PACK / STARTER / TAI loads affect estimated pressure; valid sensor data takes precedence.';
   section.append(note);
   status=document.createElement('p');status.className='muted';status.setAttribute('role','status');section.append(status);
   for(const needle of model.needles){
@@ -155,7 +155,7 @@
    inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
   }
   const resume=document.createElement('button');resume.type='button';
-  resume.textContent='AUTO · اتصال مجدد به ECU';resume.addEventListener('click',auto);section.append(resume);
+  resume.textContent='AUTO · Reconnect to ECU';resume.addEventListener('click',auto);section.append(resume);
   const previous=document.querySelector('#unifiedCabinTemperatureNeedle');
   if(previous)previous.after(section);else document.querySelector('.overhead-tools')?.before(section);
   paintStatus();
