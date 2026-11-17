@@ -49,12 +49,15 @@
  function routeView(base){
   if(!base||!routePages.includes(state.page))return base;
   const snap=shared.snapshot();
-  if(!snap.modified&&!Object.keys(snap.runways).length)return base;
+  const hasReference=Object.keys(snap.selections||{}).length>0||
+   Object.keys(snap.runways||{}).some(key=>key.includes('@'));
+  if(!snap.modified&&!hasReference)return base;
   const rows=base.rows.map(row=>({...row}));
   const runway=snap.runways['DEP@'+snap.origin];
   if(state.page==='RTE'&&base.number===1&&runway)rows[2].valueL=runway;
   if(snap.modified)rows[5].valueL='<ERASE';
-  return {...base,rows,title:snap.modified?'MOD '+base.title.replace(/^(ACT|MOD) /,''):base.title};
+  const stage=snap.modified?'MOD':hasReference?'ACT':'';
+  return {...base,rows,title:stage?stage+' '+base.title.replace(/^(ACT|MOD) /,''):base.title};
  }
  function indexKey(k){
   const slots={LSK_L1:['ORIGIN','DEP'],LSK_R1:['ORIGIN','ARR'],

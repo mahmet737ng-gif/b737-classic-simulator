@@ -363,3 +363,31 @@ test('one known threshold does not fabricate a runway rectangle',()=>{
  assert.equal(nodes.filter(n=>n.attrs['data-runway-extension']).length,0);
  assert.equal(nodes.filter(n=>n.attrs['data-runway-threshold-only']).length,1);
 });
+
+test('source-only STAR populates last VIA/TO row and MOD becomes ACT on EXEC',()=>{
+ const ch11=require('../../../cdu-standalone-v6/engine/ch11-route-pages-v1.js');
+ const route=routeAPI.create();route.setConnected(true);
+ route.setContext({origin:'OIII',destination:'OIMM'});
+ const proc={airport:'OIMM',kind:'STAR',ident:'BAG1A',fmc_executable:false,
+  requires_runway_selection:false,requires_transition_selection:false,
+  runway_options:[],transition_options:[]};
+ const star={type:'FeatureCollection',metadata:{airport:'OIMM',kind:'STAR',
+  ident:'BAG1A',airac:status,fmc_executable:false,
+  selected_runway:null,selected_transition:null},
+  features:[{type:'Feature',geometry:{type:'Point',coordinates:[59,36]},
+   properties:{ident:'BAG',fmc_executable:false}}]};
+ route.select({airport:'OIMM',kind:'STAR',ident:'BAG1A',runway:null,
+  procedure:proc,geometry:star});
+ const state={page:'FLIGHT_PLAN',subpage:2,active:{ORIGIN:'OIII',DEST:'OIMM'},
+  stagedRoute:{},pending:{},routeActivated:false,cduSgReference:route.snapshot()};
+ const adapter=makeSelector(state,{},null,{isConnected:()=>true},route,()=>{},converter);
+ let page=ch11.view(state);
+ assert.equal(page.rows[1].valueL,'BAG1A');
+ assert.equal(page.rows[1].valueR,'BAG');
+ assert.equal(ch11.routeCell(state,'LSK_R2'),null);
+ assert.equal(adapter.routeView(page).title,'MOD RTE');
+ route.execute();state.cduSgReference=route.snapshot();
+ page=ch11.view(state);
+ assert.equal(adapter.routeView(page).title,'ACT RTE');
+ assert.equal(state.routeActivated,false);
+});
