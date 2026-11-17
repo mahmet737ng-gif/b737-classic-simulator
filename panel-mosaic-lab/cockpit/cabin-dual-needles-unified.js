@@ -74,7 +74,7 @@
  function controls(){
   const section=document.createElement('section');section.id='unifiedCabinDualNeedles';
   const title=document.createElement('h2');title.textContent='Cabin gauge · PRESS / CAB ALT';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='دو عقربه با محور مشترک و حرکت مستقل. مقدار واقعی CAB ALT از فرودگاه/سیستم فشار کابین خوانده می‌شود؛ نگاشت زاویهٔ نیدل هنوز نیازمند تأیید اسکیل تصویری است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='Two independently moving needles share a pivot. CAB ALT derives from airport/cabin-pressurization state; needle angles still require photo-scale approval.';section.append(note);
   physicalOutput=document.createElement('output');
   physicalOutput.style.display='block';physicalOutput.style.whiteSpace='pre-line';
   physicalOutput.style.direction='ltr';physicalOutput.style.textAlign='left';
@@ -88,7 +88,7 @@
    input.addEventListener('input',()=>setAngle(needle.id,Number(input.value)));label.append(input,output);section.append(label);
    inputs.set(needle.id,input);outputs.set(needle.id,output);paint(needle.id);
   }
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به تصویر مرجع';reset.addEventListener('click',()=>{for(const needle of model.needles)setAngle(needle.id,needle.initialAngle);});section.append(reset);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Restore Source Photo Position';reset.addEventListener('click',()=>{for(const needle of model.needles)setAngle(needle.id,needle.initialAngle);});section.append(reset);
   const previous=document.querySelector('#unifiedApuEgtNeedle');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);
  }
  window.B737UnifiedCabinNeedles=Object.freeze({
