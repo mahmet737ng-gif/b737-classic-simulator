@@ -105,14 +105,14 @@
    '<p style="font-size:11px"><a href="../../cb-panel-lab/" target="_blank" rel="noopener">Open CB panels P6-11 / P6-12 / P18-3</a> (same browser origin; pulls sync live). Test POWER and OVHT with the real centre spring switch.</p>';
   const lab=document.createElement('dialog');lab.id='windowHeatTestLabDialog';lab.dir='rtl';
   lab.style.cssText='width:min(980px,94vw);max-width:980px;max-height:90vh;overflow:auto;padding:14px;background:#101f2b;color:#e1ecf4;border:1px solid #79d5df;border-radius:12px;box-shadow:0 18px 70px #000b';
-  lab.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px"><strong style="font-size:16px;letter-spacing:.4px">WINDOW HEAT · TEST LAB</strong><button type="button" id="wh-lab-close" aria-label="Close Window Heat Test Lab">بستن ×</button></div>'+
-   '<p style="margin:0 0 10px;color:#9bb1c2;font-size:12px">برای ورود، روی عنوان «کاکپیت یکپارچه» سه بار پشت سر هم کلیک یا تپ کن. این آزمایشگاه فقط سیستم Window Heat را بررسی می‌کند.</p>';
+  lab.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px"><strong style="font-size:16px;letter-spacing:.4px">WINDOW HEAT · TEST LAB</strong><button type="button" id="wh-lab-close" aria-label="Close Window Heat Test Lab">Close ×</button></div>'+
+   '<p style="margin:0 0 10px;color:#9bb1c2;font-size:12px">Triple-click or tap the Unified Cockpit title to enter. This lab tests the Window Heat system only.</p>';
   lab.append(ui);ui.open=true;document.body.append(lab);
   lab.querySelector('#wh-lab-close').onclick=()=>lab.close();
   lab.addEventListener('click',e=>{if(e.target===lab)lab.close();});
   const trigger=document.querySelector('#inspector h1');
   if(trigger){
-   trigger.title='سه کلیک/تپ پشت سر هم برای بازکردن آزمایشگاه Window Heat';
+   trigger.title='Triple-click or tap to open Window Heat Test Lab';
    trigger.style.userSelect='none';
    let tapCount=0,lastTap=0,resetTapTimer=null;
    trigger.addEventListener('click',()=>{
