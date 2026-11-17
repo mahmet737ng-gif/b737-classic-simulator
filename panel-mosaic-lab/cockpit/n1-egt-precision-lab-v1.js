@@ -5,7 +5,7 @@
 'use strict';
 const calibration=window.B737PhotoDetentCalibrationV1;
 const font=window.B737EISDotDigitsV1;
-if(!calibration||!font){document.getElementById('source-status').textContent='خطای بارگذاری موتور کالیبراسیون یا دیجیت‌ها';return;}
+if(!calibration||!font){document.getElementById('source-status').textContent='Calibration engine or digital fonts failed to load';return;}
 const NS='http://www.w3.org/2000/svg';
 const PHOTO='./assets/p2-conventional-full-owner-20261030.png?v=CONV-FULL-0001';
 const NEEDLE='./assets/conventional-needle-photo-v1.svg?v=CONV-NEEDLE-0001';
@@ -185,7 +185,7 @@ window.B737N1EGTPrecisionLabV1=api;
 for(const entry of entries)build(entry);
 byId('marks-toggle').addEventListener('click',()=>{
  showMarks=!showMarks;byId('marks-toggle').setAttribute('aria-pressed',String(showMarks));
- byId('marks-toggle').textContent=showMarks?'پنهان‌کردن خطوط کالیبراسیون':'نمایش خطوط کالیبراسیون';
+ byId('marks-toggle').textContent=showMarks?'Hide Calibration Tick Marks':'Show Calibration Tick Marks';
  refresh();
 });
 byId('reset').addEventListener('click',()=>{for(const e of entries)update(e,e.initial);});
@@ -217,13 +217,13 @@ img.onload=()=>{
   }
   photoReady=passed===4;
   status.className=photoReady?'good':'warn';
-  status.textContent=photoReady?'PHOTO SCAN 4/4 · ثبت مستقل تمام خطوط N1 و EGT موفق':
-   'PHOTO SCAN '+passed+'/4 · برخی خطوط نیازمند بازبینی تصویری هستند';
+  status.textContent=photoReady?'PHOTO SCAN 4/4 · All N1 and EGT tick marks registered independently':
+   'PHOTO SCAN '+passed+'/4 · Some tick marks require photo-based review';
   refresh();runReport();
  }catch(error){photoReady=false;status.className='warn';
   status.textContent='PHOTO SCAN ERROR · '+error.message;runReport();}
 };
 img.onerror=()=>{photoReady=false;status.className='warn';
- status.textContent='تصویر اصلی بارگذاری نشد؛ فقط کالیبراسیون مرجع در دسترس است';runReport();};
+ status.textContent='Source photo failed to load; reference calibration only';runReport();};
 img.src=PHOTO;
 })();
