@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111d29">
 <title>B737 Classic — Full Overhead Mosaic Test (OH01–OH25)</title>
 <link rel="stylesheet" href="./style.css?v=UPD-0012-OVH-measured-seams">
 </head><body>
 <header>
-<div><strong>B737 CLASSIC · OVERHEAD MOSAIC TEST</strong><small>ترکیب تمام تصاویر تأییدشدهٔ OH-01 تا OH-25 · بدون تغییر کیفیت منبع</small></div>
-<div class="head-actions"><a href="../">اطلس اصلی</a><a href="../upper-oh/">تست شش پنل بالایی</a><button id="reload">↻ به‌روزرسانی</button></div>
+<div><strong>B737 CLASSIC · OVERHEAD MOSAIC TEST</strong><small>Approved OH-01 through OH-25 source photos · Original image quality preserved</small></div>
+<div class="head-actions"><a href="../">Source Atlas</a><a href="../upper-oh/">Six Upper Panels Test</a><button id="reload">↻ Refresh</button></div>
 </header>
 <main>
-<div class="notice"><strong>UPD-0012 — تنظیم اندازه و اتصال پنل‌ها بر اساس OVH</strong> — عرض پنج ستون، ارتفاع هر پنل و فاصلهٔ اجزا از عکس مرجع اندازه‌گیری شده‌اند. پنل سوخت و آمپرمترهای برق از یک خط شروع می‌شوند و هر پنج ستون روی یک لبه به نوار پایینی می‌رسند. OH-01 تا OH-06 مطابق نسخهٔ قبلی حفظ شده‌اند.</div>
+<div class="notice"><strong>UPD-0012 — Panel dimensions and joins registered against OVH</strong> — Panel widths, heights and spacing are measured against the source. Fuel and electrical ammeter panels share the top edge; all five columns align with the lower strip. OH-01 to OH-06 remain unchanged.</div>
 <div class="workspace">
 <section class="work-main">
 <div class="controls">
-<div class="control-group"><button class="active" id="modeMosaic">چیدمان یکپارچه</button><button id="modeGallery">تصاویر مستقل</button><button id="modeAtlas">مرجع اطلس</button><label><input id="borders" type="checkbox"> مرز پنل‌ها</label><label><input id="tags" type="checkbox" checked> شمارهٔ پنل‌ها</label></div>
+<div class="control-group"><button class="active" id="modeMosaic">Unified Layout</button><button id="modeGallery">Separate Photos</button><button id="modeAtlas">Atlas Reference</button><label><input id="borders" type="checkbox"> Panel Boundaries</label><label><input id="tags" type="checkbox" checked> Panel Numbers</label></div>
 <div class="control-group"><button id="minus" aria-label="Zoom out">−</button><output id="zoomLabel">100%</output><button id="plus" aria-label="Zoom in">+</button><button id="fit">FIT</button></div>
 </div>
 <div class="viewport" id="viewport" role="region" aria-label="Full overhead mosaic viewer">
@@ -24,17 +24,17 @@
 <div id="columns" class="columns"></div>
 <div id="bottom" class="bottom-placeholders"></div>
 </div>
-<div id="gallery" class="gallery hidden"></div><div id="atlasView" class="hidden"><img src="../../assets/overhead.webp" alt="مرجع تصویر کامل اورهد از اطلس اصلی B737 Classic"></div>
+<div id="gallery" class="gallery hidden"></div><div id="atlasView" class="hidden"><img src="../../assets/overhead.webp" alt="Full B737 Classic overhead atlas source photo"></div>
 </div></div></div>
-<div class="caption">چیدمان OH-07 تا OH-25 از روی مرزهای فیزیکی عکس OVH تنظیم شده است؛ خطوط قرمز عکس، راهنمای تراز اجزا هستند. برای مقایسه، «مرز پنل‌ها» را روشن کن. با + و −، Ctrl + چرخ ماوس یا دو انگشت زوم کن. بخش پایین نوار پایینی در عکس مرجع دیده نمی‌شود و با تصویر کامل قبلی نمایش داده شده است.</div>
+<div class="caption">OH-07 to OH-25 follow physical boundaries in the OVH source. Red guide lines assist alignment. Enable Panel Boundaries to compare; zoom with +/- , Ctrl+wheel or pinch. The bottom strip uses the previously complete source where the new reference was cropped.</div>
 </section>
 <aside class="inspector">
-<h2>وضعیت مونتاژ</h2>
-<div class="summary"><div class="metric"><b id="panelCount">—</b><small>شناسهٔ پنل با تصویر</small></div><div class="metric"><b id="sourceCount">—</b><small>فایل تصویری مستقل</small></div><div class="metric"><b id="loadedCount">—</b><small>تصویر بارگذاری‌شده</small></div><div class="metric"><b id="missingCount">۰</b><small>پنل بدون تصویر در اطلس</small></div></div>
-<div class="status" id="status">در حال خواندن دیتابیس…</div><div class="status" id="viewModeStatus" role="status">حالت فعال: چیدمان یکپارچه</div>
-<div style="margin-top:12px"><input id="search" type="search" placeholder="جست‌وجوی شمارهٔ پنل یا سیستم…" autocomplete="off"></div>
+<h2>Assembly Status</h2>
+<div class="summary"><div class="metric"><b id="panelCount">—</b><small>Panel IDs with Source Images</small></div><div class="metric"><b id="sourceCount">—</b><small>Independent Source Image Files</small></div><div class="metric"><b id="loadedCount">—</b><small>Loaded Photo</small></div><div class="metric"><b id="missingCount">0</b><small>Panels Without Atlas Photos</small></div></div>
+<div class="status" id="status">Loading Database…</div><div class="status" id="viewModeStatus" role="status">Current View: Unified Layout</div>
+<div style="margin-top:12px"><input id="search" type="search" placeholder="Search panel number or system…" autocomplete="off"></div>
 <div class="piece-list" id="pieces"></div>
-<div id="detail" class="detail">یک پنل را انتخاب کن.</div>
+<div id="detail" class="detail">Select a Panel.</div>
 </aside></div>
-<footer>UPD-0012 · مرجع هندسهٔ بخش پایین: OVH.png · مشخصات: <a href="./atlas-layout.json">atlas-layout.json</a> / <a href="./spec.json">spec.json</a> · تصاویر اصلی و OH-01 تا OH-06 حفظ شده‌اند.</footer>
+<footer>UPD-0012 · Lower panel geometry: OVH.png · Specification: <a href="./atlas-layout.json">atlas-layout.json</a> / <a href="./spec.json">spec.json</a> · Original source photos and OH-01 through OH-06 remain unchanged.</footer>
 </main><script src="./stage.js?v=UPD-0012-OVH-measured-seams" defer></script></body></html>
