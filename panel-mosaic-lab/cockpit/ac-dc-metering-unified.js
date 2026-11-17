@@ -169,10 +169,10 @@
   const section=document.createElement('section');section.id='unifiedAcDcMeteringNeedles';
   const title=document.createElement('h2');title.textContent='AC / DC METERING · MET-0011 · ORIGINAL 4 NEEDLES';section.append(title);
   const note=document.createElement('p');note.className='muted';
-  note.textContent='فقط همان چهار گیج و عقربه‌های قبلی؛ حرکت در تمام فریم‌ها داخل خط‌های چاپ‌شده و با شعاع ثابت نوک، سقف سرعت ۷۰ درجه بر ثانیه و شتاب نرم. DC AMPS و DC VOLTS از درجات عکس؛ CPS و AC VOLTS هنوز نیازمند ممیزی شعاع و محور دقیق تصویرند.';
+  note.textContent='The four original gauges and needles remain unchanged. Motion follows printed ticks at a fixed needle-tip radius with a 70°/s speed limit and smooth acceleration. DC AMPS/VOLTS are photo-tick calibrated; CPS and AC VOLTS still require radius and pivot QA.';
   section.append(note);
   const verify=document.createElement('button');verify.type='button';
-  verify.textContent='بررسی نسخه و وضعیت پاک‌سازی OH-10';
+  verify.textContent='Verify OH-10 Cleanup and Version';
   const status=document.createElement('pre');
   status.style.cssText='direction:ltr;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;font-size:11px;line-height:1.55;max-width:100%;color:#e6e8dd';
   function checkStatus(){
@@ -213,7 +213,7 @@
    label.append(input,output);section.append(label);
    inputs.set(meter.id,input);outputs.set(meter.id,output);paint(meter.id);
   }
-  const reset=document.createElement('button');reset.type='button';reset.textContent='پارک عقربه‌ها در وضعیت مرجع';
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Park Needles at Reference Positions';
   reset.addEventListener('click',()=>{
    for(const meter of model.meters)setAngle(meter.id,meter.initialAngle);
    acMode='NORMAL';
