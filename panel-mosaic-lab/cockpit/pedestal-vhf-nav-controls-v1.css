@@ -1,4 +1,4 @@
-/* PD-VHF-NAV-CONTROLS-0001 — photo-registered 1799x813 NAV panel controls. */
+/* PD-VHF-NAV-CONTROLS-0002 — photo-registered 1799x813 NAV panel controls. */
 #unified-pedestal-faceplates .pd-freq-mechanical[data-kind="NAV"] .pd-freq-index{display:none}
 /* The user-requested inactive-side bar is 14% tall, with COMM's orange finish.
    Note: unlike this shared visual cue, the FCOM only calls for MANUAL bar in AUTO. */
@@ -9,10 +9,8 @@
  background:linear-gradient(180deg,#ffd0a0 0%,#ff9656 18%,#fc884d 56%,#f67d38 85%,#d65c26 100%);
  box-shadow:0 1px 2px #000b,0 -1px 1px #ffcf924d;
 }
-/* FCOM 11.10.13: the AUTO digits extinguish in MANUAL, but its inactive marker remains per owner. */
-#unified-pedestal-faceplates [data-nav-mode="manual"] .pd-freq-mechanical[data-mechanical-frequency$="-auto"] .pd-freq-glass{
- visibility:hidden;
-}
+/* Both AUTO and MANUAL numeric drums remain visible in every mode.
+   Only the thick orange marker identifies the inactive side. */
 #unified-pedestal-faceplates .pd-nav-mode-switch{
  position:absolute;left:41.75%;top:50.4%;width:15.3%;height:34.5%;z-index:7;
  appearance:none;-webkit-appearance:none;box-sizing:border-box;margin:0;padding:0;
@@ -37,30 +35,43 @@
  color:#ffefc7;text-shadow:0 0 4px #fff1cbba,0 0 8px #ffd78b70;
  background:radial-gradient(ellipse,#ffe5ae25,transparent 74%);
 }
+/* Original five-state Small Silver switch atlas; owner-requested NAV only.
+   Atlas cells: LEFT=0, CENTER=1, RIGHT=2, UP=3, DOWN=4.
+   Preserve the source asset and all other cockpit controls exactly. */
 #unified-pedestal-faceplates .pd-nav-test-toggle{
- position:absolute;top:76%;width:6.2%;aspect-ratio:1/1;height:auto;z-index:7;
- transform:translate(-50%,-50%);padding:0;margin:0;box-sizing:border-box;
+ position:absolute;top:76%;width:9.2%;aspect-ratio:1/1;height:auto;z-index:8;
+ transform:translate(-50%,-50%);margin:0;padding:0;box-sizing:border-box;
  border:0;border-radius:50%;appearance:none;-webkit-appearance:none;
- background:radial-gradient(circle,#07090b 0 52%,#2a3238 60%,#89939a 70%,#1b2125 82%,transparent 85%);
+ background:transparent;box-shadow:none;outline-offset:2px;
  cursor:pointer;pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent;
- box-shadow:inset 0 2px 4px #0008;
 }
 #unified-pedestal-faceplates .pd-nav-test-toggle[data-nav-test="vorDme"]{left:14.84%}
 #unified-pedestal-faceplates .pd-nav-test-toggle[data-nav-test="ils"]{left:30.35%}
-#unified-pedestal-faceplates .pd-nav-test-toggle:focus-visible{outline:2px solid #80dbf8;outline-offset:2px}
-#unified-pedestal-faceplates .pd-nav-test-lever{
- position:absolute;left:50%;top:50%;width:36%;height:57%;
- transform:translate(-50%,-50%);border-radius:45% 45% 40% 40%;
- background:linear-gradient(90deg,#545e65 0%,#ccd5da 23%,#f6f7ee 48%,#b4bec4 72%,#444e55 100%);
- box-shadow:1px 2px 3px #000c,inset 0 1px 2px #fff7;
- pointer-events:none;transition:transform 70ms ease-out;
+#unified-pedestal-faceplates .pd-nav-test-toggle:focus-visible{outline:2px solid #80dbf8}
+#unified-pedestal-faceplates .pd-nav-test-photo{
+ display:block;position:absolute;left:50%;top:50%;width:260%;aspect-ratio:1/1;
+ transform:translate(-50%,-50%);pointer-events:none;
+ background-image:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp');
+ background-repeat:no-repeat;background-size:500% 100%;background-position:25% 50%;
 }
-#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="up"] .pd-nav-test-lever{
- transform:translate(-50%,-76%) rotate(-13deg);
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="center"] .pd-nav-test-photo{
+ background-position:25% 50%;
 }
-#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="down"] .pd-nav-test-lever{
- transform:translate(-50%,-24%) rotate(13deg);
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="up"] .pd-nav-test-photo{
+ background-position:75% 50%;
 }
-@media(prefers-reduced-motion:reduce){
- #unified-pedestal-faceplates .pd-nav-test-lever{transition:none}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="down"] .pd-nav-test-photo{
+ background-position:100% 50%;
+}
+/* Direct tuning target aligns to the existing AUTO readout, does not redraw it.
+   Left portion steps MHz; right portion steps 50 kHz. */
+#unified-pedestal-faceplates .pd-nav-auto-tuner{
+ position:absolute;left:11.90%;top:17.45%;width:25.46%;height:22.39%;
+ z-index:7;margin:0;padding:0;border:0;border-radius:3px;
+ background:transparent;appearance:none;-webkit-appearance:none;
+ box-shadow:none;touch-action:none;pointer-events:auto;cursor:ns-resize;
+ -webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-nav-auto-tuner:focus-visible{
+ outline:2px solid #7fd9f2;outline-offset:1px;
 }

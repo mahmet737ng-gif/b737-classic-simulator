@@ -6,7 +6,7 @@
  */
 (function(root){
 'use strict';
-const VERSION='PD-VHF-NAV-CONTROLS-0001';
+const VERSION='PD-VHF-NAV-CONTROLS-0002';
 const SEATS=Object.freeze(['CAPT','FO']);
 const CONTROL=Object.freeze({vorDme:{up:'VOR',down:'DME'},ils:{up:'UP/LT',down:'DN/RT'}});
 const EXPECTED=Object.freeze({
@@ -69,6 +69,69 @@ function setTest(seat,kind,position){
  }}));
  return true;
 }
+// Owner-requested independent training adjustment of the AUTO drum, including
+// while MANUAL is selected. The original FMC auto-tune input remains supported.
+function tuneAuto(seat,part,dir){
+ if(!SEATS.includes(seat)||!['outer','inner'].includes(part)||!Number.isFinite(dir)||dir===0)return false;
+ const mechanical=root.B737UnifiedMechanicalFrequencyV1;
+ const old=read(seat,'auto');
+ if(!Number.isInteger(old))return false;
+ const next=root.B737UnifiedVHFDualV1?.nextFrequency?.('NAV',old,part,dir);
+ if(!Number.isInteger(next)||next===old)return false;
+ if(!mechanical?.setNavAuto?.(seat,next))return false;
+ emitMode(seat,'auto-window-tuned');
+ return true;
+}
+function autoWindowControl(seat,plate){
+ if(plate.querySelector('[data-nav-auto-tuner]'))return;
+ const button=document.createElement('button');
+ button.type='button';button.className='pd-nav-auto-tuner';
+ button.dataset.navAutoTuner=seat;
+ button.setAttribute('aria-label',seat+' NAV AUTO frequency: drag or wheel to tune; left digits MHz, right digits 50 kHz');
+ button.title='AUTO FREQUENCY — drag / wheel to adjust while retaining both displays';
+ let drag=null,skipClick=false;
+ const partAt=x=>{
+  const bounds=button.getBoundingClientRect();
+  return x<bounds.left+bounds.width*0.60?'outer':'inner';
+ };
+ button.addEventListener('wheel',e=>{
+  e.preventDefault();e.stopPropagation();
+  tuneAuto(seat,partAt(e.clientX),e.deltaY<0?1:-1);
+ },{passive:false});
+ button.addEventListener('pointerdown',e=>{
+  if(e.button!==0)return;
+  e.stopPropagation();
+  drag={id:e.pointerId,x:e.clientX,y:e.clientY,part:partAt(e.clientX),acc:0,moved:false};
+  button.setPointerCapture?.(e.pointerId);
+ });
+ button.addEventListener('pointermove',e=>{
+  if(!drag||drag.id!==e.pointerId)return;
+  e.preventDefault();e.stopPropagation();
+  drag.acc+=(drag.y-e.clientY)+(e.clientX-drag.x)*0.60;
+  drag.x=e.clientX;drag.y=e.clientY;
+  const steps=Math.trunc(drag.acc/9);
+  if(!steps)return;
+  drag.moved=true;drag.acc-=steps*9;
+  for(let i=0;i<Math.min(Math.abs(steps),20);i++)
+   tuneAuto(seat,drag.part,Math.sign(steps));
+ });
+ button.addEventListener('pointerup',e=>{
+  if(!drag||drag.id!==e.pointerId)return;
+  e.stopPropagation();skipClick=drag.moved;drag=null;
+ });
+ button.addEventListener('pointercancel',()=>{drag=null;skipClick=true});
+ button.addEventListener('click',e=>{
+  e.preventDefault();e.stopPropagation();
+  if(skipClick){skipClick=false;return}
+  tuneAuto(seat,e.detail===0?'inner':partAt(e.clientX),e.shiftKey?-1:1);
+ });
+ button.addEventListener('keydown',e=>{
+  if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))return;
+  e.preventDefault();e.stopPropagation();
+  tuneAuto(seat,e.shiftKey?'outer':'inner',e.key==='ArrowUp'||e.key==='ArrowRight'?1:-1);
+ });
+ plate.append(button);
+}
 function modeButton(seat,plate){
  let button=plate.querySelector('[data-nav-mode-control]');
  if(button)return;
@@ -93,7 +156,7 @@ function toggleButton(seat,plate,kind){
  button.type='button';button.className='pd-nav-test-toggle';
  button.dataset.navTest=kind;button.dataset.position='center';
  button.title=kind==='vorDme'?'VOR / DME self-test — spring return':'ILS UP/LT / DN/RT self-test — spring return';
- const lever=document.createElement('span');lever.className='pd-nav-test-lever';button.append(lever);
+ const photo=document.createElement('span');photo.className='pd-nav-test-photo';photo.setAttribute('aria-hidden','true');button.append(photo);
  let heldPointer=null;
  function positionFromPoint(y){
   const r=button.getBoundingClientRect();
@@ -136,6 +199,7 @@ function mount(){
  for(const seat of SEATS){
   const plate=frame(seat);if(!plate)continue;
   modeButton(seat,plate);
+  autoWindowControl(seat,plate);
   toggleButton(seat,plate,'vorDme');
   toggleButton(seat,plate,'ils');
   paint(seat);count++;
@@ -163,6 +227,6 @@ root.addEventListener('blur',()=>SEATS.forEach(seat=>{
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
 else start();
 root.B737UnifiedVHFNavControlsV1=Object.freeze({
- version:VERSION,mount,getState,setMode,setTest,expectedIndications:EXPECTED
+ version:VERSION,mount,getState,setMode,setTest,tuneAuto,expectedIndications:EXPECTED
 });
 })(window);
