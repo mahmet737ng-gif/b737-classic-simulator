@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -19,82 +19,82 @@
   <div class="brand">
     <div class="brand-kicker">B737 CLASSIC / ATA 24</div>
     <h1>BUS &amp; CONSUMER <span>TEST LAB</span></h1>
-    <p>قطع و وصل مستقل باس‌ها و مشاهدهٔ آنی وضعیت تمام مصرف‌کننده‌ها</p>
+    <p>Independently switch buses and monitor consumer power in real time</p>
   </div>
   <div class="top-actions">
-    <a class="return-link" href="../panel-mosaic-lab/cockpit/" aria-label="بازگشت به کابین Unified">↗ UNIFIED COCKPIT</a>
+    <a class="return-link" href="../panel-mosaic-lab/cockpit/" aria-label="Return to Unified Cockpit">↗ UNIFIED COCKPIT</a>
     <span class="isolation-tag">● SIMULATION ONLY</span>
   </div>
 </header>
 <section class="notice" role="note">
   <span class="notice-icon">ⓘ</span>
-  <span>قطع باس‌ها تا پیش از زدن <strong>Inject Failure to Cockpit</strong> فقط در آزمایشگاه است. پس از تزریق، سیستم‌های فعال کابین مطابق برق باس‌های انتخابی دچار خرابی می‌شوند؛ سوییچ فیزیکی و موتور به‌صورت ساختگی تغییر نمی‌کند. پاک‌کردن خرابی الزامی و دستی است.</span>
+  <span>Bus switching remains in this lab until<strong>Inject Failure to Cockpit</strong>After injection, cockpit consumers react to failed buses. Physical switches and engines are not artificially moved. Clear failures manually.</span>
 </section>
 <div class="metrics" aria-live="polite">
-  <div class="metric"><span>باس‌های برق‌دار</span><strong id="metricBusOn">—</strong><small>از ۲۴ گره</small></div>
-  <div class="metric"><span>برق‌دار <i class="dot dot-blue"></i></span><strong id="metricOn" class="txt-blue">—</strong><small>مصرف‌کننده</small></div>
-  <div class="metric"><span>بی‌برق <i class="dot dot-red"></i></span><strong id="metricOff" class="txt-red">—</strong><small>مصرف‌کننده</small></div>
-  <div class="metric"><span>محدود / نامشخص</span><strong id="metricOther" class="txt-amber">—</strong><small>خرابی بخشی یا ابهام در تغذیه</small></div>
+  <div class="metric"><span>Powered Buses</span><strong id="metricBusOn">—</strong><small>of 24 nodes</small></div>
+  <div class="metric"><span>Powered<i class="dot dot-blue"></i></span><strong id="metricOn" class="txt-blue">—</strong><small>Consumers</small></div>
+  <div class="metric"><span>Unpowered<i class="dot dot-red"></i></span><strong id="metricOff" class="txt-red">—</strong><small>Consumers</small></div>
+  <div class="metric"><span>Limited / Unknown</span><strong id="metricOther" class="txt-amber">—</strong><small>Partial failure or uncertain supply</small></div>
 </div>
 <div class="work-area">
   <aside class="bus-panel" aria-labelledby="busPanelTitle">
     <div class="panel-heading">
-      <div><h2 id="busPanelTitle">باس‌های برق</h2><p>روی هر باس بزن تا ON / OFF شود.</p></div>
+      <div><h2 id="busPanelTitle">Electrical Buses</h2><p>Click each bus to toggle ON / OFF.</p></div>
       <span id="busTotal" class="pill">24 BUS NODES</span>
     </div>
     <div class="scenario-actions">
-      <button type="button" id="allOn" class="scenario-btn" title="برق‌دار کردن همهٔ باس‌ها در آزمایشگاه">ALL ON</button>
-      <button type="button" id="allOff" class="scenario-btn danger" title="قطع تمام باس‌ها در آزمایشگاه">ALL OFF</button>
-      <button type="button" id="resetLab" class="scenario-btn subtle" title="بازگشت به حالت اولیه">RESET</button>
+      <button type="button" id="allOn" class="scenario-btn" title="Power All Buses in Lab">ALL ON</button>
+      <button type="button" id="allOff" class="scenario-btn danger" title="De-energize All Buses in Lab">ALL OFF</button>
+      <button type="button" id="resetLab" class="scenario-btn subtle" title="Restore Initial State">RESET</button>
     </div>
-    <label class="field-label" for="baselineSelect">مبنای تست</label>
-    <select id="baselineSelect" aria-label="مبنای وضعیت باس‌ها">
-      <option value="ALL_ON">All powered — شروع با همهٔ باس‌ها روشن</option>
-      <option value="NOMINAL_V7">V7 normal sources — مدل پایهٔ ژنراتورها</option>
+    <label class="field-label" for="baselineSelect">Test Baseline</label>
+    <select id="baselineSelect" aria-label="Bus State Baseline">
+      <option value="ALL_ON">All Powered — Start all buses energized</option>
+      <option value="NOMINAL_V7">V7 Normal Sources — Generator Baseline</option>
     </select>
-    <label class="cascade-option"><input type="checkbox" id="cascadeSwitch"> محاسبهٔ قطعی باس‌های پایین‌دست (Cascade)</label>
+    <label class="cascade-option"><input type="checkbox" id="cascadeSwitch">Apply downstream cascade propagation</label>
     <section class="inject-controls" aria-label="Apply bus failure to the working Unified simulator">
       <button type="button" id="injectToCockpit" class="inject-button">Inject Failure to Cockpit</button>
       <button type="button" id="clearCockpitFailures" class="scenario-btn subtle">Clear Injected Failures</button>
-      <p id="injectionStatus" role="status">قطع و وصل باس‌ها ابتدا فقط در این Test Lab است. برای اعمال خرابی روی کابین دکمه Inject را بزن.</p>
+      <p id="injectionStatus" role="status">Bus switching starts inside the lab only. Press Inject to propagate faults to the cockpit.</p>
     </section>
-    <div class="bus-list" id="busList" aria-label="تمام ۲۴ باس قابل آزمایش">
-      <p class="loading">در حال بارگذاری باس‌ها…</p>
+    <div class="bus-list" id="busList" aria-label="All 24 Testable Buses">
+      <p class="loading">Loading buses…</p>
     </div>
-    <div class="small-note">115V AC، 28V AC و 28V DC جدا هستند؛ قطع باس بالادستی ممکن است تغذیهٔ وابسته را نیز قطع کند. Transfer Bus می‌تواند از منبع دیگر تغذیه شود.</div>
+    <div class="small-note">115 V AC, 28 V AC, and 28 V DC are distinct. Loss of upstream power may affect dependent consumers; transfer buses may receive alternate supply.</div>
   </aside>
   <main class="consumer-panel" aria-labelledby="consumerTitle">
     <div class="panel-heading">
-      <div><h2 id="consumerTitle">تمام مصرف‌کننده‌های برق</h2><p id="sourceCaption">MRG IV.6 • 340 source records / 322 logical devices</p></div>
-      <div class="view-tabs" role="group" aria-label="نوع فهرست">
-        <button id="rowsView" type="button" class="view-tab active" aria-pressed="true">۳۴۰ کانسیومر</button>
-        <button id="devicesView" type="button" class="view-tab" aria-pressed="false">۳۲۲ تجهیز</button>
+      <div><h2 id="consumerTitle">All Electrical Consumers</h2><p id="sourceCaption">MRG IV.6 • 340 source records / 322 logical devices</p></div>
+      <div class="view-tabs" role="group" aria-label="List Type">
+        <button id="rowsView" type="button" class="view-tab active" aria-pressed="true">340 consumers</button>
+        <button id="devicesView" type="button" class="view-tab" aria-pressed="false">322 devices</button>
       </div>
     </div>
-    <div class="controls" aria-label="فیلترهای آزمایشگاه">
-      <label class="search-field"><span>جستجو</span><input type="search" id="searchInput" placeholder="N1, fuel, anti-ice, hydraulic…" autocomplete="off"></label>
-      <label class="select-field"><span>سیستم</span><select id="systemFilter"><option value="ALL">تمام سیستم‌ها</option></select></label>
-      <label class="select-field"><span>وضعیت</span><select id="stateFilter">
-        <option value="ALL">همه</option><option value="OFF">بی‌برق</option>
-        <option value="NORMAL">برق‌دار</option><option value="DEGRADED">محدود</option>
-        <option value="UNKNOWN">نامشخص</option>
+    <div class="controls" aria-label="Lab Filters">
+      <label class="search-field"><span>Search</span><input type="search" id="searchInput" placeholder="N1, fuel, anti-ice, hydraulic…" autocomplete="off"></label>
+      <label class="select-field"><span>System</span><select id="systemFilter"><option value="ALL">All Systems</option></select></label>
+      <label class="select-field"><span>Status</span><select id="stateFilter">
+        <option value="ALL">All</option><option value="OFF">Unpowered</option>
+        <option value="NORMAL">Powered</option><option value="DEGRADED">Limited</option>
+        <option value="UNKNOWN">Unknown</option>
       </select></label>
     </div>
-    <p class="effectivity-note">تمام مدل‌ها، EIS و Conventional، CPCS و DCPCS هم‌زمان در فهرست هستند؛ کاربرد هر تجهیز در انتهای نام مشخص می‌شود.</p>
-    <div class="legend" aria-label="راهنمای رنگ">
+    <p class="effectivity-note">All EIS / Non-EIS and CPCS / DCPCS configurations appear together, with applicability identified on each device.</p>
+    <div class="legend" aria-label="Color Legend">
       <span class="legend-item txt-blue"><i class="dot dot-blue"></i> BLUE = POWERED</span>
       <span class="legend-item txt-red"><i class="dot dot-red"></i> RED = NO POWER</span>
       <span class="legend-item txt-amber"><i class="dot dot-amber"></i> AMBER = DEGRADED / UNKNOWN</span>
       <span class="legend-item txt-muted">EFFECTIVITY = SUFFIX ON NAME</span>
     </div>
-    <div class="list-status"><span id="resultCount" aria-live="polite">در حال خواندن…</span><span id="scenarioLabel">ISOLATED TEST SCENARIO</span></div>
-    <div class="table-viewport" role="region" aria-label="فهرست کامل مصرف‌کننده‌ها" tabindex="0">
+    <div class="list-status"><span id="resultCount" aria-live="polite">Loading…</span><span id="scenarioLabel">ISOLATED TEST SCENARIO</span></div>
+    <div class="table-viewport" role="region" aria-label="Full Consumer List" tabindex="0">
       <table id="consumerTable">
-        <thead><tr><th scope="col" class="num">#</th><th scope="col">مصرف‌کننده / تجهیز</th><th scope="col">باس و ولتاژ</th><th scope="col">سیستم</th><th scope="col">وضعیت برق</th></tr></thead>
-        <tbody id="consumerBody"><tr><td colspan="5">در حال دریافت اطلاعات…</td></tr></tbody>
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">Consumer / Device</th><th scope="col">Bus and Voltage</th><th scope="col">System</th><th scope="col">Power Status</th></tr></thead>
+        <tbody id="consumerBody"><tr><td colspan="5">Loading data…</td></tr></tbody>
       </table>
     </div>
-    <footer>هر ۳۴۰ ردیف مرجع نمایش داده می‌شود. رنگ، وضعیت <strong>تغذیهٔ الکتریکی</strong> است؛ نه لزوماً روشن‌بودن واقعی یک سیستم. مدارهای اختیاری و نامشخص به‌اشتباه برق‌دار گزارش نمی‌شوند.</footer>
+    <footer>All 340 reference rows are displayed. Color represents<strong>electrical supply</strong>rather than actual system operation. Optional and unknown circuits are not falsely shown as powered.</footer>
   </main>
 </div>
 <p class="error" id="labError" role="alert" hidden></p>
