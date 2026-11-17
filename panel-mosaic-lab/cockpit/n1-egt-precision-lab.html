@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -43,26 +43,26 @@ footer{font-size:12px;color:#778a98;padding:24px 5px;line-height:1.8}
 <body>
 <header>
 <div class="brand">B737 CLASSIC / PRECISION INSTRUMENT LAB / N1 + EGT / V1</div>
-<h1>آزمایشگاه کالیبراسیون واقعی N1 و EGT</h1>
-<p>تصویر اصلی پنل، نیدلِ فوتوگرافیک و درجه‌بندی مستقل برای موتورهای ۱ و ۲. این صفحه صرفاً برای بررسی و تأیید طراحی است و وضعیت Unified اصلی را تغییر نمی‌دهد.</p>
+<h1>N1 and EGT Source-Photo Calibration Lab</h1>
+<p>Source panel artwork, photographic needles and independent scales for engines 1 and 2. This lab is for design QA and does not change the main Unified state.</p>
 </header>
 <main>
 <div class="statusbar">
-<div><span id="source-status" role="status" aria-live="polite">در حال بارگذاری تصویر اصلی و استخراج خطوط سفید…</span></div>
+<div><span id="source-status" role="status" aria-live="polite">Loading source photo and extracting tick marks…</span></div>
 <div class="toolbar">
-<button id="marks-toggle" type="button" aria-pressed="false">نمایش خطوط کالیبراسیون</button>
-<button id="random-audit" class="primary" type="button">ممیزی ۱٬۰۰۰ مقدار تصادفی</button>
-<button id="reset" type="button">بازنشانی مقادیر</button>
-<a href="./index.html">بازگشت به Unified</a>
+<button id="marks-toggle" type="button" aria-pressed="false">Show Calibration Ticks</button>
+<button id="random-audit" class="primary" type="button">Audit 1,000 Random Values</button>
+<button id="reset" type="button">Reset Values</button>
+<a href="./index.html">Return to Unified</a>
 </div>
 </div>
-<section class="gauges" id="gauges" aria-label="چهار گیج اصلی N1 و EGT"></section>
+<section class="gauges" id="gauges" aria-label="Four Original N1 and EGT Gauges"></section>
 <section class="audit">
-<h2>گزارش صحت صفر، خطوط اصلی، خطوط میانی و عدد دیجیتال</h2>
-<pre id="audit-result" aria-live="polite">برای آغاز آزمون دکمهٔ «ممیزی ۱٬۰۰۰ مقدار تصادفی» را فشار دهید.</pre>
-<small>زاویه‌ها از خطوط روشن تصویر اصلی استخراج می‌شوند. نمایشگر و نیدل از یک مقدار مشترک استفاده می‌کنند. اختلاف مجاز عدد نمایشگر صرفاً ناشی از گردکردن آن است: N1 حداکثر ۰٫۰۵ درصد و EGT حداکثر ۰٫۵ درجه. تأیید این صفحه به معنای اعتبارسنجی تجهیزات واقعی هواپیما یا تأیید AFM نیست.</small>
+<h2>Verify zero, major ticks, minor ticks and digital readouts</h2>
+<pre id="audit-result" aria-live="polite">Click Audit 1,000 Random Values to run the test.</pre>
+<small>Angles are measured from bright source-photo ticks. Needle and digital window share the same value. Allowed rounding differences: N1 at most 0.05% and EGT at most 0.5°. This lab does not certify real aircraft instruments or AFM values.</small>
 </section>
-<footer>منبع تصویر: p2-conventional-full-owner-20261030.png (1463 × 1075). نیدل از فایل تصویری موجود conventional-needle-photo-v1.svg استفاده می‌کند. کالیبراسیون N2 و سایر پنل‌ها دست‌نخورده است.</footer>
+<footer>Source: p2-conventional-full-owner-20261030.png (1463 × 1075). Needle asset: conventional-needle-photo-v1.svg. N2 and other panel calibrations remain unchanged.</footer>
 </main>
 <script src="../../engine/instruments/photo-detent-calibration-v1.js?v=CONV-PHOTO-DETENT-0001" defer></script>
 <script src="../../engine/instruments/eis-dot-digits-v1.js?v=EIS-CONV-DRUM-0004" defer></script>
