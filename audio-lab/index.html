@@ -60,41 +60,41 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 
 <section class="panel" id="realAudioImporter" dir="rtl" style="border-color:#6a7149">
  <div class="kicker">REAL RECORDINGS · USER-OWNED FILES</div>
- <h2 style="font-size:22px;margin-top:7px">بانک صداهای واقعی — واردکردن و آزمودن</h2>
- <p class="muted">ضبط‌های دارای مجوز را از روی دستگاهت انتخاب کن. فقط در همین مرورگر ذخیره می‌شوند؛ روی ریپوی عمومی آپلود نمی‌شوند. تا وقتی فایل واقعی برای هشداری وارد نشده باشد، همان صدای مصنوعی آزمایشی پخش می‌شود.</p>
+ <h2 style="font-size:22px;margin-top:7px">Real Sound Library — Import and Test</h2>
+ <p class="muted">Choose licensed recordings from your device. They stay in this browser and are not uploaded to the public repository. Until a real recording is imported, the simulator plays its synthetic test tone.</p>
  <div class="import-grid">
-  <label>هشدار مقصد<select id="realTarget" aria-label="Target warning"></select></label>
-  <div class="actions"><button class="action" id="importOne">انتخاب فایل برای همین هشدار</button>
-   <button class="action secondary" id="importMany">ورود دسته‌جمعی WAV/MP3</button>
-   <button class="action secondary" id="deleteCurrent">حذف فایل هشدار انتخابی</button><button class="action secondary" id="diagnoseImported">آزمون سلامت فایل‌های واردشده</button></div>
+  <label>Target Warning<select id="realTarget" aria-label="Target warning"></select></label>
+  <div class="actions"><button class="action" id="importOne">Choose File for Selected Warning</button>
+   <button class="action secondary" id="importMany">Batch Import WAV / MP3</button>
+   <button class="action secondary" id="deleteCurrent">Remove Selected Warning File</button><button class="action secondary" id="diagnoseImported">Check Imported File Health</button></div>
   <input type="file" id="realSingleFile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" hidden />
   <input type="file" id="realMultipleFiles" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" multiple hidden />
-  <p id="realImportStatus" class="source-status" role="status">در حال بررسی بانک صوتی مرورگر…</p>
-  <p id="realDiagnostics" class="source-status">برای بررسی فنی فایل‌ها روی «آزمون سلامت» بزن.</p>
-  <p id="realCurrentClip" class="source-status">برای هشدار انتخاب‌شده هنوز فایل واقعی ثبت نشده است.</p>
+  <p id="realImportStatus" class="source-status" role="status">Checking Browser Sound Library…</p>
+  <p id="realDiagnostics" class="source-status">Click Health Check to validate imported files.</p>
+  <p id="realCurrentClip" class="source-status">No real recording has been registered for this warning.</p>
  </div>
- <p class="muted" style="margin:14px 0 5px">منابع شناسایی‌شده؛ فایل‌های زیر هنوز به برنامه منتقل نشده‌اند:</p>
+ <p class="muted" style="margin:14px 0 5px">Sources identified; the following files have not been imported:</p>
  <div class="sources">
-  <a href="https://sonniss.com/gameaudiogdc/" target="_blank" rel="noopener noreferrer">Sonniss GDC 2020 — ضبط واقعی Stall / Gear / Trim (مجوز استفاده در اپ)</a>
-  <a href="https://www.101soundboards.com/boards/34296-737-sounds" target="_blank" rel="noopener noreferrer">737 Soundboard — شنیدن نمونه‌ها (مجوز بازنشر تأییدنشده)</a>
-  <a href="https://library.avsim.net/file/81893-feelthere-737-gpws-replacement-files" target="_blank" rel="noopener noreferrer">AVSIM 737 GPWS — استفاده محدود، نیازمند اجازه</a>
-  <a href="https://sonniss.com/gdc-bundle-license/" target="_blank" rel="noopener noreferrer">متن مجوز Sonniss</a>
+  <a href="https://sonniss.com/gameaudiogdc/" target="_blank" rel="noopener noreferrer">Sonniss GDC 2020 — Real Stall / Gear / Trim recordings (application license)</a>
+  <a href="https://www.101soundboards.com/boards/34296-737-sounds" target="_blank" rel="noopener noreferrer">737 Soundboard — Listen to examples (redistribution license unverified)</a>
+  <a href="https://library.avsim.net/file/81893-feelthere-737-gpws-replacement-files" target="_blank" rel="noopener noreferrer">AVSIM 737 GPWS — Restricted usage; permission required</a>
+  <a href="https://sonniss.com/gdc-bundle-license/" target="_blank" rel="noopener noreferrer">Sonniss License Text</a>
  </div>
 </section>
 <section class="panel" id="guidedTest" dir="rtl" style="border-color:#3b8576">
-  <div class="guided-heading"><div><div class="kicker">GUIDED LISTENING REVIEW · تست مرحله‌به‌مرحله</div><h2>ارزیابی تک‌تک صداهای شبیه‌ساز</h2></div><strong id="reviewCounter">۱ / ۱۶</strong></div>
+  <div class="guided-heading"><div><div class="kicker">GUIDED LISTENING REVIEW · Step-by-Step Test</div><h2>Review each simulator warning sound</h2></div><strong id="reviewCounter">1 / 16</strong></div>
   <div class="review-progress"><div id="reviewProgressFill"></div></div>
-  <div class="review-current"><div class="review-number" id="reviewNumber">01</div><div><h3 id="reviewTitle">Altitude Alert</h3><p id="reviewDescription">بوق هشدار ارتفاع</p><p class="muted">این نمونه‌ها فعلاً برای آزمایش رابط پخش و منطق اولیه هستند؛ صدای اصلی هواپیما نیستند.</p></div></div>
-  <label class="review-volume">بلندی پخش آزمایشی <input id="reviewVolume" type="range" min="4" max="45" value="17" step="1" aria-label="Preview volume"/><span id="reviewVolumeValue">۱۷٪</span></label>
+  <div class="review-current"><div class="review-number" id="reviewNumber">01</div><div><h3 id="reviewTitle">Altitude Alert</h3><p id="reviewDescription">Altitude Warning Tone</p><p class="muted">These are playback and logic test samples, not certified aircraft recordings.</p></div></div>
+  <label class="review-volume">Test Playback Volume <input id="reviewVolume" type="range" min="4" max="45" value="17" step="1" aria-label="Preview volume"/><span id="reviewVolumeValue">17%</span></label>
   <div class="review-buttons">
-    <button class="action" id="reviewPlay">▶ پخش صدا</button>
-    <button class="action secondary" id="reviewStop">■ توقف</button>
-    <button class="action" id="reviewApprove">✓ مورد تأیید</button>
-    <button class="action secondary" id="reviewFix">✎ نیاز به اصلاح</button>
+    <button class="action" id="reviewPlay">▶ Play Sound</button>
+    <button class="action secondary" id="reviewStop">■ Stop</button>
+    <button class="action" id="reviewApprove">✓ Approved</button>
+    <button class="action secondary" id="reviewFix">✎ Needs Revision</button>
   </div>
-  <label class="review-notes">نظر یا تغییر موردنیاز<textarea id="reviewNote" rows="2" placeholder="مثلاً تُن تیزتر، تکرار آهسته‌تر، صدای بم‌تر..." style="width:100%;resize:vertical;padding:12px;color:#e3eeee;background:#07171e;border:1px solid #385c64;border-radius:8px;font:inherit"></textarea></label>
-  <div class="review-navigation"><button class="action secondary" id="reviewPrev">→ صدای قبلی</button><button class="action secondary" id="reviewNext">صدای بعدی ←</button></div>
-  <div class="review-footer"><div id="reviewSummary">هنوز موردی ارزیابی نشده</div><div class="review-buttons"><button class="action secondary" id="reviewCopy">کپی گزارش</button><button class="action secondary" id="reviewDownload">دریافت گزارش JSON</button><button class="action secondary" id="reviewReset">پاک‌کردن نتایج</button></div></div>
+  <label class="review-notes">Review Notes / Requested Changes<textarea id="reviewNote" rows="2" placeholder="e.g. sharper tone, slower repetition, deeper pitch…" style="width:100%;resize:vertical;padding:12px;color:#e3eeee;background:#07171e;border:1px solid #385c64;border-radius:8px;font:inherit"></textarea></label>
+  <div class="review-navigation"><button class="action secondary" id="reviewPrev">→ Previous Sound</button><button class="action secondary" id="reviewNext">Next Sound ←</button></div>
+  <div class="review-footer"><div id="reviewSummary">No Items Reviewed Yet</div><div class="review-buttons"><button class="action secondary" id="reviewCopy">Copy Report</button><button class="action secondary" id="reviewDownload">Download Report JSON</button><button class="action secondary" id="reviewReset">Clear Results</button></div></div>
 </section>
 <section class="panel"><h2>01 · Listen to the warning palette</h2><p class="muted">Tap any sound. Browser audio must be activated by a user click. Voice warnings use your installed browser voice for now.</p>
 <div class="matrix" id="soundMatrix"></div></section>
