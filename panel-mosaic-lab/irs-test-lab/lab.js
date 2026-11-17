@@ -27,8 +27,8 @@ function showCases(){
  '<span class="case-title">'+escape(x.title)+'<span class="pill'+(x.level==='INJECTED'?' injected':'')+'">'+escape(x.level)+'</span></span>'+
  '<span class="case-meta">'+escape(x.ref)+' · '+escape(x.id)+'</span>'+
  '<span class="case-desc">'+escape(x.subtitle)+'</span></button>').join('')||
- '<p class="hint">سناریویی با این جست‌وجو پیدا نشد.</p>';
- by('groups').innerHTML=[{id:'ALL',title:'همه'},...catalogue.groups].map(g=>
+ '<p class="hint">No scenarios match this search.</p>';
+ by('groups').innerHTML=[{id:'ALL',title:'All'},...catalogue.groups].map(g=>
  '<button class="chip'+(g.id===group?' active':'')+'" data-action="filter" data-id="'+g.id+'" type="button">'+escape(g.title)+'</button>').join('');
 }
 function panel(id,u){
@@ -79,14 +79,14 @@ function showDiagnostics(s){
  if(s.error)alerts.unshift('ERROR: '+s.error);
  if(s.sim.cbCandidate)alerts.push('CB '+s.sim.cbCandidate+': PHOTO-ONLY / WIRING NOT VERIFIED');
  const el=by('fault-line');el.classList.toggle('bad',alerts.length>0);
- el.textContent=alerts.length?alerts.join(' · '):'NORMAL · هیچ خرابی فعالی وجود ندارد';
+ el.textContent=alerts.length?alerts.join(' · '):'NORMAL · No Active Failures';
  by('diagnostic-badge').textContent=s.units.L.syntheticFault||s.units.R.syntheticFault||
    s.units.L.syntheticDcFail||s.units.R.syntheticDcFail||s.sim.cbCandidate?'CORE + INSTRUCTOR INJECTION':'LIVE CORE + ELECTRICAL MODEL';
 }
 function showCard(s){
  const item=catalogue.byId(s.activeScenario);
  by('scenario-title').textContent=item?.title||'IRS Ground Test';
- by('scenario-summary').textContent=item?.subtitle||'هر دو IRS را مستقل بررسی کنید. با انتخاب سناریو، خرابی و علائم همان مورد شبیه‌سازی می‌شود.';
+ by('scenario-summary').textContent=item?.subtitle||'Inspect each IRS independently. Selecting a scenario simulates its faults and annunciations.';
  by('scenario-category').textContent=item?(item.group+' · '+item.level):'LIVE TRAINER';
  by('qrh-ref').textContent=item?.ref||'B737 Classic · FCOM / MRG';
  const result=lab.checkStatus();
@@ -95,14 +95,14 @@ function showCard(s){
  by('scenario-detail').innerHTML=item?
  '<div class="card-box"><strong>'+escape(item.title)+'</strong><p>'+escape(item.subtitle)+'</p>'+
  '<p class="source-line">'+escape(item.ref)+'</p><p class="source-line">'+
- (item.level==='CORE'?'CORE: وضعیت واقعی موتور IRS/برق':'INJECTED: خرابی مربی؛ هنوز مدل سخت‌افزاری مستقل ندارد')+
+ (item.level==='CORE'?'CORE: Live IRS / Electrical Engine State':'INJECTED: Instructor Fault; no independent hardware model')+
  '</p></div>':
- '<div class="card-box"><strong>انتخاب سناریو</strong><p>در ستون Fault Library روی یک سناریو کلیک کنید؛ سپس وضعیت چراغ‌ها، کدهای IRS، برق و QRH نمایش داده می‌شود.</p></div>';
+ '<div class="card-box"><strong>Select Scenario</strong><p>Choose a scenario in Fault Library to display lights, IRS codes, electrical status and QRH notes.</p></div>';
  by('expected').innerHTML=item?item.expected.map(v=>'<div class="expected-item">'+escape(v)+'</div>').join(''):
- '<div class="hint">پس از انتخاب سناریو فعال می‌شود.</div>';
+ '<div class="hint">Available after selecting a scenario.</div>';
  by('steps').innerHTML=item?item.steps.map((line,i)=>
  '<label class="checklist-item"><input type="checkbox" data-step="'+i+'" '+(s.checklist[i]?'checked':'')+'><span>'+
- escape(line)+'</span></label>').join(''):'<div class="hint">یک سناریو را انتخاب کنید.</div>';
+ escape(line)+'</span></label>').join(''):'<div class="hint">Select a scenario.</div>';
  by('events').innerHTML=s.log.slice(0,28).map(e=>'<div class="event '+escape(e.kind)+'"><b>'+
  escape(e.at)+'s</b>'+escape(e.kind)+' · '+escape(e.message)+'</div>').join('')||'<p class="hint">No events</p>';
 }
