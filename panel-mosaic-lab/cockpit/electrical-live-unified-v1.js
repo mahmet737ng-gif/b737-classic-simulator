@@ -7,7 +7,7 @@
  let current=null,lastKey='',panel=null,errorBox=null,numericMode='NOMINAL_MODEL';
  let lastDistributionBusSignature=null;
  const listeners=new Set(),sourceCache=new Map(),busRows=new Map(),faultInputs=new Map();
- const label={ENERGIZED:'برق‌دار',DEENERGIZED:'بی‌برق',UNKNOWN:'نامشخص'};
+ const label={ENERGIZED:'Powered',DEENERGIZED:'Unpowered',UNKNOWN:'Unknown'};
  const copy=v=>JSON.parse(JSON.stringify(v));
  const owner=()=>root.B737ISNCockpitV1;
  function element(tag,text,parent){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(parent)parent.append(n);return n;}
@@ -16,20 +16,20 @@
  function scenario(key,value){
   if(!['groundPowerAttached','onGround'].includes(key)||typeof value!=='boolean')throw Error('Invalid ground scenario');
   const lights=document.getElementById('overheadFrame')?.contentWindow?.B737OverheadLights;
-  if(!lights?.setScenario)throw Error('پنل اورهد هنوز آماده نیست.');
+  if(!lights?.setScenario)throw Error('Overhead panel is not ready.');
   // Use the actual iframe scenario owner so its next snapshot cannot undo
   // the input. Existing transport -> Gateway -> same Pack remains authoritative.
   lights.setScenario({[key]:value});return {pending:true};
  }
  function fault(id,active){
   if(!root.B737ElectricalV7.FAULTS.includes(id)||typeof active!=='boolean')throw Error('Invalid electrical fault');
-  if(!owner())throw Error('موتور برق هنوز آماده نیست.');
+  if(!owner())throw Error('Electrical engine is not ready.');
   owner().instructor({type:'ELECTRICAL',action:{type:'FAULT',id,active,instructor:true}});
   refresh();return snapshot();
  }
  function control(key,value){
   if(!['groundPowerQualityGood','groundServiceSelected'].includes(key)||typeof value!=='boolean')throw Error('Invalid instructor environment control');
-  if(!owner())throw Error('موتور برق هنوز آماده نیست.');
+  if(!owner())throw Error('Electrical engine is not ready.');
   owner().instructor({type:'ELECTRICAL',action:{type:'CONTROL',key,value}});refresh();
  }
  function snapshot(){return current?copy(current):null;}
@@ -98,19 +98,19 @@
   const holder=document.getElementById('isnBridgePanel');if(!holder)return;
   panel=element('section');panel.id='electricalLivePanel';
   panel.style.cssText='border:1px solid #45606b;border-radius:10px;padding:12px;margin:14px 0;line-height:1.7';
-  element('h2','برق زنده · فاز ۱',panel);
-  element('p','باتری نصب‌شده با زمان واقعی مصرف و شارژ می‌شود؛ جریان و شارژ باقی‌مانده روی خود پنل و گیج BAT دیده می‌شوند. مقادیر AC نامی‌اند و پروفایل مصرف باتری آموزشی است.',panel);
-  const help=element('p','تست زمین: BATTERY را ON کن، کابل GPU را در زیر وصل کن و سپس سوییچ واقعی GRD PWR را ON کن. سلکتورهای AC/DC همان گیج‌های نصب‌شده را می‌خوانند.',panel);
+  element('h2','Live Electrical · Phase 1',panel);
+  element('p','Installed battery charge and discharge evolve in real time. Actual modeled current and charge appear on BAT indicators. AC values are nominal; battery consumption is a training profile.',panel);
+  const help=element('p','Ground test: select BATTERY ON, connect GPU cable, then select the physical GRD PWR switch ON. AC/DC selectors read the installed gauges.',panel);
   help.style.color='#bde6cf';
-  checkbox(panel,'electricalGpuAttached','کابل برق زمینی وصل است',value=>scenario('groundPowerAttached',value));
-  checkbox(panel,'electricalOnGround','هواپیما روی زمین است',value=>scenario('onGround',value));
-  const env=element('details',undefined,panel);element('summary','کیفیت برق زمینی و Ground Service',env);
-  checkbox(env,'electricalGpuQuality','کیفیت برق زمینی قابل قبول است',value=>control('groundPowerQualityGood',value));
-  checkbox(env,'electricalGroundService','Ground Service انتخاب شده است',value=>control('groundServiceSelected',value));
-  element('p','Ground Service می‌تواند برق خدمات و شارژر را بدون برق‌دار کردن همهٔ باس‌های هواپیما بگیرد.',env);
-  const numbers=element('label','نمایش گیج‌ها: ',panel),select=element('select',undefined,numbers);
+  checkbox(panel,'electricalGpuAttached','Ground Power Cable Connected',value=>scenario('groundPowerAttached',value));
+  checkbox(panel,'electricalOnGround','Aircraft on Ground',value=>scenario('onGround',value));
+  const env=element('details',undefined,panel);element('summary','Ground Power Quality and Ground Service',env);
+  checkbox(env,'electricalGpuQuality','Ground Power Quality Acceptable',value=>control('groundPowerQualityGood',value));
+  checkbox(env,'electricalGroundService','Ground Service Selected',value=>control('groundServiceSelected',value));
+  element('p','Ground Service can power service loads and charger without energizing every aircraft bus.',env);
+  const numbers=element('label','Gauge Display: ',panel),select=element('select',undefined,numbers);
   select.id='electricalNumericMode';
-  for(const [value,text]of [['NOMINAL_MODEL','مقادیر نامی مدل'],['SENSOR_ONLY','فقط ورودی حسگر؛ مقادیر ناموجود نامشخص']]){
+  for(const [value,text]of [['NOMINAL_MODEL','Nominal Model Values'],['SENSOR_ONLY','Sensor Input Only; missing values remain UNKNOWN']]){
    const opt=element('option',text,select);opt.value=value;
   }
   select.addEventListener('change',()=>safely(()=>{numericMode=select.value;refresh();}));
@@ -125,11 +125,11 @@
    row.style.borderTop='1px solid #344c57';
    const cols=Array.from({length:5},()=>element('td','',row));cols[0].textContent=id;for(const cell of cols)cell.style.cssText='white-space:normal;overflow-wrap:anywhere;padding:4px 2px';busRows.set(id,{row,cols});
   }
-  const fail=element('details',undefined,panel);element('summary','تزریق خرابی برق برای تست پنل',fail);
+  const fail=element('details',undefined,panel);element('summary','Inject Electrical Failure for Panel Test',fail);
   for(const id of root.B737ElectricalV7.FAULTS){
    const input=checkbox(fail,'electricalFault-'+id,id,value=>fault(id,value));faultInputs.set(id,input);
   }
-  const clear=element('button','رفع خرابی‌های تزریق‌شده',fail);clear.type='button';
+  const clear=element('button','Clear Injected Failures',fail);clear.type='button';
   clear.onclick=()=>safely(()=>{for(const [id,active]of Object.entries(current?.faults||{}))if(active)fault(id,false);});
   const qa=element('p','',panel);qa.id='electricalLiveUnknown';qa.style.color='#edc87b';
   errorBox=element('p','',panel);errorBox.id='electricalLiveError';errorBox.setAttribute('role','status');
@@ -152,8 +152,8 @@
    ['electricalGpuQuality','groundPowerQualityGood'],['electricalGroundService','groundServiceSelected']])document.getElementById(id).checked=current.controls[key];
   for(const [id,input]of faultInputs)input.checked=current.faults[id];
   const unresolved=current.qa.filter(item=>!['NOMINAL_NUMBERS','LOAD_CURRENT','APU_BAT_EFFECTIVITY'].includes(item.id)).map(item=>item.id);
-  document.getElementById('electricalLiveUnknown').textContent='APU BAT و مسیر CB مصرف‌کننده‌ها هنوز تأیید نشده‌اند.'+
-   (unresolved.length?' موارد باز: '+unresolved.join(' · '):'')+
+  document.getElementById('electricalLiveUnknown').textContent='APU BAT and consumer CB paths remain unverified.'+
+   (unresolved.length?' Outstanding: '+unresolved.join(' · '):'')+
    (current.galleyShed?' · GALLEY LOAD SHED':'');
  }
  root.B737UnifiedElectricalLive=Object.freeze({version:Core.VERSION,snapshot,refresh,scenario,fault,
