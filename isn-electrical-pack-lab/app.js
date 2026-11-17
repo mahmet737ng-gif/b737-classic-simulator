@@ -43,7 +43,7 @@
   function render() {
     const state = session.get(), sur = state.mode === 'TRAINING_SURROGATE';
     $('mode').setAttribute('aria-pressed', String(sur));
-    $('mode').textContent = sur ? 'بازگشت به Source-Gated' : 'فعال‌سازی نگاشت آموزشی Surrogate';
+    $('mode').textContent = sur ? 'Return to Source-Gated' : 'Enable Training Surrogate Mapping';
     $('modeBadge').textContent = state.mode;
     $('modeBadge').className = sur ? 'surrogate' : '';
     $('busTransfer').checked = session.electricalState.config.busTransferAuto;
@@ -53,7 +53,7 @@
     $('highCabin').checked = state.sensors.cabinAltitudeFt > 10000;
     $('buses').innerHTML = ['generator1','generator2','transfer1','transfer2','main1','main2','dc1','dc2']
       .map(bus => '<div><small>' + escape(bus.toUpperCase()) + '</small>' + colored(state.electrical.bus[bus]) + '</div>').join('');
-    $('powerQa').textContent = state.electrical.qa.map(item => item.id).join(' · ') || 'Electrical V7 · منبع‌های AC و DC در مدل گسسته محاسبه شدند.';
+    $('powerQa').textContent = state.electrical.qa.map(item => item.id).join(' · ') || 'Electrical V7 · AC and DC sources computed in discrete model.';
     for (const p of PUMPS) {
       const row = pumpBody.querySelector('[data-pump="' + p.id + '"]');
       const item = state.pumps[p.id];
@@ -73,13 +73,13 @@
       ['CABIN HORN · WarningEngine', w.audio.active.some(a => a.id === 'intermittentHorn')]
     ];
     $('warningSummary').innerHTML = summary.map(([name,value]) => '<div><small>' + escape(name) + '</small>' + colored(value) + '</div>').join('');
-    $('warningNote').textContent = 'Fuel caution یک خروجی آموزشی کاندید است؛ Hydraulic Master Caution و تغذیه دقیق پمپ‌ها تا دریافت مدرک معتبر UNKNOWN می‌مانند.';
+    $('warningNote').textContent = 'Fuel caution is a candidate training output. Hydraulic Master Caution and actual pump supplies remain UNKNOWN without verified references.';
     $('eventTrace').replaceChildren();
     for (const event of [...state.recentEvents].reverse().slice(0,25)) {
       const item = document.createElement('div'); item.className = 'event';
       const top = document.createElement('b');top.textContent = '#' + event.seq + ' · ' + event.command.type;
       item.append(top);
-      if (!event.changes.length) { const none = document.createElement('small'); none.textContent = 'بدون تغییر خروجی'; item.append(none); }
+      if (!event.changes.length) { const none = document.createElement('small'); none.textContent = 'No Output Changes'; item.append(none); }
       for (const change of event.changes) {
         const p = document.createElement('p');p.dir = 'ltr';
         p.textContent = change.path + ': ' + status(change.from) + ' → ' + status(change.to) + ' [' + change.evidence + ']';
@@ -87,7 +87,7 @@
       }
       $('eventTrace').append(item);
     }
-    if (!state.recentEvents.length) $('eventTrace').textContent = 'هنوز رویدادی ثبت نشده است.';
+    if (!state.recentEvents.length) $('eventTrace').textContent = 'No Events Logged Yet';
   }
   root.B737ISNPack01Session = session;
   render();
