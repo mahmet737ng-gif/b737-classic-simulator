@@ -200,7 +200,7 @@
    const procedure=await request('/api/cdu/procedure?'+query);
    if(!converter?.hasSource?.(procedure))throw Error('PROCEDURE SOURCE INCOMPLETE');
    const geometry=converter.compile(procedure,{airport:v.airport,kind:entry.kind,
-    ident:entry.ident,runway:v.runway,transition:v.transition});
+    ident:entry.ident,runway:v.runway,transition:v.transition,airportRecord:v.airportRecord});
    if(ticket!==serial||state.cduSgView!==v)return;
    shared.select({airport:v.airport,kind:entry.kind,ident:entry.ident,
     runway:v.runway,transition:v.transition,procedure,geometry,airportRecord:v.airportRecord});

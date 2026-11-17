@@ -105,7 +105,12 @@
    if(!segments.length&&!fixes.length)throw Error('NO VERIFIED GEOMETRY');
    const bank=startMod();
    bank.selections[key]={airport,kind,ident,runway,transition,cycle:CYCLE,sourceOnly:true,fmcExecutable:false};
+   const program=meta?.pathProgram?.version==='SG-PROCEDURE-TRAJECTORY-0001'&&
+    meta.pathProgram.sourceOnly===true&&meta.pathProgram.fmcExecutable===false&&
+    meta.pathProgram.runway===runway&&meta.pathProgram.fixes?.length===2?
+    copy(meta.pathProgram):null;
    bank.geometries[key]={airport,kind,ident,segments,fixes,
+    ...(program?{program}:{}),
     warnings:Array.isArray(meta?.warnings)?meta.warnings.slice(0,100):[],
     renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
    if(runway){

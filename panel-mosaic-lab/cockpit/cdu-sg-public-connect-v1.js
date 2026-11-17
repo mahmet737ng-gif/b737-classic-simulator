@@ -26,6 +26,13 @@
     if(cmd.kind==='SPEED')return {kind:'SPEED_TOKEN'};
     if(cmd.kind==='AT'&&/^(?:OR (?:ABOVE|BELOW) )?\d{3,5}$/.test(cmd.value))
      return {kind:'ALTITUDE_CONSTRAINT'};
+    if(cmd.kind==='TRK'&&/^\d{1,3}$/.test(cmd.value)&&Number(cmd.value)<360)
+     return {kind:'TRK',values:{degrees:Number(cmd.value)},sourceCommand:cmd.raw_text};
+    if(cmd.kind==='UNTIL'&&/^\d{3,5}$/.test(cmd.value))
+     return {kind:'UNTIL',values:{altitudeFt:Number(cmd.value)},sourceCommand:cmd.raw_text};
+    if(cmd.kind==='TURN'&&['LEFT','RIGHT'].includes(cmd.value))
+     return {kind:'TURN',values:{direction:cmd.value},sourceCommand:cmd.raw_text};
+    if(cmd.kind==='DIRECT')return {kind:'DIRECT',values:{},sourceCommand:cmd.raw_text};
     if(cmd.kind!=='FIX')return {kind:String(cmd.kind||'UNKNOWN')};
     const ident=String(cmd.value||'').trim().replace(/^OVERFLY\s+/,'');
     const ref=fixes[idx++];
