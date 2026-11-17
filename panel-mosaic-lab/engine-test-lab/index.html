@@ -1,21 +1,21 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B737 Classic — Engine / EIS / Conventional Test Lab</title>
 <link rel="stylesheet" href="./style.css?v=ENG-LAB-0002"></head>
 <body>
 <header class="top"><div><h1>ENGINE SYSTEMS TEST LAB</h1><p>737 Classic · EIS / Conventional · START / IGNITION / OIL / FUEL / ELECTRICAL</p></div>
 <strong id="connection" class="connection">WAITING FOR UNIFIED ECU</strong></header>
-<div class="warning">TRAINING ONLY — اعداد و سناریوها جایگزین FCOM / AFM و دستورالعمل عملیاتی هواپیما نیستند. این آزمایشگاه از همان ECU و برق پنل Unified استفاده می‌کند؛ سوئیچ‌های واقعی را مخفیانه جابه‌جا نمی‌کند.</div>
+<div class="warning">TRAINING ONLY — Values and scenarios are not substitutes for FCOM/AFM or operational procedures. This lab uses the existing Unified ECU and electrical model; it does not secretly move physical switches.</div>
 <nav class="tabs" aria-label="Engine test modes">
 <button data-tab="normal" class="selected">NORMAL</button><button data-tab="abnormal">ABNORMAL</button>
 <button data-tab="emergency">EMERGENCY</button><button data-tab="systems">SYSTEM / EIS BITE</button></nav>
-<div class="controls-top"><label>موتور مورد آزمایش<select id="engine"><option value="engine1">ENGINE 1</option><option value="engine2">ENGINE 2</option></select></label>
-<label>نمایشگر<select id="display"><option value="EIS">EIS</option><option value="CONVENTIONAL">CONVENTIONAL</option></select></label>
+<div class="controls-top"><label>Test Engine<select id="engine"><option value="engine1">ENGINE 1</option><option value="engine2">ENGINE 2</option></select></label>
+<label>Display<select id="display"><option value="EIS">EIS</option><option value="CONVENTIONAL">CONVENTIONAL</option></select></label>
 <button id="refresh" type="button">REFRESH STATE</button><span id="report-age">—</span></div>
 <main>
-<section class="panel tab-panel" data-panel="normal"><h2>Normal · روشن‌کردن، تثبیت، توان و توقف</h2>
-<p>برای آزمون کامل ترتیب استارت، در Unified سوئیچ واقعی ENG START را روی GRD، IGN را روی L/BOTH/R و Fuel Start Lever را روی IDLE قرار بده. PRESET RUNNING فقط میان‌بُر مخصوص مربی است، نه یک استارت واقعی.</p>
+<section class="panel tab-panel" data-panel="normal"><h2>Normal · Start, Stabilize, Power and Shut Down</h2>
+<p>For a complete start sequence, set physical ENG START to GRD, IGN to L/BOTH/R and Fuel Start Lever to IDLE in Unified. PRESET RUNNING is an instructor shortcut, not an actual engine start.</p>
 <div class="field physical-start-select">
 <label>Physical ENG START switch<select id="start-position"><option value="OFF">OFF</option>
 <option value="GRD">GRD</option><option value="CONT">CONT</option><option value="FLT">FLT</option></select></label>
@@ -23,7 +23,7 @@
 <label>IGN select toggle<select id="ignition-position"><option value="BOTH">BOTH</option>
 <option value="IGN L">IGN L</option><option value="IGN R">IGN R</option></select></label>
 <button id="ignition-set">MOVE ACTUAL OH IGN TOGGLE</button>
-</div><p>سوئیچ‌ها از کنترل فیزیکی واقعی داخل iframe اورهد حرکت می‌کنند. اگر اورهد هنوز بارگذاری نشده است، ابتدا نمای OVERHEAD را در Unified باز کن.</p>
+</div><p>Switches follow real overhead controls inside the iframe. If the overhead is not loaded, first open OVERHEAD in Unified.</p>
 <div class="actions">
 <button data-command="APU_PRESET">INSTRUCTOR APU READY</button>
 <button data-command="PRESET_RUNNING">INSTRUCTOR RUN SELECTED ENGINE</button>
@@ -35,13 +35,13 @@
 <div class="field"><label>Engine Thrust / Throttle (selected engine) <output id="throttle-label">0%</output><input id="throttle" type="range" min="0" max="100" value="0"></label><button id="throttle-set">APPLY THRUST</button></div>
 <p class="tip">Starter valve position, starter motor, ignition, N2 acceleration, EGT, oil pressure, fuel flow and related lamps are observed in the live tables below.</p>
 </section>
-<section class="panel tab-panel" data-panel="abnormal" hidden><h2>Abnormal · شروع ناموفق و خرابی سنسورها</h2>
+<section class="panel tab-panel" data-panel="abnormal" hidden><h2>Abnormal · Start Failures and Sensor Faults</h2>
 <div class="field"><label>Start failure<select id="start-fault">
 <option value="n2Stall">N2 STALL</option><option value="egtHigh">HOT START / EGT HIGH</option>
 <option value="noLightOff">NO LIGHT-OFF</option><option value="hungStart">HUNG START</option>
 <option value="earlyCutout">EARLY STARTER CUTOUT</option><option value="flameOut">FLAMEOUT AFTER RUNNING</option>
 </select></label><button id="start-fault-on">INJECT</button><button id="start-fault-off">CLEAR</button></div>
-<p>خطاهای استارت را قبل از چرخاندن سوئیچ واقعی به GRD فعال کن. این گزینه‌ها از همان ISN Start Chain استفاده می‌کنند.</p>
+<p>Inject start faults before selecting GRD using the physical switch. These scenarios use the existing ISN Start Chain.</p>
 <div class="field"><label>Engine oil fault<select id="oil-fault"><option value="pumpFailure">OIL PUMP FAILURE</option>
 <option value="oilLeak">OIL LEAK</option><option value="filterRestriction">OIL FILTER RESTRICTION</option></select></label>
 <button id="oil-fault-on">INJECT</button><button id="oil-fault-off">CLEAR</button></div>
@@ -63,8 +63,8 @@
 <option value="TRANSFER1_RELAY_FAILED">TRANSFER 1 RELAY</option><option value="TRANSFER2_RELAY_FAILED">TRANSFER 2 RELAY</option>
 </select></label><button id="electric-on">FAULT ON</button><button id="electric-off">FAULT OFF</button></div>
 <button data-command="SHUTDOWN" class="danger">EMERGENCY ENGINE SHUTDOWN / FUEL CUTOFF</button>
-<p>قطع باس با توقف موتور فرق دارد: مقدار فیزیکی N1/N2/EGT می‌تواند موجود بماند، ولی خود گیج یا نشانگر بر اساس منبع برق از دسترس خارج شود. وضعیت هر مورد در جدول پایین مستقل نمایش داده می‌شود.</p>
-<p class="tip">اقدامات عملیاتی Emergency به عمد به‌صورت چک‌لیست کنترل پرواز ارائه نشده‌اند. این بخش تزریق عیب آموزشی است.</p>
+<p>Bus power loss differs from engine shutdown: physical N1/N2/EGT may persist while the powered gauge/display becomes unavailable. Each state is shown separately in the table.</p>
+<p class="tip">Emergency operating procedures are intentionally not presented as flight checklists. This section is for training fault injection.</p>
 </section>
 <section class="panel tab-panel" data-panel="systems" hidden><h2>System · Display, EIS BITE &amp; Indication Quality</h2>
 <div class="field"><label>EIS Unit fault<select id="unit-fault"><option value="eisPrimary">PRIMARY UNIT</option>
@@ -80,7 +80,7 @@
 <div class="field"><label>Instructor-installed Oil Filter Bypass Switch threshold (PSID)<input id="filter-limit" type="number" step=".5" min="0" max="100" placeholder="Unverified / None"></label>
 <button id="set-filter">SET / CLEAR THRESHOLD</button></div>
 <button id="reset-instruments">RESET ALL INSTRUMENT INJECTIONS</button>
-<p>هنگام نامعلوم بودن WDM دقیق یا آستانه Filter Bypass، برنامه UNKNOWN نشان می‌دهد؛ از این ورودی‌ها فقط برای سناریوی تست استفاده کن.</p>
+<p>When wiring or FILTER BYPASS thresholds are unverified, output remains UNKNOWN. Use these inputs only for test scenarios.</p>
 </section>
 
 <section class="panel statuses" id="engine-scenario-matrix-v3">
@@ -112,7 +112,7 @@
 </div>
 <p id="scenario-description" dir="auto">Normal, Abnormal and Emergency source-traced cases are loaded from Technical Database scenarios.</p>
 <p id="scenario-expectation" dir="auto">Expected result: —</p>
-<p class="tip">برای خطاهای START ابتدا fault را فعال کن و سپس GRD را از همان پنل فیزیکی انتخاب کن. این ابزار خطا را تزریق می‌کند؛ هیچ موتور یا شیر خیالی اضافه نمی‌شود.</p>
+<p class="tip">For START faults, arm the fault before using GRD on the real panel. This tool injects failures without inventing engines or valves.</p>
 </section>
 <section class="panel statuses"><h2>START PANEL · Actual discrete switching</h2><div id="start-table" class="table-scroll">Waiting for ECU…</div></section>
 <section class="panel statuses"><h2>Engine indications · All gauges, both engines, bus source &amp; failure state</h2><div id="indications-table" class="table-scroll">Waiting for engine technical database…</div></section>
