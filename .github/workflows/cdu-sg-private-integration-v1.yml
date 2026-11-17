@@ -6,6 +6,7 @@ on:
       - 'cdu-standalone-v6/cdu-sg-selector-v1.js'
       - 'cdu-standalone-v6/app.js'
       - 'panel-mosaic-lab/cockpit/cdu-sg-*'
+      - 'panel-mosaic-lab/cockpit/tests/cdu-sg-private-integration-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/cdu-stage.html'
       - 'panel-mosaic-lab/cockpit/cdu-session.js'
       - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
