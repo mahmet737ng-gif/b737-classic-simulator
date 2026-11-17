@@ -234,6 +234,8 @@ function applyCDUScreenTypography(box){
  box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
 }
+// Avoid repainting unchanged FMC glyphs on unrelated network/SG notifications.
+let lastCduVisualMarkup=null;
 function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
  const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
@@ -318,15 +320,23 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  if(!output)throw Error('AUTHORITATIVE_CDU_SCREEN_COMPOSITOR_NOT_LOADED');
  // Single atomic update to the VISIBLE CDU. Optional reference adapters never
  // receive or mutate the live DOM and cannot erase a FCOM-owned screen.
- box.replaceChildren(...frame.childNodes);
- applyCDUScreenTypography(box);
+ const nextVisualMarkup=frame.innerHTML;
+ if(nextVisualMarkup!==lastCduVisualMarkup||box.childNodes.length===0){
+  box.replaceChildren(...frame.childNodes);
+  applyCDUScreenTypography(box);
+  lastCduVisualMarkup=nextVisualMarkup;
+ }
  box.dataset.screenOwner=output.owner;
  box.dataset.sourceVerified=String(output.sourceVerified);
  box.dataset.compositorVersion=output.version;
  box.style.opacity=state.brightness;
  const all=core.lights(state);if(state.stage6AwaitingExec||window.CDU_SG_API?.execLit?.())all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
- $('page-now').textContent=state.page;$('scratch-now').textContent=state.message||state.scratch||'—';$('pending-now').textContent=core.pendingCount(state);$('key-now').textContent=state.lastKey;
+ for(const [id,value] of [
+  ['page-now',state.page],['scratch-now',state.message||state.scratch||'—'],
+  ['pending-now',core.pendingCount(state)],['key-now',state.lastKey]]){
+  const node=$(id);if(node&&node.textContent!==String(value))node.textContent=String(value);
+ }
  const review=contract.compile(pages,state.page);
  box.dataset.layoutVerification=review.verification.layout;
  box.dataset.behaviorVerification=review.verification.behavior;
