@@ -257,9 +257,27 @@
      core.addMessage(s,'NOT IN DATABASE');return true;
     }
    }
+   if(cell.field.startsWith('TO')&&s.scratch&&s.scratch!=='DELETE'){
+    const viaName='VIA'+cell.field.slice(2),via=entered(s,viaName);
+    if(via&&via!=='DIRECT'&&via!=='DCT'){
+     const proof=s.verifiedToEntries?.[cell.field];
+     if(proof?.to!==String(s.scratch).trim().toUpperCase()||
+        proof?.airway!==via||proof?.origin!==entered(s,'ORIGIN')||
+        proof?.destination!==entered(s,'DEST')||
+        proof?.source!=='OWNER_WPNAVRTE_VERIFIED'){
+      core.addMessage(s,'NOT IN DATABASE');return true;
+     }
+    }
+   }
    const before=entered(s,cell.field),input=s.scratch;
    if(s.routeActivated)core.field(s,cell);
    else core.stageRouteField(s,cell);
+   if(input&&s.scratch===''&&cell.field.startsWith('VIA')&&input!==before){
+    const to='TO'+cell.field.slice(3),draft=s.routeActivated?s.pending:s.stagedRoute;
+    draft[to]='';
+    if(s.verifiedToEntries)delete s.verifiedToEntries[to];
+    if(s.navFixEvidence)delete s.navFixEvidence[to];
+   }
    if(input&&s.scratch===''&&cell.field==='ORIGIN'&&before&&entered(s,'ORIGIN')!==before){
     const draft=s.routeActivated?s.pending:s.stagedRoute;
     for(const name of new Set([...Object.keys(s.active),...Object.keys(draft)]))

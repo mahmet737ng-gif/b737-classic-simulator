@@ -262,6 +262,47 @@
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
+
+ // A TO entry must be reachable on the selected VIA airway, not merely
+ // present somewhere in the waypoint database.
+ async function verifyToKey(key,cell,via){
+  if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
+  const n=Number(/^TO(\d+)$/.exec(cell.field)?.[1]),viaField='VIA'+n;
+  const from=precedingFix(viaField),input=String(state.scratch||'').trim().toUpperCase();
+  const origin=core.readValue(state,'ORIGIN','RTE');
+  const destination=core.readValue(state,'DEST','RTE');
+  const verifiedVia=state.verifiedAirwayEntries?.[viaField];
+  if(!from||!Number.isFinite(from.lat)||!Number.isFinite(from.lon)||
+     verifiedVia?.airway!==via||verifiedVia?.from!==from.ident||
+     verifiedVia?.origin!==origin||verifiedVia?.destination!==destination||
+     verifiedVia?.source!=='OWNER_WPNAVRTE_VERIFIED'){
+   issue('NAV DATA UNAVAILABLE');return;
+  }
+  airwayBusy=true;const ticket=++airwayTicket,revision=shared.snapshot().revision;
+  state.message='VERIFY NAV DATA';update();
+  try{
+   const url='/api/cdu/airway-check?from='+encoded(from.ident)+
+    '&airway='+encoded(via)+'&to='+encoded(input)+
+    '&lat='+encoded(from.lat)+'&lon='+encoded(from.lon);
+   const result=await bridge.request(url),proof=await result.json();
+   if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||
+      String(state.scratch||'').trim().toUpperCase()!==input||
+      core.readValue(state,viaField,'FLIGHT_PLAN')!==via||
+      shared.snapshot().revision!==revision||
+      globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
+   if(!result.ok||proof?.available!==true){issue('NAV DATA UNAVAILABLE');return;}
+   if(proof.valid!==true||proof.from!==from.ident||
+      proof.airway!==via||proof.to!==input){
+    issue('NOT IN DATABASE');return;
+   }
+   state.verifiedToEntries={...(state.verifiedToEntries||{}),
+    [cell.field]:{to:input,airway:via,from:from.ident,origin,destination,
+     source:'OWNER_WPNAVRTE_VERIFIED'}};
+   state.message='';
+   core.press(state,pages,'CDU_CAPT_'+key);update();
+  }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
+  finally{if(ticket===airwayTicket)airwayBusy=false;}
+ }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
@@ -270,6 +311,18 @@
    const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
    if(cell?.format==='AIRWAY'&&core.validate?.('AIRWAY',state.scratch)){
     void verifyAirwayKey(k,cell);return true;
+   }
+  }
+  if(state.page==='FLIGHT_PLAN'&&/^LSK_R[1-5]$/.test(k)&&state.scratch&&
+     state.scratch.trim().toUpperCase()!=='DELETE'){
+   const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
+   if(cell?.format==='WAYPOINT'&&/^TO\d+$/.test(cell.field)){
+    const viaField='VIA'+cell.field.slice(2);
+    const via=String(core.readValue(state,viaField,'FLIGHT_PLAN')||'').trim().toUpperCase();
+    if(via&&via!=='DIRECT'&&via!=='DCT'){
+     if(!core.validate?.('WAYPOINT',state.scratch)){issue('INVALID ENTRY');return true;}
+     void verifyToKey(k,cell,via);return true;
+    }
    }
   }
   if(state.page==='DEP_ARR')return indexKey(k);
