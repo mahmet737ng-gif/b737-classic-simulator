@@ -503,7 +503,10 @@ function render(svg,raw){
 }
 function routeProjection(input){
  const m=model({...input,route:{points:[]}});
- return ['PLAN','MAP','CTR_MAP'].includes(m.mode)?projection(m,LAYOUT[m.mode],m.mode==='PLAN'):null;
+ // The normal NAV glyph contract remains unchanged; source-only overlays
+  // also need accurate projections for centered/expanded NAV rose modes.
+  return ['PLAN','MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(m.mode)?
+   projection(m,LAYOUT[m.mode],m.mode==='PLAN'):null;
 }
 return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render,routeProjection};
 });

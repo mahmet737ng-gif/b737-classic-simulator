@@ -41,7 +41,7 @@
  function draw(svg,source,mode,range,powered,offset,project,anchor,flight=null){
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
-  if(!powered||!['PLAN','MAP','CTR_MAP'].includes(mode)||!Number.isFinite(range)||range<=0||
+  if(!powered||!['PLAN','MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(mode)||!Number.isFinite(range)||range<=0||
      typeof offset!=='function'||source?.connected!==true||source?.sourceOnly!==true||
      source?.fmcExecutable!==false)return 0;
 
