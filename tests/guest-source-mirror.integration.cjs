@@ -35,6 +35,8 @@ async function read(route,cookies){
    const unauthorized=await get(originalResource);
    assert.equal(unauthorized.status,401,'Unprotected original resource: '+originalResource);
  }
+ const noAccess=await get('/api/cdu/airway-check?from=DHN&airway=B411&lat=35.254167&lon=52.72');
+ assert.equal(noAccess.status,401,'Airway check must be session protected');
  const first=await login();
  assert.equal(first.status,303);
  assert.equal(first.location,'/');
@@ -75,6 +77,17 @@ async function read(route,cookies){
  }));
  const image=await read('/panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png',first.cookies);
  assert(image.bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])),'Original overhead PNG was not delivered');
+ const validAirway=await get('/api/cdu/airway-check?from=DHN&airway=B411&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal(validAirway.status,200);
+ assert.equal((await validAirway.json()).valid,true,'B411 must connect to source DHN');
+ const absent=await get('/api/cdu/airway-check?from=DHN&airway=B11&lat=35.254167&lon=52.72',
+  {headers:{Cookie:first.cookies}});
+ assert.equal(absent.status,200);
+ assert.equal((await absent.json()).valid,false,'B11 must be absent at DHN');
+ const spoofed=await get('/api/cdu/airway-check?from=DHN&airway=B411&lat=41.645&lon=122.115',
+  {headers:{Cookie:first.cookies}});
+ assert.equal((await spoofed.json()).valid,false,'Another DHN position must not resolve as Iran DHN');
  const pulse=await get('/api/pulse',{method:'POST',headers:{Cookie:first.cookies}});
  assert.equal(pulse.status,204,'Session heartbeat failed');
  const second=await login(),third=await login(),fourth=await login();

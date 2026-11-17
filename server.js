@@ -14,6 +14,10 @@ const USER = process.env.LAB_USER || 'Ali.m';
 const BUILTIN_SCRYPT = 'scrypt:e16e63d5777399754f7b87d6666a7768:575fd8471f434a6e088f38abde8e62ce9a9cec892bd70b69ff07593d0abed044b99e0b5cd93f36bd4c83e340e96fdc9d4ce2bbe2a762d6aa3098d2b1d680ba89';
 const PASSWORD_HASH = process.env.LAB_PASSWORD_SCRYPT || BUILTIN_SCRYPT;
 const MAX_DEVICES = 3;
+// This owner-supplied navigation subset is held in Railway variables only.
+// Never publish the route database as part of the public GitHub repository.
+const AIRWAY_REFERENCE=(()=>{try{return JSON.parse(process.env.LAB_AIRWAY_DHN_VERIFIED||'{}');}
+ catch(_){return {};}})();
 const UNLIMITED_USER = 'Taregh';
 // Disabled unless Railway provides the salted verifier via a protected variable.
 const UNLIMITED_PASSWORD_SCRYPT = process.env.LAB_TAREGH_PASSWORD_SCRYPT || '';
@@ -422,6 +426,31 @@ async function handle(req,res) {
       'Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin',
       'X-Content-Type-Options':'nosniff'});
     res.end(JSON.stringify(body));return;
+  }
+  // Airway names alone are not proof of connectivity. Confirm membership
+  // at the preceding exact georeferenced fix; do not infer routable FMC legs.
+  if(req.method==='GET'&&url.pathname==='/api/cdu/airway-check'){
+    const from=String(url.searchParams.get('from')||'').toUpperCase();
+    const airway=String(url.searchParams.get('airway')||'').toUpperCase();
+    const latitude=url.searchParams.get('lat'),longitude=url.searchParams.get('lon');
+    const record=Object.hasOwn(AIRWAY_REFERENCE,from)?AIRWAY_REFERENCE[from]:null;
+    const supplied=latitude!==null&&longitude!==null&&latitude!==''&&longitude!=='';
+    const lat=supplied?Number(latitude):NaN,lon=supplied?Number(longitude):NaN;
+    if(!/^[A-Z0-9]{2,8}$/.test(from)||!/^[A-Z0-9]{2,8}$/.test(airway)){
+      res.writeHead(400,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
+      res.end('{"error":"INVALID ENTRY"}');return;
+    }
+    if(!record||!Array.isArray(record.airways)){
+      res.writeHead(503,{'Content-Type':'application/json','Cache-Control':'private, no-store'});
+      res.end('{"available":false,"error":"NAV DATA UNAVAILABLE"}');return;
+    }
+    const near=Number.isFinite(lat)&&Number.isFinite(lon)&&
+      Math.abs(lat-record.lat)<=0.02&&Math.abs(lon-record.lon)<=0.02;
+    const valid=near&&record.airways.includes(airway);
+    res.writeHead(200,{'Content-Type':'application/json; charset=utf-8',
+      'Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin'});
+    res.end(JSON.stringify({source:'OWNER_WPNAVRTE_VERIFIED',fmc_executable:false,
+      available:true,valid,from,airway}));return;
   }
   if(req.method==='GET'&&navdata.supports(url.pathname)){
     const {status,body}=await navdata.lookup(url);
