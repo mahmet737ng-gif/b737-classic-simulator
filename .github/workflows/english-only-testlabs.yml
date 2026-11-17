@@ -1,0 +1,18 @@
+name: English-only Test Labs Source Audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/qa-english-only-labs.cjs'
+      - '.github/workflows/english-only-testlabs.yml'
+  workflow_dispatch:
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit all test-lab user-interface source strings
+        run: node tools/qa-english-only-labs.cjs
