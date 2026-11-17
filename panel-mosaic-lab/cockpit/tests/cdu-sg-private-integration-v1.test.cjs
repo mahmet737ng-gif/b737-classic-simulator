@@ -604,3 +604,14 @@ test('OIII DHN3A exact source commands produce verified magnetic track, altitude
  assert.equal(arc.attrs['stroke-dasharray'],undefined);
  assert.equal(nodes.find(n=>n.attrs['data-cdu-sg-reference']).attrs['data-route-state'],'ACT');
 });
+
+
+test('Unified CDU frame boots the SG source adapter before CDU ready event',()=>{
+ const html=read('cdu-standalone-v6/index.html');
+ const sg=html.indexOf('src="cdu-sg-selector-v1.js?v=');
+ const app=html.indexOf('src="app.js?v=');
+ assert.ok(sg>0&&app>sg,
+  'The shared CDU source selector must exist before the CDU app ready handshake');
+ assert.match(read('panel-mosaic-lab/cockpit/cdu-sg-public-connect-v1.js'),
+  /B737CDUAttachCduSgV1/);
+});
