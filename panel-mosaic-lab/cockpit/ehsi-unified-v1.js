@@ -221,7 +221,11 @@
     // aircraft-centered, including when the source is the selected IRS.
     const anchor=referenceAnchor(mode,route,src.mapPosition,
      win.B737UnifiedFlightLocationV1?.getLocation?.(),sg);
-    const project=mode==='PLAN'||Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
+    // The reviewed runway is the reference origin in PLAN. Do not subtract
+     // the unrelated FMC route's selected center waypoint a second time.
+     const project=mode==='PLAN'?
+      renderer.routeProjection({...model,route:{...model.route,points:[],centerIndex:0}}):
+      Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
     reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
      src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor,trajectoryFlight);
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';

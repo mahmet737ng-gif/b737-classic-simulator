@@ -179,6 +179,9 @@ test('EHSI PLAN centers selected runway threshold, MAP keeps valid actual aircra
  }]}}}};
  assert.deepEqual(ehsi.referenceAnchor('PLAN',{points:[]},null,selected,runway),
   {lat:35.681,lon:51.312,source:'VERIFIED_RUNWAY_THRESHOLD'});
+ assert.deepEqual(ehsi.referenceAnchor('PLAN',{points:[{lat:12,lon:67}],centerIndex:0},
+  null,selected,runway),{lat:35.681,lon:51.312,source:'VERIFIED_RUNWAY_THRESHOLD'},
+  'FMC route center must not displace a selected runway reference');
  assert.equal(ehsi.referenceAnchor('CTR_MAP',{points:[]},mapPosition,selected,runway),mapPosition);
  assert.equal(ehsi.referenceAnchor('MAP',{points:[]},null,selected,runway),selected);
  assert.equal(ehsi.referenceAnchor('MAP',{points:[]},null,null,runway).source,'VERIFIED_RUNWAY_THRESHOLD');

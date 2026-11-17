@@ -78,9 +78,9 @@
      warnings.push({group:groupIndex,event:eventIndex,kind:'FIX_COORDINATE_UNVERIFIED',ident:String(name||'')});
      continue;
     }
-    if(previous){
+    if(previous&&!pathProgram){
      const distance=nm(previous,current);
-     if(distance>.005&&distance<=200&&!pathProgram){
+     if(distance>.005&&distance<=200){
       features.push({type:'Feature',geometry:{type:'LineString',coordinates:[previous,current]},
        properties:{from:previousFix,to:name,reference_distance_nm:Math.round(distance*1000)/1000,
         render_style:'dashed_reference_not_actual_flight_path',fmc_executable:false}});
