@@ -44,11 +44,11 @@ function syncFamily(){
  function controls(){
   const section=document.createElement('section');section.id='unifiedCabinTemperatureNeedle';
   const title=document.createElement('h2');title.textContent='Cabin temperature · TEMP';section.append(title);
-  const note=document.createElement('p');note.className='muted';note.textContent='همان نیدل Cabin Rate، بدون تغییر شکل؛ روی گیج دمای OH20. مقدار فعلاً برای تست تصویری است.';section.append(note);
+  const note=document.createElement('p');note.className='muted';note.textContent='The same Cabin Rate needle artwork is used unchanged on the OH20 temperature gauge; this value is for visual testing only.';section.append(note);
   const label=document.createElement('label');label.textContent='Cabin temperature (°C)';label.style.display='block';label.style.direction='ltr';
   input=document.createElement('input');Object.assign(input,{type:'range',min:'0',max:'100',step:'1'});input.style.width='100%';input.style.accentColor='#edf0e8';input.addEventListener('input',()=>setTemperature(Number(input.value)));
   output=document.createElement('output');output.style.display='block';output.style.textAlign='left';output.style.direction='ltr';label.append(input,output);section.append(label);
-  const reset=document.createElement('button');reset.type='button';reset.textContent='بازگشت به ۲۰°C';reset.addEventListener('click',()=>setTemperature(model.needle.initialTemperature));section.append(reset);
+  const reset=document.createElement('button');reset.type='button';reset.textContent='Restore 20°C';reset.addEventListener('click',()=>setTemperature(model.needle.initialTemperature));section.append(reset);
   const previous=document.querySelector('#unifiedCabinRateNeedle');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);paint();
  }
  window.B737UnifiedCabinTemperatureNeedle=Object.freeze({getTemperature:()=>currentTemperature,setTemperature});
