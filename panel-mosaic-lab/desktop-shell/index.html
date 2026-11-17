@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a111d">
@@ -60,25 +60,25 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
 <main id="setup">
   <aside class="presentation">
     <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>B737 CLASSIC · DESKTOP</small></div></div>
-    <div><div class="eyebrow">SIMULATION · PROCEDURES · SYSTEMS</div><div class="hero">Your aircraft.<br><em>Your configuration.</em></div><p>یک فضای یکپارچه برای تمرین پنل‌ها، سوئیچ‌ها، سیستم‌ها و رویه‌های Boeing 737 Classic؛ بدون تصویر تزئینی از هواپیما یا کابین.</p></div>
+    <div><div class="eyebrow">SIMULATION · PROCEDURES · SYSTEMS</div><div class="hero">Your aircraft.<br><em>Your configuration.</em></div><p>Unified Boeing 737 Classic panel, switch, system and procedure training environment.</p></div>
     <div><div class="mini"><span>300 / 400 / 500</span><span>Offline-oriented</span><span>Systems Trainer</span></div><p class="copyright">Cockpit Pro · Offline Desktop</p></div>
   </aside>
   <section class="configure"><div class="formbox">
     <div class="step"><small>01 / INITIAL CONFIGURATION</small><span>PRE-FLIGHT SETUP</span></div>
-    <h1>پیکربندی هواپیما</h1><p class="subtitle">مدل و تجهیزات را مشخص کن؛ همین انتخاب‌ها در پروفایل اصلی یونیفاید ذخیره می‌شوند.</p>
-    <div class="section"><header><b>Aircraft Variant</b><small>خانوادهٔ هواپیما</small></header><div class="picks" data-group="aircraftFamily">
-      <button class="pick" data-value="B737-300-500" aria-pressed="true"><b>737-300 / 500</b><small>Classic · مشترک در پنل‌های مربوطه</small></button>
-      <button class="pick" data-value="B737-400" aria-pressed="false"><b>737-400</b><small>Classic · پنل‌های اختصاصی سری 400</small></button>
+    <h1>Aircraft Configuration</h1><p class="subtitle">Choose an aircraft family and equipment; these settings persist in Unified.</p>
+    <div class="section"><header><b>Aircraft Variant</b><small>Aircraft Family</small></header><div class="picks" data-group="aircraftFamily">
+      <button class="pick" data-value="B737-300-500" aria-pressed="true"><b>737-300 / 500</b><small>Classic · Shared Components</small></button>
+      <button class="pick" data-value="B737-400" aria-pressed="false"><b>737-400</b><small>Classic · Dedicated 400-Series Panels</small></button>
     </div></div>
-    <div class="section"><header><b>Cabin Pressurization</b><small>سیستم کنترل فشار کابین</small></header><div class="picks" data-group="pressurization">
+    <div class="section"><header><b>Cabin Pressurization</b><small>Cabin Pressurization</small></header><div class="picks" data-group="pressurization">
       <button class="pick" data-value="CPCS" aria-pressed="false"><b>CPCS</b><small>Conventional Pressurization Control</small></button>
       <button class="pick" data-value="DCPCS" aria-pressed="true"><b>DCPCS</b><small>Digital Cabin Pressure Control</small></button>
     </div></div>
-    <div class="section"><header><b>Engine Indication</b><small>نوع نشان‌دهنده‌های موتور</small></header><div class="picks" data-group="engineInstruments">
-      <button class="pick" data-value="CONVENTIONAL" aria-pressed="true"><b>CONVENTIONAL</b><small>نشان‌دهنده‌های متداول عقربه‌ای</small></button>
+    <div class="section"><header><b>Engine Indication</b><small>Engine Instrument Type</small></header><div class="picks" data-group="engineInstruments">
+      <button class="pick" data-value="CONVENTIONAL" aria-pressed="true"><b>Non-EIS</b><small>Analog Engine Instruments</small></button>
       <button class="pick" data-value="EIS" aria-pressed="false"><b>EIS</b><small>Electronic Engine Instruments</small></button>
     </div></div>
-    <div class="start"><button id="start" class="primary">START SIMULATOR →</button><div class="note">فقط منابع تأییدشده بارگذاری می‌شوند. انتخاب EIS فعلاً در دیتابیس وجود دارد، اما نصب همهٔ تصاویر ویژهٔ آن هنوز تأیید نشده است.</div></div>
+    <div class="start"><button id="start" class="primary">START SIMULATOR →</button><div class="note">Only approved assets are loaded. Some EIS-specific visual installations still require approval.</div></div>
   </div></section>
 </main>
 <section id="workspace" class="hide">
@@ -87,7 +87,7 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
     <div class="spacer"></div><button class="soft" id="update">↻ UPDATE</button><button class="soft" id="settings">⚙ SETUP</button>
   </header>
   <nav class="tray" aria-label="Cockpit tools">
-    <button class="tool" data-view="all" title="تمام کابین"><strong>▦</strong><small>ALL</small></button>
+    <button class="tool" data-view="all" title="Full Cockpit"><strong>▦</strong><small>ALL</small></button>
     <button class="tool" data-view="overhead" title="Overhead"><strong>▤</strong><small>OH</small></button>
     <button class="tool" data-view="main" title="Main Panel"><strong>▧</strong><small>MAIN</small></button>
     <button class="tool" data-view="pedestal" title="Pedestal"><strong>▥</strong><small>PED</small></button>
@@ -99,15 +99,15 @@ h1{font-size:32px;margin:0 0 8px;font-weight:720} .subtitle{color:var(--muted);m
   <div id="view"><iframe id="cockpit" title="Live Unified Boeing 737 Classic Cockpit" src="about:blank"></iframe>
     <div id="loadcover"><div class="loadcard">
       <div class="brandmark"><div class="monogram">CP</div><div><b>COCKPIT <span>PRO</span></b><small>SYSTEM INITIALIZATION</small></div></div>
-      <h2>آماده‌سازی کابین</h2><p>نمای اصلی و کنترل‌های زنده در اولویت‌اند؛ تصاویر بخش‌های دیگر هنگام نیاز بارگذاری می‌شوند.</p>
+      <h2>Cockpit Startup</h2><p>The main cockpit and active controls load first; other images load on demand.</p>
       <div class="bar"><i id="progress"></i></div>
       <div class="checkline"><span>Aircraft configuration</span><span id="readyConfig">WAITING</span></div>
       <div class="checkline"><span>Cabin and images</span><span id="readyMain">WAITING</span></div>
       <div class="checkline"><span>Live system / main controls</span><span id="readyOverhead">WAITING</span></div>
       <div class="checkline"><span>Captain & first officer CDU · background</span><span id="readyCdu">WAITING</span></div>
-      <div id="fallback"><p>بعضی قسمت‌ها هنوز آماده نیستند. می‌توانی خطا را بررسی کنی یا با هشدار وارد شوی.</p><button id="openPartial">ورود با هشدار</button><button id="retry">تلاش مجدد</button></div>
+      <div id="fallback"><p>Some components are not ready. Review the status or continue with a warning.</p><button id="openPartial">Continue With Warning</button><button id="retry">Try Again</button></div>
     </div></div>
-    <div class="overlay hide" id="drawerShade"><section class="drawer"><header><h2 id="drawerTitle">پنل‌ها</h2><button class="close" id="drawerClose">× بستن</button></header><div id="drawerBody"></div></section></div>
+    <div class="overlay hide" id="drawerShade"><section class="drawer"><header><h2 id="drawerTitle">Panels</h2><button class="close" id="drawerClose">× Close</button></header><div id="drawerBody"></div></section></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </div>
 </section>
@@ -145,7 +145,7 @@ qs('#cockpit').addEventListener('load',()=>{frameReady=true;attachKeys();checkRe
 function sceneVisibleImagesReady(w){return window.CockpitStartupGate.visibleImagesReady(w);}
 let checkCount=0;function checkReady(){if(!started||usable)return;checkCount++;
  const result=window.CockpitStartupGate.inspect(cwin(),profile);
- for(const [id,ok] of [['readyConfig',result.profile],['readyMain',result.main],['readyOverhead',result.controls],['readyCdu',result.cdu]])qs('#'+id).textContent=ok?'READY':'در حال آماده‌سازی';
+ for(const [id,ok] of [['readyConfig',result.profile],['readyMain',result.main],['readyOverhead',result.controls],['readyCdu',result.cdu]])qs('#'+id).textContent=ok?'READY':'Preparing Cockpit';
  qs('#progress').style.width=([result.profile,result.main,result.controls].filter(Boolean).length/3*100)+'%';
  if(result.usable){
   usable=true;clearInterval(poll);qs('#loadcover').classList.add('hide');
@@ -154,32 +154,32 @@ let checkCount=0;function checkReady(){if(!started||usable)return;checkCount++;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
    const report={main:true,controls:true,loadMs:performance.now()-loadBegan,secondaryReady:result.overhead&&result.cdu};
    qs('#workspace').dataset.startupReport=JSON.stringify(report);
-   qs('#headprofile').title='زمان آماده‌شدن کابین: '+(report.loadMs/1000).toFixed(2)+' ثانیه';
+   qs('#headprofile').title='Cockpit Ready Time: '+(report.loadMs/1000).toFixed(2)+' seconds';
    window.CockpitDesktopUI?.ready(report).catch(()=>{});
   }));
  }
- if(performance.now()-loadBegan>5000)qs('#progress').setAttribute('aria-label','آماده‌سازی بیش از هدف ۵ ثانیه طول کشیده است');
+ if(performance.now()-loadBegan>5000)qs('#progress').setAttribute('aria-label','Cockpit startup exceeded the five-second target');
  if(checkCount>175&&!usable)qs('#fallback').classList.add('show');
 }
-qs('#openPartial').addEventListener('click',()=>{clearInterval(poll);qs('#loadcover').classList.add('hide');notify('ورود با هشدار: آماده‌بودن تمام زیرسیستم‌ها تأیید نشده است.');});
+qs('#openPartial').addEventListener('click',()=>{clearInterval(poll);qs('#loadcover').classList.add('hide');notify('Entered with warning; not all subsystems are ready.');});
 qs('#retry').addEventListener('click',()=>{checkCount=0;qs('#fallback').classList.remove('show');checkReady();});
-qs('#settings').addEventListener('click',()=>{if(!confirm('بازگشت به صفحه انتخاب و بارگذاری دوباره کابین؟'))return;qs('#workspace').classList.add('hide');qs('#setup').classList.remove('hide');qs('#cockpit').src='about:blank';started=false;usable=false;qs('#start').disabled=false;clearInterval(poll);});
+qs('#settings').addEventListener('click',()=>{if(!confirm('Return to configuration and reload the cockpit?'))return;qs('#workspace').classList.add('hide');qs('#setup').classList.remove('hide');qs('#cockpit').src='about:blank';started=false;usable=false;qs('#start').disabled=false;clearInterval(poll);});
 qs('#homeTool').addEventListener('click',()=>qs('#settings').click());
 function drawer(title,html){qs('#drawerTitle').textContent=title;qs('#drawerBody').innerHTML=html;qs('#drawerShade').classList.remove('hide');}
 function closeDrawer(){qs('#drawerShade').classList.add('hide');qs('#cbframe')?.setAttribute('src','about:blank');}
 qs('#drawerClose').addEventListener('click',closeDrawer);
 qs('#drawerShade').addEventListener('click',e=>{if(e.target.id==='drawerShade')closeDrawer();});
-qs('#cbTool').addEventListener('click',()=>{drawer('CIRCUIT BREAKER PANELS','<p>پنل‌های CB موجود در پروژه؛ روی هر نام کلیک کن تا همان پنل در آزمایشگاه CB انتخاب شود. ارتباطات الکتریکی اثبات‌نشده همچنان علامت‌گذاری می‌شوند.</p><div class="cb-list">'+['P18-1','P18-2','P18-3','P6-1','P6-2','P6-3','P6-4','P6-5','P6-6','P6-11','P6-12'].map(n=>'<button type="button" data-cb="'+n+'">'+n+'</button>').join('')+'</div><iframe id="cbframe" title="CB panels laboratory" src="about:blank"></iframe>');const frame=qs('#cbframe');function chooseCB(){try{const d=frame.contentDocument,variant=d?.getElementById('configuration'),selector=d?.getElementById('panelSelect');if(!selector)return;variant.value=profile.pressurization;variant.dispatchEvent(new Event('change',{bubbles:true}));if(frame.dataset.pendingPanel){selector.value=frame.dataset.pendingPanel;selector.dispatchEvent(new Event('change',{bubbles:true}));frame.dataset.pendingPanel='';}}catch(e){notify('انتخاب پنل CB انجام نشد: '+e.message);}}frame.addEventListener('load',chooseCB,{once:true});frame.src='../../cb-panel-lab/';qsa('[data-cb]').forEach(btn=>btn.addEventListener('click',()=>{frame.dataset.pendingPanel=btn.dataset.cb;chooseCB();}));});
-qs('#audioTool').addEventListener('click',()=>{drawer('AUDIO & WARNINGS','<p>تست‌های موتور، Stall Warning و Takeoff Configuration باید از موتور هشدار موجود اجرا شوند؛ فایل‌های ضبط‌شدهٔ اختصاصی هنوز در مخزن عمومی قرار نگرفته‌اند.</p><div class="cb-list"><button data-audio="engine">ENGINE / APU</button><button data-audio="stall">STALL WARNING</button><button data-audio="toc">TAKEOFF CONFIG</button></div><p id="audioInfo" class="tag">تست‌های صوتی تنها در صورت وجود فایل مجاز و اتصال به موتور هشدار قابل اجرا هستند.</p>');qsa('[data-audio]').forEach(b=>b.onclick=()=>{const paths={engine:'../../isn-ecu-start-lab/',stall:'../../stall-warning-lab/',toc:'../cockpit/'};const frame=document.createElement('iframe');frame.title='Audio laboratory';frame.src=paths[b.dataset.audio];frame.style.cssText='width:100%;height:65vh;border:1px solid #40576b;border-radius:9px;margin-top:14px;background:#07121e';const container=qs('#drawerBody');container.querySelector('iframe')?.remove();container.append(frame);qs('#audioInfo').textContent='آزمایشگاه صدا در همان پنجره باز شد. کامل‌بودن نمونه‌های صوتی هنوز در انتظار بستهٔ صوتی مجاز است.';});});
-const map=[['F1','تراست موتورهای 1 و 2 → IDLE'],['F2','کاهش یک مرحله تراست (از 5 مرحلهٔ فعلی)'],['F3','افزایش یک مرحله تراست (از 5 مرحلهٔ فعلی)'],['F4','تراست کامل در تست مرحله‌ای'],['F5','فلپ UP'],['F6','فلپ یک Detent کمتر'],['F7','فلپ یک Detent بیشتر'],['F8','فلپ تا 40 با رعایت Gate مکانیکی'],['/ · Numpad /','Spoiler Toggle · اتصال Backend در انتظار'],['Shift + /','Arm Spoilers · اتصال Backend در انتظار'],['G','Landing Gear · اتصال Backend در انتظار']];
-qs('#keysTool').addEventListener('click',()=>{drawer('FSX-STYLE KEYBOARD COMMANDS','<p>کلیدهای فلپ و تراست به کنترل فعلی یونیفاید متصل‌اند. بخش‌هایی که موتور فرمان مطمئن ندارند، عمداً بدون فرمان جعلی باقی مانده‌اند.</p><table class="keylist"><thead><tr><th>KEY</th><th>عملکرد</th></tr></thead><tbody>'+map.map(row=>'<tr><td>'+row[0]+'</td><td>'+row[1]+'</td></tr>').join('')+'</tbody></table>');});
+qs('#cbTool').addEventListener('click',()=>{drawer('CIRCUIT BREAKER PANELS','<p>Select a CB panel to open it in the CB lab; unverified electrical links remain marked.</p><div class="cb-list">'+['P18-1','P18-2','P18-3','P6-1','P6-2','P6-3','P6-4','P6-5','P6-6','P6-11','P6-12'].map(n=>'<button type="button" data-cb="'+n+'">'+n+'</button>').join('')+'</div><iframe id="cbframe" title="CB panels laboratory" src="about:blank"></iframe>');const frame=qs('#cbframe');function chooseCB(){try{const d=frame.contentDocument,variant=d?.getElementById('configuration'),selector=d?.getElementById('panelSelect');if(!selector)return;variant.value=profile.pressurization;variant.dispatchEvent(new Event('change',{bubbles:true}));if(frame.dataset.pendingPanel){selector.value=frame.dataset.pendingPanel;selector.dispatchEvent(new Event('change',{bubbles:true}));frame.dataset.pendingPanel='';}}catch(e){notify('CB selection failed: '+e.message);}}frame.addEventListener('load',chooseCB,{once:true});frame.src='../../cb-panel-lab/';qsa('[data-cb]').forEach(btn=>btn.addEventListener('click',()=>{frame.dataset.pendingPanel=btn.dataset.cb;chooseCB();}));});
+qs('#audioTool').addEventListener('click',()=>{drawer('AUDIO & WARNINGS','<p>Engine, stall warning and takeoff configuration tests use the existing warning engine. Licensed recordings are not included in the public repository.</p><div class="cb-list"><button data-audio="engine">ENGINE / APU</button><button data-audio="stall">STALL WARNING</button><button data-audio="toc">TAKEOFF CONFIG</button></div><p id="audioInfo" class="tag">Audio testing requires licensed files connected to the warning system.</p>');qsa('[data-audio]').forEach(b=>b.onclick=()=>{const paths={engine:'../../isn-ecu-start-lab/',stall:'../../stall-warning-lab/',toc:'../cockpit/'};const frame=document.createElement('iframe');frame.title='Audio laboratory';frame.src=paths[b.dataset.audio];frame.style.cssText='width:100%;height:65vh;border:1px solid #40576b;border-radius:9px;margin-top:14px;background:#07121e';const container=qs('#drawerBody');container.querySelector('iframe')?.remove();container.append(frame);qs('#audioInfo').textContent='Audio lab opened in the same window; complete sounds require licensed recordings.';});});
+const map=[['F1','Engines 1 and 2 thrust → IDLE'],['F2','Decrease thrust by one step'],['F3','Increase thrust by one step'],['F4','Full thrust in stepped test'],['F5','Flaps UP'],['F6','Flaps one detent lower'],['F7','Flaps one detent higher'],['F8','Flaps 40 with mechanical gate'],['/ · Numpad /','Spoiler Toggle · Backend Pending'],['Shift + /','Arm Spoilers · Backend Pending'],['G','Landing Gear · Backend Pending']];
+qs('#keysTool').addEventListener('click',()=>{drawer('FSX-STYLE KEYBOARD COMMANDS','<p>Flaps and thrust use verified Unified controls. Unsupported commands remain inactive rather than simulated.</p><table class="keylist"><thead><tr><th>KEY</th><th>Operation</th></tr></thead><tbody>'+map.map(row=>'<tr><td>'+row[0]+'</td><td>'+row[1]+'</td></tr>').join('')+'</tbody></table>');});
 function keyboard(e){if(e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;const tag=(e.target?.tagName||'').toUpperCase();if(['INPUT','TEXTAREA','SELECT'].includes(tag)||e.target?.isContentEditable)return;
  const spoilerPressed=e.code==='Slash'||e.code==='NumpadDivide'||e.key==='/';const key=spoilerPressed?'/':e.key; if(!['F1','F2','F3','F4','F5','F6','F7','F8','/','G','g'].includes(key))return;
  if(qs('#workspace').classList.contains('hide')||!qs('#loadcover').classList.contains('hide'))return;
  const w=cwin();if(!w)return;
- if(/^F[1-4]$/.test(key)){const ss=[...w.document.querySelectorAll('#throttle-position-controls select')];if(ss.length<2){notify('کنترل‌های تراست هنوز آماده نیستند');return;}e.preventDefault();for(const sel of ss){let v=Number(sel.value);v=key==='F1'?0:key==='F4'?100:Math.max(0,Math.min(100,v+(key==='F3'?25:-25)));sel.value=String(v);sel.dispatchEvent(new Event('change',{bubbles:true}));}return;}
- if(/^F[5-8]$/.test(key)){const f=w.B737FlapVisualTest;if(!f){notify('مکانیزم فلپ هنوز آماده نیست');return;}e.preventDefault();let target=key==='F5'?0:key==='F8'?40:f.positions[Math.max(0,Math.min(f.positions.length-1,f.positions.indexOf(f.position)+(key==='F7'?1:-1)))];const ok=f.request(target);if(!ok)notify('اهرم فلپ در حال حرکت است');return;}
- e.preventDefault();notify('برای '+(key==='/'?(e.shiftKey?'Arm Spoilers':'Spoiler Toggle'):'Landing Gear')+' هنوز فرمان تأییدشدهٔ مرکزی وجود ندارد؛ از شبیه‌سازی ساختگی استفاده نمی‌کنیم.');
+ if(/^F[1-4]$/.test(key)){const ss=[...w.document.querySelectorAll('#throttle-position-controls select')];if(ss.length<2){notify('Thrust controls not ready');return;}e.preventDefault();for(const sel of ss){let v=Number(sel.value);v=key==='F1'?0:key==='F4'?100:Math.max(0,Math.min(100,v+(key==='F3'?25:-25)));sel.value=String(v);sel.dispatchEvent(new Event('change',{bubbles:true}));}return;}
+ if(/^F[5-8]$/.test(key)){const f=w.B737FlapVisualTest;if(!f){notify('Flap mechanism not ready');return;}e.preventDefault();let target=key==='F5'?0:key==='F8'?40:f.positions[Math.max(0,Math.min(f.positions.length-1,f.positions.indexOf(f.position)+(key==='F7'?1:-1)))];const ok=f.request(target);if(!ok)notify('Flap lever is moving');return;}
+ e.preventDefault();notify('For '+(key==='/'?(e.shiftKey?'Arm Spoilers':'Spoiler Toggle'):'Landing Gear')+' has no verified central command; synthetic control is disabled.');
 }
 document.addEventListener('keydown',keyboard,true);
 const bound=new WeakSet();
@@ -187,8 +187,8 @@ function attachKeys(){const w=cwin();if(!w)return;const frames=[w];try{for(const
  for(const current of frames){try{if(!bound.has(current.document)){current.document.addEventListener('keydown',keyboard,true);bound.add(current.document);}}catch{}}
 }
 setInterval(()=>{if(started){attachKeys();}},1800);
-qsa('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const engine=cwin()?.B737ScenarioPresetV1;if(!engine?.apply){notify('برای '+button.textContent+' هنوز preset معتبر به موتور برق، موتور و کنترل‌ها متصل نشده؛ وضعیت هواپیما تغییر نکرد.');return;}try{engine.apply(button.dataset.mode);qsa('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));notify('Preset توسط موتور مرکزی اعمال شد.');}catch(err){notify('Preset اجرا نشد: '+err.message);}}));
-qs('#update').addEventListener('click',async()=>{if(window.CockpitDesktopUI){window.CockpitDesktopUI.open();return;}const b=qs('#update');b.disabled=true;b.textContent='CHECKING…';try{const r=await fetch('https://api.github.com/repos/'+repo+'/commits/main',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const latest=j.sha;if(!lastHead){lastHead=latest;notify('آخرین نسخهٔ GitHub شناسایی شد. این نسخهٔ وب فقط بررسی می‌کند؛ دانلود انتخابی فایل‌ها مخصوص updater ویندوز است.');}else if(latest!==lastHead){if(confirm('نسخهٔ جدید در GitHub دیده شد. صفحهٔ وب برای دریافت فایل‌های جدید بارگذاری مجدد شود؟')){location.reload();return;}}else notify('تغییر جدیدی نسبت به آخرین بررسی این جلسه پیدا نشد.');}catch(error){notify('بررسی GitHub ممکن نشد: '+error.message);}finally{b.disabled=false;b.textContent='↻ UPDATE';}});
+qsa('[data-mode]').forEach(button=>button.addEventListener('click',()=>{const engine=cwin()?.B737ScenarioPresetV1;if(!engine?.apply){notify('For '+button.textContent+' has no validated preset attached to aircraft systems. Aircraft state is unchanged.');return;}try{engine.apply(button.dataset.mode);qsa('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));notify('Preset applied by central engine.');}catch(err){notify('Preset failed: '+err.message);}}));
+qs('#update').addEventListener('click',async()=>{if(window.CockpitDesktopUI){window.CockpitDesktopUI.open();return;}const b=qs('#update');b.disabled=true;b.textContent='CHECKING…';try{const r=await fetch('https://api.github.com/repos/'+repo+'/commits/main',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const latest=j.sha;if(!lastHead){lastHead=latest;notify('Latest GitHub version detected. Selective file downloads belong to the Windows updater.');}else if(latest!==lastHead){if(confirm('New GitHub version found. Reload the page to apply changes?')){location.reload();return;}}else notify('No new changes found since the last check.');}catch(error){notify('GitHub check failed: '+error.message);}finally{b.disabled=false;b.textContent='↻ UPDATE';}});
 if(window.CockpitDesktopUI){
  qs('#start').disabled=true;
  window.CockpitDesktopUI.state.then(info=>{
