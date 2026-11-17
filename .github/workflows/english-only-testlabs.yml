@@ -15,4 +15,4 @@ jobs:
         with:
           node-version: '22'
       - name: Audit all test-lab user-interface source strings
-        run: node tools/qa-english-only-labs.cjs
+        run: node tools/qa-english-only-labs.cjs --strict
