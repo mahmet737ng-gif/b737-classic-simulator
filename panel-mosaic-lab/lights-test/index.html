@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,19 +10,19 @@
 </style>
 </head>
 <body>
-<header><div><strong>B737 CLASSIC · LIGHTS TEST</strong><small>بررسی جداگانهٔ چراغ‌های هشدار بدون تغییر چیدمان قفل‌شدهٔ Overhead</small></div><a href="../all-overhead/">بازگشت به موزاییک اورهد</a></header>
+<header><div><strong>B737 CLASSIC · LIGHTS TEST</strong><small>Independent annunciator checks without changing the locked overhead assembly</small></div><a href="../all-overhead/">Back to Overhead Mosaic</a></header>
 <main>
-<p class="intro">حالت‌های <strong>OFF / ON / DIM BLUE / BRIGHT BLUE</strong> را با دکمهٔ مربوط تست کن. چراغ‌های امبر، سبز و قرمز هم در این صفحه موجودند. قاب و فایل اصلی هر چراغ حفظ شده است. فایل‌های جدید را در <a href="https://github.com/mahmet737ng-gif/b737-classic-simulator/tree/main/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS" target="_blank" rel="noopener">پوشهٔ LIGHTS در GitHub</a> آپلود کن و سپس «همگام‌سازی» را بزن.</p>
+<p class="intro">States <strong>OFF / ON / DIM BLUE / BRIGHT BLUE</strong> using the corresponding button. Amber, green and red lights are also available. Original lamp housings and source assets are preserved. Add new files to <a href="https://github.com/mahmet737ng-gif/b737-classic-simulator/tree/main/panel-mosaic-lab/assets/locked/2026-10-23/LIGHTS" target="_blank" rel="noopener">LIGHTS directory on GitHub</a> then click Synchronize.</p>
 <div class="controls">
-<input id="search" type="search" placeholder="جست‌وجوی اسم چراغ، مثلاً LOW PRESSURE / YAW DAMPER">
-<button id="refresh" class="primary">↻ همگام‌سازی فایل‌ها</button>
-<button id="allOn">همه روشن</button>
-<button id="allOff">همه خاموش</button>
+<input id="search" type="search" placeholder="Search lamps, e.g. LOW PRESSURE / YAW DAMPER">
+<button id="refresh" class="primary">↻ Synchronize Files</button>
+<button id="allOn">All On</button>
+<button id="allOff">All Off</button>
 </div>
-<div class="stats" id="stats" role="status">در حال خواندن رجیستری چراغ‌ها…</div>
+<div class="stats" id="stats" role="status">Loading Lamp Registry…</div>
 <div class="grid" id="grid"></div>
 </main>
-<footer>این صفحه برای QA تصویری و تست تغییر حالت است. محل نصب واقعی روی پنل و شرایط سیستم‌های هواپیما فقط پس از ثبت هندسه و منطق مستند فعال می‌شوند. آبی کم‌نور و پرنور از فایل‌های DIM_BLUE و BRIGHT_BLUE خوانده می‌شوند. فایل‌های موجود در مخزن اصلی و چیدمان OH-01…OH-25 تغییر نمی‌کنند.</footer>
+<footer>This page tests source-lamp appearance and state changes. Aircraft placement and system conditions require verified geometry and documented logic. Dim and bright blue are read from DIM_BLUE and BRIGHT_BLUE source assets. Locked files and OH-01 through OH-25 remain unchanged.</footer>
 <script src="./asset-model.js?v=LGT-0013"></script><script src="./app.js?v=LGT-0013"></script>
 </body>
 </html>
