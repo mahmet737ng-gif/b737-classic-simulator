@@ -42,7 +42,7 @@
  }
  function controls(){
   const section=document.createElement('section');section.id='unifiedFuelTemperatureNeedle';
-  section.innerHTML='<h2>Fuel Temperature · Needle</h2><p class="muted">نیدل سفید روی OH09؛ تصویر اصلی پنل بدون تغییر.</p><label for="fuelTemperatureNeedleInput">Fuel temperature (°C)</label><input type="range" id="fuelTemperatureNeedleInput" min="-40" max="40" step="1" value="10" style="width:100%;accent-color:#d5eaf4"><output id="fuelTemperatureNeedleOutput" dir="ltr" style="display:block;text-align:left">10 °C</output><button type="button" id="fuelTemperatureNeedleReset">Default · 10°C</button>';
+  section.innerHTML='<h2>Fuel Temperature · Needle</h2><p class="muted">White needle on OH09; original panel photo unchanged.</p><label for="fuelTemperatureNeedleInput">Fuel temperature (°C)</label><input type="range" id="fuelTemperatureNeedleInput" min="-40" max="40" step="1" value="10" style="width:100%;accent-color:#d5eaf4"><output id="fuelTemperatureNeedleOutput" dir="ltr" style="display:block;text-align:left">10 °C</output><button type="button" id="fuelTemperatureNeedleReset">Default · 10°C</button>';
   const after=document.querySelector('#unifiedFlapNeedles'),before=document.querySelector('.overhead-tools');
   if(after)after.after(section);else before.before(section);
   input=section.querySelector('input');output=section.querySelector('output');
