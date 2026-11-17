@@ -5,7 +5,9 @@
  if(root?.document)root.B737CduSgEHSIPreviewV1=api;
 })(typeof globalThis==='undefined'?null:globalThis,function(){
  'use strict';
- const NS='http://www.w3.org/2000/svg',VERSION='CDU-SG-EHSI-REF-0001';
+ const NS='http://www.w3.org/2000/svg',VERSION='CDU-SG-EHSI-ROUTE-TRAJECTORY-0002';
+ const Trajectory=(typeof globalThis==='object'?globalThis.B737UnifiedSGProcedureTrajectoryV1:null)||
+  (typeof module==='object'&&typeof require==='function'?require('../../engine/fmc/sg-procedure-trajectory-v1.js'):null);
  function collect(s){
   if(!s?.connected||s.sourceOnly!==true||s.fmcExecutable!==false)return [];
   return Object.values(s.geometries||{}).flatMap(x=>x?.renderStyle==='DASHED_REFERENCE_CHORDS_ONLY'?
@@ -36,7 +38,7 @@
   }
   return [[x+start*dx,y+start*dy],[x+end*dx,y+end*dy]];
  }
- function draw(svg,source,mode,range,powered,offset,project,anchor){
+ function draw(svg,source,mode,range,powered,offset,project,anchor,flight=null){
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
   if(!powered||!['PLAN','MAP','CTR_MAP'].includes(mode)||!Number.isFinite(range)||range<=0||
@@ -58,7 +60,7 @@
     geometries:Object.values(changed).filter(valid)}]:[])
   ].filter(layer=>layer.geometries.length);
   if(!layers.length)return 0;
-  const state=pending?'MOD':'ACT',color=pending?'#00c8f2':'#ff47e1';
+  const state=pending?'MOD':'ACT';
   const make=(parent,name,attrs={})=>{
    const el=svg.ownerDocument.createElementNS(NS,name);
    for(const [k,v] of Object.entries(attrs))if(v!==null&&v!==undefined)el.setAttribute(k,String(v));
@@ -66,15 +68,9 @@
   };
   const group=make(svg,'g',{'data-cdu-sg-reference':'true','pointer-events':'none',
    'data-route-state':state,'data-source-only':'true','aria-label':'Non-executable CDU route reference'});
-  function label(reason=''){
-   const tag=make(group,'text',{x:475,y:386,fill:color,'font-size':14,
-    'text-anchor':'end','data-cdu-sg-status':reason||'REFERENCE_ONLY'});
-   tag.textContent=state+' REF'+(reason?' '+reason:'');
-  }
   const positioned=Number.isFinite(anchor?.lat)&&Number.isFinite(anchor?.lon);
-  if(mode!=='PLAN'&&(!positioned||typeof project!=='function')){
-   label(positioned?'NO TRK':'NO POS');return 0;
-  }
+  if(mode!=='PLAN'&&(!positioned||typeof project!=='function'))return 0;
+
   // Prefer the selected runway threshold when there is no active PLAN anchor.
   // Never manufacture a leg from a single unsourced airport point.
   const all=layers.flatMap(x=>x.geometries);
@@ -82,7 +78,7 @@
   const fix=all.find(x=>x.fixes?.length)?.fixes[0];
   const pair=all.find(x=>x.segments?.length)?.segments[0]?.[0];
   const first=runway||fix||(pair&&{lon:pair[0],lat:pair[1]});
-  if(!first){label('NO VERIFIED POINT');return 0;}
+  if(!first)return 0;
   const ref=positioned?anchor:first,scale=178/range;
   const xyFor=(lon,lat)=>{
    const d=offset(ref,{lat,lon});
@@ -133,7 +129,29 @@
      }
      continue;
     }
-    for(const segment of (g.segments||[]).slice(0,300)){
+    // Source-command leg programs take priority over raw fix-to-fix chords.
+    const model=g.program?Trajectory?.trajectory?.(g.program,flight):null;
+    if(model&&Array.isArray(model.segments)){
+     for(const leg of model.segments){
+      if(!Array.isArray(leg.points)||leg.points.length<2)continue;
+      const paths=[];
+      for(let i=1;i<leg.points.length;i++){
+       const a=leg.points[i-1],b=leg.points[i];
+       if(!Number.isFinite(a?.lon)||!Number.isFinite(a?.lat)||
+          !Number.isFinite(b?.lon)||!Number.isFinite(b?.lat))continue;
+       const clipped=clipSegment([xyFor(a.lon,a.lat),xyFor(b.lon,b.lat)]);
+       if(clipped)paths.push('M'+clipped[0].join(' ')+' L'+clipped[1].join(' '));
+      }
+      if(!paths.length)continue;
+      make(plot,'path',{d:paths.join(' '),fill:'none',stroke:layer.color,
+       'stroke-width':2.2,'stroke-linecap':'round','stroke-linejoin':'round',
+       'stroke-dasharray':layer.dash,'data-trajectory-leg':leg.type,
+       'data-trajectory-profile':model.profile,
+       'data-cdu-sg-geometry':'PROCEDURE','data-reference-stage':layer.stage,
+       'data-reference-only':'true'});count++;
+     }
+    }
+    if(!g.program)for(const segment of (g.segments||[]).slice(0,300)){
      if(!Array.isArray(segment)||segment.length!==2||!segment.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)))continue;
      const xy=clipSegment(segment.map(([lon,lat])=>xyFor(lon,lat)));
      if(!xy)continue;
@@ -159,7 +177,6 @@
     }
    }
   }
-  label(count?'':'OFF MAP');
   return count;
  }
 
