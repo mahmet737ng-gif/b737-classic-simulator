@@ -47,20 +47,20 @@
      ||v.status==='identity_unresolved'||v.status==='selector_unknown').length;
    const cabin=last['oh.cabin.diff_pressure_altitude']?.needles;
    const numericCabin=cabin?.cabAlt?.status==='physical_value_known'
-    ?' · CAB ALT زمین: '+cabin.cabAlt.value.toFixed(0)+' ft (DIFF '+cabin.press?.value+' psi)'
-    :' · CAB ALT: نیازمند ارتفاع فرودگاه/سنسور';
+    ?' · Ground CAB ALT: '+cabin.cabAlt.value.toFixed(0)+' ft (DIFF '+cabin.press?.value+' psi)'
+    :' · CAB ALT: airport elevation / valid sensor required';
    elt.querySelector('output').textContent=
-    'پوشش '+Object.keys(last).length+' گیج · صفرهای فیزیکی مستقل از برق · '+
-    'نیازمند دادهٔ محیط/سیستم: '+unresolved+numericCabin+
-    ' · نیدل‌های دارای کالیبراسیون تصویری تأییدشده: ۰'+
-    ' · اعمال نمایش‌های امن: '+(lastApplied?.applied.join('، ')||'—');
+    'Coverage: '+Object.keys(last).length+' gauges · physical zero independent of power · '+
+    'Environment/system inputs required: '+unresolved+numericCabin+
+    ' · Photo-calibrated needles approved: 0'+
+    ' · Safe visual states applied: '+(lastApplied?.applied.join(', ')||'—');
  }
  function panel(){
    const inspector=document.querySelector('.inspector');if(!inspector||document.querySelector('#coldDarkGaugeQA'))return;
    const section=document.createElement('section');section.id='coldDarkGaugeQA';
    const head=document.createElement('h2');head.textContent='Cold & Dark · Instrument QA';
    const note=document.createElement('p');note.className='muted';
-   note.textContent='هر گیج با منطق فیزیکی خودش بررسی می‌شود؛ فشار اکسیژن، دما، ارتفاع فرودگاه، فلپ و تریم به‌اجبار صفر نمی‌شوند. کالیبراسیون تصویریِ نامعتبر روی پنل اعمال نمی‌شود.';
+   note.textContent='Each gauge follows its own physical logic. Oxygen pressure, temperature, airport elevation, flaps and trim are not forced to zero. Unverified photo calibration is never applied.';
    const out=document.createElement('output');out.style.display='block';out.style.direction='rtl';
    section.append(head,note,out);inspector.append(section);show();
  }
@@ -94,7 +94,7 @@
       else{last=window.B737ColdDarkIndicatorV1.snapshot(ground);show();}
     }).catch(error=>{
       const out=document.querySelector('#coldDarkGaugeQA output');
-      if(out)out.textContent='عدم دسترسی به رجیستری وضعیت خاموش: '+error.message;
+      if(out)out.textContent='Cold/dark state registry unavailable: '+error.message;
       console.error('Cold dark gauge initial condition unavailable:',error);
     });
  }
