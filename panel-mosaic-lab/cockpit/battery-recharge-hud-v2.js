@@ -21,8 +21,8 @@
    volts:battery.voltageV.toFixed(2)+' V',
    amps:(battery.ammeterA>=0?'+':'')+battery.ammeterA.toFixed(2)+' A',
    watts:(battery.voltageV*battery.dischargeA).toFixed(1)+' W',
-   used:'مصرف '+battery.dischargedAh.toFixed(3)+' Ah / '+battery.dischargedWh.toFixed(2)+' Wh',
-   status:battery.status==='EMPTY'?'باتری خالی':battery.status==='CHARGING'?'در حال شارژ':battery.status==='DISCHARGING'?'در حال مصرف':'آماده'
+   used:'Used '+battery.dischargedAh.toFixed(3)+' Ah / '+battery.dischargedWh.toFixed(2)+' Wh',
+   status:battery.status==='EMPTY'?'Battery Empty':battery.status==='CHARGING'?'Charging':battery.status==='DISCHARGING'?'Discharging':'Ready'
   };
   for(const [key,value]of Object.entries(map)){
    const el=hud.querySelector('[data-battery-'+key+']');
