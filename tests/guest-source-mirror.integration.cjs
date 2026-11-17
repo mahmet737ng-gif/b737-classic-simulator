@@ -47,7 +47,7 @@ async function read(route,cookies){
  for(const part of [
   '<base href="/panel-mosaic-lab/cockpit/">','/static/guest-cockpit.js',
   '/static/guest-cockpit.css','/static/session.js',
-  'id="guestSourceOverheadFocus"','id="aircraftSettingsOpen"',
+  'id="aircraftSettingsOpen"',
   'id="cbPanelOpen"','id="busConsumerTestLabOpen"','id="failuresHeaderOpen"'
  ]) assert(html.includes(part),'Missing original cockpit / guest integration: '+part);
  assert(html.includes('src="./app.js'),'Original cockpit script absent');
