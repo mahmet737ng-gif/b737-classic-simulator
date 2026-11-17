@@ -22,7 +22,7 @@
   if(!parent||!owner()?.getFuelSystem)return false;
   panel=text('section',undefined,parent);panel.id=ID;panel.style.cssText='border:1px solid #45606b;border-radius:10px;padding:12px;margin:12px 0;line-height:1.7';
   text('h2','FUEL SYSTEM · ATA 28 · LIVE',panel);
-  text('p','سوخت واقعی مدل ECU / شش پمپ و منیفولد مشترک. برای تست سوخت و خرابی از کنترل‌های مربی استفاده کن؛ سوییچ‌ها روی Overhead باقی می‌مانند.',panel);
+  text('p','ECU fuel model with six pumps and a common manifold. Use instructor controls for fuel/failure tests; physical switches remain on the Overhead.',panel);
   liveRows=text('div',undefined,panel);liveRows.dir='ltr';
   liveRows.style.cssText='font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#0f1b22;color:#d9e5ec;padding:10px;border-radius:6px';
   controls=text('details',undefined,panel);text('summary','Instructor · Load fuel / inject fuel faults',controls);
