@@ -59,7 +59,7 @@
     $('marks').textContent=d.marks.length
       ? d.marks.slice().sort((a,b)=>a.value-b.value).map(m=>
         m.value+' → ('+m.x.toFixed(1)+', '+m.y.toFixed(1)+') '+(m.major?'major':'minor')).join('\n')
-      : 'هیچ خطی روی تصویر منبع ثبت نشده است.';
+      : 'No tick marks have been registered on the source photo.';
   }
   function zoomToFit(){
     const img=$('sourceImage');if(!img.naturalWidth)return;
