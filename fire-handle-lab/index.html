@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101920">
 <title>B737 Classic | FIRE HANDLE Rotation Lab</title>
@@ -24,12 +24,12 @@ button:hover{background:#34505d}button[aria-pressed="true"]{background:#176781;b
 </style>
 </head>
 <body>
-<header><h1>FIRE HANDLE · Rotation Test</h1><p>سه هندل مستقل B737 Classic؛ ۴۵ درجه چپ، مستقیم، ۴۵ درجه راست؛ تغییر نور ON/OFF بدون تغییر تصویر اصلی.</p></header>
+<header><h1>FIRE HANDLE · Rotation Test</h1><p>Three independent B737 Classic fire handles: 45° left, center and 45° right. ON/OFF lighting does not modify source artwork.</p></header>
 <main>
-<div class="toolbar"><a href="../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_manifest.json" target="_blank" rel="noopener">مشاهده فایل‌های اصلی و شناسه‌ها</a><a href="./rotation-manifest.json" target="_blank" rel="noopener">مشخصات ۱۸ حالت</a><button type="button" id="reset-all">بازنشانی هر سه</button><span>Visual preview only · v1.0</span></div>
+<div class="toolbar"><a href="../panel-mosaic-lab/assets/locked/2026-10-23/FIRE_HANDEL_manifest.json" target="_blank" rel="noopener">View Source Files and IDs</a><a href="./rotation-manifest.json" target="_blank" rel="noopener">18-State Specification</a><button type="button" id="reset-all">Reset All Three</button><span>Visual preview only · v1.0</span></div>
 <div class="grid" id="cards"></div>
-<section class="foot"><p><strong>مکانیزم:</strong> چرخش دقیق و انیمیشن روان حول مرکز هندل؛ تصویر و هاله نور اصلی دست‌نخورده می‌مانند. این تست فقط ظاهر را تغییر می‌دهد و هیچ فرمانی برای فعال‌سازی اطفای حریق ارسال نمی‌کند.</p>
-<p>برای توسعهٔ آینده، هر تغییر با رویداد <code>b737:fire-handle-visual-change</code> منتشر می‌شود. وضعیت هندل فعلاً <code>IN</code> است؛ مکانیزم بیرون‌کشیدن و اینترلاک سیستم جدا تعریف می‌شود.</p>
+<section class="foot"><p><strong>Mechanism:</strong> Accurate pivot rotation and smooth animation preserve the original handle photo and light halo. This test changes appearance only; it does not discharge fire extinguishers.</p>
+<p>For future integration, each change emits the event <code>b737:fire-handle-visual-change</code> The handle state is currently <code>IN</code> ; pull-out action and system interlocks are separate.</p>
 <div class="api" id="state-dump" aria-live="polite">Loading 18 visual states…</div></section>
 </main>
 <script src="./engine.js"></script>
