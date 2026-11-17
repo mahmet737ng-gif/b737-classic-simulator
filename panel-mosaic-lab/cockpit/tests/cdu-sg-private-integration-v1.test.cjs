@@ -405,7 +405,7 @@ test('VIA B11 at source SID DHN rejects with NOT IN DATABASE and preserves scrat
  shared.select({airport:'OIII',kind:'SID',ident:'DHN3A',runway:'29L',procedure:sid,geometry:g});
  const state=Object.assign(engine.makeState('FLIGHT_PLAN'),{subpage:2,
   chapter11RoutePages:true,active:{ORIGIN:'OIII',DEST:'OIMM'},
-  scratch:'B11'});
+  cduSgReference:shared.snapshot(),scratch:'B11'});
  const pages={FLIGHT_PLAN:{}};
  let called=0;
  const bridge={isConnected:()=>true,async request(url){
