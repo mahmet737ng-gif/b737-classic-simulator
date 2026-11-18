@@ -51,7 +51,7 @@
   const button=el('button',parent,'manual-n1-knob');button.type='button';
   button.setAttribute('aria-label','Engine '+n+' N1 pull to set');
   button.title='N1 ENG '+n+' · click PULL/PUSH, scroll or swipe to SET';
-  const img=el('img',button,'manual-n1-raster');img.src='./assets/manual-n1-raster-20261119.png';
+  const img=el('img',button,'manual-n1-raster');img.src='./assets/manual-n1-photo-knob-v1.png';
   img.alt='';img.draggable=false;
   const note=el('span',button,'manual-n1-knob-label');note.textContent='N1 '+n;
   let drag=null;
