@@ -25,5 +25,26 @@
   }
   return out;
  }
- return Object.freeze({VERSION,frames});
+ // Altimeters with 20 ft graduations: the low printed wheel advances
+ // 00→20→40→60→80→00. Higher drums start their carry only during the FINAL
+ // 20 ft before the next hundred/thousand, never 180 ft in advance.
+ function framesTwenty(value,digits){
+  if(!Number.isFinite(value)||value<0||!Number.isInteger(digits)||digits<3||digits>6)
+   throw RangeError('MECHANICAL_20FT_SOURCE');
+  const steps=Math.floor(value/20),phase=(value-steps*20)/20,shown=steps*20;
+  return Array.from({length:digits},(_,i)=>{
+   const magnitude=10**(digits-i-1);
+   if(magnitude===1)return {digit:0,previous:0,next:0,fraction:0,magnitude,digitPosition:i};
+   if(magnitude===10){
+    const decade=steps%5;
+    return {digit:decade*2,previous:((decade+4)%5)*2,
+     next:((decade+1)%5)*2,fraction:phase,magnitude,digitPosition:i};
+   }
+   const whole=Math.floor(shown/magnitude),lower=value-whole*magnitude;
+   const fraction=clamp((lower-(magnitude-20))/20,0,1);
+   return {digit:whole%10,next:(whole+1)%10,previous:(whole+9)%10,
+    fraction,magnitude,digitPosition:i};
+  });
+ }
+ return Object.freeze({VERSION,frames,framesTwenty});
 });
