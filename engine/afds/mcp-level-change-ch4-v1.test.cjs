@@ -1,5 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict');
+require('./mcp-fcom-ch4-numeric-v1.js');
 const Core=require('./mcp-mode-core-v1.js');
 const Fma=require('./fma-mode-engine-v1.js');
 function ready(alt){
