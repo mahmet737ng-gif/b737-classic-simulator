@@ -169,7 +169,7 @@ test('cruise route advances by ground speed, calculates distance/ETA/TTG and pas
  assert.equal(c.next,'VABER','Active waypoint switches after first fix');
  assert.ok(c.route.points[1].x>0,'Following leg turns towards next fix');
  assert.ok(a.eta.endsWith('Z')&&b.eta.endsWith('Z'));
- assert.ok(/^\\d+:\\d\\d$/.test(a.timeToGo));
+ assert.ok(/^\d+:\d\d$/.test(a.timeToGo));
  assert.equal(a.route.points[0].hidden,true);
  assert.equal(a.route.source,'TCAS_LAB_SIMULATED_FMC');
 });
