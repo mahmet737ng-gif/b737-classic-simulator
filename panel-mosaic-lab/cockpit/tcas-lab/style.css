@@ -75,3 +75,26 @@ main{max-width:1540px;padding:12px}
  .efis-quick-controls #range{width:80px}
  .efis-quick-controls #tfc{min-width:75px}
 }
+
+/* Physical EFIS CP replaces the obsolete select strip, and mounts below EHSI.
+   This is a new TCAS Lab mounting context for the approved Unified photo/art. */
+#efis-state-bridge[hidden]{display:none!important}
+.ehsi-with-cp{display:flex;flex-direction:column}
+.efis-physical-dock{padding:13px 13px 18px;border-top:1px solid #304451;
+ background:linear-gradient(#0d1720,#0a1017);color:#c8dbe7}
+.efis-physical-dock h3{text-align:center;font:700 12px/1.2 Arial,sans-serif;
+ letter-spacing:.12em;color:#a6d6e9;margin:0 0 10px}
+#efisCpMount{width:min(100%,570px);margin:0 auto}
+#efisCpMount .uefis-face{width:100%;box-sizing:border-box;border-radius:7px;
+ box-shadow:0 5px 16px #000c}
+#efisCpMount .uefis-face .uefis-knob,
+#efisCpMount .uefis-face .uefis-tfc,
+#efisCpMount .uefis-face .uefis-detent{cursor:pointer}
+#efisCpMount .uefis-face .uefis-tfc:hover,
+#efisCpMount .uefis-face .uefis-knob:hover{filter:none}
+#efisCpMount .uefis-face .uefis-detent:hover{opacity:0!important}
+#efisCpMount .uefis-face .uefis-detent:focus-visible{opacity:1!important}
+@media(max-width:750px){
+ #efisCpMount{width:min(100%,500px)}
+ .efis-physical-dock{padding:9px 7px}
+}
