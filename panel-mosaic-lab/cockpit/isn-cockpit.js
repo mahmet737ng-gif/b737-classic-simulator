@@ -41,7 +41,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':global==='B737ClassicFuelSystemV1'?'ATA28-FAILURES-FUEL-0002':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
