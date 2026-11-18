@@ -291,6 +291,36 @@ function waypoint(parent,x,y,pt,color,showData,shape='star',calibrated=false){
   text(g,pt.eta,x+10,y+20,13,color);
  }
 }
+// Measure a conservative glyph footprint before drawing so that a fix ID
+// cannot be partly erased by the circular/sector compass crop. Label positions
+// are re-evaluated on every render as the ownship moves and the range changes.
+function routeFixLabel(x,y,name,l,occupied=[]){
+ const size=MAP_ID_SIZE,width=Math.max(22,String(name).length*size*.75),height=size*.94;
+ const cx=l.roseCenter[0],cy=l.roseCenter[1],rx=Math.max(1,(l.radiusX??l.radius)-9),
+  ry=Math.max(1,l.radius-9);
+ const fitsBox=([left,top,right,bottom])=>{
+  if(left<12||right>W-12||top<86||bottom>H-21)return false;
+  for(const px of [left,right])for(const py of [top,bottom]){
+   const dx=(px-cx)/rx,dy=(py-cy)/ry;
+   if(dx*dx+dy*dy>1)return false;
+   if(l.degrees<360&&Math.abs(Math.atan2(dx,-dy)*180/Math.PI)>l.degrees/2-2)return false;
+  }
+  return !occupied.some(([a,b,c,d])=>left<c+7&&right>a-7&&top<d+4&&bottom>b-4);
+ };
+ const candidates=[
+  [x+15,y+4,'start'],[x-15,y+4,'end'],
+  [x+15,y-18,'start'],[x-15,y-18,'end'],
+  [x+15,y+24,'start'],[x-15,y+24,'end'],
+  [x-width/2,y-22,'start'],[x-width/2,y+29,'start'],
+  [x-width/2,y-40,'start'],[x-width/2,y+44,'start']
+ ];
+ for(const [atX,atY,align] of candidates){
+  const left=align==='end'?atX-width:atX;
+  const box=[left,atY-height,left+width,atY+3];
+  if(fitsBox(box))return {x:atX,y:atY,align,box};
+ }
+ return null; // Never draw a half-visible identifier.
+}
 function drawRoute(svg,m,l,status,plan){
  const project=projection(m,l,plan),points=m.route.points;
  const rangeClip=m.routeClipToScale&&!plan?'url(#'+(svg.id||'ehsi')+'-route-range)':null;
@@ -319,8 +349,22 @@ function drawRoute(svg,m,l,status,plan){
    const [color,dash]=styles[leg]||styles.ACTIVE;
    line(segments,...positions[i],...to,color,2.1,{'stroke-dasharray':dash});
   });
+  const occupied=[];
   positions.forEach(([x,y],i)=>{
-   if(fits([x,y])&&!points[i].hidden)waypoint(g,x,y,points[i],i===m.route.activeIndex?colors.magenta:colors.white,m.options.rteData,'star',l.calibrated);
+   if(!fits([x,y])||points[i].hidden)return;
+   const color=i===m.route.activeIndex?colors.magenta:colors.white;
+   if(m.routeClipToScale&&!plan&&l.calibrated){
+    // Symbol and label are separate. Use a fully legible, in-scale label
+    // placement instead of letting the SVG clip cut half of its letters.
+    waypoint(g,x,y,{...points[i],name:''},color,false,'star',true);
+    const placement=routeFixLabel(x,y,points[i].name,l,occupied);
+    if(placement){
+     const label=layer(g,'route-fix-label',{'data-fix':points[i].name,
+      'data-label-fitted':'true','data-label-side':placement.align});
+     photoText(label,points[i].name,placement.x,placement.y,MAP_ID_SIZE,color,placement.align);
+     occupied.push(placement.box);
+    }
+   }else waypoint(g,x,y,points[i],color,m.options.rteData,'star',l.calibrated);
   });
  }
  if(!m.nav.valid)return;
@@ -566,5 +610,5 @@ function routeProjection(input){
   return ['PLAN','MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(m.mode)?
    projection(m,layoutFor(m),m.mode==='PLAN'):null;
 }
-return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render,routeProjection};
+return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render,routeProjection,routeFixLabel};
 });
