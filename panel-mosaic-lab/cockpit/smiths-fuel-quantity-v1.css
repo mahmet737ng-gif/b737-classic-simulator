@@ -15,10 +15,14 @@
 .smiths-fuel-quantity[data-preview="segments"] > .smiths-fuel-face {
   background-position-y: 66.666667%;
 }
-.smiths-fuel-quantity > .smiths-qty-test {
+.smiths-fuel-quantity > .smiths-qty-test,
+.smiths-fuel-quantity > .smiths-qty-test:hover,
+.smiths-fuel-quantity > .smiths-qty-test:active,
+.smiths-fuel-quantity > .smiths-qty-test:focus {
+  /* Keep the photographed cap: global button:hover must not replace the sprite. */
   padding: 0;
   border: 0;
-  background-position-y: 100%;
+  background: transparent url("./assets/smiths-fuel-quantity-v1.webp") 0 100% / 300% 400% no-repeat;
   pointer-events: auto;
   touch-action: none;
   cursor: pointer;
@@ -28,4 +32,31 @@
 }
 .smiths-qty-test:focus-visible {
   outline: 2px solid white;
+}
+
+/* KG legend is fitted to the original Smiths glass in all three fuel windows.
+   The legacy artwork carries "LB"; mask only that tiny legend, preserving
+   all surrounding digital segments, tick marks and the test-button sprite. */
+.smiths-fuel-quantity > .smiths-fuel-face {
+  container-type: inline-size;
+}
+.smiths-fuel-quantity > .smiths-fuel-face::after {
+  content: "KG";
+  position: absolute;
+  left: 65%;
+  top: 63.3%;
+  width: 16%;
+  height: 11%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1px;
+  background: linear-gradient(180deg, #1c1634, #1b1533);
+  color: #d9d6e1;
+  font: 700 9.5cqi/1 "Arial Narrow", Arial, sans-serif;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+.smiths-fuel-quantity:not([data-preview="held"]):not([data-preview="segments"]) > .smiths-fuel-face::after {
+  color: #605b70;
 }
