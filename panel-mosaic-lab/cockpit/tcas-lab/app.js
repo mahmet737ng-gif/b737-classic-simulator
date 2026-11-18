@@ -5,7 +5,7 @@
   tasKt:440,gsKt:448,iasKt:293,mach:.73,pitchDeg:2,vsFpm:0,
   trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},initialAltitudeFt=27000,
  encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,tfcVisible=true;
- const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='SAME_LEVEL';
+ const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='DIVERGING_ABOVE';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
  function load(){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;
