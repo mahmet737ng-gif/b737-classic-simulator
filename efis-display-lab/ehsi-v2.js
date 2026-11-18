@@ -109,6 +109,8 @@ function header(svg,m,status){
  if(!m.radio){
   const eta=active?.eta?String(active.eta):'----Z';
   photoText(g,eta,h.right,h.top,23,PHOTO_COLORS.white,'end');
+  // Instructor FMC route may supply dynamic time-to-go; unchanged if absent.
+  if(m.nav.timeToGo)photoText(g,'TTG '+String(m.nav.timeToGo),76,485,18,PHOTO_COLORS.white);
  }
  if(m.mode==='PLAN')return;
  photoText(g,'TAS'+numberText(m.trueAirspeed),h.left,h.second,22);
@@ -295,7 +297,7 @@ function drawRoute(svg,m,l,status,plan){
    line(segments,...positions[i],...to,color,2.1,{'stroke-dasharray':dash});
   });
   positions.forEach(([x,y],i)=>{
-   if(fits([x,y]))waypoint(g,x,y,points[i],i===m.route.activeIndex?colors.magenta:colors.white,m.options.rteData,'star',l.calibrated);
+   if(fits([x,y])&&!points[i].hidden)waypoint(g,x,y,points[i],i===m.route.activeIndex?colors.magenta:colors.white,m.options.rteData,'star',l.calibrated);
   });
  }
  if(!m.nav.valid)return;
@@ -424,7 +426,7 @@ function traffic(svg,m,l,status){
   text(g,labels[mode],64,226,18,mode==='FAIL'?COLORS.amber:mode==='TA_ONLY'?COLORS.green:COLORS.white,'start');
  }
  if(!status.trafficOverlay)return;
- photoText(g,'TFC',G.header.left,184,21,PHOTO_COLORS.green);
+ photoText(g,'TFC',G.header.left,184+(Number.isFinite(m.trafficLabelOffsetY)?m.trafficLabelOffsetY:0),21,PHOTO_COLORS.green);
  let offscale=null;
  let noBearingRow=0;
  for(const t of visible){
