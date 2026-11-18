@@ -113,7 +113,8 @@
       return {element:all,set(value,visible=true){
         setVisible(all,visible);
         if(!visible||!Number.isFinite(value))return;
-        const frames=roller.frames(Math.max(0,value),digits);
+        const frames=(kind==='altimeter'||kind==='standby')?
+         roller.framesTwenty(Math.max(0,value),digits):roller.frames(Math.max(0,value),digits);
         frames.forEach((f,i)=>{
           const t=tracks[i];
           // Values progress upward. Lower place rotates continuously; upper
