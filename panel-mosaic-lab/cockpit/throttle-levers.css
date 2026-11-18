@@ -2,3 +2,12 @@
 /* THR-0003: rolling plastic cover, below both moving throttle sprites (z=5). */
 .throttle-plastic-cover{position:absolute;z-index:4;pointer-events:none;user-select:none;object-fit:fill;max-width:none;display:block}
 .reference-mode .throttle-plastic-cover{display:none!important}
+
+/* Authentic TO/GA push surfaces track the photographed black pushbuttons. */
+.throttle-toga-push{position:absolute;z-index:9;padding:0;margin:0;border:0;
+ border-radius:50%;background:transparent;box-shadow:none;cursor:pointer;
+ touch-action:manipulation;outline:0;appearance:none}
+.throttle-toga-push:hover,.throttle-toga-push:active{
+ background:transparent!important;box-shadow:none!important;border:0!important}
+.throttle-toga-push:focus-visible{outline:2px solid #ffcf51;outline-offset:2px}
+.reference-mode .throttle-toga-push{display:none!important}
