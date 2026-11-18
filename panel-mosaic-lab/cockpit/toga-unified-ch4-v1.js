@@ -21,7 +21,7 @@
    fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,atArmed:c.atArm===true,
    apChannels:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
    autopilotEngaged:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||''),
-   engine1Running:light?false:engineRunning(1),engine2Running:light?false:engineRunning(2),
+   engine1Running:light?undefined:engineRunning(1),engine2Running:light?undefined:engineRunning(2),
    // Presence of both engines running is checked independently from pump/fuel faults.
    selectedSpeedKt:m?.values?.speed??f?.iasKt,
    v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
@@ -120,6 +120,16 @@
   }else lastMs=performance.now();
  }
  win.addEventListener('b737:toga-request',e=>press(e.detail?.source||'THRUST_LEVER'));
+ // Engine indication emits an existing throttled shared-ECU packet; adapt the
+ // 2-engine GA to a single-engine target using Chapter 4 F/D speed rules.
+ win.addEventListener('b737:engine-indications-live-v2',()=>{
+  if(!active())return;
+  const next=T.advance(state,context(),0);
+  if(next.singleEngine!==state.singleEngine||next.targetSpeedKt!==state.targetSpeedKt){
+   state=next;lastFma='';publishFma();
+   win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'ENGINE_FEEDBACK'}}));
+  }
+ });
  function releaseToga(){
   if(state.phase==='OFF')return;
   state=T.initial();lastFma='';lastThrust='';
