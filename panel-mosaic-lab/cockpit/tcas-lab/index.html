@@ -1,17 +1,19 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="style.css?v=TCAS-CRUISE-0005"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-CP-0007"></head><body>
 <header><div><h1>737 Classic · TCAS Encounter Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
 <main><section class="controls controls-primary" aria-label="Encounter quick controls">
 <div class="encounter-bar"><label class="encounter-select">Encounter<select id="scenario"></select></label>
 <div class="actions primary-actions"><button id="start">LOAD ENCOUNTER</button><button id="play">RUN</button><button id="step">STEP 1 S</button><button id="respond">RESPOND TO RA</button>
 <label class="converging-option" title="Automatically generate a lateral and vertical altitude-crossing encounter"><input id="converging" type="checkbox"> CONVERGING</label></div></div>
-<div class="efis-quick-controls" role="group" aria-label="EFIS CONTROL PANEL">
-<span class="efis-quick-title">EFIS CONTROL</span>
-<label>MAP MODE<select id="displayMode"><option value="CTR_MAP" selected>CTR MAP · 360°</option><option value="MAP">MAP · EXPANDED</option></select></label>
-<label>RANGE (NM)<select id="range"><option>10</option><option>20</option><option>40</option><option>80</option></select></label>
-<button id="tfc" type="button" aria-pressed="true" class="tfc-on" title="Show or hide TCAS traffic on the EHSI">TFC ON</button>
+<div id="efis-state-bridge" hidden aria-hidden="true">
+<select id="displayMode"><option value="CTR_MAP" selected>CTR MAP</option><option value="MAP">MAP</option><option value="FULL_NAV">FULL NAV</option><option value="FULL_VOR_ILS">FULL VOR / ILS</option><option value="EXP_NAV">EXP NAV</option><option value="EXP_VOR_ILS">EXP VOR / ILS</option><option value="PLAN">PLAN</option></select>
+<select id="range"><option>10</option><option>20</option><option>40</option><option>80</option><option>160</option><option>320</option></select>
+<button id="tfc" aria-pressed="true">TFC ON</button>
 </div>
 </section>
-<section class="screens"><article><h2>EADI · red pitch attitudes to avoid</h2><canvas id="eadi" width="640" height="640"></canvas></article><article><h2>EHSI · traffic / altitude / trend</h2><svg id="ehsi" xmlns="http://www.w3.org/2000/svg"></svg></article></section>
+<section class="screens"><article><h2>EADI · red pitch attitudes to avoid</h2><canvas id="eadi" width="640" height="640"></canvas></article><article class="ehsi-with-cp"><h2>EHSI · traffic / altitude / trend</h2><svg id="ehsi" xmlns="http://www.w3.org/2000/svg"></svg>
+<section class="efis-physical-dock" aria-label="EFIS CTR PNL"><h3>EFIS CONTROL PANEL</h3>
+<div id="efisCpMount"></div></section>
+</article></section>
 <section class="readings"><h2>Received traffic</h2><p>Simulated cruise FMC route and non-threat background traffic are instructor-only examples, not operational navigation data.</p><div class="legend"><span><i class="symbol ra"></i> RA · solid red square</span><span><i class="symbol ta"></i> TA · solid amber circle</span><span><i class="symbol prox"></i> Proximate · solid white diamond</span><span><i class="symbol other"></i> Other · outline white diamond</span></div><p>Signed labels show hundreds of feet relative to own aircraft. Above / below placement follows relative altitude. An arrow appears for an intruder climbing or descending at 500 fpm or more; no arrow means a lower rate, not necessarily the same altitude. Unknown altitude has no label.</p><p id="ownState"></p><table><thead><tr><th>Target</th><th>Class</th><th>Clock</th><th>Range NM</th><th>Relative ft</th><th>Vertical fpm</th><th>Vertical relation</th><th>CPA s</th></tr></thead><tbody id="trafficRows"></tbody></table></section>
 <section class="advanced controls" aria-label="Advanced TCAS lab controls">
 <details><summary>ADVANCED SETTINGS · TRANSPONDER / EFIS / FLIGHT / FAILURES</summary>
@@ -33,6 +35,8 @@
 </main>
 <script src="../../../engine/afds/fma-mode-engine-v1.js"></script><script src="../../../engine/efis/classic-flap-speed-profile-v1.js"></script><script src="../../../engine/efis/classic-speed-tape-engine-v1.js"></script>
 <script src="../eadi-speed-tape-v1.js"></script><script src="../eadi-fma-fcom-v2.js?v=TCAS-CRUISE-0005"></script>
-<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CRUISE-0005"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-CRUISE-0005"></script>
-<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-GEOMETRY-0003"></script><script src="cruise-scenario-v1.js?v=TCAS-CRUISE-0006"></script><script src="app.js?v=TCAS-CRUISE-0005"></script>
+<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CRUISE-0005"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-CP-0007"></script>
+<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-GEOMETRY-0003"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
+<script src="efis-physical-cp-v1.js?v=TCAS-CP-0007"></script>
+<script src="app.js?v=TCAS-CP-0007"></script>
 </body></html>
