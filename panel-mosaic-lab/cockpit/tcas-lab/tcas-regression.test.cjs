@@ -6,6 +6,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const TCAS=require('../../../engine/tcas/classic-tcas-v2.js');
+const EHSI=require('../../../efis-display-lab/ehsi-v2.js');
 const own=()=>({airborne:true,altitudeFt:10000,radioAltitudeFt:6000,
  tasKt:220,gsKt:220,iasKt:220,pitchDeg:2,vsFpm:0,
  trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0});
@@ -37,14 +38,18 @@ test('automatic left/right convergence climbs or descends through own altitude',
 });
 test('quick encounter controls precede EADI/EHSI, optional settings follow',()=>{
  const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
- for(const id of ['scenario','start','play','step','respond','converging','intruderSide','mode','eadi','ehsi'])
+ for(const id of ['scenario','start','play','step','respond','converging','intruderSide','displayMode','range','tfc','mode','eadi','ehsi'])
   assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1,id);
  assert.ok(html.indexOf('id="converging"')<html.indexOf('id="eadi"'));
  assert.ok(html.indexOf('id="mode"')>html.indexOf('id="ehsi"'));
+ assert.ok(html.indexOf('id="displayMode"')<html.indexOf('id="ehsi"'));
+ assert.ok(html.indexOf('id="range"')<html.indexOf('id="ehsi"'));
+ assert.ok(html.indexOf('id="tfc"')<html.indexOf('id="ehsi"'));
+ assert.match(html,/value="CTR_MAP" selected/);
 });
 test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',()=>{
  const defaults={altitude:'10000',radioHeight:'6000',speed:'220',pitch:'2',vs:'0',
-  relative:'',intruderVS:'',rate:'1',displayMode:'MAP',range:'10',mode:'TA_RA',
+  relative:'',intruderVS:'',rate:'1',displayMode:'CTR_MAP',range:'10',mode:'TA_RA',
   unit:'1',altSource:'1',code:'2000',filter:'NORM',intruderSide:'RIGHT'};
  const els=new Map();
  class Element{
@@ -57,17 +62,28 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  }
  const get=id=>{if(!els.has(id))els.set(id,new Element(id));return els.get(id);};
  const document={getElementById:get,createElement:tag=>new Element(tag),createTextNode:s=>({textContent:s})};
- let eadi=null;
+ let eadi=null,ehsiInput=null;
  const window={B737ClassicTcasV2:TCAS,
   EFISDisplayLabCore:{initial:()=>({eadi:{},power:{}})},
   EFISDisplayLabEadi:{render(_node,state){eadi={...state.eadi};}},
-  EFISClassicEHSIV2:{render(){}}};
+  EFISClassicEHSIV2:{render(_node,input){ehsiInput=input;}}};
  class Option{constructor(label,value){this.label=label;this.value=value;}}
  const app=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
  vm.runInNewContext(app,{window,document,Option,requestAnimationFrame(){}},{filename:'tcas-lab/app.js'});
  const fma=e=>[e.at,e.pitchMode,e.rollMode];
  assert.deepEqual(fma(eadi),['FMC SPD','VNAV PTH','LNAV']);
  assert.equal(eadi.afds,'CMD');
+ assert.equal(ehsiInput.mode,'CTR_MAP');
+ assert.equal(ehsiInput.options.tfc,true);
+ get('tfc').onclick();
+ assert.equal(ehsiInput.options.tfc,false,'TFC OFF hides EHSI overlay');
+ assert.equal(get('tfc').textContent,'TFC OFF');
+ get('tfc').onclick();
+ assert.equal(ehsiInput.options.tfc,true,'TFC ON restores overlay');
+ get('displayMode').value='MAP';get('displayMode').onchange();
+ assert.equal(ehsiInput.mode,'MAP','MAP MODE changes instantly');
+ get('range').value='20';get('range').onchange();
+ assert.equal(ehsiInput.range,20,'EHSI range changes instantly');
  get('respond').onclick();
  assert.equal(eadi.afds,'CMD','No RA: autopilot stays engaged');
  get('converging').checked=true;get('scenario').value='CLIMB';get('start').onclick();
@@ -78,4 +94,33 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.equal(eadi.afds,'FD');assert.equal(eadi.apEngaged,false);assert.equal(eadi.fd,true);
  assert.deepEqual(fma(eadi),before,'FMC, VNAV and LNAV modes unchanged');
  get('start').onclick();assert.equal(eadi.afds,'CMD','LOAD resets autopilot to CMD');
+});
+
+test('EHSI actually renders tracked traffic on 360° CTR MAP (even when beyond expanded MAP arc)',()=>{
+ class SvgNode{
+  constructor(name,doc){this.tagName=name;this.ownerDocument=doc;this.attributes={};this.children=[];this.style={};}
+  setAttribute(k,v){this.attributes[k]=String(v);}
+  appendChild(v){this.children.push(v);return v;}
+  replaceChildren(...c){this.children=c;}
+ }
+ const doc={createElementNS(_,tag){return new SvgNode(tag,doc);}};
+ const makeSvg=()=>{const el=new SvgNode('svg',doc);el.id='ehsi';return el;};
+ const descendants=root=>[root,...root.children.flatMap(descendants)];
+ const params=mode=>({
+  mode,range:10,heading:0,track:0,selectedHeading:0,trueRef:false,
+  nav:{valid:true},route:{points:[]},options:{tfc:true},
+  traffic:run('OFFSCALE').output,
+  efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true},weather:{}
+ });
+ const centered=makeSvg();const state=EHSI.render(centered,params('CTR_MAP'));
+ const nodes=descendants(centered);
+ assert.equal(state.trafficOverlay,true);
+ assert.ok(nodes.some(n=>n.attributes['data-segment']==='traffic-prox'),
+  'off-axis real intruder must be represented by a white diamond in CTR MAP');
+ const expanded=makeSvg();EHSI.render(expanded,params('MAP'));
+ const outOfArc=descendants(expanded);
+ assert.ok(!outOfArc.some(n=>n.attributes['data-segment']==='traffic-prox'),
+  'expanded MAP arc never fakes an in-scale position for a 45-degree target');
+ const disabled=makeSvg();EHSI.render(disabled,{...params('CTR_MAP'),options:{tfc:false}});
+ assert.ok(!descendants(disabled).some(n=>n.attributes['data-segment']==='traffic-prox'));
 });
