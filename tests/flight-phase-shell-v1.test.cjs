@@ -10,6 +10,7 @@ test('original FLT PHASE entry and complete dialog exist before flight scripts r
  assert.equal((html.match(/id="flightScenarioDialog"/g)||[]).length,1);
  for(const id of ['flightAirport','flightRunway','flightPreset','flightAlt','flightHeading','flightSpeed','flightVS','flightBank','flightLat','flightLon','flightLoad','flightTargets','flightTakeoff','flightPause','flightStop','flightFollowMCP','flightTelemetry'])
   assert.ok(view.includes('id="'+id+'"'),id+' must remain available');
+ assert.match(view,/id="flightTakeoff">PRESS TOGA<\/button>/);
  assert.doesNotMatch(view,/flightAirGround/);
 });
 test('main window opens without flight dependencies, then existing controls initialize and load a flight',()=>{
