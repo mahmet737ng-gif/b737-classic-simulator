@@ -14,6 +14,9 @@ for(const [id,pos] of Object.entries({main2FwdPump:'B3',main1FwdPump:'B7',main2A
 define('hyd.electricPumpA',[key('P6-12','C2'),key('P6-2','A15')]);
 define('hyd.electricPumpB',[key('P6-11','C2'),key('P6-2','A14')]);
 one('fuel.crossfeedControl','P6-3','C5','CONTROL');
+one('fuel.quantityCommon','P6-3','A4','INDICATION');
+for(const [tank,position] of Object.entries({main1:'F5',center:'F4',main2:'F3'}))
+ define('fuel.quantity.'+tank,[key('P6-3','A4'),key('P6-3',position)],'INDICATION');
 one('fuel.groundFuelingControl','P6-3','A7','CONTROL');
 for(const [name,pos]of Object.entries({bleedIsolationControl:'B1',bleedRightControl:'B2',bleedLeftControl:'B3',recircControl:'B4',recircEnergized:'B5',packR:'C3',packL:'C4',ductGauge:'D1',temperatureIndicator:'D2',valvePositionIndicator:'D3',overheatDetector:'D4',recircFan:'E5',temperatureAutoR:'A3',temperatureAutoL:'A4',temperatureManual:'A5',ramModR:'E1',ramModL:'E2',turbofanR:'C1',turbofanL:'C2'}))one('air.'+name,'P6-4',pos,/Indicator|Gauge|Energized/.test(name)?'INDICATION':'CONTROL');
 define('air.recirc',[key('P6-4','B4'),key('P6-4','E5')]);

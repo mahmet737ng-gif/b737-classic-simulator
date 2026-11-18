@@ -249,7 +249,7 @@
    if(lastTime!==null&&now<lastTime){prior=null;lastPaint.clear();}
    const next=api().calculate(db,{mode,electrical:state,observed,previous:prior,
     faults:displayFaults,limits:displayLimits,filterBypassThresholdPsid:filterThreshold,
-    dtMs:dt,fuelMode,resetFuelUsed:resetFuelPending});
+    dtMs:dt,fuelMode,resetFuelUsed:resetFuelPending,burnedKg:live.fuel?.burnedKg});
    resetFuelPending=false;
    prior=next;lastTime=now;lastRaw=live;current=next;events++;
    const derivedAt=profiler?performance.now():0;

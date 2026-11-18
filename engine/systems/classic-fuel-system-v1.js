@@ -23,6 +23,8 @@
  });
  const TRAINING=Object.freeze({crossfeedTravelMs:820,centerDryStopMs:5000,
   scavengeWindowMs:20*60*1000,scavengeFlowKgHr:150});
+ const FUEL_LIMITS=Object.freeze({maxTemperatureC:49,minTemperatureFloorC:-45,
+  freezeMarginC:3,maxMainImbalanceKg:453,centerLoadingThresholdKg:453});
  const finite=x=>typeof x==='number'&&Number.isFinite(x);
  function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
  class Controller{
@@ -35,12 +37,35 @@
    this.centerAutoStopped={'fuel.centerLeftPump':false,'fuel.centerRightPump':false};
    this.previousSwitches=Object.fromEntries(Object.keys(PUMPS).map(k=>[k,false]));
    this.scavenge={armed:false,remainingMs:0,transferredKg:0,flowKgHr:0};
+   this.leakRateKgHr=Object.fromEntries(TANKS.map(tank=>[tank,0]));
+   this.leakedKg=Object.fromEntries(TANKS.map(tank=>[tank,0]));
+   this.freezePointC=-47; // Training default Jet A-1 specification limit.
    this.temperatureC=10;this.events=[];this.elapsedMs=0;
    this.fuel.setCrossfeed('CLOSED');
   }
   record(type,data={}){this.events.push({tMs:Math.round(this.elapsedMs),type,...data});if(this.events.length>60)this.events.shift();}
   setTemperature(c){if(!finite(c)||c< -56||c>56)throw Error('Fuel temperature outside instrument range');
    this.temperatureC=c;return this.get();}
+  setTankLeak(tank,rateKgHr){
+   if(!TANKS.includes(tank)||!finite(rateKgHr)||rateKgHr<0||rateKgHr>60000)
+    throw Error('Tank leak rate must be 0–60000 kg/h');
+   this.leakRateKgHr[tank]=rateKgHr;
+   this.record('TANK_LEAK_RATE',{tank,rateKgHr});
+  }
+  setFuelFreezePoint(c){
+   if(!finite(c)||c< -75||c>0)throw Error('Invalid fuel freezing point');
+   this.freezePointC=c;
+  }
+  indications(){
+   const tanksKg={...this.fuel.tanks};
+   const imbalanceKg=tanksKg.main2-tanksKg.main1;
+   const minimumC=Math.max(FUEL_LIMITS.minTemperatureFloorC,this.freezePointC+FUEL_LIMITS.freezeMarginC);
+   return {tanksKg,capacitiesKg:CAPACITY_KG,imbalanceKg,
+    imbalanceLimitExceeded:Math.abs(imbalanceKg)>FUEL_LIMITS.maxMainImbalanceKg,
+    temperature:{sensorTank:'main1',celsius:this.temperatureC,freezePointC:this.freezePointC,minimumC,
+     maximumC:FUEL_LIMITS.maxTemperatureC,status:this.temperatureC>FUEL_LIMITS.maxTemperatureC?'ABOVE_MAX':
+      this.temperatureC<minimumC?'BELOW_MIN':'WITHIN_LIMITS'}};
+  }
   setCrossfeedFailure(failed){if(typeof failed!=='boolean')throw Error('Boolean crossfeed failure required');
    this.crossfeed.failed=failed;return this.get();}
   commandCrossfeed(command){
@@ -69,6 +94,13 @@
    if(typeof batteryPowered!=='boolean'||typeof onGround!=='boolean')
     throw Error('Fuel controller needs Boolean battery/ground observation');
    this.elapsedMs+=ms;
+   for(const tank of TANKS){
+    const lost=Math.min(this.fuel.tanks[tank],this.leakRateKgHr[tank]*ms/3600000);
+    if(lost===0)continue;
+    this.fuel.setTank(tank,this.fuel.tanks[tank]-lost);
+    this.leakedKg[tank]+=lost;
+    if(this.fuel.tanks[tank]===0)this.record('TANK_DRAINED_BY_LEAK',{tank});
+   }
    for(const [id,tank]of Object.entries(PUMPS)){
     const on=rawPumps[id]?.switchOn===true;
     if(tank==='center'){
@@ -135,9 +167,10 @@
    const valves={crossfeed:{...this.crossfeed,
     lamp:this.crossfeed.command!==this.crossfeed.position||this.crossfeed.remainingMs>0?
      'BRIGHT_BLUE':this.crossfeed.position==='OPEN'?'DIM_BLUE':'OFF'}};
-   const quantityKg={...this.fuel.tanks};
+   const indications=this.indications(),quantityKg=indications.tanksKg;
    return {schema:VERSION,source:'SAME_ISN09_12_FUEL_LEDGER',fuelTemperatureC:this.temperatureC,
     capacitiesKg:{...CAPACITY_KG},tanksKg:quantityKg,totalFuelKg:Object.values(quantityKg).reduce((a,b)=>a+b,0),
+    indications,leaks:{rateKgHr:{...this.leakRateKgHr},lostKg:{...this.leakedKg}},
     pumps:Object.fromEntries(Object.keys(PUMPS).map(id=>[id,{tank:PUMPS[id],
      commandedOn:pump[id].switchOn===true,operating:pump[id].operating,
      lowPressure:pump[id].lowPressure,autoStopped:pump[id].autoStopped,
@@ -150,5 +183,5 @@
     events:copy(this.events)};
   }
  }
- return Object.freeze({Controller,VERSION,CAPACITY_KG,PUMPS,LOW_LIGHTS,TRAINING});
+ return Object.freeze({Controller,VERSION,CAPACITY_KG,FUEL_LIMITS,PUMPS,LOW_LIGHTS,TRAINING});
 });

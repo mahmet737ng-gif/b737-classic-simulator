@@ -32,11 +32,20 @@
    text('span',label[id]+' kg',line);
    const inp=text('input',undefined,line);inp.type='number';inp.min='0';inp.max=String(({main1:4555,center:7029,main2:4555})[id]);inp.step='1';inp.dataset.tank=id;inp.style.cssText='width:100px';
    const button=text('button','SET',line);button.type='button';button.onclick=()=>command({type:'SERVICE_TANK',tank:id,quantityKg:Number(inp.value)});
+   const leak=text('input',undefined,line);leak.type='number';leak.min='0';leak.max='60000';leak.value='0';
+   leak.style.width='95px';leak.setAttribute('aria-label',label[id]+' leak rate in kg per hour');
+   const applyLeak=text('button','LEAK KG/H',line);applyLeak.type='button';
+   applyLeak.onclick=()=>command({type:'TANK_LEAK',tank:id,rateKgHr:Number(leak.value)});
   }
   const tempLine=text('label',undefined,controls);tempLine.style.cssText='display:block;margin:10px 0';
   text('span','Fuel Temperature °C ',tempLine);
   const t=text('input',undefined,tempLine);t.type='number';t.min='-56';t.max='56';t.step='1';t.value='10';t.style.width='70px';
   const b=text('button','SET TEMP',tempLine);b.type='button';b.onclick=()=>command({type:'FUEL_TEMPERATURE',celsius:Number(t.value)});
+  const freezeLine=text('label',undefined,controls);
+  text('span','Fuel freezing point °C ',freezeLine);
+  const freeze=text('input',undefined,freezeLine);freeze.type='number';freeze.min='-75';freeze.max='0';freeze.value='-47';
+  const applyFreeze=text('button','SET FREEZING POINT',freezeLine);applyFreeze.type='button';
+  applyFreeze.onclick=()=>command({type:'FUEL_FREEZE_POINT',celsius:Number(freeze.value)});
   const x=text('label',undefined,controls);x.style.cssText='display:block;margin:8px 0';
   const chk=text('input',undefined,x);chk.type='checkbox';
   text('span',' Simulate CROSSFEED VALVE stuck',x);
@@ -54,11 +63,15 @@
  function refresh(){
   if(!panel||!owner()?.getFuelSystem)return;
   const s=owner().getFuelSystem();if(!s)return;
-  const key=JSON.stringify([s.tanksKg,s.pumps,s.valves,s.scavenge,s.caution,s.fuelTemperatureC]);
+  const key=JSON.stringify([s.tanksKg,s.pumps,s.valves,s.scavenge,s.caution,s.indications,s.leaks]);
   if(key===last)return;last=key;
   const q=Object.entries(s.tanksKg).map(([id,kg])=>label[id]+': '+kg.toFixed(1)+' / '+s.capacitiesKg[id]+' kg');
   const ps=Object.entries(s.pumps).map(([id,p])=>pumpLabel[id]+': '+(p.commandedOn?'ON':'OFF')+' · '+(p.operating===null?'POWER ?':p.operating?'PRESSURE OK':'LOW PRESSURE')+(p.autoStopped?' · AUTO STOP':''));
   liveRows.textContent=q.join(' | ')+'\nTOTAL '+s.totalFuelKg.toFixed(1)+' kg · T '+s.fuelTemperatureC+' °C'+
+   '\nMAIN 2 − MAIN 1 '+s.indications.imbalanceKg.toFixed(1)+' kg'+
+   (s.indications.imbalanceLimitExceeded?' · LIMIT EXCEEDED':'')+
+   '\nTEMPERATURE '+s.indications.temperature.status+' · MIN '+s.indications.temperature.minimumC+' °C'+
+   '\nLEAK LOSS '+Object.entries(s.leaks.lostKg).map(([id,kg])=>label[id]+' '+kg.toFixed(1)+' kg').join(' | ')+
    '\nCROSSFEED selector '+s.valves.crossfeed.command+' / valve '+s.valves.crossfeed.position+' · '+s.valves.crossfeed.lamp+
    '\nSCAVENGE '+(s.scavenge.active?'WINDOW OPEN':'OFF')+' · '+s.scavenge.flowKgHr+' kg/h · '+Math.ceil(s.scavenge.remainingMs/60000)+' min left'+
    '\nFUEL CAUTION '+(s.caution.masterCaution?'ON':'OFF')+'\n'+ps.join(' | ');

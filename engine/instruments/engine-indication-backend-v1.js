@@ -82,12 +82,12 @@
     {value:raw.value,origin:raw.origin}:null;
  }
  function calculate(database,{mode="EIS",electrical=null,observed={},faults={},previous=null,dtMs=0,
-  limits={},fuelMode="RATE",resetFuelUsed=false,filterBypassThresholdPsid=null}={}){
+  limits={},fuelMode="RATE",resetFuelUsed=false,filterBypassThresholdPsid=null,burnedKg=null}={}){
   validate(database);
   if(!validMode.has(mode))throw Error("Unsupported instrument mode");
   if(!Number.isInteger(dtMs)||dtMs<0||dtMs>60000)throw Error("Invalid timestep");
   if(!["RATE","USED"].includes(fuelMode))throw Error("Unsupported fuel display mode");
-  const result={schema,revision:database.revision,mode,engines:{},fuelUsedKg:{},bite:{},
+  const result={schema,revision:database.revision,mode,engines:{},fuelUsedKg:{},fuelLedgerBurnedKg:{},bite:{},
    quality:"SOURCE_INDEXED_TRAINING_NOT_WDM_CERTIFIED"};
   for(const side of [1,2]){
    const id="engine"+side,prior=previous?.engines?.[id]||{},indications={},warning={};
@@ -112,7 +112,14 @@
    }
    let used=resetFuelUsed?0:finite(previous?.fuelUsedKg?.[id])?previous.fuelUsedKg[id]:0;
    const flow=sensor(observed,side,"fuelFlow","kg/h");
-   if(!resetFuelUsed&&flow.valid===true&&flow.value>=0)used+=flow.value*dtMs/3600000;
+   const ledgerValue=burnedKg?.[id], previousLedger=previous?.fuelLedgerBurnedKg?.[id];
+   if(finite(ledgerValue)&&ledgerValue>=0){
+    result.fuelLedgerBurnedKg[id]=ledgerValue;
+    if(!resetFuelUsed&&finite(previousLedger)){
+     if(ledgerValue>=previousLedger)used+=ledgerValue-previousLedger;
+     else used=0; // Physical ECU ledger was reset.
+    }
+   }else if(!resetFuelUsed&&flow.valid===true&&flow.value>=0)used+=flow.value*dtMs/3600000;
    result.fuelUsedKg[id]=Number(used.toFixed(5));
    indications.fuelFlow.fuelMode=fuelMode;
    indications.fuelFlow.fuelUsedKg=result.fuelUsedKg[id];

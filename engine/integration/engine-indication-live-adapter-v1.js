@@ -14,7 +14,7 @@
     const power=electrical.evaluate(ecu.start.core.pack.electricalState);
     const snapshot=ecu.get();
     const next=indications.calculate(database,{mode,electrical:power,observed:indications.fromEcu(snapshot),
-     faults,limits,fuelMode,resetFuelUsed,filterBypassThresholdPsid,dtMs,previous});
+     faults,limits,fuelMode,resetFuelUsed,filterBypassThresholdPsid,dtMs,previous,burnedKg:snapshot.fuel?.burnedKg});
     previous=next;
     return {schema:"b737classic.engine-indications-live/1",owner:"EXISTING_ISN_ECU_AND_ELECTRICAL_V7",
      timeMs:snapshot.timeMs,electricalRevision:power.revision,technicalRevision:database.revision,indications:next};

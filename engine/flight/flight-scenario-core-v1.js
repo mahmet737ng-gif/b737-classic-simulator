@@ -197,6 +197,14 @@
     const actualVs=clamp(Math.tan((s.pitchDeg-2)*RAD)*Math.max(s.tasKt*KT_TO_MPS,35)*60/.3048,-5000,5000);
     s.vsFpm+=clamp(actualVs-s.vsFpm,-420*dt,420*dt);
    }
+   // Bounded training disturbance. Positive bank is toward the heavier right wing.
+   // The shared controller continues to apply its corrective bank command.
+   const imbalance=propulsion?.fuelImbalanceKg;
+   if(Number.isFinite(imbalance)){
+    const rollBiasDegSec=clamp(imbalance/453*.12,-1.2,1.2);
+    s.bankDeg=clamp(s.bankDeg+rollBiasDegSec*dt,-45,45);
+    s.fuelBalance={imbalanceKg:imbalance,rollBiasDegSec,source:'TRAINING_LATERAL_FUEL_MASS'};
+   }else delete s.fuelBalance;
    // Gravity coordinated-turn relation, using the RATE-LIMITED bank angle.
    const velocity=Math.max(s.tasKt*KT_TO_MPS,50);
    const turnDegPerSec=(9.80665*Math.tan(s.bankDeg*RAD)/velocity)/RAD;

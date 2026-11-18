@@ -577,6 +577,15 @@
     ecu.setFlightInputs({iasKt,pressureAltitudeFt:altitudeFt});
    return {active:true,onGround,iasKt,altitudeFt,origin:'TRAINING_SCENARIO'};
   },
+    getFuelImbalanceKg:()=>{
+     const tanks=ecu.core.fuel.tanks;
+     return tanks.main2-tanks.main1;
+    },
+    getFuelQuantityIndications:()=>{
+     const indications=ecu.core.fuelSystem?.indications();
+     if(!indications)return null;
+     return {...indications,standbyAc:chain.get().electrical?.acStandby??null};
+    },
     getFuelSystem:()=>ecu.get().fuel?.system??null,
    reconcileElectricalConsumers:reason=>reconcileElectricalConsumers(reason),
    refreshElectricalAnnunciations:()=>{render();return true;},
@@ -588,6 +597,8 @@
        onGround:ecu.aircraft.onGround});break;
       case 'FUEL_TEMPERATURE':fs.setTemperature(command.celsius);
        window.B737UnifiedFuelTemperature?.setTemperature(command.celsius);break;
+      case 'TANK_LEAK':fs.setTankLeak(command.tank,command.rateKgHr);break;
+      case 'FUEL_FREEZE_POINT':fs.setFuelFreezePoint(command.celsius);break;
       case 'CROSSFEED_FAILURE':fs.setCrossfeedFailure(command.active);break;
       case 'PUMP_FAILURE':
        if(!Object.hasOwn(window.B737ClassicFuelSystemV1.PUMPS,command.id)||typeof command.active!=='boolean')throw Error('Invalid fuel pump fault');

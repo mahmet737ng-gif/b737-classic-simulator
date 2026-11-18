@@ -107,3 +107,29 @@ const mainL='fuel.main1FwdPump',centerL='fuel.centerLeftPump',centerR='fuel.cent
  assert.match(gateway,/fuel:copy\(e\.fuel\)/);
 }
 console.log('PASS Unified ATA28: shared fuel ledger, six pump source gates, crossfeed valve travel, center dry auto-stop, 20-min scavenge, ground fueling caps, ECU and cockpit bridge.');
+
+{
+ const fuel=mkFuel({main1:1000,main2:1000,center:5});
+ const controller=new F.Controller({fuel});
+ controller.setTankLeak('main1',18000);
+ controller.setTankLeak('center',3600);
+ controller.advance(120000);
+ assert.equal(fuel.tanks.main1,400);
+ assert.equal(fuel.tanks.center,0);
+ assert.deepEqual(fuel.burnedKg,{engine1:0,engine2:0,apu:0});
+ assert.deepEqual(controller.get().leaks.lostKg,{main1:600,main2:0,center:5});
+ assert.equal(controller.indications().imbalanceKg,600);
+ assert.equal(controller.indications().imbalanceLimitExceeded,true);
+ controller.setTankLeak('main1',0);
+ controller.advance(120000);
+ assert.equal(fuel.tanks.main1,400);
+ controller.setTemperature(50);
+ assert.equal(controller.indications().temperature.status,'ABOVE_MAX');
+ controller.setFuelFreezePoint(-40);
+ controller.setTemperature(-38);
+ assert.equal(controller.indications().temperature.minimumC,-37);
+ assert.equal(controller.indications().temperature.status,'BELOW_MIN');
+ controller.setTemperature(-37);
+ assert.equal(controller.indications().temperature.status,'WITHIN_LIMITS');
+ assert.throws(()=>controller.setTankLeak('main2',-1),/leak rate/);
+}

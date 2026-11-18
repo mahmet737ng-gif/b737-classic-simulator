@@ -88,3 +88,13 @@ test('invalid limits and airports are rejected instead of silently clamped',()=>
  assert.throws(()=>Core.newScenario({preset:'MANUAL',airborne:true,speedKt:0,altitudeFt:10000}),RangeError);
  assert.throws(()=>Core.step(Core.newScenario(),NaN),RangeError);
 });
+
+test('fuel imbalance banks the trainer toward the heavier wing in flight',()=>{
+ const state=Core.newScenario({airport:'OIII',runway:'29L',preset:'FINAL_10'});
+ const balanced=Core.step(state,.5,{fuelImbalanceKg:0});
+ const right=Core.step(state,.5,{fuelImbalanceKg:906});
+ const left=Core.step(state,.5,{fuelImbalanceKg:-906});
+ assert.ok(right.bankDeg>balanced.bankDeg);
+ assert.ok(left.bankDeg<balanced.bankDeg);
+ assert.equal(right.fuelBalance.rollBiasDegSec,.24);
+});

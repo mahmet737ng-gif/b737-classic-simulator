@@ -316,7 +316,7 @@
     n1Percent:fast?.engines?.[id]?.n1Percent??ecu?.engines?.[id]?.n1Percent??null};
   });
   lastPropulsion=engines.every(e=>Number.isFinite(e.n1Percent))?
-   {valid:true,engines}:null;
+   {valid:true,engines,fuelImbalanceKg:owner.getFuelImbalanceKg?.()}:null;
   return lastPropulsion;
  }
  function tick(){
