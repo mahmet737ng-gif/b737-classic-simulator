@@ -35,4 +35,28 @@ let dual=T.press(T.initial(),{...ctx,groundReady:false,airborne:true,
  radioAltitudeFt:50,apChannels:2,flareArmed:true});
 assert.equal(dual.afdsMode,'CMD');assert.equal(dual.apDisengage,false);
 assert.equal(T.press(T.initial(),{...ctx,groundReady:false,airborne:true,radioAltitudeFt:3000}).phase,'OFF');
+// FCOM 4.20.27: second engine fails AFTER GA starts, with <10s and >10s
+// branches. Actual aircraft performance limits are not inferred.
+let oneAfter=T.press(T.initial(),{...ctx,groundReady:false,airborne:true,
+ radioAltitudeFt:400,iasKt:150,selectedSpeedKt:145});
+oneAfter=T.advance(oneAfter,{...ctx,airborne:true,iasKt:153,
+ engine1Running:true,engine2Running:false,v2Kt:140,selectedSpeedKt:145},5);
+assert.equal(oneAfter.singleEngine,true);
+assert.equal(oneAfter.fdPitchDeg,13);
+assert.equal(oneAfter.targetSpeedKt,145,'Before 10 s use selected MCP approach speed');
+let gaAfter10=T.press(T.initial(),{...ctx,groundReady:false,airborne:true,
+ radioAltitudeFt:500,iasKt:150,selectedSpeedKt:140});
+gaAfter10=T.advance(gaAfter10,{...ctx,engine1Running:true,engine2Running:true,iasKt:152},10);
+gaAfter10=T.advance(gaAfter10,{...ctx,engine1Running:true,engine2Running:false,
+ iasKt:153,selectedSpeedKt:140,v2Kt:140},1);
+assert.equal(gaAfter10.targetSpeedKt,150,'After 10 s within ±5 knots: speed at GA engagement');
+let gaFast=T.press(T.initial(),{...ctx,groundReady:false,airborne:true,radioAltitudeFt:500,iasKt:150});
+gaFast=T.advance(gaFast,{...ctx,engine1Running:true,engine2Running:true,iasKt:152},10);
+gaFast=T.advance(gaFast,{...ctx,engine1Running:true,engine2Running:false,
+ iasKt:170,selectedSpeedKt:140,v2Kt:140},1);
+assert.equal(gaFast.targetSpeedKt,170,'After 10 s >5 knots: current IAS');
+let toFail=T.press(T.initial(),ctx);
+toFail=T.advance(toFail,{...ctx,engine1Running:true,engine2Running:false,
+ v2Kt:145,iasKt:178},4);
+assert.equal(toFail.targetSpeedKt,165,'Engine-out takeoff target clamps to V2+20');
 console.log('PASS CH4 TOGA: FD N1/THR HLD, 60/84 kt thresholds, FD-only GA, dual AP GA, single-engine 13°, reduced-to-full GA');
