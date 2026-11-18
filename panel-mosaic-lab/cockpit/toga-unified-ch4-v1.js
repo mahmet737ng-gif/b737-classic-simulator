@@ -109,9 +109,13 @@
   state=next;
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
   if(was==='OFF'&&state.phase==='TO'){
-   try{flight.command({type:'TAKEOFF_ROLL'});}catch(e){
-    state=T.initial();banner('TO/GA BLOCKED · '+String(e.message||e),true);return state;
-   }
+   // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL
+   // cannot accelerate under imaginary thrust while both engines are OFF.
+   if(c.atArmed===true&&(c.engine1Running===true||c.engine2Running===true)){
+    try{flight.command({type:'TAKEOFF_ROLL'});}catch(e){
+     state=T.initial();banner('TO/GA BLOCKED · '+String(e.message||e),true);return state;
+    }
+   }else banner('TO/GA FD MODE · A/T ARMED AND RUNNING ENGINE REQUIRED FOR POWERED GROUND ROLL',true);
   }
   if(state.apDisengage===true){
    win.B737McpAFDSBridgeV1?.disconnectConfirmed?.({
