@@ -6,7 +6,7 @@ const html=read('index.html');
 const header=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/header>/)?.[1];
 assert.ok(header,'Main Unified top bar exists');
 const ids=[...header.matchAll(/<button\b[^>]*\bid="([^"]+)"/g)].map(m=>m[1]);
-assert.deepEqual(ids,['inspectorToggle','aircraftSettingsOpen','unifiedEfisHeader','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
+assert.deepEqual(ids,['flightScenarioHeader','inspectorToggle','aircraftSettingsOpen','unifiedEfisHeader','cbPanelOpen','groundPowerHeader','failuresHeaderOpen'],
  'The top bar includes EFIS CONTROL alongside the existing controls');
 assert.match(header,/<button[^>]*id="unifiedEfisHeader"[^>]*aria-controls="unifiedEfisDialog"[^>]*>EFIS CONTROL<\/button>/);
 for(const preset of ['FULL_ALIGN','COLD_DARK','LIVE'])
@@ -38,8 +38,8 @@ const recharge=read('battery-recharge-header-v1.js');
 assert.ok(!recharge.includes("bar.querySelector('#cbPanelOpen')"),'Battery charge must not reattach to top bar');
 const failureMenu=read('failures-header-v1.js');
 assert.ok(html.includes('id="failuresHeaderOpen"'),'FAILURES must be visible beside the other header controls');
-assert.ok(html.includes('failures-header-v1.css?v=FAILURES-HEADER-0001'));
-assert.ok(html.includes('failures-header-v1.js?v=FAILURES-HEADER-0001'));
+assert.ok(html.includes('failures-header-v1.css?v=FAILURES-FUEL-0002'));
+assert.ok(html.includes('failures-header-v1.js?v=FAILURES-FUEL-0002'));
 assert.ok(failureMenu.includes("const GROUPS="),'Electrical branch must be extensible');
 new vm.Script(failureMenu,{filename:'failures-header-v1.js'});
 const gpu=read('ground-power-header-v1.js');

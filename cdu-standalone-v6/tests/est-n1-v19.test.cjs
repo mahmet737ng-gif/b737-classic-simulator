@@ -6,6 +6,8 @@ const bundle=fs.readFileSync(path.join(root,'cdu-standalone-v6/data/epfsi-simula
 assert.equal(canonical,bundle,'v6 estimate bundle must match canonical surrogate');
 class E{
  constructor(){this.children=[];this.style={};this.dataset={};this.value='';this.textContent='';this.events={};this.className='';this.hidden=false;this.checked=false;this.classList={toggle:()=>{},contains:n=>this.className.split(/\s+/).includes(n),add:(...n)=>{this.className+=' '+n.join(' ')}}}
+ // The live renderer compares serialized frame contents before committing a paint.
+ get innerHTML(){return JSON.stringify([this.className,this.textContent,this.children.map(c=>c.innerHTML)]);}
  get childNodes(){return this.children}get firstChild(){return this.children[0]||null}
  querySelector(selector){return this.children.find(c=>selector.startsWith('.')&&c.classList.contains(selector.slice(1)))||null}
  removeChild(child){this.children=this.children.filter(c=>c!==child);return child}

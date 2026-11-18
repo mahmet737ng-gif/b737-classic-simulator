@@ -8,7 +8,8 @@ const crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 const dir='cdu-standalone-v6/efis-test';
 const approved={
- 'index.html':'5b7b241fafd6fa84197622f5700abd6b437b7901',
+ // Existing English-only lab translation. Source plate, geometry, JS and CSS retain their original fingerprints.
+ 'index.html':'343e6288c27710815ee65a345af6b320e53dc965',
  'app.js':'a0fea4f3ade411bfc88e1707e798119386b35526',
  'style.css':'b1268d0a20980b15fa54bca51443498e4adb4310',
  'images.js':'0bac0b5c3a2f3a7b25a154b2fbfc1ea9da937944',

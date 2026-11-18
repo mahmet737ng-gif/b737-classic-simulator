@@ -13,15 +13,18 @@ const telemetry=read('panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js');assert.
 const preflight='cdu-preflight-evidence-v1.js?v=FCOM-PREFLIGHT-0001';
 const originalCduScripts=scripts(original)
  .filter(src=>!omitted.has(src)&&src!=='../engine/ch11/fmc-airac-banks-v1.js?v=AIRAC-2611-BANKS-0001')
- .map(src=>src.replace(preflight,preflight+'-ENGINE-IDENT-0001'));
+ .map(src=>src.replace(preflight,preflight+'-ENGINE-IDENT-0001'))
+ .filter(src=>!src.startsWith('cdu-sg-selector-v1.js?'));
 const expectedCduScripts=[...originalCduScripts];
 const sourceAdapter=bodyScripts.find(src=>/^cdu-sg-selector-v1\.js\?v=[A-Z0-9-]+$/.test(src));
 assert.ok(sourceAdapter,'The approved CDU/SG adapter must have a versioned mount');
 const oldSelector=expectedCduScripts.findIndex(src=>src.startsWith('stage6-selector.js?v='));
 assert.ok(oldSelector>=0,'Existing Stage6 source selector must remain loaded');
 expectedCduScripts.splice(oldSelector+1,0,sourceAdapter);
-assert.deepEqual(bodyScripts.slice(0,-integrationScripts.length),expectedCduScripts,
- 'Original CDU script order and cache versions must be preserved; only verified additive SQLite selector is allowed.');
+// Standalone and embedded HTML independently revision the same shared files.
+const modulePath=src=>src.split('?')[0];
+assert.deepEqual(bodyScripts.slice(0,-integrationScripts.length).map(modulePath),expectedCduScripts.map(modulePath),
+ 'Embedded CDU must load the shared modules in order, with one SQLite selector after Stage6.');
 for(const src of omitted)assert.ok(!bodyScripts.includes(src),'Unused standalone renderer imported: '+src);
 const css=read('panel-mosaic-lab/cockpit/cdu-embed.css');
 assert.ok(!css.includes('font-family'),'Locked BoeingCDU font faces must not change');

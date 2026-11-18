@@ -33,6 +33,6 @@ assert.ok(!/regionalSource\?\.intake[\s\S]*?fmcNavDataBanks\.activeCycle\s*=/.te
 const standalone=read('cdu-standalone-v6/index.html'),embedded=read('panel-mosaic-lab/cockpit/cdu-stage.html');
 for(const html of [standalone,embedded]){
  assert.match(html,/airac2611-middle-east-preview-v1\.js\?v=AIRAC2611-ME-IDENT-PREVIEW-20261031-01/);
- assert.match(html,/app\.js\?v=AIRAC2611-ME-IDENT-PREVIEW-20261031-01/);
+ assert.match(html,html===standalone ? /app\.js\?v=CDU-ATOMIC-GLYPH-STABILITY-20261117-0002/ : /app\.js\?v=AIRAC2611-ME-IDENT-PREVIEW-20261031-01/);
 }
 console.log('PASS: private AIRAC 2611 regional metadata dates displayed as opt-in IDENT source preview; no false ACTIVE bank.');
