@@ -24,7 +24,7 @@
  const MODE_HITS={FULL_NAV:[639,389],FULL_VOR_ILS:[698,175],EXP_NAV:[647,290],
   EXP_VOR_ILS:[859,178],MAP:[972,276],CTR_MAP:[963,395],PLAN:[817,503]};
  const RANGE_HITS={10:[1034,439],20:[1006,363],40:[1024,278],80:[1079,203],160:[1190,166],320:[1311,205]};
- const state={mode:'CTR_MAP',range:10,tfc:true,dh:200,
+ const state={mode:'CTR_MAP',range:10,tfc:true,dh:-20,
   brightness:{adi:1,hsi:1,wxInner:1},
   options:{wxr:false,vorAdf:false,navAid:false,arpt:false,rteData:false,wpt:false}};
  const elems={rotors:{},buttons:{},detents:[],tfc:null,dh:null};
@@ -54,7 +54,7 @@
   }else if(kind==='tfc'){
    document.getElementById('tfc').onclick?.();
    state.tfc=!!(document.getElementById('tfc').getAttribute('aria-pressed')==='true');
-  }else if(kind==='rst'){state.dh=200;}
+  }else if(kind==='rst'){state.dh=-20;}
   else if(kind==='dh')state.dh=Math.max(-20,Math.min(999,state.dh+value));
   else if(Object.hasOwn(state.brightness,kind)){
    state.brightness[kind]=Math.max(0,Math.min(1,Math.round((state.brightness[kind]+value*.04)*100)/100));
