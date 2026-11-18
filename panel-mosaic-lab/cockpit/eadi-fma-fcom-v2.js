@@ -213,7 +213,7 @@
   ctx.restore();
  }
  // Reference glass layout used by both the live EADI and standalone lab.
- function renderReference(ctx,seat,metrics,glyph,now=Date.now()){
+ function renderReference(ctx,seat,metrics,glyph,now=Date.now(),fontScale=1){
   validate(seat);
   const state=seats[seat]||model()?.blank?.();
   if(!state)return;
@@ -231,8 +231,8 @@
    const v=state[field],cx=centers[i];
    if(!v)return;
    const ink=color[model().color(field,v.active)]||color.green;
-   if(v.active)glyph.canvas(ctx,v.active,cx,primaryY,37,ink,'center',.74);
-   if(v.armed)glyph.canvas(ctx,v.armed,cx,primaryY+32,21,color.white,'center',.76);
+   if(v.active)glyph.canvas(ctx,v.active,cx,primaryY,37*fontScale,ink,'center',.74);
+   if(v.armed)glyph.canvas(ctx,v.armed,cx,primaryY+32,21*fontScale,color.white,'center',.76);
    if(highlights[seat][field]>now&&v.active&&!v.secondary){
     ctx.strokeStyle=ink;ctx.lineWidth=1.7;ctx.strokeRect(cx-64,primaryY-17,128,34);
    }
@@ -242,7 +242,7 @@
      ctx.strokeStyle=color.yellow;ctx.lineWidth=1.8;
      ctx.strokeRect(cx-cwsWidth/2,y-cwsHeight/2,cwsWidth,cwsHeight);
     }
-    glyph.canvas(ctx,label,cx,y,33,color.yellow,'center',.77);
+    glyph.canvas(ctx,label,cx,y,33*fontScale,color.yellow,'center',.77);
    });
   });
   ctx.restore();
