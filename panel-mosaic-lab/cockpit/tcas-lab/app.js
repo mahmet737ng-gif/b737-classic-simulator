@@ -1,7 +1,7 @@
 (function(win){'use strict';
  const C=win.B737ClassicTcasV2,Core=win.EFISDisplayLabCore,by=id=>document.getElementById(id);
  let settings=C.controls(),own={airborne:true,altitudeFt:10000,radioAltitudeFt:6000,tasKt:220,gsKt:220,iasKt:220,pitchDeg:2,vsFpm:0,trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},
- encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true;
+ encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,tfcVisible=true;
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='SAME_LEVEL';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
@@ -19,6 +19,12 @@
   own.altitudeFt+=own.vsFpm*dt/60;own.radioAltitudeFt+=own.vsFpm*dt/60;own.elapsedSec+=dt;
   encounter=C.step(encounter,own,dt,settings,feeds());out=encounter.output;paint();
  }
+ function syncTfc(){
+  const button=by('tfc');
+  button.textContent=tfcVisible?'TFC ON':'TFC OFF';
+  button.className=tfcVisible?'tfc-on':'tfc-off';
+  button.setAttribute?.('aria-pressed',String(tfcVisible));
+ }
  function paint(){
   const state=Core.initial();state.eadi.pitch=own.pitchDeg;state.eadi.bank=0;state.eadi.ias=own.iasKt;state.eadi.radioAlt=own.radioAltitudeFt;
   state.eadi.tcasRa=out.ra;
@@ -30,7 +36,7 @@
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
   win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:Number(by('range').value),heading:0,track:0,selectedHeading:0,
-   trueRef:false,nav:{valid:true},route:{points:[]},options:{tfc:by('tfc').checked},traffic:out,
+   trueRef:false,nav:{valid:true},route:{points:[]},options:{tfc:tfcVisible},traffic:out,
    efis:{displayPower:true,sgValid:true,headingValid:!settings.failures.irs,trackValid:!settings.failures.irs},weather:{}});
   by('status').textContent=[out.mode,out.stage,out.callout,...out.inhibits].filter(Boolean).join(' · ');
   const t=out.transponder;by('xpdr').textContent='ATC '+t.selectedUnit+' · '+t.displayedCode+' · MODE S '+(t.modeS?'ON':'OFF')+' · ALT '+(t.altitudeReporting?'REPORTING':'OFF / INVALID')+' · '+(t.atcFailLight?'ATC FAIL / TEST':'NORMAL')+(t.ident?' · IDENT':'');
@@ -55,8 +61,9 @@
  by('pitch').onchange=()=>{targetPitch=Number(by('pitch').value);};
  by('vs').onchange=()=>{targetPitch=2+Math.asin(Math.max(-.7,Math.min(.7,Number(by('vs').value)/(own.tasKt*6076.11549/60))))*180/Math.PI;by('pitch').value=targetPitch.toFixed(1);};
  by('priority').onchange=()=>{settings.priorityWarning=by('priority').checked;refresh();};
- for(const id of ['displayMode','range','tfc','bus1','bus2','atc2cb'])by(id).onchange=refresh;
+ for(const id of ['displayMode','range','bus1','bus2','atc2cb'])by(id).onchange=refresh;
+ by('tfc').onclick=()=>{tfcVisible=!tfcVisible;syncTfc();paint();};
  by('ident').onclick=()=>{settings.identUntil=own.elapsedSec+1;refresh();};by('absolute').onclick=()=>{settings.absoluteUntil=own.elapsedSec+15;refresh();};
  function tick(now){if(running&&last!==null){const dt=Math.min(.2,(now-last)/1000)*Number(by('rate').value);try{step(dt);}catch(e){running=false;by('status').textContent=e.message;}}last=now;requestAnimationFrame(tick);}
- load();requestAnimationFrame(tick);
+ syncTfc();load();requestAnimationFrame(tick);
 })(window);
