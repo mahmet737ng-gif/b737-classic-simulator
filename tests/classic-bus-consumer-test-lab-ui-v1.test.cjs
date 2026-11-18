@@ -86,8 +86,8 @@ async function test(){
  assert.ok(standby.some(x=>allChildren(x).some(c=>c.textContent==='DC STANDBY BUS')));
  assert.equal(new Set(Object.values(api.getSnapshot().consumers).map(x=>x.system)).has('OTHER'),false);
  assert.equal(ids.consumerBody.children.length,340,'All 340 physical source entries are visible');
- assert.match(html,/باس تغذیه \(MRG \/ FCOM\)/);
- assert.match(html,/نوع \/ ولتاژ تغذیه/);
+ assert.match(html,/Supply Bus \(MRG \/ FCOM\)/);
+ assert.match(html,/Supply Type \/ Voltage/);
  const getSourceRow=name=>ids.consumerBody.children.find(x=>x.dataset.consumer===name);
  const starter=getSourceRow('Engine 2 Starter Valve');
  assert.ok(starter,'MRG starter source row must remain visible');
