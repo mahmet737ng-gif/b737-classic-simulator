@@ -172,7 +172,7 @@
     capacitiesKg:{...CAPACITY_KG},tanksKg:quantityKg,totalFuelKg:Object.values(quantityKg).reduce((a,b)=>a+b,0),
     indications,leaks:{rateKgHr:{...this.leakRateKgHr},lostKg:{...this.leakedKg}},
     pumps:Object.fromEntries(Object.keys(PUMPS).map(id=>[id,{tank:PUMPS[id],
-     commandedOn:pump[id].switchOn===true,operating:pump[id].operating,
+     commandedOn:pump[id].switchOn===true,failed:pump[id].failed===true,operating:pump[id].operating,
      lowPressure:pump[id].lowPressure,autoStopped:pump[id].autoStopped,
      powerEvidence:pump[id].powerEvidence??null}])),
     lamps:Object.fromEntries(Object.entries(LOW_LIGHTS).map(([id,light])=>[light,low(id)])),
