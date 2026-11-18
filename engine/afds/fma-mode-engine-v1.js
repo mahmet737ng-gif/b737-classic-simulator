@@ -108,7 +108,7 @@
   const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical)||
    output.capture?.pitch==='G/S'||output.capture?.pitch==='ALT_HOLD';
   state.at.active=at?(automaticSpeed?'MCP SPD':
-   sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD'})||'ARM'):'';
+   sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD',RETARD:'RETARD',ARM:'ARM'})||'ARM'):'';
   state.at.origin=ORIGIN.MCP;
   state.pitch.active=sourceMode(output.capture?.pitch,
    {ALT_ACQ:'ALT ACQ',ALT_HOLD:'ALT HOLD','G/S':'G/S'})||
