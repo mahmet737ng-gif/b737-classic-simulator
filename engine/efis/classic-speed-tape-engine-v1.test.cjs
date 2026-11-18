@@ -265,4 +265,20 @@ assert.equal(R.getView('FO').casKt,null);
 assert.equal(R.getView('FO').command?.speedKt,245,'MCP goes to both displays');
 assert.ok(drawn.CAPT&&drawn.FO);
 assert.equal(R.observe('FO',{type:'CONFIG',gearExtended:false,flapsPosition:0}).seat,'FO');
+// Speed trend short-cadence smoothing regression: actual CAS is never
+// modified; only the ten-second projection uses the filtered derivative.
+let smooth=E.initialState('CAPT');
+smooth=apply(smooth,{type:'ADC',valid:true,casKt:200,timeMs:1000});
+smooth=apply(smooth,{type:'ADC',valid:true,casKt:200.5,timeMs:1250});
+assert.equal(E.view(smooth).casKt,200.5);
+assert.ok(E.view(smooth).trend);
+const firstTrend=E.view(smooth).trend.delta10Kt;
+smooth=apply(smooth,{type:'ADC',valid:true,casKt:200.75,timeMs:1500});
+assert.ok(E.view(smooth).trend.delta10Kt<firstTrend);
+assert.ok(E.view(smooth).trend.delta10Kt>10,
+ 'one short jitter sample must not abruptly replace predicted trend');
+smooth=apply(smooth,{type:'ADC',valid:true,casKt:250,timeMs:1750});
+assert.equal(E.view(smooth).casKt,250);
+assert.equal(E.view(smooth).trend,null,
+ 'instantaneous instructor/ADC jumps must not become acceleration arrows');
 console.log('PASS — Classic speed tape independent ADC, sources, limits, failures, hysteresis and EADI wiring');
