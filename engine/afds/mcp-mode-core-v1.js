@@ -290,7 +290,8 @@ function transition(state,action){
   const flags=["establishedEnroute","thrustIdleConfirmed","navValid","gearDown","fdVorCaptured","fdLocCaptured",
    "pitchOverrideConfirmed","rollOverrideConfirmed","pitchForceReleased",
    "rollForceReleased","altAcquireConfirmed","altitudeHoldConfirmed",
-   "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot"];
+   "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot",
+   "controlWheelForceApplied","stabTrimAutopilotNormal","apDisengageBarUp"];
   if(flags.some(k=>f[k]!==undefined&&typeof f[k]!=="boolean"))
    return rejected(s,"INVALID_FLIGHT_SENSOR_FLAG");
   s.flight={...(s.flight||{}),...f};
@@ -427,6 +428,14 @@ function transition(state,action){
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
   if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
+  // FCOM SHI 4.20.2: known A/P engagement inhibits, never inferred from
+  // absent/unverified evidence or from F/D switch state alone.
+  if(s.flight?.controlWheelForceApplied===true)
+   return rejected(s,"AP_ENGAGEMENT_INHIBITED_WHEEL_FORCE");
+  if(s.flight?.stabTrimAutopilotNormal===false)
+   return rejected(s,"AP_ENGAGEMENT_INHIBITED_STAB_TRIM_CUTOUT");
+  if(s.flight?.apDisengageBarUp===false)
+   return rejected(s,"AP_ENGAGEMENT_INHIBITED_DISENGAGE_BAR");
   const selected=s.modes.autopilot;
   s.modes.autopilot=selected===id?null:id;
   if(selected===id)s.lastAutopilotDisengagement={
