@@ -20,6 +20,10 @@ const {chromium}=require('playwright');
   const state=await page.evaluate(()=>({
    assetLoaded:document.querySelector('#efisCpMount .uefis-photo')?.naturalWidth>0,
    photoName:document.querySelector('#efisCpMount .uefis-photo')?.getAttribute('src'),
+   dh:document.querySelector('#efisCpMount .uefis-dh-window')?.textContent?.trim(),
+   visibleRouteLabels:Array.from(document.querySelectorAll('#ehsi [data-segment="route-fix-label"]')).map(el=>({
+    name:el.getAttribute('data-fix'),fitted:el.getAttribute('data-label-fitted'),
+    drawn:!!el.querySelector('[data-text]')})),
    rectTop:document.querySelector('#efisCpMount')?.getBoundingClientRect().top,
    ehsiBottom:document.querySelector('#ehsi')?.getBoundingClientRect().bottom,
    mode:document.querySelector('#ehsi')?.getAttribute('data-mode'),
@@ -28,6 +32,10 @@ const {chromium}=require('playwright');
    ellipseRx:document.querySelector('#ehsi clipPath[id="ehsi-route-range"] ellipse')?.getAttribute('rx')
   }));
   assert.equal(state.assetLoaded,true,'Original photographic EFIS CP must load');
+  assert.equal(state.dh,'-20','TCAS photographic EFIS CP default DH is -20');
+  assert.ok(state.visibleRouteLabels.length>0,'Cruise FMC fix name must be visible');
+  assert.ok(state.visibleRouteLabels.every(p=>p.fitted==='true'&&p.drawn),
+   'All rendered route labels must be fully inside compass scale');
   assert.ok(state.photoName.includes('efis-cp-photo-plate-v1.webp'));
   assert.ok(state.rectTop>=state.ehsiBottom,'Physical CP belongs below EHSI');
   assert.equal(state.mode,'CTR_MAP');
