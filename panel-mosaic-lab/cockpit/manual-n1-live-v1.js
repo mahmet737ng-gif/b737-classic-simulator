@@ -38,7 +38,8 @@
   const auto=num(st.fmcPct)?st.fmcPct:num(est?.maxN1Pct)?est.maxN1Pct:null;
   const label=st.pulled?'MAN':num(st.fmcPct)?'FMC':'EST';
   return {targetPct:st.pulled?st.manualPct:auto,source:label,
-   automaticPct:auto,pulled:st.pulled,atInfluenced:false,
+   automaticPct:auto,automaticSource:num(st.fmcPct)?'FMC':'EST',
+   pulled:st.pulled,atInfluenced:false,
    maxN1Pct:num(est?.maxN1Pct)?est.maxN1Pct:null,estimateNotAfm:true};
  }
  function change(n,value){
