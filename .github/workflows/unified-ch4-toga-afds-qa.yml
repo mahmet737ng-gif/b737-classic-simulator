@@ -23,6 +23,7 @@ on:
       - 'panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'
       - 'panel-mosaic-lab/cockpit/lvlchg-thrust-servo-ch4-v1.js'
       - 'tests/unified-ch4-physical-controls-v1.test.cjs'
+      - 'tests/engine-indication-unified-live-v2.test.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - '.github/workflows/unified-ch4-toga-afds-qa.yml'
   workflow_dispatch:
@@ -50,5 +51,6 @@ jobs:
           node panel-mosaic-lab/cockpit/eadi-speed-tape-direction-ch10-v1.test.cjs
           node tests/epfsi-simulated-n1-v19.test.cjs
           node tests/unified-ch4-physical-controls-v1.test.cjs
+          node tests/engine-indication-unified-live-v2.test.cjs
           node tests/flight-phase-shell-v1.test.cjs
           node panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.test.cjs
