@@ -131,6 +131,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./smiths-fuel-quantity-v1.js?v=ATA28-KG-0002" defer></script>
 </head><body>
 <header class="unified-minimal-header"><div class="header-settings">
+<button id="flightScenarioHeader" style="order:100" type="button" aria-haspopup="dialog" aria-controls="flightScenarioDialog">FLT PHASE</button>
 <span id="aircraftProfileHeader" class="aircraft-profile-header" dir="ltr" hidden>737-300/500 · DCPCS · Non-EIS</span>
 <button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">Controls</button>
 <button id="aircraftSettingsOpen" type="button" aria-haspopup="dialog" aria-controls="aircraftSettingsDialog">⚙ Settings</button>
@@ -141,6 +142,52 @@ body > header.unified-minimal-header .header-settings>button{
 <button id="groundPowerHeader" type="button" aria-expanded="false" aria-controls="groundPowerPopover" aria-haspopup="dialog" title="External AC cable and GRD PWR ON/OFF per FCOM">GROUND POWER</button>
 <button id="failuresHeaderOpen" type="button" aria-expanded="false" aria-controls="failuresHeaderPopover" aria-haspopup="dialog" title="Instructor failure management; Electrical bus faults">FAILURES</button>
 </div></header>
+<dialog id="flightScenarioDialog" aria-labelledby="flightScenarioTitle" dir="ltr">
+  <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
+  <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
+  <div class="flight-grid">
+   <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
+   <label>Runway<select id="flightRunway"></select></label>
+   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
+  </div>
+  <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
+  <div class="flight-grid flight-numbers">
+   <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
+   <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
+   <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
+   <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
+   <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
+   <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
+   <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
+  </div>
+  <div class="flight-actions">
+   <button type="button" id="flightLoad" class="flight-primary">LOAD SCENARIO</button>
+   <button type="button" id="flightTargets">APPLY FLIGHT TARGETS</button>
+   <button type="button" id="flightTakeoff">BEGIN TAKEOFF ROLL</button>
+   <button type="button" id="flightPause">PAUSE</button>
+   <button type="button" id="flightStop">STOP FEED</button>
+  </div>
+  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
+  <div class="flight-heading">LIVE AIRCRAFT STATE</div>
+  <div class="flight-telemetry" id="flightTelemetry">
+   <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
+   <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
+   <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
+   <div><span>VS</span><strong id="flightOutVS">—</strong></div>
+   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
+   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
+   <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
+   <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
+   <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
+   <div><span>LAT</span><strong id="flightOutLat">—</strong></div>
+   <div><span>LON</span><strong id="flightOutLon">—</strong></div>
+   <div><span>GS</span><strong id="flightOutGS">—</strong></div>
+   <div><span>RWY DIST</span><strong id="flightOutDist">—</strong></div>
+  </div>
+  <p id="flightGeorefWarning" class="flight-warning">Runway threshold geometry is provisional: airport reference point, not certified runway threshold. AGL* uses airport elevation, not terrain.</p>
+  <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
+ </dialog>
+<script src="./flight-scenario-shell-v1.js?v=FLT-PHASE-SHELL-0001"></script>
 <!-- BAT RECHARGE: synchronous Controls-drawer prepaint survives deferred bundle errors. -->
 <script id="battery-recharge-prepaint-v4">
 (function(){
@@ -288,7 +335,7 @@ body > header.unified-minimal-header .header-settings>button{
  <script src="../../engine/flight/flight-scenario-core-v1.js?v=ATA28-KG-0002" defer></script><script src="../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT" defer></script><script src="../../engine/afds/fcom-ch4-ap-protection-v1.js?v=FCC-PROTECT-0001" defer></script><script src="../../engine/flight/iran-nav-reference-v1.js?v=FLT-PHASE-IRAN-NAV-0001" defer></script>
 <script src="../../engine/flight/flight-location-reference-v1.js?v=FLT-PHASE-LOCATION-0001" defer></script>
 <script src="./flight-phase-position-bridge-v1.js?v=FLT-PHASE-POSLINK-0001" defer></script>
-<script src="./flight-scenario-panel-v1.js?v=TCAS-CLASSIC-0001" defer></script>
+<script src="./flight-scenario-panel-v1.js?v=FLT-PHASE-RESTORE-0001" defer></script>
 <script src="../../engine/instruments/flight-display-motion-v1.js?v=FLIGHT-DISPLAY-MOTION-0001" defer></script>
 <script src="./flight-display-motion-unified-v1.js?v=FLIGHT-DISPLAY-MOTION-0002-PAUSE-HIDDEN" defer></script><script src="../../engine/afds/autothrottle-speed-servo-v1.js?v=AT-SPEED-0001" defer></script><script src="./autothrottle-unified-v1.js?v=AT-SPEED-0001" defer></script><script src="../../engine/instruments/flight-dynamics-gauge-model-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./flight-instrument-dynamics-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./fcc-flight-runtime-v1.js?v=FCC-UNIFIED-0003-DIRECTOR-SERVO" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
 <script src="../../engine/instruments/mechanical-number-wheels-v1.js?v=MECH-ROLL-0001" defer></script><script src="./instrument-lab/gauges.js?v=PHOTO-GAUGES-0003-ROLL-ALT-ASI" defer></script>

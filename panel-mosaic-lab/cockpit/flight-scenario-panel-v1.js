@@ -4,11 +4,12 @@
  const Core=win.B737FlightScenarioCoreV1;
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
+ let mounted=false;
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  let tickErrorCount=0,lastTickError=null;
- const VERSION='UNIFIED-FLIGHT-SCENARIOS-0006-EFIS-CONTINUITY';
+ const VERSION='UNIFIED-FLIGHT-SCENARIOS-0008-STATIC-SHELL';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
   <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
@@ -341,18 +342,25 @@
   }else lastTick=now;
  }
  function mount(){
-  if(by('flightScenarioDialog'))return;
+  if(mounted)return;
   const header=doc.querySelector('.unified-minimal-header .header-settings');
   if(!header)return;
-  const launch=doc.createElement('button');
-  launch.id='flightScenarioHeader';launch.textContent='FLT PHASE';
-  launch.setAttribute('aria-haspopup','dialog');launch.setAttribute('aria-controls','flightScenarioDialog');
-  header.appendChild(launch);
-  const dlg=doc.createElement('dialog');
-  dlg.id='flightScenarioDialog';dlg.setAttribute('aria-labelledby','flightScenarioTitle');
-  dlg.setAttribute('dir','ltr');dlg.innerHTML=html;doc.body.appendChild(dlg);
-  launch.addEventListener('click',()=>dlg.showModal());
-  by('flightScenarioClose').addEventListener('click',()=>dlg.close());
+  let launch=by('flightScenarioHeader');
+  if(!launch){
+   launch=doc.createElement('button');launch.id='flightScenarioHeader';launch.type='button';launch.textContent='FLT PHASE';
+   launch.setAttribute('aria-haspopup','dialog');launch.setAttribute('aria-controls','flightScenarioDialog');
+   header.appendChild(launch);
+  }
+  let dlg=by('flightScenarioDialog');
+  if(!dlg){
+   dlg=doc.createElement('dialog');dlg.id='flightScenarioDialog';
+   dlg.setAttribute('aria-labelledby','flightScenarioTitle');dlg.setAttribute('dir','ltr');
+   dlg.innerHTML=html;doc.body.appendChild(dlg);
+  }
+  if(launch.dataset?.flightShell!=='READY'){
+   launch.addEventListener('click',()=>{if(!dlg.open)dlg.showModal();});
+   by('flightScenarioClose').addEventListener('click',()=>dlg.close());
+  }
   by('flightAirport').addEventListener('change',()=>{choiceArmed=true;airportChanged();presetChanged();});
   by('flightRunway').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
   by('flightPreset').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
@@ -367,7 +375,7 @@
   by('flightStop').addEventListener('click',stop);
   by('flightFollowMCP').addEventListener('change',e=>{mcpFollow=e.target.checked;});
   airportChanged();presetChanged();updateUI();
-  timer=win.setInterval(tick,100);
+  timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,
   loadScenario:config=>{state=Core.newScenario(config);win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
