@@ -13,6 +13,7 @@
  const api=()=>window.B737EngineIndicationsV1;
  let db=null,prior=null,current=null,lastTime=null,lastRaw=null,error=null,loadPromise=null;
  let mode='EIS',fuelMode='RATE',filterThreshold=null,fuelUsedExpiresAt=null,resetFuelPending=false;
+ let fuelResetDueAt=null,fuelResetZeroUntil=null;
  let displayFaults={},sensorOverrides={engine1:{},engine2:{}},displayLimits={};
  let lastPaint=new Map(),lastEmitted=-1,events=0,labFrame=null;
  let eventPowerRegistered=false;
@@ -243,7 +244,16 @@
    const dt=lastTime===null?0:Math.max(0,Math.min(60000,Math.round(now-lastTime)));
    // EIS FUEL USED is a momentary ten-second display. Conventional uses its
    // own held RATE/USED selector and is not subject to this automatic timer.
-   if(mode==='EIS'&&fuelMode==='USED'&&fuelUsedExpiresAt!==null&&now>=fuelUsedExpiresAt){
+   if(mode==='EIS'&&fuelResetDueAt!==null&&now>=fuelResetDueAt){
+    // Ch7.10.7: show accumulated USED for one second after RESET, then
+    // reset both engines' accumulated ledger and briefly show zero.
+    resetFuelPending=true;fuelResetDueAt=null;lastPaint.clear();
+   }
+   if(mode==='EIS'&&fuelResetZeroUntil!==null&&now>=fuelResetZeroUntil){
+    fuelMode='RATE';fuelResetZeroUntil=null;fuelUsedExpiresAt=null;lastPaint.clear();
+   }
+   if(mode==='EIS'&&fuelMode==='USED'&&fuelUsedExpiresAt!==null&&now>=fuelUsedExpiresAt&&
+      fuelResetZeroUntil===null){
     fuelMode='RATE';fuelUsedExpiresAt=null;lastPaint.clear();
    }
    if(lastTime!==null&&now<lastTime){prior=null;lastPaint.clear();}
@@ -323,9 +333,18 @@
     fuelMode=cmd.value;
     const clock=window.B737ISNCockpitV1?.getECUState?.()?.timeMs;
     fuelUsedExpiresAt=fuelMode==='USED'&&mode==='EIS'&&numeric(clock)?clock+10000:null;
+    if(cmd.value==='RATE'){fuelResetDueAt=null;fuelResetZeroUntil=null;}
     lastPaint.clear();return refresh();
-   case 'RESET_FUEL_USED':
-    resetFuelPending=true;lastPaint.clear();return refresh();
+   case 'RESET_FUEL_USED': {
+    const now=window.B737ISNCockpitV1?.getECUState?.()?.timeMs;
+    if(mode==='EIS'&&numeric(now)){
+     fuelMode='USED';fuelResetDueAt=now+1000;fuelResetZeroUntil=now+1350;
+     fuelUsedExpiresAt=null;resetFuelPending=false;
+    }else{
+     resetFuelPending=true;fuelResetDueAt=null;fuelResetZeroUntil=null;
+    }
+    lastPaint.clear();return refresh();
+   }
    case 'FILTER_THRESHOLD':
     if(cmd.value!==null&&(!numeric(cmd.value)||cmd.value<0||cmd.value>100))
      throw Error('Explicit installed filter switch threshold required');
