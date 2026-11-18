@@ -48,6 +48,10 @@ test('quick encounter controls precede EADI/EHSI, optional settings follow',()=>
  assert.ok(html.indexOf('id="range"')<html.indexOf('id="ehsi"'));
  assert.ok(html.indexOf('id="tfc"')<html.indexOf('id="ehsi"'));
  assert.match(html,/value="CTR_MAP" selected/);
+ assert.ok(html.indexOf('id="efisCpMount"')>html.indexOf('id="ehsi"'));
+ assert.ok(html.includes('efis-physical-cp-v1.js'));
+ assert.ok(html.includes('../efis-pedestal-raster-v1.css'));
+ assert.ok(html.includes('id="efis-state-bridge" hidden'));
 });
 test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',()=>{
  const defaults={altitude:'27000',radioHeight:'24000',speed:'293',pitch:'2',vs:'0',
@@ -86,7 +90,8 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.equal(EFISCore.evaluate(source).dhDigital,false);
  assert.ok(ehsiInput.groundSpeed>400);
  assert.ok(ehsiInput.trueAirspeed>400);
- assert.equal(ehsiInput.traffic.targets.filter(t=>t.kind==='OTHER').length,4);
+ assert.ok(ehsiInput.traffic.targets.filter(t=>t.kind==='OTHER').length<=2,
+  '10 NM has at most two OTHER contacts beyond primary target');
  assert.equal(ehsiInput.route.activeIndex,1);
  assert.ok(ehsiInput.route.points[1].name,'Next simulated FMC fix visible');
  assert.ok(ehsiInput.nav.timeToGo,'TTG available');
@@ -162,7 +167,7 @@ test('EHSI actually renders tracked traffic on 360° CTR MAP (even when beyond e
 test('cruise route advances by ground speed, calculates distance/ETA/TTG and passes the next fix',()=>{
  const a=Cruise.route({elapsedSec:0,groundSpeedKt:448});
  const b=Cruise.route({elapsedSec:20,groundSpeedKt:448});
- const c=Cruise.route({elapsedSec:45,groundSpeedKt:448});
+ const c=Cruise.route({elapsedSec:70,groundSpeedKt:448});
  assert.equal(a.next,'REKPA');assert.equal(a.utc,'1200Z');
  assert.ok(b.distanceNm<a.distanceNm,'Distance to next fix must decrease while approaching');
  assert.ok(b.own.northNm>a.own.northNm,'Aircraft progresses along route');
@@ -173,7 +178,7 @@ test('cruise route advances by ground speed, calculates distance/ETA/TTG and pas
  assert.equal(a.route.points[0].hidden,true);
  assert.equal(a.route.source,'TCAS_LAB_SIMULATED_FMC');
 });
-test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER contacts',()=>{
+test('EHSI zooms compass-clipped route and displays max two OTHER contacts within 10 NM',()=>{
  class SvgNode{
   constructor(name,doc){this.tagName=name;this.ownerDocument=doc;this.attributes={};this.children=[];this.style={};}
   setAttribute(k,v){this.attributes[k]=String(v);}
@@ -185,10 +190,12 @@ test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER
  const render=(nm,showTfc=true,elapsedSec=0,mode='CTR_MAP')=>{
   const svg=new SvgNode('svg',doc);svg.id='ehsi';
   const route=Cruise.route({elapsedSec,groundSpeedKt:448});
-  const ambient=Cruise.ambient({elapsedSec,ownAltitudeFt:27000,initialAltitudeFt:27000,ownGroundSpeedKt:448});
+  const ambient=Cruise.ambient({elapsedSec,ownAltitudeFt:27000,initialAltitudeFt:27000,ownGroundSpeedKt:448})
+    .filter(t=>t.distance<=nm).slice(0,nm<=10?2:4);
   EHSI.render(svg,{mode,range:nm,heading:0,track:0,selectedHeading:0,
    nav:route.nav,route:route.route,groundSpeed:448,trueAirspeed:440,syntheticAirport:false,
    options:{tfc:showTfc},traffic:{mode:'TA_RA',targets:ambient},
+    routeClipToScale:true,routeOnFull:true,trainingRoseLarge:true,
    trafficLabelOffsetY:12,efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true},weather:{}});
   return {svg,nodes:descendants(svg)};
  };
@@ -202,8 +209,8 @@ test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER
   'At 10 NM the next waypoint must be farther from aircraft than at 20 NM');
  assert.ok(render(10,true,0,'MAP').nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length>=2,
   'At least two OTHER targets must remain visible in expanded MAP mode');
- assert.equal(near.nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,4,
-  'All four non-threat contacts are drawn on the TCAS rose');
+ assert.equal(near.nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,2,
+  '10 NM rose contains only two non-threat contacts');
  assert.ok(near.nodes.some(n=>n.attributes['data-text']==='TTG '+Cruise.route({groundSpeedKt:448}).timeToGo),
   'Time-to-go must render on the EHSI');
  assert.ok(near.nodes.some(n=>n.attributes['data-text']==='GS448'),
@@ -213,8 +220,21 @@ test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER
   'Do not invent database airports for instructor synthetic route');
  assert.equal(render(10,false).nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,0,
   'TFC OFF hides background traffic but does not hide route');
- assert.equal(render(10,true,10).nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,4,
-  'Background traffic updates over time');
+ assert.equal(render(10,true,10).nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,2,
+  'Only two contacts remain at 10 NM as positions evolve');
+ const clippedRoute=near.nodes.find(n=>n.attributes['data-segment']==='active-route');
+ assert.equal(clippedRoute?.attributes['clip-path'],'url(#ehsi-route-range)');
+ const fullClip=near.nodes.find(n=>n.tagName==='clipPath'&&n.attributes.id==='ehsi-route-range');
+ assert.ok(fullClip?.children.some(n=>n.tagName==='ellipse'),'CTR MAP uses elliptical clip');
+ assert.ok(near.nodes.filter(n=>n.attributes['data-segment']==='waypoint').length<6,
+  'Waypoints outside compass range withheld');
+ const expanded=render(10,true,0,'MAP');
+ const sector=expanded.nodes.find(n=>n.tagName==='clipPath'&&n.attributes.id==='ehsi-route-range');
+ assert.ok(sector?.children.some(n=>n.tagName==='polygon'),'Expanded MAP uses sector clip');
+ const fullNav=render(10,true,0,'FULL_NAV');
+ assert.ok(fullNav.nodes.some(n=>n.attributes['data-segment']==='active-route'));
+ assert.ok(fullNav.nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length<=2);
+ assert.ok(near.nodes.some(n=>n.attributes['data-segment']==='compass-rose'));
  assert.ok(near.nodes.some(n=>n.attributes['data-segment']==='active-route'));
  assert.ok(render(10,false).nodes.some(n=>n.attributes['data-segment']==='active-route'));
 });
