@@ -11,8 +11,8 @@ const header=html.match(/<header class="unified-minimal-header">([\s\S]*?)<\/hea
 assert.match(header,/id="failuresHeaderOpen"/);
 assert.ok(header.indexOf('groundPowerHeader')<header.indexOf('failuresHeaderOpen'),
  'FAILURES must remain alongside Ground Power');
-assert.match(html,/failures-header-v1\.js\?v=FAILURES-HEADER-0001/);
-assert.match(html,/failures-header-v1\.css\?v=FAILURES-HEADER-0001/);
+assert.match(html,/failures-header-v1\.js\?v=FAILURES-FUEL-0002/);
+assert.match(html,/failures-header-v1\.css\?v=FAILURES-FUEL-0002/);
 assert.match(css,/#failuresHeaderPopover\[hidden\]/);
 assert.match(css,/touch-action:manipulation/);
 assert.equal(Failures.ids().length,24);
@@ -74,6 +74,11 @@ const electrical=descend(panel).find(el=>el.id==='failuresElectricalBranch');
 assert.ok(electrical,'Electrical is a dedicated expandable branch');
 assert.equal(electrical.tagName,'DETAILS');
 assert.equal(electrical.open,undefined,'Electrical starts closed by default');
+const fuelBranch=descend(panel).find(el=>el.id==='failuresFuelBranch');
+const fuelMount=descend(panel).find(el=>el.id==='failuresFuelMount');
+assert.ok(fuelBranch&&fuelMount,'Fuel subsection is independently mountable within FAILURES');
+assert.equal(fuelBranch.tagName,'DETAILS');
+assert.ok(descend(fuelBranch).some(x=>x.textContent==='FUEL'));
 const buttons=descend(panel).filter(el=>el.tagName==='BUTTON'&&el.dataset.bus);
 assert.equal(buttons.length,24,'All 24 actual buses must be individually selectable');
 const main1=buttons.find(el=>el.dataset.bus==='main1@115VAC');
