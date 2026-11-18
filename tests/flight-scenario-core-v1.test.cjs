@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const Core=require('../engine/flight/flight-scenario-core-v1.js');
-function advance(s,seconds,dt=.1){for(let i=0;i<Math.ceil(seconds/dt);i++)s=Core.step(s,dt);return s;}
+function advance(s,seconds,dt=.1,propulsion=null){for(let i=0;i<Math.ceil(seconds/dt);i++)s=Core.step(s,dt,propulsion);return s;}
 function almost(actual,expected,tolerance=.02){assert.ok(Math.abs(actual-expected)<=tolerance,`${actual} != ${expected}`);}
 test('all airport runway options have the correct 5 and 10 NM reciprocal final geometry',()=>{
  for(const icao of ['OIMM','OIII','OISS']){
@@ -33,14 +33,39 @@ test('manual ground input cannot put the aircraft 3000 ft above airport while on
  assert.equal(s.altitudeFt,Core.AIRPORTS.OISS.elevationFt);
  assert.equal(s.iasKt,0);assert.equal(s.vsFpm,0);assert.equal(s.airborne,false);
 });
-test('ground roll requires explicit instruction and eventually enters climb',()=>{
+test('ground roll requires observed engine N1 and eventually enters climb under takeoff thrust',()=>{
  let s=Core.newScenario({airport:'OIMM',preset:'RUNWAY_READY'});
  assert.throws(()=>Core.command(s,{type:'PAUSE_WRONG'}));
  s=Core.command(s,{type:'TAKEOFF_ROLL'});
- s=advance(s,85);
+ s=advance(s,20);
+ assert.equal(s.iasKt,0,'no connected engine must not create speed');
+ assert.equal(s.propulsion.source,'NO_ENGINE_OBSERVATION_NO_SYNTHETIC_THRUST');
+ const idle={valid:true,engines:[{running:true,n1Percent:22},{running:true,n1Percent:22}]};
+ s=advance(s,20,.1,idle);
+ assert.equal(s.iasKt,0,'two engines at idle cannot cause synthetic takeoff roll');
+ const takeoff={valid:true,engines:[{running:true,n1Percent:95},{running:true,n1Percent:95}]};
+ s=advance(s,85,.1,takeoff);
  assert.equal(s.airborne,true);assert.equal(s.phase,'INITIAL_CLIMB');
  assert.ok(s.altitudeFt>Core.AIRPORTS.OIMM.elevationFt);
  assert.ok(s.vsFpm>0);assert.ok(s.iasKt>125);
+});
+test('at 73 kt engine idle yields negative speed trend, while real N1 spool yields positive trend',()=>{
+ let s=Core.command(Core.newScenario({airport:'OIII',preset:'RUNWAY_READY'}),{type:'TAKEOFF_ROLL'});
+ s={...s,iasKt:73,tasKt:73,gsKt:73};
+ const idle={valid:true,engines:[{running:true,n1Percent:22},{running:true,n1Percent:22}]};
+ const decel=Core.step(s,1,idle);
+ assert.ok(decel.iasKt<73);
+ assert.ok(decel.propulsion.accelerationKtSec<0);
+ assert.equal(decel.propulsion.source,'ISN18_OBSERVED_N1_GROUND_TRAINING_PLANT');
+ const missing=Core.step(s,1);
+ assert.ok(missing.iasKt<73,'lost engine feedback cannot create acceleration');
+ const takeoff={valid:true,engines:[{running:true,n1Percent:95},{running:true,n1Percent:95}]};
+ const accel=Core.step(s,1,takeoff);
+ assert.ok(accel.iasKt>73);
+ assert.ok(accel.propulsion.accelerationKtSec>0);
+ const oneEngine=Core.step(s,1,{valid:true,engines:[
+  {running:true,n1Percent:95},{running:false,n1Percent:0}]});
+ assert.ok(oneEngine.iasKt<accel.iasKt,'two engines should outperform one');
 });
 test('heading command banks and smoothly changes true heading without teleporting',()=>{
  let s=Core.newScenario({airport:'OIII',preset:'MANUAL',airborne:true,
