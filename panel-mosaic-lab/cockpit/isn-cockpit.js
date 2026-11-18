@@ -569,6 +569,22 @@
    ecu.setAutothrottle(engine,value);
    return {accepted:true,engine,throttle:value,source:'SAME_ISN18_ECU'};
   },
+  // FCOM 4.10.8–9: LVL CHG descent A/T retards to idle; climb N1
+  // demands may only follow a qualified FMC limit. The same ISN18 ECU
+  // remains the single authority over actual engine spool and fuel flow.
+  levelChangeThrottleCommand:({engine,value,phase,controller}={})=>{
+   if(controller!=='B737_LVLCHG_CH4_TRAINING'||!['engine1','engine2'].includes(engine)||
+    !['CLIMB','DESCENT'].includes(phase)||!Number.isFinite(value)||value<0||value>1)
+    throw Error('Invalid LVL CHG throttle request');
+   const out=window.B737McpAFDSBridgeV1?.getOutput?.();
+   if(out?.power!==true||out.controls?.atArm!==true||
+      out.modes?.vertical!=='LVL_CHG'||out.modes?.thrust!==(phase==='CLIMB'?'N1':'RETARD'))
+    return {accepted:false,reason:'LVL_CHG_NOT_ACTIVE'};
+   if(ecu.chain.phase[engine]!=='RUNNING')
+    return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
+   ecu.setAutothrottle(engine,value);
+   return {accepted:true,source:'ISN18_SHARED_ECU',engine,throttle:value};
+  },
   // Explicit training scenario controls ECU flight-idle/altitude/IAS context,
   // not real LRU data. Restore instructor values once the scenario stops.
   setFlightScenarioContext:({active,onGround,iasKt,altitudeFt,source}={})=>{
