@@ -351,6 +351,7 @@
       if (control) control.checked = true;
     }
     byId('aircraftSettingsError').hidden = true;
+    byId('ivsiEquipment').value=localStorage.getItem('b737.ivsi.equipment')||'analog';
     settings.showModal();
   }
   byId('aircraftSettingsOpen').addEventListener('click', showSettings);
@@ -363,6 +364,8 @@
     const changes = Object.fromEntries(editableFields.map(field => [field, values.get(field)]));
     try {
       store.set(changes);
+      localStorage.setItem('b737.ivsi.equipment',byId('ivsiEquipment').value);
+      window.dispatchEvent(new Event('b737:ivsi-equipment'));
       settings.close();
     } catch (error) {
       const notice = byId('aircraftSettingsError');

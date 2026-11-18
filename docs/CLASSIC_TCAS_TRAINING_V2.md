@@ -49,3 +49,13 @@ No lock baseline was changed. Protected overhead, guarded switches and IRS visua
 134 deterministic flight/EFIS/TCAS acceptance tests passed, including standalone lab boot with its actual HTML script order, actual SVG/canvas renderers, live pilot response through clear of conflict, both-seat TFC preparation, manual TFC authority, actual ATC2 CB events, unknown/missing supply, independent bus/ADC selection and self-test code segments. Seven installation/profile checks and the English-only scan passed. All four immutable overhead/Owner18/IRS checks passed; negative self-tests rejected unauthorized mutations. Native canvas/SVG rendering was visually inspected. The current signed-in user browser session was not available for an end-to-end UI check.
 
 Clearing an encounter removes traffic without switching a healthy selected transponder off. TEST also works without an active encounter when an aligned flight context exists; it displays code segment test 8888 without overwriting the stored squawk.
+
+## Optional TCAS VSI and ATC panel
+
+Settings → Vertical speed indicator selects Analog IVSI or IVSI + TCAS on both seats. The photo hardware uses separate raster controls and Canvas displays. TA SEL switches each instrument independently between full-time and advisory popup. The range selector acts on both traffic VSIs. FL displays absolute target altitudes for 15 seconds. A lit 8888 is the segment test. Operational codes use four octal digits.
+
+Sepehran FCOM D6-27370-300/400/500-SHI, 10.10.9–10, 10.10.23–24, 10.20.8, 11.10.26–29, 15.10.23–24 and 15.20.30–32. FSB/FSF have the electric TCAS VSI driven by the respective ADC. FSI has the inertial indicator. The optional display uses the documented blue standby legend. TA/RA is a selector position, while the RA cue appears during an actual advisory.
+
+Red avoidance arcs follow the shared encounter engine. Corrective and maintain fly-to widths (500 fpm) and the level-off corridor (±250 fpm) are trainer parameters. The R indication models a test or IDENT response. Radio interrogations are not synthesized.
+
+Both ATC channels use the existing 115 VAC electronic bus model. The simulated CB board names ATC-1 at P18-1 B3 and ATC-2 at P6-1 D16. Pulling either labelled TCAS breaker (P18-1 B2/B6) makes the shared simulated computer unavailable. This is a cockpit training convention. The MRG and catalogue disagree on P18 assignments and neither establishes the TCAS computer or individual electric VSI supply for this installation. Precise line-replaceable-unit wiring and independent display power loss require the applicable WDM.

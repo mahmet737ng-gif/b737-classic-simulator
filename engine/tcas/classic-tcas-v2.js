@@ -21,7 +21,7 @@
   INVALID_RA:{label:'MRG suppression-interface failure / own echo',ra:null,invalidRa:true},
   DISPLAY_TYPES:{label:'Traffic symbol / altitude / trend demonstration',ra:null,demo:true}
  });
- function controls(){return {mode:'TA_RA',unit:1,altSource:1,code:'2000',filter:'NORM',identUntil:0,absoluteUntil:0,
+ function controls(){return {mode:'TA_RA',unit:1,altSource:1,code:'2000',filter:'NORM',rangeNm:5,identUntil:0,absoluteUntil:0,
   failures:{computer:false,xpdr1:false,xpdr2:false,antenna:false,adc1:false,adc2:false,radioAlt:false,irs:false,suppression1:false,suppression2:false},priorityWarning:false};}
  function transponder(c,own,feeds=DEFAULT_FEEDS){
   if(!MODES.includes(c.mode)||![1,2].includes(c.unit)||![1,2].includes(c.altSource))throw RangeError('TRANSPONDER_SELECTION');
@@ -210,7 +210,7 @@
    }
    if(id.includes('DESCEN')&&height<1100){id='MONITOR_DESCENT';inhibits.push('DESCEND INHIBIT <1100 FT RA');}
    if(id==='INCREASE_DESCENT'&&height<1500){id='DESCEND';inhibits.push('INCREASE DESCENT INHIBIT <1500 FT RA');}
-   if(id.includes('MAINTAIN')&&Math.abs(own.vsFpm)<1500)id=id.includes('CLIMB')?'CLIMB':'DESCEND';
+   if(id.includes('MAINTAIN')&&(id.includes('CLIMB')?own.vsFpm:-own.vsFpm)<1500)id=id.includes('CLIMB')?'CLIMB':'DESCEND';
    state.raId=id;out.ra=V1.guidance(id,own);out.advisory='RA';out.stage=id;out.callout=out.ra?.callout;
   }else if(state.hadRA&&state.clearTime>=2){
    state.cleared=true;out.clearOfConflict=true;out.stage='CLEAR OF CONFLICT';out.callout='CLEAR OF CONFLICT';

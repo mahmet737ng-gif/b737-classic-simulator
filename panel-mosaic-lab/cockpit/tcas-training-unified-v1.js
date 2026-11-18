@@ -12,25 +12,31 @@
   const snapshot=win.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
   const signal=id=>snapshot?.[id]?.quality==='VALID';
   const irs=win.B737IRSTrainerUnified?.getState?.();
-  return {xpdr1:bus('electronic1'),xpdr2:win.B737UnifiedCB?.closed?.('P6-1|ALL|D16')===false?false:bus('electronic2'),
+  const closed=id=>win.B737UnifiedCB?.closed?.(id)!==false;
+  return {xpdr1:closed('P18-1|ALL|B3')?bus('electronic1'):false,xpdr2:win.B737UnifiedCB?.closed?.('P6-1|ALL|D16')===false?false:bus('electronic2'),
    adc1:snapshot?signal('airdata.adc1'):null,adc2:snapshot?signal('airdata.adc2'):null,
    radioAlt:snapshot?signal('airdata.radioAltitude'+mode.altSource):null,
    aligned:irs?['L','R'].every(s=>irs.units?.[s]?.positionValid):null,
    irs:irs?Object.values(irs.units||{}).some(u=>u.positionValid):null,
-   computer:!mode.failures.computer};
+   computer:closed('P18-1|ALL|B2')&&closed('P18-1|ALL|B6')&&!mode.failures.computer};
  }
  function getState(){
   const health=win.B737UnifiedFlightScenarioV1?.getDiagnostics?.();
   if(state&&(!health?.active||health.lastPublishAgeMs>3000))return {mode:'FAIL',stage:'SOURCE STALE',targets:[],ra:null,advisory:null};
   if(latest)return copy(latest);
-  const own=flight();
-  if(own){const idle=Core.create('SAME_LEVEL',own);idle.targets=[];
-   const output=Core.output(idle,own,mode,feeds());if(mode.mode!=='TEST')output.stage='IDLE';return output;}
-  return {mode:'OFF',stage:'IDLE',targets:[],ra:null,advisory:null};
+  const own=flight()||{airborne:false,elapsedSec:performance.now()/1000};
+  const idle={scenario:'SAME_LEVEL',targets:[]};
+  const output=Core.output(idle,own,mode,feeds());
+  if(mode.mode!=='TEST')output.stage='IDLE';
+  return output;
+
  }
  function getControls(){return copy(mode);}
  function renderStatus(){
   const status=by('tcasTrainingStatus');if(!status)return;const s=getState();
+  for(const [id,key] of [['tcasTrainingMode','mode'],['tcasUnit','unit'],['tcasCode','code'],['tcasFilter','filter']]){
+   const field=by(id);if(field&&doc.activeElement!==field&&field.value!==String(mode[key]))field.value=mode[key];
+  }
   status.textContent=[s.mode,s.stage,s.callout,...(s.inhibits||[])].filter(Boolean).join(' · ');
   const rows=by('tcasTrafficRows');if(rows)rows.textContent=(s.targets||[]).map(t=>
    t.id+' · '+t.kind+' · '+t.distance.toFixed(2)+' NM · '+(Number.isFinite(t.bearing)?Math.round(t.bearing)+'° TRUE':'NO BEARING')+
@@ -71,6 +77,14 @@
   const next={...mode,...patch,failures:{...mode.failures,...patch.failures}};
   Core.transponder(next,flight()||{airborne:false,elapsedSec:0});mode=next;update();return getControls();
  }
+ const pulseTimers={};
+ function pulse(key,seconds){
+  const elapsed=flight()?.elapsedSec??performance.now()/1000;
+  configure({[key]:elapsed+seconds});
+  clearTimeout(pulseTimers[key]);
+  pulseTimers[key]=setTimeout(()=>configure({[key]:0}),seconds*1000);
+ }
+ const ident=()=>pulse('identUntil',1),absolute=()=>pulse('absoluteUntil',15);
  function next(){
   const own=flight();if(!state||!own)return;
   for(let i=0;i<10;i++)state=Core.step(state,own,1,mode,feeds());
@@ -94,7 +108,7 @@
    '<details><summary>Instructor failures / source isolation</summary>'+Object.keys(mode.failures).map(id=>'<label class="flight-mcp"><input type="checkbox" data-tcas-failure="'+id+'"> '+id+'</label>').join('')+'</details>'+
    '<label class="flight-mcp"><input type="checkbox" id="tcasTrainingPriority"> GPWS / WINDSHEAR priority inhibit</label>'+
    '<p id="tcasXpdrStatus" class="flight-status"></p><p id="tcasTrainingStatus" class="flight-status" role="status"></p><pre id="tcasTrafficRows" style="white-space:pre-wrap"></pre>'+
-   '<p class="flight-sub">Real relative target motion; PAUSE freezes flight time. RA guidance never controls the A/P. Use existing flight targets to respond. Classic ATC feeds: Electronic Bus 1/2, 115 VAC. ATC2 CB: P6-1 D16. TCAS/ATC1 CB identity and TCAS computer feed disagreements are documented in the test lab; unverified aircraft wiring is not silently assigned.</p>';
+   '<p class="flight-sub">Real relative target motion; PAUSE freezes flight time. RA guidance never controls the A/P. Use existing flight targets to respond. Classic ATC feeds: Electronic Bus 1/2, 115 VAC. Simulator panel labels: ATC1 P18-1 B3, ATC2 P6-1 D16, TCAS P18-1 B2/B6. TCAS computer supply and airframe-specific breaker identities require the installed WDM.</p>';
   dialog.append(section);
   const run=fn=>()=>{try{fn();}catch(e){by('tcasTrainingStatus').textContent=e.message;}};
   by('tcasTrainingStart').addEventListener('click',run(()=>{
@@ -109,12 +123,12 @@
   by('tcasTrainingVoice').addEventListener('change',e=>{voice=e.target.checked;lastAural='';announce();});
   by('tcasTrainingPriority').addEventListener('change',e=>configure({priorityWarning:e.target.checked}));
   for(const input of section.querySelectorAll('[data-tcas-failure]'))input.addEventListener('change',()=>configure({failures:{[input.dataset.tcasFailure]:input.checked}}));
-  by('tcasIdent').addEventListener('click',()=>configure({identUntil:(flight()?.elapsedSec??0)+1}));
-  by('tcasAbsolute').addEventListener('click',()=>configure({absoluteUntil:(flight()?.elapsedSec??0)+15}));notify();
+  by('tcasIdent').addEventListener('click',ident);
+  by('tcasAbsolute').addEventListener('click',absolute);notify();
  }
  for(const event of ['b737:bus-consumer-snapshot','b737:cb-snapshot','b737:cb-state-change','b737:efis-preset-change','b737:efis-source-change'])win.addEventListener(event,()=>update());
  win.addEventListener('b737:flight-scenario-state',e=>update(e.detail));win.addEventListener('b737:flight-scenario-stopped',stop);
- win.B737UnifiedTcasV1=Object.freeze({start,stop,next,getState,getControls,configure,
+ win.B737UnifiedTcasV1=Object.freeze({start,stop,next,getState,getControls,configure,ident,absolute,
   setMode(value){configure({mode:value==='OFF'?'STBY':value});},setPriorityWarning(value){configure({priorityWarning:value===true});},
   getDiagnostics:()=>({active:!!state,scenario:state?.scenario,elapsedSec:state?.time,mode:mode.mode,feeds:feeds()})});
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();

@@ -24,8 +24,8 @@
     {"equipment":"ATC1","bus":"electronic1","voltage":"115VAC","source":"MRG CL printed pp173/188","status":"GENERIC_CLASSIC_SOURCE; not airframe WDM"},
     {"equipment":"ATC2","bus":"electronic2","voltage":"115VAC","source":"MRG CL printed pp173/188","status":"GENERIC_CLASSIC_SOURCE; not airframe WDM"},
     {"equipment":"ATC2 CB","position":"P6-1 D16","source":"MRG CL p136 plus existing photo catalogue ATC-2","status":"CONSISTENT_IDENTITY; used as a functional source gate"},
-    {"equipment":"ATC1 CB","position":"MRG P18-1 B2 vs catalogue B3","status":"CONFLICT_UNBOUND"},
-    {"equipment":"TCAS CB","position":"Catalogue P18-1 B2 / B6; conflicts with MRG ATC1 / DME1 identities","status":"CONFLICT_UNBOUND"},
+    {"equipment":"ATC1 CB","position":"MRG P18-1 B2 vs catalogue B3","status":"CONFLICT; simulator photo-catalogue mapping only"},
+    {"equipment":"TCAS CB","position":"Catalogue P18-1 B2 / B6; conflicts with MRG ATC1 / DME1 identities","status":"CONFLICT; simulator photo-catalogue mapping only"},
     {"equipment":"TCAS computer feed","status":"NOT_ESTABLISHED_FOR_CLASSIC; separate instructor computer-failure input"},
     {"equipment":"ATC feed disagreement","source":"MRG CL p373 labels electronic DC buses; CL pp173/188 list electronic 115VAC feeds","status":"RECORDED; no unverified DC supply added"}
   ],
