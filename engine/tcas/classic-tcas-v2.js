@@ -53,21 +53,32 @@
   if(options.distanceNm!==undefined&&options.distanceNm<=0)throw RangeError('INVALID_INTRUDER_DISTANCE');
   const heading=own.trueTrackDeg??own.trueHeadingDeg??0,forward=vector(1,heading),side=vector(1,heading+90);
   const range=options.distanceNm??5.5,converging=options.converging===true;
-  // A converging encounter enters laterally from one side and automatically
-  // crosses the own altitude near the horizontal CPA. No manual VS is needed.
-  const lateral=converging?(options.lateralSide==='LEFT' ? -.3 : .3):(spec.ra===null?.72:0);
+  // Converging traffic flies across the OWN flight path, arriving from the
+  // chosen left/right side at horizontal CPA. Its relative altitude crosses
+  // from -300 to +300 ft (or reverse) during the approach without manual VS.
+  const lateral=spec.ra===null?.72:0,speedKt=options.speedKt??220;
+  let targetHeading=norm(heading+180);
+  let initialN=forward.n*3600*range+side.n*3600*lateral;
+  let initialE=forward.e*3600*range+side.e*3600*lateral;
+  let estimatedCpaSec=range*3600/Math.max(1,(own.gsKt??own.tasKt)+speedKt);
+  if(converging){
+   targetHeading=norm(heading+(options.lateralSide==='LEFT'?90:-90));
+   const ownV=vector(own.gsKt??own.tasKt,heading),intruderV=vector(speedKt,targetHeading);
+   const relN=intruderV.n-ownV.n,relE=intruderV.e-ownV.e;
+   estimatedCpaSec=range/Math.max(1e-6,Math.hypot(relN,relE));
+   initialN=-relN*estimatedCpaSec;
+   initialE=-relE*estimatedCpaSec;
+  }
   const sense=spec.ra?.includes('CLIMB')?1:spec.ra?.includes('DESCEN')?-1:
    spec.vertical==='CONVERGING'&&spec.relativeAltitude>0?-1:1;
   const relative=options.relativeAltitudeFt??(converging?-300*sense:
    spec.relativeAltitude??(spec.ra?.includes('CLIMB')?-200:200));
-  const closingKt=Math.max(1,(own.gsKt??own.tasKt)+(options.speedKt??220));
-  const estimatedCpaSec=range*3600/closingKt;
   let rate=options.verticalRateFpm??(converging?
    (own.vsFpm??0)-2*relative*60/estimatedCpaSec:
    spec.vertical==='CONVERGING'?-Math.sign(relative)*1200:
    spec.vertical==='DIVERGING'?Math.sign(relative)*1200:0);
-  const target={id:'INTRUDER1',n:forward.n*3600*range+side.n*3600*lateral,e:forward.e*3600*range+side.e*3600*lateral,
-   altitudeFt:own.altitudeFt+relative,speedKt:options.speedKt??220,headingDeg:norm(heading+180),verticalRate:rate,
+  const target={id:'INTRUDER1',n:initialN,e:initialE,
+   altitudeFt:own.altitudeFt+relative,speedKt,headingDeg:targetHeading,verticalRate:rate,
    reportsAltitude:!spec.noAltitude,transponder:!spec.noTransponder,bearingValid:!spec.noBearing};
   if(spec.offscale){target.n=Math.cos(rad(heading+45))*range;target.e=Math.sin(rad(heading+45))*range;target.headingDeg=norm(heading+270);target.speedKt=own.gsKt??own.tasKt;}
   const targets=[target];if(spec.multi)targets.push({...target,id:'INTRUDER2',altitudeFt:own.altitudeFt-relative,n:target.n+.4,e:target.e-.4});
