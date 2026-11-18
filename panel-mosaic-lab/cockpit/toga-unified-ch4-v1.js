@@ -108,7 +108,7 @@
   }
   state=next;
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
-  if(was==='OFF'&&state.phase==='TO'){
+  if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
    // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL
    // cannot accelerate under imaginary thrust while both engines are OFF.
    if(c.atArmed===true&&(c.engine1Running===true||c.engine2Running===true)){
