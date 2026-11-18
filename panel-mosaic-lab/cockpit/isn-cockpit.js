@@ -551,6 +551,24 @@
    // The existing 100ms ISN owner tick repaints EIS and Conventional gauges.
    return {accepted:true,engine,throttle:value};
   },
+  // FCOM Ch4 TO/GA instructor linkage: the SAME ECU spool owner receives
+  // thrust lever requests. No alternate engine dynamics or independent N1 plant.
+  togaThrottleCommand:({engine,value,controller,phase}={})=>{
+   if(controller!=='B737_TOGA_CH4_TRAINING'||
+      !['engine1','engine2'].includes(engine)||
+      !['TO','GA'].includes(phase)||!Number.isFinite(value)||value<0||value>1)
+    throw Error('Invalid TO/GA throttle command');
+   const flight=window.B737UnifiedFlightScenarioV1;
+   if(flight?.getDiagnostics?.()?.active!==true)
+    return {accepted:false,reason:'TOGA_REQUIRES_ACTIVE_INSTRUCTOR_FLIGHT'};
+   const mcp=window.B737McpAFDSBridgeV1?.getOutput?.();
+   if(mcp?.power!==true||mcp.controls?.atArm!==true)
+    return {accepted:false,reason:'TOGA_A_T_NOT_ARMED'};
+   if(ecu.chain.phase[engine]!=='RUNNING')
+    return {accepted:false,reason:'TOGA_ENGINE_NOT_RUNNING'};
+   ecu.setAutothrottle(engine,value);
+   return {accepted:true,engine,throttle:value,source:'SAME_ISN18_ECU'};
+  },
   // Explicit training scenario controls ECU flight-idle/altitude/IAS context,
   // not real LRU data. Restore instructor values once the scenario stops.
   setFlightScenarioContext:({active,onGround,iasKt,altitudeFt,source}={})=>{
