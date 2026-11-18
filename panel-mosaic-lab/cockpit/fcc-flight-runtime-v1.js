@@ -51,13 +51,21 @@
   const slew=(from,to,rate)=>Math.abs(to-from)<=dt*rate?to:
    from+Math.sign(to-from)*dt*rate;
   const hasFD=view.fd.captain||view.fd.firstOfficer;
+  const toga=win.B737UnifiedTOGACh4V1?.getState?.();
+  const togaGuidance=toga?.phase==='TO'||toga?.phase==='GA';
+  // Chapter 4: takeoff FD commands -10° below 60 KIAS, then +15°;
+  // GO-AROUND commands +15° or +13° on one engine (before rate/speed
+  // schedules become available). Roll holds wings level/ground track.
+  // Do not confuse the real director cue with the autopilot servo owner.
+  const pitchGoal=togaGuidance?toga.fdPitchDeg:view.pitchCommandDeg;
+  const rollGoal=togaGuidance?0:view.rollCommandDeg;
   if(hasFD){
-   if(Number.isFinite(view.pitchCommandDeg))
+   if(Number.isFinite(pitchGoal))
     directorServo.pitch=directorServo.pitch===null?frame.pitchDeg:
-     slew(directorServo.pitch,view.pitchCommandDeg,2.2);
-   if(Number.isFinite(view.rollCommandDeg))
+     slew(directorServo.pitch,pitchGoal,2.2);
+   if(Number.isFinite(rollGoal))
     directorServo.roll=directorServo.roll===null?frame.bankDeg:
-     slew(directorServo.roll,view.rollCommandDeg,5.2);
+     slew(directorServo.roll,rollGoal,5.2);
   }else{
    directorServo.pitch=null;directorServo.roll=null;
   }
