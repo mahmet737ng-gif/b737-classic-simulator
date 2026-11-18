@@ -38,4 +38,20 @@ let unknown=ready(21000);
 unknown=Core.transition(unknown,{type:'BUTTON',id:'LVL_CHG'});
 assert.equal(unknown.lvlChgPhase,'UNKNOWN');
 assert.equal(unknown.modes.thrust,null,'No synthetic climb without altitude evidence');
+// FCOM SHI 4.20.2 — A/P engagement must not follow the F/D switch
+// when a confirmed flight-control inhibit is present.
+let guarded=ready(20000);
+guarded=fly(guarded,15000,{controlWheelForceApplied:true});
+guarded=Core.transition(guarded,{type:'BUTTON',id:'CMD_A'});
+assert.equal(guarded.modes.autopilot,null);
+assert.equal(guarded.lastRejection,'AP_ENGAGEMENT_INHIBITED_WHEEL_FORCE');
+guarded=fly(guarded,15000,{controlWheelForceApplied:false,stabTrimAutopilotNormal:false});
+guarded=Core.transition(guarded,{type:'BUTTON',id:'CMD_A'});
+assert.equal(guarded.lastRejection,'AP_ENGAGEMENT_INHIBITED_STAB_TRIM_CUTOUT');
+guarded=fly(guarded,15000,{stabTrimAutopilotNormal:true,apDisengageBarUp:false});
+guarded=Core.transition(guarded,{type:'BUTTON',id:'CMD_A'});
+assert.equal(guarded.lastRejection,'AP_ENGAGEMENT_INHIBITED_DISENGAGE_BAR');
+guarded=fly(guarded,15000,{apDisengageBarUp:true});
+guarded=Core.transition(guarded,{type:'BUTTON',id:'CMD_A'});
+assert.equal(guarded.modes.autopilot,'CMD_A');
 console.log('PASS Chapter 4 LVL CHG: climb N1, descent RETARD/ARM, selected altitude transition, early climb inhibition, no evidence guard');
