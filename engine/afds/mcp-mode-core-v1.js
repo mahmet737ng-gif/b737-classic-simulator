@@ -46,7 +46,7 @@ function initialState(){return {
   speedDisplayMode:"IAS",bankAngleLimit:20,
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
- autoThrustByPitch:false,
+ autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
  nav:{loc:false,gs:false},flight:null,targets:{pitch:null,roll:null},
@@ -92,7 +92,7 @@ function clearModes(s){
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.targets={pitch:null,roll:null};s.flight=null;
- s.autoThrustByPitch=false;
+ s.autoThrustByPitch=false;s.lvlChgPhase='UNKNOWN';
  s.speedLimit=SpeedLimit?.initialState?.()??null;
  s.flightDirectorBarsRetracted=false;
 }
@@ -111,8 +111,11 @@ function selectPitch(s,id){
  if(next==="LVL_CHG"){
   // FCOM 4.10.9: if A/T SPEED was active, retain the selected IAS/MACH
   // as the pitch TARGET, not as a competing A/T MCP SPD annunciation.
-  // Without measured climb/descent, do NOT invent N1/RETARD capture.
-  s.modes.thrust=null;
+  // With qualified active aircraft-altitude evidence the Chapter 4 LVL CHG
+  // A/T can select N1 in climb or RETARD then ARM in descent. Without a
+  // measured altitude, leave A/T in ARM rather than invent the direction.
+  s.modes.thrust=null;s.lvlChgPhase='UNKNOWN';
+  setLvlChgThrust(s);
  }else if(next==="VNAV"){
   // A generic VNAV selection cannot prove N1/RETARD/FMC SPD.
   s.modes.thrust=null;
@@ -121,6 +124,29 @@ function selectPitch(s,id){
   s.modes.thrust="SPEED";
   s.autoThrustByPitch=true;
  }
+}
+// FCOM SHI 4.10.8-9 and 4.20.15: no N1 auto reduction via LVL CHG
+// during the first 150 s after liftoff. State is never inferred from the
+// speed selector or a fixed training engine N1 percentage.
+function setLvlChgThrust(s){
+ if(s.modes.vertical!=='LVL_CHG'||s.autoThrottleArm!==true)return;
+ const measured=s.flight?.altitudeFt,selected=s.values.altitude;
+ if(!Number.isFinite(measured)||!Number.isFinite(selected))return;
+ const diff=selected-measured;
+ const direction=diff>50?'CLIMB':diff< -50?'DESCENT':'LEVEL';
+ if(direction!==s.lvlChgPhase){
+  s.lvlChgPhase=direction;
+  s.modes.thrust=direction==='DESCENT'?'RETARD':null;
+ }
+ if(direction==='CLIMB'){
+  const elapsed=s.flight?.secondsSinceLiftoff;
+  // Flight phase is necessarily known if elapsed is present. Outside a
+  // documented just-takeoff interval only qualified phase may enable N1.
+  if(Number.isFinite(elapsed)&&elapsed<150)s.modes.thrust=null;
+  else if(s.flight?.establishedEnroute===true||
+          Number.isFinite(elapsed)&&elapsed>=150)s.modes.thrust='N1';
+ }else if(direction==='DESCENT'&&s.modes.thrust==='RETARD'&&
+   s.flight?.thrustIdleConfirmed===true)s.modes.thrust='ARM';
 }
 function transition(state,action){
  if(!state||state.schema!=="B737_MCP_AFDS_V1")throw Error("AFDS state required");
@@ -259,13 +285,16 @@ function transition(state,action){
     return rejected(s,"INVALID_FLIGHT_SENSOR_"+k);
   if(f.navKind!==undefined&&!["NONE","VOR","LOC","ILS"].includes(f.navKind))
    return rejected(s,"INVALID_NAV_SIGNAL_TYPE");
-  const flags=["navValid","gearDown","fdVorCaptured","fdLocCaptured",
+  for(const k of ['secondsSinceLiftoff'])if(f[k]!==undefined&&f[k]!==null&&
+   (!Number.isFinite(f[k])||f[k]<0))return rejected(s,'INVALID_FLIGHT_TIMER_'+k);
+  const flags=["establishedEnroute","thrustIdleConfirmed","navValid","gearDown","fdVorCaptured","fdLocCaptured",
    "pitchOverrideConfirmed","rollOverrideConfirmed","pitchForceReleased",
    "rollForceReleased","altAcquireConfirmed","altitudeHoldConfirmed",
    "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot"];
   if(flags.some(k=>f[k]!==undefined&&typeof f[k]!=="boolean"))
    return rejected(s,"INVALID_FLIGHT_SENSOR_FLAG");
   s.flight={...(s.flight||{}),...f};
+  if(s.modes.vertical==='LVL_CHG')setLvlChgThrust(s);
   const cmd=/^CMD_[AB]$/.test(s.modes.autopilot||"");
   if(cmd&&f.dualAutopilot===true&&s.nav.loc&&s.nav.gs&&
    (f.pitchOverrideConfirmed||f.rollOverrideConfirmed)){
@@ -360,6 +389,7 @@ function transition(state,action){
   const id=action.id,v=action.value;
   if(!Rules?.valid||!Rules.valid(id,v))throw Error("MCP value out of FCOM Chapter 4 range or increment");
   const old=s.values[id];s.values[id]=v;
+  if(id==='altitude'&&s.modes.vertical==='LVL_CHG')setLvlChgThrust(s);
   if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&Math.abs(v-old)>100){
    s.capture.pitch=null;s.modes.vertical="VS";s.override.pitch=false;
    if(Number.isFinite(s.flight?.verticalSpeedFpm))
@@ -476,7 +506,7 @@ function output(s){
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},axisControl:axisControl(s,powered),
+  modes:{...s.modes},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
