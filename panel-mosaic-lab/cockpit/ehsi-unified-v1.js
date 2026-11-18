@@ -170,6 +170,12 @@
     }
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
+    if(!preview){
+     const tcas=win.B737UnifiedTcasV1?.getState?.();
+     if(tcas)model.traffic={...tcas,targets:(tcas.targets||[]).map(t=>({...t,
+      bearing:Number.isFinite(t.bearing)&&Number.isFinite(src.magneticVariationDeg)?
+       ((t.bearing-src.magneticVariationDeg)%360+360)%360:null}))};
+    }
     // Shared flight-position reference is an instructor chart anchor,
     // not automatically a valid aligned IRS NAV solution.
     const location=win.B737UnifiedFlightLocationV1;
@@ -284,7 +290,7 @@
   });
   doc.getElementById('unifiedFmcFail')?.addEventListener('change',e=>win.B737FmcSystemsBridgeV1?.setFailure?.(e.target.checked));
   for(const n of [1,2])doc.getElementById('unifiedSg'+n+'Fail')?.addEventListener('change',e=>sources.setSgFailure(n,e.target.checked));
-  for(const event of ['b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state','b737:flight-location-reference','b737:flight-scenario-state'])win.addEventListener(event,schedule);
+  for(const event of ['b737:tcas-state','b737:efis-source-change','b737:cockpit-mounted','b737:engine-indication-view','b737:bus-consumer-snapshot','b737:mcp-afds-state','b737:flight-location-reference','b737:flight-scenario-state'])win.addEventListener(event,schedule);
   win.addEventListener('b737:avionics-data',e=>{if(TOPICS.has(e.detail?.topic))schedule();});
   schedule();
   return Object.freeze({version:VERSION,refresh,getSeatState:seat=>SEATS.includes(seat)?JSON.parse(JSON.stringify(state[seat])):null,getDisplay:seat=>SEATS.includes(seat)&&screens[seat]?.host?.isConnected?{seat:screens[seat].host.dataset.controlSeat,mode:screens[seat].host.dataset.controlMode,range:Number(screens[seat].host.dataset.controlRange),

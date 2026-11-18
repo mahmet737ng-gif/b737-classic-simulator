@@ -93,7 +93,7 @@
    ils:!!src.ils,frontCourse:front===true,
    locDeviation:front===false&&Number.isFinite(src.ils?.localizerDots)?-src.ils.localizerDots:numeric(src.ils?.localizerDots),
    gsDeviation:numeric(src.ils?.glideslopeDots),
-   director:src.director
+   director:src.director,tcas:root.B737UnifiedTcasV1?.getState?.()
   });
   display.host.dataset.sg=String(src.sg);
   display.host.dataset.irs=src.irs===1?'L':'R';
@@ -240,7 +240,7 @@
  root.addEventListener('b737:avionics-data',event=>{
   if(/^(airdata\.(adc|radioAltitude)[12]|navigation\.ils[12]|afds\.director[12]|irs\.(left|right)|mcp\.state|fmc\.computed|electrical\.buses)$/.test(event.detail?.topic||''))scheduleLive();
  });
- for(const event of ['b737:flight-presentation-frame','b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
+ for(const event of ['b737:tcas-state','b737:flight-presentation-frame','b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')

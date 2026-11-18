@@ -15,7 +15,6 @@
   <div class="flight-grid">
    <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
    <label>Runway<select id="flightRunway"></select></label>
-   <label>FLT PHASE<select id="flightAirGround"><option value="GROUND">GROUND</option><option value="AIRBORNE">AIRBORNE</option></select></label>
    <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
   </div>
   <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
@@ -107,8 +106,6 @@
  }
  function presetChanged(){
   const kind=by('flightPreset').value;
-  if(kind==='RUNWAY_READY')by('flightAirGround').value='GROUND';
-  else if(kind==='FINAL_5'||kind==='FINAL_10')by('flightAirGround').value='AIRBORNE';
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(kind!=='MANUAL'){
    const mag=magneticHeading(a.runways[by('flightRunway').value],airportPoint(a));
@@ -120,12 +117,6 @@
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
   }
   publishSelectedReference();
- }
- function airGroundChanged(){
-  const g=by('flightAirGround').value==='GROUND',p=by('flightPreset');
-  if(g&&p.value!=='RUNWAY_READY'&&p.value!=='MANUAL')p.value='MANUAL';
-  if(!g&&p.value==='RUNWAY_READY')p.value='MANUAL';
-  presetChanged();
  }
  function status(message,isError=false){
   const p=by('flightScenarioStatus');
@@ -226,7 +217,7 @@
   try{
    const preset=by('flightPreset').value;
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
-    airborne:by('flightAirGround').value==='AIRBORNE'};
+    airborne:preset!=='RUNWAY_READY'};
    if(preset==='MANUAL'){
     config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
     config.speedKt=v('Speed');config.vsFpm=v('VS');config.bankDeg=v('Bank');
@@ -365,7 +356,6 @@
   by('flightAirport').addEventListener('change',()=>{choiceArmed=true;airportChanged();presetChanged();});
   by('flightRunway').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
   by('flightPreset').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
-  by('flightAirGround').addEventListener('change',()=>{choiceArmed=true;airGroundChanged();});
   for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(by('flightPreset').value==='MANUAL'){choiceArmed=true;publishSelectedReference();}});
   by('flightLoad').addEventListener('click',load);
   by('flightTargets').addEventListener('click',targets);

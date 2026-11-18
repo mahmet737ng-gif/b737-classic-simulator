@@ -69,6 +69,18 @@ function attitude(c,e,v){
   c.restore();
   line(c,-123,boundary,123,boundary,RED,3);
  }
+ // Classic FCOM 10.30.12-13: red pitch attitudes to AVOID, no green
+ // fly-to director. The cue moves with the pitch card and its bank.
+ for(const zone of e.tcasRa?.avoid||[]){
+  const boundary=pitch-clamp(zone.pitchDeg,-35,35)*SCALE;
+  const sign=zone.side==='BELOW'?1:-1,far=boundary+sign*145;
+  shape(c,[[-39,boundary],[39,boundary],[91,far],[-91,far]],{stroke:RED,width:3});
+  for(let i=0;i<8;i++){
+   const dy=sign*(i*17+9),x=39+52*Math.abs(dy)/145;
+   line(c,-x,boundary+dy,-x-8,boundary+dy-sign*8,RED,1.9);
+   line(c,x,boundary+dy,x+8,boundary+dy-sign*8,RED,1.9);
+  }
+ }
  if(e.pli||e.flaps>0){
   const y=pitch-clamp(e.pliAngle,0,30)*SCALE;
   for(const side of [-1,1]){
@@ -254,6 +266,7 @@ function render(canvas,state,core,live){
  if(v.flags.includes('MACH'))box(c,'MACH',81,539,16);
  if(e.windshear)txt(c,'WINDSHEAR',CX,463,33,RED,'center');
  else if(e.pullup)txt(c,'PULL UP',CX,463,33,RED,'center');
+ else if(e.tcasRa)txt(c,'TRAFFIC',CX,516,25,RED,'center');
  const comparison=live?.comparison??v.comparison;
  for(const [i,flag] of comparison.entries())box(c,flag,CX+(i-(comparison.length-1)/2)*78,566);
  c.strokeStyle='#809189';c.lineWidth=1.5;
@@ -308,6 +321,9 @@ function renderUnifiedFull(canvas,input={}){
  const observed=(x,def=null)=>finite(x)?x:def;
  e.pitch=observed(input.pitch,0);e.bank=observed(input.bank,0);
  e.slip=0;e.tcas='OFF';e.pli=false;e.flaps=0;e.demoLimits=false;
+ e.tcasRa=input.tcas?.advisory==='RA'?input.tcas.ra:null;
+ canvas.dataset.tcasAdvisory=input.tcas?.advisory||'';
+ canvas.dataset.tcasRa=e.tcasRa?.id||'';
  e.ias=observed(input.iasKt,0);e.selectedSpeed=observed(input.selectedSpeedKt,0);
  e.mach=observed(input.mach,0);e.machVisible=finite(input.mach);
  e.groundSpeed=observed(input.groundSpeedKt);

@@ -421,12 +421,28 @@ function traffic(svg,m,l,status){
   photoText(g,'TCAS',64,205,22);
   photoText(g,'OFF',64,226,22);
  }else if(labels[mode]&&(mode!=='FAIL'||!m.traffic.failSuppressed)){
-  text(g,labels[mode],494,88,17,mode==='OFF'||mode==='FAIL'?COLORS.amber:COLORS.white,'end');
+  text(g,labels[mode],494,88,17,mode==='FAIL'?COLORS.amber:mode==='TA_ONLY'?COLORS.green:COLORS.white,'end');
  }
  if(!status.trafficOverlay)return;
  photoText(g,'TFC',G.header.left,m.mode==='CTR_MAP'?200:205,21,PHOTO_COLORS.green);
  let offscale=null;
+ let noBearingRow=0;
  for(const t of visible){
+  if(!Number.isFinite(t.bearing)){
+   if(t.kind==='RA'||t.kind==='TA'){
+    const color=t.kind==='RA'?COLORS.red:COLORS.amber;
+    const altitude=Number.isFinite(t.relativeAltitude)?
+     (t.relativeAltitude>=0?'+':'-')+String(Math.abs(Math.round(t.relativeAltitude/100))).padStart(2,'0'):'';
+    const y=126+noBearingRow++*21;
+    text(g,t.kind+' '+t.distance.toFixed(1)+' '+altitude,402,y,16,color,'middle');
+    if(Math.abs(t.verticalRate)>=500){
+     const s=Math.sign(t.verticalRate);
+     line(g,464,y+7*s,464,y-7*s,color);
+     stroke(g,[[460,y-3*s],[464,y-7*s],[468,y-3*s]],color);
+    }
+   }
+   continue;
+  }
   const delta=rel(t.bearing-m.reference);
   const xy=rosePoint(l,delta,t.distance/m.range);
   if(t.distance>m.range||Math.abs(delta)>l.degrees/2||!symbolVisible(xy,l)){
