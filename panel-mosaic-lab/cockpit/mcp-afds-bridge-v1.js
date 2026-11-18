@@ -140,6 +140,19 @@ function requestMode(id){
    project();notify();return Core.output(state);
   }
  }
+ // FCOM 4.20.16: engaging CMD after the FD-only takeoff at >=400ft
+ // terminates TO/GA; pitch automatically becomes LVL CHG / MCP SPD,
+ // with HDG SEL roll retained unless the crew has selected another mode.
+ if(t?.phase==='TO'&&/^CMD_[AB]$/.test(id)&&f?.airborne===true&&
+    Number.isFinite(f.radioAltitudeFt)&&f.radioAltitudeFt>=400){
+  state=Core.transition(state,{type:'BUTTON',id});
+  if(state.modes.autopilot===id){
+   if(state.modes.vertical!=='LVL_CHG')
+    state=Core.transition(state,{type:'BUTTON',id:'LVL_CHG'});
+   if(!state.modes.lateral)state=Core.transition(state,{type:'BUTTON',id:'HDG_SEL'});
+  }
+  project();notify();return Core.output(state);
+ }
  return send({type:"BUTTON",id});
 }
 function visualRequest(e){
