@@ -70,7 +70,7 @@
    };
    const owner=()=>win.B737ISNCockpitV1;
    const system=()=>owner()?.getFuelSystem?.()??null;
-   const rows=[],pumps=new Map(),leaks=new Map();
+   const rows=[],pumps=new Map(),leaks=new Map();let wasReady=false;
    const status=create('p',host,'failures-feedback','FUEL ECU NOT READY');
    status.id='failuresFuelFeedback';status.setAttribute('role','status');
    const allButtons=[];
@@ -157,15 +157,23 @@
    const actions=create('div',host,'failures-actions');
    const clearAll=actionButton(actions,'CLEAR ALL FUEL FAILURES',()=>{
     if(!system()){status.textContent='FUEL ECU NOT READY';status.dataset.error='true';return;}
+    // Every reset targets the original ECU. Do not say ALL CLEARED if a
+    // command was rejected halfway through the sequence.
+    const commands=[
+     ...Object.keys(PUMPS).map(id=>action('pump',id,false)),
+     action('crossfeed',null,false),
+     ...Object.keys(TANKS).map(tank=>action('leak',tank,0)),
+     action('freezingPoint',null,normalFreezePoint),
+     action('temperature',null,normalTemperature)
+    ];
     try{
-     for(const id of Object.keys(PUMPS))send(action('pump',id,false),'PUMP '+id);
-     send(action('crossfeed',null,false),'CROSSFEED');
-     for(const tank of Object.keys(TANKS))send(action('leak',tank,0),'TANK '+tank);
-     send(action('freezingPoint',null,normalFreezePoint),'FREEZING POINT');
-     send(action('temperature',null,normalTemperature),'FUEL TEMPERATURE');
-     status.textContent='ALL FUEL FAILURES CLEARED';
-     refresh();win.B737UnifiedFailuresHeaderV1?.refresh?.();
-    }catch(err){status.textContent=err.message;status.dataset.error='true';}
+     for(const command of commands){
+      const result=owner().fuelTrainerAction({instructor:true,...command});
+      if(result?.accepted!==true)throw Error('Fuel ECU rejected '+command.type);
+     }
+     status.textContent='ALL FUEL FAILURES CLEARED';status.dataset.error='false';
+    }catch(err){status.textContent='RESET INCOMPLETE · '+(err.message||String(err));status.dataset.error='true';}
+    refresh();win.B737UnifiedFailuresHeaderV1?.refresh?.();
    },'failures-clear');
    const help=create('p',host,'failures-footer',
     'All injections command the existing ATA 28 ECU. Pilot overhead pump switches are not moved or overridden. Tank servicing remains in Fuel System Live.');
@@ -175,13 +183,15 @@
     for(const b of allButtons)b.disabled=!ready;
     for(const input of rows)input.disabled=!ready;
     if(!ready){
+     wasReady=false;
      status.textContent='FUEL ECU NOT READY · Initialize Unified electrical / ECU before testing';
      status.dataset.error='true';
      return 0;
     }
-    if(status.dataset.error==='true'){
+    if(!wasReady){
      status.textContent='LIVE FUEL ECU CONNECTED';
      status.dataset.error='false';
+     wasReady=true;
     }
     for(const [id,{button,state}]of pumps){
      const active=s.pump[id];button.dataset.failed=String(active);
