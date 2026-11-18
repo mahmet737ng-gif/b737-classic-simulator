@@ -1,0 +1,31 @@
+.smiths-fuel-quantity {
+  position: absolute;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+}
+.smiths-fuel-quantity > * {
+  position: absolute;
+  border-radius: 50%;
+  background: url("./assets/smiths-fuel-quantity-v1.webp") var(--smiths-column, 0%) 0 / 300% 400% no-repeat;
+}
+.smiths-fuel-quantity[data-preview="held"] > .smiths-fuel-face {
+  background-position-y: 33.333333%;
+}
+.smiths-fuel-quantity[data-preview="segments"] > .smiths-fuel-face {
+  background-position-y: 66.666667%;
+}
+.smiths-fuel-quantity > .smiths-qty-test {
+  padding: 0;
+  border: 0;
+  background-position-y: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: pointer;
+}
+.smiths-fuel-quantity[data-preview="held"] > .smiths-qty-test {
+  filter: brightness(.72);
+}
+.smiths-qty-test:focus-visible {
+  outline: 2px solid white;
+}
