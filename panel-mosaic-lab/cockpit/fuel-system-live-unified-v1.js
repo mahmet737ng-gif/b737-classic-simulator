@@ -22,40 +22,21 @@
   if(!parent||!owner()?.getFuelSystem)return false;
   panel=text('section',undefined,parent);panel.id=ID;panel.style.cssText='border:1px solid #45606b;border-radius:10px;padding:12px;margin:12px 0;line-height:1.7';
   text('h2','FUEL SYSTEM · ATA 28 · LIVE',panel);
-  text('p','ECU fuel model with six pumps and a common manifold. Use instructor controls for fuel/failure tests; physical switches remain on the Overhead.',panel);
+  text('p','ECU fuel model with six pumps and a common manifold. Use FAILURES > FUEL to inject faults; overhead switches remain the pilot commands.',panel);
   liveRows=text('div',undefined,panel);liveRows.dir='ltr';
   liveRows.style.cssText='font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#0f1b22;color:#d9e5ec;padding:10px;border-radius:6px';
-  controls=text('details',undefined,panel);text('summary','Instructor · Load fuel / inject fuel faults',controls);
+  controls=text('details',undefined,panel);text('summary','GROUND FUEL SERVICING · ON GROUND ONLY',controls);
+  text('p','Fuel failure injection has moved to FAILURES > FUEL in the cockpit top bar.',controls);
   const tanks=text('div',undefined,controls);
   for(const id of ['main1','center','main2']){
-   const line=text('label',undefined,tanks);line.style.cssText='display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:7px 0';
+   const line=text('label',undefined,tanks);
+   line.style.cssText='display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:7px 0';
    text('span',label[id]+' kg',line);
-   const inp=text('input',undefined,line);inp.type='number';inp.min='0';inp.max=String(({main1:4555,center:7029,main2:4555})[id]);inp.step='1';inp.dataset.tank=id;inp.style.cssText='width:100px';
-   const button=text('button','SET',line);button.type='button';button.onclick=()=>command({type:'SERVICE_TANK',tank:id,quantityKg:Number(inp.value)});
-   const leak=text('input',undefined,line);leak.type='number';leak.min='0';leak.max='60000';leak.value='0';
-   leak.style.width='95px';leak.setAttribute('aria-label',label[id]+' leak rate in kg per hour');
-   const applyLeak=text('button','LEAK KG/H',line);applyLeak.type='button';
-   applyLeak.onclick=()=>command({type:'TANK_LEAK',tank:id,rateKgHr:Number(leak.value)});
-  }
-  const tempLine=text('label',undefined,controls);tempLine.style.cssText='display:block;margin:10px 0';
-  text('span','Fuel Temperature °C ',tempLine);
-  const t=text('input',undefined,tempLine);t.type='number';t.min='-56';t.max='56';t.step='1';t.value='10';t.style.width='70px';
-  const b=text('button','SET TEMP',tempLine);b.type='button';b.onclick=()=>command({type:'FUEL_TEMPERATURE',celsius:Number(t.value)});
-  const freezeLine=text('label',undefined,controls);
-  text('span','Fuel freezing point °C ',freezeLine);
-  const freeze=text('input',undefined,freezeLine);freeze.type='number';freeze.min='-75';freeze.max='0';freeze.value='-47';
-  const applyFreeze=text('button','SET FREEZING POINT',freezeLine);applyFreeze.type='button';
-  applyFreeze.onclick=()=>command({type:'FUEL_FREEZE_POINT',celsius:Number(freeze.value)});
-  const x=text('label',undefined,controls);x.style.cssText='display:block;margin:8px 0';
-  const chk=text('input',undefined,x);chk.type='checkbox';
-  text('span',' Simulate CROSSFEED VALVE stuck',x);
-  chk.onchange=()=>command({type:'CROSSFEED_FAILURE',active:chk.checked});
-  const faults=text('div',undefined,controls);
-  for(const [id,name] of Object.entries(pumpLabel)){
-   const l=text('label',undefined,faults);l.style.cssText='display:inline-flex;gap:5px;align-items:center;margin:5px 9px 5px 0';
-   const inp=text('input',undefined,l);inp.type='checkbox';
-   text('span',name+' FAIL',l);
-   inp.onchange=()=>command({type:'PUMP_FAILURE',id,active:inp.checked});
+   const inp=text('input',undefined,line);inp.type='number';inp.min='0';
+   inp.max=String(({main1:4555,center:7029,main2:4555})[id]);inp.step='1';
+   inp.dataset.tank=id;inp.style.cssText='width:100px';
+   const button=text('button','SET QUANTITY',line);button.type='button';
+   button.onclick=()=>command({type:'SERVICE_TANK',tank:id,quantityKg:Number(inp.value)});
   }
   status=text('p','Ready · FCOM 12.10 / 12.20 · Training values',panel);status.setAttribute('role','status');
   refresh();return true;
