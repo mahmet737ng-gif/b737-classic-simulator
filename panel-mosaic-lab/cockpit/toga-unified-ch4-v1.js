@@ -26,7 +26,10 @@
    selectedSpeedKt:m?.values?.speed??f?.iasKt,
    v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
    flareArmed:false,touchedDown:false,
-   isTakeoffMode:state.phase==='TO',takeoffRollHdGSel:false,
+   isTakeoffMode:state.phase==='TO',
+   // FCOM 4.20.14-15 FSI/FST option: takeoff roll FMA HDG SEL, unlike
+   // other variants with a BLANK lateral TO/GA mode. EP-FSI uses FSI.
+   takeoffRollHdGSel:win.B737AircraftProfileStore?.get?.()?.aircraftModel==='737-300',
    // No digitized AFM N1 target exists. The reduced-GA-achieved gate is
    // explicitly a training approximation based on the observed same-ECU
    // throttle and N1; never an actual aircraft's reduced GA criterion.
