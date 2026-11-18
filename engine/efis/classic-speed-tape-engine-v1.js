@@ -26,6 +26,21 @@
  const required=(v,lo,hi,name)=>{if(!isNum(v)||v<lo||v>hi)throw Error('INVALID_'+name);return v;};
  const optional=(v,lo,hi,name)=>v===null?null:required(v,lo,hi,name);
  const within=(v)=>isNum(v)&&v>=0&&v<=600;
+ // Smooth short-interval ADC derivatives to avoid tape-trend jitter from
+ // sampling cadence. A real abrupt, physically implausible jump is a new
+ // observation baseline, not a 10-second acceleration prediction.
+ function filteredTrend(previous,cas,dt){
+  if(!(dt>=.1&&dt<=10))return {acceleration:null,visible:false};
+  const change=cas-previous.casKt;
+  if(dt<1&&Math.abs(change)>12)return {acceleration:null,visible:false};
+  const raw=change/dt;
+  const old=previous.accelerationKtS;
+  const alpha=dt<.75&&isNum(old)?dt/(.65+dt):1;
+  const acceleration=isNum(old)?old+alpha*(raw-old):raw;
+  const delta10=10*acceleration;
+  const visible=previous.trendVisible?Math.abs(delta10)>=3:Math.abs(delta10)>4;
+  return {acceleration,visible};
+ }
  function initialState(seat='CAPT'){
   if(!['CAPT','FO'].includes(seat))throw Error('INVALID_SEAT');
   return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',adc:{quality:'UNKNOWN',casKt:null,
@@ -48,11 +63,9 @@
      throw Error('STALE_ADC_SAMPLE');
     const previous=s.adc;
     const deltaTime=previous.lastMs===null?null:(ms-previous.lastMs)/1000;
-    const acceleration=previous.quality==='VALID'&&deltaTime>=0.1&&deltaTime<=10?
-     (cas-previous.casKt)/deltaTime:null;
-    const difference=acceleration===null?0:10*acceleration;
-    const visible=acceleration!==null&&
-     (previous.trendVisible?Math.abs(difference)>=3:Math.abs(difference)>4);
+    const trend=previous.quality==='VALID'?
+     filteredTrend(previous,cas,deltaTime):{acceleration:null,visible:false};
+    const acceleration=trend.acceleration,visible=trend.visible;
     s.adc={quality:'VALID',casKt:cas,pressureAltitudeFt:e.pressureAltitudeFt==null?null:
      required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
      mach:e.mach==null?null:required(e.mach,0,1.5,'ACTUAL_MACH'),
@@ -70,10 +83,9 @@
    if(s.adc.quality==='TRAINING'&&s.adc.lastMs!==null&&ms<=s.adc.lastMs)
     throw Error('STALE_TRAINING_SAMPLE');
    const p=s.adc,dt=p.quality==='TRAINING'&&p.lastMs!==null?(ms-p.lastMs)/1000:null;
-   const acceleration=dt!==null&&dt>=.1&&dt<=10?(cas-p.casKt)/dt:null;
-   const difference=acceleration===null?0:10*acceleration;
-   const visible=acceleration!==null&&
-    (p.trendVisible?Math.abs(difference)>=3:Math.abs(difference)>4);
+   const trend=p.quality==='TRAINING'?
+    filteredTrend(p,cas,dt):{acceleration:null,visible:false};
+   const acceleration=trend.acceleration,visible=trend.visible;
    s.adc={quality:'TRAINING',casKt:cas,
     pressureAltitudeFt:e.pressureAltitudeFt==null?null:
      required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
