@@ -14,7 +14,7 @@
 <section class="efis-physical-dock" aria-label="EFIS CTR PNL"><h3>EFIS CONTROL PANEL</h3>
 <div id="efisCpMount"></div></section>
 </article></section>
-<section class="readings"><h2>Received traffic</h2><p>Simulated cruise FMC route and non-threat background traffic are instructor-only examples, not operational navigation data.</p><div class="legend"><span><i class="symbol ra"></i> RA · solid red square</span><span><i class="symbol ta"></i> TA · solid amber circle</span><span><i class="symbol prox"></i> Proximate · solid white diamond</span><span><i class="symbol other"></i> Other · outline white diamond</span></div><p>Signed labels show hundreds of feet relative to own aircraft. Above / below placement follows relative altitude. An arrow appears for an intruder climbing or descending at 500 fpm or more; no arrow means a lower rate, not necessarily the same altitude. Unknown altitude has no label.</p><p id="ownState"></p><table><thead><tr><th>Target</th><th>Class</th><th>Clock</th><th>Range NM</th><th>Relative ft</th><th>Vertical fpm</th><th>Vertical relation</th><th>CPA s</th></tr></thead><tbody id="trafficRows"></tbody></table></section>
+<section class="readings"><h2>Received traffic</h2><p>Simulated cruise FMC route and non-threat background traffic are instructor-only examples, not operational navigation data.</p><div class="legend"><span><i class="symbol ra"></i> RA · solid red square</span><span><i class="symbol ta"></i> TA · solid amber circle</span><span><i class="symbol prox"></i> Proximate · solid white diamond</span><span><i class="symbol other"></i> Other · outline white diamond</span></div><p>Signed labels show hundreds of feet relative to own aircraft. Above / below placement follows relative altitude. An arrow appears for an intruder climbing or descending at 500 fpm or more; no arrow means a lower rate, not necessarily the same altitude. Unknown altitude has no label.</p><p id="ownState"></p><table><thead><tr><th>Target</th><th>Class</th><th>Clock</th><th>Range NM</th><th>Relative ft</th><th>Vertical fpm</th><th>Vertical relation</th><th>CPA (s)</th><th>3D proximity (s)</th><th>Sep @ CPA (ft)</th></tr></thead><tbody id="trafficRows"></tbody></table></section>
 <section class="advanced controls" aria-label="Advanced TCAS lab controls">
 <details><summary>ADVANCED SETTINGS · TRANSPONDER / EFIS / FLIGHT / FAILURES</summary>
 <div class="fields"><label>Transponder<select id="mode"><option>STBY</option><option value="ALT_OFF">ALT OFF</option><option value="ALT_ON">ALT ON</option><option value="TA_ONLY">TA ONLY</option><option value="TA_RA" selected>TA / RA</option><option>TEST</option></select></label>
@@ -35,8 +35,8 @@
 </main>
 <script src="../../../engine/afds/fma-mode-engine-v1.js"></script><script src="../../../engine/efis/classic-flap-speed-profile-v1.js"></script><script src="../../../engine/efis/classic-speed-tape-engine-v1.js"></script>
 <script src="../eadi-speed-tape-v1.js"></script><script src="../eadi-fma-fcom-v2.js?v=TCAS-CRUISE-0005"></script>
-<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CRUISE-0005"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-CP-0007"></script>
-<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-GEOMETRY-0003"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
-<script src="efis-physical-cp-v1.js?v=TCAS-CP-0007"></script>
-<script src="app.js?v=TCAS-CP-0007"></script>
+<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CRUISE-0005"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-LABEL-FIT-0008"></script>
+<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-TRAJECTORY-0008"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
+<script src="efis-physical-cp-v1.js?v=TCAS-DH-0008"></script>
+<script src="app.js?v=TCAS-TRAJECTORY-0008"></script>
 </body></html>
