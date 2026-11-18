@@ -45,12 +45,27 @@
  }
  function create(id,own,options={}){
   const spec=SCENARIOS[id];if(!spec)throw RangeError('UNKNOWN_TCAS_SCENARIO');
-  for(const [key,value] of Object.entries(options))if(!Number.isFinite(value))throw RangeError('INVALID_INTRUDER_'+key);
+  for(const [key,value] of Object.entries(options)){
+   if(key==='converging'){if(typeof value!=='boolean')throw RangeError('INVALID_INTRUDER_converging');continue;}
+   if(key==='lateralSide'){if(!['LEFT','RIGHT'].includes(value))throw RangeError('INVALID_INTRUDER_lateralSide');continue;}
+   if(!Number.isFinite(value))throw RangeError('INVALID_INTRUDER_'+key);
+  }
   if(options.distanceNm!==undefined&&options.distanceNm<=0)throw RangeError('INVALID_INTRUDER_DISTANCE');
   const heading=own.trueTrackDeg??own.trueHeadingDeg??0,forward=vector(1,heading),side=vector(1,heading+90);
-  const range=options.distanceNm??5.5,lateral=spec.ra===null?.72:0;
-  const relative=options.relativeAltitudeFt??spec.relativeAltitude??(spec.ra?.includes('CLIMB')?-200:200);
-  let rate=options.verticalRateFpm??(spec.vertical==='CONVERGING'?-Math.sign(relative)*1200:spec.vertical==='DIVERGING'?Math.sign(relative)*1200:0);
+  const range=options.distanceNm??5.5,converging=options.converging===true;
+  // A converging encounter enters laterally from one side and automatically
+  // crosses the own altitude near the horizontal CPA. No manual VS is needed.
+  const lateral=converging?(options.lateralSide==='LEFT' ? -.3 : .3):(spec.ra===null?.72:0);
+  const sense=spec.ra?.includes('CLIMB')?1:spec.ra?.includes('DESCEN')?-1:
+   spec.vertical==='CONVERGING'&&spec.relativeAltitude>0?-1:1;
+  const relative=options.relativeAltitudeFt??(converging?-300*sense:
+   spec.relativeAltitude??(spec.ra?.includes('CLIMB')?-200:200));
+  const closingKt=Math.max(1,(own.gsKt??own.tasKt)+(options.speedKt??220));
+  const estimatedCpaSec=range*3600/closingKt;
+  let rate=options.verticalRateFpm??(converging?
+   (own.vsFpm??0)-2*relative*60/estimatedCpaSec:
+   spec.vertical==='CONVERGING'?-Math.sign(relative)*1200:
+   spec.vertical==='DIVERGING'?Math.sign(relative)*1200:0);
   const target={id:'INTRUDER1',n:forward.n*3600*range+side.n*3600*lateral,e:forward.e*3600*range+side.e*3600*lateral,
    altitudeFt:own.altitudeFt+relative,speedKt:options.speedKt??220,headingDeg:norm(heading+180),verticalRate:rate,
    reportsAltitude:!spec.noAltitude,transponder:!spec.noTransponder,bearingValid:!spec.noBearing};
@@ -68,17 +83,34 @@
   const p=offset(state.anchor,own),ov=vector(own.gsKt??own.tasKt,own.trueTrackDeg??own.trueHeadingDeg),iv=vector(t.speedKt,t.headingDeg);
   const n=t.n-p.n-state.ownN,e=t.e-p.e-state.ownE,distance=Math.hypot(n,e),vn=iv.n-ov.n,ve=iv.e-ov.e;
   const vv=vn*vn+ve*ve,dot=n*vn+e*ve,tcpa=vv>1e-10?-dot/vv:Infinity;
-  const miss=Math.hypot(n+vn*Math.max(0,tcpa),e+ve*Math.max(0,tcpa));
+  const cpaTime=Number.isFinite(tcpa)?Math.max(0,tcpa):0;
+  const miss=Math.hypot(n+vn*cpaTime,e+ve*cpaTime);
   const relative=t.altitudeFt-own.altitudeFt,relativeRate=t.verticalRate-own.vsFpm;
   return {id:t.id,bearing:t.bearingValid?norm(Math.atan2(e,n)*180/Math.PI):null,distance,
    relativeAltitude:t.reportsAltitude?relative:null,absoluteAltitudeFt:t.reportsAltitude?t.altitudeFt:null,
    verticalRate:t.reportsAltitude?t.verticalRate:null,relativeVerticalRate:t.reportsAltitude?relativeRate:null,
    verticalRelation:Math.abs(relativeRate)<1?'LEVEL_RATE':relative*relativeRate<0?'CONVERGING':'DIVERGING',
-   tcpaSec:tcpa,missDistanceNm:miss,closingKt:distance>.0001?-dot/distance*3600:0,
-   predictedSeparationFt:t.reportsAltitude?Math.abs(relative+relativeRate*Math.max(0,tcpa)/60):null};
+   tcpaSec:tcpa,missDistanceNm:miss,relativeSpeedKt:Math.sqrt(vv)*3600,
+   closingKt:distance>.0001?-dot/distance*3600:0,
+   predictedSeparationFt:t.reportsAltitude?Math.abs(relative+relativeRate*cpaTime/60):null};
+ }
+ // Minimum vertical separation while the intruder is physically inside a
+ // chosen horizontal threshold. This prevents a present-day small altitude
+ // offset from being mistaken for a future collision. It also catches an
+ // altitude crossing shortly BEFORE CPA (which a CPA-only check can miss).
+ function verticalDuringLateralEncounter(g,radiusNm){
+  if(g.relativeAltitude===null||!Number.isFinite(g.tcpaSec))return Infinity;
+  if(g.missDistanceNm>radiusNm||g.relativeSpeedKt<=0)return Infinity;
+  const halfWindow=Math.sqrt(Math.max(0,radiusNm**2-g.missDistanceNm**2))*3600/g.relativeSpeedKt;
+  const enter=Math.max(0,g.tcpaSec-halfWindow),exit=g.tcpaSec+halfWindow;
+  if(exit<enter)return Infinity;
+  const a=g.relativeAltitude+g.relativeVerticalRate*enter/60;
+  const b=g.relativeAltitude+g.relativeVerticalRate*exit/60;
+  return a*b<=0?0:Math.min(Math.abs(a),Math.abs(b));
  }
  function output(state,own,c=controls(),feeds=DEFAULT_FEEDS){
   const spec=SCENARIOS[state.scenario],xpdr=transponder(c,own,feeds),f=c.failures||{},height=own.radioAltitudeFt;
+  const thresholds=V1.thresholds(own,c.mode);
   const flightValid=own.airborne===true&&[own.altitudeFt,own.vsFpm,own.pitchDeg,own.tasKt].every(Number.isFinite)&&own.tasKt>0;
   const radioValid=Number.isFinite(height)&&!f.radioAlt&&feeds.radioAlt===true;
   const irsValid=!f.irs&&feeds.irs===true;
@@ -93,7 +125,7 @@
   if(c.priorityWarning)inhibits.push('GPWS / WINDSHEAR PRIORITY');
   const out={schema:'B737_CLASSIC_TCAS_OUTPUT_V2',source:'FCOM_MRG_KINEMATIC_TRAINER',mode,stage:'MONITOR',advisory:null,
    ra:null,targets:[],callout:null,transponder:xpdr,inhibits,voiceAllowed:flightValid&&radioValid&&height>=500&&!c.priorityWarning,
-   nominalTaSec:40,nominalRaSec:25,complete:false,clearOfConflict:false};
+   nominalTaSec:thresholds.taSec,nominalRaSec:thresholds.raSec,complete:false,clearOfConflict:false};
   if(mode==='TEST')return {...out,stage:testOk?'TEST OK':'TEST FAIL',callout:testOk?'TCAS SYSTEM TEST OK':'TCAS SYSTEM TEST FAIL',
    voiceAllowed:true,targets:testOk?[{kind:'RA',bearing:own.trueHeadingDeg+12,distance:2,relativeAltitude:-500,verticalRate:600},
     {kind:'TA',bearing:own.trueHeadingDeg-12,distance:3,relativeAltitude:500,verticalRate:0},
@@ -106,11 +138,22 @@
    const g=geometry(state,t,own),alt=g.relativeAltitude,pred=g.predictedSeparationFt;
    let kind=g.distance<=6&&alt!==null&&Math.abs(alt)<=1200?'PROX':'OTHER';
    const approaching=g.tcpaSec>0&&g.closingKt>0;
-   // Nominal times from FCOM 15.20.29. Lateral/vertical margins below
-   // are declared training geometry tolerances, not certified CAS thresholds.
-   const ta=((approaching&&g.tcpaSec<=40&&g.missDistanceNm<.9)||g.distance<.75)&&
-    (alt===null?own.altitudeFt<15500:Math.min(Math.abs(alt),pred)<850);
-   const threat=alt!==null&&((approaching&&g.tcpaSec<=25&&g.missDistanceNm<.55)||g.distance<.55)&&Math.min(Math.abs(alt),pred)<600;
+   // Altitude-dependent sensitivity values from the existing V1 reference
+   // table (TA/RA tau, DMOD, ZTHR). This remains a simplified encounter lab.
+   const taRadius=thresholds.taNm??.75,raRadius=thresholds.raNm??.55;
+   const hTa=approaching&&g.tcpaSec<=thresholds.taSec&&g.missDistanceNm<=taRadius;
+   const hRa=approaching&&g.tcpaSec<=(thresholds.raSec??0)&&g.missDistanceNm<=raRadius;
+   const vTa=verticalDuringLateralEncounter(g,taRadius);
+   const vRa=verticalDuringLateralEncounter(g,raRadius);
+   // Trainer scenario rule: if an intruder is already separating vertically
+   // and will clear the RA vertical envelope at CPA, do not fabricate an
+   // escalating threat from its earlier smaller altitude offset.
+   const separatingSafely=g.verticalRelation==='DIVERGING'&&
+    pred!==null&&pred>=thresholds.raFt;
+   const ta=hTa&&!separatingSafely&&
+    (alt===null?own.altitudeFt<15500:vTa<=(thresholds.taFt??850));
+   const threat=alt!==null&&hRa&&!separatingSafely&&
+    vRa<=(thresholds.raFt??600);
    if(ta)kind='TA';if(threat&&raAllowed)kind='RA';
    if(spec.demo)kind=t.demoKind==='RA'&&!raAllowed?'TA':t.demoKind;
    if(c.priorityWarning&&(kind==='RA'||kind==='TA'))kind='PROX';
