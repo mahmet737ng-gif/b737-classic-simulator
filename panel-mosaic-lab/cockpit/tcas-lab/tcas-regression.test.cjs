@@ -238,3 +238,46 @@ test('EHSI zooms compass-clipped route and displays max two OTHER contacts withi
  assert.ok(near.nodes.some(n=>n.attributes['data-segment']==='active-route'));
  assert.ok(render(10,false).nodes.some(n=>n.attributes['data-segment']==='active-route'));
 });
+
+test('ETA-to-3D proximity requires the two trajectories to overlap in time',()=>{
+ const geom=(distance,relativeAltitude,relativeVerticalRate,tcpaSec,relativeSpeedKt)=>({
+  distance,relativeAltitude,relativeVerticalRate,tcpaSec,relativeSpeedKt
+ });
+ const distant=TCAS.trajectoryIntersection(geom(2,0,0,120,360),.8,600);
+ assert.ok(distant.timeSec>48,'No early advisory before meaningful closing time');
+ const imminent=TCAS.trajectoryIntersection(geom(2,0,0,30,240),.8,600);
+ assert.ok(Number.isFinite(imminent.timeSec));
+ const lateVertical=TCAS.trajectoryIntersection(geom(2,1300,-600,30,240),.8,600);
+ assert.equal(lateVertical.timeSec,Infinity,'Vertical crossing after horizontal passing is safe');
+ const aligned=TCAS.trajectoryIntersection(geom(2,1000,-2000,30,240),.8,600);
+ assert.ok(Number.isFinite(aligned.timeSec),'Simultaneous 3D crossing is unsafe');
+ const miss=TCAS.trajectoryIntersection(geom(3,0,0,30,240),.2,600);
+ assert.equal(miss.timeSec,Infinity,'Parallel offset must never generate an RA');
+ const intruder=run('SAME_LEVEL',{},25).output.targets[0];
+ assert.ok(intruder.timeToRaProximitySec!==null,'Every genuine RA has an estimated entry time');
+ assert.ok(Number.isFinite(intruder.predictedSeparationFt));
+ assert.ok(!['RA','TA'].includes(run('CLIMB',{
+  distanceNm:2.1,relativeAltitudeFt:300,verticalRateFpm:1500
+ }).output.targets[0].kind),'Climbing away does not create a false advisory');
+});
+test('TCAS EHSI labels remain whole even close to the enlarged lower/right compass rim',()=>{
+ const l=EHSI.computeDisplay({mode:'CTR_MAP',range:10,nav:{valid:true},
+  route:{points:[{name:'PT',x:0,y:2}]},trainingRoseLarge:true,
+  efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true}}).layout;
+ assert.ok(l.radius>180);
+ for(const pt of [[254,451,'TOLRA'],[350,380,'SIBEN'],[255,118,'LEMDA'],[410,290,'VABER']]){
+  const p=EHSI.routeFixLabel(...pt,l);
+  assert.ok(p,'The label must be relocated fully inside the rose: '+pt);
+  const [x1,y1,x2,y2]=p.box;
+  for(const x of [x1,x2])for(const y of [y1,y2]){
+   const nx=(x-l.roseCenter[0])/(l.radiusX-9);
+   const ny=(y-l.roseCenter[1])/(l.radius-9);
+   assert.ok(nx*nx+ny*ny<=1,'Whole label glyph footprint is in-scale');
+  }
+ }
+ const cp=fs.readFileSync(path.join(__dirname,'efis-physical-cp-v1.js'),'utf8');
+ assert.match(cp,/mode:'CTR_MAP',range:10,tfc:true,dh:-20/);
+ assert.match(cp,/kind==='rst'\)\{state\.dh=-20/);
+ const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+ assert.ok(html.includes('3D proximity (s)')&&html.includes('Sep @ CPA (ft)'));
+});
