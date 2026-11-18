@@ -11,7 +11,7 @@
   initialSpeedKt:null,fdPitchDeg:0,fdRollTrackDeg:null,thrustDemand:'NONE',
   atMode:'',pitchMode:'',rollMode:'',afdsMode:'',apDisengage:false,
   targetSpeedKt:null,atLimit:'NONE',throttleFraction:0,reason:'NOT_ENGAGED',
-  singleEngine:false,gaFullReady:false});
+  singleEngine:false,engineFailureAfterEngagement:false,gaFullReady:false});
  function engineCount(c){return Number(c.engine1Running===true)+Number(c.engine2Running===true);}
  function engage(previous,ctx={}){
   if(!['OFF','TO','GA'].includes(previous?.phase))throw Error('Invalid TOGA previous state');
@@ -57,6 +57,25 @@
   if(previous.phase==='OFF')return previous;
   const elapsed=previous.elapsedSec+dtSec,ias=safe(ctx.iasKt,0),ra=safe(ctx.radioAltitudeFt,0);
   let next={...previous,elapsedSec:elapsed};
+  const observedEngines=typeof ctx.engine1Running==='boolean'&&
+    typeof ctx.engine2Running==='boolean'?engineCount(ctx):null;
+  if(observedEngines===1&&!previous.singleEngine){
+   const v2=safe(ctx.v2Kt,0);
+   if(previous.phase==='GA'){
+    // FCOM 4.20.27: failure before 10 seconds uses selected approach
+    // speed; after 10 seconds, speed at GA engagement if current IAS is
+    // within 5 kt, otherwise current IAS. Never command below V2.
+    const target=elapsed<10?safe(ctx.selectedSpeedKt,ias):
+     Math.abs(ias-previous.initialSpeedKt)<=5?previous.initialSpeedKt:ias;
+    next={...next,singleEngine:true,engineFailureAfterEngagement:true,
+     targetSpeedKt:Math.max(v2,target),reason:'ENGINE_FAILURE_AFTER_GA'};
+   }else{
+    // FCOM 4.20.15: engine-out takeoff target is clamped V2..V2+20.
+    next={...next,singleEngine:true,engineFailureAfterEngagement:true,
+     targetSpeedKt:v2>0?Math.max(v2,Math.min(v2+20,ias)):safe(ctx.selectedSpeedKt,ias),
+     reason:'ENGINE_FAILURE_DURING_TAKEOFF'};
+   }
+  }
   if(previous.phase==='TO'){
    // Takeoff-specific FCOM phases: -10° until 60 kt; 15° after 60;
    // 84 kt disconnects thrust servo while TAKEOFF remains selected.
@@ -75,10 +94,13 @@
   if(previous.phase==='GA'){
    // Reduced GA has to be achieved before a second TOGA press can ask full N1.
    next.gaFullReady=ctx.reducedGaN1Reached===true||previous.gaFullReady;
-   next.fdPitchDeg=previous.singleEngine?13:15;
-   if(previous.singleEngine){
-    const v2=safe(ctx.v2Kt,0),mcp=safe(ctx.selectedSpeedKt,previous.targetSpeedKt);
-    next.targetSpeedKt=Math.max(v2,mcp);
+   next.fdPitchDeg=next.singleEngine?13:15;
+   if(next.singleEngine){
+    const v2=safe(ctx.v2Kt,0);
+    const selected=safe(ctx.selectedSpeedKt,next.targetSpeedKt);
+    // After failure, only a HIGHER MCP selection can command acceleration.
+    next.targetSpeedKt=Math.max(v2,next.targetSpeedKt,
+     selected>next.targetSpeedKt?selected:next.targetSpeedKt);
    }
   }
   return next;
