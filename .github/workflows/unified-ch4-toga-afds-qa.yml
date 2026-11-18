@@ -1,0 +1,39 @@
+name: Unified Chapter 4 TOGA and AFDS Regression
+on:
+  push:
+    paths:
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/classic-toga-ch4-v1.test.cjs'
+      - 'engine/afds/mcp-mode-core-v1.js'
+      - 'engine/afds/mcp-level-change-ch4-v1.test.cjs'
+      - 'engine/afds/fma-mode-engine-v1.js'
+      - 'engine/instruments/mechanical-number-wheels-v1.js'
+      - 'engine/instruments/mechanical-number-wheels-twenty-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/throttle-levers.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/instrument-lab/gauges.js'
+      - '.github/workflows/unified-ch4-toga-afds-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  afds-ch4:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: |
+          for source in engine/afds/classic-toga-ch4-v1.js engine/afds/mcp-mode-core-v1.js engine/afds/fma-mode-engine-v1.js engine/instruments/mechanical-number-wheels-v1.js panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js panel-mosaic-lab/cockpit/throttle-levers.js panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js panel-mosaic-lab/cockpit/instrument-lab/gauges.js; do node --check "$source"; done
+      - name: FCOM mode and mechanical wheel tests
+        run: |
+          node engine/afds/classic-toga-ch4-v1.test.cjs
+          node engine/afds/mcp-level-change-ch4-v1.test.cjs
+          node engine/instruments/mechanical-number-wheels-twenty-v1.test.cjs
+          node engine/afds/mcp-exclusive-modes-v1.test.cjs
+          node engine/afds/fma-mode-engine-v1.test.cjs
+          node panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.test.cjs
