@@ -1,9 +1,15 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="style.css?v=TCAS-QUICK-0003"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="style.css?v=TCAS-TFC-0004"></head><body>
 <header><div><h1>737 Classic · TCAS Encounter Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
 <main><section class="controls controls-primary" aria-label="Encounter quick controls">
 <div class="encounter-bar"><label class="encounter-select">Encounter<select id="scenario"></select></label>
 <div class="actions primary-actions"><button id="start">LOAD ENCOUNTER</button><button id="play">RUN</button><button id="step">STEP 1 S</button><button id="respond">RESPOND TO RA</button>
 <label class="converging-option" title="Automatically generate a lateral and vertical altitude-crossing encounter"><input id="converging" type="checkbox"> CONVERGING</label></div></div>
+<div class="efis-quick-controls" role="group" aria-label="EFIS CONTROL PANEL">
+<span class="efis-quick-title">EFIS CONTROL</span>
+<label>MAP MODE<select id="displayMode"><option value="CTR_MAP" selected>CTR MAP · 360°</option><option value="MAP">MAP · EXPANDED</option></select></label>
+<label>RANGE (NM)<select id="range"><option>10</option><option>20</option><option>40</option><option>80</option></select></label>
+<button id="tfc" type="button" aria-pressed="true" class="tfc-on" title="Show or hide TCAS traffic on the EHSI">TFC ON</button>
+</div>
 </section>
 <section class="screens"><article><h2>EADI · red pitch attitudes to avoid</h2><canvas id="eadi" width="640" height="640"></canvas></article><article><h2>EHSI · traffic / altitude / trend</h2><svg id="ehsi" xmlns="http://www.w3.org/2000/svg"></svg></article></section>
 <section class="readings"><h2>Received traffic</h2><div class="legend"><span><i class="symbol ra"></i> RA · solid red square</span><span><i class="symbol ta"></i> TA · solid amber circle</span><span><i class="symbol prox"></i> Proximate · solid white diamond</span><span><i class="symbol other"></i> Other · outline white diamond</span></div><p>Signed labels show hundreds of feet relative to own aircraft. Above / below placement follows relative altitude. An arrow appears for an intruder climbing or descending at 500 fpm or more; no arrow means a lower rate, not necessarily the same altitude. Unknown altitude has no label.</p><p id="ownState"></p><table><thead><tr><th>Target</th><th>Class</th><th>Clock</th><th>Range NM</th><th>Relative ft</th><th>Vertical fpm</th><th>Vertical relation</th><th>CPA s</th></tr></thead><tbody id="trafficRows"></tbody></table></section>
@@ -11,14 +17,13 @@
 <details><summary>ADVANCED SETTINGS · TRANSPONDER / EFIS / FLIGHT / FAILURES</summary>
 <div class="fields"><label>Transponder<select id="mode"><option>STBY</option><option value="ALT_OFF">ALT OFF</option><option value="ALT_ON">ALT ON</option><option value="TA_ONLY">TA ONLY</option><option value="TA_RA" selected>TA / RA</option><option>TEST</option></select></label>
 <label>ATC unit<select id="unit"><option>1</option><option>2</option></select></label><label>ALT SOURCE<select id="altSource"><option>1</option><option>2</option></select></label><label>Squawk<input id="code" value="2000" maxlength="4"></label>
-<label>Altitude band<select id="filter"><option value="NORM">NORM</option><option value="ABOVE">ABOVE</option><option value="BELOW">BELOW</option></select></label><label>EHSI mode<select id="displayMode"><option>MAP</option><option>CTR_MAP</option><option>EXP_NAV</option><option>EXP_VOR_ILS</option><option>FULL_NAV</option><option>PLAN</option></select></label>
-<label>Range (NM)<select id="range"><option>10</option><option>20</option><option>40</option><option>80</option></select></label><label>Time rate<select id="rate"><option>1</option><option>5</option></select></label>
+<label>Altitude band<select id="filter"><option value="NORM">NORM</option><option value="ABOVE">ABOVE</option><option value="BELOW">BELOW</option></select></label><label>Time rate<select id="rate"><option>1</option><option>5</option></select></label>
 <label>Own altitude (ft MSL)<input id="altitude" type="number" value="10000"></label><label>Radio height (ft)<input id="radioHeight" type="number" value="6000"></label><label>Own IAS / TAS (kt)<input id="speed" type="number" value="220"></label>
 <label>Own pitch target (°)<input id="pitch" type="number" step="0.1" value="2"></label><label>Own VS target (fpm)<input id="vs" type="number" value="0" step="100"></label>
 <label>Intruder initial relative altitude (ft)<input id="relative" type="number" placeholder="Encounter default"></label><label>Intruder vertical rate (fpm)<input id="intruderVS" type="number" placeholder="Encounter default"></label></div>
 
 <div class="fields"><label>Converging intruder side<select id="intruderSide"><option value="RIGHT">RIGHT</option><option value="LEFT">LEFT</option></select></label></div>
-<div class="actions"><label><input id="tfc" type="checkbox" checked> TFC</label><button id="ident">IDENT</button><button id="absolute">ABS ALT 15 S</button><label><input id="priority" type="checkbox"> GPWS / WINDSHEAR priority</label></div>
+<div class="actions"><button id="ident">IDENT</button><button id="absolute">ABS ALT 15 S</button><label><input id="priority" type="checkbox"> GPWS / WINDSHEAR priority</label></div>
 <details><summary>Source / power / CB / interface failures</summary><div id="failures" class="fields"></div><label><input id="bus1" type="checkbox" checked> Electronic Bus 1 · 115 VAC (ATC 1)</label><label><input id="bus2" type="checkbox" checked> Electronic Bus 2 · 115 VAC (ATC 2)</label><label><input id="atc2cb" type="checkbox" checked> ATC2 CB P6-1 D16 closed</label></details>
 
 </details>
@@ -29,5 +34,5 @@
 <script src="../../../engine/afds/fma-mode-engine-v1.js"></script><script src="../../../engine/efis/classic-flap-speed-profile-v1.js"></script><script src="../../../engine/efis/classic-speed-tape-engine-v1.js"></script>
 <script src="../eadi-speed-tape-v1.js"></script><script src="../eadi-fma-fcom-v2.js"></script>
 <script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-MOTION-0002"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-MOTION-0002"></script>
-<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-GEOMETRY-0003"></script><script src="app.js?v=TCAS-QUICK-0003"></script>
+<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-GEOMETRY-0003"></script><script src="app.js?v=TCAS-TFC-0004"></script>
 </body></html>
