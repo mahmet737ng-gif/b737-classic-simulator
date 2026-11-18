@@ -35,3 +35,43 @@ main{max-width:1540px;padding:12px}
  .encounter-bar .primary-actions{gap:6px}
  .encounter-bar .primary-actions button{font-size:11px;padding:7px}
 }
+
+/* TCAS-TFC-0004 — compact, always-visible EFIS selectors above the glass. */
+.efis-quick-controls {
+ display:flex; flex-wrap:wrap; align-items:end; gap:8px;
+ border-top:1px solid #355367; margin-top:9px; padding-top:7px;
+}
+.efis-quick-title {
+ color:#91cee8; font-size:11px; font-weight:800; letter-spacing:.07em;
+ align-self:center; margin-right:5px; white-space:nowrap;
+}
+.efis-quick-controls label {
+ margin:0; display:flex; flex-direction:column;
+ gap:2px; min-width:0; color:#b3d4e8; font-size:11px;
+}
+.efis-quick-controls #displayMode {width:174px}
+.efis-quick-controls #range {width:90px}
+.efis-quick-controls select,
+.efis-quick-controls button {
+ min-height:33px; padding:5px 10px; line-height:1.2;
+}
+.efis-quick-controls #tfc {
+ min-width:90px; font-weight:800; letter-spacing:.03em;
+ border:1px solid #517b90; cursor:pointer;
+}
+.efis-quick-controls #tfc.tfc-on {
+ color:#28ed49; background:#0c2a20; border-color:#28b65b;
+}
+.efis-quick-controls #tfc.tfc-off {
+ color:#b7c4d0; background:#15232d; border-color:#536d7a;
+}
+.efis-quick-controls #tfc:focus-visible {
+ outline:2px solid #a8eaff;outline-offset:2px;
+}
+@media(max-width:550px){
+ .efis-quick-controls{gap:6px}
+ .efis-quick-title{flex-basis:100%}
+ .efis-quick-controls #displayMode{width:150px}
+ .efis-quick-controls #range{width:80px}
+ .efis-quick-controls #tfc{min-width:75px}
+}
