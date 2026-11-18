@@ -32,6 +32,7 @@ function layoutFor(m){
  const base=LAYOUT[m.mode];
  if(!m.trainingRoseLarge)return base;
  if(m.mode==='CTR_MAP')return {...base,roseCenter:[256,290],aircraft:[256,290],radius:189,radiusX:211};
+ if(m.mode==='EXP_NAV')return {...base,route:true};
  if(m.mode==='FULL_NAV')return {...base,roseCenter:[256,288],aircraft:[256,288],
   radius:183,radiusX:199,route:m.routeOnFull===true,calibrated:true};
  return base;
@@ -67,7 +68,8 @@ function computeDisplay(input){
  const m=model(input),l=layoutFor(m),plan=m.mode==='PLAN';
  const headingValid=m.efis.headingValid!==false,trackValid=m.efis.trackValid!==false;
  const compassValid=m.radio?headingValid:trackValid;
- const trafficMode=['MAP','CTR_MAP','EXP_NAV','EXP_VOR_ILS'].includes(m.mode);
+ const trafficMode=['MAP','CTR_MAP','EXP_NAV','EXP_VOR_ILS'].includes(m.mode)||
+  (m.mode==='FULL_NAV'&&m.routeOnFull===true);
  return {version:VERSION,mode:m.mode,presentation:m.modeName,supported:MODES.includes(input.mode),
   orientation:plan?'TRUE_NORTH':m.radio?'HEADING_UP':'TRACK_UP',
   compassHeadingReference:m.radio?'HEADING':'TRACK',has70DegreeArc:l.degrees===70,
