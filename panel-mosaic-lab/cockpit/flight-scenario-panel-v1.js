@@ -7,7 +7,8 @@
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
- const VERSION='UNIFIED-FLIGHT-SCENARIOS-0001';
+ let tickErrorCount=0,lastTickError=null;
+ const VERSION='UNIFIED-FLIGHT-SCENARIOS-0006-EFIS-CONTINUITY';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
   <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
@@ -266,7 +267,8 @@
  function followMcp(){
   if(!active||!state?.airborne)return;
   const fcc=win.B737UnifiedFccFlightV1;
-  const output=win.B737McpAFDSBridgeV1?.getOutput?.();
+  const mcp=win.B737McpAFDSBridgeV1;
+  const output=mcp?.getOutput?.();
   if(!mcpFollow||output?.power!==true||!output.modes?.autopilot){
    if(previouslyCoupled){
     state=Core.command(state,{type:'MANUAL_HOLD'});
@@ -322,7 +324,7 @@
   if(active&&state){
    const dt=lastTick?Math.min(.3,Math.max(0,(now-lastTick)/1000)):0;
    lastTick=now;
-   if(!pause){
+   try{if(!pause){
     if(now-lastEngineContextAt>=900){
      lastEngineContextAt=now;
      try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({
@@ -332,6 +334,16 @@
     }
     followMcp();
     if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
+   }}catch(error){
+    // An FCC/plant update error must not withdraw healthy IRS/ADC/RA
+    // sources. Publish the last valid simulated state, as during PAUSE,
+    // and retain the failure for diagnosis instead of letting TTL expire.
+    tickErrorCount++;
+    lastTickError={message:String(error?.message||error),atMs:Date.now()};
+    if(tickErrorCount===1||tickErrorCount%100===0)
+     console.warn('FLIGHT UPDATE ERROR',error);
+    status('FLIGHT UPDATE ERROR · '+lastTickError.message+
+     ' · Telemetry continues from the last valid simulated state.',true);
    }
    if(now-lastPublish>=250){publish();lastPublish=now;}
    if(now-lastUI>=400){updateUI();lastUI=now;}
@@ -375,6 +387,7 @@
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
    lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,
+   tickErrorCount,lastTickError:lastTickError?{...lastTickError}:null,
    mcpFollow,producers:Object.keys(producers),producerErrors:{...producerErrors}})});
  win.B737UnifiedFlightScenarioV1=api;
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
