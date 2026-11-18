@@ -38,7 +38,8 @@
   button.setAttribute?.('aria-pressed',String(tfcVisible));
  }
  function paint(){
-  const state=Core.initial();
+  const state=Core.initial(),cp=win.B737TcasEfisCPV1?.getState?.();
+  if(cp)state.eadi.brightness=cp.brightness.adi;
   state.eadi.pitch=own.pitchDeg;state.eadi.bank=0;
   // The two attitude inputs agree: do not generate an artificial PITCH compare flag.
   state.eadi.otherPitch=own.pitchDeg;state.eadi.otherBank=0;
@@ -56,16 +57,36 @@
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
   const cruise=Cruise.route({elapsedSec:own.elapsedSec,groundSpeedKt:own.gsKt});
-  const ambient=Cruise.ambient({elapsedSec:own.elapsedSec,ownAltitudeFt:own.altitudeFt,
+  const ambientAll=Cruise.ambient({elapsedSec:own.elapsedSec,ownAltitudeFt:own.altitudeFt,
    initialAltitudeFt,ownGroundSpeedKt:own.gsKt});
+  const rangeNm=Number(by('range').value);
+  const separation=(a,b)=>{
+   const aAngle=a.bearing*Math.PI/180,bAngle=b.bearing*Math.PI/180;
+   return Math.hypot(a.distance*Math.sin(aAngle)-b.distance*Math.sin(bAngle),
+    a.distance*Math.cos(aAngle)-b.distance*Math.cos(bAngle));
+  };
+  // Only two non-target contacts inside 10 NM, and never crowd the chosen
+  // encounter target or each other. The targets remain independently moving.
+  const ambient=[];
+  for(const t of ambientAll.sort((a,b)=>a.distance-b.distance)){
+   if(t.distance>rangeNm)continue;
+   if(rangeNm<=10&&ambient.length>=2)break;
+   if(out.targets.some(target=>Number.isFinite(target.bearing)&&
+    separation(t,target)<2.6))continue;
+   if(ambient.some(visible=>separation(t,visible)<3))continue;
+   ambient.push(t);
+  }
   // Ambient contacts are visual-only; TCAS guidance comes exclusively from C.step.
   const traffic={...out,targets:[...out.targets,...ambient]};
-  win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:Number(by('range').value),
+  win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:rangeNm,
    heading:own.trueHeadingDeg,track:own.trueTrackDeg,geoTrack:own.trueTrackDeg,selectedHeading:own.trueTrackDeg,
-   trueRef:false,nav:cruise.nav,route:cruise.route,options:{tfc:tfcVisible},traffic,
-   trueAirspeed:own.tasKt,groundSpeed:own.gsKt,syntheticAirport:false,
-   trafficLabelOffsetY:12,
-   efis:{displayPower:true,sgValid:true,headingValid:!settings.failures.irs,trackValid:!settings.failures.irs},weather:{}});
+   trueRef:false,nav:cruise.nav,route:cruise.route,options:{tfc:tfcVisible,...cp?.options},traffic,
+   trueAirspeed:own.tasKt,groundSpeed:own.gsKt,syntheticAirport:false,mapObjects:[],
+   trafficLabelOffsetY:12,routeClipToScale:true,trainingRoseLarge:true,routeOnFull:true,
+   efis:{displayPower:true,sgValid:true,headingValid:!settings.failures.irs,
+    trackValid:!settings.failures.irs,brightness:cp?.brightness.hsi??1,
+    wxBrightness:cp?.brightness.wxInner??1},weather:{}});
+  win.B737TcasEfisCPV1?.sync?.({mode:by('displayMode').value,range:rangeNm,tfc:tfcVisible});
   by('status').textContent=[out.mode,out.stage,out.callout,...out.inhibits].filter(Boolean).join(' · ');
   const t=out.transponder;by('xpdr').textContent='ATC '+t.selectedUnit+' · '+t.displayedCode+' · MODE S '+(t.modeS?'ON':'OFF')+' · ALT '+(t.altitudeReporting?'REPORTING':'OFF / INVALID')+' · '+(t.atcFailLight?'ATC FAIL / TEST':'NORMAL')+(t.ident?' · IDENT':'');
   by('ownState').textContent='SIM UTC '+cruise.utc+' · NEXT '+cruise.next+
@@ -97,5 +118,6 @@
  by('tfc').onclick=()=>{tfcVisible=!tfcVisible;syncTfc();paint();};
  by('ident').onclick=()=>{settings.identUntil=own.elapsedSec+1;refresh();};by('absolute').onclick=()=>{settings.absoluteUntil=own.elapsedSec+15;refresh();};
  function tick(now){if(running&&last!==null){const dt=Math.min(.2,(now-last)/1000)*Number(by('rate').value);try{step(dt);}catch(e){running=false;by('status').textContent=e.message;}}last=now;requestAnimationFrame(tick);}
+ win.B737TcasEfisCPChanged=()=>{if(out)paint();};
  syncTfc();load();requestAnimationFrame(tick);
 })(window);
