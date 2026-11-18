@@ -117,6 +117,23 @@ test('EHSI actually renders tracked traffic on 360° CTR MAP (even when beyond e
  assert.equal(state.trafficOverlay,true);
  assert.ok(nodes.some(n=>n.attributes['data-segment']==='traffic-prox'),
   'off-axis real intruder must be represented by a white diamond in CTR MAP');
+ // Exercise the same OFFSCALE scenario after it has become an actual RA.
+ // Its 45-degree bearing is outside the expanded arc, but lies within CTR MAP.
+ let moving=TCAS.create('OFFSCALE',own());
+ const o=own();let raState=null;
+ for(let second=0;second<75;second++){
+  moving=TCAS.step(moving,o,second?1:0,TCAS.controls());
+  if(moving.output.targets.some(t=>t.kind==='RA')){raState=moving.output;break;}
+ }
+ assert.ok(raState,'offscale scenario must reach a real RA');
+ const activeRa=makeSvg();
+ EHSI.render(activeRa,{...params('CTR_MAP'),traffic:raState});
+ assert.ok(descendants(activeRa).some(n=>n.attributes['data-segment']==='traffic-ra'),
+  'RA red square must render in the correct bearing on CTR MAP');
+ const raOffscale=makeSvg();
+ EHSI.render(raOffscale,{...params('MAP'),traffic:raState});
+ assert.ok(descendants(raOffscale).some(n=>n.attributes['data-text']==='OFFSCALE'),
+  'expanded MAP truthfully reports an out-of-arc 45-degree RA');
  const expanded=makeSvg();EHSI.render(expanded,params('MAP'));
  const outOfArc=descendants(expanded);
  assert.ok(!outOfArc.some(n=>n.attributes['data-segment']==='traffic-prox'),
