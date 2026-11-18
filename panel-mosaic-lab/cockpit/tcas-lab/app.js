@@ -1,12 +1,16 @@
 (function(win){'use strict';
  const C=win.B737ClassicTcasV2,Core=win.EFISDisplayLabCore,by=id=>document.getElementById(id);
  let settings=C.controls(),own={airborne:true,altitudeFt:10000,radioAltitudeFt:6000,tasKt:220,gsKt:220,iasKt:220,pitchDeg:2,vsFpm:0,trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},
- encounter=null,out=null,running=false,last=null,targetPitch=2;
+ encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true;
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='SAME_LEVEL';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
- function load(){own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.tasKt=own.gsKt=own.iasKt=Number(by('speed').value);own.pitchDeg=Number(by('pitch').value);targetPitch=own.pitchDeg;own.vsFpm=Number(by('vs').value);
-  const options={};if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
+ function load(){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;
+  own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.tasKt=own.gsKt=own.iasKt=Number(by('speed').value);own.pitchDeg=Number(by('pitch').value);targetPitch=own.pitchDeg;own.vsFpm=Number(by('vs').value);
+  const options={};
+  if(by('converging').checked){options.converging=true;options.lateralSide=by('intruderSide').value;}
+  if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);
+  if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
   encounter=C.create(scenario.value,own,options);refresh();}
  function refresh(){if(!encounter)return;encounter=C.step(encounter,own,0,settings,feeds());out=encounter.output;paint();}
  function step(dt){
@@ -17,7 +21,13 @@
  }
  function paint(){
   const state=Core.initial();state.eadi.pitch=own.pitchDeg;state.eadi.bank=0;state.eadi.ias=own.iasKt;state.eadi.radioAlt=own.radioAltitudeFt;
-  state.eadi.tcasRa=out.ra;state.eadi.fd=false;state.eadi.fdAuto=false;state.eadi.at='';state.eadi.afds='';state.eadi.pitchMode='';state.eadi.rollMode='';
+  state.eadi.tcasRa=out.ra;
+  // Cruise FMC guidance is unchanged by a TCAS response: the crew
+  // disengages CMD and flies the RA with the flight director available.
+  state.eadi.at='FMC SPD';state.eadi.pitchMode='VNAV PTH';state.eadi.rollMode='LNAV';
+  state.eadi.afds=autopilotEngaged?'CMD':'FD';state.eadi.apEngaged=autopilotEngaged;
+  state.eadi.fd=true;state.eadi.fdAuto=false;state.eadi.fdPitch=targetPitch;state.eadi.fdRoll=0;
+  state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
   win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:Number(by('range').value),heading:0,track:0,selectedHeading:0,
    trueRef:false,nav:{valid:true},route:{points:[]},options:{tfc:by('tfc').checked},traffic:out,
@@ -31,8 +41,16 @@
  }
  function guard(fn){return ()=>{try{fn();}catch(e){by('status').textContent=e.message;}};}
  by('start').onclick=guard(load);by('play').onclick=()=>{running=!running;last=null;by('play').textContent=running?'PAUSE':'RUN';};by('step').onclick=guard(()=>step(1));
- by('respond').onclick=()=>{if(!out?.ra)return;const zones=out.ra.avoid;
-  targetPitch=zones.length===2?(zones[0].pitchDeg+zones[1].pitchDeg)/2:(zones[0]?.pitchDeg??2)+(zones[0]?.side==='BELOW'?.3:-.3);by('pitch').value=targetPitch.toFixed(1);};
+ by('respond').onclick=guard(()=>{
+  if(!out?.ra)return;
+  // EADI annunciator changes immediately, not only at the next RUN frame.
+  autopilotEngaged=false;
+  const zones=out.ra.avoid;
+  targetPitch=zones.length===2?(zones[0].pitchDeg+zones[1].pitchDeg)/2:
+   (zones[0]?.pitchDeg??2)+(zones[0]?.side==='BELOW'?.3:-.3);
+  by('pitch').value=targetPitch.toFixed(1);
+  paint();
+ });
  for(const [id,key] of [['mode','mode'],['unit','unit'],['altSource','altSource'],['code','code'],['filter','filter']])by(id).onchange=guard(()=>{settings[key]=['unit','altSource'].includes(key)?Number(by(id).value):by(id).value;refresh();});
  by('pitch').onchange=()=>{targetPitch=Number(by('pitch').value);};
  by('vs').onchange=()=>{targetPitch=2+Math.asin(Math.max(-.7,Math.min(.7,Number(by('vs').value)/(own.tasKt*6076.11549/60))))*180/Math.PI;by('pitch').value=targetPitch.toFixed(1);};
