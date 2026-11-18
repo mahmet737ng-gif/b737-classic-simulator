@@ -143,8 +143,11 @@
  // 400ft only turning BOTH FD OFF may terminate the protected phase.
  win.addEventListener('b737:mcp-button-request',e=>{
   const id=e.detail?.id;
-  if(!active()||!['VNAV','LVL_CHG','ALT_HLD','VS'].includes(id))return;
-  if((scenario()?.radioAltitudeFt??0)>=400)releaseToga();
+  if(!active()||(scenario()?.radioAltitudeFt??0)<400)return;
+  if(/^CMD_[AB]$/.test(id)&&mcp()?.modes?.autopilot===id){
+   releaseToga();return;
+  }
+  if(['VNAV','LVL_CHG','ALT_HLD','VS'].includes(id))releaseToga();
  });
  win.addEventListener('b737:mcp-hardware-change',e=>{
   if(!active())return;
