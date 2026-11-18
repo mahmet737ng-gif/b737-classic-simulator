@@ -19,8 +19,8 @@
   {name:'LEMDA',eastNm:13.0,northNm:98.0}
  ]);
  const TRAFFIC=Object.freeze([
-  {id:'OTHER-1',bearing:315,distanceNm:5.0,altitudeDeltaFt:1800,verticalRateFpm:0,headingDeg:8,speedKt:455},
-  {id:'OTHER-2',bearing:42,distanceNm:8.1,altitudeDeltaFt:-1600,verticalRateFpm:350,headingDeg:330,speedKt:425},
+  {id:'OTHER-1',bearing:329,distanceNm:5.1,altitudeDeltaFt:1800,verticalRateFpm:0,headingDeg:8,speedKt:455},
+  {id:'OTHER-2',bearing:28,distanceNm:8.4,altitudeDeltaFt:-1600,verticalRateFpm:350,headingDeg:330,speedKt:425},
   {id:'OTHER-3',bearing:133,distanceNm:16.0,altitudeDeltaFt:2400,verticalRateFpm:0,headingDeg:75,speedKt:410},
   {id:'OTHER-4',bearing:232,distanceNm:24.0,altitudeDeltaFt:-2300,verticalRateFpm:-550,headingDeg:190,speedKt:455}
  ]);
