@@ -8,6 +8,7 @@
  if(!T){win.console?.warn('TOGA CH4 core unavailable');return;}
  const doc=win.document;
  let state=T.initial(),lastMs=0,lastFma='',lastThrust='',errors=[];
+ let thrustFeedback='NOT_REQUESTED';
  const getFlight=()=>win.B737UnifiedFlightScenarioV1;
  const mcp=()=>win.B737McpAFDSBridgeV1?.getOutput?.();
  const owner=()=>win.B737ISNCockpitV1;
@@ -66,9 +67,10 @@
   if(!['TAKEOFF_LIMIT','GA_REDUCED','GA_FULL'].includes(fm.thrust))return;
   const finger=state.phase+':'+state.presses+':'+state.throttleFraction;
   if(lastThrust===finger)return;
-  const result=[];
+  const result=[];let attempts=0,reason='NO_RUNNING_ENGINE';
   for(const n of [1,2]){
    if(!engineRunning(n))continue;
+   attempts++;
    try{
     const r=owner()?.togaThrottleCommand?.({engine:'engine'+n,
      value:state.throttleFraction,controller:'B737_TOGA_CH4_TRAINING',
@@ -77,10 +79,19 @@
      result.push(n);
      doc.dispatchEvent(new CustomEvent('b737:throttle-state',{detail:{
       engine:n,percent:state.throttleFraction*100,source:'CH4_TOGA',visualOnly:true}}));
-    }
-   }catch(e){errors.push(String(e?.message||e));}
+    }else reason=r?.reason||'THROTTLE_OWNER_NOT_READY';
+   }catch(e){reason=String(e?.message||e);}
   }
-  if(result.length)lastThrust=finger;
+  if(attempts>0&&result.length===attempts){
+   lastThrust=finger;thrustFeedback='APPLIED_TO_'+result.join('_');
+  }else{
+   // A partial acceptance must not latch the whole TO/GA thrust command.
+   // Retry against the SAME ECU until the running-engine set accepts it,
+   // but never override THR HLD once that FCOM mode has been entered.
+   thrustFeedback='NOT_APPLIED_'+reason;
+   if(errors.at(-1)!==thrustFeedback)errors.push(thrustFeedback);
+   if(errors.length>24)errors.shift();
+  }
  }
  function press(source='INSTRUCTOR'){
   const flight=getFlight(),f=flight?.getState?.();
@@ -118,7 +129,7 @@
   if(active()&&current){
    const ms=performance.now(),dt=lastMs?Math.min(.35,Math.max(0,(ms-lastMs)/1000)):0;
    const next=T.advance(state,context(true),dt);
-   state=next;publishFma();
+   state=next;publishFma();thrust();
    lastMs=ms;
   }else lastMs=performance.now();
  }
@@ -135,7 +146,7 @@
  });
  function releaseToga(){
   if(state.phase==='OFF')return;
-  state=T.initial();lastFma='';lastThrust='';
+  state=T.initial();lastFma='';lastThrust='';thrustFeedback='NOT_REQUESTED';
   win.dispatchEvent(new CustomEvent('b737:fma-fcc-clear'));
  }
  win.addEventListener('b737:flight-scenario-stopped',releaseToga);
@@ -156,7 +167,8 @@
   if(controls?.left===false&&controls?.right===false)releaseToga();
  });
  const api=Object.freeze({getState:()=>({...state}),press,tickForTest:tick,
-  getDiagnostics:()=>({version:T.VERSION,errors:errors.slice(-12)})});
+  getDiagnostics:()=>({version:T.VERSION,errors:errors.slice(-12),
+   thrustFeedback,lastAcceptedCommand:lastThrust||null})});
  win.B737UnifiedTOGACh4V1=api;
  if(typeof win.setInterval==='function')win.setInterval(tick,150);
 })(window);
