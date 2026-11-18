@@ -8,7 +8,12 @@ on:
       - 'engine/runtime/unified-live-gateway-v1.js'
       - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
       - 'panel-mosaic-lab/cockpit/fuel-system-live-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/failures-header-v1.js'
+      - 'panel-mosaic-lab/cockpit/failures-header-v1.css'
+      - 'panel-mosaic-lab/cockpit/failures-fuel-v1.js'
       - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/unified-fuel-failures-menu-v1.test.cjs'
+      - 'tests/unified-failures-header-v1.test.cjs'
       - 'tests/unified-classic-fuel-ata28-live-v1.test.cjs'
       - '.github/workflows/unified-classic-fuel-ata28-live.yml'
   workflow_dispatch:
@@ -28,9 +33,19 @@ jobs:
           node --check engine/runtime/unified-live-gateway-v1.js
           node --check panel-mosaic-lab/cockpit/isn-cockpit.js
           node --check panel-mosaic-lab/cockpit/fuel-system-live-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/failures-fuel-v1.js
+          node --check panel-mosaic-lab/cockpit/failures-header-v1.js
       - name: Shared fuel-controller end-to-end and existing start tests
         run: |
           node tests/unified-classic-fuel-ata28-live-v1.test.cjs
+          node tests/unified-fuel-failures-menu-v1.test.cjs
+          node tests/unified-failures-header-v1.test.cjs
           node tests/isn-engine-suction-feed-v1.test.cjs
           node tests/classic-engine-start-backend-v1.test.cjs
           node tests/unified-live-gateway-v1.test.cjs
+      - name: Protected cockpit owner locks (unmodified)
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
