@@ -183,9 +183,32 @@
  // Hydraulic, IRS and electrical protections apply during any powered A/P
  // session, not only when instructor flight dynamics is actively loaded.
  win.setInterval(()=>protectFlight(flight()),400);
+ // Qualified scene telemetry shares the same MCP state as physical switches.
+ // LVL CHG never derives climb/descent from the button alone; aircraft altitude
+ // and observed engine idle establish A/T N1 versus RETARD -> ARM.
+ function publishFlightObservation(frame){
+  const out=mcp(),bridge=win.B737McpAFDSBridgeV1;
+  if(!bridge?.observeFlight||out?.power!==true)return;
+  const to=win.B737UnifiedTOGACh4V1?.getState?.();
+  const insideTakeoff=to?.phase==='TO';
+  const sinceLiftoff=insideTakeoff&&frame.airborne&&
+   Number.isFinite(to?.liftoffSec)?Math.max(0,to.elapsedSec-to.liftoffSec):null;
+  const all=win.B737ISNCockpitV1?.getPropulsionSnapshot?.()?.engines;
+  const observed=Object.values(all||{}).filter(e=>e?.running===true);
+  const idle=observed.length>0&&observed.every(e=>Number.isFinite(e.throttle)&&e.throttle<=.06);
+  bridge.observeFlight({schema:'B737_AFDS_FLIGHT_OBSERVATION_V1',
+   confirmed:true,source:'SIMULATED_FCC',altitudeFt:frame.altitudeFt,
+   radioAltitudeFt:frame.radioAltitudeFt,verticalSpeedFpm:frame.vsFpm,
+   headingDeg:frame.trueHeadingDeg,bankDeg:frame.bankDeg,pitchDeg:frame.pitchDeg,
+   secondsSinceLiftoff:sinceLiftoff,
+   establishedEnroute:frame.phase==='AIRBORNE'&&!insideTakeoff,
+   thrustIdleConfirmed:idle,
+   navValid:false,navKind:'NONE'});
+ }
  win.addEventListener('b737:flight-scenario-state',e=>{
   const frame=e.detail;
   if(frame?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||!isActive())return;
+  publishFlightObservation(frame);
   paintDirector(frame);protectFlight(frame);
  });
  win.addEventListener('b737:mcp-afds-state',()=>{
