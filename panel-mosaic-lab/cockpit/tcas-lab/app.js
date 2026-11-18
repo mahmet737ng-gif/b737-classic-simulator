@@ -96,7 +96,13 @@
    ' · ALT '+Math.round(own.altitudeFt)+' FT · VS '+Math.round(own.vsFpm)+' FPM';
   const tbody=by('trafficRows');tbody.replaceChildren();for(const t of traffic.targets){const tr=document.createElement('tr');
    const clock=Number.isFinite(t.bearing)?((Math.round(((t.bearing-own.trueHeadingDeg+360)%360)/30)%12)||12):'—';
-   for(const value of [t.id,t.kind,clock,t.distance.toFixed(2),t.relativeAltitude===null?'UNKNOWN':Math.round(t.relativeAltitude),t.verticalRate??'—',t.verticalRelation??'—',Number.isFinite(t.tcpaSec)?t.tcpaSec.toFixed(1):'—']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}tbody.append(tr);}
+   for(const value of [t.id,t.kind,clock,t.distance.toFixed(2),
+    t.relativeAltitude===null?'UNKNOWN':Math.round(t.relativeAltitude),
+    t.verticalRate??'—',t.verticalRelation??'—',
+    Number.isFinite(t.tcpaSec)?Math.max(0,t.tcpaSec).toFixed(1):'—',
+    Number.isFinite(t.timeToRaProximitySec)?t.timeToRaProximitySec.toFixed(1):
+     Number.isFinite(t.timeToTaProximitySec)?t.timeToTaProximitySec.toFixed(1):'NO CONFLICT',
+    Number.isFinite(t.predictedSeparationFt)?Math.round(t.predictedSeparationFt):'—']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}tbody.append(tr);}
  }
  function guard(fn){return ()=>{try{fn();}catch(e){by('status').textContent=e.message;}};}
  by('start').onclick=guard(load);by('play').onclick=()=>{running=!running;last=null;by('play').textContent=running?'PAUSE':'RUN';};by('step').onclick=guard(()=>step(1));
