@@ -180,12 +180,12 @@ function speedTape(c,view){
  c.restore();
 }
 const fmaTimers=new WeakMap();
-function drawFma(c,seat){
- fmaLayer.renderReference(c,seat,G.fma,glyph);
+function drawFma(c,seat,fontScale=1){
+ fmaLayer.renderReference(c,seat,G.fma,glyph,Date.now(),fontScale);
 }
-function flightModes(canvas,c,seat,fields){
+function flightModes(canvas,c,seat,fields,fontScale=1){
  const changed=fmaLayer.accept(seat,fields);
- drawFma(c,seat);
+ drawFma(c,seat,fontScale);
  if(!changed||typeof globalThis.setTimeout!=='function')return;
  // The shared renderer owns the 10-second deadline. Standalone EADI supplies
  // only the repaint because it is not registered as a Unified cockpit layer.
@@ -193,7 +193,7 @@ function flightModes(canvas,c,seat,fields){
  if(timer!==undefined)globalThis.clearTimeout(timer);
  fmaTimers.set(canvas,globalThis.setTimeout(()=>{
   fmaTimers.delete(canvas);
-  if(canvas.dataset.fmaSeat===seat)drawFma(c,seat);
+  if(canvas.dataset.fmaSeat===seat)drawFma(c,seat,fontScale);
  },10025));
 }
 function diamond(c,x,y,color=MAGENTA){
@@ -251,11 +251,12 @@ function render(canvas,state,core,live){
  if(!v.powered)return;
  if(!v.sg){txt(c,'SG FAIL',CX,CY+46,30,AMBER,'center');return;}
  const fma=live?null:fmaInput(state,v),speed=live?live.speedView:tapeInput(state,v,fma);
+ const fmaFontScale=clamp(e.fmaFontScale??1,.8,1);
  canvas.dataset.fmaSeat=state.seat;
  // Unified receives authoritative MCP/FCC annunciations from its live
  // FMA owner. Do not overwrite them with the lab demonstration projection.
  if(live)drawFma(c,state.seat);
- else flightModes(canvas,c,state.seat,fma);
+ else flightModes(canvas,c,state.seat,fma,fmaFontScale);
  const fields=live?fmaLayer.getState(state.seat).fields:fma;
  const axes=[fields?.afds?.secondary,fields?.afds?.tertiary];
  if(v.attitude)attitude(c,e,{...v,fdPitch:e.fdPitchValid!==false&&!axes.includes('CWS P'),fdRoll:e.fdRollValid!==false&&!axes.includes('CWS R')});else box(c,'ATT',CX,CY);
