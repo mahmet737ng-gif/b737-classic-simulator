@@ -7,6 +7,8 @@ const path=require('node:path');
 const vm=require('node:vm');
 const TCAS=require('../../../engine/tcas/classic-tcas-v2.js');
 const EHSI=require('../../../efis-display-lab/ehsi-v2.js');
+const EFISCore=require('../../../efis-display-lab/core.js');
+const Cruise=require('./cruise-scenario-v1.js');
 const own=()=>({airborne:true,altitudeFt:10000,radioAltitudeFt:6000,
  tasKt:220,gsKt:220,iasKt:220,pitchDeg:2,vsFpm:0,
  trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0});
@@ -48,7 +50,7 @@ test('quick encounter controls precede EADI/EHSI, optional settings follow',()=>
  assert.match(html,/value="CTR_MAP" selected/);
 });
 test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',()=>{
- const defaults={altitude:'10000',radioHeight:'6000',speed:'220',pitch:'2',vs:'0',
+ const defaults={altitude:'27000',radioHeight:'24000',speed:'293',pitch:'2',vs:'0',
   relative:'',intruderVS:'',rate:'1',displayMode:'CTR_MAP',range:'10',mode:'TA_RA',
   unit:'1',altSource:'1',code:'2000',filter:'NORM',intruderSide:'RIGHT'};
  const els=new Map();
@@ -63,7 +65,7 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  const get=id=>{if(!els.has(id))els.set(id,new Element(id));return els.get(id);};
  const document={getElementById:get,createElement:tag=>new Element(tag),createTextNode:s=>({textContent:s})};
  let eadi=null,ehsiInput=null;
- const window={B737ClassicTcasV2:TCAS,
+ const window={B737ClassicTcasV2:TCAS,B737TcasCruiseScenarioV1:Cruise,
   EFISDisplayLabCore:{initial:()=>({eadi:{},power:{}})},
   EFISDisplayLabEadi:{render(_node,state){eadi={...state.eadi};}},
   EFISClassicEHSIV2:{render(_node,input){ehsiInput=input;}}};
@@ -74,6 +76,21 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.deepEqual(fma(eadi),['FMC SPD','VNAV PTH','LNAV']);
  assert.equal(eadi.afds,'CMD');
  assert.equal(ehsiInput.mode,'CTR_MAP');
+ assert.equal(eadi.ias,293);
+ assert.equal(eadi.mach,.73);
+ assert.ok(eadi.fmaFontScale<1);
+ assert.equal(eadi.dh,-20,'DH200 disabled for cruise scenario');
+ assert.equal(eadi.pitch,eadi.otherPitch,'No fabricated PITCH comparison flag');
+ const source=EFISCore.initial();Object.assign(source.eadi,eadi);
+ assert.deepEqual(EFISCore.compare(source),[],'PITCH compare only when a real disagreement exists');
+ assert.equal(EFISCore.evaluate(source).dhDigital,false);
+ assert.ok(ehsiInput.groundSpeed>400);
+ assert.ok(ehsiInput.trueAirspeed>400);
+ assert.equal(ehsiInput.traffic.targets.filter(t=>t.kind==='OTHER').length,4);
+ assert.equal(ehsiInput.route.activeIndex,1);
+ assert.ok(ehsiInput.route.points[1].name,'Next simulated FMC fix visible');
+ assert.ok(ehsiInput.nav.timeToGo,'TTG available');
+ assert.ok(ehsiInput.route.points[1].eta.endsWith('Z'),'Simulated ETA available');
  assert.equal(ehsiInput.options.tfc,true);
  get('tfc').onclick();
  assert.equal(ehsiInput.options.tfc,false,'TFC OFF hides EHSI overlay');
@@ -140,4 +157,62 @@ test('EHSI actually renders tracked traffic on 360° CTR MAP (even when beyond e
   'expanded MAP arc never fakes an in-scale position for a 45-degree target');
  const disabled=makeSvg();EHSI.render(disabled,{...params('CTR_MAP'),options:{tfc:false}});
  assert.ok(!descendants(disabled).some(n=>n.attributes['data-segment']==='traffic-prox'));
+});
+
+test('cruise route advances by ground speed, calculates distance/ETA/TTG and passes the next fix',()=>{
+ const a=Cruise.route({elapsedSec:0,groundSpeedKt:448});
+ const b=Cruise.route({elapsedSec:20,groundSpeedKt:448});
+ const c=Cruise.route({elapsedSec:45,groundSpeedKt:448});
+ assert.equal(a.next,'REKPA');assert.equal(a.utc,'1200Z');
+ assert.ok(b.distanceNm<a.distanceNm,'Distance to next fix must decrease while approaching');
+ assert.ok(b.own.northNm>a.own.northNm,'Aircraft progresses along route');
+ assert.equal(c.next,'VABER','Active waypoint switches after first fix');
+ assert.ok(c.route.points[1].x>0,'Following leg turns towards next fix');
+ assert.ok(a.eta.endsWith('Z')&&b.eta.endsWith('Z'));
+ assert.ok(/^\\d+:\\d\\d$/.test(a.timeToGo));
+ assert.equal(a.route.points[0].hidden,true);
+ assert.equal(a.route.source,'TCAS_LAB_SIMULATED_FMC');
+});
+test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER contacts',()=>{
+ class SvgNode{
+  constructor(name,doc){this.tagName=name;this.ownerDocument=doc;this.attributes={};this.children=[];this.style={};}
+  setAttribute(k,v){this.attributes[k]=String(v);}
+  appendChild(v){this.children.push(v);return v;}
+  replaceChildren(...c){this.children=c;}
+ }
+ const doc={createElementNS(_,tag){return new SvgNode(tag,doc);}};
+ const descendants=root=>[root,...root.children.flatMap(descendants)];
+ const render=(nm,showTfc=true,elapsedSec=0)=>{
+  const svg=new SvgNode('svg',doc);svg.id='ehsi';
+  const route=Cruise.route({elapsedSec,groundSpeedKt:448});
+  const ambient=Cruise.ambient({elapsedSec,ownAltitudeFt:27000,initialAltitudeFt:27000,ownGroundSpeedKt:448});
+  EHSI.render(svg,{mode:'CTR_MAP',range:nm,heading:0,track:0,selectedHeading:0,
+   nav:route.nav,route:route.route,groundSpeed:448,trueAirspeed:440,syntheticAirport:false,
+   options:{tfc:showTfc},traffic:{mode:'TA_RA',targets:ambient},
+   trafficLabelOffsetY:12,efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true},weather:{}});
+  return {svg,nodes:descendants(svg)};
+ };
+ const near=render(10),far=render(20);
+ const line=nodes=>{
+  const segments=nodes.find(n=>n.attributes['data-segment']==='route-segments');
+  assert.ok(segments,'FMC route exists');
+  return segments.children[0];
+ };
+ assert.ok(Number(line(near.nodes).attributes.y2)<Number(line(far.nodes).attributes.y2),
+  'At 10 NM the next waypoint must be farther from aircraft than at 20 NM');
+ assert.equal(near.nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,4,
+  'All four non-threat contacts are drawn on the TCAS rose');
+ assert.ok(near.nodes.some(n=>n.attributes['data-text']==='TTG '+Cruise.route({groundSpeedKt:448}).timeToGo),
+  'Time-to-go must render on the EHSI');
+ assert.ok(near.nodes.some(n=>n.attributes['data-text']==='GS448'),
+  'Groundspeed is rendered on the EHSI');
+ assert.ok(near.nodes.some(n=>n.attributes['data-text']==='TFC'));
+ assert.ok(!near.nodes.some(n=>n.attributes['data-segment']==='route-airport'),
+  'Do not invent database airports for instructor synthetic route');
+ assert.equal(render(10,false).nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,0,
+  'TFC OFF hides background traffic but does not hide route');
+ assert.equal(render(10,true,10).nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,4,
+  'Background traffic updates over time');
+ assert.ok(near.nodes.some(n=>n.attributes['data-segment']==='active-route'));
+ assert.ok(render(10,false).nodes.some(n=>n.attributes['data-segment']==='active-route'));
 });
