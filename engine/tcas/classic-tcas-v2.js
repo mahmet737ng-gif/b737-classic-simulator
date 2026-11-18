@@ -105,19 +105,35 @@
    closingKt:distance>.0001?-dot/distance*3600:0,
    predictedSeparationFt:t.reportsAltitude?Math.abs(relative+relativeRate*cpaTime/60):null};
  }
- // Minimum vertical separation while the intruder is physically inside a
- // chosen horizontal threshold. This prevents a present-day small altitude
- // offset from being mistaken for a future collision. It also catches an
- // altitude crossing shortly BEFORE CPA (which a CPA-only check can miss).
- function verticalDuringLateralEncounter(g,radiusNm){
-  if(g.relativeAltitude===null||!Number.isFinite(g.tcpaSec))return Infinity;
-  if(g.missDistanceNm>radiusNm||g.relativeSpeedKt<=0)return Infinity;
-  const halfWindow=Math.sqrt(Math.max(0,radiusNm**2-g.missDistanceNm**2))*3600/g.relativeSpeedKt;
-  const enter=Math.max(0,g.tcpaSec-halfWindow),exit=g.tcpaSec+halfWindow;
-  if(exit<enter)return Infinity;
-  const a=g.relativeAltitude+g.relativeVerticalRate*enter/60;
-  const b=g.relativeAltitude+g.relativeVerticalRate*exit/60;
-  return a*b<=0?0:Math.min(Math.abs(a),Math.abs(b));
+ // Simultaneous future horizontal/vertical protected-volume approach
+ // under constant relative velocity. Not a certified TCAS II algorithm.
+ function trajectoryIntersection(g,radiusNm,verticalFt){
+  if(!Number.isFinite(radiusNm)||radiusNm<=0)return {timeSec:Infinity,reason:'INVALID_THRESHOLD'};
+  const speed=g.relativeSpeedKt/3600;
+  let hEnter=0,hExit=Infinity;
+  if(speed<1e-8){
+   if(g.distance>radiusNm)return {timeSec:Infinity,reason:'HORIZONTAL_MISS'};
+  }else{
+   const perp=Math.sqrt(Math.max(0,g.distance*g.distance-(speed*g.tcpaSec)**2));
+   if(perp>radiusNm)return {timeSec:Infinity,reason:'HORIZONTAL_MISS'};
+   const dt=Math.sqrt(Math.max(0,radiusNm*radiusNm-perp*perp))/speed;
+   hEnter=Math.max(0,g.tcpaSec-dt);hExit=g.tcpaSec+dt;
+   if(hExit<0||hExit<hEnter)return {timeSec:Infinity,reason:'HORIZONTAL_PASSED'};
+  }
+  if(g.relativeAltitude===null||verticalFt===null)
+   return {timeSec:hEnter,exitSec:hExit,reason:'HORIZONTAL_ONLY'};
+  const alt=g.relativeAltitude,rate=g.relativeVerticalRate/60;
+  let vEnter=0,vExit=Infinity;
+  if(Math.abs(rate)<1e-8){
+   if(Math.abs(alt)>verticalFt)return {timeSec:Infinity,reason:'VERTICAL_MISS'};
+  }else{
+   const times=[(-verticalFt-alt)/rate,(verticalFt-alt)/rate].sort((a,b)=>a-b);
+   vEnter=Math.max(0,times[0]);vExit=times[1];
+   if(vExit<0||vExit<vEnter)return {timeSec:Infinity,reason:'VERTICAL_PASSED'};
+  }
+  const entry=Math.max(hEnter,vEnter),exit=Math.min(hExit,vExit);
+  if(entry>exit)return {timeSec:Infinity,reason:'NO_3D_OVERLAP'};
+  return {timeSec:entry,exitSec:exit,reason:'PREDICTED_3D_PROXIMITY'};
  }
  function output(state,own,c=controls(),feeds=DEFAULT_FEEDS){
   const spec=SCENARIOS[state.scenario],xpdr=transponder(c,own,feeds),f=c.failures||{},height=own.radioAltitudeFt;
@@ -148,23 +164,19 @@
    if(!t.transponder)continue;
    const g=geometry(state,t,own),alt=g.relativeAltitude,pred=g.predictedSeparationFt;
    let kind=g.distance<=6&&alt!==null&&Math.abs(alt)<=1200?'PROX':'OTHER';
-   const approaching=g.tcpaSec>0&&g.closingKt>0;
-   // Altitude-dependent sensitivity values from the existing V1 reference
-   // table (TA/RA tau, DMOD, ZTHR). This remains a simplified encounter lab.
-   const taRadius=thresholds.taNm??.75,raRadius=thresholds.raNm??.55;
-   const hTa=approaching&&g.tcpaSec<=thresholds.taSec&&g.missDistanceNm<=taRadius;
-   const hRa=approaching&&g.tcpaSec<=(thresholds.raSec??0)&&g.missDistanceNm<=raRadius;
-   const vTa=verticalDuringLateralEncounter(g,taRadius);
-   const vRa=verticalDuringLateralEncounter(g,raRadius);
-   // Trainer scenario rule: if an intruder is already separating vertically
-   // and will clear the RA vertical envelope at CPA, do not fabricate an
-   // escalating threat from its earlier smaller altitude offset.
+   // CPA/tau warning times and SL-specific DMOD/ZTHR protection envelopes
+   // are both required; present altitude difference alone is never an RA.
+   const taPrediction=trajectoryIntersection(g,thresholds.taNm??.75,thresholds.taFt??850);
+   const raPrediction=trajectoryIntersection(g,thresholds.raNm??.55,thresholds.raFt??600);
    const separatingSafely=g.verticalRelation==='DIVERGING'&&
     pred!==null&&pred>=thresholds.raFt;
-   const ta=hTa&&!separatingSafely&&
-    (alt===null?own.altitudeFt<15500:vTa<=(thresholds.taFt??850));
-   const threat=alt!==null&&hRa&&!separatingSafely&&
-    vRa<=(thresholds.raFt??600);
+   const ta=!separatingSafely&&taPrediction.timeSec<=(thresholds.taSec??0);
+   const threat=alt!==null&&!separatingSafely&&raPrediction.timeSec<=(thresholds.raSec??-1);
+   g.timeToTaProximitySec=Number.isFinite(taPrediction.timeSec)?taPrediction.timeSec:null;
+   g.timeToRaProximitySec=Number.isFinite(raPrediction.timeSec)?raPrediction.timeSec:null;
+   g.predictionReason=threat?raPrediction.reason:taPrediction.reason;
+   g.timeToCoAltitudeSec=alt===null?null:
+    (alt*g.relativeVerticalRate<0?-60*alt/g.relativeVerticalRate:null);
    if(ta)kind='TA';if(threat&&raAllowed)kind='RA';
    if(spec.demo)kind=t.demoKind==='RA'&&!raAllowed?'TA':t.demoKind;
    if(c.priorityWarning&&(kind==='RA'||kind==='TA'))kind='PROX';
@@ -219,5 +231,5 @@
   if(s.hadRA&&!s.output.targets.some(t=>t.kind==='RA'))s.clearTime+=dt;else s.clearTime=0;
   return s;
  }
- return Object.freeze({MODES,SCENARIOS,controls,transponder,create,step,output,geometry,nominalThresholds:{taSec:40,raSec:25},pitchForVs:V1.pitchForVs});
+ return Object.freeze({MODES,SCENARIOS,controls,transponder,create,step,output,geometry,trajectoryIntersection,nominalThresholds:{taSec:40,raSec:25},pitchForVs:V1.pitchForVs});
 });
