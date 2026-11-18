@@ -182,11 +182,11 @@ test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER
  }
  const doc={createElementNS(_,tag){return new SvgNode(tag,doc);}};
  const descendants=root=>[root,...root.children.flatMap(descendants)];
- const render=(nm,showTfc=true,elapsedSec=0)=>{
+ const render=(nm,showTfc=true,elapsedSec=0,mode='CTR_MAP')=>{
   const svg=new SvgNode('svg',doc);svg.id='ehsi';
   const route=Cruise.route({elapsedSec,groundSpeedKt:448});
   const ambient=Cruise.ambient({elapsedSec,ownAltitudeFt:27000,initialAltitudeFt:27000,ownGroundSpeedKt:448});
-  EHSI.render(svg,{mode:'CTR_MAP',range:nm,heading:0,track:0,selectedHeading:0,
+  EHSI.render(svg,{mode,range:nm,heading:0,track:0,selectedHeading:0,
    nav:route.nav,route:route.route,groundSpeed:448,trueAirspeed:440,syntheticAirport:false,
    options:{tfc:showTfc},traffic:{mode:'TA_RA',targets:ambient},
    trafficLabelOffsetY:12,efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true},weather:{}});
@@ -200,6 +200,8 @@ test('EHSI plots route legs with range-dependent zoom and four safe moving OTHER
  };
  assert.ok(Number(line(near.nodes).attributes.y2)<Number(line(far.nodes).attributes.y2),
   'At 10 NM the next waypoint must be farther from aircraft than at 20 NM');
+ assert.ok(render(10,true,0,'MAP').nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length>=2,
+  'At least two OTHER targets must remain visible in expanded MAP mode');
  assert.equal(near.nodes.filter(n=>n.attributes['data-segment']==='traffic-other').length,4,
   'All four non-threat contacts are drawn on the TCAS rose');
  assert.ok(near.nodes.some(n=>n.attributes['data-text']==='TTG '+Cruise.route({groundSpeedKt:448}).timeToGo),
