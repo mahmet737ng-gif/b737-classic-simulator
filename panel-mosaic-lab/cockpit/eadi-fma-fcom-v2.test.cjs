@@ -12,7 +12,7 @@ assert.deepEqual(view.SECTION,['A/T MODE','PITCH MODE','ROLL MODE','AFDS MODE'])
 assert.equal(view.LAYOUT.w,view.LAYOUT.segment*4);
 assert.ok(view.LAYOUT.y+view.LAYOUT.h<=103);
 assert.equal(eadi.includes('const ADI_CONTENT_SCALE=0.85;'),true);
-assert.ok(index.includes('eadi-fma-fcom-v2.js?v=EADI-FMA-FCOM-0004-CWS-AXIS'));
+assert.ok(index.includes('eadi-fma-fcom-v2.js?v=EADI-FMA-CLEAR-CH4-0001'));
 assert.ok(index.indexOf('fma-mode-engine-v1.js')<
  index.indexOf('eadi-fma-four-v1.js'));
 assert.ok(index.indexOf('eadi-fma-four-v1.js')<
