@@ -9,7 +9,7 @@ const Runtime=require('../engine/integration/isn-09-12-runtime-v1.js');
 const file=rel=>fs.readFileSync(path.join(__dirname,'..',rel),'utf8');
 const index=file('panel-mosaic-lab/cockpit/index.html');
 const oldPanel=file('panel-mosaic-lab/cockpit/fuel-system-live-unified-v1.js');
-assert.ok(index.includes('failures-fuel-v1.js?v=ATA28-FAILURES-FUEL-0002'));
+assert.ok(index.includes('failures-fuel-v1.js?v=ATA28-FAILURES-FUEL-0003'));
 assert.ok(index.includes('failures-header-v1.js?v=FAILURES-FUEL-0002'));
 assert.match(oldPanel,/type:'SERVICE_TANK'/);
 for(const type of ['TANK_LEAK','PUMP_FAILURE','CROSSFEED_FAILURE','FUEL_TEMPERATURE','FUEL_FREEZE_POINT'])
@@ -121,4 +121,18 @@ assert.ok(Object.values(controller.get(raw).pumps).every(p=>p.failed===false));
 assert.equal(busWrites,0,'Fuel injection must never overwrite Electrical bus failures');
 assert.ok(headerRefreshCount>3,'Header count updates after Fuel changes');
 assert.equal(ui.refresh(),0);
+// Rejection must be visible, and a partially failed CLEAR must never show
+// a false success message while the shared ECU retains active failures.
+pumpButtons[0].click();assert.equal(ui.getCount(),1);
+const originalAction=owner.fuelTrainerAction;
+owner.fuelTrainerAction=()=>{throw Error('SIMULATED ECU REJECT');};
+reset.click();
+const failureStatus=find(x=>x.id==='failuresFuelFeedback');
+assert.match(failureStatus.textContent,/RESET INCOMPLETE/);
+assert.equal(ui.getCount(),1,'Rejected reset must retain the real pump failure');
+pumpButtons[1].click();
+assert.match(failureStatus.textContent,/SIMULATED ECU REJECT/);
+assert.equal(ui.getCount(),1,'Rejected injection must not change fuel state');
+owner.fuelTrainerAction=originalAction;
+reset.click();assert.equal(ui.getCount(),0);
 console.log('PASS Unified FAILURES > FUEL: six live ECU pumps, crossfeed, leaks, hot/cold temperature, freeze point, single-source reset and Electrical isolation');
