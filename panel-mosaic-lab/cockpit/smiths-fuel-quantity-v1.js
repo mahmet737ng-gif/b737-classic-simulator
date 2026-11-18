@@ -48,7 +48,9 @@
       const capacity = reading?.capacitiesKg[tanks[index]];
       const raw = mode === 'full' ? capacity : reading?.tanksKg[tanks[index]];
       const on = powered && atlas.complete && atlas.naturalWidth > 0 && Number.isFinite(raw) && mode !== 'blank';
-      const quantity = mode === 'held' ? 0 : Math.round(raw);
+      // FUEL QTY source remains kg with full ECU resolution. The Smiths
+      // visual counter advances in 20 kg increments and NEVER rounds up early.
+      const quantity = mode === 'held' ? 0 : Math.floor(Math.max(0, raw) / 20) * 20;
       const ring = mode === 'held' ? 0 : Math.max(0, Math.min(20, Math.floor(raw / capacity * 20)));
       const key = on ? [mode, quantity, ring].join(':') : 'off';
       if (key === painted[index]) return;
