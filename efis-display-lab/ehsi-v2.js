@@ -27,6 +27,15 @@ const LAYOUT=Object.freeze({
  FULL_VOR_ILS:FULL,
  PLAN
 });
+// Opt-in TCAS trainer geometry, leaving validated Unified/EFIS Lab unchanged.
+function layoutFor(m){
+ const base=LAYOUT[m.mode];
+ if(!m.trainingRoseLarge)return base;
+ if(m.mode==='CTR_MAP')return {...base,roseCenter:[256,290],aircraft:[256,290],radius:189,radiusX:211};
+ if(m.mode==='FULL_NAV')return {...base,roseCenter:[256,288],aircraft:[256,288],
+  radius:183,radiusX:199,route:m.routeOnFull===true,calibrated:true};
+ return base;
+}
 const MODES=Object.freeze(Object.keys(LAYOUT));
 const REFERENCE=Object.freeze({
  MAP:'10.31.2–3',CTR_MAP:'10.31.4–5',EXP_NAV:'10.31.6–7',FULL_NAV:'10.31.8–9',
@@ -55,7 +64,7 @@ function model(input={}){
   reference:radio?norm(input.heading):norm(input.track)};
 }
 function computeDisplay(input){
- const m=model(input),l=LAYOUT[m.mode],plan=m.mode==='PLAN';
+ const m=model(input),l=layoutFor(m),plan=m.mode==='PLAN';
  const headingValid=m.efis.headingValid!==false,trackValid=m.efis.trackValid!==false;
  const compassValid=m.radio?headingValid:trackValid;
  const trafficMode=['MAP','CTR_MAP','EXP_NAV','EXP_VOR_ILS'].includes(m.mode);
@@ -100,7 +109,7 @@ function flag(p,value,x,y){
 const photoText=(p,value,x,y,size,color=PHOTO_COLORS.white,align='start')=>text(p,value,x,y,size,color,align);
 const numberText=(n,digits=0)=>Number.isFinite(n)?n.toFixed(digits):'---';
 function header(svg,m,status){
- const l=LAYOUT[m.mode],h=G.header;
+ const l=layoutFor(m),h=G.header;
  const active=m.nav.valid?m.route.points[m.route.activeIndex]:null;
  const distance=active?Math.hypot(active.x,active.y):null;
  const left=m.radio?'DME'+numberText(m.nav.valid?m.nav.dme:null,1):numberText(distance,1)+'NM';
@@ -281,11 +290,23 @@ function waypoint(parent,x,y,pt,color,showData,shape='star',calibrated=false){
  }
 }
 function drawRoute(svg,m,l,status,plan){
- const project=projection(m,l,plan),points=m.route.points,g=layer(svg,plan?'plan-route':'active-route');
+ const project=projection(m,l,plan),points=m.route.points;
+ const rangeClip=m.routeClipToScale&&!plan?'url(#'+(svg.id||'ehsi')+'-route-range)':null;
+ const g=layer(svg,plan?'plan-route':'active-route',rangeClip?{'clip-path':rangeClip}:{});
+
  const brightness=String(clamp(m.efis.wxBrightness??1,0,1));
  g.style.opacity=brightness;
  const colors=l.calibrated?PHOTO_COLORS:COLORS;
- const fits=xy=>symbolVisible(xy,l)&&(l.calibrated||plan||Math.hypot(xy[0]-l.roseCenter[0],xy[1]-l.roseCenter[1])<l.radius-33);
+ const fits=xy=>{
+  if(!symbolVisible(xy,l))return false;
+  if(m.routeClipToScale&&!plan){
+   const dx=(xy[0]-l.roseCenter[0])/Math.max(1,(l.radiusX??l.radius)-17);
+   const dy=(xy[1]-l.roseCenter[1])/Math.max(1,l.radius-17);
+   if(dx*dx+dy*dy>1)return false;
+   if(l.degrees<360&&Math.abs(Math.atan2(dx,-dy)*180/Math.PI)>l.degrees/2-2)return false;
+  }
+  return l.calibrated||plan||Math.hypot(xy[0]-l.roseCenter[0],xy[1]-l.roseCenter[1])<l.radius-33;
+ };
  if(status.routeValid){
   const positions=points.map(pt=>project(pt.x,pt.y));
   const segments=layer(g,'route-segments');
@@ -364,7 +385,7 @@ function vertical(svg,m){
 }
 function wind(svg,m){
  if(m.mode==='PLAN'||!Number.isFinite(m.windDirection)||!Number.isFinite(m.windSpeed)||m.windSpeed<=0)return;
- const l=LAYOUT[m.mode],g=layer(svg,'wind');
+ const l=layoutFor(m),g=layer(svg,'wind');
  const [x,y]=l.full?G.wind.full:m.mode==='CTR_MAP'?G.wind.center:G.wind.expanded;
  photoText(g,direction(m.windDirection)+'°/'+Math.round(m.windSpeed),x,y,23);
  if(m.windSpeed<6)return;
@@ -376,7 +397,7 @@ function footer(svg,m){
  const g=layer(svg,'lower-data');
  wind(g,m);
  if(m.radio){
-  const x=LAYOUT[m.mode].full?75:57;
+  const x=layoutFor(m).full?75:57;
   photoText(g,m.nav.source,x,459,22,PHOTO_COLORS.green);
   if(m.nav.frequency!=null)photoText(g,Number(m.nav.frequency).toFixed(2),440,459,23,PHOTO_COLORS.green,'end');
  }else if(m.mode.endsWith('NAV'))photoText(g,'NAV',72,459,21,PHOTO_COLORS.green);
@@ -472,7 +493,7 @@ function traffic(svg,m,l,status){
 }
 function render(svg,raw){
  if(!svg)return null;
- const m=model(raw),s=computeDisplay(raw),l=LAYOUT[m.mode];
+ const m=model(raw),s=computeDisplay(raw),l=layoutFor(m);
  svg.replaceChildren();
  svg.setAttribute('viewBox','0 0 512 512');
  svg.setAttribute('preserveAspectRatio','none');
@@ -488,6 +509,21 @@ function render(svg,raw){
  const defs=make(svg,'defs'),clipId=(svg.id||'ehsi')+'-plot';
  const clip=make(defs,'clipPath',{id:clipId});
  make(clip,'rect',l.calibrated?{x:0,y:49,width:W,height:H-49,rx:px(25),ry:py(25)}:{x:13,y:73,width:486,height:391});
+ // FMC path, fix symbols and labels must not escape the compass scale.
+ // Expanded: the 70-degree elliptical sector. Full: the 360-degree ellipse.
+ if(m.routeClipToScale&&l.route&&m.mode!=='PLAN'){
+  const rc=make(defs,'clipPath',{id:(svg.id||'ehsi')+'-route-range',clipPathUnits:'userSpaceOnUse'});
+  if(l.degrees===360){
+   make(rc,'ellipse',{cx:l.roseCenter[0],cy:l.roseCenter[1],
+    rx:(l.radiusX??l.radius)-3,ry:l.radius-3});
+  }else{
+   const outline=[[...l.roseCenter]];
+   for(let a=-l.degrees/2;a<=l.degrees/2;a+=.5){
+    outline.push(rosePoint(l,Math.min(a,l.degrees/2),.991));
+   }
+   make(rc,'polygon',{points:outline.map(([x,y])=>x.toFixed(2)+','+y.toFixed(2)).join(' ')});
+  }
+ }
  const plot=layer(svg,'plot',{'clip-path':'url(#'+clipId+')'});
  header(svg,m,s);
  radar(plot,m,l,s);
@@ -526,7 +562,7 @@ function routeProjection(input){
  // The normal NAV glyph contract remains unchanged; source-only overlays
   // also need accurate projections for centered/expanded NAV rose modes.
   return ['PLAN','MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(m.mode)?
-   projection(m,LAYOUT[m.mode],m.mode==='PLAN'):null;
+   projection(m,layoutFor(m),m.mode==='PLAN'):null;
 }
 return {VERSION,COLORS,MODES,REFERENCE,LAYOUT,FRAME,DISPLAY_ASPECT,rosePoint,norm,rel,selectedHeadingPresentation,model,computeDisplay,render,routeProjection};
 });
