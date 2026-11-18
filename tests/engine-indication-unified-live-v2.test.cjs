@@ -107,11 +107,32 @@ async function run(){
  assert.ok(readouts.some(x=>x.key==='fuelFlow'&&x.val===used));
  raw.timeMs+=10001;live.refresh();
  assert.equal(live.getState().fuelMode,'RATE');
+ const beforeReset=live.getState().snapshot.fuelUsedKg.engine1;
  live.command({type:'RESET_FUEL_USED'});
+ assert.equal(live.getState().fuelMode,'USED',
+  'EIS RESET displays old fuel USED for the first second');
+ assert.equal(live.getState().snapshot.fuelUsedKg.engine1,beforeReset);
+ raw.timeMs+=999;live.refresh();
+ assert.ok(live.getState().snapshot.fuelUsedKg.engine1>0,
+  'EIS fuel USED must not reset before the one-second hold expires');
+ raw.timeMs+=1;live.refresh();
  assert.equal(live.getState().snapshot.fuelUsedKg.engine1,0);
+ assert.equal(live.getState().fuelMode,'USED','EIS momentarily shows zero');
+ raw.timeMs+=350;live.refresh();
+ assert.equal(live.getState().fuelMode,'RATE','EIS returns to RATE after reset');
  // Conventional photo needles use same observed ECU but have different feeds.
  live.command({type:'MODE',mode:'CONVENTIONAL'});
  assert.equal(live.getState().mode,'CONVENTIONAL');
+ live.command({type:'FUEL_MODE',value:'USED'});
+ raw.timeMs+=10500;live.refresh();
+ assert.equal(live.getState().fuelMode,'USED',
+  'Conventional spring-held USED does not auto-revert after 10s');
+ live.command({type:'RESET_FUEL_USED'});
+ assert.equal(live.getState().snapshot.fuelUsedKg.engine1,0,
+  'Conventional spring RESET resets both engine ledgers without 1s EIS delay');
+ assert.equal(live.getState().snapshot.fuelUsedKg.engine2,0);
+ live.command({type:'FUEL_MODE',value:'RATE'});
+ assert.equal(live.getState().fuelMode,'RATE');
  assert.ok(renders.some(x=>x.kind==='conventional'&&x.engine==='engine1'&&x.key==='n2'));
  assert.equal(live.getState().snapshot.engines.engine1.indications.oilQuantity.value,4);
  assert.ok(readouts.some(x=>x.engine==='engine1'&&x.key==='oilQuantity'&&x.val===80),'Conventional drums receive percent input and convert it to gallons once');
