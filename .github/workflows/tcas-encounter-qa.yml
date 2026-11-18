@@ -28,6 +28,10 @@ jobs:
           node --check engine/tcas/classic-tcas-v1.js
           node --check engine/tcas/classic-tcas-v2.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/app.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/browser-smoke.cjs
+          node --check efis-display-lab/ehsi-v2.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/tcas-regression.test.cjs
       - name: Kinematics, manual RA response and layout
         run: node --test panel-mosaic-lab/cockpit/tcas-lab/tcas-regression.test.cjs
@@ -37,3 +41,29 @@ jobs:
           python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
           python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
           python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+
+  browser-smoke:
+    needs: tcas-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+      - name: Inspect real physical EFIS photo, knobs and EHSI rendering
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node panel-mosaic-lab/cockpit/tcas-lab/browser-smoke.cjs
+      - name: Upload browser screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tcas-lab-approved-efis-control-panel
+          path: artifacts/tcas-lab/*.png
+          if-no-files-found: ignore
