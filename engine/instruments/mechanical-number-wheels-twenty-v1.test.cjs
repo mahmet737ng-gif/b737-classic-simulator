@@ -1,0 +1,14 @@
+'use strict';const assert=require('node:assert/strict');
+const Wheel=require('./mechanical-number-wheels-v1.js');
+const f=x=>Wheel.framesTwenty(x,5);
+assert.deepEqual([f(12340)[3].digit,f(12340)[4].digit],[4,0]);
+assert.deepEqual([f(12360)[3].digit,f(12360)[4].digit],[6,0]);
+assert.deepEqual([f(12380)[3].digit,f(12380)[4].digit],[8,0]);
+assert.equal(f(12379)[2].fraction,0,'Higher hundreds do not jump early');
+assert.equal(f(12381)[2].fraction,.05);
+assert.equal(f(12979)[1].fraction,0,'Thousands must not roll 180ft early');
+assert.equal(f(12990)[1].fraction,.5,'Thousands carry through final 20ft');
+assert.equal(f(13000)[1].digit,3);
+assert.equal(f(12399)[3].fraction,.95);
+assert.ok(Wheel.frames(123.4,3)[2].fraction>0,'Default IAS 1-kt wheel unchanged');
+console.log('PASS mechanical altitude wheels: 20-ft increments and upper drums only transition during final 20 ft');
