@@ -11,18 +11,18 @@
  'use strict';
  const rad=x=>x*Math.PI/180,norm=x=>(x%360+360)%360;
  const FIXES=Object.freeze([
-  {name:'REKPA',eastNm:0,northNm:4.8},
-  {name:'VABER',eastNm:1.5,northNm:12.0},
-  {name:'DOKIT',eastNm:3.6,northNm:23.5},
-  {name:'TOLRA',eastNm:6.1,northNm:40.0},
-  {name:'SIBEN',eastNm:7.8,northNm:63.0},
-  {name:'LEMDA',eastNm:9.5,northNm:96.0}
+  {name:'REKPA',eastNm:0,northNm:7.4},
+  {name:'VABER',eastNm:1.5,northNm:17.5},
+  {name:'DOKIT',eastNm:4.2,northNm:29.0},
+  {name:'TOLRA',eastNm:7.8,northNm:45.0},
+  {name:'SIBEN',eastNm:10.8,northNm:67.0},
+  {name:'LEMDA',eastNm:13.0,northNm:98.0}
  ]);
  const TRAFFIC=Object.freeze([
-  {id:'OTHER-1',bearing:335,distanceNm:2.9,altitudeDeltaFt:1800,verticalRateFpm:0,headingDeg:8,speedKt:455},
-  {id:'OTHER-2',bearing:25,distanceNm:4.2,altitudeDeltaFt:-1600,verticalRateFpm:350,headingDeg:330,speedKt:425},
-  {id:'OTHER-3',bearing:133,distanceNm:6.4,altitudeDeltaFt:2400,verticalRateFpm:0,headingDeg:75,speedKt:410},
-  {id:'OTHER-4',bearing:232,distanceNm:8.0,altitudeDeltaFt:-2300,verticalRateFpm:-550,headingDeg:190,speedKt:455}
+  {id:'OTHER-1',bearing:315,distanceNm:5.0,altitudeDeltaFt:1800,verticalRateFpm:0,headingDeg:8,speedKt:455},
+  {id:'OTHER-2',bearing:42,distanceNm:8.1,altitudeDeltaFt:-1600,verticalRateFpm:350,headingDeg:330,speedKt:425},
+  {id:'OTHER-3',bearing:133,distanceNm:16.0,altitudeDeltaFt:2400,verticalRateFpm:0,headingDeg:75,speedKt:410},
+  {id:'OTHER-4',bearing:232,distanceNm:24.0,altitudeDeltaFt:-2300,verticalRateFpm:-550,headingDeg:190,speedKt:455}
  ]);
  const start={eastNm:0,northNm:0};
  const length=(a,b)=>Math.hypot(b.eastNm-a.eastNm,b.northNm-a.northNm);
