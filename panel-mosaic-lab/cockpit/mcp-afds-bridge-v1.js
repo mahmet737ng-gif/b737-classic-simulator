@@ -124,6 +124,22 @@ function hardwareCommand(e){
 }
 function requestMode(id){
  if(!id)return;
+ // The source-grounded TO/GA FCC controls pitch until 400 ft RA, not an
+ // unrelated MCP pushbutton. Also inhibit a new single A/P engagement below
+ // the takeoff/go-around floor. A dual A/P already engaged for FLARE is
+ // handled by the TO/GA FCC logic and is not a new MCP button selection.
+ const t=window.B737UnifiedTOGACh4V1?.getState?.();
+ const f=window.B737UnifiedFlightScenarioV1?.getState?.();
+ if((t?.phase==='TO'||t?.phase==='GA')&&f?.airborne===true&&
+    Number.isFinite(f.radioAltitudeFt)&&f.radioAltitudeFt<400){
+  const lockedPitch=['VNAV','LVL_CHG','VS','ALT_HLD'].includes(id);
+  const lockedAp=/^(?:CMD|CWS)_[AB]$/.test(id);
+  if(lockedPitch||lockedAp){
+   state={...state,lastRejection:lockedPitch?'TOGA_PITCH_PROTECTED_BELOW_400_RA':
+    'NEW_AP_ENGAGEMENT_INHIBITED_BELOW_400_RA',revision:state.revision+1};
+   project();notify();return Core.output(state);
+  }
+ }
  return send({type:"BUTTON",id});
 }
 function visualRequest(e){
