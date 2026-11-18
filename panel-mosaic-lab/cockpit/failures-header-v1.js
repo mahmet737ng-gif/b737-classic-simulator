@@ -121,8 +121,19 @@
    const link=create('a',actions,'failures-lab-link','OPEN FULL BUS TEST LAB');
    link.href='../../bus-consumer-test-lab/v3.html';
    link.target='_blank';link.rel='noopener';
+   // Fuel injectors live in an independently mounted ATA28 module. Keep
+   // Electrical's immutable 24-bus registry and injection channel isolated.
+   const fuelBranch=create('details',panel,'failures-fuel');
+   fuelBranch.id='failuresFuelBranch';
+   const fuelSummary=create('summary',fuelBranch,'failures-section-title');
+   create('span',fuelSummary,'','FUEL');
+   const fuelCounter=create('span',fuelSummary,'failures-branch-counter','0 ACTIVE');
+   fuelCounter.id='failuresFuelCounter';
+   const fuelMount=create('div',fuelBranch,'failures-electrical-content');
+   fuelMount.id='failuresFuelMount';
+   create('p',fuelMount,'failures-feedback','Fuel ECU instructor controls are initializing.');
    create('p',panel,'failures-footer',
-    'Future groups (Fuel, Hydraulic, Pneumatic and others) will be added here.');
+    'Fuel faults act on the existing ATA 28 ECU. Other systems will be added separately.');
    function live(){
     const api=win.B737UnifiedBusFailureInjectionV1;
     validateProtocol(api);
@@ -139,10 +150,13 @@
    }
    function refresh(){
     const keys=new Set(currentKeys());
-    trigger.dataset.failureCount=String(keys.size);
-    trigger.dataset.failuresActive=String(keys.size>0);
-    trigger.textContent=keys.size?'FAILURES ('+keys.size+')':'FAILURES';
+    const fuelCount=Number(win.B737UnifiedFuelFailuresV1?.refresh?.()??0);
+    const total=keys.size+(Number.isFinite(fuelCount)?Math.max(0,fuelCount):0);
+    trigger.dataset.failureCount=String(total);
+    trigger.dataset.failuresActive=String(total>0);
+    trigger.textContent=total?'FAILURES ('+total+')':'FAILURES';
     counter.textContent=keys.size+' FAILED';
+    fuelCounter.textContent=fuelCount+' ACTIVE';
     for(const [key,button] of buttons){
      const failed=keys.has(key);
      button.dataset.failed=String(failed);
