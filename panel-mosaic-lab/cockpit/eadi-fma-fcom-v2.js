@@ -156,6 +156,11 @@
    return false;
   }
  }
+ function clearFcc(){
+  fcc.CAPT=null;fcc.FO=null;
+  lastTrigger='FCC_MODE_CLEARED';
+  return refreshFromMcp('FCC_MODE_CLEARED');
+ }
  function render(ctx,seat,now=Date.now()){
   validate(seat);
   const states=seats[seat]||model()?.blank?.();
@@ -273,10 +278,11 @@
    'b737:electrical-distribution-changed','b737:bus-failure-injection-changed'])
    root.addEventListener(event,()=>refreshFromMcp(event));
   root.addEventListener('b737:fma-fcc-observation',event=>observeFcc(event.detail));
+  root.addEventListener('b737:fma-fcc-clear',clearFcc);
   const current=root.B737McpAFDSBridgeV1?.getOutput?.();
   if(current)projectMcp(current,'INITIAL_BRIDGE_SNAPSHOT');
   return true;
  }
  return Object.freeze({VERSION,FIELDS,SECTION,LAYOUT,COLOR,
-  accept,projectMcp,refreshFromMcp,hardwareReconciled,inspectLink,observeFcc,render,renderReference,getState,bind});
+  accept,projectMcp,refreshFromMcp,hardwareReconciled,inspectLink,observeFcc,clearFcc,render,renderReference,getState,bind});
 });
