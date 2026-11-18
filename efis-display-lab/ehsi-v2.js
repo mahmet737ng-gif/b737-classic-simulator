@@ -88,7 +88,7 @@ function stroke(p,points,color=COLORS.white,w=1.65,attrs={}){
 }
 function text(p,value,x,y,size=17,color=COLORS.white,align='start'){
  if(value===null||value===undefined||value==='')return;
- const g=make(p,'g',{'data-text':String(value),'aria-label':String(value),'font-size':size});
+ const g=make(p,'g',{'data-text':String(value),'aria-label':String(value),'font-size':size,'data-x':x,'data-y':y});
  make(g,'title',{},value);
  return make(g,'path',{d:glyph.svg(value,x,y,size,align,.84),fill:'none',stroke:color,'stroke-width':Math.max(.8,size/12.5),'stroke-linecap':'round','stroke-linejoin':'round'});
 }
@@ -415,26 +415,26 @@ function traffic(svg,m,l,status){
  const visible=enabled?targets.filter(t=>mode!=='TA_ONLY'||t.kind!=='RA'):[];
  const advisories=visible.filter(t=>t.kind==='TA'||t.kind==='RA');
  const alerts=advisories.some(t=>t.kind==='RA')?COLORS.red:COLORS.amber;
- if(advisories.length)text(g,'TRAFFIC',402,68,19,alerts,'middle');
+ if(advisories.length){make(g,'rect',{x:343,y:196,width:97,height:22,fill:COLORS.black});text(g,'TRAFFIC',437,214,21,alerts,'end');}
  const labels={OFF:'TCAS OFF',FAIL:'TCAS FAIL',TA_ONLY:'TA ONLY',TEST:'TCAS TEST'};
  if(mode==='OFF'&&l.calibrated){
   photoText(g,'TCAS',64,205,22);
   photoText(g,'OFF',64,226,22);
  }else if(labels[mode]&&(mode!=='FAIL'||!m.traffic.failSuppressed)){
-  text(g,labels[mode],494,88,17,mode==='FAIL'?COLORS.amber:mode==='TA_ONLY'?COLORS.green:COLORS.white,'end');
+  text(g,labels[mode],64,226,18,mode==='FAIL'?COLORS.amber:mode==='TA_ONLY'?COLORS.green:COLORS.white,'start');
  }
  if(!status.trafficOverlay)return;
- photoText(g,'TFC',G.header.left,m.mode==='CTR_MAP'?200:205,21,PHOTO_COLORS.green);
+ photoText(g,'TFC',G.header.left,184,21,PHOTO_COLORS.green);
  let offscale=null;
  let noBearingRow=0;
  for(const t of visible){
   if(!Number.isFinite(t.bearing)){
    if(t.kind==='RA'||t.kind==='TA'){
     const color=t.kind==='RA'?COLORS.red:COLORS.amber;
-    const altitude=Number.isFinite(t.relativeAltitude)?
-     (t.relativeAltitude>=0?'+':'-')+String(Math.abs(Math.round(t.relativeAltitude/100))).padStart(2,'0'):'';
-    const y=126+noBearingRow++*21;
-    text(g,t.kind+' '+t.distance.toFixed(1)+' '+altitude,402,y,16,color,'middle');
+    const altitude=Number.isFinite(t.displayAltitude)?String(t.displayAltitude).padStart(3,'0'):Number.isFinite(t.relativeAltitude)?
+     (t.relativeAltitude>=0?'+':'-')+String(Math.round(Math.abs(t.relativeAltitude)/100)).padStart(2,'0'):'';
+    const y=236+noBearingRow++*21;
+    text(g,t.kind+' '+t.distance.toFixed(1)+' '+altitude,437,y,16,color,'end');
     if(Math.abs(t.verticalRate)>=500){
      const s=Math.sign(t.verticalRate);
      line(g,464,y+7*s,464,y-7*s,color);
@@ -449,22 +449,24 @@ function traffic(svg,m,l,status){
    if(t.kind==='RA'||(t.kind==='TA'&&offscale!==COLORS.red))offscale=t.kind==='RA'?COLORS.red:COLORS.amber;
    continue;
   }
-  const [x,y]=xy,target=layer(g,'traffic-'+t.kind.toLowerCase());
+  const [x,y]=xy,target=layer(g,'traffic-'+t.kind.toLowerCase(),{'data-target-id':t.id||'',
+   'data-relative-altitude':t.relativeAltitude??'UNKNOWN','data-bearing':t.bearing,'data-range':t.distance});
   const color=t.kind==='RA'?COLORS.red:t.kind==='TA'?COLORS.amber:COLORS.white;
   if(t.kind==='TA')circle(target,x,y,6,color,color);
   else if(t.kind==='RA')make(target,'rect',{x:x-6,y:y-6,width:12,height:12,fill:color});
   else polygon(target,[[x,y-7],[x+7,y],[x,y+7],[x-7,y]],color,t.kind==='PROX'?color:COLORS.black);
   if(Number.isFinite(t.relativeAltitude)){
-   const a=Math.round(t.relativeAltitude/100);
-   text(target,(a>=0?'+':'-')+String(Math.abs(a)).padStart(2,'0'),x,y+(a>=0?-14:15),14,color,'middle');
+   const a=Math.round(Math.abs(t.relativeAltitude)/100),above=t.relativeAltitude>=0;
+   text(target,Number.isFinite(t.displayAltitude)?String(t.displayAltitude).padStart(3,'0'):
+    (above?'+':'-')+String(a).padStart(2,'0'),x,y+(above?-14:15),16,color,'middle');
   }
   if(Math.abs(t.verticalRate)>=500){
-   const s=Math.sign(t.verticalRate);
-   line(target,x+12,y+7*s,x+12,y-7*s,color);
-   stroke(target,[[x+8,y-3*s],[x+12,y-7*s],[x+16,y-3*s]],color);
+   const s=Math.sign(t.verticalRate),arrow=layer(target,'traffic-trend',{'data-trend':s>0?'UP':'DOWN'});
+   line(arrow,x+12,y+7*s,x+12,y-7*s,color);
+   stroke(arrow,[[x+8,y-3*s],[x+12,y-7*s],[x+16,y-3*s]],color);
   }
  }
- if(offscale)text(g,'OFFSCALE',494,106,16,offscale,'end');
+ if(offscale)text(g,'OFFSCALE',437,192,18,offscale,'end');
 }
 function render(svg,raw){
  if(!svg)return null;

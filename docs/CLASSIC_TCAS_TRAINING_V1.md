@@ -1,3 +1,5 @@
+> Superseded for active Unified behavior by [CLASSIC_TCAS_TRAINING_V2.md](CLASSIC_TCAS_TRAINING_V2.md). This file describes the prior timed prototype.
+
 # Classic TCAS II 7.1 instructor encounters
 
 This release adds an explicitly scripted TCAS trainer to Unified FLT PHASE. It does not implement RTCA DO-185B surveillance, interrogation, Mode S coordination, threat tracking, horizontal miss-distance filtering or a certified collision avoidance computer. The displayed encounter stages and their changes are instructor authored, rather than calculated predictions of a real aircraft collision. The current flight scenario supplies MSL altitude; unless a separate `pressureAltitudeFt` is supplied, it is explicitly used as a pressure-altitude surrogate (`altitudeSource: SCENARIO_MSL_SURROGATE`). No QNH-to-standard conversion or real TCAS pressure source is claimed. The warning-time table is reference data and controls the nominal TA-to-RA interval of the scripts; it is not the full CAS algorithm.

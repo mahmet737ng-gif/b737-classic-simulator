@@ -62,6 +62,7 @@ on:
       - 'panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js'
       - 'tests/flight-phase-shell-v1.test.cjs'
       - 'engine/tcas/**'
+      - 'panel-mosaic-lab/cockpit/tcas-lab/**'
       - 'panel-mosaic-lab/cockpit/tcas-training-unified-v1.js'
       - 'tests/classic-tcas*.test.cjs'
       - '.github/workflows/flight-scenario-ci.yml'
@@ -74,6 +75,7 @@ on:
       - 'panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js'
       - 'tests/flight-phase-shell-v1.test.cjs'
       - 'engine/tcas/**'
+      - 'panel-mosaic-lab/cockpit/tcas-lab/**'
       - 'panel-mosaic-lab/cockpit/tcas-training-unified-v1.js'
       - 'tests/classic-tcas*.test.cjs'
 jobs:
@@ -96,6 +98,9 @@ jobs:
           node --check panel-mosaic-lab/cockpit/instrument-lab/photo-gauge-registration-v1.js
           node --check panel-mosaic-lab/cockpit/eadi-lab-unified-v2.js
           node --check panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js
+          node --check engine/tcas/classic-tcas-v2.js
+          node --check panel-mosaic-lab/cockpit/tcas-training-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/app.js
           node --check engine/flight/flight-scenario-core-v1.js
           node --check engine/instruments/flight-dynamics-gauge-model-v1.js
           node --check engine/efis/wmm2025-magnetic-model-v1.js
@@ -119,4 +124,4 @@ jobs:
       - name: Flight instrument photo socket placement QA
         run: node --test panel-mosaic-lab/cockpit/instrument-lab/photo-gauge-registration-v1.test.cjs
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/flight-display-motion-v1.test.cjs tests/mechanical-number-wheels-v1.test.cjs tests/photo-gauge-mcp-speed-bugs-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/photo-gauge-rolling-svg-v1.test.cjs tests/flight-scenario-stop-guard-v1.test.cjs tests/unified-efis-source-health-v1.test.cjs tests/flight-scenario-efis-continuity-v1.test.cjs tests/classic-tcas-v1.test.cjs tests/classic-tcas-display-v1.test.cjs tests/flight-phase-shell-v1.test.cjs
+        run: node --test tests/flight-scenario-core-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/flight-display-motion-v1.test.cjs tests/mechanical-number-wheels-v1.test.cjs tests/photo-gauge-mcp-speed-bugs-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/photo-gauge-rolling-svg-v1.test.cjs tests/flight-scenario-stop-guard-v1.test.cjs tests/unified-efis-source-health-v1.test.cjs tests/flight-scenario-efis-continuity-v1.test.cjs tests/classic-tcas-v1.test.cjs tests/classic-tcas-display-v1.test.cjs tests/classic-tcas-v2.test.cjs tests/classic-tcas-integration-v2.test.cjs tests/flight-phase-shell-v1.test.cjs

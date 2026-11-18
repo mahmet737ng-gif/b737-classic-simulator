@@ -16,7 +16,8 @@ function draw(traffic,{tfc=true,mode='MAP',range=40}={}){
 const encounter=id=>TCAS.evaluate({scenario:id,elapsedSec:20,own});
 test('TA / RA symbols and altitude labels are source-colored and disappear with TFC, alert text remains',()=>{
  const ra=draw(encounter('CLIMB'));
- assert.ok(ra.find('traffic-ra'));assert.ok(ra.texts.includes('TRAFFIC'));assert.ok(ra.texts.includes('-02'));
+ assert.ok(ra.find('traffic-ra'));
+ const alert=ra.nodes.find(n=>n.attrs['data-text']==='TRAFFIC');assert.equal(alert.attrs['data-y'],'214');assert.equal(alert.attrs['data-x'],'437');assert.ok(ra.texts.includes('TRAFFIC'));assert.ok(ra.texts.includes('-02'));
  assert.equal(ra.find('traffic-ra').children.find(n=>n.tag==='rect').attrs.fill,'#ff504f');
  const off=draw(encounter('CLIMB'),{tfc:false});assert.equal(off.find('traffic-ra'),undefined);assert.ok(off.texts.includes('TRAFFIC'));
  const ta=draw(TCAS.evaluate({scenario:'CLIMB',elapsedSec:5,own}));assert.ok(ta.find('traffic-ta'));
@@ -26,6 +27,17 @@ test('PLAN and FULL modes suppress traffic targets, retaining the all-mode TRAFF
  for(const mode of ['PLAN','FULL_NAV','FULL_VOR_ILS']){
   const r=draw(encounter('CLIMB'),{mode});assert.equal(r.find('traffic-ra'),undefined);assert.ok(r.texts.includes('TRAFFIC'));
  }
+});
+test('white diamonds differ by fill; signed altitude sits on the correct side and actual rate controls trend arrows',()=>{
+ const traffic={mode:'TA_RA',targets:[
+  {id:'P',kind:'PROX',bearing:80,distance:4,relativeAltitude:-50,verticalRate:-500},
+  {id:'O',kind:'OTHER',bearing:100,distance:7,relativeAltitude:1500,verticalRate:499}]};
+ const r=draw(traffic),p=r.find('traffic-prox'),o=r.find('traffic-other');
+ assert.equal(p.children.find(n=>n.tag==='polygon').attrs.fill,'#f0f4ec');
+ assert.equal(o.children.find(n=>n.tag==='polygon').attrs.fill,'#000');
+ const label=p.children.find(n=>n.attrs['data-text']==='-01');assert.ok(label,'negative altitude does not become +00');
+ assert.equal(p.children.find(n=>n.attrs['data-segment']==='traffic-trend').attrs['data-trend'],'DOWN');
+ assert.ok(!o.children.some(n=>n.attrs['data-segment']==='traffic-trend'));
 });
 test('offscale and no-bearing messages never fabricate an intruder bearing',()=>{
  const off=draw(encounter('OFFSCALE'));assert.ok(off.texts.includes('OFFSCALE'));assert.equal(off.find('traffic-ra'),undefined);
@@ -47,6 +59,7 @@ test('live EADI receives the RA pitch zones and clears them without changing att
  const input={seat:'CAPT',pitch:2,bank:10,powered:true,attitudeValid:true,tcas:encounter('CLIMB')};
  assert.equal(Eadi.renderUnifiedFull(canvas,input),true);assert.equal(canvas.dataset.tcasRa,'CLIMB');
  assert.ok(calls.some(c=>c[0]==='lineTo'&&c[1]===91));
+ assert.ok(!calls.some(c=>c[0]==='moveTo'&&c[1]===-91&&calls.some(d=>d[0]==='lineTo'&&d[1]===-91&&d[2]===c[2])),'no far-side fence closure');
  Eadi.renderUnifiedFull(canvas,{...input,tcas:{advisory:null,ra:null}});assert.equal(canvas.dataset.tcasRa,'');
  Eadi.renderUnifiedFull(canvas,{...input,powered:false});assert.equal(canvas.dataset.tcasRa,'CLIMB');
  // Electrical power remains enforced by the renderer (no red strokes when dark).

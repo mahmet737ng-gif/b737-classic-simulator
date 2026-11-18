@@ -62,7 +62,9 @@ test('every defined encounter terminates and never mutates the aircraft or gener
 });
 function runtime(){
  const events=new Map();let state={...own},flightActive=true,age=0;
- const win={document:{readyState:'loading',addEventListener(){},getElementById(){return null;}},B737ClassicTcasV1:TCAS,
+ const win={document:{readyState:'loading',addEventListener(){},getElementById(){return null;}},B737ClassicTcasV2:require('../engine/tcas/classic-tcas-v2.js'),B737ClassicTcasV1:TCAS,
+  B737UnifiedBusConsumerLiveV1:{getBus:()=>({powered:true})},
+  B737UnifiedAvionicsNetworkV1:{getSnapshot:()=>Object.fromEntries(['airdata.adc1','airdata.adc2','airdata.radioAltitude1','airdata.radioAltitude2'].map(k=>[k,{quality:'VALID'}]))},
   B737UnifiedFlightScenarioV1:{getDiagnostics:()=>({active:flightActive,lastPublishAgeMs:age}),getState:()=>state,
    command(){throw Error('TCAS MUST NEVER COMMAND FLIGHT');}},
   addEventListener(name,fn){if(!events.has(name))events.set(name,[]);events.get(name).push(fn);},
@@ -75,9 +77,9 @@ function runtime(){
 }
 test('runtime follows flight time / pause, next event, source stop and mode changes',()=>{
  const f=runtime();f.api.start('REVERSAL_CLIMB');
- f.advance(5);assert.equal(f.api.getState().advisory,'TA');
- f.advance(5);assert.equal(f.api.getDiagnostics().elapsedSec,5);
- f.api.next();assert.equal(f.api.getState().ra.id,'DESCEND');
+ f.advance(6);assert.equal(f.api.getState().advisory,'TA');
+ f.advance(6);assert.equal(f.api.getDiagnostics().elapsedSec,6);
+ f.api.next();f.api.next();assert.equal(f.api.getState().ra.id,'DESCEND');
  f.api.next();assert.equal(f.api.getState().ra.id,'REVERSAL_CLIMB');
  f.api.setMode('TA_ONLY');assert.equal(f.api.getState().ra,null);
  f.api.setMode('TA_RA');assert.equal(f.api.getState().ra.id,'REVERSAL_CLIMB');
@@ -97,24 +99,27 @@ test('TCAS controls mount inside the existing flight dialog and user buttons run
  const nodes=new Map(),listeners=new Map();let ready;
  const node=id=>({id,textContent:'',value:'',checked:false,handlers:{},
   addEventListener(k,fn){this.handlers[k]=fn;},
-  appendChild(n){nodes.set(n.id,n);},
+  appendChild(n){nodes.set(n.id,n);},append(n){nodes.set(n.id,n);},querySelectorAll(){return [];},
   set innerHTML(html){this.html=html;for(const [,id] of html.matchAll(/id="([^"]+)"/g))nodes.set(id,node(id));},
   get innerHTML(){return this.html;}});
  nodes.set('flightScenarioDialog',node('flightScenarioDialog'));
  const document={readyState:'loading',getElementById:id=>nodes.get(id)||null,
   createElement:()=>node(''),addEventListener(type,fn){if(type==='DOMContentLoaded')ready=fn;}};
  const flight={...own};
- const win={document,B737ClassicTcasV1:TCAS,
+ const win={document,B737ClassicTcasV2:require('../engine/tcas/classic-tcas-v2.js'),B737ClassicTcasV1:TCAS,
+  B737UnifiedBusConsumerLiveV1:{getBus:()=>({powered:true})},
+  B737UnifiedAvionicsNetworkV1:{getSnapshot:()=>Object.fromEntries(['airdata.adc1','airdata.adc2','airdata.radioAltitude1','airdata.radioAltitude2'].map(k=>[k,{quality:'VALID'}]))},
   B737UnifiedFlightScenarioV1:{getDiagnostics:()=>({active:true,lastPublishAgeMs:0}),getState:()=>flight},
   addEventListener(type,fn){listeners.set(type,fn);},dispatchEvent(e){listeners.get(e.type)?.(e);}};
  class CustomEvent{constructor(type,opt={}){this.type=type;this.detail=opt.detail;}}
  vm.runInNewContext(fs.readFileSync('panel-mosaic-lab/cockpit/tcas-training-unified-v1.js','utf8'),{window:win,CustomEvent});
  ready();assert.ok(nodes.get('tcasTrainingControls'));
  nodes.get('tcasTrainingScenario').value='REVERSAL_DESCEND';
+ nodes.get('tcasRelativeAltitude').value='';nodes.get('tcasVerticalRate').value='';
  nodes.get('tcasTrainingStart').handlers.click();
  assert.equal(win.B737UnifiedTcasV1.getDiagnostics().active,true);
  nodes.get('tcasTrainingNext').handlers.click();nodes.get('tcasTrainingNext').handlers.click();
- assert.equal(win.B737UnifiedTcasV1.getState().ra.id,'CLIMB');
+ assert.equal(win.B737UnifiedTcasV1.getState().advisory,'TA');
  nodes.get('tcasTrainingNext').handlers.click();assert.equal(win.B737UnifiedTcasV1.getState().ra.id,'REVERSAL_DESCEND');
  const aural=[];listeners.set('b737:tcas-aural',e=>aural.push(e.detail.text));
  nodes.get('tcasTrainingVoice').handlers.change({target:{checked:true}});
