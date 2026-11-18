@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0009","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":474,"2":574},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":48,"note":"THR-0009: preserve both throttle lever sprites and independent sliders; reduce apparent grip from 112 to 48 source units so grips fit beside each other, slightly separate track centers; remove spurious TOGA circle overlay. Engine start levers and original assets remain unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
+const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0009","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":474,"2":574},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":56,"note":"THR-0009: preserve both throttle lever sprites and independent sliders; reduce apparent grip from 112 to 48 source units so grips fit beside each other, slightly separate track centers; remove spurious TOGA circle overlay. Engine start levers and original assets remain unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
 const KEYS=Object.freeze([0,25,50,75,100]);
 const position={1:0,2:0};
 const images={};
@@ -19,6 +19,15 @@ function apply(engine,pct,source){
   c.visual.dataset.position=String(next);
   c.visual.setAttribute('aria-valuenow',String(next));
   c.visual.setAttribute('aria-label','Engine '+engine+' throttle '+next+' percent');
+  // Move the invisible TO/GA touch target WITH its real photographed black
+  // pushbutton (different left/right photo locations), at every throttle detent.
+  if(c.toga){
+   const sprite=c.sprite.get(next),left=parseFloat(sprite.style.left),
+    top=parseFloat(sprite.style.top),w=parseFloat(sprite.style.width),h=parseFloat(sprite.style.height);
+   const cx=left+w*(engine===1?.74:.31),cy=top+h*.695,size=Math.max(17,Math.min(26,w*.18));
+   Object.assign(c.toga.style,{left:(cx-size/2)+'px',top:(cy-size/2)+'px',
+    width:size+'px',height:size+'px'});
+  }
  }
  if(source!=='sim')fire(engine);
 }
@@ -50,7 +59,7 @@ function createSprite(engine,pct,tex){
  // The panel's already-calibrated source window is reused; this never modifies the locked plate.
  const baseScale=tex.offsetWidth/1055;
  const centerX=tex.offsetLeft+(x-20)*baseScale;
- const centerY=tex.offsetTop+(p.sourceY-30)*baseScale;
+ const centerY=tex.offsetTop+(p.sourceY-54)*baseScale;
  Object.assign(visual.style,{left:(centerX-image.naturalWidth*cal.anchor[0]*scale)+'px',
     top:(centerY-image.naturalHeight*cal.anchor[1]*scale)+'px',
     width:(image.naturalWidth*scale)+'px',
@@ -88,7 +97,20 @@ function place(engine,tex){
   width:hitWidth+'px',
   height:'585px'
  });
- root.append(hit);controls.set(engine,{sprite:sprites,visual:hit,select:null});
+ root.append(hit);
+ const toga=document.createElement('button');toga.type='button';
+ toga.className='throttle-toga-push';
+ toga.dataset.engine=String(engine);
+ toga.setAttribute('aria-label','Press TO/GA switch on throttle '+engine);
+ toga.title='TO/GA '+engine;
+ toga.addEventListener('pointerdown',e=>{e.stopPropagation();});
+ toga.addEventListener('click',e=>{
+  e.preventDefault();e.stopPropagation();
+  window.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{
+   source:'THROTTLE_'+engine,engine}}));
+ });
+ root.append(toga);
+ controls.set(engine,{sprite:sprites,visual:hit,toga,select:null});
 }
 function mountPlasticCover(tex){
  if(root.querySelector('.throttle-plastic-cover'))return;
@@ -149,6 +171,7 @@ async function mount(){
    }
    mountPlasticCover(texture);
    place(1,texture);place(2,texture);buildControls();
+   apply(1,position[1],'sim');apply(2,position[2],'sim');
    mounted=true;root.dataset.throttleMount='ready';
    root.dataset.throttleMissingAssets=String(missing.length);
    if(missing.length)console.warn('THR-0008: Loaded with fallback sprites:',missing);
