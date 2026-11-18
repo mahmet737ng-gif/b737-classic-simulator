@@ -133,14 +133,30 @@
   const groundRoll=s.phase==='TAKEOFF_ROLL',landingRoll=s.phase==='LANDING_ROLL';
   const commandedSpeed=landingRoll?0:groundRoll?165:target.speedKt;
   const rate=groundRoll?2.4:landingRoll?1.8:s.iasKt<commandedSpeed?1.2:1;
-  // If a shared ISN-18 ECU observation is available, N1 (not target speed)
-  // drives the airspeed derivative. Without a linked engine, the original
-  // kinematic trainer remains an explicitly approximate fallback.
+  // Shared ISN-18 ECU N1 is the sole observed propulsion input. Do not
+  // synthesize takeoff acceleration from the TO/GA label or a speed target.
+  // The following coefficients are TRAINING approximations, not AFM data.
   const observed=propulsion?.valid===true&&Array.isArray(propulsion.engines)&&
    propulsion.engines.length===2&&propulsion.engines.every(e=>
     typeof e?.running==='boolean'&&Number.isFinite(e.n1Percent)&&
     e.n1Percent>=0&&e.n1Percent<=120);
-  if(observed&&s.airborne&&!landingRoll){
+  if(groundRoll&&observed){
+   // At idle N1 there is no takeoff acceleration. Real observed engine
+   // spool drives a bounded training surrogate with rolling/drag losses.
+   const normalizedThrust=propulsion.engines.reduce((sum,e)=>
+    sum+(e.running?Math.pow(clamp((e.n1Percent-22)/78,0,1),1.25):0),0)/2;
+   const resistanceKtSec=.12+.000025*s.iasKt*s.iasKt;
+   const accelerationKtSec=4.1*normalizedThrust-resistanceKtSec;
+   s.iasKt=clamp(s.iasKt+accelerationKtSec*dt,0,450);
+   s.propulsion={source:'ISN18_OBSERVED_N1_GROUND_TRAINING_PLANT',
+    normalizedThrust,resistanceKtSec,accelerationKtSec};
+  }else if(groundRoll){
+   // An absent/invalid ECU observation cannot authorize synthetic thrust.
+   const accelerationKtSec=-(.12+.000025*s.iasKt*s.iasKt);
+   s.iasKt=Math.max(0,s.iasKt+accelerationKtSec*dt);
+   s.propulsion={source:'NO_ENGINE_OBSERVATION_NO_SYNTHETIC_THRUST',
+    accelerationKtSec};
+  }else if(observed&&s.airborne&&!landingRoll){
    const n1Equivalent=32+propulsion.engines.reduce((sum,e)=>
     sum+(e.running?clamp(e.n1Percent-32,0,65):0),0)/2;
    const requiredN1=clamp(42+.105*s.iasKt+.0002*s.iasKt*s.iasKt+
