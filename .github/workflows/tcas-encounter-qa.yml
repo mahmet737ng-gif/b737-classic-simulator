@@ -1,0 +1,37 @@
+name: TCAS Encounter Lab geometry and FMA regression
+on:
+  push:
+    paths:
+      - 'engine/tcas/**'
+      - 'panel-mosaic-lab/cockpit/tcas-lab/**'
+      - '.github/workflows/tcas-encounter-qa.yml'
+  pull_request:
+    paths:
+      - 'engine/tcas/**'
+      - 'panel-mosaic-lab/cockpit/tcas-lab/**'
+      - '.github/workflows/tcas-encounter-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tcas-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: TCAS JavaScript syntax
+        run: |
+          node --check engine/tcas/classic-tcas-v1.js
+          node --check engine/tcas/classic-tcas-v2.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/app.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/tcas-regression.test.cjs
+      - name: Kinematics, manual RA response and layout
+        run: node --test panel-mosaic-lab/cockpit/tcas-lab/tcas-regression.test.cjs
+      - name: Protect existing approved cockpit assets
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
