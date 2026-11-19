@@ -1,9 +1,14 @@
 'use strict';
 const assert=require('node:assert/strict');
-const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation}=require('../auth-policy');
+const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation,canRegisterDevice}=require('../auth-policy');
 assert.equal(OWNER_SESSION_SECONDS,60*60*24*400);
-assert.equal(GUEST_SESSION_SECONDS,60*60*24*7);
-assert.equal(DEVICE_SESSION_SECONDS,60*60*24*30);
+assert.equal(GUEST_SESSION_SECONDS,OWNER_SESSION_SECONDS);
+assert.equal(DEVICE_SESSION_SECONDS,OWNER_SESSION_SECONDS);
+for(const count of [0,1,2])assert.equal(canRegisterDevice('guest',null,count),true);
+assert.equal(canRegisterDevice('guest',null,3),false,'4th new guest device denied');
+assert.equal(canRegisterDevice('guest','guest',3),true,'Registered device may re-login when full');
+assert.equal(canRegisterDevice('unlimited',null,3),true,'Owner exempt');
+assert.equal(canRegisterDevice('guest','unlimited',3),false);
 const cases=[
  ['/',{},true],
  ['/panel-mosaic-lab/cockpit/',{},true],
