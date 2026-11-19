@@ -27,10 +27,11 @@
  function estimate(){
   if(!EST||!validProfile())return null;
   const f=win.B737UnifiedFlightScenarioV1?.getState?.();
-  const oat=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.oat')?.value;
+  const context=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('flightcontext.state');
+  const oat=context?.quality==='VALID'?context.value?.oatC:null;
   return EST.estimate({...EST.AIRFRAME,phase:phase(),
    pressureAltitudeFt:num(f?.altitudeFt)?f.altitudeFt:null,
-   oatC:num(oat?.temperatureC)?oat.temperatureC:null,
+   oatC:num(oat)?oat:null,
    weatherMode:'ISA',engineBleedMode:'ON',acPacks:'AUTO',
    antiIceMode:'OFF',thrustLeverPct:100});
  }

@@ -14,7 +14,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.waitForFunction(()=>window.B737ThrottlePositions?.mounted()&&window.B737ISNCockpitV1&&
    window.B737McpAFDSBridgeV1&&document.querySelectorAll('.fire-handle-control').length===3,null,{timeout:55000});
   await page.evaluate(()=>{
-   document.querySelector('[data-focus="pedestal"]').click();document.querySelector('#native').click();
+   document.querySelector('#native').click();
    window.pedestalPresses=[];window.addEventListener('b737:toga-request',e=>window.pedestalPresses.push(e.detail.source));
   });
   const fire=page.locator('[data-piece="fire-protection"]');
