@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "3c518f1ddf083f7e16601779aa3005acb70e3d88",
+  "sourceCommit": "a357242a1db41c768204e08204a8a8eb714a718f",
   "mainBefore": 291,
   "mainAfter": 90,
   "overheadBefore": 59,
@@ -8,19 +8,19 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e6c2da034205eb2479aa4c147679922589bb57dc36c997201f77773542ab80be"
+      "sha256": "43394d5e25f8e293602c5a5904d822624e17659c60f30f6ca2534f34989411d5"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "bec80d3cd25c86ab19281f100187c63069e06f6e00428ba272c6f76446953ff3"
+      "sha256": "06b65820211da95e71a40a9752992b9dd09d5ed9a44c4a008491e544e315790b"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
       "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
     },
     {
-      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-fa393fa3de0eb4a8.js",
-      "sha256": "fa393fa3de0eb4a8a2dcbbb13fdf6987811b29df69ed5c3df2cae8a475d16b0f"
+      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-4953ec3759c3f14a.js",
+      "sha256": "4953ec3759c3f14ab8585e2e47ae9d168c691c861e0c0d8639a736ffac762fda"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -83,8 +83,8 @@
       "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-05416e2bc7fc24cd.js",
-      "sha256": "05416e2bc7fc24cd1debc45c7e8648975a174c11a0ada1acad5fd3f2c929f9d3"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-2ebcfe0727e4075e.js",
+      "sha256": "2ebcfe0727e4075ed647e858882810c604d201e33a9663e731308ee2ddea37f2"
     },
     {
       "path": "fire-protection-lab/desktop-bundle-38daab6b98875ff2.js",

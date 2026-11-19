@@ -1053,7 +1053,7 @@ win.B737UnifiedFireLights=Object.freeze({
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fire-hardware-unified.js?v=ATA26-0003 */
+/* ./fire-hardware-unified.js?v=ATA26-0003-PERF-0001 */
 try{
 /* P8-1 hardware registered to the same fitted photo plane as all 11 lenses. */
 (function(win){
@@ -1134,7 +1134,8 @@ function handleAt(unit,x){
  const h=button(unit+' fire handle · pull / push, hold left or right to discharge','fire-handle-control');
  rect(h,x-92,143,184,428);h.dataset.unit=unit;
  const img=new Image();img.alt='';img.draggable=false;img.loading='eager';
- img.src=handleRoot+'FIRE_HANDEL_'+unit+'_OFF.webp';
+ const source=handleRoot+'FIRE_HANDEL_'+unit+'_OFF.webp';
+ if(win.B737ImageLoader)win.B737ImageLoader.assign(img,source);else img.src=source;
  const [cropX,cropY,w,height]=handleBounds[unit];
  Object.assign(img.style,{left:-cropX/w*100+'%',top:-cropY/height*100+'%',width:1024/w*100+'%',height:1536/height*100+'%'});
  h.append(img);layer.append(h);
