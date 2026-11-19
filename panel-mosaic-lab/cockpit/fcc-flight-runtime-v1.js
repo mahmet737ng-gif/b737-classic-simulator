@@ -211,6 +211,7 @@
    secondsSinceLiftoff:sinceLiftoff,
    establishedEnroute:frame.phase==='AIRBORNE'&&!insideTakeoff,
    thrustIdleConfirmed:idle,
+   stabTrimAutopilotNormal:win.B737StabilizerTrim?.getCutouts?.().AUTOPILOT!=='CUTOUT',
    navValid:false,navKind:'NONE'});
  }
  win.addEventListener('b737:flight-scenario-state',e=>{
@@ -239,8 +240,13 @@
    confirmedHardware('CONTROL_WHEEL_TRIM');
  });
  win.addEventListener('b737:stab-trim-autopilot-cutout',e=>{
-  if(e.detail?.confirmed===true&&e.detail?.position==='CUTOUT')
-   confirmedHardware('STAB_TRIM_AUTOPILOT_CUTOUT');
+  if(e.detail?.confirmed!==true||!['NORMAL','CUTOUT'].includes(e.detail.position))return;
+  const cutout=e.detail.position==='CUTOUT';
+  if(cutout)confirmedHardware('STAB_TRIM_AUTOPILOT_CUTOUT');
+  win.B737McpAFDSBridgeV1?.observeFlight?.({
+   schema:'B737_AFDS_FLIGHT_OBSERVATION_V1',source:'SIMULATED_FCC',
+   confirmed:true,stabTrimAutopilotNormal:!cutout
+  });
  });
  win.addEventListener('b737:toga-pressed',e=>{
   if(e.detail?.confirmed===true&&e.detail?.source==='COCKPIT_HARDWARE')

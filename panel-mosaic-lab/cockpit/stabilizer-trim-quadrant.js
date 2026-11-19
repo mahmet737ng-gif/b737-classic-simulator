@@ -1,7 +1,7 @@
 /* Classic stabilizer authorities, FCOM 9.20.8–9.20.9, and P8 wheel/indicator projection. */
 (function(win){
 'use strict';
-const ticks=[[0,520],[5,564],[10,607],[15,646],[17,661]];
+const ticks=[[0,520],[5,564],[10,607],[15,646],[17,651]];
 function limits(source,flaps=0,variant='737-300'){
  if(source==='MAIN_ELECTRIC')return [flaps>0?.25:variant==='737-300'?2.5:2.8,12.5];
  if(source==='AUTOPILOT')return [.25,14];
@@ -76,7 +76,7 @@ function beginDrive(source,direction,target=direction>0?17:0){
   const {source,direction,target,last}=drive,dt=Math.min(.1,Math.max(0,(now-last)/1000));
   drive.last=now;
   // LAN 27-40 speed ratios. Absolute rates are simulator calibration.
-  const down=flapPosition()>0,rate=source==='MAIN_ELECTRIC'?(down?.45:.15):(down?.15:.075);
+  const down=flapPosition()>.01,rate=source==='MAIN_ELECTRIC'?(down?.45:.15):(down?.15:.075);
   const next=direction>0?Math.min(target,units+rate*dt):Math.max(target,units-rate*dt);
   const before=units;
   if(!set(next,source)||(dt>0&&units===before)||units===target){stopDrive();return;}

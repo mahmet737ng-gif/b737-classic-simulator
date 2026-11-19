@@ -18,9 +18,15 @@ const by=id=>dialog.querySelector('#'+id);
 const degrees=value=>Number.isFinite(value)?value.toFixed(1)+' °C':'—';
 const percent=value=>Number.isFinite(value)?value.toFixed(1)+'%':'—';
 const valve=value=>value===true?'OPEN':value===false?'CLOSED':'—';
-function undo(command){
- const key={SET_LOOP:'healthy',SET_APU_DETECTOR:'healthy',SET_CIRCUIT:'healthy'}[command.type]||'active';
- return {...command,[key]:!command[key]};
+function scenarioField(command,state){
+ switch(command.type){
+  case 'SET_FIRE': return ['active',command.unit==='APU'?state.apuFire:state.engineFire[command.unit]];
+  case 'SET_OVERHEAT': return ['active',state.engineOverheat[command.unit]];
+  case 'SET_WHEEL_FIRE': return ['active',state.wheelWellFire];
+  case 'SET_LOOP': return ['healthy',state.loops[command.unit][command.loop]];
+  case 'SET_APU_DETECTOR': return ['healthy',state.apuDetector];
+  case 'SET_CIRCUIT': return ['healthy',state.squibs[command.bottle][command.channel]];
+ }
 }
 function selectScenario(){
  by('p8-lab-reason').textContent=scenarios[by('p8-lab-scenario').value][1];
@@ -63,8 +69,8 @@ function paint(){
 }
 function annunciators(){
  const grid=by('p8-lab-cautions');
- const categories={CAPT:['FLT CONT','IRS','FUEL','ELEC','APU','OVHT/DET'],
- FO:['ANTI-ICE','HYD','DOORS','ENG','OVERHEAD','AIR COND']};
+ const categories={CAPT:['FLT CONT','ELEC','IRS','APU','FUEL','OVHT/DET'],
+ FO:['ANTI-ICE','ENG','HYD','OVERHEAD','DOORS','AIR COND']};
  for(const [side,systems] of Object.entries(categories)){
   const cell=doc.createElement('section');cell.className='p8-lab-crew';
   const title=doc.createElement('strong');title.textContent=side==='CAPT'?'CAPTAIN':'FIRST OFFICER';
@@ -103,11 +109,16 @@ function build(){
  by('p8-lab-close').onclick=()=>dialog.close();
  by('p8-lab-scenario').onchange=selectScenario;selectScenario();
  function clear(){
-  if(applied){fire().dispatch(undo(applied));applied=null;paint();}
+  if(!applied)return;
+  const {command,key,previous}=applied;
+  if(scenarioField(command,fire().getState())[1]===command[key])
+   fire().dispatch({...command,[key]:previous});
+  applied=null;paint();
  }
  by('p8-lab-apply').onclick=()=>{
   clear();const [label,,command]=scenarios[by('p8-lab-scenario').value];
-  fire().dispatch(command);applied=command;by('p8-lab-result').textContent=label+' active';paint();
+  const [key,previous]=scenarioField(command,fire().getState());
+  fire().dispatch(command);applied={command,key,previous};by('p8-lab-result').textContent=label+' active';paint();
  };
  by('p8-lab-clear').onclick=()=>{clear();by('p8-lab-result').textContent='Scenario cleared';};
  dialog.addEventListener('close',()=>{

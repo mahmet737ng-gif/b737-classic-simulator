@@ -182,7 +182,7 @@ function mount(){
  switchAt('ENG1',305,222,['A','NORMAL','B'],'x');switchAt('ENG2',1359,222,['A','NORMAL','B'],'x');
  switchAt('TEST',305,519,['FAULT_INOP','CENTER','OVHT_FIRE'],'x');switchAt('EXT',2047,486,['EXT_1','CENTER','EXT_2'],'x');
  handleAt('ENG1',544);handleAt('APU',1090);handleAt('ENG2',1614);
- const bell=button('Fire warning bell cutout','fire-bell-cutout');bell.textContent='BELL CUTOUT';rect(bell,1001,72,178,37);
+ const bell=button('Fire warning bell cutout','fire-bell-cutout');bell.textContent='BELL CUTOUT';rect(bell,1001,71,178,29);
  bell.onpointerdown=e=>e.stopPropagation();bell.onclick=e=>{e.stopPropagation();command({type:'BELL_CUTOUT'});};layer.append(bell);
  releaseButton=button('Fire handle manual lock release · arm next pull','fire-override');
  rect(releaseButton,1314,476,64,64);armRelease(false);
