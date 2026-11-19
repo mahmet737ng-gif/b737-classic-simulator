@@ -1,0 +1,405 @@
+/* Unified startup CSS; exact source order. */
+/* BEGIN ground-power-header-v1.css 53bf8bbf5e60213b21ac0be6d9cc90c4d772a625 */
+/* Unified instructor GPU controls only; no changes to protected cockpit artwork. */
+body > header.unified-minimal-header #groundPowerHeader{
+ display:inline-flex!important;visibility:visible!important;flex:0 0 auto!important;
+ border-color:#6b8692!important;background:#203d4a!important;color:#e4f5fb!important;
+ white-space:nowrap!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="AVAILABLE"]{
+ border-color:#6da5d5!important;color:#d8efff!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="ON_BUS"]{
+ border-color:#6baf8f!important;background:#1d4940!important;color:#d5ffe4!important;
+}
+body > header.unified-minimal-header #groundPowerHeader[data-gpu="BAD_QUALITY"]{
+ border-color:#d39c5d!important;color:#ffddad!important;
+}
+#groundPowerPopover[hidden]{display:none!important}
+#groundPowerPopover{
+ position:fixed;top:calc(var(--minimal-header-height,48px) + 7px);right:clamp(8px,15vw,280px);
+ width:min(370px,calc(100vw - 16px));max-height:calc(100dvh - 66px);
+ overflow-y:auto;box-sizing:border-box;z-index:80;border:1px solid #56788b;
+ border-radius:11px;background:#0d2330;color:#e7f2f9;
+ box-shadow:0 12px 40px #000a;padding:13px 14px;
+ font:12px/1.55 system-ui,Tahoma,Arial,sans-serif;direction:ltr;
+}
+#groundPowerPopover > header{display:flex;justify-content:space-between;
+ align-items:center;border-bottom:1px solid #395464;padding-bottom:8px}
+#groundPowerPopover > header strong{font-size:13px;letter-spacing:.02em}
+#groundPowerPopover button{font:600 12px/1.2 system-ui,Tahoma,Arial,sans-serif;
+ background:#1b4155;color:#ecf7ff;border:1px solid #65889b;
+ padding:9px 8px;border-radius:7px;cursor:pointer;touch-action:manipulation}
+#groundPowerPopover button:disabled{opacity:.45;cursor:not-allowed}
+#groundPowerPopover #gpuClose{padding:3px 9px;font-size:18px;line-height:1.1}
+#groundPowerPopover .gpu-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+#groundPowerPopover [data-gpu-action="ON"]{background:#1b5147;border-color:#5d9e86}
+#groundPowerPopover [data-gpu-action="OFF"]{background:#56402f;border-color:#997b61}
+#groundPowerPopover #gpuStatus{font-weight:650;color:#d0ecff}
+#groundPowerPopover #gpuAvailability{color:#a6d8ff}
+#groundPowerPopover #gpuBus{font-variant-numeric:tabular-nums;font-size:11px}
+#groundPowerPopover .gpu-explain{font-size:11px;color:#b3c8d3}
+#groundPowerPopover #gpuMessage{min-height:1.2em;color:#b9e6ce}
+#groundPowerPopover #gpuMessage[data-error="true"]{color:#ffbdad}
+@media(max-width:480px){
+ #groundPowerPopover{right:8px}
+ body > header.unified-minimal-header #groundPowerHeader{
+  font-size:10px!important;padding:4px 5px!important;
+ }
+}
+
+/* GPU-SPRING-0001: actual GRD PWR selector is a three-position momentary
+   lever. Electrical contactors latch in ECU; only the physical lever centers. */
+#groundPowerPopover .gpu-grd-switch{border:1px solid #4c6978;background:#122d3c;border-radius:9px;padding:10px;margin:10px 0}
+#groundPowerPopover .gpu-grd-switch>strong{display:block;font-size:12px;letter-spacing:.04em}
+#groundPowerPopover .gpu-grd-switch>small{display:block;color:#a9c8d8;margin-top:7px}
+#groundPowerPopover .gpu-switch-layout{display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0 4px}
+#groundPowerPopover .gpu-switch-labels{display:flex;flex-direction:column;justify-content:space-between;height:120px;text-align:right;font:700 11px/1.1 system-ui;letter-spacing:.04em;color:#d6e8f2}
+#groundPowerPopover .gpu-switch-labels span:nth-child(2){color:#a5c0ca}
+#groundPowerPopover button.gpu-spring-switch{
+ position:relative;display:block;box-sizing:border-box;width:58px;height:124px;flex:0 0 58px;
+ padding:0;background:linear-gradient(90deg,#0a1116,#263d49 49%,#0a1217);
+ border:3px ridge #6b8794;border-radius:25px;box-shadow:inset 0 4px 12px #000b,0 2px 4px #0008;
+ touch-action:none;cursor:ns-resize;user-select:none
+}
+#groundPowerPopover .gpu-spring-lever{
+ display:block;position:absolute;left:50%;top:50%;width:38px;height:28px;
+ transform:translate(-50%,-50%);border-radius:11px;
+ background:linear-gradient(#d4d8d9,#818d92 45%,#455158 51%,#cbd1d3);
+ border:1px solid #a4b2bb;box-shadow:0 2px 5px #000a;
+ transition:top 90ms ease-out;pointer-events:none
+}
+#groundPowerPopover .gpu-spring-switch[data-position="ON"] .gpu-spring-lever{top:18%}
+#groundPowerPopover .gpu-spring-switch[data-position="OFF"] .gpu-spring-lever{top:82%}
+#groundPowerPopover .gpu-spring-switch:focus-visible{outline:2px solid #90e5ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#groundPowerPopover .gpu-spring-lever{transition:none}}
+
+/* END ground-power-header-v1.css */
+
+/* BEGIN failures-header-v1.css 53c8610ad066bc001df5e34107f9f8490ec94b2c */
+/* Unified FAILURES — modular instructor menu, outside protected cockpit atlas. */
+body > header.unified-minimal-header .header-settings #failuresHeaderOpen {
+  display:inline-flex!important;flex:0 1 auto!important;min-width:90px!important;
+  border-color:#997866!important;background:#433128!important;color:#ffdeca!important;
+  white-space:nowrap!important;letter-spacing:.035em!important;
+}
+body > header.unified-minimal-header .header-settings #failuresHeaderOpen[data-failures-active="true"]{
+  background:#612c36!important;border-color:#e38b9a!important;color:#ffe3e5!important;
+}
+#failuresHeaderPopover[hidden]{display:none!important}
+#failuresHeaderPopover {
+  position:fixed;top:calc(var(--minimal-header-height,48px) + 7px);
+  right:clamp(8px,6vw,96px);z-index:95;
+  box-sizing:border-box;width:min(470px,calc(100vw - 16px));
+  max-height:calc(100dvh - var(--minimal-header-height,48px) - 16px);
+  overflow-y:auto;overscroll-behavior:contain;direction:ltr;
+  background:#102431;color:#dbeaf4;border:1px solid #547487;border-radius:12px;
+  box-shadow:0 15px 45px #000b;padding:12px;
+  font:12px/1.45 system-ui,Tahoma,Arial,sans-serif;
+}
+#failuresHeaderPopover .failures-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #3a5668;padding-bottom:9px}
+#failuresHeaderPopover .failures-top strong{font-size:14px;letter-spacing:.05em}
+#failuresHeaderPopover button,#failuresHeaderPopover .failures-lab-link{
+  font:600 12px/1.25 system-ui,Tahoma,Arial,sans-serif;cursor:pointer;
+  touch-action:manipulation;border-radius:7px;color:#e6f2fa;border:1px solid #4d768a;
+  background:#1b3b4c;padding:9px;text-align:center;
+}
+#failuresHeaderPopover button:focus-visible,#failuresHeaderPopover summary:focus-visible{
+  outline:2px solid #b2e2ff;outline-offset:2px;
+}
+#failuresHeaderPopover .failures-close{font-size:20px;min-width:38px;min-height:36px;padding:3px 8px}
+#failuresHeaderPopover .failures-intro,#failuresHeaderPopover .failures-footer{
+  font-size:11px;color:#abc3d2;line-height:1.6;
+}
+#failuresHeaderPopover .failures-electrical{border:1px solid #527287;border-radius:8px;overflow:hidden;background:#0c1e2b}
+#failuresHeaderPopover .failures-section-title{display:flex;align-items:center;justify-content:space-between;padding:12px;cursor:pointer;background:#1d3e51;color:#e3f1ff;font-weight:800;list-style-position:inside;touch-action:manipulation}
+#failuresHeaderPopover .failures-branch-counter{color:#ffb7c1;font-size:11px;font-variant-numeric:tabular-nums}
+#failuresHeaderPopover .failures-electrical-content{padding:10px}
+#failuresHeaderPopover .failures-feedback{margin:2px 0 9px;color:#b6dbef;font-size:11px}
+#failuresHeaderPopover .failures-feedback[data-error="true"]{color:#ffb4b8}
+#failuresHeaderPopover .failures-group{margin-bottom:10px}
+#failuresHeaderPopover .failures-group h3{margin:0 0 6px;padding:5px 2px;color:#aecbdc;font-size:10px;letter-spacing:.05em;border-bottom:1px solid #355163}
+#failuresHeaderPopover .failures-bus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#failuresHeaderPopover .failures-bus-toggle{
+  display:grid;grid-template-columns:1fr auto;column-gap:5px;align-items:center;
+  min-width:0;min-height:52px;padding:8px 7px;text-align:left;
+  background:#19354a;border-color:#436a80;
+}
+#failuresHeaderPopover .failures-bus-name{
+  grid-column:1 / -1;font-size:11px;font-weight:700;overflow-wrap:anywhere;
+}
+#failuresHeaderPopover .failures-bus-voltage{color:#9fbacb;font-size:10px}
+#failuresHeaderPopover .failures-bus-state{font-size:10px;color:#80d5ee;text-align:right}
+#failuresHeaderPopover .failures-bus-toggle[data-failed="true"]{
+  background:#472b37;border-color:#d37b8d;color:#ffe2e6;
+}
+#failuresHeaderPopover .failures-bus-toggle[data-failed="true"] .failures-bus-state{
+  color:#ff9ba9;font-weight:800;
+}
+#failuresHeaderPopover .failures-actions{display:grid;gap:7px;margin-top:12px}
+#failuresHeaderPopover .failures-clear{background:#55323c;border-color:#b3707c;min-height:42px}
+#failuresHeaderPopover .failures-clear:disabled{opacity:.5;cursor:default}
+#failuresHeaderPopover .failures-lab-link{text-decoration:none;display:block;background:#204662}
+@media(max-width:600px){
+ body > header.unified-minimal-header .header-settings #failuresHeaderOpen{
+   font-size:10px!important;min-width:67px!important;padding:5px 4px!important;
+ }
+ #failuresHeaderPopover{right:8px;max-height:calc(100dvh - 65px)}
+}
+@media(prefers-reduced-motion:reduce){#failuresHeaderPopover *{transition:none!important}}
+
+/* ATA28 fuel branch: isolated injector controls; Electrical bus layout unchanged. */
+#failuresHeaderPopover .failures-fuel{
+ margin-top:9px;border:1px solid #527287;border-radius:8px;
+ overflow:hidden;background:#0c1e2b;
+}
+#failuresHeaderPopover .failures-fuel .failures-group{margin-bottom:14px}
+#failuresHeaderPopover .failures-fuel .failures-bus-toggle{
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ gap:6px;min-height:56px;font-size:11px;white-space:normal;
+}
+#failuresHeaderPopover .failures-fuel .failures-bus-state{
+ width:100%;text-align:left;font-size:10px;
+}
+#failuresHeaderPopover .failures-fuel-row{
+ display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;
+ border-bottom:1px solid #294759;padding:7px 0;
+}
+#failuresHeaderPopover .failures-fuel-row .failures-fuel-field{
+ flex:1 1 150px;display:flex;flex-direction:column;gap:3px;
+ color:#aecbdc;font-weight:600;font-size:10px;
+}
+#failuresHeaderPopover .failures-fuel-field input{
+ box-sizing:border-box;max-width:100%;min-height:34px;
+ background:#102331;color:#e9f5ff;border:1px solid #507285;border-radius:5px;
+ padding:6px 8px;font:600 12px ui-monospace,monospace;
+}
+#failuresHeaderPopover .failures-fuel-row button{font-size:11px;min-height:34px}
+#failuresHeaderPopover .failures-fuel-row .failures-fuel-clear-single{
+ background:#56313b;border-color:#b77783;
+}
+#failuresHeaderPopover .failures-fuel-reading{
+ color:#8fdcf0;font:600 11px ui-monospace,monospace;
+ min-width:80px;align-self:center;
+}
+#failuresHeaderPopover .failures-fuel-reading[data-failed="true"]{color:#ffc4a7}
+#failuresHeaderPopover .failures-fuel button[disabled]{
+ cursor:not-allowed;opacity:.55;
+}
+#failuresHeaderPopover .failures-fuel .failures-clear{
+ min-height:44px;text-align:center;
+}
+
+/* END failures-header-v1.css */
+
+/* BEGIN cockpit-photo-input-v1.css 0c8c6dfa57af3357d5203771c994b9d523489329 */
+/* PHOTO-INPUT-0001 — noninteractive cockpit photos, only.
+   Scope: Unified parent stage. Does not modify controls, sprites or geometry. */
+#viewport, #scene, #sizer, #scene .region-label, #scene .texture-piece,
+#scene .texture-piece img, #scene .reference-image {
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#scene .texture-piece {
+  /* Photo tiles cannot consume clicks, taps, long presses or hover. */
+  pointer-events:none !important;
+  cursor:inherit !important;
+}
+#scene .texture-piece.selected {
+  outline:none !important;
+}
+/* Never disable interactive instrument, annunciator, CDU or physical-switch overlays. */
+
+/* END cockpit-photo-input-v1.css */
+
+/* BEGIN unified-pinch-v1.css 93de7734886131112e2f6368e22fcb87768d70dc */
+/* UNIFIED-PINCH-0001: the cockpit handles its own two-finger zoom
+   and one-finger pan. Other website UI and dialogs keep native touch behavior. */
+#viewport {touch-action:none !important; overscroll-behavior:contain !important; overflow-anchor:none !important;}
+#viewport #sizer, #viewport #scene {overflow-anchor:none !important;}
+#viewport #scene, #viewport #sizer, #viewport .region, #viewport .region-native {
+  touch-action:none;
+}
+
+/* END unified-pinch-v1.css */
+
+/* BEGIN cb-panel-entry-v1.css 95137e94dc1b923204dcfcabbb2e05b7dbbbdcdb */
+/* CB-ENTRY-0001: Unified header launcher, separate from all locked cockpit assets. */
+#cbPanelOpen{white-space:nowrap!important}
+#cbPanelDialog{
+ position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;
+ height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ background:#0b121a!important;color:#f0f4f5!important;overflow:hidden!important;
+ box-sizing:border-box;display:none;flex-direction:column;z-index:1000!important;
+}
+#cbPanelDialog[open]{display:flex!important}
+#cbPanelDialog::backdrop{background:#03080edb}
+#cbPanelDialog .cb-dialog-top{
+ flex:0 0 42px;height:42px;display:flex;align-items:center;justify-content:space-between;
+ background:#101e29;border-bottom:1px solid #3b5260;padding:4px 12px;gap:12px;
+ direction:ltr;font:700 13px/1.1 system-ui,Arial,sans-serif;
+}
+#cbPanelDialog #cbPanelClose{
+ width:35px;height:33px;min-width:35px;margin:0;padding:0;display:grid;place-items:center;
+ border:1px solid #557184;border-radius:6px;background:#1c3746;color:#e8f1f7;
+ font:26px/1 system-ui,Arial,sans-serif;touch-action:manipulation;
+}
+#cbPanelDialog #cbPanelFrame{display:block;flex:1 1 auto;width:100%;min-height:0;border:0;background:#0b1119}
+@media(max-width:430px){
+ body>header.unified-minimal-header .header-settings{gap:3px!important}
+ body>header.unified-minimal-header .header-settings button{
+   flex:1 1 0%!important;padding:4px 3px!important;
+   min-height:38px!important;font-size:clamp(9px,2.65vw,11px)!important;
+ }
+ body>header.unified-minimal-header #visualLampTest{flex:1.75 1 0%!important;max-width:none}
+ body>header.unified-minimal-header #cbPanelOpen{flex:0.8 1 0%!important}
+}
+
+/* END cb-panel-entry-v1.css */
+
+/* BEGIN eis-dot-readouts-v1.css 6404102124deded6a67171605a502a23e35b94f7 */
+.texture-piece>.eis-dot-readouts-v1{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:6}
+.eis-dot-readouts-v1 use{shape-rendering:geometricPrecision}
+.conventional-engine-photo-wrap-v1>.conventional-dot-readouts-v1{position:absolute;left:0;top:0;display:block;max-width:none;max-height:none;transform-origin:0 0;pointer-events:none;overflow:visible;z-index:6}
+.conventional-dot-readouts-v1 use{shape-rendering:geometricPrecision}
+html[data-engine-indication="CONVENTIONAL"] #region-main .eis-dot-readouts-v1{display:none!important}
+
+/* END eis-dot-readouts-v1.css */
+
+/* BEGIN afds-annunciator-switch-v1.css 6140c62832a4c35e9acabe031b37e1daa2e72d52 */
+/* AFDS-ANN-UNIFIED-0002 — preserve photographed sockets and metal face.
+ * Only text in A/P, A/T, FMC lenses illuminates; Small Silver atlas is original.
+ */
+#region-main .region-native .afds-silver-toggle,
+#region-main .region-native .afds-toggle-hit,
+#region-main .region-native .afds-legend-window {
+ position:absolute;box-sizing:border-box;margin:0;padding:0;border:0;
+ -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
+}
+#region-main .region-native .afds-silver-toggle {
+ z-index:39;display:block;pointer-events:none;background-repeat:no-repeat;
+ background-size:500% 100%;background-color:transparent;
+}
+#region-main .region-native .afds-toggle-hit {
+ z-index:40;display:block;cursor:ns-resize;border-radius:50%;
+ appearance:none;background:transparent;outline:none;touch-action:none;
+}
+#region-main .region-native .afds-toggle-hit:focus-visible {
+ outline:1px dotted #dfe9f7;outline-offset:1px;
+}
+#region-main .region-native .afds-legend-window {
+ z-index:37;display:flex;flex-direction:column;justify-content:center;
+ align-items:center;overflow:hidden;appearance:none;cursor:pointer;
+ background:transparent!important;box-shadow:none!important;
+ outline:none;border-radius:0;touch-action:manipulation;
+ font-family:Arial,Helvetica,sans-serif;font-weight:600;
+ line-height:1.05;text-align:center;letter-spacing:.02em;
+ color:#241614; /* Unlit, nearly invisible against ORIGINAL black lens */
+ text-shadow:none;
+}
+#region-main .region-native .afds-legend-window .afds-legend-main {
+ display:block;font-size:7.05px;line-height:1.13;white-space:nowrap;
+}
+#region-main .region-native .afds-legend-window .afds-legend-reset {
+ display:block;font-size:4.5px;line-height:1.2;white-space:nowrap;
+}
+#region-main .region-native .afds-legend-window[data-lamp$="AMBER"] {
+ color:#ffb841;text-shadow:0 0 1px #ffc76e,0 0 3px #b47a13;
+}
+#region-main .region-native .afds-legend-window[data-lamp$="RED"] {
+ color:#ff433e;text-shadow:0 0 1px #f77c6a,0 0 3px #ad100b;
+}
+/* Blink just the letter glyphs. Never illuminate the photographed lens body. */
+#region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-main,
+#region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-reset {
+ animation:afds-legend-flash 1s steps(1,end) infinite;
+}
+@keyframes afds-legend-flash{0%,49.999%{opacity:1}50%,100%{opacity:.13}}
+@media (prefers-reduced-motion:reduce){
+ #region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-main,
+ #region-main .region-native .afds-legend-window[data-lamp^="FLASH_"] .afds-legend-reset{
+ animation:none;text-decoration:underline;
+ }
+}
+
+/* END afds-annunciator-switch-v1.css */
+
+/* BEGIN flight-scenario-panel-v1.css 03fd0dafb7d253cea294c2a23c745888ce3702cc */
+/* Isolated Unified flight-scenario instructor modal */
+#flightScenarioHeader{border:1px solid #5998ae!important;background:#163b52!important;color:#c8f4ff!important;min-height:36px!important;border-radius:7px!important;font:600 11px system-ui,sans-serif!important;padding:6px 10px!important;cursor:pointer!important}
+#flightScenarioDialog{width:min(870px,96vw);max-height:92vh;overflow:auto;background:#111e2b;color:#edf5fb;border:1px solid #45657b;border-radius:12px;padding:20px;font:13px system-ui,Tahoma,sans-serif;box-shadow:0 18px 70px #0009}
+#flightScenarioDialog::backdrop{background:#000b}
+#flightScenarioDialog .flight-head{display:flex;justify-content:space-between;align-items:center;gap:20px}
+#flightScenarioDialog .flight-head strong{font-size:18px;color:#b9ebfa;letter-spacing:.04em}
+#flightScenarioDialog .flight-head button{font-size:25px;min-width:36px}
+#flightScenarioDialog .flight-sub{font-size:12px;color:#91acbf;line-height:1.5;margin:7px 0 16px}
+#flightScenarioDialog .flight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+#flightScenarioDialog label{display:flex;flex-direction:column;gap:5px;font:600 11px system-ui,sans-serif;color:#b8d3e3}
+#flightScenarioDialog input:not([type=checkbox]),#flightScenarioDialog select{border:1px solid #466276;border-radius:6px;padding:9px;background:#0a1826;color:#effaff;font:14px system-ui,sans-serif;width:100%;min-width:0;direction:ltr}
+#flightScenarioDialog .flight-numbers{grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
+#flightScenarioDialog .flight-heading{margin:17px 0 9px;border-bottom:1px solid #29445a;padding-bottom:7px;color:#8dd5ed;font-weight:700;letter-spacing:.08em;font-size:11px}
+#flightScenarioDialog .flight-actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+#flightScenarioDialog button{border:1px solid #53778e;border-radius:6px;background:#24455b;color:#e7f7ff;padding:8px 12px;cursor:pointer}
+#flightScenarioDialog button:disabled{opacity:.45;cursor:not-allowed}
+#flightScenarioDialog button.flight-primary{background:#197295;border-color:#40b8d8;font-weight:700}
+#flightScenarioDialog .flight-mcp{display:flex;flex-direction:row;align-items:center;gap:9px;line-height:1.5;font-weight:400;margin:10px 0}
+#flightScenarioDialog .flight-telemetry{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#flightScenarioDialog .flight-telemetry>div{border:1px solid #2e495f;background:#0a1a28;border-radius:6px;padding:9px;min-width:0}
+#flightScenarioDialog .flight-telemetry span{display:block;font-size:10px;color:#90acc3;margin-bottom:5px}
+#flightScenarioDialog .flight-telemetry strong{font:700 13px ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+#flightScenarioDialog .flight-warning{color:#f0c993;background:#302b20;border:1px solid #68563b;border-radius:6px;padding:9px;line-height:1.55;margin:15px 0 8px}
+#flightScenarioDialog .flight-status{color:#b7e8f6;font-size:12px;line-height:1.5;min-height:20px}
+#flightScenarioDialog .flight-status[data-error=true]{color:#ffad9c}
+@media(max-width:600px){#flightScenarioDialog{padding:12px}#flightScenarioDialog .flight-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#flightScenarioDialog .flight-numbers{grid-template-columns:repeat(2,minmax(0,1fr))}#flightScenarioDialog .flight-telemetry{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+#flightScenarioDialog .flight-at-panel{border-top:1px solid #436377;margin-top:18px;padding-top:4px}
+#flightScenarioDialog .flight-at-mode{padding:10px 12px;border:1px solid #566f80;background:#152736;border-radius:7px;color:#ffca99;font:700 12px ui-monospace,Consolas,monospace;letter-spacing:.03em}
+#flightScenarioDialog .flight-at-mode[data-active=true]{color:#9decc2;border-color:#449876;background:#153328}
+#flightScenarioDialog #flightAtInstructorRun{border-color:#8d704c;background:#473622;color:#f9d1a2;font-size:11px}
+
+#flightScenarioDialog .flight-gauge-bridge{border-top:1px solid #3a566a;margin-top:15px;padding-top:4px}
+#flightScenarioDialog .flight-gauge-source{font:700 11px/1.6 ui-monospace,Consolas,monospace;color:#9cd8ea}
+#flightScenarioDialog .flight-standby-row{display:flex;gap:15px;align-items:center;margin:12px 0;border:1px solid #30475b;background:#0a1824;border-radius:8px;padding:10px}
+#flightScenarioDialog .flight-standby-dial{width:145px;height:145px;flex:0 0 145px}
+#flightScenarioDialog .flight-standby-row strong{font-size:12px;color:#d9edf7}
+#flightScenarioDialog .flight-standby-row p{font-size:11px;color:#90aebc;line-height:1.65}
+@media(max-width:420px){#flightScenarioDialog .flight-standby-dial{width:110px;height:110px;flex-basis:110px}#flightScenarioDialog .flight-standby-row{gap:8px}}
+#tcasTrainingControls{margin:18px 0 0;padding:14px;border:1px solid #496a7e;border-radius:8px;min-width:0}
+#tcasTrainingControls legend{padding:0 8px;font-weight:700;color:#8dd5ed;letter-spacing:.04em}
+
+/* END flight-scenario-panel-v1.css */
+
+/* BEGIN smiths-fuel-quantity-v1.css 6872eac2ca469f1aea8f7b30aeb010a5aaf994f6 */
+.smiths-fuel-quantity {
+  position: absolute;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+}
+.smiths-fuel-quantity > * {
+  position: absolute;
+  border-radius: 50%;
+  background: url("./assets/smiths-fuel-quantity-v1.webp") var(--smiths-column, 0%) 0 / 300% 400% no-repeat;
+}
+.smiths-fuel-quantity > .smiths-qty-test,
+.smiths-fuel-quantity > .smiths-qty-test:hover,
+.smiths-fuel-quantity > .smiths-qty-test:active,
+.smiths-fuel-quantity > .smiths-qty-test:focus {
+  padding: 0;
+  border: 0;
+  background: transparent url("./assets/smiths-fuel-quantity-v1.webp") 0 100% / 300% 400% no-repeat;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: pointer;
+}
+.smiths-fuel-quantity[data-preview="held"] > .smiths-qty-test {
+  filter: brightness(.72);
+}
+.smiths-qty-test:focus-visible {
+  outline: 2px solid white;
+}
+
+/* END smiths-fuel-quantity-v1.css */
