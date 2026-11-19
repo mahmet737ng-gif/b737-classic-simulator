@@ -265,14 +265,16 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
  const html=cockpitDocument?transformCockpitHTML(original):
   original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
  res.setHeader('Cache-Control','private, no-store');
+ res.setHeader('Vary','Accept-Encoding');
+ const accepts=String(req.headers['accept-encoding']||'');
+ const encode=/\bbr\b/.test(accepts);
+ if(encode)res.setHeader('Content-Encoding','br');
  res.writeHead(200,{'Content-Type':mime});
  if(req.method==='HEAD'){res.end();return;}
- const accepts=String(req.headers['accept-encoding']||'');
- if(/\bbr\b/.test(accepts)){
-  res.setHeader('Vary','Accept-Encoding');
-  res.setHeader('Content-Encoding','br');
-  res.end(zlib.brotliCompressSync(Buffer.from(html),{params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}}));
- }else res.end(html);
+ if(encode)res.end(zlib.brotliCompressSync(Buffer.from(html),{
+  params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
+ }));
+ else res.end(html);
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();
