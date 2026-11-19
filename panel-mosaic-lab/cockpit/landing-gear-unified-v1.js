@@ -15,6 +15,8 @@
   const safeNumber=v=>Number.isFinite(v)?v:null;
   const emit=(name,detail)=>root.dispatchEvent(new root.CustomEvent(name,{detail}));
   const sprite=new URL('./assets/landing-gear-classic-3state.webp',doc.currentScript?.src||root.location.href).href;
+  // The lever drives the aircraft sensors; cockpit and aft indications subscribe
+  // to this same source of truth, never to a separate visual-test state.
 
   function source(){
     const live=root.B737ISNCockpitV1?.getECUState?.();
@@ -36,7 +38,13 @@
 
   function hornState(){
     if(!root.B737WarningEngine?.WarningEngine)return false;
-    if(!warning)warning=new root.B737WarningEngine.WarningEngine({variant:'737-300'});
+    if(!warning){
+      const family=root.B737AircraftProfileV1?.getState?.()?.aircraftFamily||
+        root.B737AircraftSettings?.getState?.()?.aircraftFamily||'B737-300';
+      warning=new root.B737WarningEngine.WarningEngine({
+        variant:/400/.test(family)?'737-400':/500/.test(family)?'737-500':'737-300'
+      });
+    }
     const output=warning.update({
       gearDownLocked:POS.every(id=>state.gear[id]==='DOWN'),
       onGround:ground!==false,flaps:flaps,
@@ -75,7 +83,7 @@
       for(const id of POS){const el=aux.querySelector('[data-aux-gear="'+id+'"]');
         if(el){el.dataset.on=String(l.auxiliary[id]);el.setAttribute('aria-label',id+' landing gear down locked '+l.auxiliary[id]);}}
     }
-    const detail={schema:'ATA32-GEAR-0001',lever:state.lever,gear:{...state.gear},
+    const detail={schema:'ATA32-GEAR-0002',lever:state.lever,gear:{...state.gear},
       selectedTarget:state.target,systemAPsi:hydPsi,onGround:ground,
       normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=2200:null,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
@@ -88,6 +96,12 @@
     if(!current||Object.keys(patch).some(k=>current[k]!==patch[k]))
       emit('b737:cockpit-sensors',patch);
     emit('b737:landing-gear-state',detail);
+    // Read-only consumers (AFT OH, master-caution and instructor scenarios) may
+    // subscribe without taking ownership of gear actuation.
+    emit('b737:landing-gear-indications',{
+      lever:state.lever,gear:{...state.gear},main:l.main,aftOverhead:l.auxiliary,
+      hydraulicSystemAPsi:hydPsi,transit:POS.some(id=>state.gear[id]==='TRANSIT')
+    });
     const frame=doc.getElementById('overheadFrame');
     // Shared, read-only auxiliary-lamp source. No guessed rear-overhead socket.
     frame?.contentWindow?.postMessage({type:'b737:cockpit-command',action:'landing-gear-indicator-snapshot',detail},root.location.origin);
@@ -155,7 +169,7 @@
       const style=doc.createElement('style');style.textContent='#b737GearAftIndicatorStatus [data-on="true"]{background:#135934;color:#a5ffc7!important;box-shadow:0 0 10px #29e67c77}';
       section.append(style);inspector.append(section);aux=section;
     }
-    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0001'});
+    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0002'});
     publish(true);return true;
   }
   root.addEventListener('b737:cockpit-mounted',mount);
@@ -176,6 +190,9 @@
     if(Number.isFinite(n)&&n>=0&&n<=40){flaps=n;sound(hornState());}
   });
   root.addEventListener('b737:sixpack-acknowledge',()=>{}); // MC must never silence a gear horn.
+  root.addEventListener('b737:landing-gear-horn-cutout-request',()=>{
+    warning?.cutoutGear?.();sound(hornState());
+  });
   root.B737LandingGearUnifiedV1=Object.freeze({
     select,getState:()=>({ ...state,gear:{...state.gear},pressureA:hydPsi,onGround:ground,horn:gearHorn}),
     cutoutHorn:()=>{warning?.cutoutGear?.();sound(hornState());},
