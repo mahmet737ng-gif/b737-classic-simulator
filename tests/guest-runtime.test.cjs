@@ -67,6 +67,7 @@ assert(!source.includes('guestSourceOverheadFocus'),'Gateway must not inject hid
 // Expired sessions must never transform hundreds of original cockpit JS/CSS
 // requests into 303 -> /login HTML. The cockpit starts a preflight refresh
 // before loading all original deferred files.
+assert(fs.readFileSync(path.join(root,'Dockerfile'),'utf8').includes('COPY --chown=node:node auth-policy.js ./'),'Deployment image must include the auth policy');
 const session=fs.readFileSync(path.join(root,'public/session.js'),'utf8');
 assert(source.includes('const preflight='),'Missing synchronous cockpit auth renewal bootstrap');
 assert(source.includes('location.replace("/login?e=expired")'),'Preflight must redirect on expiry');
