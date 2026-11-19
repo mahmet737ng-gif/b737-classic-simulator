@@ -252,7 +252,7 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
   "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
  const original=bytes.toString('utf8');
  const html=cockpitDocument?transformCockpitHTML(original):
-  original.replace(/<head\\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+  original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
  res.setHeader('Cache-Control','private, no-store');
  res.writeHead(200,{'Content-Type':mime});
  if(req.method==='HEAD')res.end();else res.end(html);
