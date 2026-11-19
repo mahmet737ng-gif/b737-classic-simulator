@@ -8,6 +8,7 @@ const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
 const NavdataRelay=require('./navdata-relay.js');
+const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation}=require('./auth-policy.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const USER = process.env.LAB_USER || 'Ali.m';
@@ -381,8 +382,8 @@ async function signIn(req,res) {
   } finally { client.release(); }
   if (!allowed) { redirect(res,'/login?e=full');return; }
   redirect(res,'/',{'Set-Cookie':[
-    cookie(req,DEVICE_COOKIE,device,60*60*24*30),
-    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?60*60*24*30:60*60*24*7)
+    cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS),
+    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS)
   ]});
 }
 async function readPrivateNavData(req){
@@ -429,11 +430,7 @@ async function handle(req,res) {
     // Redirect only actual document navigations. Serving login HTML as a
     // redirected .js/.css/.image response previously produced a blank page
     // and hundreds of GET /login requests after an expired guest session.
-    const dest=String(req.headers['sec-fetch-dest']||'');
-    const accept=String(req.headers.accept||'');
-    const isDocument=dest==='document'||dest==='iframe'||
-      (!dest&&accept.includes('text/html'));
-    if (req.method==='GET'&&isDocument) redirect(res,'/login?e=expired');
+    if (req.method==='GET'&&isDocumentNavigation(url.pathname,req.headers)) redirect(res,'/login?e=expired');
     else {
       res.writeHead(401,{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'});
       if(req.method==='HEAD')res.end();
@@ -450,7 +447,7 @@ async function handle(req,res) {
       );
       // Sliding renewal keeps an active unlimited session signed in.
       if(updated.rows[0]?.account_tier==='unlimited')
-        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,60*60*24*30));
+        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,OWNER_SESSION_SECONDS));
     }
     res.writeHead(204);res.end();return;
   }
