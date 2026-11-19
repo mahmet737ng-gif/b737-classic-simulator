@@ -92,8 +92,17 @@
   
   for(const device of ['engine1','engine2']){
    const group=svg(art,'g',{'data-start-lever-assembly':device});
-   const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,viewBox:device==='engine1'?'420 340 655 365':'1095 340 655 365',preserveAspectRatio:'none',overflow:'hidden'});
-   svg(cap,'image',{href:master,width:2172,height:724});
+   const sprite=window.B737GatewayBoot?.art?.[device];
+   const original=()=>device==='engine1'?'420 340 655 365':'1095 340 655 365';
+   const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,
+    viewBox:sprite?'0 0 655 365':original(),preserveAspectRatio:'none',overflow:'hidden'});
+   const image=svg(cap,'image',sprite?
+    {href:sprite.url,width:655,height:365}:{href:master,width:2172,height:724});
+   if(sprite)image.addEventListener('error',()=>{
+    cap.setAttribute('viewBox',original());
+    image.setAttribute('width','2172');image.setAttribute('height','724');
+    image.setAttribute('href',master);
+   },{once:true});
    const button=document.createElement('button');button.type='button';button.className='engine-start-lever';
    button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
    button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');

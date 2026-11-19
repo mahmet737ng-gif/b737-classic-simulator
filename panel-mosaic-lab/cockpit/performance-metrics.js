@@ -1,6 +1,6 @@
 /* User-visible load diagnostics; bounded resource buffer and no telemetry/upload. */
 (function(){
- 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,painting=false,cockpitPainting=false;
+ 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,painting=false,cockpitPainting=false,readyState=null;
  const cockpitMilestones={};
  function resources(w=window,prefix='top'){const result=[];try{for(const e of [...w.performance.getEntriesByType('resource'),...w.performance.getEntriesByType('navigation')])result.push({frame:prefix,url:e.name,bytes:e.transferSize,body:e.encodedBodySize,start:e.startTime,end:e.responseEnd,cache:e.transferSize===0&&e.encodedBodySize>0});for(const f of w.document.querySelectorAll('iframe'))if(f.contentWindow)result.push(...resources(f.contentWindow,prefix+'/'+f.id));}catch{}return result;}
  function status(){const profile=window.B737AircraftProfileStore?.get();return profile&&window.CockpitStartupGate?.inspect(window,profile);}
@@ -26,7 +26,10 @@
   if(cockpitReady!==null||cockpitPainting||mainReady===null||mainSharpReady===null||!fullStatus()?.complete)return;
   cockpitPainting=true;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-   cockpitPainting=false;if(!fullStatus()?.complete)return;
+   cockpitPainting=false;
+   const state=fullStatus();
+   if(!state?.complete)return;
+   readyState=state;
    cockpitReady=performance.now();
    performance.mark('b737:unified-cockpit-ready');
    document.documentElement.dataset.unifiedCockpitReadyMs=String(Math.round(cockpitReady));
@@ -78,7 +81,7 @@
  window.addEventListener('b737:performance-view',render);
  document.getElementById('inspectorToggle')?.addEventListener('click',()=>queueMicrotask(render));
  window.B737LoadDiagnostics=Object.freeze({
-  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),cockpitMilestones:{...cockpitMilestones},mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
+  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),readyState,cockpitMilestones:{...cockpitMilestones},mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
   measureFps:(durationMs=3000)=>new Promise(resolve=>{
    const length=Math.max(500,Math.min(10000,Number(durationMs)||3000));
    const start=performance.now();let last=null,count=0,slowFrames=0,longestFrameMs=0;

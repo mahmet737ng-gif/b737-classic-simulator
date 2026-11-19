@@ -82,6 +82,20 @@ for(const asset of [...lampAssets].sort()){
  lampSources['/'+filename]=fs.readFileSync(path.join(root,filename),'utf8');
 }
 filesToPublish.set(cockpit+'performance/boot-lamp-sources.json',JSON.stringify(lampSources));
+const artIndex=cockpit+'performance/boot-art/manifest.json';
+const art=JSON.parse(fs.readFileSync(path.join(root,artIndex),'utf8'));
+for(const [id,asset] of Object.entries(art)){
+ if(!['oh10','oh12','engine1','engine2'].includes(id)||
+    !asset.url.startsWith(cockpit+'performance/boot-art/')||
+    !asset.url.endsWith('-'+asset.sha256.slice(0,20)+'.webp'))
+  throw Error('Invalid boot artwork entry '+id);
+ add(asset.url);
+ for(const [file,expected] of [[asset.source,asset.sourceSha256],[asset.url,asset.sha256]]){
+  const check=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex');
+  if(check!==expected)throw Error('Stale boot artwork '+file);
+ }
+}
+add(artIndex);
 const entries=[...filesToPublish];
 const totalBytes=entries.reduce((sum,[,data])=>sum+Buffer.byteLength(data),0);
 if(totalBytes>20*1024*1024)throw Error('Unified boot release exceeds the 20 MiB package budget');

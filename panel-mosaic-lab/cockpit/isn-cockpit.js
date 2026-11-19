@@ -191,9 +191,7 @@
  // protected cockpit controls, or outputs when diagnostics are disabled.
  const profileStart=()=>window.B737InteractionProfilerV1?performance.now():null;
  const profileDone=(name,started)=>{if(started!==null)window.B737InteractionProfilerV1?.markWork(name,performance.now()-started);};
- function renderStart(){
-  const readStarted=profileStart(),s=chain.get(),live=ecu.get();
-  profileDone('ISN state snapshot read',readStarted);
+ function renderStart(s=chain.get(),live=ecu.get()){
   const startLines=[];let blocked=false;
   for(const n of [1,2]){
    const id='engine'+n,phase=s.phase[id],measured=live.engines[id];
@@ -330,8 +328,10 @@
    }
   }
  }
- function postProjection(){const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
-  const lamps={...bridge.get().lamps};const projected=chain.get().projected;
+ function postProjection(s=chain.get(),live=ecu.get()){
+  const f=byId('overheadFrame');if(!f?.contentWindow||!bridge.initialized)return;
+  const pack=session.getLive();
+  const lamps=Adapter.projectLamps(pack);
   // ATA30-31 authoritative physical heater/current indication for the
   // already-mounted L/R ALPHA VANE lamps. Retain the actual interactive
   // PITOT A/B switches: losing AC never locks their mechanical position.
@@ -339,7 +339,7 @@
   // including instructor bus-failure injection, never a second backend.
   const alphaHeatEngine=window.B737ClassicAlphaVaneHeatV1;
   if(alphaHeatEngine){
-   const evaluated=bridge.get().state.electrical;
+   const evaluated=pack.electrical;
    const physicalSwitches=f.contentWindow.B737OverheadToggles?.getState?.()||{};
    const alphaResult=alphaHeatEngine.evaluate({
     buses:evaluated.bus,switches:physicalSwitches,
@@ -352,42 +352,47 @@
   }
   // FCOM 12.10.1 / LAN ATA 28: valve-position indications, NOT engine-running lights.
   const valveState=fuelValveIndication.observe({
-   levers:{engine1:chain.get().observations.engine1.feedback.fuelStartLever.value,
-    engine2:chain.get().observations.engine2.feedback.fuelStartLever.value},
+   levers:{engine1:s.observations.engine1.feedback.fuelStartLever.value,
+    engine2:s.observations.engine2.feedback.fuelStartLever.value},
    fireHandles:ecu.core.fireSwitch,nowMs:performance.now()});
   for(const n of [1,2])if(ecu.core.fireSwitch['engine'+n])lamps['hyd-eng-'+n]=false;
   for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
    // Fuel indications derive from the existing ISN09 ledger + same live Pack.
-   const actualFuel=ecu.get().fuel?.system;
+   const actualFuel=live.fuel?.system;
    if(actualFuel){Object.assign(lamps,actualFuel.lamps);
     lamps['crossfeed-valve']=actualFuel.valves.crossfeed.lamp;}
   // Settle even when the passive ECU is sleeping with both engines stopped.
-  if(valveState.transitionStarted)setTimeout(postProjection,valveState.travelMs+20);
+  if(valveState.transitionStarted)setTimeout(()=>postProjection(),valveState.travelMs+20);
   // ECU owns availability; V7 evaluated source (not selected detent)
   // proves the generator actually feeds an AC bus.
-  const apuGenerator=ecu.get().apu.generator;
-  const apuOnBus=Object.values(bridge.get().state.electrical.source).includes('APU');
+  const apuGenerator=live.apu.generator;
+  const apuOnBus=Object.values(pack.electrical.source).includes('APU');
   lamps['apu-gen-off-bus']=apuGenerator.ready===true&&!apuOnBus;
   // The real Unified APU lamp follows ECU oil PSI, not a STARTING timer.
   const apuTrip=chain.apuProtectionReason; // latched by the shared APU source owner
-   lamps['apu-low-pressure']=ecu.get().apu.oil.lowPressureLamp;
+   lamps['apu-low-pressure']=live.apu.oil.lowPressureLamp;
    if(apuTrip==='LOW_OIL_PRESSURE')lamps['apu-low-pressure']=true;
    lamps['apu-high-oil-temp']=apuTrip==='HIGH_OIL_TEMP';
    lamps['apu-overspeed']=apuTrip==='OVERSPEED';
   const key=JSON.stringify(lamps);if(key===lastLampProjection)return;lastLampProjection=key;
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
- let tickPresentationFrame=0;
- function presentActiveTick(){
-  if(document.hidden){render();return;}
+ let tickPresentationFrame=0,pendingTick=null;
+ function presentActiveTick(live){
+  if(document.hidden){render(live);return;}
+  pendingTick=live;
   if(!tickPresentationFrame)tickPresentationFrame=requestAnimationFrame(()=>{
    tickPresentationFrame=0;
-   render();
+   render(pendingTick);
   });
  }
- function render(){
+ function render(live=null){
   if(tickPresentationFrame){cancelAnimationFrame(tickPresentationFrame);tickPresentationFrame=0;}
+  pendingTick=null;
   const renderStarted=profileStart();
+  const readStarted=profileStart(),state=chain.get();
+  live??=ecu.get();
+  profileDone('ISN state snapshot read',readStarted);
   // Instructor-only tables, trace and fault controls are not visible in the main cockpit.
   if(document.body.classList.contains('side-open')){
   const {state,lamps,rejected,initialized}=bridge.get();
@@ -412,10 +417,10 @@
    rejected.length?'Last Rejected Command: '+rejected.at(-1).reason:(ownerElectricalGuards()['bus-transfer']?'BUS TRANSFER: Connected to Installed Owner18 Guard.':'BUS TRANSFER: Awaiting Guard Installation.');
   }
   const startIndicationsStarted=profileStart();
-  renderStart();
+  renderStart(state,live);
   profileDone('ISN renderStart total',startIndicationsStarted);
   const lampProjectionStarted=profileStart();
-  postProjection();
+  postProjection(state,live);
   profileDone('ISN overhead lamp projection',lampProjectionStarted);
   profileDone('ISN render total',renderStarted);
  }
@@ -527,13 +532,13 @@
   }
   lastPassiveCoolingAt=now;
   const advanceStarted=profileStart();
-  ecu.advance(elapsed);
+  const observations=ecu.advance(elapsed);
   profileDone('ISN ECU.advance',advanceStarted);
   for(const effect of chain.consumeEffects())if(effect.type==='ROTARY_RELEASE'){
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
     action:'isn-starter-cutout',id:effect.id},location.origin);
   }
-  presentActiveTick();
+  presentActiveTick(observations);
   profileDone('ISN 100ms active tick',tickStarted);
  },100);
  // ATA 26 drives actual simulator owners while leaving cockpit switch detents intact.

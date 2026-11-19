@@ -140,7 +140,7 @@
  const pristineSource=()=>new URL('../assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png',document.baseURI).href;
  const inFlight=new WeakMap();
  let restoredAfterImageSwap=0;
- function cleanPiece(piece){
+ function cleanOriginal(piece){
   if(!piece||!piece.isConnected)return Promise.resolve(false);
   const photos=[...piece.querySelectorAll('.atlas-photo')];
   if(!photos.length)return Promise.resolve(false);
@@ -175,6 +175,27 @@
   return job;
  }
  const watches=new WeakSet();
+ const maskJobs=new WeakMap();
+ function cleanPiece(piece){
+  if(!piece?.isConnected)return Promise.resolve(false);
+  if(maskJobs.has(piece))return maskJobs.get(piece);
+  const patch=root.B737NeedleBootMask?.apply(piece,'oh10');
+  if(!patch)return cleanOriginal(piece);
+  const job=patch.then(ready=>{
+   if(ready===null)return cleanOriginal(piece);
+   if(ready){
+    piece.dataset.staticNeedlePhoto='CLEANED';
+    piece.dataset.needleRestoration='RELEASE_MASK';
+    stats.status='READY_RELEASE_MASK';
+    const {width,height,changed}=root.B737GatewayBoot.art.oh10;
+    stats.sourceDimensions=[width,height];
+    stats.cleanedPixelCount=changed;
+   }
+   return ready;
+  }).finally(()=>maskJobs.delete(piece));
+  maskJobs.set(piece,job);
+  return job;
+ }
  function watchPiece(piece){
   if(!piece||watches.has(piece))return;
   watches.add(piece);
@@ -187,6 +208,6 @@
   });
   observer.observe(piece,{subtree:true,attributes:true,attributeFilter:['src']});
  }
- const getStatus=()=>Object.freeze({...stats,derivedPhotoLoaded:Boolean(objectURL),restoredAfterImageSwap});
+ const getStatus=()=>Object.freeze({...stats,derivedPhotoLoaded:Boolean(objectURL)||stats.status==='READY_RELEASE_MASK',restoredAfterImageSwap});
  root.B737AcDcStaticCleaner=Object.freeze({regions,cleanPiece,watchPiece,ensureDerivedUrl,getStatus});
 })(window);

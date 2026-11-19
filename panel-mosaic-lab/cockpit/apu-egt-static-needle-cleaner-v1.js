@@ -126,7 +126,7 @@
   return sourcePromise;
  }
  const active=new WeakMap(),observed=new WeakSet();
- function cleanPiece(piece){
+ function cleanOriginal(piece){
   if(!piece?.isConnected)return Promise.resolve(false);
   const photos=[...piece.querySelectorAll('.atlas-photo')];
   if(!photos.length)return Promise.resolve(false);
@@ -149,6 +149,27 @@
    return false;
   }).finally(()=>active.delete(piece));
   active.set(piece,job);return job;
+ }
+ const maskJobs=new WeakMap();
+ function cleanPiece(piece){
+  if(!piece?.isConnected)return Promise.resolve(false);
+  if(maskJobs.has(piece))return maskJobs.get(piece);
+  const patch=root.B737NeedleBootMask?.apply(piece,'oh12');
+  if(!patch)return cleanOriginal(piece);
+  const job=patch.then(ready=>{
+   if(ready===null)return cleanOriginal(piece);
+   if(ready){
+    piece.dataset.apuEgtPhoto='CLEANED';
+    piece.dataset.needleRestoration='RELEASE_MASK';
+    stats.status='READY_RELEASE_MASK';
+    const {width,height,changed}=root.B737GatewayBoot.art.oh12;
+    stats.sourceDimensions=[width,height];
+    stats.restoredPixels=changed;
+   }
+   return ready;
+  }).finally(()=>maskJobs.delete(piece));
+  maskJobs.set(piece,job);
+  return job;
  }
  function watchPiece(piece){
   if(!piece||observed.has(piece))return;
