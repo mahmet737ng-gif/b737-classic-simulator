@@ -42,6 +42,13 @@ for(const item of lights.lights){
 const source=fs.readFileSync(path.join(root,'server.js'),'utf8');
 assert(source.includes('MAX_DEVICES = 3'),'Missing three-device server-side cap');
 assert(source.includes('pg_advisory_xact_lock'),'Concurrent login cap must be atomic');
+assert(!source.includes("DELETE FROM ata24_devices WHERE account_tier='guest' AND last_seen"),'Guest inactivity must not release registration');
+assert(!source.includes("last_seen>now()-interval '20 minutes'"),'No guest inactivity timeout');
+assert(source.includes('canRegisterDevice(tier,same.rows[0]?.account_tier||null,count.rows[0].total,MAX_DEVICES)'),'Quota must be checked atomically');
+assert(source.includes('ON CONFLICT (device_hash) DO UPDATE'),'Re-login must update same registration');
+assert(source.includes('device_user_agent,last_ip,registered_at'),'Device metadata must be stored');
+assert(source.includes("url.pathname==='/devices'"),'Owner device registry missing');
+assert(source.includes("url.pathname==='/api/devices/revoke'"),'Owner revoke route missing');
 assert(source.includes('runtimeFiles.has(runtimePath)'),'Static route guard missing');
 assert(source.includes("const ok=await authorized(req)"),'Authentication guard missing');
 const guest=fs.readFileSync(path.join(root,'runtime/view/cockpit/overhead-stage.html'),'utf8');
