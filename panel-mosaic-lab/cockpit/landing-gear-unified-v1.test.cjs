@@ -64,7 +64,7 @@ const reversed=core.select(off,'DN',{onGround:false});
 assert.equal(reversed.elapsed.nose,0,'direction reversal must reset timing');
 assert.equal(reversed.elapsed.left,0);
 assert.equal(reversed.progress.left,off.progress.left,'reversing must preserve actuator progress');
-const reversing=core.step(reversed,2,3000);
+const reversing=core.step(reversed,1,3000);
 assert.ok(reversing.progress.left>reversed.progress.left&&reversing.progress.left<1);
 assert.deepEqual(core.step(core.select(transit,'OFF',{onGround:false}),20,3000).progress,transit.progress);
 assert.equal(core.lamps(core.select(initial,'OFF',{onGround:false})).main.nose.red,true);
