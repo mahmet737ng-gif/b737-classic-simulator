@@ -413,10 +413,17 @@
  async function start(){
   try{
    if(!motion||typeof motion.createDetentGesture!=='function')throw Error('RM-0002 detent engine unavailable');
-   const responses=await Promise.all([fetch(url('rotary-guards.json?v=ENGINE-START-DETENTS-0002'),{cache:'no-store'}),fetch(url('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);if(responses.some(r=>!r.ok))throw Error('Rotary/guard registry unavailable');
-   registry=await responses[0].json();const extraResponse=await fetch(url('lights-controls.json'),{cache:'no-store'});if(!extraResponse.ok)throw Error('Upper light controls unavailable');const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);
+   const load=window.B737OverheadMetadata||fetch;
+   const [rotaryResponse,layoutResponse,extraResponse]=await Promise.all([
+    load(url('rotary-guards.json?v=ENGINE-START-DETENTS-0002'),{cache:'no-store'}),
+    load(url('../all-overhead/atlas-layout.json'),{cache:'no-store'}),
+    load(url('lights-controls.json'),{cache:'no-store'})
+   ]);
+   if(!rotaryResponse.ok||!layoutResponse.ok)throw Error('Rotary/guard registry unavailable');
+   if(!extraResponse.ok)throw Error('Upper light controls unavailable');
+   registry=await rotaryResponse.json();const extra=await extraResponse.json();registry.rotaries.push(...extra.rotaries);registry.guards.push(...extra.guards);
    changeAirconDetents(profileAirconFamily());
-   const layout=await responses[1].json();model.validate(registry,layout,points.mapPoint);
+   const layout=await layoutResponse.json();model.validate(registry,layout,points.mapPoint);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
    engine=model.controller(registry,saved,event=>{const c=[...registry.rotaries,...registry.guards].find(c=>c.id===event.id);render(c);persist();if(window.B737OverheadToggles)interlocks();if(event.kind==='rotary')projectMeter(event.id,event.next);window.dispatchEvent(new CustomEvent('b737:'+event.kind+'-change',{detail:{...event,timestamp:new Date().toISOString()}}));},window.B737ControlMechanics);
    const root=byId('atlasAbsolute'),ready=()=>root.querySelector('.atlas-piece')&&window.B737OverheadToggles;

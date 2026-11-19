@@ -36,7 +36,7 @@ test('full cockpit requires synchronized electrical, overhead photos, CDUs, gaug
  const photo={complete:true,naturalWidth:100};
  const overhead={querySelectorAll:()=>[photo]};
  const d=w.document;
- d.getElementById=id=>id==='overheadFrame'?{contentDocument:overhead}:{};
+ d.getElementById=id=>id==='overheadFrame'||id.startsWith('cduFrame')?{contentDocument:overhead}:{};
  d.querySelectorAll=selector=>selector.includes('engine-start-lever')?[{},{}]:[photo];
  d.querySelector=()=>({dataset:{eadiPaintCount:'1'}});
  w.B737ISNCockpitV1.startupSynchronized=()=>true;

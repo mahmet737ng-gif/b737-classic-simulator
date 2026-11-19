@@ -8,7 +8,8 @@
  const masters=new Map();
  const requested=new URLSearchParams(location.search).get('lampBrightness');
  if(valid(requested))mode=requested;
- const ready=fetch(new URL('manifest.json',rootURL),{cache:'no-store'}).then(response=>{
+ const load=win.B737OverheadMetadata||fetch;
+ const ready=load(new URL('manifest.json',rootURL),{cache:'no-store'}).then(response=>{
    if(!response.ok)throw Error('Lamp manifest HTTP '+response.status);
    return response.json();
  }).then(data=>{

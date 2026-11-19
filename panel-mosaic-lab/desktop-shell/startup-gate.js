@@ -21,7 +21,8 @@
    result.electrical=w.B737ISNCockpitV1?.startupSynchronized?.()===true;
    const overhead=d.getElementById('overheadFrame')?.contentDocument;
    result.overhead=main.overhead&&imagesReady(overhead,'#atlasAbsolute .atlas-photo');
-   result.cdu=main.cdu;
+   result.cdu=main.cdu&&(w.B737UnifiedNoCduTest||['CAPT','FO'].every(seat=>
+    imagesReady(d.getElementById('cduFrame'+seat)?.contentDocument,'#cdu-stage img.base')));
    result.pedestal=imagesReady(d,'#region-pedestal .texture-piece > img')&&
     w.B737ThrottlePositions?.mounted?.()===true&&
     d.querySelectorAll('#region-pedestal .engine-start-lever').length===2&&

@@ -299,7 +299,8 @@
  }
  async function start(){
   try{
-   const [rr,lr]=await Promise.all([fetch(localURL('registry.json'),{cache:'no-store'}),fetch(localURL('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);
+   const load=window.B737OverheadMetadata||fetch;
+   const [rr,lr]=await Promise.all([load(localURL('registry.json'),{cache:'no-store'}),load(localURL('../all-overhead/atlas-layout.json'),{cache:'no-store'})]);
    if(!rr.ok||!lr.ok)throw Error('Toggle metadata unavailable');registry=await rr.json();const layout=await lr.json();model.validate(registry,layout);
    let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{};}catch{}
    // Unified embeds this same approved, spring-return APU switch.

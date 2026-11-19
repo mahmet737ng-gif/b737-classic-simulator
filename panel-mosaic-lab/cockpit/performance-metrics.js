@@ -95,7 +95,17 @@
    requestAnimationFrame(frame);
   })
  });
- if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=PERF-0004',{scope:'./',updateViaCache:'none'}).then(()=>navigator.serviceWorker.ready).then(registration=>{registration.active?.postMessage({type:'b737:prime-used-textures',urls:resources().map(r=>r.url)});const out=document.getElementById('performanceStats');if(out)out.dataset.cache='ready';}).catch(()=>{const out=document.getElementById('performanceStats');if(out)out.dataset.cache='unavailable';}),{once:true});
+ if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:'){
+  // Register after first usable paint. Cache future requests on demand rather
+  // than scanning/copying every resource while the rest of the cockpit starts.
+  window.addEventListener('b737:unified-usable',()=>{
+   const out=document.getElementById('performanceStats');
+   navigator.serviceWorker.register('./sw.js?v=PERF-0004',{scope:'./',updateViaCache:'none'})
+    .then(()=>navigator.serviceWorker.ready)
+    .then(()=>{if(out)out.dataset.cache='ready';})
+    .catch(()=>{if(out)out.dataset.cache='unavailable';});
+  },{once:true});
+ }
 })();
 
 ;(function tapLagAddon(){

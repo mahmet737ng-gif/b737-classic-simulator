@@ -100,7 +100,9 @@
    timer=0;
    const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
    const first=[],upgrades=[];
-   const overhead=win!==win.top&&win.frameElement?.id==='overheadFrame';
+   const frameId=win!==win.top?win.frameElement?.id:'';
+   const overhead=frameId==='overheadFrame';
+   const cdu=frameId==='cduFrameCAPT'||frameId==='cduFrameFO';
    let overheadScale=0;
    if(overhead){
     const frame=win.frameElement.getBoundingClientRect();
@@ -114,6 +116,7 @@
     let primeScale=0;
     if(!item.extent){
      if(overheadScale>0&&Number.isFinite(overheadScale)&&img.classList.contains('atlas-photo'))primeScale=overheadScale;
+     else if(cdu&&img.matches('#cdu-stage img.base'))primeScale=1;
      else if(startupScales&&img.parentElement?.classList.contains('texture-piece')){
       const region=img.closest('.region')?.dataset.region;
       primeScale=fitRatio(region);
