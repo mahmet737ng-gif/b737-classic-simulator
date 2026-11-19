@@ -262,17 +262,25 @@ async function body(req) {
     req.on('error',reject);
   });
 }
+// Share only IN-FLIGHT lookups for a burst of static resources. There is no
+// cached authorization decision: a completed query is immediately removed,
+// keeping logout/revocation and the 20-minute expiry database-authoritative.
+const authorizationInFlight = new Map();
 async function authorized(req) {
   const token = cookies(req)[TOKEN_COOKIE];
   if (!token || token.length < 30 || token.length > 128) return false;
-  // All original cockpit files are fetched independently. A read-only
-  // authorization check prevents hundreds of concurrent static requests
-  // from serializing on the same PostgreSQL row lock.
-  const result = await pool.query(
-    "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes')",
-    [hash(token)]
-  );
-  return result.rowCount===1;
+  const key = hash(token);
+  let inFlight = authorizationInFlight.get(key);
+  if (!inFlight) {
+    inFlight = pool.query(
+      "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes')",
+      [key]
+    ).then(result=>result.rowCount===1).finally(()=>{
+      authorizationInFlight.delete(key);
+    });
+    authorizationInFlight.set(key,inFlight);
+  }
+  return inFlight;
 }
 async function signIn(req,res) {
   const now=Date.now(), ip=String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim().slice(0,80);
