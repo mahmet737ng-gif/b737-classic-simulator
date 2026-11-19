@@ -1,0 +1,14 @@
+/* Empty sockets only: hide physical switch/guard pixels baked into the source image.
+   No locked source photographs are modified and none of the original guard sprites is loaded. */
+#atlasAbsolute .atlas-image-window>.b737-removed-old-guard{
+ position:absolute;display:block;box-sizing:border-box;z-index:5;pointer-events:none;
+ border:1px solid rgba(100,110,118,.18);
+ border-radius:9%;
+ background:
+   radial-gradient(ellipse at 50% 45%, #1b2022 0%, #0a0c0d 68%, #030607 100%);
+ box-shadow:inset 1px 2px 7px #000b,inset -1px -1px 4px #4445;
+ overflow:hidden;
+}
+#atlasAbsolute [data-retired-guard-location="standby-power"],
+#atlasAbsolute [data-retired-guard-location="bus-transfer"]{border-radius:12px}
+#atlasAbsolute [data-retired-guard-location="flight-recorder-test"]{border-radius:4px}

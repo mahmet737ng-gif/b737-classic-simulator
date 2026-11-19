@@ -1,0 +1,26 @@
+/* PMC-GLASS-0001: two new square clear covers, confined to the PMC sockets.
+   No frozen photograph or Owner18 guarded-switch renderer is altered. */
+html.pmc-glass-mounted .mounted-light[data-light="pmc-inop-1"],
+html.pmc-glass-mounted .mounted-light[data-light="pmc-inop-2"]{display:none!important}
+.pmc-glass-unit{position:absolute;z-index:500;isolation:isolate;perspective:600px;perspective-origin:50% 0;overflow:visible;direction:ltr;pointer-events:auto;user-select:none;touch-action:manipulation}
+.pmc-glass-unit .pmc-case{position:absolute;inset:0;background:linear-gradient(90deg,#0b0c0c,#282c2d 5%,#080b0c 10%,#131719 88%,#3d4344 96%,#0a0c0d);border-radius:3%;box-shadow:0 2px 2px #060809a0;pointer-events:none}
+.pmc-glass-unit button{position:absolute;display:block;box-sizing:border-box;min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;appearance:none;border:0!important;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.pmc-glass-unit .pmc-pushbutton{inset:10% 7% 7%;background:linear-gradient(110deg,#252726,#0e1111 23%,#161b1b 55%,#0a0d0e)!important;border-radius:2%;box-shadow:inset 1px 1px 1px #73787266,inset -1px -1px 1px #000,0 1px 1px #050606;cursor:pointer;color:#f6f3e7;opacity:1}
+.pmc-glass-unit .pmc-pushbutton:disabled{cursor:default;opacity:1;color:#f6f3e7}
+.pmc-glass-unit .pmc-pushbutton:not(:disabled):active{transform:translateY(.7%);box-shadow:inset 1px 1px 3px #000}
+.pmc-glass-unit .pmc-divider{position:absolute;left:4%;right:4%;top:58%;height:1%;background:linear-gradient(90deg,#51534b66,#6b706b44,#30353155);pointer-events:none}
+.pmc-glass-unit .pmc-on-symbol{position:absolute;left:29%;top:10%;width:42%;height:46%;overflow:visible;opacity:1;pointer-events:none;transition:opacity 90ms linear}
+.pmc-glass-unit .pmc-on-symbol circle{fill:#111312;stroke:#f8f5e9;stroke-width:2.8}
+.pmc-glass-unit .pmc-on-symbol text{fill:#f8f5e9;font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:700;letter-spacing:-1px;text-anchor:middle}
+.pmc-glass-unit .pmc-inop-symbol{position:absolute;left:0;bottom:4%;width:100%;height:33%;opacity:0;overflow:visible;pointer-events:none;transition:opacity 90ms linear}
+.pmc-glass-unit .pmc-inop-symbol text{fill:#ffc158;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:750;letter-spacing:-.5px;text-anchor:middle;paint-order:stroke;stroke:#ff980033;stroke-width:.5px;filter:drop-shadow(0 0 1px #ffad36) drop-shadow(0 0 2px #ee861e88)}
+.pmc-glass-unit[data-on="false"] .pmc-on-symbol{opacity:0}
+.pmc-glass-unit[data-inop="true"] .pmc-inop-symbol{opacity:1}
+.pmc-glass-unit .pmc-cover{left:0;top:4%;width:100%;height:96%;z-index:3;background:transparent!important;box-shadow:none!important;border-radius:2%;transform-origin:50% 0;transform:rotateX(0deg);transform-style:preserve-3d;backface-visibility:visible;cursor:pointer;transition:transform 260ms cubic-bezier(.22,.75,.22,1)}
+.pmc-glass-unit[data-open="true"] .pmc-cover{transform:rotateX(110deg)}
+.pmc-glass-unit .pmc-cover svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+.pmc-glass-unit .pmc-hinge{position:absolute;left:0;top:0;width:100%;height:12%;z-index:4;pointer-events:none}
+.pmc-glass-unit .pmc-hinge svg{display:block;width:100%;height:100%;overflow:visible}
+.pmc-glass-unit button:focus-visible{outline:1px solid #e6d7b5;outline-offset:2px}
+.reference-mode .pmc-glass-unit{display:none}
+@media(prefers-reduced-motion:reduce){.pmc-glass-unit .pmc-cover,.pmc-glass-unit .pmc-on-symbol,.pmc-glass-unit .pmc-inop-symbol{transition:none}}

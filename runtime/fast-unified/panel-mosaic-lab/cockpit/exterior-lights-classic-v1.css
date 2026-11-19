@@ -1,0 +1,54 @@
+/* EXTL-CLASSIC-0001 — strictly scoped to external-light row OH23-25. */
+/* Correct cockpit image remains locked; only existing toggle actuators are restyled. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]{isolation:isolate}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"] .toggle-sprite{
+ filter:drop-shadow(0px 2px 2px rgba(0,0,0,.42));transition:background-position .10s steps(1);
+}
+/* APU-SPRING-0001: START uses the corrected single DOWN photo but ON uses
+   frame 1 of the 5-pose atlas. Never interpolate background-position across
+   that asset/size switch: delayed 50% renders the unrelated RIGHT frame. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"][data-control="apu-start"] .toggle-sprite{
+ transition:none!important;
+}
+/* Owner-approved slim ivory toggle: original transparent sheet, unchanged pixels.
+   Nine exterior controls only; keep native registry, state engine and hit targets.
+   Three source pivots: (367.5,370), (1084.5,370), (1797,370).
+   All poses use the same 0.16 scale and mounting center. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]){--ext-white-x:-8.8px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])::after{
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 59.2px);
+ width:100px;height:116px;pointer-events:none;transform:none;filter:none;transition:none;
+ background-image:url("../../shared-assets/exterior-white-owner-v1/topdown-up-center-down.png");
+ background-size:347.52px 115.84px;background-repeat:no-repeat;
+ background-position:var(--ext-white-x) 0;
+}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="ON"]{--ext-white-x:-237.52px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="AUTO"],
+#overheadToggleLayer .mounted-toggle[data-control="position-lights"][data-state="OFF"]{--ext-white-x:-123.52px}
+/* Owner-approved top-down photograph, unchanged pixels. The three poses share
+   one mounting pivot. Outer: RETRACT / EXTEND / ON; inner: OFF / ON only. */
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"] .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::before{content:none}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::after{
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 52.78px);
+ width:100px;height:102px;pointer-events:none;
+ background-image:url("../../shared-assets/landing-tbar-owner-v1/topdown-up-center-down.png");
+ background-size:304.08px 101.36px;background-position:-2.64px 0;background-repeat:no-repeat;
+ transform:none;filter:none;transition:none;
+}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="EXTEND"]::after{background-position:-100.5px 0}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="ON"]::after{background-position:-198.92px 0}
+/* Unified header inspector: never affect overhead photo, its source images or guarded switches. */
+.extl-unified-dialog{max-width:min(1000px,95vw);max-height:85vh;overflow:auto;direction:ltr;color:#e5ebec;background:#17232d;border:1px solid #81909a;border-radius:9px;padding:19px;box-shadow:0 14px 60px #000b}
+.extl-unified-dialog::backdrop{background:#080c12a8}
+.extl-unified-dialog h2{font:600 18px/1.3 system-ui,sans-serif;margin:0 0 12px}
+.extl-unified-dialog .extl-close{float:right}
+.extl-status,.extl-note{font:13px/1.5 system-ui;color:#c3ced6}
+.extl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:9px}
+.extl-card{padding:9px;background:#27343e;border:1px solid #4b5a64;border-radius:5px;display:grid;gap:6px}
+.extl-card strong{font:600 12px/1.35 system-ui}
+.ext-state{font:700 13px monospace;color:#d8e3b3}
+.extl-choices{display:flex;flex-wrap:wrap;gap:4px}
+.extl-choices button{font:11px/1.3 system-ui!important;padding:5px 7px!important;min-width:0!important}
+.extl-choices button[aria-pressed="true"]{border-color:#dfbd7e!important;background:#4d5341!important}

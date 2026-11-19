@@ -1,0 +1,443 @@
+'use strict';
+const $=id=>document.getElementById(id);
+const map=window.CDU_MAP, pages=window.CDU_PAGES, core=window.CDU_ENGINE;
+const state=core.makeState('IDENT');
+const chapter11RoutePages=window.CDU_CH11_ROUTE_PAGES;
+if(chapter11RoutePages)state.chapter11RoutePages=true;
+// A factual SOURCE preview does not install or activate an FMC NAVDATA bank.
+// Default IDENT still shows the owner's 2610 display until opt-in.
+const regionalSource=window.B737Airac2611MiddleEastPreviewV1;
+let showRegionalSource2611=/(?:^|[?&])nav_source=2611(?:&|$)/.test(String(window.location?.search||''));
+const preflight=window.B737CDUPreflightEvidenceV1;
+if(!preflight)throw Error('FCOM_CDU_PREFLIGHT_EVIDENCE_NOT_LOADED');
+const contract=window.B737FCOMScreenContractV1;
+if(!contract)throw Error('FCOM_CDU_SCREEN_CONTRACT_NOT_LOADED');
+const procedureLedger=window.B737CDUTransitionLedgerV1?.create({
+ seat:new URLSearchParams(window.location.search).get('seat')==='FO'?'FO':'CAPT',
+ validPages:Object.keys(pages),now:()=>Date.now()
+});
+const byId={};
+function n1EstimateV19(){
+ // V19 estimate is calibrated only to a legacy B1/20K demonstration.
+ // User-selected B1/18.5K, B3/20K and C1/23.5K must NOT reuse that curve.
+ const selected=state.engineInstallation;
+ if(selected&&!(selected.variant==='CFM56-3B1'&&selected.ratingLbf===20000))return null;
+ const engine=window.EPFSI_ESTIMATED_N1_V19;
+ if(!engine)return null;
+ const altitude=$('n1-v6-altitude');
+ const phase=$('n1-v6-phase');
+ const lever=$('n1-v6-lever');
+ const altText=altitude?String(altitude.value??'').trim():'';
+ const altFt=altText!==''&&Number.isFinite(Number(altText))?Number(altText):null;
+ const leverText=lever?String(lever.value??'').trim():'';
+ const context=window.EPFSI_SCENARIO_DEFAULTS?.normalize?.({pressureAltitudeFt:altFt})||{
+  weatherMode:'ISA',antiIceMode:'OFF',engineBleedMode:'ON',acPacks:'AUTO',pressureAltitudeFt:altFt};
+ return engine.estimate({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',
+  ratingLbf:20000,...context,phase:phase?.value||'TAKEOFF',
+  thrustLeverPct:leverText!==''&&Number.isFinite(Number(leverText))?Number(leverText):null});
+}
+
+function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x1/1199*100+'%',top:y1/1312*100+'%',width:(x2-x1)/1199*100+'%',height:(y2-y1)/1312*100+'%'});}
+function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){send(c.id)}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
+ const outputs=$('annunciators');for(const a of map.outputs){const el=document.createElement('div');el.id=a.id;el.className='annunciator '+a.color+(a.label==='EXEC'?' exec':'');let b=a.sprite_bbox_px;position(el,b);if(a.illuminated_sprite){const pic=document.createElement('img');pic.className='light-glyph';pic.src=a.illuminated_sprite;el.appendChild(pic);}outputs.appendChild(el);byId[a.id]=el;}}
+function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stage5Committed) && state.ehsi?.options) state.ehsi.options.demoRoute=false; window.EHSI_ENGINE.renderToDom(state,core,$('ehsi-svg'),document); window.CDU_NAV_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE5_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE9_ADVISORY?.render(state,$('ehsi-svg')); window.CDU_STAGE10_ADVISORY?.render(state,$('ehsi-svg')); } }
+const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
+function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
+function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
+// CDU entry placeholders have the original small baseline size, independently
+// of enlarged field labels and interactive LSK navigation options.
+function isEntryPromptText(text){
+ const v=String(text??'').trim();
+ return !/[<>]/.test(v)&&(/[□]/.test(v)||/-{2,}/.test(v)||v==='TRAINER');
+}
+function isNavigationLSKText(text){
+ const s=String(text??'').trim();
+ return /^[<]/.test(s)||/[>]$/.test(s);
+}
+function markEntryPlaceholder(span){
+ span.classList.add('cdu-entry-placeholder');
+ if(!/^□+$/.test(span.textContent))return;
+ span.classList.add('cdu-square-entry');
+ const glyphs=document.createElement('span');
+ glyphs.className='cdu-square-glyphs';
+ glyphs.textContent=span.textContent;
+ glyphs.style.display='inline-block';
+ glyphs.style.transform='scale(2)';
+ glyphs.style.transformOrigin=span.classList.contains('fmc-right')?'right center':'left center';
+ span.style.overflow='visible';
+ span.replaceChildren(glyphs);
+}
+function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){for(const span of [l,r]){if(isEntryPromptText(span.textContent))markEntryPlaceholder(span);else if(isNavigationLSKText(span.textContent))span.classList.add('cdu-lsk-prompt');}} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
+/* FCOM Vol.2 11.40.32: DEP/ARR INDEX is a THREE-COLUMN origin/dest
+ * page, not a generic route-field menu. Keep the approved photo & LSK map.
+ */
+function makeDepArrTriplet(topPct,leftText,centerText,rightText,isSmall=false){
+ const row=makePairRow(topPct,leftText,rightText,false,isSmall);
+ row.classList.add('fmc-dep-arr-index');
+ const center=document.createElement('span');
+ center.className='fmc-center';
+ center.textContent=centerText||'';
+ Object.assign(center.style,{
+   position:'absolute',left:'32%',width:'36%',top:'0',textAlign:'center',
+   whiteSpace:'pre',overflow:'visible',font:'inherit',lineHeight:'inherit',color:'inherit'
+ });
+ row.appendChild(center);
+ return row;
+}
+// Shared display geometry: LSK page fields must end ABOVE the independent scratchpad.
+const CDU_DISPLAY_GEOMETRY=Object.freeze({
+ screenTop:1312*0.0765, screenHeight:1312*0.375,
+ // Field values and selectable prompts are centred on each physical LSK.
+ // The smaller field title is on the line immediately above that LSK.
+ valueOffset:-13, labelOffset:-42, lowerLabelOffset:-50,
+ scratchpadTop:565, lineHeight:1312*0.375*0.09, clearGap:4
+});
+function lskTextTops(number){
+ const lsk=map.controls.find(c=>c.id==='CDU_CAPT_LSK_L'+number);
+ if(!lsk)throw Error('CDU_LSK_GEOMETRY_MISSING_'+number);
+ const cy=(lsk.bbox_px[1]+lsk.bbox_px[3])/2;
+ let labelY=cy+(number===1?CDU_DISPLAY_GEOMETRY.labelOffset:CDU_DISPLAY_GEOMETRY.lowerLabelOffset);
+ let valueY=cy+CDU_DISPLAY_GEOMETRY.valueOffset;
+ // Keep the bottom LSK's two lines together and strictly above scratchpad.
+ // Applies to INDEX, DEP/ARR, and every other core CDU page.
+ const maxValueY=CDU_DISPLAY_GEOMETRY.scratchpadTop-
+   CDU_DISPLAY_GEOMETRY.clearGap-CDU_DISPLAY_GEOMETRY.lineHeight;
+ const shift=Math.max(0,valueY-maxValueY);
+ labelY-=shift;valueY-=shift;
+ const percent=y=>(y-CDU_DISPLAY_GEOMETRY.screenTop)/CDU_DISPLAY_GEOMETRY.screenHeight*100;
+ return {label:percent(labelY),value:percent(valueY)};
+}
+function renderDepArrIndex(box){
+ // Use EXACTLY the same six small-title + six large-value DOM rows as IDENT.
+ // Four custom rows previously caused the 24-column screen fitter to classify
+ // DEP/ARR as a nonstandard overlay and scale its glyphs differently.
+ const airport=name=>String(core.readValue(state,name,'RTE')||'').toUpperCase();
+ for(let row=1;row<=6;row++){
+  const {label,value}=lskTextTops(row);
+  const small=makePairRow(label,row===6?'DEP':'',row===6?'ARR':'',false,true);
+  const large=makePairRow(value,
+   row===1?'<DEP':row===6?'<----':'',
+   row===1||row===2?'ARR>':row===6?'---->':'');
+  function center(target,text){
+   const el=document.createElement('span');el.className='fmc-center';
+   el.textContent=text;
+   Object.assign(el.style,{position:'absolute',left:'32%',width:'36%',
+    top:'0',textAlign:'center',whiteSpace:'pre',overflow:'visible',
+    font:'inherit',lineHeight:'inherit',color:'inherit'});
+   target.appendChild(el);
+  }
+  if(row===1)center(large,airport('ORIGIN'));
+  if(row===2)center(large,airport('DEST'));
+  if(row===6)center(small,'OTHER');
+  box.appendChild(small);box.appendChild(large);
+ }
+}
+function sourceOfflineCatalog(){
+ if(!['DEPARTURES','ARRIVALS'].includes(state.page)||
+    window.CDU_STAGE6_API?.chapter11CatalogView?.())return null;
+ const airport=state.depArrSelection?.airport||'----';
+ const labels=state.page==='DEPARTURES'?'SIDS':'STARS';
+ const rows=Array.from({length:6},()=>({labelL:'',valueL:'',labelR:'',valueR:''}));
+ rows[0]={labelL:labels,valueL:'',labelR:state.page==='ARRIVALS'?'APPROACHES':'RUNWAYS',valueR:''};
+ rows[2]={labelL:'NAV DATA',valueL:'NOT CONNECTED',labelR:'',valueR:''};
+ rows[5]={labelL:'',valueL:'<INDEX',labelR:'',valueR:'RTE>'};
+ return {title:airport+' '+state.page,number:1,count:1,rows};
+}
+function v19SafeN1(){const r=n1EstimateV19();return r?.status==='SIM_ESTIMATE'?r:null;}
+// Force the user-approved green Boeing CDU typography on the LIVE rows.
+// Inline-important values win over historical v5 CSS and global nth-child
+// font selectors which incorrectly shrink DEP/ARR selectable prompts.
+function applyCDUScreenTypography(box){
+ // Unified has its own APPROVED 24-column typography and locked #29ff31 color.
+ // Only Standalone gets the independent high-contrast screen treatment.
+ if(typeof document.querySelector!=='function'||typeof box?.querySelectorAll!=='function'||typeof box?.style?.setProperty!=='function')return;
+ if(document.querySelector('base[href="../../cdu-standalone-v6/"]'))return;
+ const green='#29ff31';
+ const stage=document.getElementById('cdu-stage');
+ const stageWidth=stage?.getBoundingClientRect().width||790;
+ const width=box.getBoundingClientRect().width||stageWidth*.4865;
+ const target=stageWidth*.0247;
+ // At least 24 uppercase A characters must fit the scratchpad without
+ // horizontal clipping. Measure the actual loaded font; scale only if needed.
+ const canvas=applyCDUScreenTypography.canvas||(applyCDUScreenTypography.canvas=document.createElement('canvas'));
+ const ctx=canvas.getContext('2d');
+ let px=target;
+ if(ctx){
+  ctx.font=target+'px BoeingCDULarge';
+  const textWidth=ctx.measureText('AAAAAAAAAAAAAAAAAAAAAAAA').width;
+  if(textWidth>0)px=Math.min(target,target*(width*.946*.98/textWidth));
+ }
+ box.style.setProperty('color',green,'important');
+ box.style.setProperty('font-size',px+'px','important');
+ // The 24-A metric belongs ONLY to the scratchpad. Page values are allowed
+ // to be 1.8 times larger, and labels twice their previous size.
+ const nodes=box.querySelectorAll('.fmc-line');
+ const cap=(family)=>{
+  if(!ctx)return .72;
+  ctx.font='400 100px "'+family+'"';
+  const m=ctx.measureText('HMWA3');
+  return ((m.actualBoundingBoxAscent||0)+(m.actualBoundingBoxDescent||0))/100||.72;
+ };
+ const oldSmall=Math.min(px*.73,px*.70*cap('BoeingCDULarge')/cap('BoeingCDUSmall'));
+ const pageSize=px*1.44; // 80% of the previous 1.8x LSK text scale
+ const labelSize=oldSmall*1.8; // 10% below prior 2x label size
+ for(const el of nodes){
+  const small=el.classList.contains('fmc-small');
+  const f=small?'BoeingCDUSmall':'BoeingCDULarge';
+  const isScratch=el.classList.contains('scratch');
+  const isHeader=el.classList.contains('fmc-header');
+  const size=isScratch||isHeader?px:small?labelSize:pageSize;
+  for(const node of [el,...el.querySelectorAll('*')]){
+   if(node.classList?.contains('cdu-square-glyphs'))continue;
+   node.style.setProperty('color',green,'important');
+   node.style.setProperty('font-family',f,'important');
+   const entry=node.classList?.contains('cdu-entry-placeholder');
+   const navigation=node.classList?.contains('cdu-lsk-prompt');
+   node.style.setProperty('font-size',(entry?px*1.10:navigation?px*1.05:size)+'px','important');
+   node.style.setProperty('font-weight','400','important');
+   node.style.setProperty('line-height',
+    isScratch?'1':isHeader?'.92':small?'.72':entry?'.96':'.77','important');
+  }
+  if(!isScratch&&!isHeader){
+   el.style.setProperty('height',small?'5.3%':'6.1%','important');
+   el.style.setProperty('overflow','visible','important');
+   // Keep the full glyph height. Fit long text ONLY horizontally inside
+   // its original left/right LSK column; do not shrink the font.
+   for(const span of el.querySelectorAll('.fmc-left,.fmc-right,.fmc-center')){
+    if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
+    const available=span.getBoundingClientRect().width;
+    if(!(available>0))continue;
+    const textSize=span.classList.contains('cdu-entry-placeholder')?px*1.10:
+     span.classList.contains('cdu-lsk-prompt')?px*1.05:size;
+    ctx.font='400 '+textSize+'px "'+f+'"';
+    const measured=ctx.measureText(span.textContent).width;
+    const factor=measured>available-2?(available-2)/measured:1;
+    span.style.setProperty('overflow','visible','important');
+    if(factor<1){
+     span.style.setProperty('transform-origin',
+      span.classList.contains('fmc-right')?'right top':span.classList.contains('fmc-center')?'center top':'left top','important');
+     span.style.setProperty('transform','scaleX('+Math.max(.15,factor).toFixed(4)+')','important');
+    }
+   }
+  }
+  if(small)el.style.setProperty('line-height','.72','important');
+ }
+ box.dataset.fontColor=green;
+ box.dataset.promptPolicy=window.CDU_PROMPT_POLICY_V1?.VERSION||'NOT_LOADED';
+ box.dataset.fontFit24='true';
+ box.dataset.labelCapRatio='2x-previous';
+ box.dataset.pageValueScale='1.44';
+ box.dataset.pageLabelScale='1.8';
+ box.dataset.entryPromptScale='1.10';
+ box.dataset.navigationPromptScale='1.05';
+ box.dataset.lastRowSafe='true';
+ box.dataset.scratchpadScale='1';
+ box.dataset.valueLine='LSK_CENTER';
+}
+// Avoid repainting unchanged FMC glyphs on unrelated network/SG notifications.
+let lastCduVisualMarkup=null;
+function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
+ const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
+ const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
+ const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
+ const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
+ const n1=v19SafeN1();
+ if(state.page==='DEP_ARR')renderDepArrIndex(frame);
+ else if(chapter11){
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR},index)=>{
+     const {label,value}=lskTextTops(index+1);
+     frame.appendChild(makePairRow(label,labelL,labelR,false,true));
+     frame.appendChild(makePairRow(value,valueL,valueR));
+   });
+ }else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);
+   let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';
+   let valueL=displayCell(pair?.[0]),valueR=displayCell(pair?.[1]);
+   if(state.page==='INDEX'){
+     // The FCOM INDEX figure has large selectable prompts on the LSK rows,
+     // with no small field titles. L6 is absent in the photographed variant.
+     valueL=row===6?(state.indexOffsetAvailable===true?'<OFFSET':''):labelL;
+     valueR=row===6&&state.fmcOnGroundVerified===false?'NAV STATUS>':labelR;
+     labelL='';labelR='';
+   }
+   if(state.page==='IDENT'){
+     const sources=state.preflightEvidence||{};
+     // Owner's IDENT reference supplies the display values. Settings still
+     // select MODEL / ENG RATING; the two ACTIVE lines are one date range,
+     // not active/inactive database banks. No NAVDB is installed by this view.
+     if(row===1){
+       valueL=preflight.identValue('MODEL',sources)||valueL;
+       valueR=preflight.identValue('ENG_RATING',sources)||valueR;
+     }
+     // SOURCE PREVIEW: dates verified against cycle.json, cycle_info.txt and
+     // fmc_ident.txt from the regional private archive. Never label ACTIVE.
+     // Keep the aircraft/engine/program fields and LSK6 navigation intact.
+     if(showRegionalSource2611&&regionalSource?.intake?.sourceOnly===true){
+       const preview=regionalSource.identPreviewRow(row);
+       if(preview)({labelL,valueL,labelR,valueR}=preview);
+     }
+   }
+   if(state.page==='POS_INIT'){
+     const sources=state.preflightEvidence||{};
+     if(row===1){valueL=preflight.lastPosition(sources);valueR='';}
+     if(row===3&&!core.readValue(state,'REF_AIRPORT','POS_INIT'))valueL='-----';
+     if(row===4){valueR=preflight.irsPositionPrompt(sources);}
+     if(row===5){
+       valueL=preflight.clock(sources);
+       if(!preflight.irsHeadingAvailable(sources)){labelR='';valueR='';}
+       else valueR=preflight.posValue('IRS_HDG',sources,state.active);
+     }
+   }
+   if(row===1&&state.depArrSelection&&['DEPARTURES','ARRIVALS'].includes(state.page))
+     valueL=state.depArrSelection.airport||valueL;
+   // Navigation prompts are selectable full-size LSK values, not field titles.
+    if(state.page!=='INDEX'){
+      const left=pair?.[0],right=pair?.[1];
+      if(left?.action&&!left.field&&!left.value&&labelL&&!valueL){valueL=labelL;labelL='';}
+      if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
+    }
+    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
+   if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
+   frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
+   const valueLine=makePairRow(valueTop,valueL,valueR);
+   if(state.page==='POS_INIT'&&row===1){
+     valueLine.querySelector('.fmc-left')?.classList.add('full');
+   }
+   frame.appendChild(valueLine);
+ }
+ frame.appendChild(makePairRow(((CDU_DISPLAY_GEOMETRY.scratchpadTop-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));
+ const renderers={
+  NAVDB_LEGS:window.CDU_NAV_API?.paint,
+  STAGE5:window.CDU_STAGE5_API?.paint,
+  STAGE6:window.CDU_STAGE6_API?.paint,
+  PROGRESS:window.CDU_REFERENCE_PROGRESS_API?.paint,
+  STAGE10_ADVISORY:window.CDU_STAGE10_ADVISORY?.paint?
+    node=>window.CDU_STAGE10_ADVISORY.paint(node,state):null
+ };
+ const output=window.CDU_SCREEN_COMPOSITOR_V1?.compose({
+   frame,state,renderers,onError:items=>console.warn('CDU SCREEN OWNER ERROR',items)
+ });
+ if(!output)throw Error('AUTHORITATIVE_CDU_SCREEN_COMPOSITOR_NOT_LOADED');
+ // Single atomic update to the VISIBLE CDU. Optional reference adapters never
+ // receive or mutate the live DOM and cannot erase a FCOM-owned screen.
+ const nextVisualMarkup=frame.innerHTML;
+ if(nextVisualMarkup!==lastCduVisualMarkup||box.childNodes.length===0){
+  box.replaceChildren(...frame.childNodes);
+  applyCDUScreenTypography(box);
+  lastCduVisualMarkup=nextVisualMarkup;
+ }
+ box.dataset.screenOwner=output.owner;
+ box.dataset.sourceVerified=String(output.sourceVerified);
+ box.dataset.compositorVersion=output.version;
+ box.style.opacity=state.brightness;
+ const all=core.lights(state);if(state.stage6AwaitingExec||window.CDU_SG_API?.execLit?.())all.EXEC=true;
+ for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
+ for(const [id,value] of [
+  ['page-now',state.page],['scratch-now',state.message||state.scratch||'—'],
+  ['pending-now',core.pendingCount(state)],['key-now',state.lastKey]]){
+  const node=$(id);if(node&&node.textContent!==String(value))node.textContent=String(value);
+ }
+ const review=contract.compile(pages,state.page);
+ box.dataset.layoutVerification=review.verification.layout;
+ box.dataset.behaviorVerification=review.verification.behavior;
+ box.dataset.sourceFolio=review.source.folio||'UNVERIFIED';
+ const ref=pages[state.page].source_ref;
+ $('current-reference').textContent='FCOM '+(ref?.folio_family||'UNKNOWN')+' / PDF near '+(ref?.pdf_page_near||'?')+
+   ' — layout '+review.verification.layout+'; behavior '+review.verification.behavior;
+ $('current-status').textContent='SOURCE: '+(pages[state.page].source_status||'UNVERIFIED')+
+   ' / unresolved static cell issues: '+review.issues.length;
+ const status=$('n1-v6-est-status');
+ if(status&&state.engineInstallation&&!n1)status.textContent=
+  'ENGINE '+state.engineInstallation.label+' · '+state.engineInstallation.rating+
+  ' · N1 EST NOT CALIBRATED FOR SELECTED VARIANT';
+ if(status&&n1)status.textContent='SIM EST / '+n1.phase+': MAX '+n1.maxN1Pct.toFixed(1)+
+  '% / PRESENT ENG1 '+n1.presentN1Pct[1].toFixed(1)+'% / ENG2 '+n1.presentN1Pct[2].toFixed(1)+'%';
+ updateEHSI();
+}
+function send(k){
+ const prior=procedureLedger?.capture(state)||null;
+ try{const before=state.page;
+ if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
+  if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
+ if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
+ core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
+ window.CDU_STAGE5_API?.afterPage?.(k);window.CDU_STAGE5_API?.afterKey?.(k,before);
+ window.CDU_STAGE6_API?.afterPage?.(k);window.CDU_STAGE6_API?.afterKey?.(k,before);window.CDU_SG_API?.afterKey?.(k);update()
+ }finally{
+  if(prior)try{procedureLedger.record(k,prior,procedureLedger.capture(state))}
+  catch(err){console.warn('CDU PROCEDURE TRACE ERROR',err);}
+ }
+}
+function reset(){const fresh=core.makeState('IDENT');if(chapter11RoutePages)fresh.chapter11RoutePages=true;Object.keys(state).forEach(k=>delete state[k]);Object.assign(state,fresh);['call-test','fault-test','offset-test'].forEach(k=>$(k).checked=false);window.EHSI_ENGINE?.syncPanel(state,document);update()}
+function init(){if(!map||!pages||!core)throw Error('CDU data is missing');makeControls();
+ // Optional informational source preview button outside the approved CDU
+ // picture and hitboxes. No FMC bank state, routes or IRS data is mutated.
+ const selector=$('page-select');
+ if(regionalSource?.intake?.sourceOnly===true&&typeof selector?.insertAdjacentElement==='function'){
+   const b=document.createElement('button');
+   b.id='regional-source-preview-toggle';b.type='button';
+   b.textContent=showRegionalSource2611?'IDENT: 2611 SOURCE PREVIEW — OFF':'IDENT: 2611 SOURCE PREVIEW — ON';
+   b.setAttribute('aria-label','Toggle AIRAC 2611 regional source dates in IDENT');
+   b.addEventListener('click',()=>{
+     showRegionalSource2611=!showRegionalSource2611;
+     b.textContent=showRegionalSource2611?'IDENT: 2611 SOURCE PREVIEW — OFF':'IDENT: 2611 SOURCE PREVIEW — ON';
+     core.choose(state,pages,'IDENT');update();
+   });
+   selector.insertAdjacentElement('afterend',b);
+ }
+ update();$('reset').onclick=reset;$('overlay-toggle').onclick=()=>$('cdu-stage').classList.toggle('debug');$('info-toggle').onclick=()=>$('qa').hidden=!$('qa').hidden;
+ for(const [el,k] of [['call-test','call'],['fault-test','fail'],['offset-test','offsetGuidance']])$(el).addEventListener('change',e=>{state[k]=e.target.checked;update()});
+ $('test-message').onclick=()=>{state.message='CHECK FMC DATA';update()};
+ document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;let key=null;
+ if(e.key==='Backspace')key='KEY_CLR';else if(e.key==='Enter')key='EXEC';else if(e.key===' ')key='KEY_SP';else if(e.key==='.')key='KEY_DOT';else if(e.key==='/')key='KEY_SLASH';else if(e.key==='-')key='KEY_PLUS_MINUS';else if(/^[A-Z0-9]$/i.test(e.key))key='KEY_'+e.key.toUpperCase();if(key){e.preventDefault();send('CDU_CAPT_'+key)}});
+ for(const id of ['n1-v6-phase','n1-v6-altitude','n1-v6-lever']){
+  const el=$(id);if(el)el.addEventListener('change',update);
+ }
+ $('page-select').addEventListener('change',e=>{core.choose(state,pages,e.target.value);update()});
+ Object.keys(pages).sort().forEach(key=>{const option=document.createElement('option');option.value=key;option.textContent=key;$('page-select').appendChild(option)});
+ new MutationObserver(()=>{$('page-select').value=state.page}).observe($('page-now'),{childList:true});$('page-select').value=state.page;
+ window.EHSI_ENGINE?.initControls(state,core,document,updateEHSI);
+ // Recalculate after font faces load and after responsive stage resizing.
+ const refreshType=()=>{const screen=$('fmc-lines');if(screen)applyCDUScreenTypography(screen);};
+ if(document.fonts?.ready)document.fonts.ready.then(refreshType).catch(err=>console.warn('CDU FONT LOAD',err));
+ if(typeof window.addEventListener==='function')window.addEventListener('resize',refreshType,{passive:true});
+ 
+}
+window.CDU_PROCEDURE_AUDIT_V1=procedureLedger;
+window.CDU_SCREEN_QA_V1=Object.freeze({
+ getCurrent:()=>contract.grid(pages,state.page,{
+   readValue:(field,page)=>core.readValue(state,field,page),
+   readScratch:()=>state.scratch,readMessage:()=>state.message,
+   indexOffsetAvailable:state.indexOffsetAvailable,
+   fmcOnGroundVerified:state.fmcOnGroundVerified
+ }),
+ getPage:id=>contract.compile(pages,id),
+ getMasterAudit:()=>contract.audit(pages),
+ getVisualOwner:()=>({
+   owner:document.getElementById('fmc-lines')?.dataset.screenOwner||null,
+   compositor:document.getElementById('fmc-lines')?.dataset.compositorVersion||null
+ }),
+ getDisplayStyle:()=>{
+  const box=document.getElementById('fmc-lines');
+  const large=box?.querySelector('.fmc-line:not(.fmc-small)');
+  const small=box?.querySelector('.fmc-line.fmc-small');
+  return {color:large?getComputedStyle(large).color:null,
+   largeFamily:large?getComputedStyle(large).fontFamily:null,
+   largeSize:large?getComputedStyle(large).fontSize:null,
+   smallFamily:small?getComputedStyle(small).fontFamily:null,
+   smallSize:small?getComputedStyle(small).fontSize:null,
+   loadedLarge:document.fonts?.check('16px BoeingCDULarge')??null,
+   loadedSmall:document.fonts?.check('16px BoeingCDUSmall')??null,
+   fit24:box?.dataset.fontFit24||null,
+   promptPolicy:box?.dataset.promptPolicy||null};
+ },
+ getRegionalSourcePreview:()=>Object.freeze({enabled:showRegionalSource2611,
+  cycle:regionalSource?.intake?.cycle||null,
+  validFrom:regionalSource?.intake?.validFrom||null,
+  lastValid:regionalSource?.intake?.lastValid||null,
+  expiresFrom:regionalSource?.intake?.expiresFrom||null,
+  fmcActive:false,sourceOnly:true}),
+ getPromptAudit:()=>window.CDU_PROMPT_POLICY_V1?.audit(pages,(field,page)=>core.readValue(state,field,page))
+});
+window.updateStage5View=update;
+init();

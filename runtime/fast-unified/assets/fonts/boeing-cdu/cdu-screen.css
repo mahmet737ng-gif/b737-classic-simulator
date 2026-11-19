@@ -1,0 +1,42 @@
+/*
+ * B737 Classic CDU approved font lock.
+ * The only authoritative font mapping for real FMC/CDU screen characters.
+ * Scope: screen text only, not bezel artwork, cockpit labeling or EFIS.
+ * Font assets and identifiers are guarded by the CDU font-lock tests.
+ */
+@font-face {
+  font-family: "BoeingCDULarge";
+  src: url("./BoeingCDU-Large.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "BoeingCDUSmall";
+  src: url("./BoeingCDU-Small.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+/* A shared font policy, applied after each version's existing layout CSS. */
+.fmc-screen .fmc-lines,
+.fmc-screen .fmc-lines .fmc-line,
+.fmc-screen .fmc-lines .fmc-line * {
+  font-family: "BoeingCDULarge" !important;
+  font-synthesis: none;
+  font-variant-ligatures: none;
+}
+
+/* Label rows use Small; data values, scratchpad and heading use Large. */
+.fmc-screen .fmc-lines .fmc-line.fmc-small,
+.fmc-screen .fmc-lines .fmc-line.fmc-small * {
+  font-family: "BoeingCDUSmall" !important;
+}
+
+/* The Chapter 11 physical CDU retains its existing render function; its
+   label lines are every even DOM row, starting with row 2. */
+.fmc-screen .fmc-lines .fmc-line:nth-child(2n):not(.fmc-header):not(.scratch),
+.fmc-screen .fmc-lines .fmc-line:nth-child(2n):not(.fmc-header):not(.scratch) * {
+  font-family: "BoeingCDUSmall" !important;
+}

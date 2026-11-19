@@ -1,0 +1,17 @@
+{
+  "schema": "b737.oh01-06.mosaic-geometry.v1",
+  "version": "2026-10-23.4",
+  "source": "../assets/locked/2026-10-23/OH01-06-source-9d8ac0ac86bd.png",
+  "sourceSha256": "9d8ac0ac86bdb92c040e9bdd97811ca381535d949bff94aa5b1a01e5de8e23df",
+  "sourceWidth": 1731,
+  "sourceHeight": 909,
+  "approval": {"sourcePixels": "locked-original", "panelContours": "provisional-awaiting-owner-QA", "compositeAlignment": "preview-only"},
+  "parts": [
+    {"id":"OH-01", "name":"Leading Edge Devices / Left Plates", "polygons":[[[4,56],[381,56],[382,322],[381,715],[4,715]]], "asset":null, "status":"source-placed"},
+    {"id":"OH-02", "name":"IRS Cluster", "polygons":[[[383,57],[771,57],[769,214],[770,715],[383,715]]], "asset":null, "status":"source-placed"},
+    {"id":"OH-03", "name":"Service Interphone / Dome Light", "polygons":[[[775,441],[950,441],[950,561],[775,561]],[[772,719],[932,719],[932,874],[772,874]]], "asset":null, "status":"source-placed"},
+    {"id":"OH-04", "name":"Audio / Mic Selector", "polygons":[[[953,56],[1332,56],[1332,339],[953,339]]], "asset":null, "status":"source-placed"},
+    {"id":"OH-05", "name":"Engine Indications / Crew and Passenger Oxygen", "polygons":[[[953,340],[1332,340],[1332,714],[953,714]]], "asset":null, "status":"source-placed"},
+    {"id":"OH-06", "name":"ELT / Flight Recorder / Stall Warning", "polygons":[[[1334,57],[1726,57],[1726,714],[1334,714]]], "asset":null, "status":"source-placed"}
+  ]
+}
