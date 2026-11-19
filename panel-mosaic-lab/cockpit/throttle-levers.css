@@ -25,12 +25,12 @@
 .pedestal-trim-wheel:focus-visible{outline:1px dotted #fff}
 .pedestal-trim-plane{position:absolute;inset:0;overflow:hidden;border-radius:24% / 8%;pointer-events:none;
  background:#1f2122;box-shadow:inset 0 0 .28em #000,0 .14em .26em #0008}
-.pedestal-trim-plane::before{content:'';position:absolute;inset:0 0 -100%;
- background:url('./assets/pedestal-hardware/trim-wheel.webp?v=2') center top / 100% 50% repeat-y;
- transform:translateY(calc(var(--phase,0)*-50%))}
-.pedestal-trim-plane::after{content:'';position:absolute;inset:0;border-radius:inherit;
+.pedestal-trim-plane img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:fill}
+.pedestal-trim-plane::before{content:'';position:absolute;z-index:1;left:0;right:0;height:7%;
+ top:calc(var(--phase,.82)*107% - 7%);
+ background:linear-gradient(180deg,#aeac9e,#d7d4c4 35%,#b4b0a2);box-shadow:0 1px 1px #343430}
+.pedestal-trim-plane::after{content:'';position:absolute;z-index:2;inset:0;border-radius:inherit;
  background:linear-gradient(180deg,#07090af2,transparent 17% 79%,#08090af2),linear-gradient(90deg,#090b0cc9,transparent 26% 74%,#08090ac0)}
-.pedestal-trim-plane img{display:none}
 .pedestal-trim-index{position:absolute;width:2%;height:auto!important;max-width:none;transform:translateY(-50%);pointer-events:none}
 .pedestal-trim-index[data-side="CAPT"]{left:11.1%}.pedestal-trim-index[data-side="FO"]{right:11.1%;transform:translateY(-50%) scaleX(-1)}
 .pedestal-trim-cutout{position:absolute;top:91.4%;width:6%;height:3.2%;padding:0;border:0;background:transparent;

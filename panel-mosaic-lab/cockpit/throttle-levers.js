@@ -3,7 +3,7 @@
 'use strict';
 const doc=win.document;
 const STOPS=[0,25,50,75,100], NAMES=['idle','quarter','mid','three-quarter','full'];
-const CENTER=(322+437)/2, SEAM=2;
+const CENTER=(322+437)/2, SEAM=-4;
 const FULL=184, IDLE=652;
 const WHITE_WIDTH=[137,135,127,117,108];
 const positions={1:0,2:0}, controls=new Map();
@@ -43,7 +43,9 @@ function paint(engine){
  box(c.toga,buttonX-btnSize*.78,buttonY-btnSize*.78,btnSize*1.56,btnSize*1.56);
  c.toga.classList.toggle('show-recess',k>=2);
  // The grip hit area travels with the handgrip, clear of the opposite lever.
- box(c.hit,gripX-WHITE_WIDTH[k]/2,gripY-24,WHITE_WIDTH[k],48);
+ const hitWidth=WHITE_WIDTH[k]+SEAM/2;
+ const hitLeft=engine===1?CENTER-hitWidth:CENTER;
+ box(c.hit,hitLeft,gripY-24,hitWidth,48);
  c.hit.dataset.position=String(pct);c.hit.setAttribute('aria-valuenow',String(pct));
  c.hit.setAttribute('aria-valuetext',pct+' percent');
  if(c.select)c.select.value=STOPS.includes(pct)?String(pct):'';
@@ -127,5 +129,5 @@ win.addEventListener('b737:cockpit-mounted',mount);
 win.addEventListener('load',mount,{once:true});queueMicrotask(mount);
 for(const ms of [500,1800,5000])setTimeout(mount,ms);
 win.B737ThrottlePositions=Object.freeze({get:engine=>positions[engine],set:(engine,pct)=>apply(engine,Number(pct),'user'),
- mounted:()=>ready,positions:STOPS,geometry:()=>({centers:{1:CENTER-(WHITE_WIDTH[4]+SEAM)/2,2:CENTER+(WHITE_WIDTH[4]+SEAM)/2},sourceWidth:800,gripWidthNative:WHITE_WIDTH[4],fullY:FULL,idleY:IDLE,hasAddedTogaFace:false})});
+ mounted:()=>ready,positions:STOPS,geometry:()=>({centers:{1:CENTER-WHITE_WIDTH[4]/2,2:CENTER+WHITE_WIDTH[4]/2},sourceWidth:800,gripWidthNative:WHITE_WIDTH[4]-1,fullY:FULL,idleY:IDLE,hasAddedTogaFace:false})});
 })(window);

@@ -41,7 +41,7 @@ function canDrive(source,direction){
 function paint(){
  paintQueued=false;
  for(const {wheel,index,rim,sign} of wheels){
-  const phase=(units-5)*15*sign+(sign>0?.02:.62);
+  const phase=(units-5)*15*sign+(sign>0?.82:.18);
   rim.style.setProperty('--phase',String(phase-Math.floor(phase)));
   index.style.top=(indexY(units)/10)+'%';
   wheel.setAttribute('aria-valuenow',String(Math.round(units*100)/100));
@@ -128,7 +128,7 @@ function mount(){
   const wheel=doc.createElement('div'),rim=doc.createElement('div'),tread=doc.createElement('img'),index=new Image();
   wheel.className='pedestal-trim-wheel';wheel.dataset.side=side;wheel.setAttribute('role','slider');wheel.tabIndex=0;
   wheel.setAttribute('aria-label',side+' manual stabilizer trim wheel');wheel.setAttribute('aria-valuemin','0');wheel.setAttribute('aria-valuemax','17');wheel.setAttribute('aria-orientation','vertical');
-  rim.className='pedestal-trim-plane';tread.src='./assets/pedestal-hardware/trim-wheel.webp?v=2';tread.alt='';tread.draggable=false;
+  rim.className='pedestal-trim-plane';tread.src='./assets/pedestal-hardware/trim-wheel.webp?v=3';tread.alt='';tread.draggable=false;
   index.src='./assets/pedestal-hardware/trim-index.webp?v=2';index.className='pedestal-trim-index';index.dataset.side=side;index.alt='';index.draggable=false;
   rim.append(tread);wheel.append(rim);layer.append(wheel,index);wheels.push({wheel,index,rim,sign});
   wheel.onpointerdown=e=>{
