@@ -385,8 +385,8 @@ async function signIn(req,res) {
   } finally { client.release(); }
   if (!allowed) { redirect(res,'/login?e=full');return; }
   redirect(res,'/',{'Set-Cookie':[
-    cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,tier==='unlimited'?'Lax':'Strict'),
-    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,tier==='unlimited'?'Lax':'Strict')
+    cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,'Lax'),
+    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,'Lax')
   ]});
 }
 async function readPrivateNavData(req){
@@ -444,8 +444,8 @@ async function handle(req,res) {
   }
   if (req.method==='POST' && url.pathname==='/api/login') { await signIn(req,res);return; }
   // Public shell only: first top-level navigation changes the popup's site
-  // from GitHub Pages to Railway, then a SAME-SITE navigation lets Strict
-  // Railway session cookies be sent. The data endpoint remains protected.
+  // from GitHub Pages to Railway. Lax cookies allow safe top-level links
+  // without sending credentials on cross-site POSTs.
   if(req.method==='GET'&&url.pathname==='/navdata-relay/start'){
     const nonce=url.searchParams.get('nonce');
     if(!/^[a-f0-9]{32}$/.test(nonce||'')){
@@ -496,9 +496,9 @@ async function handle(req,res) {
       if(updated.rowCount===1){
         const owner=updated.rows[0].account_tier==='unlimited';
         const device=cookies(req)[DEVICE_COOKIE];
-        const cookiesToSet=[cookie(req,TOKEN_COOKIE,token,owner?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,owner?'Lax':'Strict')];
+        const cookiesToSet=[cookie(req,TOKEN_COOKIE,token,owner?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,'Lax')];
         if(device&&/^[A-Za-z0-9_-]{32,128}$/.test(device))
-          cookiesToSet.push(cookie(req,DEVICE_COOKIE,device,owner?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,owner?'Lax':'Strict'));
+          cookiesToSet.push(cookie(req,DEVICE_COOKIE,device,owner?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,'Lax'));
         res.setHeader('Set-Cookie',cookiesToSet);
       }
     }
