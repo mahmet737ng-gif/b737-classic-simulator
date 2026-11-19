@@ -1,0 +1,221 @@
+/* Unified startup CSS; original styles preserved. */
+/* BEGIN irs-panel-registration-v1.css 452ef7bf4b8441a8fb53f099b9d374b9f0216a2e */
+/* Only the new independent IRS registration layer and its unfrozen controls. */
+#irsBarePanelRegistered{position:absolute;inset:0;z-index:121;pointer-events:none;direction:ltr}
+#irsBarePanelRegistered img{position:absolute;display:block;max-width:none;pointer-events:none;user-select:none;image-rendering:auto}
+#irsBarePanelRegistered .irs-preserved-sys-heading{position:absolute;pointer-events:none;background-repeat:no-repeat}
+#region-overhead.irs-panel-registered .irs-photo-key-bezel{display:none}
+#region-overhead.irs-panel-registered .irs-photo-key-press{left:18.115942029%;top:16.666666667%;width:63.768115942%;height:68.115942029%;right:auto;bottom:auto}
+#region-overhead.irs-panel-registered .irs-msu-phys-lamp{
+ font-size:0;opacity:1;text-shadow:none;color:transparent;overflow:hidden;
+ background-image:var(--irs-panel-lamp-off);background-position:center;background-size:100% 100%;background-repeat:no-repeat;
+}
+#region-overhead.irs-panel-registered .irs-msu-phys-lamp[data-lit="true"],
+#region-overhead.irs-panel-registered[data-irs-panel-test="true"] .irs-msu-phys-lamp{
+ color:transparent;text-shadow:none;background-image:var(--irs-panel-lamp-on);opacity:1;
+}
+.reference-mode #irsBarePanelRegistered{display:none}
+
+/* Owner requested L/R 45 degrees upward, reviewed the resulting image, then
+   explicitly ordered that version uploaded and detented with the SAME knobs.
+   Source photographs, fixed SYS mount/size, logic and locked files stay intact. */
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplLRMarkings{display:none}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsUpperDsplMounted .irs-rotary-fixed-ticks-upper{display:none!important}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplMounted[data-system="L"] .irs-sys-dspl-approved-photo{transform:rotate(var(--irs-photo-sys-L))}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] #irsSysDsplMounted[data-system="R"] .irs-sys-dspl-approved-photo{transform:rotate(var(--irs-photo-sys-R))}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="OFF"]{--irs-msu-angle:var(--irs-photo-L-OFF)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="ALIGN"]{--irs-msu-angle:var(--irs-photo-L-ALIGN)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="NAV"]{--irs-msu-angle:var(--irs-photo-L-NAV)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="L"][data-mode="ATT"]{--irs-msu-angle:var(--irs-photo-L-ATT)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="OFF"]{--irs-msu-angle:var(--irs-photo-R-OFF)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="ALIGN"]{--irs-msu-angle:var(--irs-photo-R-ALIGN)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="NAV"]{--irs-msu-angle:var(--irs-photo-R-NAV)}
+#region-overhead.irs-panel-registered[data-irs-panel-version="IRS-PANEL-REGISTER-0002"] .irs-msu-mini[data-msu-mini="R"][data-mode="ATT"]{--irs-msu-angle:var(--irs-photo-R-ATT)}
+
+/* END irs-panel-registration-v1.css */
+
+/* BEGIN irs-rotary-detent-indices-v1.css 1d4439c0c28506470ffec52d67ede0c1b4d83e1b */
+/* IRS-INDEX-0002: only the separate upper DSPL SEL keeps its existing fixed
+   tick/reference overlay. L/R MSU selectors display no injected marks and
+   use the approved rotary photograph. LOWER SYS DSPL remains locked. */
+#region-overhead #irsUpperDsplMounted .irs-rotary-fixed-ticks-upper {
+ position:absolute;inset:0;z-index:0;display:block;
+ width:100%;height:100%;overflow:visible;
+ pointer-events:none;user-select:none
+}
+#region-overhead #irsUpperDsplMounted .irs-upper-mode-rotor .irs-rotary-reference-pointer-upper {
+ position:absolute;inset:0;z-index:3;display:block;
+ width:100%;height:100%;overflow:visible;
+ pointer-events:none;user-select:none;
+ filter:drop-shadow(0 0 .45px rgba(245,245,242,.62))
+}
+
+/* END irs-rotary-detent-indices-v1.css */
+
+/* BEGIN asp-controls-v1.css 7e99f664944e3aada3e5fb3c8a18b504fad6668c */
+/* Scoped to the three additive ASP faces; no shared switch styles. */
+.asp-bare-mounted .asp-socket-patches{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.asp-bare-mounted .asp-photo-control{position:absolute;transform:translate(-50%,-50%);box-sizing:border-box;margin:0;padding:0;min-width:0;min-height:0;border:0;background:transparent;box-shadow:none;border-radius:0;z-index:2;cursor:pointer;touch-action:none;user-select:none;-webkit-tap-highlight-color:transparent;outline:none;overflow:visible;direction:ltr}
+.asp-bare-mounted .asp-photo-control[data-kind="volume"]{border-radius:50%;background:#101418;cursor:grab}
+.asp-bare-mounted .asp-photo-control[data-kind="volume"]:active{cursor:grabbing}
+.asp-bare-mounted .asp-photo-control:focus-visible{outline:1.5px solid #8bd5ed;outline-offset:2px}
+.asp-bare-mounted .asp-control-rotor{position:absolute;inset:0;transform-origin:50% 50%;pointer-events:none}
+.asp-bare-mounted .asp-photo-control .asp-control-image{position:absolute;display:block;max-width:none;max-height:none;object-fit:fill;border:0;margin:0;padding:0;pointer-events:none;user-select:none;image-rendering:auto}
+.asp-bare-mounted .asp-photo-control .asp-image-on{opacity:0}
+.asp-bare-mounted .asp-photo-control[data-selected="true"] .asp-image-on,
+.asp-bare-mounted[data-asp-lamp-test="true"] .asp-photo-control .asp-image-on{opacity:1}
+.asp-bare-mounted .asp-photo-control[data-selected="true"] .asp-image-off,
+.asp-bare-mounted[data-asp-lamp-test="true"] .asp-photo-control .asp-image-off{opacity:0}
+.reference-mode .asp-bare-mounted .asp-photo-control,.reference-mode .asp-bare-mounted .asp-socket-patches{display:none}
+
+/* END asp-controls-v1.css */
+
+/* BEGIN engine-indication-mode-v1.css 991ceb3a9b23ca3393070b719bcd52a65f1d610a */
+/* CONV-FIT-0003: independent, photo-backed layer across ENGINE and
+   only the flap/anti-skid/autobrake strip of FO INNER.
+   It never changes approved source geometry, Owner18 guards or EIS.
+   Pointer events pass through to original hardware. */
+#region-main .region-native>.conventional-engine-photo-wrap-v1{
+ position:absolute;display:none;overflow:hidden;z-index:3;
+ pointer-events:none;user-select:none;padding:0;border:0;
+ background:linear-gradient(180deg,#3c4f56 0%,#34434b 55%,#29383f 100%);
+}
+#region-main .conventional-engine-photo-wrap-v1>.conventional-engine-panel-v1{
+ display:block;position:absolute;left:0;top:0;
+ width:1182px;height:1330px;max-width:none;max-height:none;
+ object-fit:fill;transform-origin:0 0;pointer-events:none;
+ user-select:none;border:0;background:transparent;
+}
+html[data-engine-indication="CONVENTIONAL"] #region-main .region-native>.conventional-engine-photo-wrap-v1{display:block}
+/* The unmodified EIS photo is invisible ONLY when the independent owner
+   Conventional image has loaded. This prevents an exposed EIS edge. */
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>img,
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.isn-engine-gauges,
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>[data-main-lamp],
+html[data-engine-indication="CONVENTIONAL"] #region-main .texture-piece[data-piece="engine"]>.main-lamp-overlay{display:none!important}
+
+/* END engine-indication-mode-v1.css */
+
+/* BEGIN conventional-physical-controls-v1.css 11fbd2330759b6966ea65b3d80257632c5f82f6e */
+/* CONV-CONTROLS-0001
+   Photo-registered controls for the Conventional instrument installation.
+   The original EIS anti-skid guard and background are explicitly untouched.
+*/
+#region-main .region-native > .b737-conv-autobrake-rotary{
+ display:none;
+ position:absolute;
+ z-index:56;
+ transform:translate(-50%,-50%);
+ padding:0;margin:0;border:0;border-radius:50%;
+ min-width:0;min-height:0;
+ background:transparent!important;
+ box-shadow:none!important;
+ cursor:pointer;
+ appearance:none;
+ touch-action:manipulation;
+ overflow:visible;
+ box-sizing:border-box;
+ user-select:none;
+ -webkit-tap-highlight-color:transparent;
+}
+html[data-engine-indication="CONVENTIONAL"] #region-main .region-native > .b737-conv-autobrake-rotary{
+ display:block;
+ pointer-events:auto;
+}
+#region-main .b737-conv-autobrake-rotary > img{
+ position:absolute;
+ /* The approved sprite's rotational axle is at 44% of its height.
+    Its full canvas had been centered at 50%, moving the selector's tip
+    off the real 50px photographed hole with every detent rotation.
+    Translate the sprite by 6% to place the axle on the hole center. */
+ top:6%;left:0;width:100%;height:100%;
+ display:block;object-fit:fill;
+ max-width:none;max-height:none;
+ user-select:none;pointer-events:none;
+ transform-origin:50% 44%;
+ filter:drop-shadow(0 1px 1.25px rgba(0,0,0,.42));
+ transition:transform 125ms cubic-bezier(.17,.7,.24,1);
+}
+#region-main .b737-conv-autobrake-rotary.pressed > img{
+ filter:brightness(.94) drop-shadow(0 1px 1px rgba(0,0,0,.65));
+}
+#region-main .b737-conv-autobrake-rotary:focus-visible{
+ outline:2px solid #a8dced;outline-offset:1px;
+}
+/* NO anti-skid visual override in EIS. The guard stays the approved owner18
+   sprite with its original ON/OFF mechanic and click/double-click policies. */
+@media(prefers-reduced-motion:reduce){
+ #region-main .b737-conv-autobrake-rotary > img{transition:none}
+}
+
+/* END conventional-physical-controls-v1.css */
+
+/* BEGIN eis-autobrake-physical-v1.css 87b29bc2b17e71a21a2ef16757057f392e601d5f */
+/* EIS-AUTOBRAKE-0001: same approved 737 Classic rotary sprite and axle
+ * as Conventional; only visible in EIS mode. No alteration of Owner18 guards. */
+#region-main .region-native>.b737-eis-autobrake-rotary{
+ display:none;position:absolute;z-index:56;
+ transform:translate(-50%,-50%);
+ padding:0;margin:0;border:0;border-radius:50%;
+ min-width:0;min-height:0;background:transparent!important;
+ box-shadow:none!important;appearance:none;cursor:pointer;
+ box-sizing:border-box;overflow:visible;touch-action:manipulation;
+ user-select:none;-webkit-tap-highlight-color:transparent;
+}
+html[data-engine-indication="EIS"] #region-main .region-native>.b737-eis-autobrake-rotary{
+ display:block;pointer-events:auto;
+}
+#region-main .b737-eis-autobrake-rotary>img{
+ position:absolute;left:0;top:6%;width:100%;height:100%;
+ display:block;object-fit:fill;max-width:none;max-height:none;
+ pointer-events:none;user-select:none;
+ transform-origin:50% 44%;
+ filter:drop-shadow(0 1px 1.25px rgba(0,0,0,.42));
+ transition:transform 125ms cubic-bezier(.17,.7,.24,1);
+}
+#region-main .b737-eis-autobrake-rotary.pressed>img{
+ filter:brightness(.94) drop-shadow(0 1px 1px rgba(0,0,0,.65));
+}
+#region-main .b737-eis-autobrake-rotary:focus-visible{
+ outline:2px solid #a8dced;outline-offset:1px;
+}
+@media(prefers-reduced-motion:reduce){
+ #region-main .b737-eis-autobrake-rotary>img{transition:none}
+}
+
+/* Transparent hit surfaces above photographed AUTOBRAKE detent lettering.
+ * These are NOT independent switches: both installations call the same
+ * B737AutobrakeUnified.setSelector and share the real selector status.
+ * Suppress inactive-installation hit zones absolutely on mode changes. */
+#region-main .region-native > .b737-autobrake-detent-label{
+ display:none;pointer-events:none;opacity:0;user-select:none;
+ -webkit-tap-highlight-color:transparent;
+}
+html[data-engine-indication="EIS"] #region-main .region-native >
+ .b737-autobrake-detent-label[data-autobrake-installation="EIS"],
+html[data-engine-indication="CONVENTIONAL"] #region-main .region-native >
+ .b737-autobrake-detent-label[data-autobrake-installation="CONVENTIONAL"]{
+ display:block;pointer-events:auto;
+}
+#region-main .region-native > .b737-autobrake-detent-label:focus-visible{
+ opacity:1;outline:2px solid #81ddeb!important;outline-offset:0;
+}
+
+/* END eis-autobrake-physical-v1.css */
+
+/* BEGIN conventional-engine-needles-v1.css 23e704c3d6b7a9ea97e71f2c644d24754a5b2a4d */
+/* Photo and gauge pointers have the SAME native 1182x1330 layout
+   and affine registration. The parent clip protects the FO landing gear. */
+#region-main .conventional-engine-photo-wrap-v1>.conventional-engine-needle-layer-v1 {
+ position:absolute;left:0;top:0;width:1182px;height:1330px;max-width:none;
+ overflow:visible;pointer-events:none;display:block;z-index:8;transform-origin:0 0;
+}
+.conventional-engine-needle-layer-v1 [data-needle-pivot]{
+ transition:transform .18s ease-out;
+ transform-box:view-box;
+}
+@media(prefers-reduced-motion:reduce){
+ .conventional-engine-needle-layer-v1 [data-needle-pivot]{transition:none}
+}
+
+/* END conventional-engine-needles-v1.css */
