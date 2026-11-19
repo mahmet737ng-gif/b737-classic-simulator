@@ -1,4 +1,4 @@
-/* ATA32-GEAR-0004 — B737 Classic landing gear selector and shared indicator state.
+/* ATA32-GEAR-0005 — B737 Classic landing gear selector and shared indicator state.
  * Additive panel control: no protected image, guarded switch or electrical owner is changed.
  * Transit timing and System A pressure cutoff are TRAINING ESTIMATES, not AFM calibration.
  */
@@ -14,7 +14,7 @@
   let warning=null,gearHorn=false,audioContext=null,audioOsc=null,audioGain=null,ticker=0;
   const safeNumber=v=>Number.isFinite(v)?v:null;
   const emit=(name,detail)=>root.dispatchEvent(new root.CustomEvent(name,{detail}));
-  const sprite=new URL('./assets/landing-gear-classic-3state.webp?v=ATA32-GEAR-0004',doc.currentScript?.src||root.location.href).href;
+  const sprite=new URL('./assets/landing-gear-classic-3state.webp?v=ATA32-GEAR-0005',doc.currentScript?.src||root.location.href).href;
   // The lever drives the aircraft sensors; cockpit and aft indications subscribe
   // to this same source of truth, never to a separate visual-test state.
 
@@ -93,9 +93,10 @@
       for(const id of POS){const el=aux.querySelector('[data-aux-gear="'+id+'"]');
         if(el){el.dataset.on=String(l.auxiliary[id]);el.setAttribute('aria-label',id+' landing gear down locked '+l.auxiliary[id]);}}
     }
-    const detail={schema:'ATA32-GEAR-0004',lever:state.lever,gear:{...state.gear},
+    const detail={schema:'ATA32-GEAR-0005',lever:state.lever,gear:{...state.gear},
       selectedTarget:state.target,systemAPsi:hydPsi,onGround:ground,
-      normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=2200:null,
+      normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=api.core.HYD_MIN_PSI:null,
+      nominalCycleSeconds:api.core.NOMINAL_CYCLE_SEC,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
     const signature=JSON.stringify({lever:state.lever,gear:state.gear,target:state.target,
       onGround:ground,hydraulicAvailable:detail.normalHydraulicAvailable});
@@ -186,7 +187,7 @@
       const style=doc.createElement('style');style.textContent='#b737GearAftIndicatorStatus [data-on="true"]{background:#135934;color:#a5ffc7!important;box-shadow:0 0 10px #29e67c77}';
       section.append(style);inspector.append(section);aux=section;
     }
-    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0004'});
+    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0005'});
     publish(true);return true;
   }
   root.addEventListener('b737:cockpit-mounted',mount);
@@ -216,13 +217,17 @@
     cutoutHorn:()=>{warning?.cutoutGear?.();sound(hornState());},
     refresh:()=>{source();publish(true);return api.core.lamps(state);},
     getSpriteUrl:()=>sprite,getVisualSpec:()=>VISUAL,
-    version:'ATA32-GEAR-0004'
+    getNominalCycleSeconds:()=>api.core.NOMINAL_CYCLE_SEC,
+    version:'ATA32-GEAR-0005'
   });
   root.setTimeout(mount,250);
 })(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
   const POS=Object.freeze(['nose','left','right']);
-  const seconds=Object.freeze({nose:6,left:7,right:7.5}); // Training time estimates
+  const NOMINAL_CYCLE_SEC=Object.freeze({nose:4.5,left:5.1,right:5.8});
+  // Pilot-requested training calibration: nose locks first; left main precedes
+  // right main by 0.7 seconds for BOTH normal extension and retraction.
+  // Not an AFM-certified transit time; faults and hydraulic pauses override it.
   const HYD_MIN_PSI=2200; // Training threshold, not certified AFM data
   // Packed sprite wheel centers vary with silhouette: UP=34, OFF=60, DN=85.
   // Anchor each WHEEL to the physical slot, not a uniform top-left offset.
@@ -251,7 +256,7 @@
     for(const id of POS){
       const p=Number.isFinite(n.progress[id])?n.progress[id]:
         n.gear[id]==='DOWN'?1:n.gear[id]==='UP'?0:.5;
-      const next=Math.max(0,Math.min(1,p+Math.sign(goal-p)*Math.min(Math.abs(goal-p),dt/seconds[id])));
+      const next=Math.max(0,Math.min(1,p+Math.sign(goal-p)*Math.min(Math.abs(goal-p),dt/NOMINAL_CYCLE_SEC[id])));
       n.progress[id]=next;
       n.gear[id]=next<=1e-6?'UP':next>=1-1e-6?'DOWN':'TRANSIT';
       n.elapsed[id]=n.gear[id]===n.target?0:(n.elapsed[id]||0)+dt;
@@ -268,5 +273,5 @@
     })),
     auxiliary:Object.fromEntries(POS.map(id=>[id,s.gear[id]==='DOWN']))
   });
-  return {core:Object.freeze({POS,VISUAL,HYD_MIN_PSI,detentAtY,initial,select,step,lamps})};
+  return {core:Object.freeze({POS,VISUAL,HYD_MIN_PSI,NOMINAL_CYCLE_SEC,detentAtY,initial,select,step,lamps})};
 });
