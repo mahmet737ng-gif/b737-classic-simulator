@@ -1,0 +1,29 @@
+name: Landing gear lever ATA32 QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/landing-gear-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/landing-gear-unified-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/assets/landing-gear-classic-3state.webp'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/landing-gear-unified-ata32.yml'
+  workflow_dispatch:
+
+jobs:
+  gear-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate control source
+        run: node --check panel-mosaic-lab/cockpit/landing-gear-unified-v1.js
+      - name: Run ATA32 lamp and hydraulic tests
+        run: node panel-mosaic-lab/cockpit/landing-gear-unified-v1.test.cjs
+      - name: Check existing main panel lamp behavior
+        run: node panel-mosaic-lab/cockpit/lights.test.cjs
+      - name: Check existing warning engine
+        run: node tests/audio-warning-engine.test.cjs
