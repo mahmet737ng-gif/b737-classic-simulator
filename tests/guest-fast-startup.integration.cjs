@@ -35,7 +35,12 @@ const assert=require('node:assert/strict');
      jsTags:tags.length,bundles:tags.filter(x=>x.src.includes('desktop-bundle-')).length,
      resources:resources.length,
      images:resources.filter(x=>/\.(?:png|jpe?g|svg|webp|avif)(?:\?|$)/i.test(x.name)).length,
-     failed:resources.filter(x=>x.responseStatus>=400).slice(0,15).map(x=>x.name)};
+     failed:resources.filter(x=>x.responseStatus>=400).slice(0,15).map(x=>x.name),
+     marks:performance.getEntriesByType('mark').filter(x=>/b737:|ready/i.test(x.name)).slice(0,25).map(x=>[x.name,Math.round(x.startTime)]),
+     lastResources:resources.slice().sort((a,b)=>b.responseEnd-a.responseEnd).slice(0,16).map(x=>[new URL(x.name).pathname.slice(-110),Math.round(x.startTime),Math.round(x.responseEnd),x.encodedBodySize]),
+     slowResources:resources.slice().sort((a,b)=>b.duration-a.duration).slice(0,15).map(x=>[new URL(x.name).pathname.slice(-110),Math.round(x.duration),Math.round(x.startTime),x.encodedBodySize]),
+     buckets:resources.reduce((acc,x)=>{const key=Math.floor(x.responseEnd/1000);acc[key]=(acc[key]||0)+1;return acc;},{}),
+     bytes:resources.reduce((total,x)=>total+(x.encodedBodySize||0),0)};
    });
    result.mode=cold?'fresh-context':'second-context';
    result.pageErrors=errors.slice(0,10);
