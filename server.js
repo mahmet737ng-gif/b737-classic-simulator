@@ -32,6 +32,77 @@ const folder = path.join(__dirname, 'public');
 const runtimeDir = path.join(__dirname, 'runtime');
 const runtimeFiles = new Set(require('./runtime/manifest.json'));
 
+/* Version-matched optimized cockpit compiled by the same tested web compiler
+ * used for GitHub Pages. The protected Railway session check still precedes
+ * EVERY response. Only public JS and HTML from the main simulator are mirrored;
+ * owner photographs and all private NAVDATA remain in their original routes. */
+const fastRuntimeDir=path.join(runtimeDir,'fast-unified');
+const fastRuntime=(()=>{
+ try {
+  const disk=require('node:fs');
+  const manifest=JSON.parse(disk.readFileSync(path.join(fastRuntimeDir,'manifest.json'),'utf8'));
+  if(manifest.schema!=='b737-unified-fast-runtime/1'||
+   !/^[a-f0-9]{40}$/.test(manifest.sourceCommit)||
+   !Array.isArray(manifest.files))throw Error('Invalid compiled-runtime manifest');
+  const bytes=new Map();
+  for(const entry of manifest.files){
+   const relative=entry.path;
+   if(typeof relative!=='string'||relative.includes('..')||
+    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js)$/.test(relative)||
+    !/^[a-f0-9]{64}$/.test(entry.sha256))
+     throw Error('Invalid compiled-runtime resource path');
+   const full=path.resolve(fastRuntimeDir,relative);
+   if(!full.startsWith(fastRuntimeDir+path.sep))throw Error('Runtime path escapes directory');
+   const body=disk.readFileSync(full);
+   if(crypto.createHash('sha256').update(body).digest('hex')!==entry.sha256)
+    throw Error('Invalid compiled-runtime digest: '+relative);
+   bytes.set(relative,body);
+  }
+  if(!bytes.has('panel-mosaic-lab/cockpit/index.html')||
+   !bytes.has('panel-mosaic-lab/cockpit/overhead-stage.html'))
+    throw Error('Compiled cockpit or overhead entry missing');
+  console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
+  return {sourceCommit:manifest.sourceCommit,bytes};
+ } catch(error){
+  if(error.code!=='ENOENT')console.warn('UNIFIED FAST RUNTIME DISABLED: '+error.message);
+  return null;
+ }
+})();
+let mainHeadChecked=0,mainHeadValue=null,mainHeadInFlight=null;
+async function fastRuntimeCurrent(){
+ if(!fastRuntime)return false;
+ if(Date.now()-mainHeadChecked<180000)return mainHeadValue===fastRuntime.sourceCommit;
+ if(mainHeadInFlight)return mainHeadInFlight;
+ mainHeadInFlight=(async()=>{
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),4500);
+  try {
+   const result=await fetch('https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/git/ref/heads/main',{
+    headers:{'Accept':'application/vnd.github+json','User-Agent':'ATA24-unified-fast-runtime'},
+    signal:controller.signal,cache:'no-store'});
+   if(!result.ok)throw Error('GitHub ref '+result.status);
+   const value=(await result.json()).object?.sha;
+   mainHeadValue=/^[a-f0-9]{40}$/.test(value||'')?value:null;
+  }catch(error){
+   // Never serve an unverified stale compilation after an update/network loss.
+   mainHeadValue=null;
+   console.warn('UNIFIED FAST REF CHECK: '+error.message);
+  }finally{
+   clearTimeout(timeout);
+   mainHeadChecked=Date.now();
+   mainHeadInFlight=null;
+  }
+  return mainHeadValue===fastRuntime.sourceCommit;
+ })();
+ return mainHeadInFlight;
+}
+async function optimizedSource(relative){
+ if(!fastRuntime?.bytes.has(relative))return null;
+ if(relative.endsWith('.html')&&!(await fastRuntimeCurrent()))return null;
+ return fastRuntime.bytes.get(relative);
+}
+
+
 /* The protected guest is a live mirror of the original main-branch cockpit.
  * Railway authenticates and serves the same source URLs under its own origin.
  * No duplicated/stale overhead code or artwork is maintained here. */
@@ -164,8 +235,36 @@ function transformCockpitHTML(content) {
   result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
   return result;
 }
+async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false}={}){
+ const ext=path.posix.extname(relative).toLowerCase();
+ if(ext==='.js'){
+  res.setHeader('Cache-Control','private, max-age=31536000, immutable');
+  res.writeHead(200,{'Content-Type':PROXY_MIME['.js']});
+  if(req.method==='HEAD')res.end();else res.end(bytes);
+  return;
+ }
+ const mime='text/html; charset=utf-8';
+ res.setHeader('Content-Security-Policy',
+  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; "+
+  "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; "+
+  "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
+  "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
+  "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
+ const original=bytes.toString('utf8');
+ const html=cockpitDocument?transformCockpitHTML(original):
+  original.replace(/<head\\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+ res.setHeader('Cache-Control','private, no-store');
+ res.writeHead(200,{'Content-Type':mime});
+ if(req.method==='HEAD')res.end();else res.end(html);
+}
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();
+  const compiled=await optimizedSource(relative);
+  if(compiled){
+    // Content-addressed JS bundles and page HTML pass through the unchanged
+    // CSP, session injection, MIME and security-header code below.
+    return serveFastCompiledResponse(req,res,relative,compiled,{cockpitDocument});
+  }
   if(req.method==='GET'&&(textExt==='.js'||textExt==='.css')){
     try{
       const bytes=await cachedSourceText(relative,req.url);
