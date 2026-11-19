@@ -39,9 +39,16 @@ const assert=require('node:assert/strict');
     await connection.send('Network.emulateNetworkConditions',{
      offline:false,latency:250,downloadThroughput:256000,uploadThroughput:128000
     });
-   }
-   await Promise.all([page.waitForURL(base+direct,{timeout:45000}),
+    const login=await context.request.post(base+'/api/login',{
+     form:{username:'ci-reviewer',password:'ci-only-fixture'},maxRedirects:0
+    });
+    assert.equal(login.status(),303);
+    assert.equal(login.headers().location,'/');
+    await page.goto(base+direct+'?bootTrace=1',{waitUntil:'commit'});
+   }else{
+    await Promise.all([page.waitForURL(base+direct,{timeout:45000,waitUntil:'domcontentloaded'}),
      page.locator('button[type="submit"]').click()]);
+   }
    if(retained){
     // Retain a legacy worker in the same profile. The sibling route and all
     // three iframes must bypass it, with the authenticated session intact.
