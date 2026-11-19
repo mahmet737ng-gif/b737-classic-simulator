@@ -97,12 +97,14 @@
    const cap=svg(group,'svg',{width:model.HANDLE.w,height:model.HANDLE.h,
     viewBox:sprite?'0 0 655 365':original(),preserveAspectRatio:'none',overflow:'hidden'});
    const image=svg(cap,'image',sprite?
-    {href:sprite.url,width:655,height:365}:{href:master,width:2172,height:724});
+    {width:655,height:365}:{width:2172,height:724});
+   image.addEventListener('load',()=>image.setAttribute('data-boot-ready','true'),{once:true});
    if(sprite)image.addEventListener('error',()=>{
     cap.setAttribute('viewBox',original());
     image.setAttribute('width','2172');image.setAttribute('height','724');
     image.setAttribute('href',master);
    },{once:true});
+   image.setAttribute('href',sprite?.url||master);
    const button=document.createElement('button');button.type='button';button.className='engine-start-lever';
    button.dataset.device=device;button.setAttribute('role','slider');button.setAttribute('aria-orientation','vertical');
    button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');
