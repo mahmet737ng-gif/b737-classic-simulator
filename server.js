@@ -8,7 +8,7 @@ const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
 const NavdataRelay=require('./navdata-relay.js');
-const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation}=require('./auth-policy.js');
+const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation,canRegisterDevice}=require('./auth-policy.js');
 
 const PORT = Number(process.env.PORT || 3000);
 const USER = process.env.LAB_USER || 'Ali.m';
@@ -26,7 +26,6 @@ const AIRWAY_POINTS=(()=>{try{return JSON.parse(process.env.LAB_AIRWAY_DHN_ROUTE
 const UNLIMITED_USER = 'Taregh';
 // Disabled unless Railway provides the salted verifier via a protected variable.
 const UNLIMITED_PASSWORD_SCRYPT = process.env.LAB_TAREGH_PASSWORD_SCRYPT || '';
-const ACTIVE_FOR_MINUTES = 20;
 const TOKEN_COOKIE = 'ata24_session';
 const DEVICE_COOKIE = 'ata24_device';
 const folder = path.join(__dirname, 'public');
@@ -300,13 +299,13 @@ function verifyPassword(pass, verifier=PASSWORD_HASH) {
 }
 function loginHTML(error) {
   const errorHTML = error === 'expired' ? '<div class="notice" role="alert">Your previous session expired. Sign in again to load all simulator panels.</div>'
-    : error === 'full' ? '<div class="notice" role="alert">All three device slots are currently occupied. Sign out from another device or retry after its session expires.</div>'
+    : error === 'full' ? '<div class="notice" role="alert">All 3 guest device slots are registered. Sign out on one of the three devices, or ask Taregh to revoke a device from /devices. Inactivity never frees a slot.</div>'
     : error === 'invalid' ? '<div class="notice" role="alert">Incorrect username or password.</div>'
     : error === 'rate' ? '<div class="notice" role="alert">Too many attempts. Retry in 15 minutes.</div>' : '';
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<meta name="robots" content="noindex,nofollow"><title>Secure Access | B737 Classic Simulator</title>'
     + '<style>*,*::before,*::after{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0%,#17384d,#09131f 55%,#060c14);color:#f1f6fa;font-family:system-ui,Arial,sans-serif;display:grid;place-items:center;padding:24px}.card{width:min(100%,425px);background:#101f2c;border:1px solid #31556e;border-radius:18px;padding:34px;box-shadow:0 24px 80px #0008}.eyebrow{color:#67c8f8;font:700 11px monospace;letter-spacing:.16em}h1{font-size:27px;line-height:1.2;margin:10px 0 7px}p{color:#9eb6c7;font-size:13px;line-height:1.6;margin:0 0 26px}label{display:block;font-size:12px;font-weight:650;color:#bcd2e2;margin:17px 0 7px}input{width:100%;padding:13px 14px;border-radius:9px;background:#0a1723;color:#fff;border:1px solid #39566b;font:inherit}input:focus{outline:2px solid #63bdf7}button{width:100%;padding:14px;border-radius:10px;background:#2689ba;color:#fff;border:0;font-weight:750;cursor:pointer;margin-top:23px}button:hover{background:#3aa8dd}.foot{font:11px monospace;color:#789aac;text-align:center;margin-top:23px}.notice{color:#ffbfbf;background:#4a2029;border:1px solid #a24b59;border-radius:8px;padding:12px;font-size:12px;margin-bottom:16px}</style></head>'
-    + '<body><main class="card"><span class="eyebrow">B737 CLASSIC / ATA 24</span><h1>B737 Classic Simulator</h1><p>Authorized access to the complete simulator. Guest accounts allow three active devices; unlimited accounts have no concurrent-device cap.</p>'
+    + '<body><main class="card"><span class="eyebrow">B737 CLASSIC / ATA 24</span><h1>B737 Classic Simulator</h1><p>Authorized access to the complete simulator. Guests may register up to three browser profiles. A slot remains occupied until explicit sign out or owner revocation. Taregh has no device cap.</p>'
     + errorHTML + '<form method="post" action="/api/login" autocomplete="on"><label for="user">Username</label><input id="user" name="username" autocomplete="username" required maxlength="100" autofocus>'
     + '<label for="pass">Password</label><input id="pass" name="password" type="password" autocomplete="current-password" required maxlength="200">'
     + '<button type="submit">SIGN IN</button></form><div class="foot">SESSION PROTECTED · INDEPENDENT TEST ENVIRONMENT</div></main></body></html>';
@@ -321,7 +320,7 @@ async function body(req) {
 }
 // Share only IN-FLIGHT lookups for a burst of static resources. There is no
 // cached authorization decision: a completed query is immediately removed,
-// keeping logout/revocation and the 20-minute expiry database-authoritative.
+// keeping logout and owner revocation database-authoritative.
 const authorizationInFlight = new Map();
 async function authorized(req) {
   const token = cookies(req)[TOKEN_COOKIE];
@@ -330,7 +329,7 @@ async function authorized(req) {
   let inFlight = authorizationInFlight.get(key);
   if (!inFlight) {
     inFlight = pool.query(
-      "SELECT session_hash FROM ata24_devices WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes')",
+      "SELECT session_hash FROM ata24_devices WHERE session_hash=$1",
       [key]
     ).then(result=>result.rowCount===1).finally(()=>{
       authorizationInFlight.delete(key);
@@ -364,15 +363,19 @@ async function signIn(req,res) {
   try {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(73724003)');
-    // Guest cap is independent: unlimited sessions never occupy guest slots.
-    await client.query("DELETE FROM ata24_devices WHERE account_tier='guest' AND last_seen <= now() - interval '20 minutes'");
+    // Every registered guest browser keeps its slot until explicit release.
+    // The advisory lock serializes competing logins for the fourth slot.
     const same=await client.query('SELECT account_tier FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
     const count=await client.query("SELECT count(*)::int AS total FROM ata24_devices WHERE account_tier='guest'");
-    if (tier==='unlimited'||(same.rowCount>0&&same.rows[0].account_tier==='guest')||
-        count.rows[0].total<MAX_DEVICES) {
-      await client.query('DELETE FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
-      await client.query('INSERT INTO ata24_devices(device_hash,session_hash,last_seen,account_tier) VALUES($1,$2,now(),$3)',
-        [hash(device),hash(token),tier]);
+    if(canRegisterDevice(tier,same.rows[0]?.account_tier||null,count.rows[0].total,MAX_DEVICES)){
+      const agent=String(req.headers['user-agent']||'Unknown browser').slice(0,320);
+      await client.query(`INSERT INTO ata24_devices
+        (device_hash,session_hash,last_seen,account_tier,device_user_agent,last_ip,registered_at)
+        VALUES($1,$2,now(),$3,$4,$5,now())
+        ON CONFLICT (device_hash) DO UPDATE SET session_hash=EXCLUDED.session_hash,
+          last_seen=now(),account_tier=EXCLUDED.account_tier,
+          device_user_agent=EXCLUDED.device_user_agent,last_ip=EXCLUDED.last_ip`,
+        [hash(device),hash(token),tier,agent,ip]);
       allowed=true;
     }
     await client.query('COMMIT');
@@ -399,6 +402,36 @@ function sameOriginRequest(req){
   if(!origin||(req.headers['sec-fetch-site']&&req.headers['sec-fetch-site']!=='same-origin'))return false;
   const u=new URL(origin);return u.host===req.headers.host&&u.protocol==='https:';
  }catch{return false;}
+}
+
+
+function escapeHtml(value){
+ return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function devicesHTML(rows){
+ const body=rows.map((d,i)=>{
+  const label=escapeHtml(d.device_user_agent||'Unknown browser');
+  const ip=escapeHtml(d.last_ip||'Unknown');
+  const registered=escapeHtml(d.registered_at?new Date(d.registered_at).toISOString():'Unknown');
+  const seen=escapeHtml(d.last_seen?new Date(d.last_seen).toISOString():'Unknown');
+  const id=escapeHtml(d.device_hash);
+  return '<tr><td>'+String(i+1)+'</td><td>'+label+'<small>ID '+id.slice(0,12)+'</small></td>'+
+   '<td>'+ip+'</td><td>'+registered+'</td><td>'+seen+'</td>'+
+   '<td><form action="/api/devices/revoke" method="post"><input type="hidden" name="device" value="'+id+'"><button type="submit">REVOKE</button></form></td></tr>';
+ }).join('');
+ return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+ '<meta name="robots" content="noindex,nofollow"><title>Guest Device Registry | B737 Classic</title>'+
+ '<style>body{background:#0a1420;color:#eaf5ff;font:14px system-ui,Arial,sans-serif;margin:auto;padding:24px;max-width:1100px}a{color:#70cbff}h1{font-size:24px}p,small{color:#a1bbcf}table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:12px;border-bottom:1px solid #31485c;vertical-align:top}th{white-space:nowrap}small{display:block;margin-top:8px}button{border:0;border-radius:6px;padding:10px;background:#b94747;color:white;font-weight:700;cursor:pointer}td{overflow-wrap:anywhere}form{margin:0}</style></head><body>'+
+ '<p><a href="/">BACK TO UNIFIED</a></p><h1>Registered Guest Devices — '+rows.length+' / 3</h1>'+
+ '<p>Each browser profile occupies one slot until explicit sign out or owner revocation. No inactivity timeout. Clearing cookies does not free a registration.</p>'+
+ '<table><thead><tr><th>#</th><th>Browser / OS</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
+ (rows.length?'':'<p>No guest devices are registered.</p>')+'</body></html>';
+}
+async function ownerAccess(req){
+ const token=cookies(req)[TOKEN_COOKIE];
+ if(!token)return false;
+ const result=await pool.query("SELECT 1 FROM ata24_devices WHERE session_hash=$1 AND account_tier='unlimited'",[hash(token)]);
+ return result.rowCount===1;
 }
 
 async function handle(req,res) {
@@ -438,16 +471,36 @@ async function handle(req,res) {
     }
     return;
   }
+  if(req.method==='GET'&&url.pathname==='/devices'){
+    if(!await ownerAccess(req)){res.writeHead(403,{'Content-Type':'text/plain'});res.end('Owner access required');return;}
+    const result=await pool.query("SELECT device_hash,device_user_agent,last_ip,registered_at,last_seen FROM ata24_devices WHERE account_tier='guest' ORDER BY registered_at ASC");
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
+    res.end(devicesHTML(result.rows));return;
+  }
+  if(req.method==='POST'&&url.pathname==='/api/devices/revoke'){
+    if(!sameOriginRequest(req)){res.writeHead(403);res.end('Origin denied');return;}
+    if(!await ownerAccess(req)){res.writeHead(403);res.end('Owner access required');return;}
+    const device=String(new URLSearchParams(await body(req)).get('device')||'');
+    if(!/^[a-f0-9]{64}$/.test(device)){res.writeHead(400);res.end('Invalid device ID');return;}
+    await pool.query("DELETE FROM ata24_devices WHERE device_hash=$1 AND account_tier='guest'",[device]);
+    redirect(res,'/devices');return;
+  }
   if (req.method==='POST' && url.pathname==='/api/pulse') {
     const token=cookies(req)[TOKEN_COOKIE];
     if(token) {
       const updated=await pool.query(
-        "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 AND (account_tier='unlimited' OR last_seen>now()-interval '20 minutes') RETURNING account_tier",
+        "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 RETURNING account_tier",
         [hash(token)]
       );
-      // Sliding renewal keeps an active unlimited session signed in.
-      if(updated.rows[0]?.account_tier==='unlimited')
-        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,OWNER_SESSION_SECONDS,'Lax'));
+      // Keep persistent cookies refreshed for owners and registered guests.
+      if(updated.rowCount===1){
+        const owner=updated.rows[0].account_tier==='unlimited';
+        const device=cookies(req)[DEVICE_COOKIE];
+        const cookiesToSet=[cookie(req,TOKEN_COOKIE,token,owner?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,owner?'Lax':'Strict')];
+        if(device&&/^[A-Za-z0-9_-]{32,128}$/.test(device))
+          cookiesToSet.push(cookie(req,DEVICE_COOKIE,device,owner?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,owner?'Lax':'Strict'));
+        res.setHeader('Set-Cookie',cookiesToSet);
+      }
     }
     res.writeHead(204);res.end();return;
   }
@@ -588,6 +641,9 @@ async function start() {
   await pool.query('CREATE TABLE IF NOT EXISTS ata24_devices(device_hash text PRIMARY KEY,session_hash text UNIQUE NOT NULL,last_seen timestamptz NOT NULL DEFAULT now())');
   // Migration preserves existing guest sessions and their original cap.
   await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS account_tier text NOT NULL DEFAULT 'guest'");
+  await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS device_user_agent text NOT NULL DEFAULT 'Unknown browser'");
+  await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS last_ip text NOT NULL DEFAULT ''");
+  await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS registered_at timestamptz NOT NULL DEFAULT now()");
   await navdata.initialize();
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.
