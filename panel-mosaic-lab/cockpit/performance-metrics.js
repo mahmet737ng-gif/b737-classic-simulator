@@ -38,7 +38,8 @@
  // Keep first usable paint separate from the complete interactive cockpit.
  function pollReady(){
   ready();trySharp();tryCockpitReady();
-  if(cockpitReady===null&&performance.now()<60000)setTimeout(pollReady,100);
+  const elapsed=performance.now();
+  if(cockpitReady===null&&elapsed<180000)setTimeout(pollReady,elapsed<15000?100:250);
  }
  pollReady();
  function sharpStatus(){
