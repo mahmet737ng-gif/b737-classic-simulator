@@ -19,11 +19,24 @@
 .throttle-quadrant-layer .throttle-plastic-cover{background:url('../assets/throttle-levers/throttle-plastic-cover.svg') 50% 50% / 345% 100% no-repeat;border-radius:7% / 1%}
 .throttle-toga-push.show-recess::before{content:'';position:absolute;inset:20% 16%;border-radius:50%;background:url('./assets/pedestal-hardware/toga-recess.webp') center / 100% 100% no-repeat;pointer-events:none}
 .pan-mode .throttle-toga-push,.reference-mode .throttle-quadrant-layer,.reference-mode .pedestal-trim-layer{display:none!important}
-.pedestal-trim-wheel{position:absolute;top:29%;height:43%;width:6.6%;transform:translateX(-50%);cursor:ns-resize;touch-action:none;pointer-events:auto;outline:0}
-.pedestal-trim-wheel[data-side="CAPT"]{left:5.8%}.pedestal-trim-wheel[data-side="FO"]{left:94.2%}
+.pedestal-trim-layer{z-index:10}
+.pedestal-trim-wheel{position:absolute;top:11%;height:70%;width:14%;transform:translateX(-50%);cursor:ns-resize;touch-action:none;pointer-events:auto;outline:0}
+.pedestal-trim-wheel[data-side="CAPT"]{left:3.1%}.pedestal-trim-wheel[data-side="FO"]{left:96.9%}
 .pedestal-trim-wheel:focus-visible{outline:1px dotted #fff}
-.pedestal-trim-plane{position:absolute;left:50%;top:0;height:100%;aspect-ratio:1;transform:translateX(-50%) scaleX(.116);pointer-events:none}
-.pedestal-trim-plane img{display:block;position:absolute;width:100%;height:100%;max-width:none;object-fit:fill;pointer-events:none}
-.pedestal-trim-index{position:absolute;width:4.5%;height:auto!important;max-width:none;transform:translateY(-50%);pointer-events:none}
-.pedestal-trim-index[data-side="CAPT"]{left:9.3%}.pedestal-trim-index[data-side="FO"]{right:9.3%;transform:translateY(-50%) scaleX(-1)}
-.pan-mode .pedestal-trim-wheel{pointer-events:none}
+.pedestal-trim-plane{position:absolute;inset:0;overflow:hidden;border-radius:24% / 8%;pointer-events:none;
+ background:#1f2122;box-shadow:inset 0 0 .28em #000,0 .14em .26em #0008}
+.pedestal-trim-plane::before{content:'';position:absolute;inset:0 0 -100%;
+ background:url('./assets/pedestal-hardware/trim-wheel.webp?v=2') center top / 100% 50% repeat-y;
+ transform:translateY(calc(var(--phase,0)*-50%))}
+.pedestal-trim-plane::after{content:'';position:absolute;inset:0;border-radius:inherit;
+ background:linear-gradient(180deg,#07090af2,transparent 17% 79%,#08090af2),linear-gradient(90deg,#090b0cc9,transparent 26% 74%,#08090ac0)}
+.pedestal-trim-plane img{display:none}
+.pedestal-trim-index{position:absolute;width:2%;height:auto!important;max-width:none;transform:translateY(-50%);pointer-events:none}
+.pedestal-trim-index[data-side="CAPT"]{left:11.1%}.pedestal-trim-index[data-side="FO"]{right:11.1%;transform:translateY(-50%) scaleX(-1)}
+.pedestal-trim-cutout{position:absolute;top:91.4%;width:6%;height:3.2%;padding:0;border:0;background:transparent;
+ pointer-events:auto;cursor:pointer;touch-action:manipulation}
+.pedestal-trim-cutout::before{content:'';display:block;width:19%;height:83%;margin:auto;border-radius:28%;background:linear-gradient(90deg,#555,#b9b8aa,#515355);
+ transform:rotate(-23deg);transform-origin:center;box-shadow:1px 1px 2px #0008}
+.pedestal-trim-cutout[data-position="CUTOUT"]::before{transform:rotate(25deg)}
+.stab-trim-controls{padding:.45rem;display:block}.stab-trim-controls output{display:block;margin:.4rem 0}.stab-trim-controls button{margin:.15rem;touch-action:none}
+.pan-mode .pedestal-trim-wheel,.pan-mode .pedestal-trim-cutout{pointer-events:none}

@@ -4,6 +4,7 @@ on:
     paths:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
       - 'panel-mosaic-lab/cockpit/fire-hardware-unified.js'
+      - 'panel-mosaic-lab/cockpit/fire-lab-unified.js'
       - 'panel-mosaic-lab/cockpit/stabilizer-trim-quadrant.js'
       - 'panel-mosaic-lab/cockpit/throttle-levers*'
       - 'panel-mosaic-lab/cockpit/assets/pedestal-hardware/**'
@@ -20,6 +21,7 @@ on:
     paths:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
       - 'panel-mosaic-lab/cockpit/fire-hardware-unified.js'
+      - 'panel-mosaic-lab/cockpit/fire-lab-unified.js'
       - 'panel-mosaic-lab/cockpit/stabilizer-trim-quadrant.js'
       - 'panel-mosaic-lab/cockpit/throttle-levers*'
       - 'panel-mosaic-lab/cockpit/assets/pedestal-hardware/**'

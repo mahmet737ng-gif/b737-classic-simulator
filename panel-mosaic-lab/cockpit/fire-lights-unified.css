@@ -1,24 +1,18 @@
-/* FIRELAMP-0006: Independent cropped photo assets on approved Fire bare panel.
-   Only Fire Protection, no alteration of handles / switches / adjacent panels. */
-.texture-piece[data-piece="fire-protection"] .fire-lamps-mounted{
-  position:absolute;inset:auto;overflow:hidden;z-index:1;
-  pointer-events:none;user-select:none;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp{
-  position:absolute;display:block;box-sizing:border-box;overflow:visible;
-  line-height:0;background:transparent;pointer-events:auto;cursor:pointer;touch-action:pan-x pan-y;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp img{
-  display:block;position:absolute;left:0;top:0;width:100%;height:100%;
-  max-width:none;object-fit:fill;image-rendering:auto;
-  mix-blend-mode:normal;pointer-events:none;user-select:none;
-}
-.texture-piece[data-piece="fire-protection"] .fire-lamp[data-kind="round"]{
-  border-radius:50%;
-}
-
-/* Only the approved lamp glass is pressable, not adjacent fire switches. */
-.texture-piece[data-piece="fire-protection"] .fire-lamp:focus-visible{outline:2px solid #78d5ff;outline-offset:2px}
+/* P8 lenses are painted on first mount and change state without fetching assets. */
+.fire-lamps-mounted{position:absolute;inset:0;z-index:1;pointer-events:none;user-select:none;container-type:inline-size}
+.fire-lamp{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ box-sizing:border-box;overflow:hidden;z-index:2;border:.24cqw solid #0a0b0b;border-radius:.28cqw;
+ box-shadow:inset 0 0 0 .105cqw #626561,inset 0 0 0 .20cqw #272925,0 .12cqw .16cqw #000a;
+ background:linear-gradient(165deg,#2e2b24,#171815 36%,#101211);color:#736450;
+ font:700 .98cqw/1.03 'Roboto Condensed','Arial Narrow',Arial,sans-serif;
+ text-align:center;letter-spacing:.025em;pointer-events:auto;cursor:pointer;touch-action:none}
+.fire-lamp span{pointer-events:none}
+.fire-lamp[data-color="red"]{color:#815359}
+.fire-lamp[data-illuminated="true"]{color:#ffd36b;background:radial-gradient(ellipse,#40310f 3%,#221b0e 64%,#13120e);text-shadow:0 0 .3cqw #ffac26}
+.fire-lamp[data-color="red"][data-illuminated="true"]{color:#fff0e5;background:radial-gradient(ellipse,#b22624 5%,#5a1419 74%,#241116);text-shadow:0 0 .32cqw #ff4e38}
+.fire-lamp[data-kind="round"]{border-radius:50%;background:radial-gradient(circle at 34% 27%,#728787 2%,#263936 10%,#0b1516 31%,#070c0b 65%,#242926 70%)}
+.fire-lamp[data-kind="round"][data-illuminated="true"]{background:radial-gradient(circle at 45% 38%,#e0ffcc 4%,#8fff70 30%,#37c03d 52%,#175928 75%,#0b2010)}
+.fire-lamp:focus-visible{outline:2px solid #78d5ff;outline-offset:2px}
 
 .fire-hardware-layer{position:absolute;inset:0;pointer-events:none;direction:ltr}
 .fire-hardware-layer>*{position:absolute;box-sizing:border-box}
@@ -26,13 +20,46 @@
 .fire-toggle-silver{background:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp') 25% center / 500% 100% no-repeat;pointer-events:none}
 .fire-hardware-layer button{display:block;padding:0;min-width:0;min-height:0;margin:0;border:0;background:transparent;box-shadow:none;appearance:none;color:inherit;touch-action:none;pointer-events:auto;cursor:pointer}
 .fire-hardware-layer button:focus-visible{outline:2px solid #ffc854;outline-offset:1px}
-.fire-handle-control{z-index:2;transform-origin:center;transition:transform .14s ease-out;overflow:visible}
-.fire-handle-control[data-pulled="true"]{z-index:3;filter:drop-shadow(1px 3px 2px #111a)}
+.fire-handle-control{z-index:2;transform-origin:center;transition:scale .12s ease-out;overflow:visible;scale:1;background:transparent}
+.fire-handle-control[data-pulled="true"]{z-index:3;scale:1.18;filter:drop-shadow(1px 3px 2px #111a)}
+.fire-handle-control::after{content:'';position:absolute;inset:2% 5%;border-radius:19% / 8%;
+ background:#ff2818;opacity:0;pointer-events:none;mix-blend-mode:screen;box-shadow:0 0 .66cqw #ff241f, inset 0 0 .7cqw #ff6453}
+.fire-handle-control[data-lit="true"]::after{opacity:.70}
 .fire-handle-control img{position:absolute;max-width:none;object-fit:fill;pointer-events:none}
 .fire-hardware-layer .fire-override{background:url('./assets/recessed-pushbutton-v2.svg') center/contain no-repeat;z-index:4}
-.fire-hardware-layer .fire-bell-cutout{border-radius:12%;border:1px solid #171718;background:#252628;color:#e8e5dc;font:bold 5px/1 Arial,sans-serif;z-index:3}
+.fire-hardware-layer .fire-bell-cutout{border-radius:12%;border:1px solid #171718;background:#252628;color:#e8e5dc;font:bold .85cqw/1 Arial,sans-serif;z-index:3}
 .fire-sr-status{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .reference-mode .fire-hardware-layer{display:none}
 @media(prefers-reduced-motion:reduce){.fire-handle-control{transition:none}}
 
 .failures-fire-row{display:block;margin:.25rem 0;cursor:pointer}
+
+.fire-hardware-layer .fire-lab-target{inset:0;width:100%;height:100%;touch-action:manipulation;cursor:default;z-index:0}
+
+.fire-hardware-layer .fire-override[aria-pressed="true"]{outline:1px solid #ffc861;outline-offset:1px}
+
+.p8-lab{box-sizing:border-box;max-width:min(1100px,97vw);width:100%;max-height:92vh;background:#111820;color:#ebf0f4;
+ border:1px solid #536972;border-radius:12px;padding:clamp(.7rem,2vw,1.3rem);font:14px/1.4 'Instrument Sans',system-ui,sans-serif;direction:ltr}
+.p8-lab::backdrop{background:#04080baf}
+.p8-lab header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.p8-lab h2{margin:0;font-size:1.35rem}
+.p8-lab :is(header,.p8-lab-scenario,.p8-lab-crew) button,.p8-lab select{font:inherit;background:#24313c;color:#e4edf1;border:1px solid #4a5b68;border-radius:5px;padding:.35rem .65rem}
+.p8-lab button{cursor:pointer}
+.p8-lab #p8-lab-board{max-width:820px;margin:0 auto .8rem}
+.p8-lab .p8-lab-docked{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:3}
+.p8-lab .p8-lab-docked>img{display:block;width:100%;height:100%;object-fit:contain}
+.p8-lab .fire-lab-target{display:none}
+#p8-lab-cautions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:.6rem}
+.p8-lab-crew{display:flex;gap:.25rem;flex-wrap:wrap;padding:.55rem;background:#151b20;border:1px solid #3a4954;border-radius:6px}
+.p8-lab-crew strong{width:100%;color:#aabac5}
+.p8-lab-crew button{font-size:.73rem;background:#15181c;border-color:#313941;color:#aeb3b8}
+.p8-lab-crew button[data-lit="true"]{background:#6a430d;color:#fff3c6;border-color:#e2a343}
+.p8-lab-crew button.p8-lab-fire-warn[data-lit="true"]{background:#b72626;color:white;border-color:#f58c71}
+.p8-lab-scenario{margin-top:.65rem;border-top:1px solid #334652;padding-top:.65rem}
+.p8-lab-scenario p{margin:.4rem 0;color:#c0d0db}
+.p8-lab-table{overflow:auto}
+.p8-lab table{width:100%;border-collapse:collapse;text-align:left;white-space:nowrap;font-variant-numeric:tabular-nums}
+.p8-lab caption{text-align:left;padding:.3rem 0;font-weight:700}
+.p8-lab th,.p8-lab td{padding:.4rem;border-bottom:1px solid #30404a}
+.p8-lab :is(#p8-lab-power,#p8-lab-bottles){font-variant-numeric:tabular-nums;color:#a9d3db;margin:.35rem 0}
+.fire-hardware-layer .fire-touch{z-index:1}

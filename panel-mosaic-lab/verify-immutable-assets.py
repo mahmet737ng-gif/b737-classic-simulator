@@ -10,6 +10,7 @@ repository rulesets that must be configured by a repository administrator.
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -20,6 +21,21 @@ assets = manifest["assets"]
 issues = []
 ids = set()
 paths = set()
+
+# The P8 owner explicitly retired these old copies. Compare exact former bytes
+# and permit deletion only; all original cockpit locks still use the same rule.
+retirement_file = "panel-mosaic-lab/fire-asset-retirements.json"
+retirements = json.loads((repo / retirement_file).read_text())["assets"]
+retired = {entry["path"]: entry for entry in retirements}
+p8_paths = re.compile(
+    r"panel-mosaic-lab/assets/locked/2026-10-23/(?:"
+    r"(?:Switches/Fire_Handles/)?FIRE_HANDEL_(?:[A-Z0-9_]+\.(?:png|webp)|(?:APU_45_|ENGINES_45_)?manifest\.json)"
+    r"|LIGHTS/(?:black-amber-v1/(?:gallery|mounted)/|unified-mounted-v1/|unified-v2/)?"
+    r"(?:APU_DET_INOP|ENG_[12]_OVERHEAT|[LR]_BOTTLE_DISCHARGED|WHEEL_WELL_RED)_(?:ON|OFF)\.svg)"
+)
+for rel in retired:
+    if not p8_paths.fullmatch(rel) or (repo / rel).exists():
+        issues.append("Invalid or republished P8 retirement: " + rel)
 
 def git(*args):
     return subprocess.run(["git", *args], cwd=repo, capture_output=True, text=True)
@@ -76,7 +92,12 @@ if base and base != "0" * 40:
     if head.returncode or verify.returncode:
         issues.append("Cannot verify locked history against requested Git base " + base)
     else:
-        diff = git("diff", "--name-status", "-z", base, "HEAD", "--", "panel-mosaic-lab/assets/locked/")
+        old_retirement = git("show", base + ":" + retirement_file)
+        if old_retirement.returncode == 0:
+            former = json.loads(old_retirement.stdout)["assets"]
+            if any(retired.get(entry["path"]) != entry for entry in former):
+                issues.append("Existing P8 retirement record altered")
+        diff = git("diff", "--no-renames", "--name-status", "-z", base, "HEAD", "--", "panel-mosaic-lab/assets/locked/")
         if diff.returncode:
             issues.append("Git immutable diff failed: " + diff.stderr.strip())
         else:
@@ -84,6 +105,10 @@ if base and base != "0" * 40:
             for i in range(0, len(records)-1, 2):
                 status = records[i]
                 pathname = records[i+1]
+                if status == "D" and pathname in retired:
+                    blob = git("rev-parse", base + ":" + pathname)
+                    if blob.returncode == 0 and blob.stdout.strip() == retired[pathname]["gitBlobSha1"]:
+                        continue
                 if not status.startswith("A"):
                     issues.append("LOCKED CONTENT WAS CHANGED OR REMOVED: " + status + " " + pathname)
         prior = git("show", base + ":panel-mosaic-lab/immutable-manifest.json")

@@ -11,7 +11,7 @@
   const UNITS=Object.freeze(['APU','ENG1','ENG2']);
   const LIGHTS=Object.freeze(['ON','OFF']);
   const ANGLES=Object.freeze([-45,0,45]);
-  const BASE='../panel-mosaic-lab/assets/locked/2026-10-23/';
+  const BASE='../panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/';
   const SOURCES=Object.freeze({
     APU:Object.freeze({ON:BASE+'FIRE_HANDEL_APU_ON.webp',OFF:BASE+'FIRE_HANDEL_APU_OFF.webp'}),
     ENG1:Object.freeze({ON:BASE+'FIRE_HANDEL_ENG1_ON.webp',OFF:BASE+'FIRE_HANDEL_ENG1_OFF.webp'}),

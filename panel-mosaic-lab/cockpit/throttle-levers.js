@@ -3,7 +3,7 @@
 'use strict';
 const doc=win.document;
 const STOPS=[0,25,50,75,100], NAMES=['idle','quarter','mid','three-quarter','full'];
-const AXIS={1:322,2:437};
+const CENTER=(322+437)/2, SEAM=2;
 const FULL=184, IDLE=652;
 const WHITE_WIDTH=[137,135,127,117,108];
 const positions={1:0,2:0}, controls=new Map();
@@ -29,7 +29,10 @@ function paint(engine){
  const pose=c.poses[k],anchor=PHOTO[engine][k];
  const gripY=IDLE+(FULL-IDLE)*pct/100, width=WHITE_WIDTH[k]/anchor[2];
  const height=width*pose.naturalHeight/pose.naturalWidth;
- const left=AXIS[engine]-width*anchor[0],top=gripY-height*anchor[1];
+ // The inner edges meet at the seam when throttle positions match.
+ const gripCenterFraction=k===4?.5:engine===1?.484:.515;
+ const gripX=CENTER+(engine===1?-1:1)*(WHITE_WIDTH[k]+SEAM)/2;
+ const left=gripX-width*gripCenterFraction,top=gripY-height*anchor[1];
  if(c.stage!==k){
   if(c.stage!==undefined)c.poses[c.stage].style.display='none';
   pose.style.display='block';c.stage=k;
@@ -40,7 +43,6 @@ function paint(engine){
  box(c.toga,buttonX-btnSize*.78,buttonY-btnSize*.78,btnSize*1.56,btnSize*1.56);
  c.toga.classList.toggle('show-recess',k>=2);
  // The grip hit area travels with the handgrip, clear of the opposite lever.
- const gripX=left+width*(k===4?.50:engine===1?.484:.515);
  box(c.hit,gripX-WHITE_WIDTH[k]/2,gripY-24,WHITE_WIDTH[k],48);
  c.hit.dataset.position=String(pct);c.hit.setAttribute('aria-valuenow',String(pct));
  c.hit.setAttribute('aria-valuetext',pct+' percent');
@@ -125,5 +127,5 @@ win.addEventListener('b737:cockpit-mounted',mount);
 win.addEventListener('load',mount,{once:true});queueMicrotask(mount);
 for(const ms of [500,1800,5000])setTimeout(mount,ms);
 win.B737ThrottlePositions=Object.freeze({get:engine=>positions[engine],set:(engine,pct)=>apply(engine,Number(pct),'user'),
- mounted:()=>ready,positions:STOPS,geometry:()=>({centers:{...AXIS},sourceWidth:800,gripWidthNative:WHITE_WIDTH[4],fullY:FULL,idleY:IDLE,hasAddedTogaFace:false})});
+ mounted:()=>ready,positions:STOPS,geometry:()=>({centers:{1:CENTER-(WHITE_WIDTH[4]+SEAM)/2,2:CENTER+(WHITE_WIDTH[4]+SEAM)/2},sourceWidth:800,gripWidthNative:WHITE_WIDTH[4],fullY:FULL,idleY:IDLE,hasAddedTogaFace:false})});
 })(window);

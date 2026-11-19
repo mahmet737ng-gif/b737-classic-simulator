@@ -1991,8 +1991,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "unified-v2/WHEEL_WELL_RED_OFF.svg",
-        "ON": "unified-v2/WHEEL_WELL_RED_ON.svg"
+        "OFF": "p8-lenses-v7/WHEEL_WELL_RED_OFF.svg",
+        "ON": "p8-lenses-v7/WHEEL_WELL_RED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2062,8 +2062,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "black-amber-v1/gallery/L_BOTTLE_DISCHARGED_OFF.svg",
-        "ON": "black-amber-v1/gallery/L_BOTTLE_DISCHARGED_ON.svg"
+        "OFF": "p8-lenses-v7/L_BOTTLE_DISCHARGED_OFF.svg",
+        "ON": "p8-lenses-v7/L_BOTTLE_DISCHARGED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2086,8 +2086,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "black-amber-v1/gallery/R_BOTTLE_DISCHARGED_OFF.svg",
-        "ON": "black-amber-v1/gallery/R_BOTTLE_DISCHARGED_ON.svg"
+        "OFF": "p8-lenses-v7/R_BOTTLE_DISCHARGED_OFF.svg",
+        "ON": "p8-lenses-v7/R_BOTTLE_DISCHARGED_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2110,8 +2110,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "black-amber-v1/gallery/ENG_2_OVERHEAT_OFF.svg",
-        "ON": "black-amber-v1/gallery/ENG_2_OVERHEAT_ON.svg"
+        "OFF": "p8-lenses-v7/ENG_2_OVERHEAT_OFF.svg",
+        "ON": "p8-lenses-v7/ENG_2_OVERHEAT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2134,8 +2134,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "black-amber-v1/gallery/ENG_1_OVERHEAT_OFF.svg",
-        "ON": "black-amber-v1/gallery/ENG_1_OVERHEAT_ON.svg"
+        "OFF": "p8-lenses-v7/ENG_1_OVERHEAT_OFF.svg",
+        "ON": "p8-lenses-v7/ENG_1_OVERHEAT_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },
@@ -2158,8 +2158,8 @@
         "ON"
       ],
       "assets": {
-        "OFF": "black-amber-v1/gallery/APU_DET_INOP_OFF.svg",
-        "ON": "black-amber-v1/gallery/APU_DET_INOP_ON.svg"
+        "OFF": "p8-lenses-v7/APU_DET_INOP_OFF.svg",
+        "ON": "p8-lenses-v7/APU_DET_INOP_ON.svg"
       },
       "scope": "ASSET_TEST_ONLY"
     },

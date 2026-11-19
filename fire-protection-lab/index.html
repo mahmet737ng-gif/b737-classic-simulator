@@ -44,9 +44,11 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 #board .asset.bell-push .bell-core{display:block;border-radius:50%;width:65%;height:65%;background:radial-gradient(circle at 38% 27%,#acb6ba,#6f777a 29%,#12191d 72%);box-shadow:inset 0 2px 3px #e5e5e56b,0 1px 2px #000b}
 #board .asset.bell-push:active .bell-core{transform:scale(.9);filter:brightness(.86)}
 #board .asset.bell-push:before{content:'BELL CUTOUT';position:absolute;bottom:107%;left:50%;transform:translateX(-50%);white-space:nowrap;color:#f5f5ee;text-shadow:0 1px 2px #000;letter-spacing:.025em;font:bold clamp(8px,1vw,13px) Arial,sans-serif}
+#board .asset.handle[data-lit="true"] img{filter:brightness(1.45) saturate(1.3) drop-shadow(0 0 6px #ff332d)}
 #board.edit .asset.bell-push{outline:1px dashed #85d6e3}
 </style>
 <link rel="stylesheet" href="./hardware.css">
+<link rel="stylesheet" href="../panel-mosaic-lab/cockpit/fire-lights-unified.css">
 </head>
 <body>
 <header>
@@ -56,7 +58,7 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 <main>
 <section class="viewer">
 <div class="row"><h2>Base Photo and Dynamic Layers</h2><div class="row"><button id="edit" aria-pressed="false">Adjust Source Positions</button><button id="layout-reset">Reset Layout</button></div></div>
-<div class="board-wrap"><div id="board"><img id="base" src="../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png" alt="Approved Fire Protection blank cockpit background"><div id="overlays"></div></div></div>
+<div class="board-wrap"><div id="board"><img id="base" src="../panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png" alt="Approved Fire Protection blank cockpit background"><div id="overlays" class="fire-lamps-mounted"></div></div></div>
 <p class="small">Positions were measured from the user reference photo and independently registered for each aperture. Final pixel-level approval is pending; edits are stored locally and locked source photos remain unchanged.</p>
 <div class="legend"><span>RED · Fire / Wheel Well</span><span>AMBER · OVHT / Fault / Bottle</span><span>GREEN · EXT circuit tests</span></div>
 <details class="group"><summary>System and Warning Outputs (Expand)</summary><div id="indicators" class="indicators"></div></details>
@@ -75,27 +77,17 @@ label{font-size:12px;color:#bfd0db}.checks{display:grid;grid-template-columns:1f
 </aside>
 <section class="bottom">
 <h2>Version Validation Limits</h2>
-<p>Display logic refers to FCOM Chapter 8, pp.8.10.1–8.10.4 and 8.20.1–8.20.8. ENG 1/2 OVERHEAT, FAULT, APU DET INOP, BOTTLE DISCHARGED, WHEEL WELL and FIRE handle photos are loaded from source assets. APU BOTTLE DISCHARGED has dedicated ON/OFF images in the central fourth row; three green EXT TEST lenses remain separate. Physical sizes still require visual approval.</p>
+<p>Display logic refers to FCOM Chapter 8, pp.8.10.1–8.10.4 and 8.20.1–8.20.8. The eight rectangular lenses and three green test lenses share the Unified light design. The same handle artwork stays in place during all lamp states.</p>
 <p>Fuel, hydraulic, bleed and generator cutout outputs are calculated by this lab, but not yet connected to the primary aircraft system engines. This is not a substitute for visual QA, safety standards or certified aircraft verification.</p>
 </section>
 </main>
-<script src="./engine.js"></script><script src="./geometry-v2.js"></script>
+<script src="../panel-mosaic-lab/cockpit/fire-lights-model.js"></script><script src="./engine.js"></script><script src="./geometry-v2.js"></script>
 <script>
 (function(){
 'use strict';
 const api=window.B737FireProtection,e=api.createEngine(),root='../panel-mosaic-lab/assets/locked/2026-10-23/';
-const lampBase=root+'LIGHTS/black-amber-v1/mounted/',normalLights=root+'LIGHTS/';
-const handleBase=root;
-const lamps=[
- ['ENG1_OVERHEAT','ENG_1_OVERHEAT',20,19],
- ['ENG2_OVERHEAT','ENG_2_OVERHEAT',80,19],
- ['FAULT','FAULT',50,12],
- ['APU_DET_INOP','APU_DET_INOP',50,81],
- ['L_BOTTLE_DISCHARGED','L_BOTTLE_DISCHARGED',20,78],
- ['R_BOTTLE_DISCHARGED','R_BOTTLE_DISCHARGED',80,78],
- ['WHEEL_WELL','WHEEL_WELL_RED',50,27],
- ['APU_BOTTLE_DISCHARGED','APU_BOTTLE_DISCHARGED',50,90]
-];
+const handleBase=root+'Switches/Fire_Handles/';
+const lamps=window.B737UnifiedFireLampModel.SLOTS;
 const handles=[['ENG1',22.5,65],['APU',49.9,65],['ENG2',78.9,65]];
 const allPositions={};const slotGeometry=window.B737FirePanelGeometry?.slots||{};for(const [id,slot] of Object.entries(slotGeometry)){if(!slot.assetPending)allPositions[id]={x:slot.x,y:slot.y};}
 const layoutsKey='b737.fireProtection.preview.layout.v4';let positions={...allPositions};
@@ -126,8 +118,11 @@ function addAsset(id,className,title){
  return el;
 }
 function move(id){if(!nodes[id])return;nodes[id].style.left=positions[id].x+'%';nodes[id].style.top=positions[id].y+'%';}
-for(const [id,name] of lamps){const el=addAsset(id,'lamp',id);const img=document.createElement('img');img.alt=id;el.appendChild(img);}
-for(const name of ['EXT_L','EXT_R','EXT_APU'])addAsset(name,'green-lens',name);
+for(const slot of lamps){
+ const el=addAsset(slot.id,'fire-lamp',slot.id);
+ el.dataset.kind=slot.type;el.dataset.color=slot.color;
+ for(const line of slot.lines){const legend=document.createElement('span');legend.textContent=line;el.append(legend);}
+}
 for(const [id,aria] of [
  ['SELECTOR_ENG1','ENG 1 OVHT DET selector: choose A, Normal, or B'],
  ['SELECTOR_ENG2','ENG 2 OVHT DET selector: choose A, Normal, or B'],
@@ -140,7 +135,7 @@ for(const [id,aria] of [
 }
 
 for(const [unit] of handles){
- const el=addAsset('HANDLE_'+unit,'handle','FIRE HANDLE '+unit);const img=document.createElement('img');img.alt='Approved '+unit+' fire handle';el.appendChild(img);
+ const el=addAsset('HANDLE_'+unit,'handle','FIRE HANDLE '+unit);const img=document.createElement('img');img.alt='Approved '+unit+' fire handle';img.src=handleBase+'FIRE_HANDEL_'+unit+'_OFF.webp';el.appendChild(img);
 }
 const bellButton=addAsset('BELL_CUTOUT','bell-push','BELL CUTOUT — push to silence fire warning bell');
 bellButton.setAttribute('role','button');
@@ -192,18 +187,15 @@ const indicatorNames=[
  ['EXT_L','GREEN'],['EXT_R','GREEN'],['EXT_APU','GREEN']
 ];
 for(const [name,color] of indicatorNames){const el=document.createElement('span');el.className='indicator '+color.toLowerCase();el.id='ind-'+name;el.textContent=name.replaceAll('_',' ');document.getElementById('indicators').appendChild(el);}
-function assetUrl(id,state){
- if(id==='WHEEL_WELL')return normalLights+'WHEEL_WELL_RED_'+(state?'ON':'OFF')+'.svg';
- if(id==='APU_BOTTLE_DISCHARGED')return './assets/APU_BOTTLE_DISCHARGED_'+(state?'ON':'OFF')+'.svg';
- const entry=lamps.find(x=>x[0]===id);return lampBase+entry[1]+'_'+(state?'ON':'OFF')+'.svg';
-}
 function render(){
  const s=e.getState(),d=e.evaluate(),ind=d.indications;
- for(const [id,name] of lamps){const el=nodes[id],on=Boolean(ind[id]);if(!el)continue;el.classList.toggle('on',on);if(name)el.querySelector('img').src=assetUrl(id,on);}
- for(const [unit] of handles){const el=nodes['HANDLE_'+unit],st=s.handles[unit],on=Boolean(ind[unit+'_FIRE']);
- el.querySelector('img').src=handleBase+'FIRE_HANDEL_'+unit+'_'+(on?'ON':'OFF')+'.webp';
- el.querySelector('img').style.visibility=(on||st.pulled||st.angle!==0)?'visible':'hidden';
- el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';}
+ for(const slot of lamps)nodes[slot.id].dataset.illuminated=String(Boolean(ind[slot.id]));
+ for(const [unit] of handles){
+  const el=nodes['HANDLE_'+unit],st=s.handles[unit];
+  el.dataset.lit=String(Boolean(ind[unit+'_FIRE']));
+  el.style.scale=st.pulled?'1.18':'1';
+  el.style.rotate=st.angle+'deg';el.title=unit+' · '+(st.pulled?'PULLED':'IN')+' · '+st.angle+'°';
+ }
  for(const [id] of indicatorNames)document.getElementById('ind-'+id).classList.toggle('on',Boolean(ind[id]));
  document.querySelectorAll('[data-selector]').forEach(b=>b.setAttribute('aria-pressed',String(s.selectors[b.dataset.unit]===b.dataset.selector)));
  for(const unit of ['ENG1','ENG2']){
@@ -215,7 +207,6 @@ function render(){
   const node=nodes[id],angle=s.test===l?-30:s.test===r?30:0;
   node.style.setProperty('--switch-angle',angle+'deg');node.setAttribute('aria-pressed',String(angle!==0));
  }
- for(const id of ['EXT_L','EXT_R','EXT_APU'])nodes[id].classList.toggle('on',!!ind[id]);
  document.querySelectorAll('[data-test]').forEach(b=>b.setAttribute('aria-pressed',String(s.test===b.dataset.test)));
  for(const [id,key] of [['ac-power','acTransfer1'],['battery-power','batteryBus'],['hot-power','hotBatteryBus'],['ground','onGround']]){const b=document.getElementById(id);b.setAttribute('aria-pressed',String(s.power[key]));b.textContent=(key==='acTransfer1'?'AC TRANSFER 1':key==='batteryBus'?'BATTERY BUS':key==='hotBatteryBus'?'HOT BATTERY':'GROUND')+' · '+(s.power[key]?'ON':'OFF');}
  document.querySelectorAll('.handle-controls').forEach(el=>{

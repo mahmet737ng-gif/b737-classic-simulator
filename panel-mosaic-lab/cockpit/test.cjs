@@ -15,15 +15,15 @@ assert.ok(throttle.maskPolygon?.length>=8,'Owner-approved bare quadrant silhouet
 // visible face to the quadrant silhouette and to the top of the radio pedestal.
 const photoScale=fire.w/2172;
 const throttleBottom=throttle.y+Math.max(...throttle.maskPolygon.map(point=>point[1]))*throttle.w/throttle.sourceWindow.w;
-assert.ok(fire.y+63*photoScale>=throttleBottom,'The P8 face clears the quadrant');
-assert.ok(fire.y+655*photoScale<=radio.y,'The P8 face clears the radio pedestal');
+assert.ok(Math.abs(fire.y+63*photoScale-throttleBottom)<.01,'The P8 face meets the quadrant');
+assert.ok(Math.abs(fire.y+655*photoScale-radio.y)<.01,'The P8 face meets the radio pedestal');
 const fireBare='panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp';
 assert.equal(fire.asset,fireBare,'Unified pedestal must show the newly uploaded bare Fire Protection texture');
 assert.equal(fire.presentation,'contain','New bare panel must preserve exact aspect ratio');
 assert.equal(fire.sourceWindow,undefined,'Full 2172x724 fire panel must not be cropped');
-assert.equal(fire.x+fire.w/2,radio.x+radio.w/2,'P8 is centered on the pedestal');
+assert.ok(Math.abs(fire.x+fire.w/2-radio.x-radio.w/2)<.01,'P8 is centered on the pedestal');
 assert.ok(Math.abs(fire.w/fire.h-3)<1e-9,'Fire hardware shares the native 3:1 photo plane');
-assert.ok(Math.abs(2098*photoScale/radio.w-265/455)<.01,'P8 and radio bay use the same physical scale');
+assert.ok(fire.w>700,'Full-height P8 bay retains its proportional face width');
 assert.equal(radio.y,911.0886528039184,'The adjacent radio hardware stays at its approved position');
 assert.equal(a.assets[fireBare].sha256,'0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f','Approved Fire V6 source image integrity');
 assert.equal(a.assets[fireBare].gitBlobSha,'9b5451a8c1a2598de9a5ee5ae166fee8382d0b38','Approved Fire V6 Git blob integrity');

@@ -1,7 +1,3 @@
-/* FIRELAMP-0006 installs 8 rectangular / 3 round independently cropped approved images
- * in the exact letterboxed 2172×724 source-image rectangle; hardware unchanged. Separate from
- * immutable Fire Protection artwork and from the switches/handles.
- */
 (function(win){
 'use strict';
 const model=win.B737UnifiedFireLampModel;
@@ -43,8 +39,7 @@ function bindPushTest(node,id){
 }
 let external=null, visualTest=false, attached=false, lastSystemLamps='',lampTestPower=false;
 const ids=new Set(model.SLOTS.map(s=>s.id));
-function systemIndications(){
- const computed=unit?.evaluate()?.indications||{};
+function systemIndications(computed=unit?.evaluate()?.indications||{}){
  const out={};
  for(const s of model.SLOTS)out[s.id]=Boolean(
   Object.prototype.hasOwnProperty.call(overrides,s.id)?overrides[s.id]:
@@ -53,38 +48,32 @@ function systemIndications(){
  );
  return out;
 }
-function current(){
- const out=systemIndications();
+function visualIndications(live=systemIndications()){
+ const out={...live};
  if(visualTest)for(const k of Object.keys(out))out[k]=true;
  if(lampTestPower)for(const id of pressed)out[id]=true;
  return out;
 }
 function draw(){
- if(unit){
-  const state=unit.getState(),derived=unit.evaluate();
+ const state=unit?.getState(),derived=unit?.evaluate();
+ const live=systemIndications(derived?.indications),vals=visualIndications(live);
+ for(const [id,node] of faceNodes){
+  node.dataset.illuminated=String(vals[id]);
+  node.dataset.pushTest=String(pressed.has(id));
+ }
+ const caution=derived?.indications.OVHT_DET,signature=JSON.stringify([live,caution]);
+ if(signature!==lastSystemLamps){
+  lastSystemLamps=signature;
+  win.dispatchEvent(new CustomEvent('b737:unified-fire-indicators-state',{detail:{indications:{...live,OVHT_DET:caution},source:'FIRELAMP-0007_SYSTEM'}}));
+ }
+ if(state){
   const key=JSON.stringify([state.handles,state.selectors,state.test,state.extTest,state.power,state.bottles,
-   state.pending.L!==null,state.pending.R!==null,state.pending.APU!==null,derived.indications,derived.outputs,visualTest]);
+   derived.indications,derived.outputs,visualTest]);
   if(lastPanel!==key){
    lastPanel=key;
    win.dispatchEvent(new CustomEvent('b737:ata26-panel-state',{detail:{state,derived,visualTest}}));
    win.dispatchEvent(new CustomEvent('b737:fire-warning-state',{detail:{active:derived.indications.MASTER_FIRE_WARN,source:'ATA26'}}));
   }
- }
- const live=systemIndications(),caution=unit?.evaluate().indications.OVHT_DET,signature=JSON.stringify([live,caution]);
- if(signature!==lastSystemLamps){
-  lastSystemLamps=signature;
-  win.dispatchEvent(new win.CustomEvent('b737:unified-fire-indicators-state',{detail:{indications:{...live,OVHT_DET:caution},source:'FIRELAMP-0006_SYSTEM'}}));
- }
- const vals=current();
- for(const s of model.SLOTS){
-  const img=faceNodes.get(s.id);
-  if(!img)continue;
-  const wanted=model.file(s,vals[s.id]);
-  if(img.dataset.source!==wanted){
-   img.dataset.source=wanted;img.src=wanted;
-  }
-  img.dataset.illuminated=vals[s.id]?'true':'false';
-  img.parentElement.dataset.pushTest=String(pressed.has(s.id));
  }
  return vals;
 }
@@ -100,41 +89,29 @@ function attach(){
  const layer=win.document.createElement('div');
  layer.className='fire-lamps-mounted';
  layer.dataset.coordinateBase='2172x724';
- // The approved base is object-fit: contain. Pixel registration MUST be
- // performed in its fitted image rectangle, not in the whole texture button.
- // Otherwise, a 4:1 host causes a 3:1 image to be centered with side bars.
- const hostW=host.clientWidth,hostH=host.clientHeight;
- const scale=Math.min(hostW/model.BASE.width,hostH/model.BASE.height);
- const imageW=model.BASE.width*scale,imageH=model.BASE.height*scale;
- Object.assign(layer.style,{
-   inset:'auto',
-   left:((hostW-imageW)/2)+'px',top:((hostH-imageH)/2)+'px',
-   width:imageW+'px',height:imageH+'px'
- });
- // The new owner-approved bare panel already has both bottle cutouts horizontal.
- // Do not overlay the obsolete V3 bottle patch.
-
+ // The full-size host has the exact plate aspect ratio. Percent positioning
+ // stays aligned at every zoom and when the real controls are moved to the lab.
+ const hostW=parseFloat(host.style.width)||host.clientWidth;
+ const hostH=parseFloat(host.style.height)||host.clientHeight;
  layer.setAttribute('aria-label','Fire protection indicator lamps');
  for(const slot of model.SLOTS){
   const node=win.document.createElement('span');node.className='fire-lamp';
   node.dataset.fireLamp=slot.id;node.dataset.kind=slot.type;
   const p=model.percent(slot);
   for(const [key,value]of Object.entries(p))node.style[key]=value;
-  const img=win.document.createElement('img');
-  img.alt='';img.decoding='async';img.draggable=false;
-  // Full independent PNG/WebP crop including its original finished lamp bezel.
-  // Alpha is preserved; no artificial SVG legend, CSS blend, or corner screws.
-  Object.assign(img.style,{position:'absolute',left:'0%',top:'0%',width:'100%',height:'100%'});
-  node.dataset.geometry=slot.type==='rect'?'approved-cropped-annunciator':'approved-green-lens';
+  node.dataset.color=slot.color;
   node.dataset.version=model.version;
-  node.append(img);bindPushTest(node,slot.id);layer.append(node);faceNodes.set(slot.id,img);
+  for(const line of slot.lines){
+   const label=win.document.createElement('span');label.textContent=line;node.append(label);
+  }
+  bindPushTest(node,slot.id);layer.append(node);faceNodes.set(slot.id,node);
  }
  host.append(layer);attached=true;
   win.document.addEventListener('pointerup',releasePointer,true);
   win.document.addEventListener('pointercancel',releasePointer,true);
   win.addEventListener('blur',releaseAll);
   win.document.addEventListener('visibilitychange',()=>{if(win.document.hidden)releaseAll();});
- lastRegistration={hostWidth:hostW,hostHeight:hostH,imageWidth:imageW,imageHeight:imageH,offsetX:(hostW-imageW)/2,offsetY:(hostH-imageH)/2};draw();
+ lastRegistration={hostWidth:hostW,hostHeight:hostH,imageWidth:hostW,imageHeight:hostH,offsetX:0,offsetY:0};draw();
  win.dispatchEvent(new win.CustomEvent('b737:unified-fire-lamps-mounted',{detail:{count:model.SLOTS.length,base:model.BASE,source:model.source}}));
  return true;
 }
@@ -209,7 +186,7 @@ win.B737UnifiedFireLights=Object.freeze({
  setIndicators:patch,
  clearOverrides,
  visualTest(active){visualTest=Boolean(active);return draw();},
- dispatch,indications:()=>Object.freeze({...current()}),
+ dispatch,indications:()=>Object.freeze({...visualIndications()}),
  systemIndications:()=>Object.freeze({...systemIndications()}),
  getState:()=>unit?.getState()||null,evaluate:()=>unit?.evaluate()||null,
  positions:()=>model.SLOTS.map(s=>({id:s.id,center:[s.cx,s.cy],frameBounds:model.region(s),glassBounds:model.faceRegion(s),legendPercent:model.legendPercent(s)})),

@@ -1916,7 +1916,7 @@
       "id": "WHEEL_WELL_RED",
       "palette": "red",
       "state": "OFF",
-      "asset": "unified-mounted-v1/WHEEL_WELL_RED_OFF.svg",
+      "asset": "p8-lenses-v7/WHEEL_WELL_RED_OFF.svg",
       "sha256": "2a66c84aa69cb4b7fa65812d8dcb600fb294eaf3dc5e4ada20485704339538fa",
       "face": {
         "width": 600,
@@ -1927,7 +1927,7 @@
       "id": "WHEEL_WELL_RED",
       "palette": "red",
       "state": "ON",
-      "asset": "unified-mounted-v1/WHEEL_WELL_RED_ON.svg",
+      "asset": "p8-lenses-v7/WHEEL_WELL_RED_ON.svg",
       "sha256": "5b4c219dfe4b148f625a20d0bbb65b0a0f630a863c5e17d2ecf481a7cb80eec9",
       "face": {
         "width": 600,

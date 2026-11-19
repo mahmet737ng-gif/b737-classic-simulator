@@ -1,7 +1,7 @@
-/* FIRELAMP-0006: individually cropped owner-approved source, image coordinates 2172x724. */
+/* P8 lamp windows and engraved legends registered to the 2172 × 724 plate. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.B737UnifiedFireLampModel=api;})(typeof globalThis==='undefined'?this:globalThis,function(){
 'use strict';
-const BASE=Object.freeze({width:2172,height:724}), IMAGE_ROOT='./assets/fire-v6/';
+const BASE=Object.freeze({width:2172,height:724});
 const data=[
  ['ENG1_OVERHEAT',182,289,243,110,'rect'],['WHEEL_WELL',682,104,261,114,'rect'],
  ['FAULT',682,218,261,115,'rect'],['APU_DET_INOP',682,333,261,119,'rect'],
@@ -9,9 +9,14 @@ const data=[
  ['L_BOTTLE_DISCHARGED',1698,103,176,117,'rect'],['R_BOTTLE_DISCHARGED',1875,103,181,117,'rect'],
  ['EXT_L',1763,373,72,73,'round'],['EXT_R',1859,373,72,73,'round'],['EXT_APU',1810,467,72,73,'round']
 ];
-const SLOTS=Object.freeze(data.map(([id,x,y,w,h,type])=>Object.freeze({id,type,cx:x+w/2,cy:y+h/2,bounds:Object.freeze([x,y,w,h])})));
+const legends={
+ ENG1_OVERHEAT:['ENG 1','OVERHEAT'], ENG2_OVERHEAT:['ENG 2','OVERHEAT'],
+ WHEEL_WELL:['WHEEL','WELL'], FAULT:['FAULT'], APU_DET_INOP:['APU DET','INOP'],
+ APU_BOTTLE_DISCHARGED:['APU BOTTLE','DISCHARGED'],
+ L_BOTTLE_DISCHARGED:['L BOTTLE','DISCHARGED'], R_BOTTLE_DISCHARGED:['R BOTTLE','DISCHARGED']
+};
+const SLOTS=Object.freeze(data.map(([id,x,y,w,h,type])=>Object.freeze({id,type,lines:Object.freeze(legends[id]||[]),color:type==='round'?'green':id==='WHEEL_WELL'?'red':'amber',cx:x+w/2,cy:y+h/2,bounds:Object.freeze([x,y,w,h])})));
 const map=Object.freeze(Object.fromEntries(SLOTS.map(s=>[s.id,s])));
-function file(slot,on){if(!map[slot.id])throw Error('Unknown indicator '+slot.id);return IMAGE_ROOT+slot.id+'_'+(on?'ON':'OFF')+'.webp';}
 function region(s){const [left,top,width,height]=s.bounds;return {left,top,width,height};}
 function percent(s){const b=region(s);return {left:(b.left/BASE.width*100)+'%',top:(b.top/BASE.height*100)+'%',width:(b.width/BASE.width*100)+'%',height:(b.height/BASE.height*100)+'%'};}
 function facePercent(){return {left:'0%',top:'0%',width:'100%',height:'100%'};}
@@ -27,5 +32,5 @@ function validate(){
  return true;
 }
 validate();
-return Object.freeze({BASE,SLOTS,map,file,region,faceRegion:region,percent,facePercent,legendPercent:facePercent,validate,source:'fire-protection-lab/reference/unified-fire-approved-v6.json',version:'FIRELAMP-0006'});
+return Object.freeze({BASE,SLOTS,map,region,faceRegion:region,percent,facePercent,legendPercent:facePercent,validate,source:'P8_REGISTERED_LENSES',version:'FIRELAMP-0007'});
 });
