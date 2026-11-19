@@ -21,7 +21,7 @@
 .fire-toggle-silver{background:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp') 25% center / 500% 100% no-repeat;pointer-events:none}
 .fire-hardware-layer button{display:block;padding:0;min-width:0;min-height:0;margin:0;border:0;background:transparent;box-shadow:none;appearance:none;color:inherit;touch-action:none;pointer-events:auto;cursor:pointer}
 .fire-hardware-layer button:focus-visible{outline:2px solid #ffc854;outline-offset:1px}
-.fire-handle-control{z-index:2;transform-origin:center;transition:scale .12s ease-out;overflow:visible;scale:1;background:transparent}
+.fire-handle-control{z-index:2;transform-origin:50% 100%;transition:scale .12s ease-out;overflow:visible;scale:1;background:transparent}
 .fire-handle-control[data-pulled="true"]{z-index:3;scale:1.18;filter:drop-shadow(1px 3px 2px #111a)}
 .fire-handle-control::after{content:'';position:absolute;inset:2% 5%;border-radius:19% / 8%;
  background:#ff2818;opacity:0;pointer-events:none;mix-blend-mode:screen;box-shadow:0 0 .66cqw #ff241f, inset 0 0 .7cqw #ff6453}
@@ -50,12 +50,12 @@
 .p8-lab .p8-lab-docked{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:3}
 .p8-lab .p8-lab-docked>img{display:block;width:100%;height:100%;object-fit:contain}
 .p8-lab .fire-lab-target{display:none}
-#p8-lab-cautions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:.6rem}
-.p8-lab-crew{display:flex;gap:.25rem;flex-wrap:wrap;padding:.55rem;background:#151b20;border:1px solid #3a4954;border-radius:6px}
-.p8-lab-crew strong{width:100%;color:#aabac5}
-.p8-lab-crew button{font-size:.73rem;background:#15181c;border-color:#313941;color:#aeb3b8}
-.p8-lab-crew button[data-lit="true"]{background:#6a430d;color:#fff3c6;border-color:#e2a343}
-.p8-lab-crew button.p8-lab-fire-warn[data-lit="true"]{background:#b72626;color:white;border-color:#f58c71}
+#p8-lab-cautions{display:flex;justify-content:center;gap:1.2rem;margin:.8rem 0}
+.p8-lab #p8-lab-cautions .b737-sp-console{position:relative;inset:auto}
+.p8-lab fieldset{border:1px solid #30404a;margin:.6rem 0;padding:.35rem .6rem}
+.p8-lab fieldset label{display:inline-block;margin:.15rem .6rem .15rem 0}
+.p8-lab form{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.p8-lab form input{width:6.7em}
 .p8-lab-scenario{margin-top:.65rem;border-top:1px solid #334652;padding-top:.65rem}
 .p8-lab-scenario p{margin:.4rem 0;color:#c0d0db}
 .p8-lab-table{overflow:auto}

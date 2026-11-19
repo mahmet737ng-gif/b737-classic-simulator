@@ -26,22 +26,21 @@ function sensed(s,unit,kind){
 }
 // LAN ATA 26-20 figs 29/30. Two independent hot-battery feeds per
 // engine bottle supply the two firing coils. Squib 1/2 selects the engine.
-function feeds(bottle){
- const cb=globalThis.B737UnifiedCB;
- const primary=cb?.available('fire.extinguisher'+bottle)!==false;
- return bottle==='APU'?[primary]:[primary,cb?.available('fire.extinguisher'+bottle+'Alternate')!==false];
+const liveCB=name=>globalThis.B737UnifiedCB?.available(name)!==false;
+function feeds(bottle,cb){
+ const primary=cb('fire.extinguisher'+bottle);
+ return bottle==='APU'?[primary]:[primary,cb('fire.extinguisher'+bottle+'Alternate')];
 }
-function dischargeStatus(s,unit,angle){
+function dischargeStatus(s,unit,angle,cb){
  const bottle=unit==='APU'?'APU':angle<0?'L':'R';
  if(!s.power.hotBatteryBus)return 'NO_HOT_BATTERY_POWER';
  if(s.bottles[bottle]||s.pending[bottle]!==null||s.pressureLow[bottle])return 'BOTTLE_UNAVAILABLE';
  const squib=unit==='ENG2'?2:1;
- if(!s.circuits[bottle]||!s.squibs[bottle][squib]||!feeds(bottle).some(Boolean))
+ if(!s.circuits[bottle]||!s.squibs[bottle][squib]||!feeds(bottle,cb).some(Boolean))
   return 'EXTINGUISHER_CIRCUIT_FAILED';
  return null;
 }
-function evaluate(s){
- const cb=(name)=>globalThis.B737UnifiedCB?.available(name)!==false;
+function evaluate(s,cb=liveCB){
  const detector=unit=>cb(unit==='APU'?'apu.fireDetector':'engine'+(unit==='ENG1'?1:2)+'.fireDetector');
  const powered=s.power.batteryBus,testFire=s.test==='OVHT_FIRE'&&powered,testFault=s.test==='FAULT_INOP'&&powered;
  const testPath=unit=>testFire&&selected(s,unit).length>0;
@@ -67,12 +66,12 @@ function evaluate(s){
  ENG1_OVERHEAT:activeOverheat.ENG1,ENG2_OVERHEAT:activeOverheat.ENG2,
  FAULT:powered&&(testFault||anyFault||(testFire&&['ENG1','ENG2'].some(failedTestPath))),
  APU_DET_INOP:powered&&(testFault||!s.apuDetector||!detector('APU')),
- WHEEL_WELL:wheel,L_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('L').some(Boolean)&&(s.bottles.L||s.pressureLow.L),
- R_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('R').some(Boolean)&&(s.bottles.R||s.pressureLow.R),
- APU_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('APU').some(Boolean)&&(s.bottles.APU||s.pressureLow.APU),
+ WHEEL_WELL:wheel,L_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('L',cb).some(Boolean)&&(s.bottles.L||s.pressureLow.L),
+ R_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('R',cb).some(Boolean)&&(s.bottles.R||s.pressureLow.R),
+ APU_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('APU',cb).some(Boolean)&&(s.bottles.APU||s.pressureLow.APU),
  ENG1_FIRE:activeFire.ENG1,ENG2_FIRE:activeFire.ENG2,APU_FIRE:activeFire.APU,
  FIRE_BELL:cb('warning.aural')&&signature.length>0&&!acknowledged,
- MASTER_FIRE_WARN:signature.length>0&&!acknowledged,
+ MASTER_FIRE_WARN:cb('warning.masterFireControl')&&signature.length>0&&!acknowledged,
  APU_GROUND_HORN:s.power.onGround&&activeFire.APU&&!acknowledged,
  APU_GROUND_LIGHT:s.power.onGround&&activeFire.APU,
  APU_GROUND_LIGHT_FLASHING:s.power.onGround&&activeFire.APU&&!acknowledged,
@@ -81,7 +80,7 @@ function evaluate(s){
  const ext=s.extTest||s.test;
  const channel=ext==='EXT_1'?1:ext==='EXT_2'?2:0;
  for(const bottle of BOTTLES){const suffix=bottle==='L'?'L':bottle==='R'?'R':'APU';
-  flags['EXT_'+suffix]=!!(channel&&feeds(bottle).every(Boolean)&&s.power.hotBatteryBus&&s.circuits[bottle]&&s.squibs[bottle][bottle==='APU'?1:channel]&&s.dischargedTo[bottle]!== (bottle==='APU'?'APU':'ENG'+channel));
+  flags['EXT_'+suffix]=!!(channel&&feeds(bottle,cb).every(Boolean)&&s.power.hotBatteryBus&&s.circuits[bottle]&&s.squibs[bottle][bottle==='APU'?1:channel]&&s.dischargedTo[bottle]!== (bottle==='APU'?'APU':'ENG'+channel));
  }
  const outputs={};
  for(const unit of ['ENG1','ENG2']){const pulled=s.handles[unit].pulled;outputs[unit]={
@@ -91,11 +90,19 @@ function evaluate(s){
  const realApuFire=powered&&detector('APU')&&s.apuDetector&&s.apuFire;
  outputs.APU={autoShutdown:realApuFire,fuelShutoff:apuPull||realApuFire,bleedShutoff:apuPull,
  inletDoorClose:apuPull,generatorTrip:apuPull};
- return {indications:flags,outputs,activeFire,activeOverheat,fireKeys:warningIds,fireSignature:signature,
+ // Extra P8 lamp check requested for this trainer. This does not assert an
+ // actual detector fault, a failed APU loop, or a discharged bottle.
+ const testLamps={
+  FAULT:testFire&&['ENG1','ENG2'].some(detector),
+  APU_DET_INOP:testFire&&detector('APU'),
+  APU_BOTTLE_DISCHARGED:testFire&&s.power.hotBatteryBus&&feeds('APU',cb).some(Boolean)
+ };
+ return {indications:flags,testLamps,outputs,activeFire,activeOverheat,fireKeys:warningIds,fireSignature:signature,
  handleUnlock:{ENG1:activeFire.ENG1||activeOverheat.ENG1,ENG2:activeFire.ENG2||activeOverheat.ENG2,APU:activeFire.APU},
  detectorSelection:clone(s.selectors),dischargePending:clone(s.pending)};
 }
-function createEngine(initialPower){
+function createEngine(initialPower,{available=liveCB}={}){
+ const inspect=s=>evaluate(s,available);
  const initial=()=>{const state=defaults();Object.assign(state.power,initialPower);return state;};
  let state=initial(),last={accepted:true,reason:'INIT'};
  function dispatch(cmd){
@@ -149,14 +156,14 @@ function createEngine(initialPower){
    known();if(cmd.pulled===false){
      if(n.handles[unit].angle!==0){result={accepted:false,reason:'RETURN_ROTATION_TO_CENTER'};break;}
      n.handles[unit].pulled=false;break;}
-   if(!(evaluate(n).handleUnlock[unit]||n.handles[unit].override)){result={accepted:false,reason:'HANDLE_LOCKED'};break;}
+   if(!(inspect(n).handleUnlock[unit]||n.handles[unit].override)){result={accepted:false,reason:'HANDLE_LOCKED'};break;}
    n.handles[unit].pulled=true;break;
  case 'ROTATE':
    known();if(![-45,0,45].includes(cmd.angle))throw new RangeError('Invalid rotary detent');
    if(!n.handles[unit].pulled){result={accepted:false,reason:'PULL_FIRST'};break;}
    if(n.handles[unit].angle!==cmd.angle){n.heldSeconds[unit]=0;n.handles[unit].angle=cmd.angle;}
    if(cmd.angle){
-    const failure=dischargeStatus(n,unit,cmd.angle);
+    const failure=dischargeStatus(n,unit,cmd.angle,available);
     if(failure)result={accepted:false,reason:failure};
    }
    break;
@@ -166,7 +173,7 @@ function createEngine(initialPower){
    n.elapsed+=dt;
    for(const id of UNITS){
     const angle=n.handles[id].angle;
-    if(!angle||!n.handles[id].pulled||dischargeStatus(n,id,angle)){n.heldSeconds[id]=0;continue;}
+    if(!angle||!n.handles[id].pulled||dischargeStatus(n,id,angle,available)){n.heldSeconds[id]=0;continue;}
     const held=n.heldSeconds[id];
     n.heldSeconds[id]=held+dt;
     if(held<1&&held+dt>=1){
@@ -188,21 +195,21 @@ function createEngine(initialPower){
     }
    }
    break;}
- case 'BELL_CUTOUT':n.ackFire=evaluate(n).fireSignature;break;
+ case 'BELL_CUTOUT':n.ackFire=inspect(n).fireSignature;break;
  default:throw new RangeError('Unknown fire protection command '+cmd.type);
  }
  if(!n.power.hotBatteryBus)for(const id of UNITS)n.heldSeconds[id]=0;
  if(result.accepted||(cmd.type==='ROTATE'&&n.handles[unit]?.pulled)){
-   const was=evaluate(prior).fireKeys, now=evaluate(n).fireKeys;
+   const was=inspect(prior).fireKeys, now=inspect(n).fireKeys;
    const newAlert=now.some(id=>!was.includes(id));
    if(newAlert)n.ackFire=null;
    if(!now.length)n.ackFire=null;
    state=n;
  }
  last=result;
- return {state:clone(state),derived:evaluate(state),result};
+ return {state:clone(state),derived:inspect(state),result};
  }
- return Object.freeze({dispatch,getState:()=>clone(state),evaluate:()=>evaluate(state),lastEvent:()=>({...last})});
+ return Object.freeze({dispatch,getState:()=>clone(state),evaluate:()=>inspect(state),lastEvent:()=>({...last})});
 }
 return Object.freeze({VERSION:'3.0.0',UNITS,BOTTLES,defaults,evaluate,createEngine});
 });

@@ -50,6 +50,7 @@ function systemIndications(computed=unit?.evaluate()?.indications||{}){
 }
 function visualIndications(live=systemIndications()){
  const out={...live};
+ for(const [id,lit] of Object.entries(unit?.evaluate()?.testLamps||{}))if(lit)out[id]=true;
  if(visualTest)for(const k of Object.keys(out))out[k]=true;
  if(lampTestPower)for(const id of pressed)out[id]=true;
  return out;

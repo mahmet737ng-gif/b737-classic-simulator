@@ -1,7 +1,8 @@
 /* P8-1 hardware registered to the same fitted photo plane as all 11 lenses. */
 (function(win){
 'use strict';
-const doc=win.document, owner=()=>win.B737UnifiedFireLights;
+const doc=win.document;
+function createHardware(owner,openLab){
 const controls=new Map(),handles=new Map(),held=new Map();
 const handleRoot='../assets/locked/2026-10-23/Switches/Fire_Handles/';
 const handleBounds={ENG1:[210,138,604,1274],APU:[254,117,517,1300],ENG2:[191,140,643,1278]};
@@ -142,9 +143,9 @@ function paint(state,derived,allOn=false){
  }
 }
 // The public training bell uses the two tones from the existing audio lab.
-let audio=null,volume=null,bellTimer=0,bellWanted=false;
+let audio=null,volume=null,bellTimer=0,bellWanted=false,bellMuted=false;
 function playBell(){
- if(!bellWanted||bellTimer||win.navigator.userActivation?.hasBeenActive===false)return;
+ if(!bellWanted||bellMuted||bellTimer||win.navigator.userActivation?.hasBeenActive===false)return;
  const Engine=win.AudioContext||win.webkitAudioContext;if(!Engine)return;
  audio=audio||new Engine();if(audio.state!=='running')audio.resume().catch(()=>{});
  volume=audio.createGain();volume.gain.value=.16;volume.connect(audio.destination);
@@ -163,21 +164,20 @@ function playBell(){
 }
 function bell(active){
  bellWanted=active;
- if(active){playBell();return;}
+ if(active&&!bellMuted){playBell();return;}
  if(bellTimer){clearInterval(bellTimer);bellTimer=0;volume.disconnect();}
 }
-doc.addEventListener('pointerdown',playBell,{passive:true});
-win.addEventListener('b737:ata26-panel-state',e=>bell(e.detail.derived.indications.FIRE_BELL));
-function mount(){
- if(layer||!owner())return;
- const host=doc.querySelector('[data-piece="fire-protection"] .fire-lamps-mounted');if(!host)return;
+function mount(host){
+ if(layer||!owner()||!host)return;
  layer=doc.createElement('div');layer.className='fire-hardware-layer';host.append(layer);
+ if(openLab){
  const labTarget=button('Fire Protection Test Lab · triple click','fire-lab-target');
  labTarget.onclick=e=>{
   e.stopPropagation();
-  if(e.detail===0||e.detail>=3)win.B737UnifiedFireLab?.open();
+  if(e.detail===0||e.detail>=3)openLab();
  };
  layer.append(labTarget);
+ }
  const patch=new Image();patch.className='fire-surface-patch';patch.src='./assets/pedestal-hardware/fire-blanking.webp';patch.alt='';patch.draggable=false;rect(patch,1205,424,299,186);layer.append(patch);
  switchAt('ENG1',305,222,['A','NORMAL','B'],'x');switchAt('ENG2',1359,222,['A','NORMAL','B'],'x');
  switchAt('TEST',305,519,['FAULT_INOP','CENTER','OVHT_FIRE'],'x');switchAt('EXT',2047,486,['EXT_1','CENTER','EXT_2'],'x');
@@ -192,9 +192,23 @@ function mount(){
  feedback=doc.createElement('span');feedback.className='fire-sr-status';feedback.setAttribute('role','status');layer.append(feedback);
  paint(owner().getState(),owner().evaluate(),visualTest);
 }
-win.addEventListener('b737:ata26-panel-state',e=>paint(e.detail.state,e.detail.derived,e.detail.visualTest));
-win.addEventListener('b737:unified-fire-lamps-mounted',mount);win.addEventListener('b737:cockpit-mounted',mount);
-win.addEventListener('blur',release);doc.addEventListener('visibilitychange',()=>{if(doc.hidden)release();});
-win.addEventListener('b737:sixpack-fire-acknowledge',()=>command({type:'BELL_CUTOUT'}));
+return {mount,release,paint(state,derived,allOn){
+ paint(state,derived,allOn);bell(derived.indications.FIRE_BELL);
+},stopBell:()=>bell(false),muteBell:muted=>{bellMuted=muted;bell(bellWanted);},playBell};
+}
+win.B737FirePanelHardware=Object.freeze({create:createHardware});
+const owner=()=>win.B737UnifiedFireLights;
+const primary=createHardware(owner,()=>win.B737UnifiedFireLab?.open());
+function mount(){
+ primary.mount(doc.querySelector('#region-pedestal [data-piece="fire-protection"] .fire-lamps-mounted'));
+}
+doc.addEventListener('pointerdown',primary.playBell,{passive:true});
+win.addEventListener('b737:ata26-panel-state',e=>primary.paint(e.detail.state,e.detail.derived,e.detail.visualTest));
+win.addEventListener('b737:fire-lab-visibility',e=>primary.muteBell(e.detail));
+win.addEventListener('b737:unified-fire-lamps-mounted',mount);
+win.addEventListener('b737:cockpit-mounted',mount);
+win.addEventListener('blur',primary.release);
+doc.addEventListener('visibilitychange',()=>{if(doc.hidden)primary.release();});
+win.addEventListener('b737:sixpack-fire-acknowledge',()=>owner()?.dispatch({type:'BELL_CUTOUT'}));
 queueMicrotask(mount);
 })(window);

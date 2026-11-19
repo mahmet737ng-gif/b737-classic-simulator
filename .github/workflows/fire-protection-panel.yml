@@ -22,7 +22,7 @@ jobs:
       - name: Check Fire Protection model and data paths
         run: |
           node --check fire-protection-lab/engine.js
-          node fire-protection-lab/tests/engine.test.cjs
+          node --test fire-protection-lab/tests/engine.test.cjs fire-protection-lab/tests/thermal-trainer.test.cjs
           node fire-protection-lab/tests/assets.test.cjs
           node fire-protection-lab/tests/geometry-v2.test.cjs
           node fire-protection-lab/tests/video-scenarios.test.cjs

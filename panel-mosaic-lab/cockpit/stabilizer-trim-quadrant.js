@@ -41,8 +41,12 @@ function canDrive(source,direction){
 function paint(){
  paintQueued=false;
  for(const {wheel,index,rim,sign} of wheels){
-  const phase=(units-5)*15*sign+(sign>0?.82:.18);
-  rim.style.setProperty('--phase',String(phase-Math.floor(phase)));
+  const phase=(units-5)*15*sign+(sign>0?.64:.36);
+  const angle=(phase-.5)*2*Math.PI;
+  const facing=Math.cos(angle);
+  rim.style.setProperty('--stripe-position',50+48*Math.sin(angle)+'%');
+  rim.style.setProperty('--stripe-depth',String(Math.max(0,facing)));
+  rim.style.setProperty('--stripe-visible',facing>0?'1':'0');
   index.style.top=(indexY(units)/10)+'%';
   wheel.setAttribute('aria-valuenow',String(Math.round(units*100)/100));
   wheel.setAttribute('aria-valuetext',units.toFixed(2)+' units');
@@ -125,12 +129,12 @@ function mount(){
  const plate=doc.querySelector('#region-pedestal [data-piece="throttle-quadrant"]');if(!plate)return;
  layer=doc.createElement('div');layer.className='pedestal-trim-layer';
  for(const [side,sign] of [['CAPT',1],['FO',-1]]){
-  const wheel=doc.createElement('div'),rim=doc.createElement('div'),tread=doc.createElement('img'),index=new Image();
+  const wheel=doc.createElement('div'),rim=doc.createElement('div'),index=new Image();
   wheel.className='pedestal-trim-wheel';wheel.dataset.side=side;wheel.setAttribute('role','slider');wheel.tabIndex=0;
   wheel.setAttribute('aria-label',side+' manual stabilizer trim wheel');wheel.setAttribute('aria-valuemin','0');wheel.setAttribute('aria-valuemax','17');wheel.setAttribute('aria-orientation','vertical');
-  rim.className='pedestal-trim-plane';tread.src='./assets/pedestal-hardware/trim-wheel.webp?v=3';tread.alt='';tread.draggable=false;
+  rim.className='pedestal-trim-plane';
   index.src='./assets/pedestal-hardware/trim-index.webp?v=2';index.className='pedestal-trim-index';index.dataset.side=side;index.alt='';index.draggable=false;
-  rim.append(tread);wheel.append(rim);layer.append(wheel,index);wheels.push({wheel,index,rim,sign});
+  wheel.append(rim);layer.append(wheel,index);wheels.push({wheel,index,rim,sign});
   wheel.onpointerdown=e=>{
    if(held||e.button!==0)return;e.preventDefault();e.stopPropagation();stopDrive();
    held={wheel,id:e.pointerId,y:e.clientY,at:e.timeStamp,height:Math.max(1,wheel.getBoundingClientRect().height)};
