@@ -216,6 +216,7 @@
    const original=new URL(source,doc.baseURI).href;
    if(!item.asset){img.src=original;return;}
    const level=choose(item.asset,extent),url=new URL(level.url,rootURL).href;
+   img.fetchPriority='high';
    item.extent=level.extent;
    img.dataset.perfExtent=String(level.extent);
    img.addEventListener('error',()=>{
