@@ -1,4 +1,4 @@
-/* ATA32-GEAR-0001 — B737 Classic landing gear selector and shared indicator state.
+/* ATA32-GEAR-0003 — B737 Classic landing gear selector and shared indicator state.
  * Additive panel control: no protected image, guarded switch or electrical owner is changed.
  * Transit timing and System A pressure cutoff are TRAINING ESTIMATES, not AFM calibration.
  */
@@ -8,13 +8,13 @@
   if(typeof module==='object'&&module.exports)module.exports=api;
   if(root)root.B737LandingGearCoreV1=api.core;
   if(!root?.document)return;
-  const doc=root.document,POS=api.core.POS;
+  const doc=root.document,POS=api.core.POS,VISUAL=api.core.VISUAL;
   let state=api.core.initial(),track=null,handle=null,aux=null,lastPublished='',lastAt=0;
   let flaps=0,radioAltitude=null,ground=null,hydPsi=null,lever1=null,lever2=null;
   let warning=null,gearHorn=false,audioContext=null,audioOsc=null,audioGain=null,ticker=0;
   const safeNumber=v=>Number.isFinite(v)?v:null;
   const emit=(name,detail)=>root.dispatchEvent(new root.CustomEvent(name,{detail}));
-  const sprite=new URL('./assets/landing-gear-classic-3state.webp',doc.currentScript?.src||root.location.href).href;
+  const sprite=new URL('./assets/landing-gear-classic-3state.webp?v=ATA32-GEAR-0003',doc.currentScript?.src||root.location.href).href;
   // The lever drives the aircraft sensors; cockpit and aft indications subscribe
   // to this same source of truth, never to a separate visual-test state.
 
@@ -77,13 +77,13 @@
   function publish(force=false){
     if(track){track.dataset.detent=state.lever;track.setAttribute('aria-valuenow',String({UP:0,OFF:1,DN:2}[state.lever]));track.setAttribute('aria-label','Landing gear selector '+state.lever+'. Tap or drag: UP, OFF, DOWN.');
       if(handle){handle.style.backgroundPosition={UP:'0% 50%',OFF:'50% 50%',DN:'100% 50%'}[state.lever];
-        handle.style.top={UP:'0px',OFF:'145px',DN:'292px'}[state.lever];}}
+        handle.style.top=VISUAL.top[state.lever]+'px';}}
     const l=api.core.lamps(state);
     if(aux){
       for(const id of POS){const el=aux.querySelector('[data-aux-gear="'+id+'"]');
         if(el){el.dataset.on=String(l.auxiliary[id]);el.setAttribute('aria-label',id+' landing gear down locked '+l.auxiliary[id]);}}
     }
-    const detail={schema:'ATA32-GEAR-0002',lever:state.lever,gear:{...state.gear},
+    const detail={schema:'ATA32-GEAR-0003',lever:state.lever,gear:{...state.gear},
       selectedTarget:state.target,systemAPsi:hydPsi,onGround:ground,
       normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=2200:null,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
@@ -138,18 +138,22 @@
     // source dimensions 918x1713, rendered 372x694.157.
     const x=1222+285*(372/918)-44;
     const y=127+335*(694.156862745098/1713);
+    // The photographic selector slot is ~270 native pixels high. The previous 412px
+    // pointer box and 0/145/292px art translations placed DN below the real cutout.
+    // Keep the original horizontal mount: only vertical travel and hit zones change.
     const box=doc.createElement('div');box.id='b737LandingGearSelector';box.tabIndex=0;
     box.setAttribute('role','slider');box.setAttribute('aria-valuemin','0');
     box.setAttribute('aria-valuemax','2');box.setAttribute('aria-valuenow','2');
-    box.style.cssText='position:absolute;left:'+x.toFixed(2)+'px;top:'+y.toFixed(2)+'px;width:88px;height:412px;z-index:21;cursor:pointer;touch-action:none;user-select:none;outline-offset:3px;background:transparent';
+    box.style.cssText='position:absolute;left:'+x.toFixed(2)+'px;top:'+y.toFixed(2)+'px;width:'+VISUAL.width+'px;height:'+VISUAL.height+'px;z-index:21;cursor:pointer;touch-action:none;user-select:none;outline-offset:3px;background:transparent';
     const art=doc.createElement('div');art.className='b737-gear-handle';
-    art.style.cssText='position:absolute;left:8px;width:72px;height:120px;pointer-events:none;background-image:url("'+sprite+'");background-size:300% 100%;background-repeat:no-repeat;filter:drop-shadow(0 2px 3px #0008)';
+    art.style.cssText='position:absolute;left:8px;width:'+VISUAL.artWidth+'px;height:'+VISUAL.artHeight+'px;pointer-events:none;background-image:url("'+sprite+'");background-size:300% 100%;background-repeat:no-repeat;filter:drop-shadow(0 2px 3px #0008)';
     box.append(art);host.append(box);track=box;handle=art;
     function press(event){
       if(event.type==='pointerdown'){if(event.button!==0)return;box.setPointerCapture?.(event.pointerId);ensureAudio();audioContext?.resume?.();}
       if(event.type==='pointerup'){
-        const r=box.getBoundingClientRect(),f=(event.clientY-r.top)/r.height;
-        select(f<.33?'UP':f<.67?'OFF':'DN');}
+        const r=box.getBoundingClientRect();
+        // Detent hit zones track the three physical wheel centers, not the old oversized box.
+        select(api.core.detentAtY((event.clientY-r.top)*VISUAL.height/r.height));}
     }
     box.addEventListener('pointerdown',press);
     box.addEventListener('pointerup',press);
@@ -169,7 +173,7 @@
       const style=doc.createElement('style');style.textContent='#b737GearAftIndicatorStatus [data-on="true"]{background:#135934;color:#a5ffc7!important;box-shadow:0 0 10px #29e67c77}';
       section.append(style);inspector.append(section);aux=section;
     }
-    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0002'});
+    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0003'});
     publish(true);return true;
   }
   root.addEventListener('b737:cockpit-mounted',mount);
@@ -198,13 +202,21 @@
     cutoutHorn:()=>{warning?.cutoutGear?.();sound(hornState());},
     refresh:()=>{source();publish(true);return api.core.lamps(state);},
     getSpriteUrl:()=>sprite,
-    version:'ATA32-GEAR-0001'
+    version:'ATA32-GEAR-0003'
   });
   root.setTimeout(mount,250);
 })(typeof window!=='undefined'?window:globalThis,function(){
   'use strict';
   const POS=Object.freeze(['nose','left','right']);
   const seconds=Object.freeze({nose:6,left:7,right:7.5}); // Training only
+  // Front-on cockpit wheel geometry: 72x120 sprite cell in a 270px photo slot.
+  // UP wheel center ~35px, OFF ~132px, DN ~235px from selector origin.
+  // Keep shaft/wheel as ONE raster per detent. There is no moving silver hinge.
+  const VISUAL=Object.freeze({width:88,height:270,artWidth:72,artHeight:120,
+    top:Object.freeze({UP:0,OFF:72,DN:145}),
+    wheelY:Object.freeze({UP:35,OFF:132,DN:235})});
+  const detentAtY=y=>y<(VISUAL.wheelY.UP+VISUAL.wheelY.OFF)/2?'UP':
+    y<(VISUAL.wheelY.OFF+VISUAL.wheelY.DN)/2?'OFF':'DN';
   const initial=()=>({lever:'DN',target:'DOWN',gear:{nose:'DOWN',left:'DOWN',right:'DOWN'},elapsed:{nose:0,left:0,right:0},lastReject:null});
   function select(s,lever,info={}){
     if(!['UP','OFF','DN'].includes(lever))throw Error('Landing gear selector UP/OFF/DN required');
@@ -232,5 +244,5 @@
       s.lever==='UP'&&s.gear[id]!=='UP'||s.lever==='DN'&&s.gear[id]!=='DOWN'}])),
     auxiliary:Object.fromEntries(POS.map(id=>[id,s.gear[id]==='DOWN']))
   });
-  return {core:Object.freeze({POS,initial,select,step,lamps})};
+  return {core:Object.freeze({POS,VISUAL,detentAtY,initial,select,step,lamps})};
 });

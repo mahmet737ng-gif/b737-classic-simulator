@@ -4,6 +4,20 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {core}=require('./landing-gear-unified-v1.js');
 
+// The wheel stays within the actual black photo slot in all three detents.
+assert.equal(core.VISUAL.height,270);
+assert.deepEqual(core.VISUAL.top,{UP:0,OFF:72,DN:145});
+assert.ok(core.VISUAL.wheelY.UP>=0&&core.VISUAL.wheelY.DN<core.VISUAL.height);
+for(const detent of ['UP','OFF','DN']){
+  assert.ok(core.VISUAL.top[detent]>=0);
+  assert.ok(core.VISUAL.top[detent]+core.VISUAL.artHeight<=core.VISUAL.height,
+    `${detent} raster cannot escape landing gear slot`);
+}
+assert.equal(core.detentAtY(35),'UP');
+assert.equal(core.detentAtY(132),'OFF');
+assert.equal(core.detentAtY(235),'DN');
+assert.equal(core.detentAtY(270),'DN');
+
 const initial=core.initial();
 assert.equal(initial.lever,'DN');
 assert.deepEqual(initial.gear,{nose:'DOWN',left:'DOWN',right:'DOWN'});
@@ -54,5 +68,5 @@ assert.ok(bytes.byteLength>1000&&bytes.byteLength<12500,'sprite must fit 100-kil
 assert.equal(bytes.toString('ascii',0,4),'RIFF');
 assert.equal(bytes.toString('ascii',8,12),'WEBP');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0002/);
+assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0003/);
 console.log('ATA32 gear selector, hydraulics, red/green/aux lamps and assets PASS');
