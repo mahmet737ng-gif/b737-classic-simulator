@@ -19,6 +19,22 @@ const child=read('panel-mosaic-lab/cockpit/cdu-stage.html');for(const source of 
 // The embedded CDU uses the nav-map helper to validate routed fixes; EHSI renders in the parent.
 assert.ok(child.includes('src="nav-map-overlay.js"'));
 assert.ok(child.includes('engine/cdu-engine.js'));assert.ok(child.includes('cdu-bridge.js'));assert.ok(!read('panel-mosaic-lab/cockpit/flap-lever-test.js').includes('sourceImage=new Image'));
+// BOOT-FAST-0001: preserve exact owner-authored CSS declarations and order.
+const linkedCSS=[...html.matchAll(/<link\\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)].map(m=>m[1]);
+assert.ok(linkedCSS.length<=12,'Unified must not return to 71 render-blocking cockpit CSS requests');
+assert.ok(linkedCSS.some(u=>u.startsWith('./guard-owner18-v1.css?')),'Guard Owner18 stylesheet remains direct and unchanged');
+let sourceStyles=0;
+for(const href of linkedCSS.filter(u=>/unified-css-fast-/.test(u))){
+ const filename=href.split('?')[0].replace(/^\\.\\//,'');
+ const bundle=read('panel-mosaic-lab/cockpit/'+filename);
+ const sources=[...bundle.matchAll(/\\/\\* BEGIN ([\\w.-]+\\.css) ([a-f0-9]{40}) \\*\\/\\n([\\s\\S]*?)\\n\\/\\* END \\1 \\*\\//g)];
+ assert.ok(sources.length>=3,'CSS bundle needs source segments: '+filename);
+ for(const [,source,,contents] of sources){
+  assert.equal(contents,read('panel-mosaic-lab/cockpit/'+source),'CSS is byte-for-byte unchanged: '+source);
+  sourceStyles++;
+ }
+}
+assert.equal(sourceStyles,69,'All 69 non-base, non-guard CSS sources are retained in exact order');
 // Service-worker contracts: no install download, immutable reuse, fresh mutable text,
 // API isolation and removal of only this route's outdated cache namespace.
 (async()=>{
