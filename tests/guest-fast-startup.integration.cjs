@@ -24,7 +24,8 @@ const assert=require('node:assert/strict');
    if(!cold)await context.addInitScript(()=>{
     if(window!==window.top)return;
     localStorage.setItem('b737classic.aircraft-profile.v1',JSON.stringify({
-     aircraftFamily:'B737-400',pressurization:'DCPCS',engineInstruments:'EIS'
+     schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-400',
+     pressurization:'DCPCS',engineInstruments:'EIS'
     }));
    });
    await page.goto(base+'/login',{waitUntil:'domcontentloaded'});
