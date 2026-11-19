@@ -272,9 +272,9 @@ function cookies(req) {
   }
   return result;
 }
-function cookie(req, name, value, age) {
+function cookie(req, name, value, age, sameSite='Strict') {
   const secure = process.env.NODE_ENV === 'production' || req.headers['x-forwarded-proto'] === 'https';
-  return name + '=' + encodeURIComponent(value) + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=' + age + (secure ? '; Secure' : '');
+  return name + '=' + encodeURIComponent(value) + '; Path=/; HttpOnly; SameSite=' + sameSite + '; Max-Age=' + age + (secure ? '; Secure' : '');
 }
 function commonHeaders(req,res) {
   res.setHeader('Cache-Control','no-store, max-age=0');
@@ -382,8 +382,8 @@ async function signIn(req,res) {
   } finally { client.release(); }
   if (!allowed) { redirect(res,'/login?e=full');return; }
   redirect(res,'/',{'Set-Cookie':[
-    cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS),
-    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS)
+    cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,tier==='unlimited'?'Lax':'Strict'),
+    cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,tier==='unlimited'?'Lax':'Strict')
   ]});
 }
 async function readPrivateNavData(req){
@@ -447,7 +447,7 @@ async function handle(req,res) {
       );
       // Sliding renewal keeps an active unlimited session signed in.
       if(updated.rows[0]?.account_tier==='unlimited')
-        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,OWNER_SESSION_SECONDS));
+        res.setHeader('Set-Cookie',cookie(req,TOKEN_COOKIE,token,OWNER_SESSION_SECONDS,'Lax'));
     }
     res.writeHead(204);res.end();return;
   }
