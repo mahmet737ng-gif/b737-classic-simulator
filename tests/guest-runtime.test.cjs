@@ -79,7 +79,7 @@ const session=fs.readFileSync(path.join(root,'public/session.js'),'utf8');
 assert(source.includes('const preflight='),'Missing synchronous cockpit auth renewal bootstrap');
 assert(source.includes('location.replace("/login?e=expired")'),'Preflight must redirect on expiry');
 assert(source.includes('isDocumentNavigation(url.pathname,req.headers)'),'Expired cockpit navigation must redirect even if fetch headers are omitted');
-assert(source.includes("tier==='unlimited'?'Lax':'Strict'"),'Owner cookies must survive cross-site top-level navigation without weakening guest cookies');
+assert(source.includes("GUEST_SESSION_SECONDS,'Lax'")&&source.includes("DEVICE_SESSION_SECONDS,'Lax'"),'Guest cookies must survive external top-level navigation');
 assert(source.includes('res.writeHead(401'),'Expired subresources must receive 401 instead of login HTML');
 assert(session.includes('ping();'),'Heartbeat must start immediately');
 assert(session.includes("window.addEventListener('pageshow'"),'Back-forward cache revalidation missing');
