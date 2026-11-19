@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ../desktop-shell/startup-gate.js?v=UNIFIED-READY-0005 */
+/* ../desktop-shell/startup-gate.js?v=UNIFIED-READY-0006 */
 try{
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.CockpitStartupGate=api;})(typeof window==='undefined'?globalThis:window,function(){
  'use strict';
@@ -24,7 +24,11 @@ try{
   try{
    result.electrical=w.B737ISNCockpitV1?.startupSynchronized?.()===true;
    const overhead=d.getElementById('overheadFrame')?.contentDocument;
-   result.overhead=main.overhead&&imagesReady(overhead,'#atlasAbsolute .atlas-photo')&&
+   const releaseArt=w.B737GatewayBoot?.art;
+   const needlesRestored=
+    (!releaseArt?.oh10||Boolean(overhead?.querySelector('.atlas-piece[data-key="OH10"][data-static-needle-photo="CLEANED"]')))&&
+    (!releaseArt?.oh12||Boolean(overhead?.querySelector('.atlas-piece[data-key="OH12"][data-apu-egt-photo="CLEANED"]')));
+   result.overhead=main.overhead&&needlesRestored&&imagesReady(overhead,'#atlasAbsolute .atlas-photo')&&
     (profile.pressurization!=='DCPCS'||imagesReady(overhead,'.dcpcs-owner-oh22-background > img'))&&
     (profile.aircraftFamily!=='B737-400'||imagesReady(overhead,'.b737-400-owner-oh20-background > img'))&&
     imagesReady(overhead,'.asp-control-image');
@@ -33,6 +37,7 @@ try{
    result.pedestal=imagesReady(d,'#region-pedestal .texture-piece > img')&&
     w.B737ThrottlePositions?.mounted?.()===true&&
     d.querySelectorAll('#region-pedestal .engine-start-lever').length===2&&
+    (!releaseArt?.engine1||d.querySelectorAll('.engine-start-lever-art image[data-boot-ready="true"]').length===2)&&
     imagesReady(d,'#region-pedestal .fire-handle-control > img',3)&&
     imagesReady(d,'.throttle-state-sprite',10)&&imagesReady(d,'.asp-control-image');
    const eadiSeats=['CAPT','FO'];
