@@ -7,11 +7,21 @@
   location.replace('https://ata24-review-gateway-production.up.railway.app/panel-mosaic-lab/cockpit/'+(trace?'?bootTrace=1':''));
 })(window.location);</script><script id="unified-boot-trace-entry">(function(){
  if(new URLSearchParams(location.search).get('bootTrace')!=='1')return;
- const seed={started:performance.now(),errors:[]};
+ const seed={started:performance.now(),errors:[],calls:[]};
+ function forward(method,args){
+  if(window.B737BootTrace!==early)window.B737BootTrace[method](...args);
+  else if(seed.calls.length<2500)seed.calls.push([method,args]);
+ }
+ const early={
+  phase:(name,start,end=performance.now())=>forward('phase',[name,start,end]),
+  zoom:(kind,start,scale,geometryEnd,input)=>forward('zoom',[kind,start,scale,geometryEnd,input,performance.now()]),
+  texture:(...args)=>forward('texture',args)
+ };
+ window.B737BootTrace=early;
  seed.onError=event=>{if(seed.errors.length<100)seed.errors.push(event);};
  window.B737BootTraceSeed=seed;
  window.addEventListener('error',seed.onError,true);
- const script=document.createElement('script');script.src='./boot-trace.js?v=TRACE-0001';
+ const script=document.createElement('script');script.src='./boot-trace.js?v=TRACE-0002';
  document.head.append(script);
 })();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c1721"><meta name="application-name" content="Unified"><meta name="apple-mobile-web-app-title" content="Unified"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./unified.webmanifest"><link rel="icon" type="image/webp" sizes="512x512" href="./brand/unified-icon-512.webp"><link rel="apple-touch-icon" sizes="180x180" href="./brand/unified-apple-touch.png"><title>Unified — B737 Classic Simulator</title><script>performance.setResourceTimingBufferSize(3000)</script><script src="../../cb-panel-lab/catalog.js?v=CB-UNIFIED-0001" defer></script><script src="../../engine/cb/cb-kernel.js?v=CB-UNIFIED-0001" defer></script><script src="../../engine/cb/unified-circuit-gates-v1.js?v=ATA28-KG-0002&amp;p8=ATA26-0003" defer></script><script src="./cb-unified-live-v1.js?v=CB-UNIFIED-0001" defer></script><script>
 /* Start the immutable layout download while the 150 ordered deferred modules

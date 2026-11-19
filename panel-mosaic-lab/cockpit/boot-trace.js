@@ -89,9 +89,8 @@
   if(now<zoomUntil||pendingPaint)frameRequest=requestAnimationFrame(frameTick);
   else{frameRequest=0;lastFrame=null;}
  }
- function zoom(kind,start,scale,geometryEnd,input){
+ function zoom(kind,start,scale,geometryEnd,input,now=performance.now()){
   if(stoppedAt!==null)return;
-  const now=performance.now();
   add('zoom-work',start,{kind,scale:round(scale*100),durationMs:round(now-start),
    geometryMs:geometryEnd===undefined?undefined:round(geometryEnd-start),
    updateMs:geometryEnd===undefined?undefined:round(now-geometryEnd),
@@ -133,6 +132,7 @@
  }
  window.B737BootTrace=Object.freeze({zoom,phase,texture,report,stop});
  add('trace-enabled',seed.started);
+ for(const [method,args] of seed.calls)window.B737BootTrace[method](...args);
  scanFrames();
  for(const event of seed.errors)recordError(event,'Unified');
  window.removeEventListener('error',seed.onError,true);
