@@ -68,7 +68,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./performance-metrics.js?v=PERF-FAST-SW-0005 */
+/* ./performance-metrics.js?v=PERF-FAST-SW-0006 */
 try{
 /* User-visible load diagnostics; bounded resource buffer and no telemetry/upload. */
 (function(){
@@ -167,7 +167,7 @@ try{
    requestAnimationFrame(frame);
   })
  });
- if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:'){
+ if(!window.B737GatewayBoot&&window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:'){
   // Register after first usable paint. Cache future requests on demand rather
   // than scanning/copying every resource while the rest of the cockpit starts.
   window.addEventListener('b737:unified-usable',()=>{

@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "345a0c6db185d71c88afe284e35ff03b2bb1827a",
+  "sourceCommit": "e229bcf8d2eada09521061112bb26b0ac8c395a0",
   "mainBefore": 291,
   "mainAfter": 90,
   "overheadBefore": 59,
@@ -8,19 +8,19 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "81bc0f19a6a73ea48b861bf95395823fcd3573bf604d32db180b1cb5755ef581"
+      "sha256": "f41faadbeed5e48754c9dd54277fb80f1cecd58b8c1d134ca563e35618e30fe4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "875b1615c73ca3f461c6e328ddbcf599fb33d833936ba524e51a971ec2b88d0a"
+      "sha256": "6f03d35553f55dc530c6ec7fa2c96e11be437a029500415e9551344d247c75f1"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
       "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
     },
     {
-      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-649ae624b9d583c9.js",
-      "sha256": "649ae624b9d583c9bbe4f9c0be8de27e24957307605aa44f408e23f09914f43b"
+      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-ef2a230cbe22bb97.js",
+      "sha256": "ef2a230cbe22bb975bb815b4b18eb9f9e8e9635ee22549de0c23853bd07f359e"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -276,7 +276,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
-      "sha256": "bcd006b40f7237c8a44b505f03d42121743de4631e63678c4d2a7f35a210c9d7"
+      "sha256": "4eb5e8e9439b6ef205328b3c9bf5b072c7c7b8697f30e3047f4d85077e972b4d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless-integrator.js",
@@ -436,7 +436,7 @@
     },
     {
       "path": "panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js",
-      "sha256": "a59b5dca526db2a80833b445a1a5719ae4d4f2b5b1fc9cd6200653fb9849b0af"
+      "sha256": "fab8fbd5bc3664dd5557fc64ec42ee8f32600bfc65a1e62ae7667406a2d3354c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/lights.js",
@@ -720,7 +720,7 @@
     },
     {
       "path": "panel-mosaic-lab/lamp-socket-fit-v3/variant-fit.js",
-      "sha256": "cf20d8861f18938ef5d230918d113d5e12acca1c14573e01ec735ab474780056"
+      "sha256": "f4a2d897f0ab135162a9b46763131c2c145fa66a95ddabde51189b12b6c7131e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.js",
@@ -944,11 +944,35 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/boot-trace.js",
-      "sha256": "b100c8bf77fa9f88c6daed3b1a3e77df017fbf45a9045b99c06354c2dc301ca8"
+      "sha256": "8554e1e490e31a5e1434315b4e4fdc633eefc081f6133a68524032071873635a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/sw.js",
       "sha256": "7d57162c42cd700aea96cc1ca11acf48b197114928ba260044ef7045171b8bb9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
+      "sha256": "2d11a0ba986561dae17be9ca3b01d5c4dd8719317ef7d91700004794c296dafb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified.webmanifest",
+      "sha256": "9b30f03cea8e14589ae960bc74ba97a480ca788f12c5a669bf110335306518b4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
+      "sha256": "4200e370af032dd84341d0837b758dac33d38efe33c2ca4b7bb38f43825f3b91"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
+      "sha256": "68888486524df70c13f6024c5044b7381055d368b69d6a12010bb8eeafa05eff"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/oh21-737-300500-owner-20261030.q100.webp",
+      "sha256": "754cfa32b415d06b90c30336e50a677852806a43e9ccdfe0bb17c111b20ab07a"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-test/registry.json",
+      "sha256": "3f0388fd747a08f9fe1bdd69cd4b5fc157944c5dd13c4fcbb5a48aa1da7e6fd9"
     },
     {
       "path": "panel-mosaic-lab/lights-reference-v2/manifest.json",
@@ -1433,6 +1457,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp",
       "sha256": "3e780f9fb0d266fa424d9eca703a416b57f7815d9b30bed24a152dbb12da509a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-lamp-sources.json",
+      "sha256": "3e45340578798c51b9b6e6c0ac3e6aed536dc0f38dfcbd552565063829dd9947"
     }
   ]
 }

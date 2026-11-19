@@ -1,0 +1,2214 @@
+{
+  "schema": "b737-annunciator-assets.v1",
+  "version": "LGT-0020",
+  "assetDirectory": "../assets/locked/2026-10-23/LIGHTS/",
+  "testMode": "manual-asset-visual-qa",
+  "note": "Stable IDs for the owner-approved light designs. This registry does not assign physical coordinates or certify aircraft logic.",
+  "lights": [
+    {
+      "id": "ALIGN_WHITE",
+      "lines": [
+        "ALIGN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-white-v1/gallery/ALIGN_WHITE_OFF.svg",
+        "ON": "black-white-v1/gallery/ALIGN_WHITE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "A_T_LIM_WHITE",
+      "lines": [
+        "A/T LIM"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-white-v1/gallery/A_T_LIM_WHITE_OFF.svg",
+        "ON": "black-white-v1/gallery/A_T_LIM_WHITE_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-at-lim"
+      ]
+    },
+    {
+      "id": "AFT_CARGO",
+      "lines": [
+        "AFT CARGO"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AFT_CARGO_OFF.svg",
+        "ON": "unified-v2/AFT_CARGO_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AFT_ENTRY",
+      "lines": [
+        "AFT ENTRY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AFT_ENTRY_OFF.svg",
+        "ON": "unified-v2/AFT_ENTRY_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AFT_SERVICE",
+      "lines": [
+        "AFT SERVICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AFT_SERVICE_OFF.svg",
+        "ON": "unified-v2/AFT_SERVICE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AIR_STAIR",
+      "lines": [
+        "AIR STAIR"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AIR_STAIR_OFF.svg",
+        "ON": "unified-v2/AIR_STAIR_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "ALTITUDE_ALERT",
+      "lines": [
+        "ALTITUDE ALERT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/ALTITUDE_ALERT_OFF.svg",
+        "ON": "unified-v2/ALTITUDE_ALERT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-altitude-captain",
+        "main-altitude-fo"
+      ]
+    },
+    {
+      "id": "ANTI_SKID_INOP",
+      "lines": [
+        "ANTI SKID INOP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/ANTI_SKID_INOP_OFF.svg",
+        "ON": "unified-v2/ANTI_SKID_INOP_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-antiskid"
+      ]
+    },
+    {
+      "id": "APU_GEN_OFF_BUS",
+      "lines": [
+        "APU GEN OFF BUS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/APU_GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/APU_GEN_OFF_BUS_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AUTO_BRAKE_DISARM",
+      "lines": [
+        "AUTO BRAKE DISARM"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AUTO_BRAKE_DISARM_OFF.svg",
+        "ON": "unified-v2/AUTO_BRAKE_DISARM_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-autobrake"
+      ]
+    },
+    {
+      "id": "AUTO_FAIL",
+      "lines": [
+        "AUTO FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AUTO_FAIL_OFF.svg",
+        "ON": "unified-v2/AUTO_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "AUTO_SLAT_FAIL",
+      "lines": [
+        "AUTO SLAT",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/AUTO_SLAT_FAIL_OFF.svg",
+        "ON": "unified-v2/AUTO_SLAT_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "BELOW_GS_P_INHIBIT",
+      "lines": [
+        "BELOW GS P INHIBIT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/BELOW_GS_P_INHIBIT_OFF.svg",
+        "ON": "unified-v2/BELOW_GS_P_INHIBIT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-below-gs-captain",
+        "main-below-gs-fo"
+      ]
+    },
+    {
+      "id": "BLEED_TRIP_OFF",
+      "lines": [
+        "BLEED TRIP OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/BLEED_TRIP_OFF_OFF.svg",
+        "ON": "unified-v2/BLEED_TRIP_OFF_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "BRAKE_TEMP",
+      "lines": [
+        "BRAKE TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/BRAKE_TEMP_OFF.svg",
+        "ON": "unified-v2/BRAKE_TEMP_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-brake-temp"
+      ]
+    },
+    {
+      "id": "BUS_OFF_LAMP",
+      "lines": [
+        "BUS",
+        "OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/BUS_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/BUS_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "CALL",
+      "lines": [
+        "CALL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/CALL_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/CALL_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "CAPT_PS_1_AUX_STATIC",
+      "lines": [
+        "CAPT P/S",
+        "1 AUX STATIC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/CAPT_PS_1_AUX_STATIC_OFF.svg",
+        "ON": "unified-v2/CAPT_PS_1_AUX_STATIC_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "CAPT_STATIC_1_AUX_PS",
+      "lines": [
+        "CAPT STATIC 1 AUX PS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/CAPT_STATIC_1_AUX_PS_OFF.svg",
+        "ON": "unified-v2/CAPT_STATIC_1_AUX_PS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "COWL_ANTI_ICE",
+      "lines": [
+        "COWL ANTI ICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/COWL_ANTI_ICE_OFF.svg",
+        "ON": "unified-v2/COWL_ANTI_ICE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "COWL_VALVE_OPEN",
+      "lines": [
+        "COWL VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/COWL_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/COWL_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/COWL_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DC_FAIL",
+      "lines": [
+        "DC FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/DC_FAIL_OFF.svg",
+        "ON": "unified-v2/DC_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DUAL_BLEED",
+      "lines": [
+        "DUAL BLEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/DUAL_BLEED_OFF.svg",
+        "ON": "unified-v2/DUAL_BLEED_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "DUCT_OVERHEAT",
+      "lines": [
+        "DUCT OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/DUCT_OVERHEAT_OFF.svg",
+        "ON": "unified-v2/DUCT_OVERHEAT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "EQUIP",
+      "lines": [
+        "EQUIP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/EQUIP_OFF.svg",
+        "ON": "unified-v2/EQUIP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FAULT",
+      "lines": [
+        "FAULT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-amber-v1/gallery/FAULT_OFF.svg",
+        "ON": "black-amber-v1/gallery/FAULT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FEEL_DIFF_PRESS",
+      "lines": [
+        "FEEL",
+        "DIFF PRESS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FEEL_DIFF_PRESS_OFF.svg",
+        "ON": "unified-v2/FEEL_DIFF_PRESS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FILTER_BYPASS",
+      "lines": [
+        "FILTER",
+        "BYPASS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FILTER_BYPASS_OFF.svg",
+        "ON": "unified-v2/FILTER_BYPASS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FO_PS_2_AUX_STATIC",
+      "lines": [
+        "FO PS 2 AUX STATIC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FO_PS_2_AUX_STATIC_OFF.svg",
+        "ON": "unified-v2/FO_PS_2_AUX_STATIC_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FO_STATIC_2_AUX_PS",
+      "lines": [
+        "F/O STATIC",
+        "2 AUX P/S"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FO_STATIC_2_AUX_PS_OFF.svg",
+        "ON": "unified-v2/FO_STATIC_2_AUX_PS_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FUEL_VALVE_CLOSED",
+      "lines": [
+        "FUEL VALVE CLOSED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/FUEL_VALVE_CLOSED_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/FUEL_VALVE_CLOSED_DIM_BLUE.svg",
+        "OFF": "unified-v2/FUEL_VALVE_CLOSED_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_CARGO",
+      "lines": [
+        "FWD CARGO"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FWD_CARGO_OFF.svg",
+        "ON": "unified-v2/FWD_CARGO_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_ENTRY",
+      "lines": [
+        "FWD ENTRY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FWD_ENTRY_OFF.svg",
+        "ON": "unified-v2/FWD_ENTRY_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "FWD_SERVICE",
+      "lines": [
+        "FWD SERVICE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/FWD_SERVICE_OFF.svg",
+        "ON": "unified-v2/FWD_SERVICE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "GEN_OFF_BUS",
+      "lines": [
+        "GEN OFF BUS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/GEN_OFF_BUS_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/GEN_OFF_BUS_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "GRD_POWER_AVAILABLE",
+      "lines": [
+        "GRD POWER AVAILABLE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/GRD_POWER_AVAILABLE_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/GRD_POWER_AVAILABLE_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "HIGH_OIL_TEMP",
+      "lines": [
+        "HIGH OIL",
+        "TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/HIGH_OIL_TEMP_OFF.svg",
+        "ON": "unified-v2/HIGH_OIL_TEMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "INOP",
+      "lines": [
+        "INOP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/INOP_OFF.svg",
+        "ON": "unified-v2/INOP_ON.svg"
+      },
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gpws-inop"
+      ]
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_GREEN",
+      "lines": [
+        "LEFT GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LEFT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/LEFT_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-left-green"
+      ]
+    },
+    {
+      "id": "LEFT_GEAR_2LINE_RED",
+      "lines": [
+        "LEFT GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LEFT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/LEFT_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-left-red"
+      ]
+    },
+    {
+      "id": "LE_FLAPS_EXT_GREEN",
+      "lines": [
+        "LE FLAPS",
+        "EXT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LE_FLAPS_EXT_GREEN_OFF.svg",
+        "ON": "unified-v2/LE_FLAPS_EXT_GREEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-le-extended"
+      ]
+    },
+    {
+      "id": "LE_FLAPS_TRANSIT",
+      "lines": [
+        "LE FLAPS TRANSIT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LE_FLAPS_TRANSIT_OFF.svg",
+        "ON": "unified-v2/LE_FLAPS_TRANSIT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-le-transit"
+      ]
+    },
+    {
+      "id": "LOW_IDLE",
+      "lines": [
+        "LOW IDLE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LOW_IDLE_OFF.svg",
+        "ON": "unified-v2/LOW_IDLE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_OIL_PRESSURE",
+      "lines": [
+        "LOW OIL",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LOW_OIL_PRESSURE_OFF.svg",
+        "ON": "unified-v2/LOW_OIL_PRESSURE_ON.svg"
+      },
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-low-oil-1",
+        "main-low-oil-2"
+      ]
+    },
+    {
+      "id": "LOW_OIL_QUANTITY",
+      "lines": [
+        "LOW OIL QUANTITY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/LOW_OIL_QUANTITY_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/LOW_OIL_QUANTITY_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_PRESSURE",
+      "lines": [
+        "LOW",
+        "PRESSURE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LOW_PRESSURE_OFF.svg",
+        "ON": "unified-v2/LOW_PRESSURE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "LOW_QUANTITY",
+      "lines": [
+        "LOW",
+        "QUANTITY"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/LOW_QUANTITY_OFF.svg",
+        "ON": "unified-v2/LOW_QUANTITY_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "L_ALPHA_VANE",
+      "lines": [
+        "L ALPHA",
+        "VANE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/L_ALPHA_VANE_OFF.svg",
+        "ON": "unified-v2/L_ALPHA_VANE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "L_ELEV_PITOT",
+      "lines": [
+        "L ELEV",
+        "PITOT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/L_ELEV_PITOT_OFF.svg",
+        "ON": "unified-v2/L_ELEV_PITOT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "L_VALVE_OPEN",
+      "lines": [
+        "L VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/L_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/L_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/L_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "MACH_TRIM_FAIL",
+      "lines": [
+        "MACH TRIM",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/MACH_TRIM_FAIL_OFF.svg",
+        "ON": "unified-v2/MACH_TRIM_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "MANUAL_GREEN",
+      "lines": [
+        "MANUAL GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/MANUAL_GREEN_OFF.svg",
+        "ON": "unified-v2/MANUAL_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_GREEN",
+      "lines": [
+        "NOSE GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/NOSE_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/NOSE_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-nose-green"
+      ]
+    },
+    {
+      "id": "NOSE_GEAR_2LINE_RED",
+      "lines": [
+        "NOSE GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/NOSE_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/NOSE_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-nose-red"
+      ]
+    },
+    {
+      "id": "NOT_ARMED_VERTICAL",
+      "lines": [
+        "NOT",
+        "ARMED"
+      ],
+      "orientation": "portrait",
+      "face": {
+        "width": 300,
+        "height": 600
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/NOT_ARMED_VERTICAL_OFF.svg",
+        "ON": "unified-v2/NOT_ARMED_VERTICAL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OFF_LAMP",
+      "lines": [
+        "OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OFF_SCHED_DESCENT",
+      "lines": [
+        "OFF SCHED DESCENT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/OFF_SCHED_DESCENT_OFF.svg",
+        "ON": "unified-v2/OFF_SCHED_DESCENT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OIL_FILTER_BYPASS",
+      "lines": [
+        "OIL FILTER BYPASS"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/OIL_FILTER_BYPASS_OFF.svg",
+        "ON": "unified-v2/OIL_FILTER_BYPASS_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-oil-filter-1",
+        "main-oil-filter-2"
+      ]
+    },
+    {
+      "id": "ON_DC_LAMP",
+      "lines": [
+        "ON DC"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/ON_DC_LAMP_OFF.svg",
+        "ON": "unified-v2/ON_DC_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "ON_GREEN",
+      "lines": [
+        "ON GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/ON_GREEN_OFF.svg",
+        "ON": "unified-v2/ON_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OVERHEAT",
+      "lines": [
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/OVERHEAT_OFF.svg",
+        "ON": "unified-v2/OVERHEAT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "OVER_SPEED",
+      "lines": [
+        "OVER",
+        "SPEED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/OVER_SPEED_OFF.svg",
+        "ON": "unified-v2/OVER_SPEED_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "PACK_TRIP_OFF",
+      "lines": [
+        "PACK TRIP OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/PACK_TRIP_OFF_OFF.svg",
+        "ON": "unified-v2/PACK_TRIP_OFF_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "PASS_OXY_ON_LAMP",
+      "lines": [
+        "PASS OXY",
+        "ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/PASS_OXY_ON_LAMP_OFF.svg",
+        "ON": "unified-v2/PASS_OXY_ON_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "PULL_UP_RED",
+      "lines": [
+        "PULL UP RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/PULL_UP_RED_OFF.svg",
+        "ON": "unified-v2/PULL_UP_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-pull-up-captain",
+        "main-pull-up-fo"
+      ]
+    },
+    {
+      "id": "RAM_DOOR_FULL_OPEN",
+      "lines": [
+        "RAM DOOR FULL OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/RAM_DOOR_FULL_OPEN_BRIGHT_BLUE.svg",
+        "OFF": "unified-v2/RAM_DOOR_FULL_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "REVERSER",
+      "lines": [
+        "REVERSER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/REVERSER_OFF.svg",
+        "ON": "unified-v2/REVERSER_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "REVERSER_UNLOCKED",
+      "lines": [
+        "REVERSER UNLOCKED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/REVERSER_UNLOCKED_OFF.svg",
+        "ON": "unified-v2/REVERSER_UNLOCKED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-reverser-1",
+        "main-reverser-2"
+      ]
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_GREEN",
+      "lines": [
+        "RIGHT GEAR 2LINE GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/RIGHT_GEAR_2LINE_GREEN_OFF.svg",
+        "ON": "unified-v2/RIGHT_GEAR_2LINE_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD",
+      "mountedCockpitInstances": [
+        "main-gear-right-green"
+      ]
+    },
+    {
+      "id": "RIGHT_GEAR_2LINE_RED",
+      "lines": [
+        "RIGHT GEAR 2LINE RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/RIGHT_GEAR_2LINE_RED_OFF.svg",
+        "ON": "unified-v2/RIGHT_GEAR_2LINE_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-gear-right-red"
+      ]
+    },
+    {
+      "id": "R_ALPHA_VANE",
+      "lines": [
+        "R ALPHA VANE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/R_ALPHA_VANE_OFF.svg",
+        "ON": "unified-v2/R_ALPHA_VANE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "R_ELEV_PITOT",
+      "lines": [
+        "R ELEV",
+        "PITOT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/R_ELEV_PITOT_OFF.svg",
+        "ON": "unified-v2/R_ELEV_PITOT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "R_VALVE_OPEN",
+      "lines": [
+        "R VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/R_VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/R_VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/R_VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "SPEED_BRAKE_ARMED_GREEN",
+      "lines": [
+        "SPEED BRAKE",
+        "ARMED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/SPEED_BRAKE_ARMED_GREEN_OFF.svg",
+        "ON": "unified-v2/SPEED_BRAKE_ARMED_GREEN_ON.svg"
+      },
+      "scope": "MAIN_INSTRUMENT_PANEL",
+      "mountedCockpitInstances": [
+        "main-speed-brake-armed"
+      ]
+    },
+    {
+      "id": "SPEED_BRAKE_DO_NOT_ARMED_AMBER",
+      "lines": [
+        "SPEED BRAKE",
+        "DO NOT ARMED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_OFF.svg",
+        "ON": "unified-v2/SPEED_BRAKE_DO_NOT_ARMED_AMBER_ON.svg"
+      },
+      "scope": "MAIN_INSTRUMENT_PANEL",
+      "mountedCockpitInstances": [
+        "main-speed-brake-do-not-arm"
+      ]
+    },
+    {
+      "id": "SPEED_TRIM_FAIL",
+      "lines": [
+        "SPEED TRIM",
+        "FAIL"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/SPEED_TRIM_FAIL_OFF.svg",
+        "ON": "unified-v2/SPEED_TRIM_FAIL_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "STAB_OUT_OF_TRIM",
+      "lines": [
+        "STAB",
+        "OUT OF",
+        "TRIM"
+      ],
+      "orientation": "square",
+      "face": {
+        "width": 300,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/STAB_OUT_OF_TRIM_OFF.svg",
+        "ON": "unified-v2/STAB_OUT_OF_TRIM_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-stab-trim"
+      ]
+    },
+    {
+      "id": "STANDBY_GREEN",
+      "lines": [
+        "STANDBY GREEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/STANDBY_GREEN_OFF.svg",
+        "ON": "unified-v2/STANDBY_GREEN_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "STANDBY_PWR_OFF_LAMP",
+      "lines": [
+        "STANDBY",
+        "PWR OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/STANDBY_PWR_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/STANDBY_PWR_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "START_VALVE_OPEN",
+      "lines": [
+        "START VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/START_VALVE_OPEN_OFF.svg",
+        "ON": "unified-v2/START_VALVE_OPEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY",
+      "mountedCockpitInstances": [
+        "main-start-valve-1",
+        "main-start-valve-2"
+      ]
+    },
+    {
+      "id": "STBY_RUD_ON_LAMP",
+      "lines": [
+        "STBY",
+        "RUD ON"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/STBY_RUD_ON_LAMP_OFF.svg",
+        "ON": "unified-v2/STBY_RUD_ON_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "TEMP_PROBE",
+      "lines": [
+        "TEMP PROBE"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/TEMP_PROBE_OFF.svg",
+        "ON": "unified-v2/TEMP_PROBE_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "TRANSFER_BUS_OFF_LAMP",
+      "lines": [
+        "TRANSFER",
+        "BUS OFF"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/TRANSFER_BUS_OFF_LAMP_OFF.svg",
+        "ON": "unified-v2/TRANSFER_BUS_OFF_LAMP_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "VALVE_OPEN",
+      "lines": [
+        "VALVE OPEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "DIM_BLUE",
+        "BRIGHT_BLUE"
+      ],
+      "assets": {
+        "BRIGHT_BLUE": "unified-v2/VALVE_OPEN_BRIGHT_BLUE.svg",
+        "DIM_BLUE": "unified-v2/VALVE_OPEN_DIM_BLUE.svg",
+        "OFF": "unified-v2/VALVE_OPEN_OFF.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "WHEEL_WELL_RED",
+      "lines": [
+        "WHEEL WELL RED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/WHEEL_WELL_RED_OFF.svg",
+        "ON": "p8-lenses-v7/WHEEL_WELL_RED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "WING_BODY_OVERHEAT",
+      "lines": [
+        "WING BODY OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/WING_BODY_OVERHEAT_OFF.svg",
+        "ON": "unified-v2/WING_BODY_OVERHEAT_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "YAW_DAMPER",
+      "lines": [
+        "YAW",
+        "DAMPER"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "unified-v2/YAW_DAMPER_OFF.svg",
+        "ON": "unified-v2/YAW_DAMPER_ON.svg"
+      },
+      "scope": "OVERHEAD"
+    },
+    {
+      "id": "L_BOTTLE_DISCHARGED_AMBER",
+      "lines": [
+        "L BOTTLE",
+        "DISCHARGED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/L_BOTTLE_DISCHARGED_OFF.svg",
+        "ON": "p8-lenses-v7/L_BOTTLE_DISCHARGED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "R_BOTTLE_DISCHARGED_AMBER",
+      "lines": [
+        "R BOTTLE",
+        "DISCHARGED"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/R_BOTTLE_DISCHARGED_OFF.svg",
+        "ON": "p8-lenses-v7/R_BOTTLE_DISCHARGED_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ENG_2_OVERHEAT_AMBER",
+      "lines": [
+        "ENG 2",
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/ENG_2_OVERHEAT_OFF.svg",
+        "ON": "p8-lenses-v7/ENG_2_OVERHEAT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ENG_1_OVERHEAT_AMBER",
+      "lines": [
+        "ENG 1",
+        "OVERHEAT"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/ENG_1_OVERHEAT_OFF.svg",
+        "ON": "p8-lenses-v7/ENG_1_OVERHEAT_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "APU_DET_INOP",
+      "lines": [
+        "APU DET",
+        "INOP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "p8-lenses-v7/APU_DET_INOP_OFF.svg",
+        "ON": "p8-lenses-v7/APU_DET_INOP_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ALTEN_GREEN",
+      "lines": [
+        "ALTEN"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-green-v1/gallery/ALTEN_GREEN_OFF.svg",
+        "ON": "black-green-v1/gallery/ALTEN_GREEN_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    },
+    {
+      "id": "ZONE_TEMP_YELLOW",
+      "lines": [
+        "ZONE",
+        "TEMP"
+      ],
+      "orientation": "landscape",
+      "face": {
+        "width": 600,
+        "height": 300
+      },
+      "defaultState": "OFF",
+      "logicCondition": null,
+      "placement": null,
+      "states": [
+        "OFF",
+        "ON"
+      ],
+      "assets": {
+        "OFF": "black-yellow-v1/gallery/ZONE_TEMP_YELLOW_OFF.svg",
+        "ON": "black-yellow-v1/gallery/ZONE_TEMP_YELLOW_ON.svg"
+      },
+      "scope": "ASSET_TEST_ONLY"
+    }
+  ]
+}
