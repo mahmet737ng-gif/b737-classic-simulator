@@ -1,0 +1,40 @@
+{
+  "oh10": {
+    "url": "panel-mosaic-lab/cockpit/performance/boot-art/oh10-needle-mask-eacdc127f7340f9b3b0a.webp",
+    "width": 1095,
+    "height": 1436,
+    "bytes": 14294,
+    "sha256": "eacdc127f7340f9b3b0a19357d09a84aa2d6611261f9ad7fd810f7bb32f19293",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png",
+    "sourceSha256": "9a1ca4d6cfb277ec1404f3a464e957d81be9d9689a0810883364342d57b0f1ea",
+    "changed": 12584
+  },
+  "oh12": {
+    "url": "panel-mosaic-lab/cockpit/performance/boot-art/oh12-needle-mask-5088a2f7e5870a835fc1.webp",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 6486,
+    "sha256": "5088a2f7e5870a835fc128a18de4b16cd6035e61076b6b0c7774ab1757a0eabc",
+    "source": "panel-mosaic-lab/assets/locked/2026-10-23/OH12-BUS-TRANS-09319c17e7d0.png",
+    "sourceSha256": "709cb15a86f9038ca082136c4db59af83c7800107dfe320182bf7f4c56837e9f",
+    "changed": 5909
+  },
+  "engine1": {
+    "url": "panel-mosaic-lab/cockpit/performance/boot-art/engine1-start-lever-e21a1a02adc945b27091.webp",
+    "width": 655,
+    "height": 365,
+    "bytes": 183992,
+    "sha256": "e21a1a02adc945b2709159d1f3f9f22d659c7b2b3bfda2dd2b7ba1fed5aadb65",
+    "source": "panel-mosaic-lab/cockpit/assets/engine-start-lever-reference-v2.png",
+    "sourceSha256": "426ad9d86dcc9c475b062f3964111befb7e0d155dc34e7e13b62074065450e62"
+  },
+  "engine2": {
+    "url": "panel-mosaic-lab/cockpit/performance/boot-art/engine2-start-lever-3678f7fe7ceb8ce8b04f.webp",
+    "width": 655,
+    "height": 365,
+    "bytes": 184168,
+    "sha256": "3678f7fe7ceb8ce8b04f5bd016c922ffbec43b35b5fc78e19a3554ed47c56167",
+    "source": "panel-mosaic-lab/cockpit/assets/engine-start-lever-reference-v2.png",
+    "sourceSha256": "426ad9d86dcc9c475b062f3964111befb7e0d155dc34e7e13b62074065450e62"
+  }
+}

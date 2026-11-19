@@ -43,7 +43,12 @@
   const target=win.performance,offset=target.timeOrigin-origin;
   frames.add(target);
   add('document',offset,{frame,file:path(win.location.href)});
-  for(const type of ['navigation','resource','mark','measure','paint','longtask','long-animation-frame']){
+  // Same-origin cockpit frames share the main thread. Chromium reports the
+ // overlapping stall entries in each context. Keep one copy of that work
+ // while retaining distinct NavigationTiming and ResourceTiming per frame.
+ const types=['navigation','resource','mark','measure','paint'];
+ if(win===window)types.push('longtask','long-animation-frame');
+ for(const type of types){
    const consume=e=>{
     if(type==='resource'||type==='navigation'){resource(e,frame,offset);return;}
     if(type==='long-animation-frame'){
@@ -118,7 +123,7 @@
     longAnimationFrames:entryTypes.includes('long-animation-frame')},
    readiness:{fullMs:round(diagnostics?.cockpitReadyMs),mainMs:round(diagnostics?.mainReadyMs),
     sharpMs:round(diagnostics?.mainSharpReadyMs),phases:diagnostics?.cockpitMilestones,
-    state:diagnostics?.cockpit},
+    state:diagnostics?.readyState??diagnostics?.cockpit,liveState:diagnostics?.cockpit},
    release:timeline.find(e=>e.type==='navigation'&&e.frame==='Unified'&&e.delivery?.length)?.delivery,
    dropped,timeline:[...timeline].sort((a,b)=>a.atMs-b.atMs)
   };
@@ -129,9 +134,13 @@
   for(const {observer,consume} of observers){observer.takeRecords().forEach(consume);observer.disconnect();}
   stoppedAt=performance.now();
   clearInterval(scanTimer);
+  document.removeEventListener('visibilitychange',visibility);
   if(frameRequest)cancelAnimationFrame(frameRequest);
  }
  const scanTimer=setInterval(scanFrames,350);
+ function visibility(){add('visibility',performance.now(),{state:document.visibilityState});}
+ document.addEventListener('visibilitychange',visibility);
+ visibility();
  function phase(name,start,end=performance.now()){
   add('app-phase',start,{name,durationMs:round(end-start)});
  }
