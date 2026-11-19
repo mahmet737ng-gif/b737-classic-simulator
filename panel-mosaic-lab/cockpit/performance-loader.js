@@ -89,16 +89,28 @@
    // Fill freed slots promptly instead of waiting 115 ms per decode wave.
    schedule(0);
   }
+  function traceTexture(){
+   if(win.B737BootTrace)return win.B737BootTrace;
+   if(win.frameElement?.id)return win.parent.B737BootTrace;
+   return undefined;
+  }
   function begin(url,waiters,upgrade){
+   const trace=traceTexture(),start=trace?win.performance.now():0;
+   const record=(kind,from,ok)=>trace?.texture(win.frameElement?.id,win.performance.timeOrigin,
+    url,waiters[0].level.extent,kind,from,win.performance.now(),ok);
    activeDecodes++;if(upgrade)activeUpgrades++;
    for(const w of waiters)w.item.loading=url;
    inflight.set(url,{waiters,upgrade});
    const next=new win.Image();next.decoding='async';next.fetchPriority=upgrade?'low':'high';
    next.onload=async()=>{
-    try{if(typeof next.decode==='function')await next.decode();}catch{}
+    const decodeStart=trace?win.performance.now():0;
+    record(upgrade?'zoom-texture-load':'texture-load',start,true);
+    let decoded=true;
+    try{if(typeof next.decode==='function')await next.decode();}catch{decoded=false;}
+    record('decode',decodeStart,decoded);
     complete(url,true);
    };
-   next.onerror=()=>complete(url,false);
+   next.onerror=()=>{record('texture-load',start,false);complete(url,false);};
    next.src=url;
   }
   function refresh(){
@@ -144,7 +156,10 @@
      // Keep the bounded decode pool for subsequent zoom upgrades.
      item.loading=url;
      img.fetchPriority='high';
+     const trace=traceTexture(),start=trace?win.performance.now():0;
      const settled=event=>{
+      trace?.texture(frameId,win.performance.timeOrigin,url,level.extent,'fit-image-load',
+       start,win.performance.now(),event.type==='load');
       img.removeEventListener('load',settled);
       img.removeEventListener('error',settled);
       item.loading=null;

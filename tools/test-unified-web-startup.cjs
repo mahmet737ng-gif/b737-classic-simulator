@@ -40,6 +40,36 @@ function assertFiveSeconds(samples){
    if(lockedIrsObserverRace(e))lockedIrsErrors.push(String(e));
    else errors.push(String(e?.stack||e));
   });
+  if(process.argv.includes('--boot-trace')){
+   await page.goto(url,{waitUntil:'domcontentloaded'});
+   assert.equal(await page.evaluate(()=>typeof window.B737BootTrace),'undefined');
+   await page.addInitScript(()=>{
+    Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{window.copiedBootTrace=text;}}});
+   });
+   await page.goto(url+'?bootTrace=1&redactTest=secret-query-value',{waitUntil:'commit'});
+   await page.locator('#unifiedBootTrace').waitFor();
+   await page.waitForFunction(()=>document.documentElement.dataset.unifiedCockpitReadyMs,null,{timeout:30000});
+   await page.locator('#viewport').hover({position:{x:100,y:100}});
+   await page.keyboard.down('Control');
+   await page.mouse.wheel(0,-180);
+   await page.keyboard.up('Control');
+   await page.waitForFunction(()=>window.B737BootTrace.report().timeline.some(e=>e.type==='zoom-work'&&Number.isFinite(e.inputDelayMs))&&
+    window.B737BootTrace.report().timeline.some(e=>e.type==='zoom-paint-opportunity'));
+   await page.getByRole('button',{name:'Copy report'}).click();
+   await page.waitForFunction(()=>window.copiedBootTrace);
+   const copied=await page.evaluate(()=>window.copiedBootTrace);
+   const report=JSON.parse(copied);
+   assert.ok(report.readiness.fullMs>0&&report.readiness.state.complete);
+   assert.ok(report.timeline.some(e=>e.type==='navigation'&&e.atMs===0));
+   assert.ok(report.timeline.some(e=>e.type==='resource'&&e.frame.includes('overheadFrame')));
+   assert.ok(report.timeline.some(e=>e.type==='texture'));
+   assert.ok(report.timeline.some(e=>e.type==='app-phase'&&e.name==='Initialize electrical and ECU systems'));
+   assert.ok(report.timeline.some(e=>e.type==='zoom-work'&&Number.isFinite(e.geometryMs)));
+   assert.ok(!copied.includes('secret-query-value'));
+   fs.writeFileSync(path.join(out,'boot-trace-smoke.json'),JSON.stringify(report,null,2));
+   console.log('Boot trace startup, wheel zoom, frame timing, query redaction and Copy report verified');
+   return;
+  }
   for(const mode of ['fresh-cache','retained-cache','conventional-profile']){
    if(mode==='conventional-profile'){
     await page.locator('#aircraftSettingsOpen').click();

@@ -108,9 +108,10 @@
   byId('zoomValue').textContent=Math.round(zoom*100)+'%';
   scheduleViewRefresh();
  }
- function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null){
+ function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null,inputTime){
   wheelController?.cancel();
-  const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
+  const profiler=window.B737InteractionProfilerV1,trace=window.B737BootTrace;
+  const started=profiler||trace?performance.now():0;
   const next=model.clamp(value,.04,2);
   const after={x:Math.max(0,(vp.clientWidth-assembly.canvas.width*next)/2),
    y:Math.max(0,(vp.clientHeight-assembly.canvas.height*next)/2)};
@@ -126,6 +127,7 @@
    const before={x:parseFloat(scene.style.left)||0,y:parseFloat(scene.style.top)||0};
    z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);
   }
+  const geometryEnd=trace?performance.now():undefined;
   zoom=z.zoom;
   window.B737ImageLoader.setCockpitZoom(zoom);
   scene.style.left=after.x+'px';scene.style.top=after.y+'px';
@@ -137,6 +139,7 @@
    // The inherited --zoom style affects region labels and selection
    // outlines, not the actual gauges. Sync it when the pinch ends.
   }else commitZoomPresentation();
+  trace?.zoom(gestureSource?'pinch-commit':'zoom-commit',started,zoom,geometryEnd,inputTime);
   if(profiler)profiler.markWork(gestureSource?'ZOOM pinch geometry and scroll':'ZOOM single-step geometry and scroll',performance.now()-started);
  }
  // Responsive two-finger zoom adapter for the outer canvas. This touches only
@@ -156,7 +159,8 @@
   },
   move(start,distance,x,y){
    if(!start||!assembly||![distance,x,y].every(Number.isFinite)||distance<2)return;
-   const profiler=window.B737InteractionProfilerV1,started=profiler?performance.now():0;
+   const profiler=window.B737InteractionProfilerV1,trace=window.B737BootTrace;
+   const started=profiler||trace?performance.now():0;
    const next=model.clamp(start.zoom*distance/start.distance,.04,2);
    // Compositor-only preview: freeze the scroll range, parent position and
    // texture level while the fingers move. One scene transform keeps the
@@ -166,6 +170,7 @@
    const dy=y+start.top-start.offsetY-start.sourceY*next;
    scene.style.transform='translate('+dx+'px,'+dy+'px) scale('+next+')';
    start.latestZoom=next;start.latestX=x;start.latestY=y;
+   trace?.zoom('pinch-preview',started,next);
    if(profiler)profiler.markWork('ZOOM compositor preview transform',performance.now()-started);
   },
   end(start){
@@ -240,7 +245,7 @@
  byId('inspectorToggle').onclick=e=>{const active=!document.body.classList.contains('side-open');document.body.classList.toggle('side-open',active);e.currentTarget.setAttribute('aria-expanded',String(active));};
  byId('lampSelect').onchange=renderLights;byId('lampFault').onchange=e=>command('fault',{id:byId('lampSelect').value,active:e.target.checked});byId('resetScenario').onclick=()=>command('reset-scenario');byId('resetControls').onclick=()=>command('reset-controls');
  vp.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();const r=vp.getBoundingClientRect();applyZoom(zoom*(e.deltaY<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,e.clientX-r.left,e.clientY-r.top);return;}
+  if(e.ctrlKey||e.metaKey){e.preventDefault();const r=vp.getBoundingClientRect();applyZoom(zoom*(e.deltaY<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,e.clientX-r.left,e.clientY-r.top,null,e.timeStamp);return;}
   // Outer cockpit pans directly; embedded OH/CDU send same-origin wheel-pan messages.
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(panWheel(e))e.preventDefault();
@@ -290,7 +295,17 @@
    applyZoom(zoom,vp.scrollLeft,vp.scrollTop,vp.clientWidth/2,vp.clientHeight/2);
   },120);
  });
- async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');
+ async function start(){try{const trace=window.B737BootTrace,wait=trace?performance.now():0;const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}const parseEnd=trace?performance.now():0;
+  trace?.phase('Await cockpit assembly',wait,parseEnd);
+  model.validate(assembly);
+  const mountStart=trace?performance.now():0;
+  trace?.phase('Validate cockpit assembly',parseEnd,mountStart);
+  mount();
+  const mounted=trace?performance.now():0;
+  trace?.phase('Mount cockpit panels',mountStart,mounted);
+  window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));
+  trace?.phase('Notify cockpit components',mounted);
+  focus('main');
   const scales=Object.fromEntries(assembly.regions.map(r=>[r.id,model.fit(r,vp.clientWidth,vp.clientHeight)]));
   window.B737ImageLoader.primeCockpit(scales,zoom);
   const earlyReady=window.B737TakeOverheadReady();

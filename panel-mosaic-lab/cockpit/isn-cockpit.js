@@ -794,7 +794,13 @@
  window.dispatchEvent(new CustomEvent('b737:electrical-owner-ready'));
  render();
  }
- loadDependencies().then(init).catch(error=>{
+ const trace=window.B737BootTrace,requestStart=trace?performance.now():0;
+ loadDependencies().then(()=>{
+  const initStart=trace?performance.now():0;
+  trace?.phase('Load electrical and ECU modules',requestStart,initStart);
+  init();
+  trace?.phase('Initialize electrical and ECU systems',initStart);
+ }).catch(error=>{
   console.error('ISN-18 Unified ECU startup failed:',error);
   // If an integration script fails or the new ECU init throws, never leave
   // a silent, apparently functional overhead start panel.
