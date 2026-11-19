@@ -38,10 +38,10 @@
     onGround: true, flaps: 5, gearDownLocked: true, leadingEdgeTakeoff: true,
     speedbrakeDown: true, parkingBrakeSet: false, stabilizerTrimTakeoff: true,
     takeoffThrust: false, thrustLever1Angle: 45, thrustLever2Angle: 45,
-    cabinAltitudeFt: 0, engine1Fire: false, engine2Fire: false, apuFire: false
+    cabinAltitudeFt: 0, engine1Fire: false, engine2Fire: false, apuFire: false, wheelWellFire: false
   }; }
   const SENSOR_FIELDS = Object.freeze({onGround: 'boolean', cabinAltitudeFt: 'number',
-    engine1Fire: 'boolean', engine2Fire: 'boolean', apuFire: 'boolean'});
+    engine1Fire: 'boolean', engine2Fire: 'boolean', apuFire: 'boolean', wheelWellFire:'boolean'});
 
   class Session {
     constructor({Electrical, Loads, TrainerCore, WarningEngine} = {}) {

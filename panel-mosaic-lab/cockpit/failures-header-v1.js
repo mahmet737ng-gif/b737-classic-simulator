@@ -132,8 +132,35 @@
    const fuelMount=create('div',fuelBranch,'failures-electrical-content');
    fuelMount.id='failuresFuelMount';
    create('p',fuelMount,'failures-feedback','Fuel ECU instructor controls are initializing.');
-   create('p',panel,'failures-footer',
-    'Fuel faults act on the existing ATA 28 ECU. Other systems will be added separately.');
+   const fireBranch=create('details',panel,'failures-electrical');
+   const fireSummary=create('summary',fireBranch,'failures-section-title');
+   create('span',fireSummary,'','FIRE PROTECTION');
+   const fireCounter=create('span',fireSummary,'failures-branch-counter','0 ACTIVE');
+   const fireContent=create('div',fireBranch,'failures-electrical-content');
+   const fireInputs=[];
+   function addFire(label,read,command){
+    const row=create('label',fireContent,'failures-fire-row');
+    const input=create('input',row);input.type='checkbox';create('span',row,'',' '+label);
+    input.onchange=()=>{win.B737UnifiedFireLights?.dispatch(command(input.checked));refresh();};
+    fireInputs.push({input,read});
+   }
+   for(const unit of ['ENG1','ENG2']){
+    addFire(unit+' FIRE',s=>s.engineFire[unit],active=>({type:'SET_FIRE',unit,active}));
+    addFire(unit+' OVERHEAT',s=>s.engineOverheat[unit],active=>({type:'SET_OVERHEAT',unit,active}));
+    for(const loop of ['A','B'])addFire(unit+' LOOP '+loop+' FAIL',s=>!s.loops[unit][loop],
+     failed=>({type:'SET_LOOP',unit,loop,healthy:!failed}));
+   }
+   addFire('APU FIRE',s=>s.apuFire,active=>({type:'SET_FIRE',unit:'APU',active}));
+   addFire('APU DETECTOR FAIL',s=>!s.apuDetector,failed=>({type:'SET_APU_DETECTOR',healthy:!failed}));
+   addFire('WHEEL WELL FIRE',s=>s.wheelWellFire,active=>({type:'SET_WHEEL_FIRE',active}));
+   for(const bottle of ['L','R','APU']){
+    addFire(bottle+' BOTTLE LOW PRESSURE',s=>s.pressureLow[bottle],active=>({type:'SET_BOTTLE_LOW',bottle,active}));
+    for(const channel of (bottle==='APU'?[1]:[1,2]))addFire(
+     bottle+' BOTTLE '+(bottle==='APU'?'SQUIB':'ENG '+channel+' SQUIB')+' FAIL',
+     s=>!s.squibs[bottle][channel],failed=>({type:'SET_CIRCUIT',bottle,channel,healthy:!failed}));
+   }
+   const service=create('button',fireContent,'failures-close','Service discharged bottles');
+   service.type='button';service.onclick=()=>win.B737UnifiedFireLights?.dispatch({type:'SERVICE_BOTTLES'});
    function live(){
     const api=win.B737UnifiedBusFailureInjectionV1;
     validateProtocol(api);
@@ -151,7 +178,13 @@
    function refresh(){
     const keys=new Set(currentKeys());
     const fuelCount=Number(win.B737UnifiedFuelFailuresV1?.refresh?.()??0);
-    const total=keys.size+(Number.isFinite(fuelCount)?Math.max(0,fuelCount):0);
+    const fireState=win.B737UnifiedFireLights?.getState?.();
+    let fireCount=0;
+    for(const {input,read} of fireInputs){input.disabled=!fireState;input.checked=!!fireState&&read(fireState);if(input.checked)fireCount++;}
+    service.disabled=!fireState||Object.values(fireState.handles).some(h=>h.pulled)||
+     !Object.values(fireState.bottles).some(Boolean);
+    fireCounter.textContent=fireCount+' ACTIVE';
+    const total=keys.size+fireCount+(Number.isFinite(fuelCount)?Math.max(0,fuelCount):0);
     trigger.dataset.failureCount=String(total);
     trigger.dataset.failuresActive=String(total>0);
     trigger.textContent=total?'FAILURES ('+total+')':'FAILURES';
@@ -167,6 +200,8 @@
     clear.disabled=keys.size===0;
     return keys.size;
    }
+   win.addEventListener('b737:ata26-input-change',refresh);
+   win.addEventListener('b737:ata26-panel-state',()=>{if(opened)refresh();});
    function write(keys){
     const protocol=live(),record=protocol.payload(keys);
     protocol.live.write(record);

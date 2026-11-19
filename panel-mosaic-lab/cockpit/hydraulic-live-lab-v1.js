@@ -67,6 +67,8 @@
   const s=Core.PRESETS.find(p=>p.id===id);
   if(!s)return false;
   model=Core.loadPreset(id);preset=id;lastReason=s.label;
+  const panel=window.B737UnifiedFireLights?.getState?.();
+  if(panel)for(const n of [1,2])model.env['fireHandle'+n]=panel.handles['ENG'+n].pulled;
   if(id==='a-lost'||id==='b-lost'||id==='dual-lost'){
    model=Core.step(model,30); // leak scenario settles close to zero system pressure
   }else if(id==='dual-ac-loss')model=Core.step(model,8);
@@ -429,6 +431,12 @@
   output=Core.evaluate(model);render();
   return true;
  }
+ window.addEventListener('b737:ata26-panel-state',e=>{
+  const state=e.detail.state;
+  const actions=[1,2].filter(n=>model.env['fireHandle'+n]!==state.handles['ENG'+n].pulled)
+   .map(n=>({type:'SET_ENV',id:'fireHandle'+n,value:state.handles['ENG'+n].pulled}));
+  if(actions.length)after(actions);
+ });
  window.B737HydraulicLabV1=Object.freeze({
   open,getState:()=>Core.clone(model),getOutput:()=>output,
   presets:Core.PRESETS,faults:Core.FAULTS,choosePreset,inject,

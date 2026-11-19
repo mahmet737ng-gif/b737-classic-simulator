@@ -70,6 +70,7 @@
   if(!lamps||typeof lamps!=='object')return out;
   for(const id of ['ENG1_OVERHEAT','ENG2_OVERHEAT','APU_DET_INOP'])
    if(lamps[id]===true)out['CAPT.OVHT/DET'].push('FIRE:'+id);
+  if(lamps.FAULT&&lamps.OVHT_DET===true)out['CAPT.OVHT/DET'].push('FIRE:FAULT');
   return out;
  }
 
@@ -249,6 +250,8 @@
   }
   function fireWarningFrom(source,active){
    if(typeof active!=='boolean')return;
+   if(source==='wheelWell'&&win.B737UnifiedFireLights?.evaluate?.()?.indications.WHEEL_WELL)
+    active=false;
    fireWarningInputs[source]=active;
    win.B737SixPack?.setFireWarning?.(Object.values(fireWarningInputs).some(Boolean),'UNIFIED_FIRE_WARNING');
   }

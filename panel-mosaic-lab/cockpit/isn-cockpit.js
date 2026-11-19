@@ -355,6 +355,7 @@
    levers:{engine1:chain.get().observations.engine1.feedback.fuelStartLever.value,
     engine2:chain.get().observations.engine2.feedback.fuelStartLever.value},
    fireHandles:ecu.core.fireSwitch,nowMs:performance.now()});
+  for(const n of [1,2])if(ecu.core.fireSwitch['engine'+n])lamps['hyd-eng-'+n]=false;
   for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
    // Fuel indications derive from the existing ISN09 ledger + same live Pack.
    const actualFuel=ecu.get().fuel?.system;
@@ -388,7 +389,7 @@
   byId('isnBusTransfer').checked=session.electricalState.config.busTransferAuto;
   byId('isnGen1Fault').checked=session.electricalState.faults.GEN1_FAILED;
   byId('isnGen2Fault').checked=session.electricalState.faults.GEN2_FAILED;
-  byId('isnFire1').checked=state.sensors.engine1Fire;
+  byId('isnFire1').checked=window.B737UnifiedFireLights?.getState()?.engineFire.ENG1??state.sensors.engine1Fire;
   byId('isnCabinHigh').checked=state.sensors.cabinAltitudeFt===12000;
   for(const p of Pack.PUMP_REGISTRY){const value=state.pumps[p.id],n=node.get(p.id);n.run.replaceChildren(span(value.operating));n.low.replaceChildren(span(lamps[Adapter.LAMPS[p.id]]));
    n.evidence.textContent=value.powerEvidence+(value.sourceBus?' · '+value.sourceBus:'');n.faultInput.checked=value.failed;n.observed.value=String(value.observedPower);
@@ -426,9 +427,9 @@
  byId('isnBusTransfer').disabled=true;
  byId('isnBusTransfer').title='Change BUS TRANSFER using the physical OH12 switch.';
  for(const [input,fault] of [['isnGen1Fault','GEN1_FAILED'],['isnGen2Fault','GEN2_FAILED']])byId(input).onchange=e=>{bridge.instructor({type:'ELECTRICAL',action:{type:'FAULT',id:fault,active:e.target.checked,instructor:true}});render();};
- byId('isnFire1').onchange=e=>{bridge.instructor({type:'WARNING_SENSOR',key:'engine1Fire',value:e.target.checked});render();};
+ byId('isnFire1').onchange=e=>window.B737UnifiedFireLights?.dispatch({type:'SET_FIRE',unit:'ENG1',active:e.target.checked});
  byId('isnCabinHigh').onchange=e=>{bridge.instructor({type:'WARNING_SENSOR',key:'cabinAltitudeFt',value:e.target.checked?12000:0});render();};
- byId('isnAckFire').onclick=()=>{bridge.instructor({type:'ACK_FIRE'});render();};
+ byId('isnAckFire').onclick=()=>window.B737UnifiedFireLights?.dispatch({type:'BELL_CUTOUT'});
  byId('isnCutoutCabin').onclick=()=>{bridge.instructor({type:'CUTOUT_CABIN'});render();};
  byId('isnReplay').onclick=()=>{bridge.replay();chain.syncPower();render();};
  byId('isnReset').onclick=()=>{bridge.reset();
@@ -526,6 +527,45 @@
   render();
   profileDone('ISN 100ms active tick',tickStarted);
  },100);
+ // ATA 26 drives actual simulator owners while leaving cockpit switch detents intact.
+ let lastFireOutputs='',fireRenderQueued=false;
+ function applyFirePanel(state,derived){
+  const {outputs,indications}=derived;
+  const key=JSON.stringify([outputs,derived.activeFire,indications.WHEEL_WELL,indications.FIRE_BELL,indications.MASTER_FIRE_WARN]);
+  if(key===lastFireOutputs)return;
+  lastFireOutputs=key;
+  for(const n of [1,2]){
+   const id='engine'+n,pulled=outputs['ENG'+n].fuelShutoff;
+   if(ecu.core.fireSwitch[id]!==pulled){
+    if(pulled)for(const side of [1,2]){
+     if(session.electricalState.source[side]==='GEN'+n)ecu.selectGenerator('OFF',side);
+    }
+    ecu.core.setFireSwitch(id,pulled);
+    chain.command({type:'PNEUMATIC',action:{type:'SENSOR',key:id+'FireHandle',value:pulled}});
+   }
+  }
+  chain.apuFireDetected=outputs.APU.autoShutdown;
+  if(chain.apuFireDetected)chain.tripAPU('APU_FIRE');
+  const apuIn=!state.handles.APU.pulled;
+  if(chain.start.getLive().observation.apu.feedback.cockpitFireHandleIn.value!==apuIn){
+   chain.feedback('apu','cockpitFireHandleIn',apuIn);
+   chain.command({type:'PNEUMATIC',action:{type:'SENSOR',key:'apuFireHandle',value:!apuIn}});
+   if(!apuIn){chain.feedback('apu','inletDoorOpen',false);chain.feedback('apu','starterEngaged',false);}
+  }
+  const alerts={engine1Fire:derived.activeFire.ENG1,engine2Fire:derived.activeFire.ENG2,
+   apuFire:derived.activeFire.APU,wheelWellFire:indications.WHEEL_WELL};
+  for(const [key,value] of Object.entries(alerts)){
+   if(session.sensors[key]!==value)bridge.instructor({type:'WARNING_SENSOR',key,value});
+  }
+  if(!indications.FIRE_BELL&&Object.values(alerts).some(Boolean))bridge.instructor({type:'ACK_FIRE'});
+  chain.syncPower();ecu.core.refreshFuelDelivery();
+  if(!fireRenderQueued){
+   fireRenderQueued=true;queueMicrotask(()=>{fireRenderQueued=false;render();});
+  }
+ }
+ window.addEventListener('b737:ata26-panel-state',e=>applyFirePanel(e.detail.state,e.detail.derived));
+ const initialFirePanel=window.B737UnifiedFireLights;
+ if(initialFirePanel?.evaluate())applyFirePanel(initialFirePanel.getState(),initialFirePanel.evaluate());
  let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
   getPropulsionSnapshot:()=>({

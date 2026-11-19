@@ -177,6 +177,7 @@
    this.syncPower();return this.get();
   }
   startAPU(){
+   if(this.apuFireDetected){this.lastError='APU FIRE DETECTED';return;}
    if(globalThis.B737UnifiedCB?.available('apu.control')===false){this.phase.apu='BLOCKED';this.lastError='APU CONTROL CB OPEN';return;}
    if(this.apuProtectionReason){this.lastError='APU protection latched · select OFF to reset before restarting';return;}
    this.lastError='';this.cancel('apu');this.command({type:'APU_SWITCH',position:'START'});
@@ -216,7 +217,7 @@
   // source path as real APU fuel loss: no shadow APU or fabricated AC source.
   // It deliberately leaves the cockpit switch under the physical owner.
   tripAPU(reason){
-   const allowed=['OVERSPEED','HIGH_OIL_TEMP','LOW_OIL_PRESSURE','OIL_TEMP_SENSOR',
+   const allowed=['APU_FIRE','OVERSPEED','HIGH_OIL_TEMP','LOW_OIL_PRESSURE','OIL_TEMP_SENSOR',
     'SPEED_SENSOR','EGT_SENSOR','ECU_DC_LOSS','INLET_DOOR','NO_ACCELERATION','NO_FLAME'];
    if(!allowed.includes(reason))throw Error('Unknown APU protection trip reason');
    if(!['INLET_DOOR','STARTING','READY'].includes(this.phase.apu))return false;

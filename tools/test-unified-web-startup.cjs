@@ -173,11 +173,11 @@ const server=http.createServer((req,res)=>{
    assert.equal(throttles.shown,2,'Throttle 1 and 2 must both be visible at startup');
    assert.ok(throttles.bounds.every(b=>b.decoded&&b.width>25&&b.height>25),
     'Both installed throttle lever sprites must be decoded and visibly sized');
-   const slotPitch=(throttles.geometry.centers[2]-throttles.geometry.centers[1])*(throttles.plateWidth/1055);
+   const slotPitch=(throttles.geometry.centers[2]-throttles.geometry.centers[1]);
    assert.ok(throttles.geometry.gripWidthNative<slotPitch,
-    'Throttle handle grip heads overlap: reduce optical grip width or fix centers');
+    'Full-forward grip width in native photo pixels fits between both shaft axes');
    assert.equal(throttles.fakeTogaCircles,0,'Do not draw a second fake TO/GA circle over the throttle');
-   console.log('THR-0009: two independently mounted, spaced throttle grips with no duplicate TO/GA',JSON.stringify(throttles));
+   console.log('Two independent thrust levers registered on the installed quadrant',JSON.stringify(throttles));
    const sample=await page.evaluate(()=>{
     const diagnostic=window.B737LoadDiagnostics.snapshot(),control=document.querySelector('[data-mcp-hardware="FD_LEFT"]'),before=window.B737McpHardwareV1.getState().FD_LEFT;
     const start=performance.now();control.click();const responded=window.B737McpHardwareV1.getState().FD_LEFT!==before;control.click();

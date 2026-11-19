@@ -1,195 +1,129 @@
-(function(){
+/* Thrust quadrant, registered in pixels of the installed 800 × 1000 photo. */
+(function(win){
 'use strict';
-const CONFIG={"schema":"b737.throttle-five-position-v1","version":"THR-0009","relativeAssetRoot":"../assets/throttle-levers/","engineSourceCenters":{"1":474,"2":574},"backgroundSource":{"width":1145,"height":1373},"stages":{"0":{"name":"idle","sourceY":1088},"25":{"name":"quarter","sourceY":856},"50":{"name":"mid","sourceY":642},"75":{"name":"three-quarter","sourceY":430},"100":{"name":"full","sourceY":220}},"gripWidthNative":56,"note":"THR-0009: preserve both throttle lever sprites and independent sliders; reduce apparent grip from 112 to 48 source units so grips fit beside each other, slightly separate track centers; remove spurious TOGA circle overlay. Engine start levers and original assets remain unchanged.","sprites":{"engine-1-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-1-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-1-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-1-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-1-full.png":{"anchor":[0.5,0.73],"gripWidth":650},"engine-2-idle.png":{"anchor":[0.5,0.9],"gripWidth":640},"engine-2-quarter.png":{"anchor":[0.5,0.88],"gripWidth":655},"engine-2-mid.png":{"anchor":[0.5,0.83],"gripWidth":760},"engine-2-three-quarter.png":{"anchor":[0.5,0.78],"gripWidth":760},"engine-2-full.png":{"anchor":[0.5,0.73],"gripWidth":650}}};
-const KEYS=Object.freeze([0,25,50,75,100]);
-const position={1:0,2:0};
-const images={};
-const controls=new Map();
-let mounted=false,mounting=false,root=null,texture=null;
-function filename(engine,pct){return 'engine-'+engine+'-'+CONFIG.stages[String(pct)].name+'.png';}
-function path(engine,pct){return CONFIG.relativeAssetRoot+filename(engine,pct);}
-function fire(engine){document.dispatchEvent(new CustomEvent('b737:throttle-position',{detail:{engine,percent:position[engine],stage:CONFIG.stages[String(position[engine])].name,source:'PEDESTAL'}}));}
-function snap(pct){return KEYS.reduce((a,b)=>Math.abs(b-pct)<Math.abs(a-pct)?b:a,0);}
-function apply(engine,pct,source){
- const next=snap(Number(pct));if(!KEYS.includes(next))return;
- position[engine]=next;
- const c=controls.get(engine);if(c){
-  for(const [key,object] of c.sprite.entries())object.style.display=key===next?'block':'none';
-  if(c.select)c.select.value=String(next);
-  c.visual.dataset.position=String(next);
-  c.visual.setAttribute('aria-valuenow',String(next));
-  c.visual.setAttribute('aria-label','Engine '+engine+' throttle '+next+' percent');
-  // Move the invisible TO/GA touch target WITH its real photographed black
-  // pushbutton (different left/right photo locations), at every throttle detent.
-  if(c.toga){
-   const sprite=c.sprite.get(next),left=parseFloat(sprite.style.left),
-    top=parseFloat(sprite.style.top),w=parseFloat(sprite.style.width),h=parseFloat(sprite.style.height);
-   const cx=left+w*(engine===1?.74:.31),cy=top+h*.695,size=Math.max(17,Math.min(26,w*.18));
-   Object.assign(c.toga.style,{left:(cx-size/2)+'px',top:(cy-size/2)+'px',
-    width:size+'px',height:size+'px'});
-  }
+const doc=win.document;
+const STOPS=[0,25,50,75,100], NAMES=['idle','quarter','mid','three-quarter','full'];
+const AXIS={1:322,2:437};
+const FULL=184, IDLE=652;
+const WHITE_WIDTH=[137,135,127,117,108];
+const positions={1:0,2:0}, controls=new Map();
+// Each photo has its own crop and perspective. Register its metal shaft and
+// white handgrip independently. The last pair locates the recessed button.
+const PHOTO={
+ 1:[[.725,.884,.782,.717,.690],[.725,.855,.825,.725,.721],
+    [.773,.765,.934,.766,.535],[.702,.383,.819,.696,.627],[.503,.123,.541,.507,.266]],
+ 2:[[.275,.884,.783,.282,.690],[.277,.855,.840,.269,.724],
+    [.267,.769,.900,.254,.575],[.296,.392,.835,.300,.627],[.503,.123,.541,.507,.266]]
+};
+const clamp=n=>Math.max(0,Math.min(100,n));
+const closest=n=>Math.round(n/25);
+let layer,ready=false,mounting=false;
+function box(el,x,y,w,h){
+ Object.assign(el.style,{left:x/8+'%',top:y/10+'%',width:w/8+'%',height:h/10+'%'});
+}
+function paint(engine){
+ const c=controls.get(engine);if(!c)return;
+ const pct=positions[engine],requested=closest(pct);
+ const k=c.poses[requested]?requested:c.poses.reduce((best,p,i)=>p&&(best<0||Math.abs(i-requested)<Math.abs(best-requested))?i:best,-1);
+ if(k<0)return;
+ const pose=c.poses[k],anchor=PHOTO[engine][k];
+ const gripY=IDLE+(FULL-IDLE)*pct/100, width=WHITE_WIDTH[k]/anchor[2];
+ const height=width*pose.naturalHeight/pose.naturalWidth;
+ const left=AXIS[engine]-width*anchor[0],top=gripY-height*anchor[1];
+ if(c.stage!==k){
+  if(c.stage!==undefined)c.poses[c.stage].style.display='none';
+  pose.style.display='block';c.stage=k;
  }
- if(source!=='sim')fire(engine);
+ box(pose,left,top,width,height);
+ const buttonX=left+width*anchor[3],buttonY=top+height*anchor[4];
+ const btnSize=k<2?width*.134:18;
+ box(c.toga,buttonX-btnSize*.78,buttonY-btnSize*.78,btnSize*1.56,btnSize*1.56);
+ c.toga.classList.toggle('show-recess',k>=2);
+ // The grip hit area travels with the handgrip, clear of the opposite lever.
+ const gripX=left+width*(k===4?.50:engine===1?.484:.515);
+ box(c.hit,gripX-WHITE_WIDTH[k]/2,gripY-24,WHITE_WIDTH[k],48);
+ c.hit.dataset.position=String(pct);c.hit.setAttribute('aria-valuenow',String(pct));
+ c.hit.setAttribute('aria-valuetext',pct+' percent');
+ if(c.select)c.select.value=STOPS.includes(pct)?String(pct):'';
 }
-function buildControls(){
- const toolbar=document.querySelector('.toolbar .tools:last-child')||document.querySelector('.toolbar');
- if(!toolbar||document.getElementById('throttle-position-controls'))return;
- const holder=document.createElement('div');holder.id='throttle-position-controls';holder.className='throttle-position-controls';holder.dir='ltr';
- [1,2].forEach(engine=>{
-  const group=document.createElement('label');group.className='throttle-position-group';
-  group.append(document.createTextNode('THR '+engine));
-  const select=document.createElement('select');select.setAttribute('aria-label','Engine '+engine+' throttle position');
-  for(const value of KEYS){const o=document.createElement('option');o.value=String(value);o.textContent=value===0?'IDLE':value===25?'¼':value===50?'MID':value===75?'¾':'FULL';select.append(o);}
-  select.value='0';select.onchange=()=>apply(engine,Number(select.value),'user');
-  group.append(select);holder.append(group);
-  const c=controls.get(engine);if(c)c.select=select;
- });
- toolbar.append(holder);
+function apply(engine,value,source){
+ if(![1,2].includes(engine)||!Number.isFinite(value))return false;
+ const pct=Math.round(clamp(value)*10)/10;positions[engine]=pct;paint(engine);
+ if(source==='user')doc.dispatchEvent(new CustomEvent('b737:throttle-position',{
+  detail:{engine,percent:pct,stage:NAMES[closest(pct)],source:'PEDESTAL'}}));
+ return true;
 }
-function createSprite(engine,pct,tex){
- const p=CONFIG.stages[String(pct)];
- const name=filename(engine,pct),image=images[name],cal=CONFIG.sprites[name];
- // THR-0009: the opaque grip is calibrated to 48 source-native pixels, smaller
- // than the track pitch once projected into the same parent coordinate system.
- // No second application of texture scale: this would hide the sprites.
- const scale=CONFIG.gripWidthNative/cal.gripWidth;
- const visual=document.createElement('img');visual.src=image.src;visual.alt='';visual.draggable=false;
- visual.className='throttle-state-sprite';
- const x=CONFIG.engineSourceCenters[engine];
- // The panel's already-calibrated source window is reused; this never modifies the locked plate.
- const baseScale=tex.offsetWidth/1055;
- const centerX=tex.offsetLeft+(x-20)*baseScale;
- const centerY=tex.offsetTop+(p.sourceY-54)*baseScale;
- Object.assign(visual.style,{left:(centerX-image.naturalWidth*cal.anchor[0]*scale)+'px',
-    top:(centerY-image.naturalHeight*cal.anchor[1]*scale)+'px',
-    width:(image.naturalWidth*scale)+'px',
-    height:(image.naturalHeight*scale)+'px',
-    display:pct===0?'block':'none'});
- return visual;
-}
-function place(engine,tex){
- const hit=document.createElement('div');hit.className='throttle-sprite-hit';hit.setAttribute('role','slider');
- hit.tabIndex=0;hit.setAttribute('aria-valuemin','0');hit.setAttribute('aria-valuemax','100');
- hit.setAttribute('aria-valuenow','0');hit.setAttribute('aria-label','Engine '+engine+' throttle position');
- let down=null;
- hit.onpointerdown=e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.stopPropagation();down={y:e.clientY,pointer:e.pointerId};hit.setPointerCapture(e.pointerId);};
- hit.onpointerup=e=>{e.stopPropagation();if(!down)return;const delta=e.clientY-down.y;down=null;
-  if(Math.abs(delta)<12)return;
-  const current=KEYS.indexOf(position[engine]);apply(engine,KEYS[Math.max(0,Math.min(KEYS.length-1,current+(delta<0?1:-1)))],'user');};
- hit.onpointercancel=()=>down=null;
- hit.onkeydown=e=>{if(!['ArrowUp','ArrowDown','Home','End'].includes(e.key))return;e.preventDefault();
-  if(e.key==='Home')return apply(engine,0,'user');
-  if(e.key==='End')return apply(engine,100,'user');
-  const current=KEYS.indexOf(position[engine]);apply(engine,KEYS[Math.max(0,Math.min(4,current+(e.key==='ArrowUp'?1:-1)))],'user');};
- const sprites=new Map();
- for(const pct of KEYS){
-  const img=createSprite(engine,pct,tex);
-  root.append(img);
-  sprites.set(pct,img);
- }
- // Hit area follows common section of sprite movement, avoiding overlap with engine-start levers below.
- const ref=CONFIG.engineSourceCenters[engine],scale=tex.offsetWidth/1055;
- const x=tex.offsetLeft+(ref-20)*scale;
- const hitWidth=Math.max(24,(CONFIG.engineSourceCenters[2]-CONFIG.engineSourceCenters[1]-10)*scale);
- Object.assign(hit.style,{
-  left:(x-hitWidth/2)+'px',
-  top:(tex.offsetTop+78)+'px',
-  width:hitWidth+'px',
-  height:'585px'
- });
- root.append(hit);
- const toga=document.createElement('button');toga.type='button';
- toga.className='throttle-toga-push';
- toga.dataset.engine=String(engine);
- toga.setAttribute('aria-label','Press TO/GA switch on throttle '+engine);
- toga.title='TO/GA '+engine;
- toga.addEventListener('pointerdown',e=>{e.stopPropagation();});
+function addControls(engine,poses){
+ const hit=doc.createElement('div'),toga=doc.createElement('button');
+ hit.className='throttle-sprite-hit';hit.tabIndex=0;hit.setAttribute('role','slider');
+ hit.setAttribute('aria-label','Engine '+engine+' thrust lever');
+ hit.setAttribute('aria-valuemin','0');hit.setAttribute('aria-valuemax','100');hit.setAttribute('aria-orientation','vertical');
+ let drag=null;
+ hit.onpointerdown=e=>{
+  if(e.button!==0||drag)return;
+  e.preventDefault();e.stopPropagation();const height=layer.getBoundingClientRect().height;
+  if(height<=0)return;
+  drag={id:e.pointerId,y:e.clientY,pct:positions[engine],travel:height*(IDLE-FULL)/1000};
+  hit.setPointerCapture(e.pointerId);
+ };
+ hit.onpointermove=e=>{
+  if(e.pointerId!==drag?.id)return;
+  e.preventDefault();e.stopPropagation();
+  apply(engine,drag.pct+(drag.y-e.clientY)*100/drag.travel,'user');
+ };
+ hit.onpointerup=hit.onpointercancel=hit.onlostpointercapture=e=>{if(e.pointerId===drag?.id)drag=null;};
+ hit.onkeydown=e=>{
+  const pct=positions[engine],value={Home:0,End:100,ArrowUp:pct+1,ArrowDown:pct-1,PageUp:pct+10,PageDown:pct-10}[e.key];
+  if(value===undefined)return;e.preventDefault();e.stopPropagation();apply(engine,value,'user');
+ };
+ toga.type='button';toga.className='throttle-toga-push';toga.dataset.engine=String(engine);
+ toga.setAttribute('aria-label','Press TO/GA switch on throttle '+engine);toga.title='TO/GA '+engine;
+ toga.addEventListener('pointerdown',e=>e.stopPropagation());
  toga.addEventListener('click',e=>{
   e.preventDefault();e.stopPropagation();
-  window.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{
-   source:'THROTTLE_'+engine,engine}}));
+  win.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{source:'THROTTLE_'+engine,engine}}));
  });
- root.append(toga);
- controls.set(engine,{sprite:sprites,visual:hit,toga,select:null});
+ layer.append(hit,toga);controls.set(engine,{poses,hit,toga});
 }
-function mountPlasticCover(tex){
- if(root.querySelector('.throttle-plastic-cover'))return;
- // THR-0005: corrected slot-based placement (owner screenshot, 2026-10-25).
- // Cover is aligned to the two central throttle roller tracks; all coordinates are
- // original 1145x1373 quadrant-image pixels, not viewport/mobile CSS pixels.
- // This stays behind throttle sprites, with the locked plate unmodified.
- const sourceRect={x:388,y:176,w:224,h:648};
- const sourceWindow={x:20,y:30,w:1055,h:1290};
- const unit=tex.offsetWidth/sourceWindow.w;
- const cover=document.createElement('img');
- cover.className='throttle-plastic-cover';
- cover.alt='';
- cover.draggable=false;
- cover.decoding='async';
- cover.src=CONFIG.relativeAssetRoot+'throttle-plastic-cover.svg?v=THR-0005';
- Object.assign(cover.style,{
-  left:(tex.offsetLeft+(sourceRect.x-sourceWindow.x)*unit)+'px',
-  top:(tex.offsetTop+(sourceRect.y-sourceWindow.y)*unit)+'px',
-  width:(sourceRect.w*unit)+'px',height:(sourceRect.h*unit)+'px'
- });
- // The cover is behind all throttle sprites and does not intercept controls.
- root.append(cover);
+function buildSelectors(){
+ const bar=doc.querySelector('.toolbar .tools:last-child')||doc.querySelector('.toolbar');
+ if(!bar||doc.getElementById('throttle-position-controls'))return;
+ const holder=doc.createElement('div');holder.id='throttle-position-controls';holder.className='throttle-position-controls';holder.dir='ltr';
+ for(const [engine,c] of controls){
+  const label=doc.createElement('label'),select=doc.createElement('select');label.className='throttle-position-group';
+  label.append('THR '+engine);select.setAttribute('aria-label','Engine '+engine+' throttle position');
+  for(const pct of STOPS)select.add(new Option(pct===0?'IDLE':pct===100?'FULL':pct+'%',String(pct)));
+  const continuous=new Option('—','');continuous.hidden=true;select.add(continuous);
+  select.onchange=()=>apply(engine,Number(select.value),'user');label.append(select);holder.append(label);c.select=select;
+ }
+ bar.append(holder);
+}
+async function load(engine,k){
+ const img=new Image();img.alt='';img.draggable=false;img.decoding='async';img.className='throttle-state-sprite';
+ img.src='../assets/throttle-levers/engine-'+engine+'-'+NAMES[k]+'.png';
+ try{await img.decode();return img;}catch{return null;}
 }
 async function mount(){
- // Async compiled bundles can start after app.js has already dispatched the
- // one-shot cockpit-mounted event; never rely on that event alone.
- if(mounted||mounting)return;
- const candidate=document.querySelector('#region-pedestal .region-native');
- const plate=candidate?.querySelector('[data-piece="throttle-quadrant"]');
- if(!candidate||!plate)return;
- mounting=true;root=candidate;texture=plate;
- root.dataset.throttleMount='loading';
+ if(ready||mounting)return;
+ const native=doc.querySelector('#region-pedestal .region-native'),plate=native?.querySelector('[data-piece="throttle-quadrant"]');
+ if(!plate)return;mounting=true;
  try{
-   const entries=[1,2].flatMap(e=>KEYS.map(p=>[filename(e,p),path(e,p)]));
-   const results=await Promise.allSettled(entries.map(async ([name,url])=>{
-    const img=new Image();img.decoding='async';img.src=url;
-    await img.decode();
-    if(!img.naturalWidth||!img.naturalHeight)throw Error('Invalid PNG '+name);
-    return [name,img];
-   }));
-   for(const result of results)if(result.status==='fulfilled'){
-    const [name,img]=result.value;images[name]=img;
-   }
-   const missing=entries.filter(([name])=>!images[name]).map(([name])=>name);
-   if(!Object.keys(images).length){
-    root.dataset.throttleMount='missing-assets';
-    console.warn('THR-0008: No throttle sprites decoded; preserving plate and retrying later.',missing);
-    return;
-   }
-   // Do not remove both handles because one of ten images failed to decode.
-   for(const engine of [1,2])for(const pct of KEYS){
-    const name=filename(engine,pct);
-    if(images[name])continue;
-    const sameEngine=KEYS.map(p=>filename(engine,p)).find(n=>images[n]);
-    const otherEngine=KEYS.map(p=>filename(engine===1?2:1,p)).find(n=>images[n]);
-    images[name]=images[sameEngine||otherEngine];
-   }
-   mountPlasticCover(texture);
-   place(1,texture);place(2,texture);buildControls();
-   apply(1,position[1],'sim');apply(2,position[2],'sim');
-   mounted=true;root.dataset.throttleMount='ready';
-   root.dataset.throttleMissingAssets=String(missing.length);
-   if(missing.length)console.warn('THR-0008: Loaded with fallback sprites:',missing);
-   root.dispatchEvent(new CustomEvent('b737:throttle-sprites-ready',{detail:{engines:2,positions:KEYS.slice(),missing}}));
- }catch(err){
-   root.dataset.throttleMount='error';
-   console.error('THR-0008: Throttle lever mount failed:',err);
+  const sets=await Promise.all([1,2].map(n=>Promise.all(STOPS.map((_,k)=>load(n,k)))));
+  if(sets.some(set=>set.every(img=>!img))){native.dataset.throttleMount='missing-assets';return;}
+  layer=doc.createElement('div');layer.className='throttle-quadrant-layer';
+  const cover=doc.createElement('div');cover.className='throttle-plastic-cover';
+  box(cover,346,170,67,515);layer.append(cover);plate.append(layer);
+  sets.forEach((set,i)=>{for(const img of set)if(img){img.style.display='none';layer.append(img);}addControls(i+1,set);});
+  buildSelectors();paint(1);paint(2);ready=true;
+  native.dataset.throttleMount='ready';native.dataset.throttleMissingAssets=String(sets.flat().filter(img=>!img).length);
+  native.dispatchEvent(new CustomEvent('b737:throttle-sprites-ready',{bubbles:true,detail:{engines:2,positions:STOPS.slice()}}));
  }finally{mounting=false;}
 }
-// Register for the usual mount, but also handle scripts that execute AFTER that
-// event (compiled Pages bundles, cached or offline boots).
-window.addEventListener('b737:cockpit-mounted',()=>{void mount();});
-queueMicrotask(()=>{void mount();});
-document.addEventListener('DOMContentLoaded',()=>{void mount();},{once:true});
-window.addEventListener('load',()=>{void mount();},{once:true});
-for(const delay of [300,1500,5000])setTimeout(()=>{if(!mounted)void mount();},delay);
-document.addEventListener('b737:throttle-state',event=>{
- const d=event.detail||{};if([1,2].includes(d.engine)&&Number.isFinite(d.percent)&&mounted)apply(d.engine,d.percent,'sim');
-});
-window.B737ThrottlePositions=Object.freeze({get:engine=>position[engine],set:(engine,value)=>[1,2].includes(engine)&&apply(engine,value,'user'),mounted:()=>mounted,positions:KEYS,geometry:()=>({centers:{...CONFIG.engineSourceCenters},gripWidthNative:CONFIG.gripWidthNative,hasAddedTogaFace:false})});
-})();
+doc.addEventListener('b737:throttle-state',e=>apply(e.detail?.engine,e.detail?.percent,'sim'));
+win.addEventListener('b737:manual-engine-throttle',e=>apply(e.detail?.engine,e.detail?.percent,'sim'));
+win.addEventListener('b737:cockpit-mounted',mount);
+win.addEventListener('load',mount,{once:true});queueMicrotask(mount);
+for(const ms of [500,1800,5000])setTimeout(mount,ms);
+win.B737ThrottlePositions=Object.freeze({get:engine=>positions[engine],set:(engine,pct)=>apply(engine,Number(pct),'user'),
+ mounted:()=>ready,positions:STOPS,geometry:()=>({centers:{...AXIS},sourceWidth:800,gripWidthNative:WHITE_WIDTH[4],fullY:FULL,idleY:IDLE,hasAddedTogaFace:false})});
+})(window);

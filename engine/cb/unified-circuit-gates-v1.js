@@ -75,6 +75,9 @@ for(const [name,variant,pos]of [['autoAC','CPCS','F1'],['autoDC','CPCS','F2'],['
 for(const [name,keys]of Object.entries({L_FWD:['P6-11|ALL|B9','P18-3|ALL|F1'],L_SIDE:['P6-12|ALL|B9','P18-3|ALL|F3'],R_FWD:['P6-12|ALL|B8','P18-3|ALL|E1'],R_SIDE:['P6-11|ALL|B8','P18-3|ALL|E3'],L45:['P6-11|ALL|B7'],R45:['P6-12|ALL|B7']}))define('window.'+name,keys);
 one('fire.wheelWellDetector','P6-2','B24','DETECTION');
 one('fire.extinguisherL','P6-2','C24','CONTROL');one('fire.extinguisherR','P6-2','C22','CONTROL');one('fire.extinguisherAPU','P6-2','C23','CONTROL');
+// P6-2 photo catalogue and LAN ATA 26-20 fig. 29: alternate engine-bottle firing feeds.
+one('fire.extinguisherLAlternate','P6-2','D24','CONTROL');
+one('fire.extinguisherRAlternate','P6-2','D23','CONTROL');
 // Catalogue/MRG conflicts remain unavailable for automatic system routing.
 const QUARANTINED=['P6-4|CPCS|C8','P6-4|DCPCS|C8','P6-4|CPCS|E8','P6-4|DCPCS|E8','P18-3|ALL|A12'];
 const UNBOUND=['fuel.groundFuelingControl','air.recircControl','air.recircEnergized','air.recircFan','air.temperatureIndicator','air.valvePositionIndicator','air.temperatureAutoR','air.temperatureAutoL','air.temperatureManual','air.ramModR','air.ramModL','air.turbofanR','air.turbofanL','electrical.tr2','electrical.tr3','electrical.standbyControl','electrical.standbyIndication','electrical.apuControl','electrical.dcStandbyBattery','electrical.dcStandbyTr','antiice.cowl1','antiice.cowl2','antiice.engineWing1','antiice.engineWing2','antiice.wingValve','lights.landingOutboardR','lights.landingOutboardL','lights.landingInboardL','lights.landingInboardR','lights.seatBelts','lights.passengerSigns','lights.emergencyExit','warning.annunciator1','warning.annunciatorBattery','warning.section4','warning.section5','warning.section6','oxygen.manualControl','cooling.normalBlower','cooling.alternateBlower','press.indication','press.lighting','probe.drain'];

@@ -263,8 +263,8 @@
    yawDamper:mainB&&!faulted(s,'YAW_DAMPER_HYD_FAIL'),
    antiskid:!faulted(s,'ANTISKID_FAIL'),
    alternateFlaps:standbyDemand&&pressure.STBY>1800&&!faulted(s,'ALT_FLAP_BYPASS_FAIL'),
-   reverser1:mainA||pressure.STBY>1800,
-   reverser2:mainB||pressure.STBY>1800,
+   reverser1:!s.env.fireHandle1&&(mainA||pressure.STBY>1800),
+   reverser2:!s.env.fireHandle2&&(mainB||pressure.STBY>1800),
    ptu:{available:!faulted(s,'PTU_FAIL'),demand:ptuDemand,active:ptuDemand&&!faulted(s,'PTU_FAIL')},
    lgtu:{available:!faulted(s,'LGTU_FAIL'),demand:lgtuDemand,active:lgtuDemand&&!faulted(s,'LGTU_FAIL')},
    fluidOverheat:{A:faulted(s,'A_FLUID_OVERHEAT'),B:faulted(s,'B_FLUID_OVERHEAT')}

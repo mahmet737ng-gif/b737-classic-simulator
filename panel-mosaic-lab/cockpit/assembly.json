@@ -361,12 +361,12 @@
           "id": "fire-protection",
           "label": "FIRE PROTECTION — BELOW THROTTLE QUADRANT",
           "asset": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
-          "x": 244,
-          "y": 740.9857819905213,
-          "w": 685,
-          "h": 170.10287081339712,
+          "x": 250,
+          "y": 703.25,
+          "w": 650,
+          "h": 216.66666666666666,
           "presentation": "contain",
-          "layoutStatus": "FIRELAMP-0006 individually separated ON/OFF lights; base V6 approved shell; adjacent panels unmodified"
+          "layoutStatus": "P8-1 face centered at x575: 265 mm face against 455 mm radio stand, with source transparency retained."
         },
         {
           "id": "pedestal-radio",

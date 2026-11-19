@@ -19,3 +19,20 @@
 
 /* Only the approved lamp glass is pressable, not adjacent fire switches. */
 .texture-piece[data-piece="fire-protection"] .fire-lamp:focus-visible{outline:2px solid #78d5ff;outline-offset:2px}
+
+.fire-hardware-layer{position:absolute;inset:0;pointer-events:none;direction:ltr}
+.fire-hardware-layer>*{position:absolute;box-sizing:border-box}
+.fire-hardware-layer .fire-surface-patch{pointer-events:none;max-width:none;object-fit:fill}
+.fire-toggle-silver{background:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp') 25% center / 500% 100% no-repeat;pointer-events:none}
+.fire-hardware-layer button{display:block;padding:0;min-width:0;min-height:0;margin:0;border:0;background:transparent;box-shadow:none;appearance:none;color:inherit;touch-action:none;pointer-events:auto;cursor:pointer}
+.fire-hardware-layer button:focus-visible{outline:2px solid #ffc854;outline-offset:1px}
+.fire-handle-control{z-index:2;transform-origin:center;transition:transform .14s ease-out;overflow:visible}
+.fire-handle-control[data-pulled="true"]{z-index:3;filter:drop-shadow(1px 3px 2px #111a)}
+.fire-handle-control img{position:absolute;max-width:none;object-fit:fill;pointer-events:none}
+.fire-hardware-layer .fire-override{background:url('./assets/recessed-pushbutton-v2.svg') center/contain no-repeat;z-index:4}
+.fire-hardware-layer .fire-bell-cutout{border-radius:12%;border:1px solid #171718;background:#252628;color:#e8e5dc;font:bold 5px/1 Arial,sans-serif;z-index:3}
+.fire-sr-status{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.reference-mode .fire-hardware-layer{display:none}
+@media(prefers-reduced-motion:reduce){.fire-handle-control{transition:none}}
+
+.failures-fire-row{display:block;margin:.25rem 0;cursor:pointer}

@@ -11,3 +11,19 @@
  background:transparent!important;box-shadow:none!important;border:0!important}
 .throttle-toga-push:focus-visible{outline:2px solid #ffcf51;outline-offset:2px}
 .reference-mode .throttle-toga-push{display:none!important}
+
+/* Native plane matches the full 800 × 1000 plate, including the cropped foot. */
+.throttle-quadrant-layer,.pedestal-trim-layer{position:absolute;top:0;left:0;width:100%;aspect-ratio:800/1000;pointer-events:none;direction:ltr}
+.throttle-quadrant-layer .throttle-state-sprite{max-width:none;object-fit:fill}
+.throttle-quadrant-layer .throttle-sprite-hit,.throttle-quadrant-layer .throttle-toga-push{pointer-events:auto}
+.throttle-quadrant-layer .throttle-plastic-cover{background:url('../assets/throttle-levers/throttle-plastic-cover.svg') 50% 50% / 345% 100% no-repeat;border-radius:7% / 1%}
+.throttle-toga-push.show-recess::before{content:'';position:absolute;inset:20% 16%;border-radius:50%;background:url('./assets/pedestal-hardware/toga-recess.webp') center / 100% 100% no-repeat;pointer-events:none}
+.pan-mode .throttle-toga-push,.reference-mode .throttle-quadrant-layer,.reference-mode .pedestal-trim-layer{display:none!important}
+.pedestal-trim-wheel{position:absolute;top:29%;height:43%;width:6.6%;transform:translateX(-50%);cursor:ns-resize;touch-action:none;pointer-events:auto;outline:0}
+.pedestal-trim-wheel[data-side="CAPT"]{left:5.8%}.pedestal-trim-wheel[data-side="FO"]{left:94.2%}
+.pedestal-trim-wheel:focus-visible{outline:1px dotted #fff}
+.pedestal-trim-plane{position:absolute;left:50%;top:0;height:100%;aspect-ratio:1;transform:translateX(-50%) scaleX(.116);pointer-events:none}
+.pedestal-trim-plane img{display:block;position:absolute;width:100%;height:100%;max-width:none;object-fit:fill;pointer-events:none}
+.pedestal-trim-index{position:absolute;width:4.5%;height:auto!important;max-width:none;transform:translateY(-50%);pointer-events:none}
+.pedestal-trim-index[data-side="CAPT"]{left:9.3%}.pedestal-trim-index[data-side="FO"]{right:9.3%;transform:translateY(-50%) scaleX(-1)}
+.pan-mode .pedestal-trim-wheel{pointer-events:none}

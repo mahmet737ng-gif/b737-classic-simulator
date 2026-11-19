@@ -12,7 +12,11 @@ ok(M.SLOTS.length===11&&M.SLOTS.filter(x=>x.type==='rect').length===8&&M.SLOTS.f
 ok(M.BASE.width===2172&&M.BASE.height===724,'Natural pixel coordinate canvas');
 const p=asm.regions.find(r=>r.id==='pedestal').placements.find(r=>r.id==='fire-protection');
 ok(p.asset===manifest.panel.path,'Only the approved Fire bare panel referenced in Unified');
-ok(p.presentation==='contain'&&p.w===685&&p.h===170.10287081339712,'Original native placement untouched');
+const pedestal=asm.regions.find(r=>r.id==='pedestal');
+const radio=pedestal.placements.find(p=>p.id==='pedestal-radio');
+ok(p.presentation==='contain'&&Math.abs(p.w/p.h-3)<.001,'Fire face uses the native photo aspect ratio');
+ok(Math.abs((p.x+p.w/2)-(radio.x+radio.w/2))<1,'P8 face is centered on the radio pedestal');
+ok(Math.abs(p.w*(2098/2172)/radio.w-265/455)<.01,'Visible photographic face matches measured panel/stand ratio');
 ok(asm.assets[p.asset].url==='./assets/fire-v6/FIRE_PANEL_BARE.webp','Approved Fire webp URL is active');
 const plate=path.join(root,p.asset);ok(fs.existsSync(plate),'New bare panel file physically present');
 function webpFile(file){

@@ -3,6 +3,12 @@ on:
   push:
     paths:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
+      - 'panel-mosaic-lab/cockpit/fire-hardware-unified.js'
+      - 'panel-mosaic-lab/cockpit/stabilizer-trim-quadrant.js'
+      - 'panel-mosaic-lab/cockpit/throttle-levers*'
+      - 'panel-mosaic-lab/cockpit/assets/pedestal-hardware/**'
+      - 'fire-protection-lab/engine.js'
+      - 'tools/test-pedestal-controls.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
@@ -13,6 +19,12 @@ on:
   pull_request:
     paths:
       - 'panel-mosaic-lab/cockpit/fire-lights*'
+      - 'panel-mosaic-lab/cockpit/fire-hardware-unified.js'
+      - 'panel-mosaic-lab/cockpit/stabilizer-trim-quadrant.js'
+      - 'panel-mosaic-lab/cockpit/throttle-levers*'
+      - 'panel-mosaic-lab/cockpit/assets/pedestal-hardware/**'
+      - 'fire-protection-lab/engine.js'
+      - 'tools/test-pedestal-controls.cjs'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'panel-mosaic-lab/cockpit/assembly.json'
       - 'fire-protection-lab/reference/unified-11-indicator-aperture-audit-v3.json'
@@ -35,3 +47,19 @@ jobs:
           node --check panel-mosaic-lab/cockpit/fire-lights-model.js
           node --check panel-mosaic-lab/cockpit/fire-lights-unified.js
           node panel-mosaic-lab/cockpit/fire-lights-unified.test.cjs
+      - name: Verify physical pedestal controls through the live simulator
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+          python3 -m http.server 8788 --bind 127.0.0.1 > "$RUNNER_TEMP/pedestal-http.log" 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          node tools/test-pedestal-controls.cjs
+      - name: Save pedestal screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pedestal-hardware
+          path: artifacts/pedestal-qa/
+          if-no-files-found: ignore
