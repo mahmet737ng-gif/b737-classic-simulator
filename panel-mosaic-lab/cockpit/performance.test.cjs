@@ -19,22 +19,28 @@ const child=read('panel-mosaic-lab/cockpit/cdu-stage.html');for(const source of 
 // The embedded CDU uses the nav-map helper to validate routed fixes; EHSI renders in the parent.
 assert.ok(child.includes('src="nav-map-overlay.js"'));
 assert.ok(child.includes('engine/cdu-engine.js'));assert.ok(child.includes('cdu-bridge.js'));assert.ok(!read('panel-mosaic-lab/cockpit/flap-lever-test.js').includes('sourceImage=new Image'));
-// BOOT-FAST-0001: preserve exact owner-authored CSS declarations and order.
+// BOOT-SAFE-0001: every owner-frozen direct mount remains byte-identical.
 const linkedCSS=[...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)].map(m=>m[1]);
-assert.ok(linkedCSS.length<=12,'Unified must not return to 71 render-blocking cockpit CSS requests');
-assert.ok(linkedCSS.some(u=>u.startsWith('./guard-owner18-v1.css?')),'Guard Owner18 stylesheet remains direct and unchanged');
-let sourceStyles=0;
-for(const href of linkedCSS.filter(u=>/unified-css-fast-/.test(u))){
+assert.ok(linkedCSS.length<=30,'Safe CSS optimization may not restore 71 blocking requests');
+const expectedCssOrder=["style.css","guard-owner18-v1.css","main-panel-seam-repair.css","mcp-visual-v3.css","mcp-hardware-v1.css","mcp-toggle-reference-v2.css","mcp-authentic-sprites-v2.css","mcp-owner-photo-components-v1.css","mcp-front-actual-photo-v3.css","mcp-owner13-v1.css","mcp-photo-optics-v1.css","mcp-knob-retina-v1.css","mcp-afds-bridge-v1.css","unified-lights.css","flap-needles.css","aircraft-settings.css","pressurization-oh22-diagnostic-ui.css","isn-cockpit.css","isn-engine-gauges.css","flap-lever-test.css","engine-start-levers.css","throttle-levers.css","speedbrake-lever-unified-v1.css","fire-lights-unified.css","irs-isdu-frontend-v1.css","irs-isdu-onpanel-v2.css","irs-isdu-cues-v1.css","irs-sys-dspl-v1.css","irs-sys-dspl-lr-markings-v1.css","irs-dspl-sel-upper-v1.css","irs-upper-face-v2.css","irs-amber-display-v1.css","irs-upper-dspl-v1.css","irs-13seg-display-v2.css","irs-trainer-unified-v1.css","irs-panel-registration-v1.css","irs-rotary-detent-indices-v1.css","asp-controls-v1.css","engine-indication-mode-v1.css","conventional-physical-controls-v1.css","eis-autobrake-physical-v1.css","conventional-engine-needles-v1.css","ground-power-header-v1.css","failures-header-v1.css","cockpit-photo-input-v1.css","unified-pinch-v1.css","cb-panel-entry-v1.css","eis-dot-readouts-v1.css","afds-annunciator-switch-v1.css","flight-scenario-panel-v1.css","smiths-fuel-quantity-v1.css","eis-cold-dark-glass-v1.css","asp-physical-controls-v1.css","asp-vbr-small-silver-v1.css","toggle-base-matte-v1.css","antiice-live-test-lab-v2.css","aircon-live-test-lab-v1.css","exterior-lights-classic-v1.css","sixpack-glareshield-v1.css","overhead-test-labs-v1.css","overhead-cross-cockpit-v1.css","hydraulic-live-lab-v1.css","engine-indication-live-v2.css","manual-n1-live-v1.css","fuel-used-physical-ch7-v1.css","efis-pedestal-raster-v1.css","pedestal-dual-vhf-knobs-v1.css","pedestal-mechanical-frequency-v1.css","pedestal-vhf-comm-tfr-v1.css","pedestal-vhf-comm-test-v1.css","pedestal-vhf-nav-controls-v1.css"];
+const frozenLinks=["./guard-owner18-v1.css?v=OWNER18-004","./mcp-owner-photo-components-v1.css?v=MCP-PHOTO-0002","./mcp-owner13-v1.css?v=AT-PADDLE-20261027-R2","./irs-isdu-frontend-v1.css?v=IRS-UI-0001","./irs-isdu-onpanel-v2.css?v=IRS-UI-0004","./irs-isdu-cues-v1.css?v=IRS-CUES-0003","./irs-sys-dspl-v1.css?v=IRS-SYS-0001","./irs-sys-dspl-lr-markings-v1.css?v=IRS-LR-0001","./irs-dspl-sel-upper-v1.css?v=IRS-AMBER-0001","./irs-upper-face-v2.css?v=IRS-AMBER-0001","./irs-amber-display-v1.css?v=IRS-AMBER-0001","./irs-upper-dspl-v1.css?v=IRS-UPPER-0004","./irs-13seg-display-v2.css?v=IRS-FILAMENT-0002","./irs-trainer-unified-v1.css?v=IRS-LIVE-0002-MSU-PHOTO","./irs-panel-registration-v1.css?v=IRS-PANEL-0002","./irs-rotary-detent-indices-v1.css?v=IRS-INDEX-0002","./conventional-physical-controls-v1.css?v=CONV-CONTROLS-0003-AXLE","./conventional-engine-needles-v1.css?v=CONV-FULL-NEEDLES-0002-ABOVE-DIGITS"];
+for(const href of frozenLinks)assert.ok(linkedCSS.includes(href),'Protected stylesheet must retain its exact original tag: '+href);
+const actualCssOrder=[];
+for(const href of linkedCSS){
  const filename=href.split('?')[0].replace(/^\.\//,'');
+ if(!/^unified-css-safe-\d+-v1\.css$/.test(filename)){
+  actualCssOrder.push(filename);continue;
+ }
  const bundle=read('panel-mosaic-lab/cockpit/'+filename);
- const sources=[...bundle.matchAll(/\/\* BEGIN ([\w.-]+\.css) ([a-f0-9]{40}) \*\/\n([\s\S]*?)\n\/\* END \1 \*\//g)];
- assert.ok(sources.length>=3,'CSS bundle needs source segments: '+filename);
- for(const [,source,,contents] of sources){
-  assert.equal(contents,read('panel-mosaic-lab/cockpit/'+source),'CSS is byte-for-byte unchanged: '+source);
-  sourceStyles++;
+ const entries=[...bundle.matchAll(/\/\* BEGIN ([\w.-]+\.css) ([a-f0-9]{40}) \*\/\n([\s\S]*?)\n\/\* END \1 \*\//g)];
+ assert.ok(entries.length>=2,'Safe bundle is empty or corrupt: '+filename);
+ for(const [,name,,contents] of entries){
+  assert.ok(!/(?:irs|guard|owner|le-devices|conventional)/i.test(name),'Protected CSS must never be bundled: '+name);
+  assert.equal(contents,read('panel-mosaic-lab/cockpit/'+name),'Source CSS differs from owner file: '+name);
+  actualCssOrder.push(name);
  }
 }
-assert.equal(sourceStyles,69,'All 69 non-base, non-guard CSS sources are retained in exact order');
+assert.deepEqual(actualCssOrder,expectedCssOrder,'Every original stylesheet must retain exactly its original cascade order');
 // Service-worker contracts: no install download, immutable reuse, fresh mutable text,
 // API isolation and removal of only this route's outdated cache namespace.
 (async()=>{
