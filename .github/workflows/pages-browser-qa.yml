@@ -34,6 +34,12 @@ jobs:
           node tools/build-unified-web.cjs
       - name: Install browser test dependency
         run: npm install --no-save --ignore-scripts playwright@1.58.2
+      - name: Verify five-second full cockpit startup in raw and compiled builds
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
+          if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
+          node tools/test-unified-web-startup.cjs --startup-only --raw
+          node tools/test-unified-web-startup.cjs --startup-only
       - name: Verify selected CDU procedure on both EHSIs
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"

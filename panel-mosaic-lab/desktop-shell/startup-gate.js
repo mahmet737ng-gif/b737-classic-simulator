@@ -10,6 +10,32 @@
   });
   return images.length>0&&images.every(img=>img.complete&&img.naturalWidth>0);
  }
+ function imagesReady(root,selector){
+  const images=root?.querySelectorAll(selector);
+  return !!images?.length&&Array.from(images,img=>img.complete&&img.naturalWidth>0).every(Boolean);
+ }
+ function inspectFull(w,profile,main=inspect(w,profile)){
+  const d=w.document;
+  const result={electrical:false,overhead:false,cdu:false,pedestal:false,instruments:false,complete:false};
+  try{
+   result.electrical=w.B737ISNCockpitV1?.startupSynchronized?.()===true;
+   const overhead=d.getElementById('overheadFrame')?.contentDocument;
+   result.overhead=main.overhead&&imagesReady(overhead,'#atlasAbsolute .atlas-photo');
+   result.cdu=main.cdu;
+   result.pedestal=imagesReady(d,'#region-pedestal .texture-piece > img')&&
+    w.B737ThrottlePositions?.mounted?.()===true&&
+    d.querySelectorAll('#region-pedestal .engine-start-lever').length===2&&
+    !!d.querySelector('#region-pedestal .fire-hardware-layer');
+   const eadiSeats=['CAPT','FO'];
+   result.instruments=eadiSeats.every(seat=>
+    Number(d.querySelector('[data-eadi-stage1-seat="'+seat+'"]')?.dataset.eadiPaintCount)>0&&
+    !!d.getElementById('unifiedEhsi'+seat))&&
+    !!d.querySelector(profile.engineInstruments==='CONVENTIONAL'?
+     '.conventional-engine-needle-layer-v1 [data-render-angle]':'[data-isn-engine-gauges] [data-pointer]');
+   result.complete=main.usable&&result.electrical&&result.overhead&&result.cdu&&result.pedestal&&result.instruments;
+  }catch{}
+  return result;
+ }
  function inspect(w,profile){
   const result={profile:false,main:false,controls:false,overhead:false,cdu:false,usable:false};
   try{
@@ -27,5 +53,5 @@
   }catch{}
   return result;
  }
- return {inspect,visibleImagesReady,intersects};
+ return {inspect,inspectFull,visibleImagesReady,intersects};
 });

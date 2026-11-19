@@ -9,6 +9,7 @@
   const doc=win.document,rootURL=new URL('../../',doc.currentScript.src),manifest=win.B737PerformanceAssets;
   const entries=new Map(),pending=new Set(),inflight=new Map(),readyURLs=new Set(),seen=new Set();
   const MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1;
+  let startupScales=null,cockpitZoom=1;
   let timer=0,idleTimer=0,lastMotionAt=0,activeDecodes=0,activeUpgrades=0,lastVisible=0,lastSharp=0;
   function sourceKey(src){
    const u=new URL(src,doc.baseURI);
@@ -28,18 +29,18 @@
    const top=win.top,v=top.document.getElementById('viewport')?.getBoundingClientRect();
    return {left:Math.max(0,v?.left||0),top:Math.max(0,v?.top||0),right:Math.min(top.innerWidth,v?.right||top.innerWidth),bottom:Math.min(top.innerHeight,v?.bottom||top.innerHeight)};
   }
-  function measure(node,view,geometryCache){
+  function measure(node,view,geometryCache,primeScale){
    if(!node?.isConnected)return null;
    const host=node.closest('.atlas-piece,.texture-piece,.flap-bmp-overlay')||node;
    // One layout read per physical host/clone group per refresh, rather
    // than reflowing the same Overhead strip for every duplicated image.
    let hr=geometryCache?.get(host);
    if(hr===undefined){hr=box(host);geometryCache?.set(host,hr);}
-   if(!hr||!intersects(hr,view))return null;
+   if(!hr||!primeScale&&!intersects(hr,view))return null;
    let r=host===node?hr:geometryCache?.get(node);
    if(r===undefined){r=box(node);geometryCache?.set(node,r);}
-   if(!r)return null;
-   return {r,hr,view};
+   if(!r||!r.width||!r.height)return null;
+   return {r,hr,view,primeScale};
   }
   function visible(node,view){return !!measure(node,view||viewport());}
   function desiredLevel(img,item,m){
@@ -47,9 +48,10 @@
    const dpr=Math.min(win.top.devicePixelRatio||1,2);
    const pixels=Math.max(m.r.width,m.r.height)*dpr;
    const exposed=Math.min(m.hr.bottom,m.view.bottom)-Math.max(m.hr.top,m.view.top);
-   // Show useful <=768px previews fast; only request full source when
-   // genuine on-screen pixel demand exceeds the last derivative.
-   const first=item.extent===0,extent=exposed<24?384:first?Math.min(768,pixels):pixels;
+   // Request useful fit-view detail on the first pass for cockpit photos.
+   // Progressive upgrades during zoom still use the original source pixels.
+   const extent=m.primeScale?Math.min(1536,pixels*m.primeScale):
+    exposed<24?384:item.extent===0?Math.min(768,pixels):pixels;
    return choose(item.asset,extent);
   }
   function apply(img,item,url,level){
@@ -66,8 +68,8 @@
    img.src=new URL(item.source,doc.baseURI).href;
    item.extent=Infinity;img.dataset.perfExtent='Infinity';img.dataset.perfFallback='true';
   }
-  function schedule(){
-   if(!timer)timer=win.setTimeout(refresh,115);
+  function schedule(delay=115){
+   if(!timer)timer=win.setTimeout(refresh,delay);
   }
   function complete(url,ok){
    const job=inflight.get(url);if(!job)return;
@@ -78,7 +80,8 @@
     if(ok)apply(w.img,w.item,url,w.level);
     else fallback(w.img,w.item);
    }
-   schedule();
+   // Fill freed slots promptly instead of waiting 115 ms per decode wave.
+   schedule(0);
   }
   function begin(url,waiters,upgrade){
    activeDecodes++;if(upgrade)activeUpgrades++;
@@ -96,11 +99,21 @@
    timer=0;
    const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
    const first=[],upgrades=[];
+   const overhead=win!==win.top&&win.frameElement?.id==='overheadFrame';
+   const overheadScale=overhead?win.parent.B737ImageLoader?.fitRatio('overhead'):0;
    lastVisible=0;lastSharp=0;
    const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2;
    for(const [img,item] of entries){
     if(!img.isConnected){entries.delete(img);continue;}
-    const m=measure(img,view,geometryCache);if(!m)continue;
+    let primeScale=0;
+    if(!item.extent){
+     if(overheadScale&&img.classList.contains('atlas-photo'))primeScale=overheadScale;
+     else if(startupScales&&img.parentElement?.classList.contains('texture-piece')){
+      const region=img.closest('.region')?.dataset.region;
+      primeScale=fitRatio(region);
+     }
+    }
+    const m=measure(img,view,geometryCache,primeScale);if(!m)continue;
     lastVisible++;
     if(!item.asset){
      if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;img.dataset.perfExtent='Infinity';}
@@ -162,8 +175,15 @@
   doc.addEventListener('scroll',noteMotion,{capture:true,passive:true});
   win.addEventListener('resize',noteMotion);
   win.addEventListener('b737:performance-view',noteMotion);
-  win.addEventListener('b737:cockpit-mounted',schedule);
+  win.addEventListener('b737:cockpit-mounted',()=>schedule());
+  function fitRatio(region){return (startupScales?.[region]||0)/cockpitZoom;}
   const api={
+   fitRatio,
+   primeCockpit(scales,zoom){startupScales=scales;cockpitZoom=zoom;
+    if(timer)win.clearTimeout(timer);
+    timer=0;schedule(0);
+   },
+   setCockpitZoom(zoom){cockpitZoom=zoom;},
    assign,refresh:schedule,
    clone(img){const node=img.cloneNode(false);node.removeAttribute('src');delete node.dataset.perfReady;delete node.dataset.perfExtent;return assign(node,img.dataset.perfSource);},
    whenVisible(node,run){pending.add({node,run});schedule();},

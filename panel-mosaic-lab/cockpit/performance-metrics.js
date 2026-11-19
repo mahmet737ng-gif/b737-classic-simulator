@@ -1,8 +1,12 @@
 /* User-visible load diagnostics; bounded resource buffer and no telemetry/upload. */
 (function(){
- 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,painting=false;
+ 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,painting=false,cockpitPainting=false;
  function resources(w=window,prefix='top'){const result=[];try{for(const e of [...w.performance.getEntriesByType('resource'),...w.performance.getEntriesByType('navigation')])result.push({frame:prefix,url:e.name,bytes:e.transferSize,body:e.encodedBodySize,start:e.startTime,end:e.responseEnd,cache:e.transferSize===0&&e.encodedBodySize>0});for(const f of w.document.querySelectorAll('iframe'))if(f.contentWindow)result.push(...resources(f.contentWindow,prefix+'/'+f.id));}catch{}return result;}
  function status(){const profile=window.B737AircraftProfileStore?.get();return profile&&window.CockpitStartupGate?.inspect(window,profile);}
+ function fullStatus(){
+  const profile=window.B737AircraftProfileStore?.get();
+  return profile&&window.CockpitStartupGate?.inspectFull(window,profile);
+ }
  function ready(){
   if(mainReady!==null||painting)return;
   if(!status()?.usable)return;
@@ -14,9 +18,21 @@
    window.dispatchEvent(new CustomEvent('b737:unified-usable',{detail:{mainReadyMs:mainReady}}));
   }));
  }
- // Measure the real painted main view and live controls, independently of
- // hidden/offscreen textures or the two secondary CDU ready handshakes.
- function pollReady(){ready();if(mainReady===null&&performance.now()<60000)setTimeout(pollReady,50);}
+ function tryCockpitReady(){
+  if(cockpitReady!==null||cockpitPainting||mainReady===null||mainSharpReady===null||!fullStatus()?.complete)return;
+  cockpitPainting=true;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   cockpitPainting=false;if(!fullStatus()?.complete)return;
+   cockpitReady=performance.now();
+   performance.mark('b737:unified-cockpit-ready');
+   document.documentElement.dataset.unifiedCockpitReadyMs=String(Math.round(cockpitReady));
+  }));
+ }
+ // Keep first usable paint separate from the complete interactive cockpit.
+ function pollReady(){
+  ready();trySharp();tryCockpitReady();
+  if(cockpitReady===null&&performance.now()<60000)setTimeout(pollReady,100);
+ }
  pollReady();
  function sharpStatus(){
   const area=document.getElementById('viewport')?.getBoundingClientRect();
@@ -50,15 +66,15 @@
   if(out.closest('#inspector')&&!document.body.classList.contains('side-open'))return;
   const samples=resources();const bytes=samples.reduce((n,e)=>n+(e.bytes||0),0),sharp=sharpStatus();
   const texture=window.B737ImageLoader?.stats();
-  out.dataset.measurement=JSON.stringify({mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp,texture,elapsedMs:performance.now(),transferBytes:bytes,encodedBytes:samples.reduce((n,e)=>n+(e.body||0),0),requests:samples.length,largeOriginals:samples.filter(e=>/\.png(?:[?]|$)/.test(e.url)&&e.body>500000).map(e=>({url:e.url,bytes:e.body,transfer:e.bytes}))});
-  out.textContent=(mainReady===null?'Main view loading':'Main view: '+(mainReady/1000).toFixed(1)+' seconds')+' · Sharpness: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' seconds')+' · Concurrent Decode: '+(texture?.decoding??0)+' · Transfer: '+(bytes/1e6).toFixed(2)+' MB';}
+  out.dataset.measurement=JSON.stringify({cockpitReadyMs:cockpitReady,mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp,texture,elapsedMs:performance.now(),transferBytes:bytes,encodedBytes:samples.reduce((n,e)=>n+(e.body||0),0),requests:samples.length,largeOriginals:samples.filter(e=>/\.png(?:[?]|$)/.test(e.url)&&e.body>500000).map(e=>({url:e.url,bytes:e.body,transfer:e.bytes}))});
+  out.textContent=(mainReady===null?'Main view loading':'Main view: '+(mainReady/1000).toFixed(1)+' seconds')+' · Full Cockpit: '+(cockpitReady===null?'Loading':(cockpitReady/1000).toFixed(1)+' seconds')+' · Sharpness: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' seconds')+' · Concurrent Decode: '+(texture?.decoding??0)+' · Transfer: '+(bytes/1e6).toFixed(2)+' MB';}
  const timer=setInterval(()=>{ready();trySharp();render();},1000);
  setTimeout(()=>{clearInterval(timer);render();},60000);
  window.addEventListener('b737:texture-ready',()=>{trySharp();render();});
  window.addEventListener('b737:performance-view',render);
  document.getElementById('inspectorToggle')?.addEventListener('click',()=>queueMicrotask(render));
  window.B737LoadDiagnostics=Object.freeze({
-  snapshot:()=>({started:began,mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
+  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
   measureFps:(durationMs=3000)=>new Promise(resolve=>{
    const length=Math.max(500,Math.min(10000,Number(durationMs)||3000));
    const start=performance.now();let last=null,count=0,slowFrames=0,longestFrameMs=0;

@@ -30,3 +30,26 @@ test('Conventional must be visible and both replacement photos decoded before re
  w.document.querySelector=selector=>selector.includes('conventional-engine-panel-v1')||selector.includes('fo-owner-panel-v1')?{complete:true,naturalWidth:100}:query(selector);
  assert.equal(gate.inspect(w,profile).usable,true);
 });
+
+test('full cockpit requires synchronized electrical, overhead photos, CDUs, gauges and pedestal hardware',()=>{
+ const {w,profile}=fixture();
+ const photo={complete:true,naturalWidth:100};
+ const overhead={querySelectorAll:()=>[photo]};
+ const d=w.document;
+ d.getElementById=id=>id==='overheadFrame'?{contentDocument:overhead}:{};
+ d.querySelectorAll=selector=>selector.includes('engine-start-lever')?[{},{}]:[photo];
+ d.querySelector=()=>({dataset:{eadiPaintCount:'1'}});
+ w.B737ISNCockpitV1.startupSynchronized=()=>true;
+ w.B737ThrottlePositions={mounted:()=>true};
+ const main={usable:true,overhead:true,cdu:true};
+ assert.equal(gate.inspectFull(w,profile,main).complete,true);
+ assert.equal(gate.inspectFull(w,profile,{...main,cdu:false}).complete,false);
+ w.B737ISNCockpitV1.startupSynchronized=()=>false;
+ assert.equal(gate.inspectFull(w,profile,main).complete,false);
+ w.B737ISNCockpitV1.startupSynchronized=()=>true;
+ photo.complete=false;
+ const pending=gate.inspectFull(w,profile,main);
+ assert.equal(pending.overhead,false);
+ assert.equal(pending.pedestal,false);
+ assert.equal(pending.complete,false);
+});

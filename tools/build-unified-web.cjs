@@ -13,6 +13,8 @@ function revisioned(compiled,root,entry){
  const baseMatch=source.match(/<base\s+href=(["'])([^"']+)\1/i);
  const doc=new URL('https://unified.invalid/'+entry),base=baseMatch?new URL(baseMatch[2],doc):doc;
  const html=compiled.html.replace(/<(?:script|link)\b[^>]*>/gi,tag=>{
+  // Preload must use the exact runtime request URL and credentials.
+  if(/\brel="preload"/i.test(tag))return tag;
   const match=tag.match(/\b(?:src|href)=(["'])([^"']+)\1/i);if(!match)return tag;
   const url=new URL(match[2],base),file=url.pathname.slice(1);
   if(url.origin!==base.origin||protectedName.test(file)||!/[.](?:js|css)$/.test(file))return tag;

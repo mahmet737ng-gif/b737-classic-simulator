@@ -190,39 +190,6 @@
         }
       ]
     },
-    "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png": {
-      "width": 1145,
-      "height": 1373,
-      "sourceBytes": 2399844,
-      "sourceSha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
-      "levels": [
-        {
-          "width": 320,
-          "height": 384,
-          "extent": 384,
-          "url": "panel-mosaic-lab/cockpit/performance/e533f907b3826dbf8fc9-q96-384.webp",
-          "bytes": 38966,
-          "sha256": "922b1d7e6f0d53b3605dc77a15ba9a44b2fd0d1274f9bb2c1e52ecefe2992e7b"
-        },
-        {
-          "width": 640,
-          "height": 768,
-          "extent": 768,
-          "url": "panel-mosaic-lab/cockpit/performance/e533f907b3826dbf8fc9-q96-768.webp",
-          "bytes": 141810,
-          "sha256": "ca9ae9ea81bbfaed5dd12e29bc7cdf1859f39bb314459b868ec3efd354dd42cc"
-        },
-        {
-          "width": 1145,
-          "height": 1373,
-          "extent": 1373,
-          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Aircraft Throttle Quadrant Control Panel.png",
-          "bytes": 2399844,
-          "sha256": "e533f907b3826dbf8fc986812b9045c2ef8980f93133ce85b859e9b9d7ab0030",
-          "original": true
-        }
-      ]
-    },
     "panel-mosaic-lab/assets/locked/2026-10-23/B737_Captain_Panel_Blank_4K.png": {
       "width": 3942,
       "height": 3591,
@@ -1159,6 +1126,228 @@
           "original": true
         }
       ]
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png": {
+      "width": 918,
+      "height": 1713,
+      "sourceBytes": 1828457,
+      "sourceSha256": "16120d7f4e38aef3854619f231ee2a324b4888bc35c506d0b6d24e1b8417c672",
+      "levels": [
+        {
+          "width": 206,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-384.webp",
+          "bytes": 26860,
+          "sha256": "8c06b89b3c7961f47f24a08331d28a52aa156cb45b404c515afaafc7ce67186d"
+        },
+        {
+          "width": 412,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-768.webp",
+          "bytes": 81110,
+          "sha256": "5ec60e7f8357074d34c385cafb0285351aa5fa91a2919de445fe32dcd9a9927f"
+        },
+        {
+          "width": 823,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-1536.webp",
+          "bytes": 238066,
+          "sha256": "c2009ba6856a95e6355d1403fc02347e92eb5fb79714af4d7e1df0380305753d"
+        },
+        {
+          "width": 918,
+          "height": 1713,
+          "extent": 1713,
+          "url": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png",
+          "bytes": 1828457,
+          "sha256": "16120d7f4e38aef3854619f231ee2a324b4888bc35c506d0b6d24e1b8417c672",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png": {
+      "width": 918,
+      "height": 1713,
+      "sourceBytes": 1826218,
+      "sourceSha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
+      "levels": [
+        {
+          "width": 206,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-384.webp",
+          "bytes": 26734,
+          "sha256": "cf2d8fd8b4df01db5fd18e0d1a9d9b0454b836060ffe41015d89bc0743f18f4f"
+        },
+        {
+          "width": 412,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-768.webp",
+          "bytes": 80476,
+          "sha256": "497f35b98943dac6710675959c8dac2b09994f694bd4a4dc2dbe17a032f22e97"
+        },
+        {
+          "width": 823,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-1536.webp",
+          "bytes": 236778,
+          "sha256": "8e1003364a4df75bedf53017d2a710d21cf3e6126fd4e63f64518b2f7150524e"
+        },
+        {
+          "width": 918,
+          "height": 1713,
+          "extent": 1713,
+          "url": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
+          "bytes": 1826218,
+          "sha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp": {
+      "width": 2172,
+      "height": 724,
+      "sourceBytes": 380034,
+      "sourceSha256": "0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f",
+      "levels": [
+        {
+          "width": 384,
+          "height": 128,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/0667fc8267a7812dc558-q96-384.webp",
+          "bytes": 25848,
+          "sha256": "fe69584df2c1f1f312f70cfdb4751be8d76ae8b42944b052b7810e829754a148"
+        },
+        {
+          "width": 768,
+          "height": 256,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/0667fc8267a7812dc558-q96-768.webp",
+          "bytes": 82076,
+          "sha256": "f700b865f03e0094d2c0cff7b1a0048597ecc432822fcbc3e3b2cc70b8a23161"
+        },
+        {
+          "width": 1536,
+          "height": 512,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/0667fc8267a7812dc558-q96-1536.webp",
+          "bytes": 286586,
+          "sha256": "e9217fcc14d1bbf5bbdac76df4a5c89577e852b1f3823a0d12823e2e6d3abc76"
+        },
+        {
+          "width": 2172,
+          "height": 724,
+          "extent": 2172,
+          "url": "panel-mosaic-lab/cockpit/assets/fire-v6/FIRE_PANEL_BARE.webp",
+          "bytes": 380034,
+          "sha256": "0667fc8267a7812dc558529ec98aa6e7252683b2b4941257e73dcf4c4a0fa14f",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp": {
+      "width": 800,
+      "height": 1000,
+      "sourceBytes": 26884,
+      "sourceSha256": "f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-384.webp",
+          "bytes": 22074,
+          "sha256": "e255f51b261623d53fadb42546ce17857f05c168a8abaa65a1034ca02bf22b73"
+        },
+        {
+          "width": 614,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-768.webp",
+          "bytes": 57736,
+          "sha256": "54518fa214938f2ae2ff98c47661553edc0e20be538b998ac110a6ef961c4dcf"
+        },
+        {
+          "width": 800,
+          "height": 1000,
+          "extent": 1000,
+          "url": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-bare-owner-20261104.webp",
+          "bytes": 26884,
+          "sha256": "f2bb85e2374a7e010d2acaae3c43d9838d8e7561fe788001116b48e8a903d74a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp": {
+      "width": 800,
+      "height": 1000,
+      "sourceBytes": 233688,
+      "sourceSha256": "ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/ee1743f1ac4ed261761e-q96-384.webp",
+          "bytes": 22256,
+          "sha256": "cfb794858d47d02072bc8ca22abe403f715522553345eb499b6dbb7037e5ffb3"
+        },
+        {
+          "width": 614,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/ee1743f1ac4ed261761e-q96-768.webp",
+          "bytes": 58326,
+          "sha256": "69b459fe8679829b4bb189432778cb94bbaa44b8a5384a865d18a7e9fbb3dcf9"
+        },
+        {
+          "width": 800,
+          "height": 1000,
+          "extent": 1000,
+          "url": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-idle-cutoff-20261106.webp",
+          "bytes": 233688,
+          "sha256": "ee1743f1ac4ed261761ec206dad61645fbb3a52d4501a2c8a216abd275b0290f",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp": {
+      "width": 800,
+      "height": 1000,
+      "sourceBytes": 234554,
+      "sourceSha256": "effe3523ce16b81060e0ada0ba6dfc298f7448d6256ed99b2602fe98bd254eb8",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/effe3523ce16b81060e0-q96-384.webp",
+          "bytes": 22250,
+          "sha256": "f89a59c7597039c04e6b48906bedc8cda201a3a588a6f047242f73b46cffaf36"
+        },
+        {
+          "width": 614,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/effe3523ce16b81060e0-q96-768.webp",
+          "bytes": 58372,
+          "sha256": "dacc42dfae9fce365ab744c887af0aa0e6574ff5cc3f835aaa13e0820c734d81"
+        },
+        {
+          "width": 800,
+          "height": 1000,
+          "extent": 1000,
+          "url": "panel-mosaic-lab/cockpit/assets/throttle-quadrant-slots-centered-20261106.webp",
+          "bytes": 234554,
+          "sha256": "effe3523ce16b81060e0ada0ba6dfc298f7448d6256ed99b2602fe98bd254eb8",
+          "original": true
+        }
+      ]
     }
   },
   "patches": {
@@ -1166,5 +1355,5 @@
     "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
   },
   "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
-  "version": "PERF-0d974f564bca"
+  "version": "PERF-01331ee75775"
 }

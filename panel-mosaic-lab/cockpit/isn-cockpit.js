@@ -568,6 +568,7 @@
  if(initialFirePanel?.evaluate())applyFirePanel(initialFirePanel.getState(),initialFirePanel.evaluate());
  let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+  startupSynchronized:()=>liveGateway.initialized&&apuDefaultBootChecked,
   getPropulsionSnapshot:()=>({
    schema:'B737_ISN_PROPULSION_SNAPSHOT_V1',source:'SHARED_ISN18_ECU',
    onGround:ecu.aircraft.onGround,

@@ -12,10 +12,8 @@
   });
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
- let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false,overheadIdleTimer=0;
- let lastNavigationAt=Date.now();
+ let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false;
  function scheduleViewRefresh(){
-  lastNavigationAt=Date.now();
   if(viewRefreshTimer)return;
   viewRefreshTimer=setTimeout(()=>{
    viewRefreshTimer=0;
@@ -25,7 +23,6 @@
  }
  function startOverheadFrame(){
   if(overheadStarted||!frame)return;
-  if(overheadIdleTimer){clearTimeout(overheadIdleTimer);overheadIdleTimer=0;}
   overheadStarted=true;
   frame.src=frame.dataset.deferredUrl;
   delete frame.dataset.deferredUrl;
@@ -66,7 +63,7 @@
    // visible as soon as their photograph host exists. These already-loaded
    // presenters use only their original geometry and inactive/cold-dark
    // readings; the single ECU and electrical owner connect later as before.
-   // Crucially, no CDU or overhead iframe has been started at this point.
+   if(r.id==='overhead')startOverheadFrame();
    if(r.id==='main'){
     window.B737McpVisualV3?.mount?.();
     window.B737McpHardwareV1?.mount?.();
@@ -96,7 +93,7 @@
     byId('region-'+item.regionId).querySelector('.region-native').append(station);
     continue;
    }
-   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.loading='lazy';child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
+   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
  }
  // Keep expensive visual-only CSS invalidation and texture rescans out
  // of the 2-finger pinch loop. The authoritative scale/scroll transform and
@@ -125,6 +122,7 @@
    z=model.zoomAnchor(zoom,next,left,top,x,y,before,after);
   }
   zoom=z.zoom;
+  window.B737ImageLoader.setCockpitZoom(zoom);
   scene.style.left=after.x+'px';scene.style.top=after.y+'px';
   scene.style.transform='scale('+zoom+')';
   sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';
@@ -133,7 +131,6 @@
   if(gestureSource){
    // The inherited --zoom style affects region labels and selection
    // outlines, not the actual gauges. Sync it when the pinch ends.
-   lastNavigationAt=Date.now();
   }else commitZoomPresentation();
   if(profiler)profiler.markWork(gestureSource?'ZOOM pinch geometry and scroll':'ZOOM single-step geometry and scroll',performance.now()-started);
  }
@@ -163,9 +160,6 @@
    const dx=x+start.left-start.offsetX-start.sourceX*next;
    const dy=y+start.top-start.offsetY-start.sourceY*next;
    scene.style.transform='translate('+dx+'px,'+dy+'px) scale('+next+')';
-   // A live pinch is navigation activity: do not prewarm the heavy overhead
-   // iframe mid-gesture while the pilot is zooming the main photograph.
-   lastNavigationAt=Date.now();
    start.latestZoom=next;start.latestX=x;start.latestY=y;
    if(profiler)profiler.markWork('ZOOM compositor preview transform',performance.now()-started);
   },
@@ -179,10 +173,7 @@
    commitZoomPresentation();
   }
  });
- function focus(id){lastNavigationAt=Date.now();if(id==='overhead'||id==='all')startOverheadFrame();
-  for(const {item,child} of cduFrames.values()){
-   if(id===item.id||id==='cdu-both')child.loading='eager';
-  }wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'Full Cockpit',overhead:'Interactive Overhead',main:'Main Panel',pedestal:'Pedestal','cdu-captain':'Captain CDU','cdu-first-officer':'First Officer CDU','cdu-both':'Captain and First Officer CDUs'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'Approved 70-key CDU; independent display with shared FMC data':id==='overhead'?'110 interactive lamps and controls from approved artwork':id==='pedestal'?'Original Throttle Quadrant, Fire Panel and radios arranged independently without overlap':'Original source photos assembled with preserved aspect ratios';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
+ function focus(id){wheelController?.cancel();focused=id;const r=model.target(assembly,id);if(!r)return;const scale=model.fit(r,vp.clientWidth,vp.clientHeight);applyZoom(scale,0,0,0,0);vp.scrollLeft=Math.max(0,(r.x+r.w/2)*zoom-vp.clientWidth/2);vp.scrollTop=Math.max(0,r.y*zoom-38);for(const b of document.querySelectorAll('[data-focus]'))b.classList.toggle('active',b.dataset.focus===id);const labels={all:'Full Cockpit',overhead:'Interactive Overhead',main:'Main Panel',pedestal:'Pedestal','cdu-captain':'Captain CDU','cdu-first-officer':'First Officer CDU','cdu-both':'Captain and First Officer CDUs'};byId('viewLabel').textContent=labels[id];byId('selectionTitle').textContent=r.label||'ALL COCKPIT';byId('selectionDescription').textContent=id.startsWith('cdu-')?'Approved 70-key CDU; independent display with shared FMC data':id==='overhead'?'110 interactive lamps and controls from approved artwork':id==='pedestal'?'Original Throttle Quadrant, Fire Panel and radios arranged independently without overlap':'Original source photos assembled with preserved aspect ratios';byId('selectionSize').textContent='';byId('originalLink').hidden=true;}
  function panWheel(payload){if(drag)return false;return wheelController?wheelController.pan(payload):window.B737WheelPanModelV1?.pan(vp,payload)===true;}
  function command(action,extra={}){if(ready)frame.contentWindow.postMessage({type:'b737:cockpit-command',action,...extra},location.origin);}
  // Environment sensor values are supplied by ISN or an external simulator adapter.
@@ -293,33 +284,11 @@
    applyZoom(zoom,vp.scrollLeft,vp.scrollTop,vp.clientWidth/2,vp.clientHeight/2);
   },120);
  });
- async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');byId('loading').classList.add('hidden');
-  // Overhead geometry is mounted immediately; its 49-script iframe starts only
-  // after the first usable main paint, or when actually brought into view.
-  // A bounded fallback still initializes systems if the ready event is missed.
-  // PERF-0003: never compete with the main textures during the first seconds.
-  // Offscreen OH visual runtime is prewarmed after a quiet interval. Its
-  // electrical/APU/avionics source state continues in parent independently.
-  window.addEventListener('b737:unified-usable',()=>{
-   const prewarm=()=>{
-    if(overheadStarted)return;
-    const quietFor=Date.now()-lastNavigationAt;
-    if(quietFor<2500){overheadIdleTimer=setTimeout(prewarm,2800-quietFor);return;}
-    if(typeof window.requestIdleCallback==='function'){
-     window.requestIdleCallback(startOverheadFrame,{timeout:2500});
-    }else startOverheadFrame();
-   };
-   overheadIdleTimer=setTimeout(prewarm,8500);
-  },{once:true});
-  // Fail-safe for slow hardware / missed readiness; actual overhead focus
-  // and viewport exposure always start it immediately.
-  setTimeout(startOverheadFrame,24000);
-  if('IntersectionObserver' in window){
-   const observer=new IntersectionObserver(entries=>{
-    if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();startOverheadFrame();}
-   },{root:vp,rootMargin:'250px'});
-   observer.observe(byId('region-overhead'));
-  }}catch(e){byId('loading').textContent='Panel Connection Error: '+e.message;console.error(e);}}
+ async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');
+  const scales=Object.fromEntries(assembly.regions.map(r=>[r.id,model.fit(r,vp.clientWidth,vp.clientHeight)]));
+  window.B737ImageLoader.primeCockpit(scales,zoom);
+  window.addEventListener('b737:unified-usable',()=>byId('loading').classList.add('hidden'),{once:true});
+ }catch(e){byId('loading').textContent='Panel Connection Error: '+e.message;console.error(e);}}
  start();
 })();
 

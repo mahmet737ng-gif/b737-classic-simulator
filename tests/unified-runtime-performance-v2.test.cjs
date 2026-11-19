@@ -12,6 +12,7 @@ test('All registered ECU dependency downloads are queued in one turn, while exec
  const deps=[...isn.slice(0,start).matchAll(/\['(B737[^']+)','([^']+)'\]/g)].map(m=>[m[1],m[2]]);
  assert.equal(deps.length,16,'Unified ATA28 adds one fuel-system module to the existing shared ECU dependencies; audit loader changes together');
  assert.ok(deps.some(([name,url])=>name==='B737ClassicFuelSystemV1'&&url.endsWith('/classic-fuel-system-v1.js')),'ATA28 module must be loaded into the shared ECU');
+ const preloads=read(base+'index.html');
  const queued=[],win={};
  const document={head:{append(node){queued.push(node);}},createElement:()=>({})};
  const sandbox={window:win,document,URL,deps,moduleBase:'https://example.test/repo/panel-mosaic-lab/cockpit/isn-cockpit.js'};
@@ -19,6 +20,9 @@ test('All registered ECU dependency downloads are queued in one turn, while exec
  const pending=sandbox.loadTest();
  assert.equal(queued.length,deps.length,'All ECU dependency requests must queue in a single turn');
  assert.ok(queued.every(s=>s.async===false),'Module execution order must remain browser-serial');
+ const preloadURLs=[...preloads.matchAll(/<link rel="preload" as="script" href="([^"]+)">/g)]
+  .map(m=>new URL(m[1].replaceAll('&amp;','&'),sandbox.moduleBase).href);
+ assert.deepEqual(preloadURLs,queued.map(s=>s.src),'The browser reuses the exact early ECU requests');
  for(let i=0;i<queued.length;i++){win[deps[i][0]]={ready:true};queued[i].onload();}
  await pending;
  assert.equal(Object.keys(win).length,deps.length);
@@ -89,10 +93,9 @@ test('Heavy resource-timing statistics are gated while Controls drawer is closed
  assert.ok(metrics.includes('B737LoadDiagnostics'), 'On-demand diagnostics remain available');
 });
 
-test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesces visible navigation',()=>{
+test('Gallery remains on demand and visible navigation still coalesces texture work',()=>{
  const app=read(base+'app.js'),wheel=read(base+'wheel-pan-model-v1.js'),loader=read(base+'performance-loader.js');
  assert.match(app,/b737:unified-usable',\(\)=>/);
- assert.match(app,/IntersectionObserver/);
  assert.match(app,/frame\.dataset\.deferredUrl=\(window\.B737UnifiedLightOverheadTest\?/);
  assert.match(app,/mountGallery\(\);byId\('galleryDialog'\)/);
  assert.match(app,/wheelController\.pan\(payload\)/);
@@ -103,13 +106,12 @@ test('PERF-0002 defers overhead rendering, builds gallery on demand and coalesce
  assert.match(loader,/if\(item\.loading\|\|moving&&item\.extent\)continue/);
 });
 
-test('PERF-0003 only starts overhead on focus/visibility or after quiet prewarm; avionics remain independent',()=>{
+test('Primary Overhead and both CDUs launch during cockpit mounting',()=>{
  const app=read(base+'app.js');
- assert.match(app,/lastNavigationAt/);
- assert.match(app,/setTimeout\(prewarm,8500\)/);
- assert.match(app,/setTimeout\(startOverheadFrame,24000\)/);
- assert.match(app,/requestIdleCallback/);
- assert.match(app,/if\(id==='overhead'\|\|id==='all'\)startOverheadFrame\(\)/);
+ assert.match(app,/if\(r.id==='overhead'\)startOverheadFrame\(\)/);
+ assert.doesNotMatch(app,/setTimeout\((?:prewarm|startOverheadFrame)|requestIdleCallback|child.loading='lazy'/);
+ assert.match(app,/child.src=item.embeddedUrl/);
+ assert.match(app,/B737ImageLoader.primeCockpit\(scales,zoom\)/);
  assert.match(app,/cduSeats=window\.B737UnifiedNoCduTest\?\[\]:\['CAPT','FO'\]/);
 });
 test('PERF-0003 reports both first interactive paint and sharp first-panel paint',()=>{
@@ -118,12 +120,13 @@ test('PERF-0003 reports both first interactive paint and sharp first-panel paint
  assert.match(metrics,/measureFps:/);
  assert.match(metrics,/maxNative|const native=/);
  assert.match(metrics,/dataset\.unifiedSharpMs/);
+ assert.match(metrics,/dataset\.unifiedCockpitReadyMs/);
 });
 
 test('PERF-0003 layout measurements are shared within a refresh and decode upgrades stay serialized',()=>{
  const loader=read(base+'performance-loader.js');
  assert.match(loader,/geometryCache=new Map\(\)/);
  assert.match(loader,/geometryCache\?\.get\(host\)/);
- assert.match(loader,/measure\(img,view,geometryCache\)/);
+ assert.match(loader,/measure\(img,view,geometryCache,primeScale\)/);
  assert.match(loader,/MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1/);
 });

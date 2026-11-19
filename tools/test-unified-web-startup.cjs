@@ -10,7 +10,10 @@ function lockedIrsObserverRace(error){
  return message==="TypeError: Cannot read properties of null (reading 'disconnect')"&&
   /irs-background-hash-clean-v1\.js(?:\?[^:\n]*)?:116:\d+/.test(stack);
 }
-const root=path.resolve(__dirname,'../web-dist'),out=path.resolve(__dirname,'../artifacts/unified-web-startup'),prefix='/b737-classic-simulator/';
+const raw=process.argv.includes('--raw'),startupOnly=process.argv.includes('--startup-only');
+const root=path.resolve(__dirname,raw?'..':'../web-dist');
+const out=path.resolve(__dirname,'../artifacts/unified-web-startup',raw?'raw':'compiled');
+const prefix='/b737-classic-simulator/';
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.ttf':'font/ttf','.woff2':'font/woff2'};
 fs.mkdirSync(out,{recursive:true});
 const server=http.createServer((req,res)=>{
@@ -23,6 +26,9 @@ const server=http.createServer((req,res)=>{
   fs.createReadStream(file).on('error',()=>res.destroy()).pipe(res);
  }catch{res.writeHead(404);res.end();}
 });
+function assertFiveSeconds(samples){
+ assert.ok(samples.every(x=>x.cockpit.complete&&x.cockpitReadyMs<=5000),'Five-second full cockpit startup budget exceeded: '+JSON.stringify(samples.map(({mode,cockpitReadyMs})=>({mode,cockpitReadyMs}))));
+}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const origin='http://127.0.0.1:'+server.address().port,url=origin+prefix+'panel-mosaic-lab/cockpit/';
@@ -43,6 +49,21 @@ const server=http.createServer((req,res)=>{
    await page.goto(url,{waitUntil:'commit',timeout:60000});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedUsableMs,null,{timeout:60000,polling:25});
    await page.waitForFunction(()=>document.documentElement.dataset.unifiedSharpMs,null,{timeout:30000,polling:100});
+   try{
+    await page.waitForFunction(()=>document.documentElement.dataset.unifiedCockpitReadyMs,null,{timeout:30000,polling:100});
+   }catch(error){
+    const pending=await page.evaluate(()=>window.B737LoadDiagnostics?.snapshot?.().cockpit);
+    throw new Error(mode+' incomplete cockpit: '+JSON.stringify(pending),{cause:error});
+   }
+   if(startupOnly){
+    const sample=await page.evaluate(()=>{
+     const {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit}=window.B737LoadDiagnostics.snapshot();
+     return {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit};
+    });
+    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
+    await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
+    continue;
+   }
    // EFIS replacement regression: both crew glasses must use the new EADI
    // renderer, with the retired Stage1 visual script fully excluded. EHSI
    // continues to use the new Classic v2 rose/map renderer.
@@ -181,7 +202,7 @@ const server=http.createServer((req,res)=>{
    const sample=await page.evaluate(()=>{
     const diagnostic=window.B737LoadDiagnostics.snapshot(),control=document.querySelector('[data-mcp-hardware="FD_LEFT"]'),before=window.B737McpHardwareV1.getState().FD_LEFT;
     const start=performance.now();control.click();const responded=window.B737McpHardwareV1.getState().FD_LEFT!==before;control.click();
-    return {mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
+    return {cockpitReadyMs:diagnostic.cockpitReadyMs,cockpit:diagnostic.cockpit,mainReadyMs:diagnostic.mainReadyMs,mainSharpReadyMs:diagnostic.mainSharpReadyMs,sharp:diagnostic.sharp,textures:diagnostic.textures,profile:window.B737AircraftProfileStore.get(),status:diagnostic.status,interaction:{responded,restored:window.B737McpHardwareV1.getState().FD_LEFT===before,roundTripMs:performance.now()-start},scriptTags:document.scripts.length};
    });
    sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
    // Header controls: Controls, Settings, EFIS, CB, GPU and the
@@ -260,6 +281,10 @@ const server=http.createServer((req,res)=>{
    await page.locator('#aircraftSettingsOpen').click();await page.locator('#aircraftSettingsDialog').waitFor({state:'visible'});await page.locator('#aircraftSettingsClose').click();
    await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});
   }
+  if(startupOnly){
+   assertFiveSeconds(samples);
+   return;
+  }
   // Instructor presets must operate the same live ECU, with independent power.
   await page.locator('#inspectorToggle').click();
   await page.locator('#isnQuickRun1').waitFor({state:'visible'});
@@ -336,11 +361,10 @@ const server=http.createServer((req,res)=>{
   assert.equal(errors.length,0,'Uncaught page errors: '+errors.join('\n'));
   assert.ok(lockedIrsErrors.length<=3,'Frozen IRS observer error exceeded one per page load');
   console.log('Isolated frozen IRS observer errors: '+lockedIrsErrors.length);
-  assert.ok(samples.every(x=>x.mainReadyMs<=5000),'Five-second local web startup budget exceeded');
-  assert.ok(samples.every(x=>x.sharp.ready&&x.mainSharpReadyMs<8000),'First visible cockpit textures did not become sharp in eight seconds');
+  assertFiveSeconds(samples);
  }finally{
-  fs.writeFileSync(path.join(out,'benchmark.json'),JSON.stringify({targetMs:5000,sharpTargetMs:8000,environment:'headless Chromium; local HTTP; Pages subpath; retained cache includes service worker',samples},null,2));
-  fs.copyFileSync(path.join(out,'benchmark.json'),path.join(root,'panel-mosaic-lab/cockpit/startup-benchmark.json'));
+  fs.writeFileSync(path.join(out,'benchmark.json'),JSON.stringify({targetMs:5000,environment:'headless Chromium; local HTTP; Pages subpath; retained cache includes service worker',samples},null,2));
+  if(!raw)fs.copyFileSync(path.join(out,'benchmark.json'),path.join(root,'panel-mosaic-lab/cockpit/startup-benchmark.json'));
   await context.close();await browser.close();await new Promise(r=>server.close(r));
  }
 })().catch(error=>{console.error(error);server.close();process.exitCode=1;});

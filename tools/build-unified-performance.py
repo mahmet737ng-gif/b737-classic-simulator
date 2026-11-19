@@ -9,7 +9,7 @@ OUT.mkdir(exist_ok=True)
 sha=lambda b:hashlib.sha256(b).hexdigest()
 a=json.loads((ROOT/'panel-mosaic-lab/cockpit/assembly.json').read_text())
 spec=json.loads((ROOT/'panel-mosaic-lab/all-overhead/spec.json').read_text())
-paths={x['path'] for x in a['assets'].values()}
+paths={x['path'] for x in a['assets'].values() if Path(x['path']).suffix.lower() != '.svg'}
 for x in spec['images']:
  paths.add(str((ROOT/'panel-mosaic-lab/all-overhead'/x['url']).resolve().relative_to(ROOT)))
 paths.add('assets/overhead.webp')
