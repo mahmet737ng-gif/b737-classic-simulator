@@ -254,6 +254,13 @@ function directBootSetup(){
  const photoRegistry=fastRuntime.bytes.get(cockpitSource+'panel-photo-registry.v1.json');
  const images=previewManifest?JSON.parse(previewManifest).images:{};
  const photos=photoRegistry?JSON.parse(photoRegistry).panels:{};
+ const artIndex=fastRuntime.bytes.get(cockpitSource+'performance/boot-art/manifest.json');
+ const art={};
+ if(artIndex)for(const [id,asset] of Object.entries(JSON.parse(artIndex))){
+  if(!fastRuntime.bytes.has(asset.url)||!asset.url.startsWith(cockpitSource+'performance/boot-art/'))
+   throw Error('Missing verified Unified boot artwork '+id);
+  art[id]={url:'/'+asset.url,width:asset.width,height:asset.height,changed:asset.changed};
+ }
  const preview=filename=>{
   const entry=images['panel-mosaic-lab/assets/locked/2026-10-23/'+filename];
   const image=entry?.levels.find(item=>item.extent===384&&!item.original)?.url;
@@ -264,7 +271,7 @@ function directBootSetup(){
   return fastRuntime.bytes.has(image)?'/'+image+'?v=OH21-DEDICATED-20261106':undefined;
  };
  const setup=JSON.stringify({
-  assembly,
+  assembly,art,
   previews:{
    aircon400:preview('Boeing-Style Environmental Control Panel.png'),
    dcpcs:preview('DCPCS_Background_Owner.png'),
@@ -313,7 +320,8 @@ function compiledDocument(relative,bytes,cockpitDocument,direct){
 async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false,direct=false,authMs}={}){
  const ext=path.posix.extname(relative).toLowerCase();
  if(ext!=='.html'){
-  const immutable=/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative);
+  const immutable=/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative)||
+   /^panel-mosaic-lab\/cockpit\/performance\/boot-art\/[a-z0-9-]+-[a-f0-9]{20}\.webp$/.test(relative);
   res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':'private, max-age=0, must-revalidate');
   res.setHeader('Vary','Accept-Encoding');
   const brotli=fastRuntime.compressed.get(relative);

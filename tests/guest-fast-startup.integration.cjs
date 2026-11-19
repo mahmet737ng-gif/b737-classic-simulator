@@ -13,7 +13,9 @@ const assert=require('node:assert/strict');
  const direct='/panel-mosaic-lab/unified/';
  const legacy='/panel-mosaic-lab/cockpit/';
  try {
-  for(const cold of [true,false]){
+  for(const mode of ['fresh-context','737-400-retained-worker','limited-connection']){
+   const limited=mode==='limited-connection';
+   const retained=mode==='737-400-retained-worker';
    const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1});
    const page=await context.newPage();
    const errors=[];
@@ -21,7 +23,7 @@ const assert=require('node:assert/strict');
    const unauthorized=await context.request.get(base+direct,{maxRedirects:0});
    assert.equal(unauthorized.status(),303);
    assert.equal(unauthorized.headers().location,'/login?e=expired');
-   if(!cold)await context.addInitScript(()=>{
+   if(retained||limited)await context.addInitScript(()=>{
     if(window!==window.top)return;
     localStorage.setItem('b737classic.aircraft-profile.v1',JSON.stringify({
      schema:'b737-classic-aircraft-profile/1',aircraftFamily:'B737-400',
@@ -31,9 +33,16 @@ const assert=require('node:assert/strict');
    await page.goto(base+'/login',{waitUntil:'domcontentloaded'});
    await page.locator('#user').fill('ci-reviewer');
    await page.locator('#pass').fill('ci-only-fixture');
+   if(limited){
+    const connection=await context.newCDPSession(page);
+    await connection.send('Network.enable');
+    await connection.send('Network.emulateNetworkConditions',{
+     offline:false,latency:250,downloadThroughput:256000,uploadThroughput:128000
+    });
+   }
    await Promise.all([page.waitForURL(base+direct,{timeout:45000}),
      page.locator('button[type="submit"]').click()]);
-   if(!cold){
+   if(retained){
     // Retain a legacy worker in the same profile. The sibling route and all
     // three iframes must bypass it, with the authenticated session intact.
     await page.goto(base+legacy,{waitUntil:'domcontentloaded'});
@@ -59,6 +68,9 @@ const assert=require('node:assert/strict');
      workerStarts:['overheadFrame','cduFrameCAPT','cduFrameFO'].map(id=>document.getElementById(id)?.contentWindow?.performance.getEntriesByType('navigation')[0]?.workerStart),
      navTiming:performance.getEntriesByType('navigation')[0]?.serverTiming.map(x=>x.name),
      packedLampCount:Object.keys(await window.B737BootLampSources||{}).length,
+     bootMasks:[...document.querySelector('#overheadFrame').contentDocument.querySelectorAll('[data-needle-restoration="RELEASE_MASK"]')].map(piece=>piece.dataset.key).sort(),
+     bootLevers:[...document.querySelectorAll('.engine-start-lever-art image')].map(img=>img.getAttribute('href')),
+     unnecessaryOriginals:resources.filter(resource=>/OH10-ELEC-LOSSLESS|OH12-BUS-TRANS|engine-start-lever-reference/.test(resource.name)).map(resource=>new URL(resource.name).pathname),
      copiedTrace:window.B737BootTrace?.report().readiness.fullMs||null,
      jsTags:tags.length,bundles:tags.filter(x=>x.src.includes('desktop-bundle-')).length,
      resources:resources.length,
@@ -70,7 +82,7 @@ const assert=require('node:assert/strict');
      buckets:resources.reduce((acc,x)=>{const key=Math.floor(x.responseEnd/1000);acc[key]=(acc[key]||0)+1;return acc;},{}),
      bytes:resources.reduce((total,x)=>total+(x.encodedBodySize||0),0)};
    });
-   result.mode=cold?'fresh-context':'737-400-retained-worker';
+   result.mode=mode;
    result.pageErrors=errors.slice(0,10);
    data.push(result);
    console.log('AUTHENTICATED UNIFIED GATEWAY STARTUP:',JSON.stringify(result));
@@ -82,8 +94,12 @@ const assert=require('node:assert/strict');
    assert.deepEqual(result.workerStarts,[0,0,0]);
    assert.ok(result.navTiming.includes('unified-direct'),'Missing delivery provenance');
    assert.ok(result.packedLampCount>200,'Lamp source pack missing');
-   if(!cold){
-    assert.equal(result.profile,'B737-400');
+   assert.deepEqual(result.bootMasks,['OH10','OH12']);
+   assert.equal(result.bootLevers.length,2);
+   assert.ok(result.bootLevers.every(url=>/boot-art/.test(url)),'Lever sprites must use the release crops');
+   assert.deepEqual(result.unnecessaryOriginals,[],'Boot must avoid full-size cleaner and lever sources');
+   if(retained||limited)assert.equal(result.profile,'B737-400');
+   if(retained){
     assert.ok(result.copiedTrace>0,'Full readiness missing from opt-in trace');
    }
    assert.ok(result.cockpitReadyMs>0,'Full cockpit readiness milestone missing');
