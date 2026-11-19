@@ -20,6 +20,39 @@ assert.equal(core.detentAtY(125),'OFF');
 assert.equal(core.detentAtY(210),'DN');
 assert.equal(core.detentAtY(248),'DN');
 
+// Normal full-stroke cycle timing: nose first, left then right main, at 0.1s resolution.
+const expected=core.NOMINAL_CYCLE_SEC;
+assert.deepEqual(expected,{nose:4.5,left:5.1,right:5.8});
+assert.equal(Number((expected.right-expected.left).toFixed(1)),0.7);
+function cycleTimeline(initialState,command,goal){
+  let s=core.select(initialState,command,{onGround:false}),clock=0;
+  const locked={};
+  for(let i=0;i<70;i++){
+    s=core.step(s,0.1,3000);
+    clock=Math.round((clock+0.1)*100)/100;
+    for(const id of core.POS)if(s.gear[id]===goal&&locked[id]===undefined)locked[id]=clock;
+  }
+  return {s,locked};
+}
+const timedUp=cycleTimeline(core.initial(),'UP','UP');
+assert.deepEqual(timedUp.locked,expected,'normal retraction locks nose/left/right at calibrated times');
+const timedDown=cycleTimeline(timedUp.s,'DN','DOWN');
+assert.deepEqual(timedDown.locked,expected,'normal extension matches retraction timings');
+for(const id of core.POS){
+  assert.equal(timedDown.s.gear[id],'DOWN');
+  assert.equal(core.lamps(timedDown.s).main[id].green,true);
+  assert.equal(core.lamps(timedUp.s).main[id].green,false);
+}
+assert.equal(core.step(core.select(core.initial(),'UP',{onGround:false}),1,0).gear.nose,'DOWN',
+  'normal cycle must not advance without hydraulic pressure');
+const halfway=core.step(core.select(core.initial(),'UP',{onGround:false}),2.2,3000);
+const hold=core.select(halfway,'OFF',{onGround:false});
+assert.deepEqual(core.step(hold,20,3000).progress,halfway.progress,'OFF freezes mid-cycle travel');
+const recovered=core.step(core.select(hold,'UP',{onGround:false}),2.3,3000);
+assert.equal(recovered.gear.nose,'UP','resuming restores remaining nose stroke, not a new full timer');
+const interrupted=core.step(halfway,10,0);
+assert.deepEqual(interrupted.progress,halfway.progress,'hydraulic fault pauses all actuators');
+
 const initial=core.initial();
 assert.equal(initial.lever,'DN');
 assert.deepEqual(initial.gear,{nose:'DOWN',left:'DOWN',right:'DOWN'});
@@ -76,5 +109,5 @@ assert.ok(bytes.byteLength>1000&&bytes.byteLength<12500,'sprite must fit 100-kil
 assert.equal(bytes.toString('ascii',0,4),'RIFF');
 assert.equal(bytes.toString('ascii',8,12),'WEBP');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0004/);
+assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0005/);
 console.log('ATA32 gear selector, hydraulics, red/green/aux lamps and assets PASS');
