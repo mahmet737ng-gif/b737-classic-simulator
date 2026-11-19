@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 COPY --chown=node:node server.js ./
+COPY --chown=node:node auth-policy.js ./
 COPY --chown=node:node navdata-store.js ./
 COPY --chown=node:node navdata-bootstrap.js ./
 COPY --chown=node:node navdata-relay.js ./
