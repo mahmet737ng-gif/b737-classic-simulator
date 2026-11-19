@@ -1,0 +1,416 @@
+/* Ordered Unified startup CSS; sources preserved. */
+/* BEGIN irs-isdu-frontend-v1.css 928e44d2b4b26a76eb5adc4d7a8582a3193eeedf */
+/* IRS ISDU source-informed FRONTEND ONLY: isolated from frozen mosaic. */
+.irs-isdu-open{white-space:nowrap}
+.irs-isdu-dialog{color:#e9f0f4;background:#14202b;border:1px solid #577084;border-radius:14px;max-width:min(94vw,850px);width:760px;max-height:94vh;overflow:auto;padding:22px;box-shadow:0 22px 90px #000a}
+.irs-isdu-dialog::backdrop{background:#01080dd9;backdrop-filter:blur(2px)}
+.irs-isdu-head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.irs-isdu-head h2{font:700 19px/1.3 system-ui;margin:0}
+.irs-isdu-head small{display:block;margin-top:3px;color:#a1b7c4}
+.irs-isdu-close{background:#243646;border:1px solid #7891a2;color:white;border-radius:10px;font:24px/1 Arial;padding:4px 12px}
+.irs-isdu-tabs{display:flex;gap:8px;justify-content:center;margin:18px 0}
+.irs-isdu-tabs button{font:700 14px/1.2 system-ui;background:#24384a;color:#e1edf4;border:1px solid #61798d;border-radius:8px;padding:10px 22px}
+.irs-isdu-tabs button[aria-pressed=true]{background:#dbe6ec;color:#14202b}
+.irs-isdu-unit{width:min(100%,690px);margin:auto;--isdu-brightness:.82;background:linear-gradient(125deg,#666f75,#878d92 52%,#646c72);border:3px solid #343b40;border-radius:7px;box-shadow:inset 0 3px 5px #cfd7db55,inset 0 -3px 9px #0004,0 10px 20px #0008;padding:19px 32px 15px;font:700 14px/1.15 Arial,Helvetica,sans-serif;letter-spacing:.02em;color:#11181c}
+.irs-isdu-top-label{letter-spacing:.18em;font-size:14px;text-align:center;margin-bottom:5px}
+.irs-isdu-readouts{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:490px;margin:0 auto 25px;background:#2b353a;padding:8px;border-radius:3px;border:2px solid #202930}
+.irs-isdu-lcd{display:flex;justify-content:center;align-items:center;min-height:74px;background:linear-gradient(#17231e,#1e3029);color:rgba(174,247,193,var(--isdu-brightness));text-shadow:0 0 10px #b1ffa588;white-space:nowrap;font:normal clamp(16px,4vw,32px)/1.2 monospace;letter-spacing:.08em;border:2px solid #151d1b;box-shadow:inset 0 2px 7px #0008}
+.irs-isdu-lower{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.irs-isdu-selectors{display:flex;flex-direction:column;align-items:center;justify-content:space-around;min-height:300px;gap:8px}
+.irs-isdu-control{display:flex;flex-direction:column;align-items:center;gap:7px;color:#172026;font:700 13px/1.2 Arial;letter-spacing:.12em}
+.irs-isdu-control select{background:radial-gradient(circle at 32% 23%,#d7dadd,#697278);border:4px solid #404a50;border-radius:48%;color:#111;min-width:120px;height:48px;padding:0 5px;font:700 12px Arial;text-align:center;box-shadow:0 2px 4px #0008}
+.irs-isdu-brightness{width:118px;accent-color:#334653}
+.irs-isdu-keypad{background:#333b40;border:3px solid #222a2f;padding:7px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;min-width:0}
+.irs-isdu-key{position:relative;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#e0e3e4,#a9afb3);border:4px double #313a40;outline:2px solid #596267;outline-offset:-7px;color:#10171b;font:700 21px/1.05 Arial;box-shadow:1px 2px 3px #0008;user-select:none;padding:8px}
+.irs-isdu-key:is(:active,.is-pressed){background:#8e989e;transform:translateY(1px);box-shadow:inset 1px 2px 5px #0008}
+.irs-isdu-key .irs-isdu-compass{font:700 12px/1 Arial;margin-bottom:2px}
+.irs-isdu-key[data-key="ENT"],.irs-isdu-key[data-key="CLR"]{font-size:16px}
+.irs-isdu-key:focus-visible,.irs-isdu-dialog button:focus-visible{outline:3px solid #007ade;outline-offset:1px}
+.irs-isdu-unit-footer{text-align:center;letter-spacing:.25em;font-size:11px;margin-top:14px}
+.irs-isdu-disclaimer{color:#bdcbd4;font:13px/1.8 Tahoma,Arial,sans-serif;text-align:center;margin:15px 6px 4px}
+.irs-isdu-key-status{text-align:center;font:12px/1.6 monospace;color:#8bdbe8;margin:8px}
+@media(max-width:600px){.irs-isdu-dialog{padding:12px}.irs-isdu-unit{padding:14px 10px}.irs-isdu-lower{gap:12px}.irs-isdu-readouts{margin-bottom:12px}.irs-isdu-lcd{min-height:44px;font-size:16px}.irs-isdu-control select{min-width:96px}.irs-isdu-keypad{padding:5px}.irs-isdu-key{min-height:50px;font-size:16px;padding:5px}.irs-isdu-selectors{min-height:230px}}
+/* The Honeywell keypad is the ACTUAL cropped source image, not redrawn key faces.
+   Transparent hit areas implement UI-only visual click feedback. */
+.irs-isdu-keypad.irs-isdu-source{background:#fff url('./assets/irs-honeywell-fcom-keypad.avif') center/100% 100% no-repeat;border:0;position:relative;aspect-ratio:263/330;grid-template-rows:repeat(4,minmax(0,1fr));gap:0;padding:7.2% 9.5% 7.4%;box-shadow:none}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key{opacity:0;background:transparent;color:transparent;border:0;outline:none;box-shadow:none;min-height:0;margin:0;padding:0}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key:focus-visible,.irs-isdu-keypad.irs-isdu-source .irs-isdu-key.is-pressed{opacity:.35;background:#62b4df;outline:2px solid #007ada;transform:none;box-shadow:none}
+.irs-isdu-keypad.irs-isdu-source .irs-isdu-key span{visibility:hidden}
+
+/* END irs-isdu-frontend-v1.css */
+
+/* BEGIN irs-isdu-onpanel-v2.css 5f1ca03a503cfa4eb580eb8b34f60ae0f9ebb401 */
+/* IRS-ISDU-BEZEL-FIX-0004 — source-pixel measured, unfrozen OH02 overlay only.
+   Twelve independent keys. Original OH01-25 frozen artwork is never edited. */
+#region-overhead .irs-photo-keypad{position:absolute;inset:0;z-index:122;pointer-events:none;direction:ltr}
+#region-overhead .irs-photo-key{position:absolute;display:block;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;overflow:visible;pointer-events:none;isolation:isolate}
+#region-overhead .irs-photo-key-bezel,#region-overhead .irs-photo-key-cap{position:absolute;inset:0;display:block;pointer-events:none;user-select:none;background-image:url('./assets/irs-owner-keycaps-v3.avif');background-repeat:no-repeat;background-size:300% 400%;transform-origin:50% 50%;backface-visibility:hidden}
+/* The source-photo metal frame, including all corners, is immovable. */
+#region-overhead .irs-photo-key-bezel{z-index:1;mask-image:url('./assets/irs-key-fixed-metal-mask-v4.svg');-webkit-mask-image:url('./assets/irs-key-fixed-metal-mask-v4.svg');mask-mode:alpha;mask-size:100% 100%;-webkit-mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;transform:none!important;transition:none!important;filter:none!important}
+/* The central black cap is the ONLY movable visual material. */
+#region-overhead .irs-photo-key-cap{z-index:2;mask-image:url('./assets/irs-key-black-cap-mask-v4.svg');-webkit-mask-image:url('./assets/irs-key-black-cap-mask-v4.svg');mask-mode:alpha;mask-size:100% 100%;-webkit-mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;transform:translate3d(0,0,0);transition:transform 80ms ease-out,filter 80ms ease-out;filter:none}
+#region-overhead .irs-photo-key.is-depressed .irs-photo-key-cap{transform:translate3d(0,1.65px,0) scale(.975);filter:brightness(.79)}
+/* Only the center black cap can be clicked. The bezel is not a hit target. */
+#region-overhead .irs-photo-key-press{position:absolute;z-index:3;top:17%;bottom:17%;left:18%;right:18%;width:auto;height:auto;display:block;appearance:none;padding:0!important;margin:0!important;border:0!important;border-radius:10%!important;outline:0;background:transparent!important;box-shadow:none!important;pointer-events:auto;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#region-overhead .irs-photo-key-press:focus-visible{outline:2px solid #8fd5f4!important;outline-offset:0}
+#region-overhead .irs-photo-key-fallback{position:absolute;inset:3px;z-index:4;display:none;place-items:center;font:bold 11px/1.05 Arial,sans-serif;white-space:pre-wrap;color:#f9f3dc;background:#171717;border:2px solid #666;text-align:center;pointer-events:none}
+#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-bezel,#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-cap{display:none}
+#region-overhead .irs-photo-keypad[data-art=fallback] .irs-photo-key-fallback{display:grid}
+.pan-mode #region-overhead .irs-photo-keypad,.pan-mode #region-overhead .irs-photo-key-press{pointer-events:none}
+.reference-mode #region-overhead .irs-photo-keypad{display:none}
+#irsIsduOpen{display:none!important}
+
+/* END irs-isdu-onpanel-v2.css */
+
+/* BEGIN irs-isdu-cues-v1.css 08ae6b99f8d145eabb13f017e9fe9d22b7b1d08c */
+/* ISDU-CUE-0001 — luminous overlays for the TWO original lenses below each
+ * ENT and CLR label. OFF = owner source photograph, byte-for-byte unchanged.
+ * No electrical, alignment or entry/clear logic is assumed.
+ */
+#region-overhead .irs-photo-key .irs-cue-lens{
+ position:absolute;z-index:4;top:65.2%;width:10.7%;height:16.4%;
+ display:block;pointer-events:none;opacity:0;visibility:hidden;
+ transform:translate(-50%,-50%);
+ background:transparent url('./assets/irs-isdu-white-cue-on-v1.svg') 50% 50% / 100% 100% no-repeat;
+ filter:drop-shadow(0 0 1px rgba(255,255,246,.94));
+}
+#region-overhead .irs-photo-key .irs-cue-lens[data-side="left"]{left:38.5%}
+#region-overhead .irs-photo-key .irs-cue-lens[data-side="right"]{left:62.4%}
+#region-overhead .irs-photo-key .irs-cue-lens[data-lit="true"]{opacity:1;visibility:visible}
+#region-overhead .irs-photo-key:is(:active,.is-depressed) .irs-cue-lens[data-lit="true"]{
+ /* Lens already moves with its parent black cap; never move it twice. */
+ transform:translate(-50%,-50%);
+ filter:brightness(.84) drop-shadow(0 0 1px #fff);
+}
+#irsCueTestOpen{white-space:nowrap}
+#irsCueTestPanel{direction:rtl}
+#irsCueTestPanel p{margin:3px 0 8px;color:#a8c4d4;font-size:11px;line-height:1.65}
+#irsCueTestPanel .irs-cue-pair{display:flex;align-items:center;gap:6px;margin:6px 0}
+#irsCueTestPanel .irs-cue-name{width:36px;text-align:left;direction:ltr;font:700 12px monospace;color:#eef5ef;flex:0 0 auto}
+#irsCueTestPanel .irs-cue-pair button{flex:1;min-width:0;margin:0;padding:7px 2px;font-size:11px}
+#irsCueTestPanel button[aria-pressed="true"]{background:#e0e7e8!important;border-color:#fff!important;color:#14212c!important}
+#irsCueTestPanel .irs-cue-actions{display:flex;gap:6px;margin:9px 0 0}
+#irsCueTestPanel .irs-cue-actions button{flex:1;margin:0;padding:7px 3px}
+#irsCueTestStatus{font:11px/1.6 monospace;direction:ltr;text-align:center;color:#9bdce1;min-height:17px}
+
+/* END irs-isdu-cues-v1.css */
+
+/* BEGIN irs-sys-dspl-v1.css 785ba865fee741fbd95a27c30dbe1a29ad44fa61 */
+/* IRS-SYS-DSPL-0001. Additive independent unfrozen OH02 overlay ONLY.
+   The owner-approved photographic ivory selector is a top-view isolated AVIF.
+   Source panel, labels, 12 keypad buttons and all guarded switches are untouched.
+*/
+#region-overhead .irs-sys-dspl-mount{
+  position:absolute;display:block;z-index:126;box-sizing:border-box;
+  background:transparent;border:0;padding:0;pointer-events:none;
+  direction:ltr;isolation:isolate
+}
+#region-overhead .irs-sys-dspl-switch{
+  position:absolute;inset:0;box-sizing:border-box;width:100%;height:100%;
+  background:transparent!important;border:0!important;border-radius:50%!important;
+  appearance:none;padding:0!important;margin:0!important;box-shadow:none!important;
+  outline:none;pointer-events:auto;cursor:grab;touch-action:none;
+  -webkit-tap-highlight-color:transparent
+}
+#region-overhead .irs-sys-dspl-switch:active{cursor:grabbing}
+#region-overhead .irs-sys-dspl-approved-photo{
+  position:absolute;display:block;inset:0;width:100%;height:100%;
+  max-width:none;object-fit:contain;pointer-events:none;user-select:none;
+  transform-origin:50% 50%;transition:transform 160ms cubic-bezier(.25,.8,.2,1);
+  filter:drop-shadow(0 1.3px 1px rgba(8,16,26,.42))
+}
+#region-overhead .irs-sys-dspl-mount[data-system="L"] .irs-sys-dspl-approved-photo{transform:rotate(-33deg)}
+#region-overhead .irs-sys-dspl-mount[data-system="R"] .irs-sys-dspl-approved-photo{transform:rotate(33deg)}
+#region-overhead .irs-sys-dspl-switch:focus-visible{outline:2px solid #99e8fb!important;outline-offset:2px!important}
+.pan-mode #region-overhead .irs-sys-dspl-switch{pointer-events:none}
+.reference-mode #region-overhead .irs-sys-dspl-mount{display:none}
+@media(prefers-reduced-motion:reduce){
+  #region-overhead .irs-sys-dspl-approved-photo{transition:none}
+}
+
+/* END irs-sys-dspl-v1.css */
+
+/* BEGIN irs-sys-dspl-lr-markings-v1.css b4027692474288827702f2022db55c68d6978126 */
+/* IRS-SYS-LR-MARKINGS-0001 · only independent OH02 parent-layer artwork.
+ * 125: behind existing knob (126), above frozen source frame (iframe).
+ * All text, patch and ticks are mouse-transparent; normal knob remains usable.
+ */
+#region-overhead .irs-sys-dspl-lr-markings{
+ position:absolute;box-sizing:border-box;display:block;z-index:125;
+ border:0;background:transparent;padding:0;margin:0;pointer-events:none;
+ overflow:visible;direction:ltr;isolation:isolate
+}
+#region-overhead .irs-sys-dspl-lr-markings img{
+ position:absolute;display:block;inset:0;width:100%;height:100%;
+ object-fit:fill;max-width:none;pointer-events:none;user-select:none;
+ -webkit-user-drag:none
+}
+.reference-mode #region-overhead .irs-sys-dspl-lr-markings{display:none}
+
+/* END irs-sys-dspl-lr-markings-v1.css */
+
+/* BEGIN irs-dspl-sel-upper-v1.css a7a2e420175295a045ac4303d197beedc88945df */
+/* IRS upper double-coaxial selector; additive OH02 overlay only.
+   Lower SYS DSPL owner-approved/locked selector is not selected or touched.
+   All five ticks are physically stationary; outer ivory body rotates, inner
+   brightness black spindle rotates independently at the exact same pivot.
+*/
+#region-overhead .irs-upper-selector-mount{
+ position:absolute;z-index:128;display:block;box-sizing:border-box;overflow:visible;
+ background:transparent;pointer-events:none;direction:ltr;isolation:isolate;
+ --irs-brt-level:0.78
+}
+#region-overhead .irs-upper-mode-tick{
+ position:absolute;z-index:0;display:none;width:3.2px;height:10px;
+ background:linear-gradient(90deg,#c7d0d0,#fffefa 45%,#f2f6f4);
+ border-radius:1.4px;box-shadow:0 0 0.7px #07131c,0 1px 1px #253439;
+ pointer-events:none
+}
+#region-overhead .irs-upper-outer{
+ position:absolute;inset:0;display:block;appearance:none;
+ box-sizing:border-box;border:0!important;border-radius:50%!important;
+ background:transparent!important;box-shadow:none!important;
+ padding:0!important;margin:0!important;outline:none;cursor:grab;
+ pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent;
+}
+#region-overhead .irs-upper-outer:active{cursor:grabbing}
+#region-overhead .irs-upper-outer img{
+ display:block;position:absolute;inset:0;width:100%;height:100%;
+ object-fit:contain;user-select:none;pointer-events:none;
+ transform-origin:50% 50%;transform:rotate(var(--outer-rotation,-10deg));
+ transition:transform 165ms cubic-bezier(.2,.6,.12,1);
+ filter:brightness(1.06) contrast(1.13) drop-shadow(0 2px 1.4px #10202b80);
+ /* Photographic outer ivory collar only: inner black knob has its own axis.
+    The source crop's old white ticks are outside the actual collar and masked. */
+ -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 22.1%,#000 23.7% 45.9%,transparent 48.5%);
+ mask-image:radial-gradient(circle at 50% 50%,transparent 0 22.1%,#000 23.7% 45.9%,transparent 48.5%);
+}
+#region-overhead .irs-upper-brt{
+ position:absolute;z-index:3;left:27.6%;top:27.6%;width:44.8%;height:44.8%;
+ display:block;appearance:none;padding:0!important;margin:0!important;
+ background:transparent!important;border:0!important;border-radius:50%!important;
+ box-shadow:none!important;outline:none;
+ pointer-events:auto;touch-action:none;cursor:ns-resize
+}
+#region-overhead .irs-upper-brt img{
+ position:absolute;inset:0;width:100%;height:100%;display:block;
+ user-select:none;pointer-events:none;object-fit:contain;
+ transform-origin:50% 50%;transform:rotate(var(--inner-rotation,68deg));
+ filter:brightness(1.13) contrast(1.08) drop-shadow(0 0 .7px rgba(2,8,12,.55));
+ transition:transform 115ms ease-out
+}
+#region-overhead .irs-upper-outer:focus-visible,#region-overhead .irs-upper-brt:focus-visible{
+ outline:2px solid #a1dce6!important;outline-offset:0
+}
+/* Existing frontend-only IRS cue lights are intensity-adjustable from the
+   inner spindle. Never affects other cockpit lighting or avionics systems. */
+#region-overhead .irs-photo-key .irs-cue-lens[data-lit="true"]{
+ filter:brightness(calc(0.25 + var(--irs-brt-level,0.78) * .75)) drop-shadow(0 0 1px #fff)
+}
+.pan-mode #region-overhead .irs-upper-selector-mount,
+.pan-mode #region-overhead .irs-upper-outer,
+.pan-mode #region-overhead .irs-upper-brt{pointer-events:none}
+.reference-mode #region-overhead .irs-upper-selector-mount{display:none}
+@media(prefers-reduced-motion:reduce){
+ #region-overhead .irs-upper-outer img,#region-overhead .irs-upper-brt img{transition:none}
+}
+
+/* Let the photograph retain its real metal edge, not the artificial empty ring.
+   The small BRT inner photo remains separately interactive. */
+#region-overhead .irs-upper-outer img{mask-image:radial-gradient(circle at center,transparent 0 21%,#000 23.5% 50%,transparent 53%);-webkit-mask-image:radial-gradient(circle at center,transparent 0 21%,#000 23.5% 50%,transparent 53%)}
+#region-overhead .irs-upper-brt img{image-rendering:auto;filter:brightness(1.1) contrast(1.2) drop-shadow(0 1px 1.3px #101820)}
+
+/* END irs-dspl-sel-upper-v1.css */
+
+/* BEGIN irs-upper-face-v2.css ce82be9cd2aadc02255e1f22b632fb03d95189de */
+/* IRS upper five-label source clean-up, registered against ORIGINAL OH01-06.
+ * Above frozen photo, below photographed upper selector. NOT the lower SYS DSPL.
+ */
+#region-overhead .irs-upper-face-v2{
+ position:absolute;z-index:127;box-sizing:border-box;display:block;pointer-events:none;
+ background:transparent;isolation:isolate;overflow:visible
+}
+#region-overhead .irs-upper-face-v2 img{
+ position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:fill;
+ user-select:none;pointer-events:none;max-width:none
+}
+#region-overhead .irs-upper-face-v2 img.irs-upper-five-labels{z-index:2}
+#region-overhead .irs-upper-face-v2 img.irs-upper-old-text-clean{z-index:1}
+.reference-mode #region-overhead .irs-upper-face-v2{display:none}
+
+/* QA screenshot: legacy cleaned alpha patch left ghosts and new vector font
+   was sharper than the locked photographed lettering. Show the ORIGINAL
+   five printed stencil labels; no duplicate art is rendered. This does not
+   modify the frozen image or lower SYS DSPL area. */
+#region-overhead .irs-upper-face-v2{display:none!important}
+
+/* END irs-upper-face-v2.css */
+
+/* BEGIN irs-amber-display-v1.css cb62faedc4c9d74dd0c2d4cb0b2ca090597c82aa */
+/* 737 Classic ISDU two-line amber luminous LCD, fitted INSIDE original black aperture.
+ * FCOM 11.10.15-17 format; NO REAL IRS NAV POSITION without backend.
+ */
+#region-overhead .irs-amber-display{
+ position:absolute;z-index:129;display:flex;flex-direction:column;justify-content:center;
+ box-sizing:border-box;overflow:hidden;background:transparent;padding:1px 7px;
+ direction:ltr;pointer-events:auto;cursor:pointer;isolation:isolate;
+ --irs-amber-power:.7
+}
+#region-overhead .irs-amber-display .irs-amber-line{
+ display:block;flex:1;min-height:0;white-space:pre;overflow:hidden;
+ color:rgb(255 164 39 / var(--irs-amber-power));
+ opacity:1;
+ font-family:"Lucida Console",Consolas,"Courier New",monospace;
+ font-variant-numeric:tabular-nums;
+ font-size:19.5px;font-weight:600;letter-spacing:2.5px;
+ line-height:1.06;text-align:center;
+ text-shadow:0 0 2.1px rgb(255 164 35 / calc(var(--irs-amber-power) * .75)),
+             0 0 7px rgb(255 126 9 / calc(var(--irs-amber-power) * .40));
+ font-smooth:never;
+}
+#region-overhead .irs-amber-display[data-active="false"] .irs-amber-line{visibility:hidden}
+#region-overhead .irs-amber-display[data-brightness="0"] .irs-amber-line{opacity:0}
+#region-overhead .irs-amber-display:focus-visible{outline:1px solid #c18b40}
+.pan-mode #region-overhead .irs-amber-display{pointer-events:none}
+.reference-mode #region-overhead .irs-amber-display{display:none}
+
+/* END irs-amber-display-v1.css */
+
+/* BEGIN irs-upper-dspl-v1.css a4f81590b1f4d4bc57048f97a79f8aa641ce324a */
+/* Independently layered photographic controls; fixed lower SYS DSPL is outside this scope. */
+#region-overhead .irs-upper-dspl-mount{position:absolute;z-index:127;direction:ltr;isolation:isolate;pointer-events:none;background:transparent;border:0;padding:0}
+#region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor{position:absolute;display:block;pointer-events:none;transform-origin:50% 50%;transition:transform 110ms ease-out}
+#region-overhead .irs-upper-mode-rotor{inset:0;z-index:1}
+#region-overhead .irs-upper-brt-rotor{inset:0;width:100%;height:100%;z-index:2}
+#region-overhead .irs-upper-photo,#region-overhead .irs-upper-mode-index{position:absolute;display:block;inset:0;width:100%;height:100%;max-width:none;pointer-events:none;user-select:none}
+#region-overhead .irs-upper-control{position:absolute;appearance:none;background:transparent!important;border:0!important;box-shadow:none!important;margin:0!important;padding:0!important;border-radius:50%!important;outline:none;pointer-events:auto;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
+#region-overhead .irs-upper-mode-control{inset:0;width:100%;height:100%;clip-path:circle(35% at 50% 50%);z-index:3}
+#region-overhead .irs-upper-brt-control{left:30.5%;top:30.5%;width:39%;height:39%;z-index:4}
+#region-overhead .irs-upper-control:active{cursor:grabbing}
+#region-overhead .irs-upper-control:focus-visible{outline:1px solid #a4e8f4!important;outline-offset:1px!important}
+#region-overhead .irs-upper-display-dimmer{position:absolute;z-index:122;pointer-events:none;background:#000;border:0;transition:opacity 80ms linear}
+.pan-mode #region-overhead .irs-upper-control{pointer-events:none}
+.reference-mode #region-overhead .irs-upper-dspl-mount,.reference-mode #region-overhead .irs-upper-display-dimmer{display:none}
+@media(prefers-reduced-motion:reduce){#region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor,#region-overhead .irs-upper-display-dimmer{transition:none}}
+
+/* Owner correction: use the EXACT original 1774x887 PNG as both lossless sprites.
+   No resampled/repainted derivative, enlargement of the inner part, or JPEG. */
+#region-overhead .irs-upper-mode-rotor,#region-overhead .irs-upper-brt-rotor{overflow:hidden}
+#region-overhead .irs-upper-photo{inset:auto;width:173.2421875%;height:86.62109375%;image-rendering:auto}
+#region-overhead .irs-upper-photo-outer{left:-.12890625%;top:6.615234375%;clip-path:inset(0 50% 0 0)}
+#region-overhead .irs-upper-photo-inner{left:-78.759765625%;top:7.958984375%;clip-path:inset(0 0 0 50%)}
+
+/* Replace only the older UPPER control visual; its existing IRS controller remains authoritative. */
+#region-overhead #irsUpperDsplSelMounted{display:none!important}
+
+/* Exact concentric circles. Opaque circular seats remove alpha-edge wobble;
+   original high-resolution photograph remains the surface texture. */
+#region-overhead .irs-upper-mode-rotor{clip-path:circle(35% at 50% 50%);background:#d8d0bc}
+#region-overhead .irs-upper-brt-rotor{clip-path:circle(19.5% at 50% 50%);background:#ded8c7}
+
+/* END irs-upper-dspl-v1.css */
+
+/* BEGIN irs-13seg-display-v2.css 94ac8c9c84ead211726119953e5ddd71d164908a */
+/* IRS 13-position warm incandescent filament facsimile / OEM-inspired photograph.
+   ONLY the display overlay, NO modifications to locked lower L/R or overhead.
+   Original two-row text mock is hidden in favor of a single real segment row.
+*/
+#region-overhead .irs-amber-display{display:none!important;pointer-events:none!important}
+#region-overhead .irs-segment-display{
+ position:absolute;z-index:135;display:block;box-sizing:border-box;
+ border:0;margin:0;padding:0;background:transparent;overflow:hidden;
+ pointer-events:auto;cursor:pointer;direction:ltr;isolation:isolate;
+ --irs-filament-light:.82
+}
+#region-overhead .irs-segment-display .irs-segment-canvas{
+ display:block;width:100%;height:100%;overflow:visible;pointer-events:none
+}
+#region-overhead .irs-segment-display .irs-filament{
+ fill:#40220c;opacity:.07;stroke:none;stroke-width:0;
+ transition:fill .08s,opacity .08s;
+}
+#region-overhead .irs-segment-display .irs-filament[data-on="true"]{
+ fill:#ffca87;opacity:var(--irs-filament-light);
+ filter:drop-shadow(0 0 2px #ff9c48) drop-shadow(0 0 3.5px #fe7627);
+}
+#region-overhead .irs-segment-display .irs-fraction-dot{
+ fill:#613012;opacity:.06;transition:opacity .1s;
+}
+#region-overhead .irs-segment-display .irs-fraction-dot[data-on="true"]{
+ fill:#ffdfac;opacity:var(--irs-filament-light);
+ filter:drop-shadow(0 0 2.5px #ffb264) drop-shadow(0 0 4px #ff862a)
+}
+#region-overhead .irs-segment-display .irs-dot-halo{fill:#f6a15c;opacity:0}
+#region-overhead .irs-segment-display[data-brightness="0"] .irs-filament[data-on="true"],
+#region-overhead .irs-segment-display[data-brightness="0"] .irs-fraction-dot[data-on="true"]{opacity:0}
+#region-overhead .irs-segment-display:focus-visible{outline:1px solid #a97037;outline-offset:0}
+.pan-mode #region-overhead .irs-segment-display{pointer-events:none}
+.reference-mode #region-overhead .irs-segment-display{display:none}
+@media(prefers-reduced-motion:reduce){
+ #region-overhead .irs-segment-display .irs-filament{transition:none}
+}
+
+/* END irs-13seg-display-v2.css */
+
+/* BEGIN irs-trainer-unified-v1.css 5b6a7f1efc1c4d4ea21fd3649a23fd90bbed536a */
+/* Additive IRS trainer controls; immutable source textures and owner-locked
+   ISDU/13seg renderer/SYS DSPL are NOT restyled or touched.
+*/
+#irsTrainerV1{border-top:1px solid #587083;padding:10px 5px 16px;font-size:12px;direction:ltr;text-align:left}
+#irsTrainerV1 h2{font-size:14px;margin:4px 0}
+#irsTrainerV1 h3{font-size:12px;margin:9px 0 3px;color:#dfe8e9}
+#irsTrainerV1 p{font-size:11px;line-height:1.5;opacity:.8;margin:6px 0}
+#irsTrainerV1 select,#irsTrainerV1 input{background:#142a36;color:#f8f7f1;border:1px solid #59798c;padding:5px;max-width:100%;border-radius:3px}
+#irsTrainerV1 select{width:100%}
+#irsTrainerV1 button{background:#1a3948;color:#fafafa;border:1px solid #648296;border-radius:3px;padding:5px;cursor:pointer;font-size:11px}
+#irsTrainerV1 .irs-msu-mode-row{display:flex;gap:3px;flex-wrap:wrap}
+#irsTrainerV1 .irs-msu-mode-row button{flex:1}
+#irsTrainerV1 .irs-msu-mode-row button[aria-pressed="true"]{background:#d6ac65;color:#1a1b1b}
+#irsTrainerV1 .irs-msu-lamps{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:5px 0}
+#irsTrainerV1 .irs-lab-lamp{border:1px solid #3c4448;background:#151b20;color:#707574;text-align:center;padding:4px 1px;font-size:9px;border-radius:2px}
+#irsTrainerV1 .irs-lab-lamp[data-lit="true"]{color:#ffcf95;background:#5a2b0d;border-color:#bd8249;box-shadow:inset 0 0 5px #ffae527f,0 0 4px #f5a44f6e;text-shadow:0 0 4px #f7c591}
+#irsTrainerV1 output{display:block;font:10px Consolas,monospace;white-space:normal;overflow-wrap:anywhere;color:#a1d5bb;margin:6px 0}
+#irsTrainerV1 .irs-motion-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+#irsTrainerV1 .irs-motion-controls label{display:flex;flex-direction:column;font-size:10px}
+#irsTrainerV1 .irs-motion-controls input{width:100%;box-sizing:border-box}
+#region-overhead .irs-msu-trainer-overlay{position:absolute;inset:0;pointer-events:none;z-index:130}
+#region-overhead .irs-msu-mini{position:absolute;border:0!important;background:transparent!important;pointer-events:auto;cursor:pointer;outline:none!important;padding:0!important;touch-action:manipulation}
+/* MSU-OWNER-PHOTO-0002 — use the already approved standard rotary sprite.
+   Only the L/R MSU selectors change. The photographed faceplate and printed
+   OFF/ALIGN/NAV/ATT legend remain untouched; no artificial white ticks. */
+#region-overhead .irs-msu-mini{overflow:visible;isolation:isolate}
+#region-overhead .irs-msu-mini::before,
+#region-overhead .irs-msu-mini::after{content:none!important;display:none!important}
+#region-overhead .irs-msu-mini .irs-msu-owner-photo{
+ position:absolute;left:0;top:6%;width:100%;height:100%;display:block;
+ max-width:none!important;max-height:none!important;object-fit:contain;
+ transform-origin:50% 44%;
+ transform:rotate(var(--irs-msu-angle,-70deg));
+ transition:transform 140ms cubic-bezier(.2,.85,.3,1);
+ pointer-events:none;user-select:none;-webkit-user-drag:none;
+}
+/* Photo's white leading index starts at twelve o'clock. These four measured
+   mode-ray offsets face the ORIGINAL panel legend, not injected tick SVGs. */
+#region-overhead .irs-msu-mini[data-mode="OFF"]{--irs-msu-angle:-70deg}
+#region-overhead .irs-msu-mini[data-mode="ALIGN"]{--irs-msu-angle:-38deg}
+#region-overhead .irs-msu-mini[data-mode="NAV"]{--irs-msu-angle:25deg}
+#region-overhead .irs-msu-mini[data-mode="ATT"]{--irs-msu-angle:69deg}
+@media(prefers-reduced-motion:reduce){
+ #region-overhead .irs-msu-mini .irs-msu-owner-photo{transition:none}
+}
+.reference-mode #region-overhead .irs-msu-trainer-overlay{display:none}
+.pan-mode #region-overhead .irs-msu-trainer-overlay{pointer-events:none}
+.pan-mode #region-overhead .irs-msu-mini{pointer-events:none}
+
+#region-overhead .irs-msu-phys-lamp{
+ position:absolute;box-sizing:border-box;display:flex;align-items:center;
+ justify-content:center;pointer-events:none;color:#74716c;
+ font:bold 12.3px Arial,Helvetica,sans-serif;letter-spacing:.1px;
+ text-shadow:0 1px 1px #050608;opacity:.14;
+}
+#region-overhead .irs-msu-phys-lamp[data-lit="true"]{
+ color:#ffe5b6;opacity:1;text-shadow:0 0 3px #ffd39e,0 0 5px #e79d66;
+ background:radial-gradient(ellipse at center,#c5823f4f 0%,transparent 77%);
+}
+
+/* END irs-trainer-unified-v1.css */
