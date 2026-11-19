@@ -27,7 +27,9 @@
    responseWaitMs:round(e.requestStart&&e.responseStart?e.responseStart-e.requestStart:null),
    downloadMs:round(e.responseStart?e.responseEnd-e.responseStart:null),
    transferredBytes:e.transferSize,bodyBytes:e.encodedBodySize,status,
-   serviceWorker:e.workerStart>0,cache:e.deliveryType||undefined
+   serviceWorker:e.workerStart>0,cache:e.deliveryType||undefined,
+   delivery:e.serverTiming?.filter(item=>item.name==='unified-compiled'||item.name==='unified-source')
+    .map(item=>({mode:item.name,release:item.description}))
   });
  }
  function monitor(win,frame){
@@ -79,9 +81,9 @@
   if(lastFrame!==null)add('zoom-frame',lastFrame,{durationMs:round(now-lastFrame)});
   lastFrame=now;
   if(pendingPaint){
-   if(pendingPaint.firstFrame===null)pendingPaint.firstFrame=now;
+   if(pendingPaint.firstFrame===null)pendingPaint.firstFrame=performance.now();
    else{
-    add('zoom-paint-opportunity',pendingPaint.start,{durationMs:round(now-pendingPaint.start),
+    add('zoom-paint-opportunity',pendingPaint.start,{durationMs:round(performance.now()-pendingPaint.start),
      firstFrameMs:round(pendingPaint.firstFrame-pendingPaint.start),updates:pendingPaint.updates});
     pendingPaint=null;
    }
@@ -111,6 +113,7 @@
    readiness:{fullMs:round(diagnostics?.cockpitReadyMs),mainMs:round(diagnostics?.mainReadyMs),
     sharpMs:round(diagnostics?.mainSharpReadyMs),phases:diagnostics?.cockpitMilestones,
     state:diagnostics?.cockpit},
+   release:timeline.find(e=>e.type==='navigation'&&e.frame==='Unified'&&e.delivery?.length)?.delivery,
    dropped,timeline:[...timeline].sort((a,b)=>a.atMs-b.atMs)
   };
  }

@@ -20,13 +20,17 @@
   try{
    result.electrical=w.B737ISNCockpitV1?.startupSynchronized?.()===true;
    const overhead=d.getElementById('overheadFrame')?.contentDocument;
-   result.overhead=main.overhead&&imagesReady(overhead,'#atlasAbsolute .atlas-photo');
+   result.overhead=main.overhead&&imagesReady(overhead,'#atlasAbsolute .atlas-photo')&&
+    (profile.pressurization!=='DCPCS'||imagesReady(overhead,'.dcpcs-owner-oh22-background > img'))&&
+    (profile.aircraftFamily!=='B737-400'||imagesReady(overhead,'.b737-400-owner-oh20-background > img'))&&
+    imagesReady(overhead,'.asp-control-image');
    result.cdu=main.cdu&&(w.B737UnifiedNoCduTest||['CAPT','FO'].every(seat=>
     imagesReady(d.getElementById('cduFrame'+seat)?.contentDocument,'#cdu-stage img.base')));
    result.pedestal=imagesReady(d,'#region-pedestal .texture-piece > img')&&
     w.B737ThrottlePositions?.mounted?.()===true&&
     d.querySelectorAll('#region-pedestal .engine-start-lever').length===2&&
-    imagesReady(d,'#region-pedestal .fire-handle-control > img',3);
+    imagesReady(d,'#region-pedestal .fire-handle-control > img',3)&&
+    imagesReady(d,'.throttle-state-sprite',10)&&imagesReady(d,'.asp-control-image');
    const eadiSeats=['CAPT','FO'];
    result.instruments=eadiSeats.every(seat=>
     Number(d.querySelector('[data-eadi-stage1-seat="'+seat+'"]')?.dataset.eadiPaintCount)>0&&

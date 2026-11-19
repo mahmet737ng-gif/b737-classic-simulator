@@ -24,8 +24,13 @@
    if(!image.naturalWidth||!image.naturalHeight)return;
    obsMeasuring.add(name);
    try{
-    const shape=await silhouette(image.currentSrc||image.src);
-    if(shape.width!==image.naturalWidth||shape.height!==image.naturalHeight)throw Error('ASP source dimensions changed during registration');
+    // A display derivative keeps the original source calibration; standalone
+    // photo checks still inspect the displayed PNG at its native dimensions.
+    const source=image.dataset.perfSource;
+    const shape=await silhouette(source||image.currentSrc||image.src);
+    const width=source?Number(image.getAttribute('width')):image.naturalWidth;
+    const height=source?Number(image.getAttribute('height')):image.naturalHeight;
+    if(shape.width!==width||shape.height!==height)throw Error('ASP source dimensions changed during registration');
     obsLiveMasks.set(name,shape);
     host.dataset.aspObsMeasuredImages=String(obsLiveMasks.size);
     sizeControls(host);
@@ -273,7 +278,10 @@
     button.title=s.kind==='mic'?'Press to select / deselect':'Press: select / deselect · Drag / wheel: volume · 270° travel';
     if(s.kind==='volume'){button.setAttribute('role','slider');button.setAttribute('aria-valuemin','0');button.setAttribute('aria-valuemax','100');}
     const rotor=document.createElement('span');rotor.className='asp-control-rotor';
-    ASSETS[s.kind].forEach((name,i)=>{const img=document.createElement('img');img.src=assetRoot+'assets/asp-controls-v1/'+name;img.alt='';img.draggable=false;img.className='asp-control-image asp-image-'+(i?'on':'off');rotor.append(img);});
+    ASSETS[s.kind].forEach((name,i)=>{const img=document.createElement('img'),source=assetRoot+'assets/asp-controls-v1/'+name;
+     if(root.B737ImageLoader?.assignPreview)root.B737ImageLoader.assignPreview(img,source,384);
+     else img.src=source;
+     img.alt='';img.draggable=false;img.className='asp-control-image asp-image-'+(i?'on':'off');rotor.append(img);});
     button.append(rotor);host.append(button);wire(button);paint(button);
    }
    host.dataset.aspControlsVersion=model.version;host.dataset.aspLampTest=String(document.documentElement.dataset.lampVisualTest==='true');

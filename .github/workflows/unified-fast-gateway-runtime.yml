@@ -27,12 +27,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Compile only verified browser JS and owner-safe HTML
+      - name: Compile verified browser runtime and boot assets
         working-directory: source
         run: |
           node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs
           node tools/export-unified-gateway-runtime.cjs gateway-fast-runtime
-      - name: Sync a tiny version-matched fast bundle, not assets or secrets
+      - name: Sync the version-pinned public boot release
         run: |
           set -euo pipefail
           rm -rf gateway/runtime/fast-unified
@@ -47,3 +47,52 @@ jobs:
           git -C gateway config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git -C gateway commit -m "perf(gateway): version-matched compiled Unified ${GITHUB_SHA:0:12}"
           git -C gateway push origin HEAD:ata24-guest-gateway
+  verify-release:
+    needs: compile-and-sync
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: test-only
+          POSTGRES_DB: source_mirror
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci -d source_mirror"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      DATABASE_URL: postgresql://ci:test-only@127.0.0.1:5432/source_mirror
+      LAB_USER: ci-reviewer
+      PORT: 3000
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ata24-guest-gateway
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check release identity and install browser dependencies
+        run: |
+          node -e 'require("node:assert/strict").equal(require("./runtime/fast-unified/manifest.json").sourceCommit,process.env.GITHUB_SHA)'
+          npm install --ignore-scripts --no-audit --no-fund
+          npm install --no-save --ignore-scripts playwright@1.58.2 --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Boot and measure the authenticated Gateway
+        run: |
+          set -euo pipefail
+          SALT="$(openssl rand -hex 16)"
+          HASH="$(node -e 'const c=require("node:crypto");process.stdout.write(c.scryptSync("ci-only-fixture",process.argv[1],64).toString("hex"))' "$SALT")"
+          LAB_PASSWORD_SCRYPT="scrypt:$SALT:$HASH" node server.js >/tmp/unified-release.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:3000/healthz | grep -qx ok; then break; fi
+            sleep 1
+          done
+          node tests/gateway-boot-performance.test.cjs
+          node tests/guest-fast-startup.integration.cjs
+      - name: Show fixture launch log
+        if: always()
+        run: if [ -f /tmp/unified-release.log ]; then tail -30 /tmp/unified-release.log; fi

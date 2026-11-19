@@ -71,7 +71,8 @@ const overheadBridge = fs.readFileSync(path.join(__dirname, '../panel-mosaic-lab
 assert.ok(overheadBridge.includes('DCPCS_Background_Owner.png'), 'Embedded overhead must show exact owner-uploaded asset');
 assert.ok(overheadBridge.includes('[data-key="OH22"] .atlas-image-window'), 'DCPCS must display on actual OH22 plate');
 assert.ok(overheadBridge.includes("pressurizationSystem==='DCPCS'"), 'Only DCPCS may show replacement on OH22');
-assert.ok(overheadBridge.includes("new URL(DCPCS_ARTWORK,document.baseURI)"), 'Resolve owner artwork from overhead base URL');
+assert.match(overheadBridge,/new URL\(asset,document\.baseURI\)/,'Resolve owner artwork from overhead base URL');
+assert.match(overheadBridge,/loadPlate\(ownerImage,DCPCS_ARTWORK\)/,'Use approved DCPCS source for the installed photo');
 assert.ok(overheadBridge.includes("e.key===PROFILE_KEY"), 'Existing saved settings must sync across iframe contexts');
 const parentCockpit = fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/app.js'),'utf8');
 assert.ok(parentCockpit.includes("command('pressurization-background'"), 'Iframe-ready handshake must restore selection');

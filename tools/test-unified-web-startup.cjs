@@ -55,6 +55,13 @@ function assertFiveSeconds(samples){
    await page.keyboard.up('Control');
    await page.waitForFunction(()=>window.B737BootTrace.report().timeline.some(e=>e.type==='zoom-work'&&Number.isFinite(e.inputDelayMs))&&
     window.B737BootTrace.report().timeline.some(e=>e.type==='zoom-paint-opportunity'));
+   await page.waitForFunction(()=>window.B737BootTrace.report().timeline.some(e=>e.type==='zoom-work'&&e.kind==='wheel-commit'));
+   const child=page.frameLocator('#overheadFrame').locator('#viewport');
+   await child.evaluate(node=>node.dispatchEvent(new WheelEvent('wheel',{
+    bubbles:true,cancelable:true,ctrlKey:true,deltaY:-90,clientX:100,clientY:120
+   })));
+   await page.waitForFunction(()=>window.B737BootTrace.report().timeline.filter(e=>
+    e.type==='zoom-work'&&e.kind==='wheel-commit'&&Number.isFinite(e.inputDelayMs)).length>=2);
    await page.getByRole('button',{name:'Copy report'}).click();
    await page.waitForFunction(()=>window.copiedBootTrace);
    const copied=await page.evaluate(()=>window.copiedBootTrace);
@@ -66,6 +73,10 @@ function assertFiveSeconds(samples){
    assert.ok(report.timeline.some(e=>e.type==='app-phase'&&e.name==='Initialize electrical and ECU systems'));
    assert.ok(report.timeline.some(e=>e.type==='zoom-work'&&Number.isFinite(e.geometryMs)));
    assert.ok(!copied.includes('secret-query-value'));
+   assert.ok(report.timeline.filter(e=>e.type==='zoom-paint-opportunity').every(e=>e.firstFrameMs>=0));
+   const sprites=await page.locator('.throttle-state-sprite').evaluateAll(nodes=>nodes.map(n=>n.currentSrc));
+   assert.equal(sprites.length,10,'All throttle detents must boot with an available sprite');
+   assert.ok(sprites.every(url=>/q96-(?:384|768)\.webp$/.test(url)));
    fs.writeFileSync(path.join(out,'boot-trace-smoke.json'),JSON.stringify(report,null,2));
    console.log('Boot trace startup, wheel zoom, frame timing, query redaction and Copy report verified');
    return;

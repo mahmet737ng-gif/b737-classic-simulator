@@ -387,6 +387,72 @@
         }
       ]
     },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Boeing-Style Environmental Control Panel.png": {
+      "width": 1122,
+      "height": 1402,
+      "sourceBytes": 2765943,
+      "sourceSha256": "20b5a4a331566a1d1fd09971d62ee8ea14ba68259ed00c30bac3cc9b93bcce41",
+      "levels": [
+        {
+          "width": 307,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-384.webp",
+          "bytes": 37428,
+          "sha256": "4ace416afad285374cf2605af893ebef5676e94c4f8d718a4a44678b4a061c49"
+        },
+        {
+          "width": 615,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-768.webp",
+          "bytes": 154262,
+          "sha256": "9b432808f57f6d75c32c855b2651408afe772191af4f0dc88f7b3eae0bdd7d5f"
+        },
+        {
+          "width": 1122,
+          "height": 1402,
+          "extent": 1402,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Boeing-Style Environmental Control Panel.png",
+          "bytes": 2765943,
+          "sha256": "20b5a4a331566a1d1fd09971d62ee8ea14ba68259ed00c30bac3cc9b93bcce41",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/DCPCS_Background_Owner.png": {
+      "width": 1086,
+      "height": 1120,
+      "sourceBytes": 2040317,
+      "sourceSha256": "29e87130e683813cb1342ca4fc6b588d990ddfb224bcfd12189b329391845c03",
+      "levels": [
+        {
+          "width": 372,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-384.webp",
+          "bytes": 39888,
+          "sha256": "a2aa857faff69b5949804f709236aa65005ebe763cddf889612efa19e74d7c47"
+        },
+        {
+          "width": 745,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-768.webp",
+          "bytes": 168380,
+          "sha256": "8e5d4233b84d4a44c37acd8868e780534faa7150f7855d3f491f108d655fea3d"
+        },
+        {
+          "width": 1086,
+          "height": 1120,
+          "extent": 1120,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/DCPCS_Background_Owner.png",
+          "bytes": 2040317,
+          "sha256": "29e87130e683813cb1342ca4fc6b588d990ddfb224bcfd12189b329391845c03",
+          "original": true
+        }
+      ]
+    },
     "panel-mosaic-lab/assets/locked/2026-10-23/Fire_Protection_Panel_Blank_With_Buttons.png": {
       "width": 2172,
       "height": 724,
@@ -1226,6 +1292,368 @@
         }
       ]
     },
+    "panel-mosaic-lab/assets/throttle-levers/engine-1-full.png": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 1341396,
+      "sourceSha256": "703b1dc32ac784fd46e45a81bdd5d61ab1ed8ac98a80a3a9770fd0953f3f723a",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-384.webp",
+          "bytes": 14462,
+          "sha256": "447dea5a84b070bf32cd449104cd25e411c953de16bf01d48fa5c11d77153336"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-768.webp",
+          "bytes": 38202,
+          "sha256": "45cb2f20155f33f3d6a4df5b251fb6ebb6912e1d174cf765ee05d6c74956dc70"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-1-full.png",
+          "bytes": 1341396,
+          "sha256": "703b1dc32ac784fd46e45a81bdd5d61ab1ed8ac98a80a3a9770fd0953f3f723a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-1-idle.png": {
+      "width": 953,
+      "height": 1650,
+      "sourceBytes": 962290,
+      "sourceSha256": "a6a208300913994bcbbccbb5cbed8ddbbf6335766b77c9617d2cab3576b4cac7",
+      "levels": [
+        {
+          "width": 222,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-384.webp",
+          "bytes": 16986,
+          "sha256": "e88a12d3e4219696907e2d13baf1fb2ffcf93d563b5dd8848f2294c063df1394"
+        },
+        {
+          "width": 444,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-768.webp",
+          "bytes": 44744,
+          "sha256": "a1cf25639c0b78adf810767ff3049209c866468fd56a92c6e780848d1fc513c2"
+        },
+        {
+          "width": 887,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-1536.webp",
+          "bytes": 153026,
+          "sha256": "4ff4c410d8cf3ad7127a7a7cce43a707943da9dfb4124430f911a481ab476e68"
+        },
+        {
+          "width": 953,
+          "height": 1650,
+          "extent": 1650,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-1-idle.png",
+          "bytes": 962290,
+          "sha256": "a6a208300913994bcbbccbb5cbed8ddbbf6335766b77c9617d2cab3576b4cac7",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-1-mid.png": {
+      "width": 1312,
+      "height": 1199,
+      "sourceBytes": 1313829,
+      "sourceSha256": "a3e35e28bafe1ad12c9c674478f4f7a3fc6e5fd5da42e081b7eae934a6e3f21c",
+      "levels": [
+        {
+          "width": 384,
+          "height": 351,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-384.webp",
+          "bytes": 26016,
+          "sha256": "a700524287cbfcd9f4f6a6bb8fd2f0396a885c7581933f0be92b6732326f880f"
+        },
+        {
+          "width": 768,
+          "height": 702,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-768.webp",
+          "bytes": 81696,
+          "sha256": "98adc43335757f9e2949b1f45277dfc166763b6fc38462609cd716f7a57e4df8"
+        },
+        {
+          "width": 1312,
+          "height": 1199,
+          "extent": 1312,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-1-mid.png",
+          "bytes": 1313829,
+          "sha256": "a3e35e28bafe1ad12c9c674478f4f7a3fc6e5fd5da42e081b7eae934a6e3f21c",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-1-quarter.png": {
+      "width": 953,
+      "height": 1650,
+      "sourceBytes": 950559,
+      "sourceSha256": "a39a47344f50704982dbdc6b7bcc47e3a36c7d27aafcfa13b729c3be315cfb58",
+      "levels": [
+        {
+          "width": 222,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-384.webp",
+          "bytes": 16738,
+          "sha256": "56b43ceebde919b6593f03fb8a0fb43963fc1bde97f6dc6ba531006d14d002ca"
+        },
+        {
+          "width": 444,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-768.webp",
+          "bytes": 43864,
+          "sha256": "3d808bcec6a5d643c8e3d35e1ad220140f2aa654fa16a3afaca13d59de314cb5"
+        },
+        {
+          "width": 887,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-1536.webp",
+          "bytes": 146108,
+          "sha256": "2609128859bec36fd62be46bb841d7860cb2846fc4ff0f2212b24885019ff383"
+        },
+        {
+          "width": 953,
+          "height": 1650,
+          "extent": 1650,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-1-quarter.png",
+          "bytes": 950559,
+          "sha256": "a39a47344f50704982dbdc6b7bcc47e3a36c7d27aafcfa13b729c3be315cfb58",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-1-three-quarter.png": {
+      "width": 1320,
+      "height": 1300,
+      "sourceBytes": 839737,
+      "sourceSha256": "0bcea81d94c9affd3a3ba4cc3602786a1580de69d0b63c02dd13284685b5a1bb",
+      "levels": [
+        {
+          "width": 384,
+          "height": 378,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-384.webp",
+          "bytes": 18702,
+          "sha256": "a02387bb9648b442c11b589d629e380e34bb986bb4dca42522966a386279ee35"
+        },
+        {
+          "width": 768,
+          "height": 756,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-768.webp",
+          "bytes": 53800,
+          "sha256": "6e0d4245a9b65f26e17bd5c872942866ab16cc8d2f4c45771c3cec0c16dce2e5"
+        },
+        {
+          "width": 1320,
+          "height": 1300,
+          "extent": 1320,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-1-three-quarter.png",
+          "bytes": 839737,
+          "sha256": "0bcea81d94c9affd3a3ba4cc3602786a1580de69d0b63c02dd13284685b5a1bb",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-2-full.png": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 1319318,
+      "sourceSha256": "a7a83795687ea3fa3c4a9186f3bd02e908401a12f4112736a12bfa43a0faf6c4",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-384.webp",
+          "bytes": 14710,
+          "sha256": "c9f87ab3d934e267838405bdce28cee0fcefd0dbeca8aead7069761e6b3d60ae"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-768.webp",
+          "bytes": 37896,
+          "sha256": "29d7cb45df81488168a41458d6fdafaefc04d61a053738ed23d1e588e81ca03c"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-2-full.png",
+          "bytes": 1319318,
+          "sha256": "a7a83795687ea3fa3c4a9186f3bd02e908401a12f4112736a12bfa43a0faf6c4",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-2-idle.png": {
+      "width": 953,
+      "height": 1650,
+      "sourceBytes": 920050,
+      "sourceSha256": "500e497bf4067c3434bf7b66e5b8d2a28689b43c32312555019bfa7a144fc71e",
+      "levels": [
+        {
+          "width": 222,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-384.webp",
+          "bytes": 17034,
+          "sha256": "1eb4952043faac7391fa167d5fe600e462d27c1a66e928ff66bc8651ae0b9d84"
+        },
+        {
+          "width": 444,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-768.webp",
+          "bytes": 43844,
+          "sha256": "5490a7d7dd77f8b1151e655b47d1292a2cbc4c42dcdfe83aa1f77f1006b05ba0"
+        },
+        {
+          "width": 887,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-1536.webp",
+          "bytes": 138004,
+          "sha256": "afdf18447b32b2f292adf31a473099a68ea031271e26f8f1fd53e623f2b78ada"
+        },
+        {
+          "width": 953,
+          "height": 1650,
+          "extent": 1650,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-2-idle.png",
+          "bytes": 920050,
+          "sha256": "500e497bf4067c3434bf7b66e5b8d2a28689b43c32312555019bfa7a144fc71e",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-2-mid.png": {
+      "width": 1189,
+      "height": 1323,
+      "sourceBytes": 1349998,
+      "sourceSha256": "d460c1247e8f95bd0d88661d193f632d0d4a4cc0901bed533dfe6ed50c9d8c0a",
+      "levels": [
+        {
+          "width": 345,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-384.webp",
+          "bytes": 25598,
+          "sha256": "84183c53fc78556226fbd81f904c1b96f1c5611f32bb7752380b9108ffffb1e2"
+        },
+        {
+          "width": 690,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-768.webp",
+          "bytes": 84122,
+          "sha256": "40c4f3e8685bea5ac356824bcd6e5c6b94c9d8fd34007e832fb4d3f597701a79"
+        },
+        {
+          "width": 1189,
+          "height": 1323,
+          "extent": 1323,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-2-mid.png",
+          "bytes": 1349998,
+          "sha256": "d460c1247e8f95bd0d88661d193f632d0d4a4cc0901bed533dfe6ed50c9d8c0a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-2-quarter.png": {
+      "width": 954,
+      "height": 1649,
+      "sourceBytes": 906511,
+      "sourceSha256": "bc1f5f4c72272ca729ee3b658ffb88d05fd4c396901ca4b9072dd1a35cca24ce",
+      "levels": [
+        {
+          "width": 222,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-384.webp",
+          "bytes": 17316,
+          "sha256": "0442134d39913a6b94863d8db0224dee183fc049a0810f68d4065ed59b182680"
+        },
+        {
+          "width": 444,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-768.webp",
+          "bytes": 43318,
+          "sha256": "9867173731c20bde5e4aafe9047dd1cc38004ff8b5cc7d30ce265c7ea2194ae8"
+        },
+        {
+          "width": 889,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-1536.webp",
+          "bytes": 133204,
+          "sha256": "375a6e957daf7613813677e535fc30e0830979e02c9b15a9fb1858b9db333e49"
+        },
+        {
+          "width": 954,
+          "height": 1649,
+          "extent": 1649,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-2-quarter.png",
+          "bytes": 906511,
+          "sha256": "bc1f5f4c72272ca729ee3b658ffb88d05fd4c396901ca4b9072dd1a35cca24ce",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/throttle-levers/engine-2-three-quarter.png": {
+      "width": 1320,
+      "height": 1300,
+      "sourceBytes": 871482,
+      "sourceSha256": "449c6375b5a19271c963f4dc9f6c6397979228b86c642830a151cd4c24c31bac",
+      "levels": [
+        {
+          "width": 384,
+          "height": 378,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-384.webp",
+          "bytes": 20664,
+          "sha256": "296ed2849f6caefb2d9434f398aaab87989bc5dc6a71590678bba43f07752a0d"
+        },
+        {
+          "width": 768,
+          "height": 756,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-768.webp",
+          "bytes": 58378,
+          "sha256": "c4b1e3118de94839f339d18e06361ac92e17bfd0af99f88d78f9bfbe376e8c60"
+        },
+        {
+          "width": 1320,
+          "height": 1300,
+          "extent": 1320,
+          "url": "panel-mosaic-lab/assets/throttle-levers/engine-2-three-quarter.png",
+          "bytes": 871482,
+          "sha256": "449c6375b5a19271c963f4dc9f6c6397979228b86c642830a151cd4c24c31bac",
+          "original": true
+        }
+      ]
+    },
     "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png": {
       "width": 918,
       "height": 1713,
@@ -1304,6 +1732,138 @@
           "url": "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_V2.png",
           "bytes": 1826218,
           "sha256": "f7c3b3406b533ec606332666781a25f158fd69eb4b5b11a3b405a2ddaa5ee830",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/asp-controls-v1/mic-off.png": {
+      "width": 1254,
+      "height": 1254,
+      "sourceBytes": 1204850,
+      "sourceSha256": "b68d4f30f7dcef356c1aa194cd7fed55241091f5d74f9efc0147f22f48dc2b2b",
+      "levels": [
+        {
+          "width": 384,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-384.webp",
+          "bytes": 25834,
+          "sha256": "9969eee9f933d4f19ec6cdc4db99cfe2c74e46d71b2e863f79828e8068804fa3"
+        },
+        {
+          "width": 768,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-768.webp",
+          "bytes": 96262,
+          "sha256": "4cfdaacc2336c560b7cbcb92684ee43d434c739a98f53fc7f59b3e9a16f513b0"
+        },
+        {
+          "width": 1254,
+          "height": 1254,
+          "extent": 1254,
+          "url": "panel-mosaic-lab/cockpit/assets/asp-controls-v1/mic-off.png",
+          "bytes": 1204850,
+          "sha256": "b68d4f30f7dcef356c1aa194cd7fed55241091f5d74f9efc0147f22f48dc2b2b",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/asp-controls-v1/mic-on.png": {
+      "width": 1254,
+      "height": 1254,
+      "sourceBytes": 1085487,
+      "sourceSha256": "0bb7a727395212b5b578d56186d19565eee8afe7248920f9a5bd96a78a123874",
+      "levels": [
+        {
+          "width": 384,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-384.webp",
+          "bytes": 26314,
+          "sha256": "b23f611b96d2ade2b6078aae52a7e23bcb2f57c98ba0ea0a2d44e73780042577"
+        },
+        {
+          "width": 768,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-768.webp",
+          "bytes": 91040,
+          "sha256": "2df1d3d185df65e7b049d654a15a827db88787c28cf059e9f3a1e01982b381c3"
+        },
+        {
+          "width": 1254,
+          "height": 1254,
+          "extent": 1254,
+          "url": "panel-mosaic-lab/cockpit/assets/asp-controls-v1/mic-on.png",
+          "bytes": 1085487,
+          "sha256": "0bb7a727395212b5b578d56186d19565eee8afe7248920f9a5bd96a78a123874",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/asp-controls-v1/volume-glass-off.png": {
+      "width": 1254,
+      "height": 1254,
+      "sourceBytes": 1755809,
+      "sourceSha256": "9f67035dc7fcdc2ca861d9d48ad4c9dd93309a718a9a4c5fb29445ac8f852276",
+      "levels": [
+        {
+          "width": 384,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-384.webp",
+          "bytes": 49566,
+          "sha256": "9a7cb96ecf45cc9cc082ec4bda40e7ad68679935001ff4d06980daf8387b2e33"
+        },
+        {
+          "width": 768,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-768.webp",
+          "bytes": 173714,
+          "sha256": "7259c0a6d1e144d3ffa841e80e1b751e7721fea44825d8687c38d8ee81a6bd16"
+        },
+        {
+          "width": 1254,
+          "height": 1254,
+          "extent": 1254,
+          "url": "panel-mosaic-lab/cockpit/assets/asp-controls-v1/volume-glass-off.png",
+          "bytes": 1755809,
+          "sha256": "9f67035dc7fcdc2ca861d9d48ad4c9dd93309a718a9a4c5fb29445ac8f852276",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/assets/asp-controls-v1/volume-glass-on.png": {
+      "width": 1254,
+      "height": 1254,
+      "sourceBytes": 1612833,
+      "sourceSha256": "450d942811e7b3e6359f503b7095b15363910198ef1d4c1d115e412f5eae2a24",
+      "levels": [
+        {
+          "width": 384,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-384.webp",
+          "bytes": 48904,
+          "sha256": "accea6ffe99e7d5d52477b0b5402a131658b19a536c6d72571687fb440065cc5"
+        },
+        {
+          "width": 768,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-768.webp",
+          "bytes": 162094,
+          "sha256": "adb7e74f98d09fd7a92f96923b316276384fea81ba4ef2c9b4b9455e67ab0b28"
+        },
+        {
+          "width": 1254,
+          "height": 1254,
+          "extent": 1254,
+          "url": "panel-mosaic-lab/cockpit/assets/asp-controls-v1/volume-glass-on.png",
+          "bytes": 1612833,
+          "sha256": "450d942811e7b3e6359f503b7095b15363910198ef1d4c1d115e412f5eae2a24",
           "original": true
         }
       ]
@@ -1454,5 +2014,5 @@
     "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
   },
   "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
-  "version": "PERF-e66df4eb3e4e"
+  "version": "PERF-f96a5778b5f6"
 }

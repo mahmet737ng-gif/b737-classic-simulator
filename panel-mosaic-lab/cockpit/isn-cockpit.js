@@ -377,7 +377,16 @@
   const key=JSON.stringify(lamps);if(key===lastLampProjection)return;lastLampProjection=key;
   f.contentWindow.postMessage({type:'b737:cockpit-command',action:'isn-projection',lamps},location.origin);
  }
+ let tickPresentationFrame=0;
+ function presentActiveTick(){
+  if(document.hidden){render();return;}
+  if(!tickPresentationFrame)tickPresentationFrame=requestAnimationFrame(()=>{
+   tickPresentationFrame=0;
+   render();
+  });
+ }
  function render(){
+  if(tickPresentationFrame){cancelAnimationFrame(tickPresentationFrame);tickPresentationFrame=0;}
   const renderStarted=profileStart();
   // Instructor-only tables, trace and fault controls are not visible in the main cockpit.
   if(document.body.classList.contains('side-open')){
@@ -524,7 +533,7 @@
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
     action:'isn-starter-cutout',id:effect.id},location.origin);
   }
-  render();
+  presentActiveTick();
   profileDone('ISN 100ms active tick',tickStarted);
  },100);
  // ATA 26 drives actual simulator owners while leaving cockpit switch detents intact.

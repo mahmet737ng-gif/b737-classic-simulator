@@ -40,6 +40,7 @@ test('full cockpit requires synchronized electrical, overhead photos, CDUs, gaug
  d.querySelectorAll=selector=>{
   if(selector.includes('engine-start-lever'))return [{},{}];
   if(selector.includes('fire-handle-control'))return [photo,photo,photo];
+  if(selector.includes('throttle-state-sprite'))return Array(10).fill(photo);
   return [photo];
  };
  d.querySelector=()=>({dataset:{eadiPaintCount:'1'}});

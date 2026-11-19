@@ -18,6 +18,11 @@
    catch(_){return 'B737-300-500';}
  }
  let pressurizationSystem='DCPCS',ownerPlate=null,ownerImage=null;
+ function loadPlate(img,asset){
+   const source=new URL(asset,document.baseURI).href;
+   if(window.B737ImageLoader?.assignPreview)window.B737ImageLoader.assignPreview(img,source,384);
+   else img.src=source;
+ }
  function savedPressurization(){
    try{
      const value=JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')?.pressurization;
@@ -42,12 +47,12 @@
      img.addEventListener('load',()=>{layer.dataset.loaded='true';layer.style.display=pressurizationSystem==='DCPCS'?'block':'none';});
      img.addEventListener('error',()=>{layer.dataset.loaded='false';layer.style.display='none';send({kind:'pressurization-background-error',system:'DCPCS'});});
      // Don't fetch the 737-400/other background when CPCS is selected.
-      if(pressurizationSystem==='DCPCS')img.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
+      if(pressurizationSystem==='DCPCS')loadPlate(img,DCPCS_ARTWORK);
      layer.append(img);
      plate.append(layer);
      ownerPlate=layer;ownerImage=img;
    }
-   if(pressurizationSystem==='DCPCS'&&ownerImage&&!ownerImage.getAttribute('src'))ownerImage.src=new URL(DCPCS_ARTWORK,document.baseURI).href;
+   if(pressurizationSystem==='DCPCS'&&ownerImage&&!ownerImage.getAttribute('src'))loadPlate(ownerImage,DCPCS_ARTWORK);
     ownerPlate.style.display=pressurizationSystem==='DCPCS'&&ownerPlate.dataset.loaded==='true'?'block':'none';
    return true;
  }
@@ -69,7 +74,7 @@
      layer.append(img);plate.append(layer);
      airconPlate=layer;airconImage=img;
    }
-   if(airframeFamily==='B737-400'&&!airconImage.getAttribute('src'))airconImage.src=new URL(AIRCON_400_ARTWORK,document.baseURI).href;
+   if(airframeFamily==='B737-400'&&!airconImage.getAttribute('src'))loadPlate(airconImage,AIRCON_400_ARTWORK);
    airconPlate.style.display=airframeFamily==='B737-400'&&airconPlate.dataset.loaded==='true'?'block':'none';
    return true;
  }
@@ -217,7 +222,7 @@
   drag=null;
  });
  document.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
+  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY,inputAt:performance.timeOrigin+e.timeStamp});return;}
   // OH iframe is overflow:clip. Route wheel to parent without modifying approved hardware.
   // Physical knobs/guarded levers retain their existing wheel-detent gestures.
   if(e.target.closest('.oh14-lever-hit,.oh14-top-hinge-lid,.mounted-toggle[data-control="emergency-exit-lights"],.mounted-rotary,.rg-detent-hit,.guard-node,.aircon400-knob,.oh22-dcpcs-altitude-knob,input,select,textarea,[contenteditable="true"]'))return;

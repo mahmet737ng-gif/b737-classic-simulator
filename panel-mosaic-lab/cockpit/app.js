@@ -109,6 +109,7 @@
   scheduleViewRefresh();
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null,inputTime){
+  cancelWheelZoom();
   wheelController?.cancel();
   const profiler=window.B737InteractionProfilerV1,trace=window.B737BootTrace;
   const started=profiler||trace?performance.now():0;
@@ -139,14 +140,71 @@
    // The inherited --zoom style affects region labels and selection
    // outlines, not the actual gauges. Sync it when the pinch ends.
   }else commitZoomPresentation();
-  trace?.zoom(gestureSource?'pinch-commit':'zoom-commit',started,zoom,geometryEnd,inputTime);
+  trace?.zoom(gestureSource?.kind|| (gestureSource?'pinch-commit':'zoom-commit'),started,zoom,geometryEnd,inputTime);
   if(profiler)profiler.markWork(gestureSource?'ZOOM pinch geometry and scroll':'ZOOM single-step geometry and scroll',performance.now()-started);
+ }
+ let wheelZoom=null,wheelZoomFrame=0,wheelZoomSettle=0;
+ function cancelWheelZoom(){
+  if(!wheelZoom)return;
+  cancelAnimationFrame(wheelZoomFrame);
+  clearTimeout(wheelZoomSettle);
+  wheelZoom=null;wheelZoomFrame=0;wheelZoomSettle=0;
+  scene.style.transform='scale('+zoom+')';
+  window.B737ImageLoader.setZoomPreview(false);
+ }
+ function finishWheelZoom(){
+  if(!wheelZoom)return;
+  const pending=wheelZoom;
+  if(!pending.anchor)captureWheelAnchor(pending);
+  applyZoom(pending.next,0,0,pending.anchor.x,pending.anchor.y,pending.anchor,pending.inputTime);
+  commitZoomPresentation();
+ }
+ function captureWheelAnchor(pending){
+  const v=vp.getBoundingClientRect(),r=pending.frame?.getBoundingClientRect();
+  const x=(r?r.left:0)-v.left+pending.x*(r?r.width/pending.frame.clientWidth:1);
+  const y=(r?r.top:0)-v.top+pending.y*(r?r.height/pending.frame.clientHeight:1);
+  const left=vp.scrollLeft,top=vp.scrollTop;
+  const offsetX=parseFloat(scene.style.left)||0,offsetY=parseFloat(scene.style.top)||0;
+  pending.anchor={kind:'wheel-commit',x,y,left,top,offsetX,offsetY,
+   sourceX:(left+x-offsetX)/zoom,sourceY:(top+y-offsetY)/zoom};
+ }
+ function previewWheelZoom(){
+  wheelZoomFrame=0;
+  const pending=wheelZoom;if(!pending)return;
+  const trace=window.B737BootTrace,start=trace?performance.now():0;
+  if(!pending.anchor)captureWheelAnchor(pending);
+  const {x,y,left,top,offsetX,offsetY,sourceX,sourceY}=pending.anchor,scale=pending.next;
+  const dx=x+left-offsetX-sourceX*scale,dy=y+top-offsetY-sourceY*scale;
+  scene.style.transform='translate('+dx+'px,'+dy+'px) scale('+scale+')';
+  trace?.zoom('wheel-preview',start,scale,undefined,pending.inputTime);
+ }
+ function queueWheelZoom(delta,x,y,inputTime,child=null){
+  if(!assembly||!Number.isFinite(delta)||!delta||![x,y].every(Number.isFinite))return;
+  const previous=wheelZoom?.next??zoom;
+  const next=model.clamp(previous*(delta<0?1.12:1/1.12),.04,2);
+  if(next===previous)return;
+  if(!wheelZoom){
+   wheelController?.cancel();
+   wheelZoom={next,x,y,frame:child,inputTime,anchor:null};
+   window.B737ImageLoader.setZoomPreview(true);
+  }
+  wheelZoom.next=next;
+  if(!wheelZoomFrame){
+   wheelZoom.inputTime=inputTime;
+   wheelZoomFrame=requestAnimationFrame(previewWheelZoom);
+  }
+  clearTimeout(wheelZoomSettle);
+  wheelZoomSettle=setTimeout(finishWheelZoom,125);
+ }
+ function frameInputTime(message){
+  return Number.isFinite(message.inputAt)?message.inputAt-performance.timeOrigin:undefined;
  }
  // Responsive two-finger zoom adapter for the outer canvas. This touches only
  // viewport transforms, never protected cockpit artwork or switch geometry.
  window.B737UnifiedPinchAdapterV1=Object.freeze({
   begin(distance,x,y){
    if(!assembly||!Number.isFinite(distance)||distance<2)return null;
+   finishWheelZoom();
    wheelController?.cancel();
    endParentDrag();
    if(drag?.source==='iframe')drag=null;
@@ -216,7 +274,7 @@
    vp.scrollLeft=drag.left-(d.screenX-drag.x);vp.scrollTop=drag.top-(d.screenY-drag.y);
   }
   if(d.kind==='pan-end'&&drag?.source==='iframe')drag=null;
-  if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
+  if(d.kind==='zoom'){queueWheelZoom(d.delta,d.clientX,d.clientY,frameInputTime(d),frame);return;}
  }
  window.addEventListener('message',receiveOverhead);
  function updateCduStatus(){byId('cduStatus').textContent=cduSeats.map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'Captain':'First Officer')+': '+(s?.error?'Load Error':s?.ready?(s.page||'Ready'):'Loading')+font;}).join(' · ')||'CDU OFF';}
@@ -227,7 +285,7 @@
   if(d.kind==='error')cduStates.set(d.seat,{...previous,error:true});
   if(d.kind==='typography'&&d.version==='CDU-24COL-0006')cduStates.set(d.seat,{...previous,typography:{version:d.version,correct:d.correct===true,nativePx:d.actualFontPx,labelPx:d.labelPx,color:d.color,columns:d.columns,width24Px:d.width24Px,width25Px:d.width25Px,widthPx:d.widthPx}});
   if(d.kind==='wheel-pan'){panWheel(d);return;}
-  if(d.kind==='zoom'&&Number.isFinite(d.delta)){const r=c.child.getBoundingClientRect(),v=vp.getBoundingClientRect(),scaleX=r.width/c.item.nativeWidth,scaleY=r.height/c.item.nativeHeight;applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*scaleX,r.top-v.top+d.clientY*scaleY);}
+  if(d.kind==='zoom'){queueWheelZoom(d.delta,d.clientX,d.clientY,frameInputTime(d),c.child);return;}
   updateCduStatus();
  });
  for(const seat of cduSeats){
@@ -245,7 +303,8 @@
  byId('inspectorToggle').onclick=e=>{const active=!document.body.classList.contains('side-open');document.body.classList.toggle('side-open',active);e.currentTarget.setAttribute('aria-expanded',String(active));};
  byId('lampSelect').onchange=renderLights;byId('lampFault').onchange=e=>command('fault',{id:byId('lampSelect').value,active:e.target.checked});byId('resetScenario').onclick=()=>command('reset-scenario');byId('resetControls').onclick=()=>command('reset-controls');
  vp.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();const r=vp.getBoundingClientRect();applyZoom(zoom*(e.deltaY<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,e.clientX-r.left,e.clientY-r.top,null,e.timeStamp);return;}
+  if(e.ctrlKey||e.metaKey){e.preventDefault();queueWheelZoom(e.deltaY,e.clientX,e.clientY,e.timeStamp);return;}
+  finishWheelZoom();
   // Outer cockpit pans directly; embedded OH/CDU send same-origin wheel-pan messages.
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(panWheel(e))e.preventDefault();

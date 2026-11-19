@@ -9,7 +9,7 @@
   const doc=win.document,rootURL=new URL('../../',doc.currentScript.src),manifest=win.B737PerformanceAssets;
   const entries=new Map(),pending=new Set(),inflight=new Map(),readyURLs=new Set(),seen=new Set();
   const MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1;
-  let startupScales=null,cockpitZoom=1;
+  let startupScales=null,cockpitZoom=1,zoomPreview=false;
   let timer=0,idleTimer=0,lastMotionAt=0,activeDecodes=0,activeUpgrades=0,lastVisible=0,lastSharp=0;
   function sourceKey(src){
    const u=new URL(src,doc.baseURI);
@@ -115,7 +115,7 @@
   }
   function refresh(){
    timer=0;
-   const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
+   const view=viewport(),moving=zoomPreview||win.top!==win&&win.top.B737ImageLoader?.zoomPreview?.()||Date.now()-lastMotionAt<310,geometryCache=new Map();
    const projection=frameProjection(),first=[],upgrades=[];
    const frameId=win!==win.top?win.frameElement?.id:'';
    const overhead=frameId==='overheadFrame';
@@ -210,6 +210,20 @@
    if(asset){img.width=asset.width;img.height=asset.height;}
    entries.set(img,{source,asset,extent:0,loading:null});schedule();return img;
   }
+  function assignPreview(img,source,extent){
+   assign(img,source);
+   const item=entries.get(img);
+   const original=new URL(source,doc.baseURI).href;
+   if(!item.asset){img.src=original;return;}
+   const level=choose(item.asset,extent),url=new URL(level.url,rootURL).href;
+   item.extent=level.extent;
+   img.dataset.perfExtent=String(level.extent);
+   img.addEventListener('error',()=>{
+    if(img.src!==url)return;
+    item.extent=0;fallback(img,item);
+   },{once:true});
+   img.src=url;
+  }
   function scan(node){
    if(node.nodeType!==1)return;
    // Most new nodes are status spans, dial digits and lamp elements. The
@@ -235,7 +249,8 @@
     timer=0;schedule(0);
    },
    setCockpitZoom(zoom){cockpitZoom=zoom;},
-   assign,refresh:schedule,
+   setZoomPreview(active){zoomPreview=active;},zoomPreview:()=>zoomPreview,
+   assign,assignPreview,refresh:schedule,
    clone(img){const node=img.cloneNode(false);node.removeAttribute('src');delete node.dataset.perfReady;delete node.dataset.perfExtent;return assign(node,img.dataset.perfSource);},
    whenVisible(node,run){pending.add({node,run});schedule();},
    fullURL(source){const a=manifest?.images[sourceKey(source)];return a?new URL(a.levels.at(-1).url,rootURL).href:new URL(source,doc.baseURI).href;},

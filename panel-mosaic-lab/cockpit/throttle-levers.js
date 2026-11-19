@@ -28,7 +28,7 @@ function paint(engine){
  if(k<0)return;
  const pose=c.poses[k],anchor=PHOTO[engine][k];
  const gripY=IDLE+(FULL-IDLE)*pct/100, width=WHITE_WIDTH[k]/anchor[2];
- const height=width*pose.naturalHeight/pose.naturalWidth;
+ const height=width*(Number(pose.getAttribute('height'))||pose.naturalHeight)/(Number(pose.getAttribute('width'))||pose.naturalWidth);
  // The inner edges meet at the seam when throttle positions match.
  const gripCenterFraction=k===4?.5:engine===1?.484:.515;
  const gripX=CENTER+(engine===1?-1:1)*(WHITE_WIDTH[k]+SEAM)/2;
@@ -104,8 +104,15 @@ function buildSelectors(){
 }
 async function load(engine,k){
  const img=new Image();img.alt='';img.draggable=false;img.decoding='async';img.className='throttle-state-sprite';
- img.src='../assets/throttle-levers/engine-'+engine+'-'+NAMES[k]+'.png';
- try{await img.decode();return img;}catch{return null;}
+ const source='../assets/throttle-levers/engine-'+engine+'-'+NAMES[k]+'.png';
+ if(win.B737ImageLoader?.assignPreview)win.B737ImageLoader.assignPreview(img,source,384);
+ else img.src=source;
+ try{await img.decode();return img;}
+ catch{
+  if(!win.B737ImageLoader?.assignPreview)return null;
+  img.src=source;
+  try{await img.decode();return img;}catch{return null;}
+ }
 }
 async function mount(){
  if(ready||mounting)return;

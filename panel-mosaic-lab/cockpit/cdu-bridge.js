@@ -23,7 +23,7 @@
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:unified-cdu-command'||e.data.seat!==seat)return;if(e.data.action==='reset')reset();if(e.data.action==='reset-fmc'){originalReset();session.publish();}});
  document.addEventListener('pointerdown',e=>{if(e.target.closest('.hotspot'))send({kind:'focus'});});
  document.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY});return;}
+  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY,inputAt:performance.timeOrigin+e.timeStamp});return;}
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(!Number.isFinite(e.deltaX)||!Number.isFinite(e.deltaY))return;
   e.preventDefault();e.stopImmediatePropagation();

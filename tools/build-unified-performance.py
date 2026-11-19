@@ -13,6 +13,11 @@ paths={x['path'] for x in a['assets'].values() if Path(x['path']).suffix.lower()
 for x in spec['images']:
  paths.add(str((ROOT/'panel-mosaic-lab/all-overhead'/x['url']).resolve().relative_to(ROOT)))
 paths.add('assets/overhead.webp')
+paths.update('panel-mosaic-lab/assets/locked/2026-10-23/'+name for name in
+             ['DCPCS_Background_Owner.png','Boeing-Style Environmental Control Panel.png'])
+paths.update(str(p.relative_to(ROOT)) for p in (ROOT/'panel-mosaic-lab/assets/throttle-levers').glob('engine-[12]-*.png'))
+paths.update(f'panel-mosaic-lab/cockpit/assets/asp-controls-v1/{name}.png'
+             for name in ['mic-off','mic-on','volume-glass-off','volume-glass-on'])
 # Unified lights the existing OFF artwork with CSS. Only this installed pose
 # is on the startup path, and the frozen originals stay the highest level.
 handle_dir='panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles'
