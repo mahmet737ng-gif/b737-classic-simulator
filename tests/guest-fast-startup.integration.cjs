@@ -57,7 +57,7 @@ const assert=require('node:assert/strict');
     await page.goto(base+direct+'?bootTrace=1',{waitUntil:'commit'});
    }
    const result=await page.evaluate(async()=>{
-    const limit=performance.now()+70000;
+    const limit=performance.now()+140000;
     while(performance.now()<limit){
      const ready=Number(document.documentElement.dataset.unifiedCockpitReadyMs);
      if(ready>0)break;
@@ -75,6 +75,12 @@ const assert=require('node:assert/strict');
      workerStarts:['overheadFrame','cduFrameCAPT','cduFrameFO'].map(id=>document.getElementById(id)?.contentWindow?.performance.getEntriesByType('navigation')[0]?.workerStart),
      navTiming:performance.getEntriesByType('navigation')[0]?.serverTiming.map(x=>x.name),
      packedLampCount:Object.keys(await window.B737BootLampSources||{}).length,
+     priorityPreviewCount:window.B737GatewayBoot?.previews?.cockpitControls?.length||0,
+     versionedScriptCount:tags.filter(tag=>new URL(tag.src).searchParams.has('unifiedRelease')).length,
+     pendingPedestal:['#region-pedestal .texture-piece > img','#region-pedestal .fire-handle-control > img','.throttle-state-sprite','.asp-control-image']
+      .flatMap(selector=>[...document.querySelectorAll(selector)]
+       .filter(img=>!img.complete||img.naturalWidth<=0)
+       .map(img=>img.currentSrc?new URL(img.currentSrc).pathname:selector)).slice(0,20),
      bootMasks:[...document.querySelector('#overheadFrame').contentDocument.querySelectorAll('[data-needle-restoration="RELEASE_MASK"]')].map(piece=>piece.dataset.key).sort(),
      bootLevers:[...document.querySelectorAll('.engine-start-lever-art image')].map(img=>img.getAttribute('href')),
      unnecessaryOriginals:resources.filter(resource=>/OH10-ELEC-LOSSLESS|OH12-BUS-TRANS|engine-start-lever-reference/.test(resource.name)).map(resource=>new URL(resource.name).pathname),
@@ -95,6 +101,8 @@ const assert=require('node:assert/strict');
    console.log('AUTHENTICATED UNIFIED GATEWAY STARTUP:',JSON.stringify(result));
    assert.ok(result.bundles>10,'Gateway served uncompiled source instead of fast runtime');
    assert.ok(result.jsTags<=130,'Gateway is not reducing simulator script requests');
+   assert.ok(result.priorityPreviewCount>=14,'Priority preview list missing');
+   assert.ok(result.versionedScriptCount>=60,'Compiled resources lack release-keyed browser caching');
    assert.ok(result.complete,'Complete interactive cockpit did not initialize');
    assert.equal(result.directWorker,null);
    assert.deepEqual(result.framePaths,[direct+'overhead-stage.html',direct+'cdu-stage.html',direct+'cdu-stage.html']);

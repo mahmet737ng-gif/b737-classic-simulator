@@ -270,12 +270,21 @@ function directBootSetup(){
   const image=cockpitSource+'assets/'+photos[key]?.file;
   return fastRuntime.bytes.has(image)?'/'+image+'?v=OH21-DEDICATED-20261106':undefined;
  };
+ const cockpitControls=Object.keys(images).filter(source=>
+  /^panel-mosaic-lab\/assets\/throttle-levers\/engine-[12]-[^/]+\.png$/.test(source)||
+  source.startsWith(cockpitSource+'assets/asp-controls-v1/')||
+  /\/Switches\/Fire_Handles\/FIRE_HANDEL_(?:ENG1|ENG2|APU)_OFF\.webp$/.test(source)||
+  source==='cdu-standalone-v6/assets/cdu-approved-unlit.png'
+ ).map(source=>{
+  const selected=images[source].levels.find(item=>item.extent===384&&!item.original);
+  return selected&&fastRuntime.bytes.has(selected.url)?'/'+selected.url:null;
+ }).filter(Boolean);
  const setup=JSON.stringify({
   assembly,art,
   previews:{
    aircon400:preview('Boeing-Style Environmental Control Panel.png'),
    dcpcs:preview('DCPCS_Background_Owner.png'),
-   oh21_400:photo('OH21_400'),oh21_300500:photo('OH21_300500')
+   oh21_400:photo('OH21_400'),oh21_300500:photo('OH21_300500'),cockpitControls
   },
   lamps:fastRuntime.bytes.has(cockpitSource+'performance/boot-lamp-sources.json')
  });
@@ -303,13 +312,33 @@ function transformCockpitHTML(content,{direct=false}={}) {
 }
 // No session-specific values are embedded in the markup. Build each
 // variant once per process and reuse the exact compressed representation.
+function versionCompiledLinks(html,relative){
+ const junction=new URL(relative,'http://release.invalid/');
+ const declared=html.match(/<base\s+href=(["'])([^"']+)\1/i)?.[2];
+ const baseUrl=declared?new URL(declared,junction):junction;
+ return html.replace(/<(?:link|script)\b[^>]*>/gi,tag=>{
+  // Owner mounts and preload URLs paired with dynamically appended scripts
+  // keep the exact original URL. Release-tag ordinary deferred assets only.
+  if(!/^<script\b/i.test(tag)&&!(/\brel=(["'])stylesheet\1/i.test(tag)))return tag;
+  return tag.replace(/\b(?:src|href)=(["'])([^"']+)\1/i,(match,quote,value)=>{
+   const asset=new URL(value.replaceAll('&amp;','&'),baseUrl);
+   if(asset.origin!==junction.origin||asset.searchParams.has('ts')||
+      /(?:irs-|guard|owner18)/i.test(asset.pathname)||
+      !/\.(?:js|css)$/.test(asset.pathname)||!optimizedSource(asset.pathname.slice(1)))return match;
+   const url=asset.pathname+asset.search.replaceAll('&','&amp;')+
+    (asset.search?'&amp;':'?')+'unifiedRelease='+fastRuntime.sourceCommit+asset.hash;
+   return match.slice(0,match.indexOf(quote)+1)+url+quote;
+  });
+ });
+}
 const compiledDocuments=new Map();
 function compiledDocument(relative,bytes,cockpitDocument,direct){
  const key=direct?'direct:'+relative:relative;
  if(!compiledDocuments.has(key)){
   const original=bytes.toString('utf8');
-  const html=cockpitDocument?transformCockpitHTML(original,{direct}):
+  const rendered=cockpitDocument?transformCockpitHTML(original,{direct}):
    original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+  const html=direct?versionCompiledLinks(rendered,relative):rendered;
   const brotli=zlib.brotliCompressSync(Buffer.from(html),{
    params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
   });
@@ -320,9 +349,12 @@ function compiledDocument(relative,bytes,cockpitDocument,direct){
 async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false,direct=false,authMs}={}){
  const ext=path.posix.extname(relative).toLowerCase();
  if(ext!=='.html'){
-  const immutable=/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative)||
+  const releasePinned=/\.(?:js|css)$/.test(relative)&&
+   new URL(req.url,'http://localhost').searchParams.get('unifiedRelease')===fastRuntime.sourceCommit;
+  const immutable=releasePinned||/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative)||
    /^panel-mosaic-lab\/cockpit\/performance\/boot-art\/[a-z0-9-]+-[a-f0-9]{20}\.webp$/.test(relative);
   res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':'private, max-age=0, must-revalidate');
+  if(immutable)res.removeHeader('Pragma');
   res.setHeader('Vary','Accept-Encoding');
   const brotli=fastRuntime.compressed.get(relative);
   const accepts=String(req.headers['accept-encoding']||'');
