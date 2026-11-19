@@ -5,13 +5,19 @@ try{importScripts('./performance/lossless/manifest.js');}catch{}
 const LOSSLESS=typeof B737LosslessAssets==='object'?B737LosslessAssets:null;
 let cachePromise;
 const openCache=()=>cachePromise??=caches.open(CACHE).catch(()=>{cachePromise=null;return null;});
-const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-'+(LOSSLESS?.version||'base')+'-4';
+const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-'+(LOSSLESS?.version||'base')+'-5';
 const root=new URL('../../',self.location.href);
 const immutable=new Set(Object.values(B737PerformanceAssets.images).flatMap(a=>a.levels.map(l=>new URL(l.url,root).pathname)));
 for(const path of Object.values(B737PerformanceAssets.patches))immutable.add(new URL(path,root).pathname);
 for(const item of Object.values(LOSSLESS?.images||{}))if(item.pixelIdentical&&item.url)immutable.add(new URL(item.url,root).pathname);
 for(const name of ['BoeingCDU-Large.ttf','BoeingCDU-Small.ttf'])immutable.add(new URL('assets/fonts/boeing-cdu/'+name,root).pathname);
-function revisioned(u){return /\.(?:js|css)$/.test(u.pathname)&&/^WEB-[a-f0-9]{16}$/.test(u.searchParams.get('v')||'');}
+function revisioned(u){
+ // Explicitly versioned JS/CSS is immutable for that version. Unversioned
+ // code, HTML, JSON and URLs with timestamp cache-busters stay network-first.
+ if(!/\.(?:js|css)$/.test(u.pathname)||u.searchParams.has('ts'))return false;
+ const version=u.searchParams.get('v')||'';
+ return /^[A-Za-z0-9][A-Za-z0-9._-]{0,199}$/.test(version);
+}
 self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const name of await caches.keys())if(name.startsWith(PREFIX)&&name!==CACHE)await caches.delete(name);await self.clients.claim();})()));
 self.addEventListener('fetch',event=>{
