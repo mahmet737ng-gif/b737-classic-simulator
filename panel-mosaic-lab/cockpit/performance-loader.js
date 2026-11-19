@@ -9,41 +9,46 @@
   const doc=win.document,rootURL=new URL('../../',doc.currentScript.src),manifest=win.B737PerformanceAssets;
   const entries=new Map(),pending=new Set(),inflight=new Map(),readyURLs=new Set(),seen=new Set();
   const MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1;
-  const MAX_OVERHEAD_STARTUP_TEXTURES=8;
   let startupScales=null,cockpitZoom=1;
   let timer=0,idleTimer=0,lastMotionAt=0,activeDecodes=0,activeUpgrades=0,lastVisible=0,lastSharp=0;
   function sourceKey(src){
    const u=new URL(src,doc.baseURI);
    return u.origin===rootURL.origin&&u.pathname.startsWith(rootURL.pathname)?decodeURIComponent(u.pathname.slice(rootURL.pathname.length)):null;
   }
-  function box(node){
-   let r=node.getBoundingClientRect(),w=win;
-   let rect={left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};
+  function frameProjection(){
+   let left=0,top=0,scaleX=1,scaleY=1,w=win;
    while(w!==w.top){
-    const frame=w.frameElement;if(!frame)return null;
-    const f=frame.getBoundingClientRect(),sx=f.width/frame.clientWidth,sy=f.height/frame.clientHeight;
-    rect={left:f.left+rect.left*sx,top:f.top+rect.top*sy,right:f.left+rect.right*sx,bottom:f.top+rect.bottom*sy,width:rect.width*sx,height:rect.height*sy};w=w.parent;
+    const frame=w.frameElement;if(!frame||!frame.clientWidth||!frame.clientHeight)return null;
+    const rect=frame.getBoundingClientRect(),x=rect.width/frame.clientWidth,y=rect.height/frame.clientHeight;
+    left=rect.left+left*x;top=rect.top+top*y;
+    scaleX*=x;scaleY*=y;w=w.parent;
    }
-   return rect;
+   return {left,top,scaleX,scaleY};
+  }
+  function box(node,projection){
+   if(!projection)return null;
+   const rect=node.getBoundingClientRect(),{left,top,scaleX,scaleY}=projection;
+   return {left:left+rect.left*scaleX,top:top+rect.top*scaleY,
+    right:left+rect.right*scaleX,bottom:top+rect.bottom*scaleY,
+    width:rect.width*scaleX,height:rect.height*scaleY};
   }
   function viewport(){
    const top=win.top,v=top.document.getElementById('viewport')?.getBoundingClientRect();
    return {left:Math.max(0,v?.left||0),top:Math.max(0,v?.top||0),right:Math.min(top.innerWidth,v?.right||top.innerWidth),bottom:Math.min(top.innerHeight,v?.bottom||top.innerHeight)};
   }
-  function measure(node,view,geometryCache,primeScale){
+  function measure(node,view,geometryCache,projection,primeScale){
    if(!node?.isConnected)return null;
    const host=node.closest('.atlas-piece,.texture-piece,.flap-bmp-overlay')||node;
    // One layout read per physical host/clone group per refresh, rather
    // than reflowing the same Overhead strip for every duplicated image.
    let hr=geometryCache?.get(host);
-   if(hr===undefined){hr=box(host);geometryCache?.set(host,hr);}
+   if(hr===undefined){hr=box(host,projection);geometryCache?.set(host,hr);}
    if(!hr||!primeScale&&!intersects(hr,view))return null;
    let r=host===node?hr:geometryCache?.get(node);
-   if(r===undefined){r=box(node);geometryCache?.set(node,r);}
+   if(r===undefined){r=box(node,projection);geometryCache?.set(node,r);}
    if(!r||!r.width||!r.height)return null;
    return {r,hr,view,primeScale};
   }
-  function visible(node,view){return !!measure(node,view||viewport());}
   function desiredLevel(img,item,m){
    if(!item.asset)return null;
    const dpr=Math.min(win.top.devicePixelRatio||1,2);
@@ -99,7 +104,7 @@
   function refresh(){
    timer=0;
    const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
-   const first=[],upgrades=[];
+   const projection=frameProjection(),first=[],upgrades=[];
    const frameId=win!==win.top?win.frameElement?.id:'';
    const overhead=frameId==='overheadFrame';
    const cdu=frameId==='cduFrameCAPT'||frameId==='cduFrameFO';
@@ -122,7 +127,7 @@
       primeScale=fitRatio(region);
      }
     }
-    const m=measure(img,view,geometryCache,primeScale);if(!m)continue;
+    const m=measure(img,view,geometryCache,projection,primeScale);if(!m)continue;
     lastVisible++;
     if(!item.asset){
      if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;img.dataset.perfExtent='Infinity';}
@@ -132,18 +137,38 @@
     if(item.extent>=level.extent){lastSharp++;continue;}
     if(item.loading||moving&&item.extent)continue;
     const url=new URL(level.url,rootURL).href;
+    if(primeScale){
+     // Put every fit-size cockpit photo on the browser's request queue in
+     // the same pass. The browser shares requests for identical crop URLs.
+     // Keep the bounded decode pool for subsequent zoom upgrades.
+     item.loading=url;
+     img.fetchPriority='high';
+     const settled=event=>{
+      img.removeEventListener('load',settled);
+      img.removeEventListener('error',settled);
+      item.loading=null;
+      if(event.type==='error'){
+       item.extent=0;
+       fallback(img,item);
+      }
+      schedule();
+     };
+     img.addEventListener('load',settled);
+     img.addEventListener('error',settled);
+     apply(img,item,url,level);
+     continue;
+    }
     if(readyURLs.has(url)){apply(img,item,url,level);continue;}
     const candidate={img,item,level,url,priority:Math.abs((m.hr.left+m.hr.right)/2-cx)+Math.abs((m.hr.top+m.hr.bottom)/2-cy)};
     (item.extent?upgrades:first).push(candidate);
    }
    first.sort((a,b)=>a.priority-b.priority);
    upgrades.sort((a,b)=>a.priority-b.priority);
-   const decodeLimit=overheadScale&&first.length?MAX_OVERHEAD_STARTUP_TEXTURES:MAX_CONCURRENT_TEXTURES;
    for(const group of [first,upgrades]){
     for(const w of group){
      const existing=inflight.get(w.url);
      if(existing){existing.waiters.push(w);w.item.loading=w.url;continue;}
-     if(activeDecodes>=decodeLimit)break;
+     if(activeDecodes>=MAX_CONCURRENT_TEXTURES)break;
      const upgrade=!!w.item.extent;
      if(upgrade&&activeUpgrades>=MAX_CONCURRENT_UPGRADES)continue;
      // Gather sibling strips/clones sharing the same source texture, so
@@ -153,7 +178,7 @@
      begin(w.url,siblings,upgrade);
     }
    }
-   for(const task of pending)if(measure(task.node,view,geometryCache)){pending.delete(task);task.run();}
+   for(const task of pending)if(measure(task.node,view,geometryCache,projection)){pending.delete(task);task.run();}
    if(win===win.top)for(const frame of doc.querySelectorAll('iframe')){
     try{frame.contentWindow?.B737ImageLoader?.refresh();}catch{}
    }
@@ -200,7 +225,7 @@
    fullURL(source){const a=manifest?.images[sourceKey(source)];return a?new URL(a.levels.at(-1).url,rootURL).href:new URL(source,doc.baseURI).href;},
    labelPatchURL(){const path=manifest?.patches['engine-start-label'];return path?new URL(path,rootURL).href:null;},
    patchURL(source,rect){const key=sourceKey(source)+':'+['x','y','w','h'].map(k=>rect[k]).join(',');const path=manifest?.patches[key];return path?new URL(path,rootURL).href:null;},
-   stats:()=>({tracked:entries.size,requested:seen.size,decoding:activeDecodes,upgrading:activeUpgrades,visible:lastVisible,sharp:lastSharp,sharedRequests:inflight.size,maxParallel:win.frameElement?.id==='overheadFrame'?MAX_OVERHEAD_STARTUP_TEXTURES:MAX_CONCURRENT_TEXTURES,maxUpgrades:MAX_CONCURRENT_UPGRADES})
+   stats:()=>({tracked:entries.size,requested:seen.size,decoding:activeDecodes,upgrading:activeUpgrades,visible:lastVisible,sharp:lastSharp,sharedRequests:inflight.size,maxParallel:MAX_CONCURRENT_TEXTURES,maxUpgrades:MAX_CONCURRENT_UPGRADES})
   };
   doc.querySelectorAll('img[data-perf-source]').forEach(scan);return Object.freeze(api);
  }

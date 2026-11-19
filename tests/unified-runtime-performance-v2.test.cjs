@@ -131,6 +131,7 @@ test('PERF-0003 layout measurements are shared within a refresh and decode upgra
  const loader=read(base+'performance-loader.js');
  assert.match(loader,/geometryCache=new Map\(\)/);
  assert.match(loader,/geometryCache\?\.get\(host\)/);
- assert.match(loader,/measure\(img,view,geometryCache,primeScale\)/);
+ assert.match(loader,/const projection=frameProjection\(\)/);
+ assert.match(loader,/measure\(img,view,geometryCache,projection,primeScale\)/);
  assert.match(loader,/MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1/);
 });

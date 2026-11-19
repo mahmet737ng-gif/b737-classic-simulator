@@ -52,7 +52,12 @@ assert.deepEqual(actualCssOrder,expectedCssOrder,'Every original stylesheet must
  vm.runInNewContext(read('panel-mosaic-lab/cockpit/sw.js'),context);
  let pending;handlers.install({waitUntil:p=>pending=p});await pending;assert.equal(network,0,'Install must never prefetch the whole aircraft');
  handlers.activate({waitUntil:p=>pending=p});await pending;assert.ok(stores.has('unrelated-app'));assert.ok(!stores.has('b737-unified-perf-old'));
- async function request(url){let task;handlers.fetch({request:{url,method:'GET',mode:'cors'},respondWith:p=>task=p});return task?await task:null;}
+ async function request(url){
+  let task,update;
+  handlers.fetch({request:{url,method:'GET',mode:'cors'},respondWith:p=>task=p,waitUntil:p=>update=p});
+  if(!task)return null;
+  const response=await task;await update;return response;
+ }
  const image='https://test.example/repo/'+Object.values(manifest.images)[0].levels[0].url;await request(image);const after=network;await request(image);assert.equal(network,after,'Immutable image must come from runtime cache');
  const json='https://test.example/repo/panel-mosaic-lab/cockpit/assembly.json';await request(json);generation=2;assert.equal((await request(json)).generation,2,'New flight configuration must not be hidden behind stale cache');
  assert.equal(await request('https://test.example/repo/api/route'),null);assert.equal(await request('https://third.example/photo.webp'),null);
