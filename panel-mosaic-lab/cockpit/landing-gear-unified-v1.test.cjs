@@ -54,5 +54,5 @@ assert.ok(bytes.byteLength>1000&&bytes.byteLength<12500,'sprite must fit 100-kil
 assert.equal(bytes.toString('ascii',0,4),'RIFF');
 assert.equal(bytes.toString('ascii',8,12),'WEBP');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0001/);
+assert.match(html,/landing-gear-unified-v1\.js\?v=ATA32-GEAR-0002/);
 console.log('ATA32 gear selector, hydraulics, red/green/aux lamps and assets PASS');
