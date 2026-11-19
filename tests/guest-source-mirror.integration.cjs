@@ -23,7 +23,8 @@ async function read(route,cookies){
 }
 (async()=>{
  const auth=await get('/panel-mosaic-lab/cockpit/');
- assert.equal(auth.status,401,'Unauthenticated non-document requests must fail closed');
+ assert.equal(auth.status,303,'Unauthenticated cockpit navigation must redirect to login');
+ assert.match(auth.headers.get('location'),/^\/login\?e=expired$/);
  for(const originalResource of [
    '/panel-mosaic-lab/cockpit/overhead-stage.html',
    '/panel-mosaic-lab/cockpit/app.js',
@@ -33,7 +34,9 @@ async function read(route,cookies){
    '/panel-mosaic-lab/assets/locked/2026-10-23/OH10-ELEC-LOSSLESS-9a1ca4d6cfb2.png'
  ]) {
    const unauthorized=await get(originalResource);
-   assert.equal(unauthorized.status,401,'Unprotected original resource: '+originalResource);
+   const documentRoute=originalResource.endsWith('/')||/\.html$/.test(originalResource);
+   assert.equal(unauthorized.status,documentRoute?303:401,'Unprotected original resource: '+originalResource);
+   if(documentRoute)assert.match(unauthorized.headers.get('location'),/^\/login\?e=expired$/);
  }
  const noAccess=await get('/api/cdu/airway-check?from=DHN&airway=B411&lat=35.254167&lon=52.72');
  assert.equal(noAccess.status,401,'Airway check must be session protected');
@@ -52,7 +55,8 @@ async function read(route,cookies){
   'id="aircraftSettingsOpen"',
   'id="cbPanelOpen"','id="busConsumerTestLabOpen"','id="failuresHeaderOpen"'
  ]) assert(html.includes(part),'Missing original cockpit / guest integration: '+part);
- assert(html.includes('src="./app.js'),'Original cockpit script absent');
+ assert(/src="\.\/app\.js|desktop-bundle-[a-f0-9]{16}\.js/.test(html),
+  'Authenticated cockpit must reference original or compiled simulator scripts');
  const css=(await read('/static/guest-cockpit.css',first.cookies)).bytes.toString('utf8');
  assert(css.includes('#viewport')&&css.includes('#guestLogoutForm'));
  const js=(await read('/static/guest-cockpit.js',first.cookies)).bytes.toString('utf8');
