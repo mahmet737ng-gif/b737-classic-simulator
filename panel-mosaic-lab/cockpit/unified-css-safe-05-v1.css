@@ -1,0 +1,492 @@
+/* Ordered visual-only stylesheet concatenation: no protected owner files. */
+/* BEGIN eis-cold-dark-glass-v1.css 0df26b8839e2f17380f3e41e282d6d79a8e5dae4 */
+/* EIS-COLD-DARK-0001: photo remains byte-identical.
+ * Off-glass disc masks follow source-calibrated EIS gauge centers, not panel holes. */
+#region-main .texture-piece[data-piece="engine"]>.eis-cold-dark-glass-v1{
+ position:absolute;inset:0;width:100%;height:100%;z-index:12;
+ pointer-events:none;user-select:none;display:none;
+}
+#region-main .texture-piece[data-piece="engine"]>.eis-cold-dark-glass-v1[data-unpowered="true"]{display:block}
+html[data-engine-indication="CONVENTIONAL"] #region-main .eis-cold-dark-glass-v1{display:none!important}
+html.reference-mode #region-main .eis-cold-dark-glass-v1{display:none!important}
+
+/* END eis-cold-dark-glass-v1.css */
+
+/* BEGIN asp-physical-controls-v1.css 7f8bc1a55e5d1e8eea05f604cdb482452a5e00ba */
+/* ASP-PHYSICAL-0001. Entirely additive at the existing empty 26px apertures.
+   No replacement of approved 7 MIC/13 receiver sprites, labels or faceplate. */
+.asp-bare-mounted .asp-physical-switch{position:absolute;z-index:12;display:block;box-sizing:border-box;
+ left:0;top:0;width:7.2%;height:10.5%;transform:translate(-50%,-50%);
+ padding:0;margin:0;border:0;outline:0;background:transparent;appearance:none;
+ touch-action:none;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.asp-bare-mounted .asp-physical-switch:focus-visible{outline:1px solid #a9d6e8;outline-offset:0;border-radius:50%}
+.asp-bare-mounted .asp-physical-switch .asp-physical-base{position:absolute;left:50%;top:50%;
+ width:46%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+ background:radial-gradient(circle at 31% 26%,#87949a 0%,#505c65 22%,#20262c 62%,#0b0f12 80%);
+ border:1px solid #8696a1;box-shadow:inset 0 0 1px #000,0 1px 2px #111a23;pointer-events:none}
+.asp-bare-mounted .asp-physical-switch .asp-physical-lever{position:absolute;left:50%;top:50%;
+ width:24%;height:47%;border-radius:43% 43% 24% 24%;transform:translate(-50%,-50%);
+ background:linear-gradient(90deg,#4d5358,#d6dad9 18%,#f9f8f4 43%,#aeb6b9 62%,#414951 92%);
+ border:1px solid #303a42;box-shadow:1px 1px 2px #080d12, inset -1px 0 1px #49535b;
+ transition:transform 90ms ease-out;pointer-events:none}
+.asp-bare-mounted .asp-physical-switch .asp-physical-lever:after{content:'';position:absolute;left:9%;right:9%;top:0;height:22%;
+ background:linear-gradient(90deg,#647078,#f5f4f1,#a7b0b4);border-radius:45%}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"] .asp-physical-lever{transform:translate(-50%,-80%)}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"] .asp-physical-lever{transform:translate(-50%,-18%)}
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"] .asp-physical-lever{transform:translate(-50%,-50%)}
+.reference-mode .asp-bare-mounted .asp-physical-switch{display:none}
+
+/* END asp-physical-controls-v1.css */
+
+/* BEGIN asp-vbr-small-silver-v1.css cf272dcf75e4d8b0bdba975ab9ad0d8fcb01f6da */
+/* Explicit owner selection: Small Silver on the 3 ASP physical toggles only.
+   Reuses the existing atlas; all detents and spring-return inputs stay intact. */
+.asp-bare-mounted .asp-physical-switch .asp-physical-base,
+.asp-bare-mounted .asp-physical-switch .asp-physical-lever{display:none}
+.asp-bare-mounted .asp-physical-switch::before,
+.asp-bare-mounted .asp-physical-switch::after{content:'';position:absolute;display:block;
+ left:50%;top:50%;width:121.9047619%;height:121.9047619%;transform:translate(-50%,-50%);
+ background-image:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp');
+ background-size:500% 100%;background-repeat:no-repeat;background-position:25% 0;
+ pointer-events:none}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::after{background-position:75% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::after{background-position:100% 0}
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::before,
+.asp-bare-mounted .asp-physical-switch[data-detent="CENTER"]::after{background-position:25% 0}
+.asp-bare-mounted .asp-vbr-selector{position:absolute;z-index:12;display:block;box-sizing:border-box;
+ padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;
+ transform:translate(-50%,-50%);touch-action:none;user-select:none;cursor:grab;overflow:visible;
+ -webkit-tap-highlight-color:transparent;appearance:none;direction:ltr;outline:none}
+.asp-bare-mounted .asp-vbr-selector:hover,.asp-bare-mounted .asp-vbr-selector:active{background:transparent}
+.asp-bare-mounted .asp-vbr-selector:active{cursor:grabbing}
+.asp-bare-mounted .asp-vbr-selector:focus-visible{outline:1px solid #a9d6e8;outline-offset:0;border-radius:50%}
+.asp-bare-mounted .asp-vbr-rotor{position:absolute;inset:0;transform-origin:50% 50%;pointer-events:none;transition:transform 100ms ease-out}
+.asp-bare-mounted .asp-vbr-photo{position:absolute;display:block;max-width:none;max-height:none;border:0;margin:0;padding:0;pointer-events:none;user-select:none;image-rendering:auto}
+.reference-mode .asp-bare-mounted .asp-vbr-selector{display:none}
+@media(prefers-reduced-motion:reduce){.asp-bare-mounted .asp-vbr-rotor{transition:none}}
+
+/* ASP-BASE-MATTE-0001: tone only the bezel ring. The center cap,
+   silver grip and stem are excluded from the overlay in every used pose.
+   The original shared Small Silver atlas stays byte-identical. */
+.asp-bare-mounted .asp-physical-switch::after{filter:contrast(.72) brightness(.70);-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.asp-bare-mounted .asp-physical-switch[data-detent="UP"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.asp-bare-mounted .asp-physical-switch[data-detent="DOWN"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url%28%23m%29%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+
+/* END asp-vbr-small-silver-v1.css */
+
+/* BEGIN toggle-base-matte-v1.css dc01cc9be99553b685779133512c078c160f7fa4 */
+/* TOGGLE-BASE-MATTE-0001 — owner-requested Unified base material adjustment.
+   The original source pixels, atlas frames, native resolution and registration
+   remain unchanged. A masked second draw tones the bezel only: no blur,
+   resampling, solid paint, handle tint, hitbox or controller changes.
+   Explicit selectors exclude all Owner18 guarded-switch renderers. */
+:is(.toggle-sprite,.oh22-small-silver-face)::after{
+ content:'';position:absolute;inset:0;display:block;pointer-events:none;
+ background-image:inherit;background-size:inherit;background-position:inherit;
+ background-repeat:inherit;background-color:transparent;
+ filter:saturate(.65) contrast(.72) brightness(.70);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22132%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;
+ -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+:is(.toggle-sprite,.oh22-small-silver-face)[style*="background-position: 0%"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%22416%22%20width%3D%22512%22%20height%3D%22192%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%220%22%20y%3D%22416%22%20width%3D%22512%22%20height%3D%22192%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E")}
+:is(.toggle-sprite,.oh22-small-silver-face)[style*="background-position: 75%"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E")}
+:is(.toggle-sprite,.oh22-small-silver-face)[style*="background-position: 100%"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E")}
+:is(.toggle-sprite,.oh22-small-silver-face)[style*="background-position: 50%"][style*="background-size: 500%"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22512%22%20y%3D%22416%22%20width%3D%22512%22%20height%3D%22192%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22512%22%20y%3D%22416%22%20width%3D%22512%22%20height%3D%22192%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E")}
+.toggle-sprite[style*="background-size: 100%"]::after{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22512%22%20cy%3D%22512%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22416%22%20y%3D%22512%22%20width%3D%22192%22%20height%3D%22512%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E")}
+/* ASP already has a pose-isolated second draw; keep exactly one overlay. */
+.asp-bare-mounted .asp-physical-switch::after{filter:saturate(.65) contrast(.72) brightness(.70)}
+/* MCP owner-photo A/T ring: the paddle and the black pivot recess remain original. */
+[data-piece="mcp"]>.mcp-hw[data-mcp-hardware="AT_ARM"]>:is(.mcp-hw-real-face,.mcp-owner13-art)::after{
+ content:'';position:absolute;inset:0;pointer-events:none;display:block;
+ background-image:inherit;background-position:inherit;background-size:inherit;background-repeat:inherit;
+ filter:saturate(.65) contrast(.72) brightness(.70);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20108%20147%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2253%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2233%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%2232%22%20y%3D%2277%22%20width%3D%2247%22%20height%3D%2270%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22147%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20108%20147%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2253%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2233%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%2232%22%20y%3D%2277%22%20width%3D%2247%22%20height%3D%2270%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22147%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+ -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+[data-piece="mcp"]>.mcp-hw[data-mcp-hardware="AT_ARM"][data-state="ARM"]>:is(.mcp-hw-real-face,.mcp-owner13-art)::after{
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20108%20147%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2253%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2233%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%2223%22%20y%3D%220%22%20width%3D%2262%22%20height%3D%2297%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22147%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20108%20147%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2253%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2254%22%20cy%3D%2297%22%20r%3D%2233%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%2223%22%20y%3D%220%22%20width%3D%2262%22%20height%3D%2297%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22108%22%20height%3D%22147%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+}
+/* F/D's owner-selected rectangular case: preserve its moving center paddle. */
+[data-piece="mcp"]>.mcp-hw-fd>.mcp-owner13-art::after{
+ content:'';position:absolute;inset:0;pointer-events:none;
+ background-image:inherit;background-position:inherit;background-size:inherit;background-repeat:inherit;
+ filter:saturate(.65) contrast(.72) brightness(.70);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22white%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%224%22%20width%3D%2252%22%20height%3D%2292%22%20rx%3D%229%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22white%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%224%22%20width%3D%2252%22%20height%3D%2292%22%20rx%3D%229%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+ -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+/* Native high-resolution F/D fallback, when the owner case layer is absent. */
+[data-piece="mcp"]>.mcp-hw-fd>.mcp-hw-real-face::after{
+ content:'';position:absolute;inset:0;pointer-events:none;
+ background-image:inherit;background-position:inherit;background-size:inherit;background-repeat:inherit;
+ filter:saturate(.65) contrast(.72) brightness(.70);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20463%20814%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22136%22%20y%3D%22386%22%20width%3D%22192%22%20height%3D%22428%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22463%22%20height%3D%22814%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20463%20814%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22136%22%20y%3D%22386%22%20width%3D%22192%22%20height%3D%22428%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22463%22%20height%3D%22814%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+ -webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;
+ -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"]>.mcp-hw-real-face::after{
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20463%20814%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22136%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22386%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22463%22%20height%3D%22814%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20463%20814%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22201%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22386%22%20r%3D%22100%22%20fill%3D%22black%22%2F%3E%3Crect%20x%3D%22136%22%20y%3D%220%22%20width%3D%22192%22%20height%3D%22386%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%22463%22%20height%3D%22814%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+}
+/* 737-400 TRIM AIR retains the existing original-state crossfade and fit. */
+.aircon400-trim::after{
+ content:'';display:block;position:absolute;inset:0;pointer-events:none;
+ background:url('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-off.webp') center/contain no-repeat;
+ transform:translateY(-4%) scale(1.25);transform-origin:50% 50%;
+ filter:saturate(.65) contrast(.72) brightness(.70);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201254%201254%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22405%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22170%22%20fill%3D%22black%22%2F%3E%3Ccircle%20cx%3D%22417%22%20cy%3D%22425%22%20r%3D%22286%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221254%22%20height%3D%221254%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201254%201254%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22405%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22170%22%20fill%3D%22black%22%2F%3E%3Ccircle%20cx%3D%22417%22%20cy%3D%22425%22%20r%3D%22286%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221254%22%20height%3D%221254%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+ -webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;
+ -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+}
+.aircon400-trim[data-state="ON"]::after{
+ background-image:url('../assets/locked/2026-10-23/Switches/Toggle/b737-toggle-on.webp');
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201254%201254%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22405%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22170%22%20fill%3D%22black%22%2F%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22920%22%20r%3D%22248%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221254%22%20height%3D%221254%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201254%201254%22%3E%3Cdefs%3E%3Cmask%20id%3D%22m%22%20maskUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22405%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%22635%22%20cy%3D%22670%22%20r%3D%22170%22%20fill%3D%22black%22%2F%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22920%22%20r%3D%22248%22%20fill%3D%22black%22%2F%3E%3C%2Fmask%3E%3C%2Fdefs%3E%3Crect%20width%3D%221254%22%20height%3D%221254%22%20fill%3D%22white%22%20mask%3D%22url(%23m)%22%2F%3E%3C%2Fsvg%3E");
+}
+
+/* END toggle-base-matte-v1.css */
+
+/* BEGIN antiice-live-test-lab-v2.css 987e518ad868821b128a7c356be5a5a29bbd2b3c */
+/* Live, exact original OH15 panel stage: pixel registration from
+ * frozen atlas OH15 x1231 y1031 w493 h508. No recreated graphics. */
+.antiice-dialog{box-sizing:border-box;width:min(1440px,98vw);max-width:1440px;max-height:96vh;margin:auto;padding:0;overflow:auto;color:#e1edf4;background:#0b1520;border:1px solid #446174;border-radius:12px;box-shadow:0 24px 90px #000b;font:13px/1.45 "Segoe UI",Arial,sans-serif}
+.antiice-dialog::backdrop{background:#020b16d9;backdrop-filter:blur(2px)}
+.antiice-dialog *{box-sizing:border-box}
+.antiice-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 17px;gap:10px;background:#182d3b;border-bottom:1px solid #3c5b70}
+.antiice-header strong{display:block;font-size:17px;letter-spacing:.55px}
+.antiice-header small{display:block;font-size:11px;color:#a4bccb}
+.antiice-header button{width:38px;height:37px;border-radius:6px;background:#263b4b;border:1px solid #688095;color:#fff;font-size:24px;cursor:pointer}
+.antiice-main{display:grid;grid-template-columns:minmax(480px,1fr) minmax(380px,.85fr);min-height:400px}
+.antiice-visual{padding:15px;border-right:1px solid #314e60;text-align:center;overflow:hidden}
+.antiice-crop{position:relative;overflow:hidden;display:block;width:100%;margin:0 auto;border:1px solid #506f80;background:#2c4556;border-radius:4px;box-shadow:0 10px 35px #0008;touch-action:pan-y}
+.antiice-canvas{position:absolute;left:0;top:0;width:493px;height:508px;transform-origin:top left;will-change:transform}
+.antiice-canvas iframe{background:#233744;overflow:hidden}
+.antiice-note{color:#a5bcca;font-size:12px;line-height:1.55;text-align:left}
+.antiice-visual .antiice-note{max-width:640px;margin:10px auto}
+#anti-metrics{margin:8px auto;color:#b4cbd7;font:12px/1.5 Consolas,monospace;max-width:640px;word-wrap:break-word}
+#anti-debug{color:#ddb56a;font-size:11px;max-width:650px;margin:6px auto}
+.antiice-buttons{display:flex;flex-wrap:wrap;gap:6px}
+.antiice-buttons>button{flex:1;min-width:125px;padding:10px 6px;background:#253f52;border:1px solid #5a7d92;border-radius:5px;color:#e5f2f7;font-weight:650;cursor:pointer}
+.antiice-buttons>button:hover{background:#36546a}
+.antiice-right{padding:16px;overflow:auto}
+.antiice-right h3{font-size:12px;margin:8px 0;letter-spacing:.6px;color:#d1dfe7}
+.antiice-scenarios{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.antiice-scenarios button{cursor:pointer;text-align:left;padding:7px 8px;min-height:34px;background:#1d3444;border:1px solid #46657a;color:#dce7f0;border-radius:5px;font-weight:650;font-size:11px}
+.antiice-scenarios button[aria-pressed="true"]{background:#534124;border-color:#e6af5b;color:#ffdfa2}
+.antiice-desc{min-height:41px;background:#122735;border-radius:5px;padding:9px 11px;color:#a7bece}
+.antiice-selects{display:flex;flex-wrap:wrap;gap:7px}
+.antiice-selects select,.antiice-selects button{background:#1a3547;color:#e9f2f6;border:1px solid #5b7992;padding:9px;border-radius:6px;flex:1;min-width:95px}
+.antiice-selects button{cursor:pointer;font-weight:700}
+#anti-reset{cursor:pointer;padding:10px 14px;border:1px solid #617d8e;border-radius:7px;color:#edf5f9;background:#263b4a;width:100%;margin-top:12px}
+#anti-status{color:#91cfcb;min-height:24px;font-size:11px}
+@media(max-width:1050px){.antiice-main{grid-template-columns:1fr}.antiice-visual{border-right:0;border-bottom:1px solid #345368;padding:8px}.antiice-right{padding:12px}.antiice-dialog{width:99vw;max-height:98vh}}
+@media(max-width:580px){.antiice-scenarios{grid-template-columns:repeat(2,minmax(0,1fr))}.antiice-header strong{font-size:14px}.antiice-main{display:block}.antiice-crop{max-width:100%}.antiice-right{padding:9px}}
+
+/* END antiice-live-test-lab-v2.css */
+
+/* BEGIN aircon-live-test-lab-v1.css 5ed0d87134fd6b1599bbce56b35b3cfab605fcdf */
+/* AIRCON-LIVE-LAB-0001. Original OH21 stage cropped inside an isolated lab. */
+.aircon-live-dialog{box-sizing:border-box;width:min(1450px,98vw);max-width:1450px;max-height:96vh;overflow:auto;margin:auto;padding:0;color:#dceaf1;background:#101b27;border:1px solid #536c7c;border-radius:12px;box-shadow:0 25px 90px #000c;font:12px/1.5 "Segoe UI",Arial,sans-serif}
+.aircon-live-dialog::backdrop{background:#030d17d9}
+.aircon-live-dialog *{box-sizing:border-box}
+.aircon-live-dialog .aircon-head{position:sticky;top:0;z-index:15;display:flex;align-items:center;justify-content:space-between;gap:15px;background:#1a303f;border-bottom:1px solid #425f70;padding:12px 16px}
+.aircon-live-dialog .aircon-head strong{display:block;font-size:17px;letter-spacing:.3px}
+.aircon-live-dialog .aircon-head small{display:block;font-size:11px;color:#aec4d2}
+.aircon-live-dialog .aircon-head button{border:1px solid #607e90;background:#264052;color:#eaf4f9;padding:4px 11px;border-radius:6px;font-size:21px;cursor:pointer}
+.aircon-live-dialog .aircon-body{display:grid;grid-template-columns:minmax(420px,1.1fr) minmax(380px,.9fr);min-height:450px}
+.aircon-live-dialog .aircon-left{padding:14px;border-right:1px solid #334d60;text-align:center;min-width:0}
+.aircon-live-dialog .aircon-right{padding:14px;min-width:0;max-height:79vh;overflow:auto}
+.aircon-live-dialog .aircon-crop{width:100%;max-width:590px;position:relative;overflow:hidden;margin:0 auto;background:#283b47;border:1px solid #516d7c;border-radius:5px;box-shadow:0 10px 30px #0008}
+.aircon-live-dialog .aircon-window{position:absolute;top:0;left:0;transform-origin:top left;width:493px;height:701px}
+.aircon-live-dialog #airconLabStage{position:absolute;left:-1724px;top:-1751px;width:2220px;height:3312px;display:block;border:0;max-width:none;max-height:none;background:#22313b}
+.aircon-live-dialog .aircon-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}
+.aircon-live-dialog .aircon-summary>div{border:1px solid #3c586a;background:#142e3f;padding:9px;text-align:left;border-radius:7px}
+.aircon-live-dialog .aircon-summary b{display:block;font-size:13px;color:#c5eaff}
+.aircon-live-dialog .aircon-summary span{display:block;font:12px/1.5 Consolas,monospace;color:#a4c4d8}
+.aircon-live-dialog .aircon-caution[data-on="true"]{background:#6b4b17!important;color:#ffe5a6;border-color:#e3b56e}
+.aircon-live-dialog .aircon-caution[data-on="true"] b{color:#fff1c9}
+.aircon-live-dialog .aircon-note{font-size:11px;color:#b1c2d0;line-height:1.55;text-align:left;margin:11px auto}
+.aircon-live-dialog .aircon-actions{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.aircon-live-dialog button,.aircon-live-dialog select{font:600 12px/1.25 "Segoe UI",Arial,sans-serif;border-radius:6px;border:1px solid #597b90;background:#244256;color:#edf5fa;padding:8px;cursor:pointer}
+.aircon-live-dialog button:disabled{opacity:.4;cursor:not-allowed}
+.aircon-live-dialog .aircon-actions button{flex:1;min-width:110px}
+.aircon-live-dialog #airconLabHold{background:#665126;color:#fff1ce;border-color:#e1ba73;user-select:none;touch-action:none}
+.aircon-live-dialog #airconLabHold[aria-pressed="true"]{background:#9c6a18;border-color:#ffdc85;box-shadow:inset 0 2px 8px #0009}
+.aircon-live-dialog #airconLabHoldMeter{height:6px;border-radius:4px;overflow:hidden;background:#364956;margin:7px 0}
+.aircon-live-dialog #airconLabHoldFill{height:100%;background:#edbf68;width:0%;transition:width 90ms linear}
+.aircon-live-dialog .aircon-lamps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:10px auto;max-width:570px}
+.aircon-live-dialog .aircon-lamp{border:1px solid #405564;background:#172733;border-radius:5px;padding:6px;font-size:11px;text-align:left}
+.aircon-live-dialog .aircon-lamp[data-on="true"]{background:#735021;border-color:#c69750;color:#ffe0ac}
+.aircon-live-dialog .aircon-lamp[data-recall="true"]{border-style:dashed}
+.aircon-live-dialog .aircon-section{margin:13px 0;border-top:1px solid #334e60;padding-top:10px}
+.aircon-live-dialog .aircon-section h3{font-size:12px;letter-spacing:.45px;color:#cae0e9;margin:0 0 8px}
+.aircon-live-dialog .aircon-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.aircon-live-dialog .aircon-grid label{display:flex;gap:7px;align-items:flex-start;cursor:pointer;border:1px solid #34536a;border-radius:5px;padding:7px;background:#172d3d;font-size:11px}
+.aircon-live-dialog .aircon-grid label:has(input:checked){border-color:#e4b66b;background:#514126;color:#f9e0b3}
+.aircon-live-dialog .aircon-grid input[type=checkbox]{margin:2px 0 0;accent-color:#e4b66b;flex:0 0 auto}
+.aircon-live-dialog .aircon-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.aircon-live-dialog .aircon-presets button{min-height:34px;font-size:11px;text-align:left;padding:6px}
+.aircon-live-dialog .aircon-presets button[aria-pressed="true"]{background:#695022;border-color:#e3b86f}
+.aircon-live-dialog .aircon-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.aircon-live-dialog .aircon-row select{flex:1;min-width:110px}
+.aircon-live-dialog .aircon-lamp-list{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.aircon-live-dialog .aircon-lamp-list label{display:flex;align-items:center;gap:6px;font-size:11px}
+.aircon-live-dialog .aircon-lamp-list select{width:100%;font-size:10px}
+.aircon-live-dialog #airconLabStatus{color:#b6dbc9;min-height:23px;text-align:left}
+@media(max-width:1050px){.aircon-live-dialog .aircon-body{grid-template-columns:1fr}.aircon-live-dialog .aircon-left{border-right:0;border-bottom:1px solid #3d5968}.aircon-live-dialog .aircon-right{max-height:none}.aircon-live-dialog{width:99vw;max-height:98vh}}
+@media(max-width:560px){.aircon-live-dialog .aircon-head strong{font-size:13px}.aircon-live-dialog .aircon-left,.aircon-live-dialog .aircon-right{padding:8px}.aircon-live-dialog .aircon-grid,.aircon-live-dialog .aircon-lamp-list{grid-template-columns:1fr}.aircon-live-dialog .aircon-summary{grid-template-columns:1fr 1fr}.aircon-live-dialog .aircon-presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* END aircon-live-test-lab-v1.css */
+
+/* BEGIN exterior-lights-classic-v1.css 6563caace0ce0fa60f5afb6f5b555edf2e42a7a9 */
+/* EXTL-CLASSIC-0001 — strictly scoped to external-light row OH23-25. */
+/* Correct cockpit image remains locked; only existing toggle actuators are restyled. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]{isolation:isolate}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"] .toggle-sprite{
+ filter:drop-shadow(0px 2px 2px rgba(0,0,0,.42));transition:background-position .10s steps(1);
+}
+/* APU-SPRING-0001: START uses the corrected single DOWN photo but ON uses
+   frame 1 of the 5-pose atlas. Never interpolate background-position across
+   that asset/size switch: delayed 50% renders the unrelated RIGHT frame. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"][data-control="apu-start"] .toggle-sprite{
+ transition:none!important;
+}
+/* Owner-approved slim ivory toggle: original transparent sheet, unchanged pixels.
+   Nine exterior controls only; keep native registry, state engine and hit targets.
+   Three source pivots: (367.5,370), (1084.5,370), (1797,370).
+   All poses use the same 0.16 scale and mounting center. */
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]){--ext-white-x:-8.8px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"]) .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])::after{
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 59.2px);
+ width:100px;height:116px;pointer-events:none;transform:none;filter:none;transition:none;
+ background-image:url("../../shared-assets/exterior-white-owner-v1/topdown-up-center-down.png");
+ background-size:347.52px 115.84px;background-repeat:no-repeat;
+ background-position:var(--ext-white-x) 0;
+}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="ON"]{--ext-white-x:-237.52px}
+#overheadToggleLayer .mounted-toggle[data-placement="OH23-25"]:not([data-control="apu-start"]):not([data-control^="landing-"])[data-state="AUTO"],
+#overheadToggleLayer .mounted-toggle[data-control="position-lights"][data-state="OFF"]{--ext-white-x:-123.52px}
+/* Owner-approved top-down photograph, unchanged pixels. The three poses share
+   one mounting pivot. Outer: RETRACT / EXTEND / ON; inner: OFF / ON only. */
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"] .toggle-sprite{display:none!important}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::before{content:none}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"]::after{
+ content:"";position:absolute;left:calc(50% - 50px);top:calc(50% - 52.78px);
+ width:100px;height:102px;pointer-events:none;
+ background-image:url("../../shared-assets/landing-tbar-owner-v1/topdown-up-center-down.png");
+ background-size:304.08px 101.36px;background-position:-2.64px 0;background-repeat:no-repeat;
+ transform:none;filter:none;transition:none;
+}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="EXTEND"]::after{background-position:-100.5px 0}
+#overheadToggleLayer .mounted-toggle[data-control^="landing-"][data-state="ON"]::after{background-position:-198.92px 0}
+/* Unified header inspector: never affect overhead photo, its source images or guarded switches. */
+.extl-unified-dialog{max-width:min(1000px,95vw);max-height:85vh;overflow:auto;direction:ltr;color:#e5ebec;background:#17232d;border:1px solid #81909a;border-radius:9px;padding:19px;box-shadow:0 14px 60px #000b}
+.extl-unified-dialog::backdrop{background:#080c12a8}
+.extl-unified-dialog h2{font:600 18px/1.3 system-ui,sans-serif;margin:0 0 12px}
+.extl-unified-dialog .extl-close{float:right}
+.extl-status,.extl-note{font:13px/1.5 system-ui;color:#c3ced6}
+.extl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:9px}
+.extl-card{padding:9px;background:#27343e;border:1px solid #4b5a64;border-radius:5px;display:grid;gap:6px}
+.extl-card strong{font:600 12px/1.35 system-ui}
+.ext-state{font:700 13px monospace;color:#d8e3b3}
+.extl-choices{display:flex;flex-wrap:wrap;gap:4px}
+.extl-choices button{font:11px/1.3 system-ui!important;padding:5px 7px!important;min-width:0!important}
+.extl-choices button[aria-pressed="true"]{border-color:#dfbd7e!important;background:#4d5341!important}
+
+/* END exterior-lights-classic-v1.css */
+
+/* BEGIN sixpack-glareshield-v1.css ae4e5eae853f03231f048ec264768890507fa18c */
+/* SIXPACK-0002: new movable glass/lighting overlays on unprotected main-panel margins.
+   No modification to MCP itself, locked source images, or Owner18 guarded switches. */
+.b737-sixpack-glareshield{position:absolute;inset:0;width:2100px;height:920px;z-index:8;pointer-events:none;direction:ltr}
+.b737-sp-console{position:absolute;top:3px;width:144px;height:121px;box-sizing:border-box;padding:3px 4px 4px;
+ background:linear-gradient(145deg,#363b3d 0%,#1d2328 22%,#161a1e 69%,#222629 100%);
+ border:2px solid #111619;border-radius:10px 10px 5px 5px;
+ box-shadow:inset 1px 1px 1px #70777a5c,inset 0 -3px 4px #070a0d,1px 3px 6px #06090fd0;
+ pointer-events:auto;user-select:none}
+.b737-sp-console:before{content:"";position:absolute;inset:1px;pointer-events:none;border-radius:inherit;opacity:.35;
+ background:repeating-linear-gradient(12deg,transparent 0 8px,#8b90901b 9px 9.35px,transparent 10px 19px);
+ mix-blend-mode:overlay}
+.b737-sp-console.seat-capt{left:640px}
+.b737-sp-console.seat-fo{left:1387px}
+.b737-sp-top{display:flex;align-items:flex-start;justify-content:center;gap:8px;height:55px;position:relative;z-index:1}
+.b737-sp-master{width:55px;height:51px;min-width:0;padding:2px 1px 1px;box-sizing:border-box;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:1px;border-radius:3px;border:3px solid #080a0b;
+ font-family:"Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;font-stretch:condensed;
+ font-weight:800;font-size:10px;line-height:1.03;letter-spacing:.22px;white-space:nowrap;cursor:pointer;
+ box-shadow:inset 0 1px 1px #b6ac9a54,1px 1px 2px #000d;transition:filter 90ms linear}
+.b737-sp-master small{font-size:5.6px;font-weight:700;letter-spacing:-.05px;margin-top:2px}
+.b737-sp-master.caution{background:radial-gradient(ellipse at 48% 38%,#87602c 0,#6b451e 53%,#3a2418 95%);color:#3e2c1d;border-color:#080907}
+.b737-sp-master.fire{background:radial-gradient(ellipse at 48% 30%,#822c33 0,#571a23 58%,#270e16 99%);color:#a99494}
+.b737-sp-master.caution[data-on="true"]{background:radial-gradient(ellipse at 48% 43%,#ffd65a 0,#ffab15 62%,#b95a0b 100%);color:#382511;box-shadow:inset 0 0 11px #fff3a9c6,0 0 9px #efac0a5b,1px 2px 2px #000b}
+.b737-sp-master.fire[data-on="true"]{background:radial-gradient(ellipse at 48% 41%,#fa4c4c 0,#ed2128 68%,#940d1b 99%);color:#ffebd6;text-shadow:0 0 4px #ffeed4;box-shadow:inset 0 0 9px #ffb5ad9c,0 0 8px #ff18184d,1px 2px 2px #000b}
+.b737-sp-master:active{transform:translateY(1px)}
+.b737-sp-rack{position:relative;z-index:1;height:58px;padding:2px 3px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);
+ border:2px solid #090a0b;border-radius:3px;cursor:pointer;touch-action:manipulation;background:linear-gradient(180deg,#343331 0%,#252527 25%,#212022 75%,#37302a 100%);
+ box-shadow:inset 0 0 0 1px #575145,0 0 2px #000e;overflow:hidden}
+.b737-sp-rack:focus-visible{outline:2px solid #a9dff4;outline-offset:2px}
+.b737-sp-rack:active{transform:translateY(1px);filter:brightness(1.08)}
+.b737-sp-legend{appearance:none;border:0!important;border-radius:0!important;outline-offset:-2px;min-width:0;margin:0!important;padding:0 1px!important;
+ color:#91705a!important;background:transparent!important;box-shadow:none!important;cursor:default;pointer-events:none;
+ font-family:"Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;font-stretch:condensed;
+ font-size:10.25px!important;font-weight:650!important;line-height:1!important;text-align:center;
+ white-space:nowrap;overflow:hidden;letter-spacing:-.22px;
+ transition:color 60ms linear,text-shadow 60ms linear}
+.b737-sp-legend[data-on="true"]{color:#ffb24b!important;text-shadow:0 0 2px #ffb01e,0 0 4px #e36a16,0 0 8px #ee6c0977}
+.b737-sp-master:focus-visible{outline:2px solid #8bdeef!important;outline-offset:-2px}
+.b737-sp-inspector{direction:ltr;text-align:left;padding:12px;border-top:1px solid #52616a;font:12px/1.5 system-ui,Arial,sans-serif}
+.b737-sp-inspector h2{font-size:15px;margin:0 0 7px}
+.b737-sp-inspector fieldset{border:1px solid #42525d;border-radius:7px;margin:8px 0;padding:6px}
+.b737-sp-inspector legend{padding:0 4px;font:700 11px Arial,sans-serif}
+.b737-sp-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.b737-sp-actions button{padding:5px 2px!important;font:700 10px Arial,sans-serif!important}
+.b737-sp-test-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.b737-sp-test-grid label{font:11px/1.6 Arial,sans-serif;display:flex;align-items:center;gap:3px}
+.b737-sp-test-grid input{width:15px;height:15px;accent-color:#ffa62a}
+.b737-sp-inspector small{color:#a2b4c0;font-size:10px}
+html.reference-mode .b737-sixpack-glareshield{pointer-events:none}
+
+/* END sixpack-glareshield-v1.css */
+
+/* BEGIN overhead-test-labs-v1.css 477f10a8596a4cae18d3ce09fb5caf103c79dee0 */
+/* OH-LABS-0001: isolated training interface; frozen atlas and Owner18 untouched. */
+.oh-lab-dialog{box-sizing:border-box;width:min(1460px,98vw);max-width:1460px;max-height:95vh;margin:auto;padding:0;overflow:auto;color:#e4eef5;background:#0d1926;border:1px solid #44677a;border-radius:12px;box-shadow:0 20px 65px #000b;font:13px/1.5 'Segoe UI',Arial,sans-serif}
+.oh-lab-dialog::backdrop{background:#020b16de}
+.oh-lab-dialog *{box-sizing:border-box}
+.oh-lab-header{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 18px;background:#1b3142;border-bottom:1px solid #49677a}
+.oh-lab-header strong{font-size:17px;letter-spacing:.45px;display:block}
+.oh-lab-header small{color:#b3c7d4;display:block;font-size:11px}
+.oh-lab-header button{flex:none;background:#2a4051;color:#fff;border:1px solid #6a8494;border-radius:6px;min-width:38px;height:36px;font-size:23px;cursor:pointer}
+.oh-lab-layout{display:grid;grid-template-columns:minmax(330px,1.1fr) minmax(350px,.9fr)}
+.oh-lab-left{padding:16px;text-align:center;min-width:0;border-right:1px solid #345066}
+.oh-lab-crop{position:relative;width:100%;overflow:hidden;margin:auto;background:#243b4c;border:1px solid #618093;border-radius:5px;touch-action:pan-y;box-shadow:0 8px 30px #0009}
+.oh-lab-window{position:relative;transform-origin:top left;will-change:transform}
+.oh-lab-window iframe{background:#233b4e;overflow:hidden}
+.oh-lab-right{padding:17px;overflow:auto;max-height:75vh}
+.oh-lab-right h3{font-size:12px;letter-spacing:.5px;color:#d5e4ed;margin:12px 0 7px}
+.oh-lab-right select{width:100%;padding:10px;background:#152c3d;color:#e8f2f8;border:1px solid #618097;border-radius:6px;font:12px 'Segoe UI',sans-serif}
+.oh-lab-actions{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}
+.oh-lab-actions button{cursor:pointer;flex:1;min-width:95px;padding:9px 11px;border:1px solid #54768a;background:#244055;border-radius:5px;color:#ecf5fa;font-weight:650}
+.oh-lab-actions button:hover{background:#345d73}
+.oh-lab-actions #ohLabInject{border-color:#c6a05b;background:#5b4728}
+.oh-lab-note{font-size:12px;color:#a7becf;text-align:left;line-height:1.65;margin:12px auto;max-width:720px}
+#ohLabStatus{font:12px/1.5 Consolas,monospace;color:#cbd5df;margin:8px}
+#ohLabActive{padding-left:20px;max-height:29vh;overflow:auto;color:#e9d29c;font-size:12px}
+#ohLabActive li{padding:5px 0;border-bottom:1px solid #294458}
+@media(max-width:1000px){.oh-lab-layout{grid-template-columns:1fr}.oh-lab-left{border-right:0;border-bottom:1px solid #345066}.oh-lab-right{max-height:none}.oh-lab-dialog{width:99vw}}
+@media(max-width:580px){.oh-lab-header strong{font-size:14px}.oh-lab-left,.oh-lab-right{padding:9px}.oh-lab-actions button{font-size:11px}}
+
+/* END overhead-test-labs-v1.css */
+
+/* BEGIN overhead-cross-cockpit-v1.css 96bee09a10ce21451a91814d349357654352ece1 */
+/* Same-system indicators across physical cockpit zones. Adds no panels to the main cockpit. */
+.oh-cross-indicators{margin:14px auto 4px;max-width:100%;padding:13px;border:1px solid #355b71;border-radius:7px;background:#102435;color:#e5eef6;text-align:left}
+.oh-cross-indicators[hidden]{display:none!important}
+.oh-cross-heading{font:700 12px/1.35 "Segoe UI",sans-serif;letter-spacing:.6px;color:#d8ebf4;margin:0 0 9px}
+.oh-cross-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.oh-cross-card{min-width:0;padding:10px;border-radius:6px;background:#192f40;border:1px solid #3d5d73;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.oh-cross-tag{font:10px/1.3 Consolas,monospace;color:#99c6dc;overflow-wrap:anywhere}
+.oh-cross-name{font-size:12px;color:#e7f1f5;overflow-wrap:anywhere}
+.oh-cross-source{max-width:100%;position:relative;overflow:hidden;background:#1e3543;border:1px solid #547185;border-radius:3px;flex:none}
+.oh-cross-native-photo{width:100%;height:100%;background-color:#1b303e;background-position:left top}
+.oh-cross-value{display:block;font:700 15px/1.3 Consolas,monospace;color:#9ed6ce}
+.oh-cross-value[data-on="true"]{color:#f0ba72}
+.oh-cross-quality{font:10px/1.3 Consolas,monospace;color:#adbfcd;overflow-wrap:anywhere}
+.oh-cross-note{font:11px/1.45 "Segoe UI",sans-serif;color:#9fb5c6;margin:0;overflow-wrap:anywhere}
+.oh-cross-lamps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.oh-cross-lamp{padding:4px;background:#111f2b;border:1px solid #364a5b;font:10px/1.35 Consolas,monospace;color:#a9b9c7}
+.oh-cross-lamp[data-frame="ON"],.oh-cross-lamp[data-frame="FLASH"],.oh-cross-lamp[data-frame="BRIGHT_BLUE"]{border-color:#bca258;color:#f6d99a}
+.oh-cross-error{color:#e4aaa0;font-size:12px}
+@media(max-width:580px){.oh-cross-grid{grid-template-columns:1fr}}
+
+/* END overhead-cross-cockpit-v1.css */
+
+/* BEGIN hydraulic-live-lab-v1.css 339af63324bd21d9aa5f9d5e7808e960b19730a8 */
+/* HYD-LAB-UI-0001: Independent OH17 + main-engine + FO-bra ke viewer */
+.hydlab-dialog{box-sizing:border-box;width:min(1520px,98vw);max-width:1520px;max-height:96vh;overflow:auto;margin:auto;padding:0;border:1px solid #4f7288;border-radius:11px;background:#0b1724;color:#e9f2f6;box-shadow:0 24px 90px #000c;font:12px/1.5 "Segoe UI",Arial,sans-serif}
+.hydlab-dialog::backdrop{background:#030b13db}
+.hydlab-dialog *{box-sizing:border-box}
+.hydlab-head{position:sticky;top:0;z-index:5;background:#182f40;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #426176;padding:12px 17px}
+.hydlab-head strong{font-size:17px;display:block;letter-spacing:.5px}
+.hydlab-head small{font-size:11px;color:#a8c5d4;display:block}
+.hydlab-head button{border:1px solid #7391a2;border-radius:6px;background:#284456;color:#fff;width:38px;height:36px;font-size:21px;cursor:pointer;flex:none}
+.hydlab-layout{display:grid;grid-template-columns:minmax(480px,1fr) minmax(470px,1fr);gap:0}
+.hydlab-left{padding:15px;text-align:center;min-width:0;border-right:1px solid #355366}
+.hydlab-viewport{position:relative;overflow:hidden;margin:auto;width:100%;background:#2c4758;border:1px solid #658497;border-radius:5px;touch-action:pan-y}
+.hydlab-photo{position:absolute;left:0;top:0;transform-origin:top left;will-change:transform;width:493px;height:283px}
+.hydlab-photo iframe{overflow:hidden}
+.hydlab-note{font-size:11px;color:#aac1cd;line-height:1.65;text-align:left;margin:10px 0}
+.hydlab-indicators{width:100%;text-align:left}
+.hydlab-statusbar{background:#0c2533;color:#abd6de;padding:8px 10px;border:1px solid #2c4a61;border-radius:4px;font:11px/1.6 Consolas,monospace;text-align:left;overflow-wrap:anywhere;margin:9px 0}
+.hydlab-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hyd-stat{padding:7px 6px;background:#162c3a;border:1px solid #37546a;border-radius:4px;display:flex;flex-direction:column;gap:2px}
+.hyd-stat small{color:#8eaebd;font:10px Consolas,monospace}
+.hyd-stat strong{color:#e7f1e6;font:700 14px Consolas,monospace}
+.hydlab-sixpack{margin:9px 0;padding:9px 11px;border-radius:4px;border:1px solid #425e75;background:#071a26;color:#9ebdc8;font:11px/1.6 Consolas,monospace;text-align:left}
+.hydlab-sixpack[data-on=true]{border-color:#bd9c4d;color:#ffcf83;background:#392e1c}
+.hydlab-left h3,.hydlab-right h3{font-size:12px;letter-spacing:.6px;color:#d2e2ee;text-align:left;margin:12px 0 8px}
+.hydlab-gauges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;min-width:0}
+.hyd-instrument{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;padding:8px 4px;background:#152b39;border:1px solid #496478;border-radius:5px}
+.hyd-instrument strong{font-size:11px;min-height:30px;color:#d4e7f0;line-height:1.35;text-align:center}
+.hyd-native-wrap{width:176px;height:176px;position:relative;overflow:hidden;border-radius:5px;max-width:100%;background:#243e4f;border:1px solid #6e8793}
+.hyd-native-image{position:absolute;inset:0;background-repeat:no-repeat}
+.hyd-native-needle{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hyd-instrument output{font:700 17px/1.2 Consolas,monospace;color:#9af0bc;min-height:20px}
+.hyd-instrument small[data-hyd-qty]{font:700 13px Consolas,monospace;color:#a3d9e5}
+.hyd-instrument[data-degraded=true] output{color:#eda978}
+.hyd-gauge-note{font-size:10px!important;color:#91abbc;line-height:1.35;text-align:center}
+.hydlab-standby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.hydlab-standby span{border:1px solid #456276;padding:5px 7px;border-radius:3px;background:#142532;color:#a3bdcb;font:10px Consolas,monospace}
+.hydlab-standby span[data-on=true]{color:#ffcb80;border-color:#c69c53;background:#30271a}
+.hydlab-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
+.hydlab-tools button{min-height:34px;padding:8px 4px;font-size:11px;font-weight:650;border-radius:4px;border:1px solid #5b8193;background:#274458;color:#e9f2f6;cursor:pointer}
+.hydlab-tools button:hover{background:#335a70}
+.hydlab-tools button[aria-pressed=true]{background:#5b451e;border-color:#e1af5b}
+.hydlab-right{padding:14px 16px;min-width:0;max-height:84vh;overflow:auto}
+.hydlab-right h4{margin:12px 0 6px;color:#c6dce7;font-size:11px;letter-spacing:.4px}
+.hydlab-preset-grid,.hydlab-fault-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.hydlab-preset-grid button,.hydlab-fault-grid button{cursor:pointer;text-align:left;min-height:34px;padding:7px 8px;border-radius:4px;border:1px solid #496a7f;background:#1b3546;color:#e6eef3;font:600 11px/1.35 "Segoe UI",Arial,sans-serif}
+.hydlab-preset-grid button:hover,.hydlab-fault-grid button:hover{background:#304e61}
+.hydlab-preset-grid button[aria-pressed=true],.hydlab-fault-grid button[aria-pressed=true]{background:#594424;border-color:#ddad55;color:#ffe3ad}
+.hydlab-active{display:flex;flex-wrap:wrap;gap:6px;min-height:30px}
+.hyd-fault-chip{max-width:100%;padding:6px 8px;cursor:pointer;border:1px solid #b58d53;border-radius:3px;color:#ffdbac;background:#392f23;font-size:10px;text-align:left}
+.hydlab-env{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.hydlab-env label{display:flex;align-items:center;gap:7px;border:1px solid #426074;padding:7px;background:#172e3d;font:10px/1.3 Consolas,monospace;cursor:pointer}
+.hydlab-env input{width:16px;height:16px;accent-color:#dbb269;flex:none}
+@media(max-width:1100px){.hydlab-layout{grid-template-columns:1fr}.hydlab-left{border-right:0;border-bottom:1px solid #385368}.hydlab-right{max-height:none}.hydlab-dialog{width:99vw;max-height:98vh}}
+@media(max-width:700px){.hydlab-gauges{grid-template-columns:repeat(2,minmax(0,1fr))}.hydlab-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.hydlab-standby{grid-template-columns:1fr}.hydlab-tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Register QTY digits within the TWO BLACK ORIGINAL PHOTOGRAPHED WINDOWS. */
+.hyd-quantity-native{position:absolute;width:56px;height:21px;display:grid;place-items:center;z-index:4;pointer-events:none;
+ background:#030707;color:#91edb1;font:700 16px/1 Consolas,monospace;letter-spacing:1px;
+ text-shadow:0 0 4px #4ea674;border-radius:2px}
+.hyd-instrument[data-degraded=true] .hyd-native-needle{opacity:.4}
+
+/* Existing Six-Pack lamp/master-caution face classes, duplicated only into the isolated lab. */
+.hydlab-sixpack-physical{display:flex;align-items:center;gap:14px;margin:7px 0;padding:6px 10px;background:linear-gradient(#2c3134,#151b20);border-radius:5px;border:2px solid #080a0d;max-width:260px}
+.hydlab-sixpack-physical .b737-sp-legend[data-hyd-six-legend]{display:grid;place-items:center;width:104px;height:43px;min-width:104px;min-height:43px;
+ font-size:19px!important;font-weight:750!important;background:linear-gradient(#242626,#101213)!important;
+ border:2px solid #07080b!important;box-shadow:inset 1px 2px 2px #68676854!important;border-radius:3px!important}
+.hydlab-sixpack-physical .b737-sp-master.caution{width:74px;height:53px;font-size:10px;padding:4px}
+.hydlab-sixpack small[data-hyd-six-status]{display:block;color:#a9c8d5;font:10px/1.6 Consolas,monospace}
+
+/* Original OH07 Flight Control / Standby Hyd photo, separate from live OH17. */
+.hydlab-oh07-group{display:grid;grid-template-columns:260px minmax(0,1fr);gap:10px;align-items:start}
+.hydlab-oh07-source{width:260px;height:347px;max-width:100%;background-size:260px auto;
+ background-position:left top;background-repeat:no-repeat;background-color:#243b4a;
+ border:1px solid #607e90;border-radius:5px}
+.hydlab-oh07-group .hydlab-standby{display:flex;flex-direction:column;gap:6px}
+@media(max-width:650px){.hydlab-oh07-group{grid-template-columns:1fr}.hydlab-oh07-group .hydlab-standby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.hydlab-dependents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.hydlab-dependents span{padding:6px 5px;border:1px solid #36556a;border-radius:3px;background:#192b38;
+ color:#b8cbcf;font:10px/1.35 Consolas,monospace}
+.hydlab-dependents span[data-ok="true"]{color:#92ddae;border-color:#486d60}
+.hydlab-dependents span[data-ok="false"]{color:#dfac85}
+.hydlab-flaps{display:flex;gap:5px;flex-wrap:wrap;grid-column:1/-1;padding:4px 0}
+.hydlab-flaps button{flex:1;min-width:60px;padding:7px;border:1px solid #577284;border-radius:4px;
+ background:#1b3445;color:#e4eef3;font:600 11px Consolas,monospace;cursor:pointer}
+.hydlab-flaps button[aria-pressed="true"]{background:#5e4724;border-color:#dcb165;color:#ffdb93}
+@media(max-width:650px){.hydlab-dependents{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* END hydraulic-live-lab-v1.css */
