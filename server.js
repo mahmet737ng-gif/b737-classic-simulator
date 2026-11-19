@@ -232,13 +232,13 @@ async function prewarmFastRuntime(){
   const markup=fastRuntime.bytes.get(entry)?.toString('utf8');
   if(!markup)continue;
   const doc=new URL(entry,origin);
-  const baseMatch=markup.match(/<base\\s+href=(["'])([^"']+)\\1/i);
+  const baseMatch=markup.match(/<base\s+href=(["'])([^"']+)\1/i);
   const base=baseMatch?new URL(baseMatch[2],doc):doc;
-  for(const match of markup.matchAll(/<(?:script|link)\\b[^>]*?\\b(?:src|href)=(["'])([^"']+)\\1[^>]*>/gi)){
+  for(const match of markup.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)=(["'])([^"']+)\1[^>]*>/gi)){
    try{
     const url=new URL(match[2].replaceAll('&amp;','&'),base);
     const relative=url.pathname.slice(1);
-    if(url.origin!==base.origin||!/^[-a-zA-Z0-9_./]+\\.(?:js|css)$/.test(relative)||
+    if(url.origin!==base.origin||!/^[-a-zA-Z0-9_./]+\.(?:js|css)$/.test(relative)||
      !url.searchParams.has('v')||fastRuntime.bytes.has(relative)||relative.includes('..'))continue;
     files.set(relative+'?'+url.searchParams.get('v'),{relative,url:url.href});
    }catch{}
