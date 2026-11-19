@@ -187,14 +187,14 @@ async function upstreamFetch(relative) {
 // passes the database-backed authorization check BEFORE reaching this cache.
 // A version change gets a distinct entry; unversioned and ts-busted files
 // continue through the original uncached streaming source path.
-const SOURCE_CACHE_TTL_MS=45000,SOURCE_CACHE_ENTRY_MAX=256*1024,SOURCE_CACHE_LIMIT=12*1024*1024;
+const SOURCE_CACHE_TTL_MS=15*60*1000,SOURCE_CACHE_ENTRY_MAX=256*1024,SOURCE_CACHE_LIMIT=24*1024*1024;
 const sourceCache=new Map(),sourceInFlight=new Map();
 let sourceCacheBytes=0;
 async function cachedSourceText(relative,requestUrl) {
   const parsed=new URL(requestUrl,'https://gateway.invalid');
   const version=parsed.searchParams.get('v');
   if(!version || parsed.searchParams.has('ts'))return null;
-  const key=relative+'?v='+version;
+  const key=relative+'?v='+version+'@'+(mainHeadValue||'unknown');
   const current=sourceCache.get(key);
   if(current){
     if(current.expires>Date.now()){
@@ -221,6 +221,39 @@ async function cachedSourceText(relative,requestUrl) {
   })();
   sourceInFlight.set(key,task);
   try{return await task;}finally{sourceInFlight.delete(key);}
+}
+// Prewarm only public, explicitly revisioned JS/CSS referenced by the
+// already-authenticated cockpit's compiled entry points. NO NAVDATA, HTML or
+// protected user/session data is prefetched. Does not block server health.
+async function prewarmFastRuntime(){
+ if(!(await fastRuntimeCurrent()))return;
+ const files=new Map(),origin='https://warm.invalid/';
+ for(const entry of ['panel-mosaic-lab/cockpit/index.html','panel-mosaic-lab/cockpit/overhead-stage.html']){
+  const markup=fastRuntime.bytes.get(entry)?.toString('utf8');
+  if(!markup)continue;
+  const doc=new URL(entry,origin);
+  const baseMatch=markup.match(/<base\\s+href=(["'])([^"']+)\\1/i);
+  const base=baseMatch?new URL(baseMatch[2],doc):doc;
+  for(const match of markup.matchAll(/<(?:script|link)\\b[^>]*?\\b(?:src|href)=(["'])([^"']+)\\1[^>]*>/gi)){
+   try{
+    const url=new URL(match[2].replaceAll('&amp;','&'),base);
+    const relative=url.pathname.slice(1);
+    if(url.origin!==base.origin||!/^[-a-zA-Z0-9_./]+\\.(?:js|css)$/.test(relative)||
+     !url.searchParams.has('v')||fastRuntime.bytes.has(relative)||relative.includes('..'))continue;
+    files.set(relative+'?'+url.searchParams.get('v'),{relative,url:url.href});
+   }catch{}
+  }
+ }
+ const queue=[...files.values()].slice(0,160);
+ let index=0,ok=0,errors=0;
+ await Promise.all(Array.from({length:8},async()=>{
+  while(index<queue.length){
+   const item=queue[index++];
+   try{if(await cachedSourceText(item.relative,item.url))ok++;else errors++;}
+   catch{errors++;}
+  }
+ }));
+ console.log('UNIFIED FAST PREWARM: '+ok+' source JS/CSS ready, '+errors+' unavailable');
 }
 function transformCockpitHTML(content) {
   // Only presentation changes: preserve all original ordered scripts and code.
@@ -790,6 +823,9 @@ async function start() {
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
     else res.end();
-  })).listen(PORT,'0.0.0.0',()=>console.log('ATA24 gateway listening on '+PORT));
+  })).listen(PORT,'0.0.0.0',()=>{
+    console.log('ATA24 gateway listening on '+PORT);
+    setTimeout(()=>prewarmFastRuntime().catch(e=>console.warn('UNIFIED FAST PREWARM: '+e.message)),1500);
+   });
 }
 start().catch(e=>{console.error('Gateway startup failed:',e.message);process.exit(1);});
