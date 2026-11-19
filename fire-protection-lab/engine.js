@@ -46,6 +46,8 @@ function evaluate(s){
  const powered=s.power.batteryBus,testFire=s.test==='OVHT_FIRE'&&powered,testFault=s.test==='FAULT_INOP'&&powered;
  const testPath=unit=>testFire&&selected(s,unit).length>0;
  const anyFault=['ENG1','ENG2'].some(unit=>!detector(unit)||fault(s,unit));
+ const failedTestPath=unit=>s.selectors[unit]==='NORMAL'?
+  !s.loops[unit].A||!s.loops[unit].B:!s.loops[unit][s.selectors[unit]];
  const activeFire={
  ENG1:powered&&detector('ENG1')&&(testPath('ENG1')||sensed(s,'ENG1','fire')),
  ENG2:powered&&detector('ENG2')&&(testPath('ENG2')||sensed(s,'ENG2','fire')),
@@ -63,7 +65,7 @@ function evaluate(s){
  const caution=testFault||activeOverheat.ENG1||activeOverheat.ENG2||noDet;
  const flags={
  ENG1_OVERHEAT:activeOverheat.ENG1,ENG2_OVERHEAT:activeOverheat.ENG2,
- FAULT:powered&&(testFault||anyFault||(testFire&&['ENG1','ENG2'].some(u=>!s.loops[u].A||!s.loops[u].B))),
+ FAULT:powered&&(testFault||anyFault||(testFire&&['ENG1','ENG2'].some(failedTestPath))),
  APU_DET_INOP:powered&&(testFault||!s.apuDetector||!detector('APU')),
  WHEEL_WELL:wheel,L_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('L').some(Boolean)&&(s.bottles.L||s.pressureLow.L),
  R_BOTTLE_DISCHARGED:s.power.hotBatteryBus&&feeds('R').some(Boolean)&&(s.bottles.R||s.pressureLow.R),
