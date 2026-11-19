@@ -47,6 +47,6 @@ function extract(from,to){
  assert.equal(downloads,1,'Warm, explicitly revisioned asset should reuse cache');
  assert.equal(await ctx.cached(route,'/efis-test.js?ts=5'),null,'Timestamp invalidates text cache');
  assert.ok(source.indexOf('const ok=await authorized(req);')<source.indexOf('await serveGitHubSource(req,res,sourcePath'), 'Authentication must precede EVERY source file response');
- assert.match(source,/textExt==='\\.js'\\|\\|textExt==='\\.css'/,'Only JS/CSS may use accelerated upstream path');
+ assert.match(source,/textExt==='\.js'\|\|textExt==='\.css'/,'Only JS/CSS may use accelerated upstream path');
  console.log('PASS: one in-flight DB check per session burst; no cached auth decisions; version-keyed JS/CSS source reuse behind auth');
 })().catch(error=>{console.error(error.stack||error);process.exitCode=1;});
