@@ -1,0 +1,378 @@
+<!doctype html><html lang="en" dir="ltr"><head><script id="unified-gateway-entry-v1">(function(location){
+  'use strict';
+  // Keep the existing authenticated entry for the public cockpit URL.
+  if(location.hostname!=='mahmet737ng-gif.github.io')return;
+  if(!/^\/b737-classic-simulator\/panel-mosaic-lab\/cockpit\/(?:index\.html)?$/.test(location.pathname))return;
+  location.replace('https://ata24-review-gateway-production.up.railway.app/panel-mosaic-lab/cockpit/');
+})(window.location);</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0c1721"><meta name="application-name" content="Unified"><meta name="apple-mobile-web-app-title" content="Unified"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./unified.webmanifest"><link rel="icon" type="image/webp" sizes="512x512" href="./brand/unified-icon-512.webp"><link rel="apple-touch-icon" sizes="180x180" href="./brand/unified-apple-touch.png"><title>Unified — B737 Classic Simulator</title><script>performance.setResourceTimingBufferSize(3000)</script><script src="../../cb-panel-lab/catalog.js?v=WEB-ac9b31752d68502a" defer></script><script src="../../engine/cb/desktop-bundle-ead9dd67de883c75.js?v=WEB-ead9dd67de883c75" defer></script><script>
+/* Start the immutable layout download while the 150 ordered deferred modules
+   are still being fetched; the cockpit application owns its validation/mount. */
+window.B737UnifiedAssemblyPrefetch=fetch('./assembly.json',{cache:'no-store'})
+ .then(async response=>response.ok?{data:await response.json()}:{error:'Assembly unavailable'})
+ .catch(error=>({error:String(error)}));
+</script>
+<!-- Start the shared ECU downloads before its ordered loader runs. -->
+<link rel="preload" as="script" href="../../engine/systems/pneumatics-v6.js?cb=CB-UNIFIED-0001&amp;v=AIRCON-FCOM-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-engine-apu-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-start-sequence-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-engine-start-dynamics-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-apu-start-chain-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-start-indications-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-fuel-shutoff-indicator-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-unified-control-router-v1.js?cb=CB-UNIFIED-0001&amp;v=ENGINE-START-ACK-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-thrust-performance-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/systems/classic-fuel-system-v1.js?cb=CB-UNIFIED-0001&amp;v=ATA28-FAILURES-FUEL-0002">
+<link rel="preload" as="script" href="../../engine/integration/isn-09-12-runtime-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-apu-load-dynamics-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/integration/isn-13-18-ecu-testbench-v1.js?cb=CB-UNIFIED-0001&amp;v=APU-OIL4-0001-ENG-OIL-DYNAMIC-0002">
+<link rel="preload" as="script" href="../../engine/runtime/unified-live-gateway-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/runtime/owner18-electrical-input-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<link rel="preload" as="script" href="../../engine/runtime/unified-authority-diagnostics-v1.js?cb=CB-UNIFIED-0001&amp;v=ELEC-LIVE-0001">
+<script src="./performance/manifest.js?v=WEB-bf88bcd4c196f12a" defer></script><script src="./performance/lossless/manifest.js?v=WEB-bcd006b40f7237c8" defer></script><script src="./performance/lossless-integrator.js?v=WEB-a72ec641689a30e9" defer></script><script src="./performance-loader.js?v=WEB-73edf0b707822c8a" defer></script><script src="../desktop-shell/desktop-bundle-fa393fa3de0eb4a8.js?v=WEB-fa393fa3de0eb4a8" defer></script><link rel="stylesheet" href="./style.css?v=WEB-56644c7cd357e0d1"><link rel="stylesheet" href="./guard-owner18-v1.css?v=OWNER18-004"><link rel="stylesheet" href="./unified-css-safe-01-v1.css?v=WEB-d1448c7277dd806c"><link rel="stylesheet" href="./mcp-owner-photo-components-v1.css?v=MCP-PHOTO-0002"><link rel="stylesheet" href="./mcp-front-actual-photo-v3.css?v=WEB-9364149b78e1760e"><link rel="stylesheet" href="./mcp-owner13-v1.css?v=AT-PADDLE-20261027-R2"><link rel="stylesheet" href="./unified-css-safe-02-v1.css?v=WEB-8f83ee23f728843c"><script src="../../engine/afds/desktop-bundle-824bd1661d8cf653.js?v=WEB-824bd1661d8cf653" defer></script><script src="./mcp-visual-v3.js?v=WEB-e8264f99e434ad17" defer></script><script src="./mcp-hardware-v1.js?v=WEB-6a7d9922b4fdfd8c" defer></script><script src="./mcp-owner13-v1.js?v=MCP-HIT-0001-DUAL-HEADING-BOOT-0002" defer></script><script src="./mcp-knob-retina-v1.js?v=WEB-66c5760b993c8363" defer></script><script src="./desktop-bundle-8d1cf432277b613b.js?v=WEB-8d1cf432277b613b" defer></script><script src="./desktop-bundle-d0166f498405b46a.js?v=WEB-d0166f498405b46a" defer></script><script src="./desktop-bundle-cf9ca3f1a25eddd8.js?v=WEB-cf9ca3f1a25eddd8" defer></script><script src="./desktop-bundle-ead25272b26ce8a7.js?v=WEB-ead25272b26ce8a7" defer></script><script src="./airspeed-pointers-model.js?v=ASP-0002" defer></script><script src="./airspeed-pointers-unified.js?v=ASP-0002" defer></script><script src="./desktop-bundle-8b08647124142f06.js?v=WEB-8b08647124142f06" defer></script><link rel="stylesheet" href="./irs-isdu-frontend-v1.css?v=IRS-UI-0001"><link rel="stylesheet" href="./irs-isdu-onpanel-v2.css?v=IRS-UI-0004"><link rel="stylesheet" href="./irs-isdu-cues-v1.css?v=IRS-CUES-0003"><link rel="stylesheet" href="./irs-sys-dspl-v1.css?v=IRS-SYS-0001"><link rel="stylesheet" href="./irs-sys-dspl-lr-markings-v1.css?v=IRS-LR-0001"><link rel="stylesheet" href="./irs-dspl-sel-upper-v1.css?v=IRS-AMBER-0001"><link rel="stylesheet" href="./irs-upper-face-v2.css?v=IRS-AMBER-0001"><link rel="stylesheet" href="./irs-amber-display-v1.css?v=IRS-AMBER-0001"><link rel="stylesheet" href="./irs-upper-dspl-v1.css?v=IRS-UPPER-0004"><link rel="stylesheet" href="./irs-13seg-display-v2.css?v=IRS-FILAMENT-0002"><link rel="stylesheet" href="./irs-trainer-unified-v1.css?v=IRS-LIVE-0002-MSU-PHOTO"><link rel="stylesheet" href="./irs-panel-registration-v1.css?v=IRS-PANEL-0002"><link rel="stylesheet" href="./irs-rotary-detent-indices-v1.css?v=IRS-INDEX-0002"><link rel="stylesheet" href="./unified-css-safe-03-v1.css?v=WEB-c536d063e4cadf61"><link rel="stylesheet" href="./conventional-physical-controls-v1.css?v=CONV-CONTROLS-0003-AXLE"><link rel="stylesheet" href="./eis-autobrake-physical-v1.css?v=WEB-7a1ba24b46b705cb"><link rel="stylesheet" href="./conventional-engine-needles-v1.css?v=CONV-FULL-NEEDLES-0002-ABOVE-DIGITS">
+<style id="unified-minimal-ui-v2">
+/* MINIMAL-0002 — outer interface only. Protected cockpit artwork, positions, behavior and pixels are untouched. */
+:root { --minimal-header-height: 48px; }
+html,body { height: 100% !important; height: 100dvh !important; overflow: hidden !important; }
+body { display:flex !important; flex-direction:column !important; margin:0 !important; }
+body > header.unified-minimal-header {
+  width:100% !important; height:var(--minimal-header-height) !important;
+  min-height:var(--minimal-header-height) !important; flex:0 0 var(--minimal-header-height) !important;
+  padding:4px 8px !important; margin:0 !important; display:flex !important;
+  align-items:center !important; justify-content:center !important;
+  flex-wrap:nowrap !important; background:#10202b !important;
+  border-bottom:1px solid #334c5b !important; position:relative; z-index:21;
+}
+body > header.unified-minimal-header .header-settings {
+  display:flex !important; width:100% !important; min-width:0 !important;
+  justify-content:center !important; align-items:center !important;
+  gap:6px !important; flex-wrap:nowrap !important; direction:rtl !important;
+}
+body > header.unified-minimal-header .header-settings #aircraftProfileHeader {display:none !important}
+body > header.unified-minimal-header .header-settings button {
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  width:auto !important; flex:0 1 auto !important; min-width:0 !important;
+  min-height:36px !important; padding:5px 10px !important; margin:0 !important;
+  border-radius:7px !important; font:600 12px/1.2 system-ui,Tahoma,sans-serif !important;
+  text-align:center !important; white-space:normal !important; color:#e6f0f6 !important;
+  background:#1c3746 !important; border:1px solid #4d7285 !important; touch-action:manipulation;
+}
+/* Instructor command: always visible, even if the AC bus is powered or a
+   cached module erroneously applies [hidden]. The ECU controls readiness. */
+body > header.unified-minimal-header #liveBatteryRecharge {
+  display:inline-flex !important; visibility:visible !important;
+  flex:0 0 auto !important;
+  border-color:#668c7f !important; background:#193a37 !important;
+  color:#def5e4 !important; white-space:nowrap !important;
+}
+body > header.unified-minimal-header #liveBatteryRecharge:disabled {
+  opacity:.6; cursor:not-allowed;
+}
+body > header.unified-minimal-header #liveBatteryRecharge[data-recharge="error"] {
+  border-color:#d28b78 !important; color:#ffd6c8 !important;
+}
+body > header.unified-minimal-header #visualLampTest {
+  background:#233e37 !important; border-color:#739482 !important;
+}
+body > header.unified-minimal-header #visualLampTest[aria-pressed="true"] {
+  background:#775322 !important; border-color:#d9b268 !important; color:#fff0ce !important;
+}
+body > header.unified-minimal-header #inspectorToggle {display:flex !important}
+body > main { display:flex !important; flex:1 1 0 !important; height:0 !important;
+  min-height:0 !important; padding:0 !important; margin:0 !important;
+  gap:0 !important; grid-template-columns:none !important; direction:ltr !important;
+}
+body > main > .workbench { display:flex !important; flex:1 1 auto !important; width:100% !important;
+  height:100% !important; min-width:0 !important; min-height:0 !important;
+  overflow:hidden !important; border:0 !important; border-radius:0 !important;
+}
+body > main > .workbench > .toolbar,
+body > main > .workbench > .view-caption { display:none !important; }
+body > main > .workbench > #isnStartIndications { display:none !important; }
+body > main > .workbench > .viewport {
+  display:block; flex:1 1 auto !important; height:100% !important;
+  min-height:0 !important; max-height:100% !important; width:100% !important;
+  border-radius:0 !important; margin:0 !important;
+}
+/* Inspector is a floating drawer reached only via the first button. */
+body > main > aside#inspector {
+  display:none !important; position:fixed !important; right:8px !important;
+  left:auto !important; top:calc(var(--minimal-header-height) + 5px) !important;
+  bottom:8px !important; width:min(360px,calc(100vw - 16px)) !important;
+  max-height:calc(100dvh - var(--minimal-header-height) - 13px) !important;
+  overflow-y:auto !important; z-index:40 !important; box-shadow:0 8px 36px #000c !important;
+}
+body.side-open > main > aside#inspector {display:block !important}
+@media(max-width:430px) {
+  body > header.unified-minimal-header .header-settings {gap:4px !important}
+  body > header.unified-minimal-header .header-settings button {
+    padding:4px 6px !important; font-size:11px !important; line-height:1.15 !important;
+  }
+  body > header.unified-minimal-header #visualLampTest {max-width:145px}
+}
+@media(max-width:345px) {
+  :root {--minimal-header-height:54px}
+  body > header.unified-minimal-header .header-settings button {padding:4px 5px !important; font-size:10px !important}
+}
+
+/* Header controls stay visible together on narrow phone screens.
+   Battery metering and recharge live inside the Controls drawer. */
+body > header.unified-minimal-header .header-settings{
+ max-width:970px!important;gap:6px!important
+}
+body > header.unified-minimal-header .header-settings>button{
+ white-space:nowrap!important;flex:1 1 0!important
+}
+#unifiedControlCenter{direction:ltr;text-align:left;border:1px solid #52748a;border-radius:9px;
+ padding:12px;background:#101f2c;display:grid;gap:12px}
+#unifiedControlCenter h2{margin:0;font-size:17px}
+#unifiedControlCenter h3{margin:0 0 8px;font-size:13px}
+#unifiedControlCenter .battery-controls-slot{border:1px solid #52715f;
+ border-radius:8px;padding:10px;background:#132c2b}
+#batteryMeterControlSlot #liveBatteryReadout{position:static!important;inset:auto!important;
+ left:auto!important;top:auto!important;z-index:auto!important;
+ pointer-events:auto!important;max-width:100%!important;width:100%!important;margin:0 0 8px!important}
+#batteryRechargeControlSlot #liveBatteryRecharge{display:inline-flex!important;visibility:visible!important;
+ background:#193a37!important;border-color:#668c7f!important;color:#def5e4!important}
+#batteryRechargeControlSlot #liveBatteryRecharge:disabled{opacity:.55}
+#unifiedControlCenter .control-center-actions{display:grid;gap:7px}
+#unifiedControlCenter .unified-lab-shortcuts{display:grid;gap:7px}
+#unifiedControlCenter .control-center-actions button{width:100%;text-align:center}
+@media(max-width:640px){
+ body > header.unified-minimal-header .header-settings{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px!important}
+ body > header.unified-minimal-header .header-settings>button,
+ body > header.unified-minimal-header .header-settings>a{
+   width:100%!important;min-width:0!important;white-space:normal!important;
+   overflow-wrap:anywhere;font-size:clamp(8px,2.4vw,11px)!important;padding:4px 2px!important;
+ }
+}
+</style><link rel="stylesheet" href="./unified-css-safe-04-v1.css?v=WEB-5ae7f48a28f1fa6b">
+<script src="./smiths-fuel-quantity-v1.js?v=WEB-37a2a4a71d571b56" defer></script>
+</head><body>
+<header class="unified-minimal-header"><div class="header-settings">
+<button id="flightScenarioHeader" style="order:100" type="button" aria-haspopup="dialog" aria-controls="flightScenarioDialog">FLT PHASE</button>
+<span id="aircraftProfileHeader" class="aircraft-profile-header" dir="ltr" hidden>737-300/500 · DCPCS · Non-EIS</span>
+<button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">Controls</button>
+<button id="aircraftSettingsOpen" type="button" aria-haspopup="dialog" aria-controls="aircraftSettingsDialog">⚙ Settings</button>
+<button id="unifiedEfisHeader" type="button" aria-haspopup="dialog" aria-controls="unifiedEfisDialog">EFIS CONTROL</button>
+<button id="cbPanelOpen" type="button" aria-haspopup="dialog" aria-controls="cbPanelDialog">CB PNL</button>
+<a href="./instrument-lab/" target="_blank" rel="noopener" class="toolbar-button" id="instrumentPhotoLabOpen">INSTRUMENT LAB</a>
+<a id="busConsumerTestLabOpen" href="../../bus-consumer-test-lab/v3.html" target="_blank" rel="noopener" title="Open 24 functional bus nodes and 340 consumers (versioned lab)" style="display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 1 auto!important;min-height:36px!important;max-width:128px!important;padding:5px 9px!important;border:1px solid #559dca!important;border-radius:7px!important;background:#193d54!important;color:#b5e1ff!important;text-decoration:none!important;font:600 11px/1.2 system-ui,Tahoma,sans-serif!important;white-space:normal!important;text-align:center!important;touch-action:manipulation">BUS TEST LAB</a>
+<button id="groundPowerHeader" type="button" aria-expanded="false" aria-controls="groundPowerPopover" aria-haspopup="dialog" title="External AC cable and GRD PWR ON/OFF per FCOM">GROUND POWER</button>
+<button id="failuresHeaderOpen" type="button" aria-expanded="false" aria-controls="failuresHeaderPopover" aria-haspopup="dialog" title="Instructor failure management: Electrical and Fuel">FAILURES</button>
+</div></header>
+<dialog id="flightScenarioDialog" aria-labelledby="flightScenarioTitle" dir="ltr">
+  <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
+  <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
+  <div class="flight-grid">
+   <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
+   <label>Runway<select id="flightRunway"></select></label>
+   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
+  </div>
+  <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
+  <div class="flight-grid flight-numbers">
+   <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
+   <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
+   <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
+   <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
+   <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
+   <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
+   <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
+  </div>
+  <div class="flight-actions">
+   <button type="button" id="flightLoad" class="flight-primary">LOAD SCENARIO</button>
+   <button type="button" id="flightTargets">APPLY FLIGHT TARGETS</button>
+   <button type="button" id="flightTakeoff">PRESS TOGA</button>
+   <button type="button" id="flightPause">PAUSE</button>
+   <button type="button" id="flightStop">STOP FEED</button>
+  </div>
+  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
+  <div class="flight-heading">LIVE AIRCRAFT STATE</div>
+  <div class="flight-telemetry" id="flightTelemetry">
+   <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
+   <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
+   <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
+   <div><span>VS</span><strong id="flightOutVS">—</strong></div>
+   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
+   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
+   <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
+   <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
+   <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
+   <div><span>LAT</span><strong id="flightOutLat">—</strong></div>
+   <div><span>LON</span><strong id="flightOutLon">—</strong></div>
+   <div><span>GS</span><strong id="flightOutGS">—</strong></div>
+   <div><span>RWY DIST</span><strong id="flightOutDist">—</strong></div>
+  </div>
+  <p id="flightGeorefWarning" class="flight-warning">Runway threshold geometry is provisional: airport reference point, not certified runway threshold. AGL* uses airport elevation, not terrain.</p>
+  <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
+ </dialog>
+<script src="./flight-scenario-shell-v1.js?v=WEB-5b6d2e548e7b78c9"></script>
+<!-- BAT RECHARGE: synchronous Controls-drawer prepaint survives deferred bundle errors. -->
+<script id="battery-recharge-prepaint-v4">
+(function(){
+ 'use strict';
+ function ensureRechargePrepaint(){
+ const slot=document.getElementById('batteryRechargeControlSlot');
+ if(!slot)return;
+ let button=document.getElementById('liveBatteryRecharge');
+ if(!button){
+  button=document.createElement('button');
+  button.type='button';
+  button.id='liveBatteryRecharge';
+  button.textContent='BAT RECHARGE';
+  button.disabled=true;
+  button.setAttribute('aria-label','Recharge training battery to 100 percent');
+ }
+ if(button.parentElement!==slot)slot.append(button);
+ button.hidden=false;
+ button.style.setProperty('display','inline-flex','important');
+ button.style.setProperty('visibility','visible','important');
+ button.dataset.build='BAT-CONTROLS-0001';
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureRechargePrepaint,{once:true});
+ else ensureRechargePrepaint();
+})();
+</script>
+<main><section class="workbench"><div class="toolbar"><div class="tools"><button id="zoomOut" aria-label="Zoom Out">−</button><output id="zoomValue">—</output><button id="zoomIn" aria-label="Zoom In">+</button><button id="fit">FIT</button><button id="native">1:1</button></div><div class="tools"><button id="unifiedLightsOpen" class="unified-lights-open" aria-label="Unified Lights Library">Lights Test · Synchronizing</button><span id="visualLampStatus" role="status"></span><button id="panMode" aria-pressed="false">Pan</button><button id="reference" aria-pressed="false">Reference</button><button id="galleryOpen">Source Photos</button></div></div>
+<div id="viewport" class="viewport" tabindex="0" role="region" aria-label="Overhead, Main Panel and Pedestal Mosaic"><div id="sizer"><div id="scene" class="scene"></div></div>
+<script id="unified-early-overhead">
+(function(){
+ const scene=document.getElementById('scene');
+ let region,frame,readyEvent;
+ function rememberReady(event){
+  if(event.origin===location.origin&&event.source===frame?.contentWindow&&
+   event.data?.type==='b737:cockpit-overhead'&&event.data.kind==='ready')readyEvent=event;
+ }
+ window.addEventListener('message',rememberReady);
+ window.B737TakeOverheadReady=()=>{
+  window.removeEventListener('message',rememberReady);
+  const event=readyEvent;readyEvent=null;return event;
+ };
+ window.B737PrepareOverhead=layout=>{
+  if(region)return region;
+  region=document.createElement('section');
+  region.id='region-overhead';region.className='region';
+  Object.assign(region.style,{left:layout.x+'px',top:layout.y+'px',width:layout.w+'px',height:layout.h+'px',visibility:'hidden'});
+  frame=document.createElement('iframe');
+  frame.id='overheadFrame';frame.title='Interactive Overhead LGT-0003';
+  const url=window.B737UnifiedLightOverheadTest?'./overhead-real-f-in-unified-v10.html?v=PERF-0010':
+   window.B737OverheadStaticTest?'./overhead-static-controls-stage.html?v=AB-CONTROLS-0001':
+   window.B737OverheadCompositeTest?'./overhead-composite-stage.html?v=PERF-0004-COMPOSITE-TEST':layout.embeddedUrl;
+  frame.src=url+'&photoInput=PHOTO-INPUT-0001&ledev=LEDEV-0006&lelogic=LEDEV-STAGED-V1&aspObs=ASP-OBS-CENTER-0005-FACE&pmc=PMC-GLASS-0004';
+  region.append(frame);scene.append(region);
+  return region;
+ };
+ window.B737UnifiedAssemblyPrefetch?.then(result=>{
+  const layout=result.data?.regions?.find(entry=>entry.id==='overhead');
+  if(layout?.embeddedUrl)window.B737PrepareOverhead(layout);
+ });
+})();
+</script>
+<p id="loading" class="loading" role="status">Connecting Panels…</p></div><div class="view-caption"><span id="viewLabel">Main Panel</span><span>Drag to pan · Ctrl + wheel or pinch to zoom</span></div></section>
+<aside id="inspector" class="inspector"><section><h1>Unified Cockpit</h1><p class="muted">Interactive overhead, main panel, and pedestal share this cockpit. Header buttons switch views.</p><div class="metrics"><div><b>3</b><small>Shared Areas</small></div><div><b>7</b><small>Connected Photos</small></div></div><p id="assetStatus" role="status">Photos: Loading</p><p id="overheadStatus" role="status">Overhead: Connecting</p></section>
+<section id="unifiedControlCenter" class="unified-control-center" aria-label="Unified cockpit controls">
+<h2>Controls · Power &amp; Test Labs</h2>
+<div id="batteryControlsSlot" class="battery-controls-slot">
+ <h3>BATTERY · Voltage / Ammeter / Charger</h3>
+ <div id="batteryMeterControlSlot" class="battery-meter-control-slot"></div>
+ <div id="batteryRechargeControlSlot">
+ <button id="liveBatteryRecharge" type="button" disabled aria-label="Recharge training battery to 100 percent" title="Waiting for live battery ECU" data-recharge-control="instructor">BAT RECHARGE</button>
+ </div>
+</div>
+<div class="control-center-actions">
+ <h3>Test &amp; Utilities</h3>
+ <button id="visualLampTest" type="button" aria-pressed="false">Illuminate All Lights</button>
+ <button id="apuLabButtonV1" type="button" aria-label="Open independent APU test lab">APU TEST LAB</button>
+ <button id="unifiedEfisOpen" type="button">EFIS CONTROL PANEL</button>
+ <div id="unifiedLabShortcuts" class="unified-lab-shortcuts"></div>
+</div>
+</section>
+<section class="aircraft-profile-summary" aria-labelledby="aircraftProfileSummaryTitle"><h2 id="aircraftProfileSummaryTitle">Active Aircraft Configuration</h2><dl><dt>Aircraft Family</dt><dd id="activeAircraftFamily" dir="ltr">—</dd><dt>Pressurization System</dt><dd id="activePressurization" dir="ltr">—</dd><dt>Engine Instruments</dt><dd id="activeEngineInstruments" dir="ltr">—</dd></dl><button id="openSelectedPressurizationPanel" type="button">Open Selected Pressurization Panel</button><a class="isn-pack-link" href="../../isn-electrical-pack-lab/">Electrical Buses, Pumps and Alerts Test</a><p id="activeProfileStatus" class="muted" role="status">Loading Settings…</p><div id="pressurePhysicsDiagnostics" class="pressure-physics-diagnostics" aria-live="polite"></div></section>
+<section><h2 id="selectionTitle">Main Instrument Panel</h2><p id="selectionDescription">Five source photos assembled at their original aspect ratios.</p><p id="selectionSize" class="muted"></p><a id="originalLink" hidden target="_blank" rel="noopener">Open Source Photo</a><p class="assembly-note">CKP-0012 / ISN-03: Throttle Quadrant registration follows the reference. Source artwork is unchanged; Fire Protection, Radio/Nav, and interactive Engine Start controls remain independent.</p></section>
+<section class="cdu-tools"><h2>Captain and First Officer CDUs</h2><p id="cduStatus" role="status">Loading CDUs…</p><button data-focus="cdu-captain">Show Captain CDU</button><button data-focus="cdu-first-officer">Show First Officer CDU</button><button data-focus="cdu-both">Show Both CDUs</button><div class="cdu-actions"><button id="resetCduCaptain" type="button" disabled>Reset Captain CDU</button><button id="resetCduFirstOfficer" type="button" disabled>Reset First Officer CDU</button></div><button id="resetSharedFmc" type="button">Clear FMC Data</button></section><section class="overhead-tools"><h2>Overhead Test</h2><button id="lampTest">Illuminate Lights for Test</button><p id="lampStatus" role="status">—</p><label for="lampSelect">Select Lamp</label><select id="lampSelect" dir="ltr" disabled></select><output id="lampValue" dir="ltr">—</output><label class="check"><input id="lampFault" type="checkbox" disabled>Inject Failure / Sensor State</label><button id="resetScenario" disabled>Clear Overhead Failures</button><button id="resetControls" disabled>Reset Overhead Controls</button><a href="../interactive-overhead/?standalone=1&amp;v=LGT-0003">Independent overhead view with complete test inputs</a></section>
+<section><details><summary>Loading Status</summary><p id="performanceStats" role="status">Measuring…</p></details></section></aside></main>
+<dialog id="unifiedEfisDialog" aria-label="EFIS control panel">
+ <div class="dialog-head"><h2>EFIS Control Panel</h2><button id="unifiedEfisClose" type="button" aria-label="Close EFIS controls">×</button></div>
+ <fieldset class="unified-efis-presets">
+  <legend>IRS / EFIS training presets</legend>
+  <div class="unified-efis-selectors">
+   <button type="button" data-efis-preset="FULL_ALIGN" aria-pressed="true">FULL ALIGN</button>
+   <button type="button" data-efis-preset="COLD_DARK" aria-pressed="false">COLD &amp; DARK</button>
+   <button type="button" data-efis-preset="LIVE" aria-pressed="false">AIRCRAFT</button>
+  </div>
+  <output id="unifiedEfisPresetStatus" aria-live="polite">FULL ALIGN · initializing IRS L/R…</output>
+ </fieldset>
+ <div class="unified-efis-selectors" dir="ltr">
+  <label>Seat <select id="unifiedEfisSeat"><option value="CAPT">Captain</option><option value="FO">First Officer</option></select></label>
+  <label><input id="unifiedEfisDemo" type="checkbox"> Instructor display inputs</label>
+ </div>
+ <div class="unified-efis-selectors">
+  <button id="unifiedEfisPhysical" type="button">Open pedestal EFIS panel</button>
+  <button id="unifiedPlanPrev" type="button">PLAN previous waypoint</button>
+  <button id="unifiedPlanNext" type="button">PLAN next waypoint</button>
+ </div>
+ <details><summary>EFIS source diagnostics</summary>
+  <p>Source selectors are on overhead panel OH08.</p>
+  <output id="unifiedEfisSources"></output>
+  <div class="unified-efis-selectors">
+   <label><input type="checkbox" id="unifiedSg1Fail"> SG 1 power supply failure</label>
+   <label><input type="checkbox" id="unifiedSg2Fail"> SG 2 power supply failure</label>
+   <label><input type="checkbox" id="unifiedFmcFail"> FMC failure</label>
+  </div>
+ </details>
+</dialog>
+<dialog id="cbPanelDialog" aria-label="Circuit Breaker Panel"><div class="cb-dialog-top"><strong>CB PANEL</strong><button type="button" id="cbPanelClose" aria-label="Close CB Panel">×</button></div><iframe id="cbPanelFrame" title="B737 Classic interactive CB Panel" loading="lazy"></iframe></dialog>
+
+
+
+<dialog id="galleryDialog"><div class="dialog-head"><h2>Source Photos in Assembly</h2><button id="galleryClose" aria-label="Close Source Photos">×</button></div><div id="gallery" class="gallery"></div></dialog>
+<dialog id="unifiedLightsDialog" class="unified-lights-dialog" aria-labelledby="unifiedLightsTitle"><div class="dialog-head"><h2 id="unifiedLightsTitle">Unified · Interactive Lamp Test</h2><button id="unifiedLightsClose" aria-label="Close Lights Test">×</button></div><p class="unified-lights-note">Test each actual lamp image in OFF / ON and, when available, DIM BLUE / BRIGHT BLUE. Installed lamps update simultaneously in the main panel. Unregistered lamps remain in this test lab.</p><div class="unified-lights-controls"><input id="unifiedLightSearch" type="search" placeholder="Search lamps, e.g. SPEED BRAKE or STAB" aria-label="Search Lamp"><button id="unifiedLightSync">↻ Synchronize</button><button id="unifiedLightAllOn">All On</button><button id="unifiedLightAllOff">All Off</button><button id="unifiedLightReset">Restore System State</button></div><p id="unifiedLightStats" class="unified-lights-stats" role="status">Loading Lamps…</p><div id="unifiedLightGrid" class="unified-lights-grid"></div></dialog>
+<dialog id="aircraftSettingsDialog" class="aircraft-settings-dialog" aria-labelledby="aircraftSettingsTitle"><form id="aircraftSettingsForm"><div class="dialog-head"><div><h2 id="aircraftSettingsTitle">Settings · Aircraft Configuration</h2><p>Select an aircraft family. Both CDU IDENT pages automatically show 737-300 / 20K or 737-400 / 22K. Settings persist after reload.</p></div><button id="aircraftSettingsClose" type="button" aria-label="Close settings">×</button></div><fieldset><legend>Aircraft Family</legend><div class="profile-options"><label><input type="radio" name="aircraftFamily" value="B737-300-500"><span><b>737-300 / 737-500</b><small>FMC IDENT: 737-300 · 20K</small></span></label><label><input type="radio" name="aircraftFamily" value="B737-400"><span><b>737-400</b><small>FMC IDENT: 737-400 · 22K</small></span></label></div></fieldset><fieldset><legend>Pressurization System</legend><div class="profile-options"><label><input type="radio" name="pressurization" value="CPCS"><span><b>CPCS</b><small>Analog controller · CPCS V5</small></span></label><label><input type="radio" name="pressurization" value="DCPCS"><span><b>DCPCS</b><small>Digital controller · DCPCS V4</small></span></label></div></fieldset><fieldset><legend>Engine Instruments</legend><div class="profile-options"><label><input type="radio" name="engineInstruments" value="EIS"><span><b>EIS</b><small>Electronic Engine Instruments</small></span></label><label><input type="radio" name="engineInstruments" value="CONVENTIONAL"><span><b>Non-EIS</b><small>Analog Engine Instruments</small></span></label></div></fieldset><fieldset><legend>Vertical speed indicator</legend><label>Instrument <select id="ivsiEquipment"><option value="analog">Analog IVSI</option><option value="traffic">IVSI + TCAS</option></select></label></fieldset><p id="aircraftSettingsError" class="profile-error" role="alert" hidden></p><div class="profile-actions"><button id="aircraftSettingsCancel" type="button">Cancel</button><button type="submit" class="profile-primary">Save and Apply</button></div></form></dialog>
+<dialog id="selectedPressurizationDialog" class="selected-pressure-dialog" aria-labelledby="selectedPressureTitle"><div class="dialog-head"><div><h2 id="selectedPressureTitle">Selected Pressurization Panel</h2><p>Independent training controller for the selected installation</p></div><button id="selectedPressureClose" type="button" aria-label="Close pressurization panel">×</button></div><iframe id="selectedPressureFrame" title="Selected cabin pressurization test lab" loading="lazy"></iframe></dialog>
+<script src="../../engine/config/desktop-bundle-0fde219859e11dab.js?v=WEB-0fde219859e11dab" defer></script><script src="./desktop-bundle-932a88709ed763e3.js?v=WEB-932a88709ed763e3" defer></script><script src="../../engine/fmc/desktop-bundle-a81158a2a65952f0.js?v=WEB-a81158a2a65952f0" defer></script><script src="./app.js?v=WEB-768f0bc0f3690c81&amp%3Bstartup=0003" defer></script><script src="./guard-close-policy-v2.js?v=OWNER18-004" defer></script><script src="./guard-owner18-v1.js?v=OWNER18-004" defer></script><script src="./desktop-bundle-36ab9ba49f318e96.js?v=WEB-36ab9ba49f318e96" defer></script><script src="./desktop-bundle-c1b91f69a0cfc771.js?v=WEB-c1b91f69a0cfc771" defer></script><script src="../lights-reference-v2/live-mount.js?v=WEB-cc87c90d3818613e" defer></script><script src="../lamp-socket-fit-v3/live-fit.js?v=WEB-a59b5dca526db2a8" defer></script><script src="./desktop-bundle-ac32804382394975.js?v=WEB-ac32804382394975" defer></script><script src="./lights.js?v=WEB-1402fa68efe9572c&amp%3Bcb=CB-UNIFIED-0001" defer></script><script src="./le-devices-live-link-v1.js?v=LEDEV-STAGED-V1" defer></script><script src="../lights-test/desktop-bundle-000fb2540bcc78fc.js?v=WEB-000fb2540bcc78fc" defer></script><script src="../../engine/systems/desktop-bundle-bc7b454ad8e22d1a.js?v=WEB-bc7b454ad8e22d1a" defer></script><link rel="stylesheet" href="./unified-css-safe-05-v1.css?v=WEB-b56603affaebd789"><script src="./desktop-bundle-02bd2b77b2f6ae57.js?v=WEB-02bd2b77b2f6ae57" defer></script><script src="./stage78-readonly-unified.js?v=WEB-532c53a75a4386b0" defer></script><script src="./isn-cockpit.js?v=WEB-b01b3952feaca6f3&amp%3Bp8=ATA26-0003&amp%3Bstartup=0003" defer></script><script src="./desktop-bundle-05416e2bc7fc24cd.js?v=WEB-05416e2bc7fc24cd" defer></script><script src="../../fire-protection-lab/desktop-bundle-38daab6b98875ff2.js?v=WEB-38daab6b98875ff2" defer></script><script src="./irs-isdu-frontend-v1.js?v=IRS-UI-0001" defer></script><script src="./irs-isdu-onpanel-v2.js?v=IRS-UI-0004" defer></script><script src="./irs-isdu-cues-v1.js?v=IRS-CUES-0003" defer></script><script src="./irs-sys-dspl-v1.js?v=IRS-SYS-0001" defer></script><script src="./irs-sys-dspl-lr-markings-v1.js?v=IRS-LR-0001" defer></script><script src="./irs-dspl-sel-upper-v1.js?v=IRS-UPPER-PHOTO-0002" defer></script><script src="./irs-upper-face-v2.js?v=IRS-UPPER-PHOTO-0002" defer></script><script src="./irs-amber-display-v1.js?v=IRS-AMBER-0001" defer></script><script src="./irs-upper-dspl-v1.js?v=IRS-UPPER-0005" defer></script><script src="./irs-13seg-display-v2.js?v=IRS-FILAMENT-0002" defer></script><script src="../../engine/systems/irs-trainer-web-v1.js?v=IRS-LIVE-0001" defer></script><script src="./irs-trainer-unified-v1.js?v=IRS-LIVE-0002-MSU-PHOTO" defer></script><script src="./irs-panel-registration-v1.js?v=IRS-PANEL-0002" defer></script><script src="./irs-background-hash-clean-v1.js?v=IRS-HASH-CLEAN-0002" defer></script><script src="./irs-rotary-detent-indices-v1.js?v=IRS-INDEX-0002" defer></script><script src="./desktop-bundle-81f7e0670d067403.js?v=WEB-81f7e0670d067403" defer></script><script src="./desktop-bundle-07dbfd46ef5aa048.js?v=WEB-07dbfd46ef5aa048" defer></script><script src="./asp-vbr-selector-v1.js?v=WEB-bec3742657a37e3e" defer></script>
+
+<script src="../../engine/integration/desktop-bundle-f2bde8996357d2ca.js?v=WEB-f2bde8996357d2ca" defer></script><script src="./conventional-full-paint-v1.js?v=CONV-FULL-PAINT-0002-PRECOMPUTED-MASK" defer></script><script src="./desktop-bundle-c17d543da71fbafb.js?v=WEB-c17d543da71fbafb" defer></script><script src="./conventional-engine-needles-v1.js?v=CONV-N2-POWER-BLANK-0001" defer></script><script src="./desktop-bundle-c041ee2a9e2c5fda.js?v=WEB-c041ee2a9e2c5fda" defer></script><script src="./desktop-bundle-b1771f97f24a6ce0.js?v=WEB-b1771f97f24a6ce0" defer></script><script src="./fo-owner-panel-v1.js?v=FO-CONVENTIONAL-ONLY-0001" defer></script><script src="./conventional-lamp-registration-v1.js?v=CONV-LAMP-PIXEL-0003" defer></script><script src="./detent-hit-geometry-v1.js?v=WEB-accd22f649e81d2b" defer></script><script src="./conventional-physical-controls-v1.js?v=AUTO-BRAKE-LABEL-TAPS-0002&amp;hit=DETENT-TEXT-0001" defer></script><script src="./desktop-bundle-3aa8890257a17c94.js?v=WEB-3aa8890257a17c94" defer></script><script src="../../engine/systems/desktop-bundle-18d585c6839bd074.js?v=WEB-18d585c6839bd074" defer></script><script src="../../engine/systems/desktop-bundle-3b4049d2b5a225b1.js?v=WEB-3b4049d2b5a225b1" defer></script>
+<!-- Classic exterior lights: additive switch/photo layer; no change to locked mosaics or guards. -->
+<script src="./desktop-bundle-e20eb36fc09cce37.js?v=WEB-e20eb36fc09cce37" defer></script><script src="./desktop-bundle-53b0f9894f4057d8.js?v=WEB-53b0f9894f4057d8" defer></script><style id="apu-lab-shell-v1">
+#apuLabButtonV1{background:#174969;color:#eff6ff;border:1px solid #4c859e;border-radius:5px;padding:8px 12px;cursor:pointer;font-weight:700}
+#apuLabDialogV1{padding:0;border:1px solid #43667d;border-radius:9px;background:#09121c;color:#ecf4ff;width:min(1510px,97vw);height:min(910px,96vh);max-width:none;max-height:none;box-shadow:0 12px 44px #000b;overflow:hidden}
+#apuLabDialogV1::backdrop{background:#050a12bf}
+#apuLabDialogV1 .apu-lab-dialog-top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:4px 12px;background:#192a3a}
+#apuLabDialogV1 button{cursor:pointer;background:#2e455b;color:#fff;border:1px solid #668398;border-radius:5px;font-size:14px;padding:4px 14px}
+#apuLabFrameV1{border:0;width:100%;height:calc(100% - 38px);background:#09121c}
+</style>
+<dialog id="apuLabDialogV1" aria-label="APU protective failure test lab"><div class="apu-lab-dialog-top"><strong>737 CLASSIC · APU TEST LAB</strong><button id="apuLabCloseV1" type="button">CLOSE ×</button></div><iframe id="apuLabFrameV1" title="APU numeric fault test lab" loading="lazy"></iframe></dialog>
+<script id="apu-lab-shell-script-v1">
+(function(){'use strict';
+ const dialog=document.getElementById('apuLabDialogV1'),frame=document.getElementById('apuLabFrameV1');
+ function open(){if(!dialog.open)dialog.showModal();if(!frame.getAttribute('src')||frame.getAttribute('src')==='about:blank')frame.src=new URL('../apu-test-lab/index.html?v=APU-LAB-0001',location.href).href;return true;}
+ function close(){if(dialog.open)dialog.close();}
+ document.getElementById('apuLabButtonV1')?.addEventListener('click',open);
+ document.getElementById('apuLabCloseV1')?.addEventListener('click',close);
+ dialog.addEventListener('click',e=>{if(e.target===dialog)close();});
+ dialog.addEventListener('close',()=>{frame.src='about:blank';});
+ window.B737APULabShellV1=Object.freeze({open,close});
+})();
+</script><link rel="stylesheet" href="./unified-css-safe-06-v1.css?v=WEB-893767e87585f3d3">
+<script src="../../engine/instruments/desktop-bundle-75446c3ce3970339.js?v=WEB-75446c3ce3970339" defer></script>
+<script src="../../engine/instruments/conventional-indication-sync-v1.js?v=CONV-SYNC-0001" defer></script>
+<script src="./conventional-sync-runtime-v1.js?v=CONV-SYNC-RUNTIME-0002-TIP-PARITY" defer></script>
+<script src="./desktop-bundle-d5314336e6d15117.js?v=WEB-d5314336e6d15117" defer></script><script src="./conventional-eadi-socket-v1.js?v=CONV-FO-EADI-SOCKET-0001" defer></script><script src="../../engine/efis/desktop-bundle-627c22b8c36fc771.js?v=WEB-627c22b8c36fc771" defer></script><script src="./desktop-bundle-3a48ddd412dbb295.js?v=WEB-3a48ddd412dbb295" defer></script><style>
+.unified-ehsi-glass{position:absolute;border-radius:7%;overflow:hidden;background:#000;z-index:2;pointer-events:none}
+.unified-ehsi-glass svg{display:block;width:100%;height:100%;pointer-events:none}
+#unifiedEfisDialog{width:min(900px,94vw);max-height:92vh;overflow:auto;color:#e2edf6;background:#101c28;border:1px solid #3c566e;padding:14px;direction:ltr}
+#unifiedEfisDialog::backdrop{background:#0009}
+ .unified-efis-presets{border:1px solid #3c566e;border-radius:8px;padding:4px 12px 10px;margin:10px 0}
+ .unified-efis-presets button[aria-pressed="true"]{background:#214f5c;border-color:#64bbc6}
+ .unified-efis-presets output{display:block;min-height:1.4em}
+.unified-efis-selectors{display:flex;flex-wrap:wrap;gap:18px;margin:10px 0;align-items:center}
+</style>
+<script src="../../efis-display-lab/desktop-bundle-8fac53a586773932.js?v=WEB-8fac53a586773932" defer></script>
+
+<link rel="stylesheet" href="./unified-css-safe-07-v1.css?v=WEB-4111604c75d64ef1"><script src="./efis-pedestal-raster-v1.js?v=WEB-9f86280b9f752c1e" defer></script>
+<script src="./pedestal-faceplates-library-v1.js?v=WEB-81cbdf87f0b62b17" defer></script>
+<script src="./pedestal-dual-vhf-knobs-v1.js?v=WEB-e2e4589f097e9cb3" defer></script>
+<script src="./desktop-bundle-b664dfe62adf63ce.js?v=WEB-b664dfe62adf63ce" defer></script><script src="../../engine/flight/desktop-bundle-f20f7be02d44deef.js?v=WEB-f20f7be02d44deef" defer></script>
+<script src="./desktop-bundle-9a6738970f3f7e52.js?v=WEB-9a6738970f3f7e52" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
+<script src="../../engine/instruments/desktop-bundle-bed36d6d6c58ca8c.js?v=WEB-bed36d6d6c58ca8c" defer></script>
+<script defer src="./tcas-photo/ivsi.js?v=WEB-10d7e8282ce53674"></script>
+</body></html>

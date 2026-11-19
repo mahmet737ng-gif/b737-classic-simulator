@@ -1,0 +1,202 @@
+{
+  "schema": "b737-unified-fast-runtime/1",
+  "sourceCommit": "bff850875caca94188382c7ac5dfd85c8a05acc7",
+  "mainBefore": 291,
+  "mainAfter": 90,
+  "overheadBefore": 59,
+  "overheadAfter": 41,
+  "files": [
+    {
+      "path": "panel-mosaic-lab/cockpit/index.html",
+      "sha256": "0f996d07b6f437954d3e31fc6c7deca49a2871bc5b34c1aa6e4680ac6d2a1abc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
+      "sha256": "4ac633a4b12568db1561dcbe5cd666254ffbdcd844feffe0e383db0bb6fe47ea"
+    },
+    {
+      "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
+      "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
+    },
+    {
+      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-fa393fa3de0eb4a8.js",
+      "sha256": "fa393fa3de0eb4a8a2dcbbb13fdf6987811b29df69ed5c3df2cae8a475d16b0f"
+    },
+    {
+      "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
+      "sha256": "824bd1661d8cf653e67be65b58b657f82ce1a41e65e1c7db371c906d8150d0f1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8d1cf432277b613b.js",
+      "sha256": "8d1cf432277b613b6e17bd235c6b70dc9850864808610d87ead094a1f7232e1b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-d0166f498405b46a.js",
+      "sha256": "d0166f498405b46a0a57efab0e6c2a75361bc31728c0c7d2f05ea6d914d48078"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-cf9ca3f1a25eddd8.js",
+      "sha256": "cf9ca3f1a25eddd8a61c0518969f15a13fff6c39f50da8b55c7c631713c8e014"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ead25272b26ce8a7.js",
+      "sha256": "ead25272b26ce8a79a132dca3af2a6005a19fdc39b6686a9ca7211339ee81c28"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8b08647124142f06.js",
+      "sha256": "8b08647124142f06adcbfecea7fe7dd3ed74f40fbb9fa452c014fdec1f4dbb6e"
+    },
+    {
+      "path": "engine/config/desktop-bundle-0fde219859e11dab.js",
+      "sha256": "0fde219859e11dab4c9219aabba937214406473b012540c8e0cefd95c5f6d031"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-932a88709ed763e3.js",
+      "sha256": "932a88709ed763e3405e1936735f780abf2b7e3555bb56ad4d1c52c820932f0e"
+    },
+    {
+      "path": "engine/fmc/desktop-bundle-a81158a2a65952f0.js",
+      "sha256": "a81158a2a65952f0dd142fcce48f9a45f86c493bc9d993be5abaa8ea85bfb51f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-36ab9ba49f318e96.js",
+      "sha256": "36ab9ba49f318e967df00d1ac2500bdd1123c8629d2932cabafc5e5591e3d934"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c1b91f69a0cfc771.js",
+      "sha256": "c1b91f69a0cfc77195ff4b30f47c746e1f8b420163b4623dd8a78ca7bed2266c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ac32804382394975.js",
+      "sha256": "ac328043823949750bab8eb05deb8cdb2037b07773de9efbef323aa86c2419ba"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-test/desktop-bundle-000fb2540bcc78fc.js",
+      "sha256": "000fb2540bcc78fc97efd7fd6d98d8ca842828f4731a8f0f183e7fe57f9d9ead"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-bc7b454ad8e22d1a.js",
+      "sha256": "bc7b454ad8e22d1adfb32a4d3cf048581781b987c9b27d73e9bc2c35a8244ad5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-02bd2b77b2f6ae57.js",
+      "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-05416e2bc7fc24cd.js",
+      "sha256": "05416e2bc7fc24cd1debc45c7e8648975a174c11a0ada1acad5fd3f2c929f9d3"
+    },
+    {
+      "path": "fire-protection-lab/desktop-bundle-38daab6b98875ff2.js",
+      "sha256": "38daab6b98875ff27a0e22f01e700b4205a861105fdc8e87f398a522b6017175"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-81f7e0670d067403.js",
+      "sha256": "81f7e0670d0674031c764a3b2ca28f493580b32a48bfff1974a8f903d5a39322"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-07dbfd46ef5aa048.js",
+      "sha256": "07dbfd46ef5aa048b024c8e4dc6bbf8b971ee67864bc0c12f2be50d1b8064645"
+    },
+    {
+      "path": "engine/integration/desktop-bundle-f2bde8996357d2ca.js",
+      "sha256": "f2bde8996357d2cad75fa0cb674445461cd1affce7f84c776203a20a70bc9a19"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c17d543da71fbafb.js",
+      "sha256": "c17d543da71fbafb48925bfbe8d96219e0c356c9ee5857a58305ebea8db4589b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c041ee2a9e2c5fda.js",
+      "sha256": "c041ee2a9e2c5fda124e49bfd5e3907a02eff5cab999dfa42fe5daecfc09e32b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b1771f97f24a6ce0.js",
+      "sha256": "b1771f97f24a6ce02e16399da6d63b08d70732e556437d20876657f85498a1ae"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-3aa8890257a17c94.js",
+      "sha256": "3aa8890257a17c94edca6aa8b28ede69fab4672a23d3dc78f0e7c69f177b5d5c"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-18d585c6839bd074.js",
+      "sha256": "18d585c6839bd074a66209bdceb991649c32338b8c198df5b9688cf1f1696484"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-3b4049d2b5a225b1.js",
+      "sha256": "3b4049d2b5a225b15a1d146500a0cc5054eacfa27e8b99a9127d7757e9f604b6"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e20eb36fc09cce37.js",
+      "sha256": "e20eb36fc09cce372859bdf6ca3f8a0a53bb202d7889f7a3886dc5c15fa1a598"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-53b0f9894f4057d8.js",
+      "sha256": "53b0f9894f4057d8dba163b06795dbd9dce5ecd566b84c5e5c73401f46f47303"
+    },
+    {
+      "path": "engine/instruments/desktop-bundle-75446c3ce3970339.js",
+      "sha256": "75446c3ce3970339f7cf0045c75a543db9c8b95add6ad399bfd03874969315dd"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-d5314336e6d15117.js",
+      "sha256": "d5314336e6d15117498f51ded97ab04cbec17e28675753656762979b98e38d85"
+    },
+    {
+      "path": "engine/efis/desktop-bundle-627c22b8c36fc771.js",
+      "sha256": "627c22b8c36fc771e6ecc2e184721ac5e0ab7d4b604037a6aea4a1f23394493a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-3a48ddd412dbb295.js",
+      "sha256": "3a48ddd412dbb2953b303fad60352bcd72c2b32da7d9b20e43b61cc631e95252"
+    },
+    {
+      "path": "efis-display-lab/desktop-bundle-8fac53a586773932.js",
+      "sha256": "8fac53a5867739324d0a01afb152af09810b971e5ef0eb9202447b190dbebaab"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b664dfe62adf63ce.js",
+      "sha256": "b664dfe62adf63ce9acfd419646767e52dd7d61d33fa8c259779a5eecbb46943"
+    },
+    {
+      "path": "engine/flight/desktop-bundle-f20f7be02d44deef.js",
+      "sha256": "f20f7be02d44deef69dec001d2e0a6eff504b76425adbb8d2b9872c869b91aa4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-9a6738970f3f7e52.js",
+      "sha256": "9a6738970f3f7e52ed393cd653497fbe265d18a84197d36f5b62b153f29a4768"
+    },
+    {
+      "path": "engine/instruments/desktop-bundle-bed36d6d6c58ca8c.js",
+      "sha256": "bed36d6d6c58ca8c7ccdd28641f17e4cf3a5785827e9938c3eecd2a32368d797"
+    },
+    {
+      "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
+      "sha256": "8bfe051180cf5d3d43404a1984bbc9813e8aa4296665c180d7e1a72362edc5e9"
+    },
+    {
+      "path": "flight-controls-panel/desktop-bundle-89fa9686e7b22295.js",
+      "sha256": "89fa9686e7b222954c3f76ca8a29df5b7d4e27c358b6572ac1ad004b9876eef5"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-bda8390aa7ff14a9.js",
+      "sha256": "bda8390aa7ff14a94b0e4acb104c6495cbbddef586a91fe73ac8541d80a42b8b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-537a8dea68dc3b31.js",
+      "sha256": "537a8dea68dc3b3161f29ebd1629db3460d158e86af80091158b20556cabd5d1"
+    },
+    {
+      "path": "engine/interaction/desktop-bundle-8d871c35a9a7d215.js",
+      "sha256": "8d871c35a9a7d215939702ed6dafec5b8b605617b47f2e74f277e9f72885dc3f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-6dfd1ac03dc1e4ba.js",
+      "sha256": "6dfd1ac03dc1e4ba1a3bf8a196ddc1288b82e2f95661afc0c3929d58c3b63bc4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ded448778208b1e.js",
+      "sha256": "1ded448778208b1ec3bc841fded18e559d7c0531a9caa26146e0f54701397a1c"
+    }
+  ]
+}
