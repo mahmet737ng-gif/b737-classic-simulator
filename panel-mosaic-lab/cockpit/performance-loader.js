@@ -122,6 +122,7 @@
     if(!item.extent){
      if(overheadScale>0&&Number.isFinite(overheadScale)&&img.classList.contains('atlas-photo'))primeScale=overheadScale;
      else if(cdu&&img.matches('#cdu-stage img.base'))primeScale=1;
+     else if(startupScales&&img.parentElement?.classList.contains('fire-handle-control'))primeScale=fitRatio('pedestal');
      else if(startupScales&&img.parentElement?.classList.contains('texture-piece')){
       const region=img.closest('.region')?.dataset.region;
       primeScale=fitRatio(region);

@@ -1127,6 +1127,105 @@
         }
       ]
     },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_OFF.webp": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 956876,
+      "sourceSha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-384.webp",
+          "bytes": 21226,
+          "sha256": "0ab4823d3d4513f6cf1b1b22adf3c1f1fc3ab7f3adca0c8f8e9e8ec735f8ad42"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-768.webp",
+          "bytes": 73132,
+          "sha256": "3cbaa8ef694a1e50b32b580f759db86d9320638cb77ad2e8d7a8ad7621b63e20"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_APU_OFF.webp",
+          "bytes": 956876,
+          "sha256": "a5ee96933c71f39af1a15e40d89b5d784b28711ba7a2c2eda20dc1efa1f5b8f6",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_OFF.webp": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 998418,
+      "sourceSha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-384.webp",
+          "bytes": 20222,
+          "sha256": "0365b0bac1a0c0572f5c8b483e91e0bc0ceeb008f954fbc09b1105dcb2709ed1"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-768.webp",
+          "bytes": 76074,
+          "sha256": "601a34734caa6636cf1bc3ad266d2c1fb6c98b7e1ddb2fae58db5baffb5e8b96"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG1_OFF.webp",
+          "bytes": 998418,
+          "sha256": "25e6f1dba39bc0bdfc18ad748afa4332327166cad95c8cc6a523cb07a673e483",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_OFF.webp": {
+      "width": 1024,
+      "height": 1536,
+      "sourceBytes": 971974,
+      "sourceSha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252",
+      "levels": [
+        {
+          "width": 256,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-384.webp",
+          "bytes": 22144,
+          "sha256": "ddcd03a1cd546ce7fc38c7a286124510078871ea45eb6a73bc3118710912063d"
+        },
+        {
+          "width": 512,
+          "height": 768,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-768.webp",
+          "bytes": 76698,
+          "sha256": "4d837a15d0ca5792cbe4ef0b5f06d30a5e04b7b95ddf7d3f7d1339592454caa4"
+        },
+        {
+          "width": 1024,
+          "height": 1536,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles/FIRE_HANDEL_ENG2_OFF.webp",
+          "bytes": 971974,
+          "sha256": "d1a2676302a026cc141244b489521163597ae6b13d80e08395cb5483e2c26252",
+          "original": true
+        }
+      ]
+    },
     "panel-mosaic-lab/cockpit/assets/B737_Right_Main_Instruments_GPWS_TERRAIN_LEFT_V3.png": {
       "width": 918,
       "height": 1713,
@@ -1355,5 +1454,5 @@
     "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
   },
   "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
-  "version": "PERF-01331ee75775"
+  "version": "PERF-e66df4eb3e4e"
 }

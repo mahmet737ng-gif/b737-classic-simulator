@@ -10,9 +10,9 @@
   });
   return images.length>0&&images.every(img=>img.complete&&img.naturalWidth>0);
  }
- function imagesReady(root,selector){
+ function imagesReady(root,selector,minimum=1){
   const images=root?.querySelectorAll(selector);
-  return !!images?.length&&Array.from(images,img=>img.complete&&img.naturalWidth>0).every(Boolean);
+  return (images?.length||0)>=minimum&&Array.from(images,img=>img.complete&&img.naturalWidth>0).every(Boolean);
  }
  function inspectFull(w,profile,main=inspect(w,profile)){
   const d=w.document;
@@ -26,7 +26,7 @@
    result.pedestal=imagesReady(d,'#region-pedestal .texture-piece > img')&&
     w.B737ThrottlePositions?.mounted?.()===true&&
     d.querySelectorAll('#region-pedestal .engine-start-lever').length===2&&
-    !!d.querySelector('#region-pedestal .fire-hardware-layer');
+    imagesReady(d,'#region-pedestal .fire-handle-control > img',3);
    const eadiSeats=['CAPT','FO'];
    result.instruments=eadiSeats.every(seat=>
     Number(d.querySelector('[data-eadi-stage1-seat="'+seat+'"]')?.dataset.eadiPaintCount)>0&&

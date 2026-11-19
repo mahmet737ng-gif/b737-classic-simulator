@@ -13,6 +13,10 @@ paths={x['path'] for x in a['assets'].values() if Path(x['path']).suffix.lower()
 for x in spec['images']:
  paths.add(str((ROOT/'panel-mosaic-lab/all-overhead'/x['url']).resolve().relative_to(ROOT)))
 paths.add('assets/overhead.webp')
+# Unified lights the existing OFF artwork with CSS. Only this installed pose
+# is on the startup path, and the frozen originals stay the highest level.
+handle_dir='panel-mosaic-lab/assets/locked/2026-10-23/Switches/Fire_Handles'
+paths.update(f'{handle_dir}/FIRE_HANDEL_{unit}_OFF.webp' for unit in ['ENG1','ENG2','APU'])
 paths.update(['cdu-standalone-v6/assets/cdu-approved-unlit.png','panel-mosaic-lab/assets/locked/2026-10-23/B737_FLAP_9_ORIGINAL_BMP_EXTRACTED.png'])
 manifest={'schema':'b737.unified-performance.v1','images':{},'patches':{},'policy':'Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.'}
 for path in sorted(paths):
