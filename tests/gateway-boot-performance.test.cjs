@@ -29,6 +29,22 @@ function extract(from,to){
  assert.equal(queries,2,'Finished validation must not be cached (revocation remains immediate)');
  assert.equal(await authContext.check({cookies:{}}),false);
  assert.equal(queries,2,'Missing cookie must never query the database');
+ const packaged=new Map([['panel-mosaic-lab/cockpit/index.html',Buffer.from('compiled')]]);
+ const commit='a'.repeat(40),releaseContext={
+  fastRuntime:{sourceCommit:commit,bytes:packaged},require,setTimeout,clearTimeout,AbortController,
+  fetch:async url=>{releaseContext.urls.push(url);return {ok:false,status:403,body:{cancel:async()=>{}}};},
+  urls:[]
+ };
+ vm.runInNewContext(extract('function optimizedSource(','function repoAssetPath(')+
+  extract('async function upstreamFetch(','// Authorized-only, bounded')+
+  ';this.compiled=optimizedSource;this.fetchSource=upstreamFetch;',releaseContext);
+ assert.equal(releaseContext.compiled('panel-mosaic-lab/cockpit/index.html').toString(),'compiled');
+ assert.equal(releaseContext.urls.length,0,'Serving a release must never block on GitHub ref discovery');
+ await assert.rejects(()=>releaseContext.fetchSource('engine/test.js'),/403/);
+ assert.equal(releaseContext.urls.length,1,'A pinned dependency must not fall back to moving Pages');
+ assert.ok(releaseContext.urls[0].includes('/'+commit+'/engine/test.js'));
+ assert.equal(releaseContext.compiled('panel-mosaic-lab/cockpit/index.html').toString(),'compiled',
+  'GitHub 403 must not turn off the verified release');
  let downloads=0,finish;
  const downloadWait=new Promise(resolve=>{finish=resolve;});
  const ctx={

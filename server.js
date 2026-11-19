@@ -45,11 +45,11 @@ const fastRuntime=(()=>{
   if(manifest.schema!=='b737-unified-fast-runtime/1'||
    !/^[a-f0-9]{40}$/.test(manifest.sourceCommit)||
    !Array.isArray(manifest.files))throw Error('Invalid compiled-runtime manifest');
-  const bytes=new Map(),compressed=new Map();
+  const bytes=new Map(),compressed=new Map(),digests=new Map();
   for(const entry of manifest.files){
    const relative=entry.path;
    if(typeof relative!=='string'||relative.includes('..')||
-    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js)$/.test(relative)||
+    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webp|ttf|woff2)$/.test(relative)||
     !/^[a-f0-9]{64}$/.test(entry.sha256))
      throw Error('Invalid compiled-runtime resource path');
    const full=path.resolve(fastRuntimeDir,relative);
@@ -57,8 +57,9 @@ const fastRuntime=(()=>{
    const body=disk.readFileSync(full);
    if(crypto.createHash('sha256').update(body).digest('hex')!==entry.sha256)
     throw Error('Invalid compiled-runtime digest: '+relative);
-   bytes.set(relative,body);
-   if(relative.endsWith('.js')){
+   if(bytes.has(relative))throw Error('Duplicate compiled-runtime resource');
+   bytes.set(relative,body);digests.set(relative,entry.sha256);
+   if(/\.(?:js|cjs|css|json)$/.test(relative)){
     compressed.set(relative,zlib.brotliCompressSync(body,{
      params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
     }));
@@ -68,52 +69,24 @@ const fastRuntime=(()=>{
    !bytes.has('panel-mosaic-lab/cockpit/overhead-stage.html'))
     throw Error('Compiled cockpit or overhead entry missing');
   console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
-  return {sourceCommit:manifest.sourceCommit,bytes,compressed};
+  return {sourceCommit:manifest.sourceCommit,bytes,compressed,digests};
  } catch(error){
-  if(error.code!=='ENOENT')console.warn('UNIFIED FAST RUNTIME DISABLED: '+error.message);
-  return null;
+  if(error.code==='ENOENT'&&!require('node:fs').existsSync(fastRuntimeDir))return null;
+  throw Error('Invalid Unified release', {cause:error});
  }
 })();
-let mainHeadChecked=0,mainHeadValue=null,mainHeadInFlight=null;
-async function fastRuntimeCurrent(){
- if(!fastRuntime)return false;
- if(Date.now()-mainHeadChecked<180000)return mainHeadValue===fastRuntime.sourceCommit;
- if(mainHeadInFlight)return mainHeadInFlight;
- mainHeadInFlight=(async()=>{
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),4500);
-  try {
-   const result=await fetch('https://api.github.com/repos/mahmet737ng-gif/b737-classic-simulator/git/ref/heads/main',{
-    headers:{'Accept':'application/vnd.github+json','User-Agent':'ATA24-unified-fast-runtime'},
-    signal:controller.signal,cache:'no-store'});
-   if(!result.ok)throw Error('GitHub ref '+result.status);
-   const value=(await result.json()).object?.sha;
-   mainHeadValue=/^[a-f0-9]{40}$/.test(value||'')?value:null;
-  }catch(error){
-   // Never serve an unverified stale compilation after an update/network loss.
-   mainHeadValue=null;
-   console.warn('UNIFIED FAST REF CHECK: '+error.message);
-  }finally{
-   clearTimeout(timeout);
-   mainHeadChecked=Date.now();
-   mainHeadInFlight=null;
-  }
-  return mainHeadValue===fastRuntime.sourceCommit;
- })();
- return mainHeadInFlight;
+// Deployment activation, after manifest and digest validation, is the release
+// boundary. Browser navigation must never consult the moving GitHub ref.
+function optimizedSource(relative){
+ return fastRuntime?.bytes.get(relative);
 }
-async function optimizedSource(relative){
- if(!fastRuntime?.bytes.has(relative))return null;
- if(relative.endsWith('.html')&&!(await fastRuntimeCurrent()))return null;
- return fastRuntime.bytes.get(relative);
-}
-
 
 /* The protected guest is a live mirror of the original main-branch cockpit.
  * Railway authenticates and serves the same source URLs under its own origin.
  * No duplicated/stale overhead code or artwork is maintained here. */
 const {Readable} = require('node:stream');
-const GITHUB_RAW = 'https://raw.githubusercontent.com/mahmet737ng-gif/b737-classic-simulator/main/';
+const GITHUB_RAW_ROOT = 'https://raw.githubusercontent.com/mahmet737ng-gif/b737-classic-simulator/';
+const GITHUB_RAW = GITHUB_RAW_ROOT+(fastRuntime?.sourceCommit||'main')+'/';
 const GITHUB_PAGES = 'https://mahmet737ng-gif.github.io/b737-classic-simulator/';
 const UPSTREAM_TIMEOUT_MS = 20000;
 const ALLOWED_SOURCE_ROOTS = new Set([
@@ -165,9 +138,11 @@ function repoAssetPath(urlPath) {
   return rel;
 }
 async function upstreamFetch(relative) {
-  // Use source on main, not a second copied cockpit. Pages is a fallback for
-  // deployed generated assets absent from the checked-in main branch.
-  for (const origin of [GITHUB_RAW,GITHUB_PAGES]) {
+  // Never resolve a release dependency against another revision. Generated
+  // diagnostic Pages remain available by their explicit entry points.
+  const pagesDiagnostic=/^panel-mosaic-lab\/cockpit\/(?:unified-(?:diagnostic-v6|diagnostic-static-v6|light-overhead-v10|no-cdu-v10|composite-test|static-controls-test|efis-v3)\.html|overhead-(?:real-f-in-unified-v10|composite-stage|static-controls-stage)\.html|(?:runtime-build\.json|startup-benchmark\.json))$/.test(relative);
+  const origins=!fastRuntime||pagesDiagnostic?[GITHUB_RAW,GITHUB_PAGES]:[GITHUB_RAW];
+  for (const origin of origins) {
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),UPSTREAM_TIMEOUT_MS);
     try {
@@ -178,7 +153,7 @@ async function upstreamFetch(relative) {
       if(response.ok)return response;
       await response.body?.cancel();
       if(response.status!==404)throw Error('GitHub upstream returned '+response.status);
-    }catch(e){clearTimeout(timer);if(origin===GITHUB_PAGES)throw e;}
+    }catch(e){clearTimeout(timer);if(origin===origins.at(-1))throw e;}
   }
   return null;
 }
@@ -194,7 +169,7 @@ async function cachedSourceText(relative,requestUrl) {
   const parsed=new URL(requestUrl,'https://gateway.invalid');
   const version=parsed.searchParams.get('v');
   if(!version || parsed.searchParams.has('ts'))return null;
-  const key=relative+'?v='+version+'@'+(mainHeadValue||'unknown');
+  const key=relative+'?v='+version+'@'+(typeof fastRuntime!=='undefined'&&fastRuntime?.sourceCommit||'main');
   const current=sourceCache.get(key);
   if(current){
     if(current.expires>Date.now()){
@@ -226,7 +201,7 @@ async function cachedSourceText(relative,requestUrl) {
 // already-authenticated cockpit's compiled entry points. NO NAVDATA, HTML or
 // protected user/session data is prefetched. Does not block server health.
 async function prewarmFastRuntime(){
- if(!(await fastRuntimeCurrent()))return;
+ if(!fastRuntime)return;
  const files=new Map(),origin='https://warm.invalid/';
  for(const entry of ['panel-mosaic-lab/cockpit/index.html','panel-mosaic-lab/cockpit/overhead-stage.html']){
   const markup=fastRuntime.bytes.get(entry)?.toString('utf8');
@@ -276,18 +251,24 @@ function transformCockpitHTML(content) {
 }
 async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false}={}){
  const ext=path.posix.extname(relative).toLowerCase();
- if(ext==='.js'){
-  res.setHeader('Cache-Control','private, max-age=31536000, immutable');
+ if(ext!=='.html'){
+  const immutable=/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative);
+  res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':'private, max-age=0, must-revalidate');
   res.setHeader('Vary','Accept-Encoding');
+  const brotli=fastRuntime.compressed.get(relative);
   const accepts=String(req.headers['accept-encoding']||'');
-  const brotli=fastRuntime?.compressed.get(relative);
   const encode=/\bbr\b/.test(accepts)&&brotli;
+  const etag='"'+fastRuntime.digests.get(relative)+(encode?'-br':'')+'"';
+  res.setHeader('ETag',etag);
+  if(req.headers['if-none-match']===etag){res.writeHead(304);res.end();return;}
   if(encode)res.setHeader('Content-Encoding','br');
-  res.writeHead(200,{'Content-Type':PROXY_MIME['.js']});
+  res.writeHead(200,{'Content-Type':PROXY_MIME[ext]});
   if(req.method==='HEAD')res.end();else res.end(encode?brotli:bytes);
   return;
  }
  const mime='text/html; charset=utf-8';
+ res.setHeader('X-Unified-Release',fastRuntime.sourceCommit);
+ res.setHeader('Server-Timing','unified-compiled;desc="'+fastRuntime.sourceCommit+'"');
  res.setHeader('Content-Security-Policy',
   "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; "+
   "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; "+
@@ -311,7 +292,7 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();
-  const compiled=await optimizedSource(relative);
+  const compiled=optimizedSource(relative);
   if(compiled){
     // Content-addressed JS bundles and page HTML pass through the unchanged
     // CSP, session injection, MIME and security-header code below.
@@ -366,6 +347,7 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
       "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
       "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
     const html=transformCockpitHTML(await response.text());
+    res.setHeader('Server-Timing','unified-source;desc="uncompiled"');
     res.setHeader('Cache-Control','private, no-store');
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
     res.end(html);return;
