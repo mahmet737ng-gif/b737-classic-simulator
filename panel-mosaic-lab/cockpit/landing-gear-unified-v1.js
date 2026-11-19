@@ -55,6 +55,7 @@
       audioGain.connect(audioContext.destination);
       audioOsc=audioContext.createOscillator();audioOsc.type='sawtooth';
       audioOsc.frequency.value=450;audioOsc.connect(audioGain);audioOsc.start();
+      audioGain.gain.value=gearHorn?0.022:0;
     }catch(err){audioContext=null;console.warn('Training gear horn unavailable',err);}
   }
   function sound(on){
@@ -66,7 +67,7 @@
   }
 
   function publish(force=false){
-    if(track){track.dataset.detent=state.lever;track.setAttribute('aria-label','Landing gear selector '+state.lever+'. Tap or drag: UP, OFF, DOWN.');
+    if(track){track.dataset.detent=state.lever;track.setAttribute('aria-valuenow',String({UP:0,OFF:1,DN:2}[state.lever]));track.setAttribute('aria-label','Landing gear selector '+state.lever+'. Tap or drag: UP, OFF, DOWN.');
       if(handle){handle.style.backgroundPosition={UP:'0% 50%',OFF:'50% 50%',DN:'100% 50%'}[state.lever];
         handle.style.top={UP:'0px',OFF:'145px',DN:'292px'}[state.lever];}}
     const l=api.core.lamps(state);
@@ -78,7 +79,8 @@
       selectedTarget:state.target,systemAPsi:hydPsi,onGround:ground,
       normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=2200:null,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
-    const signature=JSON.stringify(detail);
+    const signature=JSON.stringify({lever:state.lever,gear:state.gear,target:state.target,
+      onGround:ground,hydraulicAvailable:detail.normalHydraulicAvailable});
     if(!force&&signature===lastPublished)return;
     lastPublished=signature;
     const patch={gearLever:state.lever,gearNose:state.gear.nose,gearLeft:state.gear.left,gearRight:state.gear.right};
@@ -161,7 +163,7 @@
   root.addEventListener('load',mount);
   if(doc.readyState!=='loading')mount();
   root.addEventListener('b737:unified-ecu-observation',()=>{
-    const changed=source();if(ticker){advance();return;}
+    const changed=source();if(ticker)return;
     if(changed.onGround!==null&&state.lever==='UP')publish();
   });
   root.addEventListener('b737:flight-scenario-state',e=>{
@@ -192,7 +194,8 @@
     if(lever==='UP'&&info.onGround!==false&&info.lockOverride!==true)
       return {...s,lastReject:'GROUND_SAFETY_INTERLOCK'};
     const target=lever==='UP'?'UP':lever==='DN'?'DOWN':null;
-    return {...s,lever,target,lastReject:null,elapsed:{...s.elapsed}};
+    return {...s,lever,target,lastReject:null,
+      elapsed:target===s.target?{...s.elapsed}:{nose:0,left:0,right:0}};
   }
   function step(s,dt,psi){
     if(!Number.isFinite(dt)||dt<0)throw Error('Valid elapsed seconds required');
