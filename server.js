@@ -5,6 +5,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const zlib = require('node:zlib');
+const {performance} = require('node:perf_hooks');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
@@ -37,6 +38,16 @@ const runtimeFiles = new Set(require('./runtime/manifest.json'));
  * used for GitHub Pages. The protected Railway session check still precedes
  * EVERY response. Only public JS and HTML from the main simulator are mirrored;
  * owner photographs and all private NAVDATA remain in their original routes. */
+// A sibling directory keeps these three documents outside the legacy cockpit
+// worker's scope. Their original relative asset bases and same-origin session
+// remain valid. Only these documents are routed through the new entry.
+const cockpitSource='panel-mosaic-lab/cockpit/';
+const directPath='/panel-mosaic-lab/unified/';
+const directDocuments=new Map([
+ [directPath,cockpitSource+'index.html'],
+ [directPath+'overhead-stage.html',cockpitSource+'overhead-stage.html'],
+ [directPath+'cdu-stage.html',cockpitSource+'cdu-stage.html']
+]);
 const fastRuntimeDir=path.join(runtimeDir,'fast-unified');
 const fastRuntime=(()=>{
  try {
@@ -49,7 +60,7 @@ const fastRuntime=(()=>{
   for(const entry of manifest.files){
    const relative=entry.path;
    if(typeof relative!=='string'||relative.includes('..')||
-    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webp|ttf|woff2)$/.test(relative)||
+    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|ttf|woff2)$/.test(relative)||
     !/^[a-f0-9]{64}$/.test(entry.sha256))
      throw Error('Invalid compiled-runtime resource path');
    const full=path.resolve(fastRuntimeDir,relative);
@@ -230,15 +241,49 @@ async function prewarmFastRuntime(){
  }));
  console.log('UNIFIED FAST PREWARM: '+ok+' source JS/CSS ready, '+errors+' unavailable');
 }
-function transformCockpitHTML(content) {
-  // Only presentation changes: preserve all original ordered scripts and code.
+function directBootSetup(){
+ const layout=fastRuntime.bytes.get(cockpitSource+'assembly.json');
+ if(!layout)return '';
+ const assembly=JSON.parse(layout.toString('utf8'));
+ for(const entry of [...assembly.regions,...assembly.embeddedInstruments]){
+  const embedded=entry.embeddedUrl;
+  if(typeof embedded==='string'&&/^\.\/(?:overhead|cdu)-stage\.html\?/.test(embedded))
+   entry.embeddedUrl=directPath+embedded.slice(2);
+ }
+ const previewManifest=fastRuntime.bytes.get(cockpitSource+'performance/manifest.json');
+ const photoRegistry=fastRuntime.bytes.get(cockpitSource+'panel-photo-registry.v1.json');
+ const images=previewManifest?JSON.parse(previewManifest).images:{};
+ const photos=photoRegistry?JSON.parse(photoRegistry).panels:{};
+ const preview=filename=>{
+  const entry=images['panel-mosaic-lab/assets/locked/2026-10-23/'+filename];
+  const image=entry?.levels.find(item=>item.extent===384&&!item.original)?.url;
+  return fastRuntime.bytes.has(image)?'/'+image:undefined;
+ };
+ const photo=key=>{
+  const image=cockpitSource+'assets/'+photos[key]?.file;
+  return fastRuntime.bytes.has(image)?'/'+image+'?v=OH21-DEDICATED-20261106':undefined;
+ };
+ const setup=JSON.stringify({
+  assembly,
+  previews:{
+   aircon400:preview('Boeing-Style Environmental Control Panel.png'),
+   dcpcs:preview('DCPCS_Background_Owner.png'),
+   oh21_400:photo('OH21_400'),oh21_300500:photo('OH21_300500')
+  },
+  lamps:fastRuntime.bytes.has(cockpitSource+'performance/boot-lamp-sources.json')
+ });
+ return '<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
+}
+function transformCockpitHTML(content,{direct=false}={}) {
+  // Preserve the original ordered simulator scripts. Direct mode embeds the
+  // release layout and starts the same documents under the sibling route.
   // Start an immediate same-origin session renewal BEFORE the hundreds of
   // original deferred cockpit assets. If a cached page survives expiry,
   // show login rather than leaving a partially loaded white cockpit.
   const preflight='<script>(function(){fetch("/api/pulse",{method:"POST",credentials:"same-origin",cache:"no-store"})'+
     '.then(function(r){if(r.status===401)location.replace("/login?e=expired");})'+
     '.catch(function(){})})();</script>';
-  const injection = '<base href="/panel-mosaic-lab/cockpit/">'+preflight+
+  const injection = '<base href="/panel-mosaic-lab/cockpit/">'+(direct?directBootSetup():'')+preflight+
     '<meta name="unified-navdata-seed" content="/api/navdata/local-reference">'+
     '<link rel="stylesheet" href="/static/guest-cockpit.css">'+
     '<script src="/static/guest-cockpit.js" defer></script>'+
@@ -249,7 +294,23 @@ function transformCockpitHTML(content) {
   result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
   return result;
 }
-async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false}={}){
+// No session-specific values are embedded in the markup. Build each
+// variant once per process and reuse the exact compressed representation.
+const compiledDocuments=new Map();
+function compiledDocument(relative,bytes,cockpitDocument,direct){
+ const key=direct?'direct:'+relative:relative;
+ if(!compiledDocuments.has(key)){
+  const original=bytes.toString('utf8');
+  const html=cockpitDocument?transformCockpitHTML(original,{direct}):
+   original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+  const brotli=zlib.brotliCompressSync(Buffer.from(html),{
+   params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
+  });
+  compiledDocuments.set(key,{html,brotli});
+ }
+ return compiledDocuments.get(key);
+}
+async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument=false,direct=false,authMs}={}){
  const ext=path.posix.extname(relative).toLowerCase();
  if(ext!=='.html'){
   const immutable=/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative);
@@ -268,16 +329,17 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
  }
  const mime='text/html; charset=utf-8';
  res.setHeader('X-Unified-Release',fastRuntime.sourceCommit);
- res.setHeader('Server-Timing','unified-compiled;desc="'+fastRuntime.sourceCommit+'"');
+ const timing=['unified-compiled;desc="'+fastRuntime.sourceCommit+'"'];
+ if(direct)timing.push('unified-direct');
+ if(Number.isFinite(authMs))timing.push('gateway-auth;dur='+authMs.toFixed(1));
+ res.setHeader('Server-Timing',timing.join(', '));
  res.setHeader('Content-Security-Policy',
   "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; "+
   "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; "+
   "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
   "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
   "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
- const original=bytes.toString('utf8');
- const html=cockpitDocument?transformCockpitHTML(original):
-  original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+ const {html,brotli}=compiledDocument(relative,bytes,cockpitDocument,direct);
  res.setHeader('Cache-Control','private, no-store');
  res.setHeader('Vary','Accept-Encoding');
  const accepts=String(req.headers['accept-encoding']||'');
@@ -285,18 +347,15 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
  if(encode)res.setHeader('Content-Encoding','br');
  res.writeHead(200,{'Content-Type':mime});
  if(req.method==='HEAD'){res.end();return;}
- if(encode)res.end(zlib.brotliCompressSync(Buffer.from(html),{
-  params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
- }));
- else res.end(html);
+ res.end(encode?brotli:html);
 }
-async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
+async function serveGitHubSource(req,res,relative,{cockpitDocument=false,authMs}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();
   const compiled=optimizedSource(relative);
   if(compiled){
     // Content-addressed JS bundles and page HTML pass through the unchanged
     // CSP, session injection, MIME and security-header code below.
-    return serveFastCompiledResponse(req,res,relative,compiled,{cockpitDocument});
+    return serveFastCompiledResponse(req,res,relative,compiled,{cockpitDocument,authMs});
   }
   if(req.method==='GET'&&(textExt==='.js'||textExt==='.css')){
     try{
@@ -591,7 +650,9 @@ async function handle(req,res) {
       '<script>location.replace("/navdata-relay?nonce='+nonce+'");</script></body></html>');
     return;
   }
+  const authStarted=performance.now();
   const ok=await authorized(req);
+  const authMs=performance.now()-authStarted;
   if (!ok) {
     // Redirect only actual document navigations. Serving login HTML as a
     // redirected .js/.css/.image response previously produced a blank page
@@ -728,15 +789,21 @@ async function handle(req,res) {
     res.end(JSON.stringify(body));return;
   }
   if ((req.method==='GET' || req.method==='HEAD') && url.pathname==='/') {
-    // Keep the original cockpit's relative location.href resolution unchanged.
-    // The full GitHub cockpit is served under the Railway origin.
-    redirect(res,'/panel-mosaic-lab/cockpit/');return;
+    redirect(res,fastRuntime?directPath:'/panel-mosaic-lab/cockpit/');return;
   }
   if (req.method==='GET' || req.method==='HEAD') {
+    const document=directDocuments.get(url.pathname);
+    const compiled=document&&optimizedSource(document);
+    if(compiled){
+      await serveFastCompiledResponse(req,res,document,compiled,{
+       cockpitDocument:document===cockpitSource+'index.html',direct:true,authMs
+      });
+      return;
+    }
     const sourcePath=repoAssetPath(url.pathname);
     if(sourcePath) {
       await serveGitHubSource(req,res,sourcePath,{
-        cockpitDocument:sourcePath==='panel-mosaic-lab/cockpit/index.html'
+        cockpitDocument:sourcePath==='panel-mosaic-lab/cockpit/index.html',authMs
       });
       return;
     }
@@ -801,6 +868,16 @@ async function start() {
       console.log('Private CDU/SG NAVDATA READY: source status 200; OIII SID 33; OISS APP 17; source only');
     }else console.warn('Private CDU/SG NAVDATA pending import; status',status.status);
   }catch(error){console.error('Private CDU/SG NAVDATA validation failed:',String(error.message||error));}
+  if(fastRuntime){
+    for(const relative of directDocuments.values()){
+      const main=relative===cockpitSource+'index.html';
+      const bytes=optimizedSource(relative);
+      if(bytes){
+        compiledDocument(relative,bytes,main,true);
+        compiledDocument(relative,bytes,main,false);
+      }
+    }
+  }
   http.createServer((req,res)=>handle(req,res).catch(e=>{
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
