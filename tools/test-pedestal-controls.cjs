@@ -68,6 +68,11 @@ fs.mkdirSync(output,{recursive:true});
   const ga=await page.evaluate(()=>({mode:window.B737UnifiedTOGACh4V1.getState(),buttons:window.pedestalPresses}));
   assert.equal(ga.mode.pitchMode,'TO/GA');assert.equal(ga.mode.thrustDemand,'GA_REDUCED');
   assert.deepEqual(ga.buttons,['THROTTLE_1','THROTTLE_2']);
+  await page.waitForFunction(()=>Object.values(window.B737ISNCockpitV1.getPropulsionSnapshot().engines)
+   .some(e=>e.running&&e.throttle>=.82&&e.n1Percent>=80),null,{timeout:45000});
+  await quadrant.getByRole('button',{name:'Press TO/GA switch on throttle 1'}).click();
+  await page.waitForFunction(()=>window.B737UnifiedTOGACh4V1.getState().thrustDemand==='GA_FULL'&&
+   window.B737ThrottlePositions.get(1)===100&&window.B737ThrottlePositions.get(2)===100);
   await page.evaluate(()=>window.B737UnifiedFlightScenarioV1.stop());
   const selector=fire.getByRole('button',{name:'ENG2 OVHT DET B',exact:true});
   await selector.click();

@@ -63,6 +63,9 @@ for(const [name,p,ac,dc]of [['L','P18-2','D4','D5'],['R','P6-1','D11','D12']]){
 for(const [name,pos]of Object.entries({landingOutboardR:'A12',landingOutboardL:'A13',landingInboardR:'A14',landingInboardL:'A15',wingScan:'B13',strobe:'B14',position:'B15',beaconUpper:'C16',beaconLower:'C17',taxi:'D15',turnoffR:'D16',turnoffL:'D17',seatBelts:'A8',passengerSigns:'A10',emergencyExit:'A11'}))one('lights.'+name,'P18-3',pos);
 for(const [name,pos]of Object.entries({airCond:'D8',antiIce:'D9',fuel:'D10',annunciator1:'D11',annunciatorBattery:'D12',masterCaution:'D13',section4:'D14',section5:'D15',section6:'D16'}))one('warning.'+name,'P6-3',pos,'INDICATION');
 one('warning.masterCautionControl','P6-2','A4','CONTROL');
+one('lights.masterDimBattery','P6-3','B13','INDICATION');
+one('lights.masterDimDC1','P6-3','B14','INDICATION');
+one('lights.masterDimDC2','P6-3','B15','INDICATION');
 one('warning.masterFireControl','P6-2','B23','CONTROL');
 one('warning.aural','P6-2','D22','AUDIO');
 one('oxygen.indicator','P18-3','F6','INDICATION');

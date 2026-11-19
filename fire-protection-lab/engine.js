@@ -74,7 +74,8 @@ function evaluate(s){
  FIRE_BELL:cb('warning.aural')&&signature.length>0&&!acknowledged,
  MASTER_FIRE_WARN:signature.length>0&&!acknowledged,
  APU_GROUND_HORN:s.power.onGround&&activeFire.APU&&!acknowledged,
- APU_GROUND_LIGHT:s.power.onGround&&activeFire.APU&&!acknowledged,
+ APU_GROUND_LIGHT:s.power.onGround&&activeFire.APU,
+ APU_GROUND_LIGHT_FLASHING:s.power.onGround&&activeFire.APU&&!acknowledged,
  MASTER_CAUTION:caution,OVHT_DET:caution
  };
  const ext=s.extTest||s.test;

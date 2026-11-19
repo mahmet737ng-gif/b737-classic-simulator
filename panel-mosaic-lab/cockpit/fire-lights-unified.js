@@ -41,7 +41,7 @@ function bindPushTest(node,id){
  });
  node.addEventListener('blur',()=>releaseLamp(id));
 }
-let external=null, visualTest=false, attached=false, lastSystemLamps='';
+let external=null, visualTest=false, attached=false, lastSystemLamps='',lampTestPower=false;
 const ids=new Set(model.SLOTS.map(s=>s.id));
 function systemIndications(){
  const computed=unit?.evaluate()?.indications||{};
@@ -56,7 +56,7 @@ function systemIndications(){
 function current(){
  const out=systemIndications();
  if(visualTest)for(const k of Object.keys(out))out[k]=true;
- for(const id of pressed)out[id]=true;
+ if(lampTestPower)for(const id of pressed)out[id]=true;
  return out;
 }
 function draw(){
@@ -175,12 +175,18 @@ function syncPower(force=false){
  const network=win.B737UnifiedElectricalLive?.snapshot?.(),nodes=network?.nodes;
  const failed=win.B737UnifiedBusFailureInjectionV1?.live;
  const feed=(id,bus,volts)=>nodes?.[id]?.powered===true&&!failed?.isUnavailable(bus,volts);
+ // The local lamp push energizes the test filaments through the master dim/test
+ // system (LAN 26-20, figures 29/30). Its supply is independent of squib continuity.
+ const cb=win.B737UnifiedCB;
+ const testSupply=[['BATTERY_BUS','battery','lights.masterDimBattery'],['DC_1','dc1','lights.masterDimDC1'],
+  ['DC_2','dc2','lights.masterDimDC2']].some(([id,bus,circuit])=>feed(id,bus,'28VDC')&&cb?.available(circuit)!==false);
+ const testPowerChanged=lampTestPower!==testSupply;lampTestPower=testSupply;
  const flight=win.B737UnifiedFlightScenarioV1;
  const onGround=flight?.getDiagnostics?.()?.active===true?flight.getState()?.airborne!==true:network?.controls?.onGround!==false;
  const power={batteryBus:feed('BATTERY_BUS','battery','28VDC'),hotBatteryBus:feed('HOT_BATTERY_BUS','hotBattery','28VDC'),
   acTransfer1:feed('TRANSFER_1','transfer1','115VAC'),onGround};
  const prior=unit.getState().power;
- if(force||Object.keys(power).some(k=>prior[k]!==power[k])){
+ if(force||testPowerChanged||Object.keys(power).some(k=>prior[k]!==power[k])){
   advanceClock();unit.dispatch({type:'SYNC_POWER',power});draw();armClock();
  }
 }
@@ -195,7 +201,7 @@ win.addEventListener('b737:cockpit-mounted',attach);
 win.document.addEventListener('DOMContentLoaded',attach,{once:true});
 win.addEventListener('load',attach,{once:true});
 win.addEventListener('b737:visual-test',e=>{visualTest=Boolean(e.detail?.active);draw();});
-win.addEventListener('b737:cb-state-change',()=>{advanceClock();draw();armClock();});
+win.addEventListener('b737:cb-state-change',()=>syncPower(true));
 win.addEventListener('b737:fire-protection-state',e=>{if(e.detail?.indications&&typeof e.detail.indications==='object'){external={...e.detail.indications};draw();}});
 if(win.document.readyState==='complete')attach();
 win.B737UnifiedFireLights=Object.freeze({
