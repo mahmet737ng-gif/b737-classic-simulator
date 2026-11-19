@@ -45,9 +45,19 @@
  }
  function image(asset,alt){const img=document.createElement('img');window.B737ImageLoader.assign(img,asset.url);img.alt=alt;img.draggable=false;img.decoding='async';img.onload=()=>{loaded.add(asset.path);failed.delete(asset.path);assetStatus();};img.onerror=()=>{failed.add(asset.path);assetStatus();};return img;}
  function select(region,p){focused=region.id;const a=assembly.assets[p.asset];document.querySelectorAll('.texture-piece').forEach(n=>n.classList.toggle('selected',n.dataset.piece===p.id));byId('selectionTitle').textContent=p.label;byId('selectionDescription').textContent=p.referenceOnly?'Existing upper pedestal source reference':'Uploaded original photo · no source edits or cropping';byId('selectionSize').textContent=a.dimensions.join(' × ')+' px';byId('originalLink').href=a.url;byId('originalLink').hidden=false;}
+ // The original early-Overhead prepaint wins. Only a failed early mount
+ // uses this conservative recovery path, retaining every owner LEDEV port.
+ function fallbackOverhead(layout){
+  const region=document.createElement('section'),overheadFrame=document.createElement('iframe');
+  overheadFrame.id='overheadFrame';
+  overheadFrame.title='Interactive Overhead LGT-0003';
+  overheadFrame.src=layout.embeddedUrl+'&photoInput=PHOTO-INPUT-0001&ledev=LEDEV-0006&lelogic=LEDEV-STAGED-V1&aspObs=ASP-OBS-CENTER-0005-FACE&pmc=PMC-GLASS-0004';
+  region.append(overheadFrame);
+  return region;
+ }
  function mount(){
   Object.assign(scene.style,{width:assembly.canvas.width+'px',height:assembly.canvas.height+'px'});
-  for(const r of assembly.regions){const region=r.id==='overhead'?window.B737PrepareOverhead(r):document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
+  for(const r of assembly.regions){const region=r.id==='overhead'?(window.B737PrepareOverhead?.(r)||fallbackOverhead(r)):document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
    if(r.id==='overhead'){
     frame=region.querySelector('iframe');
     region.style.visibility='';
