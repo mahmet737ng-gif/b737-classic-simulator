@@ -100,7 +100,7 @@
   // than scanning/copying every resource while the rest of the cockpit starts.
   window.addEventListener('b737:unified-usable',()=>{
    const out=document.getElementById('performanceStats');
-   navigator.serviceWorker.register('./sw.js?v=PERF-0004',{scope:'./',updateViaCache:'none'})
+   navigator.serviceWorker.register('./sw.js?v=PERF-0005',{scope:'./',updateViaCache:'none'})
     .then(()=>navigator.serviceWorker.ready)
     .then(()=>{if(out)out.dataset.cache='ready';})
     .catch(()=>{if(out)out.dataset.cache='unavailable';});
