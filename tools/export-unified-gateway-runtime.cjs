@@ -27,7 +27,7 @@ const filesToPublish=new Map([
 ]);
 const origin='https://release.invalid/';
 function add(relative){
- if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webp|ttf|woff2)$/.test(relative)||relative.includes('..'))
+ if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|ttf|woff2)$/.test(relative)||relative.includes('..'))
   throw Error('Bad release resource path '+relative);
  if(filesToPublish.has(relative))return;
  const bytes=fs.readFileSync(path.join(root,relative));
@@ -51,6 +51,10 @@ for(const relative of [cockpit+'index.html',cockpit+'overhead-stage.html',cockpi
 }
 for(const relative of [
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
+ cockpit+'panel-photo-registry.v1.json',cockpit+'unified.webmanifest',cockpit+'performance/manifest.json',
+ cockpit+'assets/oh21-737-400-owner-20261030.q100.webp',
+ cockpit+'assets/oh21-737-300500-owner-20261030.q100.webp',
+ 'panel-mosaic-lab/lights-test/registry.json',
  cockpit+'performance/lossless/manifest.js',
  'panel-mosaic-lab/all-overhead/atlas-layout.json','panel-mosaic-lab/all-overhead/spec.json',
  'panel-mosaic-lab/upper-oh/geometry.json','panel-mosaic-lab/lights-reference-v2/manifest.json',
@@ -66,6 +70,18 @@ for(const image of Object.values(preview.images))
  for(const level of image.levels)
   if(!level.original&&level.extent<=768)add(level.url);
 for(const relative of Object.values(preview.patches))add(relative);
+// These exact SVG masters are converted into many differently fitted lamps
+// by the cockpit and Overhead. Send the source text once, compressed.
+const lights='panel-mosaic-lab/lights-reference-v2/';
+const lampManifest=JSON.parse(fs.readFileSync(path.join(root,lights,'manifest.json'),'utf8'));
+const lampAssets=new Set(lampManifest.masters.flatMap(master=>Object.values(master.assets)));
+const lampSources={};
+for(const asset of [...lampAssets].sort()){
+ if(!/^svg\/[A-Z0-9_]+\.svg$/.test(asset))throw Error('Bad lamp master path '+asset);
+ const filename=lights+asset;
+ lampSources['/'+filename]=fs.readFileSync(path.join(root,filename),'utf8');
+}
+filesToPublish.set(cockpit+'performance/boot-lamp-sources.json',JSON.stringify(lampSources));
 const entries=[...filesToPublish];
 const totalBytes=entries.reduce((sum,[,data])=>sum+Buffer.byteLength(data),0);
 if(totalBytes>20*1024*1024)throw Error('Unified boot release exceeds the 20 MiB package budget');

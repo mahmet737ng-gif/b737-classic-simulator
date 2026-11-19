@@ -10,6 +10,8 @@ let disabled=q.get('socketFit')==='0';
 try{if(parent!==win)disabled=disabled||new URLSearchParams(parent.location.search).get('socketFit')==='0';}catch(_){}
 if(disabled)return;
 const script=document.currentScript.src,root=new URL('../',script);
+let bootSources;
+try{bootSources=window.top.B737BootLampSources;}catch{}
 const photoPad=2.5,profiles=new WeakMap(),sourceCache=new Map(),derived=new Map();
 const errors=[],groups={DCPCS:0,CPCS:0,OH20_400:0,OH21_400:0};
 let manifest=null,ready=false,scheduled=false,scans=0,changed=0;
@@ -106,11 +108,18 @@ async function getFace(cfg){
  if(derived.has(key))return derived.get(key);
  const url=new URL(source,new URL('lights-reference-v2/',root));
  if(!sourceCache.has(url.href)){
-  const r=await fetch(url,{cache:'force-cache'});
-  if(!r.ok)throw Error('Missing master '+url.href);
-  sourceCache.set(url.href,await r.text());
+  const load=(async()=>{
+   const packed=await bootSources;
+   if(packed&&Object.hasOwn(packed,url.pathname))return packed[url.pathname];
+   const r=await fetch(url,{cache:'force-cache'});
+   if(!r.ok)throw Error('Missing master '+url.href);
+   return r.text();
+  })().catch(error=>{sourceCache.delete(url.href);throw error;});
+  sourceCache.set(url.href,load);
  }
- const xml=makeSVG(sourceCache.get(url.href),aspect,cfg.lines);
+ const svgText=await sourceCache.get(url.href);
+ if(derived.has(key))return derived.get(key);
+ const xml=makeSVG(svgText,aspect,cfg.lines);
  const blob=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml'}));
  derived.set(key,blob);return blob;
 }

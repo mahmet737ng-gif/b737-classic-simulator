@@ -28,8 +28,14 @@
    downloadMs:round(e.responseStart?e.responseEnd-e.responseStart:null),
    transferredBytes:e.transferSize,bodyBytes:e.encodedBodySize,status,
    serviceWorker:e.workerStart>0,cache:e.deliveryType||undefined,
-   delivery:e.serverTiming?.filter(item=>item.name==='unified-compiled'||item.name==='unified-source')
-    .map(item=>({mode:item.name,release:item.description}))
+   network:e.entryType==='navigation'?{
+    protocol:e.nextHopProtocol,workerStartMs:round(e.workerStart),
+    fetchStartMs:round(e.fetchStart),requestStartMs:round(e.requestStart),
+    firstByteMs:round(e.responseStart),dnsMs:round(e.domainLookupEnd-e.domainLookupStart),
+    connectMs:round(e.connectEnd-e.connectStart),redirects:e.redirectCount
+   }:undefined,
+   delivery:e.serverTiming?.filter(item=>['unified-compiled','unified-source','unified-direct','gateway-auth'].includes(item.name))
+    .map(item=>({mode:item.name,release:item.description||undefined,durationMs:item.duration||undefined}))
   });
  }
  function monitor(win,frame){

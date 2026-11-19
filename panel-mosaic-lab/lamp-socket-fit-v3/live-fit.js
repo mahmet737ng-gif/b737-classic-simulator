@@ -21,6 +21,8 @@ const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const maxPad=2.5;
 const pageScope=win.location.pathname.includes('/interactive-overhead/')||win.location.pathname.endsWith('/cockpit/overhead-stage.html')?'OH':'MP';
 const own=new Map(), records=new Map(), nodes=new Map(), pending=new Map();
+let bootSources;
+try{bootSources=win.top.B737BootLampSources;}catch{}
 const sourceCache=new Map(), blobURLs=new Map(), errors=[];
  // OH14 NOT ARMED glass is already in the immutable OH14 photograph.
  // Do not add a second framed SVG: lights.js owns emission-only lettering.
@@ -120,11 +122,19 @@ async function face(row,frame){
  if(blobURLs.has(faceKey))return {url:blobURLs.get(faceKey),shape,selector};
  const url=new URL(asset,masterRoot).href;
  if(!sourceCache.has(url)){
-  const r=await fetch(url,{cache:'force-cache'});
-  if(!r.ok)throw Error('Missing master SVG '+url);
-  sourceCache.set(url,await r.text());
+  const load=(async()=>{
+   const packed=await bootSources;
+   const pathname=new URL(url).pathname;
+   if(packed&&Object.hasOwn(packed,pathname))return packed[pathname];
+   const r=await fetch(url,{cache:'force-cache'});
+   if(!r.ok)throw Error('Missing master SVG '+url);
+   return r.text();
+  })().catch(error=>{sourceCache.delete(url);throw error;});
+  sourceCache.set(url,load);
  }
- const svg=shapeFit(sourceCache.get(url),shape,row.bank);
+ const source=await sourceCache.get(url);
+ if(blobURLs.has(faceKey))return {url:blobURLs.get(faceKey),shape,selector};
+ const svg=shapeFit(source,shape,row.bank);
  const blob=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
  blobURLs.set(faceKey,blob);
  return {url:blob,shape,selector};

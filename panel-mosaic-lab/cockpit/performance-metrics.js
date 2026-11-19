@@ -95,7 +95,7 @@
    requestAnimationFrame(frame);
   })
  });
- if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:'){
+ if(!window.B737GatewayBoot&&window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:'){
   // Register after first usable paint. Cache future requests on demand rather
   // than scanning/copying every resource while the rest of the cockpit starts.
   window.addEventListener('b737:unified-usable',()=>{
