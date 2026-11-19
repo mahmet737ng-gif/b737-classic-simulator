@@ -1,0 +1,193 @@
+/* Ordered visual-only stylesheet concatenation: no protected owner files. */
+/* BEGIN main-panel-seam-repair.css f617ae0d728bf082346f31cb5a1a595272ccac94 */
+/* Seam join only — the locked source images and all instrument positions stay untouched.
+ * Native 8px upper/24px lower cosmetic ribbon hides the source-photo doubling
+ * between ENGINE/STANDBY and F/O INNER. It cannot intercept a pointer event. */
+#region-main .main-panel-seam-repair{
+ position:absolute;inset:0;z-index:1;pointer-events:none;
+}
+#region-main .main-panel-seam-strip{
+ display:block;position:absolute;box-sizing:border-box;pointer-events:none;
+ border:none;border-radius:0;outline:0;box-shadow:none;
+ background:linear-gradient(90deg,#808d92 0%,#88979e 44%,#8d9da7 77%,#90a2af 100%);
+}
+#region-main .main-panel-seam-upper{
+ background:linear-gradient(90deg,#7a878c 0%,#899aa5 100%);
+}
+
+/* END main-panel-seam-repair.css */
+
+/* BEGIN mcp-visual-v3.css 74a5b965ec82e8ff9f413b98ba4d06028790026a */
+/* MCP-0003: vector numerals, green annunciators and rotary hardware */
+[data-piece="mcp"]{isolation:isolate}
+[data-piece="mcp"]>.mcp-v3-overlay{position:absolute;inset:0;width:100%;height:100%;z-index:3;display:block;overflow:visible;pointer-events:none;direction:ltr}
+/* MCP-0008 | warm photo-matched amber segment glow; no green digit tint. */
+.mcp-v3-overlay .mcp-lit-segment{filter:drop-shadow(0 0 1.1px #fff2b8) drop-shadow(0 0 2.5px #eaa338)}
+.mcp-v3-overlay .mcp-off-segment{filter:none}
+.mcp-v3-overlay .mcp-v3-lamp[data-on="false"]>.mcp-v3-light{opacity:0}
+.mcp-v3-overlay .mcp-v3-lamp-hit{pointer-events:auto;cursor:pointer;outline:none}
+.mcp-v3-overlay .mcp-v3-lamp-hit:focus-visible{stroke:#e7fff5;stroke-width:3}
+[data-piece="mcp"]>.mcp-v3-knob{position:absolute;z-index:4;display:block;aspect-ratio:1/1;transform:translate(-50%,-50%);background-size:contain;background-position:center;background-repeat:no-repeat;box-sizing:border-box;border:0;border-radius:50%;cursor:ew-resize;touch-action:none;user-select:none;box-shadow:2px 4px 7px #0007}
+.mcp-v3-knob:focus-visible{outline:2px solid #c5fff5;outline-offset:3px}
+.mcp-v3-course,.mcp-v3-plain{background:repeating-conic-gradient(#44484a 0deg 9deg,#a8a6a0 9deg 16deg,#56595b 17deg 22deg);border:2px solid #4e5355!important;padding:0}
+.mcp-v3-course-face,.mcp-v3-plain-face{display:block;position:absolute;left:9%;top:9%;width:82%;height:82%;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 32% 25%,#e5e5e4 3%,#bdbfbe 58%,#9ea2a1 85%,#66696b);border:2px solid #d1d1ce;box-shadow:inset -3px -5px 8px #5559,inset 2px 2px 4px #fff9}
+.mcp-v3-course-face svg{display:block;width:100%;height:100%;transform:rotate(var(--mcp-turn,0deg))}
+.mcp-v3-ias{box-shadow:none!important;border-radius:0!important;transform:translate(-50%,-50%) rotate(var(--mcp-turn,0deg))!important}
+
+/* MCP-HIT-0001: the exact photographic images are not pointer targets.
+ * Actual transparent interaction surfaces sit ABOVE them and keep touch
+ * gestures out of the outer cockpit's pan/zoom. No visual geometry changed. */
+[data-piece="mcp"]>.mcp-native-hit-surface{pointer-events:auto!important;touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;overscroll-behavior:contain}
+[data-piece="mcp"]>.mcp-native-hit-surface:focus-visible{outline:2px solid #66d8ff!important;outline-offset:1px}
+/* Rotate only the moving face of each photographic knob, preserving center,
+ * original socket radius and the independent heading BANK ANGLE outer ring. */
+[data-piece="mcp"]>.mcp-v3-knob[data-control="courseL"]>.mcp-v3-course-face,
+[data-piece="mcp"]>.mcp-v3-knob[data-control="courseR"]>.mcp-v3-course-face,
+[data-piece="mcp"]>.mcp-v3-knob[data-control="altitude"]>.mcp-v3-plain-face{transform:rotate(var(--mcp-turn,0deg));transform-origin:50% 50%}
+[data-piece="mcp"].mcp-owner13-active>.mcp-v3-knob[data-control="heading"]>.mcp-owner13-inner{transform:translate(-50%,-50%) rotate(var(--mcp-turn,0deg))!important;transform-origin:50% 50%}
+
+/* END mcp-visual-v3.css */
+
+/* BEGIN mcp-hardware-v1.css f83be287062b1849b0ff40f60db609a66e1661bf */
+/* MCP-0005 photo-registered mechanical controls. */
+[data-piece="mcp"]>.mcp-hw{
+position:absolute;z-index:6;display:block;box-sizing:border-box;
+transform:translate(-50%,-50%);outline:none;cursor:pointer;
+touch-action:none;user-select:none;pointer-events:auto;background:transparent!important;
+border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important
+}
+[data-piece="mcp"]>.mcp-hw:focus-visible{outline:2px solid #b9fff1;outline-offset:3px}
+.mcp-hw-toggle-foot{
+position:absolute;left:15%;top:24%;width:70%;height:60%;border-radius:50%;
+background:radial-gradient(ellipse at 34% 29%,#ddd7cc 0 14%,#898c89 30%,#373b3b 56%,#090c0c 73%,#343334 85%);
+border:2px solid #8b8981;box-shadow:1px 3px 7px #000a,inset 0 1px 3px #d8d4c3;
+}
+.mcp-hw-toggle-metal{
+position:absolute;left:41%;top:-60%;width:28%;height:106%;
+border-radius:28% 28% 20% 20%;transform-origin:50% 92%;
+transform:rotate(-23deg);
+background:linear-gradient(90deg,#262524,#aeb0a9 25%,#e6ded1 46%,#87837b 72%,#282725);
+box-shadow:2px 3px 4px #08080790,inset 1px 0 2px #fff9;
+transition:transform .12s cubic-bezier(.25,.8,.25,1);
+}
+.mcp-hw-toggle-head{
+position:absolute;left:-26%;top:-7%;height:21%;width:152%;border-radius:50%;
+background:radial-gradient(ellipse at 39% 30%,#e8e4d9,#96958b 53%,#292928 95%);
+border:1px solid #4c4a45;
+}
+.mcp-hw-toggle[data-state="ON"] .mcp-hw-toggle-metal,
+.mcp-hw-toggle[data-state="ARM"] .mcp-hw-toggle-metal{transform:rotate(23deg)}
+.mcp-hw-toggle[data-mcp-hardware="AT_ARM"] .mcp-hw-toggle-foot{top:20%;height:68%}
+.mcp-hw-toggle[data-mcp-hardware^="FD_"] .mcp-hw-toggle-foot{top:34%;height:49%}
+.mcp-hw-wheel-axle{
+position:absolute;left:8%;top:3%;width:84%;height:94%;overflow:hidden;border-radius:15%/4%;
+background:linear-gradient(90deg,#0d0d0e 0%,#36383a 19%,#979ca0 41%,#bac0c2 52%,#53585c 79%,#080909 98%);
+box-shadow:inset -5px 0 8px #0a0a0a,inset 2px 0 5px #ece6dc96,2px 2px 3px #06070888
+}
+.mcp-hw-wheel-tread{
+position:absolute;inset:0 4%;
+background:repeating-linear-gradient(to bottom,#202122 0 4px,#a9afb3 5px 12px,#d0d1cf 13px 18px,#4d5255 19px 23px);
+box-shadow:inset 4px 0 6px #090b0b8a,inset -5px 0 6px #080a0abd
+}
+.mcp-hw-wheel-glint{position:absolute;left:24%;top:0;height:100%;width:13%;background:#fff4;filter:blur(3px)}
+.mcp-hw-push-bezel{
+position:absolute;inset:2%;border-radius:50%;
+background:linear-gradient(135deg,#c4c5bf,#393e3d 26%,#050707 49%,#7d7d77 88%);
+box-shadow:2px 3px 4px #000a,inset 1px 1px 3px #f1ece1;
+border:1px solid #646867;
+}
+.mcp-hw-push-cap{
+position:absolute;inset:18%;border-radius:50%;
+background:radial-gradient(circle at 27% 18%,#363b3b 1%,#101414 50%,#020405 88%);
+box-shadow:inset -2px -3px 4px #000,inset 1px 1px 2px #6b6d66
+}
+.mcp-hw-push[data-state="true"] .mcp-hw-push-cap{inset:21%;background:radial-gradient(circle at 30% 25%,#383e3e,#050606 86%)}
+.mcp-v3-plain{
+background:repeating-conic-gradient(#4b4e4e 0 6deg,#c4c4bd 6deg 13deg,#777874 13deg 19deg)!important;
+box-shadow:inset 0 1px 2px #fff7,2px 5px 8px #0009!important
+}
+.mcp-v3-plain-face{
+background:radial-gradient(circle at 32% 23%,#f0efec,#bfc3c0 52%,#7d8586 84%,#515758 100%)!important;
+box-shadow:inset 2px 3px 6px #fff9,inset -4px -5px 7px #141a1c87,1px 2px 2px #0004!important
+}
+.mcp-v3-plain-face:after{content:"";position:absolute;inset:10%;border:1px solid #dddcd388;border-radius:50%}
+
+/* END mcp-hardware-v1.css */
+
+/* BEGIN mcp-toggle-reference-v2.css 5c03154245cb8ec8eb6c6f8940a5b02018c20814 */
+/* MCP-0006 | Source-registered B737 Classic small metallic F/D + flat A/T ARM. */
+[data-piece="mcp"]>.mcp-hw.mcp-hw-at,[data-piece="mcp"]>.mcp-hw.mcp-hw-fd{background:none!important;box-shadow:none!important;border:0!important}
+/* Real F/D uses a very small chrome stem and head inside the existing photo socket. */
+.mcp-hw-fd-base{position:absolute;left:33%;top:43%;width:34%;height:24%;box-sizing:border-box;border-radius:50%;background:radial-gradient(ellipse at 33% 25%,#e5e0d7,#9f9f96 33%,#3b3b37 68%,#151514);border:1px solid #b7b3aa;box-shadow:0 1px 2px #000b,inset 0 1px 1px #fff7}
+.mcp-hw-fd-shaft{position:absolute;left:44%;top:24%;width:13%;height:30%;border-radius:40% 40% 20% 20%;transform-origin:50% 92%;transform:rotate(-10deg);background:linear-gradient(90deg,#555550,#f3f1e9 30%,#b9b9b2 58%,#484945);box-shadow:1px 1px 2px #0009;transition:transform .12s ease}
+.mcp-hw-fd-tip{position:absolute;left:31%;top:17%;width:34%;height:14%;border-radius:50%/48%;background:radial-gradient(ellipse at 30% 25%,#fff,#e2dfd3 22%,#b1aaa0 55%,#5b5956);border:1px solid #74726d;box-sizing:border-box;box-shadow:1px 1px 2px #0009;transition:transform .12s ease}
+.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-shaft{transform:rotate(15deg)}
+.mcp-hw-fd[data-state="ON"] .mcp-hw-fd-tip{transform:translateX(12%) translateY(12%)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"] .mcp-hw-fd-shaft{transform:rotate(10deg)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-shaft{transform:rotate(-15deg)}
+.mcp-hw-fd[data-mcp-hardware="FD_RIGHT"][data-state="ON"] .mcp-hw-fd-tip{transform:translateX(-12%) translateY(12%)}
+/* A/T ARM reference: short, WIDE and THIN horizontal silver paddle across the well. */
+.mcp-hw-at-hub{position:absolute;left:35%;top:25%;width:30%;height:37%;border-radius:50%;background:radial-gradient(ellipse at 46% 22%,#904536,#592d2a 36%,#181514 68%,#050707);border:1px solid #3b3531;box-sizing:border-box;box-shadow:inset 1px 2px 5px #0009}
+.mcp-hw-at-paddle{position:absolute;left:8%;top:45%;width:84%;height:16%;border-radius:3px 5px 5px 3px;background:linear-gradient(to bottom,#171b1c,#2a2b2c 21%,#747979 38%,#eee9dc 62%,#b7b8b5 84%,#555654);border:1px solid #333435;box-sizing:border-box;box-shadow:1px 3px 3px #000b,inset 0 1px 1px #fefdf9b9;transform-origin:68% 55%;transition:transform .13s ease}
+.mcp-hw-at-paddle:before{content:"";position:absolute;left:4%;right:4%;bottom:0;height:14%;border-radius:2px;background:#f9f7efc7}
+.mcp-hw-at-paddle:after{content:"";position:absolute;left:4%;right:4%;top:0;height:22%;background:#11181b90;border-radius:2px}
+.mcp-hw-at[data-state="ARM"] .mcp-hw-at-paddle{transform:translateY(-70%) rotate(-7deg)}
+
+/* END mcp-toggle-reference-v2.css */
+
+/* BEGIN mcp-authentic-sprites-v2.css 4c4dccb40970e0c385671c65d0a65670db402ab0 */
+/* MCP-SPRITE-0002: actual two-state art, not CSS-generated bar or stem.
+   A/T OFF and UP are separate orthographic transparency assets, sourced
+   from the previously specified broad/thin silver horizontal paddle.
+   F/D L & R are cropped from the existing SMALL SILVER 5-state sprite atlas.
+   Do not alter locked source images or MCP photo-registered coordinates. */
+[data-piece="mcp"]>.mcp-hw-at,[data-piece="mcp"]>.mcp-hw-fd{
+  overflow:visible!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:translate(-50%,-50%)!important;
+  border:0!important;
+}
+[data-piece="mcp"]>.mcp-hw-at .mcp-hw-switch-art{
+  display:block;position:absolute;
+  inset:0;width:100%;height:100%;
+  object-fit:fill;
+  pointer-events:none;
+  user-select:none;
+  filter:drop-shadow(1px 2px 1px #0008);
+}
+[data-piece="mcp"]>.mcp-hw-at[data-state="OFF"] .mcp-hw-at-up,
+[data-piece="mcp"]>.mcp-hw-at[data-state="ARM"] .mcp-hw-at-off{display:none}
+[data-piece="mcp"]>.mcp-hw-fd .mcp-hw-silver-atlas{
+  display:block;position:absolute;
+  width:100%;height:100%;
+  left:0;top:0;
+  pointer-events:none;
+  background-image:url("../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp");
+  background-size:1050% auto;
+  background-repeat:no-repeat;
+  background-position:94.2% center;
+  filter:drop-shadow(0 1px 1px #0009);
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="OFF"] .mcp-hw-silver-atlas{
+  background-position:94.2% center;
+}
+[data-piece="mcp"]>.mcp-hw-fd[data-state="ON"] .mcp-hw-silver-atlas{
+  background-position:72.1% center;
+}
+[data-piece="mcp"]>.mcp-hw-fd:focus-visible,
+[data-piece="mcp"]>.mcp-hw-at:focus-visible{
+  outline:1px solid #f6e8bd!important;outline-offset:2px;
+}
+
+/* SOURCE ATLAS CROP V2. 5 cells, per-cell bezel ~390/1024 of cell.
+   At 1050% overall zoom, the original ring fills ~80% of the F/D socket;
+   fourth pose UP at 72.1% background position; fifth DOWN at 94.2%.
+   Full image and original Git SHA remain unchanged. */
+[data-piece="mcp"]>.mcp-v3-knob.mcp-v3-course .mcp-v3-course-face{
+  background:radial-gradient(circle at 45% 35%,#676b6c 0%,#43494b 24%,#303738 57%,#181e21 81%,#7b8384 97%)!important;
+  border:2px solid #a6aca9!important;
+  box-shadow:inset 1px 2px 3px #cfd2c457,inset -3px -3px 5px #0205067f,1px 2px 2px #0e14169c!important;
+}
+
+/* END mcp-authentic-sprites-v2.css */
