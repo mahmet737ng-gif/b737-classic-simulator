@@ -1,0 +1,330 @@
+/* Unified startup CSS; exact source order. */
+/* BEGIN efis-pedestal-raster-v1.css 248e8896d5ebd33e40510b8a46ea037a00635471 */
+/* EFIS pedestal raster 0001 — additive CAPT/FO replicas, no original photo changes. */
+#region-pedestal .region-native .uefis-seat{position:absolute;z-index:23;direction:ltr;box-sizing:border-box;pointer-events:auto;contain:layout style}
+.uefis-banner{height:27px;display:flex;align-items:center;justify-content:space-between;gap:6px;
+ background:linear-gradient(180deg,#2e414a,#1d2b34);border:1px solid #7a9397;border-bottom:0;
+ padding:0 5px;color:#f3f5ed;font:700 12px/1 Arial,sans-serif;letter-spacing:.05em}
+.uefis-expand{min-width:24px;height:23px;margin:0!important;padding:0!important;border:1px solid #8da3ab!important;
+ border-radius:3px!important;background:#304653!important;color:white!important;font:700 16px Arial,sans-serif!important;
+ display:grid;place-items:center;touch-action:manipulation}
+.uefis-face{position:relative;width:100%;aspect-ratio:1448 / 1086;direction:ltr;background:#4f585e;isolation:isolate;
+ border:1px solid #151d21;overflow:hidden;box-shadow:0 3px 8px #000a;touch-action:pan-y;user-select:none;container-type:inline-size}
+.uefis-face img{user-select:none;-webkit-user-drag:none;pointer-events:none;max-width:none}
+.uefis-face .uefis-photo{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:0}
+.uefis-face button{appearance:none;position:absolute;margin:0!important;padding:0!important;
+ border:none!important;outline-offset:0;box-shadow:none!important;background:transparent!important;
+ border-radius:50%;cursor:pointer;z-index:3;touch-action:none;-webkit-tap-highlight-color:transparent;min-height:0;min-width:0}
+.uefis-face button:focus-visible{outline:2px solid #74ebfc!important;outline-offset:2px}
+.uefis-face .uefis-knob{z-index:5;overflow:visible;cursor:grab}
+.uefis-face .uefis-knob:active{cursor:grabbing}
+.uefis-face .uefis-knob-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+ transition:transform 125ms ease-out;transform-origin:50% 50%;clip-path:none}
+.uefis-face .uefis-knob.uefis-hsi{z-index:5}
+.uefis-face .uefis-knob.uefis-wxInner{z-index:7}
+.uefis-face .uefis-knob.uefis-range{z-index:6}
+.uefis-face .uefis-tfc{z-index:10;border-radius:50%!important;overflow:hidden;touch-action:manipulation}
+.uefis-face .uefis-tfc-image{display:block;position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:fill}
+.uefis-face .uefis-tfc[aria-pressed=true]{filter:brightness(1.15)}
+.uefis-face .uefis-tfc[aria-pressed=true]:after{content:'';position:absolute;inset:5%;border-radius:50%;
+ border:1px solid #dcf0ff;box-shadow:0 0 7px #b4e9f8;pointer-events:none}
+.uefis-face .uefis-push{border:1px solid #4a5357!important;border-radius:4%!important;z-index:9;
+ background:linear-gradient(140deg,#1b2428,#090c0f 35%,#1d2427 77%,#080b0d)!important;
+ box-shadow:inset 0 0 0 2px #171b1e,inset 0 0 8px #000,0 1px 2px #000b!important;
+ touch-action:manipulation}
+.uefis-face .uefis-push:not(.uefis-push-rst)::before{content:'';position:absolute;inset:5% 5%;
+ border-radius:2%;border:1px solid #545e64;background:linear-gradient(#293237,#070b0d 40%,#131b1f 100%);
+ box-shadow:inset 0 4px 8px #000b}
+.uefis-face .uefis-on{position:absolute;z-index:2;top:8%;left:9%;width:82%;height:42%;
+ display:flex;align-items:center;justify-content:center;font:700 2.1cqw/1 'Arial Narrow',Arial,sans-serif;
+ background:linear-gradient(#1b2326,#080a0c);border:1px solid #353f43;color:transparent;pointer-events:none;
+ border-radius:2%;letter-spacing:.02em}
+.uefis-face .uefis-push[aria-pressed=true] .uefis-on{color:#0d1216;background:linear-gradient(160deg,#fcffff,#d9dedd);
+ border-color:#dde7e7;box-shadow:0 0 5px #fafefd82}
+.uefis-face .uefis-push-rst{background:radial-gradient(circle at 40% 30%,#e8ebea,#737c81 65%,#22272a 100%)!important;border:2px solid #495158!important}
+/* Invisible text-centered hit areas; no hover highlight or broad circles.
+ * Inline geometry is computed from printed labels and resized safely.
+ * Only keyboard focus gets an accessible outline. */
+.uefis-face .uefis-detent{z-index:11;transform:translate(-50%,-50%);
+ border-radius:3px!important;opacity:0;touch-action:manipulation}
+.uefis-face .uefis-detent:hover{opacity:0;background:transparent!important}
+.uefis-face .uefis-detent:focus-visible{opacity:1;background:transparent!important;
+ outline:1px solid #90c7cf!important}
+.uefis-face .uefis-dh-window{position:absolute;z-index:12;background:#151316;box-shadow:inset 0 0 12px #000;
+ display:flex;justify-content:center;align-items:center;border-radius:2%;pointer-events:none;
+ color:#f6f4f1;font:700 5.8cqw/1 'Courier New',monospace;letter-spacing:.045em;font-variant-numeric:tabular-nums}
+.uefis-dialog{position:fixed;inset:0;margin:auto;padding:0;border:1px solid #7b99a8;border-radius:10px;
+ background:#0b121a;color:#f0f6fa;width:min(980px,98vw);max-width:98vw;max-height:96vh;
+ box-shadow:0 20px 70px #000d;overflow:auto;direction:ltr}
+.uefis-dialog::backdrop{background:#02060ac7}
+.uefis-dialog .uefis-dialog-bar{display:flex;align-items:center;justify-content:space-between;
+ padding:8px 14px;background:#142736;position:sticky;top:0;z-index:20;gap:12px;
+ font:700 15px Arial,sans-serif}
+.uefis-dialog .uefis-dialog-close{border:1px solid #7a8a98;border-radius:5px;
+ padding:6px 15px;background:#273e4b;color:#fff;font:700 13px Arial,sans-serif}
+.uefis-dialog .uefis-dialog-body{width:100%;max-width:900px;margin:auto;padding:8px}
+.uefis-dialog .uefis-face{width:100%;box-shadow:0 5px 18px #000}
+@media(max-width:600px){.uefis-dialog .uefis-dialog-body{padding:2px}.uefis-dialog .uefis-dialog-bar{font-size:12px}}
+
+/* Non-destructive range legend correction: original photo plate is immutable. */
+.uefis-face .uefis-range80{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(110deg,#414a51,#3e474f);color:#f7f7f4;font:700 3.35cqw/1 'Arial Narrow',Arial,sans-serif;letter-spacing:-.045em}
+
+/* TFC is a black recessed mechanical button, not an illuminated ring. */
+.uefis-face .uefis-tfc[aria-pressed="true"]{filter:brightness(.91)}
+.uefis-face .uefis-tfc[aria-pressed="true"]:after{display:none}
+
+/* Owner-marked EFIS radio slots: faceplate starts at frame origin; expand remains accessible. */
+#region-pedestal .uefis-seat .uefis-banner{position:absolute;top:2px;right:2px;z-index:15;width:auto;height:20px;padding:0;background:transparent;border:0}
+#region-pedestal .uefis-seat .uefis-banner span{display:none}
+#region-pedestal .uefis-seat .uefis-expand{height:19px;min-width:19px;font-size:12px!important;opacity:.65}
+#region-pedestal .uefis-seat .uefis-face{width:100%;border:0}
+
+/* END efis-pedestal-raster-v1.css */
+
+/* BEGIN pedestal-dual-vhf-knobs-v1.css 6235093e08de2ec899d0cf8f5e0b764334075d36 */
+/* PD-VHF-DUAL-0001: source-image-centered, non-destructive photo knobs. */
+#unified-pedestal-faceplates .pd-vhf-rotor {
+ position:absolute;aspect-ratio:1/1;height:auto;transform:translate(-50%,-50%);
+ z-index:2;pointer-events:auto;isolation:isolate;line-height:0;
+ user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-vhf-rotor button {
+ appearance:none;position:absolute;inset:0;display:block;
+ width:100%;height:100%;margin:0;padding:0;min-width:0;min-height:0;
+ border:0;outline-offset:0;border-radius:50%;background:transparent;
+ box-shadow:none;cursor:grab;touch-action:none;pointer-events:auto;
+}
+#unified-pedestal-faceplates .pd-vhf-rotor button:active {cursor:grabbing}
+#unified-pedestal-faceplates .pd-vhf-rotor button:focus-visible {
+ outline:2px solid #71e4f9;outline-offset:2px;
+}
+#unified-pedestal-faceplates .pd-vhf-rotor img {
+ display:block;position:absolute;inset:0;width:100%;height:100%;
+ object-fit:contain;max-width:none;pointer-events:none;
+ user-select:none;-webkit-user-drag:none;
+ transform-origin:50% 50%;transition:transform 65ms linear;
+}
+#unified-pedestal-faceplates .pd-vhf-rotor .pd-vhf-outer {z-index:1}
+#unified-pedestal-faceplates .pd-vhf-rotor .pd-vhf-inner {
+ z-index:2;clip-path:circle(31.5% at 50% 50%);
+}
+
+/* END pedestal-dual-vhf-knobs-v1.css */
+
+/* BEGIN pedestal-mechanical-frequency-v1.css 4e774ae57cd627a0fd3e1fd6e39cf00a232d458e */
+/* Five individual rolling frequency drums, positioned inside the immutable photo apertures. */
+#unified-pedestal-faceplates .pd-freq-mechanical{
+ position:absolute;box-sizing:border-box;z-index:3;pointer-events:none;
+ display:block;overflow:hidden;direction:ltr;user-select:none;
+ border-radius:4px;background:linear-gradient(180deg,#080909 0%,#151617 18%,#060809 70%,#08090b 100%);
+ box-shadow:inset 0 2px 6px #000d,inset 0 -2px 4px #000d;
+ container-type:inline-size;
+}
+#unified-pedestal-faceplates .pd-freq-glass{
+ position:absolute;inset:0 2% 0 2%;display:flex;align-items:stretch;justify-content:center;
+ overflow:hidden;gap:0;white-space:nowrap;
+}
+#unified-pedestal-faceplates .pd-freq-wheel{
+ position:relative;display:block;flex:1 1 0;min-width:0;height:100%;overflow:hidden;
+ border-right:1px solid #303134;border-left:1px solid #070707;
+ background:linear-gradient(90deg,#030405,#1e2022 18%,#18191b 47%,#0b0c0d 86%,#030405);
+ box-shadow:inset 2px 0 3px #000a,inset -2px 0 4px #0009;
+}
+#unified-pedestal-faceplates .pd-freq-strip{
+ position:absolute;left:0;top:0;height:300%;width:100%;display:flex;
+ flex-direction:column;transform:translateY(-33.333333%);
+}
+#unified-pedestal-faceplates .pd-freq-glyph{
+ display:flex;align-items:center;justify-content:center;height:33.333333%;flex:none;
+ font:700 30cqw/1 'Arial Narrow','Liberation Sans Narrow',Arial,sans-serif;
+ color:#f0f0ec;text-shadow:0 1px 1px #fff3,0 -1px 1px #0007;
+ font-variant-numeric:tabular-nums;transform:none;
+}
+#unified-pedestal-faceplates .pd-freq-dot{
+ display:flex;flex:0 0 7%;height:100%;align-items:flex-end;justify-content:center;
+ padding:0 0 7% 0;color:#f0f0eb;line-height:1;
+ font:700 23cqw/1 Arial,sans-serif;background:#0a0b0d;
+ text-shadow:0 1px 1px #fff4;
+}
+#unified-pedestal-faceplates .pd-freq-mechanical::after{
+ content:'';position:absolute;inset:0;z-index:4;pointer-events:none;
+ background:linear-gradient(180deg,#000a,transparent 24%,transparent 70%,#000a);
+ border-radius:inherit;
+}
+#unified-pedestal-faceplates .pd-freq-index{
+ position:absolute;display:none;pointer-events:none;z-index:5;
+}
+#unified-pedestal-faceplates [data-index="bar"] .pd-freq-index{
+ display:block;left:1.5%;right:1.5%;top:30%;height:3.5%;
+ background:linear-gradient(180deg,#edbd77,#ed7b35 55%,#df5219);
+ box-shadow:0 1px 1px #0009;
+}
+#unified-pedestal-faceplates [data-index="wedge"] .pd-freq-index{
+ display:block;left:0;bottom:0;width:28%;height:12%;
+ background:linear-gradient(100deg,#ef7b31,#f5a256);clip-path:polygon(0 0,100% 100%,0 100%);
+}
+#unified-pedestal-faceplates .pd-freq-roll-up{
+ animation:pd-frequency-roll-up 175ms cubic-bezier(.15,.65,.28,1) both;
+}
+#unified-pedestal-faceplates .pd-freq-roll-down{
+ animation:pd-frequency-roll-down 175ms cubic-bezier(.15,.65,.28,1) both;
+}
+@keyframes pd-frequency-roll-up{
+ from{transform:translateY(0)}to{transform:translateY(-33.333333%)}
+}
+@keyframes pd-frequency-roll-down{
+ from{transform:translateY(-66.666666%)}to{transform:translateY(-33.333333%)}
+}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-freq-roll-up,
+ #unified-pedestal-faceplates .pd-freq-roll-down{animation:none}
+}
+
+/* END pedestal-mechanical-frequency-v1.css */
+
+/* BEGIN pedestal-vhf-comm-tfr-v1.css 32b3744d1ed1657cfe08db30c402dbf69483b5e1 */
+/* PD-COMM-TFR-0002 — orange bar marks the INACTIVE/STANDBY display. */
+#unified-pedestal-faceplates .pd-freq-mechanical[data-kind="COMM"] .pd-freq-index{display:none}
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="left"] .pd-freq-mechanical[data-mechanical-frequency$="-right"] .pd-freq-index,
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-tfr-active="right"] .pd-freq-mechanical[data-mechanical-frequency$="-left"] .pd-freq-index{
+ display:block;left:5%;right:5%;top:40%;bottom:auto;width:auto;height:14%;
+ clip-path:none;border-radius:2px;
+ background:linear-gradient(180deg,#ffd0a0 0%,#ff9656 18%,#fc884d 56%,#f67d38 85%,#d65c26 100%);
+ box-shadow:0 1px 2px #000b,0 -1px 1px #ffcf924d;pointer-events:none;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr{
+ position:absolute;left:43.5%;top:8.1%;width:13%;height:12.5%;z-index:6;
+ display:block;box-sizing:border-box;padding:0;margin:0;border:0;border-radius:30px;
+ background:transparent;outline:none;appearance:none;-webkit-appearance:none;
+ cursor:ew-resize;touch-action:none;pointer-events:auto;user-select:none;
+ -webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr:focus-visible{outline:2px solid #79dbfa;outline-offset:2px}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-track{
+ display:block;position:absolute;left:17%;right:17%;top:43%;height:14%;
+ border-radius:30px;
+ background:linear-gradient(180deg,#191c1f,#838c95 27%,#c7ced2 48%,#65717a 77%,#25292d);
+ box-shadow:0 1px 2px #000b,inset 0 1px 2px #070809;pointer-events:none;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-knob{
+ display:block;position:absolute;left:28%;top:50%;width:22%;aspect-ratio:1/1;
+ transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+ background:radial-gradient(circle at 33% 27%,#fffff7 0%,#f5f4e8 30%,#e7e5d4 58%,#b1b4ad 84%,#727a79 100%);
+ box-shadow:0 2px 5px #000a,1px 1px 2px #000b,inset 1px 1px 2px #fff9;
+ transition:left 90ms ease-out;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-tfr[data-side="right"] .pd-tfr-knob{left:72%}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-vhf-comm-tfr .pd-tfr-knob{transition:none}
+}
+
+/* END pedestal-vhf-comm-tfr-v1.css */
+
+/* BEGIN pedestal-vhf-comm-test-v1.css a73312bba47a03c144a6cf7140ecd14deb986b1a */
+/* PD-COMM-TEST-0001: 98px recessed button centered over 1799x815 original COMM test hole. */
+#unified-pedestal-faceplates .pd-vhf-comm-test{
+ position:absolute;left:48.36%;top:81.72%;width:5.45%;aspect-ratio:1/1;
+ height:auto;transform:translate(-50%,-50%);z-index:7;box-sizing:border-box;
+ appearance:none;-webkit-appearance:none;display:block;margin:0;padding:0;
+ background:radial-gradient(circle at 47% 44%,#090c0f 0 67%,#7e8892 75%,#262b30 82%,#15191c 100%);
+ border:0;border-radius:50%;
+ box-shadow:inset 0 2px 4px #000a,0 1px 2px #141719;
+ cursor:pointer;touch-action:none;pointer-events:auto;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test .pd-comm-test-cap{
+ position:absolute;inset:13%;border-radius:50%;pointer-events:none;
+ background:radial-gradient(circle at 33% 28%,#40464b 0%,#282e32 30%,#171b1e 64%,#090b0d 96%);
+ box-shadow:inset 0 2px 4px #000a,inset 0 -1px 1px #87919a44,0 0 0 1px #0d1013;
+ transition:inset 65ms ease-out,box-shadow 65ms ease-out;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test[data-pressed="true"] .pd-comm-test-cap{
+ inset:17%;background:radial-gradient(circle at 46% 38%,#22272a,#0a0d0f 80%);
+ box-shadow:inset 0 2px 5px #000e,0 0 0 1px #0e1113;
+}
+#unified-pedestal-faceplates .pd-vhf-comm-test:focus-visible{outline:2px solid #83d2ef;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){
+ #unified-pedestal-faceplates .pd-vhf-comm-test .pd-comm-test-cap{transition:none}
+}
+
+/* END pedestal-vhf-comm-test-v1.css */
+
+/* BEGIN pedestal-vhf-nav-controls-v1.css 3cbf18a5d78fa496d883f8f35bf41c0ef2fe8ad8 */
+/* PD-VHF-NAV-CONTROLS-0002 — photo-registered 1799x813 NAV panel controls. */
+#unified-pedestal-faceplates .pd-freq-mechanical[data-kind="NAV"] .pd-freq-index{display:none}
+/* The user-requested inactive-side bar is 14% tall, with COMM's orange finish.
+   Note: unlike this shared visual cue, the FCOM only calls for MANUAL bar in AUTO. */
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-nav-mode="auto"] .pd-freq-mechanical[data-mechanical-frequency$="-manual"] .pd-freq-index,
+#unified-pedestal-faceplates .unified-pedestal-faceplate[data-nav-mode="manual"] .pd-freq-mechanical[data-mechanical-frequency$="-auto"] .pd-freq-index{
+ display:block;left:5%;right:5%;top:40%;bottom:auto;width:auto;height:14%;
+ clip-path:none;border-radius:2px;
+ background:linear-gradient(180deg,#ffd0a0 0%,#ff9656 18%,#fc884d 56%,#f67d38 85%,#d65c26 100%);
+ box-shadow:0 1px 2px #000b,0 -1px 1px #ffcf924d;
+}
+/* Both AUTO and MANUAL numeric drums remain visible in every mode.
+   Only the thick orange marker identifies the inactive side. */
+#unified-pedestal-faceplates .pd-nav-mode-switch{
+ position:absolute;left:41.75%;top:50.4%;width:15.3%;height:34.5%;z-index:7;
+ appearance:none;-webkit-appearance:none;box-sizing:border-box;margin:0;padding:0;
+ display:flex;flex-direction:column;align-items:stretch;justify-content:stretch;
+ background:linear-gradient(105deg,#0c0d0f,#030506 55%,#0f1215);
+ border:1px solid #22272b;border-radius:4px;
+ box-shadow:inset 0 2px 4px #000a,0 1px 2px #121417;
+ cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-nav-mode-switch:focus-visible{outline:2px solid #76cdea;outline-offset:2px}
+#unified-pedestal-faceplates .pd-nav-lamp{
+ display:flex;flex:1 1 50%;min-height:0;align-items:center;justify-content:center;
+ font:700 clamp(7px,0.66vw,11px)/1 Arial,sans-serif;letter-spacing:0.2px;
+ color:#43464a;text-shadow:none;pointer-events:none;
+}
+#unified-pedestal-faceplates .pd-nav-lamp-auto{border-bottom:1px solid #14191b}
+#unified-pedestal-faceplates [data-nav-mode="auto"] .pd-nav-lamp-auto{
+ color:#f5fcff;text-shadow:0 0 4px #f5fdffb0,0 0 8px #d2ecff6b;
+ background:radial-gradient(ellipse,#f3f9fe1e,transparent 74%);
+}
+#unified-pedestal-faceplates [data-nav-mode="manual"] .pd-nav-lamp-manual{
+ color:#ffefc7;text-shadow:0 0 4px #fff1cbba,0 0 8px #ffd78b70;
+ background:radial-gradient(ellipse,#ffe5ae25,transparent 74%);
+}
+/* Original five-state Small Silver switch atlas; owner-requested NAV only.
+   Atlas cells: LEFT=0, CENTER=1, RIGHT=2, UP=3, DOWN=4.
+   Preserve the source asset and all other cockpit controls exactly. */
+#unified-pedestal-faceplates .pd-nav-test-toggle{
+ position:absolute;top:76%;width:9.2%;aspect-ratio:1/1;height:auto;z-index:8;
+ transform:translate(-50%,-50%);margin:0;padding:0;box-sizing:border-box;
+ border:0;border-radius:50%;appearance:none;-webkit-appearance:none;
+ background:transparent;box-shadow:none;outline-offset:2px;
+ cursor:pointer;pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-nav-test="vorDme"]{left:14.84%}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-nav-test="ils"]{left:30.35%}
+#unified-pedestal-faceplates .pd-nav-test-toggle:focus-visible{outline:2px solid #80dbf8}
+#unified-pedestal-faceplates .pd-nav-test-photo{
+ display:block;position:absolute;left:50%;top:50%;width:260%;aspect-ratio:1/1;
+ transform:translate(-50%,-50%);pointer-events:none;
+ background-image:url('../../shared-assets/toggle-switch-small/Small_Silver_5Positions.webp');
+ background-repeat:no-repeat;background-size:500% 100%;background-position:25% 50%;
+}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="center"] .pd-nav-test-photo{
+ background-position:25% 50%;
+}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="up"] .pd-nav-test-photo{
+ background-position:75% 50%;
+}
+#unified-pedestal-faceplates .pd-nav-test-toggle[data-position="down"] .pd-nav-test-photo{
+ background-position:100% 50%;
+}
+/* Direct tuning target aligns to the existing AUTO readout, does not redraw it.
+   Left portion steps MHz; right portion steps 50 kHz. */
+#unified-pedestal-faceplates .pd-nav-auto-tuner{
+ position:absolute;left:11.90%;top:17.45%;width:25.46%;height:22.39%;
+ z-index:7;margin:0;padding:0;border:0;border-radius:3px;
+ background:transparent;appearance:none;-webkit-appearance:none;
+ box-shadow:none;touch-action:none;pointer-events:auto;cursor:ns-resize;
+ -webkit-tap-highlight-color:transparent;
+}
+#unified-pedestal-faceplates .pd-nav-auto-tuner:focus-visible{
+ outline:2px solid #7fd9f2;outline-offset:1px;
+}
+
+/* END pedestal-vhf-nav-controls-v1.css */
