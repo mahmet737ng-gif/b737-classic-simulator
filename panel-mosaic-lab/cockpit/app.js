@@ -12,7 +12,7 @@
   });
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
- let galleryMounted=false,viewRefreshTimer=0,overheadStarted=false;
+ let galleryMounted=false,viewRefreshTimer=0;
  function scheduleViewRefresh(){
   if(viewRefreshTimer)return;
   viewRefreshTimer=setTimeout(()=>{
@@ -20,12 +20,6 @@
    window.B737ImageLoader?.refresh();
    window.dispatchEvent(new CustomEvent('b737:performance-view'));
   },80);
- }
- function startOverheadFrame(){
-  if(overheadStarted||!frame)return;
-  overheadStarted=true;
-  frame.src=frame.dataset.deferredUrl;
-  delete frame.dataset.deferredUrl;
  }
  function mountGallery(){
   if(galleryMounted||!assembly)return;
@@ -53,17 +47,18 @@
  function select(region,p){focused=region.id;const a=assembly.assets[p.asset];document.querySelectorAll('.texture-piece').forEach(n=>n.classList.toggle('selected',n.dataset.piece===p.id));byId('selectionTitle').textContent=p.label;byId('selectionDescription').textContent=p.referenceOnly?'Existing upper pedestal source reference':'Uploaded original photo · no source edits or cropping';byId('selectionSize').textContent=a.dimensions.join(' × ')+' px';byId('originalLink').href=a.url;byId('originalLink').hidden=false;}
  function mount(){
   Object.assign(scene.style,{width:assembly.canvas.width+'px',height:assembly.canvas.height+'px'});
-  for(const r of assembly.regions){const region=document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
-   if(r.id==='overhead'){frame=document.createElement('iframe');frame.id='overheadFrame';frame.title='Interactive Overhead LGT-0003';frame.dataset.deferredUrl=(window.B737UnifiedLightOverheadTest?'./overhead-real-f-in-unified-v10.html?v=PERF-0010':window.B737OverheadStaticTest?'./overhead-static-controls-stage.html?v=AB-CONTROLS-0001':window.B737OverheadCompositeTest?'./overhead-composite-stage.html?v=PERF-0004-COMPOSITE-TEST':r.embeddedUrl)+'&photoInput=PHOTO-INPUT-0001&ledev=LEDEV-0006&lelogic=LEDEV-STAGED-V1&aspObs=ASP-OBS-CENTER-0005-FACE&pmc=PMC-GLASS-0004';region.append(frame);}
-   else {const native=document.createElement('div');native.className='region-native';native.style.width=r.nativeWidth+'px';native.style.height=r.nativeHeight+'px';native.style.transform='scale('+(r.w/r.nativeWidth)+')';
+  for(const r of assembly.regions){const region=r.id==='overhead'?window.B737PrepareOverhead(r):document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
+   if(r.id==='overhead'){
+    frame=region.querySelector('iframe');
+    region.style.visibility='';
+   }else {const native=document.createElement('div');native.className='region-native';native.style.width=r.nativeWidth+'px';native.style.height=r.nativeHeight+'px';native.style.transform='scale('+(r.w/r.nativeWidth)+')';
     for(const p of r.placements){const piece=document.createElement('div');piece.className='texture-piece';piece.dataset.piece=p.id;piece.dataset.reference=String(!!p.referenceOnly);piece.setAttribute('aria-label',p.label);Object.assign(piece.style,{left:p.x+'px',top:p.y+'px',width:p.w+'px',height:p.h+'px'});const img=image(assembly.assets[p.asset],p.label);if(p.presentation==='contain')img.style.objectFit='contain';if(p.sourceWindow){const ratio=p.w/p.sourceWindow.w;img.style.position='absolute';img.style.width=(assembly.assets[p.asset].dimensions[0]*ratio)+'px';img.style.height=(assembly.assets[p.asset].dimensions[1]*ratio)+'px';img.style.left=(-p.sourceWindow.x*ratio)+'px';img.style.top=(-p.sourceWindow.y*ratio)+'px';}if(p.maskPolygon){const [sw,sh]=assembly.assets[p.asset].dimensions;img.style.clipPath='polygon('+p.maskPolygon.map(([x,y])=>(x/sw*100).toFixed(4)+'% '+(y/sh*100).toFixed(4)+'%').join(',')+')';}piece.append(img);native.append(piece);}region.append(native);
     const ref=image(assembly.assets[r.id==='main'?'assets/main-panel.webp':'assets/pedestal.webp'],r.label+' REFERENCE');ref.className='reference-image';region.append(ref);
-   }scene.append(region);
+   }if(!region.isConnected)scene.append(region);
    // First-paint lane: make the actual MCP controls and EIS needles/digits
    // visible as soon as their photograph host exists. These already-loaded
    // presenters use only their original geometry and inactive/cold-dark
    // readings; the single ECU and electrical owner connect later as before.
-   if(r.id==='overhead')startOverheadFrame();
    if(r.id==='main'){
     window.B737McpVisualV3?.mount?.();
     window.B737McpHardwareV1?.mount?.();
@@ -183,9 +178,9 @@
   zoneFault:(zone,active)=>command('aircon400-zone-fault',{zone,active})
  });
  function setVisualTest(active){visualTest=!!active;document.documentElement.dataset.lampVisualTest=String(visualTest);const button=byId('visualLampTest');button.setAttribute('aria-pressed',String(visualTest));byId('reference').disabled=visualTest;button.textContent=visualTest?'End Lamp Test':'Illuminate All Lamps';byId('lampTest').textContent=button.textContent;byId('visualLampStatus').textContent=visualTest?(visualOverheadCount===112?'142-lamp visual test active':'Visual test active · overhead connecting'):'';if(visualTest){scene.classList.remove('reference-mode');byId('reference').setAttribute('aria-pressed','false');}command('visual-test',{active:visualTest});window.dispatchEvent(new CustomEvent('b737:visual-test',{detail:{active:visualTest}}));renderLights();}
- byId('visualLampTest').onclick=()=>{startOverheadFrame();setVisualTest(!visualTest);};byId('lampTest').onclick=()=>{startOverheadFrame();setVisualTest(!visualTest);};window.addEventListener('b737:visual-test-request',e=>{if(typeof e.detail?.active==='boolean'){startOverheadFrame();setVisualTest(e.detail.active);}});
+ byId('visualLampTest').onclick=()=>{setVisualTest(!visualTest);};byId('lampTest').onclick=()=>{setVisualTest(!visualTest);};window.addEventListener('b737:visual-test-request',e=>{if(typeof e.detail?.active==='boolean'){setVisualTest(e.detail.active);}});
  function renderLights(){if(!snapshot)return;const id=byId('lampSelect').value;byId('lampValue').textContent=snapshot.frames[id]||'—';byId('lampFault').checked=snapshot.context.faults[id]===true;const c=lightDefinitions.find(c=>c.id===id);byId('lampFault').disabled=!c||!faultable.has(c.rule)||id==='dual-bleed';byId('lampStatus').textContent=(visualTest?'Visual test: 112 lamps on · normal system output: ':'')+Object.values(snapshot.lights).filter(Boolean).length+' / '+lightDefinitions.length+(visualTest?'':' on')+(snapshot.lampTest?' · LAMP TEST':'');}
- window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;const d=e.data;
+ function receiveOverhead(e){if(e.origin!==location.origin||e.source!==frame?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;const d=e.data;
   if(d.kind==='ready'){ready=true;performance.mark('b737:overhead-controls-ready');lightDefinitions=d.lampDefinitions;byId('overheadStatus').textContent='Overhead: Connected · LGT-0003';for(const id of ['lampTest','lampSelect','resetScenario','resetControls'])byId(id).disabled=false;const root=byId('lampSelect');root.replaceChildren();for(const c of lightDefinitions){const o=document.createElement('option');o.value=o.textContent=c.id;root.append(o);}root.value='crossfeed-valve';if(visualTest)command('visual-test',{active:true});command('pressurization-background',{system:window.B737AircraftProfileStore?.get()?.pressurization||'DCPCS'});command('aircon-background',{family:window.B737AircraftProfileStore?.get()?.aircraftFamily||'B737-300-500'});}
   if(d.kind==='aircon400-temperature-reading'&&Number.isFinite(d.celsius)){window.B737UnifiedCabinTemperatureNeedle?.setTemperature(d.celsius);}
   if(d.kind==='visual-state'){visualOverheadCount=d.active?d.count:0;byId('visualLampStatus').textContent=visualTest?(visualOverheadCount===112?'142-lamp visual test active':'Visual test active · overhead connecting'):'';}
@@ -207,7 +202,8 @@
   }
   if(d.kind==='pan-end'&&drag?.source==='iframe')drag=null;
   if(d.kind==='zoom'){const r=frame.getBoundingClientRect(),v=vp.getBoundingClientRect();applyZoom(zoom*(d.delta<0?1.12:1/1.12),vp.scrollLeft,vp.scrollTop,r.left-v.left+d.clientX*zoom,r.top-v.top+d.clientY*zoom);}
- });
+ }
+ window.addEventListener('message',receiveOverhead);
  function updateCduStatus(){byId('cduStatus').textContent=cduSeats.map(seat=>{const s=cduStates.get(seat);const font=s?.typography?(' · '+s.typography.version+' · '+(s.typography.correct?'✓':'⚠')+' '+(s.typography.nativePx||'?')+'px · 24A '+Math.round(s.typography.width24Px||0)+'px / 25A '+Math.round(s.typography.width25Px||0)+'px · '+s.typography.color):'';return (seat==='CAPT'?'Captain':'First Officer')+': '+(s?.error?'Load Error':s?.ready?(s.page||'Ready'):'Loading')+font;}).join(' · ')||'CDU OFF';}
  updateCduStatus();
  window.addEventListener('message',e=>{const d=e.data,c=d&&cduFrames.get(d.seat);if(e.origin!==location.origin||!c||e.source!==c.child.contentWindow||d.type!=='b737:unified-cdu')return;const previous=cduStates.get(d.seat)||{};
@@ -287,6 +283,9 @@
  async function start(){try{const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}model.validate(assembly);mount();window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));focus('main');
   const scales=Object.fromEntries(assembly.regions.map(r=>[r.id,model.fit(r,vp.clientWidth,vp.clientHeight)]));
   window.B737ImageLoader.primeCockpit(scales,zoom);
+  const earlyReady=window.B737TakeOverheadReady();
+  if(earlyReady)receiveOverhead(earlyReady);
+  command('report');
   window.addEventListener('b737:unified-usable',()=>byId('loading').classList.add('hidden'),{once:true});
  }catch(e){byId('loading').textContent='Panel Connection Error: '+e.message;console.error(e);}}
  start();

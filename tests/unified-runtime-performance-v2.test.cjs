@@ -96,7 +96,7 @@ test('Heavy resource-timing statistics are gated while Controls drawer is closed
 test('Gallery remains on demand and visible navigation still coalesces texture work',()=>{
  const app=read(base+'app.js'),wheel=read(base+'wheel-pan-model-v1.js'),loader=read(base+'performance-loader.js');
  assert.match(app,/b737:unified-usable',\(\)=>/);
- assert.match(app,/frame\.dataset\.deferredUrl=\(window\.B737UnifiedLightOverheadTest\?/);
+ assert.match(read(base+'index.html'),/const url=window\.B737UnifiedLightOverheadTest\?/);
  assert.match(app,/mountGallery\(\);byId\('galleryDialog'\)/);
  assert.match(app,/wheelController\.pan\(payload\)/);
  assert.match(app,/scheduleViewRefresh\(\)/);
@@ -108,7 +108,11 @@ test('Gallery remains on demand and visible navigation still coalesces texture w
 
 test('Primary Overhead and both CDUs launch during cockpit mounting',()=>{
  const app=read(base+'app.js');
- assert.match(app,/if\(r.id==='overhead'\)startOverheadFrame\(\)/);
+ const html=read(base+'index.html');
+ assert.ok(html.indexOf('id="unified-early-overhead"')<html.indexOf('src="./app.js?'));
+ assert.match(html,/B737UnifiedAssemblyPrefetch\?\.then/);
+ assert.match(app,/if\(!region.isConnected\)scene.append\(region\)/);
+ assert.match(app,/if\(earlyReady\)receiveOverhead\(earlyReady\)/);
  assert.doesNotMatch(app,/setTimeout\((?:prewarm|startOverheadFrame)|requestIdleCallback|child.loading='lazy'/);
  assert.match(app,/child.src=item.embeddedUrl/);
  assert.match(app,/B737ImageLoader.primeCockpit\(scales,zoom\)/);

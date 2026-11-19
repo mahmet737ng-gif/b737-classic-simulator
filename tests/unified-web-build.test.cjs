@@ -38,7 +38,7 @@ test('revisioned JS/CSS reuse cache, a new revision downloads, and mutable confi
  const caches={keys:async()=>[],open:async name=>{if(!stores.has(name))stores.set(name,new Map());const store=stores.get(name);return {match:async req=>store.get(req.url),put:async(req,response)=>store.set(req.url,response)};}};
  const self={location:{href:'https://test.invalid/repo/panel-mosaic-lab/cockpit/sw.js'},addEventListener:(n,f)=>handlers[n]=f};
  vm.runInNewContext(read('panel-mosaic-lab/cockpit/sw.js'),{self,caches,URL,B737PerformanceAssets:manifest,importScripts(){},fetch:async()=>{calls++;if(offline)throw Error('offline');return {ok:true,type:'basic',generation,clone(){return {...this};}};}});
- const request=async url=>{let task;handlers.fetch({request:{url,method:'GET',mode:'cors'},respondWith:p=>task=p});return task?await task:null;};
+ const request=async url=>{let task,updates;handlers.fetch({request:{url,method:'GET',mode:'cors'},respondWith:p=>task=p,waitUntil:p=>updates=p});if(!task)return null;const reply=await task;await updates;return reply;};
  const url='https://test.invalid/repo/panel-mosaic-lab/cockpit/app.js?v=WEB-0123456789abcdef';
  await request(url);const n=calls;generation=2;assert.equal((await request(url)).generation,1);assert.equal(calls,n);
  assert.equal((await request(url.replace('abcdef','abcdee'))).generation,2);assert.equal(calls,n+1,'New source revision must not use old cached JS');
@@ -65,9 +65,9 @@ test('PERF-0003 compiles embedded Overhead from its real HTML base without alter
 });
 
 test('PERF-0004 publishes a separate compiled Unified test page without modifying the owner-approved original mounts',()=>{
- const source=read('panel-mosaic-lab/cockpit/app.js'),compiled=prepare(root);
+ const compiled=prepare(root);
  const prod=compiled.html,stage=compiled.overhead.html;
- assert.match(source,/B737OverheadCompositeTest/);
+ assert.match(read(ENTRY),/B737OverheadCompositeTest/);
  assert.ok(!prod.includes('window.B737OverheadCompositeTest=true'),'Production entry must never enable composite test');
  assert.ok(!stage.includes('overhead-composite-test.css'),'Production overhead remains unchanged');
  const builder=read('tools/build-unified-web.cjs');
@@ -78,13 +78,13 @@ test('PERF-0004 publishes a separate compiled Unified test page without modifyin
 
 test('PERF-0005 has isolated Full vs Static controls test routes on the same composite WebP',()=>{
  const builder=read('tools/build-unified-web.cjs');
- const app=read('panel-mosaic-lab/cockpit/app.js');
+ const entry=read(ENTRY);
  const css=read('panel-mosaic-lab/cockpit/overhead-ab-static.css');
  assert.match(builder,/unified-static-controls-test.html/);
  assert.match(builder,/overhead-static-controls-stage.html/);
  assert.match(builder,/unified-ab-hud.js/);
  assert.match(builder,/overhead-ab-metrics.js/);
- assert.match(app,/B737OverheadStaticTest/);
+ assert.match(entry,/B737OverheadStaticTest/);
  assert.match(css,/\.rg-layer/);
  assert.match(css,/\.lights-layer/);
  assert.match(css,/\.toggle-layer/);
@@ -156,18 +156,18 @@ test('PERF-0009 isolates original real Overhead controls, lamps, and V7 kernels 
 });
 
 test('PERF-0010 publishes isolated parent-FMC vs full-Overhead experiments without changing production',()=>{
- const app=read('panel-mosaic-lab/cockpit/app.js');
+ const entry=read(ENTRY);
  const build=read('tools/build-unified-web.cjs');
  const probe=read('panel-mosaic-lab/cockpit/perf-diagnostic-v6.js');
  const source=read('tools/build-composite-overhead-test.cjs');
- assert.match(app,/B737UnifiedNoCduTest/);
- assert.match(app,/B737UnifiedLightOverheadTest/);
+ assert.match(read('panel-mosaic-lab/cockpit/app.js'),/B737UnifiedNoCduTest/);
+ assert.match(entry,/B737UnifiedLightOverheadTest/);
  assert.match(build,/unified-no-cdu-v10.html/);
  assert.match(build,/unified-light-overhead-v10.html/);
  assert.match(probe,/NO_FO_CDU/);
  assert.match(probe,/REAL_F_OVERHEAD/);
  assert.match(source,/overhead-real-f-in-unified-v10.html/);
- assert.doesNotMatch(read('panel-mosaic-lab/cockpit/index.html'),/PERF-0010/);
+ assert.doesNotMatch(entry,/window\.B737UnifiedLightOverheadTest\s*=\s*true/);
  assert.doesNotMatch(read('panel-mosaic-lab/cockpit/overhead-stage.html'),/PERF-0010/);
 });
 

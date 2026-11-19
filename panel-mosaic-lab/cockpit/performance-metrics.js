@@ -1,11 +1,15 @@
 /* User-visible load diagnostics; bounded resource buffer and no telemetry/upload. */
 (function(){
  'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,painting=false,cockpitPainting=false;
+ const cockpitMilestones={};
  function resources(w=window,prefix='top'){const result=[];try{for(const e of [...w.performance.getEntriesByType('resource'),...w.performance.getEntriesByType('navigation')])result.push({frame:prefix,url:e.name,bytes:e.transferSize,body:e.encodedBodySize,start:e.startTime,end:e.responseEnd,cache:e.transferSize===0&&e.encodedBodySize>0});for(const f of w.document.querySelectorAll('iframe'))if(f.contentWindow)result.push(...resources(f.contentWindow,prefix+'/'+f.id));}catch{}return result;}
  function status(){const profile=window.B737AircraftProfileStore?.get();return profile&&window.CockpitStartupGate?.inspect(window,profile);}
  function fullStatus(){
   const profile=window.B737AircraftProfileStore?.get();
-  return profile&&window.CockpitStartupGate?.inspectFull(window,profile);
+  const current=profile&&window.CockpitStartupGate?.inspectFull(window,profile);
+  if(current)for(const [part,ready] of Object.entries(current))
+   if(ready&&part!=='complete')cockpitMilestones[part]??=Math.round(performance.now());
+  return current;
  }
  function ready(){
   if(mainReady!==null||painting)return;
@@ -74,7 +78,7 @@
  window.addEventListener('b737:performance-view',render);
  document.getElementById('inspectorToggle')?.addEventListener('click',()=>queueMicrotask(render));
  window.B737LoadDiagnostics=Object.freeze({
-  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
+  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),cockpitMilestones:{...cockpitMilestones},mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
   measureFps:(durationMs=3000)=>new Promise(resolve=>{
    const length=Math.max(500,Math.min(10000,Number(durationMs)||3000));
    const start=performance.now();let last=null,count=0,slowFrames=0,longestFrameMs=0;
@@ -91,7 +95,7 @@
    requestAnimationFrame(frame);
   })
  });
- if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=PERF-0003',{scope:'./',updateViaCache:'none'}).then(()=>navigator.serviceWorker.ready).then(registration=>{registration.active?.postMessage({type:'b737:prime-used-textures',urls:resources().map(r=>r.url)});const out=document.getElementById('performanceStats');if(out)out.dataset.cache='ready';}).catch(()=>{const out=document.getElementById('performanceStats');if(out)out.dataset.cache='unavailable';}),{once:true});
+ if(window.B737PerformanceAssets&&'serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=PERF-0004',{scope:'./',updateViaCache:'none'}).then(()=>navigator.serviceWorker.ready).then(registration=>{registration.active?.postMessage({type:'b737:prime-used-textures',urls:resources().map(r=>r.url)});const out=document.getElementById('performanceStats');if(out)out.dataset.cache='ready';}).catch(()=>{const out=document.getElementById('performanceStats');if(out)out.dataset.cache='unavailable';}),{once:true});
 })();
 
 ;(function tapLagAddon(){

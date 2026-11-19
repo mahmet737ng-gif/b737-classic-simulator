@@ -3,7 +3,9 @@
 importScripts('./performance/manifest.js');
 try{importScripts('./performance/lossless/manifest.js');}catch{}
 const LOSSLESS=typeof B737LosslessAssets==='object'?B737LosslessAssets:null;
-const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-'+(LOSSLESS?.version||'base')+'-3';
+let cachePromise;
+const openCache=()=>cachePromise??=caches.open(CACHE).catch(()=>{cachePromise=null;return null;});
+const PREFIX='b737-unified-perf-',CACHE=PREFIX+B737PerformanceAssets.version+'-'+(LOSSLESS?.version||'base')+'-4';
 const root=new URL('../../',self.location.href);
 const immutable=new Set(Object.values(B737PerformanceAssets.images).flatMap(a=>a.levels.map(l=>new URL(l.url,root).pathname)));
 for(const path of Object.values(B737PerformanceAssets.patches))immutable.add(new URL(path,root).pathname);
@@ -17,11 +19,25 @@ self.addEventListener('fetch',event=>{
  // Never cache API calls, browser extensions, private sources or unrelated simulator routes.
  const asset=immutable.has(u.pathname)||revisioned(u),text=/\.(?:html|js|css|json)$/.test(u.pathname)&&!u.searchParams.has('ts')&&!u.pathname.includes('/api/');
  if(!asset&&!text&&req.mode!=='navigate')return;
- event.respondWith((async()=>{let cache,hit;try{cache=await caches.open(CACHE);hit=await cache.match(req);}catch{}
-  if(asset&&hit)return hit;
-  try{const reply=await fetch(req,{cache:asset?'default':'no-cache'});if(reply.ok&&reply.type==='basic'){try{await cache?.put(req,reply.clone());}catch{}return reply;}if(hit)return hit;return reply;}
-  catch(error){if(hit)return hit;throw error;}
- })());
+ let update;
+ const task=(async()=>{
+  const match=async()=>{
+   try{return await (await openCache())?.match(req);}catch{return undefined;}
+  };
+  const hit=asset?await match():null;
+  if(hit)return hit;
+  try{
+   const reply=await fetch(req);
+   if(reply.ok&&reply.type==='basic'){
+    const copy=reply.clone();
+    update=openCache().then(cache=>cache?.put(req,copy)).catch(()=>{});
+    return reply;
+   }
+   return await match()||reply;
+  }catch(error){const fallback=await match();if(fallback)return fallback;throw error;}
+ })();
+ event.respondWith(task);
+ event.waitUntil(task.then(()=>update,()=>{}));
 });
 
 // Adopt only resources this client actually used, from HTTP cache only: no extra download.

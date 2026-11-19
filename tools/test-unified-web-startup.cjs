@@ -57,8 +57,8 @@ function assertFiveSeconds(samples){
    }
    if(startupOnly){
     const sample=await page.evaluate(()=>{
-     const {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit}=window.B737LoadDiagnostics.snapshot();
-     return {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit};
+     const {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit,cockpitMilestones}=window.B737LoadDiagnostics.snapshot();
+     return {cockpitReadyMs,mainReadyMs,mainSharpReadyMs,cockpit,cockpitMilestones,marks:performance.getEntriesByType('mark').filter(m=>/overhead-controls|fo-cdu|main-visual/.test(m.name)).map(m=>[m.name,Math.round(m.startTime)])};
     });
     sample.mode=mode;samples.push(sample);console.log(JSON.stringify(sample));
     await page.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(r=>navigator.serviceWorker.addEventListener('controllerchange',r,{once:true}));});

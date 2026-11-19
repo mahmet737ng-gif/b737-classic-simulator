@@ -9,6 +9,7 @@
   const doc=win.document,rootURL=new URL('../../',doc.currentScript.src),manifest=win.B737PerformanceAssets;
   const entries=new Map(),pending=new Set(),inflight=new Map(),readyURLs=new Set(),seen=new Set();
   const MAX_CONCURRENT_TEXTURES=4,MAX_CONCURRENT_UPGRADES=1;
+  const MAX_OVERHEAD_STARTUP_TEXTURES=8;
   let startupScales=null,cockpitZoom=1;
   let timer=0,idleTimer=0,lastMotionAt=0,activeDecodes=0,activeUpgrades=0,lastVisible=0,lastSharp=0;
   function sourceKey(src){
@@ -100,14 +101,19 @@
    const view=viewport(),moving=Date.now()-lastMotionAt<310,geometryCache=new Map();
    const first=[],upgrades=[];
    const overhead=win!==win.top&&win.frameElement?.id==='overheadFrame';
-   const overheadScale=overhead?win.parent.B737ImageLoader?.fitRatio('overhead'):0;
+   let overheadScale=0;
+   if(overhead){
+    const frame=win.frameElement.getBoundingClientRect();
+    overheadScale=win.parent.B737ImageLoader?.fitRatio('overhead')||
+     Math.min((view.right-view.left)/frame?.width,(view.bottom-view.top)/frame?.height);
+   }
    lastVisible=0;lastSharp=0;
    const cx=(view.left+view.right)/2,cy=(view.top+view.bottom)/2;
    for(const [img,item] of entries){
     if(!img.isConnected){entries.delete(img);continue;}
     let primeScale=0;
     if(!item.extent){
-     if(overheadScale&&img.classList.contains('atlas-photo'))primeScale=overheadScale;
+     if(overheadScale>0&&Number.isFinite(overheadScale)&&img.classList.contains('atlas-photo'))primeScale=overheadScale;
      else if(startupScales&&img.parentElement?.classList.contains('texture-piece')){
       const region=img.closest('.region')?.dataset.region;
       primeScale=fitRatio(region);
@@ -129,11 +135,12 @@
    }
    first.sort((a,b)=>a.priority-b.priority);
    upgrades.sort((a,b)=>a.priority-b.priority);
+   const decodeLimit=overheadScale&&first.length?MAX_OVERHEAD_STARTUP_TEXTURES:MAX_CONCURRENT_TEXTURES;
    for(const group of [first,upgrades]){
     for(const w of group){
      const existing=inflight.get(w.url);
      if(existing){existing.waiters.push(w);w.item.loading=w.url;continue;}
-     if(activeDecodes>=MAX_CONCURRENT_TEXTURES)break;
+     if(activeDecodes>=decodeLimit)break;
      const upgrade=!!w.item.extent;
      if(upgrade&&activeUpgrades>=MAX_CONCURRENT_UPGRADES)continue;
      // Gather sibling strips/clones sharing the same source texture, so
@@ -190,7 +197,7 @@
    fullURL(source){const a=manifest?.images[sourceKey(source)];return a?new URL(a.levels.at(-1).url,rootURL).href:new URL(source,doc.baseURI).href;},
    labelPatchURL(){const path=manifest?.patches['engine-start-label'];return path?new URL(path,rootURL).href:null;},
    patchURL(source,rect){const key=sourceKey(source)+':'+['x','y','w','h'].map(k=>rect[k]).join(',');const path=manifest?.patches[key];return path?new URL(path,rootURL).href:null;},
-   stats:()=>({tracked:entries.size,requested:seen.size,decoding:activeDecodes,upgrading:activeUpgrades,visible:lastVisible,sharp:lastSharp,sharedRequests:inflight.size,maxParallel:MAX_CONCURRENT_TEXTURES,maxUpgrades:MAX_CONCURRENT_UPGRADES})
+   stats:()=>({tracked:entries.size,requested:seen.size,decoding:activeDecodes,upgrading:activeUpgrades,visible:lastVisible,sharp:lastSharp,sharedRequests:inflight.size,maxParallel:win.frameElement?.id==='overheadFrame'?MAX_OVERHEAD_STARTUP_TEXTURES:MAX_CONCURRENT_TEXTURES,maxUpgrades:MAX_CONCURRENT_UPGRADES})
   };
   doc.querySelectorAll('img[data-perf-source]').forEach(scan);return Object.freeze(api);
  }

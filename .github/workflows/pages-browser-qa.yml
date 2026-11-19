@@ -38,8 +38,10 @@ jobs:
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
           if [ -z "$CHROME_PATH" ]; then npx playwright install --with-deps chromium; fi
-          node tools/test-unified-web-startup.cjs --startup-only --raw
+          raw_status=0
+          node tools/test-unified-web-startup.cjs --startup-only --raw || raw_status=$?
           node tools/test-unified-web-startup.cjs --startup-only
+          test "$raw_status" = 0
       - name: Verify selected CDU procedure on both EHSIs
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v chromium || true)"
