@@ -17,7 +17,7 @@ try{
     case 'altitude':on=altitudeFrame;break;
     case 'below-gs':on=s.gsInhibited||(s.gsSignalValid&&s.belowGsDots>1.3);break;
     case 'gear-green':on=s['gear'+c.gear[0].toUpperCase()+c.gear.slice(1)]==='DOWN';break;
-    case 'gear-red':{const g=s['gear'+c.gear[0].toUpperCase()+c.gear.slice(1)];on=['TRANSIT','UNSAFE'].includes(g)||(s.gearLever==='DN'&&g!=='DOWN')||(s.gearLever==='UP'&&g!=='UP')||(s.thrustIdle&&g!=='DOWN');break;}
+    case 'gear-red':{const g=s['gear'+c.gear[0].toUpperCase()+c.gear.slice(1)];const approach=s.thrustIdle&&!s.aircraftOnGround&&s.radioAltitude<800;on=['TRANSIT','UNSAFE'].includes(g)||(s.gearLever==='DN'&&g!=='DOWN')||(s.gearLever==='UP'&&g!=='UP')||(s.gearLever==='OFF'&&g!=='UP')||(approach&&g!=='DOWN');break;}
     case 'le-transit':on=s.leCenterPowered&&(s.leDirectValid?s.leDirectTransit:!s.autoslatInFlight&&!programmed(s));break;
     case 'le-extended':on=s.leCenterPowered&&(s.leDirectValid?s.leDirectExtended:s.trailingFlaps>0&&programmed(s));break;
     case 'antiskid':on=!s.antiskidOn||s.antiskidFault;break;
