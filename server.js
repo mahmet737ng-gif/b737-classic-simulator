@@ -4,6 +4,7 @@ const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const zlib = require('node:zlib');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
@@ -44,7 +45,7 @@ const fastRuntime=(()=>{
   if(manifest.schema!=='b737-unified-fast-runtime/1'||
    !/^[a-f0-9]{40}$/.test(manifest.sourceCommit)||
    !Array.isArray(manifest.files))throw Error('Invalid compiled-runtime manifest');
-  const bytes=new Map();
+  const bytes=new Map(),compressed=new Map();
   for(const entry of manifest.files){
    const relative=entry.path;
    if(typeof relative!=='string'||relative.includes('..')||
@@ -57,12 +58,17 @@ const fastRuntime=(()=>{
    if(crypto.createHash('sha256').update(body).digest('hex')!==entry.sha256)
     throw Error('Invalid compiled-runtime digest: '+relative);
    bytes.set(relative,body);
+   if(relative.endsWith('.js')){
+    compressed.set(relative,zlib.brotliCompressSync(body,{
+     params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
+    }));
+   }
   }
   if(!bytes.has('panel-mosaic-lab/cockpit/index.html')||
    !bytes.has('panel-mosaic-lab/cockpit/overhead-stage.html'))
     throw Error('Compiled cockpit or overhead entry missing');
   console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
-  return {sourceCommit:manifest.sourceCommit,bytes};
+  return {sourceCommit:manifest.sourceCommit,bytes,compressed};
  } catch(error){
   if(error.code!=='ENOENT')console.warn('UNIFIED FAST RUNTIME DISABLED: '+error.message);
   return null;
@@ -239,8 +245,13 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
  const ext=path.posix.extname(relative).toLowerCase();
  if(ext==='.js'){
   res.setHeader('Cache-Control','private, max-age=31536000, immutable');
+  res.setHeader('Vary','Accept-Encoding');
+  const accepts=String(req.headers['accept-encoding']||'');
+  const brotli=fastRuntime?.compressed.get(relative);
+  const encode=/\bbr\b/.test(accepts)&&brotli;
+  if(encode)res.setHeader('Content-Encoding','br');
   res.writeHead(200,{'Content-Type':PROXY_MIME['.js']});
-  if(req.method==='HEAD')res.end();else res.end(bytes);
+  if(req.method==='HEAD')res.end();else res.end(encode?brotli:bytes);
   return;
  }
  const mime='text/html; charset=utf-8';
@@ -255,7 +266,13 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
   original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
  res.setHeader('Cache-Control','private, no-store');
  res.writeHead(200,{'Content-Type':mime});
- if(req.method==='HEAD')res.end();else res.end(html);
+ if(req.method==='HEAD'){res.end();return;}
+ const accepts=String(req.headers['accept-encoding']||'');
+ if(/\bbr\b/.test(accepts)){
+  res.setHeader('Vary','Accept-Encoding');
+  res.setHeader('Content-Encoding','br');
+  res.end(zlib.brotliCompressSync(Buffer.from(html),{params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}}));
+ }else res.end(html);
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();
