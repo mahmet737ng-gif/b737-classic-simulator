@@ -1,0 +1,49 @@
+name: Unified fast runtime for authenticated Gateway
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: unified-fast-gateway-runtime
+  cancel-in-progress: true
+jobs:
+  compile-and-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Check out current simulator source
+        uses: actions/checkout@v4
+        with:
+          path: source
+          fetch-depth: 1
+      - name: Check out isolated authenticated gateway
+        uses: actions/checkout@v4
+        with:
+          ref: ata24-guest-gateway
+          path: gateway
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile only verified browser JS and owner-safe HTML
+        working-directory: source
+        run: |
+          node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs
+          node tools/export-unified-gateway-runtime.cjs gateway-fast-runtime
+      - name: Sync a tiny version-matched fast bundle, not assets or secrets
+        run: |
+          set -euo pipefail
+          rm -rf gateway/runtime/fast-unified
+          mkdir -p gateway/runtime/fast-unified
+          cp -a source/gateway-fast-runtime/. gateway/runtime/fast-unified/
+          git -C gateway add runtime/fast-unified
+          if git -C gateway diff --cached --quiet; then
+            echo "Compiled Gateway runtime is unchanged"
+            exit 0
+          fi
+          git -C gateway config user.name "github-actions[bot]"
+          git -C gateway config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C gateway commit -m "perf(gateway): version-matched compiled Unified ${GITHUB_SHA:0:12}"
+          git -C gateway push origin HEAD:ata24-guest-gateway
