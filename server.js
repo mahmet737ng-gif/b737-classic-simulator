@@ -105,6 +105,46 @@ async function upstreamFetch(relative) {
   }
   return null;
 }
+// Authorized-only, bounded read-through cache for source JS/CSS. Never cache
+// HTML, navigation data, credentials or session decisions. Each request still
+// passes the database-backed authorization check BEFORE reaching this cache.
+// A version change gets a distinct entry; unversioned and ts-busted files
+// continue through the original uncached streaming source path.
+const SOURCE_CACHE_TTL_MS=45000,SOURCE_CACHE_ENTRY_MAX=256*1024,SOURCE_CACHE_LIMIT=12*1024*1024;
+const sourceCache=new Map(),sourceInFlight=new Map();
+let sourceCacheBytes=0;
+async function cachedSourceText(relative,requestUrl) {
+  const parsed=new URL(requestUrl,'https://gateway.invalid');
+  const version=parsed.searchParams.get('v');
+  if(!version || parsed.searchParams.has('ts'))return null;
+  const key=relative+'?v='+version;
+  const current=sourceCache.get(key);
+  if(current){
+    if(current.expires>Date.now()){
+      sourceCache.delete(key);sourceCache.set(key,current);
+      return current.bytes;
+    }
+    sourceCache.delete(key);sourceCacheBytes-=current.bytes.length;
+  }
+  if(sourceInFlight.has(key))return sourceInFlight.get(key);
+  const task=(async()=>{
+    const response=await upstreamFetch(relative);
+    if(!response)return undefined;
+    const bytes=Buffer.from(await response.arrayBuffer());
+    if(bytes.length<=SOURCE_CACHE_ENTRY_MAX){
+      while(sourceCacheBytes+bytes.length>SOURCE_CACHE_LIMIT && sourceCache.size){
+        const oldest=sourceCache.keys().next().value;
+        const item=sourceCache.get(oldest);sourceCache.delete(oldest);
+        sourceCacheBytes-=item.bytes.length;
+      }
+      sourceCache.set(key,{bytes,expires:Date.now()+SOURCE_CACHE_TTL_MS});
+      sourceCacheBytes+=bytes.length;
+    }
+    return bytes;
+  })();
+  sourceInFlight.set(key,task);
+  try{return await task;}finally{sourceInFlight.delete(key);}
+}
 function transformCockpitHTML(content) {
   // Only presentation changes: preserve all original ordered scripts and code.
   // Start an immediate same-origin session renewal BEFORE the hundreds of
@@ -125,6 +165,22 @@ function transformCockpitHTML(content) {
   return result;
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false}={}) {
+  const textExt=path.posix.extname(relative).toLowerCase();
+  if(req.method==='GET'&&(textExt==='.js'||textExt==='.css')){
+    try{
+      const bytes=await cachedSourceText(relative,req.url);
+      if(bytes!==null){
+        if(!bytes){res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});res.end('File not available in source repository');return;}
+        res.setHeader('Cache-Control','private, max-age=30');
+        res.writeHead(200,{'Content-Type':PROXY_MIME[textExt]});
+        res.end(bytes);return;
+      }
+    }catch(e){
+      console.error('Cached source unavailable',relative,e.message);
+      res.writeHead(502,{'Content-Type':'text/plain; charset=utf-8'});
+      res.end('Source repository is temporarily unavailable');return;
+    }
+  }
   let response;
   try { response=await upstreamFetch(relative); }
   catch(e) {
