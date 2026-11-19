@@ -3,8 +3,12 @@
 // Browser implementations cap persistent cookies (Chromium: 400 days).
 // Renew on every owner heartbeat: no idle 20-minute or absolute server TTL.
 const OWNER_SESSION_SECONDS=60*60*24*400;
-const GUEST_SESSION_SECONDS=60*60*24*7;
-const DEVICE_SESSION_SECONDS=60*60*24*30;
+// Registration persists server-side until explicitly released.
+const GUEST_SESSION_SECONDS=OWNER_SESSION_SECONDS;
+const DEVICE_SESSION_SECONDS=OWNER_SESSION_SECONDS;
+function canRegisterDevice(tier,previousTier,guestCount,cap=3){
+ return tier==='unlimited'||previousTier==='guest'||guestCount<cap;
+}
 
 function isDocumentNavigation(pathname,headers={}) {
   const dest=String(headers['sec-fetch-dest']||'').toLowerCase();
@@ -21,4 +25,4 @@ function isDocumentNavigation(pathname,headers={}) {
     String(headers.accept||'').toLowerCase().includes('text/html');
 }
 
-module.exports={OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation};
+module.exports={OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation,canRegisterDevice};
