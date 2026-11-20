@@ -56,7 +56,14 @@
   // Converging traffic flies across the OWN flight path, arriving from the
   // chosen left/right side at horizontal CPA. Its relative altitude crosses
   // from -300 to +300 ft (or reverse) during the approach without manual VS.
-  const lateral=spec.ra===null?.72:0,speedKt=options.speedKt??220;
+  // A passing-traffic TA is an actual lateral near-miss: inside the TA
+  // distance envelope, outside the RA envelope. Do not suppress RA solely
+  // because of a scenario label; an explicit CONVERGING override may still
+  // generate a genuine RA.
+  const limits=V1.thresholds(own,'TA_RA');
+  const passingMiss=(limits.taNm+limits.raNm)/2;
+  const lateral=id==='TA_ONLY'&&!converging?passingMiss:(spec.ra===null?.72:0);
+  const speedKt=options.speedKt??220;
   let targetHeading=norm(heading+180);
   let initialN=forward.n*3600*range+side.n*3600*lateral;
   let initialE=forward.e*3600*range+side.e*3600*lateral;
