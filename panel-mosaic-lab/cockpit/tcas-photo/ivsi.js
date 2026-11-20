@@ -128,10 +128,8 @@
   const brt=face.querySelector('#ivsiBrightness');
   if(ta&&!ta.dataset.bound){
    ta.dataset.bound='yes';
+   // Native button keyboard activation already dispatches click exactly once.
    ta.addEventListener('click',toggleLabFull);
-   ta.addEventListener('keydown',e=>{
-    if(e.key===' '||e.key==='Enter'){e.preventDefault();toggleLabFull();}
-   });
   }
   if(brt&&!brt.dataset.bound){
    brt.dataset.bound='yes';
