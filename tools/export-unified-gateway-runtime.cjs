@@ -63,6 +63,7 @@ for(const relative of [
  cockpit+'tcas-lab/app.js',
  cockpit+'tcas-lab/cruise-scenario-v1.js',
  cockpit+'tcas-lab/efis-physical-cp-v1.js',
+ cockpit+'tcas-lab/ivsi-tcas-v1.js',
  cockpit+'efis-pedestal-raster-v1.css',
  'engine/afds/fma-mode-engine-v1.js',
  'engine/efis/classic-flap-speed-profile-v1.js',
