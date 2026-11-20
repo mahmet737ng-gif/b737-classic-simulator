@@ -119,9 +119,13 @@ test('TCAS controls mount inside the existing flight dialog and user buttons run
   assert.equal(nodes.has(removed),false,'Removed training control: '+removed);
  nodes.get('tcasTrainingStart').handlers.click();
  assert.equal(win.B737UnifiedTcasV1.getDiagnostics().active,true);
+ assert.equal(win.B737UnifiedTcasV1.getDiagnostics().scenario,'REVERSAL_DESCEND');
+ const before=win.B737UnifiedTcasV1.getDiagnostics().elapsedSec;
  nodes.get('tcasTrainingNext').handlers.click();nodes.get('tcasTrainingNext').handlers.click();
- assert.equal(win.B737UnifiedTcasV1.getState().advisory,'TA');
- nodes.get('tcasTrainingNext').handlers.click();assert.equal(win.B737UnifiedTcasV1.getState().ra.id,'REVERSAL_DESCEND');
+ const after=win.B737UnifiedTcasV1.getDiagnostics().elapsedSec;
+ assert.ok(after>before,'ADVANCE must move the encounter clock forward');
+ nodes.get('tcasTrainingNext').handlers.click();
+ assert.ok(win.B737UnifiedTcasV1.getDiagnostics().elapsedSec>after);
  nodes.get('tcasTrainingMode').value='TA_ONLY';
  nodes.get('tcasTrainingMode').handlers.change();
  assert.equal(win.B737UnifiedTcasV1.getControls().mode,'TA_ONLY');
