@@ -111,6 +111,10 @@ const {chromium}=require('playwright');
   // Simulate stale browser checkbox state without dispatching a new event.
   await page.evaluate(()=>{document.getElementById('converging').checked=true;});
   await page.locator('#start').click();
+  assert.match(await page.locator('#scenarioStatus').textContent(),/SCENARIO: TA only.*RUNNING/,
+   'LOAD must visibly start the selected scenario immediately');
+  assert.equal(await page.locator('#play').textContent(),'PAUSE');
+  await page.locator('#play').click(); // Pause auto-play before deterministic STEP tests.
   assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'NONE',
    'Passing traffic must never show a false descending RA at LOAD');
   const test=await page.evaluate(()=>{
