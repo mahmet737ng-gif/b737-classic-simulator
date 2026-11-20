@@ -254,6 +254,12 @@ function directBootSetup(){
  const photoRegistry=fastRuntime.bytes.get(cockpitSource+'panel-photo-registry.v1.json');
  const images=previewManifest?JSON.parse(previewManifest).images:{};
  const photos=photoRegistry?JSON.parse(photoRegistry).panels:{};
+ // VISUAL FIRST: 384px fitted photos only, never raw 4K originals.
+ const firstPaint={};
+ for(const key of Object.keys(assembly.assets||{})){
+  const level=images[key]?.levels?.find(item=>item.extent===384&&!item.original);
+  if(level&&fastRuntime.bytes.has(level.url))firstPaint[key]='/'+level.url;
+ }
  const artIndex=fastRuntime.bytes.get(cockpitSource+'performance/boot-art/manifest.json');
  const art={};
  if(artIndex)for(const [id,asset] of Object.entries(JSON.parse(artIndex))){
@@ -280,14 +286,17 @@ function directBootSetup(){
   return selected&&fastRuntime.bytes.has(selected.url)?'/'+selected.url:null;
  }).filter(Boolean);
  const setup=JSON.stringify({
-  assembly,art,
+  assembly,art,firstPaint,
   previews:{
    aircon400:preview('Boeing-Style Environmental Control Panel.png'),
    dcpcs:preview('DCPCS_Background_Owner.png'),
    oh21_400:photo('OH21_400'),oh21_300500:photo('OH21_300500'),cockpitControls
   }
  });
- return '<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
+ const main=assembly.regions.find(region=>region.id==='main');
+ const photoURLs=[...new Set((main?.placements||[]).map(p=>firstPaint[p.asset]).filter(Boolean))];
+ const photoPreloads=photoURLs.map(url=>'<link rel="preload" as="image" href="'+url+'" fetchpriority="high">').join('');
+ return photoPreloads+'<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
 }
 function transformCockpitHTML(content,{direct=false}={}) {
   // Preserve the original ordered simulator scripts. Direct mode embeds the
@@ -305,6 +314,9 @@ function transformCockpitHTML(content,{direct=false}={}) {
     '<script src="/static/session.js" defer></script>';
   if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
   let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
+  // Photo preloads win the first lane; remove speculative ECU preload burst.
+  // Deferred simulator scripts retain their original ordering and behavior.
+  if(direct)result=result.replace(/<link\s+rel="preload"\s+as="script"[^>]*>\s*/gi,'');
   // This source is part of the verified release, shared by the three
   // documents. Its repetitive SVG compresses with the HTML. Deferring it
   // to an extra network fetch can trigger hundreds of lamp fallback requests.
