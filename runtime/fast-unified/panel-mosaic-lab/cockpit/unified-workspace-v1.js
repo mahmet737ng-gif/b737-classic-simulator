@@ -45,6 +45,7 @@
   airStarterAttached:false,airStarterFlow:false,airStarterPressurePsi:35,
   conditionedAirAttached:false,conditionedAirOn:false,
   fuelDoorOpen:false,fuelHoseAttached:false,fuelPower:false,fuelAuxPower:false,fuelTest:false,lampTest:null,
+  fuelRunOnKg:{main1:0,center:0,main2:0},fuelRunOnMode:{main1:'REFUEL',center:'REFUEL',main2:'REFUEL'},fuelIsFlowing:{main1:false,center:false,main2:false},
   fuelMode:'REFUEL',fuelRunning:false,
   valves:{main1:false,center:false,main2:false}
  };
@@ -287,8 +288,6 @@
   updateCart();
   dialog.addEventListener('close',()=>{if(services.fuelRunning)stopFuel('Refueling paused when Flight Phase closes.');});
  }
- function fuelMessage(value,bad=false){fuelStatus=value;msg('flightFuelStatus',value,bad);}
-
  // Photographed P15 faceplate; numbers were removed from this raster in
  // advance. This file is REAL WebP (44,948 bytes), never SVG / CSS imitation.
  let p15Photo=null,p15PhotoReady=false,p15PhotoLoading=false,p15PhotoFailed=false;
@@ -355,6 +354,59 @@
   c.fillStyle=lens;c.beginPath();c.arc(x,74,26,0,Math.PI*2);c.fill();
   c.restore();
  }
+
+ const FUEL_TICK_MS=250;
+ const FUEL_FLOW_KG_S=18; // Instructor tuning; not a certified pump rate.
+ const FUEL_RUNON_KG=50;  // User-requested training residual; not an FCOM value.
+ const fuelStepRound=n=>Math.round(n/10)*10;
+ const fuelHasRunOn=()=>tankKeys.some(t=>services.fuelRunOnKg[t]>.01);
+ const fuelAnyOpen=()=>tankKeys.some(t=>services.valves[t]);
+ function valvePowered(){return services.fuelPower||services.fuelAuxPower;}
+ function updateFuelValveControls(){
+  for(const tank of tankKeys){
+   const node=$('flightFuelValve_'+tank);
+   if(node){
+    const open=services.valves[tank];
+    node.textContent='VALVE · '+(open?'OPEN':'CLOSED');
+    node.setAttribute('aria-pressed',String(open));
+    node.dataset.position=open?'open':'closed';
+   }
+  }
+ }
+ function paintFuelToggle(c,x,open){
+  // Move a brushed-metal physical lever on top of the photo, keeping its
+  // mechanical pivot fixed. Top = OPEN, bottom = CLOSED.
+  const y=169,tipY=open?144:195;
+  c.save();
+  const ring=c.createRadialGradient(x-2,y-3,2,x,y,21);
+  ring.addColorStop(0,'#d1baba');ring.addColorStop(.38,'#743e3a');
+  ring.addColorStop(.65,'#44302e');ring.addColorStop(1,'#11151b');
+  c.fillStyle=ring;c.beginPath();c.ellipse(x,y,20,23,0,0,Math.PI*2);c.fill();
+  c.strokeStyle='#b1b5b7';c.lineWidth=3;c.stroke();
+  c.shadowColor='#02080a';c.shadowBlur=6;c.shadowOffsetX=3;c.shadowOffsetY=4;
+  const steel=c.createLinearGradient(x-9,0,x+10,0);
+  steel.addColorStop(0,'#242d34');steel.addColorStop(.18,'#778691');
+  steel.addColorStop(.48,'#eef1ee');steel.addColorStop(.75,'#9daab0');steel.addColorStop(1,'#303c43');
+  c.strokeStyle=steel;c.lineCap='round';c.lineWidth=14;c.beginPath();
+  c.moveTo(x,y+1);c.lineTo(x+(open?-5:7),tipY);c.stroke();
+  c.shadowBlur=0;c.shadowOffsetX=0;c.shadowOffsetY=0;
+  const tip=c.createRadialGradient(x-5,tipY-5,1,x,tipY,14);
+  tip.addColorStop(0,'#ffffff');tip.addColorStop(.36,'#dce4e7');
+  tip.addColorStop(.73,'#7d8b91');tip.addColorStop(1,'#27333b');
+  c.fillStyle=tip;c.beginPath();c.arc(x+(open?-5:7),tipY,11,0,Math.PI*2);c.fill();
+  c.restore();
+ }
+ function paintTestToggle(c){
+  // Three-position spring-loaded left-hand switch (up TEST, down BYPASS).
+  const x=86,y=199,tipY=services.fuelTest?172:services.fuelAuxPower?227:203;
+  c.save();
+  c.fillStyle='#552e31';c.strokeStyle='#c3b6ae';c.lineWidth=3;
+  c.beginPath();c.arc(x,y,20,0,Math.PI*2);c.fill();c.stroke();
+  c.strokeStyle='#b5bfc4';c.lineWidth=14;c.lineCap='round';
+  c.beginPath();c.moveTo(x,y);c.lineTo(x-11,tipY);c.stroke();
+  c.fillStyle='#c7d2d8';c.beginPath();c.arc(x-11,tipY,10,0,Math.PI*2);c.fill();
+  c.restore();
+ }
  function drawFuelPanel(){
   const canvas=$('flightFuelCanvas');if(!canvas)return;
   const c=canvas.getContext('2d');if(!c)return;
@@ -368,166 +420,238 @@
   }
   c.drawImage(p15Photo,0,0,w,h);
   const fuel=liveFuel(),q=fuel?.indications?.tanksKg??fuel?.tanksKg;
-  const powered=services.fuelDoorOpen&&(services.fuelPower||services.fuelAuxPower);
+  const powered=valvePowered();
   for(const part of p15TankCoords){
-   // The ISN ATA28 tank ledger and its current capacity limits are the
-   // approved usable-quantity simulation source; never read total fuel
-   // for an individual gauge or subtract an invented unusable reserve.
-   const raw=q?.[part.id],usableKg=Number.isFinite(raw)?Math.max(0,Math.min(raw,
-     fuel?.capacitiesKg?.[part.id]??tankCaps[part.id])):NaN;
-   paintFuelDigits(c,part.screenX,usableKg,powered,services.fuelTest);
-   paintPhotoLight(c,part.lampX,(services.lampTest===part.id)||
-    services.fuelTest||(powered&&services.valves[part.id]&&Number.isFinite(usableKg)&&
-    usableKg<(fuel?.capacitiesKg?.[part.id]??tankCaps[part.id])-.2));
-   // A slim live switch-position cue complements the original metal switch,
-   // while retaining its untouched photographic surround.
-   if(services.valves[part.id]&&powered){
-    c.save();c.fillStyle='#b4d8f8';c.shadowColor='#2a80d5';c.shadowBlur=4;
-    c.beginPath();c.arc(part.leverX-11,160,4,0,Math.PI*2);c.fill();c.restore();
-   }
+   const raw=q?.[part.id],cap=fuel?.capacitiesKg?.[part.id]??tankCaps[part.id];
+   const usableKg=Number.isFinite(raw)?Math.max(0,Math.min(raw,cap)):NaN;
+   // P15 indication is total usable fuel, not gross tank contents.
+   paintFuelDigits(c,part.screenX,Number.isFinite(usableKg)?fuelStepRound(usableKg):NaN,powered,services.fuelTest);
+   paintPhotoLight(c,part.lampX,(services.lampTest===part.id)||services.fuelTest||
+    (powered&&services.valves[part.id]&&Number.isFinite(usableKg)&&usableKg<cap-.2));
+   paintFuelToggle(c,part.leverX,services.valves[part.id]);
   }
+  paintTestToggle(c);
   lastFuelDraw=Date.now();
  }
+ function fuelMessage(value,bad=false){fuelStatus=value;msg('flightFuelStatus',value,bad);}
+ function targetFor(tank){
+  const input=$('flightFuelTarget_'+tank);
+  if(!input||!input.value.trim())throw Error(tankLabels[tank]+' target quantity is missing.');
+  const n=Number(input.value);
+  if(!Number.isFinite(n)||n<0||n>tankCaps[tank])throw Error(tankLabels[tank]+' target must be 0–'+tankCaps[tank]+' kg.');
+  return n;
+ }
+ function startFuelTicker(){
+  if(fuelTimer===null){fuelTimer=win.setInterval(tickFuel,FUEL_TICK_MS);}
+ }
+ function stopFuel(reason){
+  if(fuelTimer!==null){win.clearInterval(fuelTimer);fuelTimer=null;}
+  services.fuelRunning=false;
+  for(const tank of tankKeys){
+   services.fuelIsFlowing[tank]=false;
+   services.fuelRunOnKg[tank]=0;
+  }
+  if(reason)fuelMessage(reason);
+  drawFuelPanel();
+ }
+ function commandFuelValve(tank,open){
+  if(!tankKeys.includes(tank))throw Error('Unknown refueling valve.');
+  onGroundGuard();
+  if(open===services.valves[tank])return;
+  if(open){
+   // Instructor convenience: entering P15 refueling is equivalent to
+   // accessing the fueling station and opening its door. A separate hose
+   // connection is NOT a prerequisite in this training scenario.
+   if(!services.fuelDoorOpen){
+    services.fuelDoorOpen=true;services.fuelPower=true;
+   }
+   services.fuelRunOnKg[tank]=0;
+   services.valves[tank]=true;
+   services.fuelIsFlowing[tank]=false;
+   try{targetFor(tank);}catch(e){services.valves[tank]=false;throw e;}
+   startFuelTicker();tickFuel();
+  }else{
+   // De-energize the switch immediately, but a running transfer gets a
+   // bounded 50-kg non-certified closure run-on. Switching off a valve
+   // that was never flowing must not invent extra fuel.
+   const moving=services.fuelIsFlowing[tank]===true;
+   services.fuelRunOnMode[tank]=services.fuelMode;
+   services.fuelRunOnKg[tank]=moving?FUEL_RUNON_KG:0;
+   services.fuelIsFlowing[tank]=false;
+   services.valves[tank]=false;
+   if(moving)startFuelTicker();
+   fuelMessage(tankLabels[tank]+' switch CLOSED · '+(moving?'up to 50 kg training run-on':'no flow to run on'));
+  }
+  updateFuelValveControls();drawFuelPanel();
+ }
  function fuelPanelHit(x,y){
-  // Three physical OPEN/CLOSED fuel valve selectors (not the display glass).
-  if(y>=137&&y<=234){
-   for(const part of p15TankCoords)if(Math.abs(x-part.leverX)<42){
-    if(services.fuelRunning){fuelMessage('Stop fuel transfer before moving a valve switch.',true);return;}
-    services.valves[part.id]=!services.valves[part.id];
-    const button=$('flightFuelValve_'+part.id);
-    if(button){button.textContent='VALVE · '+(services.valves[part.id]?'OPEN':'CLOSED');
-     button.setAttribute('aria-pressed',String(services.valves[part.id]));}
-    drawFuelPanel();return;
+  // The actual metal toggles on the photo, not the quantity windows.
+  if(y>=116&&y<=225){
+   for(const part of p15TankCoords){
+    if(Math.abs(x-part.leverX)<=57){
+     try{commandFuelValve(part.id,!services.valves[part.id]);}
+     catch(e){fuelMessage(e.message,true);}
+     return;
+    }
    }
   }
-  // Independent PRESS TO TEST blue lenses on the original photo.
-  if(y>=35&&y<=121)for(const part of p15TankCoords){
-   if(Math.abs(x-part.lampX)<=37){
-    services.lampTest=part.id;drawFuelPanel();return;
+  // Blue push-to-test lenses.
+  if(y>=33&&y<=119){
+   for(const part of p15TankCoords){
+    if(Math.abs(x-part.lampX)<=45){services.lampTest=part.id;drawFuelPanel();return;}
    }
   }
-  // Spring return: up TEST GAGES, down AUX FUEL DOOR SWITCH BYPASS.
-  if(x>=25&&x<=155&&y>=130&&y<=280){
+  // Momentary switch: top TEST, bottom AUX FUEL DOOR SWITCH BYPASS.
+  if(x>=12&&x<=158&&y>=116&&y<=288){
    if(y<202)services.fuelTest=true;
    else services.fuelAuxPower=true;
    drawFuelPanel();
   }
  }
- function stopFuel(reason){
-  services.fuelRunning=false;if(fuelTimer!==null){clearInterval(fuelTimer);fuelTimer=null;}
-  $('flightFuelStart')?.setAttribute('aria-pressed','false');
-  if(reason)fuelMessage(reason);
-  drawFuelPanel();
- }
- function targetFor(tank){const n=Number($('flightFuelTarget_'+tank)?.value);if(!Number.isFinite(n)||n<0||n>tankCaps[tank])throw Error(tankLabels[tank]+' target must be 0–'+tankCaps[tank]+' kg.');return n;}
  function tickFuel(){
-  if(!services.fuelRunning)return;
+  // In the instructor service the physical valve switches, not a START
+  // button, own the transfer state. One 250-ms timer advances all tanks.
   try{
-   onGroundGuard();
-   if(!services.fuelDoorOpen||!services.fuelHoseAttached||!(services.fuelPower||services.fuelAuxPower))throw Error('Fueling connection or station power lost.');
+   if(!onGround())throw Error('Refueling cannot continue airborne.');
    const ecu=win.B737ISNCockpitV1;
    if(!ecu?.fuelTrainerAction||!ecu?.getFuelSystem)throw Error('ATA28 live ECU is unavailable.');
    const current=getQty();if(!current)throw Error('Fuel ledger unavailable.');
-   let pending=0;
+   const powered=valvePowered();
+   let transferred=false,haveWork=false,runOn=false;
    for(const tank of tankKeys){
-    if(!services.valves[tank])continue;
-    const goal=targetFor(tank),now=Number(current[tank]);
-    if(services.fuelMode==='REFUEL'&&goal<now-0.1)throw Error('REFUEL target is below current tank quantity.');
-    if(services.fuelMode==='DEFUEL'&&goal>now+0.1)throw Error('DEFUEL target is above current tank quantity.');
-    const distance=goal-now;
-    if(Math.abs(distance)<0.2)continue;
-    pending++;
-    // Training flow: 18 kg/s per open valve, not a certified fueling rate.
-    const step=Math.min(Math.abs(distance),4.5)*Math.sign(distance);
-    ecu.fuelTrainerAction({instructor:true,type:'SERVICE_TANK',tank,quantityKg:Math.min(tankCaps[tank],Math.max(0,now+step))});
+    const open=services.valves[tank];
+    let remainder=services.fuelRunOnKg[tank];
+    if(!open&&remainder<=.01){services.fuelIsFlowing[tank]=false;continue;}
+    const mode=open?services.fuelMode:services.fuelRunOnMode[tank];
+    const direction=mode==='REFUEL'?1:-1;
+    const actual=Number(current[tank]);
+    if(!Number.isFinite(actual))throw Error('Invalid live ATA28 quantity for '+tank);
+    const physicalLimit=direction>0?tankCaps[tank]:0;
+    const target=open?targetFor(tank):physicalLimit;
+    const available=direction>0?Math.min(target,physicalLimit)-actual:actual-Math.max(target,physicalLimit);
+    const canFlow=powered&&available>.01;
+    if(!canFlow){
+     services.fuelIsFlowing[tank]=false;
+     if(!open)services.fuelRunOnKg[tank]=0;
+     continue;
+    }
+    // Once CLOSED the residual quantity decelerates gradually. 50 kg is
+    // the total training allowance, not an instantaneous transfer.
+    const taper=open?1:(.20+.80*Math.max(0,remainder)/FUEL_RUNON_KG);
+    const nominal=FUEL_FLOW_KG_S*FUEL_TICK_MS/1000*taper;
+    const delta=Math.min(nominal,available,open?Infinity:remainder);
+    if(delta<=.01){services.fuelIsFlowing[tank]=false;continue;}
+    const newQty=Math.max(0,Math.min(tankCaps[tank],actual+direction*delta));
+    ecu.fuelTrainerAction({instructor:true,type:'SERVICE_TANK',tank,quantityKg:newQty});
+    transferred=true;
+    if(open)services.fuelIsFlowing[tank]=true;
+    else{
+     services.fuelRunOnKg[tank]=Math.max(0,remainder-delta);
+     runOn=runOn||services.fuelRunOnKg[tank]>.01;
+    }
+    haveWork=haveWork||open||services.fuelRunOnKg[tank]>.01;
    }
-   if(!pending){stopFuel('Target quantities reached. Close valves and disconnect the fueling hose.');return;}
+   services.fuelRunning=transferred;
+   const q=getQty();
+   if(transferred){
+    fuelMessage('TRANSFER '+services.fuelMode+' · '+tankKeys.map(t=>tankLabels[t]+' '+fuelStepRound(Number(q?.[t]||0))+' KG').join(' · ')+(runOn?' · VALVE CLOSURE RUN-ON':''));
+   }else if(!fuelAnyOpen()&&!fuelHasRunOn()){
+    fuelMessage('All valve switches CLOSED · fuel transfer stopped.');
+   }else if(!powered)fuelMessage('REFUEL POWER UNAVAILABLE · check station power / AUX bypass',true);
+   else fuelMessage('Valves selected · target quantity reached or no transfer available.');
    drawFuelPanel();
-   const q=getQty();fuelMessage('Fuel transfer active · '+tankKeys.map(id=>tankLabels[id]+' '+Number(q[id]||0).toFixed(0)+' kg').join(' · '));
-  }catch(error){stopFuel(error.message||String(error));msg('flightFuelStatus',error.message||String(error),true);}
+   if(!haveWork&&!runOn){
+    // Stop timing while OPEN valves are at their targets, restart on
+    // switch/target changes; lamp state still follows FCOM independently.
+    if(fuelTimer!==null){win.clearInterval(fuelTimer);fuelTimer=null;}
+   }
+  }catch(e){
+   stopFuel(e.message||String(e));msg('flightFuelStatus',e.message||String(e),true);
+  }
  }
  function initFuel(host){
-  element('p','flight-service-hint','Photo-real P15 pressure-refueling station: Tank 2 / Center / Tank 1. The genuine weathered panel image is a 44.9 KB WebP raster; only the usable KG digits and valve-lamp states are live Canvas overlays. The single ATA28 ECU owns fuel quantities.',host);
-  const canvas=element('canvas','flight-fuel-canvas',undefined,host);
+  element('p','flight-service-hint','FCOM P15: Tank 2 / Center / Tank 1. Click the physical metal toggles: OPEN starts live ATA28 transfer, CLOSED initiates a training-only 50 KG gradual valve-closure run-on. The panel photo is raster WebP, not SVG.',host);
+  const op=element('section','flight-fuel-operation',undefined,host);
+  element('h4','', '1 · REFUELING / DEFUELING · VALVE DRIVEN',op);
+  element('p','flight-service-hint','No hose or START button is required in this instructor service scenario. Choose REFUEL or DEFUEL, set tank targets, then use the metal switches on the panel.',op);
+  const canvas=element('canvas','flight-fuel-canvas',undefined,op);
   canvas.id='flightFuelCanvas';canvas.width=960;canvas.height=540;
-  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','B737 Classic right wing pressure refueling P15 raster training panel with three tank quantity indicators');
-  canvas.title='Photographic P15: click the three valve selectors; blue lenses are press-to-test; left switch TEST GAGES / AUX DOOR BYPASS.';
+  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Interactive B737 Classic right wing P15 refueling station: three live tank quantity displays and clickable valve switches');
+  canvas.title='Click each physical valve switch to move OPEN / CLOSED. Top-left spring toggle: TEST GAGES or AUX. Click blue lenses to test lights.';
+  canvas.style.cursor='pointer';canvas.tabIndex=0;
   const fuelFold=host.closest('[data-service="fuel"]');
   fuelFold?.addEventListener('toggle',()=>{if(fuelFold.open){ensureP15Photo();drawFuelPanel();}});
-  canvas.style.cursor='pointer';
   canvas.addEventListener('pointerdown',event=>{
    const rect=canvas.getBoundingClientRect();
    fuelPanelHit((event.clientX-rect.left)*canvas.width/Math.max(rect.width,1),
     (event.clientY-rect.top)*canvas.height/Math.max(rect.height,1));
+   if(services.fuelTest||services.fuelAuxPower||services.lampTest)canvas.setPointerCapture?.(event.pointerId);
   });
   for(const eventName of ['pointerup','pointercancel','pointerleave'])canvas.addEventListener(eventName,()=>{
-   if(services.fuelTest||services.fuelAuxPower||services.lampTest){services.fuelTest=false;services.fuelAuxPower=false;services.lampTest=null;drawFuelPanel();}
+   if(services.fuelTest||services.fuelAuxPower||services.lampTest){
+    services.fuelTest=false;services.fuelAuxPower=false;services.lampTest=null;drawFuelPanel();
+   }
   });
-  const controls=element('div','flight-fuel-controls',undefined,host);
-  const actions=element('div','flight-service-actions',undefined,controls);
-  serviceButton(actions,'OPEN REFUEL DOOR',()=>{try{onGroundGuard();services.fuelDoorOpen=true;services.fuelPower=true;fuelMessage('Refueling station door open · training power automatically enabled.');drawFuelPanel();}catch(e){fuelMessage(e.message,true)}});
-  serviceButton(actions,'CONNECT FUEL HOSE',()=>{try{onGroundGuard();if(!services.fuelDoorOpen)throw Error('Open the refuel door first.');services.fuelHoseAttached=true;fuelMessage('Pressure refueling hose connected.');drawFuelPanel();}catch(e){fuelMessage(e.message,true)}});
-  serviceButton(actions,'SIMULATE DOOR POWER FAILURE / RESTORE',()=>{try{onGroundGuard();if(!services.fuelDoorOpen)throw Error('Open the refuel door first.');services.fuelPower=!services.fuelPower;if(!services.fuelPower)stopFuel('Door power failed. Hold AUX POWER to test the bypass.');drawFuelPanel();}catch(e){fuelMessage(e.message,true)}});
+  const controls=element('div','flight-fuel-controls',undefined,op);
   const mode=element('label','flight-fuel-mode','OPERATION ',controls);
   const modeSelect=element('select','',undefined,mode);
+  modeSelect.id='flightFuelOperation';
   for(const v of ['REFUEL','DEFUEL']){const o=element('option','',v,modeSelect);o.value=v;}
-  modeSelect.addEventListener('change',()=>{stopFuel();services.fuelMode=modeSelect.value;});
   const rows=element('div','flight-fuel-rows',undefined,controls);
   tankKeys.forEach(tank=>{
    const row=element('div','flight-fuel-row',undefined,rows);
-   element('strong','',tankLabels[tank]+' · MAX '+tankCaps[tank]+' kg',row);
-   const label=element('label','','TARGET KG ',row);
+   element('strong','',tankLabels[tank]+' · MAX '+tankCaps[tank]+' KG',row);
+   const label=element('label','','TARGET · KG ',row);
    const input=element('input','',undefined,label);input.type='number';input.id='flightFuelTarget_'+tank;
-   input.step='1';input.min='0';input.max=String(tankCaps[tank]);
-   const initialFuel=getQty();
-   input.value=initialFuel?String(Math.round(Number(initialFuel[tank]||0))):'';
-   input.dataset.liveInitialized=initialFuel?'yes':'no';
-   input.addEventListener('input',()=>input.dataset.liveInitialized='yes');
-   const valve=serviceButton(row,'VALVE · CLOSED',()=>{
-    if(services.fuelRunning)return;
-    services.valves[tank]=!services.valves[tank];valve.textContent='VALVE · '+(services.valves[tank]?'OPEN':'CLOSED');
-    valve.setAttribute('aria-pressed',String(services.valves[tank]));drawFuelPanel();
+   input.step='10';input.min='0';input.max=String(tankCaps[tank]);input.value=String(tankCaps[tank]);
+   input.addEventListener('change',()=>{
+    if(services.valves[tank]){try{targetFor(tank);startFuelTicker();tickFuel();}catch(e){fuelMessage(e.message,true);}}
    });
-   valve.id='flightFuelValve_'+tank;
-   valve.setAttribute('aria-pressed','false');
+   const valve=serviceButton(row,'VALVE · CLOSED',()=>{
+    try{commandFuelValve(tank,!services.valves[tank]);}catch(e){fuelMessage(e.message,true);}
+   });
+   valve.id='flightFuelValve_'+tank;valve.setAttribute('aria-pressed','false');
   });
-  const footer=element('div','flight-service-actions',undefined,controls);
-  const start=serviceButton(footer,'START FUEL TRANSFER',()=>{
-   try{
-    onGroundGuard();
-    if(services.fuelRunning)return;
-    if(!services.fuelDoorOpen||!services.fuelHoseAttached||!(services.fuelPower||services.fuelAuxPower))
-     throw Error('Open refueling door, connect hose and verify station power.');
-    if(!tankKeys.some(t=>services.valves[t]))throw Error('Open at least one refueling valve.');
-    const q=getQty();if(!q)throw Error('Live ATA28 fuel ECU is not ready.');
-    for(const t of tankKeys)if(services.valves[t]){
-     const goal=targetFor(t),actual=q[t];
-     if(services.fuelMode==='REFUEL'&&goal<actual-0.1||services.fuelMode==='DEFUEL'&&goal>actual+0.1)
-      throw Error('Target direction conflicts with '+services.fuelMode+' mode.');
-    }
-    services.fuelRunning=true;start.setAttribute('aria-pressed','true');
-    fuelMessage('Fuel transfer started · instructor rate 18 kg/s per open valve.');
-    fuelTimer=setInterval(tickFuel,250);tickFuel();
-   }catch(e){fuelMessage(e.message,true);}
-  });start.id='flightFuelStart';
-  serviceButton(footer,'STOP TRANSFER',()=>stopFuel('Fuel transfer stopped.'));
-  serviceButton(footer,'DISCONNECT / CLOSE DOOR',()=>{
-   stopFuel('Fuel service disconnected.');
-   services.fuelPower=false;services.fuelAuxPower=false;services.fuelTest=false;services.lampTest=null;services.fuelHoseAttached=false;services.fuelDoorOpen=false;
-   tankKeys.forEach(t=>services.valves[t]=false);
-   rows.querySelectorAll('button').forEach(b=>{b.textContent='VALVE · CLOSED';b.setAttribute('aria-pressed','false');});
-   drawFuelPanel();
+  modeSelect.addEventListener('change',()=>{
+   if(fuelAnyOpen()||fuelHasRunOn()){
+    modeSelect.value=services.fuelMode;
+    fuelMessage('Close valves and allow closure run-on to finish before changing REFUEL / DEFUEL.',true);
+    return;
+   }
+   services.fuelMode=modeSelect.value;
+   tankKeys.forEach(tank=>{const field=$('flightFuelTarget_'+tank);if(field)field.value=String(services.fuelMode==='REFUEL'?tankCaps[tank]:0);});
+   fuelMessage(services.fuelMode+' selected · open a valve switch to begin.');
   });
-  const status=element('p','flight-service-status','Open the refuel door to begin.',host);
+  const status=element('p','flight-service-status','Select a tank valve to begin.',op);
   status.id='flightFuelStatus';status.setAttribute('role','status');
-  const details=element('small','flight-service-hint','Quantities are written to the single ATA28 ECU at 250 ms intervals while servicing. The door normally energizes the training panel; auxiliary power is momentary. Electrical CB wiring, valve transit, fueling pressure/flow and artwork remain uncalibrated instructor approximations.',host);
+  const aux=element('details','flight-service-fold flight-fuel-aux',undefined,host);
+  element('summary','', '2 · FUEL SERVICE / FAULTS / AUXILIARY CONTROLS',aux);
+  const auxBody=element('div','flight-service-body',undefined,aux);
+  element('p','flight-service-hint','The normal training flow automatically energizes the P15 station on first use. These controls simulate a door switch failure or interrupt service.',auxBody);
+  const actions=element('div','flight-service-actions',undefined,auxBody);
+  serviceButton(actions,'OPEN REFUEL DOOR / RESTORE POWER',()=>{
+   try{onGroundGuard();services.fuelDoorOpen=true;services.fuelPower=true;fuelMessage('Door power restored.');if(fuelAnyOpen())startFuelTicker();drawFuelPanel();}
+   catch(e){fuelMessage(e.message,true);}
+  });
+  serviceButton(actions,'SIMULATE DOOR POWER FAILURE',()=>{
+   services.fuelDoorOpen=true;services.fuelPower=false;
+   fuelMessage('Door power failure · momentary AUX switch bypass available.',true);drawFuelPanel();
+  });
+  serviceButton(actions,'ABORT / STOP ALL TRANSFER',()=>{
+   tankKeys.forEach(t=>services.valves[t]=false);updateFuelValveControls();
+   stopFuel('Instructor emergency abort · all flow stopped immediately (no normal valve closure run-on).');
+  });
+  serviceButton(actions,'CLOSE REFUEL DOOR',()=>{
+   if(fuelAnyOpen()||fuelHasRunOn()){
+    fuelMessage('Close all valves and wait for residual flow before closing the refuel door.',true);return;
+   }
+   services.fuelDoorOpen=false;services.fuelPower=false;
+   fuelMessage('Refuel door closed · P15 power OFF.');drawFuelPanel();
+  });
+  element('small','flight-service-hint','FCOM 12.10.7–8: OPEN energizes related valve; CLOSED de-energizes. Blue valve position lamp indicates OPEN with tank not full. Displays represent usable fuel in KG. The 50 KG post-closure quantity, 18 KG/s transfer rate and ten-kg display increments are training approximations, not certified Boeing performance.',auxBody);
   drawFuelPanel();
   win.addEventListener('b737:unified-ecu-observation',()=>{
-   const quantities=getQty();
-   if(quantities)for(const tank of tankKeys){const input=$('flightFuelTarget_'+tank);
-    if(input?.dataset.liveInitialized==='no'){input.value=String(Math.round(quantities[tank]||0));input.dataset.liveInitialized='yes';}
-   }
-   if(!services.fuelRunning&&doc.querySelector('#flightScenarioDialog[open] [data-service="fuel"][open]')&&Date.now()-lastFuelDraw>900)drawFuelPanel();
+   if(!services.fuelRunning&&doc.querySelector('#flightScenarioDialog[open] [data-service="fuel"][open]')&&Date.now()-lastFuelDraw>700)drawFuelPanel();
   });
  }
  function groupControls(){
