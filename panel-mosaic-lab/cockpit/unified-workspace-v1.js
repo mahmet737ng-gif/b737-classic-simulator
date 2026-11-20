@@ -216,12 +216,22 @@
   const b=element('button','workspace-lab-item',id+' · '+panel.title,container);
   b.id='workspaceOverhead'+id;
   b.type='button';
-  b.addEventListener('click',()=>{
-   if(!win.B737OverheadTestLabsV1?.open?.(id)){
-    msg('workspaceLabStatus',id+' is not ready yet. Please try again.',true);
-    return;
-   }
-   hideLabs();
+  b.addEventListener('click',async()=>{
+   b.disabled=true;b.setAttribute('aria-busy','true');
+   try{
+    for(let attempt=0;attempt<50;attempt++){
+     const api=win.B737OverheadTestLabsV1;
+     if(api&&typeof api.open==='function'){
+      if(api.open(id)){hideLabs();return;}
+      break;
+     }
+     if(attempt===0)msg('workspaceLabStatus','Opening '+id+' test lab…');
+     await new Promise(resolve=>win.setTimeout(resolve,100));
+    }
+    msg('workspaceLabStatus','Unable to open '+id+'. The overhead lab module is unavailable.',true);
+   }catch(error){
+    msg('workspaceLabStatus','Unable to open '+id+': '+String(error?.message||error),true);
+   }finally{b.disabled=false;b.removeAttribute('aria-busy');}
   });
  }
  function hideLabs(){
