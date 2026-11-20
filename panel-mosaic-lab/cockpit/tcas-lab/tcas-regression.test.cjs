@@ -128,6 +128,11 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  get('respond').onclick();
  assert.equal(eadi.afds,'FD');assert.equal(eadi.apEngaged,false);assert.equal(eadi.fd,true);
  assert.deepEqual(fma(eadi),before,'FMC, VNAV and LNAV modes unchanged');
+ const fdScreenOffset=eadi.fdPitch-eadi.pitch,commanded=Number(get('pitch').value);
+ assert.ok(Number.isFinite(commanded)&&commanded>=-12&&commanded<=12,'RA pitch target remains available up to 12°');
+ get('step').onclick();
+ assert.ok(Math.abs((eadi.fdPitch-eadi.pitch)-fdScreenOffset)<1e-8,
+  'Flight director bars stay in place on manual RA even as pitch changes');
  get('start').onclick();assert.equal(eadi.afds,'CMD','LOAD resets autopilot to CMD');
 });
 
@@ -360,4 +365,28 @@ test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()
  assert.match(app,/own\.pitchDeg\+\(fdHoldOffset\?\?0\)/);
  assert.match(app,/commandedPitchForRa/);
  assert.match(app,/options=\{progressive:true\}/);
+});
+
+test('EHSI trend arrows are driven by target vertical motion, not the RA label',()=>{
+ class Svg{
+  constructor(tag,doc){this.tagName=tag;this.ownerDocument=doc;this.attrs={};this.children=[];this.style={};}
+  setAttribute(k,v){this.attrs[k]=String(v);}
+  appendChild(v){this.children.push(v);return v;}
+  replaceChildren(...v){this.children=v;}
+ }
+ const doc={createElementNS(_,tag){return new Svg(tag,doc);}};
+ const svg=new Svg('svg',doc);svg.id='ehsi';
+ EHSI.render(svg,{mode:'CTR_MAP',range:10,heading:0,track:0,selectedHeading:0,
+  nav:{valid:true},route:{points:[]},options:{tfc:true},
+  traffic:{mode:'TA_RA',targets:[
+   {id:'CLIMBER',bearing:8,distance:2.1,kind:'TA',relativeAltitude:400,verticalRate:900},
+   {id:'DESCENDER',bearing:340,distance:3.0,kind:'PROX',relativeAltitude:-500,verticalRate:-1100},
+   {id:'LEVEL',bearing:35,distance:3.1,kind:'OTHER',relativeAltitude:300,verticalRate:200}
+  ]},
+  efis:{displayPower:true,sgValid:true,headingValid:true,trackValid:true},weather:{}});
+ const flatten=n=>[n,...n.children.flatMap(flatten)],nodes=flatten(svg);
+ const trends=nodes.filter(n=>n.attrs['data-trend']).map(n=>n.attrs['data-trend']);
+ assert.ok(trends.includes('UP'),'Climbing traffic must carry an UP arrow');
+ assert.ok(trends.includes('DOWN'),'Descending traffic must carry a DOWN arrow');
+ assert.equal(trends.length,2,'A level or <500 FPM target has no arrow');
 });
