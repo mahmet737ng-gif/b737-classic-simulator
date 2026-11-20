@@ -135,6 +135,46 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
     assert.ok(result.copiedTrace>0,'Full readiness missing from opt-in trace');
    }
    assert.ok(result.cockpitReadyMs>0,'Full cockpit readiness milestone missing');
+   if(mode==='fresh-context'){
+    // End-to-end regression: lab counts are not sufficient. Every expanded
+    // chapter must expose clickable items in the actual authenticated browser.
+    const menuButton=page.locator('#workspaceLabsToggle');
+    await menuButton.waitFor({state:'visible',timeout:12000});
+    await menuButton.click();
+    const palette=page.locator('#workspaceLabsMenu');
+    await palette.waitFor({state:'visible',timeout:5000});
+    const firstLab=page.locator('#workspaceChapter1 .workspace-lab-item').first();
+    await firstLab.waitFor({state:'visible',timeout:5000});
+    assert.ok((await firstLab.boundingBox())?.height>=25,
+     'Test Lab 01 is counted but still clipped or invisible');
+    await page.locator('.workspace-group-trigger[aria-controls="workspaceChapter2"]').click();
+    const airLab=page.locator('#workspaceChapter2 .workspace-lab-item').first();
+    await airLab.waitFor({state:'visible',timeout:5000});
+    assert.ok((await airLab.boundingBox())?.height>=25,
+     'Opening Test Lab 02 did not reveal its entries');
+    await page.getByRole('button',{name:'SHOW ALL LABS'}).click();
+    const tcas=page.locator('#workspaceChapter15 a.workspace-lab-item').filter({hasText:'TCAS Test Lab'});
+    await tcas.waitFor({state:'visible',timeout:5000});
+    await page.locator('.workspace-lab-search').fill('TCAS Test Lab');
+    assert.ok(await tcas.isVisible(),'Test Lab search hid the matching TCAS entry');
+    await page.locator('.workspace-lab-search').fill('');
+    await page.getByRole('button',{name:'SHOW ALL LABS'}).click();
+    const popupPromise=page.waitForEvent('popup',{timeout:15000});
+    await tcas.click();
+    const popup=await popupPromise;
+    await popup.waitForLoadState('domcontentloaded');
+    assert.match(new URL(popup.url()).pathname,/\/panel-mosaic-lab\/cockpit\/tcas-lab\/index\.html$/);
+    const tcasResponse=await context.request.get(popup.url(),{maxRedirects:0});
+    assert.equal(tcasResponse.status(),200,'TCAS Test Lab entry does not return HTTP 200');
+    await popup.close();
+    const overhead=page.locator('#workspaceOverheadOH04');
+    await overhead.waitFor({state:'visible',timeout:6000});
+    await overhead.click();
+    await page.locator('#overheadTestLabDialogV1').waitFor({state:'visible',timeout:12000});
+    assert.match(await page.locator('#ohLabTitle').textContent(),/^OH04/);
+    await page.locator('#ohLabClose').click();
+    console.log('TEST LABS BROWSER SMOKE PASSED: 01, 02, show all, search, TCAS 200, OH04 modal');
+   }
    await context.close();
   }
   console.log('GATEWAY COMPILED BOOT TEST PASSED; budget is 5000ms:',JSON.stringify(data.map(x=>({mode:x.mode,ms:x.cockpitReadyMs,within5s:x.cockpitReadyMs<=5000}))));
