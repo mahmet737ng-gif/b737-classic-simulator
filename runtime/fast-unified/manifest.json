@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "5532fb40b9e606a1f7d6525ebfaa43808835e7c0",
+  "sourceCommit": "4632966ecfa8cc93ec2e00fee5c18e9991b21f9e",
   "mainBefore": 293,
   "mainAfter": 91,
   "overheadBefore": 59,
@@ -8,11 +8,11 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "ea6a35d6484b30b7a01bd79ebce987cbba1aafea4dc85fac710e83e0a21caeb2"
+      "sha256": "eec6d2dc1b1338b4a59c48a7fbca561fc7a0a815e8cbca8a991ffe9622507c62"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "050718300fc18e14197c434e77419ada7c1470c8baa6705e094e6849e492a8ec"
+      "sha256": "acd374b2f226b52bb3a2274139cdab3b59418fce2895ddd4726faf8510057ed5"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
@@ -167,8 +167,8 @@
       "sha256": "3828fc060088f8d84bab9e8078ddcdcec81db7083d0a9fc704daedfa4f617da0"
     },
     {
-      "path": "engine/instruments/desktop-bundle-678c188d5520e511.js",
-      "sha256": "678c188d5520e511920c6ac1d62808037e22ce9aec4769e7a26f04f687fee69c"
+      "path": "engine/instruments/desktop-bundle-7c9efd174045a614.js",
+      "sha256": "7c9efd174045a61439135af10bbdcdc64cd65340bbc424503279f91200ba740a"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -272,7 +272,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.js",
-      "sha256": "f48fcdb4c9296a1994869c761d5a5976f4f599038634dbc4d78c6933c3d4f891"
+      "sha256": "058838c6b180d397a180589f820c0108c32db7b554fdb042b4cfacad55fdf2b2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
@@ -284,7 +284,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance-loader.js",
-      "sha256": "1bc8d92f9a14bc37dbf23cd0c907287eb8c9ab2623fa787f1ab33999710f72c4"
+      "sha256": "da021db21575dc4a0e8fde397fe0dba24bbcc700f42499eb3a684532859a3542"
     },
     {
       "path": "panel-mosaic-lab/cockpit/style.css",
@@ -572,7 +572,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/pedestal-faceplates-library-v1.js",
-      "sha256": "81cbdf87f0b62b177f31966cbe7d0bde8a84df7a3572c1452b0ec9266cb3d6c1"
+      "sha256": "919da6dfbc39213701525540d960bf9909f4ec26350fdd2f09b685b372db6049"
     },
     {
       "path": "panel-mosaic-lab/cockpit/pedestal-dual-vhf-knobs-v1.js",
@@ -964,7 +964,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
-      "sha256": "4200e370af032dd84341d0837b758dac33d38efe33c2ca4b7bb38f43825f3b91"
+      "sha256": "c325a7cc7a82467aaf8072a38374c8cb18a567390130544e0aff8e3b8230def4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
@@ -1295,6 +1295,38 @@
       "sha256": "4d837a15d0ca5792cbe4ef0b5f06d30a5e04b7b95ddf7d3f7d1339592454caa4"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-384.webp",
+      "sha256": "9ba88dca0341cefc6f50a352ac36816fbc6b15f63385e512374197d321511b8f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-768.webp",
+      "sha256": "3eba49de15c402c3b2509633213031a7bd39922cfde8c3af46e9da85eb77dd8c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-384.webp",
+      "sha256": "7c62232e61ba9023c59af6d439cd59c94ed82f50c8177a3d8dfca7427adcb2d3"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-768.webp",
+      "sha256": "590aacf918908e8179c1e07b810820376145ec82d099a606c6a730aa23483487"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-384.webp",
+      "sha256": "ed9ce7bb72103edb82f6eb4666054d8135d35b880ed201770ac610ec9a12db5b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-768.webp",
+      "sha256": "4b348cb30f0ebf3d8231a192787a4639f2f339762881a47a81ae05495aa0434c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-384.webp",
+      "sha256": "2535ab7a54b31eb2f1bfad286ccebc7a717337a974ec997ffa924f65c546a929"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-768.webp",
+      "sha256": "c30a6f3da509f34927944fbad13443fa29c499ef226e1fe5218880eb51de2320"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-384.webp",
       "sha256": "447dea5a84b070bf32cd449104cd25e411c953de16bf01d48fa5c11d77153336"
     },
@@ -1453,6 +1485,34 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/effe3523ce16b81060e0-q96-768.webp",
       "sha256": "dacc42dfae9fce365ab744c887af0aa0e6574ff5cc3f835aaa13e0820c734d81"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/02338ea5248d87ef8b6f-q96-384.webp",
+      "sha256": "51fe75364aa17daf76c5f9932d6cb8be36a081563ce548e6e7e70ac3158f7b1f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-384.webp",
+      "sha256": "629e183ac51cff6ec94fed51bba2f17ab7123d6dfd3b8d0c0ace500cab87f622"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-768.webp",
+      "sha256": "30af7e3dfa76d636a5e597d85118436a6c874f158e4df0780a325ee78f5555ac"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/198d056d0b2652027022-q96-384.webp",
+      "sha256": "44e86bf9052a35c4466c8553776828262f8d04d56a0c34e4bcda12fed8dcb8f9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/e194df5a62ba5d70cefa-q96-384.webp",
+      "sha256": "fc1f238dfb22f5fba552505d20c98ed7615f49e0388191ad37dfa2da2fcf6965"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-384.webp",
+      "sha256": "a31fe571f4d9335ab2d8d54c150fd2a1d3b6c735571ee92aa813bb56b50ef1df"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-768.webp",
+      "sha256": "3550a9453bdc2a18a43f2959e11c2838f772d168bcb7b1aad7fb008d43f87257"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/patch-b9e4c59f0173e9d72804.webp",

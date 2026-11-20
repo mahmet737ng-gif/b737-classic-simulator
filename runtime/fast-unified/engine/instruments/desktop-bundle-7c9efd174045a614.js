@@ -56,7 +56,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0001 */
+/* ./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0002 */
 try{
 (() => {
   'use strict';
@@ -126,9 +126,14 @@ try{
     const [cx,cy] = def.pivot;
     const canvas = svg(host,'svg',{viewBox:`0 0 ${width} ${height}`, role:'img',
       'aria-label':options.label || kind, 'data-gauge':kind});
-    const image = (name, x, y, w, h) => svg(canvas,'image',{
-      href:new URL(kind+'/'+name+'.png', assets).href,x,y,width:w,height:h,'pointer-events':'none'
-    });
+    const image = (name, x, y, w, h) => {
+      const href=new URL(kind+'/'+name+'.png',assets).href;
+      const node=svg(canvas,'image',{x,y,width:w,height:h,'pointer-events':'none'});
+      if(name==='face'&&options.fitPhoto&&window.B737ImageLoader?.assignPreview)
+        window.B737ImageLoader.assignPreview(node,href,384);
+      else node.setAttribute('href',href);
+      return node;
+    };
     image('face',0,0,width,height);
     const movable = svg(canvas,'g',{});
     const sprite = {};
@@ -510,7 +515,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./instrument-lab/unified.js?v=PHOTO-GAUGES-0004-SOCKET-MODE-CLIP */
+/* ./instrument-lab/unified.js?v=PHOTO-GAUGES-0005-FIT-SOURCES */
 try{
 (() => {
   'use strict';
@@ -543,7 +548,7 @@ try{
     if(!gauge||gauge.canvas.parentNode!==host){
       gauge?.canvas.remove();
       gauge=photos.createGauge(host,kind,{
-        label:station+' '+kind,
+        label:station+' '+kind,fitPhoto:true,
         lockOrangeBugs:kind==='airspeed',
         onChange:(...args)=>change(station,...args)
       });
@@ -584,7 +589,7 @@ try{
     lastMode=mode;
     const slot=document.querySelector('.flight-gauge-bridge .flight-standby-row');
     if(slot && standby?.canvas.parentNode!==slot){
-      standby=photos.createGauge(slot,'standby',{label:'Standby altimeter and IAS',onChange:(...args)=>change('standby',...args)});
+      standby=photos.createGauge(slot,'standby',{label:'Standby altimeter and IAS',fitPhoto:true,onChange:(...args)=>change('standby',...args)});
       standby.canvas.classList.add('flight-standby-dial');
       standby.canvas.style.cssText='width:clamp(110px,23vw,190px);height:auto';
       slot.querySelector('svg:not([data-gauge])')?.remove();

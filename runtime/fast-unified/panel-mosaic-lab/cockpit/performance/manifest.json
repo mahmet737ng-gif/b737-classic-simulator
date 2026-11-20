@@ -1292,6 +1292,162 @@
         }
       ]
     },
+    "panel-mosaic-lab/assets/locked/Cargo_Fire_Control_bare_faceplate.png": {
+      "width": 1009,
+      "height": 457,
+      "sourceBytes": 252254,
+      "sourceSha256": "47d1d5ed34715eac8070404098014d5a6c991cc580a7ac79114d70fac3d04d05",
+      "levels": [
+        {
+          "width": 384,
+          "height": 174,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-384.webp",
+          "bytes": 12710,
+          "sha256": "9ba88dca0341cefc6f50a352ac36816fbc6b15f63385e512374197d321511b8f"
+        },
+        {
+          "width": 768,
+          "height": 348,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-768.webp",
+          "bytes": 34218,
+          "sha256": "3eba49de15c402c3b2509633213031a7bd39922cfde8c3af46e9da85eb77dd8c"
+        },
+        {
+          "width": 1009,
+          "height": 457,
+          "extent": 1009,
+          "url": "panel-mosaic-lab/assets/locked/Cargo_Fire_Control_bare_faceplate.png",
+          "bytes": 252254,
+          "sha256": "47d1d5ed34715eac8070404098014d5a6c991cc580a7ac79114d70fac3d04d05",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/Transponder_TCAS_bare_faceplate.png": {
+      "width": 1799,
+      "height": 699,
+      "sourceBytes": 394374,
+      "sourceSha256": "44ef88163a27be6658be715a7ad649feb87fdc3c662760e18ea68d796866356a",
+      "levels": [
+        {
+          "width": 384,
+          "height": 149,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-384.webp",
+          "bytes": 12090,
+          "sha256": "7c62232e61ba9023c59af6d439cd59c94ed82f50c8177a3d8dfca7427adcb2d3"
+        },
+        {
+          "width": 768,
+          "height": 298,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-768.webp",
+          "bytes": 33148,
+          "sha256": "590aacf918908e8179c1e07b810820376145ec82d099a606c6a730aa23483487"
+        },
+        {
+          "width": 1536,
+          "height": 597,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-1536.webp",
+          "bytes": 85576,
+          "sha256": "d845aba0b67084e68f44476d3fd73174381758cf6e6406466462215bab40e29e"
+        },
+        {
+          "width": 1799,
+          "height": 699,
+          "extent": 1799,
+          "url": "panel-mosaic-lab/assets/locked/Transponder_TCAS_bare_faceplate.png",
+          "bytes": 394374,
+          "sha256": "44ef88163a27be6658be715a7ad649feb87fdc3c662760e18ea68d796866356a",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/VHF_COMM_bare_faceplate.png": {
+      "width": 1799,
+      "height": 815,
+      "sourceBytes": 343068,
+      "sourceSha256": "f5b18ef4cca4a279be8325adeeacfff5d66ff89e18ee8a202da45c615ed7e712",
+      "levels": [
+        {
+          "width": 384,
+          "height": 174,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-384.webp",
+          "bytes": 9946,
+          "sha256": "ed9ce7bb72103edb82f6eb4666054d8135d35b880ed201770ac610ec9a12db5b"
+        },
+        {
+          "width": 768,
+          "height": 348,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-768.webp",
+          "bytes": 26728,
+          "sha256": "4b348cb30f0ebf3d8231a192787a4639f2f339762881a47a81ae05495aa0434c"
+        },
+        {
+          "width": 1536,
+          "height": 696,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-1536.webp",
+          "bytes": 68242,
+          "sha256": "e665b9949c80affbaaf04b373cb2afb5caf5faa3456a0b0a6dd0451c079d954a"
+        },
+        {
+          "width": 1799,
+          "height": 815,
+          "extent": 1799,
+          "url": "panel-mosaic-lab/assets/locked/VHF_COMM_bare_faceplate.png",
+          "bytes": 343068,
+          "sha256": "f5b18ef4cca4a279be8325adeeacfff5d66ff89e18ee8a202da45c615ed7e712",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/assets/locked/VHF_NAV_MANUAL_bare_faceplate.png": {
+      "width": 1799,
+      "height": 813,
+      "sourceBytes": 347359,
+      "sourceSha256": "3ff0b4486ec15c1099d8fe01b0ff4ef819416d659a4672e35f94e2bc811b0cd7",
+      "levels": [
+        {
+          "width": 384,
+          "height": 174,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-384.webp",
+          "bytes": 10810,
+          "sha256": "2535ab7a54b31eb2f1bfad286ccebc7a717337a974ec997ffa924f65c546a929"
+        },
+        {
+          "width": 768,
+          "height": 347,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-768.webp",
+          "bytes": 28564,
+          "sha256": "c30a6f3da509f34927944fbad13443fa29c499ef226e1fe5218880eb51de2320"
+        },
+        {
+          "width": 1536,
+          "height": 694,
+          "extent": 1536,
+          "url": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-1536.webp",
+          "bytes": 70426,
+          "sha256": "4fbe680ea985a9a8bcb0be32070c3ddc791ec3342093f20aa8b276e2eda14e01"
+        },
+        {
+          "width": 1799,
+          "height": 813,
+          "extent": 1799,
+          "url": "panel-mosaic-lab/assets/locked/VHF_NAV_MANUAL_bare_faceplate.png",
+          "bytes": 347359,
+          "sha256": "3ff0b4486ec15c1099d8fe01b0ff4ef819416d659a4672e35f94e2bc811b0cd7",
+          "original": true
+        }
+      ]
+    },
     "panel-mosaic-lab/assets/throttle-levers/engine-1-full.png": {
       "width": 1024,
       "height": 1536,
@@ -2007,6 +2163,147 @@
           "original": true
         }
       ]
+    },
+    "panel-mosaic-lab/cockpit/instrument-lab/airspeed/face.png": {
+      "width": 719,
+      "height": 717,
+      "sourceBytes": 399364,
+      "sourceSha256": "02338ea5248d87ef8b6f79e18dc0706fbc8e4c11145184c248078e1a1600ee36",
+      "levels": [
+        {
+          "width": 384,
+          "height": 383,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/02338ea5248d87ef8b6f-q96-384.webp",
+          "bytes": 37778,
+          "sha256": "51fe75364aa17daf76c5f9932d6cb8be36a081563ce548e6e7e70ac3158f7b1f"
+        },
+        {
+          "width": 719,
+          "height": 717,
+          "extent": 719,
+          "url": "panel-mosaic-lab/cockpit/instrument-lab/airspeed/face.png",
+          "bytes": 399364,
+          "sha256": "02338ea5248d87ef8b6f79e18dc0706fbc8e4c11145184c248078e1a1600ee36",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/instrument-lab/altimeter/face.png": {
+      "width": 1117,
+      "height": 1112,
+      "sourceBytes": 444543,
+      "sourceSha256": "6508914f374180f95095066a38d3862ad9143f74b512d654c82b05b6cc025eba",
+      "levels": [
+        {
+          "width": 384,
+          "height": 382,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-384.webp",
+          "bytes": 26776,
+          "sha256": "629e183ac51cff6ec94fed51bba2f17ab7123d6dfd3b8d0c0ace500cab87f622"
+        },
+        {
+          "width": 768,
+          "height": 765,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-768.webp",
+          "bytes": 59712,
+          "sha256": "30af7e3dfa76d636a5e597d85118436a6c874f158e4df0780a325ee78f5555ac"
+        },
+        {
+          "width": 1117,
+          "height": 1112,
+          "extent": 1117,
+          "url": "panel-mosaic-lab/cockpit/instrument-lab/altimeter/face.png",
+          "bytes": 444543,
+          "sha256": "6508914f374180f95095066a38d3862ad9143f74b512d654c82b05b6cc025eba",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/instrument-lab/ivsi/face.png": {
+      "width": 596,
+      "height": 593,
+      "sourceBytes": 316819,
+      "sourceSha256": "198d056d0b2652027022760eb58d48c65fa97a9a14e288f3896c955228165e93",
+      "levels": [
+        {
+          "width": 384,
+          "height": 382,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/198d056d0b2652027022-q96-384.webp",
+          "bytes": 31810,
+          "sha256": "44e86bf9052a35c4466c8553776828262f8d04d56a0c34e4bcda12fed8dcb8f9"
+        },
+        {
+          "width": 596,
+          "height": 593,
+          "extent": 596,
+          "url": "panel-mosaic-lab/cockpit/instrument-lab/ivsi/face.png",
+          "bytes": 316819,
+          "sha256": "198d056d0b2652027022760eb58d48c65fa97a9a14e288f3896c955228165e93",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/instrument-lab/rmi/face.png": {
+      "width": 598,
+      "height": 725,
+      "sourceBytes": 228823,
+      "sourceSha256": "e194df5a62ba5d70cefa2e7ffd06f8f2a60276ee4184122141081b5c9e38b96b",
+      "levels": [
+        {
+          "width": 317,
+          "height": 384,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/e194df5a62ba5d70cefa-q96-384.webp",
+          "bytes": 20382,
+          "sha256": "fc1f238dfb22f5fba552505d20c98ed7615f49e0388191ad37dfa2da2fcf6965"
+        },
+        {
+          "width": 598,
+          "height": 725,
+          "extent": 725,
+          "url": "panel-mosaic-lab/cockpit/instrument-lab/rmi/face.png",
+          "bytes": 228823,
+          "sha256": "e194df5a62ba5d70cefa2e7ffd06f8f2a60276ee4184122141081b5c9e38b96b",
+          "original": true
+        }
+      ]
+    },
+    "panel-mosaic-lab/cockpit/instrument-lab/standby/face.png": {
+      "width": 1081,
+      "height": 1067,
+      "sourceBytes": 488269,
+      "sourceSha256": "0a7c8431162377276f5ee8bc8c831646589342b960d5db1af7328f4a132dc6f5",
+      "levels": [
+        {
+          "width": 384,
+          "height": 379,
+          "extent": 384,
+          "url": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-384.webp",
+          "bytes": 25186,
+          "sha256": "a31fe571f4d9335ab2d8d54c150fd2a1d3b6c735571ee92aa813bb56b50ef1df"
+        },
+        {
+          "width": 768,
+          "height": 758,
+          "extent": 768,
+          "url": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-768.webp",
+          "bytes": 55310,
+          "sha256": "3550a9453bdc2a18a43f2959e11c2838f772d168bcb7b1aad7fb008d43f87257"
+        },
+        {
+          "width": 1081,
+          "height": 1067,
+          "extent": 1081,
+          "url": "panel-mosaic-lab/cockpit/instrument-lab/standby/face.png",
+          "bytes": 488269,
+          "sha256": "0a7c8431162377276f5ee8bc8c831646589342b960d5db1af7328f4a132dc6f5",
+          "original": true
+        }
+      ]
     }
   },
   "patches": {
@@ -2014,5 +2311,5 @@
     "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
   },
   "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
-  "version": "PERF-f96a5778b5f6"
+  "version": "PERF-e49788316994"
 }

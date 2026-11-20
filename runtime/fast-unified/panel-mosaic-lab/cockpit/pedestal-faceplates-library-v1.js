@@ -10,6 +10,12 @@
 const VERSION='PEDESTAL-FACEPLATES-0006';
 const scriptUrl=document.currentScript?.src||location.href;
 const source=name=>new URL('../assets/locked/'+name,scriptUrl).href;
+function loadFace(image,file){
+ const href=source(file);
+ if(root.B737ImageLoader?.assignPreview)root.B737ImageLoader.assignPreview(image,href,384);
+ else image.src=href;
+}
+
 // Images were measured directly from the archived user-provided PNG files:
  // Cargo 1009x457; COMM 1799x815; NAV 1799x813; XPDR/TCAS 1799x699.
  // The assigned radio bays are wider/taller than these native ratios. Stretching
@@ -62,13 +68,13 @@ function mount(){
    Object.assign(frame.style,{position:'absolute',left:plate.x+'px',top:plate.y+'px',
     width:plate.w+'px',height:plate.h+'px',pointerEvents:'none',lineHeight:'0',overflow:'hidden'});
    const img=document.createElement('img');
-   img.src=source(plate.file);
    img.alt=plate.label+' — empty authentic faceplate, no switches installed';
    img.decoding='async';img.draggable=false;
    Object.assign(img.style,{display:'block',width:'100%',height:'100%',maxWidth:'none',
     objectFit:'contain',userSelect:'none',pointerEvents:'none'});
    img.addEventListener('error',()=>{frame.hidden=true;console.warn('Missing pedestal faceplate:',plate.file);},{once:true});
    frame.append(img);layer.append(frame);
+   loadFace(img,plate.file);
  }
  native.append(layer);
  // The original center LEFT MCDU/audio photograph is baked into the underlying
@@ -89,7 +95,6 @@ function mount(){
   overflow:'hidden',lineHeight:'0',pointerEvents:'none',zIndex:'95'
  });
  const cargoImage=document.createElement('img');
- cargoImage.src=source(cargo.file);
  cargoImage.alt='Cargo Fire Control replaces the existing center COMM panel';
  cargoImage.decoding='async';cargoImage.draggable=false;
  Object.assign(cargoImage.style,{
@@ -101,6 +106,7 @@ function mount(){
   console.warn('Unable to load Cargo Fire faceplate:',cargo.file);
  },{once:true});
  backing.append(cargoImage);
+ loadFace(cargoImage,cargo.file);
  native.append(backing);
  // Existing rotary controls can remount if a stale faceplate library was replaced.
  root.B737UnifiedVHFDualV1?.mount?.();
