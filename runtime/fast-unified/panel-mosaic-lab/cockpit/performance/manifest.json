@@ -1325,47 +1325,6 @@
         }
       ]
     },
-    "panel-mosaic-lab/assets/locked/Transponder_TCAS_bare_faceplate.png": {
-      "width": 1799,
-      "height": 699,
-      "sourceBytes": 394374,
-      "sourceSha256": "44ef88163a27be6658be715a7ad649feb87fdc3c662760e18ea68d796866356a",
-      "levels": [
-        {
-          "width": 384,
-          "height": 149,
-          "extent": 384,
-          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-384.webp",
-          "bytes": 12090,
-          "sha256": "7c62232e61ba9023c59af6d439cd59c94ed82f50c8177a3d8dfca7427adcb2d3"
-        },
-        {
-          "width": 768,
-          "height": 298,
-          "extent": 768,
-          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-768.webp",
-          "bytes": 33148,
-          "sha256": "590aacf918908e8179c1e07b810820376145ec82d099a606c6a730aa23483487"
-        },
-        {
-          "width": 1536,
-          "height": 597,
-          "extent": 1536,
-          "url": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-1536.webp",
-          "bytes": 85576,
-          "sha256": "d845aba0b67084e68f44476d3fd73174381758cf6e6406466462215bab40e29e"
-        },
-        {
-          "width": 1799,
-          "height": 699,
-          "extent": 1799,
-          "url": "panel-mosaic-lab/assets/locked/Transponder_TCAS_bare_faceplate.png",
-          "bytes": 394374,
-          "sha256": "44ef88163a27be6658be715a7ad649feb87fdc3c662760e18ea68d796866356a",
-          "original": true
-        }
-      ]
-    },
     "panel-mosaic-lab/assets/locked/VHF_COMM_bare_faceplate.png": {
       "width": 1799,
       "height": 815,
@@ -2311,5 +2270,5 @@
     "engine-start-label": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp"
   },
   "policy": "Originals and frozen renderer untouched; display previews use Lanczos/WebP quality 96; highest level is the byte-identical original for detailed zoom.",
-  "version": "PERF-e49788316994"
+  "version": "PERF-27c86d6fff1f"
 }

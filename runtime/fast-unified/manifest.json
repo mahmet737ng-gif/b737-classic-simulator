@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "b1d0d3c567f806613601b1118e5c1ebee6c7ba7a",
+  "sourceCommit": "0494667f7436081e1629b0cd6b3387d9b7663bc1",
   "mainBefore": 293,
   "mainAfter": 91,
   "overheadBefore": 59,
@@ -8,11 +8,11 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "ec679a0f327858be834380f88bffc8dfc9578b8d2c046683af42c9333d87e7cb"
+      "sha256": "31690f9dfa3d958857cdb37a65a918b8f400eb3d5ab9f54f0b137946f8854e3b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "acd374b2f226b52bb3a2274139cdab3b59418fce2895ddd4726faf8510057ed5"
+      "sha256": "1699a21ed1a9cbf70df48778e99255f0ee159d851b22b6b3b26e7ba951f9e8fb"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
@@ -276,11 +276,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.js",
-      "sha256": "058838c6b180d397a180589f820c0108c32db7b554fdb042b4cfacad55fdf2b2"
+      "sha256": "aec145a9bf162a42c33c762dbcc4171e52c3c69bbf18d316bf9dd79d0a7274a5"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
-      "sha256": "4eb5e8e9439b6ef205328b3c9bf5b072c7c7b8697f30e3047f4d85077e972b4d"
+      "sha256": "fe70b286f473f976d4b5f92189b1871ece7ec9fba916312e739d4c7aa9506e06"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless-integrator.js",
@@ -576,7 +576,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/pedestal-faceplates-library-v1.js",
-      "sha256": "919da6dfbc39213701525540d960bf9909f4ec26350fdd2f09b685b372db6049"
+      "sha256": "332e7a58ce55ee15690443355eba958487f3ac5d42a44bf36b9641a3839ae3d9"
     },
     {
       "path": "panel-mosaic-lab/cockpit/pedestal-dual-vhf-knobs-v1.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
-      "sha256": "c325a7cc7a82467aaf8072a38374c8cb18a567390130544e0aff8e3b8230def4"
+      "sha256": "6f016cba8f8b1719a2d7495fdc0d97f5db428d8ebc6ec289d317e378d12069d7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
@@ -1305,14 +1305,6 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-768.webp",
       "sha256": "3eba49de15c402c3b2509633213031a7bd39922cfde8c3af46e9da85eb77dd8c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-384.webp",
-      "sha256": "7c62232e61ba9023c59af6d439cd59c94ed82f50c8177a3d8dfca7427adcb2d3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/44ef88163a27be6658be-q96-768.webp",
-      "sha256": "590aacf918908e8179c1e07b810820376145ec82d099a606c6a730aa23483487"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-384.webp",
