@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "af896e5e7a1480cf38e7353131a29fa8d5602aa4",
+  "sourceCommit": "cd2faff8a85741b7a19d99c4ee2622b1a39042d6",
   "mainBefore": 295,
   "mainAfter": 93,
   "overheadBefore": 59,
@@ -428,7 +428,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
-      "sha256": "2d673e981d3ac36b6d381e61e004d9726ff04749b417bba96cfba36a9613375a"
+      "sha256": "9fb60e94825c2e8cee32db156847322ded997292fe3b7644d9aaa566791ced4b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/app.js",
@@ -1017,6 +1017,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js",
       "sha256": "5ef7cce0e004bc20faf7690cd9759bc2652e982a6ffd5815e0a97d4b942ec939"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/ivsi-tcas-v1.js",
+      "sha256": "b76c435a6470463d40765964cfeafe242db2f0e22549f3f89f5beef26dbc7fe3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",
