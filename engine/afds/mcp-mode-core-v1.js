@@ -181,6 +181,8 @@ function transition(state,action){
   s.lastAutopilotDisengagement={reason:action.reason,source:action.source};
   s.modes.autopilot=null;s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
+  // With both F/Ds OFF, an A/P disconnect leaves no guidance owner.
+  if(!s.fd.left&&!s.fd.right)clearModes(s);
   // FCOM: switching the A/P off does NOT turn F/D select switches off;
   // command bars may stay visible with valid pitch+roll F/D modes.
   return done();
@@ -448,6 +450,7 @@ function transition(state,action){
   else s.lastAutopilotDisengagement=null;
   s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
+  if(selected===id&&!s.fd.left&&!s.fd.right)clearModes(s);
   // Dual-channel autoland, CWS capture and servo are not modeled.
   // CMD engagement does not deselect an already armed approach.
   return done();
