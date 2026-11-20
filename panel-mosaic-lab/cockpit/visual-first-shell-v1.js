@@ -21,7 +21,7 @@
   if(!photos[key])return false;
   img.alt=key;img.draggable=false;img.decoding='async';
   img.loading=high?'eager':'lazy';img.fetchPriority=high?'high':'low';
-  img.dataset.perfSource=layout.assets[key].url;
+  if(layout.assets[key])img.dataset.perfSource=layout.assets[key].url;
   img.src=photos[key];
   if(high)required.push(img);
   return true;
@@ -63,6 +63,38 @@
  }
  Object.assign(scene.style,{width:layout.canvas.width+'px',height:layout.canvas.height+'px'});
  for(const id of ['main','pedestal'])mountPhotoRegion(layout.regions.find(r=>r.id===id));
+ // Overhead photo: passive until the real OH iframe has loaded and its
+ // separate electrical/air system owners are connected.
+ const over=layout.regions.find(r=>r.id==='overhead');
+ if(over&&photos['assets/overhead.webp']){
+  const section=create('section','region',scene);
+  section.id='region-overhead';section.dataset.visualShell='preview-overhead';
+  section.dataset.region='overhead';section.setAttribute('aria-label',over.label);
+  Object.assign(section.style,{left:over.x+'px',top:over.y+'px',width:over.w+'px',height:over.h+'px'});
+  const title=create('span','region-label',section);title.textContent=over.label;
+  const image=create('img','visual-overhead-preview',section);
+  Object.assign(image.style,{position:'absolute',inset:'0',width:'100%',height:'100%',objectFit:'fill',pointerEvents:'none'});
+  setImage(image,'assets/overhead.webp',false);
+ }
+ // Approved 737 CDU faceplates remain visible without depending on FMC
+ // messages or a loaded iframe. Images disappear only after each live CDU
+ // document is ready; no placeholder is presented as an operational CDU.
+ const cduKey='cdu-standalone-v6/assets/cdu-approved-unlit.png';
+ if(photos[cduKey])for(const item of layout.embeddedInstruments||[]){
+  const native=doc.querySelector('#region-'+item.regionId+'[data-visual-shell="preview"] .region-native');
+  if(!native)continue;
+  const face=create('div','cdu-visual-shell',native);
+  face.dataset.seat=item.seat;
+  Object.assign(face.style,{position:'absolute',left:item.x+'px',top:item.y+'px',
+   width:item.w+'px',height:item.h+'px',overflow:'hidden',background:'#05090b',pointerEvents:'none'});
+  const photo=create('img','',face);
+  setImage(photo,cduKey,true);
+  const source=item.sourceWindow||{x:0,y:0,w:item.nativeWidth,h:item.nativeHeight};
+  const sx=item.w/source.w,sy=item.h/source.h;
+  Object.assign(photo.style,{position:'absolute',width:item.nativeWidth*sx+'px',
+   height:item.nativeHeight*sy+'px',left:-source.x*sx+'px',top:-source.y*sy+'px'});
+ }
+
  let focusAttempts=0;
  function focusMain(){
   const width=vp.clientWidth,height=vp.clientHeight;
