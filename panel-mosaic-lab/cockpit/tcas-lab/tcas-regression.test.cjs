@@ -17,6 +17,19 @@ function run(id,options={},seconds=0){
  for(let n=0;n<=seconds;n++)state=TCAS.step(state,o,n?1:0,TCAS.controls());
  return state;
 }
+test('passing-traffic TA uses a physical near miss and never generates an RA',()=>{
+ const o=own(),limits=require('../../../engine/tcas/classic-tcas-v1.js').thresholds(o,'TA_RA');
+ let s=TCAS.create('TA_ONLY',o);
+ const g=TCAS.geometry(s,s.targets[0],o);
+ assert.ok(g.missDistanceNm>limits.raNm && g.missDistanceNm<limits.taNm,'passing outside RA, inside TA envelope');
+ const seen=new Set();
+ for(let n=0;n<85;n++){
+  s=TCAS.step(s,o,1,TCAS.controls());
+  assert.equal(s.output.ra,null,'passing traffic must not become an RA');
+  for(const t of s.output.targets)seen.add(t.kind);
+ }
+ assert.ok(seen.has('TA'),'passing traffic should create a TA');
+});
 test('2.1 NM / +300 ft / climbing away 1500 fpm is not a false TA or RA',()=>{
  const s=run('CLIMB',{distanceNm:2.1,relativeAltitudeFt:300,verticalRateFpm:1500});
  assert.ok(s.output.targets[0]);
