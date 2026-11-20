@@ -291,6 +291,19 @@
  // Photographed P15 faceplate; numbers were removed from this raster in
  // advance. This file is REAL WebP (44,948 bytes), never SVG / CSS imitation.
  let p15Photo=null,p15PhotoReady=false,p15PhotoLoading=false,p15PhotoFailed=false;
+ // The user-approved photographic P15 switch uses one 5.4 KB WebP containing
+ // two positions. The fixed mount/nut remains registered to the same pivot.
+ let p15ValveSprite=null,p15ValveLoading=false,p15ValveFailed=false;
+ const p15ValveSource='./assets/p15-toggle-photo-approved-v2.webp?v=P15-SWITCH-2-5aa76125';
+ function ensureP15ValveSprite(){
+  if(p15ValveSprite||p15ValveLoading||p15ValveFailed)return;
+  p15ValveLoading=true;
+  const img=new win.Image();img.decoding='async';
+  img.onload=()=>{p15ValveSprite=img;p15ValveLoading=false;drawFuelPanel();};
+  img.onerror=()=>{p15ValveFailed=true;p15ValveLoading=false;
+    fuelMessage('Approved P15 valve switch artwork unavailable.',true);};
+  img.src=new URL(p15ValveSource,doc.baseURI).href;
+ }
  const p15Source='./assets/p15-refuel-photo-v1.webp?v=P15-REAL-PHOTO-0001';
  const p15TankCoords=Object.freeze([
   {id:'main2',screenX:283,leverX:339,lampX:206},
@@ -298,6 +311,8 @@
   {id:'main1',screenX:801,leverX:857,lampX:778}
  ]);
  function ensureP15Photo(){
+  // Lazy load once the Fuel Service section is opened; no boot-time cost.
+  ensureP15ValveSprite();
   if(p15PhotoLoading||p15PhotoReady||p15PhotoFailed)return;
   p15PhotoLoading=true;
   const img=new win.Image();
@@ -374,38 +389,19 @@
   }
  }
  function paintFuelToggle(c,x,open){
-  // Move a brushed-metal physical lever on top of the photo, keeping its
-  // mechanical pivot fixed. Top = OPEN, bottom = CLOSED.
-  const y=169,tipY=open?144:195;
-  c.save();
-  const ring=c.createRadialGradient(x-2,y-3,2,x,y,21);
-  ring.addColorStop(0,'#d1baba');ring.addColorStop(.38,'#743e3a');
-  ring.addColorStop(.65,'#44302e');ring.addColorStop(1,'#11151b');
-  c.fillStyle=ring;c.beginPath();c.ellipse(x,y,20,23,0,0,Math.PI*2);c.fill();
-  c.strokeStyle='#b1b5b7';c.lineWidth=3;c.stroke();
-  c.shadowColor='#02080a';c.shadowBlur=6;c.shadowOffsetX=3;c.shadowOffsetY=4;
-  const steel=c.createLinearGradient(x-9,0,x+10,0);
-  steel.addColorStop(0,'#242d34');steel.addColorStop(.18,'#778691');
-  steel.addColorStop(.48,'#eef1ee');steel.addColorStop(.75,'#9daab0');steel.addColorStop(1,'#303c43');
-  c.strokeStyle=steel;c.lineCap='round';c.lineWidth=14;c.beginPath();
-  c.moveTo(x,y+1);c.lineTo(x+(open?-5:7),tipY);c.stroke();
-  c.shadowBlur=0;c.shadowOffsetX=0;c.shadowOffsetY=0;
-  const tip=c.createRadialGradient(x-5,tipY-5,1,x,tipY,14);
-  tip.addColorStop(0,'#ffffff');tip.addColorStop(.36,'#dce4e7');
-  tip.addColorStop(.73,'#7d8b91');tip.addColorStop(1,'#27333b');
-  c.fillStyle=tip;c.beginPath();c.arc(x+(open?-5:7),tipY,11,0,Math.PI*2);c.fill();
-  c.restore();
+  // Photo-derived UP/DOWN poses only; no vector/CSS/radial-gradient stand-ins.
+  // One shared sprite anchors the static nut and red annulus to the same pivot.
+  if(!p15ValveSprite)return;
+  const frameW=p15ValveSprite.naturalWidth/2;
+  const frameH=p15ValveSprite.naturalHeight;
+  // Canvas is 960x540. Original switch pivot y=169. Both states align there.
+  const outW=72,outH=88;
+  const outX=x-outW/2,outY=125;
+  c.drawImage(p15ValveSprite,open?0:frameW,0,frameW,frameH,outX,outY,outW,outH);
  }
  function paintTestToggle(c){
-  // Three-position spring-loaded left-hand switch (up TEST, down BYPASS).
-  const x=86,y=199,tipY=services.fuelTest?172:services.fuelAuxPower?227:203;
-  c.save();
-  c.fillStyle='#552e31';c.strokeStyle='#c3b6ae';c.lineWidth=3;
-  c.beginPath();c.arc(x,y,20,0,Math.PI*2);c.fill();c.stroke();
-  c.strokeStyle='#b5bfc4';c.lineWidth=14;c.lineCap='round';
-  c.beginPath();c.moveTo(x,y);c.lineTo(x-11,tipY);c.stroke();
-  c.fillStyle='#c7d2d8';c.beginPath();c.arc(x-11,tipY,10,0,Math.PI*2);c.fill();
-  c.restore();
+  // Preserve the real left selector in the P15 photo until approved
+  // photo-derived TEST/OFF/BYPASS sprites are supplied.
  }
  function drawFuelPanel(){
   const canvas=$('flightFuelCanvas');if(!canvas)return;
