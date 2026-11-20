@@ -65,6 +65,9 @@ test('quick encounter controls precede EADI/EHSI, optional settings follow',()=>
  assert.ok(html.includes('efis-physical-cp-v1.js'));
  assert.ok(html.includes('../efis-pedestal-raster-v1.css'));
  assert.ok(html.includes('id="efis-state-bridge" hidden'));
+ assert.match(html,/>Scenario<select id="scenario"/);
+ assert.match(html,/>LOAD SCENARIO<\/button>/);
+ assert.match(html,/id="scenarioStatus"[^>]*role="status"/);
 });
 test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',()=>{
  const defaults={altitude:'27000',radioHeight:'24000',speed:'293',pitch:'2',vs:'0',
@@ -122,6 +125,9 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  get('respond').onclick();
  assert.equal(eadi.afds,'CMD','No RA: autopilot stays engaged');
  get('converging').checked=true;get('scenario').value='CLIMB';get('start').onclick();
+ assert.equal(get('play').textContent,'PAUSE','LOAD SCENARIO starts playing without a second click');
+ assert.match(get('scenarioStatus').textContent,/TA > CLIMB.*T\+0 S.*RUNNING/);
+ assert.ok(ehsiInput.traffic.targets.length>0,'selected scenario populates EFIS traffic');
  for(let n=0;n<80&&!eadi.tcasRa;n++)get('step').onclick();
  assert.equal(eadi.tcasRa?.id,'CLIMB');
  const before=fma(eadi);
@@ -134,6 +140,14 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.ok(Math.abs((eadi.fdPitch-eadi.pitch)-fdScreenOffset)<1e-8,
   'Flight director bars stay in place on manual RA even as pitch changes');
  get('start').onclick();assert.equal(eadi.afds,'CMD','LOAD resets autopilot to CMD');
+ get('scenario').value='REVERSAL_DESCEND';get('start').onclick();
+ assert.match(get('scenarioStatus').textContent,/CLIMB > DESCEND NOW.*RUNNING/);
+ assert.equal(get('play').textContent,'PAUSE');
+ get('step').onclick();assert.match(get('scenarioStatus').textContent,/T\+1 S/);
+ get('scenario').value='TA_ONLY';get('start').onclick();
+ assert.match(get('scenarioStatus').textContent,/TA only \/ passing traffic.*T\+0 S.*RUNNING/);
+ get('play').onclick();assert.match(get('scenarioStatus').textContent,/PAUSED/);
+ assert.equal(get('play').textContent,'RUN');
 });
 
 test('EHSI actually renders tracked traffic on 360° CTR MAP (even when beyond expanded MAP arc)',()=>{
