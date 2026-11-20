@@ -68,18 +68,82 @@
    label(g,tag,-12,t.relativeAltitude<0?21:-10,color,14);label(g,trend,8,5,color,16);g.restore();
   }
  }
- function paintFace(g,active,selected,own,vs,valid,full){
+ // The source scale.webp contains fixed demonstration marks under two
+ // obsolete rectangular masks. In the test lab, clear the entire circular
+ // symbology field without cutting square holes through the photo instrument.
+ // The original cockpit painter is deliberately not changed.
+ function cleanLabTraffic(g,range,heading,trafficState){
+  const visible=(trafficState.targets||[]).filter(t=>Number.isFinite(t.bearing)&&
+   Number.isFinite(t.distance)&&t.distance>=0&&t.distance<=range);
+  const ranks={RA:0,TA:1,PROX:2,OTHER:3};
+  visible.sort((a,b)=>(ranks[a.kind]??4)-(ranks[b.kind]??4)||a.distance-b.distance);
+  const contacts=visible.map(t=>{
+   const rad=(t.bearing-heading)*Math.PI/180,r=130*t.distance/range;
+   return {t,x:201+r*Math.sin(rad),y:203-r*Math.cos(rad)};
+  });
+  // First paint the threat symbols at their exact bearing and range. Labels
+  // may move for legibility but the contact locations must never move.
+  for(const {t,x,y} of contacts){
+   const color=t.kind==='RA'?'#ff302e':t.kind==='TA'?amber:'#fff';
+   g.save();g.translate(x,y);g.fillStyle=g.strokeStyle=color;g.lineWidth=2;
+   g.beginPath();
+   if(t.kind==='RA')g.rect(-5,-5,10,10);
+   else if(t.kind==='TA')g.arc(0,0,6,0,2*Math.PI);
+   else {g.moveTo(0,-7);g.lineTo(5,0);g.lineTo(0,7);g.lineTo(-5,0);g.closePath();}
+   if(t.kind==='OTHER')g.stroke();else g.fill();
+   g.restore();
+  }
+  const occupied=contacts.map(c=>({left:c.x-7,right:c.x+7,top:c.y-9,bottom:c.y+9}));
+  // The leftward VSI needle passes across the zero-rate midline. Reserve its
+  // central region so traffic text is not cut by the moving needle.
+  occupied.push({left:64,right:204,top:196,bottom:211});
+  const intersects=(a,b)=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
+  const placed=[];
+  for(const {t,x,y} of contacts){
+   const n=t.displayAltitude??(Number.isFinite(t.relativeAltitude)?Math.round(t.relativeAltitude/100):null);
+   const tag=n===null?'':(t.displayAltitude!=null?'FL':n<0?'−':'+')+
+    String(Math.abs(n)).padStart(t.displayAltitude!=null?3:2,'0');
+   const trend=Number.isFinite(t.verticalRate)&&Math.abs(t.verticalRate)>=500?
+    (t.verticalRate>0?'↑':'↓'):'';
+   if(!tag&&!trend)continue;
+   const width=tag.length*8+ (trend?13:0)+2,height=17;
+   const candidate=[
+    {x:x-width/2,y:y-14},{x:x-width/2,y:y+24},
+    {x:x+14,y:y+6},{x:x-14-width,y:y+6},
+    {x:x+14,y:y-17},{x:x-14-width,y:y-17}
+   ];
+   const pos=candidate.find(c=>{
+    const rect={left:c.x-2,right:c.x+width+2,top:c.y-height,bottom:c.y+3};
+    if(rect.left<57||rect.right>345||rect.top<56||rect.bottom>350)return false;
+    if(Math.hypot((rect.left+rect.right)/2-201,(rect.top+rect.bottom)/2-203)>116)return false;
+    return !occupied.some(o=>intersects(o,rect));
+   });
+   if(!pos)continue; // Never print ambiguous overlapping altitude labels.
+   const color=t.kind==='RA'?'#ff302e':t.kind==='TA'?amber:'#fff';
+   if(tag)label(g,tag,pos.x,pos.y,color,13);
+   if(trend)label(g,trend,pos.x+tag.length*8+2,pos.y,color,15);
+   occupied.push({left:pos.x-2,right:pos.x+width+2,top:pos.y-height,bottom:pos.y+3});
+   placed.push(t.id);
+  }
+  return {symbols:contacts.length,labels:placed.length};
+ }
+ function paintFace(g,active,selected,own,vs,valid,full,lab=false){
   if(!scale.naturalWidth)return false;
   const show=(full||!!active.advisory||active.mode==='TEST')&&!['OFF','FAIL'].includes(active.mode);
   g.clearRect(0,0,403,403);g.drawImage(scale,0,0);
   if(show){
-   g.fillStyle='#060608';g.fillRect(112,114,180,67);g.fillRect(145,236,107,36);
+   g.fillStyle='#060608';
+   if(lab){
+    g.beginPath();g.arc(201,203,119,0,Math.PI*2);g.fill();
+   }else{
+    g.fillRect(112,114,180,67);g.fillRect(145,236,107,36);
+   }
    label(g,'RNG '+(selected.rangeNm??10),295,44,cyan,15);
    if(selected.filter!=='NORM')label(g,selected.filter,25,39,cyan,14);
    if(active.transponder?.absolute&&Number.isFinite(own.altitudeFt))
     label(g,'FL'+String(Math.round(own.altitudeFt/100)).padStart(3,'0'),25,55);
-   traffic(g,selected.rangeNm??10,own.trueHeadingDeg,active);
-   label(g,'✈',193,207,'white',18);
+   if(!lab)traffic(g,selected.rangeNm??10,own.trueHeadingDeg,active);
+   if(!lab)label(g,'✈',193,207,'white',18);
   }
   guidance(g,active.ra);
   if(valid){
@@ -88,6 +152,11 @@
     i?g.lineTo(x,y):g.moveTo(x,y);
    g.fill();g.restore();
   }else label(g,'VSI',310,375,amber);
+  if(show&&lab){
+   // Traffic symbology is readable over the needle, not hidden underneath it.
+   cleanLabTraffic(g,selected.rangeNm??10,own.trueHeadingDeg,active);
+   label(g,'✈',193,207,'white',18);
+  }
   const flags={OFF:['TCAS','STBY'],FAIL:['TCAS'],TEST:['TEST'],TA_ONLY:['TA ONLY']};
   (flags[active.mode]||[]).forEach((line,i)=>
    label(g,line,34,361+21*i,['FAIL','TEST'].includes(active.mode)?amber:cyan,21));
@@ -151,7 +220,7 @@
   if(canvas.height!==403)canvas.height=403;
   const selected={rangeNm:opts.rangeNm??10,filter:opts.filter??'NORM'};
   const ok=paintFace(canvas.getContext('2d'),trafficState,selected,own,
-   Number.isFinite(own.vsFpm)?own.vsFpm:0,true,labPref.full);
+   Number.isFinite(own.vsFpm)?own.vsFpm:0,true,labPref.full,true);
   canvas.style.opacity=String(labPref.brightness);
   const knob=canvas.closest?.('.photo-ivsi-face')?.querySelector('.ivsi-brightness-photo');
   if(knob)knob.style.transform='rotate('+((labPref.brightness-.1)*255)+'deg)';
