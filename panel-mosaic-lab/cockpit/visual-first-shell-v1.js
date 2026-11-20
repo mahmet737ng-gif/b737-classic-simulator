@@ -8,8 +8,9 @@
  if(!scene||!vp||!layout||!photos)return;
  const main=layout.regions.find(r=>r.id==='main');
  if(!main?.placements?.length||!main.placements.every(p=>photos[p.asset]))return;
- let resolveLane,finished=false;
+ let resolveLane,finished=false,released=false;
  const ready=new Promise(resolve=>{resolveLane=resolve;});
+ function release(value){if(released)return;released=true;resolveLane(value);}
  win.B737VisualFirstShellV1={ready,adopted:false,startedAt:performance.now()};
  const required=[];
  const create=(type,cls,parent)=>{
@@ -92,11 +93,11 @@
     const banner=doc.getElementById('loading');
     if(banner){banner.textContent='VISUAL READY · SYSTEMS CONNECTING';banner.dataset.phase='visual';}
     win.dispatchEvent(new CustomEvent('b737:visual-ready',{detail:{visualReadyMs:ms}}));
-    resolveLane({ok:true,atMs:ms});
+    release({ok:true,atMs:ms});
    }));
   }else{
    doc.documentElement.dataset.unifiedVisualPhase='fallback';
-   resolveLane({ok:false});
+   release({ok:false});
   }
  }
  let remaining=required.length,failed=false;
@@ -111,5 +112,5 @@
  }
  // A slow or corrupt preview must never deadlock Overhead or CDU startup.
  // Fallback doesn't count as VISUAL READY.
- win.setTimeout(()=>finish(false),4000);
+ win.setTimeout(()=>release({ok:false,reason:'photo-preload-timeout'}),4000);
 })(window,document);
