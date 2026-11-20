@@ -23,4 +23,13 @@ assert.ok(at300[320]<at300[280], '320 kt must be above 280 kt on speed tape');
 assert.ok(at300[300]>at280[300],
  'As actual IAS increases, existing 300-kt tick scrolls DOWN toward the current-speed index');
 assert.equal(Tape.TAPE.pxPerKt,5.2);
+const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'eadi-speed-tape-v1.js'),'utf8');
+// In the rolling CAS window the NEXT numeral must enter from ABOVE and
+// travel downward when IAS increases. This matches existing scale tick motion
+// and photo-instrument / standby drums.
+assert.ok(source.includes('[[1,f.previous],[0,f.digit],[-1,f.next]]'),
+ 'EADI upcoming IAS drum number must be above current digit');
+assert.ok(source.includes('y+(j+f.fraction)*34'),
+ 'EADI digits must move DOWN with increasing indicated speed');
+
 console.log('PASS EADI IAS scale: high speeds above lower speeds and correct downward tape scroll on acceleration');
