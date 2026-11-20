@@ -103,8 +103,8 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.equal(EFISCore.evaluate(source).dhDigital,false);
  assert.ok(ehsiInput.groundSpeed>400);
  assert.ok(ehsiInput.trueAirspeed>400);
- assert.ok(ehsiInput.traffic.targets.filter(t=>t.kind==='OTHER').length<=2,
-  '10 NM has at most two OTHER contacts beyond primary target');
+ assert.ok(ehsiInput.traffic.targets.filter(t=>t.id?.startsWith('OTHER-')).length<=2,
+  '10 NM has at most two AMBIENT OTHER contacts besides the named primary target');
  assert.equal(ehsiInput.route.activeIndex,1);
  assert.ok(ehsiInput.route.points[1].name,'Next simulated FMC fix visible');
  assert.ok(ehsiInput.nav.timeToGo,'TTG available');
