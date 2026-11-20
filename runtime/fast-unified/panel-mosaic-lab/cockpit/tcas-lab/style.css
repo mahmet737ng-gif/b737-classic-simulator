@@ -160,3 +160,8 @@ main{max-width:1540px;padding:12px}
 .screens .photo-ivsi-face>.ivsi-original-hotspot:focus-visible{
  outline:2px solid #6dcdf2;outline-offset:2px;border-radius:50%;
 }
+
+/* TCAS-SCENARIO-LOAD-0012: live scenario state stays above the flight displays. */
+#scenarioStatus.scenario-progress{margin:9px 0 1px;padding:7px 10px;
+ border-top:1px solid #355368;color:#abdaf0;font:600 12px/1.45 system-ui,sans-serif;
+ overflow-wrap:anywhere}

@@ -1,9 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-PHOTO-IVSI-0011"></head><body>
-<header><div><h1>737 Classic · TCAS Encounter Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
-<main><section class="controls controls-primary" aria-label="Encounter quick controls">
-<div class="encounter-bar"><label class="encounter-select">Encounter<select id="scenario"></select></label>
-<div class="actions primary-actions"><button id="start">LOAD ENCOUNTER</button><button id="play">RUN</button><button id="step">STEP 1 S</button><button id="respond">TAKE ACTION</button>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Scenario Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-SCENARIO-LOAD-0012"></head><body>
+<header><div><h1>737 Classic · TCAS Scenario Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
+<main><section class="controls controls-primary" aria-label="Scenario quick controls">
+<div class="encounter-bar"><label class="encounter-select">Scenario<select id="scenario"></select></label>
+<div class="actions primary-actions"><button id="start">LOAD SCENARIO</button><button id="play">RUN</button><button id="step">STEP 1 S</button><button id="respond">TAKE ACTION</button>
 <label class="converging-option" title="Automatically generate a lateral and vertical altitude-crossing encounter"><input id="converging" type="checkbox"> CONVERGING</label></div></div>
+<p id="scenarioStatus" class="scenario-progress" role="status" aria-live="polite"></p>
 <div id="efis-state-bridge" hidden aria-hidden="true">
 <select id="displayMode"><option value="CTR_MAP" selected>CTR MAP</option><option value="MAP">MAP</option><option value="FULL_NAV">FULL NAV</option><option value="FULL_VOR_ILS">FULL VOR / ILS</option><option value="EXP_NAV">EXP NAV</option><option value="EXP_VOR_ILS">EXP VOR / ILS</option><option value="PLAN">PLAN</option></select>
 <select id="range"><option>10</option><option>20</option><option>40</option><option>80</option><option>160</option><option>320</option></select>
@@ -31,7 +32,7 @@
 <label>Altitude band<select id="filter"><option value="NORM">NORM</option><option value="ABOVE">ABOVE</option><option value="BELOW">BELOW</option></select></label><label>Time rate<select id="rate"><option>1</option><option>5</option></select></label>
 <label>Own altitude (ft MSL)<input id="altitude" type="number" value="27000"></label><label>Radio height (ft)<input id="radioHeight" type="number" value="24000"></label><label>Own indicated airspeed (KIAS)<input id="speed" type="number" value="293"></label>
 <label>Own pitch target (°)<input id="pitch" type="number" step="0.1" value="2"></label><label>Own VS target (fpm)<input id="vs" type="number" value="0" step="100"></label>
-<label>Intruder initial relative altitude (ft)<input id="relative" type="number" placeholder="Encounter default"></label><label>Intruder vertical rate (fpm)<input id="intruderVS" type="number" placeholder="Encounter default"></label></div>
+<label>Intruder initial relative altitude (ft)<input id="relative" type="number" placeholder="Scenario default"></label><label>Intruder vertical rate (fpm)<input id="intruderVS" type="number" placeholder="Scenario default"></label></div>
 
 <div class="fields"><label>Converging intruder side<select id="intruderSide"><option value="RIGHT">RIGHT</option><option value="LEFT">LEFT</option></select></label></div>
 <div class="actions"><button id="ident">IDENT</button><button id="absolute">ABS ALT 15 S</button><label><input id="priority" type="checkbox"> GPWS / WINDSHEAR priority</label></div>
@@ -48,5 +49,5 @@
 <script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-TRAJECTORY-0009"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
 <script src="efis-physical-cp-v1.js?v=TCAS-DH-0008"></script>
 <script src="../tcas-photo/ivsi.js?v=TCAS-ORIGINAL-PHOTO-0011"></script>
-<script src="app.js?v=TCAS-PHOTO-IVSI-0011"></script>
+<script src="app.js?v=TCAS-SCENARIO-LOAD-0012"></script>
 </body></html>

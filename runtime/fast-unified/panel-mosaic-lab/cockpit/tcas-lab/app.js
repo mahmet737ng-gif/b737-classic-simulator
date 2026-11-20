@@ -8,7 +8,7 @@
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='DIVERGING_ABOVE';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
- function load(){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
+ function load(autoRun=false){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
   own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.iasKt=Number(by('speed').value);
   // 293 KIAS / Mach .73 cruise demonstration, with TAS distinct from CAS.
   // These are trainer estimates, not an ADC atmosphere calculation.
@@ -26,7 +26,14 @@
   }
   if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);
   if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
-  encounter=C.create(scenario.value,own,options);refresh();}
+  encounter=C.create(scenario.value,own,options);refresh();
+  // Loading starts the selected timeline; no second RUN click is necessary.
+  running=autoRun;last=null;by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();}
+ function updateScenarioStatus(){if(!encounter)return;
+  const spec=C.SCENARIOS[encounter.scenario],status=by('scenarioStatus');
+  if(status)status.textContent='SCENARIO: '+(spec?.label||encounter.scenario)+' · '+(out?.stage||'MONITOR')+
+   ' · T+'+Math.floor(own.elapsedSec)+' S · '+(running?'RUNNING':'PAUSED');
+ }
  function refresh(){if(!encounter)return;encounter=C.step(encounter,own,0,settings,feeds());out=encounter.output;paint();}
  function step(dt){
   const change=Math.max(-3*dt,Math.min(3*dt,targetPitch-own.pitchDeg));own.pitchDeg+=change;
@@ -100,6 +107,7 @@
     wxBrightness:cp?.brightness.wxInner??1},weather:{}});
   win.B737TcasEfisCPV1?.sync?.({mode:by('displayMode').value,range:rangeNm,tfc:tfcVisible});
   by('status').textContent=[out.mode,out.stage,out.callout,...out.inhibits].filter(Boolean).join(' · ');
+  updateScenarioStatus();
   const t=out.transponder;by('xpdr').textContent='ATC '+t.selectedUnit+' · '+t.displayedCode+' · MODE S '+(t.modeS?'ON':'OFF')+' · ALT '+(t.altitudeReporting?'REPORTING':'OFF / INVALID')+' · '+(t.atcFailLight?'ATC FAIL / TEST':'NORMAL')+(t.ident?' · IDENT':'');
   by('ownState').textContent='SIM UTC '+cruise.utc+' · NEXT '+cruise.next+
    ' · DIST '+cruise.distanceNm.toFixed(1)+' NM · TTG '+cruise.timeToGo+
@@ -116,8 +124,12 @@
      Number.isFinite(t.timeToTaProximitySec)?t.timeToTaProximitySec.toFixed(1):'NO CONFLICT',
     Number.isFinite(t.predictedSeparationFt)?Math.round(t.predictedSeparationFt):'—']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}tbody.append(tr);}
  }
- function guard(fn){return ()=>{try{fn();}catch(e){by('status').textContent=e.message;}};}
- by('start').onclick=guard(load);by('play').onclick=()=>{running=!running;last=null;by('play').textContent=running?'PAUSE':'RUN';};by('step').onclick=guard(()=>step(1));
+ function guard(fn){return ()=>{try{fn();}catch(e){running=false;by('play').textContent='RUN';
+  by('status').textContent='SCENARIO ERROR: '+e.message;
+  by('scenarioStatus').textContent='SCENARIO ERROR: '+e.message;
+  console.error('TCAS Scenario Lab',e);}};}
+ by('start').onclick=guard(()=>load(true));by('play').onclick=guard(()=>{running=!running;last=null;
+  by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();});by('step').onclick=guard(()=>step(1));
  // Manual response converts CMD to FD and follows the actual vertical-rate
  // instruction, including urgent cases that may need roughly 10° pitch.
  // Values are intentionally instructor physics, not an operational AP command.
@@ -155,7 +167,10 @@
    'Passing traffic is a verified lateral near miss; CONVERGING is unavailable for this preset.':
    'Select a lateral altitude-crossing encounter');
  }
- scenario.addEventListener('change',syncScenarioOptions);
+ scenario.addEventListener('change',()=>{syncScenarioOptions();
+  if(scenario.value!==encounter?.scenario)by('scenarioStatus').textContent=
+   'SELECTED: '+C.SCENARIOS[scenario.value].label+' · PRESS LOAD SCENARIO';
+ });
  syncScenarioOptions();
  by('pitch').onchange=()=>{targetPitch=Number(by('pitch').value);};
  by('vs').onchange=()=>{targetPitch=2+Math.asin(Math.max(-.7,Math.min(.7,Number(by('vs').value)/(own.tasKt*6076.11549/60))))*180/Math.PI;by('pitch').value=targetPitch.toFixed(1);};
@@ -163,7 +178,9 @@
  for(const id of ['displayMode','range','bus1','bus2','atc2cb'])by(id).onchange=refresh;
  by('tfc').onclick=()=>{tfcVisible=!tfcVisible;syncTfc();paint();};
  by('ident').onclick=()=>{settings.identUntil=own.elapsedSec+1;refresh();};by('absolute').onclick=()=>{settings.absoluteUntil=own.elapsedSec+15;refresh();};
- function tick(now){if(running&&last!==null){const dt=Math.min(.2,(now-last)/1000)*Number(by('rate').value);try{step(dt);}catch(e){running=false;by('status').textContent=e.message;}}last=now;requestAnimationFrame(tick);}
+ function tick(now){if(running&&last!==null){const dt=Math.min(.2,(now-last)/1000)*Number(by('rate').value);try{step(dt);}catch(e){running=false;by('play').textContent='RUN';
+  by('status').textContent='SCENARIO ERROR: '+e.message;by('scenarioStatus').textContent='SCENARIO ERROR: '+e.message;
+  console.error('TCAS Scenario Lab animation',e);}}last=now;requestAnimationFrame(tick);}
  win.B737TcasEfisCPChanged=()=>{if(out)paint();};
  syncTfc();load();requestAnimationFrame(tick);
 })(window);
