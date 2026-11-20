@@ -95,24 +95,106 @@
    height:item.nativeHeight*sy+'px',left:-source.x*sx+'px',top:-source.y*sy+'px'});
  }
 
- let focusAttempts=0;
- function focusMain(){
-  const width=vp.clientWidth,height=vp.clientHeight;
-  if((width<40||height<100)&&focusAttempts++<25){win.requestAnimationFrame(focusMain);return;}
-  if(width<40||height<100)return;
-  const z=Math.max(.04,Math.min(2,(width-42)/main.w,(height-65)/main.h));
-  scene.style.left=Math.max(0,(width-layout.canvas.width*z)/2)+'px';
-  scene.style.top=Math.max(0,(height-layout.canvas.height*z)/2)+'px';
-  scene.style.transform='scale('+z+')';scene.style.setProperty('--zoom',String(z));
+ // Visual-only navigation remains usable while the simulator downloads.
+ // Once the authoritative app adopts this shell, these lightweight handlers
+ // become inert and its original pan/zoom and AFDS interactions take over.
+ let focusAttempts=0,currentView='main',zoom=.2;
+ const clamp=v=>Math.max(.04,Math.min(2,v));
+ function viewBox(id){
+  if(id==='all')return {x:0,y:0,w:layout.canvas.width,h:layout.canvas.height};
+  const region=layout.regions.find(r=>r.id===id);
+  if(region)return region;
+  const inst=(layout.embeddedInstruments||[]).find(x=>x.id===id);
+  if(inst){
+   const host=layout.regions.find(r=>r.id===inst.regionId);
+   const ratio=host.w/host.nativeWidth;
+   return {x:host.x+inst.x*ratio,y:host.y+inst.y*ratio,w:inst.w*ratio,h:inst.h*ratio};
+  }
+  if(id==='cdu-both'){
+   const a=viewBox('cdu-captain'),b=viewBox('cdu-first-officer');
+   if(a&&b)return {x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),
+    w:Math.max(a.x+a.w,b.x+b.w)-Math.min(a.x,b.x),
+    h:Math.max(a.y+a.h,b.y+b.h)-Math.min(a.y,b.y)};
+  }
+  return null;
+ }
+ const labels={main:'Main Panel',overhead:'Interactive Overhead',pedestal:'Pedestal',
+  all:'Full Cockpit','cdu-captain':'Captain CDU','cdu-first-officer':'First Officer CDU',
+  'cdu-both':'Captain and First Officer CDUs'};
+ function scale(z){
+  zoom=clamp(z);
+  const w=vp.clientWidth,h=vp.clientHeight;
+  scene.style.left=Math.max(0,(w-layout.canvas.width*zoom)/2)+'px';
+  scene.style.top=Math.max(0,(h-layout.canvas.height*zoom)/2)+'px';
+  scene.style.transform='scale('+zoom+')';
+  scene.style.setProperty('--zoom',String(zoom));
   const sizer=doc.getElementById('sizer');
-  sizer.style.width=Math.ceil(layout.canvas.width*z)+'px';
-  sizer.style.height=Math.ceil(layout.canvas.height*z)+'px';
-  vp.scrollLeft=Math.max(0,(main.x+main.w/2)*z-width/2);
-  vp.scrollTop=Math.max(0,main.y*z-38);
-  const label=doc.getElementById('viewLabel');if(label)label.textContent='Main Panel';
-  const zoom=doc.getElementById('zoomValue');if(zoom)zoom.textContent=Math.round(z*100)+'%';
+  sizer.style.width=Math.ceil(layout.canvas.width*zoom)+'px';
+  sizer.style.height=Math.ceil(layout.canvas.height*zoom)+'px';
+  const value=doc.getElementById('zoomValue');
+  if(value)value.textContent=Math.round(zoom*100)+'%';
+ }
+ function focus(id){
+  const box=viewBox(id);if(!box)return;
+  const w=vp.clientWidth,h=vp.clientHeight;
+  if(w<40||h<100)return;
+  currentView=id;win.B737VisualFirstShellV1.focused=id;
+  scale(Math.min((w-42)/box.w,(h-65)/box.h));
+  vp.scrollLeft=Math.max(0,(box.x+box.w/2)*zoom-w/2);
+  vp.scrollTop=Math.max(0,box.y*zoom-38);
+  const label=doc.getElementById('viewLabel');
+  if(label)label.textContent=labels[id]||'Main Panel';
+  for(const button of doc.querySelectorAll('[data-focus]'))
+   button.classList.toggle('active',button.dataset.focus===id);
+ }
+ function focusMain(){
+  if(win.B737VisualFirstShellV1.adopted)return;
+  if((vp.clientWidth<40||vp.clientHeight<100)&&focusAttempts++<25){
+   win.requestAnimationFrame(focusMain);return;
+  }
+  focus('main');
  }
  win.requestAnimationFrame(focusMain);
+ doc.addEventListener('click',e=>{
+  if(win.B737VisualFirstShellV1.adopted)return;
+  const button=e.target.closest?.('[data-focus],#zoomOut,#zoomIn,#fit,#native');
+  if(!button)return;
+  if(button.dataset.focus){focus(button.dataset.focus);return;}
+  if(button.id==='fit'){focus(currentView);return;}
+  const newZ=button.id==='native'?1:button.id==='zoomIn'?zoom*1.2:zoom/1.2;
+  const w=vp.clientWidth,h=vp.clientHeight,old=zoom;
+  const left=(vp.scrollLeft+w/2)/old,top=(vp.scrollTop+h/2)/old;
+  scale(newZ);
+  vp.scrollLeft=Math.max(0,left*zoom-w/2);
+  vp.scrollTop=Math.max(0,top*zoom-h/2);
+ });
+ vp.addEventListener('wheel',e=>{
+  if(win.B737VisualFirstShellV1.adopted||!(e.ctrlKey||e.metaKey))return;
+  e.preventDefault();
+  const rect=vp.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+  const old=zoom,sourceX=(vp.scrollLeft+x)/old,sourceY=(vp.scrollTop+y)/old;
+  scale(zoom*Math.exp(-e.deltaY*.002));
+  vp.scrollLeft=Math.max(0,sourceX*zoom-x);
+  vp.scrollTop=Math.max(0,sourceY*zoom-y);
+ },{passive:false});
+ let drag=null;
+ vp.addEventListener('pointerdown',e=>{
+  if(win.B737VisualFirstShellV1.adopted||e.pointerType!=='mouse'||e.button!==0||
+    e.target.closest?.('button,input,select,a,iframe,[data-control]'))return;
+  drag={id:e.pointerId,x:e.clientX,y:e.clientY,l:vp.scrollLeft,t:vp.scrollTop};
+ });
+ vp.addEventListener('pointermove',e=>{
+  if(!drag||drag.id!==e.pointerId||win.B737VisualFirstShellV1.adopted)return;
+  if(!(e.buttons&1)){drag=null;return;}
+  vp.scrollLeft=drag.l-(e.clientX-drag.x);
+  vp.scrollTop=drag.t-(e.clientY-drag.y);
+  if(e.cancelable)e.preventDefault();
+ });
+ for(const name of ['pointerup','pointercancel','lostpointercapture'])
+  vp.addEventListener(name,()=>{drag=null;});
+ win.addEventListener('resize',()=>{
+  if(!win.B737VisualFirstShellV1.adopted)focus(currentView);
+ });
  function finish(ok){
   if(finished)return;
   finished=true;
