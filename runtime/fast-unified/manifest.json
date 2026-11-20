@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "0494667f7436081e1629b0cd6b3387d9b7663bc1",
+  "sourceCommit": "87d26fffe30edab2571c9cc09fbb17e24a29067a",
   "mainBefore": 293,
   "mainAfter": 91,
   "overheadBefore": 59,
@@ -8,11 +8,11 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "31690f9dfa3d958857cdb37a65a918b8f400eb3d5ab9f54f0b137946f8854e3b"
+      "sha256": "fac82ed4f49fc09da9d3e4910c94e0a0789b12e165de388c000e8a468e8d0b8f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "1699a21ed1a9cbf70df48778e99255f0ee159d851b22b6b3b26e7ba951f9e8fb"
+      "sha256": "e7ec62a827eae719f10dbe6501cdcd0790f4a4dad9ffed0fea65436b241bcccf"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
@@ -280,7 +280,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
-      "sha256": "fe70b286f473f976d4b5f92189b1871ece7ec9fba916312e739d4c7aa9506e06"
+      "sha256": "df508e3f53aa9012c60d3ce3a1709908e8ddc02c6d2f834aef721efe3e05990a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/lossless-integrator.js",
