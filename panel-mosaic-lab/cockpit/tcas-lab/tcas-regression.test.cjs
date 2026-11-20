@@ -322,7 +322,7 @@ test('progressive flight-trajectory warning sequence distinguishes OTHER, PROX, 
 
 test('Original photographed TCAS IVSI is the shared cockpit and lab renderer',()=>{
  const source=fs.readFileSync(path.join(__dirname,'../tcas-photo/ivsi.js'),'utf8');
- assert.match(source,/B737ClassicPhotoIVSIV1=Object\.freeze\(\{renderLab\}\)/);
+ assert.match(source,/B737ClassicPhotoIVSIV1=Object\.freeze\(\{renderLab,toggleLabFull,adjustLabBrightness\}\)/);
  assert.match(source,/paintFace\(g,state,controls,own,vs,valid,pref\.full\)/);
  assert.match(source,/paintFace\(canvas\.getContext\('2d'\),trafficState,selected,own/);
  const photoPath=path.join(__dirname,'../tcas-photo/');
