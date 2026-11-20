@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0013-3DRUM */
+/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0013-3DRUM-DOWN-0002 */
 try{
 /* B737 Classic EADI speed tape — event-driven read-only integration and paint.
  * FCOM 10.30.13–15, 10.40.6–8; uses independent CAPT ADC1 / FO ADC2.

@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -738,6 +738,8 @@ function transition(state,action){
   s.lastAutopilotDisengagement={reason:action.reason,source:action.source};
   s.modes.autopilot=null;s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
+  // With both F/Ds OFF, an A/P disconnect leaves no guidance owner.
+  if(!s.fd.left&&!s.fd.right)clearModes(s);
   // FCOM: switching the A/P off does NOT turn F/D select switches off;
   // command bars may stay visible with valid pitch+roll F/D modes.
   return done();
@@ -1005,6 +1007,7 @@ function transition(state,action){
   else s.lastAutopilotDisengagement=null;
   s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
+  if(selected===id&&!s.fd.left&&!s.fd.right)clearModes(s);
   // Dual-channel autoland, CWS capture and servo are not modeled.
   // CMD engagement does not deselect an already armed approach.
   return done();
