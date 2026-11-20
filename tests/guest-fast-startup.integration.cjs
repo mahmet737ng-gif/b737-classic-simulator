@@ -90,6 +90,10 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
        .map(img=>img.currentSrc?new URL(img.currentSrc).pathname:selector)).slice(0,20),
      bootMasks:[...document.querySelector('#overheadFrame').contentDocument.querySelectorAll('[data-needle-restoration="RELEASE_MASK"]')].map(piece=>piece.dataset.key).sort(),
      bootLevers:[...document.querySelectorAll('.engine-start-lever-art image')].map(img=>img.getAttribute('href')),
+     gaugeFaces:[...document.querySelectorAll('#region-main svg[data-gauge] > image[data-perf-source]')]
+      .map(img=>img.getAttribute('href')),
+     pedestalFaceplates:[...document.querySelectorAll('#unified-pedestal-faceplates img,#unified-pedestal-cargo-replacement img')]
+      .map(img=>img.currentSrc||img.src),
      unnecessaryOriginals:resources.filter(resource=>/OH10-ELEC-LOSSLESS|OH12-BUS-TRANS|engine-start-lever-reference/.test(resource.name)).map(resource=>new URL(resource.name).pathname),
      copiedTrace:window.B737BootTrace?.report().readiness.fullMs||null,
      jsTags:tags.length,bundles:tags.filter(x=>x.src.includes('desktop-bundle-')).length,
@@ -120,6 +124,10 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
    if(limited)assert.equal(result.protocol,'h2');
    assert.deepEqual(result.bootMasks,['OH10','OH12']);
    assert.equal(result.bootLevers.length,2);
+   assert.ok(result.gaugeFaces.length>=8,'Fitted captain and first officer gauge faces missing');
+   assert.equal(result.pedestalFaceplates.length,6);
+   assert.ok([...result.gaugeFaces,...result.pedestalFaceplates].every(url=>
+    /-q96-(?:384|768)\.webp$/.test(url)),'Startup must use fitted gauge and faceplate photographs');
    assert.ok(result.bootLevers.every(url=>/boot-art/.test(url)),'Lever sprites must use the release crops');
    assert.deepEqual(result.unnecessaryOriginals,[],'Boot must avoid full-size cleaner and lever sources');
    if(retained||limited)assert.equal(result.profile,'B737-400');
