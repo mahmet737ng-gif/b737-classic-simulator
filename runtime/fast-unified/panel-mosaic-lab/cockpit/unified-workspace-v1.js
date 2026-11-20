@@ -270,7 +270,12 @@
   const collapse=element('button','','COLLAPSE ALL',controls);collapse.type='button';
   const area=element('div','workspace-lab-area',undefined,palette);
   expand.addEventListener('click',()=>{
-   for(const section of area.querySelectorAll('.workspace-group')){section.hidden=false;setGroupOpen(section,true);}
+   input.value='';
+   for(const section of area.querySelectorAll('.workspace-group')){
+    section.hidden=false;setGroupOpen(section,true);
+    section.querySelectorAll('.workspace-lab-item').forEach(item=>item.hidden=false);
+   }
+   msg('workspaceLabStatus','');
   });
   collapse.addEventListener('click',()=>{
    input.value='';
