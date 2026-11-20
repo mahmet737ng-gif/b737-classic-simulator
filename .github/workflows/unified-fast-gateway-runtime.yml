@@ -30,7 +30,7 @@ jobs:
       - name: Compile verified browser runtime and boot assets
         working-directory: source
         run: |
-          node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs
+          node --test tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs tests/unified-testlabs-visible.test.cjs
           node tools/export-unified-gateway-runtime.cjs gateway-fast-runtime
       - name: Sync the version-pinned public boot release
         run: |
