@@ -32,6 +32,8 @@ jobs:
           node --check engine/tcas/classic-tcas-v1.js
           node --check engine/tcas/classic-tcas-v2.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/app.js
+          node --check panel-mosaic-lab/cockpit/tcas-lab/ivsi-tcas-v1.js
+          node --check efis-display-lab/eadi.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js
           node --check panel-mosaic-lab/cockpit/tcas-lab/browser-smoke.cjs
