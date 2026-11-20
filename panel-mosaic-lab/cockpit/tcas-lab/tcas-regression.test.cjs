@@ -294,3 +294,70 @@ test('TCAS EHSI labels remain whole even close to the enlarged lower/right compa
  const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
  assert.ok(html.includes('3D proximity (s)')&&html.includes('Sep @ CPA (ft)'));
 });
+
+test('progressive flight-trajectory warning sequence distinguishes OTHER, PROX, TA and RA',()=>{
+ const ownCruise={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,iasKt:293,
+  tasKt:440,gsKt:448,vsFpm:0,pitchDeg:2,trueTrackDeg:0,trueHeadingDeg:0,elapsedSec:0};
+ const stepScenario=(name,options)=>{
+  let s=TCAS.create(name,ownCruise,{progressive:true,...options});
+  const sequence=[];
+  for(let second=0;second<130;second++){
+   s=TCAS.step(s,ownCruise,second?1:0,TCAS.controls());
+   const kind=s.output.targets[0]?.kind;
+   if(kind&&!sequence.includes(kind))sequence.push(kind);
+   if(name==='TA_ONLY')assert.equal(s.output.ra,null,'Passing traffic must NEVER turn into an RA');
+  }
+  return sequence;
+ };
+ assert.deepEqual(stepScenario('TA_ONLY',{converging:true}),['OTHER','PROX','TA']);
+ for(const id of ['CLIMB','DESCEND'])
+  assert.deepEqual(stepScenario(id,{}).slice(0,4),['OTHER','PROX','TA','RA'],id);
+ assert.deepEqual(stepScenario('DIVERGING_ABOVE',{}),['OTHER']);
+});
+
+test('IVSI TCAS shares RA sectors and traffic trend geometry with EHSI',()=>{
+ const IVSI=require('./ivsi-tcas-v1.js');
+ const own={vsFpm:1800};
+ const output={mode:'TA_RA',advisory:'RA',ra:{id:'CLIMB',min:1500,max:null},
+  targets:[{id:'R1',kind:'RA',distance:1.8,relativeAltitude:-400,verticalRate:1200},
+   {id:'T2',kind:'TA',distance:3.1,relativeAltitude:500,verticalRate:-600},
+   {id:'P3',kind:'PROX',distance:4.8,relativeAltitude:-1000,verticalRate:100}]};
+ const state=IVSI.model(own,output);
+ assert.equal(state.raId,'CLIMB');
+ assert.ok(state.zones.some(z=>z.kind==='RED'&&z.to===1500));
+ assert.ok(state.zones.some(z=>z.kind==='GREEN'&&z.from===1500));
+ assert.deepEqual(state.targets.map(t=>t.trend),['UP','DOWN',null]);
+ assert.equal(IVSI.model({}, {ra:{id:'DESCEND',min:null,max:-1500}}).zones
+  .find(z=>z.kind==='RED').from,-1500);
+ class FakeNode{
+  constructor(tag,doc){this.tagName=tag;this.ownerDocument=doc;this.children=[];this.attrs={};}
+  setAttribute(key,value){this.attrs[key]=String(value);}
+  appendChild(node){this.children.push(node);return node;}
+  replaceChildren(...nodes){this.children=nodes;}
+ }
+ const doc={createElementNS(_url,tag){return new FakeNode(tag,doc);}};
+ const svg=new FakeNode('svg',doc);
+ IVSI.render(svg,own,output);
+ const flatten=n=>[n,...n.children.flatMap(flatten)],nodes=flatten(svg);
+ assert.equal(svg.attrs['data-ra-id'],'CLIMB');
+ assert.ok(nodes.some(n=>n.attrs['data-zone']==='RED'));
+ assert.ok(nodes.some(n=>n.attrs['data-zone']==='GREEN'));
+ assert.ok(nodes.some(n=>n.attrs['data-layer']==='vs-needle'));
+ assert.ok(nodes.some(n=>n.attrs['data-trend']==='UP'));
+ assert.ok(nodes.some(n=>n.attrs['data-trend']==='DOWN'));
+});
+
+test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
+ const app=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
+ const eadi=fs.readFileSync(path.join(__dirname,'../../../efis-display-lab/eadi.js'),'utf8');
+ assert.match(html,/id="respond">TAKE ACTION</);
+ assert.equal((html.match(/id="ivsi"/g)||[]).length,1);
+ assert.match(html,/ivsi-tcas-v1\.js/);
+ assert.match(app,/state\.eadi\.tcasFenceSimple=true/);
+ assert.match(eadi,/if\(!e\.tcasFenceSimple\)/);
+ assert.match(app,/fdHoldOffset=targetPitch-own\.pitchDeg/);
+ assert.match(app,/own\.pitchDeg\+\(fdHoldOffset\?\?0\)/);
+ assert.match(app,/commandedPitchForRa/);
+ assert.match(app,/options=\{progressive:true\}/);
+});
