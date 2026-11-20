@@ -1,0 +1,90 @@
+/* Unified lightweight instructor workspace V1. Non-frozen surfaces only. */
+#workspaceLabsToggle{
+ order:102;flex:0 0 auto!important;min-height:36px!important;
+ padding:6px 12px!important;border:1px solid #65a9bd!important;
+ background:#16485b!important;color:#d6f4ff!important;
+ border-radius:7px!important;font:700 11px/1.2 system-ui,sans-serif!important
+}
+#workspaceLabsToggle[aria-expanded="true"]{background:#26657c!important}
+body > header.unified-minimal-header .header-settings{max-width:100%!important;justify-content:center!important}
+#workspaceLabsMenu[hidden]{display:none!important}
+#workspaceLabsMenu{
+ position:fixed;z-index:120;right:clamp(10px,8vw,140px);top:calc(var(--minimal-header-height,48px) + 8px);
+ width:min(640px,calc(100vw - 20px));max-height:calc(100dvh - var(--minimal-header-height,48px) - 18px);
+ display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;
+ border:1px solid #638ea5;border-radius:12px;background:#101f2b;color:#eaf6ff;
+ box-shadow:0 18px 52px #000c;font:12px/1.45 system-ui,Arial,sans-serif
+}
+#workspaceLabsMenu .workspace-lab-top{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;border-bottom:1px solid #3b5a72;letter-spacing:.045em}
+#workspaceLabsMenu .workspace-lab-top button{background:#24465d;border:1px solid #627e8e;border-radius:6px;color:#fff;font-size:18px;line-height:1.2;padding:2px 10px;cursor:pointer}
+#workspaceLabsMenu .workspace-lab-search{margin:10px 14px;padding:11px;background:#091620;border:1px solid #527285;border-radius:7px;color:#e9f9ff;font-size:13px}
+#workspaceLabsMenu .workspace-lab-area{overflow:auto;padding:0 14px 12px;flex:1 1 auto;min-height:0;display:grid;gap:8px;align-content:start}
+#workspaceLabsMenu .workspace-group{border:1px solid #36546c;border-radius:8px;background:#132839;overflow:hidden}
+#workspaceLabsMenu .workspace-group>summary{cursor:pointer;padding:11px 12px;font-weight:700;letter-spacing:.025em;color:#c7e9f6}
+#workspaceLabsMenu .workspace-group[open]>summary{background:#1d3c50}
+#workspaceLabsMenu .workspace-group-content{padding:9px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#workspaceLabsMenu .workspace-lab-item{display:flex;align-items:center;justify-content:center;min-height:39px;box-sizing:border-box;
+ border:1px solid #527b90;border-radius:7px;background:#204157;color:#edfaff;text-align:center;text-decoration:none;
+ padding:8px;font:600 11px/1.3 system-ui,Arial,sans-serif;cursor:pointer;overflow-wrap:anywhere}
+#workspaceLabsMenu .workspace-lab-item:hover,#workspaceLabsMenu .workspace-lab-item:focus-visible{background:#2a6984;border-color:#87bfd7}
+#workspaceLabsMenu .workspace-lab-item[hidden]{display:none!important}
+#workspaceLabsMenu .workspace-dynamic-labs{display:contents}
+#workspaceLabsMenu .workspace-dynamic-labs button,
+#workspaceLabsMenu .workspace-dynamic-labs a{display:flex;align-items:center;justify-content:center;box-sizing:border-box;
+ min-height:39px;padding:8px;font:600 11px/1.3 system-ui,Arial,sans-serif;
+ background:#204157;color:#edfaff;border:1px solid #527b90;border-radius:7px;text-decoration:none;cursor:pointer}
+#workspaceLabsMenu .workspace-status{min-height:16px;margin:0;padding:5px 14px 10px;color:#e9ad91}
+#unifiedControlCenter .workspace-control-fold,#inspector>.workspace-control-fold{display:block;border:1px solid #3d5f75;border-radius:9px;background:#0f2331;margin:0 0 9px;overflow:hidden}
+#inspector>.workspace-control-fold{margin:0 0 10px}
+#unifiedControlCenter .workspace-control-fold>summary,#inspector>.workspace-control-fold>summary{
+ cursor:pointer;list-style-position:inside;min-height:36px;box-sizing:border-box;padding:10px 12px;
+ background:#1b3b4c;color:#cee6f4;font:700 12px/1.4 system-ui,Arial,sans-serif
+}
+#unifiedControlCenter .workspace-control-fold[open]>summary,#inspector>.workspace-control-fold[open]>summary{background:#2a5268}
+#inspector>.workspace-control-fold>section{margin:0!important;border:0!important;box-shadow:none!important}
+#unifiedControlCenter .workspace-control-fold>.battery-controls-slot{margin:8px}
+#unifiedControlCenter .workspace-control-fold>#visualLampTest{margin:10px;width:calc(100% - 20px)}
+#unifiedControlCenter .control-center-actions[hidden]{display:none!important}
+#flightScenarioDialog{width:min(1050px,97vw)}
+#flightScenarioDialog #flightServices{border-top:1px solid #476b7c;margin-top:18px;padding-top:12px}
+#flightScenarioDialog #flightServices>h3{color:#a6e5f6;font-size:14px;letter-spacing:.055em;margin:4px 0 13px}
+#flightScenarioDialog .flight-service-fold{border:1px solid #456579;background:#132635;border-radius:9px;margin:8px 0;overflow:hidden}
+#flightScenarioDialog .flight-service-fold>summary{cursor:pointer;padding:13px 14px;font-weight:700;color:#c8e9f7;letter-spacing:.03em}
+#flightScenarioDialog .flight-service-fold[open]>summary{background:#1b4258;border-bottom:1px solid #42647a}
+#flightScenarioDialog .flight-service-body{padding:13px 14px}
+#flightScenarioDialog .flight-service-dock{display:flex;flex-wrap:wrap;gap:8px;margin:7px 0}
+#flightScenarioDialog #groundPowerHeader,#flightScenarioDialog #unifiedEfisHeader,#flightScenarioDialog #unifiedEfisOpen,
+#flightScenarioDialog #apuLabButtonV1{display:inline-flex!important;position:relative!important;min-height:37px!important;
+ justify-content:center;align-items:center;border:1px solid #5b94aa!important;border-radius:7px!important;
+ background:#214a60!important;color:#e7f7ff!important;padding:8px 11px!important;cursor:pointer!important}
+#flightScenarioDialog .flight-service-hint{display:block;color:#a7c4d5;font:11px/1.55 system-ui,Arial,sans-serif;margin:8px 0}
+#flightScenarioDialog .flight-service-subsystem{background:#0c1d2b;border:1px solid #36526a;border-radius:8px;padding:12px;margin:10px 0}
+#flightScenarioDialog .flight-service-subsystem>strong{display:block;color:#d6e8f0;font-size:11px;letter-spacing:.03em}
+#flightScenarioDialog .flight-service-actions{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+#flightScenarioDialog .flight-service-actions button{flex:1 1 auto;min-height:35px;white-space:normal}
+#flightScenarioDialog .flight-service-small{display:flex;align-items:center;flex-wrap:wrap;gap:8px;color:#c0dae6;font-size:12px;margin:10px 0}
+#flightScenarioDialog .flight-service-small input{width:85px!important}
+#flightScenarioDialog .flight-service-status{padding:8px 10px;background:#0b1c28;border-left:3px solid #5da0bf;border-radius:4px;
+ color:#bfe8db;font:12px/1.45 system-ui,Arial,sans-serif;overflow-wrap:anywhere}
+#flightScenarioDialog .flight-service-status[data-error=true]{color:#ffb9a8;border-left-color:#e08b75}
+#flightScenarioDialog #groundPowerPopover{position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+ width:100%!important;max-height:none!important;box-shadow:none!important;margin:9px 0!important;z-index:auto!important}
+#flightScenarioDialog #groundPowerPopover[hidden]{display:none!important}
+#flightScenarioDialog .flight-fuel-canvas{display:block;width:100%;height:auto;max-width:910px;border:1px solid #74838e;
+ border-radius:7px;box-shadow:inset 0 3px 9px #0009,0 5px 14px #0008}
+#flightScenarioDialog .flight-fuel-controls{margin-top:12px;background:#0d1c29;border:1px solid #3b556a;border-radius:7px;padding:10px}
+#flightScenarioDialog .flight-fuel-mode{display:flex;flex-direction:row;align-items:center;gap:12px}
+#flightScenarioDialog .flight-fuel-mode select{max-width:170px}
+#flightScenarioDialog .flight-fuel-rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}
+#flightScenarioDialog .flight-fuel-row{border:1px solid #425e73;background:#162f40;border-radius:7px;padding:10px;min-width:0;display:grid;gap:9px}
+#flightScenarioDialog .flight-fuel-row strong{font-size:11px;color:#dbe9f1}
+#flightScenarioDialog .flight-fuel-row label{font-size:11px}
+#flightScenarioDialog .flight-fuel-row button[aria-pressed=true]{background:#23646f;color:#d6f9f5}
+#flightScenarioDialog #flightFuelStart[aria-pressed=true]{background:#246b52;border-color:#74cba0;color:#d9fff1}
+@media(max-width:650px){
+ #workspaceLabsMenu{right:7px;top:calc(var(--minimal-header-height,48px) + 6px);width:calc(100vw - 14px)}
+ #workspaceLabsMenu .workspace-group-content{grid-template-columns:1fr}
+ #flightScenarioDialog .flight-fuel-rows{grid-template-columns:1fr}
+ #flightScenarioDialog .flight-service-body{padding:9px}
+ body > header.unified-minimal-header .header-settings{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}

@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "63698ea8b19731b5fe763ecc17ed454d1d4d95ea",
-  "mainBefore": 293,
-  "mainAfter": 91,
+  "sourceCommit": "0a2535826e405956c0fb1083fff700a532d2624e",
+  "mainBefore": 294,
+  "mainAfter": 92,
   "overheadBefore": 59,
   "overheadAfter": 41,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "fac82ed4f49fc09da9d3e4910c94e0a0789b12e165de388c000e8a468e8d0b8f"
+      "sha256": "4ee8b7273d21f72cbd85acd2c016ac99450842de2ac424708d208cf3a173df52"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -123,8 +123,8 @@
       "sha256": "18d585c6839bd074a66209bdceb991649c32338b8c198df5b9688cf1f1696484"
     },
     {
-      "path": "engine/systems/desktop-bundle-3b4049d2b5a225b1.js",
-      "sha256": "3b4049d2b5a225b15a1d146500a0cc5054eacfa27e8b99a9127d7757e9f604b6"
+      "path": "engine/systems/desktop-bundle-7508f29d61a33f3c.js",
+      "sha256": "7508f29d61a33f3c89464fb735432bd4c8620b6498ef53766cf50ccddea07f1c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e20eb36fc09cce37.js",
@@ -419,6 +419,10 @@
       "sha256": "37a2a4a71d571b56ca7738be43f460625785bb7989ffb6a07517ddb98aae6869"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",
+      "sha256": "b930d684b754f4d55a2e85a19ea1a2534a31634811d90989422245bffaad4c14"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
       "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
     },
@@ -589,6 +593,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
       "sha256": "85df7fc9e266bab9af98c7d05431e85847cbb4eb77d0cac9c2eda0a66ac68feb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
+      "sha256": "85cd59493dacf5552d3596eed62efe4a7a3f7d86f359a6084636dba75b68c385"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",

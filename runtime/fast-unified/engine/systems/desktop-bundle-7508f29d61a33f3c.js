@@ -85,7 +85,7 @@ try{
   return {state,projection:electrical().evaluate(state),
    view:policy.evaluate(state,electrical().evaluate(state))};
  }
- function bar(){return document.querySelector('body > header.unified-minimal-header .header-settings');}
+ function bar(){return document.getElementById('flightGroundPowerDock') || document.querySelector('body > header.unified-minimal-header .header-settings');}
  function ensure(){
   const holder=bar();if(!holder)return false;
   button=byId(ID);
@@ -136,6 +136,9 @@ try{
     if(opened&&!panel.contains(event.target)&&!button?.contains(event.target))close();
    });
   }
+  // FLT PHASE is a modal: the existing electrical popover must share its top layer.
+  const dock=document.getElementById('flightGroundPowerPopoverDock');
+  if(panel&&dock&&panel.parentElement!==dock)dock.append(panel);
   return true;
  }
  function close(){opened=false;releaseMomentary();if(panel)panel.hidden=true;if(button)button.setAttribute('aria-expanded','false');}
