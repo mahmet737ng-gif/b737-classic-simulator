@@ -897,13 +897,19 @@ try{
  function create(id,own,options={}){
   const spec=SCENARIOS[id];if(!spec)throw RangeError('UNKNOWN_TCAS_SCENARIO');
   for(const [key,value] of Object.entries(options)){
-   if(key==='converging'){if(typeof value!=='boolean')throw RangeError('INVALID_INTRUDER_converging');continue;}
+   if(key==='converging'||key==='progressive'){if(typeof value!=='boolean')throw RangeError('INVALID_INTRUDER_'+key);continue;}
    if(key==='lateralSide'){if(!['LEFT','RIGHT'].includes(value))throw RangeError('INVALID_INTRUDER_lateralSide');continue;}
    if(!Number.isFinite(value))throw RangeError('INVALID_INTRUDER_'+key);
   }
   if(options.distanceNm!==undefined&&options.distanceNm<=0)throw RangeError('INVALID_INTRUDER_DISTANCE');
   const heading=own.trueTrackDeg??own.trueHeadingDeg??0,forward=vector(1,heading),side=vector(1,heading+90);
-  const range=options.distanceNm??5.5,converging=options.converging===true;
+  const converging=options.converging===true&&id!=='TA_ONLY';
+  // Lab-only sequence: choose a physically intersecting relative trajectory at
+  // cruise while keeping the alert thresholds untouched.  A crossing aircraft
+  // with a similar GS gives an initial OTHER -> PROX -> TA -> RA progression.
+  // Passing traffic remains a lateral near miss even if CONVERGING was checked.
+  const progressive=options.progressive===true&&!converging&&!spec.demo&&!spec.offscale;
+  const range=options.distanceNm??(progressive?8.2:5.5);
   // Converging traffic flies across the OWN flight path, arriving from the
   // chosen left/right side at horizontal CPA. Its relative altitude crosses
   // from -300 to +300 ft (or reverse) during the approach without manual VS.
@@ -914,11 +920,19 @@ try{
   const limits=V1.thresholds(own,'TA_RA');
   const passingMiss=(limits.taNm+limits.raNm)/2;
   const lateral=id==='TA_ONLY'&&!converging?passingMiss:(spec.ra===null?.72:0);
-  const speedKt=options.speedKt??220;
-  let targetHeading=norm(heading+180);
+  let speedKt=options.speedKt??(progressive?(own.gsKt??own.tasKt):220);
+  let targetHeading=norm(heading+(progressive?40:180));
   let initialN=forward.n*3600*range+side.n*3600*lateral;
   let initialE=forward.e*3600*range+side.e*3600*lateral;
   let estimatedCpaSec=range*3600/Math.max(1,(own.gsKt??own.tasKt)+speedKt);
+  if(progressive){
+   const ownV=vector(own.gsKt??own.tasKt,heading),intruderV=vector(speedKt,targetHeading);
+   const relN=intruderV.n-ownV.n,relE=intruderV.e-ownV.e;
+   const relSpeed=Math.max(1e-6,Math.hypot(relN,relE));
+   estimatedCpaSec=range/relSpeed;
+   initialN=-relN*estimatedCpaSec-relE/relSpeed*lateral;
+   initialE=-relE*estimatedCpaSec+relN/relSpeed*lateral;
+  }
   if(converging){
    targetHeading=norm(heading+(options.lateralSide==='LEFT'?90:-90));
    const ownV=vector(own.gsKt??own.tasKt,heading),intruderV=vector(speedKt,targetHeading);
