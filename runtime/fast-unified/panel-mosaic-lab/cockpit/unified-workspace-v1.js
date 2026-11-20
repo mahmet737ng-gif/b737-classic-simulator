@@ -140,9 +140,22 @@
   const oh=makeGroup('Overhead OH01–OH25 · Individual Test Labs',area);
   oh.id='workspaceOverheadLabs';
   const status=element('p','workspace-status','',palette);status.id='workspaceLabStatus';status.setAttribute('role','status');
+  const seenInspectorActions=new Set();
+  const updateInspectorActions=()=>{
+   for(const node of doc.querySelectorAll('#inspector button,#inspector a[href]')){
+    const name=(node.textContent||node.getAttribute('aria-label')||'').trim().replace(/\s+/g,' ');
+    if(!/\b(TEST\s*LAB|LABORATORY|TESTBENCH|TEST)\b/i.test(name)||name.length>95)continue;
+    const key=(node.id||node.href||name);
+    if(seenInspectorActions.has(key)||node.closest('#workspaceLabsMenu'))continue;
+    seenInspectorActions.add(key);
+    const entry=element('button','workspace-lab-item',name,extras);
+    entry.type='button';
+    entry.addEventListener('click',()=>{hideLabs();if(node.tagName==='A')win.open(node.href,'_blank','noopener');else node.click();});
+   }
+  };
   b.addEventListener('click',()=>{
    palette.hidden=!palette.hidden;b.setAttribute('aria-expanded',String(!palette.hidden));
-   if(!palette.hidden){addOverheadLabs();input.focus();}
+   if(!palette.hidden){addOverheadLabs();updateInspectorActions();input.focus();}
   });
   input.addEventListener('input',()=>{
    const q=input.value.toLowerCase().trim();
@@ -168,10 +181,22 @@
    });
   };
   navCheck();
-  const observer=new MutationObserver(navCheck);observer.observe(header,{childList:true});
+  const legacy=new Set(['unifiedEfisHeader','cbPanelOpen','instrumentPhotoLabOpen','busConsumerTestLabOpen','failuresHeaderOpen']);
+  function hideLegacyHeader(){
+   for(const node of [...header.children]){
+    if(legacy.has(node.id)||node.dataset.workspaceNavHidden==='true'){
+     node.style.setProperty('display','none','important');
+     node.tabIndex=-1;
+    }
+   }
+  }
+  win.B737WorkspaceHideLegacyHeaderV1=hideLegacyHeader;
+  hideLegacyHeader();
+  const observer=new MutationObserver(()=>{navCheck();hideLegacyHeader();});
+  observer.observe(header,{childList:true});
  }
  function actionDock(holder,id,title){
-  const target=$(id);if(target){holder.append(target);target.hidden=false;if(title)target.textContent=title;}
+  const target=$(id);if(target){holder.append(target);target.hidden=false;target.style.removeProperty('display');target.removeAttribute('aria-hidden');target.removeAttribute('tabindex');if(title)target.textContent=title;}
  }
  function foldForFlight(parent,title,key){
   const d=element('details','flight-service-fold',undefined,parent);
@@ -437,7 +462,7 @@
   observer.observe(inspector,{childList:true});
  }
  function start(){
-  initLabs();initServices();groupControls();
+  initLabs();initServices();groupControls();win.B737WorkspaceHideLegacyHeaderV1?.();
  }
  win.B737UnifiedGroundServicesV1=Object.freeze({snapshot:()=>({...services,valves:{...services.valves}}),
   isAirStarterAvailable:()=>onGround()&&services.airStarterAttached&&services.airStarterFlow,
