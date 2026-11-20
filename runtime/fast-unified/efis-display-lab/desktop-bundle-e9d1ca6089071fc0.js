@@ -171,10 +171,14 @@ function attitude(c,e,v){
   line(c,-91,far,-39,boundary,RED,3);
   line(c,-39,boundary,39,boundary,RED,3);
   line(c,39,boundary,91,far,RED,3);
-  for(let i=0;i<8;i++){
-   const dy=sign*(i*17+9),x=39+52*Math.abs(dy)/145;
-   line(c,-x,boundary+dy,-x-8,boundary+dy-sign*8,RED,1.9);
-   line(c,x,boundary+dy,x+8,boundary+dy-sign*8,RED,1.9);
+  // In the TCAS Lab show only the red V fence. Preserve the original
+  // Unified rendering by keeping the hatch variant as the default.
+  if(!e.tcasFenceSimple){
+   for(let i=0;i<8;i++){
+    const dy=sign*(i*17+9),x=39+52*Math.abs(dy)/145;
+    line(c,-x,boundary+dy,-x-8,boundary+dy-sign*8,RED,1.9);
+    line(c,x,boundary+dy,x+8,boundary+dy-sign*8,RED,1.9);
+   }
   }
  }
  if(e.pli||e.flaps>0){
