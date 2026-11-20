@@ -65,8 +65,6 @@
   state.eadi.fdRoll=0;
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
-  // Integrated TCAS IVSI consumes the same threats and RA guidance.
-  win.B737TcasIVSIV1?.render?.(by('ivsi'),own,out);
   const cruise=Cruise.route({elapsedSec:own.elapsedSec,groundSpeedKt:own.gsKt});
   const ambientAll=Cruise.ambient({elapsedSec:own.elapsedSec,ownAltitudeFt:own.altitudeFt,
    initialAltitudeFt,ownGroundSpeedKt:own.gsKt});
@@ -89,6 +87,9 @@
   }
   // Ambient contacts are visual-only; TCAS guidance comes exclusively from C.step.
   const traffic={...out,targets:[...out.targets,...ambient]};
+  // The integrated IVSI and EHSI consume exactly the same live traffic list:
+  // primary encounter plus up to two ambient targets at 10 NM.
+  win.B737TcasIVSIV1?.render?.(by('ivsi'),own,traffic);
   win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:rangeNm,
    heading:own.trueHeadingDeg,track:own.trueTrackDeg,geoTrack:own.trueTrackDeg,selectedHeading:own.trueTrackDeg,
    trueRef:false,nav:cruise.nav,route:cruise.route,options:{tfc:tfcVisible,...cp?.options},traffic,
