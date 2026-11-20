@@ -342,13 +342,21 @@ test('Original photographed TCAS IVSI is the shared cockpit and lab renderer',()
   get(_target,key){return (...params)=>{calls.push({key,args:params});};},
   set(){return true;}
  });
- const canvas={width:403,height:403,dataset:{},getContext:()=>ctx};
+ const canvas={width:403,height:403,dataset:{},style:{},getContext:()=>ctx};
  const traffic={mode:'TA_RA',advisory:'RA',ra:{id:'CLIMB',min:1500,max:null},
   targets:[{id:'UP',kind:'RA',distance:1.3,bearing:10,
    relativeAltitude:-300,verticalRate:1200},{id:'DOWN',kind:'TA',distance:2.6,bearing:340,
    relativeAltitude:500,verticalRate:-1000}]};
  assert.equal(fn(canvas,{vsFpm:1800,trueHeadingDeg:0,altitudeFt:27000},traffic,{rangeNm:10,filter:'NORM'}),true);
  assert.equal(canvas.dataset.ivsiPhoto,'original');
+ assert.equal(canvas.dataset.ivsiFullTime,'true','Original IVSI TCAS traffic is visible in lab by default');
+ assert.equal(canvas.dataset.ivsiBrightness,'1','Original photo brightness starts fully readable');
+ assert.equal(fakeWindow.B737ClassicPhotoIVSIV1.toggleLabFull(),false,
+  'Original TA SEL toggles from full-time to popup mode');
+ assert.equal(canvas.dataset.ivsiFullTime,'false');
+ assert.equal(fakeWindow.B737ClassicPhotoIVSIV1.adjustLabBrightness(-1),.95,
+  'Original IVSI brightness decrements by 5 percent');
+ assert.equal(canvas.dataset.ivsiBrightness,'0.95');
  assert.equal(canvas.dataset.tcasRaId,'CLIMB');
  assert.ok(calls.some(x=>x.key==='drawImage'),'Original photo IVSI scale must be painted');
  assert.ok(calls.filter(x=>x.key==='arc').length>=2,'Original RA arc sectors must be drawn');
