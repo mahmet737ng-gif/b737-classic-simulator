@@ -55,7 +55,10 @@ for(const [scope,directory] of contexts){
 assert.equal(mounted,37);assert.equal(states,74);
 const overheadJS=get('panel-mosaic-lab/interactive-overhead/lights.js');
 const mainJS=get('panel-mosaic-lab/cockpit/lights.js');
-assert.match(overheadJS,/fetch\(url\('instance-faces\.json'\)/);
+// Overhead metadata now uses a shared prefetch-compatible loader rather than a literal fetch(url(...)).
+assert.match(overheadJS,/\['lights\.json','\.\.\/all-overhead\/atlas-layout\.json','instance-faces\.json','readability-faces\.json'\]/);
+assert.match(overheadJS,/\.map\(path=>load\(url\(path\),\{cache:'no-store'\}\)\)/);
+assert.match(overheadJS,/instanceFaces=await responses\[2\]\.json\(\)/);
 assert.match(mainJS,/fetch\(url\('instance-faces\.json'\)/);
 assert.match(overheadJS,/instanceFaces\?\.instances/);
 assert.match(overheadJS,/return window\.B737LampAppearance\.resolve\('OH',c\.asset,state\)\|\|url\(face\.url\)/,'New mounted v2 lens must retain original per-socket fallback for all other sockets');
