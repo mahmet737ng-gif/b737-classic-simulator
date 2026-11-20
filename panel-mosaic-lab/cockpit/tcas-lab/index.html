@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-CP-0007"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-CP-0009"></head><body>
 <header><div><h1>737 Classic · TCAS Encounter Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
 <main><section class="controls controls-primary" aria-label="Encounter quick controls">
 <div class="encounter-bar"><label class="encounter-select">Encounter<select id="scenario"></select></label>
@@ -10,9 +10,12 @@
 <button id="tfc" aria-pressed="true">TFC ON</button>
 </div>
 </section>
-<section class="screens"><article><h2>EADI · red pitch attitudes to avoid</h2><canvas id="eadi" width="640" height="640"></canvas></article><article class="ehsi-with-cp"><h2>EHSI · traffic / altitude / trend</h2><svg id="ehsi" xmlns="http://www.w3.org/2000/svg"></svg>
+<section class="screens"><article><h2>EADI · RA red V-fence / independent F/D</h2><canvas id="eadi" width="640" height="640"></canvas></article><article class="ehsi-with-cp"><h2>EHSI · traffic / altitude / trend</h2><svg id="ehsi" xmlns="http://www.w3.org/2000/svg"></svg>
 <section class="efis-physical-dock" aria-label="EFIS CTR PNL"><h3>EFIS CONTROL PANEL</h3>
 <div id="efisCpMount"></div></section>
+</article><article class="ivsi-with-tcas"><h2>IVSI · integrated TCAS · RA VS bands</h2>
+<svg id="ivsi" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Integrated TCAS vertical speed indicator"></svg>
+<p class="ivsi-note">Same targets and RA as EHSI · red = avoid · green = commanded vertical-speed corridor · instructor model</p>
 </article></section>
 <section class="readings"><h2>Received traffic</h2><p>Simulated cruise FMC route and non-threat background traffic are instructor-only examples, not operational navigation data.</p><div class="legend"><span><i class="symbol ra"></i> RA · solid red square</span><span><i class="symbol ta"></i> TA · solid amber circle</span><span><i class="symbol prox"></i> Proximate · solid white diamond</span><span><i class="symbol other"></i> Other · outline white diamond</span></div><p>Signed labels show hundreds of feet relative to own aircraft. Above / below placement follows relative altitude. An arrow appears for an intruder climbing or descending at 500 fpm or more; no arrow means a lower rate, not necessarily the same altitude. Unknown altitude has no label.</p><p id="ownState"></p><table><thead><tr><th>Target</th><th>Class</th><th>Clock</th><th>Range NM</th><th>Relative ft</th><th>Vertical fpm</th><th>Vertical relation</th><th>CPA (s)</th><th>3D proximity (s)</th><th>Sep @ CPA (ft)</th></tr></thead><tbody id="trafficRows"></tbody></table></section>
 <section class="advanced controls" aria-label="Advanced TCAS lab controls">
@@ -35,8 +38,9 @@
 </main>
 <script src="../../../engine/afds/fma-mode-engine-v1.js"></script><script src="../../../engine/efis/classic-flap-speed-profile-v1.js"></script><script src="../../../engine/efis/classic-speed-tape-engine-v1.js"></script>
 <script src="../eadi-speed-tape-v1.js"></script><script src="../eadi-fma-fcom-v2.js?v=TCAS-CRUISE-0005"></script>
-<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CRUISE-0005"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-LABEL-FIT-0008"></script>
-<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-TRAJECTORY-0008"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
+<script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CLEAN-RA-0009"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-LABEL-FIT-0008"></script>
+<script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-TRAJECTORY-0009"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
 <script src="efis-physical-cp-v1.js?v=TCAS-DH-0008"></script>
-<script src="app.js?v=TCAS-TRAJECTORY-0008"></script>
+<script src="ivsi-tcas-v1.js?v=TCAS-IVSI-0001"></script>
+<script src="app.js?v=TCAS-TRAJECTORY-0009"></script>
 </body></html>
