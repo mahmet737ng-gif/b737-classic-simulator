@@ -39,9 +39,7 @@
   ['Cockpit Test Labs','FAILURES · Electrical / Fuel / Fire','failuresHeaderOpen'],
   ['Cockpit Test Labs','CB PANEL · Cockpit Circuit Breakers','cbPanelOpen'],
   ['Cockpit Test Labs','Instrument Photo Lab','instrumentPhotoLabOpen'],
-  ['Cockpit Test Labs','Bus Consumer Lab','busConsumerTestLabOpen'],
-  ['Cockpit Test Labs','ENGINE TEST LAB','engineTestLabOpen'],
-  ['Cockpit Test Labs','TCAS TEST LAB','tcasTestLabOpen']
+  ['Cockpit Test Labs','Bus Consumer Lab','busConsumerTestLabOpen']
  ];
  const services={
   airStarterAttached:false,airStarterFlow:false,airStarterPressurePsi:35,
