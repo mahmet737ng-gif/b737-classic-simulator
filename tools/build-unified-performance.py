@@ -19,7 +19,7 @@ paths.update(f'panel-mosaic-lab/cockpit/instrument-lab/{kind}/face.png'
              for kind in ['airspeed','altimeter','ivsi','rmi','standby'])
 paths.update('panel-mosaic-lab/assets/locked/'+name for name in [
  'VHF_COMM_bare_faceplate.png','VHF_NAV_MANUAL_bare_faceplate.png',
- 'Cargo_Fire_Control_bare_faceplate.png','Transponder_TCAS_bare_faceplate.png'])
+ 'Cargo_Fire_Control_bare_faceplate.png'])
 
 paths.update('panel-mosaic-lab/assets/locked/2026-10-23/'+name for name in
              ['DCPCS_Background_Owner.png','Boeing-Style Environmental Control Panel.png'])

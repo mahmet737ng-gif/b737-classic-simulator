@@ -74,7 +74,10 @@ function mount(){
     objectFit:'contain',userSelect:'none',pointerEvents:'none'});
    img.addEventListener('error',()=>{frame.hidden=true;console.warn('Missing pedestal faceplate:',plate.file);},{once:true});
    frame.append(img);layer.append(frame);
-   loadFace(img,plate.file);
+   // The live TCAS renderer reuses this image node and replaces its src.
+   // Leave its source under TCAS ownership, including after the pilot zooms.
+   if(plate.id==='transponder-tcas')img.src=source(plate.file);
+   else loadFace(img,plate.file);
  }
  native.append(layer);
  // The original center LEFT MCDU/audio photograph is baked into the underlying
