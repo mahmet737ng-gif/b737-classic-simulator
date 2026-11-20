@@ -7,46 +7,92 @@
 (function(win,doc){
  'use strict';
  const $=id=>doc.getElementById(id);
+ const CHAPTERS=[
+  [1,'Airplane General, Emergency Equipment, Doors, Windows'],
+  [2,'Air Systems'],[3,'Anti-Ice, Rain'],[4,'Automatic Flight'],
+  [5,'Communications'],[6,'Electrical'],[7,'Engines, APU'],
+  [8,'Fire Protection'],[9,'Flight Controls'],[10,'Flight Instruments, Displays'],
+  [11,'Flight Management, Navigation'],[12,'Fuel'],[13,'Hydraulics'],
+  [14,'Landing Gear'],[15,'Warning Systems']
+ ];
+ // [FCOM V2 chapter, title, verified repository-relative URL]. Keep URL
+ // resolution anchored to /panel-mosaic-lab/cockpit/, not the gateway alias.
  const LABS=[
-  ['Instrumentation','Instrument Photo Lab','./instrument-lab/'],
-  ['Instrumentation','EADI Attitude Lab','../../eadi-attitude-lab/'],
-  ['Instrumentation','EFIS Display Lab','../../efis-display-lab/'],
-  ['Instrumentation','Main Panel Lab','../../main-panel-lab/'],
-  ['Instrumentation','CDU Font Test','../../cdu-font-test/'],
-  ['Electrical','Bus Consumer Test Lab','../../bus-consumer-test-lab/v3.html'],
-  ['Electrical','Electrical Lab','../../electrical-lab/'],
-  ['Electrical','Electrical Load Lab','../../electrical-load-lab/'],
-  ['Electrical','AC/DC Metering Lab','../../acdc-metering-lab/'],
-  ['Electrical','Circuit Breaker Panel Lab','../../cb-panel-lab/'],
-  ['Electrical','Electrical Pack Test','../../isn-electrical-pack-lab/'],
-  ['Airframe & Flight','CPCS Lab','../../cpcs-lab/'],
-  ['Airframe & Flight','DCPCS Lab','../../dcpcs-lab/'],
-  ['Airframe & Flight','Pneumatics Lab','../../pneumatics-lab/'],
-  ['Airframe & Flight','Stall Warning Lab','../../stall-warning-lab/'],
-  ['Airframe & Flight','EFIS/CDU Integration Lab','../../integration-lab/efis-cdu.html'],
-  ['Airframe & Flight','Systems Integration','../../systems-integration-lab/'],
-  ['Engines & Fire','Engine ECU Start Lab','../../isn-ecu-start-lab/'],
-  ['Engines & Fire','Engine Start Sequence Lab','../../isn-start-sequence-lab/'],
-  ['Engines & Fire','Fire Protection Lab','../../fire-protection-lab/'],
-  ['Engines & Fire','Fire Handle Lab','../../fire-handle-lab/'],
-  ['Engines & Fire','Audio Warning Lab','../../audio-lab/'],
-  ['Panels','Interactive Panel Test','../../interactive-panel-test/'],
-  ['Panels','Switch Lab','../../switch-lab/'],
-  ['Panels','Trainer Lab','../../trainer-lab/'],
-  ['Panels','Vector Lab','../../vector-lab/']
+  [1,'Interactive Panel Test','../../interactive-panel-test/'],
+  [1,'Trainer Lab','../../trainer-lab/'],
+  [1,'Switch Lab','../../switch-lab/'],
+  [1,'Vector Lab','../../vector-lab/'],
+  [1,'Lighting / Annunciator Test Lab','../lights-test/'],
+  [2,'Pneumatics Lab','../../pneumatics-lab/'],
+  [2,'CPCS Lab','../../cpcs-lab/'],
+  [2,'DCPCS Lab','../../dcpcs-lab/'],
+  [4,'MCP Panel Lab','../mcp-panel/'],
+  [4,'Speed Limit / AFDS Lab','./speed-limit-ch4-lab.html'],
+  [6,'Bus Consumer Test Lab','../../bus-consumer-test-lab/v3.html'],
+  [6,'Electrical Lab','../../electrical-lab/'],
+  [6,'Electrical Load Lab','../../electrical-load-lab/'],
+  [6,'AC/DC Metering Lab','../../acdc-metering-lab/'],
+  [6,'Circuit Breaker Panel Lab','../../cb-panel-lab/'],
+  [6,'Electrical Pack Test','../../isn-electrical-pack-lab/'],
+  [7,'APU Test Lab','../apu-test-lab/'],
+  [7,'Engine Test Lab','../engine-test-lab/'],
+  [7,'Engine ECU Start Lab','../../isn-ecu-start-lab/'],
+  [7,'Engine Start Sequence Lab','../../isn-start-sequence-lab/'],
+  [7,'N1 / EGT Precision Lab','./n1-egt-precision-lab.html'],
+  [8,'Fire Protection Lab','../../fire-protection-lab/'],
+  [8,'Fire Handle Lab','../../fire-handle-lab/'],
+  [9,'Leading Edge Devices Lab','../le-devices/'],
+  [10,'Instrument Photo Lab','./instrument-lab/'],
+  [10,'EADI Attitude Lab','../../eadi-attitude-lab/'],
+  [10,'EFIS Display Lab','../../efis-display-lab/'],
+  [10,'Main Panel Lab','../../main-panel-lab/'],
+  [10,'Speed Tape Lab','./speed-tape-lab.html'],
+  [10,'Scale Calibration Lab','./scale-calibration-lab/'],
+  [11,'CDU Font Test','../../cdu-font-test/'],
+  [11,'IRS Test Lab','../irs-test-lab/'],
+  [11,'EFIS/CDU Integration Lab','../../integration-lab/efis-cdu.html'],
+  [12,'Fuel Service · P15 (in FLT PHASE)','#flightFuelService'],
+  [15,'TCAS Test Lab','./tcas-lab/'],
+  [15,'Stall Warning Lab','../../stall-warning-lab/'],
+  [15,'Audio Warning Lab','../../audio-lab/']
  ];
  const ACTIONS=[
-  ['Cockpit Test Labs','FAILURES · Electrical / Fuel / Fire','failuresHeaderOpen'],
-  ['Cockpit Test Labs','CB PANEL · Cockpit Circuit Breakers','cbPanelOpen'],
-  ['Cockpit Test Labs','Instrument Photo Lab','instrumentPhotoLabOpen'],
-  ['Cockpit Test Labs','Bus Consumer Lab','busConsumerTestLabOpen']
+  [6,'FAILURES · Electrical / Fuel / Fire','failuresHeaderOpen'],
+  [6,'CB PANEL · Cockpit Circuit Breakers','cbPanelOpen'],
+  [10,'Instrument Photo Lab','instrumentPhotoLabOpen'],
+  [6,'Bus Consumer Lab','busConsumerTestLabOpen']
  ];
+ const OVERHEAD_CHAPTER=Object.freeze({
+  OH01:9,OH02:11,OH03:5,OH04:5,OH05:7,OH06:15,OH07:9,OH08:11,
+  OH09:12,OH10:6,OH11:6,OH12:6,OH13:2,OH14:1,OH15:3,OH16:3,
+  OH17:13,OH18:3,'OH19-VOICE':5,'OH19-DIFF':2,OH20:2,OH21:2,
+  OH22:2,OH23:1,OH24:7,OH25:1
+ });
+ function chapterForLabel(label){
+  const v=String(label||'').toUpperCase();
+  if(/TCAS|TRAFFIC|STALL|WARNING|GPWS|AURAL|AUDIO/.test(v))return 15;
+  if(/GEAR|BRAKE/.test(v))return 14;
+  if(/HYD/.test(v))return 13;
+  if(/FUEL|REFUEL/.test(v))return 12;
+  if(/NAV|IRS|CDU|FMC|FMS|ROUTE/.test(v))return 11;
+  if(/EADI|EHSI|EFIS|INSTRUMENT|SPEED TAPE|ATTITUDE|DISPLAY|SCALE/.test(v))return 10;
+  if(/FLAP|SLAT|FLIGHT CONTROL|TRIM/.test(v))return 9;
+  if(/FIRE|OVHT|EXTINGUISH/.test(v))return 8;
+  if(/ENGINE|APU|STARTER|IGNITION/.test(v))return 7;
+  if(/ELECTR|BUS|CB|BATTERY|GENERATOR|GROUND POWER/.test(v))return 6;
+  if(/COMM|AUDIO SELECT|VHF|MIC/.test(v))return 5;
+  if(/AFDS|AUTOPILOT|MCP|AUTOTHROTTLE|SPEED LIMIT/.test(v))return 4;
+  if(/ANTI.?ICE|WINDOW HEAT|PITOT|WIPER|RAIN|TAT/.test(v))return 3;
+  if(/AIR COND|AIR SYSTEM|BLEED|PACK|PRESSUR|CPCS|DCPCS/.test(v))return 2;
+  return 1;
+ }
  const services={
   airStarterAttached:false,airStarterFlow:false,airStarterPressurePsi:35,
   conditionedAirAttached:false,conditionedAirOn:false,
   fuelDoorOpen:false,fuelHoseAttached:false,fuelPower:false,fuelAuxPower:false,fuelTest:false,lampTest:null,
   fuelRunOnKg:{main1:0,center:0,main2:0},fuelRunOnMode:{main1:'REFUEL',center:'REFUEL',main2:'REFUEL'},fuelIsFlowing:{main1:false,center:false,main2:false},
   fuelMode:'REFUEL',fuelRunning:false,
+  fuelTargets:{main1:4555,center:7029,main2:4555},
   valves:{main1:false,center:false,main2:false}
  };
  let palette=null,fuelTimer=null,fuelStatus='',lastFuelDraw=0;
@@ -81,8 +127,18 @@
  }
  function linkEntry(label,path,parent){
   const a=element('a','workspace-lab-item',label,parent);
+  if(path==='#flightFuelService'){
+   a.href='#flightFuelService';
+   a.addEventListener('click',event=>{
+    event.preventDefault();hideLabs();$('flightScenarioHeader')?.click();
+    const fold=doc.querySelector('#flightServices [data-service="fuel"]');
+    if(fold){fold.open=true;fold.scrollIntoView?.({block:'nearest'});}
+   });
+   return a;
+  }
   const finalPath=path.endsWith('/')?path+'index.html':path;
-  a.href=new URL(finalPath,doc.baseURI).href;a.target='_blank';a.rel='noopener';return a;
+  const cockpitBase=new URL('/panel-mosaic-lab/cockpit/index.html',doc.baseURI);
+  a.href=new URL(finalPath,cockpitBase).href;a.target='_blank';a.rel='noopener';return a;
  }
  function makeGroup(title,parent,open=false){
   const details=element('details','workspace-group',undefined,parent);
@@ -94,15 +150,17 @@
   palette.hidden=true;$('workspaceLabsToggle')?.setAttribute('aria-expanded','false');
  }
  async function addOverheadLabs(){
-  const host=$('workspaceOverheadLabs');if(!host||host.dataset.loaded)return;
-  host.dataset.loaded='loading';
+  const host=$('workspaceLabsMenu');if(!host||host.dataset.overheadLoaded)return;
+  host.dataset.overheadLoaded='loading';
   try{
    const response=await fetch('./overhead-test-labs-catalog-v1.json');
    if(!response.ok)throw Error('Catalog is unavailable');
    const json=await response.json();
    if(!Array.isArray(json.panels))throw Error('Invalid catalog');
    json.panels.forEach(panel=>{
-    const b=element('button','workspace-lab-item',panel.id+' · '+panel.title,host);
+    const container=$('workspaceChapter'+(OVERHEAD_CHAPTER[panel.id]||chapterForLabel(panel.title)));
+    if(!container)return;
+    const b=element('button','workspace-lab-item',panel.id+' · '+panel.title,container);
     b.type='button';b.addEventListener('click',()=>{
      hideLabs();
      if(!win.B737OverheadTestLabsV1?.open?.(panel.id)){
@@ -110,8 +168,8 @@
      }
     });
    });
-   host.dataset.loaded='yes';
-  }catch(error){host.dataset.loaded='';msg('workspaceLabStatus',String(error.message||error),true);}
+   host.dataset.overheadLoaded='yes';
+  }catch(error){host.dataset.overheadLoaded='';msg('workspaceLabStatus',String(error.message||error),true);}
  }
  function initLabs(){
   const header=doc.querySelector('body > header.unified-minimal-header .header-settings');
@@ -128,17 +186,14 @@
   const input=element('input','workspace-lab-search',undefined,palette);
   input.type='search';input.placeholder='Search all test labs';input.setAttribute('aria-label','Search test labs');
   const area=element('div','workspace-lab-area',undefined,palette);
-  const cockpit=makeGroup('Cockpit / Live Test Labs',area,true);
-  ACTIONS.forEach(x=>testEntry(x[1],x[2],cockpit));
-  const extras=element('div','workspace-dynamic-labs',undefined,cockpit);
-  extras.id='workspaceExtraShortcuts';
-  const groups=[...new Set(LABS.map(x=>x[0]))];
-  groups.forEach(g=>{
-   const part=makeGroup(g,area);
-   LABS.filter(x=>x[0]===g).forEach(x=>linkEntry(x[1],x[2],part));
-  });
-  const oh=makeGroup('Overhead OH01–OH25 · Individual Test Labs',area);
-  oh.id='workspaceOverheadLabs';
+  // Fixed FCOM Chapter 1–15 taxonomy. Every overhead and dynamic test lab
+  // joins the chapter that owns its system; never create uncategorized tabs.
+  for(const [number,title] of CHAPTERS){
+   const group=makeGroup(String(number).padStart(2,'0')+' · '+title,area,number===15||number===6);
+   group.id='workspaceChapter'+number;
+  }
+  for(const [chapter,label,id] of ACTIONS)testEntry(label,id,$('workspaceChapter'+chapter));
+  for(const [chapter,label,path] of LABS)linkEntry(label,path,$('workspaceChapter'+chapter));
   const status=element('p','workspace-status','',palette);status.id='workspaceLabStatus';status.setAttribute('role','status');
   const seenInspectorActions=new Set();
   const updateInspectorActions=()=>{
@@ -148,7 +203,9 @@
     const key=(node.id||node.href||name);
     if(seenInspectorActions.has(key)||node.closest('#workspaceLabsMenu'))continue;
     seenInspectorActions.add(key);
-    const entry=element('button','workspace-lab-item',name,extras);
+    const target=$('workspaceChapter'+chapterForLabel(name));
+    if(!target)continue;
+    const entry=element('button','workspace-lab-item',name,target);
     entry.type='button';
     entry.addEventListener('click',()=>{hideLabs();if(node.tagName==='A')win.open(node.href.endsWith('/')?node.href+'index.html':node.href,'_blank','noopener');else node.click();});
    }
@@ -169,7 +226,14 @@
   });
   doc.addEventListener('keydown',event=>{if(event.key==='Escape')hideLabs()});
   const shortcuts=$('unifiedLabShortcuts');
-  if(shortcuts)extras.append(shortcuts);
+  if(shortcuts){
+   for(const item of [...shortcuts.children]){
+    const label=item.textContent||item.getAttribute?.('aria-label')||'';
+    const target=$('workspaceChapter'+chapterForLabel(label));
+    target?.append(item);
+   }
+   shortcuts.hidden=true;
+  }
   // Move the NAV DATA instructor top-level entry out of the header,
   // preserving the separate CDU navigation data bank and its runtime.
   const navCheck=()=>{
@@ -181,7 +245,7 @@
    });
   };
   navCheck();
-  const legacy=new Set(['unifiedEfisHeader','cbPanelOpen','instrumentPhotoLabOpen','busConsumerTestLabOpen','failuresHeaderOpen']);
+  const legacy=new Set(['unifiedEfisHeader','groundPowerHeader','cbPanelOpen','instrumentPhotoLabOpen','busConsumerTestLabOpen','failuresHeaderOpen']);
   function hideLegacyHeader(){
    for(const node of [...header.children]){
     if(legacy.has(node.id)||node.dataset.workspaceNavHidden==='true'){
@@ -431,11 +495,38 @@
  }
  function fuelMessage(value,bad=false){fuelStatus=value;msg('flightFuelStatus',value,bad);}
  function targetFor(tank){
-  const input=$('flightFuelTarget_'+tank);
-  if(!input||!input.value.trim())throw Error(tankLabels[tank]+' target quantity is missing.');
-  const n=Number(input.value);
-  if(!Number.isFinite(n)||n<0||n>tankCaps[tank])throw Error(tankLabels[tank]+' target must be 0–'+tankCaps[tank]+' kg.');
+  const n=services.fuelTargets[tank];
+  if(!Number.isFinite(n)||n<0||n>tankCaps[tank])
+   throw Error(tankLabels[tank]+' training target is invalid.');
   return n;
+ }
+ // Quick Fill is separate from the pressure-refueling switch/valve scenario.
+ // Entering a quantity commits directly to the ONE live ATA28 ECU.
+ function applyQuickFill(tank){
+  try{
+   onGroundGuard();
+   const field=$('flightFuelQuick_'+tank);
+   if(!field||field.value.trim()==='')throw Error('Enter a fuel quantity (KG).');
+   const qty=Number(field.value);
+   if(!Number.isFinite(qty)||qty<0||qty>tankCaps[tank])
+    throw Error(tankLabels[tank]+' quantity must be 0–'+tankCaps[tank]+' KG.');
+   const ecu=win.B737ISNCockpitV1;
+   if(!ecu?.fuelTrainerAction||!ecu?.getFuelSystem||!ecu.getFuelSystem()?.tanksKg)
+    throw Error('ATA28 live fuel system is not ready. No change made.');
+   // Isolate only this tank from any active pump/switch training scenario
+   // so instructor's quantity is not immediately overwritten.
+   services.valves[tank]=false;
+   services.fuelRunOnKg[tank]=0;
+   services.fuelIsFlowing[tank]=false;
+   ecu.fuelTrainerAction({instructor:true,type:'SERVICE_TANK',tank,quantityKg:qty});
+   updateFuelValveControls();
+   drawFuelPanel();
+   fuelMessage('QUICK FILL · '+tankLabels[tank]+' set directly to '+qty.toFixed(0)+' KG');
+   if(!fuelAnyOpen()&&!fuelHasRunOn()&&fuelTimer!==null){
+    win.clearInterval(fuelTimer);fuelTimer=null;services.fuelRunning=false;
+   }
+   return true;
+  }catch(e){fuelMessage('QUICK FILL · '+(e.message||String(e)),true);return false;}
  }
  function startFuelTicker(){
   if(fuelTimer===null){fuelTimer=win.setInterval(tickFuel,FUEL_TICK_MS);}
@@ -566,10 +657,10 @@
   }
  }
  function initFuel(host){
-  element('p','flight-service-hint','FCOM P15: Tank 2 / Center / Tank 1. Click the physical metal toggles: OPEN starts live ATA28 transfer, CLOSED initiates a training-only 50 KG gradual valve-closure run-on. The panel photo is raster WebP, not SVG.',host);
+  element('p','flight-service-hint','FCOM P15: Tank 2 / Center / Tank 1. Photo-based metal switches control valve-driven refuel/defuel and training-only closure run-on. Quick Fill below writes desired KG directly to ATA28.',host);
   const op=element('section','flight-fuel-operation',undefined,host);
   element('h4','', '1 · REFUELING / DEFUELING · VALVE DRIVEN',op);
-  element('p','flight-service-hint','No hose or START button is required in this instructor service scenario. Choose REFUEL or DEFUEL, set tank targets, then use the metal switches on the panel.',op);
+  element('p','flight-service-hint','No hose or START button is required in the valve-driven instructor scenario. Choose REFUEL or DEFUEL, then move physical switches OPEN to transfer toward tank limits.',op);
   const canvas=element('canvas','flight-fuel-canvas',undefined,op);
   canvas.id='flightFuelCanvas';canvas.width=960;canvas.height=540;
   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Interactive B737 Classic right wing P15 refueling station: three live tank quantity displays and clickable valve switches');
@@ -593,20 +684,28 @@
   const modeSelect=element('select','',undefined,mode);
   modeSelect.id='flightFuelOperation';
   for(const v of ['REFUEL','DEFUEL']){const o=element('option','',v,modeSelect);o.value=v;}
+  element('h4','flight-quick-title','QUICK FILL / DEFUEL · DIRECT QUANTITY (KG)',controls);
+  element('p','flight-service-hint','Instructor shortcut: enter the desired usable fuel in any tank. After typing stops, on Enter or when leaving the field, the live ATA28 quantity updates immediately. No switch or START button.',controls);
   const rows=element('div','flight-fuel-rows',undefined,controls);
   tankKeys.forEach(tank=>{
    const row=element('div','flight-fuel-row',undefined,rows);
    element('strong','',tankLabels[tank]+' · MAX '+tankCaps[tank]+' KG',row);
-   const label=element('label','','TARGET · KG ',row);
-   const input=element('input','',undefined,label);input.type='number';input.id='flightFuelTarget_'+tank;
-   input.step='10';input.min='0';input.max=String(tankCaps[tank]);input.value=String(tankCaps[tank]);
-   input.addEventListener('change',()=>{
-    if(services.valves[tank]){try{targetFor(tank);startFuelTicker();tickFuel();}catch(e){fuelMessage(e.message,true);}}
+   const label=element('label','','QUICK FILL · KG ',row);
+   const field=element('input','flight-quick-input',undefined,label);
+   field.type='number';field.id='flightFuelQuick_'+tank;
+   field.step='10';field.min='0';field.max=String(tankCaps[tank]);
+   field.placeholder='Enter quantity';
+   const current=getQty()?.[tank];
+   field.value=Number.isFinite(current)?String(Math.round(current)):'';
+   field.dataset.initialized=Number.isFinite(current)?'yes':'no';
+   let debounceId=null;
+   const commit=()=>{if(debounceId!==null)win.clearTimeout(debounceId);debounceId=null;applyQuickFill(tank);};
+   field.addEventListener('input',()=>{
+    if(debounceId!==null)win.clearTimeout(debounceId);
+    if(field.value.trim()!=='')debounceId=win.setTimeout(commit,550);
    });
-   const valve=serviceButton(row,'VALVE · CLOSED',()=>{
-    try{commandFuelValve(tank,!services.valves[tank]);}catch(e){fuelMessage(e.message,true);}
-   });
-   valve.id='flightFuelValve_'+tank;valve.setAttribute('aria-pressed','false');
+   field.addEventListener('change',commit);
+   field.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();commit();field.blur?.();}});
   });
   modeSelect.addEventListener('change',()=>{
    if(fuelAnyOpen()||fuelHasRunOn()){
@@ -615,7 +714,7 @@
     return;
    }
    services.fuelMode=modeSelect.value;
-   tankKeys.forEach(tank=>{const field=$('flightFuelTarget_'+tank);if(field)field.value=String(services.fuelMode==='REFUEL'?tankCaps[tank]:0);});
+   tankKeys.forEach(tank=>{services.fuelTargets[tank]=services.fuelMode==='REFUEL'?tankCaps[tank]:0;});
    fuelMessage(services.fuelMode+' selected · open a valve switch to begin.');
   });
   const status=element('p','flight-service-status','Select a tank valve to begin.',op);
@@ -647,6 +746,13 @@
   element('small','flight-service-hint','FCOM 12.10.7–8: OPEN energizes related valve; CLOSED de-energizes. Blue valve position lamp indicates OPEN with tank not full. Displays represent usable fuel in KG. The 50 KG post-closure quantity, 18 KG/s transfer rate and ten-kg display increments are training approximations, not certified Boeing performance.',auxBody);
   drawFuelPanel();
   win.addEventListener('b737:unified-ecu-observation',()=>{
+   const q=getQty();
+   if(q)for(const tank of tankKeys){
+    const field=$('flightFuelQuick_'+tank);
+    if(field?.dataset.initialized==='no'&&!field.value.trim()){
+     field.value=String(Math.round(q[tank]||0));field.dataset.initialized='yes';
+    }
+   }
    if(!services.fuelRunning&&doc.querySelector('#flightScenarioDialog[open] [data-service="fuel"][open]')&&Date.now()-lastFuelDraw>700)drawFuelPanel();
   });
  }
