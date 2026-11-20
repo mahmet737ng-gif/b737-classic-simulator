@@ -115,16 +115,19 @@ test('TCAS controls mount inside the existing flight dialog and user buttons run
  vm.runInNewContext(fs.readFileSync('panel-mosaic-lab/cockpit/tcas-training-unified-v1.js','utf8'),{window:win,CustomEvent});
  ready();assert.ok(nodes.get('tcasTrainingControls'));
  nodes.get('tcasTrainingScenario').value='REVERSAL_DESCEND';
- nodes.get('tcasRelativeAltitude').value='';nodes.get('tcasVerticalRate').value='';
+ for(const removed of ['tcasRelativeAltitude','tcasVerticalRate','tcasUnit','tcasAltSource','tcasCode','tcasFilter','tcasTrainingVoice','tcasIdent','tcasAbsolute'])
+  assert.equal(nodes.has(removed),false,'Removed training control: '+removed);
  nodes.get('tcasTrainingStart').handlers.click();
  assert.equal(win.B737UnifiedTcasV1.getDiagnostics().active,true);
  nodes.get('tcasTrainingNext').handlers.click();nodes.get('tcasTrainingNext').handlers.click();
  assert.equal(win.B737UnifiedTcasV1.getState().advisory,'TA');
  nodes.get('tcasTrainingNext').handlers.click();assert.equal(win.B737UnifiedTcasV1.getState().ra.id,'REVERSAL_DESCEND');
- const aural=[];listeners.set('b737:tcas-aural',e=>aural.push(e.detail.text));
- nodes.get('tcasTrainingVoice').handlers.change({target:{checked:true}});
- assert.equal(aural.length,1);assert.match(aural[0],/DESCEND NOW/);
- win.dispatchEvent(new CustomEvent('b737:flight-scenario-state',{detail:flight}));assert.equal(aural.length,1,'no replay every 250 ms');
+ nodes.get('tcasTrainingMode').value='TA_ONLY';
+ nodes.get('tcasTrainingMode').handlers.change();
+ assert.equal(win.B737UnifiedTcasV1.getControls().mode,'TA_ONLY');
+ nodes.get('tcasTrainingMode').value='TA_RA';
+ nodes.get('tcasTrainingMode').handlers.change();
+ assert.equal(win.B737UnifiedTcasV1.getControls().mode,'TA_RA');
  nodes.get('tcasTrainingStop').handlers.click();assert.equal(win.B737UnifiedTcasV1.getState().ra,null);
  assert.equal(win.B737UnifiedTcasV1.getDiagnostics().active,false);
 });

@@ -6,7 +6,7 @@ const controller=read('panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js');
 const shell=read('panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js');
 test('original FLT PHASE entry and complete dialog exist before flight scripts run; only inner phase selector is absent',()=>{
  const view=html.match(/<dialog id="flightScenarioDialog"[^>]*>([\s\S]*?)<\/dialog>/)?.[1];
- assert.ok(view);assert.equal((html.match(/id="flightScenarioHeader"/g)||[]).length,1);
+ assert.ok(view);assert.match(html,/flight-scenario-panel-v1\.css\?v=FLT-UI-SLIM-0002/);assert.equal((html.match(/id="flightScenarioHeader"/g)||[]).length,1);
  assert.equal((html.match(/id="flightScenarioDialog"/g)||[]).length,1);
  for(const id of ['flightAirport','flightRunway','flightPreset','flightAlt','flightHeading','flightSpeed','flightLat','flightLon','flightLoad','flightTargets','flightTakeoff','flightPause','flightStop'])
   assert.ok(view.includes('id="'+id+'"'),id+' must remain available');
