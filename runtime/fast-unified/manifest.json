@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "432e4eb57a66d823920344ba4b83dfb0172c1fe7",
+  "sourceCommit": "8deca7fb1138b8755053fe4969d1695c55570d8d",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "008c6ff9413a931117e55071ecf5f2856b2c68c1353dad6af0c5bc04f643670e"
+      "sha256": "16b5557cf35ef8ba0e4f2393563e701445689f618847835b54443a769a709a36"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -596,7 +596,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "bfe47cf918387fc3725fbc6a44a2781f6b6c6d4c43ca314d6682ddc95f5501ca"
+      "sha256": "dba1a4dbcde269e38d1b42ca89d8a03fb4263eadb977f71aad0371673be5e953"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
