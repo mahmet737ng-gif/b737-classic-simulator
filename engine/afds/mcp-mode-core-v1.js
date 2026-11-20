@@ -361,7 +361,10 @@ function transition(state,action){
  if(action.type==="FD"){
   if(!["left","right"].includes(action.side)||typeof action.on!=="boolean")throw Error("Invalid FD position");
   s.fd[action.side]=action.on;
-  if(!s.fd.left&&!s.fd.right){clearModes(s);}
+  // FCOM 4.10.19: both F/D OFF retract command bars, but an already
+  // engaged A/P keeps flying its selected modes. Never clear an active AP.
+  if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot)clearModes(s);
+  if(action.on)s.flightDirectorBarsRetracted=false;
   return done();
  }
  if(action.type==="BANK_ANGLE"){
@@ -427,7 +430,9 @@ function transition(state,action){
   return done();
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
-  if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
+  // FCOM SHI 4.10.19/4.20.2 permits CMD/CWS with both F/Ds OFF.
+  // Neither F/D switch is an autopilot engagement interlock.
+  // Engagement depends on control-wheel force, trim cutout and A/P bar.
   // FCOM SHI 4.20.2: known A/P engagement inhibits, never inferred from
   // absent/unverified evidence or from F/D switch state alone.
   if(s.flight?.controlWheelForceApplied===true)
@@ -447,7 +452,8 @@ function transition(state,action){
   // CMD engagement does not deselect an already armed approach.
   return done();
  }
- if(!s.fd.left&&!s.fd.right)return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
+ if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot)
+  return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
  if(thrust.includes(id)){
   if(!s.autoThrottleArm)return rejected(s,"AUTOTHROTTLE_NOT_ARMED");
   // A/T SPEED is incompatible with LVL CHG's pitch-owned speed
