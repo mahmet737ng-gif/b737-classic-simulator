@@ -285,8 +285,7 @@ function directBootSetup(){
    aircon400:preview('Boeing-Style Environmental Control Panel.png'),
    dcpcs:preview('DCPCS_Background_Owner.png'),
    oh21_400:photo('OH21_400'),oh21_300500:photo('OH21_300500'),cockpitControls
-  },
-  lamps:fastRuntime.bytes.has(cockpitSource+'performance/boot-lamp-sources.json')
+  }
  });
  return '<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
 }
@@ -306,6 +305,15 @@ function transformCockpitHTML(content,{direct=false}={}) {
     '<script src="/static/session.js" defer></script>';
   if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
   let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
+  // This source is part of the verified release, shared by the three
+  // documents. Its repetitive SVG compresses with the HTML. Deferring it
+  // to an extra network fetch can trigger hundreds of lamp fallback requests.
+  const lampPack=direct&&fastRuntime.bytes.get(cockpitSource+'performance/boot-lamp-sources.json');
+  if(lampPack){
+   const json=lampPack.toString('utf8').replace(/</g,'\\u003c');
+   result=result.replace(/<\/head>/i,closing=>
+    '<script>window.B737BootLampSources=Promise.resolve('+json+');</script>'+closing);
+  }
   result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
   result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
   return result;
@@ -339,10 +347,11 @@ function compiledDocument(relative,bytes,cockpitDocument,direct){
   const rendered=cockpitDocument?transformCockpitHTML(original,{direct}):
    original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
   const html=direct?versionCompiledLinks(rendered,relative):rendered;
-  const brotli=zlib.brotliCompressSync(Buffer.from(html),{
+  const raw=Buffer.from(html);
+  const brotli=zlib.brotliCompressSync(raw,{
    params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}
   });
-  compiledDocuments.set(key,{html,brotli});
+  compiledDocuments.set(key,{html,brotli,gzip:zlib.gzipSync(raw,{level:4})});
  }
  return compiledDocuments.get(key);
 }
@@ -379,15 +388,15 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
   "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
   "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
   "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
- const {html,brotli}=compiledDocument(relative,bytes,cockpitDocument,direct);
+ const {html,brotli,gzip}=compiledDocument(relative,bytes,cockpitDocument,direct);
  res.setHeader('Cache-Control','private, no-store');
  res.setHeader('Vary','Accept-Encoding');
  const accepts=String(req.headers['accept-encoding']||'');
- const encode=/\bbr\b/.test(accepts);
- if(encode)res.setHeader('Content-Encoding','br');
+ const encoding=/\bbr\b/.test(accepts)?'br':/\bgzip\b/.test(accepts)?'gzip':null;
+ if(encoding)res.setHeader('Content-Encoding',encoding);
  res.writeHead(200,{'Content-Type':mime});
  if(req.method==='HEAD'){res.end();return;}
- res.end(encode?brotli:html);
+ res.end(encoding==='br'?brotli:encoding==='gzip'?gzip:html);
 }
 async function serveGitHubSource(req,res,relative,{cockpitDocument=false,authMs}={}) {
   const textExt=path.posix.extname(relative).toLowerCase();

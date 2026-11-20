@@ -3,20 +3,24 @@
 // test-only credentials and a CI PostgreSQL container, never production login.
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
+const {openHttpsFixture}=require('./https-fixture.cjs');
 (async()=>{
  const browser=await chromium.launch({
   headless:true,args:['--no-sandbox'],
   ...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})
  });
- const base='http://127.0.0.1:3000';
+ const upstream='http://127.0.0.1:3000';
+ let proxy;
  const data=[];
  const direct='/panel-mosaic-lab/unified/';
  const legacy='/panel-mosaic-lab/cockpit/';
  try {
+  proxy=await openHttpsFixture(upstream);
   for(const mode of ['fresh-context','737-400-retained-worker','limited-connection']){
    const limited=mode==='limited-connection';
    const retained=mode==='737-400-retained-worker';
-   const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1});
+   const base=limited?proxy.origin:upstream;
+   const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,ignoreHTTPSErrors:limited});
    const page=await context.newPage();
    const errors=[];
    page.on('pageerror',err=>errors.push(err.message));
@@ -74,6 +78,9 @@ const assert=require('node:assert/strict');
      framePaths:['overheadFrame','cduFrameCAPT','cduFrameFO'].map(id=>document.getElementById(id)?.contentWindow?.location.pathname),
      workerStarts:['overheadFrame','cduFrameCAPT','cduFrameFO'].map(id=>document.getElementById(id)?.contentWindow?.performance.getEntriesByType('navigation')[0]?.workerStart),
      navTiming:performance.getEntriesByType('navigation')[0]?.serverTiming.map(x=>x.name),
+     protocol:performance.getEntriesByType('navigation')[0]?.nextHopProtocol,
+     documentBytes:performance.getEntriesByType('navigation')[0]?.encodedBodySize,
+     lampPackFetches:resources.filter(resource=>resource.name.includes('/boot-lamp-sources.json')).length,
      packedLampCount:Object.keys(await window.B737BootLampSources||{}).length,
      priorityPreviewCount:window.B737GatewayBoot?.previews?.cockpitControls?.length||0,
      versionedScriptCount:tags.filter(tag=>new URL(tag.src).searchParams.has('unifiedRelease')).length,
@@ -108,7 +115,9 @@ const assert=require('node:assert/strict');
    assert.deepEqual(result.framePaths,[direct+'overhead-stage.html',direct+'cdu-stage.html',direct+'cdu-stage.html']);
    assert.deepEqual(result.workerStarts,[0,0,0]);
    assert.ok(result.navTiming.includes('unified-direct'),'Missing delivery provenance');
-   assert.ok(result.packedLampCount>200,'Lamp source pack missing');
+   assert.ok(result.packedLampCount>200,'Embedded lamp source pack missing');
+   assert.equal(result.lampPackFetches,0,'Lamp boot should require no separate pack request');
+   if(limited)assert.equal(result.protocol,'h2');
    assert.deepEqual(result.bootMasks,['OH10','OH12']);
    assert.equal(result.bootLevers.length,2);
    assert.ok(result.bootLevers.every(url=>/boot-art/.test(url)),'Lever sprites must use the release crops');
@@ -122,5 +131,5 @@ const assert=require('node:assert/strict');
   }
   console.log('GATEWAY COMPILED BOOT TEST PASSED; budget is 5000ms:',JSON.stringify(data.map(x=>({mode:x.mode,ms:x.cockpitReadyMs,within5s:x.cockpitReadyMs<=5000}))));
  }catch(error){console.error('GATEWAY BOOT TEST FAILED',error.stack||error);process.exitCode=1;}
- finally{await browser.close();}
+ finally{await browser.close();await proxy?.close();}
 })();
