@@ -74,7 +74,10 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#ehsi clipPath[id="ehsi-route-range"] ellipse').count(),1,
    'FULL NAV route stays within full compass circle');
   await page.selectOption('#scenario','TA_ONLY');
-  await page.locator('#converging').check();
+  assert.equal(await page.locator('#converging').isDisabled(),true,
+   'Passing preset must not accept a convergence override');
+  // Simulate stale browser checkbox state without dispatching a new event.
+  await page.evaluate(()=>{document.getElementById('converging').checked=true;});
   await page.locator('#start').click();
   assert.equal(await page.locator('#ivsi').getAttribute('data-ra-id'),'NONE',
    'Passing traffic must never show a false descending RA at LOAD');
