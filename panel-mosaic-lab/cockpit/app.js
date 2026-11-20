@@ -412,7 +412,9 @@
   trace?.phase('Mount cockpit panels',mountStart,mounted);
   window.dispatchEvent(new CustomEvent('b737:cockpit-mounted'));
   trace?.phase('Notify cockpit components',mounted);
-  focus('main');
+  // Do not snap a user's early visual-only navigation back to Main when
+  // the interactive cockpit finally attaches to the same photo DOM.
+  focus(window.B737VisualFirstShellV1?.focused||'main');
   const scales=Object.fromEntries(assembly.regions.map(r=>[r.id,model.fit(r,vp.clientWidth,vp.clientHeight)]));
   window.B737ImageLoader.primeCockpit(scales,zoom);
   const earlyReady=window.B737TakeOverheadReady();
