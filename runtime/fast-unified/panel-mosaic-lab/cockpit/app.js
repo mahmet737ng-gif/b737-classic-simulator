@@ -55,6 +55,9 @@
   region.append(overheadFrame);
   return region;
  }
+ function docCduPreview(seat){
+  return [...document.querySelectorAll('.cdu-visual-shell')].find(node=>node.dataset.seat===seat)||null;
+ }
  function mount(){
   Object.assign(scene.style,{width:assembly.canvas.width+'px',height:assembly.canvas.height+'px'});
   for(const r of assembly.regions){
@@ -113,7 +116,14 @@
   }
   model.validateInstruments(assembly);
   for(const item of assembly.embeddedInstruments||[]){const station=document.createElement('div');station.id=item.id;station.className='cdu-station';station.dataset.seat=item.seat;Object.assign(station.style,{left:item.x+'px',top:item.y+'px',width:item.w+'px',height:item.h+'px'});const label=document.createElement('span');label.className='cdu-seat-label';label.textContent=item.label;station.append(label);
+   const preview=docCduPreview(item.seat);
+   if(preview){
+    preview.style.left='0px';preview.style.top='0px';
+    station.dataset.visualShell='preview';
+    station.append(preview);
+   }
    if(!cduSeats.includes(item.seat)){
+    preview?.remove();
     // The no-CDU performance diagnostic keeps both panel footprints inert.
     station.classList.add('ready','cdu-disabled');
     station.dataset.runtime='OFF';
@@ -128,7 +138,15 @@
     byId('region-'+item.regionId).querySelector('.region-native').append(station);
     continue;
    }
-   const child=document.createElement('iframe');child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
+   const child=document.createElement('iframe');
+   if(preview){
+    child.style.visibility='hidden';
+    child.addEventListener('load',()=>{
+     preview.remove();child.style.visibility='';
+     station.removeAttribute('data-visual-shell');
+    },{once:true});
+   }
+   child.id='cduFrame'+item.seat;child.className='cdu-frame';child.title=item.label;child.src=item.embeddedUrl;const placement=model.instrumentPresentation(item);Object.assign(child.style,{width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});const frameWindow=document.createElement('div');frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);byId('region-'+item.regionId).querySelector('.region-native').append(station);cduFrames.set(item.seat,{child,item,station});}
  }
  // Keep expensive visual-only CSS invalidation and texture rescans out
  // of the 2-finger pinch loop. The authoritative scale/scroll transform and

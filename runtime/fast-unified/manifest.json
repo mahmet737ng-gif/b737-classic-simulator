@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "cd2faff8a85741b7a19d99c4ee2622b1a39042d6",
+  "sourceCommit": "eac6a66a1794447d3b2032b89273e8e8838a58b8",
   "mainBefore": 295,
   "mainAfter": 93,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "62e216107a0124f5cbb3ce6a83a00897e933b3e4e30c18dd8a563ab208d26357"
+      "sha256": "775f4235bde5185382a790e81c312835ee289562759337370d64b42236324faa"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -428,11 +428,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
-      "sha256": "9fb60e94825c2e8cee32db156847322ded997292fe3b7644d9aaa566791ced4b"
+      "sha256": "bdc1ae52ff6f2e4504e8aa0fff4ade00250c8753e6595bb0816a7646aafeb975"
     },
     {
       "path": "panel-mosaic-lab/cockpit/app.js",
-      "sha256": "cec2724169ad0d8313547cc13711253d5e5197f8616fcfe6708d40e6a8461bba"
+      "sha256": "ad9039a171f5deb51de25be919105c31961b0c270f38fea3486a4cef0e2a6d84"
     },
     {
       "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
