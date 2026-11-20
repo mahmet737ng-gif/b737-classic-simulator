@@ -4,11 +4,11 @@
  let settings=C.controls(),own={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,
   tasKt:440,gsKt:448,iasKt:293,mach:.73,pitchDeg:2,vsFpm:0,
   trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},initialAltitudeFt=27000,
- encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,tfcVisible=true;
+ encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,fdHoldOffset=null,tfcVisible=true;
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='DIVERGING_ABOVE';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
- function load(){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;
+ function load(){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
   own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.iasKt=Number(by('speed').value);
   // 293 KIAS / Mach .73 cruise demonstration, with TAS distinct from CAS.
   // These are trainer estimates, not an ADC atmosphere calculation.
@@ -17,8 +17,13 @@
   own.pitchDeg=Number(by('pitch').value);targetPitch=own.pitchDeg;own.vsFpm=Number(by('vs').value);
   initialAltitudeFt=own.altitudeFt;
   own.trueTrackDeg=own.trueHeadingDeg=Cruise.route({elapsedSec:0,groundSpeedKt:own.gsKt}).own.headingDeg;
-  const options={};
-  if(by('converging').checked){options.converging=true;options.lateralSide=by('intruderSide').value;}
+  // The trainer's progressive profile derives warnings from future 3D
+  // overlap, not a scripted class switch. Passing traffic never overrides
+  // its physical near-miss geometry just because CONVERGING was left checked.
+  const options={progressive:true};
+  if(scenario.value!=='TA_ONLY'&&by('converging').checked){
+   options.converging=true;options.lateralSide=by('intruderSide').value;
+  }
   if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);
   if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
   encounter=C.create(scenario.value,own,options);refresh();}
@@ -48,14 +53,20 @@
   state.eadi.dh=-20; // Instructor cruise: no DH setting, not a failed DH sensor.
   state.eadi.fmaFontScale=.88; // TCAS Lab only; Unified FMA lettering is unchanged.
   state.eadi.selectedSpeed=own.iasKt;state.eadi.fmcCommandSpeed=own.iasKt;
-  state.eadi.tcasRa=out.ra;
+  state.eadi.tcasRa=out.ra;state.eadi.tcasFenceSimple=true;
   // Cruise FMC guidance is unchanged by a TCAS response: the crew
   // disengages CMD and flies the RA with the flight director available.
   state.eadi.at='FMC SPD';state.eadi.pitchMode='VNAV PTH';state.eadi.rollMode='LNAV';
   state.eadi.afds=autopilotEngaged?'CMD':'FD';state.eadi.apEngaged=autopilotEngaged;
-  state.eadi.fd=true;state.eadi.fdAuto=false;state.eadi.fdPitch=targetPitch;state.eadi.fdRoll=0;
+  state.eadi.fd=true;state.eadi.fdAuto=false;
+  // A manual RA is NOT an FD mode. Keep the existing FD bars stationary on
+  // the glass after CMD disconnect; do not cue the RA by moving those bars.
+  state.eadi.fdPitch=autopilotEngaged?targetPitch:own.pitchDeg+(fdHoldOffset??0);
+  state.eadi.fdRoll=0;
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
+  // Integrated TCAS IVSI consumes the same threats and RA guidance.
+  win.B737TcasIVSIV1?.render?.(by('ivsi'),own,out);
   const cruise=Cruise.route({elapsedSec:own.elapsedSec,groundSpeedKt:own.gsKt});
   const ambientAll=Cruise.ambient({elapsedSec:own.elapsedSec,ownAltitudeFt:own.altitudeFt,
    initialAltitudeFt,ownGroundSpeedKt:own.gsKt});
@@ -106,17 +117,45 @@
  }
  function guard(fn){return ()=>{try{fn();}catch(e){by('status').textContent=e.message;}};}
  by('start').onclick=guard(load);by('play').onclick=()=>{running=!running;last=null;by('play').textContent=running?'PAUSE':'RUN';};by('step').onclick=guard(()=>step(1));
+ // Manual response converts CMD to FD and follows the actual vertical-rate
+ // instruction, including urgent cases that may need roughly 10° pitch.
+ // Values are intentionally instructor physics, not an operational AP command.
+ function commandedPitchForRa(ra,target){
+  const horizon=Math.max(5,Math.min(35,Number.isFinite(target?.tcpaSec)?target.tcpaSec:20));
+  const intruderRate=Number.isFinite(target?.verticalRate)?target.verticalRate:0;
+  const relative=Number.isFinite(target?.relativeAltitude)?target.relativeAltitude:0;
+  const margin=600; // instructor separation goal at CPA (ft)
+  let rate=own.vsFpm;
+  if(ra.min!==null&&ra.max===null)
+   rate=Math.max(ra.min,intruderRate+(relative+margin)*60/horizon);
+  else if(ra.max!==null&&ra.min===null)
+   rate=Math.min(ra.max,intruderRate+(relative-margin)*60/horizon);
+  else if(ra.min!==null&&ra.max!==null)
+   rate=Math.max(ra.min,Math.min(ra.max,rate));
+  return Math.max(-12,Math.min(12,C.pitchForVs(Math.max(-6500,Math.min(6500,rate)),own)));
+ }
  by('respond').onclick=guard(()=>{
   if(!out?.ra)return;
-  // EADI annunciator changes immediately, not only at the next RUN frame.
+  // Retain the existing VNAV/LNAV guidance and the screen location of F/D bars.
+  fdHoldOffset=targetPitch-own.pitchDeg;
   autopilotEngaged=false;
-  const zones=out.ra.avoid;
-  targetPitch=zones.length===2?(zones[0].pitchDeg+zones[1].pitchDeg)/2:
-   (zones[0]?.pitchDeg??2)+(zones[0]?.side==='BELOW'?.3:-.3);
+  const threat=out.targets.find(t=>t.kind==='RA'&&!t.invalidEcho)||null;
+  targetPitch=commandedPitchForRa(out.ra,threat);
   by('pitch').value=targetPitch.toFixed(1);
   paint();
  });
  for(const [id,key] of [['mode','mode'],['unit','unit'],['altSource','altSource'],['code','code'],['filter','filter']])by(id).onchange=guard(()=>{settings[key]=['unit','altSource'].includes(key)?Number(by(id).value):by(id).value;refresh();});
+ function syncScenarioOptions(){
+  const passing=scenario.value==='TA_ONLY';
+  const checkbox=by('converging');
+  if(passing)checkbox.checked=false;
+  checkbox.disabled=passing;
+  checkbox.closest?.('label')?.setAttribute?.('title',passing?
+   'Passing traffic is a verified lateral near miss; CONVERGING is unavailable for this preset.':
+   'Select a lateral altitude-crossing encounter');
+ }
+ scenario.addEventListener('change',syncScenarioOptions);
+ syncScenarioOptions();
  by('pitch').onchange=()=>{targetPitch=Number(by('pitch').value);};
  by('vs').onchange=()=>{targetPitch=2+Math.asin(Math.max(-.7,Math.min(.7,Number(by('vs').value)/(own.tasKt*6076.11549/60))))*180/Math.PI;by('pitch').value=targetPitch.toFixed(1);};
  by('priority').onchange=()=>{settings.priorityWarning=by('priority').checked;refresh();};
