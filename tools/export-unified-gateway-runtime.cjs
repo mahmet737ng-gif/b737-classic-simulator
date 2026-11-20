@@ -27,7 +27,7 @@ const filesToPublish=new Map([
 ]);
 const origin='https://release.invalid/';
 function add(relative){
- if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|ttf|woff2)$/.test(relative)||relative.includes('..'))
+ if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|png|ttf|woff2)$/.test(relative)||relative.includes('..'))
   throw Error('Bad release resource path '+relative);
  if(filesToPublish.has(relative))return;
  const bytes=fs.readFileSync(path.join(root,relative));
