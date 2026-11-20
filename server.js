@@ -60,7 +60,7 @@ const fastRuntime=(()=>{
   for(const entry of manifest.files){
    const relative=entry.path;
    if(typeof relative!=='string'||relative.includes('..')||
-    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|ttf|woff2)$/.test(relative)||
+    !/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|png|ttf|woff2)$/.test(relative)||
     !/^[a-f0-9]{64}$/.test(entry.sha256))
      throw Error('Invalid compiled-runtime resource path');
    const full=path.resolve(fastRuntimeDir,relative);
