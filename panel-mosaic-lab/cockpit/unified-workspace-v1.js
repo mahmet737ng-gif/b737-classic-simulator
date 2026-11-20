@@ -56,6 +56,36 @@
   [15,'Stall Warning Lab','../../stall-warning-lab/'],
   [15,'Audio Warning Lab','../../audio-lab/']
  ];
+ // Metadata is derived from the verified Overhead catalog so FCOM chapters
+ // have visible lab entries immediately, independent of a lazy network fetch.
+ const OVERHEAD_MENU_LABS=[
+  ["OH01", "LE DEVICES / FLAP CONTROL"],
+  ["OH02", "IRS / INERTIAL REFERENCE"],
+  ["OH03", "SERVICE INTERPHONE / DOME LIGHT"],
+  ["OH04", "AUDIO SELECTOR / MICROPHONE"],
+  ["OH05", "ENGINE INDICATIONS / CREW OXYGEN"],
+  ["OH06", "FLIGHT RECORDER / ELT / STALL WARN"],
+  ["OH07", "FLIGHT CONTROLS / YAW DAMPER"],
+  ["OH08", "NAV / IRS / EFIS TRANSFER"],
+  ["OH09", "FUEL PUMPS / CROSSFEED"],
+  ["OH10", "ELECTRICAL AC/DC METERING"],
+  ["OH11", "DRIVE / STANDBY POWER"],
+  ["OH12", "GENERATORS / BUS TRANSFER / APU GEN"],
+  ["OH13", "EQUIPMENT COOLING / CIRCUIT PANEL"],
+  ["OH14", "EMERGENCY LIGHTS / PASSENGER SIGNS"],
+  ["OH15", "WINDOW HEAT / PITOT / TAT"],
+  ["OH16", "ENGINE / WING ANTI-ICE"],
+  ["OH17", "HYDRAULIC PUMPS"],
+  ["OH18", "GROUND CALL / WIPER / RAIN REPELLENT"],
+  ["OH19-VOICE", "VOICE RECORDER / DOOR INDICATIONS"],
+  ["OH19-DIFF", "CABIN DIFF PRESS / ALT HORN"],
+  ["OH20", "CABIN TEMPERATURE / AIR MIX"],
+  ["OH21", "PACKS / BLEED AIR / RECIRCULATION"],
+  ["OH22", "CABIN PRESSURIZATION · CPCS / DCPCS"],
+  ["OH23", "LANDING / RUNWAY / TAXI LIGHTS"],
+  ["OH24", "APU / ENGINE START / IGNITION"],
+  ["OH25", "POSITION / STROBE / EXTERIOR LIGHTS"]
+ ];
  const ACTIONS=[
   [6,'FAILURES · Electrical / Fuel / Fire','failuresHeaderOpen'],
   [6,'CB PANEL · Cockpit Circuit Breakers','cbPanelOpen'],
@@ -145,6 +175,33 @@
   details.open=open;element('summary','',title,details);
   return element('div','workspace-group-content',undefined,details);
  }
+ function refreshLabCounts(){
+  for(const [number] of CHAPTERS){
+   const host=$('workspaceChapter'+number);
+   const summary=host?.parentElement?.querySelector('summary');
+   if(!summary)continue;
+   let badge=summary.querySelector('.workspace-lab-count');
+   if(!badge)badge=element('span','workspace-lab-count',undefined,summary);
+   const count=host.querySelectorAll('.workspace-lab-item').length;
+   badge.textContent=count+' LAB'+(count===1?'':'S');
+  }
+ }
+ function addOverheadMenuItem(panel){
+  const id=String(panel.id||'');
+  if(!id||doc.getElementById('workspaceOverhead'+id))return;
+  const container=$('workspaceChapter'+(OVERHEAD_CHAPTER[id]||chapterForLabel(panel.title)));
+  if(!container)return;
+  const b=element('button','workspace-lab-item',id+' · '+panel.title,container);
+  b.id='workspaceOverhead'+id;
+  b.type='button';
+  b.addEventListener('click',()=>{
+   if(!win.B737OverheadTestLabsV1?.open?.(id)){
+    msg('workspaceLabStatus',id+' is not ready yet. Please try again.',true);
+    return;
+   }
+   hideLabs();
+  });
+ }
  function hideLabs(){
   if(!palette)return;
   palette.hidden=true;$('workspaceLabsToggle')?.setAttribute('aria-expanded','false');
@@ -157,18 +214,9 @@
    if(!response.ok)throw Error('Catalog is unavailable');
    const json=await response.json();
    if(!Array.isArray(json.panels))throw Error('Invalid catalog');
-   json.panels.forEach(panel=>{
-    const container=$('workspaceChapter'+(OVERHEAD_CHAPTER[panel.id]||chapterForLabel(panel.title)));
-    if(!container)return;
-    const b=element('button','workspace-lab-item',panel.id+' · '+panel.title,container);
-    b.type='button';b.addEventListener('click',()=>{
-     hideLabs();
-     if(!win.B737OverheadTestLabsV1?.open?.(panel.id)){
-      msg('workspaceLabStatus',panel.id+' is not ready yet.',true);
-     }
-    });
-   });
-   host.dataset.overheadLoaded='yes';
+    json.panels.forEach(addOverheadMenuItem);
+    host.dataset.overheadLoaded='yes';
+    refreshLabCounts();
   }catch(error){host.dataset.overheadLoaded='';msg('workspaceLabStatus',String(error.message||error),true);}
  }
  function initLabs(){
@@ -189,11 +237,20 @@
   // Fixed FCOM Chapter 1–15 taxonomy. Every overhead and dynamic test lab
   // joins the chapter that owns its system; never create uncategorized tabs.
   for(const [number,title] of CHAPTERS){
-   const group=makeGroup(String(number).padStart(2,'0')+' · '+title,area,number===15||number===6);
+   const group=makeGroup(String(number).padStart(2,'0')+' · '+title,area,number===1);
    group.id='workspaceChapter'+number;
+   const details=group.parentElement;
+   details.addEventListener('toggle',()=>{
+    if(details.open&&palette&&!palette.hidden)details.scrollIntoView({block:'nearest'});
+   });
   }
   for(const [chapter,label,id] of ACTIONS)testEntry(label,id,$('workspaceChapter'+chapter));
   for(const [chapter,label,path] of LABS)linkEntry(label,path,$('workspaceChapter'+chapter));
+  for(const [id,title] of OVERHEAD_MENU_LABS)addOverheadMenuItem({id,title});
+  const emptyGear=$('workspaceChapter14');
+  if(emptyGear&&!emptyGear.querySelector('.workspace-lab-item'))
+   element('p','workspace-lab-empty','No separate landing gear test lab has been registered. The live landing gear controls remain in the cockpit.',emptyGear);
+  refreshLabCounts();
   const status=element('p','workspace-status','',palette);status.id='workspaceLabStatus';status.setAttribute('role','status');
   const seenInspectorActions=new Set();
   const updateInspectorActions=()=>{
@@ -209,10 +266,11 @@
     entry.type='button';
     entry.addEventListener('click',()=>{hideLabs();if(node.tagName==='A')win.open(node.href.endsWith('/')?node.href+'index.html':node.href,'_blank','noopener');else node.click();});
    }
+   refreshLabCounts();
   };
   b.addEventListener('click',()=>{
    palette.hidden=!palette.hidden;b.setAttribute('aria-expanded',String(!palette.hidden));
-   if(!palette.hidden){addOverheadLabs();updateInspectorActions();input.focus();}
+   if(!palette.hidden){addOverheadLabs();updateInspectorActions();refreshLabCounts();input.focus();}
   });
   input.addEventListener('input',()=>{
    const q=input.value.toLowerCase().trim();
