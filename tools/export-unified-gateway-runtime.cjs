@@ -53,6 +53,7 @@ for(const relative of [
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
  cockpit+'panel-photo-registry.v1.json',cockpit+'unified.webmanifest',cockpit+'performance/manifest.json',
  cockpit+'assets/p15-refuel-photo-v1.webp',
+ cockpit+'assets/p15-toggle-photo-approved-v2.webp',
  cockpit+'assets/oh21-737-400-owner-20261030.q100.webp',
  cockpit+'assets/oh21-737-300500-owner-20261030.q100.webp',
  'panel-mosaic-lab/lights-test/registry.json',
