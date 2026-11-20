@@ -457,11 +457,43 @@
  // two positions. The fixed mount/nut remains registered to the same pivot.
  let p15ValveSprite=null,p15ValveLoading=false,p15ValveFailed=false;
  const p15ValveSource='./assets/p15-approved-switch-5state-v3.webp?v=P15-5STATE-0042';
+ // Build OFF from the two unobscured halves of the SAME 8 KB source
+ // photographs. The stationary nut/red ring never rotates; the OFF pose
+ // consists of only the central metal ball, without any visible lever.
+ function fixedCenterSwitch(source){
+  const size=104,sprite=doc.createElement('canvas');
+  sprite.width=size*5;sprite.height=size;
+  const c=sprite.getContext('2d',{willReadFrequently:true});
+  if(!c)return source;
+  c.drawImage(source,0,0);
+  const upper=c.getImageData(size,0,size,size);
+  const lower=c.getImageData(0,0,size,size);
+  const center=c.createImageData(size,size);
+  for(let y=0;y<size;y++){
+   const t=Math.max(0,Math.min(1,(y-48)/8));
+   for(let x=0;x<size;x++){
+    const i=(y*size+x)*4;
+    for(let k=0;k<4;k++)
+     center.data[i+k]=Math.round(upper.data[i+k]*(1-t)+lower.data[i+k]*t);
+   }
+  }
+  c.putImageData(center,size*3,0);
+  c.save();c.beginPath();
+  c.ellipse(size*3+52,52,13.5,13.5,0,0,Math.PI*2);c.clip();
+  c.drawImage(source,37,8,31,32,size*3+37,36,31,32);c.restore();
+  return sprite;
+ }
  function ensureP15ValveSprite(){
   if(p15ValveSprite||p15ValveLoading||p15ValveFailed)return;
   p15ValveLoading=true;
   const img=new win.Image();img.decoding='async';
-  img.onload=()=>{p15ValveSprite=img;p15ValveLoading=false;drawFuelPanel();};
+  img.onload=()=>{
+   try{p15ValveSprite=fixedCenterSwitch(img);}catch(e){
+    p15ValveFailed=true;p15ValveSprite=null;
+    fuelMessage('P15 TEST GAGES centered sprite failed to initialize.',true);
+   }
+   p15ValveLoading=false;drawFuelPanel();
+  };
   img.onerror=()=>{p15ValveFailed=true;p15ValveLoading=false;
     fuelMessage('Approved P15 valve switch artwork unavailable.',true);};
   img.src=new URL(p15ValveSource,doc.baseURI).href;
@@ -563,7 +595,7 @@
  }
  function paintTestToggle(c){
   if(!p15ValveSprite)return;
-  // TEST GAGES = spring-loaded UP, OFF = horizontal resting position,
+  // TEST GAGES = spring-loaded UP, OFF = center ball only (no stem),
   // AUX FUEL DOOR SWITCH BYPASS = spring-loaded DOWN.
   const frame=services.fuelTest?2:services.fuelAuxPower?4:3;
   const size=88;
