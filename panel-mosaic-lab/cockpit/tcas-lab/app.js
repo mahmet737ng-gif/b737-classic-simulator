@@ -20,13 +20,19 @@
   // The trainer's progressive profile derives warnings from future 3D
   // overlap, not a scripted class switch. Passing traffic never overrides
   // its physical near-miss geometry just because CONVERGING was left checked.
-  const options={progressive:true};
+  // Select an observable real geometry when a scenario is loaded. Previously
+  // the default 8.2-NM start delayed the first TA/RA by 34-49 s and allowed
+  // reversal encounters to clear before the reverse advisory was reached.
+  // Normal encounters begin at a physically calculated TA (~5 s before RA).
+  // A reversal begins with its initial RA, preserving the subsequent 7-s RA.
+  const options={progressive:true,
+   distanceNm:scenario.value.startsWith('REVERSAL_')||scenario.value==='TA_ONLY'?2.5:4.5};
   if(scenario.value!=='TA_ONLY'&&by('converging').checked){
    options.converging=true;options.lateralSide=by('intruderSide').value;
   }
   if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);
   if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
-  encounter=C.create(scenario.value,own,options);refresh();
+  encounter=C.create(scenario.value,own,options);tfcVisible=true;syncTfc();refresh();
   // Loading starts the selected timeline; no second RUN click is necessary.
   running=autoRun;last=null;by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();}
  function updateScenarioStatus(){if(!encounter)return;
