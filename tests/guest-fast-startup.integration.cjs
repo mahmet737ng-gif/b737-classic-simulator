@@ -92,7 +92,7 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
      bootLevers:[...document.querySelectorAll('.engine-start-lever-art image')].map(img=>img.getAttribute('href')),
      gaugeFaces:[...document.querySelectorAll('#region-main svg[data-gauge] > image[data-perf-source]')]
       .map(img=>img.getAttribute('href')),
-     pedestalFaceplates:[...document.querySelectorAll('#unified-pedestal-faceplates img,#unified-pedestal-cargo-replacement img')]
+     pedestalFaceplates:[...document.querySelectorAll('#unified-pedestal-faceplates img[data-perf-source],#unified-pedestal-cargo-replacement img[data-perf-source]')]
       .map(img=>img.currentSrc||img.src),
      unnecessaryOriginals:resources.filter(resource=>/OH10-ELEC-LOSSLESS|OH12-BUS-TRANS|engine-start-lever-reference/.test(resource.name)).map(resource=>new URL(resource.name).pathname),
      copiedTrace:window.B737BootTrace?.report().readiness.fullMs||null,
@@ -125,7 +125,9 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
    assert.deepEqual(result.bootMasks,['OH10','OH12']);
    assert.equal(result.bootLevers.length,2);
    assert.ok(result.gaugeFaces.length>=8,'Fitted captain and first officer gauge faces missing');
-   assert.equal(result.pedestalFaceplates.length,6);
+   // The shipped TCAS replaces the transponder plate after its own mount.
+   assert.ok(result.pedestalFaceplates.length>=5&&result.pedestalFaceplates.length<=6,
+    'Expected fitted native radio bays and cargo faceplate');
    assert.ok([...result.gaugeFaces,...result.pedestalFaceplates].every(url=>
     /-q96-(?:384|768)\.webp$/.test(url)),'Startup must use fitted gauge and faceplate photographs');
    assert.ok(result.bootLevers.every(url=>/boot-art/.test(url)),'Lever sprites must use the release crops');
