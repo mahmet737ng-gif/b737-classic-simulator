@@ -118,8 +118,10 @@
    for(let i=0;i<3;i++){
     const f=frames[i],x=centers[i];
     ctx.save();ctx.beginPath();ctx.rect(x-12,y-31,25,62);ctx.clip();
-    for(const [j,digit]of [[-1,f.previous],[0,f.digit],[1,f.next]])
-     write(String(digit),x+10,y+(j-f.fraction)*34,COLOR.white,37,'right');
+    // Positive IAS change advances the wheel image DOWN; upcoming digit
+    // approaches from ABOVE. Lower numbers return UP on deceleration.
+    for(const [j,digit]of [[1,f.previous],[0,f.digit],[-1,f.next]])
+     write(String(digit),x+10,y+(j+f.fraction)*34,COLOR.white,37,'right');
     ctx.restore();
    }
   }
