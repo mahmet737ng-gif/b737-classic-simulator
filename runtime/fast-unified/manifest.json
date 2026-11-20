@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "aab64cbdd998d72f3a94299a904c73ea4a6a819a",
+  "sourceCommit": "aacacefb60153dc5270f04a573f3f8eddf1d4c1c",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -981,6 +981,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/assets/p15-refuel-photo-v1.webp",
       "sha256": "914164f9727ac815334cd3f0edc48d90fe6694c461c7d8ed28347717be028734"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/p15-toggle-photo-approved-v2.webp",
+      "sha256": "5aa76125c4550d279551e9f98fddfa23a3b45bd1ecfcfdb0b84ee79f654b4583"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
