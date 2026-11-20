@@ -58,6 +58,21 @@ const {chromium}=require('playwright');
   assert.equal(state.ivsiReady,true,'Integrated IVSI must render on first paint');
   assert.equal(state.originalRenderer,true,'Must reuse original cockpit photo IVSI rendering code');
   assert.equal(state.originalBezel,true,'Original 630 x 624 IVSI bezel image is required');
+  await page.waitForFunction(()=>Array.from(document.querySelectorAll('.ivsi-ta-photo,.ivsi-brightness-photo'))
+    .length===2&&Array.from(document.querySelectorAll('.ivsi-ta-photo,.ivsi-brightness-photo'))
+    .every(img=>img.naturalWidth>0),{timeout:5000});
+  await page.locator('#ivsiTaSelect').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-ivsi-full-time'),'false',
+   'TA SEL must switch the original photo IVSI to popup-only traffic');
+  await page.locator('#ivsiTaSelect').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-ivsi-full-time'),'true',
+   'TA SEL must restore full-time traffic');
+  await page.locator('#ivsiBrightness').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-ivsi-brightness'),'0.95',
+   'Original IVSI brightness knob must dim the instrument');
+  await page.locator('#ivsiBrightness').press('ArrowUp');
+  assert.equal(await page.locator('#ivsi').getAttribute('data-ivsi-brightness'),'1',
+   'Original IVSI brightness knob must restore full brightness');
   assert.equal(state.scalePhoto,true,'Original photo IVSI glass must remain 403 x 403');
   assert.ok(Math.abs(state.photoGlassBounds.x-109/630)<.01&&
    Math.abs(state.photoGlassBounds.y-112/624)<.01,
