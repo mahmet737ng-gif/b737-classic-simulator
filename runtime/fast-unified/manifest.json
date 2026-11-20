@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "0a083025a0b66ddf39dd8114f589ff71074b1e66",
-  "mainBefore": 294,
-  "mainAfter": 92,
+  "sourceCommit": "af896e5e7a1480cf38e7353131a29fa8d5602aa4",
+  "mainBefore": 295,
+  "mainAfter": 93,
   "overheadBefore": 59,
   "overheadAfter": 41,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "be425ffbca35e8da33672bbbb7f0c293cadb65e062172727ffa9ac23102e4179"
+      "sha256": "62e216107a0124f5cbb3ce6a83a00897e933b3e4e30c18dd8a563ab208d26357"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -19,8 +19,8 @@
       "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
     },
     {
-      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-037d930379a46f5d.js",
-      "sha256": "037d930379a46f5dea818c1d51dcd332c192271ce4ecc7cf00c261bb068f769b"
+      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-6b08d0cd89e5e470.js",
+      "sha256": "6b08d0cd89e5e470aa126288dcbff67066f97d677d3c39a5fdaed5fe52b43c44"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -167,8 +167,8 @@
       "sha256": "3828fc060088f8d84bab9e8078ddcdcec81db7083d0a9fc704daedfa4f617da0"
     },
     {
-      "path": "engine/instruments/desktop-bundle-37850675c00e7286.js",
-      "sha256": "37850675c00e72868fb75d3190256b0ad59e62c1adca9bb452f12dbb1966805e"
+      "path": "engine/instruments/desktop-bundle-ce316aecb777ec29.js",
+      "sha256": "ce316aecb777ec290e70b449abae80159d0145ee58e51e2302a2e70d6ce684c9"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -427,8 +427,12 @@
       "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
+      "sha256": "2d673e981d3ac36b6d381e61e004d9726ff04749b417bba96cfba36a9613375a"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/app.js",
-      "sha256": "7a8dafacdcc2ae5bf904b5b858f8a046e9bb3f11fa0ef04e4202e3ce32bb7dac"
+      "sha256": "cec2724169ad0d8313547cc13711253d5e5197f8616fcfe6708d40e6a8461bba"
     },
     {
       "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
@@ -1064,7 +1068,7 @@
     },
     {
       "path": "engine/tcas/classic-tcas-v2.js",
-      "sha256": "94aea9a64cc401d64bfeb11002908273c2d7debe61be676b46f3ded932eb029c"
+      "sha256": "ed86dc2c2ca73bbd15c548d70a86ebc06a1ec5e6410b851f0bbb90b3815249f4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",

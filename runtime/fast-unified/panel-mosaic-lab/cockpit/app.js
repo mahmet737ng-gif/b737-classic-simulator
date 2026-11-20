@@ -57,7 +57,37 @@
  }
  function mount(){
   Object.assign(scene.style,{width:assembly.canvas.width+'px',height:assembly.canvas.height+'px'});
-  for(const r of assembly.regions){const region=r.id==='overhead'?(window.B737PrepareOverhead?.(r)||fallbackOverhead(r)):document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
+  for(const r of assembly.regions){
+   // VISUAL FIRST: preserve the early photo DOM exactly. This is hydration,
+   // not a second paint of the same 4K geometry. Owners can now attach their
+   // live indicators independently of visual texture download.
+   const prepaint=r.id!=='overhead'&&scene.querySelector('#region-'+r.id+'[data-visual-shell="preview"]');
+   if(prepaint){
+    for(const p of r.placements){
+     const piece=[...prepaint.querySelectorAll('.texture-piece')].find(x=>x.dataset.piece===p.id);
+     const img=piece?.querySelector('img'),asset=assembly.assets[p.asset];
+     if(!img||img.dataset.perfSource!==asset.url)throw Error('VISUAL FIRST asset geometry mismatch: '+p.id);
+     const onLoad=()=>{loaded.add(asset.path);failed.delete(asset.path);assetStatus();};
+     img.addEventListener('load',onLoad);
+     img.addEventListener('error',()=>{failed.add(asset.path);assetStatus();});
+     if(img.complete&&img.naturalWidth>0)onLoad();
+    }
+    window.B737VisualFirstShellV1.adopted=true;
+    prepaint.dataset.visualShell='hydrated';
+    document.documentElement.dataset.unifiedVisualHydratedMs=String(Math.round(performance.now()));
+    if(r.id==='main'){
+     window.B737McpVisualV3?.mount?.();
+     window.B737McpHardwareV1?.mount?.();
+     window.B737McpIndependentDigitsV1?.refresh?.();
+     window.B737EISNeedlesV1?.mount?.();
+     window.B737EISDotReadoutsV1?.mount?.();
+     window.B737McpOwner13V1?.mount?.();
+     document.documentElement.dataset.unifiedMainVisualMountMs=String(Math.round(performance.now()));
+     performance.mark('b737:main-visual-instruments-mounted');
+    }
+    continue;
+   }
+   const region=r.id==='overhead'?(window.B737PrepareOverhead?.(r)||fallbackOverhead(r)):document.createElement('section');region.id='region-'+r.id;region.className='region';region.dataset.region=r.id;region.setAttribute('aria-label',r.label);Object.assign(region.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px'});const label=document.createElement('span');label.className='region-label';label.textContent=r.label;region.append(label);
    if(r.id==='overhead'){
     frame=region.querySelector('iframe');
     region.style.visibility='';

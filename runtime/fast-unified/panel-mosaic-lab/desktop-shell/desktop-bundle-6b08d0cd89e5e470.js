@@ -77,7 +77,7 @@ try{
 try{
 /* User-visible load diagnostics; bounded resource buffer and no telemetry/upload. */
 (function(){
- 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,painting=false,cockpitPainting=false,readyState=null;
+ 'use strict';performance.setResourceTimingBufferSize(3000);const began=performance.now();let mainReady=null,mainSharpReady=null,cockpitReady=null,systemsReady=null,painting=false,cockpitPainting=false,readyState=null;
  const cockpitMilestones={};
  function resources(w=window,prefix='top'){const result=[];try{for(const e of [...w.performance.getEntriesByType('resource'),...w.performance.getEntriesByType('navigation')])result.push({frame:prefix,url:e.name,bytes:e.transferSize,body:e.encodedBodySize,start:e.startTime,end:e.responseEnd,cache:e.transferSize===0&&e.encodedBodySize>0});for(const f of w.document.querySelectorAll('iframe'))if(f.contentWindow)result.push(...resources(f.contentWindow,prefix+'/'+f.id));}catch{}return result;}
  function status(){const profile=window.B737AircraftProfileStore?.get();return profile&&window.CockpitStartupGate?.inspect(window,profile);}
@@ -99,6 +99,17 @@ try{
    window.dispatchEvent(new CustomEvent('b737:unified-usable',{detail:{mainReadyMs:mainReady}}));
   }));
  }
+ function trySystemsReady(){
+  if(systemsReady!==null)return;
+  // Live ECU ownership and shared FMC state are independent of photo paint.
+  // A cold/dark or inoperative instrument must never be falsely marked live.
+  if(window.B737ISNCockpitV1?.startupSynchronized?.()!==true||
+     !window.B737UnifiedFmc||!window.B737AircraftProfileStore?.get?.())return;
+  systemsReady=performance.now();
+  document.documentElement.dataset.unifiedSystemsReadyMs=String(Math.round(systemsReady));
+  performance.mark('b737:systems-ready');
+  window.dispatchEvent(new CustomEvent('b737:systems-ready',{detail:{systemsReadyMs:systemsReady}}));
+ }
  function tryCockpitReady(){
   if(cockpitReady!==null||cockpitPainting||mainReady===null||mainSharpReady===null||!fullStatus()?.complete)return;
   cockpitPainting=true;
@@ -110,11 +121,14 @@ try{
    cockpitReady=performance.now();
    performance.mark('b737:unified-cockpit-ready');
    document.documentElement.dataset.unifiedCockpitReadyMs=String(Math.round(cockpitReady));
+   document.documentElement.dataset.unifiedFullyOperationalMs=String(Math.round(cockpitReady));
+   performance.mark('b737:fully-operational');
+   window.dispatchEvent(new CustomEvent('b737:fully-operational',{detail:{fullyOperationalMs:cockpitReady}}));
   }));
  }
  // Keep first usable paint separate from the complete interactive cockpit.
  function pollReady(){
-  ready();trySharp();tryCockpitReady();
+  ready();trySharp();trySystemsReady();tryCockpitReady();
   const elapsed=performance.now();
   if(cockpitReady===null&&elapsed<180000)setTimeout(pollReady,elapsed<15000?100:250);
  }
@@ -151,15 +165,15 @@ try{
   if(out.closest('#inspector')&&!document.body.classList.contains('side-open'))return;
   const samples=resources();const bytes=samples.reduce((n,e)=>n+(e.bytes||0),0),sharp=sharpStatus();
   const texture=window.B737ImageLoader?.stats();
-  out.dataset.measurement=JSON.stringify({cockpitReadyMs:cockpitReady,mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp,texture,elapsedMs:performance.now(),transferBytes:bytes,encodedBytes:samples.reduce((n,e)=>n+(e.body||0),0),requests:samples.length,largeOriginals:samples.filter(e=>/\.png(?:[?]|$)/.test(e.url)&&e.body>500000).map(e=>({url:e.url,bytes:e.body,transfer:e.bytes}))});
-  out.textContent=(mainReady===null?'Main view loading':'Main view: '+(mainReady/1000).toFixed(1)+' seconds')+' · Full Cockpit: '+(cockpitReady===null?'Loading':(cockpitReady/1000).toFixed(1)+' seconds')+' · Sharpness: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' seconds')+' · Concurrent Decode: '+(texture?.decoding??0)+' · Transfer: '+(bytes/1e6).toFixed(2)+' MB';}
+  out.dataset.measurement=JSON.stringify({visualReadyMs:Number(document.documentElement.dataset.unifiedVisualReadyMs)||null,systemsReadyMs:systemsReady,fullyOperationalMs:cockpitReady,cockpitReadyMs:cockpitReady,mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp,texture,elapsedMs:performance.now(),transferBytes:bytes,encodedBytes:samples.reduce((n,e)=>n+(e.body||0),0),requests:samples.length,largeOriginals:samples.filter(e=>/\.png(?:[?]|$)/.test(e.url)&&e.body>500000).map(e=>({url:e.url,bytes:e.body,transfer:e.bytes}))});
+  out.textContent='VISUAL: '+((Number(document.documentElement.dataset.unifiedVisualReadyMs)||0)/1000||0).toFixed(1)+'s · SYSTEMS: '+(systemsReady===null?'Connecting':(systemsReady/1000).toFixed(1)+'s')+' · '+(mainReady===null?'Main view loading':'Main view: '+(mainReady/1000).toFixed(1)+' seconds')+' · FULLY OPERATIONAL: '+(cockpitReady===null?'Loading':(cockpitReady/1000).toFixed(1)+' seconds')+' · Sharpness: '+(mainSharpReady===null?sharp.sharp+'/'+sharp.visible:(mainSharpReady/1000).toFixed(1)+' seconds')+' · Concurrent Decode: '+(texture?.decoding??0)+' · Transfer: '+(bytes/1e6).toFixed(2)+' MB';}
  const timer=setInterval(()=>{ready();trySharp();render();},1000);
  setTimeout(()=>{clearInterval(timer);render();},60000);
  window.addEventListener('b737:texture-ready',()=>{trySharp();render();});
  window.addEventListener('b737:performance-view',render);
  document.getElementById('inspectorToggle')?.addEventListener('click',()=>queueMicrotask(render));
  window.B737LoadDiagnostics=Object.freeze({
-  snapshot:()=>({started:began,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),readyState,cockpitMilestones:{...cockpitMilestones},mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
+  snapshot:()=>({started:began,visualReadyMs:Number(document.documentElement.dataset.unifiedVisualReadyMs)||null,systemsReadyMs:systemsReady,fullyOperationalMs:cockpitReady,cockpitReadyMs:cockpitReady,cockpit:fullStatus(),readyState,cockpitMilestones:{...cockpitMilestones},mainReadyMs:mainReady,mainSharpReadyMs:mainSharpReady,sharp:sharpStatus(),textures:window.B737ImageLoader?.stats(),status:status(),elapsedMs:performance.now(),resources:resources()}),
   measureFps:(durationMs=3000)=>new Promise(resolve=>{
    const length=Math.max(500,Math.min(10000,Number(durationMs)||3000));
    const start=performance.now();let last=null,count=0,slowFrames=0,longestFrameMs=0;

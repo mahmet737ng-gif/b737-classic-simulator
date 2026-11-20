@@ -908,8 +908,9 @@ try{
   // cruise while keeping the alert thresholds untouched.  A crossing aircraft
   // with a similar GS gives an initial OTHER -> PROX -> TA -> RA progression.
   // Passing traffic remains a lateral near miss even if CONVERGING was checked.
-  const progressive=options.progressive===true&&!converging&&!spec.demo&&!spec.offscale;
-  const range=options.distanceNm??(progressive?8.2:5.5);
+  const stagedProgression=options.progressive===true&&!spec.demo&&!spec.offscale;
+  const progressive=stagedProgression&&!converging;
+  const range=options.distanceNm??(stagedProgression?8.2:5.5);
   // Converging traffic flies across the OWN flight path, arriving from the
   // chosen left/right side at horizontal CPA. Its relative altitude crosses
   // from -300 to +300 ft (or reverse) during the approach without manual VS.
@@ -934,7 +935,11 @@ try{
    initialE=-relE*estimatedCpaSec+relN/relSpeed*lateral;
   }
   if(converging){
-   targetHeading=norm(heading+(options.lateralSide==='LEFT'?90:-90));
+   // At cruise a shallow real crossing with matched GS gives an early
+   // WHITE -> PROX -> TA -> RA trajectory instead of an immediate red alert.
+   const crossingAngle=stagedProgression?40:90;
+   targetHeading=norm(heading+(options.lateralSide==='LEFT'?crossingAngle:-crossingAngle));
+   if(stagedProgression&&options.speedKt===undefined)speedKt=own.gsKt??own.tasKt;
    const ownV=vector(own.gsKt??own.tasKt,heading),intruderV=vector(speedKt,targetHeading);
    const relN=intruderV.n-ownV.n,relE=intruderV.e-ownV.e;
    estimatedCpaSec=range/Math.max(1e-6,Math.hypot(relN,relE));
@@ -943,7 +948,7 @@ try{
   }
   const sense=spec.ra?.includes('CLIMB')?1:spec.ra?.includes('DESCEN')?-1:
    spec.vertical==='CONVERGING'&&spec.relativeAltitude>0?-1:1;
-  const relative=options.relativeAltitudeFt??(converging?-300*sense:
+  const relative=options.relativeAltitudeFt??(converging?-(stagedProgression?600:300)*sense:
    spec.relativeAltitude??(spec.ra?.includes('CLIMB')?-200:200));
   let rate=options.verticalRateFpm??(converging?
    (own.vsFpm??0)-2*relative*60/estimatedCpaSec:
