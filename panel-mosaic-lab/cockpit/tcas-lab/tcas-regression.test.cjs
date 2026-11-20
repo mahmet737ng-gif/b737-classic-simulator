@@ -17,6 +17,33 @@ function run(id,options={},seconds=0){
  for(let n=0;n<=seconds;n++)state=TCAS.step(state,o,n?1:0,TCAS.controls());
  return state;
 }
+test('scenario loading has visible advisory and both reversals occur with physical traffic',()=>{
+ const o={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,
+  tasKt:440,gsKt:448,iasKt:293,pitchDeg:2,vsFpm:0,trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0};
+ const cases=[
+  {id:'TA_ONLY',distance:2.5,initial:'TA'},
+  {id:'CLIMB',distance:4.5,initial:'TA',later:'CLIMB'},
+  {id:'DESCEND',distance:4.5,initial:'TA',later:'DESCEND'},
+  {id:'REVERSAL_CLIMB',distance:2.5,initial:'DESCEND',later:'REVERSAL_CLIMB'},
+  {id:'REVERSAL_DESCEND',distance:2.5,initial:'CLIMB',later:'REVERSAL_DESCEND'},
+  {id:'DIVERGING_ABOVE',distance:4.5,initial:'MONITOR'},
+  {id:'NO_TRANSPONDER',distance:4.5,initial:'MONITOR'}
+ ];
+ for(const p of cases){
+  let state=TCAS.create(p.id,o,{progressive:true,distanceNm:p.distance});
+  const stages=[];
+  for(let time=0;time<=14;time++){
+   state=TCAS.step(state,o,time?1:0,TCAS.controls());
+   if(!stages.includes(state.output.stage))stages.push(state.output.stage);
+   if(p.id==='TA_ONLY')assert.equal(state.output.ra,null,'passing traffic must not create an RA');
+  }
+  assert.equal(stages[0],p.initial,p.id+' first loaded stage');
+  if(p.later)assert.ok(stages.includes(p.later),
+   p.id+' should reach '+p.later+' within 14 seconds: '+stages);
+  if(p.id==='NO_TRANSPONDER')assert.equal(state.output.targets.length,0);
+ }
+});
+
 test('passing-traffic TA uses a physical near miss and never generates an RA',()=>{
  const o=own(),limits=require('../../../engine/tcas/classic-tcas-v1.js').thresholds(o,'TA_RA');
  let s=TCAS.create('TA_ONLY',o);
@@ -125,6 +152,10 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  get('respond').onclick();
  assert.equal(eadi.afds,'CMD','No RA: autopilot stays engaged');
  get('converging').checked=true;get('scenario').value='CLIMB';get('start').onclick();
+ assert.match(get('scenarioStatus').textContent,/ · TA · /,
+  'Selecting CLIMB must load an active TA rather than a silent MONITOR');
+ assert.equal(ehsiInput.traffic.targets.some(t=>t.id==='INTRUDER1'&&t.kind==='TA'),true,
+  'EHSI receives a real traffic advisory on LOAD');
  assert.equal(get('play').textContent,'PAUSE','LOAD SCENARIO starts playing without a second click');
  assert.match(get('scenarioStatus').textContent,/TA > CLIMB.*T\+0 S.*RUNNING/);
  assert.ok(ehsiInput.traffic.targets.length>0,'selected scenario populates EFIS traffic');
@@ -140,10 +171,14 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  assert.ok(Math.abs((eadi.fdPitch-eadi.pitch)-fdScreenOffset)<1e-8,
   'Flight director bars stay in place on manual RA even as pitch changes');
  get('start').onclick();assert.equal(eadi.afds,'CMD','LOAD resets autopilot to CMD');
- get('scenario').value='REVERSAL_DESCEND';get('start').onclick();
+ get('pitch').value='2';get('vs').value='0';get('scenario').value='REVERSAL_DESCEND';get('start').onclick();
+ assert.equal(eadi.tcasRa?.id,'CLIMB','Reversal load begins in CLIMB RA');
  assert.match(get('scenarioStatus').textContent,/CLIMB > DESCEND NOW.*RUNNING/);
  assert.equal(get('play').textContent,'PAUSE');
  get('step').onclick();assert.match(get('scenarioStatus').textContent,/T\+1 S/);
+ for(let second=1;second<8;second++)get('step').onclick();
+ assert.equal(eadi.tcasRa?.id,'REVERSAL_DESCEND',
+  'The selected reversal must display DESCEND NOW on the EADI');
  get('scenario').value='TA_ONLY';get('start').onclick();
  assert.match(get('scenarioStatus').textContent,/TA only \/ passing traffic.*T\+0 S.*RUNNING/);
  get('play').onclick();assert.match(get('scenarioStatus').textContent,/PAUSED/);
