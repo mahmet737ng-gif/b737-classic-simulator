@@ -122,12 +122,13 @@
          roller.framesTwenty(Math.max(0,value),digits):roller.frames(Math.max(0,value),digits);
         frames.forEach((f,i)=>{
           const t=tracks[i];
-          // Values progress upward. Lower place rotates continuously; upper
-          // places roll across 9 -> 0 only when the lower digits carry.
-          t.glyphs[0].textContent=String(f.previous);
+          // Increasing altitude/IAS moves the printed digit strip DOWN.
+          // Next numeral enters from ABOVE; previous remains BELOW.
+          // 20-ft altitude carry still originates in framesTwenty().
+          t.glyphs[0].textContent=String(f.next);
           t.glyphs[1].textContent=String(f.digit);
-          t.glyphs[2].textContent=String(f.next);
-          t.moving.setAttribute('transform','translate(0 '+(-f.fraction*stride)+')');
+          t.glyphs[2].textContent=String(f.previous);
+          t.moving.setAttribute('transform','translate(0 '+(f.fraction*stride)+')');
         });
       }};
     }
