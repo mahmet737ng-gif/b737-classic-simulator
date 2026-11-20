@@ -27,7 +27,13 @@ const {chromium}=require('playwright');
    rectTop:document.querySelector('#efisCpMount')?.getBoundingClientRect().top,
    ehsiBottom:document.querySelector('#ehsi')?.getBoundingClientRect().bottom,
    mode:document.querySelector('#ehsi')?.getAttribute('data-mode'),
-   numTraffic:document.querySelectorAll('#ehsi [data-segment="traffic-other"]').length,
+   ambientTraffic:document.querySelectorAll('#ehsi [data-segment="traffic-other"][data-target-id^="OTHER-"]').length,
+   ivsiReady:document.querySelector('#ivsi')?.getAttribute('data-ra-id')!==null,
+   ivsiNeedle:document.querySelectorAll('#ivsi [data-layer="vs-needle"]').length,
+   displayRects:['eadi','ehsi','ivsi'].map(id=>{
+    const r=document.getElementById(id)?.getBoundingClientRect();
+    return r?{left:r.left,right:r.right,top:r.top}:null;
+   }),
    fmcClipped:!!document.querySelector('#ehsi [data-segment="active-route"][clip-path="url(#ehsi-route-range)"]'),
    ellipseRx:document.querySelector('#ehsi clipPath[id="ehsi-route-range"] ellipse')?.getAttribute('rx')
   }));
@@ -39,7 +45,13 @@ const {chromium}=require('playwright');
   assert.ok(state.photoName.includes('efis-cp-photo-plate-v1.webp'));
   assert.ok(state.rectTop>=state.ehsiBottom,'Physical CP belongs below EHSI');
   assert.equal(state.mode,'CTR_MAP');
-  assert.ok(state.numTraffic<=2,'No more than two OTHER contacts within 10 NM');
+  assert.ok(state.ambientTraffic<=2,'No more than two ambient OTHER contacts within 10 NM');
+  assert.equal(state.ivsiReady,true,'Integrated IVSI must render on first paint');
+  assert.equal(state.ivsiNeedle,1,'IVSI must display one actual VS needle');
+  assert.ok(state.displayRects.every(Boolean),'EADI/EHSI/IVSI must all have visible DOM frames');
+  assert.ok(state.displayRects[0].right<=state.displayRects[1].left+12 &&
+   state.displayRects[1].right<=state.displayRects[2].left+12,
+   'All three displays must align left-to-right on desktop');
   assert.equal(state.fmcClipped,true,'FMC route is clipped to compass, not glass');
   assert.ok(Number(state.ellipseRx)>190,'360-degree compass scale is enlarged');
   const lineBefore=await page.locator('#ehsi [data-segment="route-segments"] line').first().getAttribute('y2');
@@ -61,6 +73,21 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'FULL_NAV');
   assert.equal(await page.locator('#ehsi clipPath[id="ehsi-route-range"] ellipse').count(),1,
    'FULL NAV route stays within full compass circle');
+  await page.selectOption('#scenario','TA_ONLY');
+  await page.locator('#converging').check();
+  await page.locator('#start').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-ra-id'),'NONE',
+   'Passing traffic must never show a false descending RA at LOAD');
+  const test=await page.evaluate(()=>{
+   const stage=document.getElementById('status');
+   const ivsi=document.getElementById('ivsi');
+   for(let n=0;n<65;n++){
+    document.getElementById('step').onclick();
+    if(ivsi.getAttribute('data-ra-id')!=='NONE')return {falseRa:true,at:n};
+   }
+   return {falseRa:false,status:stage.textContent};
+  });
+  assert.equal(test.falseRa,false,'TA ONLY passing geometry generated an RA during progression');
   assert.equal(errors.length,0,'Page must have no uncaught JS errors: '+errors.join('; '));
   const artifacts=path.resolve('artifacts/tcas-lab');
   fs.mkdirSync(artifacts,{recursive:true});
