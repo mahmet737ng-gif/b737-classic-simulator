@@ -95,3 +95,15 @@ body > header.unified-minimal-header .header-settings{max-width:100%!important;j
 #flightScenarioDialog .flight-quick-input:focus{outline:2px solid #7fc7df;outline-offset:1px}
 #flightScenarioDialog .flight-quick-input::-webkit-inner-spin-button,#flightScenarioDialog .flight-quick-input::-webkit-outer-spin-button{opacity:.5}
 #workspaceLabsMenu .workspace-group-content:empty{min-height:0;padding:4px 9px}
+
+/* Catalog visibility: every FCOM section advertises its actual installed lab count. */
+#workspaceLabsMenu .workspace-lab-count{
+ float:right;margin-left:10px;padding:1px 7px;border-radius:10px;
+ border:1px solid #4b7388;background:#0e2939;color:#afdde9;
+ font:700 10px/1.55 system-ui,Arial,sans-serif;white-space:nowrap
+}
+#workspaceLabsMenu .workspace-lab-empty{
+ grid-column:1/-1;margin:0;padding:9px 10px;
+ border:1px dashed #496579;border-radius:6px;color:#acc8d6;
+ font:500 11px/1.55 system-ui,Arial,sans-serif
+}
