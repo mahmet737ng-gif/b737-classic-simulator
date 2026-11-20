@@ -88,3 +88,10 @@ body > header.unified-minimal-header .header-settings{max-width:100%!important;j
  #flightScenarioDialog .flight-service-body{padding:9px}
  body > header.unified-minimal-header .header-settings{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 }
+
+/* Quick Fill is an independent instructor ATA28 direct-service tool. */
+#flightScenarioDialog .flight-quick-title{font:700 12px/1.4 system-ui,Arial,sans-serif;color:#bde6f8;margin:12px 0 5px;letter-spacing:.025em}
+#flightScenarioDialog .flight-quick-input{display:block;box-sizing:border-box;width:100%!important;max-width:100%;min-height:41px;padding:8px 10px!important;background:#081924!important;color:#edfbff!important;border:1px solid #6b93a6!important;border-radius:6px!important;font:700 18px/1.2 ui-monospace,Consolas,monospace!important;appearance:textfield}
+#flightScenarioDialog .flight-quick-input:focus{outline:2px solid #7fc7df;outline-offset:1px}
+#flightScenarioDialog .flight-quick-input::-webkit-inner-spin-button,#flightScenarioDialog .flight-quick-input::-webkit-outer-spin-button{opacity:.5}
+#workspaceLabsMenu .workspace-group-content:empty{min-height:0;padding:4px 9px}
