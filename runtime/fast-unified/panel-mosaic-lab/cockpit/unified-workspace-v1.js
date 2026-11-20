@@ -240,21 +240,27 @@
   serviceButton(starterActions,'CONNECT HOSE',()=>{try{onGroundGuard();services.airStarterAttached=true;updateCart();}catch(e){msg('flightServicesMessage',e.message,true)}});
   serviceButton(starterActions,'START AIR CART',()=>{
    try{onGroundGuard();if(!services.airStarterAttached)throw Error('Connect the high-pressure air hose first.');
-    services.airStarterFlow=true;
-    // The existing ECU can accept instructor duct-pressure targets, but its
-    // start valve/GRD logic remains the sole engagement authority.
+    // Use the existing pneumatic ECU: external high-pressure air enters the
+    // right-side manifold through its source-availability sensor.
     const ecu=win.B737ISNCockpitV1;
-    if(typeof ecu?.engineTrainerAction==='function'){
-     for(const engine of ['engine1','engine2'])
-      ecu.engineTrainerAction({type:'DUCT_PSI',engine,psi:services.airStarterPressurePsi,instructor:true});
-    }
-    msg('flightServicesMessage','Air cart ON · Training duct PSI set. Physical starter engagement and source gating are not overridden.');
+    if(typeof ecu?.sendPneumatic!=='function'||typeof ecu?.engineTrainerAction!=='function')
+     throw Error('The live pneumatic and engine-start ECUs are not ready.');
+    const derived=ecu.sendPneumatic({type:'SENSOR',key:'externalAirAvailable',value:true});
+    if(derived?.bleed?.externalAirAttached!==true)
+     throw Error('External cart source was rejected by Pneumatics V6.');
+    for(const engine of ['engine1','engine2'])
+     ecu.engineTrainerAction({type:'DUCT_PSI',engine,psi:services.airStarterPressurePsi,instructor:true});
+    services.airStarterFlow=true;
+    msg('flightServicesMessage','Air cart ON · External source connected to the live Pneumatics V6 right duct. Engine starts still require the physical GRD start selectors.');
     updateCart();
-   }catch(e){services.airStarterFlow=false;msg('flightServicesMessage',e.message,true);updateCart();}
+   }catch(e){try{win.B737ISNCockpitV1?.sendPneumatic?.({type:'SENSOR',key:'externalAirAvailable',value:false});}catch(_){}services.airStarterFlow=false;msg('flightServicesMessage',e.message,true);updateCart();}
   });
   serviceButton(starterActions,'STOP / DISCONNECT',()=>{
-   services.airStarterFlow=false;services.airStarterAttached=false;updateCart();
-   msg('flightServicesMessage','Air cart disconnected. Existing ECU duct state is not overridden with a fictitious zero.');
+   try{
+    if(services.airStarterFlow)win.B737ISNCockpitV1?.sendPneumatic?.({type:'SENSOR',key:'externalAirAvailable',value:false});
+    services.airStarterFlow=false;services.airStarterAttached=false;updateCart();
+    msg('flightServicesMessage','Air cart disconnected from the live right-side pneumatic manifold. Other bleed sources remain independent.');
+   }catch(e){msg('flightServicesMessage',e.message,true);}
   });
   const pressure=element('label','flight-service-small','Instructor air cart delivery (PSI) ',starter);
   const input=element('input','',undefined,pressure);input.type='number';input.min='20';input.max='50';input.step='1';input.value='35';
