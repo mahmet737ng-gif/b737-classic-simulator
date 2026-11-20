@@ -1,0 +1,100 @@
+:root{color-scheme:dark;font:14px system-ui,sans-serif;background:#0a121c;color:#e6eef7}body{margin:0}header{padding:18px 3vw;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #355368}h1{font-size:23px;margin:0}header p{color:#92afc5;margin-bottom:0}a{color:#7fd6f3}main{max-width:1400px;margin:auto;padding:20px}.controls,.readings,.sources{background:#111f2c;border:1px solid #304f65;border-radius:9px;padding:16px;margin-bottom:18px}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}label{display:flex;flex-direction:column;gap:6px;margin:7px 0;font-size:12px;color:#bad3e5}input,select,button{font:inherit;border:1px solid #4d6b83;background:#091521;color:#eff6fb;padding:9px;border-radius:5px}input[type=checkbox]{width:auto}label:has(input[type=checkbox]){display:flex;flex-direction:row;align-items:center}.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}button{cursor:pointer;background:#204e68}button:hover{background:#2a6689}.screens{display:grid;grid-template-columns:1fr 1fr;gap:18px}.screens article{background:#000;border:1px solid #314e60;border-radius:14px;overflow:hidden}.screens h2{font-size:14px;padding:12px;margin:0;color:#8bc9e7}canvas,svg{display:block;width:100%;aspect-ratio:1}table{border-collapse:collapse;width:100%;font:12px ui-monospace,monospace}td,th{padding:9px;border-bottom:1px solid #34495b;text-align:left}#status{color:#ffcb6b;font-weight:700}#xpdr,#ownState{color:#a6d7ee}.readings{overflow:auto}details{padding:12px 0}summary{cursor:pointer;color:#8fd8ed}.sources p{color:#aac1d3;line-height:1.6}@media(max-width:750px){.screens{grid-template-columns:1fr}header{display:block}header a{display:inline-block;margin-top:12px}main{padding:10px}}
+
+.legend{display:flex;gap:20px;flex-wrap:wrap}.legend span{display:flex;gap:9px;align-items:center;font-size:12px}.symbol{display:inline-block;width:11px;height:11px;box-sizing:border-box;flex-shrink:0}.ra{background:#ff504f}.ta{background:#ffca43;border-radius:50%}.prox,.other{transform:rotate(45deg);border:2px solid #f0f4ec}.prox{background:#f0f4ec}.readings p{color:#aac1d3;line-height:1.6}
+
+/* QUICK-ENCOUNTER-0003: buttons and FMA/traffic glass are simultaneously
+   reachable. All optional controls live below the two display canvases. */
+main{max-width:1540px;padding:12px}
+.controls-primary{padding:10px 12px;margin-bottom:10px}
+.encounter-bar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.encounter-bar .encounter-select{flex:1 1 280px;min-width:220px;margin:0}
+.encounter-bar .encounter-select select{width:100%;min-height:39px}
+.encounter-bar .primary-actions{display:flex;align-items:center;gap:8px;flex:2 1 640px;margin:0;flex-wrap:wrap}
+.encounter-bar .primary-actions button{white-space:nowrap;min-height:39px;padding:8px 10px}
+.converging-option{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:7px;
+ margin:0!important;min-height:39px;padding:0 8px;color:#e3f2ff;white-space:nowrap;
+ border:1px solid #4d6b83;border-radius:5px;background:#142635;cursor:pointer}
+.converging-option input{accent-color:#42c5ea;margin:0;width:16px;height:16px}
+.screens{gap:12px;margin-bottom:15px}
+.screens article{min-width:0;border-radius:9px}
+.screens h2{padding:8px 11px}
+.advanced{margin-top:12px}
+.advanced>details{padding:0}
+.advanced>details>summary{padding:8px 2px;font-weight:700}
+.advanced .fields{margin-top:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.advanced .actions{margin:10px 0}
+.advanced input,.advanced select{min-width:0;width:100%}
+.advanced input[type=checkbox]{width:auto}
+@media(max-width:920px){
+ .encounter-bar .primary-actions{flex:1 1 100%}
+}
+@media(max-width:600px){
+ main{padding:8px}
+ .controls-primary{padding:9px}
+ .encounter-bar .encounter-select{flex-basis:100%}
+ .encounter-bar .primary-actions{gap:6px}
+ .encounter-bar .primary-actions button{font-size:11px;padding:7px}
+}
+
+/* TCAS-TFC-0004 — compact, always-visible EFIS selectors above the glass. */
+.efis-quick-controls {
+ display:flex; flex-wrap:wrap; align-items:end; gap:8px;
+ border-top:1px solid #355367; margin-top:9px; padding-top:7px;
+}
+.efis-quick-title {
+ color:#91cee8; font-size:11px; font-weight:800; letter-spacing:.07em;
+ align-self:center; margin-right:5px; white-space:nowrap;
+}
+.efis-quick-controls label {
+ margin:0; display:flex; flex-direction:column;
+ gap:2px; min-width:0; color:#b3d4e8; font-size:11px;
+}
+.efis-quick-controls #displayMode {width:174px}
+.efis-quick-controls #range {width:90px}
+.efis-quick-controls select,
+.efis-quick-controls button {
+ min-height:33px; padding:5px 10px; line-height:1.2;
+}
+.efis-quick-controls #tfc {
+ min-width:90px; font-weight:800; letter-spacing:.03em;
+ border:1px solid #517b90; cursor:pointer;
+}
+.efis-quick-controls #tfc.tfc-on {
+ color:#28ed49; background:#0c2a20; border-color:#28b65b;
+}
+.efis-quick-controls #tfc.tfc-off {
+ color:#b7c4d0; background:#15232d; border-color:#536d7a;
+}
+.efis-quick-controls #tfc:focus-visible {
+ outline:2px solid #a8eaff;outline-offset:2px;
+}
+@media(max-width:550px){
+ .efis-quick-controls{gap:6px}
+ .efis-quick-title{flex-basis:100%}
+ .efis-quick-controls #displayMode{width:150px}
+ .efis-quick-controls #range{width:80px}
+ .efis-quick-controls #tfc{min-width:75px}
+}
+
+/* Physical EFIS CP replaces the obsolete select strip, and mounts below EHSI.
+   This is a new TCAS Lab mounting context for the approved Unified photo/art. */
+#efis-state-bridge[hidden]{display:none!important}
+.ehsi-with-cp{display:flex;flex-direction:column}
+.efis-physical-dock{padding:13px 13px 18px;border-top:1px solid #304451;
+ background:linear-gradient(#0d1720,#0a1017);color:#c8dbe7}
+.efis-physical-dock h3{text-align:center;font:700 12px/1.2 Arial,sans-serif;
+ letter-spacing:.12em;color:#a6d6e9;margin:0 0 10px}
+#efisCpMount{width:min(100%,570px);margin:0 auto}
+#efisCpMount .uefis-face{width:100%;box-sizing:border-box;border-radius:7px;
+ box-shadow:0 5px 16px #000c}
+#efisCpMount .uefis-face .uefis-knob,
+#efisCpMount .uefis-face .uefis-tfc,
+#efisCpMount .uefis-face .uefis-detent{cursor:pointer}
+#efisCpMount .uefis-face .uefis-tfc:hover,
+#efisCpMount .uefis-face .uefis-knob:hover{filter:none}
+#efisCpMount .uefis-face .uefis-detent:hover{opacity:0!important}
+#efisCpMount .uefis-face .uefis-detent:focus-visible{opacity:1!important}
+@media(max-width:750px){
+ #efisCpMount{width:min(100%,500px)}
+ .efis-physical-dock{padding:9px 7px}
+}

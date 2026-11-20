@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "bf214a3f253f9790362aa1e06357c7747c20eb83",
+  "sourceCommit": "b839431dff70a2c95d611429195807e2f57aaf13",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "ed62fd3e53eead2b8c05439ec8cb1ae7dc7f0a18d94e9be38f9fbf99eb61b521"
+      "sha256": "35a98f391e8fcc926eadc5bddcebf20ad6526aef7c1af5862431ad4a8bdfb5d2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -596,7 +596,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "4f04fed169ba678c101c0d9ed32e56eab6b40b8b754b997e81daf7727a66cbcf"
+      "sha256": "63d5006f3abb1d8197b655f9acd402ef5852a4db45bda6503b4fa97684dd85a8"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -985,6 +985,82 @@
     {
       "path": "panel-mosaic-lab/cockpit/assets/p15-toggle-photo-approved-v2.webp",
       "sha256": "5aa76125c4550d279551e9f98fddfa23a3b45bd1ecfcfdb0b84ee79f654b4583"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/p15-approved-switch-5state-v3.webp",
+      "sha256": "1dab4bd1d0ea62c8728a01828b67b2874af221a72aaa9b30271f9b1785de18bc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",
+      "sha256": "dd2c731619fe65e13538277cd36bc5dd5c3b1b028c7a476df36ad56902a86a31"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/style.css",
+      "sha256": "ce4e961b0334e71ab3c3c58a49d3978f66154a765bc30680505ad88822493580"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
+      "sha256": "1f7d72569f911697066f8cb1837e19ba1e08ce560e866de240840224c8a9919f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js",
+      "sha256": "fe1f16d20b50e5841f78bb6ac13f2975270eaae099e2ea8207dd59cd3b74f039"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js",
+      "sha256": "5ef7cce0e004bc20faf7690cd9759bc2652e982a6ffd5815e0a97d4b942ec939"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",
+      "sha256": "164477803935c380951ab0b5a9f6bc4cdaf3d6d4a63162a5809f5bbd44cbdcdd"
+    },
+    {
+      "path": "engine/afds/fma-mode-engine-v1.js",
+      "sha256": "c5281a9298b1dd5080d45ba8c05ad31a438fabd3855d2c29899467c0f7adfc11"
+    },
+    {
+      "path": "engine/efis/classic-flap-speed-profile-v1.js",
+      "sha256": "8649325aabf1c9ea84fc0868ed308abfe61118ad426d616a5dffdf46f52c23f1"
+    },
+    {
+      "path": "engine/efis/classic-speed-tape-engine-v1.js",
+      "sha256": "bcdf31b721ba219fe09ab74ae900db8094fd5a734532180a32dd1a96b5829f59"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js",
+      "sha256": "1c03d13aee754c6a944c02ec1eba9f34bab94edd186d428f86b13cea60d26b67"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js",
+      "sha256": "48a12e84a1c232aa052cd5d12aeb75157e0e77d5d4da5533d8c7d7ead7de0992"
+    },
+    {
+      "path": "efis-display-lab/reference-geometry.js",
+      "sha256": "4f3464ca6740863b9f0b6e8309c8ca72bba7c19cbfc7f8125ac7c0156db7eb5c"
+    },
+    {
+      "path": "efis-display-lab/glyphs.js",
+      "sha256": "83f083862ef68187ef312c752b8c988c4f85c9a5f0b14828bf88b12c7108312f"
+    },
+    {
+      "path": "efis-display-lab/core.js",
+      "sha256": "0b5ce93761117f2aff91840d423e0f797aee81a0637fb89dba045503caae2937"
+    },
+    {
+      "path": "efis-display-lab/eadi.js",
+      "sha256": "2bad2344d69804ae0cb2028fe0462095de7dd5dc1774c8729d43eba2db92940e"
+    },
+    {
+      "path": "efis-display-lab/ehsi-v2.js",
+      "sha256": "f7b56d89d8b993aed3b14d92000fe71efee0f8331848f171b7773367f71d40ed"
+    },
+    {
+      "path": "engine/tcas/classic-tcas-v1.js",
+      "sha256": "4266aa25e6842328a6b61eef0fdc163a540e40d97aff1a9f8a60255be79e9898"
+    },
+    {
+      "path": "engine/tcas/classic-tcas-v2.js",
+      "sha256": "464239e1cee9a5632fd09b94155f0a9aeb37627e173b7265d0f4d303c16d955a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",

@@ -358,7 +358,7 @@
  // The user-approved photographic P15 switch uses one 5.4 KB WebP containing
  // two positions. The fixed mount/nut remains registered to the same pivot.
  let p15ValveSprite=null,p15ValveLoading=false,p15ValveFailed=false;
- const p15ValveSource='./assets/p15-toggle-photo-approved-v2.webp?v=P15-SWITCH-2-5aa76125';
+ const p15ValveSource='./assets/p15-approved-switch-5state-v3.webp?v=P15-5STATE-0042';
  function ensureP15ValveSprite(){
   if(p15ValveSprite||p15ValveLoading||p15ValveFailed)return;
   p15ValveLoading=true;
@@ -371,8 +371,8 @@
  const p15Source='./assets/p15-refuel-photo-v1.webp?v=P15-REAL-PHOTO-0001';
  const p15TankCoords=Object.freeze([
   {id:'main2',screenX:283,leverX:339,lampX:206},
-  {id:'center',screenX:545,leverX:600,lampX:514},
-  {id:'main1',screenX:801,leverX:857,lampX:778}
+  {id:'center',screenX:545,leverX:610,lampX:514},
+  {id:'main1',screenX:801,leverX:869,lampX:778}
  ]);
  function ensureP15Photo(){
   // Lazy load once the Fuel Service section is opened; no boot-time cost.
@@ -452,20 +452,25 @@
    }
   }
  }
+ // The original photographic nut/red ring is identical across each sprite
+ // frame; only the metal shaft and ball shift vertically. Five WebP frames,
+ // no SVG or procedural fake knob geometry, and no visual state latency.
+ const P15_FRAME=104;
  function paintFuelToggle(c,x,open){
-  // Photo-derived UP/DOWN poses only; no vector/CSS/radial-gradient stand-ins.
-  // One shared sprite anchors the static nut and red annulus to the same pivot.
   if(!p15ValveSprite)return;
-  const frameW=p15ValveSprite.naturalWidth/2;
-  const frameH=p15ValveSprite.naturalHeight;
-  // Canvas is 960x540. Original switch pivot y=169. Both states align there.
-  const outW=72,outH=88;
-  const outX=x-outW/2,outY=125;
-  c.drawImage(p15ValveSprite,open?0:frameW,0,frameW,frameH,outX,outY,outW,outH);
+  const frame=open?0:1;
+  const size=92,pivotY=160;
+  c.drawImage(p15ValveSprite,frame*P15_FRAME,0,P15_FRAME,P15_FRAME,
+    x-size/2,pivotY-size/2,size,size);
  }
  function paintTestToggle(c){
-  // Preserve the real left selector in the P15 photo until approved
-  // photo-derived TEST/OFF/BYPASS sprites are supplied.
+  if(!p15ValveSprite)return;
+  // TEST GAGES = spring-loaded UP, OFF = horizontal resting position,
+  // AUX FUEL DOOR SWITCH BYPASS = spring-loaded DOWN.
+  const frame=services.fuelTest?2:services.fuelAuxPower?4:3;
+  const size=88;
+  c.drawImage(p15ValveSprite,frame*P15_FRAME,0,P15_FRAME,P15_FRAME,
+    88-size/2,204-size/2,size,size);
  }
  function drawFuelPanel(){
   const canvas=$('flightFuelCanvas');if(!canvas)return;

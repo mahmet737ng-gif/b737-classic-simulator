@@ -1,0 +1,78 @@
+/* EFIS pedestal raster 0001 — additive CAPT/FO replicas, no original photo changes. */
+#region-pedestal .region-native .uefis-seat{position:absolute;z-index:23;direction:ltr;box-sizing:border-box;pointer-events:auto;contain:layout style}
+.uefis-banner{height:27px;display:flex;align-items:center;justify-content:space-between;gap:6px;
+ background:linear-gradient(180deg,#2e414a,#1d2b34);border:1px solid #7a9397;border-bottom:0;
+ padding:0 5px;color:#f3f5ed;font:700 12px/1 Arial,sans-serif;letter-spacing:.05em}
+.uefis-expand{min-width:24px;height:23px;margin:0!important;padding:0!important;border:1px solid #8da3ab!important;
+ border-radius:3px!important;background:#304653!important;color:white!important;font:700 16px Arial,sans-serif!important;
+ display:grid;place-items:center;touch-action:manipulation}
+.uefis-face{position:relative;width:100%;aspect-ratio:1448 / 1086;direction:ltr;background:#4f585e;isolation:isolate;
+ border:1px solid #151d21;overflow:hidden;box-shadow:0 3px 8px #000a;touch-action:pan-y;user-select:none;container-type:inline-size}
+.uefis-face img{user-select:none;-webkit-user-drag:none;pointer-events:none;max-width:none}
+.uefis-face .uefis-photo{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:0}
+.uefis-face button{appearance:none;position:absolute;margin:0!important;padding:0!important;
+ border:none!important;outline-offset:0;box-shadow:none!important;background:transparent!important;
+ border-radius:50%;cursor:pointer;z-index:3;touch-action:none;-webkit-tap-highlight-color:transparent;min-height:0;min-width:0}
+.uefis-face button:focus-visible{outline:2px solid #74ebfc!important;outline-offset:2px}
+.uefis-face .uefis-knob{z-index:5;overflow:visible;cursor:grab}
+.uefis-face .uefis-knob:active{cursor:grabbing}
+.uefis-face .uefis-knob-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+ transition:transform 125ms ease-out;transform-origin:50% 50%;clip-path:none}
+.uefis-face .uefis-knob.uefis-hsi{z-index:5}
+.uefis-face .uefis-knob.uefis-wxInner{z-index:7}
+.uefis-face .uefis-knob.uefis-range{z-index:6}
+.uefis-face .uefis-tfc{z-index:10;border-radius:50%!important;overflow:hidden;touch-action:manipulation}
+.uefis-face .uefis-tfc-image{display:block;position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:fill}
+.uefis-face .uefis-tfc[aria-pressed=true]{filter:brightness(1.15)}
+.uefis-face .uefis-tfc[aria-pressed=true]:after{content:'';position:absolute;inset:5%;border-radius:50%;
+ border:1px solid #dcf0ff;box-shadow:0 0 7px #b4e9f8;pointer-events:none}
+.uefis-face .uefis-push{border:1px solid #4a5357!important;border-radius:4%!important;z-index:9;
+ background:linear-gradient(140deg,#1b2428,#090c0f 35%,#1d2427 77%,#080b0d)!important;
+ box-shadow:inset 0 0 0 2px #171b1e,inset 0 0 8px #000,0 1px 2px #000b!important;
+ touch-action:manipulation}
+.uefis-face .uefis-push:not(.uefis-push-rst)::before{content:'';position:absolute;inset:5% 5%;
+ border-radius:2%;border:1px solid #545e64;background:linear-gradient(#293237,#070b0d 40%,#131b1f 100%);
+ box-shadow:inset 0 4px 8px #000b}
+.uefis-face .uefis-on{position:absolute;z-index:2;top:8%;left:9%;width:82%;height:42%;
+ display:flex;align-items:center;justify-content:center;font:700 2.1cqw/1 'Arial Narrow',Arial,sans-serif;
+ background:linear-gradient(#1b2326,#080a0c);border:1px solid #353f43;color:transparent;pointer-events:none;
+ border-radius:2%;letter-spacing:.02em}
+.uefis-face .uefis-push[aria-pressed=true] .uefis-on{color:#0d1216;background:linear-gradient(160deg,#fcffff,#d9dedd);
+ border-color:#dde7e7;box-shadow:0 0 5px #fafefd82}
+.uefis-face .uefis-push-rst{background:radial-gradient(circle at 40% 30%,#e8ebea,#737c81 65%,#22272a 100%)!important;border:2px solid #495158!important}
+/* Invisible text-centered hit areas; no hover highlight or broad circles.
+ * Inline geometry is computed from printed labels and resized safely.
+ * Only keyboard focus gets an accessible outline. */
+.uefis-face .uefis-detent{z-index:11;transform:translate(-50%,-50%);
+ border-radius:3px!important;opacity:0;touch-action:manipulation}
+.uefis-face .uefis-detent:hover{opacity:0;background:transparent!important}
+.uefis-face .uefis-detent:focus-visible{opacity:1;background:transparent!important;
+ outline:1px solid #90c7cf!important}
+.uefis-face .uefis-dh-window{position:absolute;z-index:12;background:#151316;box-shadow:inset 0 0 12px #000;
+ display:flex;justify-content:center;align-items:center;border-radius:2%;pointer-events:none;
+ color:#f6f4f1;font:700 5.8cqw/1 'Courier New',monospace;letter-spacing:.045em;font-variant-numeric:tabular-nums}
+.uefis-dialog{position:fixed;inset:0;margin:auto;padding:0;border:1px solid #7b99a8;border-radius:10px;
+ background:#0b121a;color:#f0f6fa;width:min(980px,98vw);max-width:98vw;max-height:96vh;
+ box-shadow:0 20px 70px #000d;overflow:auto;direction:ltr}
+.uefis-dialog::backdrop{background:#02060ac7}
+.uefis-dialog .uefis-dialog-bar{display:flex;align-items:center;justify-content:space-between;
+ padding:8px 14px;background:#142736;position:sticky;top:0;z-index:20;gap:12px;
+ font:700 15px Arial,sans-serif}
+.uefis-dialog .uefis-dialog-close{border:1px solid #7a8a98;border-radius:5px;
+ padding:6px 15px;background:#273e4b;color:#fff;font:700 13px Arial,sans-serif}
+.uefis-dialog .uefis-dialog-body{width:100%;max-width:900px;margin:auto;padding:8px}
+.uefis-dialog .uefis-face{width:100%;box-shadow:0 5px 18px #000}
+@media(max-width:600px){.uefis-dialog .uefis-dialog-body{padding:2px}.uefis-dialog .uefis-dialog-bar{font-size:12px}}
+
+/* Non-destructive range legend correction: original photo plate is immutable. */
+.uefis-face .uefis-range80{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(110deg,#414a51,#3e474f);color:#f7f7f4;font:700 3.35cqw/1 'Arial Narrow',Arial,sans-serif;letter-spacing:-.045em}
+
+/* TFC is a black recessed mechanical button, not an illuminated ring. */
+.uefis-face .uefis-tfc[aria-pressed="true"]{filter:brightness(.91)}
+.uefis-face .uefis-tfc[aria-pressed="true"]:after{display:none}
+
+/* Owner-marked EFIS radio slots: faceplate starts at frame origin; expand remains accessible. */
+#region-pedestal .uefis-seat .uefis-banner{position:absolute;top:2px;right:2px;z-index:15;width:auto;height:20px;padding:0;background:transparent;border:0}
+#region-pedestal .uefis-seat .uefis-banner span{display:none}
+#region-pedestal .uefis-seat .uefis-expand{height:19px;min-width:19px;font-size:12px!important;opacity:.65}
+#region-pedestal .uefis-seat .uefis-face{width:100%;border:0}

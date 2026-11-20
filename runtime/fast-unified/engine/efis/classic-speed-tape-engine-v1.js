@@ -1,0 +1,325 @@
+/* B737 Classic EFIS Speed Tape — FCOM 10.30.13-15 / 10.40.6-8,
+ * AFDS FCOM 4.10.3-6 / 4.20.32-35. Pure, event-driven training model.
+ * No assumed ADC readings, performance tables, aircraft limits or certified logic.
+ */
+(function(root,factory){
+ 'use strict';
+ const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root)root.B737ClassicSpeedTapeEngineV1=api;
+})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const VERSION='SPEED-TAPE-FCOM-0003',SCHEMA='B737_CLASSIC_SPEED_TAPE_STATE_V1';
+ const LIMIT_KEYS=['vmoMmoCasKt','gearPlacardKt','flapPlacardKt','minimumManeuverKt',
+  'stickShakerKt','minimumAfdsKt','highSpeedBuffetKt','nextFlapPlacardKt',
+  'flapRetractionKt','flapsUpManeuverKt','flapBufferKt'];
+ const REF_KEYS=['v1Kt','vrKt','selectedVrefKt','landingFlaps'];
+ const GEAR_SPEED_LIMITS=Object.freeze({
+  DOWN:Object.freeze({iasKt:320,mach:0.82}),
+  EXTENDING:Object.freeze({iasKt:270,mach:0.82}),
+  RETRACTING:Object.freeze({iasKt:235,mach:null})
+ });
+ const GEAR_STATES=['UP','DOWN','EXTENDING','RETRACTING'];
+ const blankFields=keys=>Object.fromEntries(keys.map(k=>[k,null]));
+ const clone=v=>JSON.parse(JSON.stringify(v));
+ const isNum=v=>typeof v==='number'&&Number.isFinite(v);
+ const required=(v,lo,hi,name)=>{if(!isNum(v)||v<lo||v>hi)throw Error('INVALID_'+name);return v;};
+ const optional=(v,lo,hi,name)=>v===null?null:required(v,lo,hi,name);
+ const within=(v)=>isNum(v)&&v>=0&&v<=600;
+ // Smooth short-interval ADC derivatives to avoid tape-trend jitter from
+ // sampling cadence. A real abrupt, physically implausible jump is a new
+ // observation baseline, not a 10-second acceleration prediction.
+ function filteredTrend(previous,cas,dt){
+  if(!(dt>=.1&&dt<=10))return {acceleration:null,visible:false};
+  const change=cas-previous.casKt;
+  if(dt<1&&Math.abs(change)>12)return {acceleration:null,visible:false};
+  const raw=change/dt;
+  const old=previous.accelerationKtS;
+  const alpha=dt<.75&&isNum(old)?dt/(.65+dt):1;
+  const acceleration=isNum(old)?old+alpha*(raw-old):raw;
+  const delta10=10*acceleration;
+  const visible=previous.trendVisible?Math.abs(delta10)>=3:Math.abs(delta10)>4;
+  return {acceleration,visible};
+ }
+ function initialState(seat='CAPT'){
+  if(!['CAPT','FO'].includes(seat))throw Error('INVALID_SEAT');
+  return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',adc:{quality:'UNKNOWN',casKt:null,
+   pressureAltitudeFt:null,mach:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false},
+   mcp:{powered:null,displayBlank:true,selectedCasKt:null,speedDisplayMode:'IAS',source:'MCP'},
+   fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
+   config:{flapsPosition:null,gearExtended:null,gearState:null,inFlight:null,phase:null,flapsRetracting:null},
+   limits:{valid:false,...blankFields(LIMIT_KEYS)},
+   trainingFlap:null,trainingGear:null,
+   failures:{speed:false,selectedSpeed:false,v1:false,speedLimit:false,mach:false}};
+ }
+ function transition(old,event){
+  if(old?.schema!==SCHEMA||!event||typeof event.type!=='string')throw Error('INVALID_TAPE_EVENT');
+  const s=clone(old),e=event;
+  if(e.type==='ADC'){
+   if(typeof e.valid!=='boolean')throw Error('ADC_VALIDITY_REQUIRED');
+   if(e.valid){
+    const cas=required(e.casKt,0,600,'CAS_KT'),ms=required(e.timeMs,0,1e15,'TIMESTAMP');
+    if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&ms<=s.adc.lastMs)
+     throw Error('STALE_ADC_SAMPLE');
+    const previous=s.adc;
+    const deltaTime=previous.lastMs===null?null:(ms-previous.lastMs)/1000;
+    const trend=previous.quality==='VALID'?
+     filteredTrend(previous,cas,deltaTime):{acceleration:null,visible:false};
+    const acceleration=trend.acceleration,visible=trend.visible;
+    s.adc={quality:'VALID',casKt:cas,pressureAltitudeFt:e.pressureAltitudeFt==null?null:
+     required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
+     mach:e.mach==null?null:required(e.mach,0,1.5,'ACTUAL_MACH'),
+     lastMs:ms,previousCasKt:previous.casKt,accelerationKtS:acceleration,trendVisible:visible};
+   }else{
+    s.adc={quality:'INVALID',casKt:null,pressureAltitudeFt:null,lastMs:null,
+     previousCasKt:null,accelerationKtS:null,trendVisible:false};
+   }
+  }else if(e.type==='TRAINING_CAS'){
+   // This is an explicitly labelled cockpit TRAINING source, not an ADC
+   // sensor, and is never published to airdata.adc1/adc2 or the AFDS.
+   if(e.origin!=='TRAINING_SCENARIO')throw Error('TRAINING_SOURCE_REQUIRED');
+   const cas=required(e.casKt,0,600,'TRAINING_CAS');
+   const ms=required(e.timeMs,0,1e15,'TRAINING_TIMESTAMP');
+   if(s.adc.quality==='TRAINING'&&s.adc.lastMs!==null&&ms<=s.adc.lastMs)
+    throw Error('STALE_TRAINING_SAMPLE');
+   const p=s.adc,dt=p.quality==='TRAINING'&&p.lastMs!==null?(ms-p.lastMs)/1000:null;
+   const trend=p.quality==='TRAINING'?
+    filteredTrend(p,cas,dt):{acceleration:null,visible:false};
+   const acceleration=trend.acceleration,visible=trend.visible;
+   s.adc={quality:'TRAINING',casKt:cas,
+    pressureAltitudeFt:e.pressureAltitudeFt==null?null:
+     required(e.pressureAltitudeFt,-2000,70000,'PRESSURE_ALTITUDE'),
+    mach:e.mach==null?null:required(e.mach,0,1.5,'ACTUAL_MACH'),
+    lastMs:ms,previousCasKt:p.casKt,accelerationKtS:acceleration,trendVisible:visible};
+  }else if(e.type==='TRAINING_CLEAR'){
+   if(s.adc.quality==='TRAINING')s.adc={quality:'UNKNOWN',casKt:null,
+    pressureAltitudeFt:null,mach:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false};
+  }else if(e.type==='ADC_TIMEOUT'){
+   const now=required(e.nowMs,0,1e15,'TIMESTAMP');
+   if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&now-s.adc.lastMs>2000)
+    s.adc={quality:'UNKNOWN',casKt:null,pressureAltitudeFt:null,lastMs:null,
+     previousCasKt:null,accelerationKtS:null,trendVisible:false};
+  }else if(e.type==='MCP'){
+   if(![true,false,null].includes(e.powered)||typeof e.displayBlank!=='boolean'||
+      !['IAS','MACH'].includes(e.speedDisplayMode))throw Error('INVALID_MCP_EVIDENCE');
+   s.mcp={powered:e.powered,displayBlank:e.displayBlank,
+    selectedCasKt:e.selectedCasKt==null?null:required(e.selectedCasKt,0,600,'MCP_CAS'),
+    speedDisplayMode:e.speedDisplayMode,source:'MCP'};
+  }else if(e.type==='FMC'){
+   if(typeof e.valid!=='boolean')throw Error('INVALID_FMC_EVIDENCE');
+   if(!e.valid)s.fmc={valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)};
+   else{
+    if(typeof e.grossWeightAvailable!=='boolean')throw Error('FMC_WEIGHT_EVIDENCE_REQUIRED');
+    const f={valid:true,grossWeightAvailable:e.grossWeightAvailable,
+     commandCasKt:e.commandCasKt==null?null:required(e.commandCasKt,0,600,'FMC_COMMAND')};
+    for(const k of REF_KEYS)f[k]=e[k]==null?null:
+     required(e[k],0,k==='landingFlaps'?40:600,'FMC_'+k);
+    s.fmc=f;
+   }
+  }else if(e.type==='COMMAND_AUTHORITY'){
+   // AUTO preserves the legacy MCP display-blanking adapter; explicit
+   // authority is reserved for verified AFDS/FMC output. A blank MCP
+   // window alone must not assert an FMC command without valid data.
+   if(!['AUTO','MCP','FMC','NONE'].includes(e.source))
+    throw Error('INVALID_COMMAND_AUTHORITY');
+   s.commandAuthority=e.source;
+  }else if(e.type==='CONFIG'){
+   const config={...s.config};
+   if(Object.hasOwn(e,'flapsPosition'))config.flapsPosition=optional(e.flapsPosition,0,40,'FLAPS');
+   for(const k of ['gearExtended','inFlight','flapsRetracting']){
+    if(Object.hasOwn(e,k)){
+     if(![true,false,null].includes(e[k]))throw Error('INVALID_'+k);
+     config[k]=e[k];
+    }
+   }
+   if(Object.hasOwn(e,'phase')){
+    if(![null,'GROUND','TAKEOFF','CLIMB','CRUISE','DESCENT','APPROACH','LANDING','GO_AROUND'].includes(e.phase))
+     throw Error('INVALID_FLIGHT_PHASE');
+    config.phase=e.phase;
+   }
+   if(Object.hasOwn(e,'gearState')){
+    if(![null,...GEAR_STATES].includes(e.gearState))throw Error('INVALID_GEAR_STATE');
+    config.gearState=e.gearState;
+    config.gearExtended=e.gearState==='DOWN'?true:e.gearState==='UP'?false:null;
+   }else if(Object.hasOwn(e,'gearExtended'))
+    config.gearState=e.gearExtended===true?'DOWN':e.gearExtended===false?'UP':null;
+   s.config=config;
+  }else if(e.type==='LIMITS'){
+   if(typeof e.valid!=='boolean')throw Error('LIMIT_VALIDITY_REQUIRED');
+   if(!e.valid)s.limits={valid:false,...blankFields(LIMIT_KEYS)};
+   else{
+    const o={valid:true};
+    for(const k of LIMIT_KEYS)o[k]=e[k]==null?null:required(e[k],0,600,'LIMIT_'+k);
+    s.limits=o;
+   }
+  }else if(e.type==='TRAINING_FLAP_PROFILE'){
+   // Pedestal detent is visually operated, not a verified aircraft sensor.
+   // This signal is an independent PRESENTATION LAYER: never mutate the
+   // real flap configuration, AFDS limits or aircraft speed-control bus.
+   if(e.source!=='INSTRUCTOR_VISUAL_DETENT')throw Error('INVALID_TRAINING_FLAP_SOURCE');
+   const detent=required(e.detent,0,40,'TRAINING_FLAP_DETENT');
+   if(![0,1,2,5,10,15,25,30,40].includes(detent))
+    throw Error('INVALID_TRAINING_FLAP_DETENT');
+   if(detent===0){
+    s.trainingFlap=null;
+   }else{
+    const max=required(e.maximumKt,0,600,'TRAINING_FLAP_MAX'),
+     buffer=e.bufferKt==null?null:required(e.bufferKt,0,100,'TRAINING_FLAP_BUFFER');
+    if(buffer!==null&&buffer>max)throw Error('INVALID_TRAINING_FLAP_BUFFER');
+    s.trainingFlap={detent,maximumKt:max,bufferKt:buffer,source:e.source};
+   }
+  }else if(e.type==='TRAINING_GEAR_PROFILE'){
+   // Instructor gear choices affect only the speed-tape visual overlay.
+   // This never commands the gear, FCC, servos or ADC sensor feeds.
+   if(e.source!=='INSTRUCTOR_VISUAL_GEAR')throw Error('INVALID_TRAINING_GEAR_SOURCE');
+   if(e.gearState===null||e.gearState==='UNKNOWN')s.trainingGear=null;
+   else{
+    if(!GEAR_STATES.includes(e.gearState))throw Error('INVALID_TRAINING_GEAR_STATE');
+    s.trainingGear={state:e.gearState,source:e.source};
+   }
+  }else if(e.type==='FAILURES'){
+   for(const k of Object.keys(s.failures)){
+    if(Object.hasOwn(e,k)){
+     if(typeof e[k]!=='boolean')throw Error('INVALID_FAILURE_'+k);
+     s.failures[k]=e[k];
+    }
+   }
+  }else throw Error('UNKNOWN_TAPE_EVENT_'+e.type);
+  s.revision+=1;return s;
+ }
+ function view(s){
+  if(s?.schema!==SCHEMA)throw Error('INVALID_TAPE_STATE');
+  const adcValid=['VALID','TRAINING'].includes(s.adc.quality)&&!s.failures.speed&&within(s.adc.casKt);
+  const cas=adcValid?s.adc.casKt:null;
+  // FCOM 10.40.6: ADC display defaults to 45 kt at low IAS.
+  // Actual CAS remains unchanged, but presentation is clamped and magnified.
+  const lowSpeedDefault=adcValid&&cas<=45;
+  const tapeCenterKt=adcValid?Math.max(45,Math.min(420,cas)):null;
+  const window=42;
+  const range=tapeCenterKt===null?null:{minKt:tapeCenterKt-window,maxKt:tapeCenterKt+window};
+  const validLimits=s.limits.valid&&!s.failures.speedLimit;
+  const lim=validLimits?s.limits:blankFields(LIMIT_KEYS);
+  const config=s.config;
+  const maximumCandidates=[];
+  const gearState=config.gearState??(config.gearExtended===true?'DOWN':config.gearExtended===false?'UP':null);
+  const gearLimit=GEAR_SPEED_LIMITS[gearState]??null;
+  if(within(lim.vmoMmoCasKt))maximumCandidates.push({reason:'VMO_MMO',speedKt:lim.vmoMmoCasKt});
+  if(gearLimit)maximumCandidates.push({reason:'GEAR',speedKt:gearLimit.iasKt});
+  if(config.flapsPosition!==null&&config.flapsPosition>0&&within(lim.flapPlacardKt))
+   maximumCandidates.push({reason:'FLAPS',speedKt:lim.flapPlacardKt});
+  // Unknown gear/flap configuration or an applicable missing placard must
+  // never be presented as a verified safe maximum speed.
+  const maxCoverage=within(lim.vmoMmoCasKt)&&
+   (gearState!==null)&&
+   (config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)));
+  const limiting=maxCoverage&&maximumCandidates.length?
+   maximumCandidates.reduce((a,b)=>a.speedKt<=b.speedKt?a:b):null;
+  // A user-entered FCOM-style yellow buffer is separate from Boeing's
+  // High-Speed Buffet and Next Flap Placard cues. It is not an automatic
+  // speed reversion trigger and must never change AFDS command values.
+  let flapBuffer=null;
+  if(validLimits&&limiting?.reason==='FLAPS'&&within(lim.flapBufferKt)&&
+     within(lim.flapPlacardKt)&&lim.flapBufferKt<=lim.flapPlacardKt){
+   flapBuffer={lowerKt:lim.flapPlacardKt-lim.flapBufferKt,
+    upperKt:lim.flapPlacardKt,bufferKt:lim.flapBufferKt,training:false};
+  }
+  // When the only input is a visual pedestal detent, show a clearly
+  // labelled training overlay, never a certified/AFDS usable limit.
+  const t=s.trainingFlap;
+  const trainingFlapLimit=!s.failures.speedLimit&&!limiting&&t&&t.detent>0?
+   {detent:t.detent,maximumKt:t.maximumKt,bufferKt:t.bufferKt,
+    bufferStartKt:t.bufferKt===null?null:t.maximumKt-t.bufferKt,
+    source:'INSTRUCTOR_VISUAL_DETENT'}:null;
+  const g=s.trainingGear;
+  const trainingGearLimit=!s.failures.speedLimit&&!limiting&&g&&GEAR_SPEED_LIMITS[g.state]?
+   {state:g.state,maximumKt:GEAR_SPEED_LIMITS[g.state].iasKt,
+    maximumMach:GEAR_SPEED_LIMITS[g.state].mach,source:g.source}:null;
+  // Prefer the lower visual training limit; verified operating limits
+  // retain authority. This overlay is never applied to speedProtection.
+  const trainingOperatingLimit=trainingFlapLimit&&trainingGearLimit?
+   (trainingFlapLimit.maximumKt<=trainingGearLimit.maximumKt?
+    {...trainingFlapLimit,reason:'FLAPS'}:{...trainingGearLimit,reason:'GEAR'}):
+   trainingFlapLimit?{...trainingFlapLimit,reason:'FLAPS'}:
+   trainingGearLimit?{...trainingGearLimit,reason:'GEAR'}:null;
+  if(!flapBuffer&&trainingFlapLimit&&trainingOperatingLimit?.reason==='FLAPS'&&
+     trainingFlapLimit.bufferKt!==null)
+   flapBuffer={lowerKt:trainingFlapLimit.bufferStartKt,
+    upperKt:trainingFlapLimit.maximumKt,
+    bufferKt:trainingFlapLimit.bufferKt,training:true};
+  const f=s.fmc;
+  const preferFmc=s.commandAuthority==='FMC'||
+   (s.commandAuthority==='AUTO'&&s.mcp.displayBlank===true);
+  const allowMcp=s.commandAuthority==='MCP'||
+   (s.commandAuthority==='AUTO'&&s.mcp.displayBlank!==true);
+  const commanded=s.commandAuthority!=='NONE'&&f.valid&&preferFmc&&within(f.commandCasKt)?
+   {source:'FMC',speedKt:f.commandCasKt}:
+   allowMcp&&s.mcp.powered===true&&!s.mcp.displayBlank&&within(s.mcp.selectedCasKt)?
+   {source:'MCP',speedKt:s.mcp.selectedCasKt}:null;
+  const command=!s.failures.selectedSpeed?commanded:null;
+  let commandedPosition=null;
+  if(command&&range)commandedPosition=command.speedKt>range.maxKt?'ABOVE':
+   command.speedKt<range.minKt?'BELOW':'ON_TAPE';
+  const validFmc=f.valid;
+  const reference=(key)=>validFmc&&within(f[key])?f[key]:null;
+  const marks={
+   v1Kt:s.failures.v1?null:reference('v1Kt'),
+   vrKt:reference('vrKt'),vrefKt:reference('selectedVrefKt'),
+   flapsUpKt:config.flapsPosition===0?lim.flapsUpManeuverKt:null,
+   retractKt:config.inFlight===true&&config.flapsPosition!==null&&config.flapsPosition>0&&
+    ['TAKEOFF','GO_AROUND'].includes(config.phase)?lim.flapRetractionKt:null,
+   nextFlapPlacardKt:config.inFlight===true&&config.flapsPosition!==null&&config.flapsPosition>0&&
+    config.flapsRetracting===false&&f.valid===true&&f.landingFlaps!==null&&
+    f.landingFlaps!==config.flapsPosition?
+    lim.nextFlapPlacardKt:null,
+   minimumManeuverKt:lim.minimumManeuverKt,stickShakerKt:lim.stickShakerKt,
+   highSpeedBuffetKt:s.adc.pressureAltitudeFt!==null&&s.adc.pressureAltitudeFt>25000&&
+    f.grossWeightAvailable===true?lim.highSpeedBuffetKt:null,
+   maximumOperatingKt:limiting?.speedKt??null,
+   trainingFlapLimit,trainingGearLimit,trainingOperatingLimit,flapBuffer
+  };
+  // A confirmed SPD or SPD LIM failure does not masquerade as a dead EADI.
+  // No source connected (UNKNOWN) is not itself a hardware failure.
+  const flags={SPD:s.failures.speed||s.adc.quality==='INVALID',
+   SEL_SPD_INOP:s.failures.selectedSpeed,V1_INOP:s.failures.v1,
+   SPD_LIM:s.failures.speedLimit,MACH:s.failures.mach};
+  const trend=adcValid&&s.adc.trendVisible&&s.adc.accelerationKtS!==null?
+   {delta10Kt:s.adc.accelerationKtS*10,
+    predictedKt:cas+s.adc.accelerationKtS*10}:null;
+  let effectiveTargetKt=command?.speedKt??null,limitReason=null;
+  if(effectiveTargetKt!==null&&validLimits){
+   if(within(lim.minimumAfdsKt)&&effectiveTargetKt<lim.minimumAfdsKt){
+    effectiveTargetKt=lim.minimumAfdsKt;limitReason='MINIMUM_AFDS_SPEED';
+   }
+   if(limiting&&effectiveTargetKt>limiting.speedKt){
+    effectiveTargetKt=limiting.speedKt;limitReason=limiting.reason;
+   }
+  }
+  return {schema:'B737_CLASSIC_SPEED_TAPE_VIEW_V1',version:VERSION,seat:s.seat,
+   revision:s.revision,quality:s.adc.quality,
+   provenance:s.adc.quality==='TRAINING'?'TRAINING_SCENARIO':
+    s.adc.quality==='VALID'?'SIMULATOR_ADC':'UNKNOWN',
+   casKt:cas,tapeCenterKt,range,lowSpeedDefault,
+   commandAuthority:s.commandAuthority,
+   rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
+   effectiveTargetKt,limitReason,marks,flags,
+   // Advisory ONLY. No implied mode switch or authority over AFDS servos.
+   speedProtection:{active:limitReason!==null,reason:limitReason,
+    commandKt:command?.speedKt??null,effectiveKt:effectiveTargetKt,
+    minimumKt:within(lim.minimumAfdsKt)?lim.minimumAfdsKt:null,
+    maximumKt:limiting?.speedKt??null,
+    limitsComplete:maxCoverage},
+   maxLimitReason:limiting?.reason??null,
+   gearState,gearOperatingLimitKt:gearLimit?.iasKt??null,
+   gearOperatingLimitMach:gearLimit?.mach??null,
+   actualMach:adcValid?s.adc.mach:null,
+   gearMachLimitReached:adcValid&&gearLimit?.mach!=null&&s.adc.mach!==null&&
+    s.adc.mach>=gearLimit.mach,
+   trainingFlapSource:trainingFlapLimit?.source??null,
+   trainingGearSource:trainingGearLimit?.source??null,
+   coverage:{vmo:within(lim.vmoMmoCasKt),
+    gear:gearState!==null,
+    flaps:config.flapsPosition===0||(config.flapsPosition!==null&&within(lim.flapPlacardKt)),
+    complete:maxCoverage}};
+ }
+ return Object.freeze({VERSION,SCHEMA,GEAR_SPEED_LIMITS,initialState,transition,view,LIMIT_KEYS,REF_KEYS});
+});
