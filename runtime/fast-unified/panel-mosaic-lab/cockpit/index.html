@@ -222,8 +222,6 @@ body > header.unified-minimal-header .header-settings>button{
    <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
    <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
    <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
-   <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
-   <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
    <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
    <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
   </div>
@@ -234,24 +232,6 @@ body > header.unified-minimal-header .header-settings>button{
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
   </div>
-  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
-  <div class="flight-heading">LIVE AIRCRAFT STATE</div>
-  <div class="flight-telemetry" id="flightTelemetry">
-   <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
-   <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
-   <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
-   <div><span>VS</span><strong id="flightOutVS">—</strong></div>
-   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
-   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
-   <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
-   <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
-   <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
-   <div><span>LAT</span><strong id="flightOutLat">—</strong></div>
-   <div><span>LON</span><strong id="flightOutLon">—</strong></div>
-   <div><span>GS</span><strong id="flightOutGS">—</strong></div>
-   <div><span>RWY DIST</span><strong id="flightOutDist">—</strong></div>
-  </div>
-  <p id="flightGeorefWarning" class="flight-warning">Runway threshold geometry is provisional: airport reference point, not certified runway threshold. AGL* uses airport elevation, not terrain.</p>
   <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
  </dialog>
 <script src="./flight-scenario-shell-v1.js?v=WEB-5b6d2e548e7b78c9"></script>
@@ -420,9 +400,9 @@ body > header.unified-minimal-header .header-settings>button{
 <link rel="stylesheet" href="./unified-css-safe-07-v1.css?v=WEB-4111604c75d64ef1"><script src="./efis-pedestal-raster-v1.js?v=WEB-9f86280b9f752c1e" defer></script>
 <script src="./pedestal-faceplates-library-v1.js?v=WEB-81cbdf87f0b62b17" defer></script>
 <script src="./pedestal-dual-vhf-knobs-v1.js?v=WEB-e2e4589f097e9cb3" defer></script>
-<script src="./desktop-bundle-b664dfe62adf63ce.js?v=WEB-b664dfe62adf63ce" defer></script><script src="../../engine/flight/desktop-bundle-f20f7be02d44deef.js?v=WEB-f20f7be02d44deef" defer></script>
-<script src="./desktop-bundle-9a6738970f3f7e52.js?v=WEB-9a6738970f3f7e52" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
-<script src="../../engine/instruments/desktop-bundle-bed36d6d6c58ca8c.js?v=WEB-bed36d6d6c58ca8c" defer></script>
+<script src="./desktop-bundle-b664dfe62adf63ce.js?v=WEB-b664dfe62adf63ce" defer></script><script src="../../engine/flight/desktop-bundle-d56527aaba8ca7ea.js?v=WEB-d56527aaba8ca7ea" defer></script>
+<script src="./desktop-bundle-3828fc060088f8d8.js?v=WEB-3828fc060088f8d8" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
+<script src="../../engine/instruments/desktop-bundle-678c188d5520e511.js?v=WEB-678c188d5520e511" defer></script>
 <script defer src="./tcas-photo/ivsi.js?v=WEB-10d7e8282ce53674"></script>
 <script src="./landing-gear-unified-v1.js?v=WEB-85df7fc9e266bab9" defer></script>
 </body></html>

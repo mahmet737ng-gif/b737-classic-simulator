@@ -139,7 +139,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./autothrottle-unified-v1.js?v=AT-SPEED-0001 */
+/* ./autothrottle-unified-v1.js?v=FLT-UI-SLIM-0001 */
 try{
 /* Unified A/T SPEED -> shared ISN-18 ENG 1+2 -> flight speed feedback v1.
  * The MCP mode core is authoritative. Never energize a stopped engine or
@@ -150,7 +150,7 @@ try{
  const Servo=win.B737AutothrottleSpeedServoV1,VERSION='UNIFIED_AT_ENGINE_BRIDGE_0001';
  if(!Servo){win.console?.error('A/T servo dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
- let state=Servo.initial(),last=0,lastUi=0,manualOverride=false,errors=[],lastCommands={};
+ let state=Servo.initial(),last=0,manualOverride=false,errors=[],lastCommands={};
  const clone=x=>JSON.parse(JSON.stringify(x));
  function activeMode(m){
   return m?.power===true&&m.controls?.atArm===true&&m.modes?.thrust==='SPEED';
@@ -163,7 +163,7 @@ try{
   const owner=win.B737ISNCockpitV1;
   // Keep idle-window overhead negligible: ISN ECU snapshots contain large
   // diagnostics trees and are only required when A/T can run or panel is open.
-  const needEngines=activeMode(mcp)||by('flightScenarioDialog')?.open===true;
+  const needEngines=activeMode(mcp);
   const propulsion=needEngines?owner?.getPropulsionSnapshot?.():null;
   const chain=needEngines&&!propulsion?owner?.getStartState?.():null;
   const ecu=needEngines&&!propulsion?owner?.getECUState?.():null;
@@ -225,79 +225,7 @@ try{
    if(errors.at(-1)!==message){errors.push(message);if(errors.length>12)errors.shift();}
    state={...state,active:false,reason:'A/T_COMMAND_ERROR: '+message,commands:[]};
   }
-  if(now-lastUi>350){paint(src);lastUi=now;}
   notify();
- }
- function modeLabel(src){
-  if(!src?.mcp)return 'MCP OFF / NO DATA';
-  if(state.reason==='NO_RUNNING_ENGINES')return 'NO RUNNING ENGINES — A/T INHIBITED';
-  if(state.reason==='MANUAL_OVERRIDE')return 'MANUAL OVERRIDE — DESELECT & RESELECT SPEED';
-  if(state.reason==='AT_SPEED_ACTIVE')return 'A/T SPEED ACTIVE';
-  if(state.reason==='AT_SPEED_SINGLE_ENGINE_TRAINING')return 'A/T SPEED / SINGLE ENGINE DEGRADED';
-  return state.reason.replaceAll('_',' ');
- }
- function paint(src){
-  const label=by('flightAtStatus');
-  if(!label)return;
-  label.textContent=modeLabel(src);
-  label.dataset.active=state.active?'true':'false';
-  const n=v=>Number.isFinite(v)?v.toFixed(1):'—';
-  const data={
-   Target:Number.isFinite(state.targetKt)?Math.round(state.targetKt)+' kt':'—',
-   IAS:n(src.flight.iasKt)+' kt',
-   Delta:Number.isFinite(state.errorKt)?(state.errorKt>=0?'+':'')+n(state.errorKt)+' kt':'—',
-   CmdN1:n(state.demandN1)+'%',
-   N1A:n(src.engines.engine1.n1Percent)+'%',
-   N1B:n(src.engines.engine2.n1Percent)+'%',
-   THRA:src.engines.engine1.running?n(src.engines.engine1.throttle*100)+'%':'ENG OFF',
-   THRB:src.engines.engine2.running?n(src.engines.engine2.throttle*100)+'%':'ENG OFF'
-  };
-  for(const [k,value] of Object.entries(data)){
-   const p=by('flightAt'+k);
-   if(p)p.textContent=value;
-  }
-  const preset=by('flightAtInstructorRun');
-  if(preset)preset.disabled=!src.owner?.engineTrainerAction||
-   src.engines.engine1.running&&src.engines.engine2.running;
- }
- function renderPanel(){
-  const d=by('flightScenarioDialog');
-  if(!d||by('flightAtPanel'))return;
-  const section=doc.createElement('section');
-  section.id='flightAtPanel';section.className='flight-at-panel';
-  section.innerHTML=`
-    <div class="flight-heading">A/T COMPUTER · ENGINE THRUST SERVO</div>
-    <p class="flight-at-mode" id="flightAtStatus" role="status">MCP / ECU NOT READY</p>
-    <div class="flight-telemetry">
-     <div><span>MCP SPEED TARGET</span><strong id="flightAtTarget">—</strong></div>
-     <div><span>MEASURED IAS</span><strong id="flightAtIAS">—</strong></div>
-     <div><span>SPEED ERROR</span><strong id="flightAtDelta">—</strong></div>
-     <div><span>DEMANDED N1*</span><strong id="flightAtCmdN1">—</strong></div>
-     <div><span>ENGINE 1 N1</span><strong id="flightAtN1A">—</strong></div>
-     <div><span>ENGINE 2 N1</span><strong id="flightAtN1B">—</strong></div>
-     <div><span>THROTTLE 1</span><strong id="flightAtTHRA">—</strong></div>
-     <div><span>THROTTLE 2</span><strong id="flightAtTHRB">—</strong></div>
-    </div>
-    <div class="flight-actions">
-      <button type="button" id="flightAtInstructorRun">SET BOTH ENGINES RUNNING · INSTRUCTOR</button>
-    </div>
-    <p class="flight-sub">Requires running engines, MCP electrical power, A/T ARM and active SPEED mode. Moving the MCP speed selector alone does not engage A/T. Both actual engine spools and IAS respond with lag. *N1 demand and acceleration are training-only approximations, not AFM performance.</p>
-  `;
-  (by('flightTelemetry')||d).after(section);
-  by('flightAtInstructorRun').addEventListener('click',()=>{
-   const owner=win.B737ISNCockpitV1;
-   if(!owner?.engineTrainerAction)return;
-   const results=[];
-   for(const engine of ['engine1','engine2']){
-    try{
-     if(owner.getStartState()?.phase?.[engine]==='RUNNING'){results.push(engine+' already running');continue;}
-     const result=owner.engineTrainerAction({type:'PRESET_RUNNING',engine,instructor:true});
-     results.push(engine+(result?.accepted?' RUNNING':' REJECTED'));
-    }catch(error){results.push(engine+' ERROR: '+String(error.message||error));}
-   }
-   const note=by('flightAtStatus');
-   if(note)note.textContent=results.join(' · ');
-  });
  }
  function manualIntervention(event){
   const d=event?.detail;
@@ -314,7 +242,6 @@ try{
  });
  win.B737UnifiedAutothrottleV1=publicApi;
  function boot(){
-  renderPanel();
   win.setInterval(tick,200);
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});
@@ -375,7 +302,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-instrument-dynamics-v1.js?v=FLIGHT-GAUGE-0001 */
+/* ./flight-instrument-dynamics-v1.js?v=FLT-UI-SLIM-0001 */
 try{
 /* Unified flight dynamics -> CAPT/FO analog primary flight instruments.
  * Drives existing physical needle APIs (no competing SVG layer or pixel drift).
@@ -400,65 +327,6 @@ try{
   const fn=win.B737UnifiedFlightNeedles,air=win.B737UnifiedAirspeedPointers;
   previous={angles:fn.getAngles(),airspeed:air.getValues()};
  }
- function updateStatus(sample){
-  const widgets={
-   flightGaugeAltitude:sample?Math.round(sample.altitudeFt).toLocaleString('en-US')+' FT':'—',
-   flightGaugeSpeed:sample?sample.indicatedSpeedKt.toFixed(1)+' KT':'—',
-   flightGaugeVSI:sample?Math.round(sample.verticalSpeedFpm)+' FPM':'—',
-   flightGaugeStandby:sample?Math.round(sample.standbyAltitudeFt).toLocaleString('en-US')+' FT':'—'
-  };
-  for(const [id,v] of Object.entries(widgets))if(by(id))by(id).textContent=v;
-  // Independent standby altimeter trainer dial. The source photo's actual
-  // center/radius have not been surveyed, so this is intentionally in the lab
-  // rather than positioned speculatively over another physical instrument.
-  const hand=by('flightGaugeStandbyHand');
-  if(hand)hand.setAttribute('transform','translate(80 80) rotate('+String(sample?.standbyNeedleDeg??0)+')');
-  const thousands=by('flightGaugeStandbyThousands');
-  if(thousands)thousands.textContent=sample?Math.floor(sample.standbyAltitudeFt/1000).toString()+'K':'—';
-  const label=by('flightGaugeSource');
-  if(label)label.textContent=sample?
-   'SCENARIO ACTIVE · CAPT + FO NEEDLES · STBY ALT DATA LIVE':
-   'SOURCE INACTIVE · INSTRUMENT VALUES NOT ASSERTED';
- }
- function addPanel(){
-  const dlg=by('flightScenarioDialog');
-  if(!dlg||by('flightGaugeBridgePanel'))return;
-  const p=doc.createElement('section');
-  p.id='flightGaugeBridgePanel';p.className='flight-gauge-bridge';
-  p.innerHTML=`
-    <div class="flight-heading">LIVE FLIGHT INSTRUMENT BUS · CAPT / F/O</div>
-    <p id="flightGaugeSource" class="flight-gauge-source">SOURCE INACTIVE</p>
-    <div class="flight-telemetry">
-     <div><span>ALTIMETERS · MSL*</span><strong id="flightGaugeAltitude">—</strong></div>
-     <div><span>AIRSPEED INDICATORS</span><strong id="flightGaugeSpeed">—</strong></div>
-     <div><span>IVSI / VERTICAL SPEED</span><strong id="flightGaugeVSI">—</strong></div>
-     <div><span>STANDBY ALTIMETER*</span><strong id="flightGaugeStandby">—</strong></div>
-    </div>
-    <div class="flight-standby-row">
-     <svg class="flight-standby-dial" viewBox="0 0 160 160" role="img" aria-label="Independent training standby altimeter pointer">
-      <circle cx="80" cy="80" r="72" fill="#11171a" stroke="#6b7375" stroke-width="4"/>
-      <circle cx="80" cy="80" r="61" fill="none" stroke="#c8d1d0" stroke-width="1.5"/>
-      <g stroke="#e1e5dc" stroke-width="2">
-       <path d="M80 18v12 M115 30l-6 10 M142 80h-12 M115 130l-6 -10 M80 142v-12 M45 130l6 -10 M18 80h12 M45 30l6 10"/>
-      </g>
-      <g fill="#e7ece9" font-size="12" font-family="Arial" text-anchor="middle">
-       <text x="80" y="46">0</text><text x="112" y="79">2</text><text x="96" y="116">4</text><text x="48" y="102">7</text>
-      </g>
-      <g id="flightGaugeStandbyHand" transform="translate(80 80) rotate(0)">
-       <path d="M-3 7 L-3 -48 L0 -59 L3 -48 L3 7Z" fill="#f4f4e6" stroke="#313639" stroke-width="1"/>
-      </g>
-      <circle cx="80" cy="80" r="5" fill="#8b9494"/>
-      <rect x="57" y="93" width="46" height="19" rx="2" fill="#030507" stroke="#a3aaa2"/>
-      <text id="flightGaugeStandbyThousands" x="80" y="107" font-family="monospace" font-weight="bold" font-size="13" text-anchor="middle" fill="#f5f6e8">—</text>
-     </svg>
-     <div><strong>STANDBY ALT · INSTRUCTOR DIAL</strong><p>Independent dynamic simulated reading · physical photo needle registration pending verified center/pivot measurements</p></div>
-    </div>
-    <p class="flight-sub">Primary CAPT and F/O altimeter, airspeed and IVSI pointers track the same simulated flight state. STANDBY ALT is independently published here; the physical standby dial photo has not yet been registered/calibrated. *MSL ≠ barometrically corrected indicated altitude until BARO is modeled. When IAS is below 60 kt the photographed ASI pointer stays at its lowest printed scale.</p>
-  `;
-  const anchor=by('flightAtPanel')||by('flightTelemetry');
-  if(anchor)anchor.after(p);else dlg.append(p);
-  updateStatus(last);
- }
  function draw(sample){
   if(!sample||!validApi())return false;
   capture();
@@ -481,7 +349,6 @@ try{
    asi.setAirspeedKts(sample.airspeedPointerKt,station);
   }
   last=sample;active=true;paints++;
-  updateStatus(sample);
   win.dispatchEvent(new CustomEvent('b737:standby-altimeter-sample',{detail:{
    schema:'B737_STANDBY_ALTIMETER_SAMPLE_V1',
    quality:'TRAINING_SIMULATED',source:sample.source,
@@ -523,7 +390,6 @@ try{
    }catch(e){error='RESTORE: '+String(e?.message||e);}
   }
   previous=null;
-  updateStatus(null);
   win.dispatchEvent(new CustomEvent('b737:standby-altimeter-sample',{detail:{
    schema:'B737_STANDBY_ALTIMETER_SAMPLE_V1',quality:'UNKNOWN',
    source:'SCENARIO_STOPPED',altitudeFt:null,physicalDialRegistration:'PENDING_VERIFIED_GEOMETRY'
@@ -534,7 +400,6 @@ try{
  });
  win.addEventListener('b737:flight-scenario-stopped',stopped);
  function mount(){
-  addPanel();
   // An active scenario can predate this deferred bundle; attach without
   // requiring a second LOAD press.
   const scn=win.B737UnifiedFlightScenarioV1;
@@ -556,7 +421,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fcc-flight-runtime-v1.js?v=FCC-UNIFIED-TOGA-FD-0002-STAB */
+/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001 */
 try{
 /* Live scenario FCC coupler, EADI F/D source, and FCOM §4.20 A/P protections.
  * Reads only already-modeled flight/airdata and existing MCP AFDS owners.
@@ -716,38 +581,6 @@ try{
   protect=result.state;
   return result.disengage&&disconnect(result.reason,'COCKPIT_HARDWARE');
  }
- function mount(){
-  const dlg=by('flightScenarioDialog');
-  if(!dlg||by('flightFccPanel'))return;
-  const panel=doc.createElement('section');panel.id='flightFccPanel';
-  panel.innerHTML=`
-   <div class="flight-heading">FCC / AFDS · FCOM CHAPTER 4</div>
-   <p class="flight-sub" id="flightFccStatus">FCC source awaiting MCP and scenario.</p>
-   <p class="flight-sub">FD bars require the pilot's F/D switch ON, a valid pitch command and a valid roll command. CWS axis guidance retracts. CMD drives the aircraft; F/D-only modes draw guidance without moving it. No route/LOC/GS capture is inferred.</p>
-   <div class="flight-actions">
-    <button type="button" id="flightFccYokeDisconnect">YOKE A/P DISCONNECT</button>
-    <button type="button" id="flightFccTrimDisconnect">CONTROL WHEEL TRIM</button>
-    <button type="button" id="flightFccTogaDisconnect">TO/GA TEST (RA &lt; 2000)</button>
-   </div>
-   <details><summary>AP protection failures · instructor tests</summary>
-    <label><input type="checkbox" data-fcc-fault="hydA"> HYDRAULIC SYS A PRESSURE LOST</label>
-    <label><input type="checkbox" data-fcc-fault="hydB"> HYDRAULIC SYS B PRESSURE LOST</label>
-    <label><input type="checkbox" data-fcc-fault="irsL"> LEFT IRS FAULT</label>
-    <label><input type="checkbox" data-fcc-fault="irsR"> RIGHT IRS FAULT</label>
-    <label><input type="checkbox" data-fcc-fault="criticalSensor"> CRITICAL FCC SENSOR FAILURE</label>
-    <label><input type="checkbox" data-fcc-fault="radioAlt"> RADIO ALTIMETER FAILED (2 s after LOC+GS capture)</label>
-   </details>
-   <p class="flight-sub" role="status" id="flightFccDisconnect">A/P disengagement: no event</p>
-  `;
-  const anchor=by('flightGaugeBridgePanel')||by('flightAtPanel')||by('flightTelemetry');
-  if(anchor)anchor.after(panel);else dlg.append(panel);
-  by('flightFccYokeDisconnect').addEventListener('click',()=>confirmedHardware('CONTROL_WHEEL_AP_DISCONNECT'));
-  by('flightFccTrimDisconnect').addEventListener('click',()=>confirmedHardware('CONTROL_WHEEL_TRIM'));
-  by('flightFccTogaDisconnect').addEventListener('click',()=>confirmedHardware('TOGA_BELOW_2000_RA'));
-  for(const input of panel.querySelectorAll('[data-fcc-fault]'))
-   input.addEventListener('change',()=>{faults[input.dataset.fccFault]=input.checked;
-    protectFlight(flight());});
- }
  // Hydraulic, IRS and electrical protections apply during any powered A/P
  // session, not only when instructor flight dynamics is actively loaded.
  win.setInterval(()=>protectFlight(flight()),400);
@@ -812,9 +645,6 @@ try{
   if(e.detail?.confirmed===true&&e.detail?.source==='COCKPIT_HARDWARE')
    confirmedHardware('TOGA_BELOW_2000_RA',{touchdown:e.detail?.touchdown===true});
  });
- if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
- else mount();
- win.addEventListener('b737:cockpit-mounted',mount);
  win.B737UnifiedFccFlightV1=Object.freeze({
   VERSION,follow,getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
    lastDisengagement:lastAp?{...lastAp}:null,sourceError,faults:{...faults}}),
