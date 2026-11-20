@@ -128,7 +128,15 @@ assert.equal(fma('CAPT').afds.active,'FD');
 assert.equal(fma('CAPT').afds.secondary,'CWS P');
 assert.equal(fma('CAPT').afds.tertiary,'CWS R');
 check();
-// Both flight directors OFF clears AFDS modes but not the physical A/T arm.
+// FCOM SHI 4.10.19: both F/D switches OFF retract the bars but must
+// NOT disengage an already engaged autopilot or discard selected modes.
+send({type:'FD',side:'left',on:false});
+assert.equal(state.modes.autopilot,'CWS_A');
+assert.equal(Core.output(state).controls.fd.left,false);
+assert.equal(Core.output(state).axisControl.pitch,'CWS');
+check();
+// Once A/P is switched OFF with both F/Ds OFF, no automatic guidance remains.
+send({type:'BUTTON',id:'CWS_A'});
 send({type:'FD',side:'left',on:false});
 for(const v of ['lateral','vertical','thrust','autopilot'])assert.equal(state.modes[v],null);
 assert.equal(fma('CAPT').roll.active,'');
