@@ -428,7 +428,8 @@ test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()
  assert.match(app,/fdHoldOffset=targetPitch-own\.pitchDeg/);
  assert.match(app,/own\.pitchDeg\+\(fdHoldOffset\?\?0\)/);
  assert.match(app,/commandedPitchForRa/);
- assert.match(app,/options=\{progressive:true\}/);
+ assert.match(app,/options=\{progressive:true,/);
+ assert.match(app,/distanceNm:scenario\.value\.startsWith\('REVERSAL_'\)/);
 });
 
 test('EHSI trend arrows are driven by target vertical motion, not the RA label',()=>{
