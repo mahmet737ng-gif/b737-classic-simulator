@@ -413,6 +413,49 @@ test('Original photographed TCAS IVSI is the shared cockpit and lab renderer',()
  assert.ok(calls.some(x=>x.key==='fillText'&&x.args[0]==='↓'),'Original downward trend arrow required');
 });
 
+test('photo-IVSI lab canvas clears the artifacts without altering the cockpit needle or face',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../tcas-photo/ivsi.js'),'utf8');
+ assert.match(source,/function paintFace\(g,active,selected,own,vs,valid,full,lab=false\)/);
+ assert.match(source,/if\(lab\)\{\s*g\.beginPath\(\);g\.arc\(201,203,119,0,Math\.PI\*2\);g\.fill\(\)/);
+ assert.match(source,/if\(!lab\)traffic\(g,selected\.rangeNm\?\?10,own\.trueHeadingDeg,active\)/);
+ assert.match(source,/cleanLabTraffic\(g,selected\.rangeNm\?\?10,own\.trueHeadingDeg,active\)/);
+ assert.match(source,/labPref\.full,true\)/);
+ // The photo-IVSI continues rendering its original geometry in Unified, while
+ // the training lab uses clean circular glass and collision-aware text only.
+ const fakeWindow={};
+ class Img{constructor(){this.naturalWidth=403;}set src(v){this.srcValue=v;}}
+ const doc={currentScript:{src:'https://sim.invalid/tcas-photo/ivsi.js'},baseURI:'https://sim.invalid'};
+ vm.runInNewContext(source,{window:fakeWindow,document:doc,Image:Img,URL,
+  requestAnimationFrame(){}});
+ const recorded=[];
+ const context=new Proxy({},{
+  get(_target,key){return (...args)=>{recorded.push({key,args});};},
+  set(){return true;}
+ });
+ const canvas={width:403,height:403,style:{},dataset:{},getContext:()=>context};
+ const t={mode:'TA_RA',advisory:'RA',ra:{id:'CLIMB',min:1500,max:null},
+  targets:[
+   {id:'R1',kind:'RA',bearing:10,distance:1.3,relativeAltitude:-300,verticalRate:1200},
+   {id:'T2',kind:'TA',bearing:340,distance:2.6,relativeAltitude:500,verticalRate:-1000},
+   {id:'O3',kind:'OTHER',bearing:280,distance:5.1,relativeAltitude:1800,verticalRate:0}
+  ]};
+ const ok=fakeWindow.B737ClassicPhotoIVSIV1.renderLab(canvas,
+  {vsFpm:0,trueHeadingDeg:0},t,{rangeNm:10});
+ assert.equal(ok,true);
+ assert.equal(recorded.filter(x=>x.key==='fillRect').length,0,
+  'The instrument glass must contain no rectangular photo masks');
+ assert.ok(recorded.some(x=>x.key==='arc'&&x.args[2]===119),
+  'The lab masks static photo marks with a circular field only');
+ const texts=recorded.filter(x=>x.key==='fillText').map(x=>x.args[0]);
+ assert.ok(texts.includes('↑')&&texts.includes('↓'),
+  'Moving contacts still display relative altitude and trend');
+ assert.ok(texts.includes('−03')&&texts.includes('+05')&&texts.includes('+18'),
+  'The close target, approaching target and ambient target labels remain legible');
+ const needle=recorded.findIndex(x=>x.key==='rotate');
+ const firstLabel=recorded.findIndex(x=>x.key==='fillText'&&x.args[0]==='−03');
+ assert.ok(needle>=0&&firstLabel>needle,'TCAS labels must appear above the moving VSI needle');
+});
+
 test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()=>{
  const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
  const app=fs.readFileSync(path.join(__dirname,'app.js'),'utf8');
