@@ -52,6 +52,7 @@ for(const relative of [cockpit+'index.html',cockpit+'overhead-stage.html',cockpi
 for(const relative of [
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
  cockpit+'panel-photo-registry.v1.json',cockpit+'unified.webmanifest',cockpit+'performance/manifest.json',
+ cockpit+'overhead-test-labs-catalog-v1.json',
  cockpit+'assets/p15-refuel-photo-v1.webp',
  cockpit+'assets/p15-toggle-photo-approved-v2.webp',
  cockpit+'assets/p15-approved-switch-5state-v3.webp',
