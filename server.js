@@ -260,6 +260,12 @@ function directBootSetup(){
   const level=images[key]?.levels?.find(item=>item.extent===384&&!item.original);
   if(level&&fastRuntime.bytes.has(level.url))firstPaint[key]='/'+level.url;
  }
+ // Both CDU stations display their approved unlit image before FMC runtime
+ // is connected. The real staged CDU frame replaces the placeholder later.
+ const cduPreviewKey='cdu-standalone-v6/assets/cdu-approved-unlit.png';
+ const cduPhoto=images[cduPreviewKey]?.levels?.find(item=>item.extent===384&&!item.original);
+ if(cduPhoto&&fastRuntime.bytes.has(cduPhoto.url))
+  firstPaint[cduPreviewKey]='/'+cduPhoto.url;
  const artIndex=fastRuntime.bytes.get(cockpitSource+'performance/boot-art/manifest.json');
  const art={};
  if(artIndex)for(const [id,asset] of Object.entries(JSON.parse(artIndex))){
