@@ -133,3 +133,30 @@ main{max-width:1540px;padding:12px}
  min-width:0;max-width:none;aspect-ratio:1!important;border-radius:9%;
  background:transparent;
 }
+
+/* Original TA SEL and brightness photo controls: the approved P6-style
+ * 630x624 plate uses [568,175] and [538,542] mechanical control centers. */
+.screens .photo-ivsi-face>.ivsi-brightness-photo{
+ position:absolute;left:81.42857%;top:82.85256%;
+ width:7.93651%;height:8.01282%;object-fit:fill;pointer-events:none;
+ transform-origin:center center;
+}
+.screens .photo-ivsi-face>.ivsi-ta-photo{
+ position:absolute;left:88.01587%;top:23.87821%;
+ width:4.28571%;height:8.33333%;object-fit:fill;pointer-events:none;
+}
+.screens .photo-ivsi-face>.ivsi-original-hotspot{
+ position:absolute;display:block;box-sizing:border-box;
+ padding:0;margin:0;min-width:0;min-height:0;
+ border:0;background:transparent;color:transparent;cursor:pointer;
+ touch-action:manipulation;z-index:2;
+}
+.screens .photo-ivsi-face>.ivsi-ta-hit{
+ left:85.87302%;top:21.63462%;width:8.57143%;height:12.82051%;
+}
+.screens .photo-ivsi-face>.ivsi-brt-hit{
+ left:80.71429%;top:82.05128%;width:9.36508%;height:9.61538%;
+}
+.screens .photo-ivsi-face>.ivsi-original-hotspot:focus-visible{
+ outline:2px solid #6dcdf2;outline-offset:2px;border-radius:50%;
+}

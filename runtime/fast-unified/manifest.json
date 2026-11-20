@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "f5c6859d4f2c57fb49a353c160d1bb467a9e130d",
+  "sourceCommit": "757df5284d6a100c9f695a39e4339c8b1b43616d",
   "mainBefore": 295,
   "mainAfter": 93,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "4f3511c7d8b01943fd7b2615e61d414f00592ac886f6b776f60fbea9181a9fd8"
+      "sha256": "1aad2475f831837cf056e7e9aade0ff9fe56f83dd531b079992fadd903c2d080"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -592,7 +592,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.js",
-      "sha256": "2bb114014c40ab06d4b381f95eb0ca0a2ada6c8e88859edc088fc56dee8c5a5c"
+      "sha256": "ee317983e8d3a09f5e6d4fccd06eeafa508a60b64609c921b1405338b66c8c72"
     },
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
@@ -1000,11 +1000,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",
-      "sha256": "9c0dbe64e5d3d0e5cfd263525b509ffdfade178e0fdb5e3697189f9656e2ff11"
+      "sha256": "0ee605b74422a0911141da66c6849f86f7b6d6a21a796690e8a50b05bd3f0392"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/style.css",
-      "sha256": "e5c0a9edfc203088160d9df4042d5d5a5c96d76a673bd6b4f03ff4fad4dab465"
+      "sha256": "69f23206186d73a8aae5e870d85c0b12a0abe023d2ad1e21a844bcd8dd26574f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
@@ -1025,6 +1025,14 @@
     {
       "path": "panel-mosaic-lab/cockpit/tcas-photo/scale.webp",
       "sha256": "e2887014862d126c52889624c52539638a3473ea01595b3bf947d3d57c4ccc99"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/brightness.png",
+      "sha256": "cffa35373147e7b5d2dd3484fd6b35160ad6d2785878a5ddc2577a41c38fa1db"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/ta.png",
+      "sha256": "5533b440fa60dca6416a7cf279accc264127711b011350f76e420bda38eb9e05"
     },
     {
       "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",

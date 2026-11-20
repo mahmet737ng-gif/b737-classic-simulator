@@ -13,6 +13,7 @@
  let state=api?.getState?.()||{mode:'TA_RA',targets:[],ra:null,advisory:null};
  let controls=api?.getControls?.()||{mode:'TA_RA',rangeNm:10,filter:'NORM'};
  let pending=false,lastLabRender=null;
+ const labPref={full:true,brightness:1};
  const cyan='#79def2',amber='#ffaf21';
  const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
  const ticks=[[0,0],[500,34],[1000,66],[2000,108],[4000,148],[6000,180]];
@@ -105,22 +106,64 @@
   d.canvas.style.opacity=String(pref.brightness);
   d.knob.style.transform='rotate('+((pref.brightness-.1)*255)+'deg)';
  }
+ function redrawLab(){
+  if(!lastLabRender)return;
+  const {canvas,own,trafficState,opts}=lastLabRender;
+  renderLab(canvas,own,trafficState,opts);
+ }
+ function toggleLabFull(){
+  labPref.full=!labPref.full;
+  redrawLab();
+  return labPref.full;
+ }
+ function adjustLabBrightness(delta){
+  labPref.brightness=clamp(labPref.brightness+delta*.05,.1,1);
+  redrawLab();
+  return labPref.brightness;
+ }
+ function bindLabHardware(canvas){
+  const face=canvas.closest?.('.photo-ivsi-face');
+  if(!face)return;
+  const ta=face.querySelector('#ivsiTaSelect');
+  const brt=face.querySelector('#ivsiBrightness');
+  if(ta&&!ta.dataset.bound){
+   ta.dataset.bound='yes';
+   // Native button keyboard activation already dispatches click exactly once.
+   ta.addEventListener('click',toggleLabFull);
+  }
+  if(brt&&!brt.dataset.bound){
+   brt.dataset.bound='yes';
+   brt.addEventListener('click',()=>adjustLabBrightness(-1));
+   brt.addEventListener('wheel',e=>{e.preventDefault();adjustLabBrightness(e.deltaY<0?1:-1);},{passive:false});
+   brt.addEventListener('keydown',e=>{
+    if(['ArrowUp','ArrowDown'].includes(e.key)){
+     e.preventDefault();adjustLabBrightness(e.key==='ArrowUp'?1:-1);
+    }
+   });
+  }
+ }
  function renderLab(canvas,own,trafficState,opts={}){
   if(!canvas)return false;
   lastLabRender={canvas,own,trafficState,opts};
+  bindLabHardware(canvas);
   if(!scale.naturalWidth)return false;
   if(canvas.width!==403)canvas.width=403;
   if(canvas.height!==403)canvas.height=403;
   const selected={rangeNm:opts.rangeNm??10,filter:opts.filter??'NORM'};
   const ok=paintFace(canvas.getContext('2d'),trafficState,selected,own,
-   Number.isFinite(own.vsFpm)?own.vsFpm:0,true,true);
+   Number.isFinite(own.vsFpm)?own.vsFpm:0,true,labPref.full);
+  canvas.style.opacity=String(labPref.brightness);
+  const knob=canvas.closest?.('.photo-ivsi-face')?.querySelector('.ivsi-brightness-photo');
+  if(knob)knob.style.transform='rotate('+((labPref.brightness-.1)*255)+'deg)';
   canvas.dataset.tcasRaId=trafficState.ra?.id||'NONE';
   canvas.dataset.tcasAdvisory=trafficState.advisory||'NONE';
   canvas.dataset.ivsiPhoto=ok?'original':'pending';
+  canvas.dataset.ivsiFullTime=String(labPref.full);
+  canvas.dataset.ivsiBrightness=String(labPref.brightness);
   return ok;
  }
  // A single approved face/needle/RA/traffic renderer is used in both places.
- window.B737ClassicPhotoIVSIV1=Object.freeze({renderLab});
+ window.B737ClassicPhotoIVSIV1=Object.freeze({renderLab,toggleLabFull,adjustLabBrightness});
  function queue(){
   if(!displays.size||pending)return;pending=true;
   requestAnimationFrame(()=>{pending=false;displays.forEach((d,station)=>paint(station,d));});

@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-PHOTO-IVSI-0010"></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>737 Classic · TCAS Encounter Lab</title><link rel="stylesheet" href="../efis-pedestal-raster-v1.css"><link rel="stylesheet" href="style.css?v=TCAS-PHOTO-IVSI-0011"></head><body>
 <header><div><h1>737 Classic · TCAS Encounter Lab</h1><p>FCOM / MRG · Dynamic relative traffic and manual RA response</p></div><a href="../">RETURN TO UNIFIED</a></header>
 <main><section class="controls controls-primary" aria-label="Encounter quick controls">
 <div class="encounter-bar"><label class="encounter-select">Encounter<select id="scenario"></select></label>
@@ -16,6 +16,10 @@
 </article><article class="ivsi-with-tcas"><h2>IVSI · integrated TCAS · RA VS bands</h2>
 <div class="photo-ivsi-face" role="group" aria-label="Original B737 Classic TCAS IVSI">
 <canvas id="ivsi" width="403" height="403" role="img" aria-label="Photographic TCAS integrated vertical speed indicator"></canvas>
+<img class="ivsi-brightness-photo" src="../tcas-photo/brightness.png" alt="" draggable="false">
+<img class="ivsi-ta-photo" src="../tcas-photo/ta.png" alt="" draggable="false">
+<button type="button" class="ivsi-original-hotspot ivsi-ta-hit" id="ivsiTaSelect" aria-label="TA SEL · full-time or popup" title="TA SEL · full-time / popup"></button>
+<button type="button" class="ivsi-original-hotspot ivsi-brt-hit" id="ivsiBrightness" aria-label="IVSI brightness" title="IVSI brightness · click to dim, scroll or press arrow keys"></button>
 </div>
 <p class="ivsi-note">Same targets and RA as EHSI · red = avoid · green = commanded vertical-speed corridor · instructor model</p>
 </article></section>
@@ -43,6 +47,6 @@
 <script src="../../../efis-display-lab/reference-geometry.js"></script><script src="../../../efis-display-lab/glyphs.js"></script><script src="../../../efis-display-lab/core.js"></script><script src="../../../efis-display-lab/eadi.js?v=TCAS-CLEAN-RA-0009"></script><script src="../../../efis-display-lab/ehsi-v2.js?v=TCAS-LABEL-FIT-0008"></script>
 <script src="../../../engine/tcas/classic-tcas-v1.js"></script><script src="../../../engine/tcas/classic-tcas-v2.js?v=TCAS-TRAJECTORY-0009"></script><script src="cruise-scenario-v1.js?v=TCAS-CP-0007"></script>
 <script src="efis-physical-cp-v1.js?v=TCAS-DH-0008"></script>
-<script src="../tcas-photo/ivsi.js?v=TCAS-ORIGINAL-PHOTO-0010"></script>
-<script src="app.js?v=TCAS-PHOTO-IVSI-0010"></script>
+<script src="../tcas-photo/ivsi.js?v=TCAS-ORIGINAL-PHOTO-0011"></script>
+<script src="app.js?v=TCAS-PHOTO-IVSI-0011"></script>
 </body></html>
