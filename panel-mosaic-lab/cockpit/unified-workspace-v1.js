@@ -71,7 +71,7 @@
  function safeOpen(actionId){
   const target=$(actionId);
   if(!target){msg('workspaceLabStatus','Lab entry is not ready: '+actionId,true);return;}
-  if(target.tagName==='A'){win.open(target.href,'_blank','noopener');}
+  if(target.tagName==='A'){const path=target.href.endsWith('/')?target.href+'index.html':target.href;win.open(path,'_blank','noopener');}
   else target.click();
  }
  function testEntry(label,actionId,parent){
@@ -80,7 +80,8 @@
  }
  function linkEntry(label,path,parent){
   const a=element('a','workspace-lab-item',label,parent);
-  a.href=new URL(path,doc.baseURI).href;a.target='_blank';a.rel='noopener';return a;
+  const finalPath=path.endsWith('/')?path+'index.html':path;
+  a.href=new URL(finalPath,doc.baseURI).href;a.target='_blank';a.rel='noopener';return a;
  }
  function makeGroup(title,parent,open=false){
   const details=element('details','workspace-group',undefined,parent);
@@ -148,7 +149,7 @@
     seenInspectorActions.add(key);
     const entry=element('button','workspace-lab-item',name,extras);
     entry.type='button';
-    entry.addEventListener('click',()=>{hideLabs();if(node.tagName==='A')win.open(node.href,'_blank','noopener');else node.click();});
+    entry.addEventListener('click',()=>{hideLabs();if(node.tagName==='A')win.open(node.href.endsWith('/')?node.href+'index.html':node.href,'_blank','noopener');else node.click();});
    }
   };
   b.addEventListener('click',()=>{
