@@ -66,6 +66,8 @@ for(const relative of [
  cockpit+'tcas-photo/ivsi.js',
  cockpit+'tcas-photo/ivsi.webp',
  cockpit+'tcas-photo/scale.webp',
+ cockpit+'tcas-photo/brightness.png',
+ cockpit+'tcas-photo/ta.png',
  cockpit+'efis-pedestal-raster-v1.css',
  'engine/afds/fma-mode-engine-v1.js',
  'engine/efis/classic-flap-speed-profile-v1.js',
