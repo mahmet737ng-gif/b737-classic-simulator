@@ -44,7 +44,7 @@
  const services={
   airStarterAttached:false,airStarterFlow:false,airStarterPressurePsi:35,
   conditionedAirAttached:false,conditionedAirOn:false,
-  fuelDoorOpen:false,fuelHoseAttached:false,fuelPower:false,fuelAuxPower:false,fuelTest:false,
+  fuelDoorOpen:false,fuelHoseAttached:false,fuelPower:false,fuelAuxPower:false,fuelTest:false,lampTest:null,
   fuelMode:'REFUEL',fuelRunning:false,
   valves:{main1:false,center:false,main2:false}
  };
@@ -288,108 +288,128 @@
   dialog.addEventListener('close',()=>{if(services.fuelRunning)stopFuel('Refueling paused when Flight Phase closes.');});
  }
  function fuelMessage(value,bad=false){fuelStatus=value;msg('flightFuelStatus',value,bad);}
+
+ // Photographed P15 faceplate; numbers were removed from this raster in
+ // advance. This file is REAL WebP (44,948 bytes), never SVG / CSS imitation.
+ let p15Photo=null,p15PhotoReady=false,p15PhotoLoading=false,p15PhotoFailed=false;
+ const p15Source='./assets/p15-refuel-photo-v1.webp?v=P15-REAL-PHOTO-0001';
+ const p15TankCoords=Object.freeze([
+  {id:'main2',screenX:283,leverX:339,lampX:206},
+  {id:'center',screenX:545,leverX:600,lampX:514},
+  {id:'main1',screenX:801,leverX:857,lampX:778}
+ ]);
+ function ensureP15Photo(){
+  if(p15PhotoLoading||p15PhotoReady||p15PhotoFailed)return;
+  p15PhotoLoading=true;
+  const img=new win.Image();
+  img.decoding='async';
+  img.onload=()=>{p15Photo=img;p15PhotoReady=true;p15PhotoLoading=false;drawFuelPanel();};
+  img.onerror=()=>{p15PhotoFailed=true;p15PhotoLoading=false;
+   fuelMessage('Photorealistic P15 image could not load; retry from the Gateway source.',true);
+   drawFuelPanel();};
+  img.src=new URL(p15Source,doc.baseURI).href;
+ }
+ // Seven-segment display drawn over the empty photographic glass,
+ // avoiding static/fake numbers, LB units and duplicate fuel ledgers.
+ const fuelSegMap={0:'abcedf',1:'bc',2:'abged',3:'abgcd',4:'fgbc',
+  5:'afgcd',6:'afgecd',7:'abc',8:'abcdefg',9:'abcdfg'};
+ function fuelDigit(c,x,y,d){
+  const w=19,h=37,t=3.4;
+  const lines={
+   a:[x+3,y,x+w-3,y],b:[x+w,y+2,x+w,y+h/2-2],
+   c:[x+w,y+h/2+2,x+w,y+h-2],d:[x+3,y+h,x+w-3,y+h],
+   e:[x,y+h/2+2,x,y+h-2],f:[x,y+2,x,y+h/2-2],
+   g:[x+3,y+h/2,x+w-3,y+h/2]
+  };
+  for(const [key,line] of Object.entries(lines)){
+   const on=fuelSegMap[d]?.includes(key);
+   c.beginPath();c.lineCap='round';c.lineWidth=t;
+   c.strokeStyle=on?'#ff9d16':'#42200b';
+   c.shadowBlur=on?7:0;c.shadowColor=on?'#ff850a':'transparent';
+   c.moveTo(line[0],line[1]);c.lineTo(line[2],line[3]);c.stroke();
+  }
+  c.shadowBlur=0;
+ }
+ function paintFuelDigits(c,x,kg,powered,testing){
+  if(!powered&&!testing)return;
+  const valid=Number.isFinite(kg)&&kg>=0;
+  const characters=testing?'88888':valid?String(Math.round(kg)):'-----';
+  const step=25,chars=characters.slice(0,5),left=x-(chars.length-1)*step/2-9.5;
+  const y=346;
+  c.save();
+  if(valid||testing)for(let i=0;i<chars.length;i++)fuelDigit(c,left+step*i,y,chars[i]);
+  else{
+   c.fillStyle='#c55e13';c.font='bold 24px ui-monospace,monospace';
+   c.textAlign='center';c.fillText('-----',x,y+27);
+  }
+  c.textAlign='center';c.fillStyle='#ff9b16';c.shadowColor='#ff8415';c.shadowBlur=5;
+  c.font='bold 21px Arial,sans-serif';c.fillText('KG',x,410);
+  c.restore();
+ }
+ function paintPhotoLight(c,x,on){
+  if(!on)return;
+  c.save();
+  const lens=c.createRadialGradient(x-4,71,3,x,74,26);
+  lens.addColorStop(0,'#c6ebff');lens.addColorStop(.28,'#369ae9');
+  lens.addColorStop(.65,'#054d9b');lens.addColorStop(1,'#063b8300');
+  c.fillStyle=lens;c.beginPath();c.arc(x,74,26,0,Math.PI*2);c.fill();
+  c.restore();
+ }
  function drawFuelPanel(){
   const canvas=$('flightFuelCanvas');if(!canvas)return;
   const c=canvas.getContext('2d');if(!c)return;
-  const w=canvas.width,h=canvas.height,live=getQty(),powered=services.fuelDoorOpen&&(services.fuelPower||services.fuelAuxPower);
-  const linear=c.createLinearGradient(0,0,w,h);
-  linear.addColorStop(0,'#5a6670');linear.addColorStop(.3,'#37434c');
-  linear.addColorStop(.62,'#232d36');linear.addColorStop(1,'#121e27');
-  c.fillStyle=linear;c.fillRect(0,0,w,h);
-  let seed=31739;
-  for(let i=0;i<2900;i++){
-   seed=(Math.imul(seed,1664525)+1013904223)>>>0;const x=seed%w;
-   seed=(Math.imul(seed,1664525)+1013904223)>>>0;const y=seed%h;
-   c.fillStyle=i%2?'#ffffff09':'#050b1110';c.fillRect(x,y,i%3+1,1);
+  const w=canvas.width,h=canvas.height;
+  c.clearRect(0,0,w,h);
+  if(!p15PhotoReady){
+   c.fillStyle='#1c2732';c.fillRect(0,0,w,h);
+   c.fillStyle='#c4d7e4';c.textAlign='center';c.font='bold 19px Arial,sans-serif';
+   c.fillText(p15PhotoFailed?'P15 PHOTO UNAVAILABLE':'P15 PHOTO LOADS WHEN FUEL SERVICE IS EXPANDED',w/2,h/2);
+   return;
   }
-  c.strokeStyle='#9aa5ad';c.lineWidth=3;c.strokeRect(10,10,w-20,h-20);
-  c.strokeStyle='#111920';c.lineWidth=2;c.strokeRect(20,20,w-40,h-40);
-  const txt=(label,x,y,size=13,color='#dce4e7',weight='600')=>{
-   c.textAlign='center';c.fillStyle=color;c.font=weight+' '+size+'px Arial,sans-serif';c.fillText(label,x,y);
-  };
-  const bolt=(x,y)=>{
-   const metal=c.createRadialGradient(x-2,y-2,1,x,y,13);
-   metal.addColorStop(0,'#e4e9eb');metal.addColorStop(.42,'#9eaab0');
-   metal.addColorStop(.78,'#46525a');metal.addColorStop(1,'#111b22');
-   c.fillStyle=metal;c.beginPath();c.arc(x,y,12,0,Math.PI*2);c.fill();
-   c.strokeStyle='#242b33';c.lineWidth=2;c.beginPath();c.moveTo(x-5,y+3);c.lineTo(x+5,y-3);c.stroke();
-  };
-  for(const x of [35,875])for(const y of [35,367])bolt(x,y);
-  txt('B737 CLASSIC · PRESSURE REFUELING STATION',455,50,21,'#ecf1ee','700');
-  txt('RIGHT WING LEADING EDGE  ·  P15  ·  KG',455,72,12,'#c1ccd1','600');
-  // Left auxiliary spring-loaded TEST GAGES / AUX FUELING POWER switch.
-  c.fillStyle='#111c24';c.fillRect(36,99,137,225);
-  c.strokeStyle='#85949c';c.lineWidth=2;c.strokeRect(36,99,137,225);
-  txt('TEST GAGES',104,121,12);
-  txt('& AUX FUELING',104,139,10);
-  txt('POWER',104,155,11);
-  const auxX=104,auxY=225;
-  c.fillStyle='#0e151a';c.beginPath();c.arc(auxX,auxY,36,0,2*Math.PI);c.fill();
-  c.strokeStyle='#707f89';c.lineWidth=4;c.stroke();
-  const stem=c.createLinearGradient(auxX-12,0,auxX+14,0);
-  stem.addColorStop(0,'#323b42');stem.addColorStop(.35,'#d6dde1');
-  stem.addColorStop(.6,'#8798a4');stem.addColorStop(1,'#1b2a32');
-  c.save();c.translate(auxX,auxY);c.rotate(services.fuelTest?-.45:services.fuelAuxPower?.45:0);
-  c.fillStyle=stem;c.beginPath();c.moveTo(-9,4);c.lineTo(-11,-37);c.lineTo(11,-37);c.lineTo(9,4);c.closePath();c.fill();
-  c.fillStyle='#c7d0d5';c.fillRect(-9,-42,18,14);c.restore();
-  txt('TEST',104,176,11,'#d9e8ef');
-  txt('OFF',104,282,13,'#d9e8ef');
-  txt('AUX PWR',104,310,11,'#c9d6dc');
-  // FCOM station order is #2 / CENTER / #1 (not captain-first cockpit order).
-  const positions=[{id:'main2',x:280,label:'TANK No. 2'},
-   {id:'center',x:495,label:'CENTER TANK'},
-   {id:'main1',x:710,label:'TANK No. 1'}];
-  txt('VALVE POSITION LIGHTS',496,96,12,'#ecf0e7','700');
-  const raised=(cx,cy,rad)=>{
-   const chrome=c.createRadialGradient(cx-4,cy-4,2,cx,cy,rad);
-   chrome.addColorStop(0,'#d7dee0');chrome.addColorStop(.3,'#7f919e');
-   chrome.addColorStop(.7,'#3c4b56');chrome.addColorStop(1,'#101922');
-   c.fillStyle=chrome;c.beginPath();c.arc(cx,cy,rad,0,2*Math.PI);c.fill();
-  };
-  for(const part of positions){
-   const {id,x,label}=part,qty=Number(live?.[id]||0),isFull=qty>=tankCaps[id]-.25;
-   const lit=powered&&services.valves[id]&&!isFull;
-   txt(label,x,124,14,'#edf1ef','700');
-   // Blue lens lights when commanded valve is OPEN and associated tank not full.
-   raised(x,153,19);
-   const glow=c.createRadialGradient(x-3,149,2,x,153,14);
-   glow.addColorStop(0,services.fuelTest?'#e8faff':lit?'#98dbff':'#233947');
-   glow.addColorStop(.4,services.fuelTest?'#92d5ff':lit?'#307fcb':'#193441');
-   glow.addColorStop(1,lit||services.fuelTest?'#164277':'#0b1c25');
-   c.fillStyle=glow;c.beginPath();c.arc(x,153,14,0,Math.PI*2);c.fill();
-   txt('OPEN',x-45,211,11,'#c6d2d6');
-   txt('CLOSED',x+47,211,11,'#c6d2d6');
-   raised(x,208,18);
-   c.save();c.translate(x,208);c.rotate(services.valves[id]?-.64:.64);
-   c.fillStyle='#dee5e8';c.fillRect(-9,-31,18,45);
-   c.fillStyle='#758d98';c.fillRect(-9,2,18,12);c.restore();
-   // Three recessed instrument windows below switches; no SVG.
-   c.fillStyle='#131b22';c.fillRect(x-87,240,174,100);
-   c.strokeStyle='#899aa4';c.lineWidth=3;c.strokeRect(x-87,240,174,100);
-   c.fillStyle='#000a10';c.fillRect(x-77,252,154,61);
-   c.fillStyle=powered?'#c8e2ae':'#657567';c.shadowColor=powered?'#96c378':'transparent';c.shadowBlur=powered?10:0;
-   txt((services.fuelTest?'88888':String(Math.round(qty)).padStart(5,'0')),x,298,31,c.fillStyle,'700');
-   c.shadowBlur=0;txt('FUEL QTY  KG',x,329,11,'#c4d3d8');
+  c.drawImage(p15Photo,0,0,w,h);
+  const fuel=liveFuel(),q=fuel?.indications?.tanksKg??fuel?.tanksKg;
+  const powered=services.fuelDoorOpen&&(services.fuelPower||services.fuelAuxPower);
+  for(const part of p15TankCoords){
+   // The ISN ATA28 tank ledger and its current capacity limits are the
+   // approved usable-quantity simulation source; never read total fuel
+   // for an individual gauge or subtract an invented unusable reserve.
+   const raw=q?.[part.id],usableKg=Number.isFinite(raw)?Math.max(0,Math.min(raw,
+     fuel?.capacitiesKg?.[part.id]??tankCaps[part.id])):NaN;
+   paintFuelDigits(c,part.screenX,usableKg,powered,services.fuelTest);
+   paintPhotoLight(c,part.lampX,(services.lampTest===part.id)||
+    services.fuelTest||(powered&&services.valves[part.id]&&Number.isFinite(usableKg)&&
+    usableKg<(fuel?.capacitiesKg?.[part.id]??tankCaps[part.id])-.2));
+   // A slim live switch-position cue complements the original metal switch,
+   // while retaining its untouched photographic surround.
+   if(services.valves[part.id]&&powered){
+    c.save();c.fillStyle='#b4d8f8';c.shadowColor='#2a80d5';c.shadowBlur=4;
+    c.beginPath();c.arc(part.leverX-11,160,4,0,Math.PI*2);c.fill();c.restore();
+   }
   }
-  txt('FUELING STATION',495,365,13,'#c1cbd0','700');
-  txt(powered?'PANEL ENERGIZED':'PANEL POWER OFF',495,386,11,powered?'#a9decb':'#e8ab93');
   lastFuelDraw=Date.now();
  }
  function fuelPanelHit(x,y){
-  if(y>171&&y<239){
-   for(const part of [{id:'main2',x:280},{id:'center',x:495},{id:'main1',x:710}]){
-    if(Math.abs(x-part.x)<69){
-     if(services.fuelRunning){fuelMessage('Stop fuel transfer before moving a valve switch.',true);return;}
-     services.valves[part.id]=!services.valves[part.id];
-     const row=$('flightFuelValve_'+part.id);
-     if(row){row.textContent='VALVE · '+(services.valves[part.id]?'OPEN':'CLOSED');row.setAttribute('aria-pressed',String(services.valves[part.id]));}
-     drawFuelPanel();return;
-    }
+  // Three physical OPEN/CLOSED fuel valve selectors (not the display glass).
+  if(y>=137&&y<=234){
+   for(const part of p15TankCoords)if(Math.abs(x-part.leverX)<42){
+    if(services.fuelRunning){fuelMessage('Stop fuel transfer before moving a valve switch.',true);return;}
+    services.valves[part.id]=!services.valves[part.id];
+    const button=$('flightFuelValve_'+part.id);
+    if(button){button.textContent='VALVE · '+(services.valves[part.id]?'OPEN':'CLOSED');
+     button.setAttribute('aria-pressed',String(services.valves[part.id]));}
+    drawFuelPanel();return;
    }
   }
-  if(x>=45&&x<=165&&y>=162&&y<=315){
-   if(y<229)services.fuelTest=true;
-   else services.fuelAuxPower=services.fuelDoorOpen;
+  // Independent PRESS TO TEST blue lenses on the original photo.
+  if(y>=35&&y<=121)for(const part of p15TankCoords){
+   if(Math.abs(x-part.lampX)<=37){
+    services.lampTest=part.id;drawFuelPanel();return;
+   }
+  }
+  // Spring return: up TEST GAGES, down AUX FUEL DOOR SWITCH BYPASS.
+  if(x>=25&&x<=155&&y>=130&&y<=280){
+   if(y<202)services.fuelTest=true;
+   else services.fuelAuxPower=true;
    drawFuelPanel();
   }
  }
@@ -427,11 +447,13 @@
   }catch(error){stopFuel(error.message||String(error));msg('flightFuelStatus',error.message||String(error),true);}
  }
  function initFuel(host){
-  element('p','flight-service-hint','Right-wing pressure refueling station P15: Tank 2 / Center / Tank 1, blue valve-open lamps, spring-loaded TEST GAGES / AUX POWER. Existing ATA28 ECU owns all fuel quantities. Raster Canvas, not SVG.',host);
+  element('p','flight-service-hint','Photo-real P15 pressure-refueling station: Tank 2 / Center / Tank 1. The genuine weathered panel image is a 44.9 KB WebP raster; only the usable KG digits and valve-lamp states are live Canvas overlays. The single ATA28 ECU owns fuel quantities.',host);
   const canvas=element('canvas','flight-fuel-canvas',undefined,host);
-  canvas.id='flightFuelCanvas';canvas.width=910;canvas.height=400;
+  canvas.id='flightFuelCanvas';canvas.width=960;canvas.height=540;
   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','B737 Classic right wing pressure refueling P15 raster training panel with three tank quantity indicators');
-  canvas.title='Click the three metal fueling valve switches to select OPEN or CLOSED. Press the left TEST GAGES control momentarily.';
+  canvas.title='Photographic P15: click the three valve selectors; blue lenses are press-to-test; left switch TEST GAGES / AUX DOOR BYPASS.';
+  const fuelFold=host.closest('[data-service="fuel"]');
+  fuelFold?.addEventListener('toggle',()=>{if(fuelFold.open){ensureP15Photo();drawFuelPanel();}});
   canvas.style.cursor='pointer';
   canvas.addEventListener('pointerdown',event=>{
    const rect=canvas.getBoundingClientRect();
@@ -439,7 +461,7 @@
     (event.clientY-rect.top)*canvas.height/Math.max(rect.height,1));
   });
   for(const eventName of ['pointerup','pointercancel','pointerleave'])canvas.addEventListener(eventName,()=>{
-   if(services.fuelTest||services.fuelAuxPower){services.fuelTest=false;services.fuelAuxPower=false;drawFuelPanel();}
+   if(services.fuelTest||services.fuelAuxPower||services.lampTest){services.fuelTest=false;services.fuelAuxPower=false;services.lampTest=null;drawFuelPanel();}
   });
   const controls=element('div','flight-fuel-controls',undefined,host);
   const actions=element('div','flight-service-actions',undefined,controls);
@@ -491,7 +513,7 @@
   serviceButton(footer,'STOP TRANSFER',()=>stopFuel('Fuel transfer stopped.'));
   serviceButton(footer,'DISCONNECT / CLOSE DOOR',()=>{
    stopFuel('Fuel service disconnected.');
-   services.fuelPower=false;services.fuelAuxPower=false;services.fuelTest=false;services.fuelHoseAttached=false;services.fuelDoorOpen=false;
+   services.fuelPower=false;services.fuelAuxPower=false;services.fuelTest=false;services.lampTest=null;services.fuelHoseAttached=false;services.fuelDoorOpen=false;
    tankKeys.forEach(t=>services.valves[t]=false);
    rows.querySelectorAll('button').forEach(b=>{b.textContent='VALVE · CLOSED';b.setAttribute('aria-pressed','false');});
    drawFuelPanel();

@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "bc560c85c346e12a44142d6418d05ee6a0d5eef0",
+  "sourceCommit": "6f26408199230bee513d7148eb90d13dddd01cd8",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e131d19ad6279518a4f82afbf68953760881fe927623afd9f258d5dcda1f4fa6"
+      "sha256": "64a092d4176eabeeed820f82c4ff090f4fba89fc62fedb2f6e4e3e804583d790"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -596,7 +596,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "94a6e139d1ebf60e37c7c16bcf42927391237ea3dd9bf3282ab5d912d27a388f"
+      "sha256": "af2678bfe1518335050a138caf6edf3809ec251e21215261189f5b9f41536c80"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -977,6 +977,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
       "sha256": "6f016cba8f8b1719a2d7495fdc0d97f5db428d8ebc6ec289d317e378d12069d7"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/p15-refuel-photo-v1.webp",
+      "sha256": "914164f9727ac815334cd3f0edc48d90fe6694c461c7d8ed28347717be028734"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
