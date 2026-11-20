@@ -105,6 +105,17 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#ehsi').getAttribute('data-mode'),'FULL_NAV');
   assert.equal(await page.locator('#ehsi clipPath[id="ehsi-route-range"] ellipse').count(),1,
    'FULL NAV route stays within full compass circle');
+  // Verify the physical TCAS indicator rather than only button text.
+  await page.selectOption('#scenario','REVERSAL_DESCEND');
+  await page.locator('#start').click();
+  assert.match(await page.locator('#scenarioStatus').textContent(),/CLIMB.*RUNNING/);
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'CLIMB',
+   'Reversal LOAD should show the initial CLIMB RA on the real IVSI');
+  await page.locator('#play').click();
+  for(let second=0;second<8;second++)await page.locator('#step').click();
+  assert.match(await page.locator('#scenarioStatus').textContent(),/REVERSAL_DESCEND/);
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'REVERSAL_DESCEND',
+   'DESCEND NOW must be visible on the physical IVSI during the reversal');
   await page.selectOption('#scenario','TA_ONLY');
   assert.equal(await page.locator('#converging').isDisabled(),true,
    'Passing preset must not accept a convergence override');
