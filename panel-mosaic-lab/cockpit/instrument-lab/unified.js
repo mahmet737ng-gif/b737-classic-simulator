@@ -29,7 +29,7 @@
     if(!gauge||gauge.canvas.parentNode!==host){
       gauge?.canvas.remove();
       gauge=photos.createGauge(host,kind,{
-        label:station+' '+kind,
+        label:station+' '+kind,fitPhoto:true,
         lockOrangeBugs:kind==='airspeed',
         onChange:(...args)=>change(station,...args)
       });
@@ -70,7 +70,7 @@
     lastMode=mode;
     const slot=document.querySelector('.flight-gauge-bridge .flight-standby-row');
     if(slot && standby?.canvas.parentNode!==slot){
-      standby=photos.createGauge(slot,'standby',{label:'Standby altimeter and IAS',onChange:(...args)=>change('standby',...args)});
+      standby=photos.createGauge(slot,'standby',{label:'Standby altimeter and IAS',fitPhoto:true,onChange:(...args)=>change('standby',...args)});
       standby.canvas.classList.add('flight-standby-dial');
       standby.canvas.style.cssText='width:clamp(110px,23vw,190px);height:auto';
       slot.querySelector('svg:not([data-gauge])')?.remove();

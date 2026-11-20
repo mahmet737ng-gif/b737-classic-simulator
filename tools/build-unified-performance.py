@@ -13,6 +13,14 @@ paths={x['path'] for x in a['assets'].values() if Path(x['path']).suffix.lower()
 for x in spec['images']:
  paths.add(str((ROOT/'panel-mosaic-lab/all-overhead'/x['url']).resolve().relative_to(ROOT)))
 paths.add('assets/overhead.webp')
+# Photo gauges and pedestal faceplates share the normal viewport LOD system.
+# The existing source paths remain the last level for close-up viewing.
+paths.update(f'panel-mosaic-lab/cockpit/instrument-lab/{kind}/face.png'
+             for kind in ['airspeed','altimeter','ivsi','rmi','standby'])
+paths.update('panel-mosaic-lab/assets/locked/'+name for name in [
+ 'VHF_COMM_bare_faceplate.png','VHF_NAV_MANUAL_bare_faceplate.png',
+ 'Cargo_Fire_Control_bare_faceplate.png','Transponder_TCAS_bare_faceplate.png'])
+
 paths.update('panel-mosaic-lab/assets/locked/2026-10-23/'+name for name in
              ['DCPCS_Background_Owner.png','Boeing-Style Environmental Control Panel.png'])
 paths.update(str(p.relative_to(ROOT)) for p in (ROOT/'panel-mosaic-lab/assets/throttle-levers').glob('engine-[12]-*.png'))

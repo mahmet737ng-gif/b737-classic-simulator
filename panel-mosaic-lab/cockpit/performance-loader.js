@@ -3,6 +3,7 @@
  */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.B737ImageLoader=api.install(root);})(typeof window==='undefined'?globalThis:window,function(){
  'use strict';
+ function svgImage(node){return node.namespaceURI==='http://www.w3.org/2000/svg'&&node.localName==='image';}
  function choose(asset,extent){return asset.levels.find(level=>level.extent>=extent)||asset.levels.at(-1);}
  function intersects(a,b){return a.width>0&&a.height>0&&a.right>b.left&&a.left<b.right&&a.bottom>b.top&&a.top<b.bottom;}
  function install(win){
@@ -60,10 +61,17 @@
     exposed<24?384:item.extent===0?Math.min(768,pixels):pixels;
    return choose(item.asset,extent);
   }
+  function setSource(node,url){
+   if(svgImage(node))node.setAttribute('href',url);
+   else node.src=url;
+  }
+  function currentSource(node){
+   return svgImage(node)?node.getAttribute('href'):node.src;
+  }
   function apply(img,item,url,level){
    if(!img.isConnected)return;
    if(item.extent>=level.extent)return;
-   img.src=url;item.extent=level.extent;
+   setSource(img,url);item.extent=level.extent;
    img.dataset.perfExtent=String(level.extent);
    img.dataset.perfReady='true';
    seen.add(url);
@@ -71,7 +79,7 @@
   }
   function fallback(img,item){
    if(!img.isConnected||item.extent)return;
-   img.src=new URL(item.source,doc.baseURI).href;
+   setSource(img,new URL(item.source,doc.baseURI).href);
    item.extent=Infinity;img.dataset.perfExtent='Infinity';img.dataset.perfFallback='true';
   }
   function schedule(delay=115){
@@ -143,7 +151,7 @@
     const m=measure(img,view,geometryCache,projection,primeScale);if(!m)continue;
     lastVisible++;
     if(!item.asset){
-     if(!item.extent){img.src=new URL(item.source,doc.baseURI).href;item.extent=Infinity;img.dataset.perfExtent='Infinity';}
+     if(!item.extent){setSource(img,new URL(item.source,doc.baseURI).href);item.extent=Infinity;img.dataset.perfExtent='Infinity';}
      lastSharp++;continue;
     }
     const level=desiredLevel(img,item,m);if(!level)continue;
@@ -207,23 +215,23 @@
   function assign(img,source){
    const key=sourceKey(source),asset=manifest?.images[key];
    img.dataset.perfSource=source;
-   if(asset){img.width=asset.width;img.height=asset.height;}
+   if(asset&&!svgImage(img)){img.width=asset.width;img.height=asset.height;}
    entries.set(img,{source,asset,extent:0,loading:null});schedule();return img;
   }
   function assignPreview(img,source,extent){
    assign(img,source);
    const item=entries.get(img);
    const original=new URL(source,doc.baseURI).href;
-   if(!item.asset){img.src=original;return;}
+   if(!item.asset){setSource(img,original);return;}
    const level=choose(item.asset,extent),url=new URL(level.url,rootURL).href;
-   img.fetchPriority='high';
+   if(!svgImage(img))img.fetchPriority='high';
    item.extent=level.extent;
    img.dataset.perfExtent=String(level.extent);
    img.addEventListener('error',()=>{
-    if(img.src!==url)return;
+    if(currentSource(img)!==url)return;
     item.extent=0;fallback(img,item);
    },{once:true});
-   img.src=url;
+   setSource(img,url);
   }
   function scan(node){
    if(node.nodeType!==1)return;

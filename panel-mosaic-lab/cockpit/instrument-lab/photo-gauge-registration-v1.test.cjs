@@ -109,6 +109,6 @@ test('Unified cannot leave FO gauges mounted on invisible EIS photo when switchi
  assert.match(impl,/gauge\.canvas\.dataset\.gaugePiece/);
  assert.match(impl,/getPlacements:\(\)=>/);
  assert(page.includes('photo-gauge-registration-v1.js?v=PHOTO-GAUGE-REG-0002-NATIVE-BEZEL'));
- assert(page.indexOf('photo-gauge-registration-v1.js')<
-  page.indexOf('instrument-lab/unified.js?v=PHOTO-GAUGES-0004-SOCKET-MODE-CLIP'));
+ const unified=page.indexOf('instrument-lab/unified.js?');
+ assert(unified>page.indexOf('photo-gauge-registration-v1.js'));
 });

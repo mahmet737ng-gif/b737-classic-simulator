@@ -66,9 +66,14 @@
     const [cx,cy] = def.pivot;
     const canvas = svg(host,'svg',{viewBox:`0 0 ${width} ${height}`, role:'img',
       'aria-label':options.label || kind, 'data-gauge':kind});
-    const image = (name, x, y, w, h) => svg(canvas,'image',{
-      href:new URL(kind+'/'+name+'.png', assets).href,x,y,width:w,height:h,'pointer-events':'none'
-    });
+    const image = (name, x, y, w, h) => {
+      const href=new URL(kind+'/'+name+'.png',assets).href;
+      const node=svg(canvas,'image',{x,y,width:w,height:h,'pointer-events':'none'});
+      if(name==='face'&&options.fitPhoto&&window.B737ImageLoader?.assignPreview)
+        window.B737ImageLoader.assignPreview(node,href,384);
+      else node.setAttribute('href',href);
+      return node;
+    };
     image('face',0,0,width,height);
     const movable = svg(canvas,'g',{});
     const sprite = {};
