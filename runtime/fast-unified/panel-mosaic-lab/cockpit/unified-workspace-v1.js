@@ -153,7 +153,7 @@
   const host=$('workspaceLabsMenu');if(!host||host.dataset.overheadLoaded)return;
   host.dataset.overheadLoaded='loading';
   try{
-   const response=await fetch('./overhead-test-labs-catalog-v1.json');
+   const response=await fetch(new URL('./overhead-test-labs-catalog-v1.json',new URL('/panel-mosaic-lab/cockpit/index.html',doc.baseURI)).href);
    if(!response.ok)throw Error('Catalog is unavailable');
    const json=await response.json();
    if(!Array.isArray(json.panels))throw Error('Invalid catalog');

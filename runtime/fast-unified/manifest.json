@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "b839431dff70a2c95d611429195807e2f57aaf13",
+  "sourceCommit": "fcc223e8d7d973d5589e65b72945446fedc99877",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "35a98f391e8fcc926eadc5bddcebf20ad6526aef7c1af5862431ad4a8bdfb5d2"
+      "sha256": "28ed76470bcb70af763eaa4a3f34ba7fb5b5ed8e83a685c8de3010a4927c8c8d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -596,7 +596,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "63d5006f3abb1d8197b655f9acd402ef5852a4db45bda6503b4fa97684dd85a8"
+      "sha256": "f835d820712c61b4a2d858471dc421fc2414ab064196bbe7a85d7dfdddad4f45"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -977,6 +977,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
       "sha256": "6f016cba8f8b1719a2d7495fdc0d97f5db428d8ebc6ec289d317e378d12069d7"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-test-labs-catalog-v1.json",
+      "sha256": "54888bd63dc2734b378bdd34d4133f26e0c952a915715d62cb23a1d2266a55d4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/p15-refuel-photo-v1.webp",
