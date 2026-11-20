@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "eac6a66a1794447d3b2032b89273e8e8838a58b8",
+  "sourceCommit": "dcd4abf098385a2216e027b499aa20618ca35f4f",
   "mainBefore": 295,
   "mainAfter": 93,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "775f4235bde5185382a790e81c312835ee289562759337370d64b42236324faa"
+      "sha256": "4f3511c7d8b01943fd7b2615e61d414f00592ac886f6b776f60fbea9181a9fd8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -428,11 +428,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
-      "sha256": "bdc1ae52ff6f2e4504e8aa0fff4ade00250c8753e6595bb0816a7646aafeb975"
+      "sha256": "d50114a1a2d77fecfa305365e6cd7cda4b9fa12fd87e862ffca20515388f9a4d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/app.js",
-      "sha256": "ad9039a171f5deb51de25be919105c31961b0c270f38fea3486a4cef0e2a6d84"
+      "sha256": "cc54ea049ce9106257687f287efc5e6ca133565f35f33191f67310df4e7b3cf3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
@@ -592,7 +592,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.js",
-      "sha256": "10d7e8282ce536745d03dbae44601d69da873837d9aed238aa21bc0ba10614cb"
+      "sha256": "2bb114014c40ab06d4b381f95eb0ca0a2ada6c8e88859edc088fc56dee8c5a5c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
@@ -1000,15 +1000,15 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",
-      "sha256": "49f1b5025ea6fd4dcd6097aab752adf1b2616ec9edeb0705cf815e2ef32ab0eb"
+      "sha256": "9c0dbe64e5d3d0e5cfd263525b509ffdfade178e0fdb5e3697189f9656e2ff11"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/style.css",
-      "sha256": "6a78122a5f749d18be7383a4bb26a77e3c3f6bdc28a3c30dd7f4d8493b3f3435"
+      "sha256": "e5c0a9edfc203088160d9df4042d5d5a5c96d76a673bd6b4f03ff4fad4dab465"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
-      "sha256": "7f1c421cf7d11797afe2f514bdec49e5e5c3ee11a4d5c2f2061bdb267dfb378e"
+      "sha256": "a0ba4b04ea4cc26ce699be618ee6d3663ccdfff9602dc764878c502e6654ead9"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js",
@@ -1019,8 +1019,12 @@
       "sha256": "5ef7cce0e004bc20faf7690cd9759bc2652e982a6ffd5815e0a97d4b942ec939"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/ivsi-tcas-v1.js",
-      "sha256": "b76c435a6470463d40765964cfeafe242db2f0e22549f3f89f5beef26dbc7fe3"
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.webp",
+      "sha256": "05238868582199b79dba142fb2b5398f1e8a779f0f6558dcc05d71922ec2d6b6"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/scale.webp",
+      "sha256": "e2887014862d126c52889624c52539638a3473ea01595b3bf947d3d57c4ccc99"
     },
     {
       "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",

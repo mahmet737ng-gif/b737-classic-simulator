@@ -1,11 +1,18 @@
 (() => {
  'use strict';
- const {hardware,part,url}=window.B737TcasPhotoHardware;
+ // This is the already-approved photographed IVSI. Its drawing engine is
+ // shared by the cockpit mount and the stand-alone TCAS encounter test lab.
+ const bridge=window.B737TcasPhotoHardware;
+ const {hardware,part}=bridge||{};
+ const scriptBase=new URL('./',document.currentScript?.src||document.baseURI);
+ const url=bridge?.url||(name=>new URL(name,scriptBase).href);
  const api=window.B737UnifiedTcasV1,registration=window.B737PhotoGaugeRegistrationV1;
  const stations=['captain','firstOfficer'],displays=new Map();
  const preferences={captain:{brightness:1,full:false},firstOfficer:{brightness:1,full:false}};
  const scale=new Image();scale.src=url('scale.webp');
- let state=api.getState(),controls=api.getControls(),pending=false;
+ let state=api?.getState?.()||{mode:'TA_RA',targets:[],ra:null,advisory:null};
+ let controls=api?.getControls?.()||{mode:'TA_RA',rangeNm:10,filter:'NORM'};
+ let pending=false,lastLabRender=null;
  const cyan='#79def2',amber='#ffaf21';
  const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
  const ticks=[[0,0],[500,34],[1000,66],[2000,108],[4000,148],[6000,180]];
@@ -37,9 +44,9 @@
  function label(g,str,x,y,color=cyan,size=17){
   g.font='bold '+size+'px monospace';g.fillStyle=color;g.fillText(str,x,y);
  }
- function traffic(g,range,heading){
+ function traffic(g,range,heading,trafficState){
   let noBearing=0;
-  for(const t of state.targets||[]){
+  for(const t of trafficState.targets||[]){
    const danger=t.kind==='RA'||t.kind==='TA';
    const color=t.kind==='RA'?'#ff302e':t.kind==='TA'?amber:'#fff';
    const n=t.displayAltitude??(Number.isFinite(t.relativeAltitude)?Math.round(t.relativeAltitude/100):null);
@@ -60,37 +67,60 @@
    label(g,tag,-12,t.relativeAltitude<0?21:-10,color,14);label(g,trend,8,5,color,16);g.restore();
   }
  }
+ function paintFace(g,active,selected,own,vs,valid,full){
+  if(!scale.naturalWidth)return false;
+  const show=(full||!!active.advisory||active.mode==='TEST')&&!['OFF','FAIL'].includes(active.mode);
+  g.clearRect(0,0,403,403);g.drawImage(scale,0,0);
+  if(show){
+   g.fillStyle='#060608';g.fillRect(112,114,180,67);g.fillRect(145,236,107,36);
+   label(g,'RNG '+(selected.rangeNm??10),295,44,cyan,15);
+   if(selected.filter!=='NORM')label(g,selected.filter,25,39,cyan,14);
+   if(active.transponder?.absolute&&Number.isFinite(own.altitudeFt))
+    label(g,'FL'+String(Math.round(own.altitudeFt/100)).padStart(3,'0'),25,55);
+   traffic(g,selected.rangeNm??10,own.trueHeadingDeg,active);
+   label(g,'✈',193,207,'white',18);
+  }
+  guidance(g,active.ra);
+  if(valid){
+   g.save();g.translate(201,203);g.rotate(angle(vs)-Math.PI);g.fillStyle=cyan;g.beginPath();
+   for(const [i,[x,y]] of [[0,-4],[-99,-4],[-99,-13],[-147,0],[-99,13],[-99,4],[0,4]].entries())
+    i?g.lineTo(x,y):g.moveTo(x,y);
+   g.fill();g.restore();
+  }else label(g,'VSI',310,375,amber);
+  const flags={OFF:['TCAS','STBY'],FAIL:['TCAS'],TEST:['TEST'],TA_ONLY:['TA ONLY']};
+  (flags[active.mode]||[]).forEach((line,i)=>
+   label(g,line,34,361+21*i,['FAIL','TEST'].includes(active.mode)?amber:cyan,21));
+  if(active.advisory)
+   label(g,active.advisory,52,327,active.advisory==='RA'?'red':amber);
+  return true;
+ }
  function paint(station,d){
-  if(!scale.naturalWidth)return;
   const pref=preferences[station],g=d.g,side=station==='captain'?1:2;
   const adc=window.B737UnifiedAvionicsNetworkV1?.getSnapshot?.()?.['airdata.adc'+side];
   const motion=window.B737UnifiedFlightDisplayMotionV1?.sample?.();
   const own=window.B737UnifiedFlightScenarioV1?.getState?.()||{};
-  const valid=adc?.quality==='VALID'&&!controls.failures['adc'+side];
+  const valid=adc?.quality==='VALID'&&!controls.failures?.['adc'+side];
   const vs=adc?.value?.verticalSpeedFpm??motion?.vsFpm??own.vsFpm??0;
-  const full=pref.full||!!state.advisory||state.mode==='TEST';
-  const show=full&&!['OFF','FAIL'].includes(state.mode);
-  g.clearRect(0,0,403,403);g.drawImage(scale,0,0);
-  if(show){
-   g.fillStyle='#060608';g.fillRect(112,114,180,67);g.fillRect(145,236,107,36);
-   label(g,'RNG '+controls.rangeNm,295,44,cyan,15);
-   if(controls.filter!=='NORM')label(g,controls.filter,25,39,cyan,14);
-   if(state.transponder?.absolute&&Number.isFinite(own.altitudeFt))label(g,'FL'+String(Math.round(own.altitudeFt/100)).padStart(3,'0'),25,55);
-   traffic(g,controls.rangeNm,own.trueHeadingDeg);
-   label(g,'✈',193,207,'white',18);
-  }
-  guidance(g,state.ra);
-  if(valid){
-   g.save();g.translate(201,203);g.rotate(angle(vs)-Math.PI);g.fillStyle=cyan;g.beginPath();
-   for(const [i,[x,y]] of [[0,-4],[-99,-4],[-99,-13],[-147,0],[-99,13],[-99,4],[0,4]].entries())i?g.lineTo(x,y):g.moveTo(x,y);
-   g.fill();g.restore();
-  }else label(g,'VSI',310,375,amber);
-  const flags={OFF:['TCAS','STBY'],FAIL:['TCAS'],TEST:['TEST'],TA_ONLY:['TA ONLY']};
-  const lines=flags[state.mode]||[];
-  lines.forEach((line,i)=>label(g,line,34,361+21*i,['FAIL','TEST'].includes(state.mode)?amber:cyan,21));
-  if(state.advisory)label(g,state.advisory,52,327,state.advisory==='RA'?'red':amber);
-  d.canvas.style.opacity=String(pref.brightness);d.knob.style.transform='rotate('+((pref.brightness-.1)*255)+'deg)';
+  if(!paintFace(g,state,controls,own,vs,valid,pref.full))return;
+  d.canvas.style.opacity=String(pref.brightness);
+  d.knob.style.transform='rotate('+((pref.brightness-.1)*255)+'deg)';
  }
+ function renderLab(canvas,own,trafficState,opts={}){
+  if(!canvas)return false;
+  lastLabRender={canvas,own,trafficState,opts};
+  if(!scale.naturalWidth)return false;
+  if(canvas.width!==403)canvas.width=403;
+  if(canvas.height!==403)canvas.height=403;
+  const selected={rangeNm:opts.rangeNm??10,filter:opts.filter??'NORM'};
+  const ok=paintFace(canvas.getContext('2d'),trafficState,selected,own,
+   Number.isFinite(own.vsFpm)?own.vsFpm:0,true,true);
+  canvas.dataset.tcasRaId=trafficState.ra?.id||'NONE';
+  canvas.dataset.tcasAdvisory=trafficState.advisory||'NONE';
+  canvas.dataset.ivsiPhoto=ok?'original':'pending';
+  return ok;
+ }
+ // A single approved face/needle/RA/traffic renderer is used in both places.
+ window.B737ClassicPhotoIVSIV1=Object.freeze({renderLab});
  function queue(){
   if(!displays.size||pending)return;pending=true;
   requestAnimationFrame(()=>{pending=false;displays.forEach((d,station)=>paint(station,d));});
@@ -116,7 +146,16 @@
   }
   queue();
  }
- scale.onload=queue;
+ scale.onload=()=>{
+  queue();
+  if(lastLabRender){
+   const {canvas,own,trafficState,opts}=lastLabRender;
+   renderLab(canvas,own,trafficState,opts);
+  }
+ };
+ // The stand-alone lab imports only this original photographed drawing engine;
+ // the cockpit installation below keeps its existing sockets and controls.
+ if(!bridge||!api||!registration)return;
  window.addEventListener('b737:tcas-state',e=>{state=e.detail;controls=api.getControls();queue();});
  for(const name of ['b737:ivsi-equipment','b737:cockpit-mounted','b737:engine-indication-view','b737:aircraft-profile-change'])
   window.addEventListener(name,()=>requestAnimationFrame(()=>requestAnimationFrame(mount)));

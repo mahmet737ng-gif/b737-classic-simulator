@@ -89,7 +89,7 @@
   const traffic={...out,targets:[...out.targets,...ambient]};
   // The integrated IVSI and EHSI consume exactly the same live traffic list:
   // primary encounter plus up to two ambient targets at 10 NM.
-  win.B737TcasIVSIV1?.render?.(by('ivsi'),own,traffic);
+  win.B737ClassicPhotoIVSIV1?.renderLab?.(by('ivsi'),own,traffic,{rangeNm,filter:settings.filter});
   win.EFISClassicEHSIV2.render(by('ehsi'),{mode:by('displayMode').value,range:rangeNm,
    heading:own.trueHeadingDeg,track:own.trueTrackDeg,geoTrack:own.trueTrackDeg,selectedHeading:own.trueTrackDeg,
    trueRef:false,nav:cruise.nav,route:cruise.route,options:{tfc:tfcVisible,...cp?.options},traffic,

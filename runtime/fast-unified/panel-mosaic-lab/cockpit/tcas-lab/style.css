@@ -117,3 +117,19 @@ main{max-width:1540px;padding:12px}
  .screens .ivsi-with-tcas{grid-column:1/-1;width:min(480px,100%);justify-self:center}
 }
 @media(max-width:750px){.screens{grid-template-columns:1fr}}
+
+/* TCAS-ORIGINAL-PHOTO-IVSI-0010 — use the existing, source-pixel IVSI.
+ * 630 × 624 approved bezel and 403 × 403 original instrument glass, mounted
+ * at the same [109,112] source offsets as the live Unified cockpit sockets. */
+.screens .ivsi-with-tcas{background:#000}
+.screens .photo-ivsi-face{
+ position:relative;display:block;width:100%;aspect-ratio:630 / 624;
+ background:#000 url('../tcas-photo/ivsi.webp') center center / 100% 100% no-repeat;
+ overflow:hidden;
+}
+.screens .photo-ivsi-face #ivsi{
+ position:absolute;display:block;left:17.3015873%;top:17.9487179%;
+ width:63.968254%!important;height:64.583333%!important;
+ min-width:0;max-width:none;aspect-ratio:1!important;border-radius:9%;
+ background:transparent;
+}
