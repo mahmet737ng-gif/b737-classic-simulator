@@ -7,7 +7,7 @@
  const Servo=win.B737AutothrottleSpeedServoV1,VERSION='UNIFIED_AT_ENGINE_BRIDGE_0001';
  if(!Servo){win.console?.error('A/T servo dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
- let state=Servo.initial(),last=0,lastUi=0,manualOverride=false,errors=[],lastCommands={};
+ let state=Servo.initial(),last=0,manualOverride=false,errors=[],lastCommands={};
  const clone=x=>JSON.parse(JSON.stringify(x));
  function activeMode(m){
   return m?.power===true&&m.controls?.atArm===true&&m.modes?.thrust==='SPEED';
@@ -20,7 +20,7 @@
   const owner=win.B737ISNCockpitV1;
   // Keep idle-window overhead negligible: ISN ECU snapshots contain large
   // diagnostics trees and are only required when A/T can run or panel is open.
-  const needEngines=activeMode(mcp)||by('flightScenarioDialog')?.open===true;
+  const needEngines=activeMode(mcp);
   const propulsion=needEngines?owner?.getPropulsionSnapshot?.():null;
   const chain=needEngines&&!propulsion?owner?.getStartState?.():null;
   const ecu=needEngines&&!propulsion?owner?.getECUState?.():null;
@@ -82,79 +82,7 @@
    if(errors.at(-1)!==message){errors.push(message);if(errors.length>12)errors.shift();}
    state={...state,active:false,reason:'A/T_COMMAND_ERROR: '+message,commands:[]};
   }
-  if(now-lastUi>350){paint(src);lastUi=now;}
   notify();
- }
- function modeLabel(src){
-  if(!src?.mcp)return 'MCP OFF / NO DATA';
-  if(state.reason==='NO_RUNNING_ENGINES')return 'NO RUNNING ENGINES — A/T INHIBITED';
-  if(state.reason==='MANUAL_OVERRIDE')return 'MANUAL OVERRIDE — DESELECT & RESELECT SPEED';
-  if(state.reason==='AT_SPEED_ACTIVE')return 'A/T SPEED ACTIVE';
-  if(state.reason==='AT_SPEED_SINGLE_ENGINE_TRAINING')return 'A/T SPEED / SINGLE ENGINE DEGRADED';
-  return state.reason.replaceAll('_',' ');
- }
- function paint(src){
-  const label=by('flightAtStatus');
-  if(!label)return;
-  label.textContent=modeLabel(src);
-  label.dataset.active=state.active?'true':'false';
-  const n=v=>Number.isFinite(v)?v.toFixed(1):'—';
-  const data={
-   Target:Number.isFinite(state.targetKt)?Math.round(state.targetKt)+' kt':'—',
-   IAS:n(src.flight.iasKt)+' kt',
-   Delta:Number.isFinite(state.errorKt)?(state.errorKt>=0?'+':'')+n(state.errorKt)+' kt':'—',
-   CmdN1:n(state.demandN1)+'%',
-   N1A:n(src.engines.engine1.n1Percent)+'%',
-   N1B:n(src.engines.engine2.n1Percent)+'%',
-   THRA:src.engines.engine1.running?n(src.engines.engine1.throttle*100)+'%':'ENG OFF',
-   THRB:src.engines.engine2.running?n(src.engines.engine2.throttle*100)+'%':'ENG OFF'
-  };
-  for(const [k,value] of Object.entries(data)){
-   const p=by('flightAt'+k);
-   if(p)p.textContent=value;
-  }
-  const preset=by('flightAtInstructorRun');
-  if(preset)preset.disabled=!src.owner?.engineTrainerAction||
-   src.engines.engine1.running&&src.engines.engine2.running;
- }
- function renderPanel(){
-  const d=by('flightScenarioDialog');
-  if(!d||by('flightAtPanel'))return;
-  const section=doc.createElement('section');
-  section.id='flightAtPanel';section.className='flight-at-panel';
-  section.innerHTML=`
-    <div class="flight-heading">A/T COMPUTER · ENGINE THRUST SERVO</div>
-    <p class="flight-at-mode" id="flightAtStatus" role="status">MCP / ECU NOT READY</p>
-    <div class="flight-telemetry">
-     <div><span>MCP SPEED TARGET</span><strong id="flightAtTarget">—</strong></div>
-     <div><span>MEASURED IAS</span><strong id="flightAtIAS">—</strong></div>
-     <div><span>SPEED ERROR</span><strong id="flightAtDelta">—</strong></div>
-     <div><span>DEMANDED N1*</span><strong id="flightAtCmdN1">—</strong></div>
-     <div><span>ENGINE 1 N1</span><strong id="flightAtN1A">—</strong></div>
-     <div><span>ENGINE 2 N1</span><strong id="flightAtN1B">—</strong></div>
-     <div><span>THROTTLE 1</span><strong id="flightAtTHRA">—</strong></div>
-     <div><span>THROTTLE 2</span><strong id="flightAtTHRB">—</strong></div>
-    </div>
-    <div class="flight-actions">
-      <button type="button" id="flightAtInstructorRun">SET BOTH ENGINES RUNNING · INSTRUCTOR</button>
-    </div>
-    <p class="flight-sub">Requires running engines, MCP electrical power, A/T ARM and active SPEED mode. Moving the MCP speed selector alone does not engage A/T. Both actual engine spools and IAS respond with lag. *N1 demand and acceleration are training-only approximations, not AFM performance.</p>
-  `;
-  (by('flightTelemetry')||d).after(section);
-  by('flightAtInstructorRun').addEventListener('click',()=>{
-   const owner=win.B737ISNCockpitV1;
-   if(!owner?.engineTrainerAction)return;
-   const results=[];
-   for(const engine of ['engine1','engine2']){
-    try{
-     if(owner.getStartState()?.phase?.[engine]==='RUNNING'){results.push(engine+' already running');continue;}
-     const result=owner.engineTrainerAction({type:'PRESET_RUNNING',engine,instructor:true});
-     results.push(engine+(result?.accepted?' RUNNING':' REJECTED'));
-    }catch(error){results.push(engine+' ERROR: '+String(error.message||error));}
-   }
-   const note=by('flightAtStatus');
-   if(note)note.textContent=results.join(' · ');
-  });
  }
  function manualIntervention(event){
   const d=event?.detail;
@@ -171,7 +99,6 @@
  });
  win.B737UnifiedAutothrottleV1=publicApi;
  function boot(){
-  renderPanel();
   win.setInterval(tick,200);
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});

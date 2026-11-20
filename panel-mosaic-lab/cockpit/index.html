@@ -222,8 +222,6 @@ body > header.unified-minimal-header .header-settings>button{
    <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
    <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
    <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
-   <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
-   <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
    <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
    <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
   </div>
@@ -234,24 +232,6 @@ body > header.unified-minimal-header .header-settings>button{
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
   </div>
-  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
-  <div class="flight-heading">LIVE AIRCRAFT STATE</div>
-  <div class="flight-telemetry" id="flightTelemetry">
-   <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
-   <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
-   <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
-   <div><span>VS</span><strong id="flightOutVS">—</strong></div>
-   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
-   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
-   <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
-   <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
-   <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
-   <div><span>LAT</span><strong id="flightOutLat">—</strong></div>
-   <div><span>LON</span><strong id="flightOutLon">—</strong></div>
-   <div><span>GS</span><strong id="flightOutGS">—</strong></div>
-   <div><span>RWY DIST</span><strong id="flightOutDist">—</strong></div>
-  </div>
-  <p id="flightGeorefWarning" class="flight-warning">Runway threshold geometry is provisional: airport reference point, not certified runway threshold. AGL* uses airport elevation, not terrain.</p>
   <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
  </dialog>
 <script src="./flight-scenario-shell-v1.js?v=FLT-PHASE-SHELL-0001"></script>
@@ -445,17 +425,17 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="../../engine/flight/flight-location-reference-v1.js?v=FLT-PHASE-LOCATION-0001" defer></script>
 <script src="./flight-phase-position-bridge-v1.js?v=FLT-PHASE-POSLINK-0001" defer></script>
 <script src="../../engine/afds/classic-toga-ch4-v1.js?v=CH4-TOGA-0003" defer></script>
-<script src="./flight-scenario-panel-v1.js?v=CH4-PRESS-TOGA-0001" defer></script>
+<script src="./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0001" defer></script>
 <script src="./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119" defer></script>
 <script src="./lvlchg-thrust-servo-ch4-v1.js?v=LVLCHG-THRUST-CH4-0001" defer></script>
 <script src="../../engine/instruments/flight-display-motion-v1.js?v=FLIGHT-DISPLAY-MOTION-0001" defer></script>
-<script src="./flight-display-motion-unified-v1.js?v=FLIGHT-DISPLAY-MOTION-0002-PAUSE-HIDDEN" defer></script><script src="../../engine/afds/autothrottle-speed-servo-v1.js?v=AT-SPEED-0001" defer></script><script src="./autothrottle-unified-v1.js?v=AT-SPEED-0001" defer></script><script src="../../engine/instruments/flight-dynamics-gauge-model-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./flight-instrument-dynamics-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./fcc-flight-runtime-v1.js?v=FCC-UNIFIED-TOGA-FD-0002-STAB" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
+<script src="./flight-display-motion-unified-v1.js?v=FLIGHT-DISPLAY-MOTION-0002-PAUSE-HIDDEN" defer></script><script src="../../engine/afds/autothrottle-speed-servo-v1.js?v=AT-SPEED-0001" defer></script><script src="./autothrottle-unified-v1.js?v=FLT-UI-SLIM-0001" defer></script><script src="../../engine/instruments/flight-dynamics-gauge-model-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./flight-instrument-dynamics-v1.js?v=FLT-UI-SLIM-0001" defer></script><script src="./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
 <script src="../../engine/instruments/mechanical-number-wheels-v1.js?v=MECH-ROLL-0020" defer></script><script src="./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0001" defer></script>
 <script src="./instrument-lab/photo-gauge-registration-v1.js?v=PHOTO-GAUGE-REG-0002-NATIVE-BEZEL" defer></script>
 <script src="./instrument-lab/unified.js?v=PHOTO-GAUGES-0004-SOCKET-MODE-CLIP" defer></script>
 <script src="../../engine/tcas/classic-tcas-v1.js?v=TCAS-CLASSIC-0001" defer></script>
 <script src="../../engine/tcas/classic-tcas-v2.js?v=TCAS-MOTION-0002" defer></script>
-<script src="./tcas-training-unified-v1.js?v=TCAS-MOTION-0002" defer></script>
+<script src="./tcas-training-unified-v1.js?v=FLT-UI-SLIM-0001" defer></script>
 <script defer src="./tcas-photo/panel.js"></script>
 <script defer src="./tcas-photo/ivsi.js"></script>
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>

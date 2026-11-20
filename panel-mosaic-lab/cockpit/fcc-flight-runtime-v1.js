@@ -156,38 +156,6 @@
   protect=result.state;
   return result.disengage&&disconnect(result.reason,'COCKPIT_HARDWARE');
  }
- function mount(){
-  const dlg=by('flightScenarioDialog');
-  if(!dlg||by('flightFccPanel'))return;
-  const panel=doc.createElement('section');panel.id='flightFccPanel';
-  panel.innerHTML=`
-   <div class="flight-heading">FCC / AFDS · FCOM CHAPTER 4</div>
-   <p class="flight-sub" id="flightFccStatus">FCC source awaiting MCP and scenario.</p>
-   <p class="flight-sub">FD bars require the pilot's F/D switch ON, a valid pitch command and a valid roll command. CWS axis guidance retracts. CMD drives the aircraft; F/D-only modes draw guidance without moving it. No route/LOC/GS capture is inferred.</p>
-   <div class="flight-actions">
-    <button type="button" id="flightFccYokeDisconnect">YOKE A/P DISCONNECT</button>
-    <button type="button" id="flightFccTrimDisconnect">CONTROL WHEEL TRIM</button>
-    <button type="button" id="flightFccTogaDisconnect">TO/GA TEST (RA &lt; 2000)</button>
-   </div>
-   <details><summary>AP protection failures · instructor tests</summary>
-    <label><input type="checkbox" data-fcc-fault="hydA"> HYDRAULIC SYS A PRESSURE LOST</label>
-    <label><input type="checkbox" data-fcc-fault="hydB"> HYDRAULIC SYS B PRESSURE LOST</label>
-    <label><input type="checkbox" data-fcc-fault="irsL"> LEFT IRS FAULT</label>
-    <label><input type="checkbox" data-fcc-fault="irsR"> RIGHT IRS FAULT</label>
-    <label><input type="checkbox" data-fcc-fault="criticalSensor"> CRITICAL FCC SENSOR FAILURE</label>
-    <label><input type="checkbox" data-fcc-fault="radioAlt"> RADIO ALTIMETER FAILED (2 s after LOC+GS capture)</label>
-   </details>
-   <p class="flight-sub" role="status" id="flightFccDisconnect">A/P disengagement: no event</p>
-  `;
-  const anchor=by('flightGaugeBridgePanel')||by('flightAtPanel')||by('flightTelemetry');
-  if(anchor)anchor.after(panel);else dlg.append(panel);
-  by('flightFccYokeDisconnect').addEventListener('click',()=>confirmedHardware('CONTROL_WHEEL_AP_DISCONNECT'));
-  by('flightFccTrimDisconnect').addEventListener('click',()=>confirmedHardware('CONTROL_WHEEL_TRIM'));
-  by('flightFccTogaDisconnect').addEventListener('click',()=>confirmedHardware('TOGA_BELOW_2000_RA'));
-  for(const input of panel.querySelectorAll('[data-fcc-fault]'))
-   input.addEventListener('change',()=>{faults[input.dataset.fccFault]=input.checked;
-    protectFlight(flight());});
- }
  // Hydraulic, IRS and electrical protections apply during any powered A/P
  // session, not only when instructor flight dynamics is actively loaded.
  win.setInterval(()=>protectFlight(flight()),400);
@@ -252,9 +220,6 @@
   if(e.detail?.confirmed===true&&e.detail?.source==='COCKPIT_HARDWARE')
    confirmedHardware('TOGA_BELOW_2000_RA',{touchdown:e.detail?.touchdown===true});
  });
- if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
- else mount();
- win.addEventListener('b737:cockpit-mounted',mount);
  win.B737UnifiedFccFlightV1=Object.freeze({
   VERSION,follow,getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
    lastDisengagement:lastAp?{...lastAp}:null,sourceError,faults:{...faults}}),

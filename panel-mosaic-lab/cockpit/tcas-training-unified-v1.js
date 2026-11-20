@@ -33,19 +33,8 @@
  }
  function getControls(){return copy(mode);}
  function renderStatus(){
-  const status=by('tcasTrainingStatus');if(!status)return;const s=getState();
-  for(const [id,key] of [['tcasTrainingMode','mode'],['tcasUnit','unit'],['tcasCode','code'],['tcasFilter','filter']]){
-   const field=by(id);if(field&&doc.activeElement!==field&&field.value!==String(mode[key]))field.value=mode[key];
-  }
-  status.textContent=[s.mode,s.stage,s.callout,...(s.inhibits||[])].filter(Boolean).join(' · ');
-  const rows=by('tcasTrafficRows');if(rows)rows.textContent=(s.targets||[]).map(t=>
-   t.id+' · '+t.kind+' · '+t.distance.toFixed(2)+' NM · '+(Number.isFinite(t.bearing)?Math.round(t.bearing)+'° TRUE':'NO BEARING')+
-   ' · '+(Number.isFinite(t.relativeAltitude)?Math.round(t.relativeAltitude)+' FT':'ALT UNKNOWN')+
-   ' · '+(t.verticalRate??'—')+' FPM · '+(t.verticalRelation||'')).join('\n')||'No received traffic';
-  const xpdr=by('tcasXpdrStatus'),x=s.transponder;
-  if(xpdr&&x)xpdr.textContent='ATC '+x.selectedUnit+' · '+x.displayedCode+' · MODE S '+(x.modeS?'ON':'OFF')+
-   ' · ALT '+(x.altitudeReporting?Math.round(x.transmittedAltitudeFt)+' FT':'OFF / INVALID')+(x.ident?' · IDENT':'')+
-   ' · '+(x.failed?'ATC FAIL':x.test?'ATC TEST':'NORMAL');
+  const field=by('tcasTrainingMode');
+  if(field&&doc.activeElement!==field&&field.value!==mode.mode)field.value=mode.mode;
  }
  function notify(){renderStatus();win.dispatchEvent(new CustomEvent('b737:tcas-state',{detail:getState()}));}
  function announce(){const s=getState(),key=[s.mode,s.advisory,s.ra?.id,s.callout].join('|');
@@ -93,38 +82,20 @@
  function mount(){
   const dialog=by('flightScenarioDialog');if(!dialog||by('tcasTrainingControls'))return;
   const section=doc.createElement('fieldset');section.id='tcasTrainingControls';
-  section.innerHTML='<legend>TCAS / TRANSPONDER · CLASSIC TRAINER</legend><div class="flight-grid">'+
+  section.innerHTML='<legend>TCAS / TRANSPONDER</legend><div class="flight-grid">'+
    '<label>Transponder mode<select id="tcasTrainingMode">'+Core.MODES.map(m=>'<option value="'+m+'"'+(m==='TA_RA'?' selected':'')+'>'+m.replaceAll('_',' ')+'</option>').join('')+'</select></label>'+
-   '<label>Encounter<select id="tcasTrainingScenario">'+Object.entries(Core.SCENARIOS).map(([id,s])=>'<option value="'+id+'">'+s.label+'</option>').join('')+'</select></label>'+
-   '<label>Selected ATC<select id="tcasUnit"><option>1</option><option>2</option></select></label>'+
-   '<label>Altitude source<select id="tcasAltSource"><option>1</option><option>2</option></select></label>'+
-   '<label>Squawk (0000–7777)<input id="tcasCode" value="2000" maxlength="4" pattern="[0-7]{4}"></label>'+
-   '<label>Altitude display band<select id="tcasFilter"><option value="NORM">NORM −2700 / +2700 FT</option><option value="ABOVE">ABOVE −2700 / +9900 FT</option><option value="BELOW">BELOW −9900 / +2700 FT</option></select></label>'+
-   '<label>Initial relative altitude (ft)<input id="tcasRelativeAltitude" type="number" placeholder="Use encounter default"></label>'+
-   '<label>Intruder vertical rate (fpm)<input id="tcasVerticalRate" type="number" placeholder="Use encounter default"></label></div>'+
-   '<div class="flight-actions"><button id="tcasTrainingStart" type="button">START ENCOUNTER</button><button id="tcasTrainingNext" type="button">ADVANCE INTRUDER 10 S</button><button id="tcasTrainingStop" type="button">CLEAR ENCOUNTER</button><button id="tcasIdent" type="button">IDENT</button><button id="tcasAbsolute" type="button">ABS ALT 15 S</button><a href="./tcas-lab/" target="_blank" rel="noopener">OPEN TCAS TEST LAB</a></div>'+
-   '<label class="flight-mcp"><input type="checkbox" id="tcasPrepareDisplay" checked> Prepare both EHSIs: TFC ON, supported mode, range 10 NM</label>'+
-   '<label class="flight-mcp"><input type="checkbox" id="tcasTrainingVoice"> Synthetic English training voice</label>'+
-   '<details><summary>Instructor failures / source isolation</summary>'+Object.keys(mode.failures).map(id=>'<label class="flight-mcp"><input type="checkbox" data-tcas-failure="'+id+'"> '+id+'</label>').join('')+'</details>'+
-   '<label class="flight-mcp"><input type="checkbox" id="tcasTrainingPriority"> GPWS / WINDSHEAR priority inhibit</label>'+
-   '<p id="tcasXpdrStatus" class="flight-status"></p><p id="tcasTrainingStatus" class="flight-status" role="status"></p><pre id="tcasTrafficRows" style="white-space:pre-wrap"></pre>'+
-   '<p class="flight-sub">Real relative target motion; PAUSE freezes flight time. RA guidance never controls the A/P. Use existing flight targets to respond. Classic ATC feeds: Electronic Bus 1/2, 115 VAC. Simulator panel labels: ATC1 P18-1 B3, ATC2 P6-1 D16, TCAS P18-1 B2/B6. TCAS computer supply and airframe-specific breaker identities require the installed WDM.</p>';
+   '<label>Encounter<select id="tcasTrainingScenario">'+Object.entries(Core.SCENARIOS).map(([id,s])=>'<option value="'+id+'">'+s.label+'</option>').join('')+'</select></label></div>'+
+   '<div class="flight-actions"><button id="tcasTrainingStart" type="button">START ENCOUNTER</button><button id="tcasTrainingNext" type="button">ADVANCE INTRUDER 10 S</button><button id="tcasTrainingStop" type="button">CLEAR ENCOUNTER</button></div>';
   dialog.append(section);
-  const run=fn=>()=>{try{fn();}catch(e){by('tcasTrainingStatus').textContent=e.message;}};
-  by('tcasTrainingStart').addEventListener('click',run(()=>{
-   const options={};for(const [id,key] of [['tcasRelativeAltitude','relativeAltitudeFt'],['tcasVerticalRate','verticalRateFpm']])
-    if(by(id).value.trim()!=='')options[key]=Number(by(id).value);
-   start(by('tcasTrainingScenario').value,options);
-  }));
-  by('tcasTrainingNext').addEventListener('click',run(next));by('tcasTrainingStop').addEventListener('click',stop);
-  for(const [id,key] of [['tcasTrainingMode','mode'],['tcasUnit','unit'],['tcasAltSource','altSource'],['tcasCode','code'],['tcasFilter','filter']])
-   by(id).addEventListener('change',run(()=>configure({[key]:['unit','altSource'].includes(key)?Number(by(id).value):by(id).value})));
-  by('tcasPrepareDisplay').addEventListener('change',e=>{prepareDisplay=e.target.checked;});
-  by('tcasTrainingVoice').addEventListener('change',e=>{voice=e.target.checked;lastAural='';announce();});
-  by('tcasTrainingPriority').addEventListener('change',e=>configure({priorityWarning:e.target.checked}));
-  for(const input of section.querySelectorAll('[data-tcas-failure]'))input.addEventListener('change',()=>configure({failures:{[input.dataset.tcasFailure]:input.checked}}));
-  by('tcasIdent').addEventListener('click',ident);
-  by('tcasAbsolute').addEventListener('click',absolute);notify();
+  const run=fn=>()=>{try{fn();}catch(e){
+   const status=by('flightScenarioStatus');
+   if(status){status.textContent='TCAS: '+String(e.message||e);status.dataset.error='true';}
+  }};
+  by('tcasTrainingStart').addEventListener('click',run(()=>start(by('tcasTrainingScenario').value)));
+  by('tcasTrainingNext').addEventListener('click',run(next));
+  by('tcasTrainingStop').addEventListener('click',stop);
+  by('tcasTrainingMode').addEventListener('change',run(()=>configure({mode:by('tcasTrainingMode').value})));
+  notify();
  }
  for(const event of ['b737:bus-consumer-snapshot','b737:cb-snapshot','b737:cb-state-change','b737:efis-preset-change','b737:efis-source-change'])win.addEventListener(event,()=>update());
  win.addEventListener('b737:flight-scenario-state',e=>update(e.detail));win.addEventListener('b737:flight-scenario-stopped',stop);

@@ -8,10 +8,12 @@ test('original FLT PHASE entry and complete dialog exist before flight scripts r
  const view=html.match(/<dialog id="flightScenarioDialog"[^>]*>([\s\S]*?)<\/dialog>/)?.[1];
  assert.ok(view);assert.equal((html.match(/id="flightScenarioHeader"/g)||[]).length,1);
  assert.equal((html.match(/id="flightScenarioDialog"/g)||[]).length,1);
- for(const id of ['flightAirport','flightRunway','flightPreset','flightAlt','flightHeading','flightSpeed','flightVS','flightBank','flightLat','flightLon','flightLoad','flightTargets','flightTakeoff','flightPause','flightStop','flightFollowMCP','flightTelemetry'])
+ for(const id of ['flightAirport','flightRunway','flightPreset','flightAlt','flightHeading','flightSpeed','flightLat','flightLon','flightLoad','flightTargets','flightTakeoff','flightPause','flightStop'])
   assert.ok(view.includes('id="'+id+'"'),id+' must remain available');
  assert.match(view,/id="flightTakeoff">PRESS TOGA<\/button>/);
- assert.doesNotMatch(view,/flightAirGround/);
+ assert.doesNotMatch(view,/flightAirGround|flightVS|flightBank|flightFollowMCP|flightTelemetry|flightGeorefWarning/);
+ assert.equal((view.match(/<label>[^<]+<input id="flight(?:Alt|Heading|Speed|Lat|Lon)"/g)||[]).length,5);
+ assert.doesNotMatch(view,/LIVE AIRCRAFT STATE|ENGINE THRUST SERVO|FCC \/ AFDS/);
 });
 test('main window opens without flight dependencies, then existing controls initialize and load a flight',()=>{
  const nodes=new Map();let createdDialogs=0;

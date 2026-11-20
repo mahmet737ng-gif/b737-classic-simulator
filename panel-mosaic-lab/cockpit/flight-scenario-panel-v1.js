@@ -23,8 +23,6 @@
    <label>Altitude MSL (ft)<input id="flightAlt" type="number" min="0" max="65000" step="100" value="6263"></label>
    <label>Heading MAG (°)<input id="flightHeading" type="number" min="0" max="359" step="1" value="309"></label>
    <label>Indicated speed (kt)<input id="flightSpeed" type="number" min="0" max="450" step="1" value="220"></label>
-   <label>Vertical speed (fpm)<input id="flightVS" type="number" min="-5000" max="5000" step="100" value="0"></label>
-   <label>Bank command (°)<input id="flightBank" type="number" min="-30" max="30" step="1" value="0"></label>
    <label>Latitude (°)<input id="flightLat" type="number" min="-90" max="90" step="0.000001" value="36.2348333"></label>
    <label>Longitude (°)<input id="flightLon" type="number" min="-180" max="180" step="0.000001" value="59.643"></label>
   </div>
@@ -35,27 +33,8 @@
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
   </div>
-  <label class="flight-mcp"><input id="flightFollowMCP" type="checkbox" checked> AUTO FCC COUPLING · Follow powered MCP CMD/CWS flight modes (default ON)</label>
-  <div class="flight-heading">LIVE AIRCRAFT STATE</div>
-  <div class="flight-telemetry" id="flightTelemetry">
-   <div><span>PHASE</span><strong id="flightOutPhase">NOT ACTIVE</strong></div>
-   <div><span>IAS</span><strong id="flightOutIAS">—</strong></div>
-   <div><span>ALT MSL</span><strong id="flightOutAlt">—</strong></div>
-   <div><span>VS</span><strong id="flightOutVS">—</strong></div>
-   <div><span>MAG HDG</span><strong id="flightOutHDG">—</strong></div>
-   <div><span>MAG VAR · WMM2025</span><strong id="flightOutVar">—</strong></div>
-   <div><span>BANK</span><strong id="flightOutBank">—</strong></div>
-   <div><span>PITCH</span><strong id="flightOutPitch">—</strong></div>
-   <div><span>AGL*</span><strong id="flightOutAGL">—</strong></div>
-   <div><span>LAT</span><strong id="flightOutLat">—</strong></div>
-   <div><span>LON</span><strong id="flightOutLon">—</strong></div>
-   <div><span>GS</span><strong id="flightOutGS">—</strong></div>
-   <div><span>RWY DIST</span><strong id="flightOutDist">—</strong></div>
-  </div>
-  <p id="flightGeorefWarning" class="flight-warning">Runway threshold geometry is provisional: airport reference point, not certified runway threshold. AGL* uses airport elevation, not terrain.</p>
   <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
  `;
- const fields=['Alt','Heading','Speed','VS','Bank'];
  const v=id=>Number(by('flight'+id).value);
  const wmm=win.B737WMM2025V1;
  const airportPoint=a=>({lat:a.lat,lon:a.lon,altitudeFt:a.elevationFt});
@@ -113,8 +92,6 @@
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
    by('flightAlt').value=Math.round(a.elevationFt+(kind==='RUNWAY_READY'?0:kind==='FINAL_5'?1643:3236));
    by('flightSpeed').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?155:170;
-   by('flightVS').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?-823:-902;
-   by('flightBank').value=0;
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
   }
   publishSelectedReference();
@@ -165,33 +142,10 @@
   sendAvionics();
  }
  function updateUI(){
-  if(!by('flightOutPhase'))return;
-  const put=(name,value)=>{by('flightOut'+name).textContent=value;};
-  if(!state){
-   put('Phase','NOT ACTIVE');
-   if(by('flightStop'))by('flightStop').disabled=true;
-   if(by('flightPause'))by('flightPause').disabled=true;
-   return;
-  }
-  if(by('flightStop'))by('flightStop').disabled=state.airborne===true;
-  if(by('flightPause'))by('flightPause').disabled=false;
-  const n=(x,d=0)=>Number(x).toFixed(d);
-  put('Phase',state.phase.replaceAll('_',' '));
-  put('IAS',n(state.iasKt)+' kt');put('Alt',n(state.altitudeFt)+' ft');
-  put('VS',n(state.vsFpm)+' fpm');put('HDG',magLabel(state.trueHeadingDeg,state));
-  const magVariation=magneticVariation(state);
-  put('Var',Number.isFinite(magVariation)?
-   Math.abs(magVariation).toFixed(2)+'° '+(magVariation<0?'W':'E'):'N/A');
-  put('Bank',n(state.bankDeg,1)+'°');put('Pitch',n(state.pitchDeg,1)+'°');
-  put('AGL',n(state.radioAltitudeFt)+' ft');put('Lat',n(state.lat,5));
-  put('Lon',n(state.lon,5));put('GS',n(state.gsKt)+' kt');
-  put('Dist',n(Core.distanceNm(state,state.threshold),2)+' NM');
-  by('flightGeorefWarning').textContent=state.georefQuality==='PROVISIONAL_ARP'?
-   'PROVISIONAL ARP-BASED RUNWAY ANCHOR — not the surveyed runway threshold. 5/10 NM are relative to this simulated anchor. AGL* is airport-elevation-based, not terrain elevation.':
-   'Runway anchor supplied externally. Source: '+state.threshold.source+' · AGL* is airport-elevation-based.';
-  by('flightTakeoff').disabled=!(state.phase==='GROUND_READY'||
-    (state.airborne===true&&state.radioAltitudeFt<2000));
-  by('flightPause').textContent=pause?'RESUME':'PAUSE';
+  const stopButton=by('flightStop'),pauseButton=by('flightPause'),takeoffButton=by('flightTakeoff');
+  if(stopButton)stopButton.disabled=!state||state.airborne===true;
+  if(pauseButton){pauseButton.disabled=!state;pauseButton.textContent=state&&pause?'RESUME':'PAUSE';}
+  if(takeoffButton)takeoffButton.disabled=!state||!(state.phase==='GROUND_READY'||(state.airborne===true&&state.radioAltitudeFt<2000));
  }
  function stop(){
   // Never withdraw the only IRS/ADC/RA telemetry source while the aircraft
@@ -222,7 +176,7 @@
     airborne:preset!=='RUNWAY_READY'};
    if(preset==='MANUAL'){
     config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
-    config.speedKt=v('Speed');config.vsFpm=v('VS');config.bankDeg=v('Bank');
+    config.speedKt=v('Speed');
    }
    if(preset==='MANUAL'){
     config.lat=v('Lat');config.lon=v('Lon');
@@ -235,8 +189,6 @@
     const mag=magneticHeading(state.trueHeadingDeg,state);
      by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
     by('flightSpeed').value=Math.round(state.iasKt);
-    by('flightVS').value=Math.round(state.vsFpm);
-    by('flightBank').value=0;
    }
    publish();lastPublish=performance.now();updateUI();
    status('ACTIVE · '+state.icao+' RWY '+state.runway+' · '+state.phase+' · '+state.georefQuality);
@@ -246,12 +198,8 @@
   if(!active||!state){status('Load a scenario first.',true);return;}
   try{
    state=Core.command(state,{type:'SPEED',value:v('Speed')});
-   if(v('Bank')!==0)state=Core.command(state,{type:'BANK',value:v('Bank')});
-   else state=Core.command(state,{type:'HEADING',value:trueHeading(v('Heading'),state)});
-   state=Core.command(state,{type:'VS',value:v('VS')});
-   // Manual VS and altitude target are alternate vertical guidance modes.
-   // ALT field in scenario load is the current altitude; this button
-   // commands ALT CAPTURE when a nonzero vertical distance is requested.
+   state=Core.command(state,{type:'HEADING',value:trueHeading(v('Heading'),state)});
+   // Altitude capture is available; VS and bank follow the flight model/MCP.
    if(Math.abs(v('Alt')-state.altitudeFt)>50)
     state=Core.command(state,{type:'ALTITUDE',value:v('Alt')});
    status('Targets accepted — aircraft changes heading/bank, IAS and altitude over simulated time.');
@@ -375,7 +323,6 @@
   });
   by('flightPause').addEventListener('click',()=>{if(!active)return;pause=!pause;updateUI();});
   by('flightStop').addEventListener('click',stop);
-  by('flightFollowMCP').addEventListener('change',e=>{mcpFollow=e.target.checked;});
   airportChanged();presetChanged();updateUI();
   timer=win.setInterval(tick,100);mounted=true;
  }
