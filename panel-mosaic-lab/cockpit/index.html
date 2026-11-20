@@ -295,11 +295,24 @@ body > header.unified-minimal-header .header-settings>button{
  };
  window.B737PrepareOverhead=layout=>{
   if(region)return region;
-  region=document.createElement('section');
+  region=scene.querySelector('#region-overhead[data-visual-shell="preview-overhead"]')||document.createElement('section');
+  const preview=region.querySelector('.visual-overhead-preview');
   region.id='region-overhead';region.className='region';
-  Object.assign(region.style,{left:layout.x+'px',top:layout.y+'px',width:layout.w+'px',height:layout.h+'px',visibility:'hidden'});
+  region.dataset.visualShell=preview?'overhead-hydrating':'';
+  Object.assign(region.style,{left:layout.x+'px',top:layout.y+'px',width:layout.w+'px',height:layout.h+'px',visibility:preview?'':'hidden'});
   frame=document.createElement('iframe');
   frame.id='overheadFrame';frame.title='Interactive Overhead LGT-0003';
+  // Keep the approved static OH photo until the real interactive frame
+  // is loaded; never paint a dark empty iframe above the photo.
+  if(preview){
+   frame.style.visibility='hidden';
+   frame.addEventListener('load',()=>{
+    if(!frame?.hasAttribute('src'))return;
+    frame.style.visibility='';
+    preview.remove();
+    region.dataset.visualShell='overhead-hydrated';
+   });
+  }
   const url=window.B737UnifiedLightOverheadTest?'./overhead-real-f-in-unified-v10.html?v=PERF-0010':
    window.B737OverheadStaticTest?'./overhead-static-controls-stage.html?v=AB-CONTROLS-0001':
    window.B737OverheadCompositeTest?'./overhead-composite-stage.html?v=PERF-0004-COMPOSITE-TEST':layout.embeddedUrl;
