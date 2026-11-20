@@ -170,18 +170,40 @@
   const cockpitBase=new URL('/panel-mosaic-lab/cockpit/index.html',doc.baseURI);
   a.href=new URL(finalPath,cockpitBase).href;a.target='_blank';a.rel='noopener';return a;
  }
- function makeGroup(title,parent,open=false){
-  const details=element('details','workspace-group',undefined,parent);
-  details.open=open;element('summary','',title,details);
-  return element('div','workspace-group-content',undefined,details);
+ // Explicit accordion avoids native <details> clipping inside the floating grid.
+ // Each panel is a normal section; hidden and aria-expanded are always in sync.
+ function setGroupOpen(section,open){
+  if(!section)return;
+  const content=section.querySelector('.workspace-group-content');
+  const trigger=section.querySelector('.workspace-group-trigger');
+  if(!content||!trigger)return;
+  content.hidden=!open;
+  section.dataset.open=open?'true':'false';
+  trigger.setAttribute('aria-expanded',String(!!open));
+ }
+ function makeGroup(title,parent,number,open=false){
+  const section=element('section','workspace-group',undefined,parent);
+  const trigger=element('button','workspace-group-trigger',undefined,section);
+  trigger.type='button';
+  const name=element('span','workspace-group-title',title,trigger);
+  const content=element('div','workspace-group-content',undefined,section);
+  content.id='workspaceChapter'+number;
+  trigger.setAttribute('aria-controls',content.id);
+  trigger.addEventListener('click',()=>{
+   const opening=content.hidden;
+   setGroupOpen(section,opening);
+   if(opening)section.scrollIntoView?.({block:'nearest'});
+  });
+  setGroupOpen(section,open);
+  return content;
  }
  function refreshLabCounts(){
   for(const [number] of CHAPTERS){
    const host=$('workspaceChapter'+number);
-   const summary=host?.parentElement?.querySelector('summary');
-   if(!summary)continue;
-   let badge=summary.querySelector('.workspace-lab-count');
-   if(!badge)badge=element('span','workspace-lab-count',undefined,summary);
+   const trigger=host?.parentElement?.querySelector('.workspace-group-trigger');
+   if(!trigger)continue;
+   let badge=trigger.querySelector('.workspace-lab-count');
+   if(!badge)badge=element('span','workspace-lab-count',undefined,trigger);
    const count=host.querySelectorAll('.workspace-lab-item').length;
    badge.textContent=count+' LAB'+(count===1?'':'S');
   }
@@ -233,16 +255,24 @@
   const close=element('button','','×',top);close.type='button';close.setAttribute('aria-label','Close test labs');close.onclick=hideLabs;
   const input=element('input','workspace-lab-search',undefined,palette);
   input.type='search';input.placeholder='Search all test labs';input.setAttribute('aria-label','Search test labs');
+  const controls=element('div','workspace-lab-toolbar',undefined,palette);
+  const expand=element('button','','SHOW ALL LABS',controls);expand.type='button';
+  const collapse=element('button','','COLLAPSE ALL',controls);collapse.type='button';
   const area=element('div','workspace-lab-area',undefined,palette);
+  expand.addEventListener('click',()=>{
+   for(const section of area.querySelectorAll('.workspace-group')){section.hidden=false;setGroupOpen(section,true);}
+  });
+  collapse.addEventListener('click',()=>{
+   input.value='';
+   for(const section of area.querySelectorAll('.workspace-group')){
+    section.hidden=false;setGroupOpen(section,false);
+    section.querySelectorAll('.workspace-lab-item').forEach(item=>item.hidden=false);
+   }
+  });
   // Fixed FCOM Chapter 1–15 taxonomy. Every overhead and dynamic test lab
   // joins the chapter that owns its system; never create uncategorized tabs.
   for(const [number,title] of CHAPTERS){
-   const group=makeGroup(String(number).padStart(2,'0')+' · '+title,area,number===1);
-   group.id='workspaceChapter'+number;
-   const details=group.parentElement;
-   details.addEventListener('toggle',()=>{
-    if(details.open&&palette&&!palette.hidden)details.scrollIntoView({block:'nearest'});
-   });
+   makeGroup(String(number).padStart(2,'0')+' · '+title,area,number,number===1);
   }
   for(const [chapter,label,id] of ACTIONS)testEntry(label,id,$('workspaceChapter'+chapter));
   for(const [chapter,label,path] of LABS)linkEntry(label,path,$('workspaceChapter'+chapter));
@@ -274,10 +304,20 @@
   });
   input.addEventListener('input',()=>{
    const q=input.value.toLowerCase().trim();
-   for(const item of area.querySelectorAll('.workspace-lab-item')){
-    item.hidden=!!q&&!item.textContent.toLowerCase().includes(q);
+   let matches=0;
+   for(const section of area.querySelectorAll('.workspace-group')){
+    const title=section.querySelector('.workspace-group-title')?.textContent.toLowerCase()||'';
+    const titleMatch=!!q&&title.includes(q);
+    let visible=0;
+    for(const item of section.querySelectorAll('.workspace-lab-item')){
+     const match=!q||titleMatch||item.textContent.toLowerCase().includes(q);
+     item.hidden=!match;
+     if(match)visible++;
+    }
+    section.hidden=!!q&&!visible&&!titleMatch;
+    if(q&&!section.hidden){setGroupOpen(section,true);matches+=visible;}
    }
-   if(q)area.querySelectorAll('details').forEach(d=>d.open=true);
+   msg('workspaceLabStatus',q?(matches?matches+' matching lab entries':'No matching test labs'):'');
   });
   doc.addEventListener('pointerdown',event=>{
    if(!palette.hidden&&!palette.contains(event.target)&&event.target!==b)hideLabs();
@@ -417,11 +457,43 @@
  // two positions. The fixed mount/nut remains registered to the same pivot.
  let p15ValveSprite=null,p15ValveLoading=false,p15ValveFailed=false;
  const p15ValveSource='./assets/p15-approved-switch-5state-v3.webp?v=P15-5STATE-0042';
+ // Build OFF from the two unobscured halves of the SAME 8 KB source
+ // photographs. The stationary nut/red ring never rotates; the OFF pose
+ // consists of only the central metal ball, without any visible lever.
+ function fixedCenterSwitch(source){
+  const size=104,sprite=doc.createElement('canvas');
+  sprite.width=size*5;sprite.height=size;
+  const c=sprite.getContext('2d',{willReadFrequently:true});
+  if(!c)return source;
+  c.drawImage(source,0,0);
+  const upper=c.getImageData(size,0,size,size);
+  const lower=c.getImageData(0,0,size,size);
+  const center=c.createImageData(size,size);
+  for(let y=0;y<size;y++){
+   const t=Math.max(0,Math.min(1,(y-48)/8));
+   for(let x=0;x<size;x++){
+    const i=(y*size+x)*4;
+    for(let k=0;k<4;k++)
+     center.data[i+k]=Math.round(upper.data[i+k]*(1-t)+lower.data[i+k]*t);
+   }
+  }
+  c.putImageData(center,size*3,0);
+  c.save();c.beginPath();
+  c.ellipse(size*3+52,52,13.5,13.5,0,0,Math.PI*2);c.clip();
+  c.drawImage(source,37,8,31,32,size*3+37,36,31,32);c.restore();
+  return sprite;
+ }
  function ensureP15ValveSprite(){
   if(p15ValveSprite||p15ValveLoading||p15ValveFailed)return;
   p15ValveLoading=true;
   const img=new win.Image();img.decoding='async';
-  img.onload=()=>{p15ValveSprite=img;p15ValveLoading=false;drawFuelPanel();};
+  img.onload=()=>{
+   try{p15ValveSprite=fixedCenterSwitch(img);}catch(e){
+    p15ValveFailed=true;p15ValveSprite=null;
+    fuelMessage('P15 TEST GAGES centered sprite failed to initialize.',true);
+   }
+   p15ValveLoading=false;drawFuelPanel();
+  };
   img.onerror=()=>{p15ValveFailed=true;p15ValveLoading=false;
     fuelMessage('Approved P15 valve switch artwork unavailable.',true);};
   img.src=new URL(p15ValveSource,doc.baseURI).href;
@@ -523,7 +595,7 @@
  }
  function paintTestToggle(c){
   if(!p15ValveSprite)return;
-  // TEST GAGES = spring-loaded UP, OFF = horizontal resting position,
+  // TEST GAGES = spring-loaded UP, OFF = center ball only (no stem),
   // AUX FUEL DOOR SWITCH BYPASS = spring-loaded DOWN.
   const frame=services.fuelTest?2:services.fuelAuxPower?4:3;
   const size=88;

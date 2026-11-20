@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "30fff3b329d03932bdf9b6b900fc44ed200586ec",
+  "sourceCommit": "68ff0f3a03488ef048294140102d8277b320fb6b",
   "mainBefore": 294,
   "mainAfter": 92,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "b113be117ec6684e226d1424289b86cf9779f1a9c17bfd346616c7caa5a6d715"
+      "sha256": "008c6ff9413a931117e55071ecf5f2856b2c68c1353dad6af0c5bc04f643670e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -420,7 +420,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",
-      "sha256": "909416009df0d6281fe83a7ac89801801cef252ca99a5af4016bf849499df101"
+      "sha256": "32ec7e6cc0aafe02e6754057fc3562b84e0e52d35e98e9e403155bfd3af10451"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
@@ -596,7 +596,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "ae7adcec7dd16f331194d0069df81c434e47aa39e8b2d50352b802b4035f7477"
+      "sha256": "bfe47cf918387fc3725fbc6a44a2781f6b6c6d4c43ca314d6682ddc95f5501ca"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
