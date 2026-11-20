@@ -98,3 +98,22 @@ main{max-width:1540px;padding:12px}
  #efisCpMount{width:min(100%,500px)}
  .efis-physical-dock{padding:9px 7px}
 }
+
+/* TCAS-THREE-GLASS-0009 — independent Classic EADI, EHSI and integrated IVSI. */
+@media(min-width:1040px){
+ .screens{grid-template-columns:minmax(0,1.05fr) minmax(0,1.05fr) minmax(270px,.78fr);align-items:start}
+ .screens article{height:auto}
+}
+.ivsi-with-tcas{display:flex;flex-direction:column;align-items:stretch}
+#ivsi{display:block;width:100%;height:auto;aspect-ratio:420/590;
+ min-height:0;flex:0 0 auto;background:#060b10}
+.ivsi-note{padding:8px 12px 15px;margin:0;line-height:1.5;color:#9bc0d4;
+ font-size:11px;border-top:1px solid #29485b}
+#respond{background:#1f576f;border-color:#5b9db4;font-weight:750}
+#respond:focus-visible{outline:2px solid #b5e7ff;outline-offset:2px}
+.converging-option:has(input:disabled){opacity:.6;cursor:not-allowed}
+@media(min-width:751px) and (max-width:1039px){
+ .screens{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .screens .ivsi-with-tcas{grid-column:1/-1;width:min(480px,100%);justify-self:center}
+}
+@media(max-width:750px){.screens{grid-template-columns:1fr}}
