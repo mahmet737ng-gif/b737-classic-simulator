@@ -72,6 +72,11 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
     const tags=[...document.querySelectorAll('script[src]')];
     const resources=performance.getEntriesByType('resource');
     return {cockpitReadyMs:Number(d.unifiedCockpitReadyMs)||null,
+     visualReadyMs:Number(d.unifiedVisualReadyMs)||null,
+     systemsReadyMs:Number(d.unifiedSystemsReadyMs)||null,
+     fullyOperationalMs:Number(d.unifiedFullyOperationalMs)||null,
+     visualShellAdopted:window.B737VisualFirstShellV1?.adopted===true,
+     mainRegionCount:document.querySelectorAll('#region-main').length,
      mainReadyMs:Number(d.unifiedUsableMs)||null,
      complete:!!full?.complete,parts:full,profile:profile?.aircraftFamily,
      directWorker:navigator.serviceWorker.controller?.scriptURL||null,
@@ -135,6 +140,14 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
     assert.ok(result.copiedTrace>0,'Full readiness missing from opt-in trace');
    }
    assert.ok(result.cockpitReadyMs>0,'Full cockpit readiness milestone missing');
+   assert.equal(result.mainRegionCount,1,'Visual shell must be adopted, not duplicated');
+   assert.ok(result.visualShellAdopted,'Cockpit app must adopt first-paint DOM');
+   assert.ok(result.visualReadyMs>0,'Verified photo-first visual milestone missing');
+   assert.ok(result.systemsReadyMs>0,'Live-system ECU milestone missing');
+   assert.ok(result.visualReadyMs<=result.cockpitReadyMs,'Visual stage must precede full simulator');
+   assert.equal(result.fullyOperationalMs,result.cockpitReadyMs,'Full milestone mismatch');
+   if(mode==='fresh-context')assert.ok(result.visualReadyMs<=5000,
+    'First visible cockpit artwork exceeded the 5-second frontend target');
    if(mode==='fresh-context'){
     // End-to-end regression: lab counts are not sufficient. Every expanded
     // chapter must expose clickable items in the actual authenticated browser.
@@ -177,7 +190,7 @@ const {openHttpsFixture}=require('./https-fixture.cjs');
    }
    await context.close();
   }
-  console.log('GATEWAY COMPILED BOOT TEST PASSED; budget is 5000ms:',JSON.stringify(data.map(x=>({mode:x.mode,ms:x.cockpitReadyMs,within5s:x.cockpitReadyMs<=5000}))));
+  console.log('GATEWAY VISUAL-FIRST BOOT RESULTS:',JSON.stringify(data.map(x=>({mode:x.mode,visualMs:x.visualReadyMs,systemsMs:x.systemsReadyMs,fullyOperationalMs:x.fullyOperationalMs,visualWithin5s:x.visualReadyMs<=5000}))));
  }catch(error){console.error('GATEWAY BOOT TEST FAILED',error.stack||error);process.exitCode=1;}
  finally{await browser.close();await proxy?.close();}
 })();
