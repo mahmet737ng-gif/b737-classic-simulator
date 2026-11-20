@@ -16,7 +16,8 @@ const {chromium}=require('playwright');
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(pathToFileURL(path.join(__dirname,'index.html')).href,{waitUntil:'load'});
   await page.waitForFunction(()=>!!window.B737TcasEfisCPV1&&
-   !!document.querySelector('#ehsi [data-segment="active-route"]'),{timeout:12000});
+   !!document.querySelector('#ehsi [data-segment="active-route"]')&&
+   document.querySelector('#ivsi')?.dataset.ivsiPhoto==='original',{timeout:12000});
   const state=await page.evaluate(()=>({
    assetLoaded:document.querySelector('#efisCpMount .uefis-photo')?.naturalWidth>0,
    photoName:document.querySelector('#efisCpMount .uefis-photo')?.getAttribute('src'),
@@ -28,8 +29,16 @@ const {chromium}=require('playwright');
    ehsiBottom:document.querySelector('#ehsi')?.getBoundingClientRect().bottom,
    mode:document.querySelector('#ehsi')?.getAttribute('data-mode'),
    ambientTraffic:document.querySelectorAll('#ehsi [data-segment="traffic-other"][data-target-id^="OTHER-"]').length,
-   ivsiReady:document.querySelector('#ivsi')?.getAttribute('data-ra-id')!==null,
-   ivsiNeedle:document.querySelectorAll('#ivsi [data-layer="vs-needle"]').length,
+   ivsiReady:document.querySelector('#ivsi')?.dataset.ivsiPhoto==='original',
+   originalRenderer:!!window.B737ClassicPhotoIVSIV1?.renderLab,
+   originalBezel:getComputedStyle(document.querySelector('.photo-ivsi-face')).backgroundImage.includes('tcas-photo/ivsi.webp'),
+   scalePhoto:document.querySelector('#ivsi')?.width===403,
+   photoGlassBounds:(()=>{
+    const face=document.querySelector('.photo-ivsi-face').getBoundingClientRect();
+    const glass=document.querySelector('#ivsi').getBoundingClientRect();
+    return {x:(glass.left-face.left)/face.width,y:(glass.top-face.top)/face.height,
+     width:glass.width/face.width,height:glass.height/face.height};
+   })(),
    displayRects:['eadi','ehsi','ivsi'].map(id=>{
     const r=document.getElementById(id)?.getBoundingClientRect();
     return r?{left:r.left,right:r.right,top:r.top}:null;
@@ -47,7 +56,15 @@ const {chromium}=require('playwright');
   assert.equal(state.mode,'CTR_MAP');
   assert.ok(state.ambientTraffic<=2,'No more than two ambient OTHER contacts within 10 NM');
   assert.equal(state.ivsiReady,true,'Integrated IVSI must render on first paint');
-  assert.equal(state.ivsiNeedle,1,'IVSI must display one actual VS needle');
+  assert.equal(state.originalRenderer,true,'Must reuse original cockpit photo IVSI rendering code');
+  assert.equal(state.originalBezel,true,'Original 630 x 624 IVSI bezel image is required');
+  assert.equal(state.scalePhoto,true,'Original photo IVSI glass must remain 403 x 403');
+  assert.ok(Math.abs(state.photoGlassBounds.x-109/630)<.01&&
+   Math.abs(state.photoGlassBounds.y-112/624)<.01,
+   'IVSI glass must retain its original source-pixel position');
+  assert.ok(Math.abs(state.photoGlassBounds.width-403/630)<.01&&
+   Math.abs(state.photoGlassBounds.height-403/624)<.01,
+   'IVSI glass must retain its original source-pixel dimensions');
   assert.ok(state.displayRects.every(Boolean),'EADI/EHSI/IVSI must all have visible DOM frames');
   assert.ok(state.displayRects[0].right<=state.displayRects[1].left+12 &&
    state.displayRects[1].right<=state.displayRects[2].left+12,
@@ -79,14 +96,14 @@ const {chromium}=require('playwright');
   // Simulate stale browser checkbox state without dispatching a new event.
   await page.evaluate(()=>{document.getElementById('converging').checked=true;});
   await page.locator('#start').click();
-  assert.equal(await page.locator('#ivsi').getAttribute('data-ra-id'),'NONE',
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'NONE',
    'Passing traffic must never show a false descending RA at LOAD');
   const test=await page.evaluate(()=>{
    const stage=document.getElementById('status');
    const ivsi=document.getElementById('ivsi');
    for(let n=0;n<65;n++){
     document.getElementById('step').onclick();
-    if(ivsi.getAttribute('data-ra-id')!=='NONE')return {falseRa:true,at:n};
+    if(ivsi.getAttribute('data-tcas-ra-id')!=='NONE')return {falseRa:true,at:n};
    }
    return {falseRa:false,status:stage.textContent};
   });
