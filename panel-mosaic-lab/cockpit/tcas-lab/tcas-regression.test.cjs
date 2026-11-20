@@ -320,36 +320,40 @@ test('progressive flight-trajectory warning sequence distinguishes OTHER, PROX, 
  assert.deepEqual(stepScenario('DIVERGING_ABOVE',{}),['OTHER']);
 });
 
-test('IVSI TCAS shares RA sectors and traffic trend geometry with EHSI',()=>{
- const IVSI=require('./ivsi-tcas-v1.js');
- const own={vsFpm:1800};
- const output={mode:'TA_RA',advisory:'RA',ra:{id:'CLIMB',min:1500,max:null},
-  targets:[{id:'R1',kind:'RA',distance:1.8,relativeAltitude:-400,verticalRate:1200},
-   {id:'T2',kind:'TA',distance:3.1,relativeAltitude:500,verticalRate:-600},
-   {id:'P3',kind:'PROX',distance:4.8,relativeAltitude:-1000,verticalRate:100}]};
- const state=IVSI.model(own,output);
- assert.equal(state.raId,'CLIMB');
- assert.ok(state.zones.some(z=>z.kind==='RED'&&z.to===1500));
- assert.ok(state.zones.some(z=>z.kind==='GREEN'&&z.from===1500));
- assert.deepEqual(state.targets.map(t=>t.trend),['UP','DOWN',null]);
- assert.equal(IVSI.model({}, {ra:{id:'DESCEND',min:null,max:-1500}}).zones
-  .find(z=>z.kind==='RED').from,-1500);
- class FakeNode{
-  constructor(tag,doc){this.tagName=tag;this.ownerDocument=doc;this.children=[];this.attrs={};}
-  setAttribute(key,value){this.attrs[key]=String(value);}
-  appendChild(node){this.children.push(node);return node;}
-  replaceChildren(...nodes){this.children=nodes;}
+test('Original photographed TCAS IVSI is the shared cockpit and lab renderer',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../tcas-photo/ivsi.js'),'utf8');
+ assert.match(source,/B737ClassicPhotoIVSIV1=Object\.freeze\(\{renderLab\}\)/);
+ assert.match(source,/paintFace\(g,state,controls,own,vs,valid,pref\.full\)/);
+ assert.match(source,/paintFace\(canvas\.getContext\('2d'\),trafficState,selected,own/);
+ const photoPath=path.join(__dirname,'../tcas-photo/');
+ assert.ok(fs.existsSync(path.join(photoPath,'ivsi.webp')),'Original IVSI faceplate image is required');
+ assert.ok(fs.existsSync(path.join(photoPath,'scale.webp')),'Original integrated TCAS scale image is required');
+ const fakeWindow={},calls=[];
+ class Img{
+  constructor(){this.naturalWidth=403;}
+  set src(v){this.srcValue=v;}
  }
- const doc={createElementNS(_url,tag){return new FakeNode(tag,doc);}};
- const svg=new FakeNode('svg',doc);
- IVSI.render(svg,own,output);
- const flatten=n=>[n,...n.children.flatMap(flatten)],nodes=flatten(svg);
- assert.equal(svg.attrs['data-ra-id'],'CLIMB');
- assert.ok(nodes.some(n=>n.attrs['data-zone']==='RED'));
- assert.ok(nodes.some(n=>n.attrs['data-zone']==='GREEN'));
- assert.ok(nodes.some(n=>n.attrs['data-layer']==='vs-needle'));
- assert.ok(nodes.some(n=>n.attrs['data-trend']==='UP'));
- assert.ok(nodes.some(n=>n.attrs['data-trend']==='DOWN'));
+ const document={currentScript:{src:'https://trainer.test/panel-mosaic-lab/cockpit/tcas-photo/ivsi.js'},
+  baseURI:'https://trainer.test/panel-mosaic-lab/cockpit/'};
+ vm.runInNewContext(source,{window:fakeWindow,document,Image:Img,URL,requestAnimationFrame(){}});
+ const fn=fakeWindow.B737ClassicPhotoIVSIV1?.renderLab;
+ assert.equal(typeof fn,'function','Original photo IVSI exposes a stand-alone lab adapter');
+ const ctx=new Proxy({},{
+  get(_target,key){return (...params)=>{calls.push({key,args:params});};},
+  set(){return true;}
+ });
+ const canvas={width:403,height:403,dataset:{},getContext:()=>ctx};
+ const traffic={mode:'TA_RA',advisory:'RA',ra:{id:'CLIMB',min:1500,max:null},
+  targets:[{id:'UP',kind:'RA',distance:1.3,bearing:10,
+   relativeAltitude:-300,verticalRate:1200},{id:'DOWN',kind:'TA',distance:2.6,bearing:340,
+   relativeAltitude:500,verticalRate:-1000}]};
+ assert.equal(fn(canvas,{vsFpm:1800,trueHeadingDeg:0,altitudeFt:27000},traffic,{rangeNm:10,filter:'NORM'}),true);
+ assert.equal(canvas.dataset.ivsiPhoto,'original');
+ assert.equal(canvas.dataset.tcasRaId,'CLIMB');
+ assert.ok(calls.some(x=>x.key==='drawImage'),'Original photo IVSI scale must be painted');
+ assert.ok(calls.filter(x=>x.key==='arc').length>=2,'Original RA arc sectors must be drawn');
+ assert.ok(calls.some(x=>x.key==='fillText'&&x.args[0]==='↑'),'Original upward trend arrow required');
+ assert.ok(calls.some(x=>x.key==='fillText'&&x.args[0]==='↓'),'Original downward trend arrow required');
 });
 
 test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()=>{
@@ -358,7 +362,10 @@ test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()
  const eadi=fs.readFileSync(path.join(__dirname,'../../../efis-display-lab/eadi.js'),'utf8');
  assert.match(html,/id="respond">TAKE ACTION</);
  assert.equal((html.match(/id="ivsi"/g)||[]).length,1);
- assert.match(html,/ivsi-tcas-v1\.js/);
+ assert.match(html,/\.\.\/tcas-photo\/ivsi\.js/);
+ assert.match(html,/class="photo-ivsi-face"/);
+ assert.doesNotMatch(html,/ivsi-tcas-v1\.js/);
+ assert.match(app,/B737ClassicPhotoIVSIV1\?\.renderLab/);
  assert.match(app,/state\.eadi\.tcasFenceSimple=true/);
  assert.match(eadi,/if\(!e\.tcasFenceSimple\)/);
  assert.match(app,/fdHoldOffset=targetPitch-own\.pitchDeg/);
