@@ -300,7 +300,7 @@ function directBootSetup(){
   }
  });
  const main=assembly.regions.find(region=>region.id==='main');
- const photoURLs=[...new Set((main?.placements||[]).map(p=>firstPaint[p.asset]).filter(Boolean))];
+ const photoURLs=[...new Set([...(main?.placements||[]).map(p=>firstPaint[p.asset]),firstPaint['cdu-standalone-v6/assets/cdu-approved-unlit.png']].filter(Boolean))];
  const photoPreloads=photoURLs.map(url=>'<link rel="preload" as="image" href="'+url+'" fetchpriority="high">').join('');
  return photoPreloads+'<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
 }
