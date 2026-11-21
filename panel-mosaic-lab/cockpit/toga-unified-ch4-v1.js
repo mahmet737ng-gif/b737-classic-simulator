@@ -153,6 +153,8 @@
   if(!active())return;
   const next=T.advance(state,context(),0);
   if(next.singleEngine!==state.singleEngine||next.targetSpeedKt!==state.targetSpeedKt){
+   if(next.singleEngine!==state.singleEngine)
+    win.B737McpAFDSBridgeV1?.updateTogaEngine?.(next.singleEngine===true);
    state=next;lastFma='';publishFma();
    win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'ENGINE_FEEDBACK'}}));
   }
