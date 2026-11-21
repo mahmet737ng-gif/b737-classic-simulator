@@ -11,6 +11,7 @@
  let fcc=Guidance.createState(),protect=Protection.initial(),last=null;
  let directorServo={pitch:null,roll:null,lastMs:null};
  let owner=null,sourceError=null,lastAp=null,lastProtectionMs=0;
+ let lastRetardAt=0,retardFeedback='NOT_REQUESTED';
  // Per-seat copy of this FCC's cues for any late avionics-gateway paint.
  let liveDirector={CAPT:null,FO:null},directorAtMs=0;
  const faults={hydA:false,hydB:false,irsL:false,irsR:false,criticalSensor:false,radioAlt:false};
@@ -173,6 +174,26 @@
   protect=result.state;
   return result.disengage&&disconnect(result.reason,'COCKPIT_HARDWARE');
  }
+ // After FLARE capture the FCC commands the existing A/T engine servos
+ // to IDLE during the last 27 ft. 0.42 is an openly TRAINING-only initial
+ // lever fraction, not an AFM thrust schedule.
+ function applyRetard(frame){
+  const m=mcp(),ra=frame?.radioAltitudeFt;
+  if(m?.dualApproach?.retard!==true||m?.dualApproach?.flareEngaged!==true||
+      m?.controls?.atArm!==true||!Number.isFinite(ra))return;
+  const now=performance.now();if(now-lastRetardAt<150)return;
+  lastRetardAt=now;
+  const value=Math.max(0,Math.min(.42,(ra/27)*.42));
+  const engineOwner=win.B737ISNCockpitV1;
+  for(const engine of ['engine1','engine2']){
+   try{
+    const result=engineOwner?.ilsRetardThrottleCommand?.({
+     engine,value,controller:'B737_ILS_FCC_CH4_TRAINING'});
+    retardFeedback=result?.accepted===true?'ISN_ECU_RETARD_ACTIVE':
+     result?.reason||'ILS_RETARD_OWNER_NOT_READY';
+   }catch(error){retardFeedback='ILS_RETARD_ERROR_'+String(error?.message||error);}
+  }
+ }
  // Hydraulic, IRS and electrical protections apply during any powered A/P
  // session, not only when instructor flight dynamics is actively loaded.
  win.setInterval(()=>protectFlight(flight()),400);
@@ -210,7 +231,7 @@
   const frame=e.detail;
   if(frame?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||!isActive())return;
   publishFlightObservation(frame);
-  paintDirector(frame);protectFlight(frame);
+  applyRetard(frame);paintDirector(frame);protectFlight(frame);
  });
  win.addEventListener('b737:mcp-afds-state',()=>{
   const frame=flight();if(frame)paintDirector(frame);
@@ -252,6 +273,7 @@
    return liveDirector[key]?{...liveDirector[key]}:null;
   },
   getILS:()=>navInput(flight(),mcp()).radio,
+  getRetardFeedback:()=>retardFeedback,
   getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
    lastDisengagement:lastAp?{...lastAp}:null,sourceError,faults:{...faults}}),
   disconnectConfirmed:confirmedHardware,protectionSample:sample=>{
