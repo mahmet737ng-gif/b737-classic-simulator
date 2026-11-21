@@ -172,16 +172,21 @@
    acquireAltitude(v.altitude);
   }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
   if(nav?.togaActive===true){
-   // TO/GA: pitch guidance and ground-track roll steering remain valid
-   // even though the ROLL FMA is intentionally blank in this mode.
-   out.pitchValid=true;out.rollValid=true;
+   // Go-around pitch remains commanded while a separately selected roll
+   // mode can replace track-hold above 400ft per FCOM 4.20.24-26.
+   const rollSelected=!!m.lateral;
+   out.pitchValid=true;
    out.pitchCommandDeg=nav.togaPitchDeg??15;
-   out.rollCommandDeg=Number.isFinite(nav.togaTrackDeg)?
-    bankForHeading(nav.togaTrackDeg):0;
+   if(!rollSelected){
+    out.rollValid=true;
+    out.rollCommandDeg=Number.isFinite(nav.togaTrackDeg)?
+     bankForHeading(nav.togaTrackDeg):0;
+   }
    if(active){
-    out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ','HEADING'].includes(a.type));
+    out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ'].includes(a.type)&&
+     (rollSelected||a.type!=='HEADING'));
     out.actions.push({type:'VS',value:clamp(nav.togaVsFpm??1500,300,2200)});
-    if(Number.isFinite(nav.togaTrackDeg))
+    if(!rollSelected&&Number.isFinite(nav.togaTrackDeg))
      out.actions.push({type:'HEADING',value:norm(nav.togaTrackDeg)});
    }
   }
