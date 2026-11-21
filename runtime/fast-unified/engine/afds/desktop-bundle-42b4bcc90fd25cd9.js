@@ -932,7 +932,11 @@ try{
   if(active&&state){
    const dt=lastTick?Math.min(.3,Math.max(0,(now-lastTick)/1000)):0;
    lastTick=now;
-   try{if(!pause){
+   try{
+    // Read actual flap actuator travel while paused; only flight time and
+    // kinematics are frozen, not the physical setup of the aircraft.
+    syncAeroConfiguration();
+    if(!pause){
     if(now-lastEngineContextAt>=900){
      lastEngineContextAt=now;
      try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({
@@ -940,7 +944,6 @@ try{
       altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'});}
      catch(error){console.warn('ISN scenario flight context',error);}
     }
-    syncAeroConfiguration();
     followMcp();
     if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
    }}catch(error){
@@ -1027,7 +1030,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0004 */
+/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0005 */
 try{
 /* B737 Classic Unified — educational VOR/DME and ILS geometry.
  * Community reference data only. NOT an AIRAC database, approved approach,

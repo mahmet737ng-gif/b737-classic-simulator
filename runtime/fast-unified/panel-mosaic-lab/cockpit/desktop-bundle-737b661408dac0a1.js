@@ -121,7 +121,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./final10-approach-preset-v1.js?v=FINAL10-INTEGRATED-0002 */
+/* ./final10-approach-preset-v1.js?v=FINAL10-INTEGRATED-0003 */
 try{
 /* FLT PHASE FINAL_10 — B737 Classic training initialization.
  * Instructor-approved initial state, never a new electrical, engine, flap
@@ -131,7 +131,7 @@ try{
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0002';
+ const VERSION='FINAL10-INTEGRATED-0003';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null;
@@ -256,6 +256,18 @@ try{
     win.B737CockpitLights?.getState?.()?.inputs?.speedBrakeArmedIndication===true;
    result('SPEED_BRAKE_ARMED',armed,armed?'ARMED':'PEDESTAL_LEVER_OR_SENSOR_NOT_READY');
   }catch(error){result('SPEED_BRAKE_ARMED',false,error?.message);}
+  // Ensure the existing ATA32 landing gear selector is in DOWN and allow
+  // the original hydraulic actuator time to reach all three downlocks.
+  const gear=win.B737LandingGearUnifiedV1;
+  try{
+   const before=gear?.getState?.();
+   if(before?.lever!=='DN')gear?.select?.('DN');
+   const after=gear?.getState?.();
+   const down=after?.lever==='DN'&&
+    ['nose','left','right'].every(x=>after.gear?.[x]==='DOWN');
+   result('LANDING_GEAR_DOWN',down,down?'THREE_GEAR_DOWN_LOCKED':
+    after?'GEAR_DOWN_TRANSIT':'LANDING_GEAR_OWNER_NOT_READY');
+  }catch(error){result('LANDING_GEAR_DOWN',false,error?.message);}
   const flap=win.B737FlapVisualTest;
   try{
    if(flap?.position!==30)flap?.select?.(30);
@@ -299,7 +311,8 @@ try{
     applyOverhead();
    if(!check.NAV1_VOR?.ok||!check.NAV2_ILS?.ok)applyNavigation(live);
    if(!check.FLAP_LEVER_30?.ok||!check.FLAP_ACTUAL_30?.ok||
-      !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok)applyConfiguration();
+      !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok||
+      !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
    if(!check.MCP?.ok)applyMcp(live);
    publish();
    if(++count>=70||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){

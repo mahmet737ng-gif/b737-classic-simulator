@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "34d0caae89220acd21b348d26d296b09e73773b0",
+  "sourceCommit": "f0035512862d22c1fa8a294387551bc034f0b9e7",
   "mainBefore": 304,
   "mainAfter": 96,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "5b34c9ec92fb4e2789ae5a16336b3a4a5c14b3de3ec14106e047eaaf0d12c118"
+      "sha256": "fc996920be31e22dc73144c39da417f2192d347614e90ee5022a1f4649f52c40"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -159,12 +159,12 @@
       "sha256": "1b98487124bc19385559609a45865ec50da3896b84df269cff69ee803cee30b5"
     },
     {
-      "path": "engine/afds/desktop-bundle-77d197ab010f80d3.js",
-      "sha256": "77d197ab010f80d366465cf05a072b7cd0d6f9321456afc62f51ee2778772f08"
+      "path": "engine/afds/desktop-bundle-42b4bcc90fd25cd9.js",
+      "sha256": "42b4bcc90fd25cd916666e2e6ffd5af0cfe7935af01a6171c173d99e30202814"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-d0a68c340bf1929b.js",
-      "sha256": "d0a68c340bf1929bd1c078bee0e4f39e3efdfa0d3bb85234ef1a2c88044c2ad9"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-737b661408dac0a1.js",
+      "sha256": "737b661408dac0a1e63afd2c7dac0b45b61c37d8c30b0b75506478d5b96c7ab3"
     },
     {
       "path": "engine/afds/desktop-bundle-a2e69c39a90ae99b.js",
