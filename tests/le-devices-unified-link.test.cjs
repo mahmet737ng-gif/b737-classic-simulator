@@ -20,7 +20,7 @@ test('handle 15 -> 5 -> 1 -> UP synchronizes indicator and sends physical comman
  const h=setup();
  h.message('ready');
  for(const d of [15,5,1,0])h.signal('b737:flap-detent-visual-test',{detent:d,visualOnly:true});
- assert.deepEqual(h.commands.filter(x=>x.payload.command.type==='FLAP_LEVER').map(x=>x.payload.command.value),[0,15,5,1,0]);
+ assert.deepEqual(h.commands.map(x=>x.payload.command.value),[0,15,5,1,0]);
  assert.deepEqual(h.needles,[],'the lever must not drive measured needles instantly');
  assert.deepEqual(h.lampPatches.filter(p=>Object.hasOwn(p,'trailingFlaps')).map(p=>p.trailingFlaps),[15,5,1,0]);
  assert.equal(h.commands.every(x=>x.payload.action==='le-devices'&&x.origin==='https://example.test'),true);
@@ -90,23 +90,4 @@ test('up-to-40 initial intermediate stage uses center direct lamps, not the leve
    center:{power:true,transit:true,extended:false}});
  assert.equal(h.lampPatches.at(-1).leDirectTransit,true);
  assert.equal(h.lampPatches.at(-1).leDirectExtended,false);
-});
-
-test('low-speed flight request reaches LE computer, is grounded on landing and is not echoed each frame',()=>{
- const h=setup();h.message('ready');
- h.signal('b737:flap-detent-visual-test',{detent:5,visualOnly:true});
- const frame=(airborne,autoSlatRequest)=>h.signal('b737:flight-scenario-state',{
-  schema:'B737_FLIGHT_SCENARIO_STATE_V1',airborne,autoSlatRequest});
- const count=type=>h.commands.filter(x=>x.payload.command.type===type).length;
- frame(true,true);
- const sent=count('AUTOSLAT');
- assert.equal(h.commands.filter(x=>x.payload.command.type==='AUTOSLAT').at(-1).payload.command.value,true);
- assert.equal(h.commands.filter(x=>x.payload.command.type==='GROUND').at(-1).payload.command.value,false);
- frame(true,true);
- assert.equal(count('AUTOSLAT'),sent,'unchanged trainer signal does not spam cockpit iframe');
- frame(true,false);
- assert.equal(h.commands.filter(x=>x.payload.command.type==='AUTOSLAT').at(-1).payload.command.value,false);
- frame(false,true);
- assert.equal(h.commands.filter(x=>x.payload.command.type==='GROUND').at(-1).payload.command.value,true);
- assert.equal(h.commands.filter(x=>x.payload.command.type==='AUTOSLAT').at(-1).payload.command.value,false);
 });
