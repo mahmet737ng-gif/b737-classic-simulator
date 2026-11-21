@@ -394,6 +394,15 @@ function transition(state,action){
       f.dualIlsValid===true&&Number.isFinite(ra)&&ra<1500){
    s.dualApproach.coupled=true;s.dualApproach.flareArmed=true;
   }
+  // FCOM SHI 4.20.22: when a dual approach reaches about 350 ft RA
+  // without FLARE armed, BOTH engaged A/P channels disengage.
+  if(s.dualApproach.second&&Number.isFinite(ra)&&ra<=350&&
+     s.dualApproach.flareArmed!==true){
+   s.lastAutopilotDisengagement={reason:'FLARE_NOT_ARMED_BY_350_RA',source:'SIMULATED_FCC'};
+   s.modes.autopilot=null;
+   s.dualApproach.second=null;s.dualApproach.coupled=false;
+   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
+  }
   if(s.dualApproach.coupled&&s.dualApproach.flareArmed&&
       Number.isFinite(ra)&&ra<=50&&s.nav.loc&&s.nav.gs){
    s.dualApproach.flareEngaged=true;s.capture.pitch='FLARE';
