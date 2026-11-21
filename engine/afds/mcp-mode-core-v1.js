@@ -588,6 +588,8 @@ function output(s){
   lamps.AT_ARM=s.autoThrottleArm;
   for(const x of [...lateral,...vertical,...thrust])if(lamps[x]!==undefined)lamps[x]=s.modes[x==="N1"||x==="SPEED"?"thrust":lateral.includes(x)?"lateral":"vertical"]===x;
   for(const x of ["CMD_A","CMD_B","CWS_A","CWS_B"])lamps[x]=s.modes.autopilot===x;
+  if(s.dualApproach.second==='CMD_A')lamps.CMD_A=true;
+  if(s.dualApproach.second==='CMD_B')lamps.CMD_B=true;
   // APP indication never claims a capture without evidence.
   // FCOM 4.10.16: APP illuminates when armed, not only after capture.
   // Extinguish it after both localizer and glideslope have captured.
