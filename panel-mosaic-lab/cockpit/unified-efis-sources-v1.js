@@ -168,6 +168,9 @@
   // verified legs, no unresolved discontinuity and operational FMC evidence.
   const evidence=fmc?.guidance?.routeEvidenceReady===true&&fmc.route?.active===true&&
    fmc.route.legsVerified===true&&fmc.route.discontinuitiesUnknown===false&&
+   data.source==='PMDG_WORLD_2610_WITH_PROCEDURES_R1'&&
+   points.every(p=>typeof p.name==='string'&&
+    Number.isFinite(p.lat)&&Number.isFinite(p.lon))&&
    aircraft&&projected.length===points.length;
   if(evidence){
    const requested=[fmc.route.activeWaypointIndex,fmc.route.activeLegIndex,
@@ -228,6 +231,33 @@
    activeWaypoint:target.name,distanceNm:distance,eta,
    source:route.activeSource};
  }
+ function positionDifference(snapshot,source){
+  const fmc=source?.fmc;
+  const pos=fmc?.position;
+  // FCOM 10.32.22 does not state the numeric threshold here: never
+  // invent a tolerance. Compare only when the FMC provides a verified
+  // configured positive position-difference limit.
+  const limit=fmc?.positionDifferenceLimitNm;
+  if(!fmc?.operational||pos?.quality!=='VALID'||
+   !(Number.isFinite(limit)&&limit>0&&limit<=100))return [];
+  const center=coordinate(pos.latitudeDeg,pos.longitudeDeg,'FMC');
+  if(!center)return [];
+  const chosen=source.irs===2?'R':'L';
+  const out=[];
+  for(const [side,topic] of [['L','irs.left'],['R','irs.right']]){
+   const record=snapshot?.[topic],unit=record?.quality==='VALID'?record.value:null;
+   if(unit?.powered!==true||unit.positionValid!==true)continue;
+   const peer=coordinate(unit.lat,unit.lon,'IRS '+side);
+   if(!peer)continue;
+   const delta=offsets(center,peer),distance=Math.hypot(delta.x,delta.y);
+   if(distance<=limit)continue;
+   out.push({side,distanceNm:distance,bearingTrueDeg:
+    ((Math.atan2(delta.x,delta.y)*180/Math.PI)%360+360)%360,
+    referenceSide:side===chosen});
+  }
+  out.sort((a,b)=>Number(b.referenceSide)-Number(a.referenceSide));
+  return out;
+ }
  function bind(win){
   let requested={},applied={},preset='LIVE';
   const faults={1:false,2:false};
@@ -279,5 +309,5 @@
    setSgFailure(n,on){if(![1,2].includes(n))throw Error('Invalid SG');faults[n]=on===true;notify();}
   });
  }
- return Object.freeze({resolve,route,fullNavFromRoute,offsets,bind});
+ return Object.freeze({resolve,route,fullNavFromRoute,positionDifference,offsets,bind});
 });
