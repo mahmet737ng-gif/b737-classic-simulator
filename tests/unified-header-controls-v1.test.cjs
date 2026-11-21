@@ -38,7 +38,8 @@ const recharge=read('battery-recharge-header-v1.js');
 assert.ok(!recharge.includes("bar.querySelector('#cbPanelOpen')"),'Battery charge must not reattach to top bar');
 const failureMenu=read('failures-header-v1.js');
 assert.ok(html.includes('id="failuresHeaderOpen"'),'FAILURES must be visible beside the other header controls');
-assert.ok(html.includes('failures-header-v1.css?v=FAILURES-FUEL-0002'));
+assert.ok(read('unified-css-safe-04-v1.css').includes('BEGIN failures-header-v1.css'),
+ 'FAILURES styling must be included in the original-cascade optimized CSS bundle');
 assert.ok(html.includes('failures-header-v1.js?v=FAILURES-FUEL-0002'));
 assert.ok(failureMenu.includes("const GROUPS="),'Electrical branch must be extensible');
 new vm.Script(failureMenu,{filename:'failures-header-v1.js'});
