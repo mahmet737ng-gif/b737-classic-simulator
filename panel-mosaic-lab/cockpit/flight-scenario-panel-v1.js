@@ -230,6 +230,9 @@
     case 'HEADING':return t.lateralMode==='HEADING'&&Math.abs(Core.angle(t.headingDeg,action.value))<.01;
     case 'BANK_LIMIT':return t.bankLimitDeg===action.value;
     case 'VS':return t.verticalMode==='VS'&&t.vsFpm===action.value;
+    case 'ALT_ACQ':return t.verticalMode==='ALT_ACQ'&&
+     state.altitudeCapture?.phase==='ACQUIRE'&&
+     Math.abs(t.altitudeFt-action.value)<.01;
     case 'ALTITUDE':return t.verticalMode==='ALTITUDE'&&Math.abs(t.altitudeFt-action.value)<.01;
     case 'SPEED':return Math.abs(t.speedKt-action.value)<.01;
     default:return false;
