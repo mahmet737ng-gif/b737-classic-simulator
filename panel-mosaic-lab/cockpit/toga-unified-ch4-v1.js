@@ -28,7 +28,7 @@
    // Presence of both engines running is checked independently from pump/fuel faults.
    selectedSpeedKt:m?.values?.speed??f?.iasKt,
    v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
-   flareArmed:m?.dualApproach?.flareArmed===true,touchedDown:f?.phase==='LANDED',
+   flareArmed:m?.dualApproach?.flareArmed===true,touchedDown:f?.phase==='LANDING_ROLL',
    isTakeoffMode:state.phase==='TO',
    // FCOM 4.20.14-15 FSI/FST option: takeoff roll FMA HDG SEL, unlike
    // other variants with a BLANK lateral TO/GA mode. EP-FSI uses FSI.
