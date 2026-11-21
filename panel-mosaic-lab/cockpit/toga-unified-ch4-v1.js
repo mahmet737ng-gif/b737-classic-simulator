@@ -115,7 +115,7 @@
   }
   state=next;
   if(state.phase==='GA'&&was!=='GA')
-   win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD');
+   win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD',next.singleEngine===true);
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
   if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
    // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL
