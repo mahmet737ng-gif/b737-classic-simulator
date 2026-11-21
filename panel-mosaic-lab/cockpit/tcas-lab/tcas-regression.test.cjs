@@ -73,11 +73,64 @@ test('automatic left/right convergence climbs or descends through own altitude',
    assert.equal(Math.sign(s.targets[0].verticalRate),sign);
    assert.ok(side==='LEFT'?g.bearing>180:g.bearing<180);
    const sequence=new Set();
-   for(let n=0;n<=75;n++){s=TCAS.step(s,o,n?1:0,TCAS.controls());sequence.add(s.output.stage);}
+   // The actual crossing is at ~64 s; post-RA clearance cannot be
+   // validated at 75 s when 3-D separation is still inside the encounter.
+   for(let n=0;n<=140;n++){s=TCAS.step(s,o,n?1:0,TCAS.controls());sequence.add(s.output.stage);}
    for(const stage of ['TA',id,'CLEAR OF CONFLICT'])assert.ok(sequence.has(stage),id+' '+side+' '+stage);
   }
  }
 });
+test('RA and IVSI red/green bands persist until verified safe separation after TAKE ACTION',()=>{
+ const scenarios=['CLIMB','DESCEND'];
+ for(const id of scenarios){
+  const o={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,
+   tasKt:440,gsKt:448,iasKt:293,pitchDeg:2,vsFpm:0,
+   trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0};
+  let encounter=TCAS.create(id,o,{progressive:true,distanceNm:4.5});
+  let responding=false,pitchTarget=2,rate=0,raStarted=null,clearedAt=null,activeAfter10=false;
+  let formerPitch=2,displayedBands=0;
+  for(let tick=0;tick<650;tick++){
+   const dt=tick?.2:0;
+   if(responding){
+    const desired=Math.max(-.55,Math.min(.55,(pitchTarget-o.pitchDeg)*.95));
+    rate+=Math.max(-.45*dt,Math.min(.45*dt,desired-rate));
+    const d=rate*dt,remaining=pitchTarget-o.pitchDeg;
+    if(Math.abs(d)>=Math.abs(remaining)){o.pitchDeg=pitchTarget;rate=0;}
+    else o.pitchDeg+=d;
+    assert.ok(Math.abs(o.pitchDeg-formerPitch)<=.55*dt+1e-8,id+' pitch response exceeded rate limit');
+    o.vsFpm=Math.sin((o.pitchDeg-2)*Math.PI/180)*o.tasKt*6076.11549/60;
+    o.altitudeFt+=o.vsFpm*dt/60;
+    o.radioAltitudeFt+=o.vsFpm*dt/60;
+   }
+   formerPitch=o.pitchDeg;
+   encounter=TCAS.step(encounter,o,dt,TCAS.controls());
+   const {output}=encounter;
+   if(!responding&&output.ra){
+    raStarted=encounter.time;
+    const ra=output.ra,t=output.targets.find(x=>x.kind==='RA');
+    const h=Math.max(5,Math.min(35,t?.tcpaSec??20));
+    const need=id==='CLIMB'?Math.max(ra.min,t.verticalRate+(t.relativeAltitude+600)*60/h)
+     :Math.min(ra.max,t.verticalRate+(t.relativeAltitude-600)*60/h);
+    pitchTarget=Math.max(-12,Math.min(12,TCAS.pitchForVs(need,o)));
+    responding=true;
+   }
+   if(responding&&output.ra){
+    displayedBands++;
+    assert.equal(output.advisory,'RA',id+' must keep RA advice alongside IVSI band');
+    assert.equal(output.ra.id,id,'No unwanted RA sense switch while geometry remains protected');
+    if(encounter.time-raStarted>=10&&!output.recoveryReady)activeAfter10=true;
+   }
+   if(output.clearOfConflict){clearedAt=encounter.time;break;}
+  }
+  assert.ok(raStarted!==null,id+' must reach an actual RA');
+  assert.ok(activeAfter10,id+' red/green guidance must persist through active conflict');
+  assert.ok(clearedAt-raStarted>=20,id+' must not instantly clear after manual Take Action');
+  assert.ok(clearedAt-raStarted<100,id+' must eventually clear when separation becomes stable');
+  assert.ok(displayedBands>80,id+' IVSI must have red/green guidance for more than 16 sec');
+  assert.ok((id==='CLIMB'?pitchTarget>2:pitchTarget<2),'Manual pitch must follow RA sense');
+ }
+});
+
 test('quick encounter controls precede EADI/EHSI, optional settings follow',()=>{
  const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
  for(const id of ['scenario','start','play','step','respond','converging','intruderSide','displayMode','range','tfc','mode','eadi','ehsi'])
