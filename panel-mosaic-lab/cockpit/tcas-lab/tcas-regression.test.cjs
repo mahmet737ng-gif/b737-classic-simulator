@@ -165,11 +165,17 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  get('respond').onclick();
  assert.equal(eadi.afds,'FD');assert.equal(eadi.apEngaged,false);assert.equal(eadi.fd,true);
  assert.deepEqual(fma(eadi),before,'FMC, VNAV and LNAV modes unchanged');
- const fdScreenOffset=eadi.fdPitch-eadi.pitch,commanded=Number(get('pitch').value);
+ const cruiseLevelReference=eadi.fdPitch,commanded=Number(get('pitch').value);
+ assert.equal(cruiseLevelReference,2,'Cruise FD commands level, independent of RA');
  assert.ok(Number.isFinite(commanded)&&commanded>=-12&&commanded<=12,'RA pitch target remains available up to 12°');
+ const pitchBefore=eadi.pitch;
  get('step').onclick();
- assert.ok(Math.abs((eadi.fdPitch-eadi.pitch)-fdScreenOffset)<1e-8,
-  'Flight director bars stay in place on manual RA even as pitch changes');
+ assert.ok(Math.abs(eadi.pitch-pitchBefore)<=.55+1e-8,
+  'Manual RA response may change pitch at no more than 0.55 deg/s');
+ assert.equal(eadi.fdPitch,cruiseLevelReference,
+  'FD retains level pitch, not the manual RA commanded pitch');
+ assert.ok(eadi.fdPitch-eadi.pitch<=cruiseLevelReference-pitchBefore+1e-8,
+  'Level cruise FD must not cue pitch-UP when manual RA aircraft pitches upward');
  get('start').onclick();assert.equal(eadi.afds,'CMD','LOAD resets autopilot to CMD');
  get('pitch').value='2';get('vs').value='0';get('scenario').value='REVERSAL_DESCEND';get('start').onclick();
  assert.equal(eadi.tcasRa?.id,'CLIMB','Reversal load begins in CLIMB RA');
@@ -468,8 +474,9 @@ test('TCAS Lab presents three real displays, no RA hatching, and TAKE ACTION',()
  assert.match(app,/B737ClassicPhotoIVSIV1\?\.renderLab/);
  assert.match(app,/state\.eadi\.tcasFenceSimple=true/);
  assert.match(eadi,/if\(!e\.tcasFenceSimple\)/);
- assert.match(app,/fdHoldOffset=targetPitch-own\.pitchDeg/);
- assert.match(app,/own\.pitchDeg\+\(fdHoldOffset\?\?0\)/);
+ assert.match(app,/state\.eadi\.fdPitch=LEVEL_CRUISE_PITCH_DEG/);
+ assert.doesNotMatch(app,/fdHoldOffset/);
+ assert.match(app,/maxRate=\.55,maxAcceleration=\.45/);
  assert.match(app,/commandedPitchForRa/);
  assert.match(app,/options=\{progressive:true,/);
  assert.match(app,/distanceNm:requestedId\.startsWith\('REVERSAL_'\)/);
