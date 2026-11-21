@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0013-3DRUM-DOWN-0002-GROUND-RED-0001&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001 */
+/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-GA-BUG-0014-3DRUM-DOWN-0002-GROUND-RED-0001&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001 */
 try{
 /* B737 Classic EADI speed tape — event-driven read-only integration and paint.
  * FCOM 10.30.13–15, 10.40.6–8; uses independent CAPT ADC1 / FO ADC2.
@@ -419,6 +419,15 @@ try{
     }catch(error){win?.console?.warn?.('CH4 speed-limit projection rejected',error);}
    }
   });
+  // FCC GA target on both EADIs, independently of the MCP speed window.
+  const receiveToga=detail=>{
+   const active=Boolean(detail?.phase==='GA'&&Number.isFinite(detail?.targetSpeedKt));
+   for(const seat of ['CAPT','FO'])dispatch(seat,{type:'TOGA_TARGET',
+    source:'SIMULATED_FCC',active,targetSpeedKt:active?detail.targetSpeedKt:null});
+  };
+  root.addEventListener('b737:toga-mode',e=>receiveToga(e.detail));
+  root.addEventListener('b737:flight-scenario-stopped',()=>receiveToga(null));
+  receiveToga(root.B737UnifiedTOGACh4V1?.getState?.());
   root.addEventListener('b737:mcp-afds-state',syncMcp);
   root.addEventListener('b737:avionics-data',e=>{
    if(['airdata.adc1','airdata.adc2'].includes(e.detail?.topic))syncNetwork();

@@ -38,6 +38,25 @@
   }
   return latest;
  }
+ // Already-established final-approach flap/LE configuration: never shown moving.
+ // Reuse owner-locked actuator laws by replaying their prior 48s in memory.
+ function loadFinal10ReadyFlaps(){
+  stopMotion();physicalMotion=true;
+  te=actuator.initialState();state=engine.initialState('NORMAL');
+  state=engine.apply(state,{type:'GROUND',value:false});
+  source='FLIGHT_SCENARIO_FINAL10';mode='NORMAL';
+  te=actuator.apply(te,{type:'COMMAND',value:30});
+  state=engine.apply(state,{type:'FLAP_LEVER',value:30});
+  state=engine.apply(state,{type:'START_LE_SEQUENCE'});
+  for(let i=0;i<48;i++){
+   te=actuator.apply(te,{type:'TICK',seconds:1});
+   state=engine.apply(state,{type:'FOLLOW_TE',position:te.actual,command:30});
+   state=engine.apply(state,{type:'TICK',seconds:1,motionProfile:'TIMED',pressureFactor:1});
+  }
+  if(Math.abs(actuator.evaluate(te).actual-30)>0.001)
+   throw Error('FINAL10_FLAP_PRESET_INCOMPLETE');
+  return paint();
+ }
  function apply(action){
   if(action.type==='HYDRAULIC_PRESSURE'){
    te=actuator.apply(te,{type:'PRESSURE',psi:action.psi});
@@ -123,6 +142,12 @@
  // Parent cockpit can send explicit LE commands without an invented hidden authority.
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;
+  if(e.data.action==='final10-flight-preset'){
+   if(e.data.originator==='FLIGHT_SCENARIO_FINAL10'&&e.data.flaps===30)
+    try{loadFinal10ReadyFlaps();}
+    catch(err){console.warn('FINAL10 flap preset rejected',err.message);}
+   return;
+  }
   if(e.data.action==='le-devices'&&e.data.command){
    try{
     const cmd=e.data.command;

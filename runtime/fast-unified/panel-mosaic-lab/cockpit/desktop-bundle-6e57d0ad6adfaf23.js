@@ -742,7 +742,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-control-laws-v1.js?v=FLIGHT-CONTROL-0002-LAG-SINK */
+/* ../../engine/flight/flight-control-laws-v1.js?v=TOGA-PITCH-FOLLOW-0001 */
 try{
 /* Unified B737 Classic instructor-only coupled AFDS/flight-plant control laws.
  * Same bank/pitch targets are used by the FCC command bars AND aircraft plant.
@@ -797,8 +797,11 @@ try{
   else if(target.verticalMode==='GLIDEPATH'&&finite(target.glideVsFpm))
    vs=target.glideVsFpm;
   vs=clamp(vs,-5000,5000);
-  return {desiredBankDeg:bank,desiredVsFpm:vs,
-   desiredPitchDeg:pitchForVs(vs,tas),rates:RATES};
+  const pitchHold=target.verticalMode==='PITCH'&&finite(target.pitchDeg);
+  const desiredPitchDeg=pitchHold?clamp(target.pitchDeg,-10,15):pitchForVs(vs,tas);
+  return {desiredBankDeg:bank,
+   desiredVsFpm:pitchHold?vsForPitch(desiredPitchDeg,tas):vs,
+   desiredPitchDeg,rates:RATES};
  }
  function move(current,target,maxRate,dt){
   if(!finite(current)||!finite(target)||!finite(maxRate)||!finite(dt)||dt<0)throw TypeError('CONTROL_SLEW');
@@ -811,12 +814,14 @@ try{
    frame.flightControl.commandedPitchDeg:frame.pitchDeg;
   const previousBank=finite(frame.flightControl?.commandedBankDeg)?
    frame.flightControl.commandedBankDeg:frame.bankDeg;
+  const directPitch=target.verticalMode==='PITCH';
+  const pitchTau=directPitch?1:RATES.pitchCommandTauSec;
   const pitchDemand=previousPitch+(desired.desiredPitchDeg-previousPitch)*
-   (1-Math.exp(-dt/RATES.pitchCommandTauSec));
+   (1-Math.exp(-dt/pitchTau));
   const bankDemand=previousBank+(desired.desiredBankDeg-previousBank)*
    (1-Math.exp(-dt/RATES.rollCommandTauSec));
   const bankDeg=move(frame.bankDeg,bankDemand,RATES.rollDegSec,dt);
-  const pitchDeg=move(frame.pitchDeg,pitchDemand,RATES.pitchDegSec,dt);
+  const pitchDeg=move(frame.pitchDeg,pitchDemand,directPitch?2.2:RATES.pitchDegSec,dt);
   // Loss of lift below the instructor-estimated stall envelope adds sink.
   // This is NOT a certified stall/alpha protection law.
   const sinkDemand=finite(frame.aeroEnvelope?.sinkDemandFpm)?
@@ -834,7 +839,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-scenario-core-v1.js?v=FINAL10-ONE-DOT-LOW-0001&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ../../engine/flight/flight-scenario-core-v1.js?v=FINAL10-PITCH-0001&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Core v1 — deterministic, offline training model.
  * NOT FCOM performance, not a certified aerodynamic model or navigation source.
@@ -978,6 +983,9 @@ try{
        next.altitudeCapture.targetAltitudeFt!==next.target.altitudeFt)
      next.altitudeCapture=null;
     break;
+   case 'PITCH':
+    next.target.pitchDeg=finite(action.value,-10,15,'PITCH');
+    next.target.verticalMode='PITCH';next.altitudeCapture=null;break;
    case 'VS':
     next.target.vsFpm=finite(action.value,-5000,5000,'VS');
     next.target.verticalMode='VS';next.altitudeCapture=null;
@@ -1120,7 +1128,7 @@ try{
     wantVS=clamp(-Math.max(0,s.gsKt)*5.307+
      clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
-   const commanded={...target,verticalMode:'VS',vsFpm:wantVS};
+   const commanded={...target,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
    const control=Laws?.stepAttitude(s,commanded,dt);
    if(control){
     // Pitch, vertical response, and bank are one physical control chain.
@@ -1139,7 +1147,8 @@ try{
     const error=angle(s.trueHeadingDeg,target.headingDeg);
     const bank=target.lateralMode==='BANK'?target.bankCommandDeg:clamp(error*.65,-limit,limit);
     s.bankDeg+=clamp(bank-s.bankDeg,-3.2*dt,3.2*dt);
-    const desiredPitch=clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
+    const desiredPitch=target.verticalMode==='PITCH'?clamp(target.pitchDeg,-10,15):
+     clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
     s.pitchDeg+=clamp(desiredPitch-s.pitchDeg,-1.15*dt,1.15*dt);
     const actualVs=clamp(Math.tan((s.pitchDeg-2)*RAD)*Math.max(s.tasKt*KT_TO_MPS,35)*60/.3048,-5000,5000);
     s.vsFpm+=clamp(actualVs-s.vsFpm,-420*dt,420*dt);

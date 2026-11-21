@@ -149,7 +149,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT */
+/* ./flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT-FINAL10-READY-0001 */
 try{
 (function(){
  'use strict';
@@ -190,6 +190,10 @@ try{
       output(gate?'GATE '+position+' • tap again':'FLAP '+position+(position===0?' / UP':''));});
    return true;
  }
+ // Scenario initialization only; normal pilot movement retains gate detents.
+ function presetFinal10(){if(!mounted||!config||!overlay||!sprite)return false;
+  if(queuedTimer!==null){clearTimeout(queuedTimer);queuedTimer=null;}
+  busy=false;position=30;paint();return true;}
  function moveBySwipe(direction){
    if(!model||busy)return false;
    return request(model.swipe(position,direction));
@@ -324,6 +328,7 @@ try{
      window.B737FlapVisualTest=Object.freeze({
        get position(){return position;},
        request,select:request,
+       presetFinal10,
        swipe:moveBySwipe,
        reset(){if(busy)return false;position=0;paint();return true;},
        positions:Object.freeze(VALUES.slice()),
