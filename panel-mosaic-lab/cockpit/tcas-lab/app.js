@@ -125,6 +125,10 @@
   state.eadi.fdRoll=0;
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
+  // Test instrumentation: expose the unchanged VNAV pitch target separately
+  // from aircraft pitch, so automated browser checks detect FD follow-up drift.
+  by('eadi').dataset.fdTargetPitchDeg=String(state.eadi.fdPitch);
+  by('eadi').dataset.actualPitchDeg=String(state.eadi.pitch);
   const cruise=Cruise.route({elapsedSec:own.elapsedSec,groundSpeedKt:own.gsKt});
   const ambientAll=Cruise.ambient({elapsedSec:own.elapsedSec,ownAltitudeFt:own.altitudeFt,
    initialAltitudeFt,ownGroundSpeedKt:own.gsKt});
