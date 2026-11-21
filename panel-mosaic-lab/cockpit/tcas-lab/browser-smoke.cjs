@@ -122,7 +122,7 @@ const {chromium}=require('playwright');
   // Simulate stale browser checkbox state without dispatching a new event.
   await page.evaluate(()=>{document.getElementById('converging').checked=true;});
   await page.locator('#start').click();
-  assert.match(await page.locator('#scenarioStatus').textContent(),/LOADED #\\d+ · TA only.*RUNNING/,
+  assert.match(await page.locator('#scenarioStatus').textContent(),/LOADED #[0-9]+ · TA only.*RUNNING/,
    'LOAD must visibly start the selected scenario immediately');
   assert.equal(await page.locator('#play').textContent(),'PAUSE');
   await page.locator('#play').click(); // Pause auto-play before deterministic STEP tests.
