@@ -4,11 +4,18 @@
  let settings=C.controls(),own={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,
   tasKt:440,gsKt:448,iasKt:293,mach:.73,pitchDeg:2,vsFpm:0,
   trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},initialAltitudeFt=27000,
- encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,fdHoldOffset=null,tfcVisible=true;
+ encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,fdHoldOffset=null,tfcVisible=true,
+ loadedScenarioId=null,loadSequence=0;
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='DIVERGING_ABOVE';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
- function load(autoRun=false){running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
+ function load(autoRun=false){
+  const requestedId=scenario.value;
+  const feedback=by('scenarioStatus');
+  if(!C.SCENARIOS[requestedId])throw Error('UNKNOWN_SELECTED_SCENARIO: '+requestedId);
+  feedback.dataset.loadState='loading';
+  feedback.textContent='LOADING SCENARIO · '+C.SCENARIOS[requestedId].label;
+  running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
   own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.iasKt=Number(by('speed').value);
   // 293 KIAS / Mach .73 cruise demonstration, with TAS distinct from CAS.
   // These are trainer estimates, not an ADC atmosphere calculation.
@@ -26,19 +33,42 @@
   // Normal encounters begin at a physically calculated TA (~5 s before RA).
   // A reversal begins with its initial RA, preserving the subsequent 7-s RA.
   const options={progressive:true,
-   distanceNm:scenario.value.startsWith('REVERSAL_')||scenario.value==='TA_ONLY'?2.5:4.5};
-  if(scenario.value!=='TA_ONLY'&&by('converging').checked){
+   distanceNm:requestedId.startsWith('REVERSAL_')||requestedId==='TA_ONLY'?2.5:4.5};
+  if(requestedId!=='TA_ONLY'&&by('converging').checked){
    options.converging=true;options.lateralSide=by('intruderSide').value;
   }
   if(by('relative').value.trim())options.relativeAltitudeFt=Number(by('relative').value);
   if(by('intruderVS').value.trim())options.verticalRateFpm=Number(by('intruderVS').value);
-  encounter=C.create(scenario.value,own,options);tfcVisible=true;syncTfc();refresh();
-  // Loading starts the selected timeline; no second RUN click is necessary.
-  running=autoRun;last=null;by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();}
+  const nextEncounter=C.create(requestedId,own,options);
+  if(nextEncounter.scenario!==requestedId)throw Error('SCENARIO_ID_MISMATCH: '+requestedId);
+  // Commit the new scenario and its own T+0 output together. Never leave the
+  // old encounter on-screen while reporting the new selection as loaded.
+  encounter=C.step(nextEncounter,own,0,settings,feeds());
+  out=encounter.output;
+  if(!out||!Array.isArray(out.targets))throw Error('EMPTY_SCENARIO_OUTPUT: '+requestedId);
+  loadedScenarioId=requestedId;
+  ++loadSequence;
+  feedback.dataset.loadedScenario=requestedId;
+  feedback.dataset.loadSequence=String(loadSequence);
+  feedback.dataset.loadState='loaded';
+  tfcVisible=true;syncTfc();
+  // A graphic failure must be reported separately from encounter initialization.
+  // It must not silently restore old data or disguise a successful load.
+  paint();
+  running=autoRun;last=null;by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();
+ }
  function updateScenarioStatus(){if(!encounter)return;
   const spec=C.SCENARIOS[encounter.scenario],status=by('scenarioStatus');
-  if(status)status.textContent='SCENARIO: '+(spec?.label||encounter.scenario)+' · '+(out?.stage||'MONITOR')+
-   ' · T+'+Math.floor(own.elapsedSec)+' S · '+(running?'RUNNING':'PAUSED');
+  if(status){
+   const primary=out?.targets?.find(t=>!t.id?.startsWith('OTHER-'));
+   status.textContent='LOADED #'+loadSequence+' · '+(spec?.label||encounter.scenario)+
+    ' · '+(out?.stage||'MONITOR')+
+    ' · TARGET '+(primary?primary.kind+' '+Number(primary.distance).toFixed(1)+' NM':'NOT TRANSMITTING')+
+    ' · T+'+Math.floor(own.elapsedSec)+' S · '+(running?'RUNNING':'PAUSED');
+   status.dataset.loadedScenario=encounter.scenario;
+   status.dataset.loadState='loaded';
+   status.dataset.elapsedSec=String(Math.floor(own.elapsedSec));
+  }
  }
  function refresh(){if(!encounter)return;encounter=C.step(encounter,own,0,settings,feeds());out=encounter.output;paint();}
  function step(dt){
@@ -130,10 +160,18 @@
      Number.isFinite(t.timeToTaProximitySec)?t.timeToTaProximitySec.toFixed(1):'NO CONFLICT',
     Number.isFinite(t.predictedSeparationFt)?Math.round(t.predictedSeparationFt):'—']){const td=document.createElement('td');td.textContent=String(value);tr.append(td);}tbody.append(tr);}
  }
- function guard(fn){return ()=>{try{fn();}catch(e){running=false;by('play').textContent='RUN';
-  by('status').textContent='SCENARIO ERROR: '+e.message;
-  by('scenarioStatus').textContent='SCENARIO ERROR: '+e.message;
-  console.error('TCAS Scenario Lab',e);}};}
+ function showScenarioError(error){
+  running=false;last=null;by('play').textContent='RUN';
+  const message=String(error?.message||error);
+  by('status').textContent='SCENARIO LOAD / RUNTIME ERROR: '+message;
+  const banner=by('scenarioStatus');
+  banner.textContent='FAILED TO LOAD '+(C.SCENARIOS[scenario.value]?.label||scenario.value)+
+   ' · '+message+' · Old scenario: '+(loadedScenarioId||'NONE');
+  banner.dataset.loadState='error';
+  banner.dataset.requestedScenario=scenario.value;
+  console.error('TCAS Scenario Lab',error);
+ }
+ function guard(fn){return ()=>{try{fn();}catch(e){showScenarioError(e);}};}
  by('start').onclick=guard(()=>load(true));by('play').onclick=guard(()=>{running=!running;last=null;
   by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();});by('step').onclick=guard(()=>step(1));
  // Manual response converts CMD to FD and follows the actual vertical-rate
@@ -174,8 +212,13 @@
    'Select a lateral altitude-crossing encounter');
  }
  scenario.addEventListener('change',()=>{syncScenarioOptions();
-  if(scenario.value!==encounter?.scenario)by('scenarioStatus').textContent=
-   'SELECTED: '+C.SCENARIOS[scenario.value].label+' · PRESS LOAD SCENARIO';
+  if(scenario.value!==loadedScenarioId){
+   const banner=by('scenarioStatus');
+   banner.dataset.loadState='selected';
+   banner.dataset.requestedScenario=scenario.value;
+   banner.textContent='SELECTED: '+C.SCENARIOS[scenario.value].label+
+    ' · NOT YET LOADED · PRESS LOAD SCENARIO';
+  }
  });
  syncScenarioOptions();
  by('pitch').onchange=()=>{targetPitch=Number(by('pitch').value);};
