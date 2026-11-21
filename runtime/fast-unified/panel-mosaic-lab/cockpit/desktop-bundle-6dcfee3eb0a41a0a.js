@@ -88,7 +88,8 @@ try{
     stationIdent:ils.ident,stationLat:ils.lat,stationLon:ils.lon,
     tunedFrequencyMHz:ils.freqKhz/1000,localizerDots:calculated.localizerDots,
     glideslopeDots:calculated.glideslopeDots,frontCourse:true,
-    courseTrueDeg:ils.courseTrueDeg,runway:ils.runway,
+    courseTrueDeg:ils.courseTrueDeg,courseMagDeg:ils.courseMagDeg??null,
+    glideDeg:ils.glideDeg,tchFt:ils.tchFt??50,runway:ils.runway,
     trainingOnly:true,positionQuality:calculated.positionQuality,
     source:calculated.source}:null;
    const dmeData=(vorValid||ilsValid)?{
@@ -186,13 +187,13 @@ try{
   return {groundReady:f?.phase==='GROUND_READY',airborne:f?.airborne===true,
    radioAltitudeFt:f?.radioAltitudeFt,iasKt:f?.iasKt,groundTrackDeg:f?.trueTrackDeg??f?.trueHeadingDeg,
    fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,atArmed:c.atArm===true,
-   apChannels:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
+   apChannels:m?.dualApproach?.coupled===true?2:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
    autopilotEngaged:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||''),
    engine1Running:light?undefined:engineRunning(1),engine2Running:light?undefined:engineRunning(2),
    // Presence of both engines running is checked independently from pump/fuel faults.
    selectedSpeedKt:m?.values?.speed??f?.iasKt,
    v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
-   flareArmed:false,touchedDown:false,
+   flareArmed:m?.dualApproach?.flareArmed===true,touchedDown:f?.phase==='LANDED',
    isTakeoffMode:state.phase==='TO',
    // FCOM 4.20.14-15 FSI/FST option: takeoff roll FMA HDG SEL, unlike
    // other variants with a BLANK lateral TO/GA mode. EP-FSI uses FSI.
@@ -273,6 +274,8 @@ try{
    banner('TO/GA BLOCKED · '+next.reason,true);return state;
   }
   state=next;
+  if(state.phase==='GA'&&was!=='GA')
+   win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD');
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
   if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
    // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL

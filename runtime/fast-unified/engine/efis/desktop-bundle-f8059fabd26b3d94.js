@@ -624,7 +624,7 @@ try{
    for(const k of ['active','armed'])if(Object.hasOwn(data,k))state[field][k]=assertField(field,k,data[k]);
    if(Object.hasOwn(data,'origin'))state[field].origin=String(data.origin);
    if(Object.hasOwn(data,'secondary')){
-    if(field!=='afds'||!['','CWS P','CWS R'].includes(data.secondary))
+    if(field!=='afds'||!['','CWS P','CWS R','1 CH'].includes(data.secondary))
      throw Error('Only AFDS column can show secondary CWS R');
     state.afds.secondary=data.secondary;
    }
@@ -661,7 +661,8 @@ try{
   if(pitchCws)state.pitch.active='';
   if(rollCws)state.roll.active='';
   // CMD stays active (green). Independent CWS status is yellow beneath it.
-  state.afds.secondary=pitchCws?'CWS P':rollCws?'CWS R':'';
+  state.afds.secondary=pitchCws?'CWS P':rollCws?'CWS R':
+   state.afds.secondary==='1 CH'?'1 CH':'';
   state.afds.tertiary=pitchCws&&rollCws?'CWS R':'';
   return state;
  }
@@ -674,15 +675,16 @@ try{
   const at=ctrl.atArm===true;
   const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical)||
    output.capture?.pitch==='G/S'||output.capture?.pitch==='ALT_HOLD';
-  state.at.active=at?(automaticSpeed?'MCP SPD':
+  state.at.active=at?(output.dualApproach?.retard===true?'RETARD':automaticSpeed?'MCP SPD':
    sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD',RETARD:'RETARD',ARM:'ARM'})||'ARM'):'';
   state.at.origin=ORIGIN.MCP;
   state.pitch.active=sourceMode(output.capture?.pitch,
-   {ALT_ACQ:'ALT ACQ',ALT_HOLD:'ALT HOLD','G/S':'G/S'})||
+   {ALT_ACQ:'ALT ACQ',ALT_HOLD:'ALT HOLD','G/S':'G/S',FLARE:'FLARE'})||
    sourceMode(m.vertical,{LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'});
   state.roll.active=sourceMode(output.capture?.roll,{VOR_LOC:'VOR/LOC'})||
    sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:'LNAV'});
-  state.pitch.armed=output.armed?.pitch==='G/S'?'G/S':
+  state.pitch.armed=output.dualApproach?.flareArmed===true&&
+    output.dualApproach.flareEngaged!==true?'FLARE':output.armed?.pitch==='G/S'?'G/S':
    output.armed?.pitch==='V/S'?'V/S':'';
   state.roll.armed=output.armed?.roll==='VOR/LOC'?'VOR/LOC':'';
   state.pitch.origin=state.roll.origin=ORIGIN.MCP;
@@ -697,6 +699,11 @@ try{
    const axes=cwsAxes(output);
    applyCwsStatus(state,axes.pitch,axes.roll);
   }
+  // After LOC capture and before verified second-channel coupling, 1 CH
+  // appears yellow in the AFDS status area. It is NOT a CWS override.
+  if(cmd&&output.pending?.approach&&output.nav?.loc===true&&
+     output.dualApproach?.coupled!==true&&!state.afds.secondary)
+   state.afds.secondary='1 CH';
   return state;
  }
  // A qualified simulated FCC observation may override a training-selected
