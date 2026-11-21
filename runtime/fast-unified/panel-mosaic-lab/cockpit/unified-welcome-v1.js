@@ -6,6 +6,7 @@
   const stage = doc.documentElement.dataset;
   if (stage.unifiedWelcome !== 'active') return;
 
+  const introTitle = welcome.querySelector('.welcome-brand');
   const progress = by('unifiedWelcomeStatus');
   const start = by('unifiedWelcomeStart');
   const retry = by('unifiedWelcomeRetry');
@@ -167,7 +168,9 @@
     const {main, throttle, forward, aft, pedestal} = panelReadiness();
     const priorityReady = main && throttle && forward;
     const panelComplete = priorityReady && aft && pedestal;
-    if (priorityReady && !setup) showSetup();
+    if (priorityReady && !setup && !introTitle.getAnimations().some(animation =>
+      animation.animationName === 'unified-intro-title' && animation.playState !== 'finished'
+    )) showSetup();
     if (panelComplete) releaseSystems();
     if (panelComplete && startRequested) beginFlight();
     if (welcome.hidden) {
