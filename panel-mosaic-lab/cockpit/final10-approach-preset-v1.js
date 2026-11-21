@@ -206,7 +206,7 @@
    const link=win.B737LEDevicesUnifiedLink?.getState?.();
    const actual=link?.actualTe;
    // Retry if overhead announced READY before its LE trainer mounted.
-   const confirmed=link?.projection?.source==='FLIGHT_SCENARIO_FINAL10'&&
+   const confirmed=link?.projection?.scenario==='FINAL_10_READY'&&
     link?.projection?.lever===30&&link?.projection?.teTarget===30&&
     link?.projection?.teMoving===false;
    if(physical&&link?.overheadReady===true&&
@@ -231,7 +231,7 @@
     }
    }
    const now=win.B737LEDevicesUnifiedLink?.getState?.();
-   const ready=physical&&now?.projection?.source==='FLIGHT_SCENARIO_FINAL10'&&
+   const ready=physical&&now?.projection?.scenario==='FINAL_10_READY'&&
     now?.projection?.teTarget===30&&now?.projection?.teMoving===false&&
     Number.isFinite(now.actualTe)&&Math.abs(now.actualTe-30)<.4;
    if(ready)result('FLAP_OWNER_PRESET',true,'OWNER_PROJECTION_CONFIRMED');
