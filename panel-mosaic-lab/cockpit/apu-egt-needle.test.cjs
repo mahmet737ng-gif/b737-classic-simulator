@@ -36,7 +36,7 @@ assert.ok(ui.includes(".atlas-piece[data-key=\"OH12\"]"));
 assert.ok(ui.includes("new URL('./apu-egt-needle.svg?v=EGT-0002'"));
 assert.ok(ui.includes('window.B737UnifiedApuEgtNeedle'));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-assert.ok(html.includes('apu-egt-static-needle-cleaner-v1.js?v=EGT-APUAMPS-CLEAN-0003'));
+assert.ok(html.includes('apu-egt-static-needle-cleaner-v1.js?v=EGT-APUAMPS-CLEAN-0004'));
 assert.ok(html.includes('apu-egt-needle-model.js?v=EGT-0005-USER-ZERO'));
 assert.ok(html.includes('apu-live-meter-unified-v1.js?v=APU-EGT-COLDZERO3'));
 assert.equal(model.needle.initialAngle,-241.5,'Cold-resting EGT pointer must align with photo-derived 0°C mark');
