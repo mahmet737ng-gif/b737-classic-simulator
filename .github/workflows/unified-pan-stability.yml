@@ -1,0 +1,51 @@
+name: Unified Pan/Zoom Camera Stability
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/app.js'
+      - 'panel-mosaic-lab/cockpit/pan-stability-v1.js'
+      - 'panel-mosaic-lab/cockpit/visual-first-shell-v1.js'
+      - 'panel-mosaic-lab/cockpit/style.css'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/wheel-pan-model-v1.js'
+      - 'tests/unified-pan-stability-v1.test.cjs'
+      - '.github/workflows/unified-pan-stability.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/app.js'
+      - 'panel-mosaic-lab/cockpit/pan-stability-v1.js'
+      - 'panel-mosaic-lab/cockpit/visual-first-shell-v1.js'
+      - 'panel-mosaic-lab/cockpit/style.css'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/unified-pan-stability-v1.test.cjs'
+      - '.github/workflows/unified-pan-stability.yml'
+permissions:
+  contents: read
+jobs:
+  pan-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate camera scripts
+        run: |
+          node --check panel-mosaic-lab/cockpit/app.js
+          node --check panel-mosaic-lab/cockpit/pan-stability-v1.js
+          node --check panel-mosaic-lab/cockpit/visual-first-shell-v1.js
+          node --check panel-mosaic-lab/cockpit/unified-pinch-v1.js
+      - name: Pan jumps, boot handoff, resize and legacy wheel regression
+        run: |
+          node --test tests/unified-pan-stability-v1.test.cjs
+          node --test panel-mosaic-lab/cockpit/wheel-pan-model-v1.test.cjs
+          node --test tests/unified-runtime-performance-v2.test.cjs
+      - name: Verify protected aircraft artwork unmodified
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/verify-final-overhead.py
