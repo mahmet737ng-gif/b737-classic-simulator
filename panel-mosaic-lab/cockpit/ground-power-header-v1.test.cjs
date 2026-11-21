@@ -14,7 +14,8 @@ assert.ok(!top.includes('liveBatteryRecharge'),'Battery recharge now belongs in 
 assert.ok(html.includes('id="batteryRechargeControlSlot"'),'Battery charge control preserved in drawer');
 assert.ok(html.includes('ground-power-header-policy-v1.js?v=GPU-FCOM-0001'));
 assert.ok(html.includes('ground-power-header-v1.js?v=GPU-SPRING-0001'));
-assert.ok(html.includes('ground-power-header-v1.css?v=GPU-SPRING-0001'));
+assert.ok(read('unified-css-safe-04-v1.css').includes('BEGIN ground-power-header-v1.css'),
+ 'Ground-power styles must remain inside the original-cascade optimized bundle');
 assert.ok(ui.includes("const ID='groundPowerHeader'"),'One header control owner');
 assert.ok(ui.includes("lights.setScenario({groundPowerAttached:attached})"),
  'GPU cable scenario must be sent to the original overhead');
