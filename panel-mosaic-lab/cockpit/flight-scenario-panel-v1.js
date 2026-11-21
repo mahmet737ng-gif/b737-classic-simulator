@@ -263,6 +263,25 @@
    {valid:true,engines,fuelImbalanceKg:owner.getFuelImbalanceKg?.()}:null;
   return lastPropulsion;
  }
+ // Consume the actual TE actuator projection; the cockpit lever is not
+ // proof that surfaces have moved. Keep instructor mass separate from ADC.
+ function syncAeroConfiguration(){
+  if(!state||!active)return false;
+  const le=win.B737LEDevicesUnifiedLink?.getState?.();
+  const projection=le?.projection;
+  if(!projection||!Number.isFinite(projection.tePosition))return false;
+  const flapLever=le.lever,flapActual=projection.tePosition;
+  const slatsFull=projection.slatsFull===true;
+  if(![0,1,2,5,10,15,25,30,40].includes(flapLever)||
+    flapActual<0||flapActual>40)return false;
+  const ctx=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('flightcontext.state');
+  const observed=ctx?.quality==='VALID'?ctx.value?.massKg:null;
+  const massKg=Number.isFinite(observed)&&observed>=30000&&observed<=75000?observed:null;
+  if(state.flapLever===flapLever&&Math.abs(state.flapActual-flapActual)<1e-5&&
+    state.slatsFull===slatsFull&&state.massKg===massKg)return false;
+  state=Core.command(state,{type:'AERO_CONFIG',flapLever,flapActual,slatsFull,massKg});
+  return true;
+ }
  function tick(){
   const now=performance.now();
   if(active&&state){
@@ -276,6 +295,7 @@
       altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'});}
      catch(error){console.warn('ISN scenario flight context',error);}
     }
+    syncAeroConfiguration();
     followMcp();
     if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
    }}catch(error){
