@@ -49,7 +49,7 @@ function initialState(){return {
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
- nav:{loc:false,gs:false},dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
+ nav:{loc:false,gs:false},togaActive:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
  lastRejection:null,lastAutopilotDisengagement:null
 };}
@@ -92,7 +92,7 @@ function clearModes(s){
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
- s.targets={pitch:null,roll:null};s.flight=null;
+ s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;
  s.autoThrustByPitch=false;s.lvlChgPhase='UNKNOWN';
  s.speedLimit=SpeedLimit?.initialState?.()??null;
  s.flightDirectorBarsRetracted=false;
@@ -165,7 +165,7 @@ function transition(state,action){
   if(!preserveDual)s.dualApproach.second=null;
   s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
-  s.flightDirectorBarsRetracted=false;
+  s.flightDirectorBarsRetracted=false;s.togaActive=true;
   return done();
  }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
@@ -570,6 +570,7 @@ function transition(state,action){
   return done();
  }
  if(vertical.includes(id)){
+  s.togaActive=false;
   // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
   // following G/S capture in APP.
   if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
@@ -586,6 +587,7 @@ function axisControl(s,powered){
  const ap=powered&&typeof s.modes.autopilot==="string"?s.modes.autopilot:"";
  const engaged=/^(?:CMD|CWS)_[AB]$/.test(ap);
  if(!engaged)return {pitch:"OFF",roll:"OFF"};
+ if(s.togaActive===true)return {pitch:"CMD",roll:"CMD"};
  const manual=ap.startsWith("CWS_");
  return {pitch:manual||s.override.pitch||
    (!s.capture.pitch&&s.modes.vertical===null)?"CWS":"CMD",
@@ -617,7 +619,7 @@ function output(s){
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
+  modes:{...s.modes},togaActive:s.togaActive===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
