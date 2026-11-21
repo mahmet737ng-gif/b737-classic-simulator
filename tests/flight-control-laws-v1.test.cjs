@@ -38,22 +38,35 @@ test('pitch/bank/VS rates are limited in physical flight plant, no instant setpo
  near(s.pitchDeg,Law.pitchForVs(2000,s.tasKt),.15);
  assert.ok(s.trueHeadingDeg>85&&s.altitudeFt>5000);
 });
-test('ALT ACQ remains latched and does NOT alternate VS/ALT flight commands',()=>{
+test('ALT ACQ stays latched until its timed profile completes; no VS/ALT oscillation',()=>{
+ const Capture=require('../engine/flight/altitude-capture-training-v1.js');
  let s=frame({altitudeFt:9500,vsFpm:1500}),m=mcp(),fcc=FCC.createState();
  let r=FCC.evaluate(fcc,m,s,{magneticVariationDeg:5});fcc=r.state;
  assert.ok(r.actions.some(x=>x.type==='VS'));
- s={...s,altitudeFt:9790,vsFpm:1450};
+ // At 1450 fpm the 9s capture distance is about 109 ft, not 300 ft.
+ s={...s,altitudeFt:9880,vsFpm:1450};
+ r=FCC.evaluate(fcc,m,s,{magneticVariationDeg:5});fcc=r.state;
+ assert.equal(r.altAcquireConfirmed,false);
+ s={...s,altitudeFt:9900,vsFpm:1450};
  r=FCC.evaluate(fcc,m,s,{magneticVariationDeg:5});fcc=r.state;
  assert.equal(r.altAcquireConfirmed,true);
- assert.equal(r.actions.filter(x=>x.type==='ALTITUDE').length,1);
+ assert.equal(r.actions.filter(x=>x.type==='ALT_ACQ').length,1);
  assert.equal(r.actions.some(x=>x.type==='VS'),false);
- for(const altitude of [9810,9890,9960]){
-  r=FCC.evaluate(fcc,m,{...s,altitudeFt:altitude},{magneticVariationDeg:5});fcc=r.state;
+ m.capture.pitch='ALT_ACQ';
+ let plan=Capture.begin({altitudeFt:9900,targetAltitudeFt:10000,vsFpm:1450});
+ for(let i=0;i<25;i++){
+  plan=Capture.advance(plan,.1);
+  r=FCC.evaluate(fcc,m,{...s,altitudeFt:plan.altitudeFt,vsFpm:plan.vsFpm,
+   altitudeCapture:plan},{magneticVariationDeg:5});fcc=r.state;
   assert.equal(r.actions.some(x=>x.type==='VS'),false);
-  assert.equal(r.actions.find(x=>x.type==='ALTITUDE').value,10000);
+  assert.equal(r.actions.find(x=>x.type==='ALT_ACQ').value,10000);
+  assert.equal(r.altitudeHoldConfirmed,false);
  }
- r=FCC.evaluate(fcc,m,{...s,altitudeFt:9990,vsFpm:180},{magneticVariationDeg:5});
+ while(plan.phase!=='HELD')plan=Capture.advance(plan,Math.min(.5,plan.durationSec-plan.elapsedSec));
+ r=FCC.evaluate(fcc,m,{...s,altitudeFt:10000,vsFpm:0,
+  altitudeCapture:plan},{magneticVariationDeg:5});
  assert.equal(r.altitudeHoldConfirmed,true);
+ assert.equal(r.actions.find(x=>x.type==='ALTITUDE').value,10000);
 });
 test('LVL CHG climb target never generates descent command for high IAS selection',()=>{
  const m=mcp({modes:{autopilot:'CMD_A',vertical:'LVL_CHG',lateral:'HDG_SEL'},
