@@ -239,7 +239,7 @@
   // configured positive position-difference limit.
   const limit=fmc?.positionDifferenceLimitNm;
   if(!fmc?.operational||pos?.quality!=='VALID'||
-   !(Number.isFinite(limit)&&limit>0&&limit<=100))return [];
+   !(Number.isFinite(limit)&&limit>0))return [];
   const center=coordinate(pos.latitudeDeg,pos.longitudeDeg,'FMC');
   if(!center)return [];
   const chosen=source.irs===2?'R':'L';
@@ -251,8 +251,10 @@
    if(!peer)continue;
    const delta=offsets(center,peer),distance=Math.hypot(delta.x,delta.y);
    if(distance<=limit)continue;
-   out.push({side,distanceNm:distance,bearingTrueDeg:
-    ((Math.atan2(delta.x,delta.y)*180/Math.PI)%360+360)%360,
+   const trueBearing=((Math.atan2(delta.x,delta.y)*180/Math.PI)%360+360)%360;
+   const magneticBearing=Number.isFinite(source.magneticVariationDeg)?
+    ((trueBearing-source.magneticVariationDeg)%360+360)%360:null;
+   out.push({side,distanceNm:distance,bearingMagDeg:magneticBearing,
     referenceSide:side===chosen});
   }
   out.sort((a,b)=>Number(b.referenceSide)-Number(a.referenceSide));
