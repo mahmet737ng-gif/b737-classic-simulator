@@ -1,0 +1,35 @@
+name: Iran VOR ILS DME Unified QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/flight/iran-radio-navaids-v1.js'
+      - 'panel-mosaic-lab/cockpit/iran-radio-nav-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/iran-radio-nav-unified-v1.test.cjs'
+      - '.github/workflows/iran-radio-nav-ci.yml'
+  pull_request:
+    paths:
+      - 'engine/flight/iran-radio-navaids-v1.js'
+      - 'panel-mosaic-lab/cockpit/iran-radio-nav-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/iran-radio-nav-unified-v1.test.cjs'
+jobs:
+  iran-radio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Static check and receiver regression
+        run: |
+          node --check engine/flight/iran-radio-navaids-v1.js
+          node --check panel-mosaic-lab/cockpit/iran-radio-nav-unified-v1.js
+          node --test tests/iran-radio-nav-unified-v1.test.cjs
+      - name: Protect frozen approved assets
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
