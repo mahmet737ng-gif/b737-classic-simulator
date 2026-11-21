@@ -118,6 +118,14 @@
   setElectricalSnapshot:buses,
   snapshot:()=>latest,
   flapActuator:()=>actuator.evaluate(te),
+  // Only the explicit instructor FINAL_10 load may initialize an ALREADY
+  // extended aircraft in one transaction. Normal physical flap movement
+  // retains the calibrated timed actuator and mechanical lever gates.
+  presetFinal10ReadyFlaps:({originator}={})=>{
+   if(originator!=='FLIGHT_SCENARIO_FINAL10')
+    throw Error('FINAL10_PRESET_REQUIRES_INSTRUCTOR_SCENARIO');
+   return loadFinal10ReadyFlaps();
+  },
   setHydraulicPressure:psi=>{const result=apply({type:'HYDRAULIC_PRESSURE',psi});if(physicalMotion)runMotion();return result;},
   calibrateFlapSegment:(from,to,seconds)=>{te=actuator.apply(te,{type:'CALIBRATE',from,to,seconds});return actuator.evaluate(te);},
   reset:scenario=>{source='TRAINER_PRESET';return apply({type:'RESET',mode:scenario||'NORMAL'});},
