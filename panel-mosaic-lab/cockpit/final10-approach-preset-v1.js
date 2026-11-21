@@ -6,7 +6,7 @@
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0001';
+ const VERSION='FINAL10-INTEGRATED-0002';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null;
@@ -81,11 +81,19 @@
   // it is not an APU fault or synthetic hidden ECU change.
   const running=eng?.getStartState?.()?.phase||{};
   const both=running.engine1==='RUNNING'&&running.engine2==='RUNNING';
-  const generator1=check?.['OH_gen-1']?.ok===true;
-  const generator2=check?.['OH_gen-2']?.ok===true;
-  if(both&&generator1&&generator2)
-   result('APU_OFF',physicalOh(w,'apu-start','OFF'),'APU_START_SWITCH_OFF');
-  else result('APU_OFF',false,'WAITING_FOR_TWO_RUNNING_ENGINES_AND_GENERATORS');
+  const electrical=eng?.getElectricalState?.();
+  const sources=Object.values(electrical?.source||{});
+  const generator1=sources.includes('GEN1'),generator2=sources.includes('GEN2');
+  result('GEN1_ON_BUS',generator1,generator1?'GEN1 AC BUS CONNECTED':'GEN1_NOT_ON_BUS');
+  result('GEN2_ON_BUS',generator2,generator2?'GEN2 AC BUS CONNECTED':'GEN2_NOT_ON_BUS');
+  // Do not remove APU supply until BOTH engine generators are genuinely
+  // providing AC bus power. Switch detent ON alone is insufficient proof.
+  if(both&&generator1&&generator2){
+   const moved=physicalOh(w,'apu-start','OFF');
+   const off=eng?.getStartState?.()?.phase?.apu==='OFF';
+   result('APU_OFF',moved&&off,off?'APU_PHASE_OFF':
+    moved?'APU_SHUTDOWN_IN_PROGRESS':'APU_SWITCH_NOT_ACCEPTED');
+  }else result('APU_OFF',false,'WAITING_FOR_BOTH_ENGINE_GENERATORS_ON_BUS');
   const light={
    'landing-out-l':'ON','landing-out-r':'ON','landing-in-l':'ON','landing-in-r':'ON',
    'strobe':'ON','position-lights':'ON','anti-collision':'ON','logo':'ON',
