@@ -114,7 +114,7 @@
   ].map(x=>({...target,id:x.id,n:Math.cos(rad(heading+x.angle))*x.distance,e:Math.sin(rad(heading+x.angle))*x.distance,
    altitudeFt:own.altitudeFt+x.relative,verticalRate:x.vr,demoKind:x.id,speedKt:0})));}
   return {schema:'B737_CLASSIC_TCAS_ENCOUNTER_V2',scenario:id,anchor:{lat:own.lat,lon:own.lon},targets,time:0,
-   ownN:0,ownE:0,firstRaTime:null,raId:null,hadRA:false,clearTime:0,cleared:false,maneuvered:false,output:null};
+   ownN:0,ownE:0,firstRaTime:null,raId:null,raTargetIds:[],hadRA:false,clearTime:0,cleared:false,maneuvered:false,output:null};
  }
  function geometry(state,t,own){
   const p=offset(state.anchor,own),ov=vector(own.gsKt??own.tasKt,own.trueTrackDeg??own.trueHeadingDeg),iv=vector(t.speedKt,t.headingDeg);
@@ -218,18 +218,44 @@
    return out;
   }
   const threats=out.targets.filter(t=>t.kind==='RA'),tas=out.targets.filter(t=>t.kind==='TA');
-  if(threats.length){
-   state.cleared=false;state.clearTime=0;state.hadRA=true;
+  // Instructor RA continuity: an improved *prediction* during pilot
+  // response does not prove observed separation. Keep the same RA/IVSI
+  // sectors while tracked 3-D geometry has not safely diverged.
+  // Recovery margins are simulation-only, not certified ACAS thresholds.
+  const heldIds=state.raTargetIds||[];
+  const heldContacts=out.targets.filter(t=>heldIds.includes(t.id));
+  const exitAltFt=Math.max((thresholds.taFt??850)+150,(thresholds.raFt??600)+300);
+  const recovered=t=>{
+   const verticallySafe=Number.isFinite(t.relativeAltitude)&&
+    Math.abs(t.relativeAltitude)>=exitAltFt&&
+    t.relativeAltitude*(t.relativeVerticalRate??0)>0;
+   const horizontallySafe=Number.isFinite(t.tcpaSec)&&t.tcpaSec< -5&&
+    t.closingKt< -25&&t.distance>Math.max(thresholds.taNm??.6,thresholds.raNm??.4);
+   return verticallySafe||horizontallySafe;
+  };
+  const recoveryReady=state.hadRA&&!threats.length&&
+   (!heldContacts.length||heldContacts.every(recovered));
+  out.recoveryReady=recoveryReady;
+  out.recoveryVerifySec=4;
+  const holdRA=state.hadRA&&!state.cleared&&!!state.raId&&raAllowed&&
+   !threats.length&&(!recoveryReady||state.clearTime<out.recoveryVerifySec);
+  if(threats.length||holdRA){
+   if(threats.length){
+    state.raTargetIds=threats.map(t=>t.id);
+    state.cleared=false;state.clearTime=0;
+   }else for(const t of heldContacts)t.kind='RA';
+   state.hadRA=true;
    if(state.firstRaTime===null)state.firstRaTime=state.time;
-   let id=state.raId||spec.ra||(threats[0].relativeAltitude>=0?'DESCEND':'CLIMB');
+   const raContacts=threats.length?threats:heldContacts;
+   let id=state.raId||spec.ra||(raContacts[0]?.relativeAltitude>=0?'DESCEND':'CLIMB');
    const age=state.time-state.firstRaTime;
    if(spec.next&&age>=7){
     const next=spec.next;
     if(next.startsWith('REVERSAL')){
      const min=next.includes('CLIMB')?1500:-1500;
-     const now=threats[0],horizon=clamp(now.tcpaSec,1,25);
+     const now=raContacts[0],horizon=clamp(now?.tcpaSec??25,1,25);
      const projected=rate=>Math.abs(now.relativeAltitude+(now.verticalRate-rate)*horizon/60);
-     if(projected(min)>projected(-min))id=next;
+     if(now&&projected(min)>projected(-min))id=next;
     }else if(next.startsWith('INCREASE')&&threats.some(t=>t.predictedSeparationFt<400))id=next;
     // Keep the initial sense until measured separation permits recovery;
     // an elapsed timer alone must not weaken a live conflict.
@@ -238,7 +264,8 @@
    if(id==='INCREASE_DESCENT'&&height<1500){id='DESCEND';inhibits.push('INCREASE DESCENT INHIBIT <1500 FT RA');}
    if(id.includes('MAINTAIN')&&(id.includes('CLIMB')?own.vsFpm:-own.vsFpm)<1500)id=id.includes('CLIMB')?'CLIMB':'DESCEND';
    state.raId=id;out.ra=V1.guidance(id,own);out.advisory='RA';out.stage=id;out.callout=out.ra?.callout;
-  }else if(state.hadRA&&state.clearTime>=2){
+   out.raContinuity=holdRA?'AWAIT VERIFIED SEPARATION':'ACTIVE TRAJECTORY THREAT';
+  }else if(state.hadRA&&recoveryReady&&state.clearTime>=out.recoveryVerifySec){
    state.cleared=true;out.clearOfConflict=true;out.stage='CLEAR OF CONFLICT';out.callout='CLEAR OF CONFLICT';
   }else if(tas.length){out.advisory='TA';out.stage='TA';out.callout=state.hadRA?null:'TRAFFIC, TRAFFIC';}
   return out;
@@ -254,7 +281,10 @@
   }
   for(const t of s.targets){const v=vector(t.speedKt,t.headingDeg);t.n+=v.n*dt;t.e+=v.e*dt;t.altitudeFt+=t.verticalRate*dt/60;}
   s.output=output(s,own,c,feeds);
-  if(s.hadRA&&!s.output.targets.some(t=>t.kind==='RA'))s.clearTime+=dt;else s.clearTime=0;
+  // Four seconds of continuously observed safe geometry, not merely
+  // four seconds without a predicted RA, are required before clearing.
+  if(s.hadRA)s.clearTime=s.output.recoveryReady?s.clearTime+dt:0;
+  else s.clearTime=0;
   return s;
  }
  return Object.freeze({MODES,SCENARIOS,controls,transponder,create,step,output,geometry,trajectoryIntersection,nominalThresholds:{taSec:40,raSec:25},pitchForVs:V1.pitchForVs});
