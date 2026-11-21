@@ -624,6 +624,25 @@
    ecu.setAutothrottle(engine,value);
    return {accepted:true,engine,throttle:value,source:'SAME_ISN18_ECU'};
   },
+  // FCOM 4.20.22: reduced to IDLE in the landing flare at ~27 ft RA.
+  // This is the same ISN18 engine ECU owner, never an independent engine.
+  // Receiver-verified dual APP/FLARE is required to command this servo.
+  ilsRetardThrottleCommand:({engine,value,controller}={})=>{
+   if(controller!=='B737_ILS_FCC_CH4_TRAINING'||
+      !['engine1','engine2'].includes(engine)||!Number.isFinite(value)||value<0||value>1)
+    throw Error('Invalid ILS RETARD throttle command');
+   const flight=window.B737UnifiedFlightScenarioV1;
+   if(flight?.getDiagnostics?.()?.active!==true)
+    return {accepted:false,reason:'NO_ACTIVE_FLIGHT'};
+   const mcp=window.B737McpAFDSBridgeV1?.getOutput?.();
+   if(mcp?.power!==true||mcp.controls?.atArm!==true||
+      mcp.dualApproach?.retard!==true||mcp.dualApproach?.flareEngaged!==true)
+    return {accepted:false,reason:'DUAL_FLARE_RETARD_NOT_ENGAGED'};
+   if(ecu.chain.phase[engine]!=='RUNNING')
+    return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
+   ecu.setAutothrottle(engine,value);
+   return {accepted:true,source:'ISN18_SHARED_ECU',engine,throttle:value};
+  },
   // FCOM 4.10.8–9: LVL CHG descent A/T retards to idle; climb N1
   // demands may only follow a qualified FMC limit. The same ISN18 ECU
   // remains the single authority over actual engine spool and fuel flow.
