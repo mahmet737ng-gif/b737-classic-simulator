@@ -39,7 +39,7 @@ function rig({generator2Fault=false,ownerReady=true}={}){
    assert.equal(originator,'FLIGHT_SCENARIO_FINAL10');
    calls.push(['LE_OWNER','READY_30']);
    le={lever:30,actualTe:30,overheadReady:true,
-    projection:{source:'FLIGHT_SCENARIO_FINAL10',lever:30,teTarget:30,teMoving:false,leStage:'FULL'}};
+    projection:{scenario:'FINAL_10_READY',source:'FLIGHT_SCENARIO_FINAL10',lever:30,teTarget:30,teMoving:false,leStage:'FULL'}};
    return {lever:30};
  }};
  const doc={getElementById:id=>id==='overheadFrame'?{contentWindow:children}:null,querySelector:()=>({})};
@@ -128,4 +128,6 @@ test('The approved TE actuator reaches 30 before scenario START in the owner 48-
  assert.equal(LE.evaluate(state).leStage,'FULL');
  assert.deepEqual(LE.evaluate(state).mismatch,[]);
  assert.match(trainer,/presetFinal10ReadyFlaps:/);
+ assert.match(trainer,/mode='FINAL_10_READY'/);
+ assert.match(trainer,/if\(action.value!==te.command\)mode='NORMAL'/);
 });
