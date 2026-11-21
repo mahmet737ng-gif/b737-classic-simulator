@@ -4,18 +4,21 @@
  let settings=C.controls(),own={airborne:true,altitudeFt:27000,radioAltitudeFt:24000,
   tasKt:440,gsKt:448,iasKt:293,mach:.73,pitchDeg:2,vsFpm:0,
   trueHeadingDeg:0,trueTrackDeg:0,elapsedSec:0},initialAltitudeFt=27000,
- encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,fdHoldOffset=null,tfcVisible=true,
+ encounter=null,out=null,running=false,last=null,targetPitch=2,autopilotEngaged=true,
+ pitchRateDegPerSec=0,tfcVisible=true,
  loadedScenarioId=null,loadSequence=0;
  const scenario=by('scenario');for(const [id,s] of Object.entries(C.SCENARIOS)){const o=new Option(s.label,id);scenario.add(o);}scenario.value='DIVERGING_ABOVE';
  for(const id of Object.keys(settings.failures)){const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.dataset.failure=id;label.append(input,document.createTextNode(id));by('failures').append(label);input.addEventListener('change',()=>{settings.failures[id]=input.checked;refresh();});}
  function feeds(){return {xpdr1:by('bus1').checked,xpdr2:by('bus2').checked&&by('atc2cb').checked,computer:!settings.failures.computer,aligned:!settings.failures.irs,adc1:true,adc2:true,radioAlt:true,irs:true};}
+ const LEVEL_CRUISE_PITCH_DEG=2; // This lab's 0-FPM cruise reference.
  function load(autoRun=false){
   const requestedId=scenario.value;
   const feedback=by('scenarioStatus');
   if(!C.SCENARIOS[requestedId])throw Error('UNKNOWN_SELECTED_SCENARIO: '+requestedId);
   feedback.dataset.loadState='loading';
   feedback.textContent='LOADING SCENARIO · '+C.SCENARIOS[requestedId].label;
-  running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;fdHoldOffset=null;
+  running=false;last=null;by('play').textContent='RUN';autopilotEngaged=true;
+  pitchRateDegPerSec=0;
   own.elapsedSec=0;own.altitudeFt=Number(by('altitude').value);own.radioAltitudeFt=Number(by('radioHeight').value);own.iasKt=Number(by('speed').value);
   // 293 KIAS / Mach .73 cruise demonstration, with TAS distinct from CAS.
   // These are trainer estimates, not an ADC atmosphere calculation.
@@ -73,8 +76,19 @@
  }
  function refresh(){if(!encounter)return;encounter=C.step(encounter,own,0,settings,feeds());out=encounter.output;paint();}
  function step(dt){
-  const change=Math.max(-3*dt,Math.min(3*dt,targetPitch-own.pitchDeg));own.pitchDeg+=change;
-  own.vsFpm=Math.sin((own.pitchDeg-2)*Math.PI/180)*own.tasKt*6076.11549/60;
+  // Smooth instructor pitch plant: 0.55 deg/s peak, 0.45 deg/s² slew.
+  // Unlike the previous instant 3 deg/s jump, a normal 1500-FPM RA
+  // takes several seconds to establish and an urgent 10° command longer.
+  const maxRate=.55,maxAcceleration=.45;
+  const desiredRate=Math.max(-maxRate,Math.min(maxRate,
+   (targetPitch-own.pitchDeg)*.95));
+  pitchRateDegPerSec+=Math.max(-maxAcceleration*dt,
+   Math.min(maxAcceleration*dt,desiredRate-pitchRateDegPerSec));
+  const remaining=targetPitch-own.pitchDeg,change=pitchRateDegPerSec*dt;
+  if(Math.abs(change)>=Math.abs(remaining)){
+   own.pitchDeg=targetPitch;pitchRateDegPerSec=0;
+  }else own.pitchDeg+=change;
+  own.vsFpm=Math.sin((own.pitchDeg-LEVEL_CRUISE_PITCH_DEG)*Math.PI/180)*own.tasKt*6076.11549/60;
   own.altitudeFt+=own.vsFpm*dt/60;own.radioAltitudeFt+=own.vsFpm*dt/60;own.elapsedSec+=dt;
   // LNAV-like simulation follows each route leg and turns to the next fix.
   own.trueTrackDeg=own.trueHeadingDeg=Cruise.route({elapsedSec:own.elapsedSec,groundSpeedKt:own.gsKt}).own.headingDeg;
@@ -103,9 +117,11 @@
   state.eadi.at='FMC SPD';state.eadi.pitchMode='VNAV PTH';state.eadi.rollMode='LNAV';
   state.eadi.afds=autopilotEngaged?'CMD':'FD';state.eadi.apEngaged=autopilotEngaged;
   state.eadi.fd=true;state.eadi.fdAuto=false;
-  // A manual RA is NOT an FD mode. Keep the existing FD bars stationary on
-  // the glass after CMD disconnect; do not cue the RA by moving those bars.
-  state.eadi.fdPitch=autopilotEngaged?targetPitch:own.pitchDeg+(fdHoldOffset??0);
+  // FD does not follow a manual TCAS maneuver. VNAV PTH continues asking
+  // for level cruise (2° in this simplified 0-FPM flight-path model).
+  // As the aircraft pitches up to comply with a CLIMB RA, the level-flight
+  // FD cue moves DOWN relative to the airplane symbol, never up with the RA.
+  state.eadi.fdPitch=LEVEL_CRUISE_PITCH_DEG;
   state.eadi.fdRoll=0;
   state.eadi.fmcVerticalValid=true;state.eadi.phase='CRUISE';
   win.EFISDisplayLabEadi.render(by('eadi'),state,Core);
@@ -143,7 +159,7 @@
     trackValid:!settings.failures.irs,brightness:cp?.brightness.hsi??1,
     wxBrightness:cp?.brightness.wxInner??1},weather:{}});
   win.B737TcasEfisCPV1?.sync?.({mode:by('displayMode').value,range:rangeNm,tfc:tfcVisible});
-  by('status').textContent=[out.mode,out.stage,out.callout,...out.inhibits].filter(Boolean).join(' · ');
+  by('status').textContent=[out.mode,out.stage,out.callout,out.raContinuity,...out.inhibits].filter(Boolean).join(' · ');
   updateScenarioStatus();
   const t=out.transponder;by('xpdr').textContent='ATC '+t.selectedUnit+' · '+t.displayedCode+' · MODE S '+(t.modeS?'ON':'OFF')+' · ALT '+(t.altitudeReporting?'REPORTING':'OFF / INVALID')+' · '+(t.atcFailLight?'ATC FAIL / TEST':'NORMAL')+(t.ident?' · IDENT':'');
   by('ownState').textContent='SIM UTC '+cruise.utc+' · NEXT '+cruise.next+
@@ -207,8 +223,7 @@
  }
  by('respond').onclick=guard(()=>{
   if(!out?.ra)return;
-  // Retain the existing VNAV/LNAV guidance and the screen location of F/D bars.
-  fdHoldOffset=targetPitch-own.pitchDeg;
+  // Disconnect CMD but keep FD commanded level-cruise, independent of RA.
   autopilotEngaged=false;
   const threat=out.targets.find(t=>t.kind==='RA'&&!t.invalidEcho)||null;
   targetPitch=commandedPitchForRa(out.ra,threat);
