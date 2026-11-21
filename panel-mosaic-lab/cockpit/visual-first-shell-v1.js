@@ -98,7 +98,10 @@
  // Visual-only navigation remains usable while the simulator downloads.
  // Once the authoritative app adopts this shell, these lightweight handlers
  // become inert and its original pan/zoom and AFDS interactions take over.
- let focusAttempts=0,currentView='main',zoom=.2;
+ let focusAttempts=0,currentView='main',zoom=.2,interacted=false;
+ // Preserve the viewport through visual-first -> full simulator hydration.
+ win.B737VisualFirstShellV1.snapshot=()=>({zoom,left:vp.scrollLeft,top:vp.scrollTop,
+  focused:currentView,interacted});
  const clamp=v=>Math.max(.04,Math.min(2,v));
  function viewBox(id){
   if(id==='all')return {x:0,y:0,w:layout.canvas.width,h:layout.canvas.height};
@@ -148,7 +151,7 @@
    button.classList.toggle('active',button.dataset.focus===id);
  }
  function focusMain(){
-  if(win.B737VisualFirstShellV1.adopted)return;
+  if(win.B737VisualFirstShellV1.adopted||interacted)return;
   if((vp.clientWidth<40||vp.clientHeight<100)&&focusAttempts++<25){
    win.requestAnimationFrame(focusMain);return;
   }
@@ -159,6 +162,7 @@
   if(win.B737VisualFirstShellV1.adopted)return;
   const button=e.target.closest?.('[data-focus],#zoomOut,#zoomIn,#fit,#native');
   if(!button)return;
+  interacted=true;
   if(button.dataset.focus){focus(button.dataset.focus);return;}
   if(button.id==='fit'){focus(currentView);return;}
   const newZ=button.id==='native'?1:button.id==='zoomIn'?zoom*1.2:zoom/1.2;
@@ -169,7 +173,9 @@
   vp.scrollTop=Math.max(0,top*zoom-h/2);
  });
  vp.addEventListener('wheel',e=>{
-  if(win.B737VisualFirstShellV1.adopted||!(e.ctrlKey||e.metaKey))return;
+  if(win.B737VisualFirstShellV1.adopted)return;
+  interacted=true;
+  if(!(e.ctrlKey||e.metaKey))return;
   e.preventDefault();
   const rect=vp.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
   const old=zoom,sourceX=(vp.scrollLeft+x)/old,sourceY=(vp.scrollTop+y)/old;
@@ -181,6 +187,7 @@
  vp.addEventListener('pointerdown',e=>{
   if(win.B737VisualFirstShellV1.adopted||e.pointerType!=='mouse'||e.button!==0||
     e.target.closest?.('button,input,select,a,iframe,[data-control]'))return;
+  interacted=true;
   drag={id:e.pointerId,x:e.clientX,y:e.clientY,l:vp.scrollLeft,t:vp.scrollTop};
  });
  vp.addEventListener('pointermove',e=>{
@@ -192,6 +199,7 @@
  });
  for(const name of ['pointerup','pointercancel','lostpointercapture'])
   vp.addEventListener(name,()=>{drag=null;});
+ vp.addEventListener('touchstart',()=>{if(!win.B737VisualFirstShellV1.adopted)interacted=true;},{passive:true});
  win.addEventListener('resize',()=>{
   if(!win.B737VisualFirstShellV1.adopted)focus(currentView);
  });
