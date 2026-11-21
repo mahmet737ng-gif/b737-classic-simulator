@@ -44,7 +44,7 @@
   stopMotion();physicalMotion=true;
   te=actuator.initialState();state=engine.initialState('NORMAL');
   state=engine.apply(state,{type:'GROUND',value:false});
-  source='FLIGHT_SCENARIO_FINAL10';mode='NORMAL';
+  source='FLIGHT_SCENARIO_FINAL10';mode='FINAL_10_READY';
   te=actuator.apply(te,{type:'COMMAND',value:30});
   state=engine.apply(state,{type:'FLAP_LEVER',value:30});
   state=engine.apply(state,{type:'START_LE_SEQUENCE'});
@@ -71,6 +71,7 @@
    return paint();
   }
   if(action.type==='FLAP_LEVER'){
+   if(action.value!==te.command)mode='NORMAL';
    const firstExtension=physicalMotion&&te.command===0&&te.actual<1e-6&&action.value>0;
    te=actuator.apply(te,{type:'COMMAND',value:action.value});
    if(firstExtension)state=engine.apply(state,{type:'START_LE_SEQUENCE'});
