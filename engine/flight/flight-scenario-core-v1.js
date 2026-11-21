@@ -201,6 +201,8 @@
     s.flightControl={source:'FCC_SHARED_TRAINING_CONTROL_LAWS',
      desiredBankDeg:control.desiredBankDeg,
      desiredPitchDeg:control.desiredPitchDeg,
+     commandedBankDeg:control.commandedBankDeg,
+     commandedPitchDeg:control.commandedPitchDeg,
      desiredVsFpm:control.desiredVsFpm};
    }else{
     // Fallback for isolated fixture environments without the new module.
