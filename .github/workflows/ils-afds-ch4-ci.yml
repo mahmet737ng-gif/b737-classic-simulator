@@ -1,0 +1,46 @@
+name: B737 Classic ILS APP AFDS Ch4
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/afds/classic-ils-afds-ch4-v1.js'
+      - 'engine/afds/mcp-mode-core-v1.js'
+      - 'engine/afds/fcc-flight-guidance-v1.js'
+      - 'engine/afds/fma-mode-engine-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/ils-afds-ch4-unified-v1.test.cjs'
+      - '.github/workflows/ils-afds-ch4-ci.yml'
+  pull_request:
+    paths:
+      - 'engine/afds/**'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'tests/ils-afds-ch4-unified-v1.test.cjs'
+jobs:
+  ils-afds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile and verify navigation flight-mode source
+        run: |
+          node --check engine/afds/classic-ils-afds-ch4-v1.js
+          node --check engine/afds/mcp-mode-core-v1.js
+          node --check engine/afds/fcc-flight-guidance-v1.js
+          node --check engine/afds/fma-mode-engine-v1.js
+          node --check panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js
+          node --check panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js
+          node --check panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js
+          node --check engine/flight/flight-scenario-core-v1.js
+          node --test tests/ils-afds-ch4-unified-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs
+          node engine/afds/mcp-exclusive-modes-v1.test.cjs
+          node --test tests/flight-scenario-core-v1.test.cjs tests/iran-radio-nav-unified-v1.test.cjs
+      - name: Verify optimized Unified bundle still compiles
+        run: node --test tests/unified-web-build.test.cjs
