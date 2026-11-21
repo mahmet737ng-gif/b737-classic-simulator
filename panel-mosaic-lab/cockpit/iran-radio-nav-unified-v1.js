@@ -84,7 +84,8 @@
     stationIdent:ils.ident,stationLat:ils.lat,stationLon:ils.lon,
     tunedFrequencyMHz:ils.freqKhz/1000,localizerDots:calculated.localizerDots,
     glideslopeDots:calculated.glideslopeDots,frontCourse:true,
-    courseTrueDeg:ils.courseTrueDeg,runway:ils.runway,
+    courseTrueDeg:ils.courseTrueDeg,courseMagDeg:ils.courseMagDeg??null,
+    glideDeg:ils.glideDeg,tchFt:ils.tchFt??50,runway:ils.runway,
     trainingOnly:true,positionQuality:calculated.positionQuality,
     source:calculated.source}:null;
    const dmeData=(vorValid||ilsValid)?{
