@@ -180,6 +180,40 @@ const {chromium}=require('playwright');
   await page.locator('#start').click();
   assert.equal(Number(await page.locator('#scenarioStatus').getAttribute('data-load-sequence')),previousSequence+1,
    'Reloading the same scenario must recreate the encounter rather than doing nothing');
+  // Full manual CLIMB RA: only the aircraft pitches up, FD remains a
+  // level-cruise cue, and real-photo IVSI RA bands must persist until
+  // observed 3-D separation allows CLEAR OF CONFLICT.
+  await page.selectOption('#scenario','CLIMB');
+  await page.locator('#converging').uncheck();
+  await page.locator('#pitch').fill('2');
+  await page.locator('#vs').fill('0');
+  await page.locator('#relative').fill('');
+  await page.locator('#intruderVS').fill('');
+  await page.locator('#start').click();
+  await page.locator('#play').click(); // Pause; STEP 1 S controls the timeline.
+  for(let second=0;second<7;second++)await page.locator('#step').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'CLIMB',
+   'The CLIMB RA must become active before manual action');
+  await page.locator('#respond').click();
+  const fdPitchAtResponse=Number(await page.locator('#eadi').getAttribute('data-fd-target-pitch-deg'));
+  const pitchAtResponse=Number(await page.locator('#eadi').getAttribute('data-actual-pitch-deg'));
+  assert.equal(fdPitchAtResponse,2,'FD commands level cruise, not the RA');
+  for(let second=0;second<12;second++)await page.locator('#step').click();
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'CLIMB',
+   'Original IVSI red/green bands must NOT vanish during an active conflict');
+  assert.match(await page.locator('#status').textContent(),/AWAIT VERIFIED SEPARATION/,
+   'Live RA must be retained while observed separation remains unsafe');
+  const fdAfter=Number(await page.locator('#eadi').getAttribute('data-fd-target-pitch-deg'));
+  const aircraftPitchAfter=Number(await page.locator('#eadi').getAttribute('data-actual-pitch-deg'));
+  assert.equal(fdAfter,fdPitchAtResponse,'FD pitch reference must not follow the pilot RA');
+  assert.ok(aircraftPitchAfter>pitchAtResponse&&aircraftPitchAfter<=12,
+   'Aircraft must respond to the climb by a slower, bounded pitch transition');
+  for(let i=0;i<65&&!((await page.locator('#scenarioStatus').textContent()).includes('CLEAR OF CONFLICT'));i++)
+   await page.locator('#step').click();
+  assert.match(await page.locator('#scenarioStatus').textContent(),/CLEAR OF CONFLICT/,
+   'RA may clear only after sustained real separation');
+  assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'NONE',
+   'RA bands must disappear once CLEAR OF CONFLICT is actually confirmed');
   assert.equal(errors.length,0,'Page must have no uncaught JS errors: '+errors.join('; '));
   const artifacts=path.resolve('artifacts/tcas-lab');
   fs.mkdirSync(artifacts,{recursive:true});
