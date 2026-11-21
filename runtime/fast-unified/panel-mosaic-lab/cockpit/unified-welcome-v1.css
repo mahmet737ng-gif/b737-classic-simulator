@@ -163,7 +163,7 @@
 @media (max-width: 680px) { #unifiedWelcome .welcome-setup { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) {
   #unifiedWelcome[data-stage="welcome"] .welcome-intro {
-    background-image: url("./brand/unified-intro-still.webp?v=WELCOME-0003");
+    background-image: url("./brand/unified-intro-still.webp?v=WELCOME-0004");
   }
   #unifiedWelcome .welcome-intro-window,
   #unifiedWelcome .welcome-intro-wordmark,
