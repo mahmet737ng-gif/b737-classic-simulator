@@ -226,6 +226,16 @@
   // Only source-verified limits are drawn, never fixed performance estimates.
   stallBufferBracket(ctx,m.minimumManeuverKt,m.stickShakerKt,view);
   band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
+  // Scenario-only training envelope, not source-verified FCOM/FCC limits.
+  const trainer=view.trainingLowSpeed;
+  if(!Number.isFinite(m.stickShakerKt)&&
+     trainer?.source==='INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA'&&
+     Number.isFinite(trainer.stickShakerKt)&&
+     Number.isFinite(trainer.minimumManeuverKt)){
+   stallBufferBracket(ctx,trainer.minimumManeuverKt,trainer.stickShakerKt,view);
+   band(ctx,trainer.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
+   write('TRN',TAPE.left+8,TAPE.bottom-31,COLOR.yellow,ref?19:15,'left');
+  }
   if(ref&&Number.isFinite(m.stickShakerKt)&&visible(yFor(m.stickShakerKt,view)))
    segment(ctx,POLE_X,yFor(m.stickShakerKt,view),POLE_X+20,yFor(m.stickShakerKt,view),COLOR.red,4);
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
