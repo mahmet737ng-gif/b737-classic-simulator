@@ -96,9 +96,17 @@ function project(){
    " · CB: "+cbText(cb?.available?.("mcp.course2"))+(guide?"\nNEXT: "+guide:"");
  }
  if(modeReadout){
-  const m=out.modes;
-  modeReadout.textContent="LAT "+(m.lateral||"—")+" · VERT "+(m.vertical||"—")+" · A/T "+(m.thrust||"—")+" · A/P "+(m.autopilot||"—")+
-   (out.rejection?" | BLOCKED: "+out.rejection:"");
+  const m=out.modes,arm=out.armed||{},cap=out.capture||{};
+  const intent=out.pending?.approach?'APP ARMED':
+   arm.roll==='VOR/LOC'?'VOR/LOC ARMED':'';
+  const nav=out.flight?.navValid===true?(out.flight.navKind+' NAV VALID'):
+   out.flight?.navValid===false?'NAV NOT RECEIVED':'NAV SOURCE PENDING';
+  modeReadout.textContent="LAT "+(m.lateral||"—")+" · VERT "+(m.vertical||"—")+
+   " · A/T "+(m.thrust||"—")+" · A/P "+(m.autopilot||"—")+
+   (intent?" | "+intent:"")+
+   (cap.roll==='VOR_LOC'?" | VOR/LOC CAPTURED":"")+
+   (cap.pitch==='G/S'?" | G/S CAPTURED":"")+
+   " | "+nav+(out.rejection?" | BLOCKED: "+out.rejection:"");
  }
 }
 function hardwareCommand(e){
@@ -215,6 +223,19 @@ if(document.readyState!=="loading"){decorate();project();electrical()}
 window.B737McpAFDSBridgeV1=Object.freeze({
  getState:()=>JSON.parse(JSON.stringify(state)),
  getOutput:()=>Core.output(state),
+ getApproachDiagnostics:()=>{
+  const out=Core.output(state);
+  const r=window.B737UnifiedFccFlightV1?.getILS?.()||null;
+  const tuner=window.B737UnifiedVHFNavControlsV1;
+  return {power:out.power,course2Power:out.course2Power,
+   appArmed:out.pending.approach,vorLocArmed:out.armed.roll==='VOR/LOC',
+   gsArmed:out.armed.pitch==='G/S',capture:{...out.capture},
+   fmaNav:{...out.nav},lastRejection:out.rejection,
+   navSignal:r?{valid:r.valid,kind:r.kind,ident:r.stationIdent,
+    locDots:r.locDeviationDots,gsDots:r.gsDeviationDots,reason:r.reason}:null,
+   nav1FrequencyKhz:tuner?.getState?.('CAPT')?.activeFrequencyKhz??null,
+   nav2FrequencyKhz:tuner?.getState?.('FO')?.activeFrequencyKhz??null};
+ },
  refreshElectrical:electrical,
  observePower:()=>Core.output(state), // compatibility: read-only, no manual power injection
  setEvidence:(key,value)=>send({type:"EVIDENCE",key,value}),
