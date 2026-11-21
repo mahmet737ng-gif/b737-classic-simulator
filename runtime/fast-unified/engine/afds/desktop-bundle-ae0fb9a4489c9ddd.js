@@ -928,7 +928,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0002 */
+/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0003 */
 try{
 /* B737 Classic Unified — educational VOR/DME and ILS geometry.
  * Community reference data only. NOT an AIRAC database, approved approach,

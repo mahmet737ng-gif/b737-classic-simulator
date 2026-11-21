@@ -270,7 +270,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001&amp;aero=TRN-LOW-0001&amp;fd=DIRECT-CMD-0002 */
+/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001-IRAN-ILS-29L-0001&amp;aero=TRN-LOW-0001&amp;fd=DIRECT-CMD-0002 */
 try{
 /* Unified EADI v2: cockpit mount for the new EFIS Display Lab EADI renderer.
  * Replaces the retired attitude-only painter, retaining the owner-registered
@@ -332,7 +332,7 @@ try{
   const powered=root.B737UnifiedEfisSources.getPreset()!=='COLD_DARK'&&(station.powered??(src.displayPowered&&src.video));
   const injected=station.source==='SIMULATOR_INJECTION';
   const numeric=v=>Number.isFinite(v)?v:null;
-  const radAlt=numeric(src.ra?.heightFt),front=src.frontCourse;
+  const radAlt=numeric(src.ra?.heightFt),front=typeof src.ils?.frontCourse==='boolean'?src.ils.frontCourse:src.frontCourse;
   const adc=src.adc;
   const smooth=root.B737UnifiedFlightDisplayMotionV1?.sample?.();
   const validSmooth=smooth?.schema==='B737_FLIGHT_SCENARIO_STATE_V1'&&
@@ -398,6 +398,12 @@ try{
    display.host.dataset.mcpLateral=src.mcp?.lateralMode||'';
    display.host.dataset.mcpSelectedAltitude=src.mcp?.altitudeSelectedFt==null?'':String(src.mcp.altitudeSelectedFt);
    display.host.dataset.mcpSelectedVs=src.mcp?.verticalSpeedSelectedFpm==null?'':String(src.mcp.verticalSpeedSelectedFpm);
+  // Raw radio ILS front-course must be independent of aircraft HDG/TRK/MCP CRS.
+  // EADI diamonds are receiver indications, NOT proof of LOC or G/S capture.
+  display.host.dataset.ilsIdent=src.ils?.stationIdent||'';
+  display.host.dataset.locSignalValid=String(Number.isFinite(src.ils?.localizerDots)&&front===true);
+  display.host.dataset.gsSignalValid=String(Number.isFinite(src.ils?.glideslopeDots)&&front===true);
+  display.host.dataset.ilsFrontCourse=String(front===true);
   display.host.dataset.fdSource=direct?'FCC_DIRECT_SAME_ENGINE':
    src.director?'AVIONICS_FCC':'NO_FCC_CUE';
   display.host.dataset.fdPitchBar=String(director?.enabled===true&&
