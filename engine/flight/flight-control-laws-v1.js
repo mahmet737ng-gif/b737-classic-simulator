@@ -13,7 +13,10 @@
  const wrap=x=>((x%360)+360)%360;
  const difference=(from,to)=>((to-from+540)%360)-180;
  const finite=x=>typeof x==='number'&&Number.isFinite(x);
- const RATES=Object.freeze({rollDegSec:3.2,pitchDegSec:1.15,vsFpmSec:420});
+ // Instructor-only slew/lag settings, not validated B737 actuator limits.
+ // A V/S mode change commands a gradual pitch change then a delayed V/S response.
+ const RATES=Object.freeze({rollDegSec:2.3,pitchDegSec:0.65,vsFpmSec:230,
+  pitchCommandTauSec:2.6,rollCommandTauSec:1.5});
  const TRIM_PITCH_DEG=2;
  function bankForHeading(headingTrue,targetTrue,limitDeg=25){
   if(!finite(headingTrue)||!finite(targetTrue))return null;
@@ -58,11 +61,20 @@
  function stepAttitude(frame,target,dt){
   const desired=guidance(frame,target);
   if(!desired)throw TypeError('INVALID_FLIGHT_CONTROL_TARGET');
-  const bankDeg=move(frame.bankDeg,desired.desiredBankDeg,RATES.rollDegSec,dt);
-  const pitchDeg=move(frame.pitchDeg,desired.desiredPitchDeg,RATES.pitchDegSec,dt);
+  const previousPitch=finite(frame.flightControl?.commandedPitchDeg)?
+   frame.flightControl.commandedPitchDeg:frame.pitchDeg;
+  const previousBank=finite(frame.flightControl?.commandedBankDeg)?
+   frame.flightControl.commandedBankDeg:frame.bankDeg;
+  const pitchDemand=previousPitch+(desired.desiredPitchDeg-previousPitch)*
+   (1-Math.exp(-dt/RATES.pitchCommandTauSec));
+  const bankDemand=previousBank+(desired.desiredBankDeg-previousBank)*
+   (1-Math.exp(-dt/RATES.rollCommandTauSec));
+  const bankDeg=move(frame.bankDeg,bankDemand,RATES.rollDegSec,dt);
+  const pitchDeg=move(frame.pitchDeg,pitchDemand,RATES.pitchDegSec,dt);
   const commandedPhysicalVs=vsForPitch(pitchDeg,frame.tasKt);
   const vsFpm=move(frame.vsFpm,commandedPhysicalVs,RATES.vsFpmSec,dt);
   return {...desired,bankDeg,pitchDeg,vsFpm,
+   commandedPitchDeg:pitchDemand,commandedBankDeg:bankDemand,
    actualVsFromPitchFpm:commandedPhysicalVs};
  }
  return Object.freeze({VERSION,RATES,TRIM_PITCH_DEG,bankForHeading,pitchForVs,
