@@ -70,6 +70,41 @@ test('NAV tuning publishes same source to VOR, DME and ILS consumers without mix
  assert.equal(packets['navigation.vor1'].value,null);
  assert.ok(packets['navigation.dme1'].value.distanceNm>0);
 });
+test('ITHL chart OIII 11-1: 285 MAG, 3.30 GS, threshold 3797, TCH 59 and altitude profile',()=>{
+ const s=geo.byIdent('ITHL'),ftPerNm=Math.tan(3.3*Math.PI/180)*6076.11549;
+ assert.equal(s.freqKhz,109900);assert.equal(s.courseMagDeg,285);
+ assert.equal(s.courseTrueDeg,289.75);assert.equal(s.elevationFt,3797);
+ assert.equal(s.tchFt,59);assert.equal(s.glideDeg,3.3);
+ assert.equal(s.dmeElevationFt,3804);
+ assert.ok(Math.abs((s.elevationFt+s.tchFt+ftPerNm*7.5)-6500)<20);
+ const nm1000=(1000-s.tchFt)/ftPerNm;
+ const nm2000=(2000-s.tchFt)/ftPerNm;
+ assert.ok(Math.abs(nm1000-2.686)<.01);
+ assert.ok(Math.abs(nm2000-5.54)<.01);
+ function onFinal(nm,offsetFt=0){
+  const r=(s.courseTrueDeg+180)*Math.PI/180;
+  return {lat:s.lat+nm*Math.cos(r)/60,
+   lon:s.lon+nm*Math.sin(r)/(60*Math.cos(s.lat*Math.PI/180)),
+   altitudeFt:s.elevationFt+s.tchFt+ftPerNm*nm+offsetFt};
+ }
+ const level=geo.evaluate(onFinal(5),s);
+ assert.equal(level.frontCourse,true);
+ assert.ok(Math.abs(level.localizerDots)<.04);
+ assert.ok(Math.abs(level.glideslopeDots)<.04);
+ assert.ok(Math.abs(level.glidepathAngleDeg-3.3)<.04);
+ assert.ok(geo.evaluate(onFinal(5,150),s).glideslopeDots>0);
+ assert.ok(geo.evaluate(onFinal(5,-150),s).glideslopeDots<0);
+ assert.equal(geo.evaluate(onFinal(11),s).glideslopeDots,null);
+ assert.equal(geo.evaluate(onFinal(19),s).frontCourse,false);
+});
+test('Both EADI and EHSI use ILS beam front course, not heading and selected course',()=>{
+ const eadi=fs.readFileSync(path.join(cockpit,'eadi-lab-unified-v2.js'),'utf8');
+ const ehsi=fs.readFileSync(path.join(cockpit,'ehsi-unified-v1.js'),'utf8');
+ assert.match(eadi,/front=typeof src\.ils\?\.frontCourse==='boolean'\?src\.ils\.frontCourse:src\.frontCourse/);
+ assert.match(ehsi,/gsValid:\(typeof src\.ils\?\.frontCourse==='boolean'\?src\.ils\.frontCourse:src\.frontCourse\)===true&&gs!==null/);
+ assert.match(eadi,/dataset\.locSignalValid/);
+ assert.match(eadi,/dataset\.gsSignalValid/);
+});
 test('Unified HTML loads radio modules after live NAV controls without changing photo gauges',()=>{
  const html=fs.readFileSync(path.join(cockpit,'index.html'),'utf8');
  assert.ok(html.includes('iran-radio-navaids-v1.js'));
