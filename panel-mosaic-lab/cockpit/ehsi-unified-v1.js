@@ -16,7 +16,7 @@
  };
  const TOPICS=new Set(['electrical.buses','irs.left','irs.right','mcp.state','fmc.computed',
   'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',
-  'navigation.ils1','navigation.ils2']);
+  'navigation.ils1','navigation.ils2','navigation.adf1','navigation.adf2']);
  const SEATS=['CAPT','FO'];
  const FMC_MAP_TIMEOUT_MS=27500;
  const number=v=>Number.isFinite(v)?v:null;
@@ -226,8 +226,9 @@
     // additive layer does not modify the owner-approved EHSI photo geometry.
     const flightPos=scenarioState&&Number.isFinite(scenarioState.lat)&&
      Number.isFinite(scenarioState.lon)?scenarioState:null;
-    if(!preview)win.B737UnifiedEhsiRadioOverlayV1?.draw(screen.svg,model,src,
-     snapshot,flightPos||src.mapPosition,renderer);
+    if(!preview&&src.displayPowered===true&&src.video===true&&src.track!==null)
+     win.B737UnifiedEhsiRadioOverlayV1?.draw(screen.svg,model,src,
+      snapshot,flightPos||src.mapPosition,renderer);
     else screen.svg.querySelector('[data-radio-nav-overlay]')?.remove();
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
