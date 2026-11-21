@@ -14,6 +14,9 @@
  const Laws=(typeof globalThis==='object'?globalThis.B737FlightControlLawsV1:null)||
   (typeof module==='object'&&typeof require==='function'?
    require('./flight-control-laws-v1.js'):null);
+ const Envelope=(typeof globalThis==='object'?globalThis.B737ClassicLowSpeedEnvelopeV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('./classic-low-speed-envelope-v1.js'):null);
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -86,6 +89,9 @@
    elevationFt:airport.elevationFt,iasKt:speed,tasKt:speed,
    gsKt:speed,trueHeadingDeg:heading,trueTrackDeg:heading,
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
+   flapLever:0,flapActual:0,slatsFull:false,
+   massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
+   autoSlatRequest:false,aeroEnvelope:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
    notices:['TRAINING_SURROGATE','NO_FCOM_PERFORMANCE_CLAIM',anchor.source]};
  }
@@ -100,6 +106,15 @@
    case 'ALTITUDE':next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');next.target.verticalMode='ALTITUDE';break;
    case 'VS':next.target.vsFpm=finite(action.value,-5000,5000,'VS');next.target.verticalMode='VS';break;
    case 'SPEED':next.target.speedKt=finite(action.value,0,450,'SPEED');break;
+   case 'AERO_CONFIG':
+    if(!Envelope?.DETENTS?.includes(action.flapLever)||
+      typeof action.slatsFull!=='boolean')throw RangeError('AERO_CONFIG_INPUT');
+    next.flapLever=action.flapLever;
+    next.flapActual=finite(action.flapActual,0,40,'ACTUAL_TE_FLAP');
+    next.slatsFull=action.slatsFull;
+    if(action.massKg!==undefined)
+     next.massKg=action.massKg===null?null:finite(action.massKg,30000,75000,'MASS_KG');
+    break;
    case 'MANUAL_HOLD':
     // Autopilot disconnect: preserve last observed bank and vertical motion.
     // Do not let obsolete HDG SEL / ALT targets keep steering the aircraft.
@@ -126,8 +141,13 @@
   if(state.paused||dt===0)return state;
   const s={...state,target:{...state.target},revision:state.revision+1,elapsedSec:state.elapsedSec+dt};
   const target=s.target;
+  const assessAero=()=>Envelope?.evaluate({iasKt:s.iasKt,
+   massKg:s.massKg,flapLever:s.flapLever,flapActual:s.flapActual,
+   slatsFull:s.slatsFull,bankDeg:s.bankDeg,airborne:s.airborne,
+   autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
   if(s.phase==='GROUND_READY'){
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
+   s.aeroEnvelope=assessAero();s.autoSlatRequest=false;
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);return s;
   }
   const groundRoll=s.phase==='TAKEOFF_ROLL',landingRoll=s.phase==='LANDING_ROLL';
@@ -169,8 +189,18 @@
    s.iasKt=Math.max(0,s.iasKt+clamp(commandedSpeed-s.iasKt,-rate*dt,rate*dt));
    s.propulsion={source:'KINEMATIC_TRAINING_FALLBACK'};
   }
+  // Trainer aerodynamic drag responds to actual TE flap travel, not just lever
+  // selection. This is NOT a calibrated performance/engine model.
+  const preliminary=assessAero();
+  if(preliminary&&s.airborne){
+   const drag=preliminary.flapDragKtSec*Math.pow(s.iasKt/180,2)*dt;
+   s.iasKt=Math.max(0,s.iasKt-drag);
+   if(s.propulsion)s.propulsion.flapDragKtSec=preliminary.flapDragKtSec;
+  }
   // Simplified TAS=IAS approximation; density/weight/thrust modeling is deferred.
   s.tasKt=s.iasKt;
+  s.aeroEnvelope=assessAero();
+  s.autoSlatRequest=s.aeroEnvelope?.autoSlatRequest===true;
   if(groundRoll){
    s.pitchDeg=s.iasKt>=128?clamp((s.iasKt-128)*.65,0,9):0;
    if(s.iasKt>=145){
