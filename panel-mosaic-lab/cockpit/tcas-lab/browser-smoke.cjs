@@ -185,10 +185,12 @@ const {chromium}=require('playwright');
   // observed 3-D separation allows CLEAR OF CONFLICT.
   await page.selectOption('#scenario','CLIMB');
   await page.locator('#converging').uncheck();
-  await page.locator('#pitch').fill('2');
-  await page.locator('#vs').fill('0');
-  await page.locator('#relative').fill('');
-  await page.locator('#intruderVS').fill('');
+  // Advanced flight inputs are intentionally inside a CLOSED details panel.
+  // Populate them through the DOM rather than waiting for hidden controls.
+  await page.evaluate(()=>{
+   for(const [id,value] of [['pitch','2'],['vs','0'],['relative',''],['intruderVS','']])
+    document.getElementById(id).value=value;
+  });
   await page.locator('#start').click();
   await page.locator('#play').click(); // Pause; STEP 1 S controls the timeline.
   for(let second=0;second<7;second++)await page.locator('#step').click();
