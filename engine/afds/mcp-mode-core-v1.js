@@ -155,6 +155,12 @@ function transition(state,action){
  let s=clone(state);
  const done=()=>{s.lastRejection=null;s.revision++;return s;};
  if(action.type==="RESET")return initialState();
+ if(action.type==='TOGA_ENGINE_STATUS'){
+  if(action.confirmed!==true||action.source!=='SIMULATED_FCC'||s.togaActive!==true)
+   return rejected(s,'UNQUALIFIED_TOGA_ENGINE_UPDATE');
+  s.togaSingleEngine=action.singleEngine===true;
+  return done();
+ }
  if(action.type==='TOGA_ENGAGED'){
   if(action.confirmed!==true||action.source!=='SIMULATED_FCC')
    return rejected(s,'TOGA_REQUIRES_CONFIRMED_FCC');
