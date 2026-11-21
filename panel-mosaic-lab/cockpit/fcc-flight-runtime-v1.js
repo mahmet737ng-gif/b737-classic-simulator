@@ -18,16 +18,24 @@
  const isActive=()=>win.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true;
  const mcp=()=>win.B737McpAFDSBridgeV1?.getOutput?.()||null;
  const flight=()=>isActive()?win.B737UnifiedFlightScenarioV1?.getState?.():null;
- function navInput(frame){
-  // Not enough evidence that a position/symbol is an active valid FMC leg:
-  // do not steer LNAV/VNAV merely because a route was typed into the CDU.
-  // MCP HDG SEL, however, has a genuine MAG->TRUE conversion at the current
-  // location via WMM2025; never treat magnetic selector as true heading.
-  const field=win.B737WMM2025V1?.evaluate?.({
-   lat:frame?.lat,lon:frame?.lon,altitudeFt:frame?.altitudeFt});
-  return {fmcTrackValid:false,fmcVerticalValid:false,courseTrackValid:false,
-   magneticVariationDeg:field?.valid===true?field.declinationDeg:null,
-   magneticVariationSource:field?.source??null};
+ function navInput(frame,output=mcp()){
+  const field=win.B737WMM2025V1?.evaluate?.({lat:frame?.lat,lon:frame?.lon,
+   altitudeFt:frame?.altitudeFt});
+  const variation=field?.valid===true?field.declinationDeg:null;
+  const net=win.B737UnifiedAvionicsNetworkV1,snap={};
+  for(const topic of ['navigation.ils1','navigation.ils2','navigation.vor1','navigation.vor2'])
+   snap[topic]=net?.getSignal?.(topic)||null;
+  const radio=win.B737ClassicILSApproachCH4V1?.evaluate?.({
+   output,flight:frame,snapshot:snap,declinationDeg:variation})||null;
+  const t=win.B737UnifiedTOGACh4V1?.getState?.();
+  const togaActive=t?.phase==='GA';
+  return {fmcTrackValid:false,fmcVerticalValid:false,
+   courseTrackValid:radio?.courseTrackValid===true,courseDeg:radio?.courseDeg??null,
+   glideValid:radio?.glideValid===true,gsVsFpm:radio?.gsVsFpm??null,
+   togaActive,togaPitchDeg:togaActive?t.fdPitchDeg:null,
+   togaTrackDeg:togaActive?t.fdRollTrackDeg:null,
+   togaVsFpm:togaActive?(t.singleEngine?1000:1500):null,
+   radio,magneticVariationDeg:variation,magneticVariationSource:field?.source??null};
  }
  function guidance(frame,output){
   if(!frame||!output)return null;
@@ -175,6 +183,7 @@
   const out=mcp(),bridge=win.B737McpAFDSBridgeV1;
   if(!bridge?.observeFlight||out?.power!==true)return;
   const to=win.B737UnifiedTOGACh4V1?.getState?.();
+  const radio=navInput(frame,out).radio;
   const insideTakeoff=to?.phase==='TO';
   const sinceLiftoff=insideTakeoff&&frame.airborne&&
    Number.isFinite(to?.liftoffSec)?Math.max(0,to.elapsedSec-to.liftoffSec):null;
@@ -189,7 +198,13 @@
    establishedEnroute:frame.phase==='AIRBORNE'&&!insideTakeoff,
    thrustIdleConfirmed:idle,
    stabTrimAutopilotNormal:win.B737StabilizerTrim?.getCutouts?.().AUTOPILOT!=='CUTOUT',
-   navValid:false,navKind:'NONE'});
+   navValid:radio?.valid===true,navKind:radio?.kind??'NONE',
+   dualIlsValid:radio?.dualIlsValid===true,
+   navCaptureConfirmed:radio?.navCaptureConfirmed===true,
+   gsCaptureConfirmed:radio?.gsCaptureConfirmed===true,
+   locDeviationDots:radio?.locDeviationDots??null,
+   gsDeviationDots:radio?.gsDeviationDots??null,
+   gsBelowDots:radio?.gsBelowDots??null});
  }
  win.addEventListener('b737:flight-scenario-state',e=>{
   const frame=e.detail;
@@ -236,6 +251,7 @@
    if(!isActive()||!directorAtMs||performance.now()-directorAtMs>1500)return null;
    return liveDirector[key]?{...liveDirector[key]}:null;
   },
+  getILS:()=>navInput(flight(),mcp()).radio,
   getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
    lastDisengagement:lastAp?{...lastAp}:null,sourceError,faults:{...faults}}),
   disconnectConfirmed:confirmedHardware,protectionSample:sample=>{
