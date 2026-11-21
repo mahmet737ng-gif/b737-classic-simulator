@@ -59,6 +59,7 @@
  }
  function updateScenarioStatus(){if(!encounter)return;
   const spec=C.SCENARIOS[encounter.scenario],status=by('scenarioStatus');
+  if(scenario.value!==loadedScenarioId && status?.dataset.loadState==='selected')return;
   if(status){
    const primary=out?.targets?.find(t=>!t.id?.startsWith('OTHER-'));
    status.textContent='LOADED #'+loadSequence+' · '+(spec?.label||encounter.scenario)+
@@ -213,6 +214,10 @@
  }
  scenario.addEventListener('change',()=>{syncScenarioOptions();
   if(scenario.value!==loadedScenarioId){
+   // STOP the previous encounter as soon as a different preset is chosen.
+   // Otherwise each animation frame overwrites the "NOT YET LOADED" message
+   // with the old running encounter, making LOAD appear unresponsive.
+   running=false;last=null;by('play').textContent='RUN';
    const banner=by('scenarioStatus');
    banner.dataset.loadState='selected';
    banner.dataset.requestedScenario=scenario.value;
