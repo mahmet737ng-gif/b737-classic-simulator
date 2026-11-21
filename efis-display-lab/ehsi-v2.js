@@ -504,8 +504,8 @@ function positionDifferenceDisplay(svg,m){
   const y=440+i*24,x=447;
   photoText(g,entry.distanceNm.toFixed(1),x-25,y,18,PHOTO_COLORS.white,'end');
   photoText(g,entry.side,x,y,18,PHOTO_COLORS.white);
-  if(Number.isFinite(entry.bearingTrueDeg)&&Number.isFinite(m.reference)){
-   const a=rel(entry.bearingTrueDeg-m.reference);
+  if(Number.isFinite(entry.bearingMagDeg)&&Number.isFinite(m.reference)){
+   const a=rel(entry.bearingMagDeg-m.reference);
    const arrow=make(g,'g',{transform:'translate('+(x+13)+' '+(y-7)+') rotate('+a+')'});
    stroke(arrow,[[0,7],[0,-7],[-3,-2],[0,-7],[3,-2]],PHOTO_COLORS.white,1.4);
   }
