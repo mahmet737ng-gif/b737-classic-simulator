@@ -190,6 +190,20 @@ test('Unqualified TOGA transition cannot clear genuine captured ILS',()=>{
  assert.equal(accepted.pending.approach,false);
  assert.equal(accepted.togaActive,true);
 });
+test('Mehrabad RWY29L five-mile ILS initial state follows 3.30 degree descent and touches runway',()=>{
+ const st=Geo.byIdent('ITHL');
+ const points={OIII:{'29L':{
+  lat:st.lat,lon:st.lon,elevationFt:st.elevationFt,glideDeg:st.glideDeg,
+  tchFt:st.tchFt,courseTrueDeg:st.courseTrueDeg}}};
+ let f=Flight.newScenario({airport:'OIII',runway:'29L',preset:'FINAL_5'},points);
+ assert.ok(Math.abs(f.altitudeFt-(st.elevationFt+st.tchFt+350.345*5))<10);
+ assert.ok(Math.abs(f.vsFpm+f.iasKt*6076.11549/60*Math.tan(3.3*Math.PI/180))<.1);
+ assert.equal(f.georefQuality,'VERIFIED_INPUT');
+ for(let i=0;i<1600&&f.phase!=='LANDING_ROLL';i++)f=Flight.step(f,.1);
+ assert.equal(f.phase,'LANDING_ROLL');
+ assert.equal(f.altitudeFt,st.elevationFt);
+ assert.equal(f.radioAltitudeFt,0);
+});
 test('Two-engine GA blanks MCP IAS/MACH; single-engine GA preserves target display',()=>{
  const base=powered();
  const go=(singleEngine)=>MCP.transition(base,{
