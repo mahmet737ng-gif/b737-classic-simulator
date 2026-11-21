@@ -69,6 +69,9 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   B737IranRadioNavaidsV1:Geo,
   B737ISNCockpitV1:{
    getStartState:()=>({phase:phases}),
+   getElectricalState:()=>({source:{
+    side1:oh['gen-1']==='ON'?'GEN1':'APU',
+    side2:oh['gen-2']==='ON'?'GEN2':'APU'}}),
    engineTrainerAction:({engine,type,instructor})=>{
     assert.equal(instructor,true);assert.equal(type,'PRESET_RUNNING');
     phases[engine]='RUNNING';return {type,engine};}
@@ -96,6 +99,8 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
  assert.equal(result.ENGINE_1.ok,true);
  assert.equal(result.ENGINE_2.ok,true);
  assert.equal(result.APU_OFF.ok,true);
+ assert.equal(result.GEN1_ON_BUS.ok,true);
+ assert.equal(result.GEN2_ON_BUS.ok,true);
  assert.equal(result.NAV1_VOR.ok,true);
  assert.equal(result.NAV2_ILS.ok,true);
  assert.equal(result.AUTOBRAKE_2.ok,true);
