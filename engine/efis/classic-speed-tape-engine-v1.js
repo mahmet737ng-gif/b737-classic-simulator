@@ -43,7 +43,7 @@
  }
  function initialState(seat='CAPT'){
   if(!['CAPT','FO'].includes(seat))throw Error('INVALID_SEAT');
-  return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',adc:{quality:'UNKNOWN',casKt:null,
+  return {schema:SCHEMA,version:VERSION,seat,revision:0,commandAuthority:'AUTO',toga:{active:false,targetSpeedKt:null},adc:{quality:'UNKNOWN',casKt:null,
    pressureAltitudeFt:null,mach:null,lastMs:null,previousCasKt:null,accelerationKtS:null,trendVisible:false},
    mcp:{powered:null,displayBlank:true,selectedCasKt:null,speedDisplayMode:'IAS',source:'MCP'},
    fmc:{valid:false,commandCasKt:null,grossWeightAvailable:false,...blankFields(REF_KEYS)},
@@ -99,6 +99,12 @@
    if(s.adc.quality==='VALID'&&s.adc.lastMs!==null&&now-s.adc.lastMs>2000)
     s.adc={quality:'UNKNOWN',casKt:null,pressureAltitudeFt:null,lastMs:null,
      previousCasKt:null,accelerationKtS:null,trendVisible:false};
+  }else if(e.type==='TOGA_TARGET'){
+   if(e.source!=='SIMULATED_FCC'||typeof e.active!=='boolean')
+    throw Error('INVALID_TOGA_TARGET_SOURCE');
+   s.toga=e.active?
+    {active:true,targetSpeedKt:required(e.targetSpeedKt,0,600,'TOGA_TARGET')}:
+    {active:false,targetSpeedKt:null};
   }else if(e.type==='MCP'){
    if(![true,false,null].includes(e.powered)||typeof e.displayBlank!=='boolean'||
       !['IAS','MACH'].includes(e.speedDisplayMode))throw Error('INVALID_MCP_EVIDENCE');
@@ -255,7 +261,10 @@
    {source:'FMC',speedKt:f.commandCasKt}:
    allowMcp&&s.mcp.powered===true&&!s.mcp.displayBlank&&within(s.mcp.selectedCasKt)?
    {source:'MCP',speedKt:s.mcp.selectedCasKt}:null;
-  const command=!s.failures.selectedSpeed?commanded:null;
+  const ga=s.toga?.active===true&&within(s.toga?.targetSpeedKt)?
+   {source:'TOGA_FD',speedKt:s.toga.targetSpeedKt}:null;
+  const command=!s.failures.selectedSpeed&&s.commandAuthority!=='NONE'?
+   (ga||commanded):null;
   let commandedPosition=null;
   if(command&&range)commandedPosition=command.speedKt>range.maxKt?'ABOVE':
    command.speedKt<range.minKt?'BELOW':'ON_TAPE';

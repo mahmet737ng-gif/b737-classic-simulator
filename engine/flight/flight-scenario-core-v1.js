@@ -140,6 +140,9 @@
        next.altitudeCapture.targetAltitudeFt!==next.target.altitudeFt)
      next.altitudeCapture=null;
     break;
+   case 'PITCH':
+    next.target.pitchDeg=finite(action.value,-10,15,'PITCH');
+    next.target.verticalMode='PITCH';next.altitudeCapture=null;break;
    case 'VS':
     next.target.vsFpm=finite(action.value,-5000,5000,'VS');
     next.target.verticalMode='VS';next.altitudeCapture=null;
@@ -282,7 +285,7 @@
     wantVS=clamp(-Math.max(0,s.gsKt)*5.307+
      clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
-   const commanded={...target,verticalMode:'VS',vsFpm:wantVS};
+   const commanded={...target,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
    const control=Laws?.stepAttitude(s,commanded,dt);
    if(control){
     // Pitch, vertical response, and bank are one physical control chain.
@@ -301,7 +304,8 @@
     const error=angle(s.trueHeadingDeg,target.headingDeg);
     const bank=target.lateralMode==='BANK'?target.bankCommandDeg:clamp(error*.65,-limit,limit);
     s.bankDeg+=clamp(bank-s.bankDeg,-3.2*dt,3.2*dt);
-    const desiredPitch=clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
+    const desiredPitch=target.verticalMode==='PITCH'?clamp(target.pitchDeg,-10,15):
+     clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
     s.pitchDeg+=clamp(desiredPitch-s.pitchDeg,-1.15*dt,1.15*dt);
     const actualVs=clamp(Math.tan((s.pitchDeg-2)*RAD)*Math.max(s.tasKt*KT_TO_MPS,35)*60/.3048,-5000,5000);
     s.vsFpm+=clamp(actualVs-s.vsFpm,-420*dt,420*dt);

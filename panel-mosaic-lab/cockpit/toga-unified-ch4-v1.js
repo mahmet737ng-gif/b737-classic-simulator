@@ -162,6 +162,7 @@
  function releaseToga(){
   if(state.phase==='OFF')return;
   state=T.initial();lastFma='';lastThrust='';thrustFeedback='NOT_REQUESTED';
+  win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'FCC_RELEASE'}}));
   win.dispatchEvent(new CustomEvent('b737:fma-fcc-clear'));
  }
  win.addEventListener('b737:flight-scenario-stopped',releaseToga);

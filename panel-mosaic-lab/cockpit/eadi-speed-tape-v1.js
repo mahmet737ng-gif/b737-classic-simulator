@@ -415,6 +415,15 @@
     }catch(error){win?.console?.warn?.('CH4 speed-limit projection rejected',error);}
    }
   });
+  // FCC GA target on both EADIs, independently of the MCP speed window.
+  const receiveToga=detail=>{
+   const active=Boolean(detail?.phase==='GA'&&Number.isFinite(detail?.targetSpeedKt));
+   for(const seat of ['CAPT','FO'])dispatch(seat,{type:'TOGA_TARGET',
+    source:'SIMULATED_FCC',active,targetSpeedKt:active?detail.targetSpeedKt:null});
+  };
+  root.addEventListener('b737:toga-mode',e=>receiveToga(e.detail));
+  root.addEventListener('b737:flight-scenario-stopped',()=>receiveToga(null));
+  receiveToga(root.B737UnifiedTOGACh4V1?.getState?.());
   root.addEventListener('b737:mcp-afds-state',syncMcp);
   root.addEventListener('b737:avionics-data',e=>{
    if(['airdata.adc1','airdata.adc2'].includes(e.detail?.topic))syncNetwork();

@@ -277,6 +277,7 @@
    switch(action.type){
     case 'HEADING':return t.lateralMode==='HEADING'&&Math.abs(Core.angle(t.headingDeg,action.value))<.01;
     case 'BANK_LIMIT':return t.bankLimitDeg===action.value;
+    case 'PITCH':return t.verticalMode==='PITCH'&&Math.abs(t.pitchDeg-action.value)<.01;
     case 'VS':return t.verticalMode==='VS'&&t.vsFpm===action.value;
     case 'ALT_ACQ':return t.verticalMode==='ALT_ACQ'&&
      state.altitudeCapture?.phase==='ACQUIRE'&&

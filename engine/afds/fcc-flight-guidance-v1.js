@@ -185,9 +185,10 @@
      bankForHeading(nav.togaTrackDeg):0;
    }
    if(active){
-    out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ'].includes(a.type)&&
+    out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ','PITCH'].includes(a.type)&&
      (rollSelected||a.type!=='HEADING'));
-    out.actions.push({type:'VS',value:clamp(nav.togaVsFpm??1500,300,2200)});
+    // Engaged CMD uses the same 13/15-degree GA pitch commanded by F/D.
+    out.actions.push({type:'PITCH',value:clamp(nav.togaPitchDeg??15,-10,15)});
     if(!rollSelected&&Number.isFinite(nav.togaTrackDeg))
      out.actions.push({type:'HEADING',value:norm(nav.togaTrackDeg)});
    }

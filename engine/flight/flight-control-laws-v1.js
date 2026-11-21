@@ -51,8 +51,11 @@
   else if(target.verticalMode==='GLIDEPATH'&&finite(target.glideVsFpm))
    vs=target.glideVsFpm;
   vs=clamp(vs,-5000,5000);
-  return {desiredBankDeg:bank,desiredVsFpm:vs,
-   desiredPitchDeg:pitchForVs(vs,tas),rates:RATES};
+  const pitchHold=target.verticalMode==='PITCH'&&finite(target.pitchDeg);
+  const desiredPitchDeg=pitchHold?clamp(target.pitchDeg,-10,15):pitchForVs(vs,tas);
+  return {desiredBankDeg:bank,
+   desiredVsFpm:pitchHold?vsForPitch(desiredPitchDeg,tas):vs,
+   desiredPitchDeg,rates:RATES};
  }
  function move(current,target,maxRate,dt){
   if(!finite(current)||!finite(target)||!finite(maxRate)||!finite(dt)||dt<0)throw TypeError('CONTROL_SLEW');
@@ -65,12 +68,14 @@
    frame.flightControl.commandedPitchDeg:frame.pitchDeg;
   const previousBank=finite(frame.flightControl?.commandedBankDeg)?
    frame.flightControl.commandedBankDeg:frame.bankDeg;
+  const directPitch=target.verticalMode==='PITCH';
+  const pitchTau=directPitch?1:RATES.pitchCommandTauSec;
   const pitchDemand=previousPitch+(desired.desiredPitchDeg-previousPitch)*
-   (1-Math.exp(-dt/RATES.pitchCommandTauSec));
+   (1-Math.exp(-dt/pitchTau));
   const bankDemand=previousBank+(desired.desiredBankDeg-previousBank)*
    (1-Math.exp(-dt/RATES.rollCommandTauSec));
   const bankDeg=move(frame.bankDeg,bankDemand,RATES.rollDegSec,dt);
-  const pitchDeg=move(frame.pitchDeg,pitchDemand,RATES.pitchDegSec,dt);
+  const pitchDeg=move(frame.pitchDeg,pitchDemand,directPitch?2.2:RATES.pitchDegSec,dt);
   // Loss of lift below the instructor-estimated stall envelope adds sink.
   // This is NOT a certified stall/alpha protection law.
   const sinkDemand=finite(frame.aeroEnvelope?.sinkDemandFpm)?

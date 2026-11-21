@@ -9,7 +9,7 @@
  const VERSION='FINAL10-INTEGRATED-0003';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
- let serial=0,timer=null,check=null;
+ let serial=0,timer=null,check=null,flapPresetSentFor=null,flapPresetLastAt=0;
  const STRATEGY={
   OIII:{vor:'TRN',ilsByRunway:{'29L':'ITHL'}},
   OIMM:{vor:'MSD',ilsByRunway:{'31R':'IMSD'}},
@@ -145,11 +145,23 @@
   }catch(error){result('LANDING_GEAR_DOWN',false,error?.message);}
   const flap=win.B737FlapVisualTest;
   try{
-   if(flap?.position!==30)flap?.select?.(30);
+   if(flap?.position!==30)flap?.presetFinal10?.();
    const physical=flap?.position===30;
    const link=win.B737LEDevicesUnifiedLink?.getState?.();
    const actual=link?.actualTe;
-   result('FLAP_LEVER_30',physical,physical?'30':'MOVING_VIA_APPROVED_1_AND_15_GATES');
+   // Retry if overhead announced READY before its LE trainer mounted.
+   if(physical&&link?.overheadReady===true&&
+      (!Number.isFinite(actual)||Math.abs(actual-30)>.4)&&
+      (flapPresetSentFor!==serial||Date.now()-flapPresetLastAt>1500)){
+    const overhead=docs.getElementById('overheadFrame')?.contentWindow;
+    if(overhead){
+     overhead.postMessage({type:'b737:cockpit-command',
+      action:'final10-flight-preset',flaps:30,
+      originator:'FLIGHT_SCENARIO_FINAL10'},win.location.origin);
+     flapPresetSentFor=serial;flapPresetLastAt=Date.now();
+    }
+   }
+   result('FLAP_LEVER_30',physical,physical?'30':'INSTRUCTOR_PRESET_NOT_READY');
    result('FLAP_ACTUAL_30',physical&&Number.isFinite(actual)&&Math.abs(actual-30)<.4,
     Number.isFinite(actual)?actual.toFixed(1)+' DEG':'LE_PROJECTION_NOT_READY');
   }catch(error){result('FLAP_LEVER_30',false,error?.message);}
@@ -173,7 +185,7 @@
  }
  function apply(state){
   if(!state||state.preset!=='FINAL_10')return null;
-  serial++;const my=serial;
+  serial++;flapPresetSentFor=null;flapPresetLastAt=0;const my=serial;
   if(timer!==null){win.clearInterval(timer);timer=null;}
   check={};let count=0;
   const run=()=>{
