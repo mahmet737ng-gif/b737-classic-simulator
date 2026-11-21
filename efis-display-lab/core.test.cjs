@@ -78,7 +78,7 @@ const bus={
 let live=liveModel(bus,core.initial(),.8);
 assert.equal(live.efis.displayPower,true);
 assert.equal(liveModel(bus,core.initial(),.8,{powered:false}).efis.displayPower,false,'Onside 115 VAC feed takes priority');
-assert.deepEqual([live.heading,live.track,live.groundSpeed,live.trueAirspeed],[340,345,212,232]);
+assert.deepEqual([live.heading,live.track,live.groundSpeed,live.trueAirspeed],[null,null,212,232], 'Unknown magnetic variation must blank HSI heading/track');
 assert.equal(live.selectedHeading,null,'No mixed TRUE and magnetic references');
 assert.deepEqual(live.route.points,[],'Live renderer must not fabricate demo geometry');
 assert.deepEqual(live.mapObjects,[]);
@@ -101,7 +101,7 @@ assert.equal(committed.points[1].leg,'DISCONTINUITY');
 assert.equal(fmcNetwork.validateDisplayRoute(committed,'OIII','OIKB'),null);
 const signals={...bus,
  'irs.left':data({...bus['irs.left'].value,lat:35.7,lon:51.3,attitudeValid:true,pitchDeg:3,rollDeg:4,magneticVariationDeg:5}),
- 'irs.right':data({powered:true,positionValid:true,lat:35.7,lon:51.3,headingDeg:150,trackDeg:155,gsKt:205,attitudeValid:true,pitchDeg:8,rollDeg:-7}),
+ 'irs.right':data({powered:true,positionValid:true,lat:35.7,lon:51.3,headingDeg:150,trackDeg:155,magneticVariationDeg:0,gsKt:205,attitudeValid:true,pitchDeg:8,rollDeg:-7}),
  'crew.flightplan':data({origin:'OIII',dest:'OIMM',active:true,displayRoute:committed}),
  'electrical.fmcFeeds':data({modeledSupply:true})};
 const compute=()=>fmcModel.project({read:topic=>signals[topic]||{quality:'UNKNOWN'}});

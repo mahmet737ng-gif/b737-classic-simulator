@@ -1,4 +1,4 @@
-name: B737 Classic EHSI FCOM 10.32 Symbology QA
+name: B737 Classic EHSI FCOM 10.31 and 10.32 QA
 on:
   push:
     branches: [main]
@@ -9,6 +9,9 @@ on:
       - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
       - 'efis-display-lab/ehsi-v2.js'
       - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - 'tests/fcom-10-31-full-nav-live.test.cjs'
+      - 'efis-display-lab/ehsi-v2.test.cjs'
+      - 'efis-display-lab/ehsi-expanded-heading-360.test.cjs'
       - '.github/workflows/fcom-10-32-symbology.yml'
   pull_request:
     branches: [main]
@@ -19,6 +22,9 @@ on:
       - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
       - 'efis-display-lab/ehsi-v2.js'
       - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - 'tests/fcom-10-31-full-nav-live.test.cjs'
+      - 'efis-display-lab/ehsi-v2.test.cjs'
+      - 'efis-display-lab/ehsi-expanded-heading-360.test.cjs'
       - '.github/workflows/fcom-10-32-symbology.yml'
 permissions:
   contents: read
@@ -28,6 +34,8 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -38,8 +46,12 @@ jobs:
           node --check panel-mosaic-lab/cockpit/unified-efis-sources-v1.js
           node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
           node --check efis-display-lab/ehsi-v2.js
-      - name: Run source-backed FCOM 10.32 symbol conditions
-        run: node --test tests/fcom-10-32-symbology-v1.test.cjs
+      - name: Run FCOM full-rose NAV and all chapter 10.32 symbol rules
+        run: |
+          node --test tests/fcom-10-31-full-nav-live.test.cjs
+          node --test tests/fcom-10-32-symbology-v1.test.cjs
+          node efis-display-lab/ehsi-v2.test.cjs
+          node --test efis-display-lab/ehsi-expanded-heading-360.test.cjs
       - name: Verify unchanged MCP/EFIS integration
         run: node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
       - name: Verify owner frozen material

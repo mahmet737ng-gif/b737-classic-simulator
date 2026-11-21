@@ -6,6 +6,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
+require('../../engine/efis/selected-heading-reference-v1.js');
 const Sources=require('./unified-efis-sources-v1.js');
 const Fma=require('../../engine/afds/fma-mode-engine-v1.js');
 const EHSI=require('../../efis-display-lab/ehsi-v2.js');
@@ -73,7 +74,7 @@ test('VNAV/MACH blank is not interpreted as IAS or as a manufactured CAS speed',
  assert.equal(c.mcp.selectedSpeedKt,null);
 });
 test('Regression: FULL ALIGN 090 TRUE track with MCP HDG 109 renders a visible EHSI heading bug',()=>{
- const bench={...irs,headingDeg:90,trackDeg:90,magneticVariationDeg:null,
+ const bench={...irs,headingDeg:90,trackDeg:90,magneticVariationDeg:0,
   source:'BENCH_SIM',trainerOnly:true};
  const mcp={...selected,headingDeg:109};
  const data={'irs.left':rec(bench),'irs.right':rec(bench),'mcp.state':rec(mcp)};
@@ -81,7 +82,7 @@ test('Regression: FULL ALIGN 090 TRUE track with MCP HDG 109 renders a visible E
   const src=Sources.resolve(data,seat,{}, {1:true,2:true},{1:false,2:false});
   assert.equal(src.track,90);
   assert.equal(src.selectedHeading,109,'Selected MCP HDG must reach glass');
-  assert.equal(src.headingReferenceSource,'TRAINING_ZERO_VARIATION');
+  assert.equal(src.headingReferenceSource,'IRS_SUPPLIED_MAGNETIC_VARIATION');
   assert.equal(src.trueRef,false,'Training display is magnetic-equivalent only under explicit 0-degree reference');
   const model=EHSI.model({mode:'MAP',range:40,
    heading:src.heading,track:src.track,selectedHeading:src.selectedHeading,
@@ -97,8 +98,8 @@ test('Do not invent magnetic reference or heading bug in real aircraft if variat
  const real={'irs.left':rec(noVar),'irs.right':rec(noVar),'mcp.state':rec({...selected,headingDeg:109})};
  const c=Sources.resolve(real,'CAPT',{}, {1:true,2:true},{1:false,2:false});
  assert.equal(c.selectedHeading,null);
- assert.equal(c.headingReferenceSource,'UNAVAILABLE');
- assert.equal(c.trueRef,true);
+ assert.equal(c.headingReferenceSource,'MAGNETIC_VARIATION_UNAVAILABLE');
+ assert.equal(c.trueRef,false);
  const impostor={...noVar,source:'BENCH_SIM',trainerOnly:false};
  const faux={'irs.left':rec(impostor),'irs.right':rec(impostor),'mcp.state':rec(selected)};
  assert.equal(Sources.resolve(faux,'CAPT',{}, {1:true,2:true},{1:false,2:false}).selectedHeading,null);
@@ -123,7 +124,7 @@ test('MCP selection is not a fabricated FD servo, LOC or GS capture',()=>{
  const renderer=fs.readFileSync(path.join(root,'../../efis-display-lab/eadi.js'),'utf8');
  assert.match(eadi,/selectedSpeedKt:src\.mcp\?\.selectedSpeedKt/);
  assert.match(eadi,/selectedSpeedValid:src\.mcp\?\.powered===true/);
- assert.match(eadi,/director:src\.director/);
+ assert.match(eadi,/const director=direct\?\?src\.director/);
  assert.match(renderer,/p\.selSpeed=input\.selectedSpeedValid===true/);
  assert.match(ehsi,/dataset\.mcpHeadingBug/);
  assert.match(ehsi,/dataset\.mcpCourse/);
