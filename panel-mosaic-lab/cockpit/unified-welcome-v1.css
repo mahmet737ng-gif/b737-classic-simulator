@@ -26,12 +26,16 @@
   gap: 16px;
 }
 #unifiedWelcome[data-stage="welcome"] .welcome-brand {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  justify-content: center;
+  margin-top: clamp(12px, 2.4vh, 24px);
+  text-align: center;
+  animation: unified-intro-title .74s ease-out 1.9s both;
+}
+#unifiedWelcome[data-stage="welcome"] .welcome-brand img { display: none; }
+#unifiedWelcome[data-stage="welcome"] .welcome-brand h1 {
+  font-size: clamp(17px, 3.9vw, 28px);
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
 #unifiedWelcome .welcome-intro { display: none; }
@@ -46,8 +50,10 @@
   background: url("./brand/unified-intro-frame.webp") center / contain no-repeat;
   filter: drop-shadow(0 22px 38px #0009);
 }
-#unifiedWelcome .welcome-intro-window,
+#unifiedWelcome .welcome-intro-airspace,
+#unifiedWelcome .welcome-intro-depth,
 #unifiedWelcome .welcome-intro-jet,
+#unifiedWelcome .welcome-intro-orbit,
 #unifiedWelcome .welcome-intro-wordmark,
 #unifiedWelcome .welcome-intro-flight {
   position: absolute;
@@ -55,14 +61,21 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
-#unifiedWelcome .welcome-intro-window {
-  /* Fixed foreground trim masks the jet except at its raised nose. */
-  -webkit-mask: url("./brand/unified-intro-window.webp") center / contain no-repeat;
-  mask: url("./brand/unified-intro-window.webp") center / contain no-repeat;
+#unifiedWelcome .welcome-intro-airspace {
+  /* Clip to the silver rim while the aircraft passes over both color panels. */
+  clip-path: inset(1.3% round 25%);
+}
+#unifiedWelcome .welcome-intro-depth {
+  animation: unified-intro-depth 1.45s cubic-bezier(.32,.12,.3,1) both;
 }
 #unifiedWelcome .welcome-intro-jet {
-  background-image: url("./brand/unified-intro-aircraft.webp");
-  animation: unified-intro-arrive 2.8s cubic-bezier(.22,.65,.35,1) .12s both;
+  background-image: url("./brand/unified-intro-aircraft.webp?v=WELCOME-0005");
+  transform-origin: 25% 44%;
+  animation: unified-intro-arrive 2.64s cubic-bezier(.24,.63,.37,1) both;
+}
+#unifiedWelcome .welcome-intro-orbit {
+  background-image: url("./brand/unified-intro-orbit.webp");
+  animation: unified-intro-orbit .86s cubic-bezier(.3,0,.24,1) 1.48s both;
 }
 #unifiedWelcome .welcome-intro-flight {
   width: 100%;
@@ -72,8 +85,23 @@
   background-image: url("./brand/unified-intro-wordmark.webp");
 }
 @keyframes unified-intro-arrive {
-  from { transform: translate(92%, 13%); }
-  to { transform: none; }
+  from { opacity: .25; transform: translateY(-.8%) scale(1); }
+  18% { opacity: 1; }
+  59% { opacity: 1; transform: translate(-5.3%, -6%) scale(1.14); }
+  to { opacity: 0; transform: translate(-5.8%, -6.3%) scale(1.17); }
+}
+@keyframes unified-intro-depth {
+  from { clip-path: polygon(0 0, 100% 0, 100% 62.5%, 70% 65%, 42% 68.5%, 0 74.7%); }
+  to { clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 100%, 42% 100%, 0 100%); }
+}
+@keyframes unified-intro-orbit {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  28% { opacity: 1; }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@keyframes unified-intro-title {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 #unifiedWelcome .welcome-brand img {
   width: 58px;
@@ -136,7 +164,7 @@
 }
 #unifiedWelcome[data-stage="welcome"] .welcome-footer {
   justify-content: center;
-  margin-top: clamp(16px, 4vh, 28px);
+  margin-top: clamp(10px, 2vh, 20px);
 }
 #unifiedWelcome .welcome-progress { display: flex; align-items: center; gap: 10px; color: #c4dce6; }
 #unifiedWelcome .welcome-spinner {
@@ -163,10 +191,12 @@
 @media (max-width: 680px) { #unifiedWelcome .welcome-setup { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) {
   #unifiedWelcome[data-stage="welcome"] .welcome-intro {
-    background-image: url("./brand/unified-intro-still.webp?v=WELCOME-0004");
+    background-image: url("./brand/unified-intro-still.webp?v=WELCOME-0005");
   }
-  #unifiedWelcome .welcome-intro-window,
+  #unifiedWelcome .welcome-intro-airspace,
+  #unifiedWelcome .welcome-intro-orbit,
   #unifiedWelcome .welcome-intro-wordmark,
   #unifiedWelcome .welcome-intro-flight { display: none; }
+  #unifiedWelcome[data-stage="welcome"] .welcome-brand,
   #unifiedWelcome .welcome-spinner { animation: none; }
 }

@@ -216,7 +216,7 @@ body > header.unified-minimal-header .header-settings>button{
 </style><link rel="stylesheet" href="./unified-css-safe-04-v1.css?v=BOOT-SAFE-0001">
 <script src="./smiths-fuel-quantity-v1.js?v=FUEL-QTY-20KG-0001" defer></script>
 <link rel="stylesheet" href="./unified-workspace-v1.css?v=WORKSPACE-0002">
-<link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0004">
+<link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0005">
 <script>
 (function(){
  const test=new URLSearchParams(location.search).get('welcomeTest')==='1';
@@ -229,36 +229,33 @@ body > header.unified-minimal-header .header-settings>button{
 <section id="unifiedWelcome" data-stage="welcome" aria-labelledby="unifiedWelcomeTitle" hidden>
  <div class="welcome-card">
   <div class="welcome-intro" aria-hidden="true">
-   <div class="welcome-intro-window"><div class="welcome-intro-jet"></div></div>
+   <div class="welcome-intro-airspace">
+    <div class="welcome-intro-depth"><div class="welcome-intro-jet"></div></div>
+   </div>
+   <div class="welcome-intro-orbit"></div>
    <svg class="welcome-intro-flight" viewBox="0 0 620 620" focusable="false">
     <defs>
-     <linearGradient id="unifiedIntroContrail" gradientUnits="userSpaceOnUse" x1="312" x2="549" y1="493" y2="414">
+     <linearGradient id="unifiedIntroContrail" gradientUnits="userSpaceOnUse" x1="312" x2="481" y1="493" y2="427">
       <stop offset="0" stop-color="#fff" stop-opacity=".28"/>
       <stop offset="1" stop-color="#fff"/>
      </linearGradient>
     </defs>
-    <path id="unifiedIntroFlightPath" d="M 312 493 C 322 469 335 445 363 441 C 422 432 496 446 549 414"
+    <path id="unifiedIntroFlightPath" d="M 312 493 C 321 469 329 451 354 446 C 393 435 431 430 481 427"
       pathLength="1" fill="none" stroke="url(#unifiedIntroContrail)" stroke-width="4.4" stroke-linecap="round"
       stroke-dasharray="1 1" stroke-dashoffset="1">
-     <animate attributeName="stroke-dashoffset" from="1" to="0" begin="1.2s" dur="2.3s"
+     <animate attributeName="stroke-dashoffset" from="1" to="0" begin=".84s" dur="1.85s"
        calcMode="spline" keyTimes="0;1" keySplines=".33 0 .27 1" fill="freeze"/>
     </path>
-    <path class="welcome-intro-red-arc" d="M 425.2 541.6 A 98 38 -12 0 0 575.1 466.4" pathLength="1"
-      fill="none" stroke="#f53942" stroke-width="5.5" stroke-linecap="round"
-      stroke-dasharray="1 1" stroke-dashoffset="1">
-     <animate attributeName="stroke-dashoffset" from="1" to="0" begin="2.05s" dur="1.05s"
-       calcMode="spline" keyTimes="0;1" keySplines=".3 0 .24 1" fill="freeze"/>
-    </path>
     <g visibility="hidden">
-     <set attributeName="visibility" to="visible" begin="1.2s" fill="freeze"/>
-     <animateMotion begin="1.2s" dur="2.3s" rotate="auto" calcMode="spline"
+     <set attributeName="visibility" to="visible" begin=".84s" fill="freeze"/>
+     <animateMotion begin=".84s" dur="1.85s" rotate="auto" calcMode="spline"
        keyPoints="0;1" keyTimes="0;1" keySplines=".33 0 .27 1" fill="freeze">
       <mpath href="#unifiedIntroFlightPath"/>
      </animateMotion>
      <g>
       <animateTransform attributeName="transform" type="scale" values=".14;.65;1;1"
-        keyTimes="0;.22;.48;1" begin="1.2s" dur="2.3s" fill="freeze"/>
-      <image href="./brand/unified-intro-white.webp?v=WELCOME-0003" x="-4" y="-15" width="51" height="28" transform="rotate(9)"/>
+        keyTimes="0;.22;.48;1" begin=".84s" dur="1.85s" fill="freeze"/>
+      <image href="./brand/unified-intro-white.webp?v=WELCOME-0003" x="-4" y="-22" width="82" height="45" transform="rotate(3)"/>
      </g>
     </g>
    </svg>
@@ -266,7 +263,7 @@ body > header.unified-minimal-header .header-settings>button{
   </div>
   <div class="welcome-brand">
    <img src="./brand/unified-icon-192.webp" width="58" height="58" alt="">
-   <h1 id="unifiedWelcomeTitle" tabindex="-1">B737 Classic Unified Trainer</h1>
+   <h1 id="unifiedWelcomeTitle" tabindex="-1">B737CL QRH &amp; Procedure Trainer</h1>
   </div>
   <div id="unifiedWelcomeSetup" class="welcome-setup" hidden>
    <section id="unifiedWelcomeAircraft" class="welcome-section"><h2>Aircraft Configuration</h2></section>
@@ -556,5 +553,5 @@ body > header.unified-minimal-header .header-settings>button{
 <script defer src="./tcas-photo/ivsi.js"></script>
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>
 <script src="./unified-workspace-v1.js?v=WORKSPACE-0002-P15-CTR-0043" defer></script>
-<script src="./unified-welcome-v1.js?v=WELCOME-0001" async></script>
+<script src="./unified-welcome-v1.js?v=WELCOME-0005" async></script>
 </body></html>
