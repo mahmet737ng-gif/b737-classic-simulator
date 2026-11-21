@@ -39,9 +39,7 @@ console.log('PASS EADI IAS scale: high speeds above lower speeds and correct dow
  // second data-change event. The EADI must respect the fresh heartbeat.
  const timers=new Map();
  let sequence=0;
- let latest={quality:'VALID',origin:'SIMULATOR_TELEMETRY',
-  value:{casKt:0,mach:0,pressureAltitudeFt:3260},
-  receivedAtMs:Date.now()-1000};
+ let latest=null;
  const host={
   B737ClassicSpeedTapeEngineV1:Model,
   B737UnifiedEADIStage1:{registerLayer(){return()=>{}},requestPaint(){}},
@@ -51,6 +49,9 @@ console.log('PASS EADI IAS scale: high speeds above lower speeds and correct dow
  };
  globalThis.B737ClassicSpeedTapeEngineV1=Model;
  assert.equal(Tape.bind(host),true);
+ latest={quality:'VALID',origin:'SIMULATOR_TELEMETRY',
+  value:{casKt:0,mach:0,pressureAltitudeFt:3260},
+  receivedAtMs:Date.now()-1000};
  assert.equal(Tape.observeAdc('CAPT',latest),true);
  assert.equal(Tape.getView('CAPT').casKt,0);
  assert.equal(Tape.getView('CAPT').lowSpeedDefault,true);
