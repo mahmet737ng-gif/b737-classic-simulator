@@ -1,0 +1,48 @@
+name: B737 Classic EHSI FCOM 10.32 Symbology QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/efis/fcom-10-32-symbol-registry-v1.js'
+      - 'panel-mosaic-lab/cockpit/ehsi-fcom-ch1032-live-v1.js'
+      - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
+      - 'efis-display-lab/ehsi-v2.js'
+      - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - '.github/workflows/fcom-10-32-symbology.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'engine/efis/fcom-10-32-symbol-registry-v1.js'
+      - 'panel-mosaic-lab/cockpit/ehsi-fcom-ch1032-live-v1.js'
+      - 'panel-mosaic-lab/cockpit/ehsi-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
+      - 'efis-display-lab/ehsi-v2.js'
+      - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - '.github/workflows/fcom-10-32-symbology.yml'
+permissions:
+  contents: read
+jobs:
+  fcom-10-32:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check module syntax
+        run: |
+          node --check engine/efis/fcom-10-32-symbol-registry-v1.js
+          node --check panel-mosaic-lab/cockpit/ehsi-fcom-ch1032-live-v1.js
+          node --check panel-mosaic-lab/cockpit/unified-efis-sources-v1.js
+          node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
+          node --check efis-display-lab/ehsi-v2.js
+      - name: Run source-backed FCOM 10.32 symbol conditions
+        run: node --test tests/fcom-10-32-symbology-v1.test.cjs
+      - name: Verify unchanged MCP/EFIS integration
+        run: node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
+      - name: Verify owner frozen material
+        run: |
+          python3 panel-mosaic-lab/verify-final-overhead.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
