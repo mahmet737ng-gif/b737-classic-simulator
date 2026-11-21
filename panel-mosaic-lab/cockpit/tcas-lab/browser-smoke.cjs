@@ -210,10 +210,10 @@ const {chromium}=require('playwright');
   assert.equal(fdAfter,fdPitchAtResponse,'FD pitch reference must not follow the pilot RA');
   assert.ok(aircraftPitchAfter>pitchAtResponse&&aircraftPitchAfter<=12,
    'Aircraft must respond to the climb by a slower, bounded pitch transition');
-  for(let i=0;i<65&&!((await page.locator('#scenarioStatus').textContent()).includes('CLEAR OF CONFLICT'));i++)
+  for(let i=0;i<85&&(await page.locator('#scenarioStatus').getAttribute('data-active-stage'))!=='CLEAR OF CONFLICT';i++)
    await page.locator('#step').click();
-  assert.match(await page.locator('#scenarioStatus').textContent(),/CLEAR OF CONFLICT/,
-   'RA may clear only after sustained real separation');
+  assert.equal(await page.locator('#scenarioStatus').getAttribute('data-active-stage'),'CLEAR OF CONFLICT',
+   'RA may clear only after sustained real separation, not just because the SCENARIO TITLE contains CLEAR');
   assert.equal(await page.locator('#ivsi').getAttribute('data-tcas-ra-id'),'NONE',
    'RA bands must disappear once CLEAR OF CONFLICT is actually confirmed');
   assert.equal(errors.length,0,'Page must have no uncaught JS errors: '+errors.join('; '));
