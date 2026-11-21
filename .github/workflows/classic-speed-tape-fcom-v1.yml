@@ -14,6 +14,7 @@ on:
       - 'engine/efis/classic-speed-tape-engine-v1.js'
       - 'engine/efis/classic-speed-tape-engine-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
+      - 'tests/eadi-speed-tape-ground-bar-v1.test.cjs'
       - 'panel-mosaic-lab/cockpit/speed-limit-ch4-lab.html'
       - 'panel-mosaic-lab/cockpit/speed-limit-ch4-lab.test.cjs'
       - 'panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.js'
@@ -47,6 +48,7 @@ jobs:
           node engine/efis/classic-flap-speed-profile-v1.test.cjs
           node engine/efis/classic-speed-tape-engine-v1.test.cjs
           node panel-mosaic-lab/cockpit/speed-tape-unified-training-v1.test.cjs
+          node --test tests/eadi-speed-tape-ground-bar-v1.test.cjs
           node panel-mosaic-lab/cockpit/speed-limit-ch4-lab.test.cjs
       - name: Confirm EADI scripts installed
         run: |
