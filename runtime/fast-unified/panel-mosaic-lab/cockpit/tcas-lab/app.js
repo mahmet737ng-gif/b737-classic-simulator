@@ -65,11 +65,17 @@
   if(scenario.value!==loadedScenarioId && status?.dataset.loadState==='selected')return;
   if(status){
    const primary=out?.targets?.find(t=>!t.id?.startsWith('OTHER-'));
-   status.textContent='LOADED #'+loadSequence+' · '+(spec?.label||encounter.scenario)+
-    ' · '+(out?.stage||'MONITOR')+
+   // Do not show "CLEAR OF CONFLICT" from the scenario's title while
+   // the aircraft is still receiving an ACTIVE RA. The current stage is
+   // authoritative and is tracked separately for tests and diagnostics.
+   const selectedLabel=(spec?.label||encounter.scenario)
+    .replace(/\s*>\s*CLEAR OF CONFLICT\s*$/,'');
+   status.textContent='LOADED #'+loadSequence+' · '+selectedLabel+
+    ' · STAGE '+(out?.stage||'MONITOR')+
     ' · TARGET '+(primary?primary.kind+' '+Number(primary.distance).toFixed(1)+' NM':'NOT TRANSMITTING')+
     ' · T+'+Math.floor(own.elapsedSec)+' S · '+(running?'RUNNING':'PAUSED');
    status.dataset.loadedScenario=encounter.scenario;
+   status.dataset.activeStage=out?.stage||'MONITOR';
    status.dataset.loadState='loaded';
    status.dataset.elapsedSec=String(Math.floor(own.elapsedSec));
   }

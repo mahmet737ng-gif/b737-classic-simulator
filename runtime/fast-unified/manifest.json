@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "7170bf1df9699f9272e06ca92d526ef6f81535a6",
-  "mainBefore": 295,
-  "mainAfter": 93,
+  "sourceCommit": "903466f286a9c39cb375524000ab1c90c77df37c",
+  "mainBefore": 296,
+  "mainAfter": 94,
   "overheadBefore": 59,
   "overheadAfter": 41,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e84510ade9322c647e7c5853fdd9c263bc594056a00bd4bcbc44e7211de62786"
+      "sha256": "776213f69fa1ba4a6be28985b33001cf58362f7be5c78bcdf334abf839f9ae3b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -159,8 +159,8 @@
       "sha256": "b664dfe62adf63ce9acfd419646767e52dd7d61d33fa8c259779a5eecbb46943"
     },
     {
-      "path": "engine/flight/desktop-bundle-d56527aaba8ca7ea.js",
-      "sha256": "d56527aaba8ca7ea4d214fa602b76e986266448b7dd791661784f4c441684e4d"
+      "path": "engine/flight/desktop-bundle-6af8e8a6a162a249.js",
+      "sha256": "6af8e8a6a162a2498087237c86747995cf2a3bc20638a11be71f3ea4707312e7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-3828fc060088f8d8.js",
@@ -423,6 +423,10 @@
       "sha256": "32ec7e6cc0aafe02e6754057fc3562b84e0e52d35e98e9e403155bfd3af10451"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.css",
+      "sha256": "60a5a92c4b52fae09b28ea6a3c03b7b994b6821e0aecdc27a014433b2733a170"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
       "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
     },
@@ -468,7 +472,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "3bdee5f1518ea1ed0278a788b21e9d118587d3be6b8d8108b9b03c90ad485fc7"
+      "sha256": "bc8f3e23422a0a32da5f1517ae6e5f5b159b70960a1e4e66e820a89fcc2bd9f8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
@@ -601,6 +605,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
       "sha256": "0a5e1d8ac5927e984544ff2cd653f6542c141dd87167094984acad3cda6b7e9b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
+      "sha256": "a53728cd1847701d80408e0297f46c8ca91000f0bf6aeab4acf4b9f20cdff19f"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -971,6 +979,10 @@
       "sha256": "7d57162c42cd700aea96cc1ca11acf48b197114928ba260044ef7045171b8bb9"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
+      "sha256": "ff78bdcf9816dabe7c1a491dcc8c643af77fb1267b93e7c8f84969da32b87696"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
       "sha256": "2d11a0ba986561dae17be9ca3b01d5c4dd8719317ef7d91700004794c296dafb"
     },
@@ -1008,7 +1020,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
-      "sha256": "88a83dc3251e08c66bf2cb7609acea078bd8024d4a3f93b029c2570998be0094"
+      "sha256": "5d9166eb835169df7e56330ab04dcf6df632a3529571ee0ae06fdc67097525fc"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js",

@@ -666,6 +666,25 @@
     ecu.setFlightInputs({iasKt,pressureAltitudeFt:altitudeFt});
    return {active:true,onGround,iasKt,altitudeFt,origin:'TRAINING_SCENARIO'};
   },
+  applyStartupLoad:({fuelKg,massKg}={})=>{
+   if(document.documentElement.dataset.unifiedWelcome!=='active'||ecu.aircraft.onGround!==true)
+    throw Error('Initial aircraft loading is available only before Start Flight');
+   const fuel=ecu.core.fuelSystem;
+   if(fuelKg!=null){
+    const capacity=fuel.get().capacitiesKg;
+    const wingTotal=capacity.main1+capacity.main2;
+    if(!Number.isFinite(fuelKg)||fuelKg<0||fuelKg>wingTotal+capacity.center)
+     throw Error('Initial fuel exceeds tank capacity');
+    const left=Math.min(capacity.main1,Math.ceil(fuelKg*capacity.main1/wingTotal));
+    const right=Math.min(capacity.main2,fuelKg-left);
+    fuel.service({tank:'main1',quantityKg:left});
+    fuel.service({tank:'main2',quantityKg:right});
+    fuel.service({tank:'center',quantityKg:fuelKg-left-right});
+    ecu.core.refreshFuelDelivery();
+   }
+   if(massKg!=null)ecu.setFlightInputs({massKg});
+   render();
+  },
     getFuelImbalanceKg:()=>{
      const tanks=ecu.core.fuel.tanks;
      return tanks.main2-tanks.main1;
@@ -809,7 +828,11 @@
  render();
  }
  const trace=window.B737BootTrace,requestStart=trace?performance.now():0;
- loadDependencies().then(()=>{
+ const visualGate=document.documentElement.dataset;
+ const panelsReady=visualGate.unifiedWelcome==='active'&&visualGate.unifiedWelcomePanels!=='ready'
+  ? new Promise(resolve=>window.addEventListener('b737:welcome-panels-ready',resolve,{once:true}))
+  : Promise.resolve();
+ panelsReady.then(loadDependencies).then(()=>{
   const initStart=trace?performance.now():0;
   trace?.phase('Load electrical and ECU modules',requestStart,initStart);
   init();

@@ -280,7 +280,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0001 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -453,7 +453,7 @@ try{
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-stopped',{detail:{version:VERSION}}));
   return true;
  }
- function load(){
+ function load(beforeStart){
   try{
    const preset=by('flightPreset').value;
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
@@ -465,7 +465,9 @@ try{
    if(preset==='MANUAL'){
     config.lat=v('Lat');config.lon=v('Lon');
    }
-   state=Core.newScenario(config);
+   const next=Core.newScenario(config);
+   if(typeof beforeStart==='function')beforeStart();
+   state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
@@ -476,7 +478,8 @@ try{
    }
    publish();lastPublish=performance.now();updateUI();
    status('ACTIVE · '+state.icao+' RWY '+state.runway+' · '+state.phase+' · '+state.georefQuality);
-  }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);}
+   return true;
+  }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);return false;}
  }
  function targets(){
   if(!active||!state){status('Load a scenario first.',true);return;}
@@ -610,7 +613,7 @@ try{
   airportChanged();presetChanged();updateUI();
   timer=win.setInterval(tick,100);mounted=true;
  }
- const api=Object.freeze({version:VERSION,getState:snapshot,
+ const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
   loadScenario:config=>{state=Core.newScenario(config);win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
