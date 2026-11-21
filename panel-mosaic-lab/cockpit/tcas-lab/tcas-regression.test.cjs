@@ -205,7 +205,7 @@ test('RA response changes CMD to FD while retaining FMC SPD, VNAV PTH and LNAV',
  get('respond').onclick();
  assert.equal(eadi.afds,'CMD','No RA: autopilot stays engaged');
  get('converging').checked=true;get('scenario').value='CLIMB';get('start').onclick();
- assert.match(get('scenarioStatus').textContent,/ · TA · /,
+ assert.match(get('scenarioStatus').textContent,/ · STAGE TA · /,
   'Selecting CLIMB must load an active TA rather than a silent MONITOR');
  assert.equal(ehsiInput.traffic.targets.some(t=>t.id==='INTRUDER1'&&t.kind==='TA'),true,
   'EHSI receives a real traffic advisory on LOAD');
