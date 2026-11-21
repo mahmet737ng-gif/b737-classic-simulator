@@ -14,9 +14,9 @@
   "id": "trackOrientation",
   "page": "10.32.2",
   "modes": [
-   "NAV",
    "MAP",
    "CTR_MAP",
+   "FULL_NAV",
    "EXP_NAV",
    "PLAN"
   ],
