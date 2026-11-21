@@ -25,6 +25,8 @@
   // ITRN is shown as OIIE RWY 29L in user chart; OIII uses ITHL.
   {ident:'ITRN',type:'ILS_DME',freqKhz:110700,lat:35.4114,lon:51.165798,elevationFt:3305,courseTrueDeg:290,glideDeg:3,runway:'29L',airport:'OIIE',source:'USER_IRAN_CHART_2620',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'IIKA',type:'ILS_DME',freqKhz:110300,lat:35.413101,lon:51.166000,elevationFt:3305,courseTrueDeg:288.88,glideDeg:3,runway:'29R',airport:'OIIE',source:'PUBLIC_OIIE_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
+  // Mehrabad OIII RWY 29L: ident ITHL, frequency 109.90 MHz; threshold is a TRAINING proxy, not localizer/DME surveyed antenna.
+  {ident:'ITHL',type:'ILS_DME',freqKhz:109900,lat:35.682400,lon:51.333599,elevationFt:3962,courseTrueDeg:289.75,glideDeg:3.3,runway:'29L',airport:'OIII',source:'PUBLIC_OIII_ILS_29L_REFERENCE',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'IMSD',type:'ILS_DME',freqKhz:109900,lat:36.224098,lon:59.657100,elevationFt:3263,courseTrueDeg:313.74,glideDeg:3,runway:'31R',airport:'OIMM',source:'PUBLIC_OIMM_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'ISYZ',type:'ILS_DME',freqKhz:109900,lat:29.5391667,lon:52.5898333,elevationFt:4927,courseTrueDeg:294.4,glideDeg:3,runway:'29L',airport:'OISS',source:'PUBLIC_OISS_APPROACH_REF',positionQuality:'PROVISIONAL_AIRPORT_ARP'}
  ];
@@ -78,5 +80,5 @@
   if(!validAircraft(aircraft))return null;
   return options.sort((a,b)=>ground(aircraft,a).distanceNm-ground(aircraft,b).distanceNm)[0];
  }
- return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0001',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
+ return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0002',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
 });
