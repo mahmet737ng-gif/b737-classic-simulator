@@ -589,7 +589,74 @@ root.B737UnifiedVHFNavControlsV1=Object.freeze({
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-control-laws-v1.js?v=FLIGHT-CONTROL-0001 */
+/* ../../engine/flight/classic-low-speed-envelope-v1.js?v=LOW-SPEED-AUTO-SLAT-0001 */
+try{
+/* B737 Classic low-speed instructor aerodynamics surrogate.
+ * FCOM describes autoslats on TE flap 1/2/5 approaching stall and system B/PTU.
+ * It does NOT supply a universal stall or shaker IAS: those require
+ * aircraft/weight/CG/configuration/AoA-specific performance data.
+ * The coefficients below are explicit TRAINING ASSUMPTIONS, NOT AFM/FCOM V-speeds.
+ * Never publish these outputs as ADC sensor or certified FCC performance.
+ */
+(function(root,factory){'use strict';const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root)root.B737ClassicLowSpeedEnvelopeV1=api;
+})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const VERSION='B737_CLASSIC_LOW_SPEED_TRAINER_0001';
+ const REF_MASS_KG=54000,AREA_M2=91.04,RHO=1.225,GRAVITY=9.80665;
+ const DETENTS=Object.freeze([0,1,2,5,10,15,25,30,40]);
+ // Illustrative maximum-lift schedule, NOT type-approved aerodynamic tables.
+ const CL=Object.freeze([1.62,1.82,1.91,2.05,2.24,2.42,2.62,2.76,2.88]);
+ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+ const finite=x=>typeof x==='number'&&Number.isFinite(x);
+ function interpolateFlap(flap){
+  const n=clamp(flap,0,40);
+  for(let i=1;i<DETENTS.length;i++)if(n<=DETENTS[i]){
+   const k=(n-DETENTS[i-1])/(DETENTS[i]-DETENTS[i-1]);
+   return CL[i-1]+k*(CL[i]-CL[i-1]);
+  }
+  return CL.at(-1);
+ }
+ function evaluate(input){
+  if(!input||!finite(input.iasKt)||input.iasKt<0||input.iasKt>600||
+     !finite(input.flapActual)||input.flapActual<0||input.flapActual>40||
+     !DETENTS.includes(input.flapLever)||!finite(input.bankDeg)||Math.abs(input.bankDeg)>90||
+     typeof input.airborne!=='boolean')throw Error('INVALID_LOW_SPEED_TRAINING_INPUT');
+  const massSource=finite(input.massKg)?'OBSERVED_TRAINING_MASS':'ASSUMED_54000_KG';
+  const massKg=massSource==='OBSERVED_TRAINING_MASS'?input.massKg:REF_MASS_KG;
+  if(massKg<30000||massKg>75000)throw Error('INVALID_TRAINING_MASS');
+  const eligible=input.airborne&&[1,2,5].includes(input.flapLever);
+  const slatsFull=input.slatsFull===true&&eligible;
+  const bank=clamp(input.bankDeg,-65,65);
+  const loadFactor=1/Math.cos(bank*Math.PI/180);
+  const clMax=interpolateFlap(input.flapActual)*(slatsFull?1.055:1);
+  const stallKt=Math.sqrt(2*massKg*GRAVITY*loadFactor/(RHO*AREA_M2*clMax))/.514444;
+  // These margins are demonstrative for trainer visuals, not shaker switch values.
+  const shakerKt=stallKt*1.09,minManeuverKt=stallKt*1.30;
+  const threshold=input.autoSlatPreviouslyRequested===true?1.20:1.12;
+  const autoSlatRequest=eligible&&input.iasKt<=shakerKt*threshold;
+  const belowShaker=input.airborne&&input.iasKt<=shakerKt;
+  const belowStall=input.airborne&&input.iasKt<stallKt;
+  const shortfall=belowStall?clamp((stallKt-input.iasKt)/stallKt,0,.5):0;
+  const sinkDemandFpm=shortfall*2300;
+  const flapDragKtSec= input.airborne?(0.22*Math.pow(input.flapActual/40,1.1)+
+   (slatsFull?0.065:0)):0;
+  return {schema:VERSION,source:'INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA',
+   massKg,massSource,flapLever:input.flapLever,flapActual:input.flapActual,slatsFull,
+   clMax,loadFactor,stallKt,stickShakerKt:shakerKt,minimumManeuverKt:minManeuverKt,
+   buffer:{lowerKt:shakerKt,upperKt:minManeuverKt},
+   belowShaker,belowStall,sinkDemandFpm,flapDragKtSec,
+   autoSlatRequest,autoSlatEligible:eligible,
+   autoSlatTrigger:'TRAINING_IAS_LOAD_PROXY_NOT_VALIDATED_AOA',
+   calibrated:false};
+ }
+ return Object.freeze({VERSION,REF_MASS_KG,DETENTS,evaluate,interpolateFlap});
+});
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
+/* ../../engine/flight/flight-control-laws-v1.js?v=FLIGHT-CONTROL-0002-LAG-SINK */
 try{
 /* Unified B737 Classic instructor-only coupled AFDS/flight-plant control laws.
  * Same bank/pitch targets are used by the FCC command bars AND aircraft plant.
@@ -664,7 +731,11 @@ try{
    (1-Math.exp(-dt/RATES.rollCommandTauSec));
   const bankDeg=move(frame.bankDeg,bankDemand,RATES.rollDegSec,dt);
   const pitchDeg=move(frame.pitchDeg,pitchDemand,RATES.pitchDegSec,dt);
-  const commandedPhysicalVs=vsForPitch(pitchDeg,frame.tasKt);
+  // Loss of lift below the instructor-estimated stall envelope adds sink.
+  // This is NOT a certified stall/alpha protection law.
+  const sinkDemand=finite(frame.aeroEnvelope?.sinkDemandFpm)?
+   clamp(frame.aeroEnvelope.sinkDemandFpm,0,1200):0;
+  const commandedPhysicalVs=vsForPitch(pitchDeg,frame.tasKt)-sinkDemand;
   const vsFpm=move(frame.vsFpm,commandedPhysicalVs,RATES.vsFpmSec,dt);
   return {...desired,bankDeg,pitchDeg,vsFpm,
    commandedPitchDeg:pitchDemand,commandedBankDeg:bankDemand,
@@ -677,7 +748,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119 */
+/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0001 */
 try{
 /* Unified Flight Scenario Core v1 — deterministic, offline training model.
  * NOT FCOM performance, not a certified aerodynamic model or navigation source.
@@ -695,6 +766,9 @@ try{
  const Laws=(typeof globalThis==='object'?globalThis.B737FlightControlLawsV1:null)||
   (typeof module==='object'&&typeof require==='function'?
    require('./flight-control-laws-v1.js'):null);
+ const Envelope=(typeof globalThis==='object'?globalThis.B737ClassicLowSpeedEnvelopeV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('./classic-low-speed-envelope-v1.js'):null);
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -767,6 +841,9 @@ try{
    elevationFt:airport.elevationFt,iasKt:speed,tasKt:speed,
    gsKt:speed,trueHeadingDeg:heading,trueTrackDeg:heading,
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
+   flapLever:0,flapActual:0,slatsFull:false,
+   massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
+   autoSlatRequest:false,aeroEnvelope:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
    notices:['TRAINING_SURROGATE','NO_FCOM_PERFORMANCE_CLAIM',anchor.source]};
  }
@@ -781,6 +858,15 @@ try{
    case 'ALTITUDE':next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');next.target.verticalMode='ALTITUDE';break;
    case 'VS':next.target.vsFpm=finite(action.value,-5000,5000,'VS');next.target.verticalMode='VS';break;
    case 'SPEED':next.target.speedKt=finite(action.value,0,450,'SPEED');break;
+   case 'AERO_CONFIG':
+    if(!Envelope?.DETENTS?.includes(action.flapLever)||
+      typeof action.slatsFull!=='boolean')throw RangeError('AERO_CONFIG_INPUT');
+    next.flapLever=action.flapLever;
+    next.flapActual=finite(action.flapActual,0,40,'ACTUAL_TE_FLAP');
+    next.slatsFull=action.slatsFull;
+    if(action.massKg!==undefined)
+     next.massKg=action.massKg===null?null:finite(action.massKg,30000,75000,'MASS_KG');
+    break;
    case 'MANUAL_HOLD':
     // Autopilot disconnect: preserve last observed bank and vertical motion.
     // Do not let obsolete HDG SEL / ALT targets keep steering the aircraft.
@@ -807,8 +893,13 @@ try{
   if(state.paused||dt===0)return state;
   const s={...state,target:{...state.target},revision:state.revision+1,elapsedSec:state.elapsedSec+dt};
   const target=s.target;
+  const assessAero=()=>Envelope?.evaluate({iasKt:s.iasKt,
+   massKg:s.massKg,flapLever:s.flapLever,flapActual:s.flapActual,
+   slatsFull:s.slatsFull,bankDeg:s.bankDeg,airborne:s.airborne,
+   autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
   if(s.phase==='GROUND_READY'){
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
+   s.aeroEnvelope=assessAero();s.autoSlatRequest=false;
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);return s;
   }
   const groundRoll=s.phase==='TAKEOFF_ROLL',landingRoll=s.phase==='LANDING_ROLL';
@@ -850,8 +941,18 @@ try{
    s.iasKt=Math.max(0,s.iasKt+clamp(commandedSpeed-s.iasKt,-rate*dt,rate*dt));
    s.propulsion={source:'KINEMATIC_TRAINING_FALLBACK'};
   }
+  // Trainer aerodynamic drag responds to actual TE flap travel, not just lever
+  // selection. This is NOT a calibrated performance/engine model.
+  const preliminary=assessAero();
+  if(preliminary&&s.airborne){
+   const drag=preliminary.flapDragKtSec*Math.pow(s.iasKt/180,2)*dt;
+   s.iasKt=Math.max(0,s.iasKt-drag);
+   if(s.propulsion)s.propulsion.flapDragKtSec=preliminary.flapDragKtSec;
+  }
   // Simplified TAS=IAS approximation; density/weight/thrust modeling is deferred.
   s.tasKt=s.iasKt;
+  s.aeroEnvelope=assessAero();
+  s.autoSlatRequest=s.aeroEnvelope?.autoSlatRequest===true;
   if(groundRoll){
    s.pitchDeg=s.iasKt>=128?clamp((s.iasKt-128)*.65,0,9):0;
    if(s.iasKt>=145){
@@ -938,7 +1039,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT */
+/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=AXES-0001 */
 try{
 /* B737 Classic unified FCC flight guidance for instructor Flight Scenario.
  * FCOM Ch 4.20.4-10 mode selection and FD visibility; commands are a training
@@ -1110,82 +1211,6 @@ try{
   return out;
  }
  return Object.freeze({VERSION,createState,evaluate});
-});
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ../../engine/afds/fcom-ch4-ap-protection-v1.js?v=FCC-PROTECT-0001 */
-try{
-/* Boeing 737 Classic FCOM §4.20.2–4.20.4 autopilot protection.
- * Variant-dependent selectors are normalized to named events.
- * Explicit loss evidence is required; UNKNOWN never means FAILED.
- * Only confirmed events may disengage an engaged CMD/CWS autopilot.
- */
-(function(root,factory){'use strict';const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root)root.B737FcomCh4APProtectionV1=api;
-})(typeof globalThis!=='undefined'?globalThis:null,function(){
- 'use strict';
- const VERSION='B737_FCOM_CH4_AP_PROTECTION_0001';
- const REASONS=Object.freeze([
-  'CONTROL_WHEEL_AP_DISCONNECT','AP_DISENGAGE_BAR_DOWN',
-  'AP_ENGAGE_PADDLE_OFF','ILLUMINATED_AP_ENGAGE_SWITCH',
-  'TOGA_BELOW_2000_RA','DUAL_AP_TOGA_AFTER_TOUCHDOWN',
-  'CONTROL_WHEEL_TRIM','STAB_TRIM_AUTOPILOT_CUTOUT',
-  'AP_A_HYDRAULIC_PRESSURE_LOST','AP_B_HYDRAULIC_PRESSURE_LOST',
-  'LEFT_IRS_FAILURE','RIGHT_IRS_FAILURE',
-  'ELECTRICAL_POWER_LOST','CRITICAL_SENSOR_INPUT_LOST',
-  'EFI_TRANSFER_REPOSITIONED','RADIO_ALT_FAILURE_AFTER_LOC_GS_2S'
- ]);
- const physical=new Set(['CONTROL_WHEEL_AP_DISCONNECT','AP_DISENGAGE_BAR_DOWN',
-  'AP_ENGAGE_PADDLE_OFF','ILLUMINATED_AP_ENGAGE_SWITCH',
-  'TOGA_BELOW_2000_RA','DUAL_AP_TOGA_AFTER_TOUCHDOWN',
-  'CONTROL_WHEEL_TRIM','STAB_TRIM_AUTOPILOT_CUTOUT','EFI_TRANSFER_REPOSITIONED']);
- const finite=x=>typeof x==='number'&&Number.isFinite(x);
- function initial(){return {schema:VERSION,raFailureSinceMs:null,reason:null};}
- function evaluate(prev,mcp,input={},nowMs=0){
-  if(prev?.schema!==VERSION||!finite(nowMs))throw TypeError('INVALID_PROTECTION_STATE');
-  const next={...prev},ap=mcp?.modes?.autopilot||null;
-  const engaged=/^(CMD|CWS)_[AB]$/.test(ap);
-  if(!engaged){next.raFailureSinceMs=null;return {state:next,disengage:false,reason:null};}
-  const checked=(reason,ok)=>ok===true?{state:{...next,reason},disengage:true,reason}:
-   {state:next,disengage:false,reason:null};
-  // Pilot hardware events must be directly observed and explicitly confirmed.
-  if(input.hardware?.confirmed===true&&input.hardware?.source==='COCKPIT_HARDWARE'&&
-     physical.has(input.hardware.reason)){
-   const reason=input.hardware.reason;
-   if(reason==='TOGA_BELOW_2000_RA'&&!(finite(input.radioAltitudeFt)&&input.radioAltitudeFt<2000))
-    return checked(reason,false);
-   if(reason==='DUAL_AP_TOGA_AFTER_TOUCHDOWN'&&input.touchdown!==true)return checked(reason,false);
-   return checked(reason,true);
-  }
-  if(mcp?.power===false)return checked('ELECTRICAL_POWER_LOST',true);
-  if(input.stabTrimAutopilotNormal===false&&input.stabTrimVerified===true)
-   return checked('STAB_TRIM_AUTOPILOT_CUTOUT',true);
-  if(input.hydraulicsVerified===true){
-   if(ap.endsWith('_A')&&input.hydraulicAAvailable===false)
-    return checked('AP_A_HYDRAULIC_PRESSURE_LOST',true);
-   if(ap.endsWith('_B')&&input.hydraulicBAvailable===false)
-    return checked('AP_B_HYDRAULIC_PRESSURE_LOST',true);
-  }
-  if(input.irsVerified===true){
-   if(input.leftIrsFault===true)return checked('LEFT_IRS_FAILURE',true);
-   if(input.rightIrsFault===true)return checked('RIGHT_IRS_FAILURE',true);
-  }
-  if(input.criticalSensorFailureVerified===true&&input.criticalSensorFailed===true)
-   return checked('CRITICAL_SENSOR_INPUT_LOST',true);
-  // FCOM 4.20.4: with an inoperative RA, disconnect 2 s after LOC & GS
-  // capture. Do not assume LOC/GS capture from APP mode selection alone.
-  if(input.raFailureVerified===true&&input.radioAltimeterInoperative===true&&
-     mcp.nav?.loc===true&&mcp.nav?.gs===true){
-   if(next.raFailureSinceMs===null)next.raFailureSinceMs=nowMs;
-   if(nowMs-next.raFailureSinceMs>=2000)
-    return checked('RADIO_ALT_FAILURE_AFTER_LOC_GS_2S',true);
-  }else next.raFailureSinceMs=null;
-  return {state:next,disengage:false,reason:null};
- }
- return Object.freeze({VERSION,REASONS,initial,evaluate});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}

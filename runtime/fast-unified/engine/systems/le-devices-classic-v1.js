@@ -33,6 +33,8 @@
   if(s.liveExtension){
    const timeline=s.liveExtension;
    if(id.startsWith('FLAP_'))return timeline.elapsed>=5?1:0;
+   if(id.startsWith('SLAT_')&&s.autoslatsRequested&&!s.onGround&&
+      [1,2,5].includes(s.lever)&&timeline.elapsed>=6.5)return 2;
    if(timeline.elapsed<6.5)return 0;
    return timeline.fullStart!==null&&timeline.elapsed>=timeline.fullStart?2:1;
   }
@@ -157,19 +159,28 @@
      for(let n=0;n<cuts.length-1;n++){
       const from=cuts[n],to=cuts[n+1],mid=(from+to)/2;
       const flapTarget=mid>=5?1:0;
-      const slatTarget=mid<6.5?0:(seq.fullStart!==null&&mid>=seq.fullStart?2:1);
+      const autoFull=s.autoslatsRequested&&!s.onGround&&
+       [1,2,5].includes(s.lever)&&mid>=6.5;
+      const slatTarget=mid<6.5?0:(autoFull||seq.fullStart!==null&&mid>=seq.fullStart?2:1);
       for(const id of DEVICES){
        if(s.jams[id]||!driveAvailable(s))continue;
+       // PTU/hydraulic A is backup for autoslats, never a substitute for
+       // hydraulic B to move the ordinary LE flaps.
+       if(id.startsWith('FLAP_')&&!s.hydraulic.B&&!s.alternateExtend)continue;
        const desired=id.startsWith('FLAP_')?flapTarget:slatTarget;
        const cur=s.position[id];
        if(!s.hydraulic.B&&desired<cur)continue;
-       if(!s.hydraulic.B&&desired>cur&&!(s.alternateExtend&&s.hydraulic.standby))continue;
+       if(!s.hydraulic.B&&desired>cur&&!(s.alternateExtend&&s.hydraulic.standby)&&
+          !(id.startsWith('SLAT_')&&s.autoslatsRequested&&!s.onGround&&
+           s.hydraulic.A&&s.ptuAvailable&&desired===2))continue;
        const step=Math.min(Math.abs(desired-cur),(to-from)/1.5);
        s.position[id]=Number((cur+Math.sign(desired-cur)*step).toFixed(6));
       }
      }
      seq.elapsed=end;
-     s.leStage=end<6.5?'RETRACTED':seq.fullStart!==null&&end>=seq.fullStart?'FULL':'EXT';
+     const autoSlatEligible=s.autoslatsRequested&&!s.onGround&&[1,2,5].includes(s.lever);
+     s.leStage=autoSlatEligible&&s.position.SLAT_1>=1.999?'FULL':
+      end<6.5?'RETRACTED':seq.fullStart!==null&&end>=seq.fullStart?'FULL':'EXT';
      s.elapsedSeconds+=dt;break;
     }
     for(const id of DEVICES){

@@ -1,5 +1,81 @@
 (async()=>{
 ;
+/* ../../engine/afds/fcom-ch4-ap-protection-v1.js?v=FCC-PROTECT-0001 */
+try{
+/* Boeing 737 Classic FCOM §4.20.2–4.20.4 autopilot protection.
+ * Variant-dependent selectors are normalized to named events.
+ * Explicit loss evidence is required; UNKNOWN never means FAILED.
+ * Only confirmed events may disengage an engaged CMD/CWS autopilot.
+ */
+(function(root,factory){'use strict';const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root)root.B737FcomCh4APProtectionV1=api;
+})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const VERSION='B737_FCOM_CH4_AP_PROTECTION_0001';
+ const REASONS=Object.freeze([
+  'CONTROL_WHEEL_AP_DISCONNECT','AP_DISENGAGE_BAR_DOWN',
+  'AP_ENGAGE_PADDLE_OFF','ILLUMINATED_AP_ENGAGE_SWITCH',
+  'TOGA_BELOW_2000_RA','DUAL_AP_TOGA_AFTER_TOUCHDOWN',
+  'CONTROL_WHEEL_TRIM','STAB_TRIM_AUTOPILOT_CUTOUT',
+  'AP_A_HYDRAULIC_PRESSURE_LOST','AP_B_HYDRAULIC_PRESSURE_LOST',
+  'LEFT_IRS_FAILURE','RIGHT_IRS_FAILURE',
+  'ELECTRICAL_POWER_LOST','CRITICAL_SENSOR_INPUT_LOST',
+  'EFI_TRANSFER_REPOSITIONED','RADIO_ALT_FAILURE_AFTER_LOC_GS_2S'
+ ]);
+ const physical=new Set(['CONTROL_WHEEL_AP_DISCONNECT','AP_DISENGAGE_BAR_DOWN',
+  'AP_ENGAGE_PADDLE_OFF','ILLUMINATED_AP_ENGAGE_SWITCH',
+  'TOGA_BELOW_2000_RA','DUAL_AP_TOGA_AFTER_TOUCHDOWN',
+  'CONTROL_WHEEL_TRIM','STAB_TRIM_AUTOPILOT_CUTOUT','EFI_TRANSFER_REPOSITIONED']);
+ const finite=x=>typeof x==='number'&&Number.isFinite(x);
+ function initial(){return {schema:VERSION,raFailureSinceMs:null,reason:null};}
+ function evaluate(prev,mcp,input={},nowMs=0){
+  if(prev?.schema!==VERSION||!finite(nowMs))throw TypeError('INVALID_PROTECTION_STATE');
+  const next={...prev},ap=mcp?.modes?.autopilot||null;
+  const engaged=/^(CMD|CWS)_[AB]$/.test(ap);
+  if(!engaged){next.raFailureSinceMs=null;return {state:next,disengage:false,reason:null};}
+  const checked=(reason,ok)=>ok===true?{state:{...next,reason},disengage:true,reason}:
+   {state:next,disengage:false,reason:null};
+  // Pilot hardware events must be directly observed and explicitly confirmed.
+  if(input.hardware?.confirmed===true&&input.hardware?.source==='COCKPIT_HARDWARE'&&
+     physical.has(input.hardware.reason)){
+   const reason=input.hardware.reason;
+   if(reason==='TOGA_BELOW_2000_RA'&&!(finite(input.radioAltitudeFt)&&input.radioAltitudeFt<2000))
+    return checked(reason,false);
+   if(reason==='DUAL_AP_TOGA_AFTER_TOUCHDOWN'&&input.touchdown!==true)return checked(reason,false);
+   return checked(reason,true);
+  }
+  if(mcp?.power===false)return checked('ELECTRICAL_POWER_LOST',true);
+  if(input.stabTrimAutopilotNormal===false&&input.stabTrimVerified===true)
+   return checked('STAB_TRIM_AUTOPILOT_CUTOUT',true);
+  if(input.hydraulicsVerified===true){
+   if(ap.endsWith('_A')&&input.hydraulicAAvailable===false)
+    return checked('AP_A_HYDRAULIC_PRESSURE_LOST',true);
+   if(ap.endsWith('_B')&&input.hydraulicBAvailable===false)
+    return checked('AP_B_HYDRAULIC_PRESSURE_LOST',true);
+  }
+  if(input.irsVerified===true){
+   if(input.leftIrsFault===true)return checked('LEFT_IRS_FAILURE',true);
+   if(input.rightIrsFault===true)return checked('RIGHT_IRS_FAILURE',true);
+  }
+  if(input.criticalSensorFailureVerified===true&&input.criticalSensorFailed===true)
+   return checked('CRITICAL_SENSOR_INPUT_LOST',true);
+  // FCOM 4.20.4: with an inoperative RA, disconnect 2 s after LOC & GS
+  // capture. Do not assume LOC/GS capture from APP mode selection alone.
+  if(input.raFailureVerified===true&&input.radioAltimeterInoperative===true&&
+     mcp.nav?.loc===true&&mcp.nav?.gs===true){
+   if(next.raFailureSinceMs===null)next.raFailureSinceMs=nowMs;
+   if(nowMs-next.raFailureSinceMs>=2000)
+    return checked('RADIO_ALT_FAILURE_AFTER_LOC_GS_2S',true);
+  }else next.raFailureSinceMs=null;
+  return {state:next,disengage:false,reason:null};
+ }
+ return Object.freeze({VERSION,REASONS,initial,evaluate});
+});
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
 /* ../../engine/flight/iran-nav-reference-v1.js?v=FLT-PHASE-IRAN-NAV-0001 */
 try{
 /* Public-domain airport and VOR reference positions (OurAirports).
@@ -280,7 +356,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -547,6 +623,25 @@ try{
    {valid:true,engines,fuelImbalanceKg:owner.getFuelImbalanceKg?.()}:null;
   return lastPropulsion;
  }
+ // Consume the actual TE actuator projection; the cockpit lever is not
+ // proof that surfaces have moved. Keep instructor mass separate from ADC.
+ function syncAeroConfiguration(){
+  if(!state||!active)return false;
+  const le=win.B737LEDevicesUnifiedLink?.getState?.();
+  const projection=le?.projection;
+  if(!projection||!Number.isFinite(projection.tePosition))return false;
+  const flapLever=le.lever,flapActual=projection.tePosition;
+  const slatsFull=projection.slatsFull===true;
+  if(![0,1,2,5,10,15,25,30,40].includes(flapLever)||
+    flapActual<0||flapActual>40)return false;
+  const ctx=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('flightcontext.state');
+  const observed=ctx?.quality==='VALID'?ctx.value?.massKg:null;
+  const massKg=Number.isFinite(observed)&&observed>=30000&&observed<=75000?observed:null;
+  if(state.flapLever===flapLever&&Math.abs(state.flapActual-flapActual)<1e-5&&
+    state.slatsFull===slatsFull&&state.massKg===massKg)return false;
+  state=Core.command(state,{type:'AERO_CONFIG',flapLever,flapActual,slatsFull,massKg});
+  return true;
+ }
  function tick(){
   const now=performance.now();
   if(active&&state){
@@ -560,6 +655,7 @@ try{
       altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'});}
      catch(error){console.warn('ISN scenario flight context',error);}
     }
+    syncAeroConfiguration();
     followMcp();
     if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
    }}catch(error){
@@ -898,55 +994,6 @@ try{
   version:VERSION,tickForTest:tick,getState:()=>({mode:lastMode,reason:lastReason,commands:lastResult.map(x=>({...x}))})
  });
 })(window);
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ../../engine/instruments/flight-display-motion-v1.js?v=FLIGHT-DISPLAY-MOTION-0001 */
-try{
-/* Source-preserving visual interpolation for Unified photo gauges and EFIS.
- * Never changes avionics bus, flight physics, FCC modes, or failure flags.
- * One sampled state and one coalesced animation clock for all consumers.
- */
-(function(root,factory){'use strict';const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root)root.B737FlightDisplayMotionV1=api;
-})(typeof globalThis!=='undefined'?globalThis:null,function(){
- 'use strict';
- const VERSION='B737_FLIGHT_DISPLAY_MOTION_0001';
- const finite=n=>typeof n==='number'&&Number.isFinite(n);
- const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
- const settings=Object.freeze({
-  iasKt:{tau:.18,rate:18},altitudeFt:{tau:.16,rate:200},
-  vsFpm:{tau:.20,rate:650},pitchDeg:{tau:.11,rate:3.4},
-  bankDeg:{tau:.11,rate:6},radioAltitudeFt:{tau:.17,rate:200},
-  trueHeadingDeg:{tau:.13,rate:13},gsKt:{tau:.18,rate:18}
- });
- function stepValue(current,target,dt,{tau=.16,rate=200}={}){
-  if(!finite(target))return current;
-  if(!finite(current)||dt>1)return target;
-  if(!finite(dt)||dt<=0)return current;
-  const diff=target-current,change=diff*(-Math.expm1(-dt/tau));
-  return current+clamp(change,-rate*dt,rate*dt);
- }
- function wrap360(a){return ((a%360)+360)%360;}
- function stepFrame(prev,raw,dt){
-  if(!raw||raw.schema!=='B737_FLIGHT_SCENARIO_STATE_V1')return null;
-  if(!prev||prev.icao!==raw.icao||raw.elapsedSec+1e-6<(prev.elapsedSec??0)||
-     dt>1||raw.revision<prev.revision)
-   return {...raw,presentationSource:VERSION};
-  const next={...raw,presentationSource:VERSION};
-  for(const [field,config]of Object.entries(settings)){
-   if(!finite(raw[field]))continue;
-   if(field==='trueHeadingDeg'){
-    const previous=prev[field],delta=((raw[field]-previous+540)%360)-180;
-    next[field]=wrap360(stepValue(0,delta,dt,config)+previous);
-   }else next[field]=stepValue(prev[field],raw[field],dt,config);
-  }
-  return next;
- }
- return Object.freeze({VERSION,settings,stepValue,stepFrame});
-});
 
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;

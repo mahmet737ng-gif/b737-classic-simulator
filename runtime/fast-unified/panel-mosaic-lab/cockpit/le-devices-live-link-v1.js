@@ -6,7 +6,23 @@
  'use strict';
  const allowed=new Set([0,1,2,5,10,15,25,30,40]);
  let lever=0,actualTe=0,ready=false,lastProjection=null,lastProjectedRevision=-1;
+ let onGround=true,autoSlatRequest=false,lastSentGround=null,lastSentAuto=null;
  const frame=()=>document.getElementById('overheadFrame');
+ function sendFlightState(force=false){
+  const child=frame()?.contentWindow;
+  if(!ready||!child)return false;
+  if(force||lastSentGround!==onGround){
+   child.postMessage({type:'b737:cockpit-command',action:'le-devices',
+    command:{type:'GROUND',value:onGround},originator:'flight-envelope-training'},location.origin);
+   lastSentGround=onGround;
+  }
+  if(force||lastSentAuto!==autoSlatRequest){
+   child.postMessage({type:'b737:cockpit-command',action:'le-devices',
+    command:{type:'AUTOSLAT',value:autoSlatRequest},originator:'flight-envelope-training'},location.origin);
+   lastSentAuto=autoSlatRequest;
+  }
+  return true;
+ }
  function sendLever(){
   const child=frame()?.contentWindow;
   if(!ready||!child)return false;
@@ -52,12 +68,24 @@
   setLever(event.detail.detent);
  });
  document.addEventListener('b737:flap-ready',event=>setLever(event.detail?.position??0));
+ window.addEventListener('b737:flight-scenario-state',event=>{
+  const s=event.detail;
+  if(s?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1')return;
+  onGround=s.airborne!==true;
+  // Until valid AoA arrives, only a labelled training speed/load proxy is used.
+  autoSlatRequest=!onGround&&s.autoSlatRequest===true&&[1,2,5].includes(lever);
+  sendFlightState();
+ });
+ window.addEventListener('b737:flight-scenario-stopped',()=>{
+  onGround=true;autoSlatRequest=false;sendFlightState();
+ });
  window.addEventListener('b737:cockpit-lights-ready',()=>updateIndication());
  window.addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==frame()?.contentWindow||
      event.data?.type!=='b737:cockpit-overhead')return;
   const payload=event.data;
-  if(payload.kind==='ready'){ready=true;sendLever();return;}
+  if(payload.kind==='ready'){ready=true;lastSentGround=null;lastSentAuto=null;
+   sendLever();sendFlightState(true);return;}
   if(payload.kind!=='le-devices-projection'||!payload.projection)return;
   const p=payload.projection;
   if(!Number.isInteger(p.revision)||p.revision<lastProjectedRevision)return;
@@ -68,7 +96,7 @@
  });
  window.B737LEDevicesUnifiedLink=Object.freeze({
   getState:()=>({lever,actualTe,overheadReady:ready,projection:lastProjection,
-    centerLightsReady:!!window.B737CockpitLights}),
+    onGround,autoSlatRequest,centerLightsReady:!!window.B737CockpitLights}),
   // For QA and simulator model integration; physical handler remains the only lever DOM owner.
   syncLever:setLever
  });

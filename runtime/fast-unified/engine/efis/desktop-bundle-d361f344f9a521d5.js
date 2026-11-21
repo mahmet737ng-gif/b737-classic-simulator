@@ -270,7 +270,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001 */
+/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001&amp;aero=TRN-LOW-0001 */
 try{
 /* Unified EADI v2: cockpit mount for the new EFIS Display Lab EADI renderer.
  * Replaces the retired attitude-only painter, retaining the owner-registered
@@ -343,10 +343,21 @@ try{
    numeric(adc?.iasKt)!==null||numeric(adc?.casKt)!==null);
   const originalSpeedView=root.B737UnifiedSpeedTapeV1?.getView?.(src.sourceSeat);
   let speedView=originalSpeedView;
+  const activeScene=root.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true?
+   root.B737UnifiedFlightScenarioV1.getState?.():null;
+  const lowSpeed=activeScene?.aeroEnvelope;
+  if(lowSpeed?.source==='INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA'&&
+     originalSpeedView?.casKt!==null&&originalSpeedView?.casKt!==undefined){
+   speedView={...originalSpeedView,trainingLowSpeed:{
+    source:lowSpeed.source,stallKt:lowSpeed.stallKt,
+    stickShakerKt:lowSpeed.stickShakerKt,
+    minimumManeuverKt:lowSpeed.minimumManeuverKt,
+    belowShaker:lowSpeed.belowShaker}};
+  }
   if(smoothIas&&originalSpeedView?.casKt!=null){
    const speed=smooth.iasKt,center=Math.max(45,Math.min(420,speed)),radius=42;
    const range={minKt:center-radius,maxKt:center+radius};
-   speedView={...originalSpeedView,casKt:speed,tapeCenterKt:center,range,
+   speedView={...speedView,casKt:speed,tapeCenterKt:center,range,
     lowSpeedDefault:speed<=45,
     commandedPosition:originalSpeedView.command?
       originalSpeedView.command.speedKt>range.maxKt?'ABOVE':
