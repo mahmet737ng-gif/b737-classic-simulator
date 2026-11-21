@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0001 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -606,7 +606,7 @@ function initialState(){return {
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
- nav:{loc:false,gs:false},dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false},flight:null,targets:{pitch:null,roll:null},
+ nav:{loc:false,gs:false},togaActive:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
  lastRejection:null,lastAutopilotDisengagement:null
 };}
@@ -648,8 +648,8 @@ function clearModes(s){
  s.pending.approach=false;
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
- s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};
- s.targets={pitch:null,roll:null};s.flight=null;
+ s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
+ s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;
  s.autoThrustByPitch=false;s.lvlChgPhase='UNKNOWN';
  s.speedLimit=SpeedLimit?.initialState?.()??null;
  s.flightDirectorBarsRetracted=false;
@@ -722,7 +722,7 @@ function transition(state,action){
   if(!preserveDual)s.dualApproach.second=null;
   s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
-  s.flightDirectorBarsRetracted=false;
+  s.flightDirectorBarsRetracted=false;s.togaActive=true;
   return done();
  }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
@@ -750,7 +750,7 @@ function transition(state,action){
    return rejected(s,"UNVERIFIED_AP_DISCONNECT_EVENT");
   if(!s.modes.autopilot)return rejected(s,"AUTOPILOT_NOT_ENGAGED");
   s.lastAutopilotDisengagement={reason:action.reason,source:action.source};
-  s.modes.autopilot=null;s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};s.override={pitch:false,roll:false,altHold:false};
+  s.modes.autopilot=null;s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
   // With both F/Ds OFF, an A/P disconnect leaves no guidance owner.
   if(!s.fd.left&&!s.fd.right)clearModes(s);
@@ -856,6 +856,8 @@ function transition(state,action){
    "radioAltitudeFt","tasKt","gsBelowDots","verticalSpeedFpm"])
    if(f[k]!==undefined&&!Number.isFinite(f[k]))
     return rejected(s,"INVALID_FLIGHT_SENSOR_"+k);
+  if(f.flightElapsedSec!==undefined&&(!Number.isFinite(f.flightElapsedSec)||f.flightElapsedSec<0))
+   return rejected(s,'INVALID_FLIGHT_ELAPSED_TIMER');
   for(const k of ['locDeviationDots','gsDeviationDots'])
    if(f[k]!==undefined&&f[k]!==null&&!Number.isFinite(f[k]))
     return rejected(s,'INVALID_NAV_DEVIATION_'+k);
@@ -866,12 +868,13 @@ function transition(state,action){
   const flags=["establishedEnroute","thrustIdleConfirmed","navValid","gearDown","fdVorCaptured","fdLocCaptured",
    "pitchOverrideConfirmed","rollOverrideConfirmed","pitchForceReleased",
    "rollForceReleased","altAcquireConfirmed","altitudeHoldConfirmed",
-   "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot","dualIlsValid",
+   "navCaptureConfirmed","gsCaptureConfirmed","dualAutopilot","dualIlsValid","onGround",
    "controlWheelForceApplied","stabTrimAutopilotNormal","apDisengageBarUp"];
   if(flags.some(k=>f[k]!==undefined&&typeof f[k]!=="boolean"))
    return rejected(s,"INVALID_FLIGHT_SENSOR_FLAG");
   // An explicit lost/retuned front course invalidates captured navigation.
-  if(f.navValid===false&&(s.nav.loc||s.nav.gs||s.armed.roll==='VOR/LOC')){
+  if(f.navValid===false&&!(s.dualApproach.flareEngaged===true&&f.radioAltitudeFt<=50)&&
+      (s.nav.loc||s.nav.gs||s.armed.roll==='VOR/LOC')){
    const wasCoupled=s.dualApproach.coupled;
    s.nav={loc:false,gs:false};s.capture.roll=null;
    if(['G/S','FLARE'].includes(s.capture.pitch))s.capture.pitch=null;
@@ -956,6 +959,15 @@ function transition(state,action){
       s.autoThrottleArm){
    s.dualApproach.retard=true;s.modes.thrust='RETARD';s.autoThrustByPitch=false;
   }
+  if(s.dualApproach.flareEngaged&&f.onGround===true&&
+      Number.isFinite(f.flightElapsedSec)){
+   if(!Number.isFinite(s.dualApproach.touchdownStartSec))
+    s.dualApproach.touchdownStartSec=f.flightElapsedSec;
+   if(f.flightElapsedSec-s.dualApproach.touchdownStartSec>=2){
+    s.autoThrottleArm=false;s.modes.thrust=null;
+   }
+  }
+
   if(axisControl(s,true).roll==="CWS"&&f.rollForceReleased===true&&
    Number.isFinite(f.bankDeg)&&Number.isFinite(f.headingDeg)){
    const inhibited=(Number.isFinite(f.radioAltitudeFt)&&
@@ -1037,7 +1049,7 @@ function transition(state,action){
   s.armed.roll=s.pending.approach?"VOR/LOC":null;
   s.armed.pitch=s.pending.approach?"G/S":null;
   if(!s.pending.approach){s.nav.loc=false;s.nav.gs=false;
-   s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};}
+   s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};}
   return done();
  }
  if(id==="LNAV"||id==="VNAV"){
@@ -1048,7 +1060,7 @@ function transition(state,action){
    return rejected(s,"VOR_LOC_NAV_EVIDENCE_REQUIRED");
   s.armed.roll=s.armed.roll==="VOR/LOC"?null:"VOR/LOC";
   s.pending.approach=false;s.armed.pitch=null;s.nav.loc=false;s.nav.gs=false;
-  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};
+  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
   return done();
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
@@ -1082,7 +1094,7 @@ function transition(state,action){
    s.dualApproach.retard=false;return done();
   }
   s.modes.autopilot=selected===id?null:id;
-  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};
+  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
   if(selected===id)s.lastAutopilotDisengagement={
    reason:"ILLUMINATED_AP_ENGAGE_SWITCH",source:"COCKPIT_HARDWARE"};
   else s.lastAutopilotDisengagement=null;
@@ -1115,6 +1127,7 @@ function transition(state,action){
   return done();
  }
  if(vertical.includes(id)){
+  s.togaActive=false;
   // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
   // following G/S capture in APP.
   if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
@@ -1131,6 +1144,7 @@ function axisControl(s,powered){
  const ap=powered&&typeof s.modes.autopilot==="string"?s.modes.autopilot:"";
  const engaged=/^(?:CMD|CWS)_[AB]$/.test(ap);
  if(!engaged)return {pitch:"OFF",roll:"OFF"};
+ if(s.togaActive===true)return {pitch:"CMD",roll:"CMD"};
  const manual=ap.startsWith("CWS_");
  return {pitch:manual||s.override.pitch||
    (!s.capture.pitch&&s.modes.vertical===null)?"CWS":"CMD",
@@ -1162,7 +1176,7 @@ function output(s){
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
+  modes:{...s.modes},togaActive:s.togaActive===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
@@ -1174,7 +1188,7 @@ return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./mcp-afds-bridge-v1.js?v=MCP-TOGA-CH4-0003&amp;cb=CB-UNIFIED-0008 */
+/* ./mcp-afds-bridge-v1.js?v=MCP-TOGA-CH4-0003&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-0001 */
 try{
 /* MCP Phase 3 / slice 1: real Electrical V7 evidence -> conservative AFDS
  * educational mode core -> visual/hardware projection. No invented LRU feed.

@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./iran-radio-nav-unified-v1.js?v=IRAN-RADIONAV-0001 */
+/* ./iran-radio-nav-unified-v1.js?v=IRAN-RADIONAV-0001&amp;ils=SHI-CH4-0001 */
 try{
 /* Unified B737 Classic — NAV tuning and actual training trajectory -> avionics bus.
  * Existing EFIS and RDMI instruments own rendering; no display DOM mutations.
@@ -121,6 +121,97 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
+/* ../../engine/afds/classic-ils-afds-ch4-v1.js?v=ILS-FCC-SHI-0001 */
+try{
+/* B737 Classic CH4 ILS/VOR AFDS training geometry -> FCC evidence.
+ * FCOM SHI 4.10.14-16, 4.20.20-29. Only models published training signals;
+ * not certified radio propagation, FCC capture law, or autoland control.
+ * LOC <= 0.5 dot, G/S <= 0.4 dot are documented capture bounds;
+ * rates/gains/intercept predictions are openly instructor approximations.
+ */
+(function(root,factory){'use strict';const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root)root.B737ClassicILSApproachCH4V1=api;
+})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const VERSION='CLASSIC-ILS-AFDS-CH4-0001';
+ const finite=Number.isFinite,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+ const norm=x=>(x%360+360)%360;
+ const diff=(a,b)=>((a-b+540)%360)-180;
+ function radio(record){
+  if(record?.quality!=='VALID'||!record.value)return null;
+  return record.value;
+ }
+ function active(out){
+  return out?.pending?.approach||out?.nav?.gs?'APP':
+   out?.armed?.roll==='VOR/LOC'||out?.capture?.roll==='VOR_LOC'?'VOR_LOC':'OFF';
+ }
+ function evaluate({output,flight,snapshot,declinationDeg=null}={}){
+  const blank={version:VERSION,valid:false,kind:'NONE',stationIdent:null,mode:active(output),
+   navCaptureConfirmed:false,gsCaptureConfirmed:false,courseTrackValid:false,
+   glideValid:false,dualIlsValid:false,reason:'NO_SIGNAL'};
+  if(output?.power!==true||!flight||!snapshot)return {...blank,reason:'SOURCE_UNAVAILABLE'};
+  const mode=active(output);
+  const nav1=radio(snapshot['navigation.ils1']),nav2=radio(snapshot['navigation.ils2']);
+  const vor1=radio(snapshot['navigation.vor1']),vor2=radio(snapshot['navigation.vor2']);
+  const primary=output.modes?.autopilot==='CMD_B'?'FO':'CAPT';
+  const selected=primary==='CAPT'?1:2;
+  const ils=selected===1?nav1:nav2,vor=selected===1?vor1:vor2;
+  const signal=ils||vor;
+  if(!signal)return {...blank,mode,reason:'NAV_RECEIVER_NO_VALID_SIGNAL'};
+  const ilsValid=!!ils&&ils.frontCourse===true&&
+   finite(ils.localizerDots)&&finite(ils.courseTrueDeg);
+  const vorValid=!!vor&&finite(vor.bearingDeg)&&
+   finite(output.values?.[selected===1?'courseL':'courseR'])&&finite(declinationDeg);
+  const kind=ilsValid?'ILS':vorValid?'VOR':'NONE';
+  const valid=kind!=='NONE';
+  const locDots=ilsValid?ils.localizerDots:vorValid?vor.deviationDots:null;
+  const gsDots=ilsValid&&finite(ils.glideslopeDots)?ils.glideslopeDots:null;
+  const crs=output.values?.[selected===1?'courseL':'courseR'];
+  const vorCourse=vorValid?norm(crs+declinationDeg):null;
+  const courseTrue=ilsValid?ils.courseTrueDeg:vorCourse;
+  const courseMag=ilsValid&&finite(ils.courseMagDeg)?ils.courseMagDeg:crs;
+  const selectedCourseAligned=ilsValid&&finite(declinationDeg)?
+   Math.abs(diff(norm(crs+declinationDeg),courseTrue))<=15:vorValid;
+  const lineValid=valid&&finite(locDots)&&selectedCourseAligned;
+  const locCaptured=output.capture?.roll==='VOR_LOC'&&lineValid;
+  const navCaptureConfirmed=mode!=='OFF'&&lineValid&&Math.abs(locDots)<=.5;
+  const gsCaptureConfirmed=mode==='APP'&&locCaptured&&
+   finite(gsDots)&&Math.abs(gsDots)<=.4;
+  const dualIlsValid=ilsValid&&!!nav1&&!!nav2&&
+   nav1.stationIdent===nav2.stationIdent&&
+   nav1.tunedFrequencyMHz===nav2.tunedFrequencyMHz&&
+   nav2.frontCourse===true&&finite(nav2.localizerDots)&&
+   Math.abs(diff(norm(output.values.courseL+declinationDeg),
+    norm(output.values.courseR+declinationDeg)))<=5&&
+   output.course2Power===true;
+  // Proportional track offset, no artificial FD deflection if signal absent.
+  const correctedCourse=lineValid&&finite(courseTrue)?
+   norm(courseTrue+clamp(locDots*5,-12,12)):null;
+  const gsTrack=mode==='APP'&&locCaptured&&finite(gsDots);
+  const gsKt=finite(flight.gsKt)?flight.gsKt:
+   finite(flight.tasKt)?flight.tasKt:finite(flight.iasKt)?flight.iasKt:null;
+  const glideDeg=ils?.glideDeg??3;
+  const nominalVs=gsTrack&&finite(gsKt)?-gsKt*6076.11549/60*Math.tan(glideDeg*Math.PI/180):null;
+  // Positive deviation represents aircraft above the GP in this radio model:
+  // command stronger descent to return to the centerline.
+  const gsVsFpm=finite(nominalVs)?clamp(nominalVs-gsDots*320,-2800,-150):null;
+  return {version:VERSION,valid,kind,stationIdent:signal.stationIdent,mode,
+   navCaptureConfirmed,gsCaptureConfirmed,dualIlsValid,
+   locDeviationDots:finite(locDots)?locDots:null,gsDeviationDots:gsDots,
+   gsBelowDots:finite(gsDots)?Math.max(0,-gsDots):null,
+   courseTrackValid:locCaptured&&finite(correctedCourse),
+   courseDeg:correctedCourse,glideValid:gsTrack&&finite(gsVsFpm),
+   gsVsFpm,glideDeg,source:'TRAINING_NAV_AVIONICS',
+   reason:!valid?'NAV_SIGNAL_UNVERIFIED':!selectedCourseAligned?'COURSE_MISMATCH':
+    mode==='OFF'?'AFDS_NOT_ARMED':'GEOMETRY_VALID'};
+ }
+ return Object.freeze({VERSION,evaluate,active});
+});
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
 /* ./flight-envelope-le-bridge-v1.js?v=LE-PORTS-AERO-0001 */
 try{
 /* Instructor flight envelope -> OWNER FINAL LE Devices external dynamics port.
@@ -163,7 +254,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119 */
+/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119&amp;ils=SHI-CH4-0001 */
 try{
 /* TCAS-independent Unified TO/GA integration.
  * Source: Sepehran 737CL FCOM Ch 4 §§4.20.14–16,4.20.24–27.
@@ -215,7 +306,11 @@ try{
   if(!active())return;
   const m=mcp();
   if(m?.power!==true)return;
-  const fm=T.fma(state),fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
+  const fm=T.fma(state);
+  if(state.phase==='GA'&&m?.modes?.lateral==='HDG_SEL')fm.roll='HDG SEL';
+  else if(state.phase==='GA'&&m?.modes?.lateral==='LNAV')fm.roll='LNAV';
+  else if(state.phase==='GA'&&m?.capture?.roll==='VOR_LOC')fm.roll='VOR/LOC';
+  const fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
   if(lastFma===fingerprint)return;
   lastFma=fingerprint;
   for(const seat of ['CAPT','FO']){
@@ -621,118 +716,6 @@ try{
  }
  return Object.freeze({VERSION,initial,step,holdN1,throttleForN1});
 });
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ./autothrottle-unified-v1.js?v=FLT-UI-SLIM-0001 */
-try{
-/* Unified A/T SPEED -> shared ISN-18 ENG 1+2 -> flight speed feedback v1.
- * The MCP mode core is authoritative. Never energize a stopped engine or
- * manufacture indications. Instructor RUNNING preset requires explicit click.
- */
-(function(win){
- 'use strict';
- const Servo=win.B737AutothrottleSpeedServoV1,VERSION='UNIFIED_AT_ENGINE_BRIDGE_0001';
- if(!Servo){win.console?.error('A/T servo dependency missing');return;}
- const doc=win.document,by=id=>doc.getElementById(id);
- let state=Servo.initial(),last=0,manualOverride=false,errors=[],lastCommands={};
- const clone=x=>JSON.parse(JSON.stringify(x));
- function activeMode(m){
-  return m?.power===true&&m.controls?.atArm===true&&m.modes?.thrust==='SPEED';
- }
- function getSources(){
-  const mcp=win.B737McpAFDSBridgeV1?.getOutput?.()||null;
-  const scenario=win.B737UnifiedFlightScenarioV1;
-  const status=scenario?.getDiagnostics?.();
-  const flight=status?.active===true?scenario.getState?.():null;
-  const owner=win.B737ISNCockpitV1;
-  // Keep idle-window overhead negligible: ISN ECU snapshots contain large
-  // diagnostics trees and are only required when A/T can run or panel is open.
-  const needEngines=activeMode(mcp);
-  const propulsion=needEngines?owner?.getPropulsionSnapshot?.():null;
-  const chain=needEngines&&!propulsion?owner?.getStartState?.():null;
-  const ecu=needEngines&&!propulsion?owner?.getECUState?.():null;
-  const engines={};
-  for(const n of [1,2]){
-   const id='engine'+n;
-   engines[id]=propulsion?.engines?.[id]?
-    {...propulsion.engines[id]}:
-    {running:chain?.phase?.[id]==='RUNNING',
-     n1Percent:ecu?.engines?.[id]?.n1Percent??null,
-     throttle:chain?.runningEnvelope?.throttle?.[id]??null};
-  }
-  // When the Scenario Lab is not running, accept only a VALID ADC source.
-  // The external producer remains responsible for moving IAS in that case.
-  const network=win.B737UnifiedAvionicsNetworkV1;
-  const adc=!flight&&activeMode(mcp)?network?.getSignal?.('airdata.adc1'):null;
-  const airGround=!flight&&activeMode(mcp)?network?.getSignal?.('aircraft.airground'):null;
-  const ias=Number.isFinite(flight?.iasKt)?flight.iasKt:
-   adc?.quality==='VALID'?(adc.value?.iasKt??adc.value?.casKt):null;
-  const airborne=flight?flight.airborne:
-   airGround?.quality==='VALID'&&airGround.value?.onGround===true?false:null;
-  return {mcp,flight:{iasKt:ias,vsFpm:flight?.vsFpm??0,airborne},
-   engines,scenarioActive:status?.active===true,paused:status?.paused===true,
-   ecu,owner};
- }
- function notify(){
-  win.dispatchEvent(new CustomEvent('b737:autothrottle-speed-state',{detail:clone(state)}));
- }
- function tick(){
-  const now=performance.now();
-  const dt=last?Math.min(.5,Math.max(0,(now-last)/1000)):.2;
-  last=now;
-  const src=getSources();
-  if(!activeMode(src.mcp)){manualOverride=false;lastCommands={};}
-  try{
-   state=Servo.step(state,{dtSec:dt,mcp:src.mcp,flight:src.flight,
-    engines:src.engines,paused:src.paused,inhibited:manualOverride});
-   if(state.active){
-    if(typeof src.owner?.autoThrottleCommand!=='function'){
-     state={...state,active:false,reason:'ISN18_THROTTLE_INTERFACE_MISSING',commands:[]};
-    }else for(const command of state.commands){
-     if(Math.abs(command.throttle-(lastCommands[command.engine]??-1))<.008)continue;
-     const result=src.owner.autoThrottleCommand({
-      engine:command.engine,value:command.throttle,controller:Servo.VERSION});
-     if(result?.accepted!==true){
-      state={...state,active:false,reason:result?.reason||'ENGINE_THROTTLE_REJECTED',commands:[]};
-      break;
-     }
-     lastCommands[command.engine]=command.throttle;
-     const number=command.engine==='engine1'?1:2;
-     // This is a photo sprite only. The real ECU has already accepted the
-     // continuous throttle; visually it is quantized to five photo stages.
-     doc.dispatchEvent(new CustomEvent('b737:throttle-state',{detail:{
-      engine:number,percent:command.throttle*100,source:'A/T SPEED',visualOnly:true}}));
-    }
-   }
-  }catch(error){
-   const message=String(error?.message||error);
-   if(errors.at(-1)!==message){errors.push(message);if(errors.length>12)errors.shift();}
-   state={...state,active:false,reason:'A/T_COMMAND_ERROR: '+message,commands:[]};
-  }
-  notify();
- }
- function manualIntervention(event){
-  const d=event?.detail;
-  if(![1,2].includes(d?.engine)&&!['engine1','engine2'].includes(d?.engine))return;
-  if(!Number.isFinite(d.percent)&&!Number.isFinite(d.throttle))return;
-  if(activeMode(win.B737McpAFDSBridgeV1?.getOutput?.()))manualOverride=true;
- }
- doc.addEventListener('b737:throttle-position',manualIntervention);
- win.addEventListener('b737:manual-engine-throttle',manualIntervention);
- const publicApi=Object.freeze({
-  getState:()=>clone(state),getDiagnostics:()=>({version:VERSION,manualOverride,errors:[...errors]}),
-  tickForTest:tick,resetManualOverride:()=>{manualOverride=false;},
-  version:VERSION
- });
- win.B737UnifiedAutothrottleV1=publicApi;
- function boot(){
-  win.setInterval(tick,200);
- }
- if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});
- else boot();
-})(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
