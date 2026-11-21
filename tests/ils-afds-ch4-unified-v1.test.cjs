@@ -23,7 +23,9 @@ function sample(extra={}){
  return {schema:'B737_AFDS_FLIGHT_OBSERVATION_V1',confirmed:true,source:'SIMULATED_FCC',
   navValid:true,navKind:'ILS',navCaptureConfirmed:false,gsCaptureConfirmed:false,
   dualIlsValid:true,radioAltitudeFt:1600,altitudeFt:5500,verticalSpeedFpm:-800,
-  bankDeg:0,pitchDeg:-2,headingDeg:289,...extra};
+  bankDeg:0,pitchDeg:-2,headingDeg:289,...extra,
+  // The FCC observation wrapper, not raw NAV data, owns this identity.
+  source:'SIMULATED_FCC',confirmed:true};
 }
 function stationSnapshot(nm=5,offset=0){
  const s=Geo.byIdent('ITHL'),to=(s.courseTrueDeg+180)*Math.PI/180;
