@@ -42,3 +42,7 @@ html[data-light-geometry-debug=true] .cockpit-light::after{content:'';position:a
 .cockpit-light[data-native-housing="true"] > img:not(.lamp-socket-fit-face){
  visibility:hidden !important;
 }
+
+/* PAN-STABLE-0004: async indicator mounts must not trigger UA scroll anchoring.
+   No owner raster, lens calibration, panel geometry or switch hitbox changes. */
+#viewport,#sizer,#scene{overflow-anchor:none;scroll-behavior:auto}

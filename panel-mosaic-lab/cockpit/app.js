@@ -12,7 +12,9 @@
   });
  window.B737UnifiedFmc=Object.freeze({attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
+ const panGuard=window.B737PanStabilityV1;
  let galleryMounted=false,viewRefreshTimer=0;
+ let lastViewportWidth=vp.clientWidth,lastViewportHeight=vp.clientHeight;
  function scheduleViewRefresh(){
   if(viewRefreshTimer)return;
   viewRefreshTimer=setTimeout(()=>{
@@ -154,6 +156,7 @@
  function commitZoomPresentation(){
   scene.style.setProperty('--zoom',String(zoom));
   byId('zoomValue').textContent=Math.round(zoom*100)+'%';
+  lastViewportWidth=vp.clientWidth;lastViewportHeight=vp.clientHeight;
   scheduleViewRefresh();
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null,inputTime){
@@ -315,11 +318,14 @@
   if(d.kind==='selected-light'){byId('lampSelect').value=d.id;renderLights();}
   if(d.kind==='wheel-pan'){panWheel(d);return;}
   if(d.kind==='pan-start'&&Number.isFinite(d.screenX)&&Number.isFinite(d.screenY)){
-   wheelController?.cancel();endParentDrag();
-   drag={x:d.screenX,y:d.screenY,left:vp.scrollLeft,top:vp.scrollTop,source:'iframe'};dragged=false;
+   finishWheelZoom();wheelController?.cancel();endParentDrag();
+   drag={lastX:d.screenX,lastY:d.screenY,source:'iframe'};dragged=false;
   }
   if(d.kind==='pan-move'&&drag?.source==='iframe'&&Number.isFinite(d.screenX)&&Number.isFinite(d.screenY)){
-   vp.scrollLeft=drag.left-(d.screenX-drag.x);vp.scrollTop=drag.top-(d.screenY-drag.y);
+   const step=panGuard?.step({x:drag.lastX,y:drag.lastY},
+    {x:d.screenX,y:d.screenY},vp);
+   drag.lastX=d.screenX;drag.lastY=d.screenY;
+   if(step?.accepted)panGuard.boundedPan(vp,step.dx,step.dy);
   }
   if(d.kind==='pan-end'&&drag?.source==='iframe')drag=null;
   if(d.kind==='zoom'){queueWheelZoom(d.delta,d.clientX,d.clientY,frameInputTime(d),frame);return;}
@@ -369,9 +375,9 @@
  }
  vp.addEventListener('pointerdown',e=>{
   if(e.pointerType!=='mouse'||e.button!==0||e.target.closest?.(panControlSelector))return;
-  wheelController?.cancel();
-  endParentDrag();
-  drag={x:e.clientX,y:e.clientY,left:vp.scrollLeft,top:vp.scrollTop,source:'parent',pointer:e.pointerId,started:false};
+  finishWheelZoom();wheelController?.cancel();endParentDrag();
+  drag={x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,
+   source:'parent',pointer:e.pointerId,started:false};
   dragged=false;
  });
  vp.addEventListener('pointermove',e=>{
@@ -383,7 +389,10 @@
    if(!vp.hasPointerCapture(e.pointerId))vp.setPointerCapture(e.pointerId);
   }
   if(!drag.started)return;
-  vp.scrollLeft=drag.left-dx;vp.scrollTop=drag.top-dy;
+  const step=panGuard?.step({x:drag.lastX,y:drag.lastY},
+   {x:e.clientX,y:e.clientY},vp);
+  drag.lastX=e.clientX;drag.lastY=e.clientY;
+  if(step?.accepted)panGuard.boundedPan(vp,step.dx,step.dy);
   if(e.cancelable)e.preventDefault();
  });
  window.addEventListener('pointerup',e=>endParentDrag(e.pointerId));
@@ -399,12 +408,24 @@
   clearTimeout(resizeTimer);
   resizeTimer=setTimeout(()=>{
    if(!assembly)return;
-   applyZoom(zoom,vp.scrollLeft,vp.scrollTop,vp.clientWidth/2,vp.clientHeight/2);
+   endParentDrag();
+   if(drag?.source==='iframe')drag=null;
+   // Preserve the same source pixel under the viewport center. Using the
+   // NEW width for both old/new anchors shifts the image on every resize.
+   const oldWidth=lastViewportWidth||vp.clientWidth;
+   const oldHeight=lastViewportHeight||vp.clientHeight;
+   const left=vp.scrollLeft+(oldWidth-vp.clientWidth)/2;
+   const top=vp.scrollTop+(oldHeight-vp.clientHeight)/2;
+   applyZoom(zoom,left,top,vp.clientWidth/2,vp.clientHeight/2);
   },120);
  });
  async function start(){try{const trace=window.B737BootTrace,wait=trace?performance.now():0;const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}const parseEnd=trace?performance.now():0;
   trace?.phase('Await cockpit assembly',wait,parseEnd);
   model.validate(assembly);
+  // Capture prepaint camera before DOM hydration: focus(main) during a pan
+  // is not a valid navigation event and must not teleport the aircraft panel.
+  const visualHandoff=panGuard?.handoff(
+   window.B737VisualFirstShellV1?.snapshot?.(),assembly.canvas,vp);
   const mountStart=trace?performance.now():0;
   trace?.phase('Validate cockpit assembly',parseEnd,mountStart);
   mount();
@@ -414,7 +435,17 @@
   trace?.phase('Notify cockpit components',mounted);
   // Do not snap a user's early visual-only navigation back to Main when
   // the interactive cockpit finally attaches to the same photo DOM.
-  focus(window.B737VisualFirstShellV1?.focused||'main');
+  if(visualHandoff){
+   zoom=visualHandoff.zoom;focused=visualHandoff.focused;
+   scene.style.left=visualHandoff.sceneLeft+'px';
+   scene.style.top=visualHandoff.sceneTop+'px';
+   scene.style.transform='scale('+zoom+')';
+   sizer.style.width=Math.ceil(assembly.canvas.width*zoom)+'px';
+   sizer.style.height=Math.ceil(assembly.canvas.height*zoom)+'px';
+   vp.scrollLeft=visualHandoff.left;vp.scrollTop=visualHandoff.top;
+   window.B737ImageLoader.setCockpitZoom(zoom);
+   commitZoomPresentation();
+  }else focus(window.B737VisualFirstShellV1?.focused||'main');
   const scales=Object.fromEntries(assembly.regions.map(r=>[r.id,model.fit(r,vp.clientWidth,vp.clientHeight)]));
   window.B737ImageLoader.primeCockpit(scales,zoom);
   const earlyReady=window.B737TakeOverheadReady();
