@@ -204,7 +204,9 @@
    // Retract/flare overrides both. Do not synthesize the blank opposite axis.
    const selected=fdCommand(mcp.controls?.fd?.[selector]);
    const trainingCmd=cmd&&mcp.flightDirectorBarsRetracted!==true;
-   const permitted=selected||trainingCmd;
+   // FCOM 4.20.7/26: pressing TO/GA in flight may automatically bring
+   // both flight director bars into view even if physical F/D switches are OFF.
+   const permitted=selected||trainingCmd||nav?.togaActive===true;
    out.fdAxes[side]={pitch:permitted&&pitchBar,roll:permitted&&rollBar};
    out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
   }
