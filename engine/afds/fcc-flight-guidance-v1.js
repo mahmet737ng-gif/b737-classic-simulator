@@ -155,8 +155,14 @@
   const pitchBar=out.pitchValid&&pAxis!=='CWS'&&!flareRetract;
   const rollBar=out.rollValid&&rAxis!=='CWS'&&!flareRetract;
   for(const [side,selector] of [['captain','left'],['firstOfficer','right']]){
-   const powered=fdCommand(mcp.controls?.fd?.[selector]);
-   out.fdAxes[side]={pitch:powered&&pitchBar,roll:powered&&rollBar};
+   // Unified training contract: an engaged CMD A/P supplies the active
+   // director-axis cues even if the corresponding physical F/D selector
+   // was OFF at engagement. Without CMD, physical F/D still owns visibility.
+   // Retract/flare overrides both. Do not synthesize the blank opposite axis.
+   const selected=fdCommand(mcp.controls?.fd?.[selector]);
+   const trainingCmd=cmd&&mcp.flightDirectorBarsRetracted!==true;
+   const permitted=selected||trainingCmd;
+   out.fdAxes[side]={pitch:permitted&&pitchBar,roll:permitted&&rollBar};
    out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
   }
   // With no engaged autopilot, the F/D may still display command guidance,
