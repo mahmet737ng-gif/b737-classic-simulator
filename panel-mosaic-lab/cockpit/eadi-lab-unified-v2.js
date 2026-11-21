@@ -94,6 +94,16 @@
       originalSpeedView.command.speedKt>range.maxKt?'ABOVE':
       originalSpeedView.command.speedKt<range.minKt?'BELOW':'ON_TAPE':null};
   }
+  // Lower red stall-speed barber pole only when AIRBORNE.
+  // Use the authoritative scenario state first; otherwise the existing
+  // air/ground avionics owner. Never infer ground merely from low IAS.
+  const airground=root.B737UnifiedAvionicsNetworkV1?.getSignal?.('aircraft.airground');
+  const knownGround=typeof activeScene?.airborne==='boolean'?!activeScene.airborne:
+   airground?.quality==='VALID'&&typeof airground.value?.onGround==='boolean'?airground.value.onGround:null;
+  if(speedView&&typeof knownGround==='boolean')
+   speedView={...speedView,inFlight:!knownGround};
+  display.host.dataset.speedLowerRedBand=knownGround===true?'GROUND_HIDDEN':
+   knownGround===false?'AIRBORNE_VISIBLE':'UNKNOWN';
   const painted=renderer.renderUnifiedFull(display.canvas,{
    seat,pitch:smoothAttitude?smooth.pitchDeg:injected?station.pitch:src.pitch,
    bank:smoothAttitude?smooth.bankDeg:injected?station.bank:src.bank,
