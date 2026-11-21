@@ -29,9 +29,6 @@
    leStage:latest.leStage,
    tePosition:flap.actual,teTarget:flap.command,teMoving:flap.moving,
    hydraulicPsi:flap.pressurePsi,
-   // Only actual LE positions may produce aerodynamic lift credit.
-   slatsFull:Object.entries(latest.position).filter(([id])=>id.startsWith('SLAT_'))
-    .every(([,position])=>position>=1.999),
    center:latest.center,overheadPower:latest.overhead.power,
    autoslatInhibit:latest.autoslatInhibit,mismatch:latest.mismatch,source};
   window.dispatchEvent(new CustomEvent('b737:le-classic-projection',{detail}));
@@ -132,8 +129,6 @@
     if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')physicalMotion=true;
     authorize(cmd);
     if(e.data.originator==='physical-flap-lever'&&cmd.type==='FLAP_LEVER')runMotion();
-    // Autoslat requests actuate through existing timed LE physics, not a teleport.
-    if(physicalMotion&&cmd.type==='AUTOSLAT')runMotion();
     if(physicalMotion&&cmd.type==='HYDRAULIC'&&cmd.system==='B'&&cmd.value===true)runMotion();
    }catch(err){console.warn('Invalid LE cockpit command',err.message);}
   }

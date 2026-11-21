@@ -1,18 +1,18 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "9c8b1b64b46acb4e8114648ff9a936cc49394d2e",
-  "mainBefore": 297,
+  "sourceCommit": "7a974be3aa5a61b03434796926c40c488f4c44f2",
+  "mainBefore": 298,
   "mainAfter": 94,
-  "overheadBefore": 59,
-  "overheadAfter": 41,
+  "overheadBefore": 61,
+  "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "0c842730c966fb145d8f8c633a2ba2273dfaa5c7e21b959e197265b4174d7faa"
+      "sha256": "01381d7eaad0e32f82849919a6bf0b92389d04fbe003aec7d9904e849de3c637"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "1b6947629574ca27e3261a81f202a567bc2478d450e2b11875c9657f6db26283"
+      "sha256": "0e0eb1b57573e01ffee8864d4f251cc4c721ae04d861617de6c1d740328b8f74"
     },
     {
       "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
@@ -159,12 +159,12 @@
       "sha256": "84cf37929d69387ad85297bc28320b886eee2d3862ad128d8514536f184f9667"
     },
     {
-      "path": "engine/afds/desktop-bundle-e3facb9f18272611.js",
-      "sha256": "e3facb9f182726119738f7c5ca03170c25975a8d81d4b15cddc6b07fc0bb7893"
+      "path": "engine/afds/desktop-bundle-3697337ec455ea93.js",
+      "sha256": "3697337ec455ea935ebb30ac55ea721d2cd5d3b905292ad039283664e06c3ec0"
     },
     {
-      "path": "engine/instruments/desktop-bundle-afa95ce973c322ed.js",
-      "sha256": "afa95ce973c322edb7cb3f8408ec8ef6d20111c398fa235a56753e568af6f6f1"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-074da41e25be1736.js",
+      "sha256": "074da41e25be1736a592001ab07013de33bbcc1c8b825f03f3651a7dee81f299"
     },
     {
       "path": "engine/instruments/desktop-bundle-ea4db04b0bdc83e6.js",
@@ -464,7 +464,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",
-      "sha256": "6fa2cf0f38a7fe1017dfac2b3b052606ad9639fd9dd25abe427c09467cee7d54"
+      "sha256": "531b3ccab63cdf105d2697b9d4ea44c331f4283ac8fbd3be486fbeb69ca262a5"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-css-safe-05-v1.css",
@@ -764,7 +764,7 @@
     },
     {
       "path": "engine/systems/le-devices-classic-v1.js",
-      "sha256": "902b03a01b2f2b66c8234a1c30c05191a8ef653421eaf59859d67e28e5eeeade"
+      "sha256": "d77e4188f23c3dd782c2aea6df23079d5c72722484ff2c846188369bada02a95"
     },
     {
       "path": "engine/systems/te-flap-actuator-v1.js",
@@ -784,7 +784,15 @@
     },
     {
       "path": "panel-mosaic-lab/le-devices/trainer-bridge-v1.js",
-      "sha256": "510118f886a33c412d73d8bf78fea520d6998e492a937f13f4ffb9192b92cc3f"
+      "sha256": "38eb454501fcd6ae4f38c0e5e2536b5477434dd7dad1246574c4f22322cef67d"
+    },
+    {
+      "path": "engine/integrations/le-devices-external-ports-v1.js",
+      "sha256": "b462c7070a57b5485a02829813745261ee242a94df89edceb0de64fe5a556c5a"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/flight-envelope-integration-v1.js",
+      "sha256": "36a9abce081d41925e866aa7eb76fc7f65a4fa1bb32c18febc5c3508544754d4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/asp-vbr-small-silver-v1.css",
