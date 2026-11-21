@@ -65,7 +65,7 @@ test('LE computer actuates full autoslats and returns to intermediate when reque
  s=LE.apply(s,{type:'TICK',seconds:6,motionProfile:'TIMED',pressureFactor:1});
  assert.ok(s.position.SLAT_1<=1.001,'Slats return to intermediate when demand clears');
  const ground=LE.apply(s,{type:'GROUND',value:true});
- assert.equal(LE.evaluate(ground).autoslatsInhibit??false,false);
+ assert.equal(LE.evaluate(ground).autoslatInhibit,false);
 });
 test('auto slat PTU backup cannot become hydraulic power for ordinary LE flaps',()=>{
  let s=LE.initialState();
