@@ -292,7 +292,36 @@
   byId('resetToggles').onclick=()=>{engine.releaseAll();engine.reset();persist();byId('toggleState').textContent='RESET';};
   select(registry.controls.find(c=>c.id==='vhf-nav'));
   persist();
-  window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion,setInterlock:(id,enabled)=>{interlocks.set(id,!!enabled);if(!enabled)engine.release(id);const c=registry.controls.find(c=>c.id===id);if(c)refreshOne(c);}});
+  // Whitelisted, NON-GUARDED instructor switch actuation from FLT PHASE.
+// Calls the existing switch controller (emits the same physical events).
+// No frozen Owner18 protected switch can be selected through this port.
+const SCENARIO_SWITCHES=new Set([
+ 'gen-1','gen-2','apu-gen-1','apu-gen-2','apu-start','bleed-apu',
+ 'bleed-eng-1','bleed-eng-2','pack-l','pack-r','isolation-valve',
+ 'landing-out-l','landing-out-r','landing-in-l','landing-in-r',
+ 'strobe','position-lights','anti-collision','logo','wing-lights',
+ 'runway-turnoff-l','runway-turnoff-r','taxi'
+]);
+function scenarioSet(id,next){
+ if(!SCENARIO_SWITCHES.has(id))return {accepted:false,reason:'SCENARIO_SWITCH_NOT_WHITELISTED'};
+ const c=registry.controls.find(x=>x.id===id);
+ if(!c||!c.states.includes(next)||c.guarded===true||c.guard===true)
+  return {accepted:false,reason:'UNKNOWN_OR_GUARDED_SWITCH'};
+ if(interlocks.get(id)===false)return {accepted:false,reason:'PHYSICAL_SWITCH_INTERLOCK'};
+ const current=engine.get(id);
+ if(current===next)return {accepted:true,position:next,source:'EXISTING_OH_SWITCH'};
+ const moved=engine.set(id,next,'flight-scenario-instructor');
+ if(!moved)return {accepted:false,reason:'SWITCH_OWNER_DID_NOT_ACCEPT'};
+ // Momentary generator and APU selectors return to NEUTRAL/ON only AFTER
+ // the pulse has been reported to the live ECU/ATA24 owner.
+ if(c.springReturn?.[next])engine.release(id);
+ return {accepted:true,position:engine.get(id),source:'EXISTING_OH_SWITCH'};
+}
+window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),
+ getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion,
+ setScenarioSwitch:scenarioSet,
+ setInterlock:(id,enabled)=>{interlocks.set(id,!!enabled);if(!enabled)engine.release(id);
+ const c=registry.controls.find(c=>c.id===id);if(c)refreshOne(c);}});
   window.addEventListener('blur',()=>engine.releaseAll());
   document.addEventListener('visibilitychange',()=>{if(document.hidden)engine.releaseAll();});
   requestAnimationFrame(()=>{const scale=byId('board').getBoundingClientRect().width/layout.canvas.width;byId('viewport').scrollTop=layout.firstLowerRowY*scale;});
