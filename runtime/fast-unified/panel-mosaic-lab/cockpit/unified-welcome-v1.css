@@ -85,10 +85,12 @@
   background-image: url("./brand/unified-intro-wordmark.webp");
 }
 @keyframes unified-intro-arrive {
-  from { opacity: .25; transform: translateY(-.8%) scale(1); }
+  /* Keep the first frame clear: the existing yellow aircraft enters from the right. */
+  from { opacity: 0; transform: translate(110%, -.8%) scale(1); }
   18% { opacity: 1; }
   59% { opacity: 1; transform: translate(-5.3%, -6%) scale(1.14); }
-  to { opacity: 0; transform: translate(-5.8%, -6.3%) scale(1.17); }
+  /* Hold the aircraft over the badge until the welcome screen closes. */
+  to { opacity: 1; transform: translate(-5.8%, -6.3%) scale(1.17); }
 }
 @keyframes unified-intro-depth {
   from { clip-path: polygon(0 0, 100% 0, 100% 62.5%, 70% 65%, 42% 68.5%, 0 74.7%); }
