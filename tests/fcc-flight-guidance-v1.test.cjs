@@ -26,13 +26,14 @@ test('CMD HDG SEL magnetic 134 commands true 139 with 5deg east variation and bo
  assert.ok(o.rollCommandDeg>0);
  assert.ok(o.pitchCommandDeg>f.pitchDeg);
 });
-test('FD bars require BOTH valid command axes and pilot-side FD switch',()=>{
+test('FD bars are independently gated by valid pitch/roll modes and pilot FD switch',()=>{
  const m=mcp();m.controls.fd.right=false;
  let o=evaluateMag(Guidance.createState(),m,frame());
  assert.equal(o.fd.captain,true);assert.equal(o.fd.firstOfficer,false);
  m.modes.lateral='LNAV';
  o=evaluateMag(Guidance.createState(),m,frame());
- assert.equal(o.fd.captain,false);
+ assert.equal(o.fd.captain,true);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
  assert.ok(o.reasons.includes('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED'));
  m.modes.lateral='HDG_SEL';m.flightDirectorBarsRetracted=true;
  o=evaluateMag(Guidance.createState(),m,frame());
@@ -90,7 +91,8 @@ test('LVL CHG creates pitch/speed guidance; VNAV lacks invented profile',()=>{
 test('HDG SEL without a valid magnetic variation cannot quietly treat MAG as TRUE',()=>{
  const o=Guidance.evaluate(Guidance.createState(),mcp(),frame(),{magneticVariationDeg:null});
  assert.equal(o.rollValid,false);
- assert.equal(o.fd.captain,false);
+ assert.equal(o.fd.captain,true);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
  assert.ok(o.reasons.includes('HDG_SEL_MAGNETIC_VARIATION_UNAVAILABLE'));
  assert.ok(!o.actions.some(a=>a.type==='HEADING'));
 });
@@ -100,4 +102,28 @@ test('west/east variation changes true MCP target but displayed magnetic bug is 
  assert.equal(west.actions.find(a=>a.type==='HEADING').value,127);
  assert.equal(east.actions.find(a=>a.type==='HEADING').value,139);
  assert.equal(mcp().values.heading,134);
+});
+
+test('CWS R keeps pitch bar only; CWS P keeps roll bar only; blank axes stay blank',()=>{
+ const m=mcp(),f=frame();
+ m.axisControl={pitch:'CMD',roll:'CWS'};
+ let o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
+ m.axisControl={pitch:'CWS',roll:'CMD'};
+ o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:false,roll:true});
+ m.axisControl={pitch:'CMD',roll:'CMD'};
+ m.modes.vertical=null;m.modes.lateral='HDG_SEL';
+ o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:false,roll:true});
+ m.modes.lateral=null;
+ o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:false,roll:false});
+ m.modes.vertical='VS';
+ o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
+ m.controls.fd.left=false;
+ o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:false,roll:false});
+ assert.deepEqual(o.fdAxes.firstOfficer,{pitch:true,roll:false});
 });
