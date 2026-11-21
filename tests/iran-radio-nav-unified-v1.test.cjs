@@ -1,13 +1,17 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const geo=require('../engine/flight/iran-radio-navaids-v1.js');
 const cockpit=path.join(__dirname,'../panel-mosaic-lab/cockpit');
-test('all ten real facilities and the MHD airport-code alias',()=>{
- assert.equal(geo.STATIONS.length,10);
+test('all eleven real facilities and the MHD airport-code alias',()=>{
+ assert.equal(geo.STATIONS.length,11);
  assert.equal(geo.byIdent('MHD').ident,'MSD');
- for(const id of ['TRN','IKA','MSD','SYZ','IFN','DHN','IMSD','ITRN','IIKA','ISYZ'])assert.ok(geo.byIdent(id));
+ for(const id of ['TRN','IKA','MSD','SYZ','IFN','DHN','IMSD','ITRN','IIKA','ISYZ','ITHL'])assert.ok(geo.byIdent(id));
  assert.equal(geo.byIdent('IMSD').freqKhz,109900);
+ assert.equal(geo.byIdent('ITHL').freqKhz,109900);
+ assert.equal(geo.byIdent('ITHL').airport,'OIII');
+ assert.equal(geo.byIdent('ITHL').runway,'29L');
 });
-test('co-channel 109.90 MHz disambiguates IMSD versus ISYZ by location',()=>{
+test('co-channel 109.90 MHz selects ITHL, IMSD and ISYZ by aircraft location',()=>{
+ assert.equal(geo.match(109900,'ILS',{lat:35.69,lon:51.31,altitudeFt:4800}).ident,'ITHL');
  assert.equal(geo.match(109900,'ILS',{lat:36.2,lon:59.7,altitudeFt:4000}).ident,'IMSD');
  assert.equal(geo.match(109900,'ILS',{lat:29.5,lon:52.5,altitudeFt:6000}).ident,'ISYZ');
  assert.equal(geo.match(109900,'ILS'),null);
@@ -57,6 +61,12 @@ test('NAV tuning publishes same source to VOR, DME and ILS consumers without mix
  freq.CAPT=109900;root.B737UnifiedFlightScenarioV1.getState=()=>({lat:36.2,lon:59.7,altitudeFt:5200});
  root.B737UnifiedIranRadioNavV1.refresh();
  assert.equal(packets['navigation.ils1'].value.stationIdent,'IMSD');
+ root.B737UnifiedFlightScenarioV1.getState=()=>({lat:35.71,lon:51.22,altitudeFt:6000});
+ root.B737UnifiedIranRadioNavV1.refresh();
+ assert.equal(packets['navigation.ils1'].value.stationIdent,'ITHL');
+ assert.equal(packets['navigation.dme1'].value.stationIdent,'ITHL');
+ root.B737UnifiedFlightScenarioV1.getState=()=>({lat:36.2,lon:59.7,altitudeFt:5200});
+ root.B737UnifiedIranRadioNavV1.refresh();
  assert.equal(packets['navigation.vor1'].value,null);
  assert.ok(packets['navigation.dme1'].value.distanceNm>0);
 });
