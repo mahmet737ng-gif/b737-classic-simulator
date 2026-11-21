@@ -52,18 +52,26 @@ test('ALT HOLD captures actual altitude on engagement, not MCP altitude window',
  o=evaluateMag(o.state,m,future);
  assert.equal(o.actions.find(a=>a.type==='ALTITUDE').value,f.altitudeFt);
 });
-test('V/S captures selected altitude only near threshold, not immediately',()=>{
+test('V/S acquires based on actual rate and height, and ALT HOLD waits for ramp completion',()=>{
  const m=mcp();let f=frame();
  let o=evaluateMag(Guidance.createState(),m,f);
  assert.equal(o.altAcquireConfirmed,false);
- assert.ok(!o.actions.some(a=>a.type==='ALTITUDE'));
- f={...f,altitudeFt:9820,vsFpm:1850};
+ assert.ok(!o.actions.some(a=>a.type==='ALT_ACQ'));
+ f={...f,altitudeFt:9800,vsFpm:1850};
+ o=evaluateMag(o.state,m,f);
+ assert.equal(o.altAcquireConfirmed,false,'200 ft is beyond the deceleration distance');
+ f={...f,altitudeFt:9890,vsFpm:1850,elapsedSec:2};
  o=evaluateMag(o.state,m,f);
  assert.equal(o.altAcquireConfirmed,true);
- assert.ok(o.actions.some(a=>a.type==='ALTITUDE'&&a.value===10000));
- f={...f,altitudeFt:9995,vsFpm:200};
+ assert.ok(o.actions.some(a=>a.type==='ALT_ACQ'&&a.value===10000));
+ const Capture=require('../engine/flight/altitude-capture-training-v1.js');
+ const plan=Capture.begin({altitudeFt:f.altitudeFt,targetAltitudeFt:10000,vsFpm:f.vsFpm});
+ m.capture.pitch='ALT_ACQ';
+ f={...f,altitudeCapture:Capture.advance(plan,plan.durationSec),
+  altitudeFt:10000,vsFpm:0,elapsedSec:2+plan.durationSec};
  o=evaluateMag(o.state,m,f);
  assert.equal(o.altitudeHoldConfirmed,true);
+ assert.ok(o.actions.some(a=>a.type==='ALTITUDE'&&a.value===10000));
 });
 test('F/D-only command modes show bars but never command flight actuators',()=>{
  const m=mcp();m.modes.autopilot=null;
