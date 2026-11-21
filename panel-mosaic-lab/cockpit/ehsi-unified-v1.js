@@ -33,7 +33,7 @@
    windDirection:src.windDirection,windSpeed:src.windSpeed,
    nav:{type:src.ils?'ILS':'VOR',valid:radio?(src.ils?loc!==null:!!src.vor):mapValid,
     source:(src.ils?'ILS ':'VOR ')+src.vhf,frequency:number(nav?.tunedFrequencyMHz),dme,cdi,
-    gsValid:src.frontCourse===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
+    gsValid:(typeof src.ils?.frontCourse==='boolean'?src.ils.frontCourse:src.frontCourse)===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
    bearings:src.bearings,route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
    efis:{displayPower:src.displayPowered&&src.video,sgValid:src.video,
     headingValid:src.heading!==null,trackValid:src.track!==null,trackSource:src.trackSource,verticalFailure:failure.active,mapFailurePending:failure.mapPending,
