@@ -6,10 +6,11 @@
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0003';
+ const VERSION='FINAL10-INTEGRATED-0004-ACTUAL-READY';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null,flapPresetSentFor=null,flapPresetLastAt=0;
+ const genPulseLastAt={1:0,2:0};
  const STRATEGY={
   OIII:{vor:'TRN',ilsByRunway:{'29L':'ITHL'}},
   OIMM:{vor:'MSD',ilsByRunway:{'31R':'IMSD'}},
@@ -65,8 +66,10 @@
       eng.getStartState().phase[id]||s?.type);
    }catch(error){result('ENGINE_'+n,false,error?.message);}
   }
+  // A command to the spring-return GEN switch is not proof that a bus
+  // actually accepted the generator. Verify the Electrical V7 source and
+  // evaluated AC bus before treating the FINAL_10 preset as ready.
   for(const [id,target] of [
-   ['gen-1','ON'],['gen-2','ON'],
    ['apu-gen-1','OFF'],['apu-gen-2','OFF'],
    ['bleed-apu','OFF'],['bleed-eng-1','ON'],['bleed-eng-2','ON'],
    ['pack-l','AUTO'],['pack-r','AUTO'],['isolation-valve','AUTO']
@@ -82,10 +85,29 @@
   const running=eng?.getStartState?.()?.phase||{};
   const both=running.engine1==='RUNNING'&&running.engine2==='RUNNING';
   const electrical=eng?.getElectricalState?.();
-  const sources=Object.values(electrical?.source||{});
-  const generator1=sources.includes('GEN1'),generator2=sources.includes('GEN2');
-  result('GEN1_ON_BUS',generator1,generator1?'GEN1 AC BUS CONNECTED':'GEN1_NOT_ON_BUS');
-  result('GEN2_ON_BUS',generator2,generator2?'GEN2 AC BUS CONNECTED':'GEN2_NOT_ON_BUS');
+  let evaluated=null;
+  try{evaluated=electrical?win.B737ElectricalV7?.evaluate?.(electrical):null;}
+  catch(error){result('ELECTRICAL_EVALUATION',false,error?.message);}
+  const generator1=electrical?.source?.[1]==='GEN1'&&evaluated?.bus?.generator1===true;
+  const generator2=electrical?.source?.[2]==='GEN2'&&evaluated?.bus?.generator2===true;
+  for(const n of [1,2]){
+   const connected=n===1?generator1:generator2;
+   const source='GEN'+n,run=running['engine'+n]==='RUNNING';
+   const ready=run&&electrical?.config?.['engine'+n+'Running']===true;
+   const failed=electrical?.faults?.[source+'_FAILED']===true;
+   const now=Date.now();
+   if(!connected&&ready&&!failed&&now-genPulseLastAt[n]>=800){
+    const pulsed=physicalOh(w,'gen-'+n,'ON');
+    genPulseLastAt[n]=now;
+    result('OH_gen-'+n,pulsed,
+     pulsed?'GENERATOR_ON_PULSE_WAITING_FOR_BUS':'GENERATOR_PULSE_REJECTED');
+   }else if(connected)result('OH_gen-'+n,true,'GENERATOR_CONNECTED_AND_POWERED');
+   else result('OH_gen-'+n,false,failed?'GENERATOR_FAILED_OR_DISCONNECTED':
+    ready?'WAITING_FOR_ACCEPTED_GENERATOR_CONTACTOR':'ENGINE_GENERATOR_NOT_READY');
+   result(source+'_ON_BUS',connected,connected?source+' AC BUS CONNECTED':
+    (electrical?.source?.[n]===source?'SOURCE_SELECTED_BUT_BUS_NOT_POWERED':
+      failed?'GENERATOR_FAULT':'NOT_CONNECTED'));
+  }
   // Do not remove APU supply until BOTH engine generators are genuinely
   // providing AC bus power. Switch detent ON alone is insufficient proof.
   if(both&&generator1&&generator2){
@@ -122,8 +144,31 @@
  function applyConfiguration(){
   const ab=win.B737AutobrakeUnified,lever=win.B737SpeedbrakeLever;
   try{
-   if(ab?.getState?.()?.selector!=='2')ab?.setSelector?.('2');
-   result('AUTOBRAKE_2',ab?.getState?.()?.selector==='2','AUTOBRAKE_SELECTOR');
+   // 10 NM final is airborne. Do not select 2 before the actual DC BUS 2,
+   // anti-skid and hydraulic/brake prerequisites are available: an early
+   // selection latches FAILED and lights AUTO BRAKE DISARM.
+   const initial=ab?.getState?.();
+   if(initial&&initial.inputs?.onGround!==false)
+    ab?.updateSensors?.({onGround:false});
+   // Refresh the SAME ATA32 owner against live DC BUS 2 and CB conditions.
+   ab?.updateSensors?.({});
+   const previous=ab?.getState?.(),input=previous?.inputs;
+   const valid=!!input&&input.electricalAvailable===true&&
+    input.antiskidOn===true&&input.antiskidFault===false&&
+    input.hydraulicBAvailable===true&&input.normalBrakesOperative===true&&
+    input.autobrakeFault===false&&input.solenoidPressurePsi<=1000;
+   if(valid&&previous?.selector==='2'&&
+      (previous.phase==='FAILED'||previous.phase==='DISARMED')){
+    // Physically equivalent instructor selection OFF -> 2 clears only the
+    // prior selection latch; it never clears an actual fault or bypasses CBs.
+    ab.setSelector('OFF');
+   }
+   if(valid&&ab?.getState?.()?.selector!=='2')ab?.setSelector?.('2');
+   const current=ab?.getState?.(),ready=current?.selector==='2'&&
+    ['WAITING','ARMED'].includes(current.phase)&&current.disarmLight===false;
+   result('AUTOBRAKE_2',ready,ready?'2 / ARMED / DISARM LIGHT OFF':
+    valid?(current?.reason||'AUTOBRAKE_REARM_PENDING'):
+    'WAITING_FOR_DC_BUS_2_ANTISKID_HYD_B_NORMAL_BRAKES');
   }catch(error){result('AUTOBRAKE_2',false,error?.message);}
   try{
    if(lever?.mounted?.()===true)lever.set('ARMED');
@@ -150,20 +195,39 @@
    const link=win.B737LEDevicesUnifiedLink?.getState?.();
    const actual=link?.actualTe;
    // Retry if overhead announced READY before its LE trainer mounted.
+   const confirmed=link?.projection?.source==='FLIGHT_SCENARIO_FINAL10'&&
+    link?.projection?.lever===30&&link?.projection?.teTarget===30&&
+    link?.projection?.teMoving===false;
    if(physical&&link?.overheadReady===true&&
-      (!Number.isFinite(actual)||Math.abs(actual-30)>.4)&&
-      (flapPresetSentFor!==serial||Date.now()-flapPresetLastAt>1500)){
+      (!confirmed||!Number.isFinite(actual)||Math.abs(actual-30)>.4)&&
+      (flapPresetSentFor!==serial||Date.now()-flapPresetLastAt>=1500)){
     const overhead=docs.getElementById('overheadFrame')?.contentWindow;
     if(overhead){
-     overhead.postMessage({type:'b737:cockpit-command',
-      action:'final10-flight-preset',flaps:30,
-      originator:'FLIGHT_SCENARIO_FINAL10'},win.location.origin);
-     flapPresetSentFor=serial;flapPresetLastAt=Date.now();
+     try{
+      const owner=overhead.B737LEDevicesTrainer;
+      if(typeof owner?.presetFinal10ReadyFlaps==='function'){
+       owner.presetFinal10ReadyFlaps({originator:'FLIGHT_SCENARIO_FINAL10'});
+       result('FLAP_OWNER_PRESET',true,'OWNER_ATOMIC_CONFIG_ACKNOWLEDGED');
+      }else{
+       // Legacy postMessage path remains safe until the owner registers.
+       overhead.postMessage({type:'b737:cockpit-command',
+        action:'final10-flight-preset',flaps:30,
+        originator:'FLIGHT_SCENARIO_FINAL10'},win.location.origin);
+       result('FLAP_OWNER_PRESET',false,'AWAITING_LE_OWNER_REGISTRATION');
+      }
+      flapPresetSentFor=serial;flapPresetLastAt=Date.now();
+     }catch(error){result('FLAP_OWNER_PRESET',false,error?.message);}
     }
    }
+   const now=win.B737LEDevicesUnifiedLink?.getState?.();
+   const ready=physical&&now?.projection?.source==='FLIGHT_SCENARIO_FINAL10'&&
+    now?.projection?.teTarget===30&&now?.projection?.teMoving===false&&
+    Number.isFinite(now.actualTe)&&Math.abs(now.actualTe-30)<.4;
    result('FLAP_LEVER_30',physical,physical?'30':'INSTRUCTOR_PRESET_NOT_READY');
-   result('FLAP_ACTUAL_30',physical&&Number.isFinite(actual)&&Math.abs(actual-30)<.4,
-    Number.isFinite(actual)?actual.toFixed(1)+' DEG':'LE_PROJECTION_NOT_READY');
+   result('FLAP_ACTUAL_30',ready,ready?
+    now.actualTe.toFixed(1)+' DEG / STABLE':
+    Number.isFinite(now?.actualTe)?now.actualTe.toFixed(1)+' DEG / WAITING_FOR_OWNER':
+     'LE_PROJECTION_NOT_READY');
   }catch(error){result('FLAP_LEVER_30',false,error?.message);}
  }
  function applyMcp(state){
@@ -185,7 +249,7 @@
  }
  function apply(state){
   if(!state||state.preset!=='FINAL_10')return null;
-  serial++;flapPresetSentFor=null;flapPresetLastAt=0;const my=serial;
+  serial++;flapPresetSentFor=null;flapPresetLastAt=0;genPulseLastAt[1]=0;genPulseLastAt[2]=0;const my=serial;
   if(timer!==null){win.clearInterval(timer);timer=null;}
   check={};let count=0;
   const run=()=>{
@@ -202,7 +266,7 @@
       !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
    if(!check.MCP?.ok)applyMcp(live);
    publish();
-   if(++count>=70||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){
+   if(++count>=180||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){
     win.clearInterval(timer);timer=null;
    }
   };
