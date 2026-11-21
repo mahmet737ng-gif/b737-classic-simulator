@@ -403,9 +403,11 @@ function transition(state,action){
    // the plant retains its continuous present vertical speed.
    s.capture.pitch=null;s.modes.vertical="VS";s.override.pitch=false;
    s.armed.pitch=null;s.targets.pitch=null;
-   if(Number.isFinite(s.flight?.verticalSpeedFpm))
-    s.values.verticalSpeed=Math.max(-5000,Math.min(5000,
-     Math.round(s.flight.verticalSpeedFpm/50)*50));
+   if(Number.isFinite(s.flight?.verticalSpeedFpm)){
+    const observedVS=Math.max(-5000,Math.min(5000,s.flight.verticalSpeedFpm));
+    s.values.verticalSpeed=Rules?.normalize?.('verticalSpeed',observedVS)??
+     Math.round(observedVS/100)*100;
+   }
   }else if(id==="altitude"&&s.modes.vertical==="ALT_HLD"&&
    Number.isFinite(s.flight?.altitudeFt)&&
    Math.abs(v-s.flight.altitudeFt)>100&&s.capture.pitch!=="ALT_ACQ"){
