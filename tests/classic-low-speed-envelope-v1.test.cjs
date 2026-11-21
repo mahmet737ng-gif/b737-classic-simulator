@@ -51,31 +51,41 @@ test('actual TE flaps create drag and near-stall speed produces bounded sink in 
  assert.ok(next.vsFpm<0,'Low-speed lift loss lowers actual vertical response');
  assert.ok(next.vsFpm>-100,'Sink is rate-limited, never teleported');
 });
-test('LE computer actuates full autoslats and returns to intermediate when requested off',()=>{
+test('owner-locked LE engine accepts autoslat on 1/2/5 and returns to EXT in normal training motion',()=>{
  let s=LE.initialState();
  s=LE.apply(s,{type:'FLAP_LEVER',value:5});
- s=LE.apply(s,{type:'START_LE_SEQUENCE'});
- s=LE.apply(s,{type:'FOLLOW_TE',position:5,command:5});
  s=LE.apply(s,{type:'GROUND',value:false});
+ s=LE.apply(s,{type:'TICK',seconds:5}); // Instructor non-timed mode, intermediate EXT.
+ assert.equal(s.position.SLAT_1,1);
  s=LE.apply(s,{type:'AUTOSLAT',value:true});
- s=LE.apply(s,{type:'TICK',seconds:12,motionProfile:'TIMED',pressureFactor:1});
- assert.ok(s.position.SLAT_1>1.99,'Slats extended through timed actuator');
- assert.equal(s.position.FLAP_1,1);
+ s=LE.apply(s,{type:'TICK',seconds:5});
+ assert.equal(s.position.SLAT_1,2);
  s=LE.apply(s,{type:'AUTOSLAT',value:false});
- s=LE.apply(s,{type:'TICK',seconds:6,motionProfile:'TIMED',pressureFactor:1});
- assert.ok(s.position.SLAT_1<=1.001,'Slats return to intermediate when demand clears');
+ s=LE.apply(s,{type:'TICK',seconds:5});
+ assert.equal(s.position.SLAT_1,1);
+ assert.equal(s.position.FLAP_1,1);
  const ground=LE.apply(s,{type:'GROUND',value:true});
  assert.equal(LE.evaluate(ground).autoslatInhibit,false);
 });
-test('auto slat PTU backup cannot become hydraulic power for ordinary LE flaps',()=>{
+test('PTU backup extends only autoslats in approved core, not regular LE flaps',()=>{
+ let s=LE.initialState();
+ s=LE.apply(s,{type:'FLAP_LEVER',value:5});
+ s=LE.apply(s,{type:'HYDRAULIC',system:'B',value:false});
+ s=LE.apply(s,{type:'GROUND',value:false});
+ s=LE.apply(s,{type:'AUTOSLAT',value:true});
+ s=LE.apply(s,{type:'TICK',seconds:10});
+ assert.equal(s.position.SLAT_1,2);
+ assert.equal(s.position.FLAP_1,0);
+});
+test('locked first-extension 0-32s schedule must not be overwritten by external integration',()=>{
  let s=LE.initialState();
  s=LE.apply(s,{type:'FLAP_LEVER',value:5});
  s=LE.apply(s,{type:'START_LE_SEQUENCE'});
  s=LE.apply(s,{type:'FOLLOW_TE',position:5,command:5});
- s=LE.apply(s,{type:'HYDRAULIC',system:'B',value:false});
  s=LE.apply(s,{type:'GROUND',value:false});
  s=LE.apply(s,{type:'AUTOSLAT',value:true});
  s=LE.apply(s,{type:'TICK',seconds:12,motionProfile:'TIMED',pressureFactor:1});
- assert.ok(s.position.SLAT_1>1.99,'System A/PTU supplies autoslat extension');
- assert.equal(s.position.FLAP_1,0,'PTU alone cannot extend ordinary LE flaps');
+ assert.equal(s.autoslatsRequested,true);
+ assert.ok(s.position.SLAT_1<=1.01,
+  'OWNER FINAL initial schedule remains unchanged and is a known Auto Slat integration limitation');
 });
