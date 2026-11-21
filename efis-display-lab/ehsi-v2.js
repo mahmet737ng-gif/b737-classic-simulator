@@ -233,7 +233,7 @@ function compass(svg,m,l){
  }
 }
 function navPointers(svg,m,l){
- if(m.mode==='PLAN'||(l.route&&!m.options.vorAdf))return;
+ if(m.mode==='PLAN'||m.options.vorAdf!==true)return;
  const g=layer(svg,'nav-bearing-pointers'),limit=l.degrees/2;
  for(const entry of m.bearings||[]){
   if(!Number.isFinite(entry.angle)||![1,2].includes(entry.channel))continue;
