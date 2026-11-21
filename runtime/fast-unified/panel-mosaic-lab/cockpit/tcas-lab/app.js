@@ -173,8 +173,21 @@
   console.error('TCAS Scenario Lab',error);
  }
  function guard(fn){return ()=>{try{fn();}catch(e){showScenarioError(e);}};}
- by('start').onclick=guard(()=>load(true));by('play').onclick=guard(()=>{running=!running;last=null;
-  by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();});by('step').onclick=guard(()=>step(1));
+ function ensureLoadedSelection(){
+  if(encounter&&scenario.value===loadedScenarioId)return true;
+  const banner=by('scenarioStatus');
+  banner.dataset.loadState='selected';
+  banner.textContent='NOT LOADED · '+(C.SCENARIOS[scenario.value]?.label||scenario.value)+
+   ' · CLICK LOAD SCENARIO FIRST';
+  return false;
+ }
+ by('start').onclick=guard(()=>load(true));
+ by('play').onclick=guard(()=>{
+  if(!ensureLoadedSelection())return;
+  running=!running;last=null;
+  by('play').textContent=running?'PAUSE':'RUN';updateScenarioStatus();
+ });
+ by('step').onclick=guard(()=>{if(ensureLoadedSelection())step(1);});
  // Manual response converts CMD to FD and follows the actual vertical-rate
  // instruction, including urgent cases that may need roughly 10° pitch.
  // Values are intentionally instructor physics, not an operational AP command.
