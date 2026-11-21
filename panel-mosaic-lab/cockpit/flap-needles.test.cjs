@@ -16,5 +16,8 @@ assert.ok(ui.includes("source={pieceId:'fo-inner'"),'Overlay mounted on existing
 assert.ok(ui.includes("b737:trailing-flaps"),'Common sensor bridge');
 assert.ok(ui.includes("b737:flap-positions"),'Independent position bridge');
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
-for(const file of ['flap-needles.css','flap-needles-model.js','flap-needles.js'])assert.ok(html.includes(file),file);
+for(const file of ['flap-needles-model.js','flap-needles.js'])assert.ok(html.includes(file),file);
+const safe=fs.readFileSync(path.join(__dirname,'unified-css-safe-02-v1.css'),'utf8');
+assert.ok(safe.includes('BEGIN flap-needles.css'),'Flap needle styling is already in the ordered safe CSS bundle');
+assert.ok(!html.includes('href="./flap-needles.css'),'Never load a duplicate blocking flap style request');
 console.log('PASS: flap needle overlay / R under L / common and independent positions / calibrated vector geometry');
