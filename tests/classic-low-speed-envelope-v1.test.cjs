@@ -89,3 +89,30 @@ test('locked first-extension 0-32s schedule must not be overwritten by external 
  assert.ok(s.position.SLAT_1<=1.01,
   'OWNER FINAL initial schedule remains unchanged and is a known Auto Slat integration limitation');
 });
+
+test('one instructor flight state drives flap drag, continuous autoslat, shaker and stall margin',()=>{
+ const source=Flight.newScenario({airport:'OIII',preset:'MANUAL',airborne:true,
+  altitudeFt:7000,speedKt:139,vsFpm:0});
+ let s=Flight.command(source,{type:'AERO_CONFIG',
+  flapLever:5,flapActual:5,slatsFull:false,massKg:54000});
+ s=Flight.step(s,.2);
+ assert.equal(s.autoSlatRequest,true,'same IAS/shaker envelope requests autoslats');
+ assert.ok(s.autoSlatTrainingFraction>0&&s.autoSlatTrainingFraction<1);
+ assert.equal(s.aeroEnvelope.slatEffectSource,'TRAINING_AUTO_SLAT_DELAY_PROXY');
+ const startingShaker=s.aeroEnvelope.stickShakerKt;
+ for(let k=0;k<19;k++)s=Flight.step(s,.2);
+ assert.ok(s.autoSlatTrainingFraction>.95,'training proxy extends smoothly over ~4s');
+ assert.ok(s.aeroEnvelope.stickShakerKt<startingShaker,
+  'increasing slat lift reduces the same EADI shaker speed');
+ assert.equal(s.aeroEnvelope.flapActual,5);
+ assert.ok(s.aeroEnvelope.flapDragKtSec>0);
+ const withdrawn=Flight.command(s,{type:'AERO_CONFIG',
+  flapLever:10,flapActual:10,slatsFull:false,massKg:54000});
+ let retract=Flight.step(withdrawn,.2);
+ assert.equal(retract.autoSlatRequest,false,'FLAP 10 inhibits autoslat');
+ assert.ok(retract.autoSlatTrainingFraction<s.autoSlatTrainingFraction);
+ for(let k=0;k<40;k++)retract=Flight.step(retract,.2);
+ assert.ok(retract.autoSlatTrainingFraction<.01,
+  'proxy retracts instead of staying latched after flap selection changes');
+ assert.equal(retract.aeroEnvelope.slatExtension,0);
+});
