@@ -6,7 +6,7 @@
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0002';
+ const VERSION='FINAL10-INTEGRATED-0003';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null;
