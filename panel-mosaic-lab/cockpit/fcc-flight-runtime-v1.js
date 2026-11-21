@@ -216,7 +216,7 @@
    radioAltitudeFt:frame.radioAltitudeFt,verticalSpeedFpm:frame.vsFpm,
    headingDeg:frame.trueHeadingDeg,bankDeg:frame.bankDeg,pitchDeg:frame.pitchDeg,
    secondsSinceLiftoff:sinceLiftoff,
-   flightElapsedSec:frame.elapsedSec,onGround:frame.phase==='LANDED',
+   flightElapsedSec:frame.elapsedSec,onGround:frame.phase==='LANDING_ROLL',
    establishedEnroute:frame.phase==='AIRBORNE'&&!insideTakeoff,
    thrustIdleConfirmed:idle,
    stabTrimAutopilotNormal:win.B737StabilizerTrim?.getCutouts?.().AUTOPILOT!=='CUTOUT',
