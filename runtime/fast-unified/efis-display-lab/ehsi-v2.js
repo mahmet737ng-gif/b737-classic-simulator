@@ -6,7 +6,7 @@
  root.EFISClassicEHSIV2=api;
 })(globalThis,function(glyph,G){
 'use strict';
-const VERSION='EHSI-CLASSIC-REBUILD-0010-FCOM-1032-SYMBOLS';
+const VERSION='EHSI-CLASSIC-REBUILD-0011-FCOM-1031-FULL-NAV';
 const COLORS=glyph.colors;
 const W=512,H=512,NS='http://www.w3.org/2000/svg';
 // Active EHSI aperture in the two 1920 x 1080 owner-supplied reference frames.
@@ -114,18 +114,28 @@ function header(svg,m,status){
  const l=layoutFor(m),h=G.header;
  const active=m.nav.valid?m.route.points[m.route.activeIndex]:null;
  const distance=active?Math.hypot(active.x,active.y):null;
- const left=m.radio?'DME'+numberText(m.nav.valid?m.nav.dme:null,1):numberText(distance,1)+'NM';
+ const fmcDistance=Number.isFinite(m.nav.activeDistanceNm)?m.nav.activeDistanceNm:distance;
+ const left=m.radio?'DME'+numberText(m.nav.valid?m.nav.dme:null,1):
+  numberText(fmcDistance,1)+' NM';
  const g=layer(svg,'header');
  photoText(g,left,h.left+70,h.top,23,PHOTO_COLORS.white,'end');
  if(!m.radio){
-  const eta=active?.eta?String(active.eta):'----Z';
-  photoText(g,eta,h.right,h.top,23,PHOTO_COLORS.white,'end');
+  const eta=m.nav.activeEta??active?.eta??'----Z';
+  photoText(g,String(eta),h.right,h.top,23,PHOTO_COLORS.white,'end');
+  if(m.mode==='FULL_NAV'){
+   const name=m.nav.activeWaypoint??active?.name;
+   if(name&&m.nav.valid)photoText(g,String(name),h.left,h.top+27,22,PHOTO_COLORS.magenta);
+  }
   // Instructor FMC route may supply dynamic time-to-go; unchanged if absent.
   if(m.nav.timeToGo)photoText(g,'TTG '+String(m.nav.timeToGo),76,485,18,PHOTO_COLORS.white);
  }
  if(m.mode==='PLAN')return;
- photoText(g,'TAS'+numberText(m.trueAirspeed),h.left,h.second,22);
- photoText(g,'GS'+numberText(m.groundSpeed),h.right,h.second,22,PHOTO_COLORS.white,'end');
+ // FULL NAV 10.31.8 has waypoint name/distance and ETA, not TAS/GS
+ // (the latter belong to other instrument presentations).
+ if(m.mode!=='FULL_NAV'){
+  photoText(g,'TAS'+numberText(m.trueAirspeed),h.left,h.second,22);
+  photoText(g,'GS'+numberText(m.groundSpeed),h.right,h.second,22,PHOTO_COLORS.white,'end');
+ }
  const key=m.radio?'HDG':'TRK',y=l.full?h.radioFullHeading:h.heading;
  if(!status.compassValid){flag(g,key,256,y);return;}
  const index=layer(g,'track-readout');
@@ -169,7 +179,9 @@ function selectedHeadingPresentation(m,l){
  const delta=Number.isFinite(m.selectedHeading)?rel(m.selectedHeading-m.reference):null;
  const onArc=delta!==null&&Math.abs(delta)<=l.degrees/2;
  return {delta,onArc,offScale:delta!==null&&!onArc,
-  vectorVisible:delta!==null&&!l.planCompass&&(l.route||l.degrees===70),
+  // FCOM 10.32.2: dashed magenta selected-heading reference line in
+  // every mode except PLAN, including the 360-degree FULL NAV rose.
+  vectorVisible:delta!==null&&!l.planCompass,
   vectorLength:onArc ? 0.92 : 1.25};
 }
 function compass(svg,m,l){
@@ -221,7 +233,7 @@ function compass(svg,m,l){
  }
 }
 function navPointers(svg,m,l){
- if(m.mode==='PLAN'||(l.route&&!m.options.vorAdf))return;
+ if(m.mode==='PLAN'||m.options.vorAdf!==true)return;
  const g=layer(svg,'nav-bearing-pointers'),limit=l.degrees/2;
  for(const entry of m.bearings||[]){
   if(!Number.isFinite(entry.angle)||![1,2].includes(entry.channel))continue;
@@ -238,6 +250,17 @@ function navPointers(svg,m,l){
    [[-9,-10],[0,-5],[9,-10],[9,-2],[4,4],[4,23],[0,27],[-4,23],[-4,4],[-9,-2]];
   polygon(t,base,PHOTO_COLORS.green,'none',1.85);
  }
+}
+function waypointBearingPointer(svg,m,l){
+ // 10.31.9 item 11 / 10.32.6: magenta pointer only for an active,
+ // validated FMC waypoint. This is separate from green ADF heads/tails.
+ if(!['FULL_NAV','EXP_NAV'].includes(m.mode)||m.nav.valid!==true||
+  !Number.isFinite(m.waypointBearing))return;
+ const angle=rel(m.waypointBearing-m.reference);
+ if(Math.abs(angle)>l.degrees/2)return;
+ const g=layer(svg,'active-waypoint-bearing');
+ const h=mapMarker(g,l,angle,'waypoint-bearing-pointer',.93);
+ polygon(h,[[0,-12],[-6,2],[0,-1],[6,2]],PHOTO_COLORS.magenta,'none',1.9);
 }
 function aircraft(svg,l,full){
  if(!l.aircraft)return;
@@ -422,7 +445,7 @@ function course(svg,m,l){
  const rotation='translate('+cx+' '+cy+') scale('+stretch+' 1) rotate('+delta+') scale('+(1/stretch)+' 1) translate('+(-cx)+' '+(-cy)+')';
  const n=make(g,'g',{transform:rotation});
  const tip=cy-r+20,stub=full?52:48;
- if(full&&m.radio){
+ if(full){
   polygon(n,[[cx,tip],[cx-4,tip+8],[cx-4,cy-stub],[cx+4,cy-stub],[cx+4,tip+8]],PHOTO_COLORS.white,'none',1.6);
   polygon(n,[[cx-4,cy+stub],[cx+4,cy+stub],[cx+4,cy+r-20],[cx-4,cy+r-20]],PHOTO_COLORS.white,'none',1.6);
  }else{
@@ -469,6 +492,24 @@ function footer(svg,m){
   photoText(g,m.nav.source,x,459,22,PHOTO_COLORS.green);
   if(m.nav.frequency!=null)photoText(g,Number(m.nav.frequency).toFixed(2),440,459,23,PHOTO_COLORS.green,'end');
  }else if(m.mode.endsWith('NAV'))photoText(g,'NAV',72,459,21,PHOTO_COLORS.green);
+}
+function positionDifferenceDisplay(svg,m){
+ // FCOM 10.31.9 item 14 / 10.32.22: display only verified FMC-vs-IRS
+ // differences beyond an externally supplied limit. Selected IRS first.
+ if(!['MAP','CTR_MAP','FULL_NAV','EXP_NAV'].includes(m.mode)||
+  !Array.isArray(m.positionDifferences)||!m.positionDifferences.length)return;
+ const g=layer(svg,'fmc-irs-position-difference');
+ m.positionDifferences.slice(0,2).forEach((entry,i)=>{
+  if(!Number.isFinite(entry.distanceNm)||!['L','R'].includes(entry.side))return;
+  const y=440+i*24,x=447;
+  photoText(g,entry.distanceNm.toFixed(1),x-25,y,18,PHOTO_COLORS.white,'end');
+  photoText(g,entry.side,x,y,18,PHOTO_COLORS.white);
+  if(Number.isFinite(entry.bearingMagDeg)&&Number.isFinite(m.reference)){
+   const a=rel(entry.bearingMagDeg-m.reference);
+   const arrow=make(g,'g',{transform:'translate('+(x+13)+' '+(y-7)+') rotate('+a+')'});
+   stroke(arrow,[[0,7],[0,-7],[-3,-2],[0,-7],[3,-2]],PHOTO_COLORS.white,1.4);
+  }
+ });
 }
 function radar(svg,m,l,status){
  if(!status.wxrVisible&&!status.terrainVisible)return;
@@ -598,6 +639,7 @@ function render(svg,raw){
  if(s.compassValid){
   compass(svg,m,l);
   navPointers(svg,m,l);
+  waypointBearingPointer(svg,m,l);
  }
  if(l.route&&s.orientationValid)drawRoute(plot,m,l,s,m.mode==='PLAN');
  if(m.mode==='PLAN'){
@@ -615,6 +657,7 @@ function render(svg,raw){
  if(l.route&&!m.nav.valid&&!m.efis.mapFailurePending&&!m.weather.disagreement?.includes('MAP'))flag(svg,'MAP',256,291);
  vertical(svg,m);
  footer(svg,m);
+ positionDifferenceDisplay(svg,m);
  traffic(svg,m,l,s);
  const w=layer(svg,'weather-status');
  if(m.weather.selected&&!m.weather.healthy)text(w,'WXR FAIL',495,49,16,COLORS.amber,'end');

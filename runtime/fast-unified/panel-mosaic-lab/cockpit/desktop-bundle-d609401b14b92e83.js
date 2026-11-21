@@ -172,7 +172,7 @@ try{
  if(root?.document)root.B737UnifiedEHSI=api.mount(root);
 })(globalThis,function(){
  'use strict';
- const VERSION='UNIFIED-EHSI-0004-HEADING-REFERENCE';
+ const VERSION='UNIFIED-EHSI-0005-FCOM-1031-FULL-NAV';
  const NS='http://www.w3.org/2000/svg';
  // Apertures measured inside the source glass. Children inherit each photo's
  // existing registration, including the FO mode-specific transform and lift.
@@ -187,19 +187,34 @@ try{
  const SEATS=['CAPT','FO'];
  const FMC_MAP_TIMEOUT_MS=27500;
  const number=v=>Number.isFinite(v)?v:null;
- function liveModel(src,setup,physical,aspect,route,failure={}){
+ function liveModel(src,setup,physical,aspect,route,failure={},fmcNav=null){
   const d=setup.ehsi,radio=d.mode.includes('VOR_ILS');
   const nav=src.ils||src.vor;
   const dme=src.dme&&(nav?.stationIdent===src.dme.stationIdent||!nav)?number(src.dme.distanceNm):null;
   const loc=number(src.ils?.localizerDots),gs=number(src.ils?.glideslopeDots);
   const mapValid=src.fmc?.operational===true&&(d.mode==='PLAN'||src.fmc.position?.quality==='VALID');
   const cdi=src.ils?loc:number(src.vor?.deviationDots);
+  const fmcMode=['FULL_NAV','EXP_NAV'].includes(d.mode);
+  const fmcActive=fmcMode&&fmcNav?.valid===true;
   return {mode:d.mode,range:d.range,heading:src.heading,track:src.track,geoTrack:src.trueTrack,
-   selectedHeading:src.selectedHeading,course:radio?src.course:null,trueRef:src.trueRef,
+   selectedHeading:src.selectedHeading,
+   course:radio?src.course:fmcActive?fmcNav.course:null,trueRef:src.trueRef,
+   waypointBearing:fmcActive?fmcNav.waypointBearing:null,
+   fmcNavSource:fmcActive?fmcNav.source:null,
    trueAirspeed:number(src.adc?.tasKt),groundSpeed:src.groundSpeed,bank:src.bank,
    windDirection:src.windDirection,windSpeed:src.windSpeed,
-   nav:{type:src.ils?'ILS':'VOR',valid:radio?(src.ils?loc!==null:!!src.vor):mapValid,
-    source:(src.ils?'ILS ':'VOR ')+src.vhf,frequency:number(nav?.tunedFrequencyMHz),dme,cdi,
+   nav:{type:radio?(src.ils?'ILS':'VOR'):'FMC',
+    valid:radio?(src.ils?loc!==null:!!src.vor):fmcMode?fmcActive:mapValid,
+    source:radio?(src.ils?'ILS ':'VOR ')+src.vhf:'NAV',
+    frequency:radio?number(nav?.tunedFrequencyMHz):null,dme:radio?dme:null,
+    cdi:radio?cdi:fmcActive?fmcNav.cdi:null,
+    vnavActive:fmcActive&&src.fmc?.guidance?.vnavActive===true,
+    descent:src.fmc?.guidance?.descent===true,
+    vnav:fmcActive&&Number.isFinite(src.fmc?.guidance?.vnavDeviationFt)?
+     src.fmc.guidance.vnavDeviationFt:null,
+    activeWaypoint:fmcActive?fmcNav.activeWaypoint:null,
+    activeDistanceNm:fmcActive?fmcNav.distanceNm:null,
+    activeEta:fmcActive?fmcNav.eta:null,
     gsValid:(typeof src.ils?.frontCourse==='boolean'?src.ils.frontCourse:src.frontCourse)===true&&gs!==null,gsDev:gs,toFrom:src.vor?.toFrom},
    bearings:src.bearings,route,mapObjects:[],syntheticAirport:false,showSyntheticBearing:false,options:d.options,
    efis:{displayPower:src.displayPowered&&src.video,sgValid:src.video,
@@ -338,7 +353,10 @@ try{
      }
     }
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
-    const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
+    const fmcNav=sources.fullNavFromRoute?.(src,route);
+    const model=preview?core.ehsiModel(setup):
+     liveModel(src,origin,setup,screen.aspect,route,failure,fmcNav);
+    if(!preview)model.positionDifferences=sources.positionDifference?.(snapshot,src)||[];
     if(!preview)fcomState?.prepare(seat,model,Number.isFinite(src.windSpeed)&&
      Number.isFinite(src.windDirection));
     if(!preview){
@@ -394,6 +412,10 @@ try{
     screen.host.dataset.mcpCourse=src.course==null?'':String(src.course);
     screen.host.dataset.mcpHeadingPower=String(src.mcp?.powered===true);
     screen.host.dataset.mcpCourse2Power=String(src.mcp?.course2Powered===true);
+     screen.host.dataset.fullNavActiveWaypoint=model.nav?.activeWaypoint||'';
+     screen.host.dataset.fullNavCourse=Number.isFinite(model.course)?String(model.course):'';
+     screen.host.dataset.fullNavCdi=Number.isFinite(model.nav?.cdi)?String(model.nav.cdi):'';
+     screen.host.dataset.fullNavEvidence=model.fmcNavSource??'UNAVAILABLE';
     const h=src.health||{};
     diagnostics.push(seat+' · SG '+src.sg+
      ' · IRS '+(h.irsPowered?'PWR':'NO PWR')+'/'+h.irsPhase+

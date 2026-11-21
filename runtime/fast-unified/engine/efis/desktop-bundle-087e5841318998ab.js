@@ -209,11 +209,109 @@ try{
  function route(fmc,mode,step){
   const data=fmc?.operational===true?fmc.route?.displayRoute:null;
   const points=data?.points;
-  if(!points?.length)return {points:[],activeIndex:-1,centerIndex:0};
+  if(!Array.isArray(points)||points.length<2)return {points:[],activeIndex:-1,centerIndex:0,activeSource:null};
   const centerIndex=Math.min(points.length-1,Math.max(0,step??1));
-  const pos=fmc.position;
-  const anchor=mode==='PLAN'?points[centerIndex]:pos?.quality==='VALID'?{lat:pos.latitudeDeg,lon:pos.longitudeDeg}:null;
-  return {source:data.source,points:anchor?points.map(p=>({...p,...offsets(anchor,p)})):[],activeIndex:-1,centerIndex};
+  const pos=fmc?.position;
+  const aircraft=pos?.quality==='VALID'?
+   coordinate(pos.latitudeDeg,pos.longitudeDeg,'FMC'):null;
+  const anchor=mode==='PLAN'?points[centerIndex]:aircraft;
+  const projected=anchor?points.map(p=>({...p,...offsets(anchor,p)})):[];
+  let activeIndex=-1,activeSource=null;
+  // A displayed route is NOT automatically the active FMC leg. Require
+  // verified legs, no unresolved discontinuity and operational FMC evidence.
+  const evidence=fmc?.guidance?.routeEvidenceReady===true&&fmc.route?.active===true&&
+   fmc.route.legsVerified===true&&fmc.route.discontinuitiesUnknown===false&&
+   data.source==='PMDG_WORLD_2610_WITH_PROCEDURES_R1'&&
+   points.every(p=>typeof p.name==='string'&&
+    Number.isFinite(p.lat)&&Number.isFinite(p.lon))&&
+   aircraft&&projected.length===points.length;
+  if(evidence){
+   const requested=[fmc.route.activeWaypointIndex,fmc.route.activeLegIndex,
+    data.activeWaypointIndex,data.activeLegIndex].find(v=>Number.isInteger(v)&&v>=1&&v<points.length);
+   const ident=fmc.route.activeWaypointIdent??data.activeWaypointIdent;
+   const identified=typeof ident==='string'?
+    points.findIndex((p,i)=>i>=1&&p.name===ident):-1;
+   if(requested!==undefined&&points[requested].leg!=='DISCONTINUITY'){
+    activeIndex=requested;activeSource='FMC_EXPLICIT';
+   }else if(identified>=1&&points[identified].leg!=='DISCONTINUITY'){
+    activeIndex=identified;activeSource='FMC_EXPLICIT_IDENT';
+   }else if(aircraft){
+    // Trainer-only leg estimate from validated geometry and FMC position.
+    // Never use this estimate as aircraft AFDS/servo guidance.
+    let closest=Infinity;
+    for(let i=1;i<points.length;i++){
+     if(points[i].leg==='DISCONTINUITY')continue;
+     const prev=offsets(aircraft,points[i-1]),next=offsets(aircraft,points[i]);
+     const dx=next.x-prev.x,dy=next.y-prev.y,len2=dx*dx+dy*dy;
+     if(len2<=.000001)continue;
+     const t=Math.max(0,Math.min(1,(-prev.x*dx-prev.y*dy)/len2));
+     const x=prev.x+t*dx,y=prev.y+t*dy,d=x*x+y*y;
+     if(d<closest){closest=d;activeIndex=i;activeSource='TRAINER_VERIFIED_LEG_ESTIMATE';}
+    }
+   }
+  }
+  return {source:data.source,points:projected,activeIndex,activeSource,
+   centerIndex,aircraftPosition:aircraft,verified:!!evidence};
+ }
+ function fullNavFromRoute(src,displayRoute){
+  const none={valid:false,course:null,cdi:null,waypointBearing:null,
+   activeWaypoint:null,distanceNm:null,eta:null,source:null};
+  const route=displayRoute||{},points=route.points;
+  const fmc=src?.fmc;
+  const i=route.activeIndex;
+  if(!route.verified||!fmc?.operational||fmc.failed===true||
+   fmc.position?.quality!=='VALID'||!Number.isFinite(src.magneticVariationDeg)||
+   !Array.isArray(points)||!Number.isInteger(i)||i<1||i>=points.length||
+   points[i]?.leg==='DISCONTINUITY')return none;
+  const before=points[i-1],target=points[i];
+  if(![before.x,before.y,target.x,target.y].every(Number.isFinite))return none;
+  const dx=target.x-before.x,dy=target.y-before.y,legNm=Math.hypot(dx,dy);
+  if(legNm<.01)return none;
+  const norm=v=>((v%360)+360)%360;
+  // Desired course is ACTIVE LEG TRACK, not selected MCP CRS1/CRS2 and
+  // not the direct bearing to the fix. 10.32.9: FMC NAV 2 NM per dot.
+  const trueCourse=norm(Math.atan2(dx,dy)*180/Math.PI);
+  const desiredMag=norm(trueCourse-src.magneticVariationDeg);
+  const signedCrossNm=(dx*(-before.y)-dy*(-before.x))/legNm;
+  const bearingTrue=norm(Math.atan2(target.x,target.y)*180/Math.PI);
+  const distance=Math.hypot(target.x,target.y);
+  const rawEta=target.etaUtc??target.eta??null;
+  const eta=typeof rawEta==='string'&&/^\d{4}(?:\.\d)?[zZ]?$/.test(rawEta)?
+   rawEta.toUpperCase().replace(/Z?$/,'Z'):null;
+  return {valid:true,course:desiredMag,cdi:signedCrossNm/2,
+   crossTrackNm:signedCrossNm,waypointBearing:distance>.02?
+    norm(bearingTrue-src.magneticVariationDeg):null,
+   activeWaypoint:target.name,distanceNm:distance,eta,
+   source:route.activeSource};
+ }
+ function positionDifference(snapshot,source){
+  const fmc=source?.fmc;
+  const pos=fmc?.position;
+  // FCOM 10.32.22 does not state the numeric threshold here: never
+  // invent a tolerance. Compare only when the FMC provides a verified
+  // configured positive position-difference limit.
+  const limit=fmc?.positionDifferenceLimitNm;
+  if(!fmc?.operational||pos?.quality!=='VALID'||
+   !(Number.isFinite(limit)&&limit>0))return [];
+  const center=coordinate(pos.latitudeDeg,pos.longitudeDeg,'FMC');
+  if(!center)return [];
+  const chosen=source.irs===2?'R':'L';
+  const out=[];
+  for(const [side,topic] of [['L','irs.left'],['R','irs.right']]){
+   const record=snapshot?.[topic],unit=record?.quality==='VALID'?record.value:null;
+   if(unit?.powered!==true||unit.positionValid!==true)continue;
+   const peer=coordinate(unit.lat,unit.lon,'IRS '+side);
+   if(!peer)continue;
+   const delta=offsets(center,peer),distance=Math.hypot(delta.x,delta.y);
+   if(distance<=limit)continue;
+   const trueBearing=((Math.atan2(delta.x,delta.y)*180/Math.PI)%360+360)%360;
+   const magneticBearing=Number.isFinite(source.magneticVariationDeg)?
+    ((trueBearing-source.magneticVariationDeg)%360+360)%360:null;
+   out.push({side,distanceNm:distance,bearingMagDeg:magneticBearing,
+    referenceSide:side===chosen});
+  }
+  out.sort((a,b)=>Number(b.referenceSide)-Number(a.referenceSide));
+  return out;
  }
  function bind(win){
   let requested={},applied={},preset='LIVE';
@@ -266,7 +364,7 @@ try{
    setSgFailure(n,on){if(![1,2].includes(n))throw Error('Invalid SG');faults[n]=on===true;notify();}
   });
  }
- return Object.freeze({resolve,route,offsets,bind});
+ return Object.freeze({resolve,route,fullNavFromRoute,positionDifference,offsets,bind});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}
