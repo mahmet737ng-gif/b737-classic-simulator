@@ -204,6 +204,16 @@
    courseTrueDeg:station.courseTrueDeg,quality:'TRAINING_ILS_PROXY',
    source:'TRAINING_ILS_'+station.ident+'_NOT_SURVEYED'}}};
  }
+ // Load the same ECU flight context before START, so a paused final
+ // already has a consistent airborne IAS and altitude. No separate engine.
+ function syncInitialEngineContext(){
+  if(!active||!state)return false;
+  try{
+   return win.B737ISNCockpitV1?.setFlightScenarioContext?.({
+    active:true,onGround:!state.airborne,iasKt:state.iasKt,
+    altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'})?.active===true;
+  }catch(error){console.warn('FLT PHASE initial ECU context',error);return false;}
+ }
  function load(beforeStart){
   try{
    const preset=by('flightPreset').value;
@@ -221,6 +231,7 @@
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
+   syncInitialEngineContext();
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
     const mag=magneticHeading(state.trueHeadingDeg,state);
@@ -407,6 +418,7 @@
   loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+   syncInitialEngineContext();
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    return snapshot();},
