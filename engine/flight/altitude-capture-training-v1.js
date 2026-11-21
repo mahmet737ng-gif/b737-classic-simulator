@@ -54,7 +54,11 @@
   if(plan?.schema!==VERSION||!finite(dt)||dt<0||dt>2)
    throw TypeError('INVALID_ALT_ACQ_STEP');
   if(plan.phase==='HELD')return {...plan,altitudeFt:plan.targetAltitudeFt,vsFpm:0};
-  const elapsedSec=clamp(plan.elapsedSec+dt,0,plan.durationSec);
+  // Floating-point 0.1s slices may total 7.999999999 instead of 8.0;
+  // settle at the exact deadline rather than delaying ALT HOLD one frame.
+  const stepped=plan.elapsedSec+dt;
+  const elapsedSec=stepped>=plan.durationSec-1e-8?
+   plan.durationSec:clamp(stepped,0,plan.durationSec);
   const fraction=elapsedSec/plan.durationSec;
   const gap=plan.targetAltitudeFt-plan.entryAltitudeFt;
   const altitudeFt=plan.entryAltitudeFt+gap*(2*fraction-fraction*fraction);
