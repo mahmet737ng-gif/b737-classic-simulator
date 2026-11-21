@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0001 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -606,7 +606,7 @@ function initialState(){return {
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
- nav:{loc:false,gs:false},togaActive:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
+ nav:{loc:false,gs:false},togaActive:false,togaSingleEngine:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
  lastRejection:null,lastAutopilotDisengagement:null
 };}
@@ -649,7 +649,7 @@ function clearModes(s){
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
- s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;
+ s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;s.togaSingleEngine=false;
  s.autoThrustByPitch=false;s.lvlChgPhase='UNKNOWN';
  s.speedLimit=SpeedLimit?.initialState?.()??null;
  s.flightDirectorBarsRetracted=false;
@@ -712,6 +712,12 @@ function transition(state,action){
  let s=clone(state);
  const done=()=>{s.lastRejection=null;s.revision++;return s;};
  if(action.type==="RESET")return initialState();
+ if(action.type==='TOGA_ENGINE_STATUS'){
+  if(action.confirmed!==true||action.source!=='SIMULATED_FCC'||s.togaActive!==true)
+   return rejected(s,'UNQUALIFIED_TOGA_ENGINE_UPDATE');
+  s.togaSingleEngine=action.singleEngine===true;
+  return done();
+ }
  if(action.type==='TOGA_ENGAGED'){
   if(action.confirmed!==true||action.source!=='SIMULATED_FCC')
    return rejected(s,'TOGA_REQUIRES_CONFIRMED_FCC');
@@ -723,6 +729,7 @@ function transition(state,action){
   s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
   s.flightDirectorBarsRetracted=false;s.togaActive=true;
+  s.togaSingleEngine=action.singleEngine===true;
   return done();
  }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
@@ -951,6 +958,15 @@ function transition(state,action){
       f.dualIlsValid===true&&Number.isFinite(ra)&&ra<1500){
    s.dualApproach.coupled=true;s.dualApproach.flareArmed=true;
   }
+  // FCOM SHI 4.20.22: when a dual approach reaches about 350 ft RA
+  // without FLARE armed, BOTH engaged A/P channels disengage.
+  if(s.dualApproach.second&&Number.isFinite(ra)&&ra<=350&&
+     s.dualApproach.flareArmed!==true){
+   s.lastAutopilotDisengagement={reason:'FLARE_NOT_ARMED_BY_350_RA',source:'SIMULATED_FCC'};
+   s.modes.autopilot=null;
+   s.dualApproach.second=null;s.dualApproach.coupled=false;
+   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
+  }
   if(s.dualApproach.coupled&&s.dualApproach.flareArmed&&
       Number.isFinite(ra)&&ra<=50&&s.nav.loc&&s.nav.gs){
    s.dualApproach.flareEngaged=true;s.capture.pitch='FLARE';
@@ -1127,7 +1143,7 @@ function transition(state,action){
   return done();
  }
  if(vertical.includes(id)){
-  s.togaActive=false;
+  s.togaActive=false;s.togaSingleEngine=false;
   // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
   // following G/S capture in APP.
   if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
@@ -1171,12 +1187,13 @@ function output(s){
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
-   speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
+   speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV"||s.togaActive===true&&!s.togaSingleEngine,
+    verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},togaActive:s.togaActive===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
+  modes:{...s.modes},togaActive:s.togaActive===true,togaSingleEngine:s.togaSingleEngine===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
@@ -1188,7 +1205,7 @@ return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./mcp-afds-bridge-v1.js?v=MCP-TOGA-CH4-0003&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-0001 */
+/* ./mcp-afds-bridge-v1.js?v=MCP-TOGA-CH4-0003&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-0004 */
 try{
 /* MCP Phase 3 / slice 1: real Electrical V7 evidence -> conservative AFDS
  * educational mode core -> visual/hardware projection. No invented LRU feed.
@@ -1412,8 +1429,10 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  setEvidence:(key,value)=>send({type:"EVIDENCE",key,value}),
  observeFlight:sample=>send({type:"FLIGHT_OBSERVATION",sample}),
  observeAltitudeCapture:sample=>send({type:"FCC_ALTITUDE_CAPTURE",...sample}),
- beginToga:dualApGA=>send({type:'TOGA_ENGAGED',confirmed:true,
-  source:'SIMULATED_FCC',dualApGA:dualApGA===true}),
+ beginToga:(dualApGA,singleEngine)=>send({type:'TOGA_ENGAGED',confirmed:true,
+  source:'SIMULATED_FCC',dualApGA:dualApGA===true,singleEngine:singleEngine===true}),
+ updateTogaEngine:singleEngine=>send({type:'TOGA_ENGINE_STATUS',confirmed:true,
+  source:'SIMULATED_FCC',singleEngine:singleEngine===true}),
  disconnectConfirmed:sample=>send({type:"AP_DISENGAGE_CONFIRMED",...sample}),
  press:requestMode,
  reset:()=>send({type:"RESET"})

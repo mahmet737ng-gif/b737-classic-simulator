@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "fb1519539b4d299d978166873015a1f054dffc10",
-  "mainBefore": 302,
-  "mainAfter": 95,
+  "sourceCommit": "cd4f6e136ae9fb0dbd9c1022ff47fc4047e700a3",
+  "mainBefore": 303,
+  "mainAfter": 96,
   "overheadBefore": 61,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e9fbe9395663e6241a31753887401894b73c267017286b220d1dbbb1a7ad1e21"
+      "sha256": "02a8bb5cc674a200807b9c91ac8896d20adf78f7b3362348563229fc973951f3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -27,8 +27,8 @@
       "sha256": "824bd1661d8cf653e67be65b58b657f82ce1a41e65e1c7db371c906d8150d0f1"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-03d9140e7121a72a.js",
-      "sha256": "03d9140e7121a72a847ec407ce9f052df8fcadeda89abdeeffc4a3a44832fe2c"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-bee1e69ba74cb302.js",
+      "sha256": "bee1e69ba74cb302c9757a0c96d3b0cb33629c04a8dc23f39f16398a395bacb7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-68d4f5acf351d53f.js",
@@ -143,32 +143,32 @@
       "sha256": "d5314336e6d15117498f51ded97ab04cbec17e28675753656762979b98e38d85"
     },
     {
-      "path": "engine/efis/desktop-bundle-7a10727ce96e8e2b.js",
-      "sha256": "7a10727ce96e8e2bf9d239a9b0e9a55d6ecf0c1da9044ec474261b411b70b331"
+      "path": "engine/efis/desktop-bundle-38b03513d17b6d88.js",
+      "sha256": "38b03513d17b6d8894ad0b349aa667b35e50c44314c609c675140b8d39ce4a00"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-c421f804441c8e77.js",
       "sha256": "c421f804441c8e7772f31de0fbdc6e75c023085f8d7bdb481f2fe602caf61a64"
     },
     {
-      "path": "efis-display-lab/desktop-bundle-561115894bbf9d51.js",
-      "sha256": "561115894bbf9d519ead587409125081caa2a67d0f576054a6c3ca98ba894b6b"
+      "path": "efis-display-lab/desktop-bundle-8483adf26bee1ea5.js",
+      "sha256": "8483adf26bee1ea5eed91f442e6de188775c4750ad01dce3dfa714c09ffbd46c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-9857cbd061cceab1.js",
-      "sha256": "9857cbd061cceab16647f4fecf186a63428a1377b6981de85b10c71ec20adc70"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-485abfdc4e9b9af6.js",
+      "sha256": "485abfdc4e9b9af68fc13385c5f4f5f261c4334b7bdcb537b1d361499d364fe5"
     },
     {
-      "path": "engine/afds/desktop-bundle-6f65d5d0c84bbddf.js",
-      "sha256": "6f65d5d0c84bbddf9977b9cbba3e2244a1efda5e3111e5b50bbe61a9fca54cd5"
+      "path": "engine/afds/desktop-bundle-40ad1324f84fcef8.js",
+      "sha256": "40ad1324f84fcef879966d76f6d0fbc1cbc441508662ecbc8733bf9acbbdb0e3"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-711b349cd05f64e9.js",
-      "sha256": "711b349cd05f64e9b091cd818f4c147f6d64e74b51a0c37465a54d55de82b6e7"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-d54ddce0a98dd663.js",
+      "sha256": "d54ddce0a98dd663cf2c7507b666219bd588a9eabae95ed87f9eb7fd8cd8d3db"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ea8d4412bef2c2fa.js",
-      "sha256": "ea8d4412bef2c2fa1830c5033da1028cce410b4b6b2e99d82d4004e324b890dd"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-3e35177b09377f6b.js",
+      "sha256": "3e35177b09377f6b9730074150083279e6a8c994b70c215d5465bb6ca4e3fe99"
     },
     {
       "path": "engine/instruments/desktop-bundle-ea4db04b0bdc83e6.js",
@@ -581,6 +581,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js",
       "sha256": "901e76725b9d328946cc509d1715e491128314aaf82f7fb4defa3502012e378a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/efis-training-presets-v1.js",
+      "sha256": "bd0495871e2c6c1752acab270889a7bac15e177fe41292254c9653ee88bd594c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-css-safe-07-v1.css",

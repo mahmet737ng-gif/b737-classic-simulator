@@ -834,7 +834,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0001 */
+/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Core v1 — deterministic, offline training model.
  * NOT FCOM performance, not a certified aerodynamic model or navigation source.
@@ -927,7 +927,7 @@ try{
   if(!ground&&speed<80)throw RangeError('AIRBORNE_IAS_BELOW_TRAINING_MINIMUM');
   const heading=manual&&config.headingDeg!==undefined?wrap(finite(config.headingDeg,0,360,'HEADING_DEG')):hdg;
   const bank=manual&&config.bankDeg!==undefined?finite(config.bankDeg,-30,30,'BANK_DEG'):0;
-  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
+  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*FT_PER_NM/60*Math.tan(glideDeg*RAD):0;
   const vs=ground?0:vsInput;
   const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
    headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?runwayElevationFt+3000:alt,
@@ -1176,7 +1176,14 @@ try{
     s.altitudeFt=target.altitudeFt;s.vsFpm=0;
    }
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);
-   if(s.preset.startsWith('FINAL_')&&distanceNm(s,s.threshold)<.09&&s.radioAltitudeFt<80){
+   // Runway touchdown follows the modeled flare to near-surface altitude.
+   // Never teleport the airplane from ~80 ft RA to touchdown merely because
+   // it crossed the runway threshold. This is a training touchdown proxy.
+   const thrDist=distanceNm(s,s.threshold);
+   const inboundDelta=angle(s.trueHeadingDeg,s.runwayHeadingTrueDeg);
+   const nearCenterline=thrDist*Math.abs(Math.sin(inboundDelta*RAD))<.08;
+   if(s.preset.startsWith('FINAL_')&&s.airborne===true&&
+       thrDist<.75&&nearCenterline&&s.radioAltitudeFt<=8){
     s.phase='LANDING_ROLL';s.airborne=false;s.iasKt=Math.min(s.iasKt,145);
     s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;s.pitchDeg=0;s.bankDeg=0;
    }

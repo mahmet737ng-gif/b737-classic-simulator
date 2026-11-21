@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=CMD-AXES-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0001 */
+/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=CMD-AXES-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* B737 Classic unified FCC flight guidance for instructor Flight Scenario.
  * FCOM Ch 4.20.4-10 mode selection and FD visibility; commands are a training
@@ -127,7 +127,9 @@ try{
    out.actions.push({type:'ALTITUDE',value:out.state.cwsAltitudeFt});
    out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.cwsAltitudeFt));out.pitchValid=true;
   }else if(mcp.capture?.pitch==='FLARE'&&nav?.glideValid===true){
-   const flareVs=clamp(-250+Math.max(0,50-(flight.radioAltitudeFt||0))*3,-250,-60);
+   // TRAINING-ONLY sink-rate scheduling; Boeing FCOM does not publish
+   // touchdown servo gains. Retains realistic descent to runway after 50 RA.
+   const flareVs=clamp(-420+Math.max(0,50-(flight.radioAltitudeFt||0))*3,-420,-250);
    out.actions.push({type:'VS',value:flareVs});
    out.pitchCommandDeg=pitchForVs(flareVs);
    out.pitchValid=true;
@@ -208,7 +210,9 @@ try{
    // Retract/flare overrides both. Do not synthesize the blank opposite axis.
    const selected=fdCommand(mcp.controls?.fd?.[selector]);
    const trainingCmd=cmd&&mcp.flightDirectorBarsRetracted!==true;
-   const permitted=selected||trainingCmd;
+   // FCOM 4.20.7/26: pressing TO/GA in flight may automatically bring
+   // both flight director bars into view even if physical F/D switches are OFF.
+   const permitted=selected||trainingCmd||nav?.togaActive===true;
    out.fdAxes[side]={pitch:permitted&&pitchBar,roll:permitted&&rollBar};
    out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
   }
@@ -582,7 +586,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0001 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){

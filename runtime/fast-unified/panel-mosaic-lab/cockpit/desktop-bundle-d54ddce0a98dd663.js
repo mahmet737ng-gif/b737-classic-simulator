@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./iran-radio-nav-unified-v1.js?v=IRAN-RADIONAV-0001&amp;ils=SHI-CH4-0001 */
+/* ./iran-radio-nav-unified-v1.js?v=IRAN-RADIONAV-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified B737 Classic — NAV tuning and actual training trajectory -> avionics bus.
  * Existing EFIS and RDMI instruments own rendering; no display DOM mutations.
@@ -254,7 +254,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119&amp;ils=SHI-CH4-0001 */
+/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119&amp;ils=SHI-CH4-0004 */
 try{
 /* TCAS-independent Unified TO/GA integration.
  * Source: Sepehran 737CL FCOM Ch 4 §§4.20.14–16,4.20.24–27.
@@ -277,14 +277,16 @@ try{
   const f=scenario(),m=mcp(),c=m?.controls||{},engines=light?null:owner()?.getPropulsionSnapshot?.()?.engines;
   return {groundReady:f?.phase==='GROUND_READY',airborne:f?.airborne===true,
    radioAltitudeFt:f?.radioAltitudeFt,iasKt:f?.iasKt,groundTrackDeg:f?.trueTrackDeg??f?.trueHeadingDeg,
-   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,atArmed:c.atArm===true,
+   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,
+   allowFdAutoEngage:f?.airborne===true&&Number.isFinite(f?.radioAltitudeFt)&&f.radioAltitudeFt<2000,
+   atArmed:c.atArm===true,
    apChannels:m?.dualApproach?.coupled===true?2:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
    autopilotEngaged:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||''),
    engine1Running:light?undefined:engineRunning(1),engine2Running:light?undefined:engineRunning(2),
    // Presence of both engines running is checked independently from pump/fuel faults.
    selectedSpeedKt:m?.values?.speed??f?.iasKt,
    v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
-   flareArmed:m?.dualApproach?.flareArmed===true,touchedDown:f?.phase==='LANDED',
+   flareArmed:m?.dualApproach?.flareArmed===true,touchedDown:f?.phase==='LANDING_ROLL',
    isTakeoffMode:state.phase==='TO',
    // FCOM 4.20.14-15 FSI/FST option: takeoff roll FMA HDG SEL, unlike
    // other variants with a BLANK lateral TO/GA mode. EP-FSI uses FSI.
@@ -319,7 +321,8 @@ try{
     source:'SIMULATED_FCC',evidence:{togaModeConfirmed:true},
     fields:{at:{active:fm.at},pitch:{active:fm.pitch},
      roll:{active:fm.roll},
-     afds:{active:fm.afds==='CMD'||m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
+     afds:{active:fm.afds==='CMD'||state.phase==='GA'||
+      m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
       fm.afds:''}}
    }}));
   }
@@ -370,7 +373,7 @@ try{
   }
   state=next;
   if(state.phase==='GA'&&was!=='GA')
-   win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD');
+   win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD',next.singleEngine===true);
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
   if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
    // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL
@@ -408,6 +411,8 @@ try{
   if(!active())return;
   const next=T.advance(state,context(),0);
   if(next.singleEngine!==state.singleEngine||next.targetSpeedKt!==state.targetSpeedKt){
+   if(next.singleEngine!==state.singleEngine)
+    win.B737McpAFDSBridgeV1?.updateTogaEngine?.(next.singleEngine===true);
    state=next;lastFma='';publishFma();
    win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'ENGINE_FEEDBACK'}}));
   }

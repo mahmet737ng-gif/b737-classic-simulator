@@ -1515,6 +1515,150 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
+/* ./ehsi-radio-overlays-v1.js?v=EHSI-RADIO-OVERLAYS-0001 */
+try{
+/* Unified EHSI valid-radio overlays. Read-only; no synthetic NAV/ADF signal.
+ * Valid VHF NAV + powered MCP COURSE -> dashed green station course.
+ * EFIS VOR/ADF option + valid receiver -> solid green station bearing.
+ */
+(function(root,factory){
+ const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root.document)root.B737UnifiedEhsiRadioOverlayV1=api;
+})(globalThis,function(){
+ 'use strict';
+ const NS='http://www.w3.org/2000/svg',NM=3440.065;
+ const norm=n=>((n%360)+360)%360;
+ const valid=rec=>rec?.quality==='VALID'&&rec.value&&typeof rec.value==='object'?rec.value:null;
+ const coords=o=>Number.isFinite(o?.lat)&&Math.abs(o.lat)<=90&&
+  Number.isFinite(o?.lon)&&Math.abs(o.lon)<=180;
+ const station=o=>Number.isFinite(o?.stationLat)&&Number.isFinite(o?.stationLon)?
+  {lat:o.stationLat,lon:o.stationLon}:null;
+ function positionDelta(from,to){
+  const r=Math.PI/180,lat1=from.lat*r,lat2=to.lat*r,dl=norm(to.lon-from.lon+180)*r-180*r;
+  const dLat=lat2-lat1;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dl/2)**2;
+  const arc=2*Math.atan2(Math.sqrt(Math.min(1,a)),Math.sqrt(Math.max(0,1-a)));
+  const bearing=Math.atan2(Math.sin(dl)*Math.cos(lat2),
+   Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dl));
+  const distance=arc*NM;
+  return {x:distance*Math.sin(bearing),y:distance*Math.cos(bearing),distance,bearingTrue:norm(bearing/r)};
+ }
+ function adfMagnetic(data,src){
+  const bearing=data?.bearingDeg;
+  if(!Number.isFinite(bearing))return null;
+  if(data.bearingReference==='MAGNETIC')return norm(bearing);
+  if(data.bearingReference==='TRUE'&&Number.isFinite(src?.magneticVariationDeg))
+   return norm(bearing-src.magneticVariationDeg);
+  if(data.bearingReference==='RELATIVE'&&Number.isFinite(src?.heading))
+   return norm(bearing+src.heading);
+  return null;
+ }
+ function plan({snapshot,src,position,options={},range=40,mode='MAP'}={}){
+  const result={course:null,pointers:[]};
+  if(!['MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(mode)||
+   !coords(position)||!Number.isFinite(range)||range<=0||!src)return result;
+  const decl=src.magneticVariationDeg;
+  const vhf=[1,2].includes(src.vhf)?src.vhf:(src.sg===2?2:1);
+  const tunedVor=valid(snapshot?.['navigation.vor'+vhf]);
+  const tunedIls=valid(snapshot?.['navigation.ils'+vhf]);
+  const selected=station(tunedVor)?tunedVor:station(tunedIls)?tunedIls:null;
+  // Radio quality is supplied by the avionics network; unknown/stale stations
+  // are deliberately excluded, even when a frequency is still displayed.
+  if(selected&&Number.isFinite(src.course)&&Number.isFinite(decl)){
+   const delta=positionDelta(position,station(selected));
+   result.course={channel:vhf,type:selected===tunedVor?'VOR':'ILS',
+    degree:norm(src.course),trueDegree:norm(src.course+decl),
+    delta,near:delta.distance<=range*.9};
+  }
+  if(options.vorAdf!==true)return result;
+  for(const channel of [1,2]){
+   const vor=valid(snapshot?.['navigation.vor'+channel]);
+   if(station(vor)){
+    const delta=positionDelta(position,station(vor));
+    const radial=Number.isFinite(vor.radialDeg)?norm(vor.radialDeg):
+     Number.isFinite(decl)?norm(positionDelta(station(vor),position).bearingTrue-decl):null;
+    result.pointers.push({channel,type:'V',delta,degree:radial,label:radial===null?
+     'V'+channel:'V'+channel+'-'+String(Math.round(radial)%360).padStart(3,'0')});
+   }
+   const adf=valid(snapshot?.['navigation.adf'+channel]);
+   if(adf){
+    const bearing=adfMagnetic(adf,src);
+    if(bearing===null)continue;
+    const target=station(adf);
+    // With a valid ADF bearing but no station coordinates, the line extends
+    // to the selected EHSI scale; it is NOT labeled as a located station.
+    const delta=target?positionDelta(position,target):{
+     x:Math.sin(bearing*Math.PI/180)*range,
+     y:Math.cos(bearing*Math.PI/180)*range,distance:range};
+    const label='A'+channel+'-'+String(Math.round(bearing)%360).padStart(3,'0');
+    result.pointers.push({channel,type:'A',delta,degree:bearing,label,
+     stationLocated:!!target});
+   }
+  }
+  return result;
+ }
+ function draw(svg,model,src,snapshot,position,renderer){
+  if(!svg||!renderer)return null;
+  svg.querySelector('[data-radio-nav-overlay]')?.remove();
+  const selection=plan({snapshot,src,position,options:model?.options,
+   range:model?.range,mode:model?.mode});
+  if(!selection.course&&!selection.pointers.length)return selection;
+  const projector=renderer.routeProjection?.(model);
+  const layout=renderer.LAYOUT?.[model?.mode];
+  if(!projector||!layout?.roseCenter)return selection;
+  const doc=svg.ownerDocument,make=(parent,tag,props={},value)=>{
+   const e=doc.createElementNS(NS,tag);
+   for(const [k,v] of Object.entries(props))e.setAttribute(k,String(v));
+   if(value!==undefined)e.textContent=String(value);
+   parent.append(e);return e;
+  };
+  const color=renderer.COLORS?.green||'#41f585';
+  const clipId=(svg.id||'unified-ehsi')+'-radio-clip';
+  const root=make(svg,'g',{'data-radio-nav-overlay':'true','pointer-events':'none'});
+  const defs=make(root,'defs'),clip=make(defs,'clipPath',{id:clipId});
+  const [cx,cy]=layout.roseCenter;
+  make(clip,'ellipse',{cx,cy,rx:(layout.radiusX??layout.radius)-3,ry:layout.radius-3});
+  const lines=make(root,'g',{'clip-path':'url(#'+clipId+')'});
+  const line=(name,xy1,xy2,dashed=false,extra={})=>make(lines,'line',{
+   x1:xy1[0],y1:xy1[1],x2:xy2[0],y2:xy2[1],
+   stroke:color,'stroke-width':dashed?1.8:2.25,
+   ...(dashed?{'stroke-dasharray':'9 12'}:{}),'data-segment':name,...extra});
+  const label=(text,xy,kind)=>make(lines,'text',{x:xy[0]+9,y:xy[1]-8,
+   fill:color,'font-size':17,'font-weight':500,
+   'font-family':'Lucida Console, monospace','stroke':'#030405',
+   'stroke-width':.75,'paint-order':'stroke',
+   'data-segment':kind},text);
+  const maxNm=Math.max(5,model.range*2.2);
+  if(selection.course){
+   const c=selection.course,r=c.trueDegree*Math.PI/180;
+   const dx=Math.sin(r)*maxNm,dy=Math.cos(r)*maxNm;
+   const p1=projector(c.delta.x-dx,c.delta.y-dy),p2=projector(c.delta.x+dx,c.delta.y+dy);
+   line('nav-selected-course',p1,p2,true,{'data-channel':c.channel,'data-course':c.degree});
+   if(c.near){
+    const p=projector(c.delta.x,c.delta.y);
+    if(p[0]>28&&p[0]<466&&p[1]>86&&p[1]<455)
+     label(String(Math.round(c.degree)%360).padStart(3,'0'),p,'nav-course-number');
+   }
+  }
+  const own=projector(0,0);
+  for(const target of selection.pointers){
+   const d=target.delta,point=projector(d.x,d.y);
+   line('nav-station-bearing',own,point,false,
+    {'data-channel':target.channel,'data-source':target.type,'data-degree':target.degree??''});
+   const factor=d.distance>0?Math.min(.82,.78*model.range/d.distance):.5;
+   const p=projector(d.x*factor,d.y*factor);
+   if(p[0]>26&&p[0]<467&&p[1]>83&&p[1]<460)
+    label(target.label,p,'nav-bearing-label');
+  }
+  return selection;
+ }
+ return Object.freeze({version:'EHSI-RADIO-OVERLAYS-0001',positionDelta,adfMagnetic,plan,draw});
+});
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
 /* ./ehsi-unified-v1.js?v=TCAS-CLASSIC-0001-IRAN-ILS-29L-0001 */
 try{
 /* Photo-registered Classic EHSI for the Unified cockpit. Source adapters are read-only. */
@@ -1535,7 +1679,7 @@ try{
  };
  const TOPICS=new Set(['electrical.buses','irs.left','irs.right','mcp.state','fmc.computed',
   'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',
-  'navigation.ils1','navigation.ils2']);
+  'navigation.ils1','navigation.ils2','navigation.adf1','navigation.adf2']);
  const SEATS=['CAPT','FO'];
  const FMC_MAP_TIMEOUT_MS=27500;
  const number=v=>Number.isFinite(v)?v:null;
@@ -1741,6 +1885,14 @@ try{
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
+    // Course and VOR/ADF overlays use valid avionics packets only; this
+    // additive layer does not modify the owner-approved EHSI photo geometry.
+    const flightPos=scenarioState&&Number.isFinite(scenarioState.lat)&&
+     Number.isFinite(scenarioState.lon)?scenarioState:null;
+    if(!preview&&src.displayPowered===true&&src.video===true&&src.track!==null)
+     win.B737UnifiedEhsiRadioOverlayV1?.draw(screen.svg,model,src,
+      snapshot,flightPos||src.mapPosition,renderer);
+    else screen.svg.querySelector('[data-radio-nav-overlay]')?.remove();
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
@@ -1828,105 +1980,6 @@ try{
      mcpCourse2Power:screens[seat].host.dataset.mcpCourse2Power==='true'}:null});
  }
  return Object.freeze({VERSION,liveModel,mount,referenceAnchor});
-});
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ./efis-training-presets-v1.js?v=EFIS-PRESETS-DEFAULT-FULL-0002 */
-try{
-/* Instructor shortcuts for the shared IRS trainer and EFIS source selector. */
-(function(root,factory){
- const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root.document)api.install(root);
-})(globalThis,function(){
- 'use strict';
- const SIDES=['L','R'];
- // Existing IRS test lab's Tehran training datum, rounded to ISDU precision.
- const DEFAULT_POSITION='N35395 E051254';
- function formatPosition({lat,lon}){
-  const field=(value,width,positive,negative)=>{
-   const minutes=Math.round(Math.abs(value)*600);
-   return (value<0?negative:positive)+String(Math.floor(minutes/600)).padStart(width,'0')+
-    String(minutes%600).padStart(3,'0');
-  };
-  return field(lat,2,'N','S')+' '+field(lon,3,'E','W');
- }
- function apply(win,preset){
-  if(!['FULL_ALIGN','COLD_DARK','LIVE'].includes(preset))throw Error('Unknown EFIS preset');
-  const irs=win.B737IRSTrainerUnified,core=win.B737IRSTrainerCoreV1,sources=win.B737UnifiedEfisSources;
-  if(!irs||!core||!sources)throw Error('IRS is loading. Try again in a moment.');
-  const before=irs.getState();
-  if(preset==='FULL_ALIGN'){
-   const blocked=SIDES.find(side=>win.B737UnifiedCB?.irsPower?.(side,true)===false);
-   if(blocked)throw Error('IRS '+blocked+' has no feed through its circuit breakers.');
-   const last=SIDES.map(side=>before.units[side]).find(u=>u.positionValid);
-   const text=last?.position?formatPosition(last.position):DEFAULT_POSITION;
-   const heading=Number.isFinite(last?.trueHeadingDeg)?last.trueHeadingDeg%360:90;
-   const reference=core.trainingAlignmentReference(core.parseFmcPosition(text),heading);
-   irs.setPowerMode('BENCH');
-   for(const side of SIDES){
-    if(before.units[side].mode!=='OFF')irs.setMode(side,'OFF');
-    irs.setMode(side,'NAV');
-   }
-   irs.setFmcPosition(text,reference);
-   irs.setBenchMotion({gsKt:0,trueTrackDeg:heading,trueHeadingDeg:heading});
-   if(!SIDES.every(side=>irs.getState().units[side].positionValid))throw Error('Both IRS units did not finish alignment.');
-  }else{
-   if(preset==='COLD_DARK'){
-    for(const side of SIDES)if(before.units[side].mode!=='OFF')irs.setMode(side,'OFF');
-   }
-   if(preset==='COLD_DARK'||sources.getPreset()==='FULL_ALIGN'&&before.motionSource==='BENCH_SIM')irs.stopMotion();
-   irs.setPowerMode('AIRCRAFT');
-  }
-  sources.setPreset(preset);
-  return irs.getState();
- }
- function install(win){
-  const doc=win.document;
-  const status=doc.getElementById('unifiedEfisPresetStatus');
-  const buttons=[...doc.querySelectorAll('[data-efis-preset]')];
-  if(!status||!buttons.length)return;
-  const descriptions={FULL_ALIGN:'IRS L/R aligned · EFIS training supply enabled.',
-   COLD_DARK:'IRS L/R OFF · EADI and EHSI dark.',LIVE:'Aircraft power and manual IRS operation.'};
-  const showPreset=preset=>{
-   for(const item of buttons)item.setAttribute('aria-pressed',String(item.dataset.efisPreset===preset));
-   status.textContent=descriptions[preset];
-  };
-  let manuallyChanged=false;
-  // The EFIS training mode defaults to FULL ALIGN on every fresh Unified load.
-  // Run the actual IRS L/R alignment shortcut, not merely the selected button
-  // visual or the EFIS source preset. This is an instructor simulation default
-  // and must not bypass a pulled circuit breaker or a failed alignment.
-  const bootDefault=()=>{
-   if(manuallyChanged)return;
-   try{
-    const current=win.B737UnifiedEfisSources?.getPreset?.();
-    if(current&&current!=='LIVE'){
-     showPreset(current); // Preserve an earlier explicit mode.
-     return;
-    }
-    apply(win,'FULL_ALIGN');
-    showPreset('FULL_ALIGN');
-   }catch(error){
-    // Never claim aligned when alignment failed, e.g. a pulled IRS CB.
-    showPreset(win.B737UnifiedEfisSources?.getPreset?.()||'LIVE');
-    status.textContent='FULL ALIGN NOT READY · '+String(error?.message||error);
-   }
-  };
-  if(doc.readyState==='complete')bootDefault();
-  else doc.addEventListener('DOMContentLoaded',bootDefault,{once:true});
-  for(const button of buttons)button.addEventListener('click',()=>{
-   const preset=button.dataset.efisPreset;
-   manuallyChanged=true;
-   try{
-    apply(win,preset);
-    showPreset(preset);
-   }catch(error){status.textContent=error.message;}
-  });
- }
- return Object.freeze({apply,install});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}

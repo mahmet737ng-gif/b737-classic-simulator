@@ -282,7 +282,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=EADI-DIRECT-0002&amp;ils=SHI-CH4-0001 */
+/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=EADI-DIRECT-0002&amp;ils=SHI-CH4-0004 */
 try{
 /* Live scenario FCC coupler, EADI F/D source, and FCOM §4.20 A/P protections.
  * Reads only already-modeled flight/airdata and existing MCP AFDS owners.
@@ -502,7 +502,7 @@ try{
    radioAltitudeFt:frame.radioAltitudeFt,verticalSpeedFpm:frame.vsFpm,
    headingDeg:frame.trueHeadingDeg,bankDeg:frame.bankDeg,pitchDeg:frame.pitchDeg,
    secondsSinceLiftoff:sinceLiftoff,
-   flightElapsedSec:frame.elapsedSec,onGround:frame.phase==='LANDED',
+   flightElapsedSec:frame.elapsedSec,onGround:frame.phase==='LANDING_ROLL',
    establishedEnroute:frame.phase==='AIRBORNE'&&!insideTakeoff,
    thrustIdleConfirmed:idle,
    stabTrimAutopilotNormal:win.B737StabilizerTrim?.getCutouts?.().AUTOPILOT!=='CUTOUT',
