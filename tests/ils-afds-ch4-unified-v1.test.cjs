@@ -190,6 +190,14 @@ test('Unqualified TOGA transition cannot clear genuine captured ILS',()=>{
  assert.equal(accepted.pending.approach,false);
  assert.equal(accepted.togaActive,true);
 });
+test('Two-engine GA blanks MCP IAS/MACH; single-engine GA preserves target display',()=>{
+ const base=powered();
+ const go=(singleEngine)=>MCP.transition(base,{
+  type:'TOGA_ENGAGED',confirmed:true,source:'SIMULATED_FCC',singleEngine});
+ assert.equal(MCP.output(go(false)).displayBlank.speed,true);
+ assert.equal(MCP.output(go(true)).displayBlank.speed,false);
+ assert.equal(MCP.output(go(false)).axisControl.pitch,'OFF');
+});
 test('Actual Unified includes FCC and captured radio module in boot order',()=>{
  const html=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/index.html'),'utf8');
  assert.ok(html.includes('classic-ils-afds-ch4-v1.js'));
