@@ -26,10 +26,11 @@ test('CMD HDG SEL magnetic 134 commands true 139 with 5deg east variation and bo
  assert.ok(o.rollCommandDeg>0);
  assert.ok(o.pitchCommandDeg>f.pitchDeg);
 });
-test('FD bars are independently gated by valid pitch/roll modes and pilot FD switch',()=>{
+test('FD bars are independently gated by each mode, with CMD training guidance active',()=>{
  const m=mcp();m.controls.fd.right=false;
  let o=evaluateMag(Guidance.createState(),m,frame());
- assert.equal(o.fd.captain,true);assert.equal(o.fd.firstOfficer,false);
+ assert.equal(o.fd.captain,true);assert.equal(o.fd.firstOfficer,true,
+  'CMD training guidance stays available when one FD selector is off');
  m.modes.lateral='LNAV';
  o=evaluateMag(Guidance.createState(),m,frame());
  assert.equal(o.fd.captain,true);
@@ -124,6 +125,25 @@ test('CWS R keeps pitch bar only; CWS P keeps roll bar only; blank axes stay bla
  assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
  m.controls.fd.left=false;
  o=evaluateMag(Guidance.createState(),m,f);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:false});
+ assert.deepEqual(o.fdAxes.firstOfficer,{pitch:true,roll:false});
+ // Without an engaged CMD A/P, the individual physical switches own the bars.
+ m.modes.autopilot=null;
+ o=evaluateMag(Guidance.createState(),m,f);
  assert.deepEqual(o.fdAxes.captain,{pitch:false,roll:false});
  assert.deepEqual(o.fdAxes.firstOfficer,{pitch:true,roll:false});
+});
+
+test('screenshot case: V/S plus CWS R with CMD selected produces pitch bar only for both seats',()=>{
+ const m=mcp();
+ m.axisControl={pitch:'CMD',roll:'CWS'};
+ m.modes.lateral=null;
+ m.controls.fd.left=false;m.controls.fd.right=false;
+ const s=evaluateMag(Guidance.createState(),m,frame());
+ assert.deepEqual(s.fdAxes.captain,{pitch:true,roll:false});
+ assert.deepEqual(s.fdAxes.firstOfficer,{pitch:true,roll:false});
+ assert.equal(s.pitchValid,true);
+ assert.equal(s.rollCommandDeg,0);
+ assert.equal(s.rollValid,true);
+ assert.equal(s.status,'COUPLED_CMD');
 });
