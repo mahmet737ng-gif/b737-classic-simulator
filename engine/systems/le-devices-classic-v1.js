@@ -164,6 +164,9 @@
       const slatTarget=mid<6.5?0:(autoFull||seq.fullStart!==null&&mid>=seq.fullStart?2:1);
       for(const id of DEVICES){
        if(s.jams[id]||!driveAvailable(s))continue;
+       // PTU/hydraulic A is backup for autoslats, never a substitute for
+       // hydraulic B to move the ordinary LE flaps.
+       if(id.startsWith('FLAP_')&&!s.hydraulic.B&&!s.alternateExtend)continue;
        const desired=id.startsWith('FLAP_')?flapTarget:slatTarget;
        const cur=s.position[id];
        if(!s.hydraulic.B&&desired<cur)continue;
