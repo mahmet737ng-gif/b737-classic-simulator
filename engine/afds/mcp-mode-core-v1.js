@@ -304,7 +304,7 @@ function transition(state,action){
   if(s.electrical.mcpPower!==true)return rejected(s,"MCP_BUS_OR_CB_NOT_POWERED");
   for(const k of ["bankDeg","headingDeg","pitchDeg","altitudeFt",
    "radioAltitudeFt","tasKt","gsBelowDots","verticalSpeedFpm"])
-   if(f[k]!==undefined&&!Number.isFinite(f[k]))
+   if(f[k]!==undefined&&f[k]!==null&&!Number.isFinite(f[k]))
     return rejected(s,"INVALID_FLIGHT_SENSOR_"+k);
   if(f.flightElapsedSec!==undefined&&(!Number.isFinite(f.flightElapsedSec)||f.flightElapsedSec<0))
    return rejected(s,'INVALID_FLIGHT_ELAPSED_TIMER');
@@ -323,14 +323,16 @@ function transition(state,action){
   if(flags.some(k=>f[k]!==undefined&&typeof f[k]!=="boolean"))
    return rejected(s,"INVALID_FLIGHT_SENSOR_FLAG");
   // An explicit lost/retuned front course invalidates captured navigation.
+  // Losing reception cannot cancel a pilot's *armed* selector.
+  // Only an actual LOC or G/S capture can be invalidated by signal loss.
   if(f.navValid===false&&!(s.dualApproach.flareEngaged===true&&f.radioAltitudeFt<=50)&&
-      (s.nav.loc||s.nav.gs||s.armed.roll==='VOR/LOC')){
+      (s.nav.loc||s.nav.gs||s.capture.roll==='VOR_LOC'||s.capture.pitch==='G/S')){
    const wasCoupled=s.dualApproach.coupled;
    s.nav={loc:false,gs:false};s.capture.roll=null;
    if(['G/S','FLARE'].includes(s.capture.pitch))s.capture.pitch=null;
    if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
    if(s.pending.approach)s.armed.pitch='G/S';
-   s.armed.roll=s.pending.approach?'VOR/LOC':null;
+   s.armed.roll='VOR/LOC';
    s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
    s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
    if(wasCoupled){
@@ -502,24 +504,49 @@ function transition(state,action){
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
  const id=action.id;
  if(id==="APP"){
-  if(s.flight?.navKind!=="ILS"||s.flight.navValid!==true)
-   return rejected(s,"APP_ILS_NAV_EVIDENCE_REQUIRED");
+  // A pilot can arm the ILS BEFORE valid localizer and glideslope reception.
+  // Signal validity is still mandatory later for each FCC capture.
   s.pending.approach=!s.pending.approach;
-  s.armed.roll=s.pending.approach?"VOR/LOC":null;
-  s.armed.pitch=s.pending.approach?"G/S":null;
-  if(!s.pending.approach){s.nav.loc=false;s.nav.gs=false;
-   s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};}
+  if(s.pending.approach){
+   s.armed.roll=s.nav.loc?null:"VOR/LOC";
+   s.armed.pitch=s.nav.gs?null:"G/S";
+  }else{
+   s.armed.roll=null;s.armed.pitch=null;
+   if(s.nav.gs||['G/S','FLARE'].includes(s.capture.pitch)){
+    s.nav.gs=false;s.capture.pitch=null;s.modes.vertical=null;
+   }
+   if(s.nav.loc||s.capture.roll==='VOR_LOC'){
+    s.nav.loc=false;s.capture.roll=null;
+    if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
+   }
+   s.dualApproach={second:null,coupled:false,flareArmed:false,
+    flareEngaged:false,retard:false,touchdownStartSec:null};
+  }
   return done();
  }
  if(id==="LNAV"||id==="VNAV"){
   if(s.evidence.fmcRouteReady!==true)return rejected(s,"FMC_ROUTE_EVIDENCE_REQUIRED");
  }
  if(id==="VOR_LOC"){
-  if(s.flight?.navValid!==true||!["VOR","LOC","ILS"].includes(s.flight.navKind))
-   return rejected(s,"VOR_LOC_NAV_EVIDENCE_REQUIRED");
-  s.armed.roll=s.armed.roll==="VOR/LOC"?null:"VOR/LOC";
-  s.pending.approach=false;s.armed.pitch=null;s.nav.loc=false;s.nav.gs=false;
-  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
+  // The VOR/LOC switch arms even when no station is yet received. FCC
+  // verifies NAV quality, geometry and capture before commanding the airplane.
+  const wasApp=s.pending.approach===true;
+  const selected=s.armed.roll==='VOR/LOC'||s.capture.roll==='VOR_LOC'||
+   s.modes.lateral==='VOR_LOC';
+  s.pending.approach=false;s.armed.pitch=null;
+  if(s.nav.gs||['G/S','FLARE'].includes(s.capture.pitch)){
+   s.nav.gs=false;s.capture.pitch=null;s.modes.vertical=null;
+  }
+  s.dualApproach={second:null,coupled:false,flareArmed:false,
+   flareEngaged:false,retard:false,touchdownStartSec:null};
+  if(wasApp){
+   // Downgrade APP to LOC-only without losing an existing LOC capture.
+   s.armed.roll=s.nav.loc?null:'VOR/LOC';
+  }else if(selected){
+   // Second press actually deselects an active or armed VOR/LOC.
+   s.armed.roll=null;s.capture.roll=null;s.nav.loc=false;
+   if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
+  }else s.armed.roll='VOR/LOC';
   return done();
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
