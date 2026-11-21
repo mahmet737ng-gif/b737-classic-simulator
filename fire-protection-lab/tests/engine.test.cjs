@@ -150,4 +150,49 @@ send({type:'RESET'});
 assert.throws(()=>send({type:'SELECT_LOOP',unit:'ENG1',value:'INVALID'}),RangeError);
 assert.throws(()=>send({type:'SET_CIRCUIT',bottle:'NO',healthy:true}),RangeError);
 assert.throws(()=>send({type:'TICK',seconds:-1}),RangeError);
+
+ // FCOM NP 2.1.15-2.1.16 — preflight fire-protection panel check.
+ // These are on-panel and master-annunciator states, not a generic all-lamps test.
+send({type:'RESET'});
+send({type:'TEST',value:'FAULT_INOP'});
+for(const id of ['MASTER_CAUTION','OVHT_DET','FAULT','APU_DET_INOP'])
+ check(normal()[id],true,'NP fire check FAULT/INOP lights '+id);
+for(const id of ['MASTER_FIRE_WARN','FIRE_BELL','ENG1_OVERHEAT','ENG2_OVERHEAT','WHEEL_WELL',
+ 'ENG1_FIRE','ENG2_FIRE','APU_FIRE','APU_BOTTLE_DISCHARGED','EXT_L','EXT_R','EXT_APU'])
+ check(normal()[id],false,'FAULT/INOP does not trigger '+id);
+send({type:'TEST',value:null});
+for(const id of ['MASTER_CAUTION','OVHT_DET','FAULT','APU_DET_INOP'])
+ check(normal()[id],false,'FAULT/INOP spring release clears '+id);
+send({type:'TEST',value:'OVHT_FIRE'});
+for(const id of ['FIRE_BELL','MASTER_FIRE_WARN','MASTER_CAUTION','OVHT_DET','ENG1_OVERHEAT',
+ 'ENG2_OVERHEAT','WHEEL_WELL','ENG1_FIRE','ENG2_FIRE','APU_FIRE'])
+ check(normal()[id],true,'NP OVHT/FIRE hold illuminates '+id);
+for(const id of ['FAULT','APU_DET_INOP','APU_BOTTLE_DISCHARGED','L_BOTTLE_DISCHARGED',
+ 'R_BOTTLE_DISCHARGED','EXT_L','EXT_R','EXT_APU'])
+ check(normal()[id],false,'NP OVHT/FIRE does not falsely illuminate '+id);
+check(Object.values(e.evaluate().testLamps).some(Boolean),false,'OVHT/FIRE has no unverified lamp overlays');
+send({type:'BELL_CUTOUT'});
+check(normal().MASTER_FIRE_WARN,false,'NP Master FIRE WARN push extinguishes warning lights');
+check(normal().FIRE_BELL,false,'NP Master FIRE WARN push cancels bell');
+for(const id of ['ENG1_FIRE','ENG2_FIRE','APU_FIRE','ENG1_OVERHEAT','ENG2_OVERHEAT','WHEEL_WELL'])
+ check(normal()[id],true,'NP indications stay lit after fire warning cutout '+id);
+send({type:'TEST',value:null});
+for(const id of ['MASTER_CAUTION','OVHT_DET','ENG1_FIRE','ENG2_FIRE','APU_FIRE','WHEEL_WELL',
+ 'ENG1_OVERHEAT','ENG2_OVERHEAT'])
+ check(normal()[id],false,'NP OVHT/FIRE spring release clears '+id);
+for(const position of ['EXT_1','EXT_2']){
+ send({type:'TEST',value:position});
+ for(const id of ['EXT_L','EXT_R','EXT_APU'])
+  check(normal()[id],true,'NP extinguisher '+position+' held green '+id);
+ check(normal().APU_BOTTLE_DISCHARGED,false,'Extinguisher circuit test does not discharge bottle');
+ send({type:'TEST',value:null});
+ for(const id of ['EXT_L','EXT_R','EXT_APU'])
+  check(normal()[id],false,'NP extinguisher '+position+' released green '+id);
+}
+send({type:'SET_POWER',bus:'acTransfer1',active:false});
+send({type:'TEST',value:'OVHT_FIRE'});
+check(normal().WHEEL_WELL,false,'Wheel-well fire test requires AC transfer bus 1');
+check(normal().ENG1_OVERHEAT,true,'Engine fire test remains on battery supply independently of wheel well AC');
+send({type:'RESET'});
+
 console.log('PASS Fire Protection v3 FCOM logic: '+assertions+' assertions + invalid input checks.');
