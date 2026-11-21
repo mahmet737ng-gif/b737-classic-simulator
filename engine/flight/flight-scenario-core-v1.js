@@ -89,7 +89,7 @@
   if(!ground&&speed<80)throw RangeError('AIRBORNE_IAS_BELOW_TRAINING_MINIMUM');
   const heading=manual&&config.headingDeg!==undefined?wrap(finite(config.headingDeg,0,360,'HEADING_DEG')):hdg;
   const bank=manual&&config.bankDeg!==undefined?finite(config.bankDeg,-30,30,'BANK_DEG'):0;
-  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
+  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*FT_PER_NM/60*Math.tan(glideDeg*RAD):0;
   const vs=ground?0:vsInput;
   const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
    headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?runwayElevationFt+3000:alt,
