@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "9147116633ca90012dea89c8cd895619df69cca1",
+  "sourceCommit": "5e3fb1ff5b485d09bfb78bd1b58d19026def7c6c",
   "mainBefore": 307,
   "mainAfter": 96,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "f07d2d09e901998af51ed3a3bd0824785b19259f193e4819ea48e89ba795707c"
+      "sha256": "782bebf1e99fff9a9454609463c7b002ca7de303bf33f3228c3af6c453b7b92f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -171,8 +171,8 @@
       "sha256": "e4cbef26ff93335506927cb9ca73f0ebaf49160d7696431f299f738a56b01401"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-57d007eb5de206f5.js",
-      "sha256": "57d007eb5de206f58ac77f9f867da252a86e0a54ff5bd4d95e3ef0b71c410ab6"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1c1d8f30bafbf508.js",
+      "sha256": "1c1d8f30bafbf50829c2ca3b0ecc8ff1765e9245330f70ed74396a231446468c"
     },
     {
       "path": "engine/afds/desktop-bundle-a2e69c39a90ae99b.js",
@@ -788,7 +788,7 @@
     },
     {
       "path": "panel-mosaic-lab/le-devices/trainer-bridge-v1.js",
-      "sha256": "35548e959a4726aaba038769e05bd7ad098abafb45340909e4c56d9296c467d9"
+      "sha256": "ea11dfa5f7c3e84713ee759dd5452795ffaa1d092aa925d1c5612659a76157f6"
     },
     {
       "path": "engine/integrations/le-devices-external-ports-v1.js",
