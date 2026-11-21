@@ -82,7 +82,7 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   B737LandingGearUnifiedV1:{getState:()=>({lever:'DN',gear:{nose:'DOWN',left:'DOWN',right:'DOWN'}}),select:()=>true},
   B737SpeedbrakeLever:{mounted:()=>true,set:x=>{selected.speedbrake=x;lights.inputs.speedBrakeArmedIndication=x==='ARMED';}},
   B737CockpitLights:{getState:()=>lights},
-  B737FlapVisualTest:{get position(){return flap},select:x=>{flap=x;return true;}},
+  B737FlapVisualTest:{get position(){return flap},presetFinal10:()=>{flap=30;return true;},select:x=>{flap=x;return true;}},
   B737LEDevicesUnifiedLink:{getState:()=>({actualTe:flap})},
   B737McpAFDSBridgeV1:{refreshElectrical(){},
    applyFinal10Preset:x=>{selected.mcp=x;return {accepted:true};}},
@@ -150,4 +150,53 @@ test('Final 10 changes only allowed unguarded overhead controls',()=>{
   const section=app.match(/const SCENARIO_SWITCHES=new Set\(\[([\s\S]*?)\]\);/)?.[1]??'';
   assert.equal(section.includes("'"+guarded+"'"),false,guarded);
  }
+});
+
+test('FINAL_10 establishes TE FLAPS 30 and LE FULL before presentation',()=>{
+ const TE=require('../engine/systems/te-flap-actuator-v1.js');
+ const LE=require('../engine/systems/le-devices-classic-v1.js');
+ let te=TE.initialState(),le=LE.initialState('NORMAL');
+ le=LE.apply(le,{type:'GROUND',value:false});
+ te=TE.apply(te,{type:'COMMAND',value:30});
+ le=LE.apply(le,{type:'FLAP_LEVER',value:30});
+ le=LE.apply(le,{type:'START_LE_SEQUENCE'});
+ for(let i=0;i<48;i++){
+  te=TE.apply(te,{type:'TICK',seconds:1});
+  le=LE.apply(le,{type:'FOLLOW_TE',position:te.actual,command:30});
+  le=LE.apply(le,{type:'TICK',seconds:1,motionProfile:'TIMED',pressureFactor:1});
+ }
+ assert.equal(TE.evaluate(te).actual,30);
+ assert.equal(TE.evaluate(te).moving,false);
+ assert.equal(LE.evaluate(le).leStage,'FULL');
+ assert.deepEqual(LE.evaluate(le).mismatch,[]);
+});
+test('TO/GA reference speed is shown independently of MCP and restored when GA exits',()=>{
+ const Tape=require('../engine/efis/classic-speed-tape-engine-v1.js');
+ for(const seat of ['CAPT','FO']){
+  let s=Tape.initialState(seat);
+  s=Tape.transition(s,{type:'MCP',powered:true,displayBlank:false,selectedCasKt:142,speedDisplayMode:'IAS'});
+  s=Tape.transition(s,{type:'TOGA_TARGET',source:'SIMULATED_FCC',active:true,targetSpeedKt:157});
+  assert.equal(Tape.view(s).command?.speedKt,157);
+  assert.equal(Tape.view(s).command?.source,'TOGA_FD');
+  s=Tape.transition(s,{type:'TOGA_TARGET',source:'SIMULATED_FCC',active:false});
+  assert.equal(Tape.view(s).command?.speedKt,142);
+ }
+});
+test('GO-AROUND CMD follows the same F/D pitch, not a fixed VS demand',()=>{
+ const FCC=require('../engine/afds/fcc-flight-guidance-v1.js');
+ const Laws=require('../engine/flight/flight-control-laws-v1.js');
+ const frame=Core.newScenario({airport:'OIII',runway:'29L',preset:'FINAL_10'},thresholds(profiles[0]));
+ const m={power:true,values:{heading:285,altitude:7000,verticalSpeed:0,speed:142},
+  controls:{fd:{left:true,right:true}},flightDirectorBarsRetracted:false,
+  modes:{autopilot:'CMD_B',lateral:'HDG_SEL',vertical:'ALT_HLD',thrust:'N1'},
+  axisControl:{pitch:'CMD',roll:'CMD'},bankAngleLimit:20,speedDisplayMode:'IAS',
+  nav:{loc:false,gs:false},capture:{pitch:null,roll:null}};
+ const fcc=FCC.evaluate(FCC.createState(),m,frame,
+  {magneticVariationDeg:5,togaActive:true,togaPitchDeg:15});
+ assert.equal(fcc.actions.find(x=>x.type==='PITCH')?.value,15);
+ assert.equal(fcc.actions.some(x=>x.type==='VS'),false);
+ const target={lateralMode:'BANK',bankCommandDeg:0,verticalMode:'PITCH',pitchDeg:15};
+ assert.equal(Laws.guidance(frame,target).desiredPitchDeg,15);
+ const s=Laws.stepAttitude(frame,target,.2);
+ assert.ok(s.pitchDeg>frame.pitchDeg);
 });
