@@ -1,0 +1,38 @@
+name: B737 Classic FINAL10 Ready-on-Load QA
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'
+      - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'tests/final10-approach-ready-integration.test.cjs'
+      - '.github/workflows/final10-ready-integration.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'
+      - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'tests/final10-approach-ready-integration.test.cjs'
+permissions:
+  contents: read
+jobs:
+  final10-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate flight scenario and LE owner code
+        run: |
+          node --check panel-mosaic-lab/cockpit/final10-approach-preset-v1.js
+          node --check panel-mosaic-lab/le-devices/trainer-bridge-v1.js
+      - name: Scenario-10 bus transfer, instantaneous flap 30 and autobrake 2 regression
+        run: |
+          node --test tests/final10-approach-ready-integration.test.cjs
+          node --test panel-mosaic-lab/cockpit/autobrake-rto-selftest-v1.test.cjs
+          node --test panel-mosaic-lab/cockpit/flap-needles.test.cjs
+      - name: Verify protected panel asset integrity
+        run: |
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          python3 panel-mosaic-lab/verify-final-overhead.py
