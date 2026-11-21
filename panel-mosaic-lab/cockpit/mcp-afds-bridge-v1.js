@@ -222,6 +222,8 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  observeAltitudeCapture:sample=>send({type:"FCC_ALTITUDE_CAPTURE",...sample}),
  beginToga:(dualApGA,singleEngine)=>send({type:'TOGA_ENGAGED',confirmed:true,
   source:'SIMULATED_FCC',dualApGA:dualApGA===true,singleEngine:singleEngine===true}),
+ updateTogaEngine:singleEngine=>send({type:'TOGA_ENGINE_STATUS',confirmed:true,
+  source:'SIMULATED_FCC',singleEngine:singleEngine===true}),
  disconnectConfirmed:sample=>send({type:"AP_DISENGAGE_CONFIRMED",...sample}),
  press:requestMode,
  reset:()=>send({type:"RESET"})
