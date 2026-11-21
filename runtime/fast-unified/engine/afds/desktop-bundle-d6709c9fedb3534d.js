@@ -586,7 +586,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -599,7 +599,7 @@ try{
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  let tickErrorCount=0,lastTickError=null;
- const VERSION='UNIFIED-FLIGHT-SCENARIOS-0008-STATIC-SHELL';
+ const VERSION='UNIFIED-FLIGHT-SCENARIOS-0009-FINAL10-STARTPAUSE';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
   <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
@@ -680,8 +680,10 @@ try{
   if(kind!=='MANUAL'){
    const mag=magneticHeading(a.runways[by('flightRunway').value],airportPoint(a));
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
-   by('flightAlt').value=Math.round(a.elevationFt+(kind==='RUNWAY_READY'?0:kind==='FINAL_5'?1643:3236));
-   by('flightSpeed').value=kind==='RUNWAY_READY'?0:kind==='FINAL_5'?155:170;
+   const preview=Core.newScenario({airport:a.icao,runway:by('flightRunway').value,preset:kind},
+    approachThresholds({airport:a.icao,runway:by('flightRunway').value,preset:kind}));
+   by('flightAlt').value=Math.round(preview.altitudeFt);
+   by('flightSpeed').value=Math.round(preview.iasKt);
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
   }
   publishSelectedReference();
@@ -731,10 +733,29 @@ try{
   win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_LIVE_POSITION'});
   sendAvionics();
  }
+ function togglePause(){
+  if(!active||!state)return false;
+  pause=!pause;lastTick=performance.now();
+  publish();updateUI();
+  status((pause?'PAUSED':'RUNNING')+' · '+state.icao+' RWY '+state.runway+
+   ' · '+state.phase+' · '+Math.round(state.iasKt)+' KT');
+  win.dispatchEvent(new CustomEvent('b737:flight-scenario-paused',{
+   detail:{paused:pause,icao:state.icao,runway:state.runway,preset:state.preset}}));
+  return true;
+ }
  function updateUI(){
   const stopButton=by('flightStop'),pauseButton=by('flightPause'),takeoffButton=by('flightTakeoff');
   if(stopButton)stopButton.disabled=!state||state.airborne===true;
-  if(pauseButton){pauseButton.disabled=!state;pauseButton.textContent=state&&pause?'RESUME':'PAUSE';}
+  if(pauseButton){pauseButton.disabled=!state;pauseButton.textContent=state&&pause?'START':'PAUSE';}
+  const sceneToggle=by('flightScenarioSceneToggle');
+  if(sceneToggle){
+   sceneToggle.disabled=!state||!active;
+   sceneToggle.textContent=state&&pause?'START':'PAUSE';
+   sceneToggle.setAttribute('aria-pressed',String(!!state&&!pause));
+   sceneToggle.dataset.flightStatus=!state?'NOT_LOADED':pause?'PAUSED':'RUNNING';
+   sceneToggle.title=!state?'Load a FLT PHASE scenario first':
+    pause?'Start flight simulation':'Pause flight simulation';
+  }
   if(takeoffButton)takeoffButton.disabled=!state||!(state.phase==='GROUND_READY'||(state.airborne===true&&state.radioAltitudeFt<2000));
  }
  function stop(){
@@ -789,7 +810,7 @@ try{
    if(typeof beforeStart==='function')beforeStart();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
-   active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
+   active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
     const mag=magneticHeading(state.trueHeadingDeg,state);
@@ -797,7 +818,9 @@ try{
     by('flightSpeed').value=Math.round(state.iasKt);
    }
    publish();lastPublish=performance.now();updateUI();
-   status('ACTIVE · '+state.icao+' RWY '+state.runway+' · '+state.phase+' · '+state.georefQuality);
+   if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+   status((pause?'PAUSED / READY':'ACTIVE')+' · '+state.icao+' RWY '+
+    state.runway+' · '+state.phase+' · '+state.georefQuality);
    return true;
   }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);return false;}
  }
@@ -955,16 +978,31 @@ try{
    // pushbutton. The Chapter 4 bridge resolves takeoff versus go-around.
    win.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{source:'FLT_PHASE'}}));
   });
-  by('flightPause').addEventListener('click',()=>{if(!active)return;pause=!pause;updateUI();});
+  by('flightPause').addEventListener('click',togglePause);
   by('flightStop').addEventListener('click',stop);
+  const scene=by('scene');
+  if(scene&&!by('flightScenarioSceneToggle')){
+   const toggle=doc.createElement('button');toggle.type='button';
+   toggle.id='flightScenarioSceneToggle';toggle.textContent='START';
+   toggle.setAttribute('aria-label','Start or pause the loaded flight scenario');
+   toggle.setAttribute('data-flight-owner','B737UnifiedFlightScenarioV1');
+   toggle.disabled=true;
+   toggle.addEventListener('click',togglePause);
+   scene.append(toggle);
+  }
   airportChanged();presetChanged();updateUI();
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
-  loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
+  loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));
+   win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
+   active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+   publish();lastPublish=performance.now();updateUI();
+   if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+   return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
-  pause:value=>{pause=value===true;updateUI();},stop,
+  pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
    lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,

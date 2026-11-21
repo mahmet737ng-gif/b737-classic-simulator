@@ -1232,7 +1232,7 @@ return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./mcp-afds-bridge-v1.js?v=MCP-TOGA-CH4-0003&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005 */
+/* ./mcp-afds-bridge-v1.js?v=MCP-FINAL10-LOAD-0001&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005 */
 try{
 /* MCP Phase 3 / slice 1: real Electrical V7 evidence -> conservative AFDS
  * educational mode core -> visual/hardware projection. No invented LRU feed.

@@ -834,7 +834,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ../../engine/flight/flight-scenario-core-v1.js?v=FINAL10-ONE-DOT-LOW-0001&amp;aero=LOW-SPEED-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Core v1 — deterministic, offline training model.
  * NOT FCOM performance, not a certified aerodynamic model or navigation source.

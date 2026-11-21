@@ -39,3 +39,25 @@
 @media(max-width:420px){#flightScenarioDialog .flight-standby-dial{width:110px;height:110px;flex-basis:110px}#flightScenarioDialog .flight-standby-row{gap:8px}}
 #tcasTrainingControls{margin:18px 0 0;padding:14px;border:1px solid #496a7e;border-radius:8px;min-width:0}
 #tcasTrainingControls legend{padding:0 8px;font-weight:700;color:#8dd5ed;letter-spacing:.04em}
+
+/* Inline at the real 4400x8100 cockpit canvas seam (OH bottom 3422,
+   main MCP top 3560). Moves/scales WITH the cockpit zoom/pan camera. */
+#scene #flightScenarioSceneToggle{
+ position:absolute!important;left:2200px!important;top:3491px!important;
+ transform:translate(-50%,-50%)!important;z-index:110!important;
+ width:228px!important;height:62px!important;min-width:228px!important;
+ border:3px solid #70cbe4!important;border-radius:13px!important;
+ background:#12354a!important;color:#e4f9ff!important;
+ font:700 25px/1 system-ui,Arial,sans-serif!important;
+ letter-spacing:2px!important;cursor:pointer!important;
+ box-shadow:0 5px 18px #000a,inset 0 0 12px #184e67!important;
+ pointer-events:auto!important;user-select:none!important;
+}
+#scene #flightScenarioSceneToggle[data-flight-status="RUNNING"]{
+ background:#5a321f!important;border-color:#fac48c!important;color:#fff2db!important;
+}
+#scene #flightScenarioSceneToggle[data-flight-status="PAUSED"]{
+ background:#16513e!important;border-color:#74e1be!important;color:#e1fff2!important;
+}
+#scene #flightScenarioSceneToggle:disabled{opacity:.55!important;cursor:not-allowed!important}
+#scene #flightScenarioSceneToggle:focus-visible{outline:4px solid #ffffff!important;outline-offset:4px!important}
