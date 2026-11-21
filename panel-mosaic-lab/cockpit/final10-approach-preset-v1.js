@@ -37,6 +37,7 @@
   if(!item||!item.states?.includes(target)||item.guarded===true||item.guard===true)return false;
   const before=api.getState?.()?.[id];
   if(before===target)return true;
+  if(typeof api.setScenarioSwitch==='function')return api.setScenarioSwitch(id,target)?.accepted===true;
   const switchButton=doc.getElementById('toggle-'+id);
   if(!switchButton)return false;
   switchButton.dispatchEvent(new winChild.MouseEvent('click',{bubbles:true,cancelable:true,detail:0}));
@@ -70,6 +71,9 @@
    ['bleed-apu','OFF'],['bleed-eng-1','ON'],['bleed-eng-2','ON'],
    ['pack-l','AUTO'],['pack-r','AUTO'],['isolation-valve','AUTO']
   ]){
+   // Do not repeatedly pulse a spring-return generator selector after its
+   // initial successful contactor command; each fresh load has a new check map.
+   if(check?.['OH_'+id]?.ok===true)continue;
    const ok=physicalOh(w,id,target);
    result('OH_'+id,ok,ok?target:'SWITCH_NOT_READY_OR_INHIBITED');
   }
