@@ -78,7 +78,7 @@ const bus={
 let live=liveModel(bus,core.initial(),.8);
 assert.equal(live.efis.displayPower,true);
 assert.equal(liveModel(bus,core.initial(),.8,{powered:false}).efis.displayPower,false,'Onside 115 VAC feed takes priority');
-assert.deepEqual([live.heading,live.track,live.groundSpeed,live.trueAirspeed],[340,345,212,232]);
+assert.deepEqual([live.heading,live.track,live.groundSpeed,live.trueAirspeed],[null,null,212,232], 'No magnetic display heading or track without valid declination');
 assert.equal(live.selectedHeading,null,'No mixed TRUE and magnetic references');
 assert.deepEqual(live.route.points,[],'Live renderer must not fabricate demo geometry');
 assert.deepEqual(live.mapObjects,[]);
