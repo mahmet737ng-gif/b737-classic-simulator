@@ -67,7 +67,9 @@
   const loc=front?clamp(offAxis/1.25,-2.5,2.5):null;
   const effectiveNm=Math.max(.03,g.distanceNm);
   const actualGlide=Math.atan2(aircraft.altitudeFt-station.elevationFt-(station.tchFt??50),effectiveNm*FT_PER_NM)/R;
-  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)&&Math.abs(actualGlide-station.glideDeg)<=5;
+  // 0.01NM numerical tolerance allows an exact 10NM great-circle final at
+  // decimal-degree station coordinates (not an extra reception claim).
+  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)+.01&&Math.abs(actualGlide-station.glideDeg)<=5;
   return {...out,frontCourse:front,runway:station.runway,airport:station.airport,
    localizerDots:loc,glideslopeDots:gsValid?clamp((actualGlide-station.glideDeg)/.35,-2.5,2.5):null,
    glidepathAngleDeg:actualGlide,courseTrueDeg:station.courseTrueDeg,courseMagDeg:station.courseMagDeg??null,tchFt:station.tchFt??50,positionQuality:station.positionQuality};
