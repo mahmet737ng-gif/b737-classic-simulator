@@ -21,3 +21,16 @@ test('FCOM 20-foot altitude wheels preserve correct carry timing after direction
  assert.equal(a2[3].digit,8);
  assert.equal(b2[3].digit,8);assert.equal(b2[3].fraction,.5);
 });
+
+test('Photo ASI shows 000 at stationary ground IAS and omits extra white cursor diamond',()=>{
+ assert.ok(gauge.includes('!s.airDataOff&&Number.isFinite(s.ias)'),
+  'IAS numeric window must remain visible at 0 through 45 kt, unless air data is off');
+ assert.ok(!gauge.includes('&&s.ias>45'),
+  'No low-speed threshold may blank the IAS readout');
+ assert.ok(!gauge.includes("const cursor=svg(movable,'path'"),
+  'The unnecessary white cursor diamond must not be created');
+ assert.ok(!gauge.includes("cursor.setAttribute('transform'"),
+  'Do not rotate a deleted diamond; preserve separate speed bugs and set knob');
+ assert.ok(gauge.includes("const bugNames=['bug-1','bug-2','bug-3','bug-4']"),
+  'Physical speed bugs must stay intact');
+});
