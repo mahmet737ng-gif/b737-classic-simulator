@@ -1,5 +1,167 @@
 (async()=>{
 ;
+/* ./iran-radio-nav-unified-v1.js?v=IRAN-RADIONAV-0001 */
+try{
+/* Unified B737 Classic — NAV tuning and actual training trajectory -> avionics bus.
+ * Existing EFIS and RDMI instruments own rendering; no display DOM mutations.
+ * Training model only; not real ILS radio propagation or AFDS guidance.
+ */
+(function(root){
+ 'use strict';
+ const GEO=root.B737IranRadioNavaidsV1;
+ if(!GEO||!root.document)return;
+ const owners={},errors={},seats=['CAPT','FO'];
+ let lastReason='NO_VALID_AIRCRAFT_POSITION',lastState={},started=false;
+ function connect(){
+  const net=root.B737UnifiedAvionicsNetworkV1;
+  if(!net?.connectExternal)return false;
+  for(const owner of ['VHF_NAV','DME','ILS']){
+   if(owners[owner]||errors[owner])continue;
+   try{owners[owner]=net.connectExternal(owner);}
+   catch(err){errors[owner]=String(err.message||err);}
+  }
+  return Object.keys(owners).length>0;
+ }
+ function position(){
+  const trainer=root.B737UnifiedFlightScenarioV1;
+  const scene=trainer?.getDiagnostics?.()?.active===true?trainer.getState?.():null;
+  if(scene&&Number.isFinite(scene.lat)&&Number.isFinite(scene.lon)&&Number.isFinite(scene.altitudeFt))
+   return {lat:scene.lat,lon:scene.lon,altitudeFt:scene.altitudeFt,source:'FLIGHT_SCENARIO'};
+  const s=root.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
+  for(const key of ['irs.left','irs.right']){
+   const record=s?.[key],v=record?.quality==='VALID'?record.value:null;
+   if(v?.powered!==true||v?.positionValid!==true||!Number.isFinite(v.lat)||!Number.isFinite(v.lon))continue;
+   const adc=s?.['airdata.adc'+(key==='irs.left'?1:2)];
+   const alt=adc?.quality==='VALID'?adc.value?.pressureAltitudeFt:null;
+   if(Number.isFinite(alt))return {lat:v.lat,lon:v.lon,altitudeFt:alt,source:'IRS_ADC'};
+  }
+  return null;
+ }
+ function magneticVariation(point){
+  const mag=root.B737WMM2025V1?.evaluate?.({lat:point.lat,lon:point.lon,altitudeFt:point.altitudeFt});
+  return mag?.valid===true&&Number.isFinite(mag.declinationDeg)?mag.declinationDeg:null;
+ }
+ function course(channel){
+  const snapshot=root.B737UnifiedAvionicsNetworkV1?.getSnapshot?.();
+  const record=snapshot?.['mcp.state'];
+  if(record?.quality!=='VALID')return null;
+  const mcp=record.value;
+  if(mcp?.powered!==true||(channel===2&&mcp.course2Powered!==true))return null;
+  const deg=channel===1?mcp.courseL:mcp.courseR;
+  return Number.isFinite(deg)?deg:null;
+ }
+ function emit(owner,topic,payload,reason){
+  const p=owners[owner];if(!p)return;
+  try{p.publish(topic,payload,{quality:payload?'VALID':'UNKNOWN',
+   origin:'TRAINING_SCENARIO',reason:payload?null:reason||'NO_TUNED_REFERENCE_SIGNAL'});}
+  catch(err){errors[owner]=String(err.message||err);}
+ }
+ function refresh(){
+  if(!connect())return false;
+  const aircraft=position();
+  lastReason=aircraft?'TRAINING_RADIONAV_ACTIVE':'NO_VALID_AIRCRAFT_POSITION';lastState={};
+  for(let i=0;i<2;i++){
+   const seat=seats[i],ch=i+1,ctl=root.B737UnifiedVHFNavControlsV1?.getState?.(seat);
+   const frequencyKhz=ctl?.activeFrequencyKhz;
+   const chReason=!aircraft?'POSITION_INVALID':!Number.isInteger(frequencyKhz)?'NAV_NOT_TUNED':null;
+   if(chReason){
+    emit('VHF_NAV','navigation.vor'+ch,null,chReason);
+    emit('DME','navigation.dme'+ch,null,chReason);
+    emit('ILS','navigation.ils'+ch,null,chReason);
+    lastState[seat]={frequencyKhz:frequencyKhz??null,stationIdent:null,reason:chReason};continue;
+   }
+   const vor=GEO.match(frequencyKhz,'VOR',aircraft),ils=GEO.match(frequencyKhz,'ILS',aircraft);
+   const source=ils||vor;
+   const distance=source?GEO.ground(aircraft,source).distanceNm:Infinity;
+   const inRange=!!source&&distance<=(ils?18:130);
+   const variation=magneticVariation(source||aircraft);
+   const calculated=inRange?GEO.evaluate(aircraft,source,{variationDeg:variation,courseMagDeg:course(ch)}):null;
+   const ilsValid=!!ils&&calculated?.frontCourse===true;
+   const vorValid=!!vor&&!!calculated;
+   const vorData=vorValid?{
+    stationIdent:vor.ident,stationLat:vor.lat,stationLon:vor.lon,
+    tunedFrequencyMHz:vor.freqKhz/1000,bearingDeg:calculated.bearingDeg,
+    bearingReference:'TRUE',radialDeg:calculated.radialMagDeg,
+    toFrom:calculated.toFrom,deviationDots:calculated.deviationDots,
+    trainingOnly:true,source:calculated.source}:null;
+   const ilsData=ilsValid?{
+    stationIdent:ils.ident,stationLat:ils.lat,stationLon:ils.lon,
+    tunedFrequencyMHz:ils.freqKhz/1000,localizerDots:calculated.localizerDots,
+    glideslopeDots:calculated.glideslopeDots,frontCourse:true,
+    courseTrueDeg:ils.courseTrueDeg,runway:ils.runway,
+    trainingOnly:true,positionQuality:calculated.positionQuality,
+    source:calculated.source}:null;
+   const dmeData=(vorValid||ilsValid)?{
+    stationIdent:source.ident,stationLat:source.lat,stationLon:source.lon,
+    distanceNm:calculated.distanceNm,tunedFrequencyMHz:source.freqKhz/1000,
+    trainingOnly:true,slantRange:true,source:calculated.source}:null;
+   emit('VHF_NAV','navigation.vor'+ch,vorData,vor?'VOR_OUT_OF_RANGE':'NO_VOR_MATCH');
+   emit('DME','navigation.dme'+ch,dmeData,'NO_VALID_DME');
+   emit('ILS','navigation.ils'+ch,ilsData,ils?'ILS_NOT_IN_FRONT_COURSE':'NO_ILS_MATCH');
+   lastState[seat]={frequencyKhz,stationIdent:vorValid||ilsValid?source.ident:null,
+    type:vorValid?'VOR':ilsValid?'ILS':null,distanceNm:dmeData?.distanceNm??null,
+    positionSource:aircraft.source,
+    reason:vorValid||ilsValid?'TRAINING_GEOMETRY_VALID':'STATION_OUT_OF_RANGE_OR_NO_FRONT_COURSE'};
+  }
+  return true;
+ }
+ function schedule(){root.setTimeout?.(refresh,0);}
+ for(const event of ['b737:vhf-nav-mode','b737:unified-vhf-frequency',
+  'b737:nav-auto-frequency','b737:flight-scenario-state',
+  'b737:flight-scenario-stopped','b737:efis-preset-change',
+  'b737:irs-trainer-state'])root.addEventListener(event,schedule);
+ function start(){if(started)return;started=true;refresh();root.setInterval?.(refresh,1000);}
+ if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+ root.B737UnifiedIranRadioNavV1=Object.freeze({version:'IRAN-RADIONAV-UNIFIED-0001',refresh,
+  getState:()=>JSON.parse(JSON.stringify({reason:lastReason,channels:lastState,ownerErrors:errors})),
+  stationCatalog:GEO.STATIONS});
+})(window);
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
+/* ./flight-envelope-le-bridge-v1.js?v=LE-PORTS-AERO-0001 */
+try{
+/* Instructor flight envelope -> OWNER FINAL LE Devices external dynamics port.
+ * Do not modify the locked LE model, trainer bridge or physical lever.
+ * Conditional autoslat demand is an IAS proxy, not certified AoA logic.
+ */
+(function(win){
+ 'use strict';
+ const VALID='B737_FLIGHT_SCENARIO_STATE_V1';
+ const source=()=>win.document.getElementById('overheadFrame')?.contentWindow;
+ let ready=false,onGround=true,requested=false,previous=null;
+ function transmit(force=false){
+  const target=source(),key=JSON.stringify([onGround,requested]);
+  if(!ready||!target||(!force&&previous===key))return false;
+  target.postMessage({type:'b737:cockpit-command',action:'le-aircraft-dynamics',
+   source:'INSTRUCTOR_LOW_SPEED_ENVELOPE_NOT_AOA',
+   snapshot:{onGround,autoslatRequested:requested}},win.location.origin);
+  previous=key;return true;
+ }
+ win.addEventListener('b737:flight-scenario-state',e=>{
+  const f=e.detail;if(f?.schema!==VALID)return;
+  onGround=f.airborne!==true;
+  const p=win.B737LEDevicesUnifiedLink?.getState?.();
+  requested=!onGround&&[1,2,5].includes(p?.lever)&&f.autoSlatRequest===true;
+  transmit();
+ });
+ win.addEventListener('b737:flight-scenario-stopped',()=>{
+  onGround=true;requested=false;transmit();
+ });
+ win.addEventListener('message',e=>{
+  if(e.origin!==win.location.origin||e.source!==source()||
+     e.data?.type!=='b737:cockpit-overhead'||e.data.kind!=='ready')return;
+  ready=true;previous=null;transmit(true);
+ });
+ win.B737FlightEnvelopeLEBridgeV1=Object.freeze({snapshot:()=>({
+  ready,onGround,requested,source:'INSTRUCTOR_LOW_SPEED_ENVELOPE_NOT_AOA'
+ })});
+})(window);
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
 /* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119 */
 try{
 /* TCAS-independent Unified TO/GA integration.
@@ -567,176 +729,6 @@ try{
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});
  else boot();
-})(window);
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ../../engine/instruments/flight-dynamics-gauge-model-v1.js?v=FLIGHT-GAUGE-0001 */
-try{
-/* Unified B737 Classic flight-to-gauge source mapping, instructor scenario only.
- * Stateless, testable; not a replacement for air data, baro compensation or
- * certified instrument calibration. Dial geometry based on existing photo
- * needle reference: upper pointer 0 deg, IVSI 0 FPM at 9 o'clock (-90deg).
- */
-(function(root,factory){'use strict';const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root)root.B737FlightDynamicsGaugesV1=api;
-})(typeof globalThis!=='undefined'?globalThis:null,function(){
- 'use strict';
- const VERSION='FLIGHT_DYNAMICS_GAUGES_0001';
- const VSI_TICKS=Object.freeze([[0,0],[500,25],[1000,42],[2000,58],[4000,75],[6000,90]]);
- const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
- const finite=(x,a,b)=>typeof x==='number'&&Number.isFinite(x)&&x>=a&&x<=b;
- function altimeterAngle(ft){
-  if(!finite(ft,-2000,65000))throw RangeError('ALTIMETER_ALTITUDE');
-  // Hundred-foot needle, one clockwise revolution per 1000 ft.
-  return ((ft%1000)+1000)%1000*360/1000;
- }
- function interpolate(x,points){
-  const v=clamp(x,points[0][0],points.at(-1)[0]);
-  for(let i=1;i<points.length;i++)if(v<=points[i][0]){
-   const a=points[i-1],b=points[i];return a[1]+(v-a[0])/(b[0]-a[0])*(b[1]-a[1]);
-  }
-  return points.at(-1)[1];
- }
- function ivsiAngle(fpm){
-  if(!finite(fpm,-10000,10000))throw RangeError('IVSI_FPM');
-  return -90+Math.sign(fpm)*interpolate(Math.abs(fpm),VSI_TICKS);
- }
- function sample(frame){
-  if(!frame||frame.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||
-   !finite(frame.altitudeFt,-2000,65000)||!finite(frame.iasKt,0,450)||
-   !finite(frame.vsFpm,-10000,10000))throw TypeError('INVALID_FLIGHT_INSTRUMENT_SOURCE');
-  const altitudeFt=frame.altitudeFt,iasKt=frame.iasKt,vsFpm=frame.vsFpm;
-  return Object.freeze({schema:VERSION,source:'UNIFIED_FLIGHT_SCENARIO',
-   quality:'TRAINING_SIMULATED',revision:frame.revision,
-   altitudeFt,standbyAltitudeFt:altitudeFt,indicatedSpeedKt:iasKt,verticalSpeedFpm:vsFpm,
-   altimeterNeedleDeg:altimeterAngle(altitudeFt),standbyNeedleDeg:altimeterAngle(altitudeFt),
-   ivsiNeedleDeg:ivsiAngle(vsFpm),
-   airspeedPointerKt:clamp(iasKt,60,400),airspeedBelowScale:iasKt<60,
-   note:'SIM MSL WITH STANDARD BARO ASSUMPTION; PHOTO NEEDLES UNCALIBRATED'});
- }
- return Object.freeze({VERSION,altimeterAngle,ivsiAngle,sample,VSI_TICKS});
-});
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ./flight-instrument-dynamics-v1.js?v=FLT-UI-SLIM-0001 */
-try{
-/* Unified flight dynamics -> CAPT/FO analog primary flight instruments.
- * Drives existing physical needle APIs (no competing SVG layer or pixel drift).
- * Standby barometric model is independent source, with diagnostic readout until
- * its center-panel mechanical needle registration is photographically verified.
- * Scenario feed is explicitly TRAINING, never an operational sensor.
- */
-(function(win){
- 'use strict';
- const Model=win.B737FlightDynamicsGaugesV1;
- if(!Model){win.console?.error('Flight dynamics gauge mapping dependency absent');return;}
- const doc=win.document,VERSION='UNIFIED_FLIGHT_GAUGE_BRIDGE_0001';
- const by=id=>doc.getElementById(id);
- let last=null,active=false,previous=null,latest=null,queued=false,paints=0,error=null;
- let accumulatedAltitudeAngle=null;
- const stations=['captain','firstOfficer'];
- const clone=x=>x===null?null:JSON.parse(JSON.stringify(x));
- const validApi=()=>typeof win.B737UnifiedFlightNeedles?.setAngle==='function'&&
-  typeof win.B737UnifiedAirspeedPointers?.setAirspeedKts==='function';
- function capture(){
-  if(previous||!validApi())return;
-  const fn=win.B737UnifiedFlightNeedles,air=win.B737UnifiedAirspeedPointers;
-  previous={angles:fn.getAngles(),airspeed:air.getValues()};
- }
- function draw(sample){
-  if(!sample||!validApi())return false;
-  capture();
-  const fn=win.B737UnifiedFlightNeedles,asi=win.B737UnifiedAirspeedPointers;
-  const first=accumulatedAltitudeAngle===null;
-  if(first)accumulatedAltitudeAngle=sample.altimeterNeedleDeg;
-  else{
-   const previousWrapped=((accumulatedAltitudeAngle%360)+360)%360;
-   const smallestDelta=((sample.altimeterNeedleDeg-previousWrapped+540)%360)-180;
-   accumulatedAltitudeAngle+=smallestDelta;
-  }
-  for(const station of stations){
-   if(typeof fn.setContinuousAngle==='function'){
-    fn.setContinuousAngle(station,'altimeter',accumulatedAltitudeAngle,{instant:first});
-    fn.setContinuousAngle(station,'verticalSpeed',sample.ivsiNeedleDeg,{instant:first});
-   }else{
-    fn.setAngle(station,'altimeter',sample.altimeterNeedleDeg);
-    fn.setAngle(station,'verticalSpeed',sample.ivsiNeedleDeg);
-   }
-   asi.setAirspeedKts(sample.airspeedPointerKt,station);
-  }
-  last=sample;active=true;paints++;
-  win.dispatchEvent(new CustomEvent('b737:standby-altimeter-sample',{detail:{
-   schema:'B737_STANDBY_ALTIMETER_SAMPLE_V1',
-   quality:'TRAINING_SIMULATED',source:sample.source,
-   altitudeFt:sample.standbyAltitudeFt,needleAngleDeg:sample.standbyNeedleDeg,
-   standardBaroAssumption:true,physicalDialRegistration:'PENDING_VERIFIED_GEOMETRY'
-  }}));
-  return true;
- }
- function schedule(frame){
-  latest=frame;
-  if(queued)return;
-  queued=true;
-  win.requestAnimationFrame(()=>{
-   queued=false;
-   const current=latest;latest=null;
-   if(!current)return;
-   try{
-    if(!draw(Model.sample(current)))error='GAUGE_NOT_READY';
-    else error=null;
-   }catch(e){error=String(e?.message||e);win.console?.warn('Flight gauge bridge',e);}
-  });
- }
- function stopped(){
-  latest=null;active=false;last=null;accumulatedAltitudeAngle=null;
-  if(previous&&validApi()){
-   const fn=win.B737UnifiedFlightNeedles,asi=win.B737UnifiedAirspeedPointers;
-   try{
-    for(const station of stations){
-     for(const key of ['altimeter','verticalSpeed'])
-      if(Number.isFinite(previous.angles?.[station]?.[key])){
-       const angle=previous.angles[station][key];
-       if(typeof fn.setContinuousAngle==='function')
-        fn.setContinuousAngle(station,key,angle,{instant:true});
-       else fn.setAngle(station,key,angle);
-      }
-     if(Number.isFinite(previous.airspeed?.[station]?.airspeedKts))
-      asi.setAirspeedKts(previous.airspeed[station].airspeedKts,station);
-    }
-   }catch(e){error='RESTORE: '+String(e?.message||e);}
-  }
-  previous=null;
-  win.dispatchEvent(new CustomEvent('b737:standby-altimeter-sample',{detail:{
-   schema:'B737_STANDBY_ALTIMETER_SAMPLE_V1',quality:'UNKNOWN',
-   source:'SCENARIO_STOPPED',altitudeFt:null,physicalDialRegistration:'PENDING_VERIFIED_GEOMETRY'
-  }}));
- }
- win.addEventListener('b737:flight-scenario-state',event=>{
-  if(event.detail?.schema==='B737_FLIGHT_SCENARIO_STATE_V1')schedule(event.detail);
- });
- win.addEventListener('b737:flight-scenario-stopped',stopped);
- function mount(){
-  // An active scenario can predate this deferred bundle; attach without
-  // requiring a second LOAD press.
-  const scn=win.B737UnifiedFlightScenarioV1;
-  if(scn?.getDiagnostics?.()?.active===true){
-   const snap=scn.getState?.();if(snap)schedule(snap);
-  }
- }
- win.addEventListener('b737:cockpit-mounted',mount);
- if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
- else mount();
- win.B737UnifiedFlightGaugeBridgeV1=Object.freeze({
-  VERSION,getState:()=>({active,sample:clone(last),paints,error,previousCaptured:!!previous,
-   registration:{altimeter:['captain','firstOfficer'],airspeed:['captain','firstOfficer'],
-    ivsi:['captain','firstOfficer'],standbyAltimeter:'DATA_ONLY_PENDING_DIAL_REGISTRATION'}}),
-  update:frame=>draw(Model.sample(frame)),stop:stopped,mount
- });
 })(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}
