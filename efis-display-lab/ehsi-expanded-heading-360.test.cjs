@@ -116,6 +116,6 @@ test('360 FULL NAV remains distinct from 70 expanded, no fabricated offscale ind
  const full=draw('FULL_NAV',166,260);
  assert.equal(V.LAYOUT.FULL_NAV.degrees,360);
  assert.equal(full.named('heading-bug').length,1);
- assert.equal(full.named('heading-bug-vector').length,0);
+ assert.equal(full.named('heading-bug-vector').length,1, 'FCOM 10.32.2 full-rose reference line');
  assert.equal(V.selectedHeadingPresentation(V.model(fixture('FULL_NAV',166,260)),V.LAYOUT.FULL_NAV).offScale,false);
 });
