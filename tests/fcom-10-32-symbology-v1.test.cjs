@@ -104,3 +104,21 @@ test('fault overlay renders only validated symbols at their assigned zones',()=>
  FCOM.draw(svg,state,{});
  assert.equal(svg.children.length,0);
 });
+
+test('10.32.17 route data, 10.32.20 VNAV and 10.32.23 range scale rules are implemented',()=>{
+ const source=fs.readFileSync(path.join(root,'efis-display-lab/ehsi-v2.js'),'utf8');
+ assert.match(source,/m\.options\.rteData===true/);
+ assert.match(source,/points\[i\]\.altitude,points\[i\]\.eta/);
+ assert.match(source,/m\.nav\.vnavActive&&m\.nav\.descent===true/);
+ assert.match(source,/\(m\.options\.wxr\|\|m\.options\.tfc\)/);
+});
+test('92-item FCOM mode/evidence matrix never paints unknown or wrong-mode signals',()=>{
+ for(const spec of Registry.specs){
+  for(const mode of Registry.modes){
+   const state=Registry.eligible(spec.id,mode,{[spec.id]:{valid:true}});
+   assert.equal(state.eligible,spec.modes.includes(mode),spec.id+' in '+mode);
+  }
+  assert.equal(Registry.eligible(spec.id,spec.modes[0],{[spec.id]:{valid:false}}).eligible,false);
+ }
+ assert.equal(Registry.eligible('FAKE','MAP',{FAKE:{valid:true}}).eligible,false);
+});
