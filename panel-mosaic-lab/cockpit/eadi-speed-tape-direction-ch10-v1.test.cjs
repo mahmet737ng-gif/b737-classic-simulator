@@ -33,3 +33,32 @@ assert.ok(source.includes('y+(j+f.fraction)*34'),
  'EADI digits must move DOWN with increasing indicated speed');
 
 console.log('PASS EADI IAS scale: high speeds above lower speeds and correct downward tape scroll on acceleration');
+
+
+ // At 0 kt the network refreshes an unchanged ADC fingerprint without a
+ // second data-change event. The EADI must respect the fresh heartbeat.
+ const timers=new Map();
+ let sequence=0;
+ let latest={quality:'VALID',origin:'SIMULATOR_TELEMETRY',
+  value:{casKt:0,mach:0,pressureAltitudeFt:3260},
+  receivedAtMs:Date.now()-1000};
+ const host={
+  B737ClassicSpeedTapeEngineV1:Model,
+  B737UnifiedEADIStage1:{registerLayer(){return()=>{}},requestPaint(){}},
+  B737UnifiedAvionicsNetworkV1:{getSignal(topic){return topic==='airdata.adc1'?latest:null}},
+  addEventListener(){},setTimeout(fn){const id=++sequence;timers.set(id,fn);return id;},
+  clearTimeout(id){timers.delete(id);}
+ };
+ globalThis.B737ClassicSpeedTapeEngineV1=Model;
+ assert.equal(Tape.bind(host),true);
+ assert.equal(Tape.observeAdc('CAPT',latest),true);
+ assert.equal(Tape.getView('CAPT').casKt,0);
+ assert.equal(Tape.getView('CAPT').lowSpeedDefault,true);
+ assert.equal(Tape.getView('CAPT').tapeCenterKt,45);
+ const first=timers.get(sequence);
+ latest={...latest,receivedAtMs:Date.now()};
+ first();
+ assert.equal(Tape.getView('CAPT').casKt,0,'unchanged 0 kt heartbeat must not expire');
+ assert.equal(Tape.getView('CAPT').lowSpeedDefault,true,'low-speed 45-kt display persists');
+ assert.equal(Tape.getView('CAPT').quality,'VALID','fresh heartbeat retains valid ADC source');
+ assert.ok(timers.has(sequence),'refresh schedules next single expiry check');
