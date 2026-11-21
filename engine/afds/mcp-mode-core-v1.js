@@ -49,7 +49,7 @@ function initialState(){return {
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
- nav:{loc:false,gs:false},togaActive:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
+ nav:{loc:false,gs:false},togaActive:false,togaSingleEngine:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
  lastRejection:null,lastAutopilotDisengagement:null
 };}
@@ -92,7 +92,7 @@ function clearModes(s){
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
- s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;
+ s.targets={pitch:null,roll:null};s.flight=null;s.togaActive=false;s.togaSingleEngine=false;
  s.autoThrustByPitch=false;s.lvlChgPhase='UNKNOWN';
  s.speedLimit=SpeedLimit?.initialState?.()??null;
  s.flightDirectorBarsRetracted=false;
@@ -166,6 +166,7 @@ function transition(state,action){
   s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
   s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
   s.flightDirectorBarsRetracted=false;s.togaActive=true;
+  s.togaSingleEngine=action.singleEngine===true;
   return done();
  }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
@@ -579,7 +580,7 @@ function transition(state,action){
   return done();
  }
  if(vertical.includes(id)){
-  s.togaActive=false;
+  s.togaActive=false;s.togaSingleEngine=false;
   // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
   // following G/S capture in APP.
   if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
@@ -623,12 +624,13 @@ function output(s){
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
-   speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV",verticalSpeed:s.modes.vertical!=="VS"},
+   speedDisplayMode:s.speedDisplayMode,bankAngleLimit:s.bankAngleLimit,displayBlank:{speed:s.modes.vertical==="VNAV"||s.togaActive===true&&!s.togaSingleEngine,
+    verticalSpeed:s.modes.vertical!=="VS"},
    controls:{fd:{...s.fd},atArm:s.autoThrottleArm},
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},togaActive:s.togaActive===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
+  modes:{...s.modes},togaActive:s.togaActive===true,togaSingleEngine:s.togaSingleEngine===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
