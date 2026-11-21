@@ -123,7 +123,9 @@
    out.actions.push({type:'ALTITUDE',value:out.state.cwsAltitudeFt});
    out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.cwsAltitudeFt));out.pitchValid=true;
   }else if(mcp.capture?.pitch==='FLARE'&&nav?.glideValid===true){
-   const flareVs=clamp(-250+Math.max(0,50-(flight.radioAltitudeFt||0))*3,-250,-60);
+   // TRAINING-ONLY sink-rate scheduling; Boeing FCOM does not publish
+   // touchdown servo gains. Retains realistic descent to runway after 50 RA.
+   const flareVs=clamp(-420+Math.max(0,50-(flight.radioAltitudeFt||0))*3,-420,-250);
    out.actions.push({type:'VS',value:flareVs});
    out.pitchCommandDeg=pitchForVs(flareVs);
    out.pitchValid=true;
