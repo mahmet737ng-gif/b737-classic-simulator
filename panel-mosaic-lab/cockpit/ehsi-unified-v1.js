@@ -222,6 +222,13 @@
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
+    // Course and VOR/ADF overlays use valid avionics packets only; this
+    // additive layer does not modify the owner-approved EHSI photo geometry.
+    const flightPos=scenarioState&&Number.isFinite(scenarioState.lat)&&
+     Number.isFinite(scenarioState.lon)?scenarioState:null;
+    if(!preview)win.B737UnifiedEhsiRadioOverlayV1?.draw(screen.svg,model,src,
+     snapshot,flightPos||src.mapPosition,renderer);
+    else screen.svg.querySelector('[data-radio-nav-overlay]')?.remove();
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
