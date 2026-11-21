@@ -14,6 +14,7 @@
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
  const panGuard=window.B737PanStabilityV1;
  let galleryMounted=false,viewRefreshTimer=0;
+ let lastViewportWidth=vp.clientWidth,lastViewportHeight=vp.clientHeight;
  function scheduleViewRefresh(){
   if(viewRefreshTimer)return;
   viewRefreshTimer=setTimeout(()=>{
@@ -155,6 +156,7 @@
  function commitZoomPresentation(){
   scene.style.setProperty('--zoom',String(zoom));
   byId('zoomValue').textContent=Math.round(zoom*100)+'%';
+  lastViewportWidth=vp.clientWidth;lastViewportHeight=vp.clientHeight;
   scheduleViewRefresh();
  }
  function applyZoom(value,left=vp.scrollLeft,top=vp.scrollTop,x=vp.clientWidth/2,y=vp.clientHeight/2,gestureSource=null,inputTime){
@@ -406,7 +408,15 @@
   clearTimeout(resizeTimer);
   resizeTimer=setTimeout(()=>{
    if(!assembly)return;
-   applyZoom(zoom,vp.scrollLeft,vp.scrollTop,vp.clientWidth/2,vp.clientHeight/2);
+   endParentDrag();
+   if(drag?.source==='iframe')drag=null;
+   // Preserve the same source pixel under the viewport center. Using the
+   // NEW width for both old/new anchors shifts the image on every resize.
+   const oldWidth=lastViewportWidth||vp.clientWidth;
+   const oldHeight=lastViewportHeight||vp.clientHeight;
+   const left=vp.scrollLeft+(oldWidth-vp.clientWidth)/2;
+   const top=vp.scrollTop+(oldHeight-vp.clientHeight)/2;
+   applyZoom(zoom,left,top,vp.clientWidth/2,vp.clientHeight/2);
   },120);
  });
  async function start(){try{const trace=window.B737BootTrace,wait=trace?performance.now():0;const prefetched=window.B737UnifiedAssemblyPrefetch?await window.B737UnifiedAssemblyPrefetch:null;if(prefetched?.error)throw Error(prefetched.error);if(prefetched?.data)assembly=prefetched.data;else{const r=await fetch('./assembly.json',{cache:'no-store'});if(!r.ok)throw Error('Assembly unavailable');assembly=await r.json();}const parseEnd=trace?performance.now():0;
