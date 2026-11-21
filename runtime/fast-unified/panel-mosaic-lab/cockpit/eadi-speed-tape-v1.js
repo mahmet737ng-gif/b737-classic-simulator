@@ -322,9 +322,15 @@
    pressureAltitudeFt:value.pressureAltitudeFt??null});}
   catch(error){win?.console?.warn?.('EADI rejected ADC sample',error);return false;}
   cancelExpiry(seat);
-  // One-shot expiry only; no 50/100-ms polling. If source stops, speed blanks.
+  // The avionics network refreshes unchanged ADC samples without dispatching
+  // another event. Recheck the channel before expiring a stationary IAS,
+  // otherwise a valid 0-kt ground sample disappears after two seconds.
   if(win?.setTimeout)expiry[seat]=win.setTimeout(()=>{
-   expiry[seat]=null;dispatch(seat,{type:'ADC_TIMEOUT',nowMs:Date.now()});
+   expiry[seat]=null;
+   const topic=seat==='CAPT'?'airdata.adc1':'airdata.adc2';
+   const latest=win?.B737UnifiedAvionicsNetworkV1?.getSignal?.(topic);
+   if(latest?.quality==='VALID'&&observeAdc(seat,latest))return;
+   dispatch(seat,{type:'ADC_TIMEOUT',nowMs:Date.now()});
   },2100);
   return true;
  }

@@ -296,7 +296,6 @@ try{
         const mach=text(504,682,41),ias=rollingReadout(504,893,49,3,'#b4f77a');
         const bugNames=['bug-1','bug-2','bug-3','bug-4'], oranges=['orange-1','orange-2'];
         [...bugNames,...oranges,'limit-needle','ias-needle','set-knob'].forEach(place);
-        const cursor=svg(movable,'path',{d:`M ${cx-13} ${cy-251} l 13 -18 l 13 18 l -13 19 Z`,fill:'#f5f3e7',stroke:'#202327','stroke-width':3});
         const manual=svg(movable,'text',{x:143,y:662,fill:'#ffcc79','font-size':16});
         manual.textContent='MAN';
         const hit={};
@@ -312,9 +311,9 @@ try{
         update=s=>{
           const air=airData(s.ias,s.altitude,s.oat);
           mach.textContent=s.airDataOff||air.mach<.4?'':Math.min(.99,air.mach).toFixed(2).slice(1);
-          cursor.setAttribute('transform',`rotate(${interpolate(s.cursorManual?s.cursor:(s.autoCursor??s.cursor),iasScale)} ${cx} ${cy})`);
           setVisible(manual,s.cursorManual);
-          ias.set(Math.max(0,Math.min(s.ias,999.999)),!s.airDataOff&&s.ias>45);
+          // A low IAS is a valid numeric reading. Ground/zero must not blank the drum.
+          ias.set(Math.max(0,Math.min(s.ias,999.999)),!s.airDataOff&&Number.isFinite(s.ias));
           setVisible(sprite['ias-needle'],!s.airDataOff);
           rotate('ias-needle',interpolate(s.ias,iasScale));
           rotate('set-knob',(s.cursor-145)*3,100,630);
