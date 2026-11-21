@@ -85,6 +85,9 @@
    }
    return true;
   }
+  // APP/VOR-LOC capture is a separate validated FCC state. Without
+  // capture, heading/LNAV continue to command the existing lateral mode.
+  // These are explicitly training response gains, not Boeing servo gains.
   // CWS axes retain the attitude/heading at hand-off. No fabricated manual
   // yoke force: only an existing MCP CWS state can enable this hold.
   if(rAxis==='CWS'){
@@ -119,6 +122,15 @@
    if(!valid(out.state.cwsAltitudeFt))out.state.cwsAltitudeFt=flight.altitudeFt;
    out.actions.push({type:'ALTITUDE',value:out.state.cwsAltitudeFt});
    out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.cwsAltitudeFt));out.pitchValid=true;
+  }else if(mcp.capture?.pitch==='FLARE'&&nav?.glideValid===true){
+   const flareVs=clamp(-250+Math.max(0,50-(flight.radioAltitudeFt||0))*3,-250,-60);
+   out.actions.push({type:'VS',value:flareVs});
+   out.pitchCommandDeg=pitchForVs(flareVs);
+   out.pitchValid=true;
+  }else if(mcp.capture?.pitch==='G/S'&&nav?.glideValid===true){
+   out.actions.push({type:'VS',value:nav.gsVsFpm});
+   out.pitchCommandDeg=pitchForVs(nav.gsVsFpm);
+   out.pitchValid=true;
   }else if(pitchMode==='ALT_HLD'||mcp.capture?.pitch==='ALT_HOLD'){
    if(!valid(out.state.altitudeHoldFt))
     out.state.altitudeHoldFt=mcp.capture?.pitch==='ALT_HOLD'&&valid(v.altitude)?
@@ -159,6 +171,20 @@
   }else if(mcp.capture?.pitch==='ALT_ACQ'&&valid(v.altitude)){
    acquireAltitude(v.altitude);
   }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
+  if(nav?.togaActive===true){
+   // TO/GA: pitch guidance and ground-track roll steering remain valid
+   // even though the ROLL FMA is intentionally blank in this mode.
+   out.pitchValid=true;out.rollValid=true;
+   out.pitchCommandDeg=nav.togaPitchDeg??15;
+   out.rollCommandDeg=Number.isFinite(nav.togaTrackDeg)?
+    bankForHeading(nav.togaTrackDeg):0;
+   if(active){
+    out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ','HEADING'].includes(a.type));
+    out.actions.push({type:'VS',value:clamp(nav.togaVsFpm??1500,300,2200)});
+    if(Number.isFinite(nav.togaTrackDeg))
+     out.actions.push({type:'HEADING',value:norm(nav.togaTrackDeg)});
+   }
+  }
   // Independent axes: an active pitch mode never authorizes a roll cue,
   // and a blank lateral mode never suppresses an otherwise valid pitch cue.
   // CWS removes only its overridden axis; approach flare retracts both.
