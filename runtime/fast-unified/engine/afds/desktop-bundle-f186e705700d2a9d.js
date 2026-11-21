@@ -958,7 +958,7 @@ try{
   {ident:'ITRN',type:'ILS_DME',freqKhz:110700,lat:35.4114,lon:51.165798,elevationFt:3305,courseTrueDeg:290,glideDeg:3,runway:'29L',airport:'OIIE',source:'USER_IRAN_CHART_2620',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'IIKA',type:'ILS_DME',freqKhz:110300,lat:35.413101,lon:51.166000,elevationFt:3305,courseTrueDeg:288.88,glideDeg:3,runway:'29R',airport:'OIIE',source:'PUBLIC_OIIE_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   // Mehrabad OIII RWY 29L: ident ITHL, frequency 109.90 MHz; threshold is a TRAINING proxy, not localizer/DME surveyed antenna.
-  {ident:'ITHL',type:'ILS_DME',freqKhz:109900,lat:35.682400,lon:51.333599,elevationFt:3962,courseTrueDeg:289.75,glideDeg:3.3,runway:'29L',airport:'OIII',source:'PUBLIC_OIII_ILS_29L_REFERENCE',positionQuality:'PROVISIONAL_RWY_THR'},
+  {ident:'ITHL',type:'ILS_DME',freqKhz:109900,lat:35.682400,lon:51.333599,elevationFt:3797,dmeElevationFt:3804,courseMagDeg:285,courseTrueDeg:289.75,glideDeg:3.3,tchFt:59,locMaxNm:18,gsMaxNm:10,runway:'29L',airport:'OIII',source:'JEPPESEN_OIII_11-1_IRAN2620_CHART',positionQuality:'PROVISIONAL_RWY_THR',dmePositionQuality:'COLOCATED_THRESHOLD_TRAINING_PROXY'},
   {ident:'IMSD',type:'ILS_DME',freqKhz:109900,lat:36.224098,lon:59.657100,elevationFt:3263,courseTrueDeg:313.74,glideDeg:3,runway:'31R',airport:'OIMM',source:'PUBLIC_OIMM_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'ISYZ',type:'ILS_DME',freqKhz:109900,lat:29.5391667,lon:52.5898333,elevationFt:4927,courseTrueDeg:294.4,glideDeg:3,runway:'29L',airport:'OISS',source:'PUBLIC_OISS_APPROACH_REF',positionQuality:'PROVISIONAL_AIRPORT_ARP'}
  ];
@@ -974,7 +974,7 @@ try{
  }
  function dmeSlantNm(aircraft,station){
   const g=ground(aircraft,station).distanceNm;
-  return Math.hypot(g,(Number(aircraft.altitudeFt)-Number(station.elevationFt))/FT_PER_NM);
+  return Math.hypot(g,(Number(aircraft.altitudeFt)-Number(station.dmeElevationFt??station.elevationFt))/FT_PER_NM);
  }
  function validAircraft(a){return a&&Number.isFinite(a.lat)&&Math.abs(a.lat)<=90&&Number.isFinite(a.lon)&&Math.abs(a.lon)<=180&&Number.isFinite(a.altitudeFt);}
  function evaluate(aircraft,station,{variationDeg=null,courseMagDeg=null}={}){
@@ -995,14 +995,14 @@ try{
   const fromThreshold=ground(station,aircraft);
   const approachRay=wrap(station.courseTrueDeg+180);
   const offAxis=delta(fromThreshold.bearingTrue,approachRay);
-  const front=Math.abs(offAxis)<=35&&g.distanceNm<=18;
+  const front=Math.abs(offAxis)<=35&&g.distanceNm<=(station.locMaxNm??18);
   const loc=front?clamp(offAxis/1.25,-2.5,2.5):null;
   const effectiveNm=Math.max(.03,g.distanceNm);
-  const actualGlide=Math.atan2(aircraft.altitudeFt-station.elevationFt-50,effectiveNm*FT_PER_NM)/R;
-  const gsValid=front&&g.distanceNm<=10&&Math.abs(actualGlide-station.glideDeg)<=5;
+  const actualGlide=Math.atan2(aircraft.altitudeFt-station.elevationFt-(station.tchFt??50),effectiveNm*FT_PER_NM)/R;
+  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)&&Math.abs(actualGlide-station.glideDeg)<=5;
   return {...out,frontCourse:front,runway:station.runway,airport:station.airport,
    localizerDots:loc,glideslopeDots:gsValid?clamp((actualGlide-station.glideDeg)/.35,-2.5,2.5):null,
-   glidepathAngleDeg:actualGlide,courseTrueDeg:station.courseTrueDeg,positionQuality:station.positionQuality};
+   glidepathAngleDeg:actualGlide,courseTrueDeg:station.courseTrueDeg,courseMagDeg:station.courseMagDeg??null,tchFt:station.tchFt??50,positionQuality:station.positionQuality};
  }
  function match(freqKhz,type,aircraft=null){
   if(!Number.isInteger(freqKhz))return null;
@@ -1012,7 +1012,7 @@ try{
   if(!validAircraft(aircraft))return null;
   return options.sort((a,b)=>ground(aircraft,a).distanceNm-ground(aircraft,b).distanceNm)[0];
  }
- return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0002',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
+ return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0003',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}
