@@ -271,7 +271,11 @@
   const projection=le?.projection;
   if(!projection||!Number.isFinite(projection.tePosition))return false;
   const flapLever=le.lever,flapActual=projection.tePosition;
-  const slatsFull=projection.slatsFull===true;
+  // OWNER FINAL LE bridge exposes the approved stage and disagreement list,
+  // not its locked per-slat position objects. Credit FULL only on agreement.
+  const slatsFull=projection.leStage==='FULL'&&
+   projection.center?.extended===true&&
+   Array.isArray(projection.mismatch)&&projection.mismatch.length===0;
   if(![0,1,2,5,10,15,25,30,40].includes(flapLever)||
     flapActual<0||flapActual>40)return false;
   const ctx=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('flightcontext.state');
