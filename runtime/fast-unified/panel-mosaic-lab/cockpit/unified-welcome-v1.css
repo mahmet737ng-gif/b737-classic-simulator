@@ -12,7 +12,7 @@
   padding: clamp(16px, 4vw, 48px);
   box-sizing: border-box;
   color: #f3f7f9;
-  background: radial-gradient(ellipse at 50% 40%, #132b4b 0%, #091629 54%, #050d19 100%);
+  background: linear-gradient(110deg, #071016ed 15%, #07101691 100%), #071016 url("./performance/9d82db8f672d766f98d7-q96-768.webp") center 48% / cover;
   font: 15px / 1.45 system-ui, sans-serif;
 }
 
@@ -48,7 +48,7 @@
 }
 #unifiedWelcome .welcome-intro-window,
 #unifiedWelcome .welcome-intro-jet,
-#unifiedWelcome .welcome-intro-orbit,
+#unifiedWelcome .welcome-intro-wordmark,
 #unifiedWelcome .welcome-intro-flight {
   position: absolute;
   inset: 0;
@@ -64,29 +64,16 @@
   background-image: url("./brand/unified-intro-aircraft.webp");
   animation: unified-intro-arrive 2.8s cubic-bezier(.22,.65,.35,1) .12s both;
 }
-#unifiedWelcome .welcome-intro-orbit,
-#unifiedWelcome .welcome-intro-flight { transform-origin: 54.46% 74.73%; }
-#unifiedWelcome .welcome-intro-orbit {
-  background-image: url("./brand/unified-intro-orbit.webp");
-  animation: unified-intro-orbit 2.88s cubic-bezier(.2,.65,.38,1) 1.32s both;
-}
 #unifiedWelcome .welcome-intro-flight {
-  background-image: url("./brand/unified-intro-white.webp");
-  animation: unified-intro-flight 2.55s cubic-bezier(.2,.65,.38,1) 1.14s both;
+  width: 100%;
+  height: 100%;
+}
+#unifiedWelcome .welcome-intro-wordmark {
+  background-image: url("./brand/unified-intro-wordmark.webp");
 }
 @keyframes unified-intro-arrive {
   from { transform: translate(92%, 13%); }
   to { transform: none; }
-}
-@keyframes unified-intro-orbit {
-  from { opacity: 0; transform: translate(11%, 12%) rotate(-100deg); }
-  64% { opacity: 1; }
-  to { opacity: 1; transform: none; }
-}
-@keyframes unified-intro-flight {
-  from { opacity: 0; transform: translate(20%, 12%) rotate(-124deg); }
-  58% { opacity: 1; }
-  to { opacity: 1; transform: none; }
 }
 #unifiedWelcome .welcome-brand img {
   width: 58px;
@@ -176,10 +163,10 @@
 @media (max-width: 680px) { #unifiedWelcome .welcome-setup { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) {
   #unifiedWelcome[data-stage="welcome"] .welcome-intro {
-    background-image: url("./brand/unified-intro-still.webp");
+    background-image: url("./brand/unified-intro-still.webp?v=WELCOME-0003");
   }
   #unifiedWelcome .welcome-intro-window,
-  #unifiedWelcome .welcome-intro-orbit,
+  #unifiedWelcome .welcome-intro-wordmark,
   #unifiedWelcome .welcome-intro-flight { display: none; }
   #unifiedWelcome .welcome-spinner { animation: none; }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "e59583c9a068892c65d17b7802d6ca0dafe1c801",
+  "sourceCommit": "1ac34010af2b0022a541c56fdd5b0db33b94bc3b",
   "mainBefore": 296,
   "mainAfter": 94,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "a6dbeb18ce86ab04415bc426e317eea492e7f8a77deac3e0d40fc41484f54acf"
+      "sha256": "2846c8e766e79fedbdeb998f27f786d989ea7d0d2c7edb36a097797055c242ba"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -424,7 +424,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.css",
-      "sha256": "ba893d85f244167074eecbde20c5780395fc07d64c0d36da2f503f7f3ce07c9e"
+      "sha256": "a72d052c357b85cb20261d985a863c6242f80ae4ae439c7e6c5ac1c8e1fc6141"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
@@ -995,16 +995,16 @@
       "sha256": "ce4e32b3f9e0affec18d23f0172a4561c69c4809405d183dc9289f37413a4cb8"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-orbit.webp",
-      "sha256": "943713caae6193eab91ea251c914ee74dba9de39517118a5fc6b9d5721420d16"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-white.webp",
+      "sha256": "a6756fdecd4a4f37c5de812983a44d28c21e7fe319acb31aea11cf9a6e15b168"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-white.webp",
-      "sha256": "ba89c4feb695f75ff9abfba1e374e268a509e5afab6ce761bc8363fd39fe50fd"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-wordmark.webp",
+      "sha256": "40febdcec9164147957003b9bf25c257d04d1a4668c97bf6325e1e41635da0ce"
     },
     {
       "path": "panel-mosaic-lab/cockpit/brand/unified-intro-still.webp",
-      "sha256": "9e211db6ac07e1b047b3076b6c78932935010313eb2f5829ac51cd7a1f44eecc"
+      "sha256": "2f7b8e617f0d54863f449f3b2ce497535d4bc2f63364675ef404c7ca7c829fc3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
