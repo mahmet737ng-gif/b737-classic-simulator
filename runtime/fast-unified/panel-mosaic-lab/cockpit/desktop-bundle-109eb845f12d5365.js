@@ -1456,9 +1456,38 @@ window.addEventListener("b737:mcp-bank-limit-preview",e=>{
 window.addEventListener("b737:visual-test",e=>{visualTest=!!e.detail?.active;project()});
 document.addEventListener("DOMContentLoaded",()=>{decorate();project();electrical()});
 if(document.readyState!=="loading"){decorate();project();electrical()}
+// The existing MCP AFDS state machine remains the SOLE owner of mode/values.
+// Scenario setup calls ordinary FCC-verified knob/paddle transitions, never
+// sets the visible display text or overrides bus/CB power.
+function applyFinal10Preset({speedKt,headingMag,courseMag,altitudeFt}={}){
+ const input={speed:Math.round(speedKt),heading:Math.round(headingMag)%360,
+  courseL:Math.round(courseMag)%360,courseR:Math.round(courseMag)%360,
+  altitude:Math.round(altitudeFt/100)*100};
+ if(![input.speed,input.heading,input.courseL,input.courseR,input.altitude].every(Number.isFinite))
+  return {accepted:false,reason:'INVALID_FINAL_10_VALUES'};
+ let out=Core.output(state);
+ if(out.power!==true)return {accepted:false,reason:'MCP_NOT_POWERED'};
+ for(const [id,value] of Object.entries(input))
+  if(out.values[id]!==value){send({type:'VALUE',id,value});out=Core.output(state);
+   if(out.rejection)return {accepted:false,reason:out.rejection,step:id};}
+ if(out.controls?.atArm!==true)send({type:'AT_ARM',armed:true});
+ out=Core.output(state);
+ for(const side of ['left','right'])if(out.controls?.fd?.[side]!==true){
+  send({type:'FD',side,on:true});out=Core.output(state);}
+ for(const id of ['HDG_SEL','ALT_HLD','CMD_B']){
+  out=Core.output(state);
+  const chosen=id==='HDG_SEL'?out.modes.lateral==='HDG_SEL':
+   id==='ALT_HLD'?out.modes.vertical==='ALT_HLD':out.modes.autopilot==='CMD_B';
+  if(!chosen)send({type:'BUTTON',id});
+  out=Core.output(state);
+  if(out.rejection)return {accepted:false,reason:out.rejection,step:id};
+ }
+ return {accepted:true,output:Core.output(state)};
+}
 window.B737McpAFDSBridgeV1=Object.freeze({
  getState:()=>JSON.parse(JSON.stringify(state)),
  getOutput:()=>Core.output(state),
+ applyFinal10Preset,
  getApproachDiagnostics:()=>{
   const out=Core.output(state);
   const r=window.B737UnifiedFccFlightV1?.getILS?.()||null;
