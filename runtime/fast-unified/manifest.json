@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "aa46b5d445b4db3d7ffd04dc5852f8f2e8c59d8c",
-  "mainBefore": 306,
+  "sourceCommit": "9147116633ca90012dea89c8cd895619df69cca1",
+  "mainBefore": 307,
   "mainAfter": 96,
   "overheadBefore": 61,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "aba730e9f68cad8d00931004ccdbcda362e2b973ad0a93afe4d900475a85162d"
+      "sha256": "f07d2d09e901998af51ed3a3bd0824785b19259f193e4819ea48e89ba795707c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -55,8 +55,12 @@
       "sha256": "932a88709ed763e3405e1936735f780abf2b7e3555bb56ad4d1c52c820932f0e"
     },
     {
-      "path": "engine/fmc/desktop-bundle-a81158a2a65952f0.js",
-      "sha256": "a81158a2a65952f0dd142fcce48f9a45f86c493bc9d993be5abaa8ea85bfb51f"
+      "path": "engine/fmc/desktop-bundle-d1651ab913034d93.js",
+      "sha256": "d1651ab913034d93250e600f3aea8f8a99d2e8d9ee2c3f1afdb3cbf5e1463899"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-5e88cc168fcb200d.js",
+      "sha256": "5e88cc168fcb200da6896beca25d2ca363e12f2fcf4768806a2983ae422b2378"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-ebbd95e0bdf0a066.js",
@@ -300,7 +304,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/style.css",
-      "sha256": "56644c7cd357e0d192c98e167ef64e4542f777a240558f875d83d763b6ec1e40"
+      "sha256": "8bfa8b10b9f8f48d54c424530db5787f9c1c792972a027caa4d160b94a391658"
     },
     {
       "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.css",
@@ -440,11 +444,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
-      "sha256": "d50114a1a2d77fecfa305365e6cd7cda4b9fa12fd87e862ffca20515388f9a4d"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/app.js",
-      "sha256": "cc54ea049ce9106257687f287efc5e6ca133565f35f33191f67310df4e7b3cf3"
+      "sha256": "c79eea7e3a20806ad57e4100c9a61eb686c42900bd32809a8edda3f3866d1555"
     },
     {
       "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
