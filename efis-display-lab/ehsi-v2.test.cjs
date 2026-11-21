@@ -8,7 +8,7 @@ const set=(s,path,value)=>core.apply(s,{type:'set',path,value});
 const option=(s,name,value)=>core.apply(s,{type:'option',name,value});
 const scenario=name=>core.apply(start,{type:'scenario',name});
 const view=s=>V.computeDisplay(core.ehsiModel(s));
-assert.equal(V.VERSION,'EHSI-CLASSIC-REBUILD-0009-EXPANDED-HEADING-360');
+assert.equal(V.VERSION,'EHSI-CLASSIC-REBUILD-0010-FCOM-1032-SYMBOLS');
 assert.equal(V.MODES.length,7);
 assert.equal(evidence.sections.length,16);
 for(const mode of core.MODES)assert.equal(view(set(start,'ehsi.mode',mode)).supported,true);
