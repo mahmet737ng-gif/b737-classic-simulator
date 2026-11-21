@@ -750,6 +750,20 @@ try{
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-stopped',{detail:{version:VERSION}}));
   return true;
  }
+ // Prefer the selected runway's local ILS reference over the ARP for
+ // training finals. The current coordinates are PROVISIONAL, not surveyed
+ // localizer, GP or DME antennas; never label them verified navigation data.
+ function approachThresholds(config){
+  if(!['FINAL_5','FINAL_10','RUNWAY_READY'].includes(config.preset))return {};
+  const station=win.B737IranRadioNavaidsV1?.STATIONS?.find(s=>
+   s.type==='ILS_DME'&&s.airport===config.airport&&s.runway===config.runway);
+  if(!station)return {};
+  return {[config.airport]:{[config.runway]:{
+   lat:station.lat,lon:station.lon,elevationFt:station.elevationFt,
+   glideDeg:station.glideDeg,tchFt:station.tchFt??50,
+   courseTrueDeg:station.courseTrueDeg,quality:'TRAINING_ILS_PROXY',
+   source:'TRAINING_ILS_'+station.ident+'_NOT_SURVEYED'}}};
+ }
  function load(beforeStart){
   try{
    const preset=by('flightPreset').value;
@@ -762,7 +776,7 @@ try{
    if(preset==='MANUAL'){
     config.lat=v('Lat');config.lon=v('Lon');
    }
-   const next=Core.newScenario(config);
+   const next=Core.newScenario(config,approachThresholds(config));
    if(typeof beforeStart==='function')beforeStart();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
@@ -938,7 +952,7 @@ try{
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
-  loadScenario:config=>{state=Core.newScenario(config);win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
+  loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});active=true;pause=false;previouslyCoupled=false;lastTick=performance.now();publish();lastPublish=performance.now();updateUI();return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   pause:value=>{pause=value===true;updateUI();},stop,

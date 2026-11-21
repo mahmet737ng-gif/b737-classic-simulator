@@ -891,7 +891,13 @@ try{
   const verified=thresholds?.[icao]?.[runway];
   if(verified&&Number.isFinite(verified.lat)&&Number.isFinite(verified.lon)&&
       distanceNm(airport,verified)<8)
-   return {lat:verified.lat,lon:verified.lon,quality:'VERIFIED_INPUT',source:verified.source||'TRAINER_IMPORTED_THR'};
+   return {lat:verified.lat,lon:verified.lon,
+    quality:verified.quality==='TRAINING_ILS_PROXY'?'TRAINING_ILS_PROXY':'VERIFIED_INPUT',
+    source:verified.source||'TRAINER_IMPORTED_THR',
+    elevationFt:Number.isFinite(verified.elevationFt)?verified.elevationFt:airport.elevationFt,
+    glideDeg:Number.isFinite(verified.glideDeg)?verified.glideDeg:3,
+    tchFt:Number.isFinite(verified.tchFt)?verified.tchFt:50,
+    courseTrueDeg:Number.isFinite(verified.courseTrueDeg)?verified.courseTrueDeg:airport.runways[runway]};
   // ARP approximate. NOT a surveyed runway threshold: deliberately flagged.
   return {lat:airport.lat,lon:airport.lon,quality:'PROVISIONAL_ARP',source:'AIRPORT_REFERENCE_POINT_NOT_THR'};
  }
@@ -902,16 +908,20 @@ try{
   if(!Object.hasOwn(airport.runways,runway))throw RangeError('UNKNOWN_RUNWAY');
   const kind=String(config.preset||'RUNWAY_READY').toUpperCase();
   if(!PRESETS.includes(kind))throw RangeError('UNKNOWN_PRESET');
-  const anchor=runwayAnchor(icao,runway,thresholds),hdg=airport.runways[runway];
+  const anchor=runwayAnchor(icao,runway,thresholds),
+   hdg=Number.isFinite(anchor.courseTrueDeg)?anchor.courseTrueDeg:airport.runways[runway],
+   runwayElevationFt=Number.isFinite(anchor.elevationFt)?anchor.elevationFt:airport.elevationFt,
+   glideDeg=Number.isFinite(anchor.glideDeg)?anchor.glideDeg:3,
+   tchFt=Number.isFinite(anchor.tchFt)?anchor.tchFt:50;
   const finalNm=kind==='FINAL_5'?5:kind==='FINAL_10'?10:0;
   const isFinal=finalNm>0, manual=kind==='MANUAL';
   const ground=kind==='RUNWAY_READY'||(manual&&config.airborne===false);
   const latitude=manual&&config.lat!==undefined?finite(config.lat,-90,90,'LAT'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lat:anchor.lat;
   const longitude=manual&&config.lon!==undefined?finite(config.lon,-180,180,'LON'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lon:anchor.lon;
-  const defaultAlt=airport.elevationFt+(isFinal?Math.tan(3*RAD)*finalNm*FT_PER_NM+50:ground?0:3000);
+  const defaultAlt=runwayElevationFt+(isFinal?Math.tan(glideDeg*RAD)*finalNm*FT_PER_NM+tchFt:ground?0:3000);
   const altitudeInput=manual&&config.altitudeFt!==undefined?finite(config.altitudeFt,-1000,65000,'ALTITUDE_FT'):defaultAlt;
-  const alt=ground?airport.elevationFt:altitudeInput;
-  if(alt<airport.elevationFt-.01)throw RangeError('ALTITUDE_BELOW_AIRPORT_SURFACE');
+  const alt=ground?runwayElevationFt:altitudeInput;
+  if(alt<runwayElevationFt-.01)throw RangeError('ALTITUDE_BELOW_AIRPORT_SURFACE');
   const speedInput=manual&&config.speedKt!==undefined?finite(config.speedKt,0,450,'IAS_KT'):isFinal?(finalNm===5?155:170):ground?0:220;
   const speed=ground?0:speedInput;
   if(!ground&&speed<80)throw RangeError('AIRBORNE_IAS_BELOW_TRAINING_MINIMUM');
@@ -920,14 +930,14 @@ try{
   const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*5.307:0;
   const vs=ground?0:vsInput;
   const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
-   headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?airport.elevationFt+3000:alt,
+   headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?runwayElevationFt+3000:alt,
    vsFpm:ground?1500:vs,speedKt:ground?150:speed};
   return {schema:'B737_FLIGHT_SCENARIO_STATE_V1',revision:1,
    icao,airportName:airport.name,runway,runwayHeadingTrueDeg:hdg,threshold:anchor,
    preset:kind,phase:ground?'GROUND_READY':isFinal?'FINAL_APPROACH':'AIRBORNE',
    airborne:!ground,groundRoll:false,lat:latitude,lon:longitude,
-   altitudeFt:alt,radioAltitudeFt:Math.max(0,alt-airport.elevationFt),
-   elevationFt:airport.elevationFt,iasKt:speed,tasKt:speed,
+   altitudeFt:alt,radioAltitudeFt:Math.max(0,alt-runwayElevationFt),
+   elevationFt:runwayElevationFt,iasKt:speed,tasKt:speed,
    gsKt:speed,trueHeadingDeg:heading,trueTrackDeg:heading,
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
    flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
