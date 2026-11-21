@@ -65,9 +65,10 @@ test('V/S acquires based on actual rate and height, and ALT HOLD waits for ramp 
  assert.equal(o.altAcquireConfirmed,true);
  assert.ok(o.actions.some(a=>a.type==='ALT_ACQ'&&a.value===10000));
  const Capture=require('../engine/flight/altitude-capture-training-v1.js');
- const plan=Capture.begin({altitudeFt:f.altitudeFt,targetAltitudeFt:10000,vsFpm:f.vsFpm});
+ let plan=Capture.begin({altitudeFt:f.altitudeFt,targetAltitudeFt:10000,vsFpm:f.vsFpm});
+ while(plan.phase!=='HELD')plan=Capture.advance(plan,Math.min(1,plan.durationSec-plan.elapsedSec));
  m.capture.pitch='ALT_ACQ';
- f={...f,altitudeCapture:Capture.advance(plan,plan.durationSec),
+ f={...f,altitudeCapture:plan,
   altitudeFt:10000,vsFpm:0,elapsedSec:2+plan.durationSec};
  o=evaluateMag(o.state,m,f);
  assert.equal(o.altitudeHoldConfirmed,true);
