@@ -41,6 +41,10 @@
     source:radio?(src.ils?'ILS ':'VOR ')+src.vhf:'NAV',
     frequency:radio?number(nav?.tunedFrequencyMHz):null,dme:radio?dme:null,
     cdi:radio?cdi:fmcActive?fmcNav.cdi:null,
+    vnavActive:fmcActive&&src.fmc?.guidance?.vnavActive===true,
+    descent:src.fmc?.guidance?.descent===true,
+    vnav:fmcActive&&Number.isFinite(src.fmc?.guidance?.vnavDeviationFt)?
+     src.fmc.guidance.vnavDeviationFt:null,
     activeWaypoint:fmcActive?fmcNav.activeWaypoint:null,
     activeDistanceNm:fmcActive?fmcNav.distanceNm:null,
     activeEta:fmcActive?fmcNav.eta:null,
@@ -185,6 +189,7 @@
     const fmcNav=sources.fullNavFromRoute?.(src,route);
     const model=preview?core.ehsiModel(setup):
      liveModel(src,origin,setup,screen.aspect,route,failure,fmcNav);
+    if(!preview)model.positionDifferences=sources.positionDifference?.(snapshot,src)||[];
     if(!preview)fcomState?.prepare(seat,model,Number.isFinite(src.windSpeed)&&
      Number.isFinite(src.windDirection));
     if(!preview){
