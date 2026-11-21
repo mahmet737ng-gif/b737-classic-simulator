@@ -19,7 +19,9 @@
   const f=scenario(),m=mcp(),c=m?.controls||{},engines=light?null:owner()?.getPropulsionSnapshot?.()?.engines;
   return {groundReady:f?.phase==='GROUND_READY',airborne:f?.airborne===true,
    radioAltitudeFt:f?.radioAltitudeFt,iasKt:f?.iasKt,groundTrackDeg:f?.trueTrackDeg??f?.trueHeadingDeg,
-   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,atArmed:c.atArm===true,
+   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,
+   allowFdAutoEngage:f?.airborne===true&&Number.isFinite(f?.radioAltitudeFt)&&f.radioAltitudeFt<2000,
+   atArmed:c.atArm===true,
    apChannels:m?.dualApproach?.coupled===true?2:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
    autopilotEngaged:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||''),
    engine1Running:light?undefined:engineRunning(1),engine2Running:light?undefined:engineRunning(2),
@@ -61,7 +63,8 @@
     source:'SIMULATED_FCC',evidence:{togaModeConfirmed:true},
     fields:{at:{active:fm.at},pitch:{active:fm.pitch},
      roll:{active:fm.roll},
-     afds:{active:fm.afds==='CMD'||m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
+     afds:{active:fm.afds==='CMD'||state.phase==='GA'||
+      m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
       fm.afds:''}}
    }}));
   }
