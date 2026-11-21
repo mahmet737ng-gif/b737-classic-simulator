@@ -71,7 +71,11 @@
    (1-Math.exp(-dt/RATES.rollCommandTauSec));
   const bankDeg=move(frame.bankDeg,bankDemand,RATES.rollDegSec,dt);
   const pitchDeg=move(frame.pitchDeg,pitchDemand,RATES.pitchDegSec,dt);
-  const commandedPhysicalVs=vsForPitch(pitchDeg,frame.tasKt);
+  // Loss of lift below the instructor-estimated stall envelope adds sink.
+  // This is NOT a certified stall/alpha protection law.
+  const sinkDemand=finite(frame.aeroEnvelope?.sinkDemandFpm)?
+   clamp(frame.aeroEnvelope.sinkDemandFpm,0,1200):0;
+  const commandedPhysicalVs=vsForPitch(pitchDeg,frame.tasKt)-sinkDemand;
   const vsFpm=move(frame.vsFpm,commandedPhysicalVs,RATES.vsFpmSec,dt);
   return {...desired,bankDeg,pitchDeg,vsFpm,
    commandedPitchDeg:pitchDemand,commandedBankDeg:bankDemand,
