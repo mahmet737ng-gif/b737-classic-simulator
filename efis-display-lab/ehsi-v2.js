@@ -6,7 +6,7 @@
  root.EFISClassicEHSIV2=api;
 })(globalThis,function(glyph,G){
 'use strict';
-const VERSION='EHSI-CLASSIC-REBUILD-0009-EXPANDED-HEADING-360';
+const VERSION='EHSI-CLASSIC-REBUILD-0010-FCOM-1032-SYMBOLS';
 const COLORS=glyph.colors;
 const W=512,H=512,NS='http://www.w3.org/2000/svg';
 // Active EHSI aperture in the two 1920 x 1080 owner-supplied reference frames.
@@ -187,7 +187,10 @@ function compass(svg,m,l){
   const label=make(g,'g',{transform:'rotate('+roseTangent(l,angle)+' '+x+' '+y+')'});
   photoText(label,String(bearing/10),x,y,full?(centered?G.labels.center:G.labels.full):G.labels.expanded,PHOTO_COLORS.white,'middle');
  }
- if(l.route&&!l.planCompass)mapRange(g,m,l);
+ // 10.32.23: MAP range arcs are always present; expanded NAV/VOR-ILS
+ // range arcs require WXR or TFC selected on the EFIS control panel.
+ if((l.route&&!l.planCompass)||
+  (['EXP_NAV','EXP_VOR_ILS'].includes(m.mode)&&(m.options.wxr||m.options.tfc)))mapRange(g,m,l);
  const otherAngle=rel((m.radio?m.track:m.heading)-ref);
  const known=m.radio?m.efis.trackValid!==false:m.efis.headingValid!==false;
  if(!l.planCompass&&known&&Math.abs(otherAngle)<=half){
@@ -378,7 +381,8 @@ function drawRoute(svg,m,l,status,plan){
  db.style.opacity=brightness;
  for(const pt of sample){
   const xy=project(pt.x,pt.y);
-  if(pt.on&&fits(xy))waypoint(db,...xy,pt,colors.cyan,false,pt.shape,l.calibrated);
+  if(pt.on&&fits(xy)&&!(pt.shape==='star'&&m.range>40))
+   waypoint(db,...xy,pt,pt.tuned===true?colors.green:colors.cyan,false,pt.shape,l.calibrated);
  }
  if(status.routeValid&&m.syntheticAirport!==false){
   const xy=project(-33,-8);
