@@ -40,7 +40,7 @@ test('Final 5 and runway-ready keep their established start speed and flight pha
 });
 test('Cockpit 10 NM simulator uses one physical owner per system and reports all detailed setup checks',()=>{
  const state=Core.newScenario({airport:'OIII',runway:'29L',preset:'FINAL_10'},thresholds(profiles[0]));
- const checks=[],selected={},oh={},freq={},mode={},events=[],phases={engine1:'OFF',engine2:'OFF',apu:'OFF'};
+ const checks=[],selected={},oh={},freq={},mode={},events=[],phases={engine1:'OFF',engine2:'OFF',apu:'READY'};
  const lights={inputs:{speedBrakeArmedIndication:false}};
  const definitions=[
   ...['gen-1','gen-2','apu-gen-1','apu-gen-2'].map(id=>({id,states:['OFF','NEUTRAL','ON']})),
@@ -53,14 +53,16 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   {id:'position-lights',states:['OFF','ON BAT','ON']},
   {id:'logo',states:['OFF','AUTO','ON']},
  ];
- let flap=0,autobrake='OFF';
+ let flap=0,actualFlap=0,flapOwnerReady=false,autobrake='OFF',autobrakePhase='OFF',runNext=null;
  const sw={
   getRegistry:()=>({controls:definitions}),
   getState:()=>oh,
   setScenarioSwitch:(id,target)=>{
    const entry=definitions.find(x=>x.id===id);
    if(!entry||!entry.states.includes(target))return {accepted:false};
-   oh[id]=target;return {accepted:true};
+   oh[id]=target;
+    if(id==='apu-start'&&target==='OFF')phases.apu='OFF';
+    return {accepted:true};
   }
  };
  const cockpit={
@@ -70,25 +72,45 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   B737ISNCockpitV1:{
    getStartState:()=>({phase:phases}),
    getElectricalState:()=>({source:{
-    side1:oh['gen-1']==='ON'?'GEN1':'APU',
-    side2:oh['gen-2']==='ON'?'GEN2':'APU'}}),
+    1:oh['gen-1']==='ON'?'GEN1':'APU',
+    2:oh['gen-2']==='ON'?'GEN2':'APU'},
+    config:{engine1Running:phases.engine1==='RUNNING',engine2Running:phases.engine2==='RUNNING'},
+    faults:{GEN1_FAILED:false,GEN2_FAILED:false}}),
    engineTrainerAction:({engine,type,instructor})=>{
     assert.equal(instructor,true);assert.equal(type,'PRESET_RUNNING');
     phases[engine]='RUNNING';return {type,engine};}
   },
+  B737ElectricalV7:{evaluate:e=>({bus:{
+   generator1:e.source[1]==='GEN1'&&e.config.engine1Running===true,
+   generator2:e.source[2]==='GEN2'&&e.config.engine2Running===true,
+   dc2:e.source[2]==='APU'||e.source[2]==='GEN2'}})},
   B737UnifiedVHFDualV1:{setFrequency:(id,kHz)=>{freq[id]=kHz;return true;}},
   B737UnifiedVHFNavControlsV1:{setMode:(seat,m)=>{mode[seat]=m;return true;}},
-  B737AutobrakeUnified:{getState:()=>({selector:autobrake}),setSelector:x=>{autobrake=x;}},
+  B737AutobrakeUnified:{
+   getState:()=>({selector:autobrake,phase:autobrakePhase,disarmLight:false,
+    inputs:{onGround:false,electricalAvailable:true,antiskidOn:true,antiskidFault:false,
+     hydraulicBAvailable:true,normalBrakesOperative:true,autobrakeFault:false,solenoidPressurePsi:0}}),
+   updateSensors(){return this.getState()},
+   setSelector:x=>{autobrake=x;autobrakePhase=x==='2'?'WAITING':'OFF';return this.getState();}
+  },
   B737LandingGearUnifiedV1:{getState:()=>({lever:'DN',gear:{nose:'DOWN',left:'DOWN',right:'DOWN'}}),select:()=>true},
   B737SpeedbrakeLever:{mounted:()=>true,set:x=>{selected.speedbrake=x;lights.inputs.speedBrakeArmedIndication=x==='ARMED';}},
   B737CockpitLights:{getState:()=>lights},
   B737FlapVisualTest:{get position(){return flap},presetFinal10:()=>{flap=30;return true;},select:x=>{flap=x;return true;}},
-  B737LEDevicesUnifiedLink:{getState:()=>({actualTe:flap})},
+  B737LEDevicesUnifiedLink:{getState:()=>({
+    lever:flap,actualTe:actualFlap,overheadReady:true,
+    projection:{scenario:flapOwnerReady?'FINAL_10_READY':'NORMAL',
+     lever:flap,teTarget:flap,teMoving:false}})},
   B737McpAFDSBridgeV1:{refreshElectrical(){},
    applyFinal10Preset:x=>{selected.mcp=x;return {accepted:true};}},
   dispatchEvent:x=>events.push(x),
-  setInterval:()=>13,clearInterval(){},addEventListener(){},
-  document:{getElementById:id=>id==='overheadFrame'?{contentWindow:{B737OverheadToggles:sw}}:null,
+  setInterval:fn=>{runNext=fn;return 13;},clearInterval(){},addEventListener(){},location:{origin:'https://unified.test'},
+  document:{getElementById:id=>id==='overheadFrame'?{contentWindow:{
+   B737OverheadToggles:sw,
+   B737LEDevicesTrainer:{presetFinal10ReadyFlaps(){
+    flapOwnerReady=true;actualFlap=30;return {lever:30};
+   }}
+  }}:null,
    querySelector:sel=>sel==='#b737-speedbrake-groove'?{}:null}
  };
  cockpit.CustomEvent=class{constructor(type,options){this.type=type;this.detail=options?.detail}};
@@ -96,6 +118,8 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   {window:cockpit,CustomEvent:cockpit.CustomEvent});
  const response=cockpit.B737Final10ApproachPresetV1.apply(state);
  assert.equal(response.started,true);
+ assert.equal(typeof runNext,'function');
+ runNext(); // Wait for confirmed Electrical V7 contactor source on next preset cycle.
  const result=cockpit.B737Final10ApproachPresetV1.getStatus().checks;
  assert.equal(result.ENGINE_1.ok,true);
  assert.equal(result.ENGINE_2.ok,true);
