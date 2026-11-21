@@ -6,6 +6,8 @@ const FCC=require('../engine/afds/fcc-flight-guidance-v1.js');
 const ILS=require('../engine/afds/classic-ils-afds-ch4-v1.js');
 const Geo=require('../engine/flight/iran-radio-navaids-v1.js');
 const Flight=require('../engine/flight/flight-scenario-core-v1.js');
+const TOGA=require('../engine/afds/classic-toga-ch4-v1.js');
+
 const required=['generator1','generator2','transfer1','transfer2','main1','main2','acStandby',
  'groundService','dc1','dc2','battery','hotBattery','switchedHotBattery','dcStandby'];
 function powered(){
@@ -151,6 +153,30 @@ test('Loss of ILS evidence after autoland coupling does not leave false G/S or F
  assert.equal(s.nav.loc,false);assert.equal(s.nav.gs,false);
  assert.equal(s.modes.autopilot,null);
  assert.equal(s.flightDirectorBarsRetracted,true);
+});
+test('Manual F/D go-around auto-arms command bars below 2000 ft without engaged A/P',()=>{
+ const ctx={airborne:true,radioAltitudeFt:1000,groundTrackDeg:289,
+  fdLeft:false,fdRight:false,allowFdAutoEngage:true,atArmed:true,
+  apChannels:0,engine1Running:true,engine2Running:true,iasKt:145,
+  selectedSpeedKt:145,isTakeoffMode:false,touchedDown:false};
+ const state=TOGA.press(TOGA.initial(),ctx);
+ assert.equal(state.phase,'GA');assert.equal(state.pitchMode,'TO/GA');
+ assert.equal(state.apDisengage,false);assert.equal(state.afdsMode,'FD');
+ assert.equal(state.rollMode,'');assert.equal(state.atMode,'GA');
+ const blocked=TOGA.press(TOGA.initial(),{...ctx,allowFdAutoEngage:false});
+ assert.equal(blocked.phase,'OFF');
+});
+test('Unqualified TOGA transition cannot clear genuine captured ILS',()=>{
+ let state=powered();
+ state.capture.pitch='G/S';state.capture.roll='VOR_LOC';
+ state.nav.gs=true;state.nav.loc=true;state.pending.approach=true;
+ const rejected=MCP.transition(state,{type:'TOGA_ENGAGED',source:'MANUAL',confirmed:false});
+ assert.equal(rejected.nav.gs,true);
+ assert.equal(rejected.lastRejection,'TOGA_REQUIRES_CONFIRMED_FCC');
+ const accepted=MCP.transition(state,{type:'TOGA_ENGAGED',source:'SIMULATED_FCC',confirmed:true});
+ assert.equal(accepted.nav.gs,false);
+ assert.equal(accepted.pending.approach,false);
+ assert.equal(accepted.togaActive,true);
 });
 test('Actual Unified includes FCC and captured radio module in boot order',()=>{
  const html=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/index.html'),'utf8');
