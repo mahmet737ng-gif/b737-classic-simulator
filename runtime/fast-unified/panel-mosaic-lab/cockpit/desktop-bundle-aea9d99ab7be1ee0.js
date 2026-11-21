@@ -475,30 +475,29 @@ try{
   directorServo.lastMs=now;
   const slew=(from,to,rate)=>Math.abs(to-from)<=dt*rate?to:
    from+Math.sign(to-from)*dt*rate;
-  const hasFD=view.fd.captain||view.fd.firstOfficer;
+  const showPitch=['captain','firstOfficer'].some(side=>view.fdAxes?.[side]?.pitch);
+  const showRoll=['captain','firstOfficer'].some(side=>view.fdAxes?.[side]?.roll);
   const toga=win.B737UnifiedTOGACh4V1?.getState?.();
   const togaGuidance=toga?.phase==='TO'||toga?.phase==='GA';
-  // Chapter 4: takeoff FD commands -10° below 60 KIAS, then +15°;
-  // GO-AROUND commands +15° or +13° on one engine (before rate/speed
-  // schedules become available). Roll holds wings level/ground track.
-  // Do not confuse the real director cue with the autopilot servo owner.
+  // TO/GA guidance remains subject to independent director-axis validity.
+  // No blank mode may gain an invented cross-axis command.
   const pitchGoal=togaGuidance?toga.fdPitchDeg:view.pitchCommandDeg;
   const rollGoal=togaGuidance?0:view.rollCommandDeg;
-  if(hasFD){
-   if(Number.isFinite(pitchGoal))
-    directorServo.pitch=directorServo.pitch===null?frame.pitchDeg:
-     slew(directorServo.pitch,pitchGoal,2.2);
-   if(Number.isFinite(rollGoal))
-    directorServo.roll=directorServo.roll===null?frame.bankDeg:
-     slew(directorServo.roll,rollGoal,5.2);
-  }else{
-   directorServo.pitch=null;directorServo.roll=null;
-  }
+  if(showPitch&&Number.isFinite(pitchGoal))
+   directorServo.pitch=directorServo.pitch===null?frame.pitchDeg:
+    slew(directorServo.pitch,pitchGoal,2.2);
+  else directorServo.pitch=null;
+  if(showRoll&&Number.isFinite(rollGoal))
+   directorServo.roll=directorServo.roll===null?frame.bankDeg:
+    slew(directorServo.roll,rollGoal,5.2);
+  else directorServo.roll=null;
   for(const [n,side] of [[1,'captain'],[2,'firstOfficer']]){
-   const enabled=view.fd[side]===true;
+   const pitchActive=view.fdAxes?.[side]?.pitch===true;
+   const rollActive=view.fdAxes?.[side]?.roll===true;
+   const enabled=pitchActive||rollActive;
    const value={enabled,
-    pitchDeg:enabled?directorServo.pitch:null,
-    rollDeg:enabled?directorServo.roll:null,
+    pitchDeg:pitchActive?directorServo.pitch:null,
+    rollDeg:rollActive?directorServo.roll:null,
     locCaptured:out?.nav?.loc===true,gsCaptured:out?.nav?.gs===true,
     source:'SIMULATED_FCC_FCOM_CH4_TRAINING',seat:side==='captain'?'CAPT':'FO'};
    try{p.publish('afds.director'+n,value,{quality:'VALID',origin:'TRAINING_SCENARIO'});}
