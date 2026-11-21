@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "903466f286a9c39cb375524000ab1c90c77df37c",
+  "sourceCommit": "e59583c9a068892c65d17b7802d6ca0dafe1c801",
   "mainBefore": 296,
   "mainAfter": 94,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "776213f69fa1ba4a6be28985b33001cf58362f7be5c78bcdf334abf839f9ae3b"
+      "sha256": "a6dbeb18ce86ab04415bc426e317eea492e7f8a77deac3e0d40fc41484f54acf"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -424,7 +424,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.css",
-      "sha256": "60a5a92c4b52fae09b28ea6a3c03b7b994b6821e0aecdc27a014433b2733a170"
+      "sha256": "ba893d85f244167074eecbde20c5780395fc07d64c0d36da2f503f7f3ce07c9e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
@@ -981,6 +981,30 @@
     {
       "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
       "sha256": "ff78bdcf9816dabe7c1a491dcc8c643af77fb1267b93e7c8f84969da32b87696"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-frame.webp",
+      "sha256": "e0d125cedde11f80c9f90f52a2e55bc027764f0385e469fa249d81df7df5a142"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-aircraft.webp",
+      "sha256": "2cd6159a6a24dfa49275b7e96915aff68c3fc2b500c354ce609afce1395f919c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-window.webp",
+      "sha256": "ce4e32b3f9e0affec18d23f0172a4561c69c4809405d183dc9289f37413a4cb8"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-orbit.webp",
+      "sha256": "943713caae6193eab91ea251c914ee74dba9de39517118a5fc6b9d5721420d16"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-white.webp",
+      "sha256": "ba89c4feb695f75ff9abfba1e374e268a509e5afab6ce761bc8363fd39fe50fd"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-still.webp",
+      "sha256": "9e211db6ac07e1b047b3076b6c78932935010313eb2f5829ac51cd7a1f44eecc"
     },
     {
       "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
