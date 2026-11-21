@@ -23,6 +23,7 @@
   if(prior?.schema!==VERSION)throw TypeError('FCC_STATE');
   const out={state:{...prior},actions:[],pitchCommandDeg:null,rollCommandDeg:null,
    pitchValid:false,rollValid:false,fd:{captain:false,firstOfficer:false},
+   fdAxes:{captain:{pitch:false,roll:false},firstOfficer:{pitch:false,roll:false}},
    reasons:[],status:'INACTIVE',altAcquireConfirmed:false,altitudeHoldConfirmed:false};
   if(flight?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||mcp?.power!==true)
    return {...out,status:'NO_ACTIVE_POWERED_FLIGHT_SOURCE'};
@@ -146,13 +147,18 @@
    out.pitchCommandDeg=pitchForVs(altitudeVs(v.altitude));
    out.pitchValid=true;
   }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
-  // FCOM 4.20.4: both commanded pitch and roll modes must be available.
-  // CWS forced handover retracts FD bars on the overridden axis.
+  // Independent axes: an active pitch mode never authorizes a roll cue,
+  // and a blank lateral mode never suppresses an otherwise valid pitch cue.
+  // CWS removes only its overridden axis; approach flare retracts both.
   const flareRetract=mcp.nav?.loc===true&&mcp.nav?.gs===true&&
    valid(flight.radioAltitudeFt)&&flight.radioAltitudeFt<=50;
-  const validBars=out.pitchValid&&out.rollValid&&pAxis!=='CWS'&&rAxis!=='CWS'&&!flareRetract;
-  out.fd.captain=fdCommand(mcp.controls?.fd?.left)&&validBars;
-  out.fd.firstOfficer=fdCommand(mcp.controls?.fd?.right)&&validBars;
+  const pitchBar=out.pitchValid&&pAxis!=='CWS'&&!flareRetract;
+  const rollBar=out.rollValid&&rAxis!=='CWS'&&!flareRetract;
+  for(const [side,selector] of [['captain','left'],['firstOfficer','right']]){
+   const powered=fdCommand(mcp.controls?.fd?.[selector]);
+   out.fdAxes[side]={pitch:powered&&pitchBar,roll:powered&&rollBar};
+   out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
+  }
   // With no engaged autopilot, the F/D may still display command guidance,
   // but it does not automatically move the airplane.
   out.actions=active?out.actions:[];
