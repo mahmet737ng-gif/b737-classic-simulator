@@ -115,6 +115,18 @@ test('matching NAV receivers allow second CMD above 800 RA; FLARE arms below 150
  assert.equal(s.nav.loc,false);assert.equal(s.nav.gs,false);
  assert.equal(s.capture.pitch,null);assert.equal(s.dualApproach.second,'CMD_B');
 });
+test('Dual autoland without FLARE armed disconnects both APs at 350 ft RA',()=>{
+ let s=powered();const push=a=>s=MCP.transition(s,a);
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:900})});
+ push({type:'BUTTON',id:'CMD_A'});
+ push({type:'BUTTON',id:'APP'});
+ push({type:'BUTTON',id:'CMD_B'});
+ assert.equal(s.dualApproach.second,'CMD_B');
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:349,dualIlsValid:true})});
+ assert.equal(s.modes.autopilot,null);
+ assert.equal(s.dualApproach.second,null);
+ assert.equal(s.lastAutopilotDisengagement.reason,'FLARE_NOT_ARMED_BY_350_RA');
+});
 test('Dual CMD cannot be added below 800 RA or with mismatched tuned NAV',()=>{
  let s=powered();const push=a=>s=MCP.transition(s,a);
  push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:900})});
