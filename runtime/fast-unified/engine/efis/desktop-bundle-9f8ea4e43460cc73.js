@@ -134,7 +134,9 @@ try{
    [Math.abs(iru.pitchDeg-peer.pitchDeg)>3?'PITCH':null,Math.abs(delta(iru.rollDeg-peer.rollDeg))>3?'ROLL':null].filter(Boolean);
   const bearings=[];
   for(const channel of [1,2]){
-   const station=signal(snapshot,'navigation.vor'+channel);
+   // FCOM 10.32.8: rose pointer head/tail represents ADF1/ADF2 only.
+   // VOR station radials belong to the separate MAP/CTR MAP VOR layer.
+   const station=signal(snapshot,'navigation.adf'+channel);
    if(!station)continue;
    const b=value(station.bearingDeg);
    let angle=null;

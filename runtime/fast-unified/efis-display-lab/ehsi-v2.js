@@ -6,7 +6,7 @@
  root.EFISClassicEHSIV2=api;
 })(globalThis,function(glyph,G){
 'use strict';
-const VERSION='EHSI-CLASSIC-REBUILD-0009-EXPANDED-HEADING-360';
+const VERSION='EHSI-CLASSIC-REBUILD-0010-FCOM-1032-SYMBOLS';
 const COLORS=glyph.colors;
 const W=512,H=512,NS='http://www.w3.org/2000/svg';
 // Active EHSI aperture in the two 1920 x 1080 owner-supplied reference frames.
@@ -187,7 +187,10 @@ function compass(svg,m,l){
   const label=make(g,'g',{transform:'rotate('+roseTangent(l,angle)+' '+x+' '+y+')'});
   photoText(label,String(bearing/10),x,y,full?(centered?G.labels.center:G.labels.full):G.labels.expanded,PHOTO_COLORS.white,'middle');
  }
- if(l.route&&!l.planCompass)mapRange(g,m,l);
+ // 10.32.23: MAP range arcs are always present; expanded NAV/VOR-ILS
+ // range arcs require WXR or TFC selected on the EFIS control panel.
+ if((l.route&&!l.planCompass)||
+  (['EXP_NAV','EXP_VOR_ILS'].includes(m.mode)&&(m.options.wxr||m.options.tfc)))mapRange(g,m,l);
  const otherAngle=rel((m.radio?m.track:m.heading)-ref);
  const known=m.radio?m.efis.trackValid!==false:m.efis.headingValid!==false;
  if(!l.planCompass&&known&&Math.abs(otherAngle)<=half){
@@ -362,6 +365,24 @@ function drawRoute(svg,m,l,status,plan){
      const label=layer(g,'route-fix-label',{'data-fix':points[i].name,
       'data-label-fitted':'true','data-label-side':placement.align});
      photoText(label,points[i].name,placement.x,placement.y,MAP_ID_SIZE,color,placement.align);
+     // FCOM 10.32.17: RTE DATA displays altitude constraints and waypoint ETA
+     // on calibrated photo glass too, not only in the uncalibrated lab.
+     if(m.options.rteData===true){
+      const fields=[points[i].altitude,points[i].eta]
+       .filter(value=>value!==null&&value!==undefined&&String(value)!=='').slice(0,2);
+      fields.forEach((field,j)=>{
+       const y=placement.y+(j+1)*(MAP_DETAIL_SIZE+3);
+       const width=String(field).length*MAP_DETAIL_SIZE*.73;
+       const left=placement.align==='end'?placement.x-width:placement.x;
+       const right=placement.align==='end'?placement.x:placement.x+width;
+       const radiusX=Math.max(1,(l.radiusX??l.radius)-9),radiusY=Math.max(1,l.radius-9);
+       const inside=[left,right].every(x=>{
+        const dx=(x-l.roseCenter[0])/radiusX,dy=(y-l.roseCenter[1])/radiusY;
+        return x>12&&x<500&&y>86&&y<491&&dx*dx+dy*dy<=1;
+       });
+       if(inside)photoText(label,String(field),placement.x,y,MAP_DETAIL_SIZE,color,placement.align);
+      });
+     }
      occupied.push(placement.box);
     }
    }else waypoint(g,x,y,points[i],color,m.options.rteData,'star',l.calibrated);
@@ -378,7 +399,8 @@ function drawRoute(svg,m,l,status,plan){
  db.style.opacity=brightness;
  for(const pt of sample){
   const xy=project(pt.x,pt.y);
-  if(pt.on&&fits(xy))waypoint(db,...xy,pt,colors.cyan,false,pt.shape,l.calibrated);
+  if(pt.on&&fits(xy)&&!(pt.shape==='star'&&m.range>40))
+   waypoint(db,...xy,pt,pt.tuned===true?colors.green:colors.cyan,false,pt.shape,l.calibrated);
  }
  if(status.routeValid&&m.syntheticAirport!==false){
   const xy=project(-33,-8);
@@ -420,7 +442,7 @@ function course(svg,m,l){
  }else flag(g,m.radio?(m.nav.type==='ILS'?'LOC':'VOR'):'XTK',full?344:357,full?256:379);
 }
 function vertical(svg,m){
- const isIls=m.radio&&m.nav.type==='ILS',vnav=!m.radio&&m.mode!=='PLAN'&&m.nav.valid&&m.nav.vnavActive;
+ const isIls=m.radio&&m.nav.type==='ILS',vnav=!m.radio&&m.mode!=='PLAN'&&m.nav.valid&&m.nav.vnavActive&&m.nav.descent===true;
  if(!isIls&&!vnav)return;
  const g=layer(svg,isIls?'glideslope':'vnav-path'),x=473,mid=isIls?(m.mode==='FULL_VOR_ILS'?281:364):341;
  for(let i=-2;i<=2;i++)circle(g,x,mid+i*18,2.8);

@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "f0035512862d22c1fa8a294387551bc034f0b9e7",
-  "mainBefore": 304,
+  "sourceCommit": "948f49ce7830b15efc26bb797ed37c69812070df",
+  "mainBefore": 306,
   "mainAfter": 96,
   "overheadBefore": 61,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "fc996920be31e22dc73144c39da417f2192d347614e90ee5022a1f4649f52c40"
+      "sha256": "2b63936f15f4ada9877c64364e3261ffe567a43411ba30ce157d5de010a502b5"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -143,16 +143,20 @@
       "sha256": "d5314336e6d15117498f51ded97ab04cbec17e28675753656762979b98e38d85"
     },
     {
-      "path": "engine/efis/desktop-bundle-38b03513d17b6d88.js",
-      "sha256": "38b03513d17b6d8894ad0b349aa667b35e50c44314c609c675140b8d39ce4a00"
+      "path": "engine/efis/desktop-bundle-9f8ea4e43460cc73.js",
+      "sha256": "9f8ea4e43460cc733ce8b5fea377a3bc07f7e58be972421b4396880ff93b0b73"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-c421f804441c8e77.js",
       "sha256": "c421f804441c8e7772f31de0fbdc6e75c023085f8d7bdb481f2fe602caf61a64"
     },
     {
-      "path": "efis-display-lab/desktop-bundle-a5f34552386bdeeb.js",
-      "sha256": "a5f34552386bdeeb3038755cc4dcc1b98080c6e863d20eb8d47d58be165064ba"
+      "path": "efis-display-lab/desktop-bundle-c4fc9d1971127f63.js",
+      "sha256": "c4fc9d1971127f6360c54426aebfc696c9deb84c53757e1fa8927b31e8d0b1f8"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1a9e802cbfcb6c9a.js",
+      "sha256": "1a9e802cbfcb6c9a572e1809fa154fd4e402ee5302d1bd017d2a27507d83bfde"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1b98487124bc1938.js",
@@ -581,10 +585,6 @@
     {
       "path": "panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js",
       "sha256": "901e76725b9d328946cc509d1715e491128314aaf82f7fb4defa3502012e378a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/efis-training-presets-v1.js",
-      "sha256": "bd0495871e2c6c1752acab270889a7bac15e177fe41292254c9653ee88bd594c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-css-safe-07-v1.css",
@@ -1128,7 +1128,7 @@
     },
     {
       "path": "efis-display-lab/ehsi-v2.js",
-      "sha256": "f7b56d89d8b993aed3b14d92000fe71efee0f8331848f171b7773367f71d40ed"
+      "sha256": "b2df0072f281c6673f14ae14f7dc7e4b730d65080707010771f38fcc9887d9d2"
     },
     {
       "path": "engine/tcas/classic-tcas-v1.js",
