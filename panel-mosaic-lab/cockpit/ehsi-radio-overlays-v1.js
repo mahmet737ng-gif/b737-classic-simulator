@@ -1,5 +1,5 @@
 /* Unified EHSI valid-radio overlays. Read-only; no synthetic NAV/ADF signal.
- * Valid VHF NAV + powered MCP COURSE -> dashed green station course.
+ * Independent valid NAV1/NAV2 + powered MCP CRS1/CRS2 -> two dashed green courses on each EHSI.
  * EFIS VOR/ADF option + valid receiver -> solid green station bearing.
  */
 (function(root,factory){
@@ -36,21 +36,25 @@
   return null;
  }
  function plan({snapshot,src,position,options={},range=40,mode='MAP'}={}){
-  const result={course:null,pointers:[]};
+  const result={courses:[],pointers:[]};
   if(!['MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(mode)||
    !coords(position)||!Number.isFinite(range)||range<=0||!src)return result;
   const decl=src.magneticVariationDeg;
-  const vhf=[1,2].includes(src.vhf)?src.vhf:(src.sg===2?2:1);
-  const tunedVor=valid(snapshot?.['navigation.vor'+vhf]);
-  const tunedIls=valid(snapshot?.['navigation.ils'+vhf]);
-  const selected=station(tunedVor)?tunedVor:station(tunedIls)?tunedIls:null;
-  // Radio quality is supplied by the avionics network; unknown/stale stations
-  // are deliberately excluded, even when a frequency is still displayed.
-  if(selected&&Number.isFinite(src.course)&&Number.isFinite(decl)){
+  const mcp=valid(snapshot?.['mcp.state']);
+  // Both MCP windows are shared aircraft selections. Display CRS1 and CRS2
+  // on BOTH EHSIs, independent of the receiving seat, transfer switch, SG or
+  // EFIS VOR/ADF pointer selection. Each radio course uses its OWN NAV channel.
+  for(const channel of [1,2]){
+   const powered=channel===1?mcp?.powered===true:mcp?.course2Powered===true;
+   const selectedCourse=channel===1?mcp?.courseL:mcp?.courseR;
+   const vor=valid(snapshot?.['navigation.vor'+channel]);
+   const ils=valid(snapshot?.['navigation.ils'+channel]);
+   const selected=station(vor)?vor:station(ils)?ils:null;
+   if(!powered||!Number.isFinite(selectedCourse)||!Number.isFinite(decl)||!selected)continue;
    const delta=positionDelta(position,station(selected));
-   result.course={channel:vhf,type:selected===tunedVor?'VOR':'ILS',
-    degree:norm(src.course),trueDegree:norm(src.course+decl),
-    delta,near:delta.distance<=range*.9};
+   result.courses.push({channel,type:selected===vor?'VOR':'ILS',
+    degree:norm(selectedCourse),trueDegree:norm(selectedCourse+decl),
+    delta,near:delta.distance<=range*.9});
   }
   if(options.vorAdf!==true)return result;
   for(const channel of [1,2]){
@@ -84,7 +88,7 @@
   svg.querySelector('[data-radio-nav-overlay]')?.remove();
   const selection=plan({snapshot,src,position,options:model?.options,
    range:model?.range,mode:model?.mode});
-  if(!selection.course&&!selection.pointers.length)return selection;
+  if(!selection.courses.length&&!selection.pointers.length)return selection;
   const projector=renderer.routeProjection?.(model);
   const layout=renderer.LAYOUT?.[model?.mode];
   if(!projector||!layout?.roseCenter)return selection;
@@ -111,15 +115,20 @@
    'stroke-width':.75,'paint-order':'stroke',
    'data-segment':kind},text);
   const maxNm=Math.max(5,model.range*2.2);
-  if(selection.course){
-   const c=selection.course,r=c.trueDegree*Math.PI/180;
+  for(const c of selection.courses){
+   const r=c.trueDegree*Math.PI/180;
    const dx=Math.sin(r)*maxNm,dy=Math.cos(r)*maxNm;
    const p1=projector(c.delta.x-dx,c.delta.y-dy),p2=projector(c.delta.x+dx,c.delta.y+dy);
    line('nav-selected-course',p1,p2,true,{'data-channel':c.channel,'data-course':c.degree});
    if(c.near){
     const p=projector(c.delta.x,c.delta.y);
-    if(p[0]>28&&p[0]<466&&p[1]>86&&p[1]<455)
-     label(String(Math.round(c.degree)%360).padStart(3,'0'),p,'nav-course-number');
+    // Keep the two selected course numbers readable when NAV1 and NAV2
+    // happen to be tuned to the same station.
+    const xy=[p[0]+(c.channel===1?-20:20),p[1]+(c.channel===1?-9:9)];
+    if(xy[0]>28&&xy[0]<466&&xy[1]>86&&xy[1]<455){
+     const printed=label(String(Math.round(c.degree)%360).padStart(3,'0'),xy,'nav-course-number');
+     printed.setAttribute('data-channel',String(c.channel));
+    }
    }
   }
   const own=projector(0,0);
@@ -134,5 +143,5 @@
   }
   return selection;
  }
- return Object.freeze({version:'EHSI-RADIO-OVERLAYS-0001',positionDelta,adfMagnetic,plan,draw});
+ return Object.freeze({version:'EHSI-RADIO-OVERLAYS-0002-DUAL-COURSE',positionDelta,adfMagnetic,plan,draw});
 });
