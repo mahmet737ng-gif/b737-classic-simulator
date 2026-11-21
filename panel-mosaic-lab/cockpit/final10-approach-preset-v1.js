@@ -70,7 +70,6 @@
   // actually accepted the generator. Verify the Electrical V7 source and
   // evaluated AC bus before treating the FINAL_10 preset as ready.
   for(const [id,target] of [
-   ['apu-gen-1','OFF'],['apu-gen-2','OFF'],
    ['bleed-apu','OFF'],['bleed-eng-1','ON'],['bleed-eng-2','ON'],
    ['pack-l','AUTO'],['pack-r','AUTO'],['isolation-valve','AUTO']
   ]){
@@ -108,7 +107,19 @@
     (electrical?.source?.[n]===source?'SOURCE_SELECTED_BUT_BUS_NOT_POWERED':
       failed?'GENERATOR_FAULT':'NOT_CONNECTED'));
   }
-  // Do not remove APU supply until BOTH engine generators are genuinely
+  // Removing APU generator contactors before the engine generators
+  // connect disconnects DC BUS 2 and can inhibit the very GEN ON commands
+  // needed to complete the preset. Keep the APU electrical source available
+  // throughout the transfer. Only then command both APU selectors OFF.
+  for(const n of [1,2]){
+   const id='apu-gen-'+n;
+   if(generator1&&generator2){
+    const ok=physicalOh(w,id,'OFF');
+    result('OH_'+id,ok,ok?'APU_GEN_OFF_AFTER_ENGINE_TRANSFER':
+     'APU_GEN_SWITCH_NOT_READY');
+   }else result('OH_'+id,false,'KEEP_APU_GENERATOR_WHILE_ENGINE_BUSES_CONNECT');
+  }
+  // Do not shut down APU until BOTH engine generators are genuinely
   // providing AC bus power. Switch detent ON alone is insufficient proof.
   if(both&&generator1&&generator2){
    const moved=physicalOh(w,'apu-start','OFF');
