@@ -84,7 +84,8 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
    applyFinal10Preset:x=>{selected.mcp=x;return {accepted:true};}},
   dispatchEvent:x=>events.push(x),
   setInterval:()=>13,clearInterval(){},addEventListener(){},
-  document:{getElementById:id=>id==='overheadFrame'?{contentWindow:{B737OverheadToggles:sw}}:null}
+  document:{getElementById:id=>id==='overheadFrame'?{contentWindow:{B737OverheadToggles:sw}}:null,
+   querySelector:sel=>sel==='#b737-speedbrake-groove'?{}:null}
  };
  cockpit.CustomEvent=class{constructor(type,options){this.type=type;this.detail=options?.detail}};
  vm.runInNewContext(read('panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'),
