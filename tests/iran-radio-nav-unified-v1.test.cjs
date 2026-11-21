@@ -61,7 +61,7 @@ test('NAV tuning publishes same source to VOR, DME and ILS consumers without mix
  freq.CAPT=109900;root.B737UnifiedFlightScenarioV1.getState=()=>({lat:36.2,lon:59.7,altitudeFt:5200});
  root.B737UnifiedIranRadioNavV1.refresh();
  assert.equal(packets['navigation.ils1'].value.stationIdent,'IMSD');
- root.B737UnifiedFlightScenarioV1.getState=()=>({lat:35.71,lon:51.22,altitudeFt:6000});
+ root.B737UnifiedFlightScenarioV1.getState=()=>({lat:35.655,lon:51.430,altitudeFt:5600});
  root.B737UnifiedIranRadioNavV1.refresh();
  assert.equal(packets['navigation.ils1'].value.stationIdent,'ITHL');
  assert.equal(packets['navigation.dme1'].value.stationIdent,'ITHL');
