@@ -60,7 +60,7 @@ const activeEadiVersion=fs.readFileSync(__dirname+'/eadi-lab-unified-v2.js','utf
 // with its internal engine VERSION.
 assert.ok(activeEadiVersion&&
  /^UNIFIED-EADI-LAB-FULL-\d{4}-/.test(activeEadiVersion)&&
- /src="\.\/eadi-lab-unified-v2\.js\?v=[A-Z0-9-]+"/.test(index),
+  /src="\.\/eadi-lab-unified-v2\.js\?v=[A-Z0-9-]+(?:&amp;[a-zA-Z0-9_-]+=[A-Z0-9-]+)*"/.test(index),
  'Unified must load the active full EADI renderer, allowing newer cache keys');
 assert.ok(!index.includes('src="./eadi-stage1-unified-v1.js'));
 assert.ok(index.includes('../../efis-display-lab/eadi.js'));
