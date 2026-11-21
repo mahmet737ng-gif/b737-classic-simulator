@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "b8a9976ae9a552f8977e3d43fd2474a12d616f06b385dfece98f6e852578efaf"
+      "sha256": "a0bc13c6cac7d3b797fbb23e80eb8e66b381dd24b01c94f436be515068df7805"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -1709,6 +1709,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/ehsi-dual-course-hotfix-v2.js",
+      "sha256": "49e48d02c905f7b6e7012d8fac5c64afb1bbab0fa332ee6962a47bcee1fd8a10"
     }
   ]
 }
