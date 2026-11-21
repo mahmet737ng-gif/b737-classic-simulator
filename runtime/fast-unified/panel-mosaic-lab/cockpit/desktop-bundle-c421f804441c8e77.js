@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0013-3DRUM-DOWN-0002&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001 */
+/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-UNIFIED-0013-3DRUM-DOWN-0002-GROUND-RED-0001&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001 */
 try{
 /* B737 Classic EADI speed tape — event-driven read-only integration and paint.
  * FCOM 10.30.13–15, 10.40.6–8; uses independent CAPT ADC1 / FO ADC2.
@@ -227,12 +227,16 @@ try{
   segment(ctx,TAPE.axis,TAPE.top,TAPE.axis,TAPE.bottom,'#e5e9e9',2.5);
   if(ref)for(const y of [TAPE.top,TAPE.bottom])segment(ctx,87,y,242,y,COLOR.white,3);
   const m=view.marks;
-  // Only source-verified limits are drawn, never fixed performance estimates.
-  stallBufferBracket(ctx,m.minimumManeuverKt,m.stickShakerKt,view);
-  band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
+  // The LOWER RED stick-shaker barber pole and its caution buffer do not
+  // appear on a confirmed GROUND state. Unknown phase is not assumed ground.
+  const showLowSpeedBand=view.inFlight!==false;
+  if(showLowSpeedBand){
+   stallBufferBracket(ctx,m.minimumManeuverKt,m.stickShakerKt,view);
+   band(ctx,m.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
+  }
   // Scenario-only training envelope, not source-verified FCOM/FCC limits.
   const trainer=view.trainingLowSpeed;
-  if(!Number.isFinite(m.stickShakerKt)&&
+  if(showLowSpeedBand&&!Number.isFinite(m.stickShakerKt)&&
      trainer?.source==='INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA'&&
      Number.isFinite(trainer.stickShakerKt)&&
      Number.isFinite(trainer.minimumManeuverKt)){
@@ -240,7 +244,7 @@ try{
    band(ctx,trainer.stickShakerKt,view,{x:POLE_X,w:POLE_WIDTH,direction:'LOW',striped:true});
    write('TRN',TAPE.left+8,TAPE.bottom-31,COLOR.yellow,ref?19:15,'left');
   }
-  if(ref&&Number.isFinite(m.stickShakerKt)&&visible(yFor(m.stickShakerKt,view)))
+  if(showLowSpeedBand&&ref&&Number.isFinite(m.stickShakerKt)&&visible(yFor(m.stickShakerKt,view)))
    segment(ctx,POLE_X,yFor(m.stickShakerKt,view),POLE_X+20,yFor(m.stickShakerKt,view),COLOR.red,4);
   const highYellow=m.highSpeedBuffetKt??m.nextFlapPlacardKt;
   band(ctx,highYellow,view,{x:234,w:15,direction:'HIGH'});

@@ -270,7 +270,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001-IRAN-ILS-29L-0001&amp;aero=TRN-LOW-0001&amp;fd=DIRECT-CMD-0002 */
+/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001-IRAN-ILS-29L-0001-GROUND-RED-0001&amp;aero=TRN-LOW-0001&amp;fd=DIRECT-CMD-0002 */
 try{
 /* Unified EADI v2: cockpit mount for the new EFIS Display Lab EADI renderer.
  * Replaces the retired attitude-only painter, retaining the owner-registered
@@ -368,6 +368,16 @@ try{
       originalSpeedView.command.speedKt>range.maxKt?'ABOVE':
       originalSpeedView.command.speedKt<range.minKt?'BELOW':'ON_TAPE':null};
   }
+  // Lower red stall-speed barber pole only when AIRBORNE.
+  // Use the authoritative scenario state first; otherwise the existing
+  // air/ground avionics owner. Never infer ground merely from low IAS.
+  const airground=root.B737UnifiedAvionicsNetworkV1?.getSignal?.('aircraft.airground');
+  const knownGround=typeof activeScene?.airborne==='boolean'?!activeScene.airborne:
+   airground?.quality==='VALID'&&typeof airground.value?.onGround==='boolean'?airground.value.onGround:null;
+  if(speedView&&typeof knownGround==='boolean')
+   speedView={...speedView,inFlight:!knownGround};
+  display.host.dataset.speedLowerRedBand=knownGround===true?'GROUND_HIDDEN':
+   knownGround===false?'AIRBORNE_VISIBLE':'UNKNOWN';
   const painted=renderer.renderUnifiedFull(display.canvas,{
    seat,pitch:smoothAttitude?smooth.pitchDeg:injected?station.pitch:src.pitch,
    bank:smoothAttitude?smooth.bankDeg:injected?station.bank:src.bank,
@@ -1315,7 +1325,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-N1-TREND-20261119 */
+/* ../../engine/efis/classic-speed-tape-engine-v1.js?v=SPEED-TAPE-N1-TREND-20261119-GROUND-RED-0001 */
 try{
 /* B737 Classic EFIS Speed Tape — FCOM 10.30.13-15 / 10.40.6-8,
  * AFDS FCOM 4.10.3-6 / 4.20.32-35. Pure, event-driven training model.
@@ -1618,6 +1628,8 @@ try{
    provenance:s.adc.quality==='TRAINING'?'TRAINING_SCENARIO':
     s.adc.quality==='VALID'?'SIMULATOR_ADC':'UNKNOWN',
    casKt:cas,tapeCenterKt,range,lowSpeedDefault,
+   // Ground/airborne indication from CONFIG; UNKNOWN stays null.
+   inFlight:config.inFlight,
    commandAuthority:s.commandAuthority,
    rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
    effectiveTargetKt,limitReason,marks,flags,

@@ -299,6 +299,8 @@
    provenance:s.adc.quality==='TRAINING'?'TRAINING_SCENARIO':
     s.adc.quality==='VALID'?'SIMULATOR_ADC':'UNKNOWN',
    casKt:cas,tapeCenterKt,range,lowSpeedDefault,
+   // Ground/airborne indication from CONFIG; UNKNOWN stays null.
+   inFlight:config.inFlight,
    commandAuthority:s.commandAuthority,
    rollingDigitsVisible:adcValid&&cas>45,trend,command,commandedPosition,
    effectiveTargetKt,limitReason,marks,flags,
