@@ -234,6 +234,7 @@
    const ready=physical&&now?.projection?.source==='FLIGHT_SCENARIO_FINAL10'&&
     now?.projection?.teTarget===30&&now?.projection?.teMoving===false&&
     Number.isFinite(now.actualTe)&&Math.abs(now.actualTe-30)<.4;
+   if(ready)result('FLAP_OWNER_PRESET',true,'OWNER_PROJECTION_CONFIRMED');
    result('FLAP_LEVER_30',physical,physical?'30':'INSTRUCTOR_PRESET_NOT_READY');
    result('FLAP_ACTUAL_30',ready,ready?
     now.actualTe.toFixed(1)+' DEG / STABLE':
