@@ -1,5 +1,200 @@
 (async()=>{
 ;
+/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=CMD-AXES-0002&amp;alt=ACQ-0001 */
+try{
+/* B737 Classic unified FCC flight guidance for instructor Flight Scenario.
+ * FCOM Ch 4.20.4-10 mode selection and FD visibility; commands are a training
+ * surrogate, NOT an aircraft-performance law or qualified LRU output.
+ * Navigational capture requires a verified active NAV/FMC source: no fiction.
+ */
+(function(root,factory){'use strict';const api=factory();
+ if(typeof module==='object'&&module.exports)module.exports=api;
+ if(root)root.B737FccFlightGuidanceV1=api;
+})(typeof globalThis!=='undefined'?globalThis:null,function(){
+ 'use strict';
+ const VERSION='B737_FCC_SCENARIO_GUIDANCE_0002';
+ const Laws=(typeof globalThis==='object'?globalThis.B737FlightControlLawsV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('../flight/flight-control-laws-v1.js'):null);
+ const AltCapture=(typeof globalThis==='object'?globalThis.B737AltitudeCaptureTrainingV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('../flight/altitude-capture-training-v1.js'):null);
+ const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+ const norm=x=>((x%360)+360)%360;
+ const delta=(from,to)=>((to-from+540)%360)-180;
+ const valid=x=>typeof x==='number'&&Number.isFinite(x);
+ function createState(){return {schema:VERSION,engagementKey:'',
+  altitudeHoldFt:null,cwsHeadingDeg:null,cwsAltitudeFt:null,
+  altitudeCapture:false,altitudeHeld:false,selectedAltitudeFt:null,
+  captureInhibitUntilSec:0,navCapture:false,reason:'NOT_ACTIVE'};}
+ function evaluate(prior,mcp,flight,nav=null){
+  if(prior?.schema!==VERSION)throw TypeError('FCC_STATE');
+  const out={state:{...prior},actions:[],pitchCommandDeg:null,rollCommandDeg:null,
+   pitchValid:false,rollValid:false,fd:{captain:false,firstOfficer:false},
+   fdAxes:{captain:{pitch:false,roll:false},firstOfficer:{pitch:false,roll:false}},
+   reasons:[],status:'INACTIVE',altAcquireConfirmed:false,altitudeHoldConfirmed:false};
+  if(flight?.schema!=='B737_FLIGHT_SCENARIO_STATE_V1'||mcp?.power!==true)
+   return {...out,status:'NO_ACTIVE_POWERED_FLIGHT_SOURCE'};
+  const m=mcp.modes||{},a=mcp.axisControl||{},v=mcp.values||{};
+  const active=/^(?:CMD|CWS)_[AB]$/.test(m.autopilot||'');
+  const cmd=active&&(m.autopilot.startsWith('CMD_'));
+  const pAxis=active?a.pitch:null,rAxis=active?a.roll:null;
+  const altitudeChanged=valid(prior.selectedAltitudeFt)&&valid(v.altitude)&&
+   prior.selectedAltitudeFt!==v.altitude;
+  out.state.selectedAltitudeFt=valid(v.altitude)?v.altitude:null;
+  if(altitudeChanged){
+   out.state.altitudeCapture=false;out.state.altitudeHeld=false;
+   out.state.captureInhibitUntilSec=(valid(flight.elapsedSec)?flight.elapsedSec:0)+1.5;
+  }
+  const key=[m.autopilot,m.vertical,m.lateral,mcp.capture?.pitch,
+   mcp.capture?.roll,pAxis,rAxis].join('|');
+  if(prior.engagementKey!==key){
+   out.state.engagementKey=key;
+   if(prior.engagementKey.split('|')[1]!==m.vertical||!active){
+    out.state.altitudeHoldFt=null;out.state.altitudeCapture=false;out.state.altitudeHeld=false;
+   }
+   if(prior.engagementKey.split('|')[5]!==pAxis)out.state.cwsAltitudeFt=null;
+   if(prior.engagementKey.split('|')[6]!==rAxis)out.state.cwsHeadingDeg=null;
+  }
+  const fdCommand=fn=>fn===true&&mcp.flightDirectorBarsRetracted!==true;
+  const bankLimit=[10,15,20,25,30].includes(mcp.bankAngleLimit)?mcp.bankAngleLimit:20;
+  const direction=m.lateral;
+  const speedForPitch=valid(flight.tasKt)?flight.tasKt:flight.iasKt;
+  const pitchForVs=vs=>Laws?.pitchForVs(vs,speedForPitch)??clamp(
+   2+Math.atan2(vs*.3048/60,Math.max(speedForPitch*.514444,35))*180/Math.PI,-10,15);
+  const bankForHeading=trueTarget=>Laws?.bankForHeading(flight.trueHeadingDeg,trueTarget,bankLimit)??
+   clamp(delta(flight.trueHeadingDeg,trueTarget)*.65,-bankLimit,bankLimit);
+  const altitudeVs=alt=>Laws?.altitudeVs(flight.altitudeFt,alt)??
+   clamp((alt-flight.altitudeFt)*2,-2500,2500);
+  function acquireAltitude(selected){
+   if(!valid(selected))return false;
+   const plan=flight.altitudeCapture;
+   const samePlan=plan?.targetAltitudeFt===selected;
+   const alreadyAcquiring=!altitudeChanged&&
+    (mcp.capture?.pitch==='ALT_ACQ'||out.state.altitudeCapture)&&
+    (!plan||samePlan);
+   const opportunity=AltCapture?.opportunity({
+    altitudeFt:flight.altitudeFt,targetAltitudeFt:selected,vsFpm:flight.vsFpm,
+    elapsedSec:flight.elapsedSec,
+    inhibitUntilSec:out.state.captureInhibitUntilSec});
+   if(!alreadyAcquiring&&opportunity?.acquire!==true)return false;
+   out.state.altitudeCapture=true;out.altAcquireConfirmed=true;out.pitchValid=true;
+   if(samePlan&&plan.phase==='HELD'){
+    out.state.altitudeHeld=true;out.altitudeHoldConfirmed=true;
+    out.actions.push({type:'ALTITUDE',value:selected});
+    out.pitchCommandDeg=pitchForVs(0);
+   }else{
+    out.actions.push({type:'ALT_ACQ',value:selected});
+    out.pitchCommandDeg=pitchForVs(samePlan?plan.vsFpm:flight.vsFpm);
+   }
+   return true;
+  }
+  // CWS axes retain the attitude/heading at hand-off. No fabricated manual
+  // yoke force: only an existing MCP CWS state can enable this hold.
+  if(rAxis==='CWS'){
+   if(!valid(out.state.cwsHeadingDeg))out.state.cwsHeadingDeg=flight.trueHeadingDeg;
+   out.actions.push({type:'HEADING',value:norm(out.state.cwsHeadingDeg)});
+   out.rollCommandDeg=0;out.rollValid=true;
+  }else if(direction==='HDG_SEL'&&valid(v.heading)){
+   // MCP selector and EHSI bug are MAGNETIC. The flight plant uses TRUE
+   // heading. Only a valid observed/WMM2025 variation may bridge them.
+   if(valid(nav?.magneticVariationDeg)){
+    const targetTrue=norm(v.heading+nav.magneticVariationDeg);
+    out.actions.push({type:'HEADING',value:targetTrue});
+    out.actions.push({type:'BANK_LIMIT',value:bankLimit});
+    out.rollCommandDeg=bankForHeading(targetTrue);
+    out.rollValid=true;
+   }else out.reasons.push('HDG_SEL_MAGNETIC_VARIATION_UNAVAILABLE');
+  }else if(direction==='LNAV'){
+   if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
+    out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
+    out.rollCommandDeg=bankForHeading(nav.trackDeg);
+    out.rollValid=true;
+   }else out.reasons.push('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED');
+  }else if(direction==='VOR_LOC'||mcp.capture?.roll==='VOR_LOC'){
+   if(nav?.courseTrackValid===true&&valid(nav.courseDeg)){
+    out.actions.push({type:'HEADING',value:norm(nav.courseDeg)});
+    out.rollCommandDeg=bankForHeading(nav.courseDeg);
+    out.rollValid=true;
+   }else out.reasons.push('VOR_LOC_CAPTURE_SOURCE_UNVERIFIED');
+  }else if(active)out.reasons.push('ROLL_MODE_CWS_OR_NO_COMMAND');
+  const pitchMode=m.vertical;
+  if(pAxis==='CWS'){
+   if(!valid(out.state.cwsAltitudeFt))out.state.cwsAltitudeFt=flight.altitudeFt;
+   out.actions.push({type:'ALTITUDE',value:out.state.cwsAltitudeFt});
+   out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.cwsAltitudeFt));out.pitchValid=true;
+  }else if(pitchMode==='ALT_HLD'||mcp.capture?.pitch==='ALT_HOLD'){
+   if(!valid(out.state.altitudeHoldFt))
+    out.state.altitudeHoldFt=mcp.capture?.pitch==='ALT_HOLD'&&valid(v.altitude)?
+     v.altitude:flight.altitudeFt;
+   out.actions.push({type:'ALTITUDE',value:out.state.altitudeHoldFt});
+   out.pitchCommandDeg=pitchForVs(altitudeVs(out.state.altitudeHoldFt));
+   out.pitchValid=true;
+  }else if(pitchMode==='VS'){
+   if(valid(v.verticalSpeed)){
+    if(!acquireAltitude(v.altitude)){
+     const targetVS=clamp(v.verticalSpeed,-5000,5000);
+     out.actions.push({type:'VS',value:targetVS});
+     out.pitchCommandDeg=pitchForVs(targetVS);
+     out.pitchValid=true;
+    }
+   }
+  }else if(pitchMode==='LVL_CHG'){
+   if(valid(v.speed)&&valid(v.altitude)&&mcp.speedDisplayMode==='IAS'){
+    const climb=Math.sign(v.altitude-flight.altitudeFt);
+    const iasError=v.speed-flight.iasKt;
+    // LVL CHG regulates IAS with pitch. A climb clearance must not
+    // accidentally turn into descent merely because target IAS is high.
+    const climbRate=climb>0?clamp(1700-iasError*12,0,2400):
+     climb<0?clamp(-1700-iasError*12,-2400,0):0;
+    out.actions.push({type:'SPEED',value:v.speed});
+    if(!acquireAltitude(v.altitude)){
+     out.actions.push({type:'VS',value:climbRate});
+     out.pitchCommandDeg=pitchForVs(climbRate);
+    }
+    out.pitchValid=true;
+   }else out.reasons.push('LVL_CHG_VALID_IAS_AND_ALTITUDE_REQUIRED');
+  }else if(pitchMode==='VNAV'){
+   if(nav?.fmcVerticalValid===true&&valid(nav.vsFpm)){
+    out.actions.push({type:'VS',value:clamp(nav.vsFpm,-5000,5000)});
+    out.pitchCommandDeg=pitchForVs(clamp(nav.vsFpm,-5000,5000));
+    out.pitchValid=true;
+   }else out.reasons.push('VNAV_FMC_VERTICAL_PROFILE_UNVERIFIED');
+  }else if(mcp.capture?.pitch==='ALT_ACQ'&&valid(v.altitude)){
+   acquireAltitude(v.altitude);
+  }else if(active)out.reasons.push('PITCH_MODE_CWS_OR_NO_COMMAND');
+  // Independent axes: an active pitch mode never authorizes a roll cue,
+  // and a blank lateral mode never suppresses an otherwise valid pitch cue.
+  // CWS removes only its overridden axis; approach flare retracts both.
+  const flareRetract=mcp.nav?.loc===true&&mcp.nav?.gs===true&&
+   valid(flight.radioAltitudeFt)&&flight.radioAltitudeFt<=50;
+  const pitchBar=out.pitchValid&&pAxis!=='CWS'&&!flareRetract;
+  const rollBar=out.rollValid&&rAxis!=='CWS'&&!flareRetract;
+  for(const [side,selector] of [['captain','left'],['firstOfficer','right']]){
+   // Unified training contract: an engaged CMD A/P supplies the active
+   // director-axis cues even if the corresponding physical F/D selector
+   // was OFF at engagement. Without CMD, physical F/D still owns visibility.
+   // Retract/flare overrides both. Do not synthesize the blank opposite axis.
+   const selected=fdCommand(mcp.controls?.fd?.[selector]);
+   const trainingCmd=cmd&&mcp.flightDirectorBarsRetracted!==true;
+   const permitted=selected||trainingCmd;
+   out.fdAxes[side]={pitch:permitted&&pitchBar,roll:permitted&&rollBar};
+   out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
+  }
+  // With no engaged autopilot, the F/D may still display command guidance,
+  // but it does not automatically move the airplane.
+  out.actions=active?out.actions:[];
+  if(!active){out.altAcquireConfirmed=false;out.altitudeHoldConfirmed=false;}
+  out.status=active?'COUPLED_'+(cmd?'CMD':'CWS'):'FD_ONLY_NOT_AUTOPILOT';
+  out.state.reason=out.reasons.join(',')||out.status;
+  return out;
+ }
+ return Object.freeze({VERSION,createState,evaluate});
+});
+
+}catch(error){queueMicrotask(()=>{throw error});}
+;await 0;
+;
 /* ../../engine/afds/fcom-ch4-ap-protection-v1.js?v=FCC-PROTECT-0001 */
 try{
 /* Boeing 737 Classic FCOM §4.20.2–4.20.4 autopilot protection.
@@ -356,7 +551,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-SLIM-0002&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -590,6 +785,9 @@ try{
     case 'HEADING':return t.lateralMode==='HEADING'&&Math.abs(Core.angle(t.headingDeg,action.value))<.01;
     case 'BANK_LIMIT':return t.bankLimitDeg===action.value;
     case 'VS':return t.verticalMode==='VS'&&t.vsFpm===action.value;
+    case 'ALT_ACQ':return t.verticalMode==='ALT_ACQ'&&
+     state.altitudeCapture?.phase==='ACQUIRE'&&
+     Math.abs(t.altitudeFt-action.value)<.01;
     case 'ALTITUDE':return t.verticalMode==='ALTITUDE'&&Math.abs(t.altitudeFt-action.value)<.01;
     case 'SPEED':return Math.abs(t.speedKt-action.value)<.01;
     default:return false;
@@ -767,190 +965,6 @@ try{
  win.B737FlightEnvelopeLEBridgeV1=Object.freeze({snapshot:()=>({
   ready,onGround,requested,source:'INSTRUCTOR_LOW_SPEED_ENVELOPE_NOT_AOA'
  })});
-})(window);
-
-}catch(error){queueMicrotask(()=>{throw error});}
-;await 0;
-;
-/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-ECU-RETRY-20261119 */
-try{
-/* TCAS-independent Unified TO/GA integration.
- * Source: Sepehran 737CL FCOM Ch 4 §§4.20.14–16,4.20.24–27.
- * All commands pass the SINGLE ISN-18 engine controller and AFDS FMA owner.
- * The reduced GA thrust fraction is a TRAINING proxy, not AFM N1 data.
- */
-(function(win){'use strict';
- const T=win.B737ClassicTogaCH4V1;
- if(!T){win.console?.warn('TOGA CH4 core unavailable');return;}
- const doc=win.document;
- let state=T.initial(),lastMs=0,lastFma='',lastThrust='',errors=[];
- let thrustFeedback='NOT_REQUESTED';
- const getFlight=()=>win.B737UnifiedFlightScenarioV1;
- const mcp=()=>win.B737McpAFDSBridgeV1?.getOutput?.();
- const owner=()=>win.B737ISNCockpitV1;
- const engineRunning=(n)=>owner()?.getStartState?.()?.phase?.['engine'+n]==='RUNNING';
- const active=()=>['TO','GA'].includes(state.phase);
- const scenario=()=>getFlight()?.getState?.()??null;
- function context(light=false){
-  const f=scenario(),m=mcp(),c=m?.controls||{},engines=light?null:owner()?.getPropulsionSnapshot?.()?.engines;
-  return {groundReady:f?.phase==='GROUND_READY',airborne:f?.airborne===true,
-   radioAltitudeFt:f?.radioAltitudeFt,iasKt:f?.iasKt,groundTrackDeg:f?.trueTrackDeg??f?.trueHeadingDeg,
-   fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,atArmed:c.atArm===true,
-   apChannels:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||'')?1:0,
-   autopilotEngaged:/^(?:CMD|CWS)_[AB]$/.test(m?.modes?.autopilot||''),
-   engine1Running:light?undefined:engineRunning(1),engine2Running:light?undefined:engineRunning(2),
-   // Presence of both engines running is checked independently from pump/fuel faults.
-   selectedSpeedKt:m?.values?.speed??f?.iasKt,
-   v2Kt:win.B737UnifiedTakeoffDataV1?.get?.()?.v2Kt??null,
-   flareArmed:false,touchedDown:false,
-   isTakeoffMode:state.phase==='TO',
-   // FCOM 4.20.14-15 FSI/FST option: takeoff roll FMA HDG SEL, unlike
-   // other variants with a BLANK lateral TO/GA mode. EP-FSI uses FSI.
-   takeoffRollHdGSel:win.B737AircraftProfileStore?.get?.()?.aircraftModel==='737-300',
-   // No digitized AFM N1 target exists. The reduced-GA-achieved gate is
-   // explicitly a training approximation based on the observed same-ECU
-   // throttle and N1; never an actual aircraft's reduced GA criterion.
-   reducedGaN1Reached:engines&&['engine1','engine2'].some(id=>
-    engines[id]?.running&&Number.isFinite(engines[id]?.n1Percent)&&
-    Number.isFinite(engines[id]?.throttle)&&
-    engines[id].throttle>=.82&&engines[id].n1Percent>=80)
-  };
- }
- function banner(message,error=false){
-  const el=doc.getElementById('flightScenarioStatus');
-  if(el){el.textContent=message;el.dataset.error=String(error);}
- }
- function publishFma(){
-  if(!active())return;
-  const m=mcp();
-  if(m?.power!==true)return;
-  const fm=T.fma(state),fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
-  if(lastFma===fingerprint)return;
-  lastFma=fingerprint;
-  for(const seat of ['CAPT','FO']){
-   win.dispatchEvent(new CustomEvent('b737:fma-fcc-observation',{detail:{
-    schema:'B737_FMA_FCC_OBSERVATION_V1',confirmed:true,seat,
-    source:'SIMULATED_FCC',evidence:{togaModeConfirmed:true},
-    fields:{at:{active:fm.at},pitch:{active:fm.pitch},
-     roll:{active:fm.roll},
-     afds:{active:fm.afds==='CMD'||m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
-      fm.afds:''}}
-   }}));
-  }
- }
- function thrust(){
-  const fm=T.fma(state);
-  if(!['TAKEOFF_LIMIT','GA_REDUCED','GA_FULL'].includes(fm.thrust))return;
-  const finger=state.phase+':'+state.presses+':'+state.throttleFraction;
-  if(lastThrust===finger)return;
-  const result=[];let attempts=0,reason='NO_RUNNING_ENGINE';
-  for(const n of [1,2]){
-   if(!engineRunning(n))continue;
-   attempts++;
-   try{
-    const r=owner()?.togaThrottleCommand?.({engine:'engine'+n,
-     value:state.throttleFraction,controller:'B737_TOGA_CH4_TRAINING',
-     phase:state.phase});
-    if(r?.accepted){
-     result.push(n);
-     doc.dispatchEvent(new CustomEvent('b737:throttle-state',{detail:{
-      engine:n,percent:state.throttleFraction*100,source:'CH4_TOGA',visualOnly:true}}));
-    }else reason=r?.reason||'THROTTLE_OWNER_NOT_READY';
-   }catch(e){reason=String(e?.message||e);}
-  }
-  if(attempts>0&&result.length===attempts){
-   lastThrust=finger;thrustFeedback='APPLIED_TO_'+result.join('_');
-  }else{
-   // A partial acceptance must not latch the whole TO/GA thrust command.
-   // Retry against the SAME ECU until the running-engine set accepts it,
-   // but never override THR HLD once that FCOM mode has been entered.
-   thrustFeedback='NOT_APPLIED_'+reason;
-   if(errors.at(-1)!==thrustFeedback)errors.push(thrustFeedback);
-   if(errors.length>24)errors.shift();
-  }
- }
- function press(source='INSTRUCTOR'){
-  const flight=getFlight(),f=flight?.getState?.();
-  if(!flight?.getDiagnostics?.()?.active||!f){
-   banner('TO/GA BLOCKED · LOAD AN ACTIVE FLIGHT SCENARIO',true);return state;
-  }
-  const c=context(),was=state.phase;
-  // Check the current engine snapshot on the SECOND GA push: do not block
-  // forever merely because no periodic full-ECU poll ran in between.
-  const before=state.phase==='GA'?T.advance(state,c,0):state;
-  const next=T.press(before,c);
-  if(next===state||next.reason===state.reason&&next.phase===state.phase){
-   banner('TO/GA BLOCKED · '+next.reason,true);return state;
-  }
-  state=next;
-  if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
-  if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
-   // FD TO/GA may engage with unavailable A/T, but a training takeoff ROLL
-   // cannot accelerate under imaginary thrust while both engines are OFF.
-   if(c.atArmed===true&&(c.engine1Running===true||c.engine2Running===true)){
-    try{flight.command({type:'TAKEOFF_ROLL'});}catch(e){
-     state=T.initial();banner('TO/GA BLOCKED · '+String(e.message||e),true);return state;
-    }
-   }else banner('TO/GA FD MODE · A/T ARMED AND RUNNING ENGINE REQUIRED FOR POWERED GROUND ROLL',true);
-  }
-  if(state.apDisengage===true){
-   win.B737McpAFDSBridgeV1?.disconnectConfirmed?.({
-    reason:'TOGA_BELOW_2000_RA',confirmed:true,source:'SIMULATED_FCC'
-   });
-  }
-  publishFma();thrust();
-  banner('TO/GA '+state.phase+' · '+state.reason+' · FMA '+state.atMode+
-    ' / '+state.pitchMode+' / '+(state.rollMode||'BLANK')+' / '+state.afdsMode);
-  win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source}}));
-  return state;
- }
- function tick(){
-  const flight=getFlight(),current=flight?.getState?.();
-  if(active()&&current){
-   const ms=performance.now(),dt=lastMs?Math.min(.35,Math.max(0,(ms-lastMs)/1000)):0;
-   const next=T.advance(state,context(true),dt);
-   state=next;publishFma();thrust();
-   lastMs=ms;
-  }else lastMs=performance.now();
- }
- win.addEventListener('b737:toga-request',e=>press(e.detail?.source||'THRUST_LEVER'));
- // Engine indication emits an existing throttled shared-ECU packet; adapt the
- // 2-engine GA to a single-engine target using Chapter 4 F/D speed rules.
- win.addEventListener('b737:engine-indications-live-v2',()=>{
-  if(!active())return;
-  const next=T.advance(state,context(),0);
-  if(next.singleEngine!==state.singleEngine||next.targetSpeedKt!==state.targetSpeedKt){
-   state=next;lastFma='';publishFma();
-   win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'ENGINE_FEEDBACK'}}));
-  }
- });
- function releaseToga(){
-  if(state.phase==='OFF')return;
-  state=T.initial();lastFma='';lastThrust='';thrustFeedback='NOT_REQUESTED';
-  win.dispatchEvent(new CustomEvent('b737:fma-fcc-clear'));
- }
- win.addEventListener('b737:flight-scenario-stopped',releaseToga);
- // Above 400ft RA selecting another pitch mode terminates TO/GA. Below
- // 400ft only turning BOTH FD OFF may terminate the protected phase.
- win.addEventListener('b737:mcp-button-request',e=>{
-  const id=e.detail?.id;
-  if(!active()||(scenario()?.radioAltitudeFt??0)<400)return;
-  if(/^CMD_[AB]$/.test(id)&&mcp()?.modes?.autopilot===id){
-   releaseToga();return;
-  }
-  if(['VNAV','LVL_CHG','ALT_HLD','VS'].includes(id))releaseToga();
- });
- win.addEventListener('b737:mcp-hardware-change',e=>{
-  if(!active())return;
-  if(!['FD_LEFT','FD_RIGHT'].includes(e.detail?.id))return;
-  const controls=mcp()?.controls?.fd;
-  if(controls?.left===false&&controls?.right===false)releaseToga();
- });
- const api=Object.freeze({getState:()=>({...state}),press,tickForTest:tick,
-  getDiagnostics:()=>({version:T.VERSION,errors:errors.slice(-12),
-   thrustFeedback,lastAcceptedCommand:lastThrust||null})});
- win.B737UnifiedTOGACh4V1=api;
- if(typeof win.setInterval==='function')win.setInterval(tick,150);
 })(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}

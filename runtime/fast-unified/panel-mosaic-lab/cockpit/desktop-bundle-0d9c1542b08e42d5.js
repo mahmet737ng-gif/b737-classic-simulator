@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -953,11 +953,18 @@ function transition(state,action){
   if(!Rules?.valid||!Rules.valid(id,v))throw Error("MCP value out of FCOM Chapter 4 range or increment");
   const old=s.values[id];s.values[id]=v;
   if(id==='altitude'&&s.modes.vertical==='LVL_CHG')setLvlChgThrust(s);
-  if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&Math.abs(v-old)>100){
+  if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&v!==old){
+   // Any real MCP ALT detent during ALT ACQ cancels capture. Resume V/S
+   // at the OBSERVED instantaneous rate, not the pre-capture selected rate.
+   // MCP display is quantized to its existing 50-fpm selector increments;
+   // the plant retains its continuous present vertical speed.
    s.capture.pitch=null;s.modes.vertical="VS";s.override.pitch=false;
-   if(Number.isFinite(s.flight?.verticalSpeedFpm))
-    s.values.verticalSpeed=Math.max(-7900,Math.min(6000,
-     Math.round(s.flight.verticalSpeedFpm/50)*50));
+   s.armed.pitch=null;s.targets.pitch=null;
+   if(Number.isFinite(s.flight?.verticalSpeedFpm)){
+    const observedVS=Math.max(-5000,Math.min(5000,s.flight.verticalSpeedFpm));
+    s.values.verticalSpeed=Rules?.normalize?.('verticalSpeed',observedVS)??
+     Math.round(observedVS/100)*100;
+   }
   }else if(id==="altitude"&&s.modes.vertical==="ALT_HLD"&&
    Number.isFinite(s.flight?.altitudeFt)&&
    Math.abs(v-s.flight.altitudeFt)>100&&s.capture.pitch!=="ALT_ACQ"){
