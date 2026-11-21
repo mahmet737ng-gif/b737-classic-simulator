@@ -90,13 +90,11 @@ function evaluate(s,cb=liveCB){
  const realApuFire=powered&&detector('APU')&&s.apuDetector&&s.apuFire;
  outputs.APU={autoShutdown:realApuFire,fuelShutoff:apuPull||realApuFire,bleedShutoff:apuPull,
  inletDoorClose:apuPull,generatorTrip:apuPull};
- // Extra P8 lamp check requested for this trainer. This does not assert an
- // actual detector fault, a failed APU loop, or a discharged bottle.
- const testLamps={
-  FAULT:testFire&&['ENG1','ENG2'].some(detector),
-  APU_DET_INOP:testFire&&detector('APU'),
-  APU_BOTTLE_DISCHARGED:testFire&&s.power.hotBatteryBus&&feeds('APU',cb).some(Boolean)
- };
+ // FCOM NP 2.1.15-2.1.16: OVHT/FIRE tests the fire/overheat warning
+ // system, not the fault-monitoring or bottle-discharge lamps. Both
+ // FAULT and APU DET INOP belong to FAULT/INOP (or genuine faults).
+ // Expose an empty compatibility overlay: lamp states come from flags.
+ const testLamps={};
  return {indications:flags,testLamps,outputs,activeFire,activeOverheat,fireKeys:warningIds,fireSignature:signature,
  handleUnlock:{ENG1:activeFire.ENG1||activeOverheat.ENG1,ENG2:activeFire.ENG2||activeOverheat.ENG2,APU:activeFire.APU},
  detectorSelection:clone(s.selectors),dischargePending:clone(s.pending)};
