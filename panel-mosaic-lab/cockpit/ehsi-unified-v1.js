@@ -58,6 +58,8 @@
   const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer,B737UnifiedEfisSources:sources}=win;
   if(!core||!renderer||!sources)return null;
   const state={},instructor={},screens={},painted={};
+  const fcom32=win.B737FCOM1032LiveV1;
+  const fcomState=fcom32?.makeSeatState?.();
   for(const seat of SEATS){state[seat]=core.initial();state[seat].seat=seat;instructor[seat]=false;}
   let selected='CAPT',frame=0,expiry=0,fmcFailureStarted=null,fmcTimeout=0;
   const cockpit=doc.getElementById('unifiedEfisDialog');
@@ -170,6 +172,8 @@
     }
     const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
     const model=preview?core.ehsiModel(setup):liveModel(src,origin,setup,screen.aspect,route,failure);
+    if(!preview)fcomState?.prepare(seat,model,Number.isFinite(src.windSpeed)&&
+     Number.isFinite(src.windDirection));
     if(!preview){
      const tcas=win.B737UnifiedTcasV1?.getState?.();
      if(tcas)model.traffic={...tcas,targets:(tcas.targets||[]).map(t=>({...t,
@@ -185,7 +189,23 @@
      const extra=[],vor=src.vor;
      if(vor?.stationIdent&&Number.isFinite(vor.stationLat)&&Number.isFinite(vor.stationLon))
       extra.push({type:'VOR',ident:vor.stationIdent,lat:vor.stationLat,lon:vor.stationLon});
-     model.mapObjects=location.mapObjects(center,origin.ehsi.options,origin.ehsi.range,extra);
+     // Chapter 10.32.16: off-route WPTs are eligible only at 10/20/40 NM.
+     const opts={...origin.ehsi.options,wpt:origin.ehsi.options.wpt&&origin.ehsi.range<=40};
+     model.mapObjects=location.mapObjects(center,opts,origin.ehsi.range,extra)
+      .filter(p=>p.shape!=='nav'||origin.ehsi.range<=40||p.highAltitude===true);
+     // Chapter 10.32.12: tuned VHF navaids are green, even when NAV AID is OFF.
+     // Both radio channels are independently received and quality-gated.
+     for(const channel of [1,2]){
+      const record=snapshot?.['navigation.vor'+channel];
+      const tuned=record?.quality==='VALID'?record.value:null;
+      if(!tuned?.stationIdent||!Number.isFinite(tuned.stationLat)||!Number.isFinite(tuned.stationLon))continue;
+      const offset=sources.offsets(center,{lat:tuned.stationLat,lon:tuned.stationLon});
+      const distance=Math.hypot(offset.x,offset.y);
+      if(distance>.98*origin.ehsi.range||distance<.03)continue;
+      model.mapObjects=model.mapObjects.filter(p=>!(p.shape==='nav'&&p.name===tuned.stationIdent));
+      model.mapObjects.push({name:tuned.stationIdent,x:offset.x,y:offset.y,on:true,
+       shape:'nav',tuned:true,channel});
+     }
      // Preview landmarks around a selected point before IRS alignment.
      // Real IRS positionValid and navigation quality remain unchanged.
      if(chosen||src.mapPosition)model.nav.valid=true; // Chart landmarks need a valid map anchor, not an FMC route
@@ -222,6 +242,10 @@
      renderer.render(screen.svg,model);
      painted[seat]=signature;
     }
+    // Chapter 10.32 fault/status annunciations require explicit verified
+    // source values. Instructor preview is independent of flight instruments.
+    if(!preview)fcom32?.draw(screen.svg,model,fcom32.liveEvidence(model,src,snapshot));
+    else screen.svg.querySelector('[data-fcom1032-layer]')?.remove();
     // Course and VOR/ADF overlays use valid avionics packets only; this
     // additive layer does not modify the owner-approved EHSI photo geometry.
     const flightPos=scenarioState&&Number.isFinite(scenarioState.lat)&&
