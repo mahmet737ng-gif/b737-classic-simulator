@@ -37,7 +37,9 @@
  }
  function plan({snapshot,src,position,options={},range=40,mode='MAP'}={}){
   const result={courses:[],pointers:[]};
-  if(!['MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(mode)||
+  // The twin green MCP CRS1/CRS2 lines are an owner-requested MAP overlay.
+  // FCOM 10.31.8 FULL NAV must display the FMC-selected course instead.
+  if(!['MAP','CTR_MAP','EXP_NAV'].includes(mode)||
    !coords(position)||!Number.isFinite(range)||range<=0||!src)return result;
   const decl=src.magneticVariationDeg;
   const mcp=valid(snapshot?.['mcp.state']);
@@ -143,5 +145,5 @@
   }
   return selection;
  }
- return Object.freeze({version:'EHSI-RADIO-OVERLAYS-0002-DUAL-COURSE',positionDelta,adfMagnetic,plan,draw});
+ return Object.freeze({version:'EHSI-RADIO-OVERLAYS-0003-FULL-NAV-FCOM-GATE',positionDelta,adfMagnetic,plan,draw});
 });
