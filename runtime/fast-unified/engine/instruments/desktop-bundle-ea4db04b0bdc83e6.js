@@ -56,7 +56,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0002-DOWN-0002 */
+/* ./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0002-DOWN-0002&amp;ias=ZERO-DIAMOND-0001 */
 try{
 (() => {
   'use strict';
