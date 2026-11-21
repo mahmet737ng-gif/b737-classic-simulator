@@ -493,6 +493,24 @@ function footer(svg,m){
   if(m.nav.frequency!=null)photoText(g,Number(m.nav.frequency).toFixed(2),440,459,23,PHOTO_COLORS.green,'end');
  }else if(m.mode.endsWith('NAV'))photoText(g,'NAV',72,459,21,PHOTO_COLORS.green);
 }
+function positionDifferenceDisplay(svg,m){
+ // FCOM 10.31.9 item 14 / 10.32.22: display only verified FMC-vs-IRS
+ // differences beyond an externally supplied limit. Selected IRS first.
+ if(!['MAP','CTR_MAP','FULL_NAV','EXP_NAV'].includes(m.mode)||
+  !Array.isArray(m.positionDifferences)||!m.positionDifferences.length)return;
+ const g=layer(svg,'fmc-irs-position-difference');
+ m.positionDifferences.slice(0,2).forEach((entry,i)=>{
+  if(!Number.isFinite(entry.distanceNm)||!['L','R'].includes(entry.side))return;
+  const y=440+i*24,x=447;
+  photoText(g,entry.distanceNm.toFixed(1),x-25,y,18,PHOTO_COLORS.white,'end');
+  photoText(g,entry.side,x,y,18,PHOTO_COLORS.white);
+  if(Number.isFinite(entry.bearingTrueDeg)&&Number.isFinite(m.reference)){
+   const a=rel(entry.bearingTrueDeg-m.reference);
+   const arrow=make(g,'g',{transform:'translate('+(x+13)+' '+(y-7)+') rotate('+a+')'});
+   stroke(arrow,[[0,7],[0,-7],[-3,-2],[0,-7],[3,-2]],PHOTO_COLORS.white,1.4);
+  }
+ });
+}
 function radar(svg,m,l,status){
  if(!status.wxrVisible&&!status.terrainVisible)return;
  const g=layer(svg,status.wxrVisible?'weather-returns':'terrain-returns',{opacity:m.efis.wxBrightness??1});
@@ -639,6 +657,7 @@ function render(svg,raw){
  if(l.route&&!m.nav.valid&&!m.efis.mapFailurePending&&!m.weather.disagreement?.includes('MAP'))flag(svg,'MAP',256,291);
  vertical(svg,m);
  footer(svg,m);
+ positionDifferenceDisplay(svg,m);
  traffic(svg,m,l,s);
  const w=layer(svg,'weather-status');
  if(m.weather.selected&&!m.weather.healthy)text(w,'WXR FAIL',495,49,16,COLORS.amber,'end');
