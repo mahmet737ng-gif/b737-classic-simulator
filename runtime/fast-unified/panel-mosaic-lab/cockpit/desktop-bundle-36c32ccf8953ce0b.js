@@ -627,10 +627,15 @@ try{
   const massKg=massSource==='OBSERVED_TRAINING_MASS'?input.massKg:REF_MASS_KG;
   if(massKg<30000||massKg>75000)throw Error('INVALID_TRAINING_MASS');
   const eligible=input.airborne&&[1,2,5].includes(input.flapLever);
-  const slatsFull=input.slatsFull===true&&eligible;
+  const observedSlatsFull=input.slatsFull===true&&eligible;
+  const computedSlatExtension=finite(input.slatExtension)?
+   clamp(input.slatExtension,0,1):0;
+  const slatExtension=eligible?
+   Math.max(observedSlatsFull?1:0,computedSlatExtension):0;
+  const slatsFull=slatExtension>=.999;
   const bank=clamp(input.bankDeg,-65,65);
   const loadFactor=1/Math.cos(bank*Math.PI/180);
-  const clMax=interpolateFlap(input.flapActual)*(slatsFull?1.055:1);
+  const clMax=interpolateFlap(input.flapActual)*(1+.055*slatExtension);
   const stallKt=Math.sqrt(2*massKg*GRAVITY*loadFactor/(RHO*AREA_M2*clMax))/.514444;
   // These margins are demonstrative for trainer visuals, not shaker switch values.
   const shakerKt=stallKt*1.09,minManeuverKt=stallKt*1.30;
@@ -641,9 +646,12 @@ try{
   const shortfall=belowStall?clamp((stallKt-input.iasKt)/stallKt,0,.5):0;
   const sinkDemandFpm=shortfall*2300;
   const flapDragKtSec= input.airborne?(0.22*Math.pow(input.flapActual/40,1.1)+
-   (slatsFull?0.065:0)):0;
+   (.065*slatExtension)):0;
   return {schema:VERSION,source:'INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA',
-   massKg,massSource,flapLever:input.flapLever,flapActual:input.flapActual,slatsFull,
+   massKg,massSource,flapLever:input.flapLever,flapActual:input.flapActual,
+   slatsFull,slatExtension,
+   slatEffectSource:observedSlatsFull?'LE_OWNER_FULL_CONFIRMED':
+    slatExtension>0?'TRAINING_AUTO_SLAT_DELAY_PROXY':'NOT_EXTENDED',
    clMax,loadFactor,stallKt,stickShakerKt:shakerKt,minimumManeuverKt:minManeuverKt,
    buffer:{lowerKt:shakerKt,upperKt:minManeuverKt},
    belowShaker,belowStall,sinkDemandFpm,flapDragKtSec,
@@ -841,7 +849,7 @@ try{
    elevationFt:airport.elevationFt,iasKt:speed,tasKt:speed,
    gsKt:speed,trueHeadingDeg:heading,trueTrackDeg:heading,
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
-   flapLever:0,flapActual:0,slatsFull:false,
+   flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
    autoSlatRequest:false,aeroEnvelope:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
@@ -895,10 +903,12 @@ try{
   const target=s.target;
   const assessAero=()=>Envelope?.evaluate({iasKt:s.iasKt,
    massKg:s.massKg,flapLever:s.flapLever,flapActual:s.flapActual,
-   slatsFull:s.slatsFull,bankDeg:s.bankDeg,airborne:s.airborne,
+   slatsFull:s.slatsFull,slatExtension:s.autoSlatTrainingFraction,
+   bankDeg:s.bankDeg,airborne:s.airborne,
    autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
   if(s.phase==='GROUND_READY'){
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
+   s.autoSlatTrainingFraction=0;
    s.aeroEnvelope=assessAero();s.autoSlatRequest=false;
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);return s;
   }
@@ -951,8 +961,22 @@ try{
   }
   // Simplified TAS=IAS approximation; density/weight/thrust modeling is deferred.
   s.tasKt=s.iasKt;
+  // One instructor-only Auto Slat response: request from the SAME
+  // weight/flap/bank/shaker envelope, then rate-limit lift credit so neither
+  // the IAS tape nor the airplane physics teleports when the request trips.
+  // The frozen owner LE device remains authoritative for cockpit lamps.
+  const envelopeDemand=assessAero();
+  const requested=envelopeDemand?.autoSlatRequest===true&&s.airborne;
+  const actualFull=s.slatsFull===true&&envelopeDemand?.autoSlatEligible===true;
+  const nextSlatTarget=actualFull||requested?1:0;
+  const slatSeconds=nextSlatTarget>state.autoSlatTrainingFraction?4:6;
+  const previousFraction=Number.isFinite(state.autoSlatTrainingFraction)?
+   state.autoSlatTrainingFraction:0;
+  s.autoSlatTrainingFraction=clamp(previousFraction+
+   clamp(nextSlatTarget-previousFraction,-dt/slatSeconds,dt/slatSeconds),0,1);
+  if(actualFull)s.autoSlatTrainingFraction=1;
   s.aeroEnvelope=assessAero();
-  s.autoSlatRequest=s.aeroEnvelope?.autoSlatRequest===true;
+  s.autoSlatRequest=requested;
   if(groundRoll){
    s.pitchDeg=s.iasKt>=128?clamp((s.iasKt-128)*.65,0,9):0;
    if(s.iasKt>=145){

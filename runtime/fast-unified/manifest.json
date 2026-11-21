@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "debad30cc1bdd8a1f0e7723ff775810d50f03567",
+  "sourceCommit": "befabf455c3688c21f9004537baafab9f6cbdfd2",
   "mainBefore": 298,
   "mainAfter": 94,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "b1530ff31678c4f1e573df5f98a47b8d049eb8bcd4bc267d26572d00c7c39dbd"
+      "sha256": "a9e5b66efb143a57193c204aba8e4a371498daef867446dab011171eb3543ade"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -155,8 +155,8 @@
       "sha256": "e9d1ca6089071fc0a34acc8bae256920f272882d166aaefff26eccda6544a489"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-9b4c069d244e150c.js",
-      "sha256": "9b4c069d244e150c6f9aa6b85582019fbbd12893029998491b9b25495053a087"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-36c32ccf8953ce0b.js",
+      "sha256": "36c32ccf8953ce0b842aafd9e8007164e7182ac963c6fc6b57d00bb6dcfb4b87"
     },
     {
       "path": "engine/afds/desktop-bundle-3697337ec455ea93.js",
