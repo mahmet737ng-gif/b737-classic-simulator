@@ -17,6 +17,9 @@
  const Envelope=(typeof globalThis==='object'?globalThis.B737ClassicLowSpeedEnvelopeV1:null)||
   (typeof module==='object'&&typeof require==='function'?
    require('./classic-low-speed-envelope-v1.js'):null);
+ const AltCapture=(typeof globalThis==='object'?globalThis.B737AltitudeCaptureTrainingV1:null)||
+  (typeof module==='object'&&typeof require==='function'?
+   require('./altitude-capture-training-v1.js'):null);
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -91,7 +94,7 @@
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
    flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
-   autoSlatRequest:false,aeroEnvelope:null,
+   autoSlatRequest:false,aeroEnvelope:null,altitudeCapture:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
    notices:['TRAINING_SURROGATE','NO_FCOM_PERFORMANCE_CLAIM',anchor.source]};
  }
@@ -103,8 +106,27 @@
    case 'HEADING':next.target.headingDeg=wrap(finite(action.value,0,360,'HEADING'));next.target.lateralMode='HEADING';break;
    case 'BANK':next.target.bankCommandDeg=finite(action.value,-30,30,'BANK');next.target.lateralMode='BANK';break;
    case 'BANK_LIMIT':next.target.bankLimitDeg=finite(action.value,10,30,'BANK_LIMIT');break;
-   case 'ALTITUDE':next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');next.target.verticalMode='ALTITUDE';break;
-   case 'VS':next.target.vsFpm=finite(action.value,-5000,5000,'VS');next.target.verticalMode='VS';break;
+   case 'ALT_ACQ':{
+    const selected=finite(action.value,0,65000,'ALT_ACQ_ALTITUDE');
+    if(!AltCapture)throw Error('ALT_ACQ_TRAINING_ENGINE_MISSING');
+    if(next.altitudeCapture?.phase!=='ACQUIRE'||
+       next.altitudeCapture.targetAltitudeFt!==selected)
+     next.altitudeCapture=AltCapture.begin({altitudeFt:state.altitudeFt,
+      targetAltitudeFt:selected,vsFpm:state.vsFpm});
+    next.target.altitudeFt=selected;next.target.verticalMode='ALT_ACQ';
+    break;
+   }
+   case 'ALTITUDE':
+    next.target.altitudeFt=finite(action.value,0,65000,'ALTITUDE');
+    next.target.verticalMode='ALTITUDE';
+    if(next.altitudeCapture?.phase!=='HELD'||
+       next.altitudeCapture.targetAltitudeFt!==next.target.altitudeFt)
+     next.altitudeCapture=null;
+    break;
+   case 'VS':
+    next.target.vsFpm=finite(action.value,-5000,5000,'VS');
+    next.target.verticalMode='VS';next.altitudeCapture=null;
+    break;
    case 'SPEED':next.target.speedKt=finite(action.value,0,450,'SPEED');break;
    case 'AERO_CONFIG':
     if(!Envelope?.DETENTS?.includes(action.flapLever)||
@@ -122,6 +144,7 @@
     next.target.bankCommandDeg=next.bankDeg;
     next.target.verticalMode='VS';
     next.target.vsFpm=next.vsFpm;
+    next.altitudeCapture=null;
     next.target.flightControlOwner='MANUAL_TRIM_NO_AP';
     break;
    case 'WIND':next.windFromDeg=wrap(finite(action.direction,0,360,'WIND_DIR'));next.windKt=finite(action.speed,0,150,'WIND_KT');break;
@@ -147,6 +170,7 @@
    bankDeg:s.bankDeg,airborne:s.airborne,
    autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
   if(s.phase==='GROUND_READY'){
+   s.altitudeCapture=null;
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
    s.autoSlatTrainingFraction=0;
    s.aeroEnvelope=assessAero();s.autoSlatRequest=false;
@@ -227,7 +251,11 @@
   if(!s.airborne){
    s.bankDeg=0;s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;
   }else{
-   let wantVS=target.vsFpm;
+   const captureStep=target.verticalMode==='ALT_ACQ'&&
+    s.altitudeCapture?.phase==='ACQUIRE'?
+    AltCapture?.advance(s.altitudeCapture,dt):null;
+   if(captureStep)s.altitudeCapture=captureStep;
+   let wantVS=captureStep?captureStep.vsFpm:target.vsFpm;
    if(target.verticalMode==='ALTITUDE'){
     const diff=target.altitudeFt-s.altitudeFt;
     wantVS=Math.abs(diff)<30?0:clamp(diff*2,-2500,2500);
@@ -261,6 +289,20 @@
     const actualVs=clamp(Math.tan((s.pitchDeg-2)*RAD)*Math.max(s.tasKt*KT_TO_MPS,35)*60/.3048,-5000,5000);
     s.vsFpm+=clamp(actualVs-s.vsFpm,-420*dt,420*dt);
    }
+   if(captureStep){
+    // One capture profile owns ACTUAL vertical motion and the FCC director
+    // uses its very same V/S. Roll still follows the ordinary AFDS controller.
+    // Constant vertical deceleration is deliberate trainer behavior.
+    const pitchDemand=Laws?.pitchForVs?.(captureStep.vsFpm,s.tasKt);
+    if(Number.isFinite(pitchDemand))
+     s.pitchDeg=clamp(state.pitchDeg+
+      clamp(pitchDemand-state.pitchDeg,-1.6*dt,1.6*dt),-10,15);
+    s.vsFpm=captureStep.vsFpm;
+    s.flightControl={...(s.flightControl||{}),
+     source:'ALT_ACQ_SHARED_TRAINING_PROFILE',
+     commandedPitchDeg:Number.isFinite(pitchDemand)?pitchDemand:s.pitchDeg,
+     desiredVsFpm:captureStep.vsFpm};
+   }
    // Bounded training disturbance. Positive bank is toward the heavier right wing.
    // The shared controller continues to apply its corrective bank command.
    const imbalance=propulsion?.fuelImbalanceKg;
@@ -274,7 +316,13 @@
    const turnDegPerSec=(9.80665*Math.tan(s.bankDeg*RAD)/velocity)/RAD;
    s.trueHeadingDeg=wrap(s.trueHeadingDeg+turnDegPerSec*dt);
    const oldAlt=s.altitudeFt;
-   s.altitudeFt=Math.max(s.elevationFt,s.altitudeFt+s.vsFpm/60*dt);
+   s.altitudeFt=Math.max(s.elevationFt,captureStep?
+    captureStep.altitudeFt:s.altitudeFt+s.vsFpm/60*dt);
+   if(captureStep?.phase==='HELD'){
+    s.altitudeFt=captureStep.targetAltitudeFt;s.vsFpm=0;
+    s.target.verticalMode='ALTITUDE';
+    s.target.altitudeFt=captureStep.targetAltitudeFt;
+   }
    if(target.verticalMode==='ALTITUDE'&&
       (target.altitudeFt-oldAlt)*(target.altitudeFt-s.altitudeFt)<=0){
     s.altitudeFt=target.altitudeFt;s.vsFpm=0;
