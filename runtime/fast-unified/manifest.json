@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "8f1899106ef0fd55e557497f21a69b16ecafb409",
+  "sourceCommit": "c2d4ab0e3473411c0768d73f2ec3e2a90f533bf0",
   "mainBefore": 296,
   "mainAfter": 94,
   "overheadBefore": 59,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "8e092cb682b454b6f5584bd0d73a25cf8c4ad5dbb71fa45dddad50d0f9a8b8fb"
+      "sha256": "ec2b663552c7798cb4c34a6d31adbe3cf2ad876416d732c0e99b885698cc65bb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -445,6 +445,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.js",
       "sha256": "caae92926bce44430d4b5972790ab5580c879bbecd2920b608112d9d250aeab5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/flap-needles.css",
+      "sha256": "5365f5ebd84a81d316421d642aac356648c9710c9c17b6121f5e95255a9da04e"
     },
     {
       "path": "panel-mosaic-lab/lights-reference-v2/live-mount.js",
