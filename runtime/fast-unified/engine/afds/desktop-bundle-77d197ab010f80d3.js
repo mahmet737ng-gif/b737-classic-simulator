@@ -586,7 +586,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-0002&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -794,6 +794,16 @@ try{
    courseTrueDeg:station.courseTrueDeg,quality:'TRAINING_ILS_PROXY',
    source:'TRAINING_ILS_'+station.ident+'_NOT_SURVEYED'}}};
  }
+ // Load the same ECU flight context before START, so a paused final
+ // already has a consistent airborne IAS and altitude. No separate engine.
+ function syncInitialEngineContext(){
+  if(!active||!state)return false;
+  try{
+   return win.B737ISNCockpitV1?.setFlightScenarioContext?.({
+    active:true,onGround:!state.airborne,iasKt:state.iasKt,
+    altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'})?.active===true;
+  }catch(error){console.warn('FLT PHASE initial ECU context',error);return false;}
+ }
  function load(beforeStart){
   try{
    const preset=by('flightPreset').value;
@@ -811,6 +821,7 @@ try{
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
+   syncInitialEngineContext();
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
     const mag=magneticHeading(state.trueHeadingDeg,state);
@@ -997,6 +1008,7 @@ try{
   loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+   syncInitialEngineContext();
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    return snapshot();},
@@ -1015,7 +1027,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0003 */
+/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0004 */
 try{
 /* B737 Classic Unified — educational VOR/DME and ILS geometry.
  * Community reference data only. NOT an AIRAC database, approved approach,
@@ -1086,7 +1098,9 @@ try{
   const loc=front?clamp(offAxis/1.25,-2.5,2.5):null;
   const effectiveNm=Math.max(.03,g.distanceNm);
   const actualGlide=Math.atan2(aircraft.altitudeFt-station.elevationFt-(station.tchFt??50),effectiveNm*FT_PER_NM)/R;
-  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)&&Math.abs(actualGlide-station.glideDeg)<=5;
+  // 0.01NM numerical tolerance allows an exact 10NM great-circle final at
+  // decimal-degree station coordinates (not an extra reception claim).
+  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)+.01&&Math.abs(actualGlide-station.glideDeg)<=5;
   return {...out,frontCourse:front,runway:station.runway,airport:station.airport,
    localizerDots:loc,glideslopeDots:gsValid?clamp((actualGlide-station.glideDeg)/.35,-2.5,2.5):null,
    glidepathAngleDeg:actualGlide,courseTrueDeg:station.courseTrueDeg,courseMagDeg:station.courseMagDeg??null,tchFt:station.tchFt??50,positionQuality:station.positionQuality};

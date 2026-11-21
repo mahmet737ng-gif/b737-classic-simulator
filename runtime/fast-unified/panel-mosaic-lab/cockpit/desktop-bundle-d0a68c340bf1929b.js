@@ -121,7 +121,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./final10-approach-preset-v1.js?v=FINAL10-INTEGRATED-0001 */
+/* ./final10-approach-preset-v1.js?v=FINAL10-INTEGRATED-0002 */
 try{
 /* FLT PHASE FINAL_10 — B737 Classic training initialization.
  * Instructor-approved initial state, never a new electrical, engine, flap
@@ -131,7 +131,7 @@ try{
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0001';
+ const VERSION='FINAL10-INTEGRATED-0002';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null;
@@ -162,6 +162,7 @@ try{
   if(!item||!item.states?.includes(target)||item.guarded===true||item.guard===true)return false;
   const before=api.getState?.()?.[id];
   if(before===target)return true;
+  if(typeof api.setScenarioSwitch==='function')return api.setScenarioSwitch(id,target)?.accepted===true;
   const switchButton=doc.getElementById('toggle-'+id);
   if(!switchButton)return false;
   switchButton.dispatchEvent(new winChild.MouseEvent('click',{bubbles:true,cancelable:true,detail:0}));
@@ -195,6 +196,9 @@ try{
    ['bleed-apu','OFF'],['bleed-eng-1','ON'],['bleed-eng-2','ON'],
    ['pack-l','AUTO'],['pack-r','AUTO'],['isolation-valve','AUTO']
   ]){
+   // Do not repeatedly pulse a spring-return generator selector after its
+   // initial successful contactor command; each fresh load has a new check map.
+   if(check?.['OH_'+id]?.ok===true)continue;
    const ok=physicalOh(w,id,target);
    result('OH_'+id,ok,ok?target:'SWITCH_NOT_READY_OR_INHIBITED');
   }
@@ -202,11 +206,19 @@ try{
   // it is not an APU fault or synthetic hidden ECU change.
   const running=eng?.getStartState?.()?.phase||{};
   const both=running.engine1==='RUNNING'&&running.engine2==='RUNNING';
-  const generator1=check?.['OH_gen-1']?.ok===true;
-  const generator2=check?.['OH_gen-2']?.ok===true;
-  if(both&&generator1&&generator2)
-   result('APU_OFF',physicalOh(w,'apu-start','OFF'),'APU_START_SWITCH_OFF');
-  else result('APU_OFF',false,'WAITING_FOR_TWO_RUNNING_ENGINES_AND_GENERATORS');
+  const electrical=eng?.getElectricalState?.();
+  const sources=Object.values(electrical?.source||{});
+  const generator1=sources.includes('GEN1'),generator2=sources.includes('GEN2');
+  result('GEN1_ON_BUS',generator1,generator1?'GEN1 AC BUS CONNECTED':'GEN1_NOT_ON_BUS');
+  result('GEN2_ON_BUS',generator2,generator2?'GEN2 AC BUS CONNECTED':'GEN2_NOT_ON_BUS');
+  // Do not remove APU supply until BOTH engine generators are genuinely
+  // providing AC bus power. Switch detent ON alone is insufficient proof.
+  if(both&&generator1&&generator2){
+   const moved=physicalOh(w,'apu-start','OFF');
+   const off=eng?.getStartState?.()?.phase?.apu==='OFF';
+   result('APU_OFF',moved&&off,off?'APU_PHASE_OFF':
+    moved?'APU_SHUTDOWN_IN_PROGRESS':'APU_SWITCH_NOT_ACCEPTED');
+  }else result('APU_OFF',false,'WAITING_FOR_BOTH_ENGINE_GENERATORS_ON_BUS');
   const light={
    'landing-out-l':'ON','landing-out-r':'ON','landing-in-l':'ON','landing-in-r':'ON',
    'strobe':'ON','position-lights':'ON','anti-collision':'ON','logo':'ON',
