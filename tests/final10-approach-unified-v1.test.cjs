@@ -79,6 +79,7 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   B737UnifiedVHFDualV1:{setFrequency:(id,kHz)=>{freq[id]=kHz;return true;}},
   B737UnifiedVHFNavControlsV1:{setMode:(seat,m)=>{mode[seat]=m;return true;}},
   B737AutobrakeUnified:{getState:()=>({selector:autobrake}),setSelector:x=>{autobrake=x;}},
+  B737LandingGearUnifiedV1:{getState:()=>({lever:'DN',gear:{nose:'DOWN',left:'DOWN',right:'DOWN'}}),select:()=>true},
   B737SpeedbrakeLever:{mounted:()=>true,set:x=>{selected.speedbrake=x;lights.inputs.speedBrakeArmedIndication=x==='ARMED';}},
   B737CockpitLights:{getState:()=>lights},
   B737FlapVisualTest:{get position(){return flap},select:x=>{flap=x;return true;}},
@@ -104,6 +105,7 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
  assert.equal(result.NAV1_VOR.ok,true);
  assert.equal(result.NAV2_ILS.ok,true);
  assert.equal(result.AUTOBRAKE_2.ok,true);
+ assert.equal(result.LANDING_GEAR_DOWN.ok,true);
  assert.equal(result.FLAP_LEVER_30.ok,true);
  assert.equal(result.FLAP_ACTUAL_30.ok,true);
  assert.equal(result.SPEED_BRAKE_ARMED.ok,true);
