@@ -589,7 +589,7 @@ root.B737UnifiedVHFNavControlsV1=Object.freeze({
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/classic-low-speed-envelope-v1.js?v=LOW-SPEED-AUTO-SLAT-0001 */
+/* ../../engine/flight/classic-low-speed-envelope-v1.js?v=LOW-SPEED-AUTO-SLAT-0002 */
 try{
 /* B737 Classic low-speed instructor aerodynamics surrogate.
  * FCOM describes autoslats on TE flap 1/2/5 approaching stall and system B/PTU.
@@ -756,7 +756,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0001 */
+/* ../../engine/flight/flight-scenario-core-v1.js?v=OBSERVED-N1-GROUND-20261119&amp;aero=LOW-SPEED-0002 */
 try{
 /* Unified Flight Scenario Core v1 — deterministic, offline training model.
  * NOT FCOM performance, not a certified aerodynamic model or navigation source.
@@ -1063,7 +1063,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=AXES-0001 */
+/* ../../engine/afds/fcc-flight-guidance-v1.js?v=FCC-GUIDANCE-0003-COUPLED-FLIGHT&amp;fd=CMD-AXES-0002 */
 try{
 /* B737 Classic unified FCC flight guidance for instructor Flight Scenario.
  * FCOM Ch 4.20.4-10 mode selection and FD visibility; commands are a training

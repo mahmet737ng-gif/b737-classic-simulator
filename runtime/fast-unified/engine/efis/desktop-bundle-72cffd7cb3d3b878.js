@@ -270,7 +270,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001&amp;aero=TRN-LOW-0001 */
+/* ./eadi-lab-unified-v2.js?v=TCAS-CLASSIC-0001&amp;aero=TRN-LOW-0001&amp;fd=DIRECT-CMD-0002 */
 try{
 /* Unified EADI v2: cockpit mount for the new EFIS Display Lab EADI renderer.
  * Replaces the retired attitude-only painter, retaining the owner-registered

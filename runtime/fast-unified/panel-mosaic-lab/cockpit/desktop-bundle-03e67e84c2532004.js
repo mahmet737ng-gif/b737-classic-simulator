@@ -558,7 +558,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=AXES-0001 */
+/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=EADI-DIRECT-0002 */
 try{
 /* Live scenario FCC coupler, EADI F/D source, and FCOM §4.20 A/P protections.
  * Reads only already-modeled flight/airdata and existing MCP AFDS owners.
