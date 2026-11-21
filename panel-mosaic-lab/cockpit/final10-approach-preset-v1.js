@@ -131,6 +131,18 @@
     win.B737CockpitLights?.getState?.()?.inputs?.speedBrakeArmedIndication===true;
    result('SPEED_BRAKE_ARMED',armed,armed?'ARMED':'PEDESTAL_LEVER_OR_SENSOR_NOT_READY');
   }catch(error){result('SPEED_BRAKE_ARMED',false,error?.message);}
+  // Ensure the existing ATA32 landing gear selector is in DOWN and allow
+  // the original hydraulic actuator time to reach all three downlocks.
+  const gear=win.B737LandingGearUnifiedV1;
+  try{
+   const before=gear?.getState?.();
+   if(before?.lever!=='DN')gear?.select?.('DN');
+   const after=gear?.getState?.();
+   const down=after?.lever==='DN'&&
+    ['nose','left','right'].every(x=>after.gear?.[x]==='DOWN');
+   result('LANDING_GEAR_DOWN',down,down?'THREE_GEAR_DOWN_LOCKED':
+    after?'GEAR_DOWN_TRANSIT':'LANDING_GEAR_OWNER_NOT_READY');
+  }catch(error){result('LANDING_GEAR_DOWN',false,error?.message);}
   const flap=win.B737FlapVisualTest;
   try{
    if(flap?.position!==30)flap?.select?.(30);
@@ -174,7 +186,8 @@
     applyOverhead();
    if(!check.NAV1_VOR?.ok||!check.NAV2_ILS?.ok)applyNavigation(live);
    if(!check.FLAP_LEVER_30?.ok||!check.FLAP_ACTUAL_30?.ok||
-      !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok)applyConfiguration();
+      !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok||
+      !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
    if(!check.MCP?.ok)applyMcp(live);
    publish();
    if(++count>=70||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){
