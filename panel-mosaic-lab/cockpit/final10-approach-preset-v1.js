@@ -164,7 +164,9 @@
    // Refresh the SAME ATA32 owner against live DC BUS 2 and CB conditions.
    ab?.updateSensors?.({});
    const previous=ab?.getState?.(),input=previous?.inputs;
-   const valid=!!input&&input.electricalAvailable===true&&
+   const electrical=win.B737ISNCockpitV1?.getElectricalState?.();
+   const dc2Powered=electrical&&win.B737ElectricalV7?.evaluate?.(electrical)?.bus?.dc2===true;
+   const valid=dc2Powered===true&&!!input&&input.electricalAvailable===true&&
     input.antiskidOn===true&&input.antiskidFault===false&&
     input.hydraulicBAvailable===true&&input.normalBrakesOperative===true&&
     input.autobrakeFault===false&&input.solenoidPressurePsi<=1000;
