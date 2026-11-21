@@ -9,6 +9,8 @@ on:
       - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
       - 'efis-display-lab/ehsi-v2.js'
       - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - 'efis-display-lab/core.test.cjs'
+      - 'panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs'
       - '.github/workflows/fcom-10-32-symbology.yml'
   pull_request:
     branches: [main]
@@ -19,6 +21,8 @@ on:
       - 'panel-mosaic-lab/cockpit/unified-efis-sources-v1.js'
       - 'efis-display-lab/ehsi-v2.js'
       - 'tests/fcom-10-32-symbology-v1.test.cjs'
+      - 'efis-display-lab/core.test.cjs'
+      - 'panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs'
       - '.github/workflows/fcom-10-32-symbology.yml'
 permissions:
   contents: read
@@ -28,6 +32,8 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # owner18 immutable verifier reads pinned historical commit
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -41,7 +47,9 @@ jobs:
       - name: Run source-backed FCOM 10.32 symbol conditions
         run: node --test tests/fcom-10-32-symbology-v1.test.cjs
       - name: Verify unchanged MCP/EFIS integration
-        run: node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
+        run: |
+          node efis-display-lab/core.test.cjs
+          node --test panel-mosaic-lab/cockpit/mcp-efis-link-v1.test.cjs
       - name: Verify owner frozen material
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
