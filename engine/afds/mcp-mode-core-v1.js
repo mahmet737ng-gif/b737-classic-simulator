@@ -155,6 +155,19 @@ function transition(state,action){
  let s=clone(state);
  const done=()=>{s.lastRejection=null;s.revision++;return s;};
  if(action.type==="RESET")return initialState();
+ if(action.type==='TOGA_ENGAGED'){
+  if(action.confirmed!==true||action.source!=='SIMULATED_FCC')
+   return rejected(s,'TOGA_REQUIRES_CONFIRMED_FCC');
+  s.pending.approach=false;s.armed={pitch:null,roll:null};
+  s.capture={pitch:null,roll:null};s.nav={loc:false,gs:false};
+  s.modes.lateral=null;s.modes.vertical=null;
+  const preserveDual=s.dualApproach.coupled&&action.dualApGA===true;
+  if(!preserveDual)s.dualApproach.second=null;
+  s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
+  s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
+  s.flightDirectorBarsRetracted=false;
+  return done();
+ }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
   if(action.confirmed!==true||action.source!=="SIMULATED_FCC"||
      !["ACQUIRE","HOLD"].includes(action.stage))
@@ -466,7 +479,8 @@ function transition(state,action){
   s.pending.approach=!s.pending.approach;
   s.armed.roll=s.pending.approach?"VOR/LOC":null;
   s.armed.pitch=s.pending.approach?"G/S":null;
-  if(!s.pending.approach){s.nav.loc=false;s.nav.gs=false;}
+  if(!s.pending.approach){s.nav.loc=false;s.nav.gs=false;
+   s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};}
   return done();
  }
  if(id==="LNAV"||id==="VNAV"){
@@ -477,6 +491,7 @@ function transition(state,action){
    return rejected(s,"VOR_LOC_NAV_EVIDENCE_REQUIRED");
   s.armed.roll=s.armed.roll==="VOR/LOC"?null:"VOR/LOC";
   s.pending.approach=false;s.armed.pitch=null;s.nav.loc=false;s.nav.gs=false;
+  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};
   return done();
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
@@ -492,15 +507,31 @@ function transition(state,action){
   if(s.flight?.apDisengageBarUp===false)
    return rejected(s,"AP_ENGAGEMENT_INHIBITED_DISENGAGE_BAR");
   const selected=s.modes.autopilot;
+  if(id.startsWith('CMD_')&&selected?.startsWith('CMD_')&&id!==selected&&s.pending.approach){
+   if(Number.isFinite(s.flight?.radioAltitudeFt)&&s.flight.radioAltitudeFt<800)
+    return rejected(s,'DUAL_AP_SELECTION_INHIBITED_BELOW_800_RA');
+   if(s.flight?.dualIlsValid!==true)
+    return rejected(s,'DUAL_AP_REQUIRES_MATCHING_NAV1_NAV2_ILS');
+   s.dualApproach.second=s.dualApproach.second===id?null:id;
+   if(!s.dualApproach.second){
+    s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
+    s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
+   }
+   return done();
+  }
+  if(s.dualApproach.second===id){
+   s.dualApproach.second=null;s.dualApproach.coupled=false;
+   s.dualApproach.flareArmed=false;s.dualApproach.flareEngaged=false;
+   s.dualApproach.retard=false;return done();
+  }
   s.modes.autopilot=selected===id?null:id;
+  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false};
   if(selected===id)s.lastAutopilotDisengagement={
    reason:"ILLUMINATED_AP_ENGAGE_SWITCH",source:"COCKPIT_HARDWARE"};
   else s.lastAutopilotDisengagement=null;
   s.override={pitch:false,roll:false,altHold:false};
   s.targets={pitch:null,roll:null};
   if(selected===id&&!s.fd.left&&!s.fd.right)clearModes(s);
-  // Dual-channel autoland, CWS capture and servo are not modeled.
-  // CMD engagement does not deselect an already armed approach.
   return done();
  }
  if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot)
