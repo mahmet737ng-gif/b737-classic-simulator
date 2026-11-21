@@ -53,6 +53,67 @@ test('ILS evidence uses tuned NAV and rejects coincidental centered diamonds whe
  assert.ok(Math.abs(ev.locDeviationDots)<.08);
  assert.ok(Math.abs(ev.gsDeviationDots)<.08);
 });
+test('APP arms before NAV1/2 are tuned, stays armed during invalid radio samples',()=>{
+ let s=powered(),push=a=>{s=MCP.transition(s,a);return MCP.output(s)};
+ let view=push({type:'BUTTON',id:'APP'});
+ assert.equal(s.lastRejection,null);
+ assert.equal(view.pending.approach,true);
+ assert.equal(view.armed.roll,'VOR/LOC');
+ assert.equal(view.armed.pitch,'G/S');
+ assert.equal(view.lamps.APP,true);
+ view=push({type:'FLIGHT_OBSERVATION',sample:sample({
+  navKind:'NONE',navValid:false,gsBelowDots:null,gsDeviationDots:null,
+  navCaptureConfirmed:false,gsCaptureConfirmed:false})});
+ assert.equal(s.lastRejection,null,'a null GS observation is absent, not invalid');
+ assert.equal(view.lamps.APP,true);
+ assert.equal(s.armed.roll,'VOR/LOC');
+ assert.equal(s.armed.pitch,'G/S');
+ assert.equal(s.nav.loc,false);
+ assert.equal(s.nav.gs,false);
+ view=push({type:'FLIGHT_OBSERVATION',sample:sample({navValid:true,navKind:'ILS',
+   navCaptureConfirmed:false,gsBelowDots:0.2})});
+ assert.equal(s.armed.roll,'VOR/LOC','valid radio before capture does not force capture');
+ assert.equal(view.lamps.APP,true);
+});
+test('VOR/LOC arms without signal, survives null G/S, captures only with valid FCC and can deselect',()=>{
+ let s=powered(),push=a=>{s=MCP.transition(s,a);return MCP.output(s)};
+ let out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.armed.roll,'VOR/LOC');
+ assert.equal(out.lamps.VOR_LOC,true);
+ for(let i=0;i<3;i++){
+  out=push({type:'FLIGHT_OBSERVATION',sample:sample({
+   navKind:'NONE',navValid:false,gsBelowDots:null,gsDeviationDots:null})});
+  assert.equal(s.lastRejection,null);
+  assert.equal(out.armed.roll,'VOR/LOC');
+  assert.equal(out.lamps.VOR_LOC,true);
+ }
+ out=push({type:'FLIGHT_OBSERVATION',sample:sample({
+  navKind:'VOR',navValid:true,gsBelowDots:null,gsDeviationDots:null,
+  navCaptureConfirmed:false})});
+ assert.equal(s.capture.roll,null,'signal alone cannot force capture');
+ out=push({type:'FLIGHT_OBSERVATION',sample:sample({
+  navKind:'VOR',navValid:true,gsBelowDots:null,gsDeviationDots:null,
+  navCaptureConfirmed:true})});
+ assert.equal(s.capture.roll,'VOR_LOC');
+ assert.equal(out.modes.lateral,'VOR_LOC');
+ out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.armed.roll,null);
+ assert.equal(out.capture.roll,null);
+ assert.equal(out.modes.lateral,null);
+ assert.equal(out.lamps.VOR_LOC,false);
+});
+test('APP and VOR/LOC share exclusive arming; switching from APP to LOC-only removes G/S arm',()=>{
+ let s=powered(),push=a=>{s=MCP.transition(s,a);return MCP.output(s)};
+ push({type:'BUTTON',id:'APP'});
+ let out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.pending.approach,false);
+ assert.equal(out.armed.pitch,null);
+ assert.equal(out.armed.roll,'VOR/LOC');
+ assert.equal(out.lamps.APP,false);
+ assert.equal(out.lamps.VOR_LOC,true);
+ out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.lamps.VOR_LOC,false);
+});
 test('APP captures LOC first, G/S second and drives green FCC FMA',()=>{
  let s=powered(),q=stationSnapshot();
  const push=a=>(s=MCP.transition(s,a),MCP.output(s));
