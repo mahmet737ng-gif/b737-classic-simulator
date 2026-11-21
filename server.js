@@ -334,6 +334,19 @@ function transformCockpitHTML(content,{direct=false}={}) {
   }
   result=result.replace(/<title>[\s\S]*?<\/title>/i,'<title>B737 Classic | Electrical Training Bench</title>');
   result=result.replace(/(<meta\b[^>]*name="(?:application-name|apple-mobile-web-app-title)"[^>]*content=")[^"]*(")/gi,'$1B737 Classic$2');
+  if(direct){
+    // Release-local correction: the existing yellow aircraft enters from the
+    // right and holds in its final pose rather than fading out.
+    const aircraftHold='<style id="unified-welcome-aircraft-hold">'+
+      '@keyframes unified-intro-arrive {'+
+      '0% { opacity:0; transform:translate(110%,-.8%) scale(1); }'+
+      '18% { opacity:1; }'+
+      '59% { opacity:1; transform:translate(-5.3%,-6%) scale(1.14); }'+
+      '100% { opacity:1; transform:translate(-5.8%,-6.3%) scale(1.17); }'+
+      '}'+
+      '</style>';
+    result=result.replace(/<\/head>/i,aircraftHold+'</head>');
+  }
   return result;
 }
 // No session-specific values are embedded in the markup. Build each
