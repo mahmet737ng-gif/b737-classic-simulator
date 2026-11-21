@@ -37,7 +37,8 @@ test('wheel AC supply, detector breakers, and DC visual test paths are distinct'
  const lab=create(Fire);
  lab.dispatch(fireTest);
  assert.equal(lab.evaluate().indications.WHEEL_WELL,true);
- assert.equal(lab.evaluate().testLamps.APU_BOTTLE_DISCHARGED,true);
+ assert.equal(lab.evaluate().indications.APU_BOTTLE_DISCHARGED,false,'OVHT/FIRE must not light APU BOTTLE DISCHARGED');
+ assert.deepEqual(lab.evaluate().testLamps,{},'NP 2.1.15 fire test has no extra fault/bottle lamp overlay');
  assert.equal(lab.evaluate().indications.APU_BOTTLE_DISCHARGED,false);
  lab.dispatch({type:'SET_POWER',bus:'acTransfer1',active:false});
  assert.equal(lab.evaluate().indications.WHEEL_WELL,false);
@@ -49,5 +50,5 @@ test('wheel AC supply, detector breakers, and DC visual test paths are distinct'
  assert.equal(lab.evaluate().indications.MASTER_FIRE_WARN,true);
  assert.equal(lab.evaluate().indications.FIRE_BELL,false);
  lab.dispatch({type:'SET_POWER',bus:'hotBatteryBus',active:false});
- assert.equal(lab.evaluate().testLamps.APU_BOTTLE_DISCHARGED,false);
+ assert.equal(lab.evaluate().indications.APU_BOTTLE_DISCHARGED,false,'No APU discharge indication after hot battery failure');
 });
