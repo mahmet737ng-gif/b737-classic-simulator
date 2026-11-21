@@ -122,7 +122,7 @@ const {chromium}=require('playwright');
   // Simulate stale browser checkbox state without dispatching a new event.
   await page.evaluate(()=>{document.getElementById('converging').checked=true;});
   await page.locator('#start').click();
-  assert.match(await page.locator('#scenarioStatus').textContent(),/SCENARIO: TA only.*RUNNING/,
+  assert.match(await page.locator('#scenarioStatus').textContent(),/LOADED #\\d+ · TA only.*RUNNING/,
    'LOAD must visibly start the selected scenario immediately');
   assert.equal(await page.locator('#play').textContent(),'PAUSE');
   await page.locator('#play').click(); // Pause auto-play before deterministic STEP tests.
@@ -138,6 +138,48 @@ const {chromium}=require('playwright');
    return {falseRa:false,status:stage.textContent};
   });
   assert.equal(test.falseRa,false,'TA ONLY passing geometry generated an RA during progression');
+  // End-to-end verification of the ACTUAL Load Scenario button for every
+  // registered preset, including immediate TA/RA, monitor, and invalid cases.
+  const allScenarios=await page.evaluate(()=>Object.keys(window.B737ClassicTcasV2.SCENARIOS));
+  assert.ok(allScenarios.length>=25,'The complete TCAS encounter registry must be present');
+  let previousSequence=Number(await page.locator('#scenarioStatus').getAttribute('data-load-sequence'));
+  for(const id of allScenarios){
+   await page.selectOption('#scenario',id);
+   // Selection must suspend the OLD encounter instead of silently running it.
+   await page.waitForFunction(id=>document.getElementById('scenarioStatus').dataset.requestedScenario===id ||
+    document.getElementById('scenarioStatus').dataset.loadedScenario===id,id,{timeout:3000});
+   if(id!==await page.locator('#scenarioStatus').getAttribute('data-loaded-scenario')){
+    assert.equal(await page.locator('#scenarioStatus').getAttribute('data-load-state'),'selected',
+     id+' must show NOT YET LOADED before LOAD');
+    assert.equal(await page.locator('#play').textContent(),'RUN',id+' selection pauses the old scenario');
+   }
+   await page.locator('#start').click();
+   const result=await page.evaluate(()=>({
+    status:document.getElementById('scenarioStatus').textContent,
+    loaded:document.getElementById('scenarioStatus').dataset.loadedScenario,
+    sequence:Number(document.getElementById('scenarioStatus').dataset.loadSequence),
+    state:document.getElementById('scenarioStatus').dataset.loadState,
+    elapsed:document.getElementById('scenarioStatus').dataset.elapsedSec,
+    autoplay:document.getElementById('play').textContent,
+    warning:document.getElementById('status').textContent,
+    photo:document.getElementById('ivsi').dataset.ivsiPhoto,
+    traffic:document.getElementById('trafficRows').children.length
+   }));
+   assert.equal(result.loaded,id,id+' was not loaded by clicking the actual button: '+JSON.stringify(result));
+   assert.equal(result.state,'loaded',id+' error: '+JSON.stringify(result));
+   assert.equal(result.sequence,previousSequence+1,id+' should create a new encounter on every click');
+   assert.equal(result.autoplay,'PAUSE',id+' should auto-run on Load');
+   assert.equal(result.elapsed,'0',id+' must reset simulated time to T+0');
+   assert.equal(result.photo,'original',id+' must update IVSI');
+   assert.ok(result.status.includes('TARGET'),id+' must show identifiable target feedback');
+   assert.doesNotMatch(result.warning,/SCENARIO.*ERROR/i,id+' hidden runtime error');
+   previousSequence=result.sequence;
+   await page.locator('#play').click(); // Test the next preset from a paused state.
+  }
+  // Reload the same selected preset: the state must reset and sequence increase.
+  await page.locator('#start').click();
+  assert.equal(Number(await page.locator('#scenarioStatus').getAttribute('data-load-sequence')),previousSequence+1,
+   'Reloading the same scenario must recreate the encounter rather than doing nothing');
   assert.equal(errors.length,0,'Page must have no uncaught JS errors: '+errors.join('; '));
   const artifacts=path.resolve('artifacts/tcas-lab');
   fs.mkdirSync(artifacts,{recursive:true});
