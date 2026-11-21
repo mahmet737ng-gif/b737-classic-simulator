@@ -396,10 +396,15 @@ function transition(state,action){
   if(!Rules?.valid||!Rules.valid(id,v))throw Error("MCP value out of FCOM Chapter 4 range or increment");
   const old=s.values[id];s.values[id]=v;
   if(id==='altitude'&&s.modes.vertical==='LVL_CHG')setLvlChgThrust(s);
-  if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&Math.abs(v-old)>100){
+  if(id==="altitude"&&s.capture.pitch==="ALT_ACQ"&&v!==old){
+   // Any real MCP ALT detent during ALT ACQ cancels capture. Resume V/S
+   // at the OBSERVED instantaneous rate, not the pre-capture selected rate.
+   // MCP display is quantized to its existing 50-fpm selector increments;
+   // the plant retains its continuous present vertical speed.
    s.capture.pitch=null;s.modes.vertical="VS";s.override.pitch=false;
+   s.armed.pitch=null;s.targets.pitch=null;
    if(Number.isFinite(s.flight?.verticalSpeedFpm))
-    s.values.verticalSpeed=Math.max(-7900,Math.min(6000,
+    s.values.verticalSpeed=Math.max(-5000,Math.min(5000,
      Math.round(s.flight.verticalSpeedFpm/50)*50));
   }else if(id==="altitude"&&s.modes.vertical==="ALT_HLD"&&
    Number.isFinite(s.flight?.altitudeFt)&&
