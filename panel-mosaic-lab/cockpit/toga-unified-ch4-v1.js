@@ -48,7 +48,11 @@
   if(!active())return;
   const m=mcp();
   if(m?.power!==true)return;
-  const fm=T.fma(state),fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
+  const fm=T.fma(state);
+  if(state.phase==='GA'&&m?.modes?.lateral==='HDG_SEL')fm.roll='HDG SEL';
+  else if(state.phase==='GA'&&m?.modes?.lateral==='LNAV')fm.roll='LNAV';
+  else if(state.phase==='GA'&&m?.capture?.roll==='VOR_LOC')fm.roll='VOR/LOC';
+  const fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
   if(lastFma===fingerprint)return;
   lastFma=fingerprint;
   for(const seat of ['CAPT','FO']){
