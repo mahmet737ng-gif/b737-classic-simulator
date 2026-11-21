@@ -338,7 +338,14 @@
     s.altitudeFt=target.altitudeFt;s.vsFpm=0;
    }
    s.radioAltitudeFt=Math.max(0,s.altitudeFt-s.elevationFt);
-   if(s.preset.startsWith('FINAL_')&&distanceNm(s,s.threshold)<.09&&s.radioAltitudeFt<80){
+   // Runway touchdown follows the modeled flare to near-surface altitude.
+   // Never teleport the airplane from ~80 ft RA to touchdown merely because
+   // it crossed the runway threshold. This is a training touchdown proxy.
+   const thrDist=distanceNm(s,s.threshold);
+   const inboundDelta=angle(s.trueHeadingDeg,s.runwayHeadingTrueDeg);
+   const nearCenterline=thrDist*Math.abs(Math.sin(inboundDelta*RAD))<.08;
+   if(s.preset.startsWith('FINAL_')&&s.airborne===true&&
+       thrDist<.75&&nearCenterline&&s.radioAltitudeFt<=8){
     s.phase='LANDING_ROLL';s.airborne=false;s.iasKt=Math.min(s.iasKt,145);
     s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;s.pitchDeg=0;s.bankDeg=0;
    }
