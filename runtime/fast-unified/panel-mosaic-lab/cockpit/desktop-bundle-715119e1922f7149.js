@@ -573,6 +573,8 @@ try{
  let fcc=Guidance.createState(),protect=Protection.initial(),last=null;
  let directorServo={pitch:null,roll:null,lastMs:null};
  let owner=null,sourceError=null,lastAp=null,lastProtectionMs=0;
+ // Per-seat copy of this FCC's cues for any late avionics-gateway paint.
+ let liveDirector={CAPT:null,FO:null},directorAtMs=0;
  const faults={hydA:false,hydB:false,irsL:false,irsR:false,criticalSensor:false,radioAlt:false};
  const clone=x=>JSON.parse(JSON.stringify(x));
  const isActive=()=>win.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true;
@@ -596,14 +598,18 @@ try{
   return res;
  }
  function directorPublisher(){
-  if(owner||sourceError)return owner;
-  try{owner=win.B737UnifiedAvionicsNetworkV1?.connectExternal?.('FCC')||null;}
-  catch(e){sourceError=String(e?.message||e);win.console.warn('FCC publisher',e);}
+  if(owner)return owner;
+  try{
+   owner=win.B737UnifiedAvionicsNetworkV1?.connectExternal?.('FCC')||null;
+   if(owner)sourceError=null;
+  }catch(e){sourceError=String(e?.message||e);win.console.warn('FCC publisher',e);}
+  // Retry on later frames if avionics initializes after the flight scenario.
   return owner;
  }
  function paintDirector(frame){
-  const out=mcp(),view=guidance(frame,out),p=directorPublisher();
-  if(!view||!p)return;
+  const out=mcp(),view=guidance(frame,out);
+  if(!view)return;
+  const p=directorPublisher();
   // The same command demand drives FCC director bars and the flight plant.
   // Limit bar motion independently to avoid abrupt mode-change visual jumps.
   const now=performance.now();
@@ -637,9 +643,12 @@ try{
     rollDeg:rollActive?directorServo.roll:null,
     locCaptured:out?.nav?.loc===true,gsCaptured:out?.nav?.gs===true,
     source:'SIMULATED_FCC_FCOM_CH4_TRAINING',seat:side==='captain'?'CAPT':'FO'};
-   try{p.publish('afds.director'+n,value,{quality:'VALID',origin:'TRAINING_SCENARIO'});}
-   catch(e){sourceError=String(e?.message||e);}
+   liveDirector[n===1?'CAPT':'FO']=value;
+   if(p)try{
+    p.publish('afds.director'+n,value,{quality:'VALID',origin:'TRAINING_SCENARIO'});
+   }catch(e){sourceError=String(e?.message||e);owner=null;}
   }
+  directorAtMs=now;
   const label=by('flightFccStatus');if(label)label.textContent=
    out?.modes?.autopilot+' · '+view.status+
    (view.reasons.length?' · '+view.reasons.join('; '):'')+
@@ -647,6 +656,7 @@ try{
    ' · FD FO '+(view.fd.firstOfficer?'SHOW':'HIDDEN');
  }
  function releaseDirector(){
+  liveDirector={CAPT:null,FO:null};directorAtMs=0;
   if(owner)for(const topic of ['afds.director1','afds.director2'])
    try{owner.publish(topic,{enabled:false,source:'SCENARIO_STOPPED'},
      {quality:'UNKNOWN',origin:'TRAINING_SCENARIO',reason:'SCENARIO_STOPPED'});}catch(_){}
@@ -782,7 +792,13 @@ try{
    confirmedHardware('TOGA_BELOW_2000_RA',{touchdown:e.detail?.touchdown===true});
  });
  win.B737UnifiedFccFlightV1=Object.freeze({
-  VERSION,follow,getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
+  VERSION,follow,
+  getDirector:seat=>{
+   const key=String(seat).toUpperCase()==='FO'?'FO':'CAPT';
+   if(!isActive()||!directorAtMs||performance.now()-directorAtMs>1500)return null;
+   return liveDirector[key]?{...liveDirector[key]}:null;
+  },
+  getState:()=>({fcc:clone(fcc),protection:clone(protect),last:clone(last),
    lastDisengagement:lastAp?{...lastAp}:null,sourceError,faults:{...faults}}),
   disconnectConfirmed:confirmedHardware,protectionSample:sample=>{
    const result=Protection.evaluate(protect,mcp(),sample,Date.now());

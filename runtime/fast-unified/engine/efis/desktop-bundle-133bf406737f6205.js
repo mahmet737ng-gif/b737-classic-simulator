@@ -346,6 +346,11 @@ try{
   const activeScene=root.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true?
    root.B737UnifiedFlightScenarioV1.getState?.():null;
   const lowSpeed=activeScene?.aeroEnvelope;
+  // This is the exact same FCC instance driving the flight plant: not a
+  // second invented director. In an active instructor scenario it wins over
+  // a missing/stale avionics publish after the Railway gateway reconnects.
+  const direct=activeScene?root.B737UnifiedFccFlightV1?.getDirector?.(seat):null;
+  const director=direct??src.director;
   if(lowSpeed?.source==='INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA'&&
      originalSpeedView?.casKt!==null&&originalSpeedView?.casKt!==undefined){
    speedView={...originalSpeedView,trainingLowSpeed:{
@@ -378,7 +383,7 @@ try{
    ils:!!src.ils,frontCourse:front===true,
    locDeviation:front===false&&Number.isFinite(src.ils?.localizerDots)?-src.ils.localizerDots:numeric(src.ils?.localizerDots),
    gsDeviation:numeric(src.ils?.glideslopeDots),
-   director:src.director,tcas:root.B737UnifiedTcasV1?.getState?.()
+   director,tcas:root.B737UnifiedTcasV1?.getState?.()
   });
   display.host.dataset.sg=String(src.sg);
   display.host.dataset.irs=src.irs===1?'L':'R';
@@ -393,6 +398,12 @@ try{
    display.host.dataset.mcpLateral=src.mcp?.lateralMode||'';
    display.host.dataset.mcpSelectedAltitude=src.mcp?.altitudeSelectedFt==null?'':String(src.mcp.altitudeSelectedFt);
    display.host.dataset.mcpSelectedVs=src.mcp?.verticalSpeedSelectedFpm==null?'':String(src.mcp.verticalSpeedSelectedFpm);
+  display.host.dataset.fdSource=direct?'FCC_DIRECT_SAME_ENGINE':
+   src.director?'AVIONICS_FCC':'NO_FCC_CUE';
+  display.host.dataset.fdPitchBar=String(director?.enabled===true&&
+   Number.isFinite(director?.pitchDeg));
+  display.host.dataset.fdRollBar=String(director?.enabled===true&&
+   Number.isFinite(director?.rollDeg));
   display.host.dataset.eadiPower=String(powered);
   display.host.dataset.eadiAttitude=String(injected?station.attitudeValid:src.attitude);
   const health=src.health||{};
@@ -525,7 +536,7 @@ try{
  root.addEventListener('b737:avionics-data',event=>{
   if(/^(airdata\.(adc|radioAltitude)[12]|navigation\.ils[12]|afds\.director[12]|irs\.(left|right)|mcp\.state|fmc\.computed|electrical\.buses)$/.test(event.detail?.topic||''))scheduleLive();
  });
- for(const event of ['b737:tcas-state','b737:flight-presentation-frame','b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
+ for(const event of ['b737:tcas-state','b737:flight-presentation-frame','b737:flight-scenario-state','b737:flight-scenario-stopped','b737:bus-consumer-snapshot','b737:efis-source-change','b737:unified-efis-control','b737:mcp-afds-state'])root.addEventListener(event,scheduleLive);
  root.addEventListener('b737:cockpit-mounted',mount);
  root.addEventListener('b737:engine-indication-view',mount);
  if(root.document.readyState==='loading')
