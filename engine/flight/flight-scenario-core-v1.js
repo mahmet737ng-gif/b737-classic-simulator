@@ -80,18 +80,25 @@
   const ground=kind==='RUNWAY_READY'||(manual&&config.airborne===false);
   const latitude=manual&&config.lat!==undefined?finite(config.lat,-90,90,'LAT'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lat:anchor.lat;
   const longitude=manual&&config.lon!==undefined?finite(config.lon,-180,180,'LON'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lon:anchor.lon;
-  const defaultAlt=runwayElevationFt+(isFinal?Math.tan(glideDeg*RAD)*finalNm*FT_PER_NM+tchFt:ground?0:3000);
+  // FINAL_10 training starts one GS dot BELOW the received ILS beam.
+   // 0.35deg per dot is the existing geometry training receiver convention;
+   // not a certified angular or flight control calibration.
+   const gsBelowDots=isFinal?(config.glideslopeBelowDots===undefined?
+    kind==='FINAL_10'?1:0:finite(config.glideslopeBelowDots,0,2.5,'GS_BELOW_DOTS')):0;
+   const initialGsDeg=glideDeg-gsBelowDots*.35;
+   const defaultAlt=runwayElevationFt+(isFinal?
+    Math.tan(initialGsDeg*RAD)*finalNm*FT_PER_NM+tchFt:ground?0:3000);
   const altitudeInput=manual&&config.altitudeFt!==undefined?finite(config.altitudeFt,-1000,65000,'ALTITUDE_FT'):defaultAlt;
   const alt=ground?runwayElevationFt:altitudeInput;
   if(alt<runwayElevationFt-.01)throw RangeError('ALTITUDE_BELOW_AIRPORT_SURFACE');
-  const speedInput=manual&&config.speedKt!==undefined?finite(config.speedKt,0,450,'IAS_KT'):isFinal?(finalNm===5?155:170):ground?0:220;
+  const speedInput=config.speedKt!==undefined?finite(config.speedKt,0,450,'IAS_KT'):isFinal?(finalNm===5?155:142):ground?0:220;
   const speed=ground?0:speedInput;
   if(!ground&&speed<80)throw RangeError('AIRBORNE_IAS_BELOW_TRAINING_MINIMUM');
   const heading=manual&&config.headingDeg!==undefined?wrap(finite(config.headingDeg,0,360,'HEADING_DEG')):hdg;
   const bank=manual&&config.bankDeg!==undefined?finite(config.bankDeg,-30,30,'BANK_DEG'):0;
-  const vsInput=manual&&config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):isFinal?-speed*FT_PER_NM/60*Math.tan(glideDeg*RAD):0;
+  const vsInput=config.vsFpm!==undefined?finite(config.vsFpm,-5000,5000,'VS_FPM'):kind==='FINAL_10'?0:isFinal?-speed*FT_PER_NM/60*Math.tan(glideDeg*RAD):0;
   const vs=ground?0:vsInput;
-  const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:isFinal?'GLIDEPATH':'VS',
+  const guidance={lateralMode:manual&&bank!==0?'BANK':'HEADING',verticalMode:kind==='FINAL_10'?'ALTITUDE':isFinal?'GLIDEPATH':'VS',
    headingDeg:heading,bankCommandDeg:bank,bankLimitDeg:25,altitudeFt:ground?runwayElevationFt+3000:alt,
    vsFpm:ground?1500:vs,speedKt:ground?150:speed};
   return {schema:'B737_FLIGHT_SCENARIO_STATE_V1',revision:1,
@@ -102,7 +109,7 @@
    elevationFt:runwayElevationFt,iasKt:speed,tasKt:speed,
    gsKt:speed,trueHeadingDeg:heading,trueTrackDeg:heading,
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
-   flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
+   glideslopeBelowDots:gsBelowDots,flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
    autoSlatRequest:false,aeroEnvelope:null,altitudeCapture:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
