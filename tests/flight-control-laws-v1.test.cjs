@@ -24,7 +24,7 @@ test('AFDS FD command pitch and roll equal actual flight-control-law demands',()
 });
 test('pitch/bank/VS rates are limited in physical flight plant, no instant setpoints',()=>{
  let s=frame(),m=mcp(),fcc=FCC.createState();
- for(let i=0;i<100;i++){
+ for(let i=0;i<230;i++){
   const r=FCC.evaluate(fcc,m,s,{magneticVariationDeg:5});fcc=r.state;
   const previous=s;
   for(const action of r.actions)s=Flight.command(s,action);
@@ -85,4 +85,19 @@ test('A/P disengagement stops stale MCP guidance while retaining current trim st
  assert.equal(free.target.verticalMode,'VS');
  assert.equal(free.target.vsFpm,1300);
  assert.ok(free.target.altitudeFt===11000,'old selection retained for metadata only');
+});
+
+test('VS select response has command lag and cannot immediately teleport into commanded rate',()=>{
+ let s=frame({vsFpm:0,pitchDeg:2}),m=mcp();
+ const demand=2000,first=FCC.evaluate(FCC.createState(),m,s,{magneticVariationDeg:5});
+ assert.equal(first.actions.find(x=>x.type==='VS').value,demand);
+ const prev=s;
+ s=Flight.command(s,{type:'VS',value:demand});
+ s=Flight.step(s,.2);
+ assert.ok(Math.abs(s.pitchDeg-prev.pitchDeg)<.2,'Pitch must start gradually, not jump');
+ assert.ok(Math.abs(s.vsFpm-prev.vsFpm)<100,'V/S needle must not jump to MCP target');
+ assert.ok(s.flightControl.commandedPitchDeg<first.pitchCommandDeg,'Pitch demand itself is filtered');
+ for(let k=0;k<40;k++)s=Flight.step(s,.1);
+ assert.ok(s.vsFpm<demand,'A/P has not instantly reached V/S target in four seconds');
+ assert.ok(s.vsFpm>0,'Aircraft starts responding to the command');
 });
