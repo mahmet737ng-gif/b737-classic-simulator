@@ -52,6 +52,8 @@ for(const relative of [cockpit+'index.html',cockpit+'overhead-stage.html',cockpi
 for(const relative of [
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
  cockpit+'brand/unified-icon-192.webp',
+ ...['frame','aircraft','window','orbit','white','still']
+   .map(layer=>cockpit+'brand/unified-intro-'+layer+'.webp'),
  cockpit+'panel-photo-registry.v1.json',cockpit+'unified.webmanifest',cockpit+'performance/manifest.json',
  cockpit+'overhead-test-labs-catalog-v1.json',
  cockpit+'assets/p15-refuel-photo-v1.webp',
