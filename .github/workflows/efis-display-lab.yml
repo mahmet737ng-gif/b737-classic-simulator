@@ -3,11 +3,13 @@ on:
   push:
     paths:
       - 'efis-display-lab/**'
+      - 'tests/eadi-radio-altimeter-20-10-1-display.test.cjs'
       - 'cdu-standalone-v6/ehsi/ehsi-engine.js'
       - '.github/workflows/efis-display-lab.yml'
   pull_request:
     paths:
       - 'efis-display-lab/**'
+      - 'tests/eadi-radio-altimeter-20-10-1-display.test.cjs'
       - 'cdu-standalone-v6/ehsi/ehsi-engine.js'
       - '.github/workflows/efis-display-lab.yml'
   workflow_dispatch:
@@ -36,6 +38,7 @@ jobs:
           node efis-display-lab/core.test.cjs
           node efis-display-lab/ehsi-v2.test.cjs
           node --test efis-display-lab/ehsi-expanded-heading-360.test.cjs
+          node --test tests/eadi-radio-altimeter-20-10-1-display.test.cjs
       - name: Ensure Unified owner-protected files not changed
         run: |
           python3 panel-mosaic-lab/verify-final-overhead.py
