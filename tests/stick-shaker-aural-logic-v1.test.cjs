@@ -1,0 +1,28 @@
+"use strict";
+const assert=require("node:assert/strict");
+const {evaluate}=require("../audio/stick-shaker-aural-logic-v1.js");
+const check=(input,expected,msg)=>{
+ const result=evaluate(input);
+ assert.equal(result.active,expected,msg);
+ return result;
+};
+check({onGround:false,iasKt:109,shakerBoundaryKt:110},true,"airborne red band");
+check({onGround:false,iasKt:110,shakerBoundaryKt:110},true,"exact red boundary");
+check({onGround:false,iasKt:110.1,shakerBoundaryKt:110},false,"above red boundary");
+check({onGround:true,iasKt:70,shakerBoundaryKt:110},false,"ground suppresses red band");
+check({onGround:null,iasKt:70,shakerBoundaryKt:110},false,"unknown phase fail-safe");
+check({onGround:false,iasKt:null,shakerBoundaryKt:110},false,"missing IAS fail-safe");
+check({onGround:false,iasKt:80,shakerBoundaryKt:null},false,"missing lower band fail-safe");
+check({onGround:true,ac115Available:true,test1:true},true,"test 1 demand");
+check({onGround:true,ac115Available:true,test2:true},true,"test 2 demand");
+check({onGround:true,ac115Available:true,test1:true,test2:true},true,"both tests");
+check({onGround:true,ac115Available:true,test1:false,test2:true},true,"holding test 2 after release 1");
+check({onGround:true,ac115Available:true,test1:false,test2:false},false,"both released");
+check({onGround:true,ac115Available:false,test1:true},false,"test blocked by absent AC");
+check({onGround:false,ac115Available:true,test1:true},false,"airborne test inhibited");
+check({onGround:false,flightStallDemand:true},true,"discrete flight stall demand");
+const provisional=check({onGround:true,ac115Available:null,test1:true},true,"unknown AC permits training mode");
+assert.equal(provisional.testPowerUnverified,true);
+assert.equal(evaluate({onGround:false,iasKt:80,shakerBoundaryKt:100}).reason,"LOWER_RED_BAND");
+assert.equal(evaluate({onGround:true,ac115Available:true,test2:true}).reason,"TEST_2");
+console.log("18 owner stick-shaker logic assertions passed");
