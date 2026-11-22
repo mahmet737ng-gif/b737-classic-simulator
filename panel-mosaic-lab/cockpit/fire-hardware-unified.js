@@ -143,30 +143,16 @@ function paint(state,derived,allOn=false){
   h.setAttribute('aria-pressed',String(st.pulled));
  }
 }
-// The public training bell uses the two tones from the existing audio lab.
-let audio=null,volume=null,bellTimer=0,bellWanted=false,bellMuted=false;
+// Both P8 main panel and isolated lab request the same owner-approved bell voice.
+// Synthesized two-tone oscillator is permanently retired.
+const soundLane=openLab?'aircraft':'lab';
+let bellWanted=false,bellMuted=false;
 function playBell(){
- if(!bellWanted||bellMuted||bellTimer||win.navigator.userActivation?.hasBeenActive===false)return;
- const Engine=win.AudioContext||win.webkitAudioContext;if(!Engine)return;
- audio=audio||new Engine();if(audio.state!=='running')audio.resume().catch(()=>{});
- volume=audio.createGain();volume.gain.value=.16;volume.connect(audio.destination);
- function strike(){
-  const t=audio.currentTime;
-  for(const [hz,end,type] of [[950,800,'sine'],[1550,1300,'triangle']]){
-   const osc=audio.createOscillator(),gain=audio.createGain();osc.type=type;
-   osc.frequency.setValueAtTime(hz,t);osc.frequency.exponentialRampToValueAtTime(end,t+.4);
-   gain.gain.setValueAtTime(.001,t);gain.gain.exponentialRampToValueAtTime(.45,t+.009);
-   gain.gain.exponentialRampToValueAtTime(.001,t+.45);
-   osc.connect(gain);gain.connect(volume);osc.start(t);osc.stop(t+.47);
-   osc.onended=()=>{osc.disconnect();gain.disconnect();};
-  }
- }
- strike();bellTimer=setInterval(strike,600);
+  return win.B737UnifiedFireBellAudioV1?.unlock?.();
 }
 function bell(active){
- bellWanted=active;
- if(active&&!bellMuted){playBell();return;}
- if(bellTimer){clearInterval(bellTimer);bellTimer=0;volume.disconnect();}
+  bellWanted=Boolean(active);
+  win.B737UnifiedFireBellAudioV1?.setDemand?.(soundLane,bellWanted&&!bellMuted);
 }
 function mount(host){
  if(layer||!owner()||!host)return;
