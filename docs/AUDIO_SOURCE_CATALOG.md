@@ -29,3 +29,10 @@
 
 Warning: licensed use inside a finished game/app does not necessarily authorize public reposting of individual WAV files through an open-source asset repository.
 See https://sonniss.com/gdc-bundle-license/ and https://www.101soundboards.com/pages/terms_and_privacy.
+
+
+## Radio Altimeter — live Unified integration (owner requirement 22 Nov 2026)
+- Unified reads the Captain's selected Radio Altimeter signal from `B737UnifiedEfisSources.project('CAPT')` and Captain DH from `B737UnifiedEFISPedestalV1.getState('CAPT').dh`.
+- The owner-recorded ten-callout OGG timeline in `audio-lab/assets/owner-ra-callouts-v1.ogg` is reused; the unidentified ending beep is excluded.
+- `APPROACHING MINIMUMS` triggers at exactly DH + 100 ft; `MINIMUMS` triggers at exactly DH. Negative DH (including −20 ft) inhibits both.
+- Callouts run only during the active final-approach scenario and only on valid RA input. Missing/unmapped phrases remain silent; no generated audio or TTS fallback.

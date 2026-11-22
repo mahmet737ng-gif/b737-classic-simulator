@@ -167,21 +167,31 @@
     },
     {
       "id": "minimums|APPROACHING MINIMUMS",
-      "when": "RA descending across Capt minimums + 80 ft",
+      "when": "Captain Radio Altimeter descends across selected DH + 100 ft",
       "repeat": "single announcement",
       "stop": "after callout",
-      "reference": "15.20.28",
+      "reference": "15.20.28 family; owner-defined exact DH+100 threshold (2026-11-22)",
       "lane": "egpws",
-      "level": 36
+      "level": 36,
+      "inhibit": [
+        "selected DH < 0",
+        "invalid Radio Altimeter input",
+        "not in active final-approach phase"
+      ]
     },
     {
       "id": "minimums|MINIMUMS",
-      "when": "RA descending across Capt minimums + 0 ft",
+      "when": "Captain Radio Altimeter descends across selected DH exactly",
       "repeat": "single announcement",
       "stop": "after callout",
-      "reference": "15.20.28",
+      "reference": "15.20.28 family; owner-defined exact DH threshold (2026-11-22)",
       "lane": "egpws",
-      "level": 36
+      "level": 36,
+      "inhibit": [
+        "selected DH < 0",
+        "invalid Radio Altimeter input",
+        "not in active final-approach phase"
+      ]
     },
     {
       "id": "gpws|PULL UP",

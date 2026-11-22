@@ -78,14 +78,23 @@
     },
     {
       "original": "a.mp3",
-      "category": "Radio Altimeter / EGPWS Callouts",
-      "engine": null,
+      "category": "Radio Altimeter Callouts",
+      "engine": "radioAltitude / minimums",
       "slots": [
-        "Radio Altimeter Callouts — Full Recording"
+        "ONE THOUSAND",
+        "500",
+        "APPROACHING MINIMUMS",
+        "MINIMUMS",
+        "100",
+        "50",
+        "40",
+        "30",
+        "20",
+        "10"
       ],
-      "assetPath": "assets/warnings/radio-altimeter/callouts-collection.mp3",
-      "validation": "identified directly by user; compiled recording requires splitting and labeling per altitude before live triggers",
-      "previewKey": "radioAltitude|COLLECTION"
+      "assetPath": "audio-lab/assets/owner-ra-callouts-v1.ogg",
+      "validation": "Owner-supplied a.mp3 was trimmed to a compact OGG timeline with ten individually timed voice callouts; unidentified ending beep excluded. Timeline is reused by Unified live RA audio bridge.",
+      "previewKey": "radioAltitude|ONE THOUSAND"
     },
     {
       "original": "c.mp3",

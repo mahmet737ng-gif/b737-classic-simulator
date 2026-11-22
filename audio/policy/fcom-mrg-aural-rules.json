@@ -150,10 +150,21 @@
         "minimums|MINIMUMS"
       ],
       "when": [
-        "radioAlt crosses selected minimums + 80ft",
-        "radioAlt crosses selected minimums"
+        "radioAlt crosses selected DH + 100ft",
+        "radioAlt crosses selected DH exactly"
       ],
-      "source": "FCOM 15.20.28"
+      "source": "FCOM 15.20.28",
+      "inhibit": [
+        "selected DH < 0",
+        "invalid Radio Altimeter input",
+        "not in active final-approach phase"
+      ],
+      "ownerDefinedBehavior": {
+        "approachingMinimumsOffsetFt": 100,
+        "minimumsOffsetFt": 0,
+        "negativeDhInhibitsBoth": true,
+        "source": "Owner requirement 2026-11-22"
+      }
     },
     {
       "id": "TCAS",
