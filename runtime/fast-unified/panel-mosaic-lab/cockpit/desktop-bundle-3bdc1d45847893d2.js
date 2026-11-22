@@ -133,7 +133,20 @@ try{
  // Keep light test purely visual: it must never latch a DCPCS or CPCS fault.
  if(typeof CustomEvent==='function'&&typeof window.dispatchEvent==='function')window.dispatchEvent(new CustomEvent('b737:pressure-light-test',{detail:{active,source:'visual-test'}}));
  send({kind:'visual-state',active,count});}
- function report(){if(!ready||pending)return;pending=true;requestAnimationFrame(()=>{pending=false;const s=window.B737OverheadLights.getState();send({kind:'state',lights:s.lights,frames:s.frames,context:s.context,lampTest:s.lampTest,power:s.power});send({kind:'controls-state',toggles:window.B737OverheadToggles.getState(),...window.B737RotaryGuards.getState(),context:s.context});applyProjection();});}
+ let lastControlsPayload = '';
+ function report(){if(!ready||pending)return;pending=true;requestAnimationFrame(()=>{
+  pending=false;
+  const s=window.B737OverheadLights.getState();
+  send({kind:'state',lights:s.lights,frames:s.frames,context:s.context,lampTest:s.lampTest,power:s.power});
+  // Frequent electrical/lamp refreshes must not rebroadcast unchanged switches.
+  const controls={toggles:window.B737OverheadToggles.getState(),...window.B737RotaryGuards.getState()};
+  const serialized=JSON.stringify(controls);
+  if(serialized!==lastControlsPayload){
+   lastControlsPayload=serialized;
+   send({kind:'controls-state',...controls,context:s.context});
+  }
+  applyProjection();
+ });}
  function start(){if(ready||!window.B737OverheadLights||!window.B737RotaryGuards||!window.B737OverheadToggles)return;ready=true;send({kind:'ready',version:'LGT-0003',lampDefinitions:window.B737OverheadLights.getRegistry().lights.map(c=>({id:c.id,rule:c.rule,states:c.states||['OFF','ON']})),switches:58,rotaries:20,guards:11});report();}
  const observer=new MutationObserver(()=>{start();if(ready)observer.disconnect();});observer.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});start();
  let crewReplay=false;
