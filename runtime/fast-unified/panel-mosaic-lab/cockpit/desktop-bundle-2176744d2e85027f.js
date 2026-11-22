@@ -12,7 +12,8 @@ try{
   decimals:g.signal==='fuelFlow'?2:['n1','n2'].includes(g.signal)?1:0,
   integerDigits:g.signal==='fuelFlow'?1:3,divisor:g.signal==='fuelFlow'?1000:1,
   unit:g.signal==='fuelFlow'?'t/h':g.signal==='egt'?'°C':'%',
-  template:g.signal==='fuelFlow'?'0.00':g.signal==='egt'?'999':'100.0',drum:true,scale:1
+  template:g.signal==='fuelFlow'?'0.00':g.signal==='egt'?'999':'100.0',
+   drum:true,scale:['n1','egt'].includes(g.signal)?1.065:1
  })).concat([1,2].map(n=>Object.freeze({id:'oilQuantity_'+n,engine:'engine'+n,signal:'oilQuantity',
   cx:n===1?984:1095,cy:741,decimals:0,integerDigits:3,divisor:1,unit:'%FULL',template:'999',drum:false,scale:.83}))));
  const values=new Map(specs.map(s=>[s.id,{value:['n1','n2'].includes(s.signal)?0:null,source:'INITIAL'}]));
@@ -190,7 +191,8 @@ try{
      // The shared Conventional display animation already moves the value.
      // Snapping this wheel to its synchronized frame removes the old
      // second phase-lag; EIS retains its own drum movement.
-     if(!raf||(part.variant==='CONVENTIONAL'&&reading.source==='ENGINE_INDICATION_SYNC_V1'))
+     if(!raf||reading.snap===true||
+      (part.variant==='CONVENTIONAL'&&reading.source==='ENGINE_INDICATION_SYNC_V1'))
       slot.wheel.snap(column);
      slot.fixed.setAttribute('visibility','hidden');
     }else{
@@ -231,7 +233,9 @@ try{
   paint();if(isMoving())schedule();else lastFrame=null;
  }
  function refresh(){mount();syncTargets();paint();schedule();}
- function write(spec,value,source){values.set(spec.id,{value:Number.isFinite(value)?value:null,source});}
+ function write(spec,value,source,snap=false){
+  values.set(spec.id,{value:Number.isFinite(value)?value:null,source,snap});
+ }
  function observeECU(live){
   // The installed FCOM/MRG/LAN feed/fault backend is authoritative after load.
   // Do not let raw ECU telemetry repower failed/CB-isolated readouts.
@@ -292,12 +296,12 @@ try{
   },
   setConventionalPowerLoss,
    getConventionalPowerLoss:(engine,signal)=>conventionalPowerLoss.has(signal+'_'+engine.slice(-1)),
-   setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE'){
+   setReading(engine,signal,value,source='EXPLICIT_TRAINER_OR_SOURCE',opts={}){
    const spec=specs.find(s=>s.engine===engine&&s.signal===signal);if(!spec)throw Error('Unknown EIS numeric field');
    if(source==='ENGINE_INDICATION_BACKEND_V2'||source==='ENGINE_INDICATION_SYNC_V1'){
     backendOwned.add(spec.id);ecuOwned.add(spec.id);
    }
-   write(spec,value,source);refresh();
+   write(spec,value,source,opts.snap===true);refresh();
   },mount
  });
  window.addEventListener('b737:cockpit-mounted',mount);

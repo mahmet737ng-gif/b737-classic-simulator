@@ -176,10 +176,10 @@ try{
  const NS='http://www.w3.org/2000/svg';
  // Apertures measured inside the source glass. Children inherit each photo's
  // existing registration, including the FO mode-specific transform and lift.
- const CAPT={parent:'[data-piece="captain"]',box:[312,256,159,198],photo:[726,661.356]};
+ const CAPT={parent:'[data-piece="captain"]',box:[306,250,171,210],photo:[726,661.356]};
  const FO={
-  EIS:{parent:'[data-piece="fo-outer"]',box:[26,215,153,200],photo:[475,592.164]},
-  CONVENTIONAL:{parent:'#fo-owner-panel-v1',box:[452,522,344,370],photo:[1286,1223]}
+  EIS:{parent:'[data-piece="fo-outer"]',box:[21,210,163,210],photo:[475,592.164]},
+  CONVENTIONAL:{parent:'#fo-owner-panel-v1',box:[444,514,360,386],photo:[1286,1223]}
  };
  const TOPICS=new Set(['electrical.buses','irs.left','irs.right','mcp.state','fmc.computed',
   'airdata.adc1','airdata.adc2','navigation.vor1','navigation.vor2','navigation.dme1','navigation.dme2',

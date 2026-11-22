@@ -1667,6 +1667,9 @@ try{
      stationLocated:!!target});
    }
   }
+  // Draw VOR1/VOR2 first, then ADF1/ADF2, irrespective of which
+  // receivers happen to be valid. This keeps bearing labels stable.
+  result.pointers.sort((a,b)=>(a.type==='V'?0:1)-(b.type==='V'?0:1)||a.channel-b.channel);
   return result;
  }
  function draw(svg,model,src,snapshot,position,renderer){

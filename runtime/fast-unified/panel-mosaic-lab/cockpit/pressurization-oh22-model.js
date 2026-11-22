@@ -40,8 +40,8 @@
      modes:['AUTO','STBY','MAN_AC','MAN_DC'],modePosition:[.805,.735],
      // Anchors measured from the supplied 2026-10-26 Unified 159% screenshot.
      // Source pixels still require independent 1:1 original-photo signoff.
-     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.160,'manual-valve':.083,'flight-ground':.082}),
-     valveIndicator:Object.freeze({xy:[.812,.282],diameter:.148,axis:'LEFT_CLOSED_RIGHT_OPEN',evidence:'2026-10-26-CPCS-SCREENSHOT'}),
+     controlFit:Object.freeze({'flight-alt':.162,'landing-alt':.162,'standby-alt':.150,'cabin-rate':.154,'press-mode':.167,'manual-valve':.121,'flight-ground':.118}),
+     valveIndicator:Object.freeze({xy:[.812,.282],diameter:.148,minAngle:-45,maxAngle:45,axis:'LEFT_CLOSED_RIGHT_OPEN',evidence:'2026-10-26-CPCS-SCREENSHOT'}),
      hornCutout:Object.freeze({piece:'OH19-DIFF',xy:[.790,.278],diameter:.092,source:'2026-10-26-UNIFIED-SCREENSHOT'}),
      // Each legend gets a separate, directly selectable detent hotspot.
      detentLabels:Object.freeze({
