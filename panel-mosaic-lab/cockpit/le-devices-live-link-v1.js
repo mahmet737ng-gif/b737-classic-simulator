@@ -60,17 +60,8 @@
   if(payload.kind==='ready'){ready=true;sendLever();return;}
   if(payload.kind!=='le-devices-projection'||!payload.projection)return;
   const p=payload.projection;
-  if(!Number.isInteger(p.revision))return;
+  if(!Number.isInteger(p.revision)||p.revision<lastProjectedRevision)return;
   if(!allowed.has(p.lever)||p.lever!==lever)return;
-  // The approved FINAL_10 instructor preset resets the LE/TE model and
-  // pre-positions both flaps. Its valid revision can be smaller than the
-  // preceding physical-flight revision. Do not discard that ready snapshot.
-  const final10Ready=p.scenario==='FINAL_10_READY'&&
-    p.source==='FLIGHT_SCENARIO_FINAL10'&&p.lever===30&&
-    p.teMoving===false&&Number.isFinite(p.tePosition)&&
-    Math.abs(p.tePosition-30)<.4;
-  if(!final10Ready&&lastProjection?.scenario===p.scenario&&
-      lastProjection?.source===p.source&&p.revision<lastProjectedRevision)return;
   lastProjectedRevision=p.revision;
   lastProjection=p;
   updateIndication();
