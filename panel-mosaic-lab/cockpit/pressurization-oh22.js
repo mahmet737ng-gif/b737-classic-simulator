@@ -239,7 +239,21 @@
      pointer.setAttribute('aria-hidden','true');
      const pin=root.createElement('span');pin.className='oh22-valve-hub';
      pin.setAttribute('aria-hidden','true');
-     gauge.append(pointer,pin);
+     // 90-degree scale around the vertical: CLOSED at -45°, OPEN at +45°.
+     const scale=root.createElementNS('http://www.w3.org/2000/svg','svg');
+     scale.classList.add('oh22-valve-scale');scale.setAttribute('viewBox','0 0 100 100');
+     scale.setAttribute('aria-hidden','true');
+     for(let a=g.minAngle;a<=g.maxAngle;a+=15){
+       const theta=a*Math.PI/180;
+       const inner=a===g.minAngle||a===g.maxAngle?40:42;
+       const line=root.createElementNS('http://www.w3.org/2000/svg','line');
+       line.setAttribute('x1',String(50+Math.sin(theta)*inner));
+       line.setAttribute('y1',String(50-Math.cos(theta)*inner));
+       line.setAttribute('x2',String(50+Math.sin(theta)*46));
+       line.setAttribute('y2',String(50-Math.cos(theta)*46));
+       scale.append(line);
+     }
+     gauge.append(scale,pointer,pin);
    }
    layer.append(gauge);
    caption=root.createElement('output');caption.className='oh22-pressure-note';caption.textContent=system+' · waiting for selected engine';layer.append(caption);
@@ -328,7 +342,11 @@
        const percent=physicalKnown?Math.max(0,Math.min(1,frac)):null;
        gauge.dataset.known=String(physicalKnown&&powered);
        gauge.dataset.powered=String(powered);
-       if(pointer)pointer.style.transform='translate(-50%,-100%) rotate('+(!powered?-75:percent===null?-75:-75+150*percent)+'deg)';
+       if(pointer){
+         const angle=!powered||percent===null?cfg.valveIndicator.minAngle:
+           cfg.valveIndicator.minAngle+(cfg.valveIndicator.maxAngle-cfg.valveIndicator.minAngle)*percent;
+         pointer.style.transform='translate(-50%,-100%) rotate('+angle+'deg)';
+       }
        gauge.title=!powered?'CPCS VALVE indicator unpowered — needle at full left':
          percent===null?'Valve travel unknown — source not connected':
          'CPCS VALVE · estimated '+Math.round(percent*100)+'% open (trainer physics, not measured aircraft position)';
