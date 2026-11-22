@@ -17,6 +17,56 @@ const usernamePattern = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{2,39}$/;
 const roleLabel = {captain: 'Captain', firstOfficer: 'First Officer', instructor: 'Instructor'};
 
 const FLIGHT_ROLES = ['captain', 'firstOfficer'];
+const DEFAULT_AIRCRAFT_PROFILE = Object.freeze({
+  schema: 'b737-classic-aircraft-profile/1', aircraftFamily: 'B737-300-500',
+  aircraftModel: '737-300', engineVariant: 'CFM56-3B3',
+  pressurization: 'DCPCS', engineInstruments: 'EIS'
+});
+function aircraftProfile(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) ||
+      value.schema !== DEFAULT_AIRCRAFT_PROFILE.schema ||
+      !['B737-300-500', 'B737-400'].includes(value.aircraftFamily) ||
+      !['CPCS', 'DCPCS'].includes(value.pressurization) ||
+      !['EIS', 'CONVENTIONAL'].includes(value.engineInstruments)) {
+    throw new RequestError(400, 'Invalid shared aircraft configuration.');
+  }
+  const family400 = value.aircraftFamily === 'B737-400';
+  return {
+    schema: DEFAULT_AIRCRAFT_PROFILE.schema,
+    aircraftFamily: value.aircraftFamily,
+    aircraftModel: family400 ? '737-400' : '737-300',
+    engineVariant: family400 ? 'CFM56-3B2' : 'CFM56-3B3',
+    pressurization: value.pressurization,
+    engineInstruments: value.engineInstruments
+  };
+}
+function overheadSnapshot(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new RequestError(400, 'Invalid overhead snapshot.');
+  }
+  const plain = (source, max, guard = false) => {
+    if (!source || typeof source !== 'object' || Array.isArray(source) ||
+        Object.keys(source).length > max) throw new RequestError(400, 'Invalid overhead controls.');
+    const result = {};
+    for (const [id, item] of Object.entries(source)) {
+      if (!CONTROL_ID.test(id)) throw new RequestError(400, 'Invalid overhead control ID.');
+      if (guard) {
+        if (!item || typeof item !== 'object' || Array.isArray(item) ||
+            !['open', 'closed'].includes(item.guard) || !controlValue(item.value)) {
+          throw new RequestError(400, 'Invalid guard state.');
+        }
+        result[id] = {guard: item.guard, value: item.value};
+      } else if (controlValue(item)) result[id] = item;
+      else throw new RequestError(400, 'Invalid overhead control value.');
+    }
+    return result;
+  };
+  return {
+    toggles: plain(value.toggles, 120),
+    rotaries: plain(value.rotaries, 100),
+    guards: plain(value.guards, 50, true)
+  };
+}
 const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
 const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
@@ -252,6 +302,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       role: room.members.get(key)?.role ?? null,
       invitedRole: invite?.role ?? null,
       manager,
+      profile: room.profile,
       ...(manager && room.invitation ? {roomInvite: room.invitation} : {})
     };
   }
@@ -349,8 +400,12 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       if (url.searchParams.get('cockpit') === '1') {
         const after = Math.max(0, Number(req.headers['last-event-id'] ?? url.searchParams.get('after')) || 0);
         room.cockpits.add(res);
+        // A late joiner must receive the host's current controls before any
+        // commands newer than that snapshot (rather than replay stale history).
+        if (room.snapshot) frame(res, room.snapshot, 'snapshot');
+        const replayFrom = Math.max(after, room.snapshot?.sequence ?? 0);
         for (const command of room.commands) {
-          if (command.sequence > after) frame(res, command, 'command');
+          if (command.sequence > replayFrom) frame(res, command, 'command');
         }
         if (room.flight) frame(res, room.flight, 'flight');
       }
@@ -408,9 +463,16 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       if (!room) {
         room = {
           id: randomToken(), manager: owner, expires: now() + ROOM_AGE, members: new Map(),
-          links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain', flight: null
+          links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain',
+          profile: aircraftProfile(data.profile || DEFAULT_AIRCRAFT_PROFILE),
+          snapshot: null, flight: null
         };
         rooms.set(room.id, room);
+      }
+      if (data.profile) {
+        const next = aircraftProfile(data.profile);
+        if (JSON.stringify(next) !== JSON.stringify(room.profile)) room.snapshot = null;
+        room.profile = next;
       }
       if (data.role !== undefined) {
         admission(room, user, data.role);
@@ -430,7 +492,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       publish(room);
       return send(res, 200, stateFor(room, user));
     }
-    if (['cockpit', 'command', 'flight'].includes(action)) {
+    if (['cockpit', 'command', 'flight', 'snapshot'].includes(action)) {
       purge(room);
       const member = room.members.get(key);
       if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
@@ -439,6 +501,13 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       if (member.role === 'observer') throw new RequestError(403, 'Observer is read-only.');
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
         throw new RequestError(400, 'Invalid cockpit connection.');
+      }
+      if (action === 'snapshot') {
+        if (room.manager !== key) throw new RequestError(403, 'Only the host publishes the shared cockpit snapshot.');
+        const overhead = overheadSnapshot(data.overhead);
+        room.snapshot = {sequence: room.sequence, client: data.client, overhead};
+        broadcast(room, 'snapshot', room.snapshot);
+        return send(res, 200, {sequence: room.sequence});
       }
       if (action === 'flight') {
         if (roster(room).controller !== member.role) throw new RequestError(403, 'Only the active flight controller publishes state.');
@@ -458,6 +527,10 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       }
       if (command.type === 'profile' && room.manager !== key && member.role !== 'instructor') {
         throw new RequestError(403, 'Only the host or Instructor can configure the shared aircraft.');
+      }
+      if (command.type === 'profile') {
+        room.profile = aircraftProfile(command.value);
+        room.snapshot = null;
       }
       if (!member.commandAt || now() - member.commandAt > 1000) {
         member.commandAt = now();
