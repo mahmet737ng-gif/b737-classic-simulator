@@ -138,4 +138,11 @@ test("negative DH mutes both minimums callouts", () => {
   const out = run(e,{radioAltitudeFt:0,minimumsRadioFt:-20,approachActive:true});
   assert.equal(out.events.some(v=>v.id==="minimums"),false);
 });
+test("DH voice does not repeat on a small RA oscillation", () => {
+  const e = new WarningEngine();
+  run(e,{radioAltitudeFt:310,minimumsRadioFt:200,approachActive:true});
+  assert.ok(event(run(e,{radioAltitudeFt:299,minimumsRadioFt:200,approachActive:true}),"minimums","APPROACHING MINIMUMS"));
+  run(e,{radioAltitudeFt:303,minimumsRadioFt:200,approachActive:true});
+  assert.equal(event(run(e,{radioAltitudeFt:298,minimumsRadioFt:200,approachActive:true}),"minimums"),false);
+});
 console.log(n + " audio-engine assertions passed");
