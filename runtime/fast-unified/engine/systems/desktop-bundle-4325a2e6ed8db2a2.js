@@ -932,8 +932,8 @@ try{
         }
       }
       const dh = s.minimumsRadioFt;
-      if (truth(s.approachActive) && !ground && finite(dh) && finite(ra) && finite(pra) && ra < pra) {
-        if (pra > dh + 80 && ra <= dh + 80) push("minimums", "APPROACHING MINIMUMS");
+      if (truth(s.approachActive) && !ground && finite(dh) && dh >= 0 && finite(ra) && finite(pra) && ra < pra) {
+        if (pra > dh + 100 && ra <= dh + 100) push("minimums", "APPROACHING MINIMUMS");
         if (pra > dh && ra <= dh) push("minimums", "MINIMUMS");
       }
 
