@@ -1,0 +1,34 @@
+name: Unified EIS FCOM thrust mode and N1 physical controls
+on:
+  push:
+    paths:
+      - panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.js
+      - panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css
+      - panel-mosaic-lab/cockpit/manual-n1-live-v1.js
+      - panel-mosaic-lab/cockpit/index.html
+      - tests/thrust-mode-annunciator-fcom-v1.test.cjs
+      - .github/workflows/unified-eis-tmd-v1.yml
+  pull_request:
+    paths:
+      - panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.js
+      - panel-mosaic-lab/cockpit/manual-n1-live-v1.js
+      - tests/thrust-mode-annunciator-fcom-v1.test.cjs
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: EIS source and FCOM source-mode semantics
+        run: |
+          node --check panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.js
+          node --check panel-mosaic-lab/cockpit/manual-n1-live-v1.js
+          node --test tests/thrust-mode-annunciator-fcom-v1.test.cjs
+      - name: Compile Unified production web
+        run: |
+          node tools/build-unified-web.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.js
