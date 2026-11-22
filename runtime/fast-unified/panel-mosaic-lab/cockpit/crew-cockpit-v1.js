@@ -89,7 +89,10 @@
     }
     const duty = role === roster?.flying ? ' · PF' :
       ['captain', 'firstOfficer'].includes(role) ? ' · PM' : '';
-    status.textContent = (labels[role] ?? 'Crew Room') + duty + (online ? ' · Connected' : ' · Reconnecting…');
+    const pending = queue.filter(entry => entry.client !== client).length;
+    const connection = !online ? ' · Reconnecting…' : pending ? ' · Sync pending (' + pending + ')' : ' · Connected';
+    const next = (labels[role] ?? 'Crew Room') + duty + connection;
+    if (status.textContent !== next) status.textContent = next;
   }
 
   async function send(action, body = {}) {
@@ -134,8 +137,15 @@
     if (entry.type === 'frequency') return radio()?.getState(entry.id);
     if (entry.type === 'commTransfer') return win.B737UnifiedVHFCommTFRV1;
     if (entry.type === 'navMode') return win.B737UnifiedVHFNavControlsV1;
-    if (entry.type === 'firePanel') return win.B737UnifiedFireLights;
-    if (entry.type === 'efis') return win.B737UnifiedEFISPedestalV1;
+    if (entry.type === 'firePanel') return typeof win.B737UnifiedFireLights?.dispatch === 'function';
+    if (entry.type === 'efis') return typeof win.B737UnifiedEFISPedestalV1?.operate === 'function';
+    if (entry.type === 'mcpValue') return typeof win.B737McpVisualV3?.setValue === 'function';
+    if (entry.type === 'mcpHardware') return typeof win.B737McpHardwareV1?.setState === 'function';
+    if (entry.type === 'mcpMode') return typeof win.B737McpAFDSBridgeV1?.press === 'function';
+    if (entry.type === 'autobrake') return typeof win.B737AutobrakeUnified?.setSelector === 'function';
+    if (entry.type === 'trim') return typeof win.B737StabilizerTrim?.set === 'function';
+    if (entry.type === 'cb') return typeof win.B737UnifiedCB?.snapshot === 'function' &&
+      !!win.B737UnifiedCircuitGatesV1?.STORAGE;
     if (entry.type === 'flap') return win.B737FlapVisualTest?.ready();
     if (entry.type === 'speedbrake') return win.B737SpeedbrakeLever?.mounted();
     if (entry.type === 'throttle') return win.B737ThrottlePositions?.mounted();
@@ -153,8 +163,7 @@
       case 'toggle':
       case 'rotary':
       case 'guard':
-        byId('overheadFrame').contentWindow.B737CrewOverheadV1.apply(type, id, value);
-        break;
+        return byId('overheadFrame').contentWindow.B737CrewOverheadV1.apply(type, id, value);
       case 'profile': win.B737AircraftProfileStore.set(value); break;
       case 'cdu': byId('cduFrame' + id).contentWindow.B737CrewCduV1.press(value); break;
       case 'efis': {
@@ -177,7 +186,7 @@
       case 'cb': {
         const current = win.B737UnifiedCB?.snapshot();
         const key = win.B737UnifiedCircuitGatesV1?.STORAGE;
-        if (!current || !key) break;
+        if (!current || !key) return false;
         const old = current.breakers.find(entry => entry.id === id);
         if (old && !value && old.fault) break;
         if (value) lastBreakers.add(id);
@@ -219,7 +228,9 @@
         if (id.startsWith('advanced.')) win.B737UnifiedAdvancedInstructorV1.launchScenario(id.slice(9), value);
         else win.B737UnifiedInstructorNonNormalV1.startScenario(id, value);
         break;
+      default: return false;
     }
+    return true;
   }
 
   function receiveHostSnapshot(snapshot) {
@@ -258,25 +269,43 @@
   }
 
   function drain() {
-    // One unready Overhead/CDU must not block independent MCP/radio controls.
-    // Commands targeting the same control keep their original order.
+    // Do not lose a remote command because its instrument has not mounted.
+    // Commands for unrelated controls may pass a pending instrument.
     const blocked = new Set();
+    let changed = false;
     for (let index = 0; index < queue.length;) {
       const entry = queue[index];
       const key = entry.type + ':' + entry.id;
-      if (blocked.has(key) || !available(entry)) {
+      if (entry.client === client) {
+        queue.splice(index, 1);
+        changed = true;
+        continue;
+      }
+      if (blocked.has(key) || (entry.retryAt && performance.now() < entry.retryAt) || !available(entry)) {
         blocked.add(key);
         index++;
         continue;
       }
-      queue.splice(index, 1);
-      if (entry.client === client) continue;
       replay = true;
-      try { apply(entry); }
-      catch (error) { console.warn('Crew cockpit command rejected', entry.type, error.message); }
-      finally { replay = false; }
+      try {
+        if (apply(entry) === false) throw Error('Control declined the remote value');
+        queue.splice(index, 1);
+        changed = true;
+      } catch (error) {
+        const now = performance.now();
+        entry.retryAt = now + 400;
+        if (!entry.lastWarning || now - entry.lastWarning > 10000) {
+          entry.lastWarning = now;
+          console.warn('Crew cockpit command pending; will retry', entry.type, entry.id, error.message);
+        }
+        blocked.add(key);
+        index++;
+      } finally {
+        replay = false;
+      }
     }
     receiveFlight();
+    if (changed) refreshStatus();
   }
 
   function readRoster(data) {
