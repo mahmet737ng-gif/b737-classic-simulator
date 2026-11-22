@@ -517,6 +517,8 @@ const crewAssets=new Map([
 const crewDialog=optimizedSource(cockpitSource+'index.html')?.toString()
   .match(/<dialog id="crewRoomDialog"(?=[\s>])[\s\S]*?<\/dialog>/)?.[0];
 const crewReady=crewDialog && [...crewAssets.values()].every(([file])=>optimizedSource(file));
+const crewCockpitReady=crewReady && crewDialog.includes('data-crew-enter') &&
+  optimizedSource(cockpitSource+'crew-cockpit-v1.js');
 const crewOrigin=process.env.CREW_ORIGIN || (process.env.RAILWAY_PUBLIC_DOMAIN ?
   'https://'+process.env.RAILWAY_PUBLIC_DOMAIN : 'http://127.0.0.1');
 const crew=createCrewRoomHandler({
@@ -753,6 +755,17 @@ async function ownerAccess(req){
  return result.rowCount===1;
 }
 
+function crewMayRead(url, role) {
+  if (['/static/session.js','/static/guest-cockpit.js','/static/guest-cockpit.css'].includes(url.pathname) ||
+      directDocuments.has(url.pathname) || navdata.supports(url.pathname)) return true;
+  const asset = repoAssetPath(url.pathname);
+  if (!asset) return false;
+  if (role === 'instructor') return true;
+  if (!asset.endsWith('.html')) return true;
+  return ['panel-mosaic-lab/cockpit/overhead-stage.html',
+    'panel-mosaic-lab/cockpit/cdu-stage.html','cdu-standalone-v6/index.html'].includes(asset);
+}
+
 async function handle(req,res) {
   commonHeaders(req,res);
   const url=new URL(req.url,'http://localhost');
@@ -785,7 +798,23 @@ async function handle(req,res) {
   const authStarted=performance.now();
   const ok=await authorized(req);
   const authMs=performance.now()-authStarted;
-  if (!ok) {
+  const crewGuest = !ok && crewCockpitReady ? crew.cockpitAccess(req) : null;
+  if (crewGuest) {
+    const assetRequest = ['GET','HEAD'].includes(req.method);
+    const pulse = req.method==='POST' && url.pathname==='/api/pulse';
+    if (pulse) { res.writeHead(204);res.end();return; }
+    if (assetRequest && (url.pathname==='/' || url.pathname==='/'+cockpitSource)) {
+      redirect(res,directPath+'?crewRoom='+crewGuest.roomId);return;
+    }
+    if (assetRequest && url.pathname===directPath && url.searchParams.get('crewRoom')!==crewGuest.roomId) {
+      url.searchParams.set('crewRoom',crewGuest.roomId);
+      redirect(res,url.pathname+url.search);return;
+    }
+    if (!assetRequest || !crewMayRead(url,crewGuest.role)) {
+      res.writeHead(403,{'Content-Type':'text/plain'});res.end('Crew access denied');return;
+    }
+  }
+  if (!ok && !crewGuest) {
     // Redirect only actual document navigations. Serving login HTML as a
     // redirected .js/.css/.image response previously produced a blank page
     // and hundreds of GET /login requests after an expired guest session.
