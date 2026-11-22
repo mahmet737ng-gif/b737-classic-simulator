@@ -29,6 +29,18 @@ const AIRWAY_POINTS=(()=>{try{return JSON.parse(process.env.LAB_AIRWAY_DHN_ROUTE
 const UNLIMITED_USER = 'Taregh';
 // Disabled unless Railway provides the salted verifier via a protected variable.
 const UNLIMITED_PASSWORD_SCRYPT = process.env.LAB_TAREGH_PASSWORD_SCRYPT || '';
+// Additional Unified accounts live exclusively in the protected Railway environment.
+// Only salted scrypt verifiers, never plaintext passwords, are stored here.
+const EXTRA_USERS = Object.freeze(JSON.parse(process.env.LAB_ADDITIONAL_USERS_JSON || '{}'));
+for (const [name, verifier] of Object.entries(EXTRA_USERS)) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,39}$/.test(name) ||
+      !/^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(verifier) ||
+      [UNLIMITED_USER,USER].some(value => value.toLowerCase() === name.toLowerCase())) {
+    throw new Error('Invalid additional Unified account configuration');
+  }
+}
+if (new Set(Object.keys(EXTRA_USERS).map(name => name.toLowerCase())).size !== Object.keys(EXTRA_USERS).length)
+  throw new Error('Duplicate additional Unified account username');
 const TOKEN_COOKIE = 'ata24_session';
 const DEVICE_COOKIE = 'ata24_device';
 const folder = path.join(__dirname, 'public');
@@ -526,7 +538,7 @@ const crewOrigin=process.env.CREW_ORIGIN || (process.env.RAILWAY_PUBLIC_DOMAIN ?
 const crew=createCrewRoomHandler({
   origin: crewOrigin,
   ownerUsername: UNLIMITED_USER,
-  reservedUsernames: [USER],
+  reservedUsernames: [USER, ...Object.keys(EXTRA_USERS)],
   gatewayIdentity: unifiedIdentity,
   async gatewayLogin(req, username, password) {
     const result=await registerUnifiedDevice(req,username,password);
@@ -685,9 +697,13 @@ async function registerUnifiedDevice(req,username,password) {
   const bucket=attemptMap.get(ip)||{n:0,until:now+900000};
   if (bucket.until<now) { bucket.n=0; bucket.until=now+900000; }
   if (bucket.n>=8) return {error:'rate'};
+  const normalizedUsername = username.toLowerCase();
+  const additional = Object.entries(EXTRA_USERS).find(([name]) => name.toLowerCase() === normalizedUsername);
+  const additionalTier = additional && verifyPassword(password, additional[1]) ?
+    'user:' + additional[0].toLowerCase() : null;
   const tier=(username===UNLIMITED_USER&&UNLIMITED_PASSWORD_SCRYPT&&
     verifyPassword(password,UNLIMITED_PASSWORD_SCRYPT))?'unlimited':
-    (username===USER&&verifyPassword(password,PASSWORD_HASH))?'guest':null;
+    (username===USER&&verifyPassword(password,PASSWORD_HASH))?'guest':additionalTier;
   if (!tier) {
     bucket.n++;attemptMap.set(ip,bucket);
     return {error:'invalid'};
@@ -704,8 +720,11 @@ async function registerUnifiedDevice(req,username,password) {
     // Every registered guest browser keeps its slot until explicit release.
     // The advisory lock serializes competing logins for the fourth slot.
     const same=await client.query('SELECT account_tier FROM ata24_devices WHERE device_hash=$1',[hash(device)]);
-    const count=await client.query("SELECT count(*)::int AS total FROM ata24_devices WHERE account_tier='guest'");
-    if(canRegisterDevice(tier,same.rows[0]?.account_tier||null,count.rows[0].total,MAX_DEVICES)){
+    const count=await client.query("SELECT count(*)::int AS total FROM ata24_devices WHERE account_tier=$1",[tier]);
+    // Every named guest has its own three-device registry; re-login on an existing
+    // device never consumes a second slot. The unlimited owner has no cap.
+    if(canRegisterDevice(tier==='unlimited'?'unlimited':'guest',
+      same.rows[0]?.account_tier===tier?'guest':null,count.rows[0].total,MAX_DEVICES)){
       const agent=String(req.headers['user-agent']||'Unknown browser').slice(0,320);
       await client.query(`INSERT INTO ata24_devices
         (device_hash,session_hash,last_seen,account_tier,device_user_agent,last_ip,registered_at)
@@ -760,16 +779,18 @@ function devicesHTML(rows){
   const registered=escapeHtml(d.registered_at?new Date(d.registered_at).toISOString():'Unknown');
   const seen=escapeHtml(d.last_seen?new Date(d.last_seen).toISOString():'Unknown');
   const id=escapeHtml(d.device_hash);
-  return '<tr><td>'+String(i+1)+'</td><td>'+label+'<small>ID '+id.slice(0,12)+'</small></td>'+
+  const account=d.account_tier==='guest'?USER:
+    Object.keys(EXTRA_USERS).find(name => 'user:' + name.toLowerCase() === d.account_tier) || 'Guest';
+  return '<tr><td>'+String(i+1)+'</td><td>'+escapeHtml(account)+'</td><td>'+label+'<small>ID '+id.slice(0,12)+'</small></td>'+
    '<td>'+ip+'</td><td>'+registered+'</td><td>'+seen+'</td>'+
    '<td><form action="/api/devices/revoke" method="post"><input type="hidden" name="device" value="'+id+'"><button type="submit">REVOKE</button></form></td></tr>';
  }).join('');
  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
  '<meta name="robots" content="noindex,nofollow"><title>Guest Device Registry | B737 Classic</title>'+
  '<style>body{background:#0a1420;color:#eaf5ff;font:14px system-ui,Arial,sans-serif;margin:auto;padding:24px;max-width:1100px}a{color:#70cbff}h1{font-size:24px}p,small{color:#a1bbcf}table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:12px;border-bottom:1px solid #31485c;vertical-align:top}th{white-space:nowrap}small{display:block;margin-top:8px}button{border:0;border-radius:6px;padding:10px;background:#b94747;color:white;font-weight:700;cursor:pointer}td{overflow-wrap:anywhere}form{margin:0}</style></head><body>'+
- '<p><a href="/">BACK TO UNIFIED</a></p><h1>Registered Guest Devices — '+rows.length+' / 3</h1>'+
- '<p>Each browser profile occupies one slot until explicit sign out or owner revocation. No inactivity timeout. Clearing cookies does not free a registration.</p>'+
- '<table><thead><tr><th>#</th><th>Browser / OS</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
+ '<p><a href="/">BACK TO UNIFIED</a></p><h1>Registered Guest Devices — '+rows.length+' total</h1>'+
+ '<p>Each guest account has up to three registered browser profiles. Slots persist until sign out or owner revocation. Clearing cookies does not free a registration.</p>'+
+ '<table><thead><tr><th>#</th><th>Account</th><th>Browser / OS</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
  (rows.length?'':'<p>No guest devices are registered.</p>')+'</body></html>';
 }
 async function unifiedIdentity(req){
@@ -777,7 +798,9 @@ async function unifiedIdentity(req){
  if(!token||token.length<30||token.length>128)return null;
  const result=await pool.query('SELECT account_tier FROM ata24_devices WHERE session_hash=$1',[hash(token)]);
  const tier=result.rows[0]?.account_tier;
- return tier==='unlimited'?UNLIMITED_USER:tier==='guest'?USER:null;
+ if (tier==='unlimited') return UNLIMITED_USER;
+ if (tier==='guest') return USER;
+ return Object.keys(EXTRA_USERS).find(name => 'user:' + name.toLowerCase() === tier) || null;
 }
 
 async function ownerAccess(req){
@@ -857,7 +880,7 @@ async function handle(req,res) {
   }
   if(req.method==='GET'&&url.pathname==='/devices'){
     if(!await ownerAccess(req)){res.writeHead(403,{'Content-Type':'text/plain'});res.end('Owner access required');return;}
-    const result=await pool.query("SELECT device_hash,device_user_agent,last_ip,registered_at,last_seen FROM ata24_devices WHERE account_tier='guest' ORDER BY registered_at ASC");
+    const result=await pool.query("SELECT device_hash,account_tier,device_user_agent,last_ip,registered_at,last_seen FROM ata24_devices WHERE account_tier<>'unlimited' ORDER BY registered_at ASC");
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
     res.end(devicesHTML(result.rows));return;
   }
@@ -866,7 +889,7 @@ async function handle(req,res) {
     if(!await ownerAccess(req)){res.writeHead(403);res.end('Owner access required');return;}
     const device=String(new URLSearchParams(await body(req)).get('device')||'');
     if(!/^[a-f0-9]{64}$/.test(device)){res.writeHead(400);res.end('Invalid device ID');return;}
-    await pool.query("DELETE FROM ata24_devices WHERE device_hash=$1 AND account_tier='guest'",[device]);
+    await pool.query("DELETE FROM ata24_devices WHERE device_hash=$1 AND account_tier<>'unlimited'",[device]);
     redirect(res,'/devices');return;
   }
   if (req.method==='POST' && url.pathname==='/api/pulse') {
