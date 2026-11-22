@@ -1,0 +1,54 @@
+#crewRoomDialog {
+  box-sizing: border-box;
+  width: min(36rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  margin: auto;
+  padding: clamp(1rem, 4vw, 1.75rem);
+  overflow: auto;
+  border: 1px solid #334952;
+  border-radius: 12px;
+  background: #101c24;
+  color: #f3f7f9;
+  font: 1rem / 1.45 system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+#crewRoomDialog::backdrop { background: #071016d9; }
+#crewRoomDialog [hidden] { display: none !important; }
+
+#crewRoomDialog .crew-title,
+#crewRoomDialog .crew-actions,
+#crewRoomDialog .crew-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+#crewRoomDialog .crew-title,
+#crewRoomDialog .crew-row { justify-content: space-between; }
+#crewRoomDialog h2 { margin: 0; font-size: 1.35rem; }
+#crewRoomDialog h3 { margin: 1rem 0 .35rem; font-size: 1rem; }
+#crewRoomDialog form { display: grid; gap: .65rem; }
+#crewRoomDialog label { display: grid; gap: .25rem; }
+#crewRoomDialog .crew-row { margin: 0; padding: .55rem 0; border-bottom: 1px solid #334952; }
+#crewRoomDialog .crew-row dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+#crewRoomDialog button,
+#crewRoomDialog input,
+#crewRoomDialog select {
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: .4rem .65rem;
+  border: 1px solid #53717f;
+  border-radius: 6px;
+  background: #162932;
+  color: inherit;
+  font: inherit;
+}
+
+#crewRoomDialog button:disabled { opacity: .5; }
+#crewRoomDialog input { min-width: 0; width: 100%; }
+#crewRoomDialog [role="status"]:empty { display: none; }
+#crewRoomDialog [role="status"][data-error="true"] { color: #ffb79e; }
+#crewRoomDialog [data-crew-link] { margin-top: .75rem; }

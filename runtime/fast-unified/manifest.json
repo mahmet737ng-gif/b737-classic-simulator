@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "f73986bc7bf0f68b30cce0fe8872b2e0bd31fdc2",
-  "mainBefore": 312,
+  "sourceCommit": "f7b5610cce99a1882784ba31c09918212220855c",
+  "mainBefore": 313,
   "mainAfter": 98,
   "overheadBefore": 61,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e4cc2ed40d03aa2fa065fcce183dff77787150915cd98a7f0cd14bcb9c2b40af"
+      "sha256": "46c2bdc60c461616b818c21db2200a4334782580e28b8e90bed539ed2517484a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -185,6 +185,10 @@
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
       "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e740d42fa2f7c108.js",
+      "sha256": "e740d42fa2f7c108e5e5f490071fcb8a4b404f650a82db7c7f50edd7fab4ef17"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -447,6 +451,10 @@
       "sha256": "c30b8e99495b0e7286f0035248b6905225f114d1808a3b356771e285e935b3aa"
     },
     {
+      "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
+      "sha256": "328b2d10679baaaa99516f6170576f81f7652522ac45ffee79895bd1c7e636b7"
+    },
+    {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
       "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
     },
@@ -629,10 +637,6 @@
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
       "sha256": "8a2ad31639af1f193f7b5ab441bfb17e4f783612a10c6df6953872f77d9a684f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/instructor-nonnormal-v1.js",
-      "sha256": "b3e00b8ff371b5c4f044040f8072ed26aa65eee4ed757192bc9649e4b25c881f"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -1009,6 +1013,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/sw.js",
       "sha256": "7d57162c42cd700aea96cc1ca11acf48b197114928ba260044ef7045171b8bb9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/crew-room-v1.js",
+      "sha256": "95855918fe0fb614c1f97cc46a831345cc2db4dfeac337372f71862eceb5d418"
     },
     {
       "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
@@ -1725,14 +1733,6 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/instructor-advanced-failures-v1.js",
-      "sha256": "464924c26916e790c42132d165684821afbf2db0da31913ad4a0c25e5d722566"
-    },
-    {
-      "path": "engine/systems/unified-instructor-fcom-mrg-effects-v2.js",
-      "sha256": "0a05c28715af11bda16fe553cae5979d265d3de4a236fc06bf45c6da3cc431e4"
     }
   ]
 }
