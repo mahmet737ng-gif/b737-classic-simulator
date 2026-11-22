@@ -2,7 +2,6 @@
 
 const {createHash, randomBytes, scrypt, timingSafeEqual} = require('node:crypto');
 const {createServer} = require('node:http');
-const {DatabaseSync} = require('node:sqlite');
 const {promisify} = require('node:util');
 
 const derive = promisify(scrypt);
@@ -74,24 +73,28 @@ function frame(res, state) {
   }
 }
 
-function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, staticHandler, now = Date.now}) {
+function createCrewRoomHandler({origin, database, accounts, ownerUsername, ownerVerifier, ownerAccess,
+  reservedUsernames = [], staticHandler, now = Date.now}) {
   if (!origin || new URL(origin).origin !== origin ||
       (!origin.startsWith('https://') && new URL(origin).hostname !== '127.0.0.1')) {
     throw Error('CREW_ORIGIN must be an HTTPS origin or the loopback development origin.');
   }
-  if (!usernamePattern.test(ownerUsername ?? '') || !/^[a-f0-9]{32}:[a-f0-9]{128}$/.test(ownerVerifier ?? '')) {
+  if (!usernamePattern.test(ownerUsername ?? '') ||
+      (!ownerAccess && !/^[a-f0-9]{32}:[a-f0-9]{128}$/.test(ownerVerifier ?? ''))) {
     throw Error('Set CREW_OWNER_USERNAME and CREW_OWNER_VERIFIER.');
   }
 
   const loopback = origin === 'http://127.0.0.1';
-  const db = new DatabaseSync(database);
-  db.exec(`CREATE TABLE IF NOT EXISTS crew_accounts (
+  const db = accounts ? null : new (require('node:sqlite').DatabaseSync)(database);
+  db?.exec(`CREATE TABLE IF NOT EXISTS crew_accounts (
     username TEXT PRIMARY KEY COLLATE NOCASE,
     verifier TEXT NOT NULL
   )`);
-  const getGuest = db.prepare('SELECT username, verifier FROM crew_accounts WHERE username = ?');
-  const addGuest = db.prepare('INSERT OR IGNORE INTO crew_accounts VALUES (?, ?)');
+  const getGuest = db?.prepare('SELECT username, verifier FROM crew_accounts WHERE username = ?');
+  const addGuest = db?.prepare('INSERT OR IGNORE INTO crew_accounts VALUES (?, ?)');
+  const getAccount = key => accounts ? accounts.get(key) : getGuest.get(key);
   const owner = ownerUsername.toLowerCase();
+  const reservedNames = new Set([owner, ...reservedUsernames.map(name => name.toLowerCase())]);
   const dummyVerifier = `${'0'.repeat(32)}:${'0'.repeat(128)}`;
   const rooms = new Map();
   const invites = new Map();
@@ -120,11 +123,14 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
   function roster(room) {
     const counts = Object.fromEntries(ROLES.map(role => [role, 0]));
     const reserved = {...counts};
+    const online = [];
     for (const member of room.members.values()) {
-      if (member.streams.size) counts[member.role]++;
-      else if (member.lastSeen + SEAT_GRACE > now()) reserved[member.role]++;
+      if (member.streams.size) {
+        counts[member.role]++;
+        online.push({username: member.username, role: member.role});
+      } else if (member.lastSeen + SEAT_GRACE > now()) reserved[member.role]++;
     }
-    return {roomId: room.id, counts, reserved};
+    return {roomId: room.id, counts, reserved, online};
   }
 
   function publish(room) {
@@ -161,7 +167,7 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
       throw new RequestError(409, `${roleLabel[role]} seat is already occupied.`);
     }
     if (previous) closeMember(room, key, previous);
-    const member = {role, lastSeen: now(), streams: new Map()};
+    const member = {role, username: user.username, lastSeen: now(), streams: new Map()};
     room.members.set(key, member);
     publish(room);
     return member;
@@ -175,8 +181,10 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
 
   function stateFor(room, user, invite) {
     const key = user?.username.toLowerCase();
+    const {online, ...counts} = roster(room);
     return {
-      ...roster(room),
+      ...counts,
+      online: room.manager === key || room.members.has(key) ? online : [],
       role: room.members.get(key)?.role ?? null,
       invitedRole: invite?.role ?? null,
       manager: room.manager === key
@@ -211,42 +219,44 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     }
   }
 
-  async function account(req, res, body, user) {
-    if (user) throw new RequestError(409, 'Sign out before switching accounts.');
-    const {username, password, invite: rawInvite} = body;
-    const setup = new URL(req.url, origin).pathname === PREFIX + '/activate';
+  function credentials({username, password}) {
     if (typeof username !== 'string' || !usernamePattern.test(username) ||
         typeof password !== 'string' || !password.length || password.length > 128) {
       throw new RequestError(400, 'Enter a valid username and password.');
     }
-    const key = username.toLowerCase();
-    if (!setup) {
-      const guest = key === owner ? null : getGuest.get(key);
-      const verifier = key === owner ? ownerVerifier : guest?.verifier ?? dummyVerifier;
-      const verified = await checkCredential(key, () => verifyPassword(password, verifier));
-      if (!verified || (key !== owner && !guest)) throw new RequestError(401, 'Incorrect username or password.');
-      rates.delete(key);
-      return openSession(res, key === owner ? ownerUsername : guest.username);
-    }
-    const invite = resolveInvite(rawInvite);
-    if (!invite || invite.boundUser) throw new RequestError(404, 'Invitation is unavailable for account setup.');
-    if (password.length < 12) throw new RequestError(400, 'Use at least 12 characters for your password.');
-    if (key === owner) throw new RequestError(409, 'Username is already in use.');
-    const verifier = await checkCredential(key, () => makeVerifier(password));
-    if (invite.boundUser || !resolveInvite(rawInvite)) {
-      throw new RequestError(409, 'Invitation is no longer available for account setup.');
-    }
-    if (!addGuest.run(username, verifier).changes) throw new RequestError(409, 'Username is already in use.');
-    if (invite.role !== 'observer') invite.boundUser = key;
+    return username.toLowerCase();
+  }
+
+  async function login(res, body, user) {
+    if (user) throw new RequestError(409, 'Sign out before switching accounts.');
+    const key = credentials(body);
+    const guest = reservedNames.has(key) ? null : await getAccount(key);
+    const localOwner = key === owner && !ownerAccess;
+    const verifier = localOwner ? ownerVerifier : guest?.verifier ?? dummyVerifier;
+    const verified = await checkCredential(key, () => verifyPassword(body.password, verifier));
+    if (!verified || (!localOwner && !guest)) throw new RequestError(401, 'Incorrect username or password.');
     rates.delete(key);
-    openSession(res, username);
+    return openSession(res, localOwner ? ownerUsername : guest.username);
+  }
+
+  async function createAccount(res, body, user) {
+    if (!user.owner) throw new RequestError(403, 'Only the Unified room host can create accounts.');
+    const key = credentials(body);
+    if (reservedNames.has(key)) throw new RequestError(409, 'Username is already in use.');
+    if (body.password.length < 12) throw new RequestError(400, 'Use at least 12 characters for the password.');
+    const verifier = await checkCredential('create:' + owner, () => makeVerifier(body.password));
+    const added = accounts ? await accounts.add(key, body.username, verifier) : addGuest.run(body.username, verifier).changes;
+    if (!added) throw new RequestError(409, 'Username is already in use.');
+    return send(res, 201, {username: body.username});
   }
 
   async function route(req, res) {
     const url = new URL(req.url, origin);
-    const user = session(req);
+    const user = session(req) || (ownerAccess && await ownerAccess(req) ?
+      {username: ownerUsername, owner: true, gateway: true, expires: Infinity} : null);
     if (req.method === 'GET' && url.pathname === PREFIX) {
-      return send(res, 200, {user: user ? {username: user.username, owner: user.owner} : null});
+      const account = user ? {username: user.username, owner: user.owner, gateway: !!user.gateway} : null;
+      return send(res, 200, {user: account});
     }
     if (req.method === 'GET' && url.pathname === PREFIX + '/events') {
       if (!user) throw new RequestError(401, 'Sign in to join the room.');
@@ -276,7 +286,7 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     }
     const data = await readBody(req);
     const action = url.pathname.slice(PREFIX.length + 1);
-    if (action === 'login' || action === 'activate') return account(req, res, data, user);
+    if (action === 'login') return login(res, data, user);
 
     const invite = resolveInvite(data.invite);
     if (action === 'inspect') {
@@ -285,7 +295,10 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     }
     if (!user) throw new RequestError(401, 'Sign in to join the room.');
 
+    if (action === 'accounts') return createAccount(res, data, user);
+
     if (action === 'logout') {
+      if (user.gateway) throw new RequestError(409, 'Sign out from Unified to end your owner session.');
       const key = user.username.toLowerCase();
       for (const [id, record] of sessions) {
         if (record === user) sessions.delete(id);
@@ -319,11 +332,17 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     const key = user.username.toLowerCase();
     if (action === 'invite') {
       if (room.manager !== key || !ROLES.includes(data.role)) throw new RequestError(403, 'The room host issues invitations.');
-      let token = room.links.get(data.role);
+      const boundUser = data.role === 'observer' ? null :
+        typeof data.username === 'string' && usernamePattern.test(data.username) ? data.username.toLowerCase() : null;
+      if (data.role !== 'observer' && (!boundUser || !await getAccount(boundUser))) {
+        throw new RequestError(400, 'Enter the username of an existing guest account.');
+      }
+      const assignment = data.role + ':' + (boundUser ?? '');
+      let token = room.links.get(assignment);
       if (!token) {
         token = randomToken();
-        room.links.set(data.role, token);
-        invites.set(hash(token), {room, role: data.role, boundUser: null});
+        room.links.set(assignment, token);
+        invites.set(hash(token), {room, role: data.role, boundUser});
       }
       return send(res, 200, {invite: token});
     }
@@ -335,7 +354,6 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
         data.role = invite.role;
       }
       admission(room, user, data.role);
-      if (room.manager !== key && invite.role !== 'observer') invite.boundUser = key;
       return send(res, 200, stateFor(room, user, invite));
     }
     if (action === 'leave') {
@@ -347,7 +365,7 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     throw new RequestError(404, 'Unknown crew action.');
   }
 
-  const server = createServer((req, res) => {
+  function handle(req, res) {
     if (!req.url.startsWith(PREFIX + '/') && req.url.split('?')[0] !== PREFIX) {
       if (staticHandler) return staticHandler(req, res);
       return send(res, 404, {error: 'Crew API only.'});
@@ -357,7 +375,7 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
       if (!(error instanceof RequestError)) console.error('Crew request failed', error.code ?? error.name);
       send(res, error.status ?? 500, {error: error.status ? error.message : 'Crew service unavailable.'});
     });
-  });
+  }
 
   const heartbeat = setInterval(() => {
     for (const [key, record] of sessions) if (record.expires <= now()) sessions.delete(key);
@@ -382,10 +400,16 @@ function createCrewRoomServer({origin, database, ownerUsername, ownerVerifier, s
     }
   }, 15 * 1000);
   heartbeat.unref();
-  server.on('close', () => {
+  return {handle, close() {
     clearInterval(heartbeat);
-    db.close();
-  });
+    db?.close();
+  }};
+}
+
+function createCrewRoomServer(options) {
+  const crew = createCrewRoomHandler(options);
+  const server = createServer(crew.handle);
+  server.on('close', crew.close);
   return server;
 }
 
@@ -399,4 +423,4 @@ if (require.main === module) {
   server.listen(Number(process.env.PORT || 8789), process.env.BIND_ADDRESS || '127.0.0.1');
 }
 
-module.exports = {createCrewRoomServer, makeVerifier};
+module.exports = {createCrewRoomHandler, createCrewRoomServer, makeVerifier};

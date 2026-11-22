@@ -62,13 +62,18 @@ test('crew authorization, exclusive seats and reusable observer invitations', as
   assert.equal((await owner('create', {})).status, 401);
   assert.equal((await owner('login', {username: 'TrainerOwner', password})).status, 200);
   const {data: {roomId}} = await owner('create', {});
-  const {data: {invite: firstOfficerInvite}} = await owner('invite', {roomId, role: 'firstOfficer'});
+  assert.equal((await owner('invite', {roomId, role: 'firstOfficer', username: 'Partner1'})).status, 400);
   const {data: {invite: observerInvite}} = await owner('invite', {roomId, role: 'observer'});
   assert.equal((await owner('invite', {roomId, role: 'observer'})).data.invite, observerInvite);
-  assert.equal((await firstOfficer('activate', {username: 'Partner1', password, invite: firstOfficerInvite})).status, 200);
-  assert.equal((await observerOne('activate', {username: 'NoSeat', password, invite: firstOfficerInvite})).status, 404);
-  assert.equal((await observerOne('activate', {username: 'Observer1', password, invite: observerInvite})).status, 200);
-  assert.equal((await observerTwo('activate', {username: 'Observer2', password, invite: observerInvite})).status, 200);
+  assert.equal((await firstOfficer('login', {username: 'Partner1', password})).status, 401);
+  assert.equal((await firstOfficer('activate', {username: 'Partner1', password, invite: observerInvite})).status, 401);
+  for (const [guest, username] of [[firstOfficer, 'Partner1'], [observerOne, 'Observer1'], [observerTwo, 'Observer2']]) {
+    assert.equal((await owner('accounts', {username, password})).status, 201);
+    assert.equal((await guest('login', {username, password})).status, 200);
+  }
+  const {data: {invite: firstOfficerInvite}} = await owner('invite', {roomId, role: 'firstOfficer', username: 'Partner1'});
+  assert.equal((await owner('accounts', {username: 'partner1', password})).status, 409);
+  assert.equal((await firstOfficer('accounts', {username: 'NoSeat', password})).status, 403);
   assert.equal((await observerOne('invite', {roomId, role: 'instructor', invite: observerInvite})).status, 403);
   assert.equal((await observerOne('join', {roomId, role: 'instructor', invite: firstOfficerInvite})).status, 403);
   const seats = await Promise.all([
@@ -98,10 +103,10 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
   const browser = await chromium.launch({executablePath: process.env.CHROME_PATH});
   t.after(() => browser.close());
   const root = origin + '/panel-mosaic-lab/cockpit/?welcomeTest=1';
-  async function signIn(page, username, activate) {
-    await page.getByLabel('Username').fill(username);
-    await page.getByLabel('Password').fill(password);
-    await page.getByRole('button', {name: activate ? 'Activate Guest Account' : 'Sign In', exact: true}).click();
+  async function signIn(page, username) {
+    await page.getByLabel('Username', {exact: true}).fill(username);
+    await page.getByLabel('Password', {exact: true}).fill(password);
+    await page.getByRole('button', {name: 'Sign In', exact: true}).click();
     await page.getByText('Signed in as ' + username, {exact: true}).waitFor();
   }
   async function count(page, role, value) {
@@ -112,34 +117,39 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
   const host = await browser.newPage({viewport: {width: 1440, height: 900}});
   await host.goto(root);
   await host.locator('#unifiedWelcome').getByRole('button', {name: 'Crew Room'}).click();
-  await signIn(host, 'TrainerOwner', false);
+  await signIn(host, 'TrainerOwner');
   await host.getByRole('button', {name: 'Create Room', exact: true}).click();
   await host.getByRole('button', {name: 'Join Room', exact: true}).click();
   await count(host, 'captain', '1 / 1');
 
-  async function invite(role) {
+  async function invite(role, username) {
+    await host.getByLabel('Assigned Username').fill(username ?? '');
     await host.locator('[data-crew-invite="' + role + '"]').click();
     await host.getByLabel('Invitation Link').waitFor();
     const label = {firstOfficer: 'First Officer', instructor: 'Instructor', observer: 'Observer'}[role];
     await host.getByText(new RegExp('^' + label + ' invite (copied|ready to copy)\\.$')).waitFor();
     return host.getByLabel('Invitation Link').inputValue();
   }
-  async function guest(url, username, seat) {
+  async function guest(role, username, seat) {
+    await host.getByLabel('Guest Username').fill(username);
+    await host.getByLabel('Guest Password').fill(password);
+    await host.getByRole('button', {name: 'Create Guest Account'}).click();
+    await host.getByText('Account created for ' + username + '.').waitFor();
     const page = await browser.newPage({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});
-    await page.goto(url);
-    await signIn(page, username, true);
+    await page.goto(await invite(role, username));
+    await signIn(page, username);
     await page.getByRole('button', {name: 'Join as ' + seat, exact: true}).click();
     await page.getByText('Your role: ' + seat, {exact: true}).waitFor();
     return page;
   }
 
-  const first = await guest(await invite('firstOfficer'), 'RemotePartner', 'First Officer');
+  const first = await guest('firstOfficer', 'RemotePartner', 'First Officer');
   await count(host, 'firstOfficer', '1 / 1');
-  const instructor = await guest(await invite('instructor'), 'SimInstructor', 'Instructor');
+  await host.getByText('RemotePartner · First Officer (Right Seat)', {exact: true}).waitFor();
+  const instructor = await guest('instructor', 'SimInstructor', 'Instructor');
   await count(first, 'instructor', '1 / 1');
-  const observerLink = await invite('observer');
-  const observer1 = await guest(observerLink, 'ClassObserver1', 'Observer');
-  const observer2 = await guest(observerLink, 'ClassObserver2', 'Observer');
+  const observer1 = await guest('observer', 'ClassObserver1', 'Observer');
+  const observer2 = await guest('observer', 'ClassObserver2', 'Observer');
   await count(host, 'observer', '2');
   await count(first, 'observer', '2');
   await count(instructor, 'observer', '2');

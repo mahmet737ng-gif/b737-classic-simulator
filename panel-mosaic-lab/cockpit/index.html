@@ -215,7 +215,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./smiths-fuel-quantity-v1.js?v=FUEL-QTY-20KG-0001" defer></script>
 <link rel="stylesheet" href="./unified-workspace-v1.css?v=WORKSPACE-0002">
 <link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0005">
-<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0001">
+<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0002">
 <script>
 (function(){
  const test=new URLSearchParams(location.search).get('welcomeTest')==='1';
@@ -309,13 +309,17 @@ body > header.unified-minimal-header .header-settings>button{
     <button type="button" data-crew-close aria-label="Close Crew Room">Close</button>
   </div>
   <p data-crew-user></p>
-  <form autocomplete="on">
+  <form data-crew-login autocomplete="on">
     <label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="40"></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
     <div class="crew-actions">
       <button type="submit">Sign In</button>
-      <button type="submit" data-crew-activate hidden>Activate Guest Account</button>
     </div>
+  </form>
+  <form data-crew-accounts hidden>
+    <label>Guest Username<input name="username" autocomplete="off" required minlength="3" maxlength="40"></label>
+    <label>Guest Password<input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
+    <div class="crew-actions"><button type="submit">Create Guest Account</button></div>
   </form>
   <button type="button" data-crew-create hidden>Create Room</button>
   <section data-crew-roster hidden aria-labelledby="crewRosterTitle">
@@ -326,6 +330,7 @@ body > header.unified-minimal-header .header-settings>button{
       <div class="crew-row"><dt data-crew-seat="instructor">Instructor</dt><dd data-crew-count="instructor">0 / 1</dd></div>
       <div class="crew-row"><dt data-crew-seat="observer">Observer</dt><dd data-crew-count="observer">0</dd></div>
     </dl>
+    <ul data-crew-online hidden></ul>
     <p data-crew-seat-status></p>
     <div class="crew-actions" data-crew-join hidden>
       <select aria-label="Crew Role">
@@ -338,6 +343,7 @@ body > header.unified-minimal-header .header-settings>button{
     </div>
     <section data-crew-invitations hidden aria-labelledby="crewInviteTitle">
       <h3 id="crewInviteTitle">Copy Invite</h3>
+      <label>Assigned Username<input data-crew-assignee autocomplete="off" maxlength="40"></label>
       <div class="crew-actions">
         <button type="button" data-crew-invite="captain">Captain</button>
         <button type="button" data-crew-invite="firstOfficer">First Officer</button>
@@ -611,6 +617,6 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>
 <script src="./unified-workspace-v1.js?v=WORKSPACE-0002-P15-CTR-0043" defer></script>
 <script src="./unified-welcome-v1.js?v=WELCOME-0005" async></script>
-<script src="./crew-room-v1.js?v=CREW-0001" defer></script>
+<script src="./crew-room-v1.js?v=CREW-0002" defer></script>
 <script src="./instructor-nonnormal-v1.js?v=INSTRUCTOR-NONNORMAL-0001" defer></script>
 </body></html>

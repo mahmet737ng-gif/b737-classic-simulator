@@ -5,6 +5,7 @@
   if (!dialog) return;
 
   const roles = {captain: 'Captain', firstOfficer: 'First Officer', instructor: 'Instructor', observer: 'Observer'};
+  const seats = {...roles, captain: 'Captain (Left Seat)', firstOfficer: 'First Officer (Right Seat)'};
   const api = '/api/crew';
   const params = new URLSearchParams(win.location.hash.slice(1));
   const invitation = params.get('crew') || undefined;
@@ -15,11 +16,13 @@
   let working = false;
   const find = selector => dialog.querySelector(selector);
   const status = find('[role="status"]');
-  const account = find('form');
+  const account = find('[data-crew-login]');
+  const guestAccount = find('[data-crew-accounts]');
   const username = account.elements.username;
   const password = account.elements.password;
   const role = find('select');
   const roster = find('[data-crew-roster]');
+  const online = find('[data-crew-online]');
   const invitePanel = find('[data-crew-invitations]');
   const linkBox = find('[data-crew-link]');
 
@@ -44,9 +47,9 @@
 
   function render() {
     account.hidden = !!user;
-    find('[data-crew-activate]').hidden = !invitation;
+    guestAccount.hidden = !user?.owner;
     find('[data-crew-user]').textContent = user ? 'Signed in as ' + user.username : '';
-    find('[data-crew-logout]').hidden = !user;
+    find('[data-crew-logout]').hidden = !user || !!user.gateway;
     find('[data-crew-create]').hidden = !user?.owner || !!room;
     roster.hidden = !room;
     find('[data-crew-join]').hidden = !user || !room || !!room.role;
@@ -55,7 +58,7 @@
     invitePanel.hidden = !room?.manager;
     if (!room) linkBox.hidden = true;
     if (!room) return;
-    for (const [key, label] of Object.entries(roles)) {
+    for (const [key, label] of Object.entries(seats)) {
       const count = room.counts[key];
       const reserved = room.reserved[key];
       find('[data-crew-count="' + key + '"]').textContent = key === 'observer' ? String(count) : count + ' / 1';
@@ -63,6 +66,12 @@
       const option = role.querySelector('option[value="' + key + '"]');
       option.disabled = key !== 'observer' && !!(count || reserved) && room.role !== key;
     }
+    online.replaceChildren(...(room.online ?? []).map(member => {
+      const item = doc.createElement('li');
+      item.textContent = member.username + ' · ' + seats[member.role];
+      return item;
+    }));
+    online.hidden = !online.childElementCount;
     if (role.selectedOptions[0]?.disabled) role.value = [...role.options].find(option => !option.disabled).value;
     find('[data-crew-seat-status]').textContent = room.role ? 'Your role: ' + roles[room.role] :
       room.invitedRole ? 'Invited as ' + roles[room.invitedRole] : '';
@@ -148,10 +157,19 @@
   account.addEventListener('submit', event => {
     event.preventDefault();
     busy(async () => {
-      const action = event.submitter?.dataset.crewActivate === undefined ? 'login' : 'activate';
-      ({user} = await request(action, {username: username.value.trim(), password: password.value, invite: invitation}));
+      ({user} = await request('login', {username: username.value.trim(), password: password.value}));
       password.value = '';
       await inspectRoom();
+    });
+  });
+
+  guestAccount.addEventListener('submit', event => {
+    event.preventDefault();
+    busy(async () => {
+      const {username, password} = guestAccount.elements;
+      const created = await request('accounts', {username: username.value.trim(), password: password.value});
+      guestAccount.reset();
+      message('Account created for ' + created.username + '.');
     });
   });
 
@@ -182,8 +200,12 @@
     const button = event.target.closest('[data-crew-invite]');
     if (!button) return;
     busy(async () => {
-      const {invite} = await request('invite', {roomId: room.roomId, role: button.dataset.crewInvite});
-      const url = new URL(win.location.href);
+      const {invite} = await request('invite', {
+        roomId: room.roomId,
+        role: button.dataset.crewInvite,
+        username: find('[data-crew-assignee]').value.trim()
+      });
+      const url = new URL('/crew/', win.location.href);
       url.hash = new URLSearchParams({crew: invite});
       const input = linkBox.querySelector('input');
       input.value = url.href;
@@ -199,5 +221,5 @@
   });
 
   render();
-  if (invitation) open();
+  if (invitation || doc.body.hasAttribute('data-crew-entry')) open();
 })(window, document);
