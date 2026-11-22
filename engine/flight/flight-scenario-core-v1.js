@@ -156,6 +156,17 @@
     next.slatsFull=action.slatsFull;
     if(action.massKg!==undefined)
      next.massKg=action.massKg===null?null:finite(action.massKg,30000,75000,'MASS_KG');
+    // Refresh the actual-flap instructor low-speed envelope immediately,
+    // including a paused 10 NM FINAL preset. Never infer TE travel from
+    // flap lever selection or overwrite certified ADC/FCC speed limits.
+    next.aeroEnvelope=Envelope.evaluate({
+     iasKt:next.iasKt,massKg:next.massKg,
+     flapLever:next.flapLever,flapActual:next.flapActual,
+     slatsFull:next.slatsFull,
+     slatExtension:next.autoSlatTrainingFraction,
+     bankDeg:next.bankDeg,airborne:next.airborne,
+     autoSlatPreviouslyRequested:state.autoSlatRequest
+    });
     break;
    case 'MANUAL_HOLD':
     // Autopilot disconnect: preserve last observed bank and vertical motion.
