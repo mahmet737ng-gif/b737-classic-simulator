@@ -14,6 +14,15 @@ const W=640,H=640,[CX,CY]=G.center,SCALE=G.attitude.pitchPerDeg;
 const C=glyph?.colors;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number(n)||0));
 const rad=n=>n*Math.PI/180;
+// Display quantization only. Keep the continuous radio-height signal for
+// DH/minimums, audio trigger crossings and simulated FCC flight controls.
+// >=1000 ft: 20-ft; 100..999 ft: 10-ft; below 100 ft: 1-ft.
+function radioAltitudeDisplayFt(raFt){
+ if(typeof raFt!=='number'||!Number.isFinite(raFt))return null;
+ const ft=Math.max(0,raFt);
+ const step=ft>=1000?20:ft>=100?10:1;
+ return Math.round(ft/step)*step;
+}
 const {white:WHITE,green:GREEN,magenta:MAGENTA,amber:AMBER,red:RED}=C||{};
 function line(c,x,y,X,Y,color=WHITE,width=2){
  c.beginPath();c.moveTo(x,y);c.lineTo(X,Y);c.strokeStyle=color;c.lineWidth=width;c.stroke();
@@ -228,6 +237,7 @@ function approach(c,e,v){
  else if(v.flags.includes('DH'))box(c,'DH',566,445);
  if(!v.ra){if(v.radioAlt===null)box(c,'RA',552,546);return;}
  const color=v.dhAlert?AMBER:WHITE;
+ const displayedRa=radioAltitudeDisplayFt(v.radioAlt);
  if(v.dial){
   const x=537,y=503,r=50;
   c.beginPath();c.arc(x,y,r,rad(105),rad(372));c.strokeStyle=color;c.lineWidth=2.1;c.stroke();
@@ -240,8 +250,8 @@ function approach(c,e,v){
    line(c,x+Math.cos(a)*(r-13),y+Math.sin(a)*(r-13),x+Math.cos(a)*(r+3),y+Math.sin(a)*(r+3),col,3.3);
   }
   if(v.heightAlert){c.strokeStyle=WHITE;c.lineWidth=1.5;c.strokeRect(508,489,58,26);}
-  txt(c,Math.round(v.radioAlt),x,y,27,color,'center');
- }else txt(c,Math.round(v.radioAlt),G.radioAltitude.x,G.radioAltitude.y,G.radioAltitude.size,color);
+  txt(c,displayedRa,x,y,27,color,'center');
+ }else txt(c,displayedRa,G.radioAltitude.x,G.radioAltitude.y,G.radioAltitude.size,color);
 }
 function render(canvas,state,core,live){
  if(!canvas)return;
@@ -336,6 +346,7 @@ function renderUnifiedFull(canvas,input={}){
  e.groundSpeed=observed(input.groundSpeedKt);
  e.brightness=observed(input.brightness,1);
  e.radioAlt=observed(input.radioAltFt,0);e.dh=observed(input.dhFt,-20);
+ canvas.dataset.radioAltitudeDisplayFt=finite(input.radioAltFt)?String(radioAltitudeDisplayFt(input.radioAltFt)):'INVALID';
  e.fdPitchValid=finite(input.director?.pitchDeg);e.fdRollValid=finite(input.director?.rollDeg);
  e.fd=input.director?.enabled===true&&(e.fdPitchValid||e.fdRollValid);
  e.fdAuto=false;e.fdPitch=observed(input.director?.pitchDeg,0);e.fdRoll=observed(input.director?.rollDeg,0);
@@ -370,5 +381,5 @@ function renderUnifiedFull(canvas,input={}){
  canvas.dataset.eadiSource=input.source||'UNKNOWN';
  return true;
 }
-return {render,tapeInput,fmaInput,renderUnifiedAttitude,renderUnifiedFull};
+return {render,tapeInput,fmaInput,renderUnifiedAttitude,renderUnifiedFull,radioAltitudeDisplayFt};
 });
