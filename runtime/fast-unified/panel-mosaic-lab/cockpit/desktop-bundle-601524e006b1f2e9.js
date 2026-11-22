@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./crew-room-v1.js?v=CREW-0005 */
+/* ./crew-room-v1.js?v=CREW-HOST-SYNC-0006 */
 try{
 (function (win, doc) {
   'use strict';
@@ -165,7 +165,31 @@ try{
       room.invitedRole ? 'Invited as ' + roles[room.invitedRole] : invited ? 'Choose an available role.' : '';
   }
 
+  const AIRCRAFT_PROFILE_KEY = 'b737classic.aircraft-profile.v1';
+  function hostAircraftProfile() {
+    try {
+      return win.B737AircraftProfileStore?.get() ??
+        JSON.parse(win.localStorage.getItem(AIRCRAFT_PROFILE_KEY) || 'null');
+    } catch { return null; }
+  }
+  function savedHostOverhead() {
+    // The host's cockpit may have navigated to /crew/ before the other pilot
+    // joins. Switch models persist on this same origin; seed the room now.
+    try {
+      const toggles = JSON.parse(win.localStorage.getItem('b737-overhead-toggles-TGL-0001') || 'null');
+      const rotary = JSON.parse(win.localStorage.getItem('b737-overhead-rotary-guards-RG-0006-GUARDS-CLEARED') || 'null');
+      if (!toggles || !rotary?.rotaries || !rotary?.guards) return null;
+      const overhead = {toggles, rotaries: rotary.rotaries, guards: rotary.guards};
+      return JSON.stringify(overhead).length <= 10000 ? overhead : null;
+    } catch { return null; }
+  }
   function enterCockpit() {
+    // Apply the host profile BEFORE navigation, so initial image selection,
+    // Overhead, EIS/Non-EIS and CPCS/DCPCS boot from the same airframe.
+    if (room?.profile) {
+      try { win.localStorage.setItem(AIRCRAFT_PROFILE_KEY, JSON.stringify(room.profile)); }
+      catch { message('Unable to apply the host aircraft configuration.', true); return; }
+    }
     const url = new URL('/panel-mosaic-lab/unified/', win.location.href);
     url.searchParams.set('crewRoom', room.roomId);
     if (invitation) sessionStorage.setItem('unified-crew-invite', invitation);
@@ -324,7 +348,15 @@ try{
     const selectedRole = hostRole.value;
     if (!selectedRole) { render(); return; }
     busy(async () => {
-      room = await request('create', {role: selectedRole});
+      room = await request('create', {role: selectedRole, ...(hostAircraftProfile() ? {profile: hostAircraftProfile()} : {})});
+      const overhead = savedHostOverhead();
+      if (overhead) {
+        try {
+          await request('snapshot', {roomId: room.roomId, client: 'unified-host-lobby', overhead});
+        } catch (error) {
+          console.warn('Crew initial overhead snapshot unavailable', error.message);
+        }
+      }
       trackRoster();
       await showRoomInvite();
     });
@@ -377,7 +409,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./crew-cockpit-v1.js?v=CREW-0001 */
+/* ./crew-cockpit-v1.js?v=CREW-HOST-SYNC-0002 */
 try{
 (function (win, doc) {
   'use strict';
@@ -402,6 +434,9 @@ try{
   let flightWrite = false;
   let flightChangedAt = 0;
   let roster = null;
+  let currentOverhead = null;
+  let lastPublishedOverhead = null;
+  let snapshotTimer = null;
   doc.documentElement.dataset.crewRole = 'pending';
 
   const status = doc.createElement('span');
@@ -415,6 +450,13 @@ try{
       '#workspaceLabsToggle,#workspaceLabsMenu,#failuresHeaderOpen,#failuresHeaderPopover'))) return;
     const source = event.target;
     if (!source.closest) return;
+    // Every crew member sees the host's aircraft installation; a guest
+    // cannot change just their local EIS/CPCS/737 family and diverge.
+    if (role && !roster?.manager && source.closest('#aircraftSettingsOpen,#aircraftSettingsDialog')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
     if (!nested && source.closest('#crewRoomDialog,[data-crew-open],[data-focus],#zoomIn,#zoomOut,#zoomReset,#fit,#zoom,#unifiedWelcomeRetry')) return;
     const control = source.closest('button,input,select,textarea,a[href],[role="button"],[role="switch"],[role="slider"],[tabindex]:not([id="viewport"])');
     if (event.type === 'wheel' && (event.ctrlKey || event.metaKey || !control)) return;
@@ -476,6 +518,20 @@ try{
     if (!online || role === 'observer' || replay || value === undefined || value === null) return;
     commandWrites = commandWrites.then(() => send('command', {command: {type, id, value}}))
       .catch(error => refreshStatus(error.message));
+  }
+  function publishHostSnapshot() {
+    if (snapshotTimer || !roster?.manager || !online || !currentOverhead) return;
+    snapshotTimer = setTimeout(() => {
+      snapshotTimer = null;
+      if (!roster?.manager || !online || !currentOverhead) return;
+      const overhead = currentOverhead;
+      const serialized = JSON.stringify(overhead);
+      if (serialized === lastPublishedOverhead) return;
+      lastPublishedOverhead = serialized;
+      // Preserve ordering with all interactive changes already accepted locally.
+      commandWrites = commandWrites.then(() => send('snapshot', {overhead}))
+        .catch(error => { lastPublishedOverhead = null; refreshStatus(error.message); });
+    }, 350);
   }
 
   const flight = () => win.B737UnifiedFlightScenarioV1;
@@ -578,6 +634,24 @@ try{
     }
   }
 
+  function receiveHostSnapshot(snapshot) {
+    if (snapshot.client === client || !Number.isSafeInteger(snapshot.sequence) ||
+        snapshot.sequence < lastSequence || !snapshot.overhead) return;
+    const {toggles, rotaries, guards} = snapshot.overhead;
+    if (!toggles || !rotaries || !guards) return;
+    // The state represents every switch at sequence N. Commands <= N must
+    // not be replayed after the state, or an old switch position would win.
+    queue.length = 0;
+    lastSequence = snapshot.sequence;
+    // Guarded/interlocked controls need the host's guard state installed first.
+    for (const [id, value] of Object.entries(guards)) {
+      queue.push({type: 'guard', id, value: {open: value.guard === 'open', value: value.value}});
+    }
+    for (const [id, value] of Object.entries(rotaries)) queue.push({type: 'rotary', id, value});
+    for (const [id, value] of Object.entries(toggles)) queue.push({type: 'toggle', id, value});
+    drain();
+  }
+
   function receiveFlight() {
     if (!latestFlight || !flight() || queue.length) return;
     const update = latestFlight;
@@ -605,11 +679,20 @@ try{
     flight()?.crewFollower(role !== controller);
     refreshStatus();
     syncLabAccess();
+    publishHostSnapshot();
   }
 
   win.addEventListener('message', event => {
     if (event.origin !== win.location.origin) return;
     const data = event.data;
+    if (data?.type === 'b737:cockpit-overhead' && data.kind === 'controls-state' &&
+        event.source === byId('overheadFrame')?.contentWindow) {
+      if (data.toggles && data.rotaries && data.guards) {
+        currentOverhead = {toggles: data.toggles, rotaries: data.rotaries, guards: data.guards};
+        if (!replay) publishHostSnapshot();
+      }
+      return;
+    }
     if (data?.type === 'b737:cb-state-changed' && event.source === byId('cbPanelFrame')?.contentWindow) {
       const state = win.B737UnifiedCB?.snapshot();
       const next = new Set(state?.breakers.filter(entry => entry.pulled || entry.tripped).map(entry => entry.id));
@@ -634,7 +717,13 @@ try{
 
   const listen = (target, name, project) => target.addEventListener(name, event => project(event.detail ?? {}));
   listen(win, 'b737:aircraft-profile-change', d => {
-    if (d.reason === 'updated' && (roster?.manager || role === 'instructor')) command('profile', 'aircraft', d.profile);
+    if (d.reason === 'updated' && roster?.manager) {
+      command('profile', 'aircraft', d.profile);
+      // The newly selected airframe may alter valid Overhead detents/artwork.
+      // Re-publish its settled switches after the profile command.
+      lastPublishedOverhead = null;
+      publishHostSnapshot();
+    }
   });
   listen(win, 'b737:unified-efis-control', d => {
     const key = d.control;
@@ -723,8 +812,11 @@ try{
       url.searchParams.set('room', roomId);
       url.searchParams.set('cockpit', '1');
       const feed = new EventSource(url);
-      feed.addEventListener('open', () => { online = true; refreshStatus(); });
+      feed.addEventListener('open', () => {
+        online = true; refreshStatus(); publishHostSnapshot();
+      });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));
+      feed.addEventListener('snapshot', event => receiveHostSnapshot(JSON.parse(event.data)));
       feed.addEventListener('command', event => {
         const entry = JSON.parse(event.data);
         if (entry.sequence <= lastSequence) return;

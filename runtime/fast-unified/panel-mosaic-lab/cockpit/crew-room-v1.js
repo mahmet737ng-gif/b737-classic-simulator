@@ -161,7 +161,31 @@
       room.invitedRole ? 'Invited as ' + roles[room.invitedRole] : invited ? 'Choose an available role.' : '';
   }
 
+  const AIRCRAFT_PROFILE_KEY = 'b737classic.aircraft-profile.v1';
+  function hostAircraftProfile() {
+    try {
+      return win.B737AircraftProfileStore?.get() ??
+        JSON.parse(win.localStorage.getItem(AIRCRAFT_PROFILE_KEY) || 'null');
+    } catch { return null; }
+  }
+  function savedHostOverhead() {
+    // The host's cockpit may have navigated to /crew/ before the other pilot
+    // joins. Switch models persist on this same origin; seed the room now.
+    try {
+      const toggles = JSON.parse(win.localStorage.getItem('b737-overhead-toggles-TGL-0001') || 'null');
+      const rotary = JSON.parse(win.localStorage.getItem('b737-overhead-rotary-guards-RG-0006-GUARDS-CLEARED') || 'null');
+      if (!toggles || !rotary?.rotaries || !rotary?.guards) return null;
+      const overhead = {toggles, rotaries: rotary.rotaries, guards: rotary.guards};
+      return JSON.stringify(overhead).length <= 10000 ? overhead : null;
+    } catch { return null; }
+  }
   function enterCockpit() {
+    // Apply the host profile BEFORE navigation, so initial image selection,
+    // Overhead, EIS/Non-EIS and CPCS/DCPCS boot from the same airframe.
+    if (room?.profile) {
+      try { win.localStorage.setItem(AIRCRAFT_PROFILE_KEY, JSON.stringify(room.profile)); }
+      catch { message('Unable to apply the host aircraft configuration.', true); return; }
+    }
     const url = new URL('/panel-mosaic-lab/unified/', win.location.href);
     url.searchParams.set('crewRoom', room.roomId);
     if (invitation) sessionStorage.setItem('unified-crew-invite', invitation);
@@ -320,7 +344,15 @@
     const selectedRole = hostRole.value;
     if (!selectedRole) { render(); return; }
     busy(async () => {
-      room = await request('create', {role: selectedRole});
+      room = await request('create', {role: selectedRole, ...(hostAircraftProfile() ? {profile: hostAircraftProfile()} : {})});
+      const overhead = savedHostOverhead();
+      if (overhead) {
+        try {
+          await request('snapshot', {roomId: room.roomId, client: 'unified-host-lobby', overhead});
+        } catch (error) {
+          console.warn('Crew initial overhead snapshot unavailable', error.message);
+        }
+      }
       trackRoster();
       await showRoomInvite();
     });
