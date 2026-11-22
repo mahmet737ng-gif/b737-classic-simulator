@@ -402,8 +402,20 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
         room.cockpits.add(res);
         // A late joiner must receive the host's current controls before any
         // commands newer than that snapshot (rather than replay stale history).
-        if (room.snapshot) frame(res, room.snapshot, 'snapshot');
-        const replayFrom = Math.max(after, room.snapshot?.sequence ?? 0);
+        // The snapshot covers the Overhead only. Replay earlier MCP, CDU,
+        // profile and flight commands BEFORE that snapshot, or new crew
+        // members lose all non-Overhead cockpit state.
+        const snapshotSequence = room.snapshot?.sequence ?? 0;
+        if (room.snapshot) {
+          for (const command of room.commands) {
+            if (command.sequence > after && command.sequence <= snapshotSequence &&
+                !['toggle', 'rotary', 'guard'].includes(command.type)) {
+              frame(res, command, 'command');
+            }
+          }
+          frame(res, room.snapshot, 'snapshot');
+        }
+        const replayFrom = Math.max(after, snapshotSequence);
         for (const command of room.commands) {
           if (command.sequence > replayFrom) frame(res, command, 'command');
         }
