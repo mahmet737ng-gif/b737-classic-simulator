@@ -1,0 +1,29 @@
+name: Unified frontal brake pressure indicator QA
+on:
+  push:
+    paths:
+      - panel-mosaic-lab/cockpit/hydraulic-brake-gauge-main-v1.js
+      - tests/hydraulic-brake-gauge-main-v1.test.cjs
+      - .github/workflows/unified-brake-pressure-face-v1.yml
+  pull_request:
+    paths:
+      - panel-mosaic-lab/cockpit/hydraulic-brake-gauge-main-v1.js
+      - tests/hydraulic-brake-gauge-main-v1.test.cjs
+  workflow_dispatch:
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate front-on source geometry and hydraulic coupling
+        run: |
+          node --check panel-mosaic-lab/cockpit/hydraulic-brake-gauge-main-v1.js
+          node --test tests/hydraulic-brake-gauge-main-v1.test.cjs tests/hydraulic-live-lab-v1.test.cjs
+      - name: Compile production Unified
+        run: |
+          node tools/build-unified-web.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/hydraulic-brake-gauge-main-v1.js
