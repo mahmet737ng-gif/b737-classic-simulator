@@ -25,34 +25,29 @@ test('RMI accepts valid tuned VOR bearings in magnetic degrees, without inventin
  assert.equal(magneticBearing({bearingDeg:210,bearingReference:'UNKNOWN'}),null);
 });
 
-test('FINAL_10 valid TE 30 projection survives model reset with lower revision',()=>{
- const docHandlers={};const winHandlers={};const needles=[];const overhead={postMessage(){}};
- const doc={getElementById:id=>id==='overheadFrame'?{contentWindow:overhead}:null,
-  addEventListener:(type,fn)=>{(docHandlers[type]??=[]).push(fn);}};
- const win={addEventListener:(type,fn)=>{(winHandlers[type]??=[]).push(fn);},
-  B737FlapNeedles:{setCommon:value=>needles.push(value)},
-  B737CockpitLights:{setInputs(){}}
- };
- vm.runInNewContext(read('panel-mosaic-lab/cockpit/le-devices-live-link-v1.js'),{
-  window:win,document:doc,location:{origin:'https://unified.test'},console
- },{timeout:2000});
- for(const fn of docHandlers['b737:flap-detent-visual-test']||[])
-  fn({detail:{visualOnly:true,detent:30}});
- const send=projection=>{
-  for(const fn of winHandlers.message||[])
-   fn({origin:'https://unified.test',source:overhead,
-    data:{type:'b737:cockpit-overhead',kind:'le-devices-projection',
-      projection:{center:{power:true,transit:false,extended:true},...projection}}});
- };
- send({revision:120,lever:30,tePosition:0,scenario:'NORMAL',source:'PHYSICAL'});
- assert.equal(win.B737LEDevicesUnifiedLink.getState().actualTe,0);
- send({revision:48,lever:30,tePosition:30,teMoving:false,teTarget:30,
-  scenario:'FINAL_10_READY',source:'FLIGHT_SCENARIO_FINAL10'});
- assert.equal(win.B737LEDevicesUnifiedLink.getState().actualTe,30);
- assert.equal(win.B737LEDevicesUnifiedLink.getState().projection.scenario,'FINAL_10_READY');
- assert.equal(needles.at(-1),30);
- send({revision:20,lever:15,tePosition:15,scenario:'NORMAL',source:'PHYSICAL'});
- assert.equal(win.B737LEDevicesUnifiedLink.getState().actualTe,30,'wrong lever is rejected');
+test('FINAL_10 reads actual TE owner without modifying the locked LE bridge',()=>{
+ const src=read('panel-mosaic-lab/cockpit/final10-approach-preset-v1.js');
+ const m=src.match(/function readFlapOwner\(\)\{([\s\S]*?)\n \}\n function applyMcp/);
+ assert.ok(m,'read-only owner check must exist');
+ const state={lever:30,leStage:'FULL',center:{extended:true},mismatch:[],revision:48};
+ const actuator={actual:30,command:30,moving:false};
+ const trainer={flapActuator:()=>actuator,snapshot:()=>state};
+ const docs={getElementById:()=>({contentWindow:{B737LEDevicesTrainer:trainer}})};
+ const readFlapOwner=new Function('docs','return function readFlapOwner(){'+m[1]+'};')(docs);
+ const ready=readFlapOwner();
+ assert.equal(ready.lever,30);
+ assert.equal(ready.actualTe,30);
+ assert.equal(ready.projection.leStage,'FULL');
+ assert.equal(ready.projection.teMoving,false);
+ assert.match(src,/ownerReady=physical/);
+ assert.match(src,/owner\?\.projection\?\.center\?\.extended===true/);
+ assert.match(src,/getLiveFlapOwnerState:readFlapOwner/);
+ actuator.actual=NaN;
+ assert.equal(readFlapOwner(),null,'invalid actuator data is rejected');
+ actuator.actual=0;state.lever=40;
+ assert.equal(readFlapOwner().actualTe,0,'lever never fabricates actual TE angle');
+ const locked=read('panel-mosaic-lab/cockpit/le-devices-live-link-v1.js');
+ assert.ok(!locked.includes('const final10Ready='),'locked LE owner link stays unchanged');
 });
 
 test('Six-Pack removes an obsolete OH BUS OFF only when V7 proves the lamp off',()=>{
