@@ -1034,94 +1034,188 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/flight/iran-radio-navaids-v1.js?v=IRAN-RADIONAV-0005 */
+/* ./instructor-advanced-failures-v1.js?v=ADV-FAILURES-20261122-01 */
 try{
-/* B737 Classic Unified — educational VOR/DME and ILS geometry.
- * Community reference data only. NOT an AIRAC database, approved approach,
- * radio-propagation model, actual station status or flight-navigation source.
- * Runway threshold approximation is explicitly flagged for ILS; DME is
- * slant range to the modeled reference point, NOT a surveyed DME antenna.
- */
-(function(root,factory){
- 'use strict';const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- if(root?.document)root.B737IranRadioNavaidsV1=api;
-})(typeof globalThis!=='undefined'?globalThis:null,function(){
+/* Unified instructor advanced fault and scenario controls · additive live bridge.
+ * Training only. No DOM lamp overrides; all non-native fault changes are published
+ * as typed events for authoritative system consumers. */
+(function(win){
  'use strict';
- const R=Math.PI/180,EARTH_NM=3440.065,FT_PER_NM=6076.11549;
- const rad=n=>n*R,wrap=n=>(n%360+360)%360,delta=(a,b)=>((wrap(a-b)+540)%360)-180;
- const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
- // Existing OurAirports reference positions, published IR ENR references
- // and reference approach/runway locations. Nonoperational trainer data.
- const sites=[
-  {ident:'TRN',type:'VOR_DME',freqKhz:115300,lat:35.696999,lon:51.283798,elevationFt:3960,source:'OURAIRPORTS_COMMUNITY'},
-  {ident:'IKA',type:'VOR_DME',freqKhz:114300,lat:35.409698,lon:51.178501,elevationFt:3280,source:'OURAIRPORTS_COMMUNITY',note:'SIMULATED_ONLY_STATION_STATUS_UNVERIFIED'},
-  {ident:'MSD',type:'VOR_DME',freqKhz:114000,lat:36.231201,lon:59.650600,elevationFt:3251,source:'OURAIRPORTS_COMMUNITY'},
-  {ident:'SYZ',type:'VOR_DME',freqKhz:117800,lat:29.540199,lon:52.588799,elevationFt:4920,source:'OURAIRPORTS_COMMUNITY'},
-  {ident:'IFN',type:'VORTAC',freqKhz:117100,lat:32.746389,lon:51.824722,elevationFt:5063,source:'PUBLIC_IR_ENR_REFERENCE'},
-  {ident:'DHN',type:'VOR_DME',freqKhz:114500,lat:35.254167,lon:52.720278,elevationFt:2756,source:'PUBLIC_IR_ENR_REFERENCE'},
-  // ITRN is shown as OIIE RWY 29L in user chart; OIII uses ITHL.
-  {ident:'ITRN',type:'ILS_DME',freqKhz:110700,lat:35.4114,lon:51.165798,elevationFt:3305,courseTrueDeg:290,glideDeg:3,runway:'29L',airport:'OIIE',source:'USER_IRAN_CHART_2620',positionQuality:'PROVISIONAL_RWY_THR'},
-  {ident:'IIKA',type:'ILS_DME',freqKhz:110300,lat:35.413101,lon:51.166000,elevationFt:3305,courseTrueDeg:288.88,glideDeg:3,runway:'29R',airport:'OIIE',source:'PUBLIC_OIIE_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
-  // Mehrabad OIII RWY 29L: ident ITHL, frequency 109.90 MHz; threshold is a TRAINING proxy, not localizer/DME surveyed antenna.
-  {ident:'ITHL',type:'ILS_DME',freqKhz:109900,lat:35.682400,lon:51.333599,elevationFt:3797,dmeElevationFt:3804,courseMagDeg:285,courseTrueDeg:289.75,glideDeg:3.3,tchFt:59,locMaxNm:18,gsMaxNm:10,runway:'29L',airport:'OIII',source:'JEPPESEN_OIII_11-1_IRAN2620_CHART',positionQuality:'PROVISIONAL_RWY_THR',dmePositionQuality:'COLOCATED_THRESHOLD_TRAINING_PROXY'},
-  {ident:'IMSD',type:'ILS_DME',freqKhz:109900,lat:36.224098,lon:59.657100,elevationFt:3263,courseTrueDeg:313.74,glideDeg:3,runway:'31R',airport:'OIMM',source:'PUBLIC_OIMM_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
-  {ident:'ISYZ',type:'ILS_DME',freqKhz:109900,lat:29.5391667,lon:52.5898333,elevationFt:4927,courseTrueDeg:294.4,glideDeg:3,runway:'29L',airport:'OISS',source:'PUBLIC_OISS_APPROACH_REF',positionQuality:'PROVISIONAL_AIRPORT_ARP'}
+ if(!win?.document)return;
+ const doc=win.document;
+ const KEY='b737.unified.advanced-failures.v1';
+ const catalogue=[
+  {group:'NAVIGATION',items:[['irs.left','LEFT IRS FAILURE'],['irs.right','RIGHT IRS FAILURE'],['irs.both','BOTH IRS FAILURE'],['fmc.left','LEFT FMC FAILURE'],['fmc.right','RIGHT FMC FAILURE'],['fmc.both','BOTH FMC FAILURE']]},
+  {group:'FLIGHT INSTRUMENTS',items:['CPT','FO'].flatMap(seat=>['EADI','EHSI','ASI','ALTIMETER','VSI','RDMI','IVSI'].map(unit=>[seat.toLowerCase()+'.'+unit.toLowerCase(),seat+' '+unit+' FAILURE']))},
+  {group:'AIR SYSTEMS',items:[['air.autoFail','PRESSURIZATION AUTO FAIL'],['air.cargoDoor','CARGO DOOR PRESSURE LOSS']]},
+  {group:'ENGINES',items:[['engine.1.startValveOpen','ENG 1 START VALVE STUCK OPEN'],['engine.2.startValveOpen','ENG 2 START VALVE STUCK OPEN']]},
+  {group:'HYDRAULICS',items:[['hyd.a.loss','SYSTEM A LOSS'],['hyd.b.loss','SYSTEM B LOSS'],['hyd.standbyPump','STANDBY PUMP FAILURE'],['hyd.ptu','PTU FAILURE'],['hyd.lgtu','LANDING GEAR TRANSFER UNIT FAILURE']]}
  ];
- const STATIONS=Object.freeze(sites.map(s=>Object.freeze(s)));
- const ALIASES=Object.freeze({MHD:'MSD'}); // MHD is an IATA airport code, not a separate VOR
- const byIdent=ident=>STATIONS.find(s=>s.ident===(ALIASES[String(ident).toUpperCase()]||String(ident).toUpperCase()))||null;
- function ground(from,to){
-  const a=rad(from.lat),b=rad(to.lat),dl=rad(to.lon-from.lon),dp=b-a;
-  const h=Math.sin(dp/2)**2+Math.cos(a)*Math.cos(b)*Math.sin(dl/2)**2;
-  const distanceNm=2*EARTH_NM*Math.asin(Math.min(1,Math.sqrt(h)));
-  const bearingTrue=wrap(Math.atan2(Math.sin(dl)*Math.cos(b),Math.cos(a)*Math.sin(b)-Math.sin(a)*Math.cos(b)*Math.cos(dl))/R);
-  return {distanceNm,bearingTrue};
+ const all=new Set(catalogue.flatMap(g=>g.items.map(x=>x[0])));
+ let failed=new Set(),selected='emergency-descent',cause='autoFail',severity='uncontrolled',messageNode=null;
+ const meta={engine:{},hydraulics:{},pressurization:null};
+ function message(text,error=false){if(messageNode){messageNode.textContent=text;messageNode.dataset.error=String(error);}}
+ function emit(name,detail){win.dispatchEvent(new CustomEvent(name,{detail}));}
+ function read(){try{const v=JSON.parse(win.sessionStorage.getItem(KEY)||'[]');return new Set(Array.isArray(v)?v.filter(id=>all.has(id)):[]);}catch{return new Set();}}
+ failed=read();
+ function publish(){
+  win.sessionStorage.setItem(KEY,JSON.stringify([...failed]));
+  emit('b737:advanced-failures-changed',{source:'UNIFIED_INSTRUCTOR',failures:[...failed],at:Date.now()});
+  refresh();
  }
- function dmeSlantNm(aircraft,station){
-  const g=ground(aircraft,station).distanceNm;
-  return Math.hypot(g,(Number(aircraft.altitudeFt)-Number(station.dmeElevationFt??station.elevationFt))/FT_PER_NM);
- }
- function validAircraft(a){return a&&Number.isFinite(a.lat)&&Math.abs(a.lat)<=90&&Number.isFinite(a.lon)&&Math.abs(a.lon)<=180&&Number.isFinite(a.altitudeFt);}
- function evaluate(aircraft,station,{variationDeg=null,courseMagDeg=null}={}){
-  if(!validAircraft(aircraft)||!station)return null;
-  const g=ground(aircraft,station),out={stationIdent:station.ident,stationLat:station.lat,stationLon:station.lon,
-   tunedFrequencyMHz:station.freqKhz/1000,distanceNm:dmeSlantNm(aircraft,station),
-   bearingDeg:g.bearingTrue,bearingReference:'TRUE',groundDistanceNm:g.distanceNm,
-   quality:'TRAINING_GEOMETRY',source:station.source};
-  if(station.type!=='ILS_DME'){
-   const radialTrue=ground(station,aircraft).bearingTrue;
-   const radialMag=Number.isFinite(variationDeg)?wrap(radialTrue-variationDeg):null;
-   const toMag=Number.isFinite(variationDeg)?wrap(g.bearingTrue-variationDeg):null;
-   const crs=Number.isFinite(courseMagDeg)?wrap(courseMagDeg):null;
-   const to=crs!==null&&toMag!==null&&Math.abs(delta(toMag,crs))<=90;
-   return {...out,radialMagDeg:radialMag,toFrom:crs===null||toMag===null?null:to?'TO':'FROM',
-    deviationDots:crs===null||radialMag===null?null:clamp((to?delta(toMag,crs):delta(radialMag,crs))/2,-2.5,2.5)};
+ function set(id,active){
+  if(!all.has(id))throw Error('Unknown fault '+id);
+  if(active)failed.add(id);else failed.delete(id);
+  // Both fails dominate individual channel status, without deleting individual selections.
+  publish();
+  if(id.startsWith('hyd.')){
+   const h=win.B737HydraulicLabV1;
+   if(h?.inject){
+    const bridge={'hyd.a.loss':'A_RAPID_LEAK','hyd.b.loss':'B_RAPID_LEAK',
+     'hyd.standbyPump':'STBY_PUMP_FAIL','hyd.ptu':'PTU_FAIL','hyd.lgtu':'LGTU_FAIL'};
+    // Independent test-lab state remains isolated from Unified.
+    emit('b737:hydraulic-failure-request',{id,active,labId:bridge[id]});
+   }
   }
-  const fromThreshold=ground(station,aircraft);
-  const approachRay=wrap(station.courseTrueDeg+180);
-  const offAxis=delta(fromThreshold.bearingTrue,approachRay);
-  const front=Math.abs(offAxis)<=35&&g.distanceNm<=(station.locMaxNm??18);
-  const loc=front?clamp(offAxis/1.25,-2.5,2.5):null;
-  const effectiveNm=Math.max(.03,g.distanceNm);
-  const actualGlide=Math.atan2(aircraft.altitudeFt-station.elevationFt-(station.tchFt??50),effectiveNm*FT_PER_NM)/R;
-  // 0.01NM numerical tolerance allows an exact 10NM great-circle final at
-  // decimal-degree station coordinates (not an extra reception claim).
-  const gsValid=front&&g.distanceNm<=(station.gsMaxNm??10)+.01&&Math.abs(actualGlide-station.glideDeg)<=5;
-  return {...out,frontCourse:front,runway:station.runway,airport:station.airport,
-   localizerDots:loc,glideslopeDots:gsValid?clamp((actualGlide-station.glideDeg)/.35,-2.5,2.5):null,
-   glidepathAngleDeg:actualGlide,courseTrueDeg:station.courseTrueDeg,courseMagDeg:station.courseMagDeg??null,tchFt:station.tchFt??50,positionQuality:station.positionQuality};
  }
- function match(freqKhz,type,aircraft=null){
-  if(!Number.isInteger(freqKhz))return null;
-  const options=STATIONS.filter(s=>s.freqKhz===freqKhz&&(type==='ILS'?s.type==='ILS_DME':s.type!=='ILS_DME'));
-  if(!options.length)return null;
-  if(options.length===1)return options[0];
-  if(!validAircraft(aircraft))return null;
-  return options.sort((a,b)=>ground(aircraft,a).distanceNm-ground(aircraft,b).distanceNm)[0];
+ function isFailed(id){return failed.has(id);}
+ function channelFailed(sys,side){return isFailed(sys+'.both')||isFailed(sys+'.'+side);}
+ function status(){return Object.freeze({navigation:{
+  irs:{left:!channelFailed('irs','left'),right:!channelFailed('irs','right')},
+  fmc:{left:!channelFailed('fmc','left'),right:!channelFailed('fmc','right')}},
+  instruments:Object.fromEntries(['cpt','fo'].map(seat=>[seat,Object.fromEntries(['eadi','ehsi','asi','altimeter','vsi','rdmi','ivsi'].map(unit=>[unit,!isFailed(seat+'.'+unit)]))])),
+  air:{autoFail:isFailed('air.autoFail'),cargoDoor:isFailed('air.cargoDoor')},
+  engines:{startValve1Stuck:isFailed('engine.1.startValveOpen'),startValve2Stuck:isFailed('engine.2.startValveOpen')},
+  hydraulics:{aFailed:isFailed('hyd.a.loss'),bFailed:isFailed('hyd.b.loss'),
+    standbyPumpFailed:isFailed('hyd.standbyPump'),ptuFailed:isFailed('hyd.ptu'),lgtuFailed:isFailed('hyd.lgtu')}});}
+ function refresh(){
+  for(const el of doc.querySelectorAll('[data-advanced-failure]')){
+   const yes=failed.has(el.dataset.advancedFailure);el.checked=yes;
+  }
+  const count=doc.getElementById('advancedFailureCount');
+  if(count)count.textContent=failed.size+' ACTIVE';
  }
- return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0003',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
-});
+ function el(tag,parent,cls,txt){
+  const node=doc.createElement(tag);
+  if(cls)node.className=cls;if(txt!==undefined)node.textContent=txt;
+  parent?.append(node);return node;
+ }
+ function labelControl(parent,text,tag,values,id){
+  const l=el('label',parent,'adv-label');el('span',l,'',text);
+  const input=el(tag,l);input.id=id;
+  if(tag==='select')for(const [v,t] of values){const option=el('option',input,'',t);option.value=v;}
+  return input;
+ }
+ function installFailures(){
+  const panel=doc.getElementById('failuresHeaderPopover');
+  if(!panel||panel.querySelector('#advancedFailureBranch'))return !!panel;
+  for(const group of catalogue){
+   const section=el('details',panel,'failures-electrical');
+   if(group.group==='NAVIGATION')section.id='advancedFailureBranch';
+   const header=el('summary',section,'failures-section-title',group.group);
+   if(group.group==='NAVIGATION'){const n=el('span',header,'failures-branch-counter','0 ACTIVE');n.id='advancedFailureCount';}
+   const grid=el('div',section,'adv-failure-grid');
+   for(const [id,title] of group.items){
+    const label=el('label',grid,'adv-failure-label');
+    const input=el('input',label);input.type='checkbox';input.dataset.advancedFailure=id;
+    input.checked=failed.has(id);
+    input.onchange=()=>set(id,input.checked);
+    el('span',label,'',title);
+   }
+   if(group.group==='HYDRAULICS'){
+    const open=el('button',section,'adv-action','OPEN HYDRAULIC LIVE TEST LAB');
+    open.type='button';open.onclick=()=>win.B737HydraulicLabV1?.open?.();
+   }
+  }
+  messageNode=el('p',panel,'failures-feedback','Advanced failures are available for instructor selection; avionics/engine/aircraft effects require a connected consumer.');
+  messageNode.id='advancedFailureFeedback';
+  const clear=el('button',panel,'adv-action','CLEAR ADVANCED FAILURES');
+  clear.type='button';clear.onclick=()=>{failed.clear();publish();message('Advanced instructor failures cleared.');};
+  refresh();return true;
+ }
+ function flightPreset(altitude,speed){
+  const bridge=win.B737UnifiedFlightScenarioV1;
+  if(!bridge?.loadScenario)throw Error('FLT PHASE ENGINE NOT READY');
+  const airport=doc.getElementById('flightAirport')?.value||'OIMM';
+  const runway=doc.getElementById('flightRunway')?.value||'31';
+  return bridge.loadScenario({airport,runway,preset:'MANUAL',
+    airborne:true,altitudeFt:altitude,speedKt:speed,
+    headingDeg:Number(doc.getElementById('flightHeading')?.value)||0,
+    lat:Number(doc.getElementById('flightLat')?.value)||36.235,
+    lon:Number(doc.getElementById('flightLon')?.value)||59.643});
+ }
+ function busBothOff(){
+  const p=win.B737UnifiedBusFailureInjectionV1;
+  if(!p?.live?.get||!p?.payload||!p?.live?.write)throw Error('LIVE ELECTRICAL INJECTION NOT READY');
+  const old=p.live.get(),keys=new Set(old.active?old.offBusKeys:[]);
+  keys.add('transfer1@115VAC');keys.add('transfer2@115VAC');
+  p.live.write(p.payload(p.BUS_KEYS.filter(k=>keys.has(k))));
+ }
+ function launch(){
+  try{
+   if(selected==='both-bus-off-climb'){
+    const loaded=flightPreset(12000,260);
+    busBothOff();
+    emit('b737:instructor-scenario-loaded',{id:selected,phase:'CLIMB',altitudeFt:12000,targetAltitudeFt:30000,verticalRateFpm:1800,loaded});
+   }else if(selected==='emergency-descent'){
+    const loaded=flightPreset(31000,280);
+    set(cause==='cargoDoor'?'air.cargoDoor':'air.autoFail',true);
+    const state={id:selected,cause,severity,phase:'CRUISE',aircraftAltitudeFt:31000,
+      cabinAltitudeFt:5500,cabinDifferentialPsi:7.83,
+      initialCabinRateFpm:0,manualRecoveryAllowed:severity==='controlled',loaded};
+    meta.pressurization=state;
+    emit('b737:instructor-scenario-loaded',state);
+   }else if(selected==='hydraulic-a'||selected==='hydraulic-b'){
+    flightPreset(31000,280);
+    set(selected==='hydraulic-a'?'hyd.a.loss':'hyd.b.loss',true);
+    emit('b737:instructor-scenario-loaded',{id:selected,phase:'CRUISE'});
+   }else throw Error('UNKNOWN SCENARIO');
+   const node=doc.getElementById('advancedScenarioStatus');
+   if(node)node.textContent='SCENARIO REQUESTED · '+selected.toUpperCase()+
+    ' · Only connected native consumers will change actual cockpit indications.';
+  }catch(e){const node=doc.getElementById('advancedScenarioStatus');
+   if(node)node.textContent='SCENARIO LOAD FAILED: '+String(e.message||e);}
+ }
+ function installScenarios(){
+  const dialog=doc.getElementById('flightScenarioDialog');
+  if(!dialog||dialog.querySelector('#advancedScenarioBlock'))return !!dialog;
+  const block=el('section',null,'adv-scenario');block.id='advancedScenarioBlock';
+  el('strong',block,'','INSTRUCTOR NON-NORMAL SCENARIOS');
+  const opt=labelControl(block,'Scenario','select',[
+   ['emergency-descent','EMERGENCY DESCENT · PRESSURIZATION'],
+   ['both-bus-off-climb','BOTH BUS OFF · CLIMB 12,000 FT'],
+   ['hydraulic-a','LOSS OF HYDRAULIC SYSTEM A'],
+   ['hydraulic-b','LOSS OF HYDRAULIC SYSTEM B']], 'advScenarioSelect');
+  opt.onchange=()=>{selected=opt.value;setVisible();};
+  const choices=el('div',block,'adv-choices');choices.id='advancedPressurizationOptions';
+  const reason=labelControl(choices,'Cause','select',[['autoFail','AUTO FAIL'],['cargoDoor','CARGO DOOR']],'advCause');
+  const mode=labelControl(choices,'Severity','select',[['controlled','CONTROLLED'],['uncontrolled','UNCONTROLLED']],'advSeverity');
+  mode.value=severity;reason.onchange=()=>{cause=reason.value;};
+  mode.onchange=()=>{severity=mode.value;};
+  const launchButton=el('button',block,'adv-action','LOAD SELECTED NON-NORMAL SCENARIO');
+  launchButton.type='button';launchButton.onclick=launch;
+  const status=el('p',block,'flight-status','Load this scenario using its separate button. Pilot response and system follow-up are training-only.');
+  status.id='advancedScenarioStatus';
+  const original=doc.getElementById('flightScenarioStatus');dialog.insertBefore(block,original);
+  function setVisible(){choices.hidden=selected!=='emergency-descent';}
+  setVisible();return true;
+ }
+ function installStyle(){
+  if(doc.getElementById('advancedInstructorStyle'))return;
+  const s=el('style',doc.head);s.id='advancedInstructorStyle';
+  s.textContent='.adv-failure-grid{padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.adv-failure-label{display:flex;align-items:center;gap:8px;font:12px system-ui;color:#d8e5ee}.adv-failure-label input{accent-color:#d99c40}.adv-action{margin:9px;padding:9px 13px;background:#16324b;color:#f3f9ff;border:1px solid #5984a7;border-radius:6px;cursor:pointer}.adv-scenario{margin:12px 0;padding:12px;border:1px solid #5a7890;border-radius:7px;background:#102332;color:#eaf5ff;display:grid;gap:8px}.adv-label{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.adv-label select{background:#10202c;color:#fff;padding:7px;border:1px solid #62839c;border-radius:5px}.adv-choices{display:flex;gap:20px;flex-wrap:wrap}.adv-choices[hidden]{display:none}';
+ }
+ let tries=0;
+ function mount(){installStyle();const a=installFailures(),b=installScenarios();
+  if((!a||!b)&&++tries<40)win.setTimeout(mount,250);
+ }
+ const api=Object.freeze({version:'ADV-FAILURES-20261122-01',getStatus:status,
+  getFailures:()=>[...failed],setFailure:set,launchScenario:(id,options={})=>{
+   selected=id;cause=options.cause||cause;severity=options.severity||severity;launch();},
+  refresh,mount});
+ win.B737UnifiedAdvancedInstructorV1=api;
+ if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
