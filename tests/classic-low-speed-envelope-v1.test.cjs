@@ -116,3 +116,43 @@ test('one instructor flight state drives flap drag, continuous autoslat, shaker 
   'proxy retracts instead of staying latched after flap selection changes');
  assert.equal(retract.aeroEnvelope.slatExtension,0);
 });
+
+test('FLAPS 30 at 54-ton nominal training mass stalls near 115 KIAS; shaker stays higher',()=>{
+ const result=evalAt({massKg:54000,iasKt:145,flapLever:30,
+  flapActual:30,bankDeg:0,airborne:true});
+ assert.ok(Math.abs(result.stallKt-115)<=2,
+  'FLAPS 30 expected approximately 115 KT stall, got '+result.stallKt);
+ assert.ok(Math.abs(result.stickShakerKt-124)<2,
+  'shaker speed must be distinct from stall speed');
+ assert.equal(result.belowStall,false);
+ assert.equal(result.belowShaker,false);
+ assert.equal(result.calibrated,false,'trainer estimate is not AFM verified');
+ const slowed=evalAt({massKg:54000,iasKt:112,flapLever:30,flapActual:30});
+ assert.equal(slowed.belowStall,true);
+ assert.equal(slowed.belowShaker,true);
+ const heavier=evalAt({massKg:65000,flapLever:30,flapActual:30});
+ assert.ok(heavier.stallKt>result.stallKt);
+ const banked=evalAt({massKg:54000,flapLever:30,flapActual:30,bankDeg:35});
+ assert.ok(banked.stallKt>result.stallKt);
+});
+
+test('real TE FLAPS 30 updates the live stall envelope immediately even before unpausing',()=>{
+ const initial=Flight.newScenario({airport:'OIII',preset:'MANUAL',airborne:true,
+  altitudeFt:6000,speedKt:145,vsFpm:-600});
+ const frozen=Flight.command(initial,{type:'PAUSE',value:true});
+ const leverOnly=Flight.command(frozen,{type:'AERO_CONFIG',flapLever:30,
+  flapActual:0,slatsFull:false,massKg:54000});
+ assert.equal(leverOnly.flapLever,30);
+ assert.equal(leverOnly.flapActual,0);
+ assert.ok(leverOnly.aeroEnvelope.stallKt>145,
+  'flap lever alone never grants actual TE-flap lift credit');
+ const extended=Flight.command(leverOnly,{type:'AERO_CONFIG',flapLever:30,
+  flapActual:30,slatsFull:false,massKg:54000});
+ assert.ok(Math.abs(extended.aeroEnvelope.stallKt-115)<=2);
+ assert.ok(extended.aeroEnvelope.stickShakerKt>extended.aeroEnvelope.stallKt);
+ assert.equal(extended.iasKt,initial.iasKt,'config change cannot accelerate airplane');
+ assert.equal(extended.altitudeFt,initial.altitudeFt,'config change cannot move aircraft');
+ assert.equal(extended.elapsedSec,initial.elapsedSec,'config is available while paused');
+ assert.equal(extended.paused,true);
+ assert.equal(Flight.step(extended,.2).aeroEnvelope.stallKt,extended.aeroEnvelope.stallKt);
+});
