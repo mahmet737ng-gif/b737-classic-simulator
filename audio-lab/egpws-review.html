@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>B737 Classic — EGPWS Sample Lab</title>
+<style>:root{font:14px/1.5 system-ui,Arial;color:#e8f2f2;background:#0a151c}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#224655,transparent 40%),#0a151c}main{max-width:1060px;margin:auto;padding:28px 16px 60px}h1{font-size:clamp(27px,4vw,39px);line-height:1.1;margin:8px 0}h2{font-size:17px;margin:0}.micro{font:700 11px monospace;letter-spacing:2px;color:#77dfc4}.muted{color:#a3bcc6}section{border:1px solid #385665;background:#10232d;border-radius:12px;padding:16px;margin:18px 0}#list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.clip{margin:0}.top{display:flex;gap:6px;justify-content:space-between;color:#b4d9d9;font:12px monospace}.actions{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}button,.file{background:#174d46;border:1px solid #548879;color:#e7f9f3;padding:9px 12px;border-radius:7px;font-weight:600;cursor:pointer;font:inherit}button.alt{background:#18303d;border-color:#48616b}button:disabled{opacity:.45;cursor:not-allowed}input[type=file]{padding:9px;max-width:100%}textarea{width:100%;resize:vertical;min-height:60px;background:#081923;color:#fff;border:1px solid #45616f;border-radius:8px;padding:9px;font:13px system-ui}a{color:#8ed3d0}.status{color:#99e2bf;font:12px monospace}.status.warn{color:#e8c793}.target{color:#b1c5cc;font:12px monospace;overflow-wrap:anywhere}#feedback{color:#b5e2c9}footer{color:#91aab6;margin:20px 0;font-size:12px}</style></head>
+<body><main><div class="micro">B737 CLASSIC · EGPWS SOURCE AUDIT</div><h1>EGPWS Sample Segmentation Lab</h1><p class="muted">Owner-defined audio only. No simulated tones or speech synthesis. The 14 clips remain inside your browser and are never uploaded to this public site. Choose the original <code>c.mp3</code> to preview each extracted phrase. Only explicitly approved clips may be assigned to the local Audio Lab bank.</p>
+<section><label for="source"><b>Original c.mp3</b> (19 seconds)</label><div class="actions"><input id="source" type="file" accept="audio/mpeg,audio/mp3,audio/*,.mp3"><button id="stop" class="alt">■ Stop</button><button id="export">Export review JSON</button><a href="./">Return to Audio Lab</a></div><p id="feedback" role="status">Choose the source file to enable playback.</p></section><div id="summary" class="micro"></div><div id="list"></div><footer>Source spans are approximate by a few milliseconds. Repeated WINDSHEAR and DON'T SINK phrases are kept individually. Compound phrases are intentionally preserved as a single recorded callout. The short electronic tone (#03) remains unmapped until the owner identifies it.</footer></main>
+<script src="./real-audio-bank.js"></script><script>
+(() => {'use strict';
+const D=[
+ ['01','GLIDESLOPE',.05,.91,'gpws|GLIDESLOPE'],
+ ['02','PULL UP',1.27,2.06,'gpws|PULL UP'],
+ ['03','ELECTRONIC ALERT TONE',2.30,3.08,null],
+ ['04','WINDSHEAR — 1',3.31,4.02,'gpws|WINDSHEAR'],
+ ['05','WINDSHEAR — 2',4.35,5.08,'gpws|WINDSHEAR'],
+ ['06','WINDSHEAR — 3',5.38,6.13,'gpws|WINDSHEAR'],
+ ['07','TERRAIN TERRAIN PULL UP',6.36,8.44,'gpws|TERRAIN TERRAIN PULL UP'],
+ ['08','SINK RATE PULL UP',8.71,10.32,'gpws|SINK RATE PULL UP'],
+ ['09','TERRAIN PULL UP',10.60,12.27,'gpws|TERRAIN PULL UP'],
+ ['10',"DON'T SINK — 1",12.60,13.46,"gpws|DON'T SINK"],
+ ['11',"DON'T SINK — 2",13.75,14.61,"gpws|DON'T SINK"],
+ ['12','TOO LOW TERRAIN',14.78,16.04,'gpws|TOO LOW TERRAIN'],
+ ['13','TOO LOW GEAR',16.16,17.38,'gpws|TOO LOW GEAR'],
+ ['14','TOO LOW FLAPS',17.62,18.91,'gpws|TOO LOW FLAPS']
+];
+const $=id=>document.getElementById(id);const STORAGE='b737cl-egpws-c-review-v1';let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')||{}}catch(_){};
+let ctx=null,source=null,buffer=null,ready=false,bank=null;
+const state=id=>saved[id]||{};
+function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(saved))}catch(_){}};
+function stop(){if(source){try{source.stop()}catch(_){}source.disconnect();source=null}};
+function refresh(){let approved=0,fix=0;for(const s of D){const status=state(s[0]).status||'PENDING';if(status==='APPROVED')approved++;if(status==='NEEDS_REVISION')fix++;
+ $('status-'+s[0]).textContent=status.replace(/_/g,' ');$('assign-'+s[0]).disabled=!ready||!bank||status!=='APPROVED'||!s[4]}
+ $('summary').textContent=`${approved} approved · ${fix} needs revision · ${D.length-approved-fix} pending`;};
+function report(){return {project:'B737 Classic EGPWS Segmentation',source:'c.mp3',sourceAudioUploaded:false,date:new Date().toISOString(),clips:D.map(s=>({id:s[0],label:s[1],start:s[2],end:s[3],proposedEvent:s[4],status:state(s[0]).status||'PENDING',note:state(s[0]).note||''}))}};
+function preview(s){if(!buffer||!ctx)return;ctx.resume().catch(()=>{});$('feedback').textContent=`Playing ${s[0]} ${s[1]}`;stop();source=ctx.createBufferSource();source.buffer=buffer;source.connect(ctx.destination);source.start(0,s[2],s[3]-s[2]);source.onended=()=>{source=null};}
+function wav(s){if(!buffer)throw Error('Load c.mp3 first');const sampleRate=buffer.sampleRate,channels=buffer.numberOfChannels,start=Math.round(s[2]*sampleRate),end=Math.min(buffer.length,Math.round(s[3]*sampleRate));const n=end-start,raw=new ArrayBuffer(44+n*channels*2),v=new DataView(raw);let i=0;const str=x=>{for(const ch of x)v.setUint8(i++,ch.charCodeAt(0))},u32=x=>{v.setUint32(i,x,true);i+=4},u16=x=>{v.setUint16(i,x,true);i+=2};str('RIFF');u32(36+n*channels*2);str('WAVEfmt ');u32(16);u16(1);u16(channels);u32(sampleRate);u32(sampleRate*channels*2);u16(channels*2);u16(16);str('data');u32(n*channels*2);for(let j=0;j<n;j++)for(let c=0;c<channels;c++){const value=Math.max(-1,Math.min(1,buffer.getChannelData(c)[start+j]));v.setInt16(i,value<0?Math.round(value*32768):Math.round(value*32767),true);i+=2}return new Blob([raw],{type:'audio/wav'});}
+async function assign(s){if(!s[4]||state(s[0]).status!=='APPROVED'||!bank)return;const key=s[4];if(bank.has(key)&&!confirm(`Replace the existing sample for ${key} in this browser?`))return;
+ try{const clip=wav(s);await bank.add(key,new File([clip],`c-${s[0]}.wav`,{type:'audio/wav'}));$('feedback').textContent=`Assigned clip ${s[0]} to ${key} in the browser-local Audio Lab bank.`;}catch(e){$('feedback').textContent='Assignment failed: '+e.message}};
+for(const s of D){const article=document.createElement('section');article.className='clip';article.innerHTML=`<div class="top"><b>CLIP ${s[0]}</b><span>${s[2].toFixed(2)}–${s[3].toFixed(2)}s</span></div><h2></h2><p class="target"></p><div class="actions"><button class="play">▶ Preview</button><button class="approve alt">✓ Approve</button><button class="reject alt">Needs revision</button><button class="download alt">Download WAV</button><button class="assign">Assign approved clip</button></div><p class="status" id="status-${s[0]}">PENDING</p><textarea placeholder="Owner review notes..."></textarea>`;
+ article.querySelector('h2').textContent=s[1];article.querySelector('.target').textContent=s[4]?'Proposed event: '+s[4]:'Unassigned — owner identification required';article.querySelector('.play').onclick=()=>preview(s);
+ article.querySelector('.approve').onclick=()=>{saved[s[0]]={...state(s[0]),status:'APPROVED'};persist();refresh()};article.querySelector('.reject').onclick=()=>{saved[s[0]]={...state(s[0]),status:'NEEDS_REVISION'};persist();refresh()};
+ article.querySelector('.download').onclick=()=>{try{const blob=wav(s),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`c-${s[0]}-${s[1].toLowerCase().replace(/[^a-z0-9]+/g,'-')}.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500)}catch(e){$('feedback').textContent=e.message}};
+ article.querySelector('.assign').id='assign-'+s[0];article.querySelector('.assign').onclick=()=>assign(s);const ta=article.querySelector('textarea');ta.value=state(s[0]).note||'';ta.oninput=()=>{saved[s[0]]={...state(s[0]),note:ta.value};persist()};$('list').appendChild(article)};
+$('source').onchange=async()=>{const file=$('source').files?.[0];if(!file)return;stop();$('feedback').textContent='Decoding source audio...';try{const Context=window.AudioContext||window.webkitAudioContext;ctx=ctx||new Context();buffer=await ctx.decodeAudioData(await file.arrayBuffer());const duration=buffer.duration;if(Math.abs(duration-18.982)>.8)throw Error(`Unexpected source duration ${duration.toFixed(2)}s (expected ~19s)`);ready=true;$('feedback').textContent=`Loaded ${file.name}: ${duration.toFixed(2)}s. Preview and review each clip.`;}catch(e){ready=false;buffer=null;$('feedback').textContent='Cannot load source: '+e.message}refresh()};
+$('stop').onclick=stop;
+$('export').onclick=()=>{const b=new Blob([JSON.stringify(report(),null,2)],{type:'application/json'}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download='b737-egpws-owner-review.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)};
+Promise.resolve().then(()=>{bank=new window.B737RealAudioBank.RealAudioBank();return bank.init()}).then(()=>refresh()).catch(()=>{$('feedback').textContent+=' (Local audio bank unavailable; preview still supported.)';refresh()});refresh();
+})();
+</script></body></html>
