@@ -37,6 +37,13 @@
       '#workspaceLabsToggle,#workspaceLabsMenu,#failuresHeaderOpen,#failuresHeaderPopover'))) return;
     const source = event.target;
     if (!source.closest) return;
+    // Every crew member sees the host's aircraft installation; a guest
+    // cannot change just their local EIS/CPCS/737 family and diverge.
+    if (role && !roster?.manager && source.closest('#aircraftSettingsOpen,#aircraftSettingsDialog')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
     if (!nested && source.closest('#crewRoomDialog,[data-crew-open],[data-focus],#zoomIn,#zoomOut,#zoomReset,#fit,#zoom,#unifiedWelcomeRetry')) return;
     const control = source.closest('button,input,select,textarea,a[href],[role="button"],[role="switch"],[role="slider"],[tabindex]:not([id="viewport"])');
     if (event.type === 'wheel' && (event.ctrlKey || event.metaKey || !control)) return;
@@ -296,7 +303,7 @@
 
   const listen = (target, name, project) => target.addEventListener(name, event => project(event.detail ?? {}));
   listen(win, 'b737:aircraft-profile-change', d => {
-    if (d.reason === 'updated' && (roster?.manager || role === 'instructor')) command('profile', 'aircraft', d.profile);
+    if (d.reason === 'updated' && roster?.manager) command('profile', 'aircraft', d.profile);
   });
   listen(win, 'b737:unified-efis-control', d => {
     const key = d.control;
