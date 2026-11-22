@@ -58,13 +58,18 @@
     piece.appendChild(face);
    }
    const eis=doc.documentElement.dataset.engineIndication!=='CONVENTIONAL';
-   face.hidden=!eis;mode=resolve(observation());
-   face.textContent=mode.mode;
-   face.dataset.source=mode.origin;
-   face.title='FCOM 7.10.1–2 · '+mode.origin+
-    (mode.confirmed?' · VERIFIED FMC LIMIT':' · NOT A CERTIFIED N1 LIMIT');
-   face.dataset.confirmed=String(mode.confirmed);
-   revision++;
+   const next=resolve(observation());
+   const changed=mode?.mode!==next.mode||mode?.origin!==next.origin||face.hidden===eis;
+   if(changed){
+    face.hidden=!eis;
+    if(face.textContent!==next.mode)face.textContent=next.mode;
+    face.dataset.source=next.origin;
+    face.title='FCOM 7.10.1–2 · '+next.origin+
+     (next.confirmed?' · VERIFIED FMC LIMIT':' · NOT A CERTIFIED N1 LIMIT');
+    face.dataset.confirmed=String(next.confirmed);
+    revision++;
+   }
+   mode=next;
    return true;
   }
   function confirmedEvent(e){
