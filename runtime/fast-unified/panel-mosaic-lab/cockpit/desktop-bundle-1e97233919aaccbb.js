@@ -356,6 +356,7 @@ try{
   }
 
   const flight = () => win.B737UnifiedFlightScenarioV1;
+  const radio = () => win.B737UnifiedVHFDualV1;
   function available(entry) {
     if (['toggle', 'rotary', 'guard'].includes(entry.type)) {
       return byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.ready();
@@ -363,6 +364,10 @@ try{
     if (['loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type)) return flight();
     if (entry.type === 'profile') return win.B737AircraftProfileStore;
     if (entry.type === 'cdu') return byId('cduFrame' + entry.id)?.contentWindow?.B737CrewCduV1;
+    if (entry.type === 'frequency') return radio()?.getState(entry.id);
+    if (entry.type === 'commTransfer') return win.B737UnifiedVHFCommTFRV1;
+    if (entry.type === 'navMode') return win.B737UnifiedVHFNavControlsV1;
+    if (entry.type === 'firePanel') return win.B737UnifiedFireLights;
     if (entry.type === 'efis') return win.B737UnifiedEFISPedestalV1;
     if (entry.type === 'flap') return win.B737FlapVisualTest?.ready();
     if (entry.type === 'speedbrake') return win.B737SpeedbrakeLever?.mounted();
@@ -388,6 +393,32 @@ try{
       case 'efis': {
         const [seat, key] = id.split('.');
         win.B737UnifiedEFISPedestalV1.operate(seat, key, value);
+        break;
+      }
+      case 'frequency': radio().setFrequency(id, value); break;
+      case 'commTransfer': win.B737UnifiedVHFCommTFRV1.setActive(id, value); break;
+      case 'navMode': win.B737UnifiedVHFNavControlsV1.setMode(id, value); break;
+      case 'autobrake': win.B737AutobrakeUnified?.setSelector(value); break;
+      case 'trim': win.B737StabilizerTrim?.set(value, id); break;
+      case 'firePanel':
+        if (['SELECT_LOOP','PULL','ROTATE','OVERRIDE','BELL_CUTOUT','TEST','EXT_TEST'].includes(id)) {
+          const native = {...value, type: id};
+          if (value.released) native.value = null;
+          win.B737UnifiedFireLights.dispatch(native);
+        }
+        break;
+      case 'cb': {
+        const current = win.B737UnifiedCB?.snapshot();
+        const key = win.B737UnifiedCircuitGatesV1?.STORAGE;
+        if (!current || !key) break;
+        const old = current.breakers.find(entry => entry.id === id);
+        if (old && !value && old.fault) break;
+        if (value) lastBreakers.add(id);
+        else lastBreakers.delete(id);
+        current.breakers = current.breakers.filter(entry => entry.id !== id);
+        if (value) current.breakers.push({id, pulled: true, tripped: old?.tripped ?? false, fault: old?.fault ?? null});
+        localStorage.setItem(key, JSON.stringify(current));
+        win.B737UnifiedCB.refresh();
         break;
       }
       case 'mcpValue': win.B737McpVisualV3?.setValue(id, value); break;
@@ -456,6 +487,14 @@ try{
   win.addEventListener('message', event => {
     if (event.origin !== win.location.origin) return;
     const data = event.data;
+    if (data?.type === 'b737:cb-state-changed' && event.source === byId('cbPanelFrame')?.contentWindow) {
+      const state = win.B737UnifiedCB?.snapshot();
+      const next = new Set(state?.breakers.filter(entry => entry.pulled || entry.tripped).map(entry => entry.id));
+      for (const id of next) if (!lastBreakers.has(id)) command('cb', id, true);
+      for (const id of lastBreakers) if (!next.has(id)) command('cb', id, false);
+      lastBreakers = next;
+      return;
+    }
     if (data?.type === 'b737:unified-cdu' && data.kind === 'crew-key' &&
         ['CAPT', 'FO'].includes(data.seat) && event.source === byId('cduFrame' + data.seat)?.contentWindow) {
       command('cdu', data.seat, data.key);
@@ -478,6 +517,32 @@ try{
     const key = d.control;
     if (key && key !== 'engine-view') command('efis', d.seat + '.' + key,
       key === 'rst' ? true : d.state[key] ?? d.state.brightness[key] ?? d.state.options[key]);
+  });
+  let lastBreakers = new Set(win.B737UnifiedCB?.snapshot().breakers.map(entry => entry.id));
+  let lastAutobrake = win.B737AutobrakeUnified?.getState().selector;
+  listen(win, 'b737:autobrake-state', d => {
+    if (d.selector !== lastAutobrake) command('autobrake', 'selector', d.selector);
+    lastAutobrake = d.selector;
+  });
+  listen(win, 'b737:stabilizer-trim-position', d => {
+    if (['MANUAL', 'MAIN_ELECTRIC'].includes(d.source)) command('trim', d.source, d.units);
+  });
+  listen(win, 'b737:unified-vhf-frequency', d => {
+    if (d.part !== 'external') command('frequency', d.id, d.frequencyKhz);
+  });
+  listen(win, 'b737:vhf-comm-tfr', d => {
+    if (d.reason === 'transfer') command('commTransfer', d.seat, d.activeSide);
+  });
+  listen(win, 'b737:vhf-nav-mode', d => {
+    if (d.reason === 'select') command('navMode', d.seat, d.mode);
+  });
+  listen(win, 'b737:crew-fire-panel-command', d => {
+    const {type, ...native} = d;
+    if (native.value === null) {
+      delete native.value;
+      native.released = true;
+    }
+    command('firePanel', type, native);
   });
   listen(win, 'b737:mcp-value-change', d => {
     if (d.method !== 'external') command('mcpValue', d.control, d.value);

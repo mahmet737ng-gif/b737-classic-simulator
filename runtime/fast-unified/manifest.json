@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "c334c9e700f7898e88b0350a30a1ac42e076ff3d",
+  "sourceCommit": "4c19ed5b5b4a04907f32d244483f974f18335f35",
   "mainBefore": 314,
   "mainAfter": 98,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "90f7e640e85c31b6616d4058298a12740ee38f4172d9abafadcf3498ac6e998e"
+      "sha256": "ed151197f0a89e7281084b29a70cfd1efbe48116208991c39fb504adfb12dc63"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -87,8 +87,8 @@
       "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b5b234bc9f7d716d.js",
-      "sha256": "b5b234bc9f7d716d3e11adf6499b67096228e78214be2cd94442bd5602bf93cc"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-70414d7055570fd1.js",
+      "sha256": "70414d7055570fd1f9fcaa829ae9dd1aba6ba2f5239f5276d432d5497d2ed195"
     },
     {
       "path": "fire-protection-lab/desktop-bundle-38daab6b98875ff2.js",
@@ -187,8 +187,8 @@
       "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-4113161cb7ed5e63.js",
-      "sha256": "4113161cb7ed5e63f36d929adfb88ad5009cfbcf6332e8b2078b65c8ea050485"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1e97233919aaccbb.js",
+      "sha256": "1e97233919aaccbb0ff936b2134309499e0c6829d19f90d65b82a3d20fed0c81"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -956,7 +956,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-bridge.js",
-      "sha256": "7794a59ce93749d63cd8354f77aac14cb4bad4173cd96db6e9a1c750c59ef8bd"
+      "sha256": "4bcafee126639b92ea2e2fc22693c31a666f5099d8ac0c9b28105e32b4d967db"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
@@ -1020,7 +1020,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
-      "sha256": "3bfacf6516584eb3d772878d7b0dcc090d842b8538227e1031fbdcb35b1109d8"
+      "sha256": "b6d74cff62bb5aa7695f5d6ae6c1be0e65d495b37ca1e2084f76a1a69545e9fe"
     },
     {
       "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
