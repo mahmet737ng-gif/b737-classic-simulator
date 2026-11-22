@@ -319,7 +319,9 @@
  // proof that surfaces have moved. Keep instructor mass separate from ADC.
  function syncAeroConfiguration(){
   if(!state||!active)return false;
-  const le=win.B737LEDevicesUnifiedLink?.getState?.();
+  // Authoritative owner TE angle prevails over a stale iframe relay revision.
+  const le=win.B737Final10ApproachPresetV1?.getLiveFlapOwnerState?.()??
+   win.B737LEDevicesUnifiedLink?.getState?.();
   const projection=le?.projection;
   if(!projection||!Number.isFinite(projection.tePosition))return false;
   const flapLever=le.lever,flapActual=projection.tePosition;
