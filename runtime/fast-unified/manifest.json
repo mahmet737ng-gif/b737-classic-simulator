@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "27cea3255dcfbf472bbfa43f5c0820aa3b47baac",
+  "sourceCommit": "90ea195d87c79c024baf76eb70e05dcca6f3ee4a",
   "mainBefore": 321,
   "mainAfter": 100,
   "overheadBefore": 62,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "be0a33b5f60ad260838b349e3e0cc9818a72fbcff70446b0360ce6985e70b735"
+      "sha256": "38ac0244265cd03bffcbefabe84e87b078ab46277f6fac0d39e79d1ccb7eefad"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -187,12 +187,12 @@
       "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-f2583185cc39bfd9.js",
-      "sha256": "f2583185cc39bfd9870ba7d08a8cb2d3d8b36cabf940b2b919ec50dd81de980b"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-01b63e9a2fc86a47.js",
+      "sha256": "01b63e9a2fc86a47dae497eceb62324249465b6f502e7cca5b0a6d00d77d1b6d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-cdcc5ab33c549b1e.js",
-      "sha256": "cdcc5ab33c549b1ea607381544b9a2f24cb79ee9f204d31054d0fffdd5636f2b"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-835b67d29b4a7d1f.js",
+      "sha256": "835b67d29b4a7d1fc7d747718e1c1d44642f042000ffa130c4d908f83b9c5634"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -456,7 +456,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
-      "sha256": "27ad8f883a944f4cb9c8bcd123208ab1ebc9d7b70a468fc6dac2e9ae8c1ad1a2"
+      "sha256": "235d02db647c131671b8f7bf14868e9efd4b24e663a6b363b890f803af7e8d7f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
@@ -1028,7 +1028,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.js",
-      "sha256": "f0e2a170294b1dabeadd994ff038442bf31a6bbe2193871e81a5df396daa3481"
+      "sha256": "b8c3d9c3650bd30f6058038cece5cc803c17b7a8ecb32adb206122bbf8fe78bf"
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
@@ -1753,14 +1753,6 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
-    },
-    {
-      "path": "audio-lab/assets/fire-bell-owner-v1.m4a",
-      "sha256": "0388a802a685d00842c50b4c681b18a3a028aab773b7bfa59a813838b2cbd83c"
-    },
-    {
-      "path": "audio-lab/assets/shaker-owner-v1.m4a",
-      "sha256": "e46a1bb1e3df8c02fc845bff7a2cedfd69802deb13f8c2901d65ea65aaed0d4e"
     }
   ]
 }
