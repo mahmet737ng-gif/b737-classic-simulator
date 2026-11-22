@@ -1357,7 +1357,11 @@ function render(svg,raw){
   text(n,'N',472,295,17,COLORS.white,'middle');
  }
  if(s.compassValid&&m.mode!=='PLAN'){
-  if(!l.route)course(plot,m,l);
+  // FCOM 10.31.8 and 10.32.9: an active NAV route does not hide
+
+  // the FMC selected course pointer and the lateral deviation dots.
+
+  if(!l.route||['FULL_NAV','EXP_NAV'].includes(m.mode))course(plot,m,l);
   trend(plot,m,l);
   altitudeArc(plot,m,l);
   aircraft(svg,l,l.degrees===360);

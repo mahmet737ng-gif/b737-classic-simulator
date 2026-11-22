@@ -1199,6 +1199,12 @@ try{
 })(typeof globalThis==='undefined'?null:globalThis,function(){
  'use strict';
  const COPY=x=>JSON.parse(JSON.stringify(x));
+ // MRG IV.14 pp.350-352: B normal brakes, A alternate at B below 1500 PSI.
+ // An accumulator charged to nominal 3000 PSI provides at least six full
+ // applications. The linear consumption used for training is NOT an MRG value.
+ const BRAKE_MRG=Object.freeze({alternateThresholdPsi:1500,prechargePsi:1000,
+  nominalPsi:3000,minimumFullApplications:6,
+  trainingPsiPerFullApplication:(3000-1000)/6});
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const PUMP=Object.freeze({
   'hyd-eng-1':{system:'A',kind:'ENG',feed:'eng1',label:'ENG 1 · SYSTEM A'},
@@ -1329,9 +1335,15 @@ try{
    case 'BRAKE':
     if(!Number.isFinite(cmd.count)||cmd.count<1||cmd.count>50)throw Error('Invalid brake application count');
     s.brakeCount+=Math.round(cmd.count);
-    const bSupply=s.pressure.B>2400&&!faulted(s,'BRAKE_PIPE_LEAK');
-    const aSupply=s.pressure.A>2400&&!faulted(s,'BRAKE_SELECTOR_STUCK_B');
-    if(!bSupply&&!aSupply&&!faulted(s,'BRAKE_PEDAL_FAIL'))s.brakeAccumulator=clamp(s.brakeAccumulator-340*cmd.count,0,3500);
+    const bSupply=s.pressure.B>=BRAKE_MRG.alternateThresholdPsi&&
+      !faulted(s,'BRAKE_SELECTOR_STUCK_A')&&!faulted(s,'BRAKE_PIPE_LEAK');
+    const aSupply=!bSupply&&s.pressure.A>=BRAKE_MRG.alternateThresholdPsi&&
+      !faulted(s,'BRAKE_SELECTOR_STUCK_B')&&!faulted(s,'BRAKE_PIPE_LEAK');
+    if(!bSupply&&!aSupply&&!faulted(s,'BRAKE_PEDAL_FAIL')&&
+      !faulted(s,'BRAKE_PIPE_LEAK')&&s.brakeAccumulator>BRAKE_MRG.prechargePsi){
+     s.brakeAccumulator=Math.max(BRAKE_MRG.prechargePsi,
+      s.brakeAccumulator-BRAKE_MRG.trainingPsiPerFullApplication*cmd.count);
+    }
     break;
    case 'SET_QTY':
     if(!['A','B','STBY'].includes(id)||!Number.isFinite(cmd.value))throw Error('Invalid hydraulic reservoir quantity');
@@ -1404,9 +1416,14 @@ try{
   const qa=faulted(s,'A_QTY_SENSOR_FAIL')?null:Math.round(q.A);
   const qb=faulted(s,'B_QTY_SENSOR_FAIL')?null:Math.round(q.B);
   const brake=faulted(s,'BRAKE_INDICATOR_FAIL')?null:Math.round(s.brakeAccumulator);
-  const normalBrakes=pressure.B>2200&&!faulted(s,'BRAKE_SELECTOR_STUCK_A')&&!faulted(s,'BRAKE_PIPE_LEAK');
-  const alternateBrakes=!normalBrakes&&pressure.A>2200&&!faulted(s,'BRAKE_SELECTOR_STUCK_B')&&!faulted(s,'BRAKE_PIPE_LEAK');
-  const brakeMode=faulted(s,'BRAKE_PEDAL_FAIL')?'FAILED':normalBrakes?'NORMAL_B':alternateBrakes?'ALTERNATE_A':brake>1000?'ACCUMULATOR_ONLY':'UNAVAILABLE';
+  const normalBrakes=pressure.B>=BRAKE_MRG.alternateThresholdPsi&&
+   !faulted(s,'BRAKE_SELECTOR_STUCK_A')&&!faulted(s,'BRAKE_PIPE_LEAK');
+  const alternateBrakes=!normalBrakes&&pressure.A>=BRAKE_MRG.alternateThresholdPsi&&
+   !faulted(s,'BRAKE_SELECTOR_STUCK_B')&&!faulted(s,'BRAKE_PIPE_LEAK');
+  const accumulatorRemaining=Math.max(0,Math.min(BRAKE_MRG.minimumFullApplications,
+   Math.floor((s.brakeAccumulator-BRAKE_MRG.prechargePsi+1e-7)/BRAKE_MRG.trainingPsiPerFullApplication)));
+  const accumulatorAvailable=accumulatorRemaining>0&&!faulted(s,'BRAKE_PIPE_LEAK');
+  const brakeMode=faulted(s,'BRAKE_PEDAL_FAIL')?'FAILED':normalBrakes?'NORMAL_B':alternateBrakes?'ALTERNATE_A':accumulatorAvailable?'ACCUMULATOR_ONLY':'UNAVAILABLE';
   const standbyDemand=s.env.standbySelected||s.env.alternateFlapsArmed||
    (!s.env.onGround&&s.env.flapsDeg>0&&(pressure.A<1800||pressure.B<1800)&&!faulted(s,'AUTO_STBY_FAIL'));
   const alertLowPump=Object.values(pumps).some(p=>p.lowPressure&&!p.fireLampInhibited);
@@ -1459,7 +1476,11 @@ try{
     'eng.hyd_qty.a':qa,'eng.hyd_qty.b':qb,'fo.hyd_brake_pressure':brake},
    lamps,alerts:{sixPackHyd,masterCaution:panelPowered&&alertHyd&&!failedLamp('MASTER_CAUTION_HYD_FAIL')&&!s.masterAcknowledged,
     recallHyd:alertHyd,acknowledged:s.masterAcknowledged,masterCautionAuthority:'LAB_TRAINING_APPROX'},
-   pumps,capabilities,brakes:{mode:brakeMode,normalBrakes,alternateBrakes,accumulatorPsi:Math.round(s.brakeAccumulator)},
+   pumps,capabilities,brakes:{mode:brakeMode,normalBrakes,alternateBrakes,
+    accumulatorPsi:Math.round(s.brakeAccumulator),
+    accumulatorFullApplicationsRemaining:accumulatorRemaining,
+    alternateSelectorThresholdPsi:BRAKE_MRG.alternateThresholdPsi,
+    antiskidAvailable:!faulted(s,'ANTISKID_FAIL')&&brakeMode!=='UNAVAILABLE'&&brakeMode!=='FAILED'},
    standby:{selected:standbyDemand,active:pressure.STBY>1800},
    warnings:{systemA:pressure.A<2200,systemB:pressure.B<2200,
     reservoirA:q.A<40,reservoirB:q.B<40},
@@ -1505,7 +1526,7 @@ try{
   return s;
  }
  return Object.freeze({
-  VERSION:'HYD-LAB-CORE-0001',PUMP,FAULTS,PRESETS,
+  VERSION:'HYD-LAB-CORE-0002-MRG-BRAKES',BRAKE_MRG,PUMP,FAULTS,PRESETS,
   initial,loadPreset,command,step,evaluate,
   getFault:id=>FAULTS.find(x=>x.id===id)||null,clone:COPY
  });
