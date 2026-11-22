@@ -1,0 +1,54 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {Engine,ALERTS,hazards,APPROX}=require('../engine/classic-egpws-ch15-v1.js');
+const base={onGround:false,phase:'FINAL_APPROACH',raFt:800,vsFpm:-600,iasKt:142,
+ flapsDeg:30,gearDownLocked:true,ilsValid:true,glideslopeBelowDots:0,terrainInhibit:false,
+ gearInhibit:false,flapInhibit:false};
+let n=0;const check=(cond,msg)=>{assert.ok(cond,msg);n++;};
+const get=(state,t=1000)=>new Engine().update({...base,...state},t);
+check(get({}).top===null,'Normal 10nm approach remains silent');
+check(get({reactiveWindshearActive:true,reactiveWindshearValidated:false,raFt:900}).top===null,'Windshear must be validated');
+check(get({reactiveWindshearActive:true,reactiveWindshearValidated:true,raFt:900}).top.sample==='WINDSHEAR','Reactive windshear');
+check(get({reactiveWindshearActive:true,reactiveWindshearValidated:true,raFt:1700}).top===null,'Windshear below 1500 RA only');
+check(get({reactiveWindshearActive:true,reactiveWindshearValidated:true,raFt:200,vsFpm:-4200,flapsDeg:5,gearDownLocked:false}).active.length===1,'Reactive windshear inhibits GPWS');
+check(get({lookaheadTerrain:{validated:true,kind:'TERRAIN',timeToImpactSec:25}}).top.sample==='TERRAIN_TERRAIN_PULL_UP','Lookahead terrain warning');
+check(get({lookaheadTerrain:{validated:false,kind:'TERRAIN',timeToImpactSec:18}}).top===null,'No unvalidated terrain warnings');
+check(get({lookaheadTerrain:{validated:true,kind:'TERRAIN',timeToImpactSec:55}}).top.visual==='TERRAIN_AMBER','Lookahead caution visual');
+check(get({lookaheadTerrain:{validated:true,kind:'TERRAIN',timeToImpactSec:55}}).top.sample===null,'Missing caution recording intentionally silent');
+check(get({lookaheadTerrain:{validated:true,kind:'TERRAIN',timeToImpactSec:25},terrainInhibit:true}).top===null,'Terrain inhibit');
+check(get({raFt:400,vsFpm:-3200}).top.sample==='SINK_RATE_PULL_UP','Mode 1 severe sink');
+check(get({raFt:400,vsFpm:-1400}).top.sample===null,'Mode 1 caution has no approved SINK RATE-only sample');
+check(get({raFt:400,vsFpm:-3200,terrainClosureFpm:7000,terrainClosureValidated:false}).top.sample==='SINK_RATE_PULL_UP','Unvalidated Mode 2 input blocked');
+check(get({raFt:800,vsFpm:-600,terrainClosureFpm:3500,terrainClosureValidated:true}).top.sample==='TERRAIN_PULL_UP','Mode 2 verified severe terrain closure');
+check(get({raFt:350,iasKt:155,gearDownLocked:false,flapsDeg:30}).top.sample==='TOO_LOW_GEAR','Mode 4 gear');
+check(get({raFt:350,iasKt:155,gearDownLocked:true,flapsDeg:15}).top.sample==='TOO_LOW_FLAPS','Mode 4 flap');
+check(get({raFt:350,iasKt:220,gearDownLocked:false,flapsDeg:15}).top.sample==='TOO_LOW_TERRAIN','Mode 4 high airspeed terrain');
+check(get({raFt:350,iasKt:155,gearDownLocked:false,gearInhibit:true,flapsDeg:30}).top===null,'Gear inhibit');
+check(get({raFt:350,iasKt:155,gearDownLocked:true,flapInhibit:true,flapsDeg:15}).top===null,'Flap inhibit');
+check(get({raFt:350,iasKt:155,gearDownLocked:null,flapsDeg:null}).top===null,'Unknown configuration cannot generate false alert');
+check(get({raFt:500,glideslopeBelowDots:1.5,ilsValid:true}).top.sample==='GLIDESLOPE','Mode 5 >1.3 dots');
+check(get({raFt:500,glideslopeBelowDots:1.3,ilsValid:true}).top===null,'Mode 5 no warning at 1.3');
+check(get({raFt:500,glideslopeBelowDots:2.2,ilsValid:true,glideslopeInhibit:true}).top===null,'Mode 5 glide inhibit');
+check(get({raFt:25,glideslopeBelowDots:2.2,ilsValid:true}).top===null,'Mode 5 below 30 RA inhibited');
+check(get({raFt:1400,glideslopeBelowDots:2.2,ilsValid:true}).top===null,'Mode 5 above 1000 RA inhibited');
+check(get({onGround:true,raFt:0,vsFpm:-4400}).top===null,'Ground protection');
+check(get({raFt:null,vsFpm:-4400}).top===null,'Invalid RA guard');
+check(get({gpwsSystemAvailable:false,raFt:400,vsFpm:-4400}).top===null,'GPWS INOP guard');
+const descend=new Engine();
+const ds={...base,phase:'INITIAL_CLIMB',raFt:450,iasKt:160};
+check(descend.update(ds,1000).top===null,'Mode 3 initial climb peak');
+check(descend.update({...ds,raFt:520},2000).top===null,'Mode 3 peak increase');
+check(descend.update({...ds,raFt:450},3000).event?.sample==='DONT_SINK_1','Mode 3 first clip');
+check(descend.update({...ds,raFt:440},7500).event?.sample==='DONT_SINK_2','Mode 3 second clip');
+check(descend.update({...ds,phase:'AIRBORNE',raFt:400},9000).top===null,'Mode 3 only initial takeoff/GA');
+const pull=new Engine(),s1={...base,raFt:300,vsFpm:-3500};
+check(pull.update(s1,1000).event?.sample==='SINK_RATE_PULL_UP','First Mode 1 alert full phrase');
+check(pull.update(s1,2000).event===null,'No repeated samples every frame');
+check(pull.update(s1,6200).event?.sample==='PULL_UP','Persistent Mode 1 uses standalone PULL UP');
+const keys=new Set(['GLIDESLOPE','PULL_UP','WINDSHEAR','TERRAIN_TERRAIN_PULL_UP','SINK_RATE_PULL_UP','TERRAIN_PULL_UP','DONT_SINK_1','DONT_SINK_2','TOO_LOW_TERRAIN','TOO_LOW_GEAR','TOO_LOW_FLAPS']);
+const clips=require('../audio/owner-egpws-approved-samples-v1.js');
+check(clips.keys.length===11,'Eleven owner audio cuts in source module');
+for(const sample of keys){check(clips.keys.includes(sample),'Actual owner recording source includes '+sample);}
+for(const sample of keys){check(Object.values(ALERTS).some(v=>v.sample===sample),'All 11 sounds must map to logic: '+sample);}
+check(Object.values(ALERTS).filter(v=>v.sample!==null).every(x=>keys.has(x.sample)),'No unsupported voice assets');
+console.log(`${n} EGPWS Chapter 15 contract tests passed`);

@@ -14,7 +14,7 @@
  const audioUrl=new URL('../../audio-lab/assets/owner-ra-callouts-v1.mp3',root.location.href).href;
  const player=new Owner.Player(audioUrl);
  let approachId=null,lastElapsed=null,lastDH=null,lastStatus='WAITING FOR FINAL APPROACH';
- let statusNode=null;
+ let statusNode=null,egpwsCritical=false;
  const diagnostics={approachActive:false,raFt:null,raQuality:'UNKNOWN',dhFt:null,
   raSource:'CAPTAIN SELECTED RA',dhSource:'CAPTAIN EFIS DH',lastEvents:[],missing:[],audioError:null};
  function status(message){
@@ -81,7 +81,7 @@
   const callouts=out.events.filter(event=>event.id==='radioAltitude'||event.id==='minimums');
   if(callouts.length){
    diagnostics.lastEvents=callouts.map(event=>({id:event.id,message:event.message,raFt:ra,dhFt:dh}));
-   for(const event of callouts){
+   if(!egpwsCritical)for(const event of callouts){
     const key=Owner.keyFor(event.id,event.message);
     if(player.has(key))player.enqueue(key,.20);
     else diagnostics.missing.push(key);
@@ -89,11 +89,17 @@
   }
   if(raQuality!=='VALID')status('RADIO ALTIMETER INPUT '+raQuality+' · NO CALLOUT');
   else if(dh!==null&&dh<0)status('RA '+Math.round(ra)+' FT · DH '+dh+' FT · MINIMUMS INHIBITED');
+  else if(callouts.length&&egpwsCritical)status('SUPPRESSED BY CRITICAL EGPWS');
   else if(callouts.length)status('TRIGGERED · '+callouts.map(x=>x.message).join(' / '));
   else status('ARMED · RA '+Math.round(ra)+' FT · DH '+(dh===null?'N/A':dh+' FT'));
   lastDH=dh;
  }
  function getDiagnostics(){return JSON.parse(JSON.stringify({...diagnostics,lastStatus,missing:diagnostics.missing.slice(-12)}));}
+ root.addEventListener('b737:egpws-ch15-state',event=>{
+  egpwsCritical=event.detail?.critical===true;
+  if(egpwsCritical)player.stop();
+ });
+ root.addEventListener('b737:flight-scenario-stopped',()=>{egpwsCritical=false;});
  root.addEventListener('b737:flight-scenario-state',event=>process(event.detail));
  if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',mountStatus,{once:true});
  else mountStatus();
