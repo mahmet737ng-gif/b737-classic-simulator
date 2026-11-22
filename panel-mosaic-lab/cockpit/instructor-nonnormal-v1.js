@@ -25,6 +25,12 @@
  const present=(category,id,value)=>{if(value)busy[category].add(id);else busy[category].delete(id);};
  const pressureState=()=>pressure?{...pressure}:null;
  const announce=(name,detail)=>root.dispatchEvent(new CustomEvent(name,{detail}));
+ function overheadFault(id,on){
+  // Use the existing overhead command receiver rather than modifying locked photo art.
+  const frame=$('overheadFrame');
+  if(frame?.contentWindow)frame.contentWindow.postMessage({
+   type:'b737:cockpit-command',action:'fault',id,active:on},root.location.origin);
+ }
  const status=(id,text,bad=false)=>{const node=$(id);if(node){node.textContent=text;node.dataset.error=String(bad);}};
  function persist(){try{root.sessionStorage.setItem(KEY,JSON.stringify({active:Object.fromEntries(Object.entries(busy).map(([k,v])=>[k,[...v]])),mode}));}catch(_){}}
  function busWrite(enabled){
@@ -53,7 +59,7 @@
   const lab=root.B737HydraulicLabV1;
   if(!lab?.choosePreset)throw Error('HYDRAULIC LAB NOT READY');
   const which=id==='lossA'?'a-lost':id==='lossB'?'b-lost':'dual-lost';
-  if(on){lab.choosePreset(which);lab.open?.();}
+  if(on){lab.choosePreset(which);lab.command?.({type:'SET_ENV',id:'onGround',value:false});lab.open?.();}
   else lab.choosePreset('airborne');
   announce('b737:instructor-hydraulic-failure',{id,active:on,origin:'ISOLATED_HYDRAULIC_LAB'});
  }
@@ -70,8 +76,9 @@
    }else if(group==='electrical'&&id==='bothBus')busWrite(on);
    else if(group==='hydraulics')setHydraulic(id,on);
    else if(group==='air'&&on){present('air',id,true);startPressure({cause:id,severity:'uncontrolled',loadFlight:false});}
-   else if(group==='air'&&!on&&pressure?.cause===id){pressure=null;}
+   else if(group==='air'&&!on&&pressure?.cause===id){pressure=null;overheadFault(id==='autoFail'?'press-auto-fail':'door-fwd-cargo',false);}
    present(group,id,on);
+   if(group==='hydraulics'&&on)for(const [other]of G.hydraulics)if(other!==id)present('hydraulics',other,false);
    if(group==='navigation'&&id==='irs.BOTH'){
     present(group,'irs.L',on);present(group,'irs.R',on);
    }
@@ -93,6 +100,32 @@
    const selector=id==='EADI'?'[data-eadi-stage1-seat="'+seat+'"]':'[data-unified-ehsi-seat="'+seat+'"]';
    for(const node of doc.querySelectorAll(selector))node.dataset.instructorFailed=String(active('instruments',seat+'.'+id));
   }
+  // Native photo-gauge SVGs retain their own scale and needles.
+  // A fault adds/removes a black overlay on only the selected instrument glass.
+  const ns='http://www.w3.org/2000/svg';
+  for(const svg of doc.querySelectorAll('.texture-piece svg[data-gauge]')){
+   const piece=svg.closest('.texture-piece')?.dataset.piece||'';
+   const seat=piece==='captain'?'CAPT':piece.startsWith('fo-')?'FO':null;
+   const id={airspeed:'ASI',altimeter:'ALTIMETER',rmi:'RDMI',ivsi:'IVSI'}[svg.dataset.gauge];
+   if(!seat||!id)continue;
+   const failed=active('instruments',seat+'.'+id)||
+    (id==='IVSI'&&active('instruments',seat+'.VSI'));
+   const old=svg.querySelector('[data-instructor-analog-cover]');
+   if(failed&&!old){
+    const cover=doc.createElementNS(ns,'rect');
+    cover.setAttribute('x','0');cover.setAttribute('y','0');
+    cover.setAttribute('width','100%');cover.setAttribute('height','100%');
+    cover.setAttribute('fill','#010306');cover.setAttribute('pointer-events','none');
+    cover.setAttribute('data-instructor-analog-cover','');
+    svg.append(cover);
+   }else if(!failed&&old)old.remove();
+  }
+  for(const n of [1,2]){
+   const value=$('isnStartIndications')?.querySelector?.('[data-engine="engine'+n+'"] [data-field="valve"]');
+   if(value&&active('engines','valve'+n)){
+    value.textContent='OPEN · STUCK';value.dataset.amber='true';
+   }
+  }
  }
  function aircraftAltitude(){
   const s=root.B737UnifiedFlightScenarioV1?.getState?.();
@@ -106,11 +139,14 @@
    phase.loadScenario({airport:'OIMM',runway:'31R',preset:'MANUAL',altitudeFt:31000,
      headingDeg:310,speedKt:280,vsFpm:0,airborne:true});
   }
-  pressure={cause,severity,cabinAltitudeFt:5500,cabinRateFtMin:0,
-   aircraftAltitudeFt:loadFlight?31000:aircraftAltitude(),differentialPsid:difference(31000,5500),
+  const initialAlt=loadFlight?31000:aircraftAltitude();
+  pressure={cause,severity,cabinAltitudeFt:Math.min(5500,initialAlt),cabinRateFtMin:0,
+   aircraftAltitudeFt:initialAlt,differentialPsid:difference(initialAlt,Math.min(5500,initialAlt)),
    emergencyDescent:false,elapsedSec:0,manualControl:'NONE',state:'PRESSURE LOSS'};
   present('air','autoFail',cause==='autoFail');
   present('air','cargoDoor',cause==='cargoDoor');
+  overheadFault('press-auto-fail',cause==='autoFail');
+  overheadFault('door-fwd-cargo',cause==='cargoDoor');
   renderNeeded=true;persist();reportPressure();return pressureState();
  }
  function startScenario(which,opts={}){
