@@ -14,7 +14,7 @@ function fixture(req, res) {
   const cockpit = path.resolve(__dirname, '../panel-mosaic-lab/cockpit');
   const pathname = new URL(req.url, 'http://127.0.0.1').pathname;
   const file = pathname.endsWith('/') ? 'index.html' : path.basename(pathname);
-  const type = {'index.html': 'text/html', 'crew-cockpit-v1.js': 'text/javascript', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
+  const type = {'index.html': 'text/html', 'qrcode-generator-2.0.4.js': 'text/javascript', 'crew-cockpit-v1.js': 'text/javascript', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
   if (!type) {
     res.writeHead(404).end();
     return;
@@ -47,7 +47,8 @@ function fixture(req, res) {
       <script src="/panel-mosaic-lab/cockpit/crew-cockpit-v1.js" defer></script>`);
     return;
   }
-  createReadStream(path.join(cockpit, file)).pipe(res);
+  const relative = file === 'qrcode-generator-2.0.4.js' ? 'vendor/' + file : file;
+  createReadStream(path.join(cockpit, relative)).pipe(res);
 }
 
 async function start(t) {
@@ -148,7 +149,7 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
 
   const host = await browser.newPage({viewport: {width: 1440, height: 900}});
   await host.goto(root);
-  await host.locator('#unifiedWelcome').getByRole('button', {name: 'Crew Room'}).click();
+  await host.locator('#unifiedWelcome').getByRole('button', {name: 'Join Private Room'}).click();
   await signIn(host, 'TrainerOwner');
   await host.getByRole('button', {name: 'Create Room', exact: true}).click();
   await host.getByRole('button', {name: 'Join Room', exact: true}).click();
@@ -158,8 +159,9 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
     await host.getByLabel('Assigned Username').fill(username ?? '');
     await host.locator('[data-crew-invite="' + role + '"]').click();
     await host.getByLabel('Invitation Link').waitFor();
-    const label = {firstOfficer: 'First Officer', instructor: 'Instructor', observer: 'Observer'}[role];
-    await host.getByText(new RegExp('^' + label + ' invite (copied|ready to copy)\\.$')).waitFor();
+    await host.getByRole('img', {name: 'Private room invitation QR code'}).waitFor();
+    await host.getByRole('button', {name: 'Copy Link', exact: true}).click();
+    await host.getByText(/Invitation link (copied|selected)/).waitFor();
     return host.getByLabel('Invitation Link').inputValue();
   }
   async function guest(role, username, seat) {
@@ -168,7 +170,20 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
     await host.getByRole('button', {name: 'Create Guest Account'}).click();
     await host.getByText('Account created for ' + username + '.').waitFor();
     const page = await browser.newPage({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});
-    await page.goto(await invite(role, username));
+    const url = await invite(role, username);
+    if (role === 'firstOfficer') {
+      await page.goto(root);
+      await page.locator('#unifiedWelcome').getByRole('button', {name: 'Join Private Room'}).click();
+      const input = page.getByLabel('Private Room Link');
+      await input.fill('https://example.com/crew/#crew=' + 'a'.repeat(32));
+      await page.getByRole('button', {name: 'Open Invitation'}).click();
+      await page.getByText('Enter a valid Unified Private Room invitation link.', {exact: true}).waitFor();
+      await input.fill(url);
+      await page.getByRole('button', {name: 'Open Invitation'}).click();
+      await page.getByText('Invited as First Officer', {exact: true}).waitFor();
+    } else {
+      await page.goto(url);
+    }
     await signIn(page, username);
     await page.getByRole('button', {name: 'Join as ' + seat, exact: true}).click();
     await page.getByText('Your role: ' + seat, {exact: true}).waitFor();

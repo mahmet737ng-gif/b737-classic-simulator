@@ -215,7 +215,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./smiths-fuel-quantity-v1.js?v=FUEL-QTY-20KG-0001" defer></script>
 <link rel="stylesheet" href="./unified-workspace-v1.css?v=WORKSPACE-0002">
 <link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0005">
-<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0003">
+<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0004">
 <script>
 (function(){
  const test=new URLSearchParams(location.search).get('welcomeTest')==='1';
@@ -280,7 +280,7 @@ body > header.unified-minimal-header .header-settings>button{
     <span class="welcome-spinner" aria-hidden="true"></span>
     <span id="unifiedWelcomeStatus" role="status">Loading Main Instrument Panel…</span>
    </div>
-   <button data-crew-open type="button" aria-haspopup="dialog" aria-controls="crewRoomDialog">Crew Room</button>
+   <button data-crew-open type="button" aria-haspopup="dialog" aria-controls="crewRoomDialog">Join Private Room</button>
    <button id="unifiedWelcomeRetry" type="button" hidden>Reload Trainer</button>
    <button id="unifiedWelcomeStart" type="button" hidden>Start Flight</button>
   </div>
@@ -309,6 +309,13 @@ body > header.unified-minimal-header .header-settings>button{
     <button type="button" data-crew-close aria-label="Close Crew Room">Close</button>
   </div>
   <p data-crew-user></p>
+  <form data-crew-link-entry autocomplete="off">
+    <label for="crewInvitationUrl">Private Room Link</label>
+    <div class="crew-link-entry">
+      <input id="crewInvitationUrl" name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" maxlength="512" required>
+      <button type="submit">Open Invitation</button>
+    </div>
+  </form>
   <form data-crew-login autocomplete="on">
     <label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="40"></label>
     <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
@@ -346,7 +353,7 @@ body > header.unified-minimal-header .header-settings>button{
       <button type="button" data-crew-confirm>Join Room</button>
     </div>
     <section data-crew-invitations hidden aria-labelledby="crewInviteTitle">
-      <h3 id="crewInviteTitle">Copy Invite</h3>
+      <h3 id="crewInviteTitle">Invite to Private Room</h3>
       <label>Assigned Username<input data-crew-assignee autocomplete="off" maxlength="40"></label>
       <div class="crew-actions">
         <button type="button" data-crew-invite="captain">Captain</button>
@@ -354,7 +361,14 @@ body > header.unified-minimal-header .header-settings>button{
         <button type="button" data-crew-invite="instructor">Instructor</button>
         <button type="button" data-crew-invite="observer">Observer</button>
       </div>
-      <label data-crew-link hidden>Invitation Link<input readonly></label>
+      <section class="crew-invite-share" data-crew-link hidden aria-label="Private room invitation">
+        <canvas data-crew-qr role="img" aria-label="Private room invitation QR code" hidden></canvas>
+        <div>
+          <p data-crew-invite-role></p>
+          <label>Invitation Link<input readonly></label>
+          <button type="button" data-crew-copy>Copy Link</button>
+        </div>
+      </section>
     </section>
     <div class="crew-actions">
       <button type="button" data-crew-enter hidden>Enter Shared Cockpit</button>
@@ -624,7 +638,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>
 <script src="./unified-workspace-v1.js?v=WORKSPACE-0002-P15-CTR-0043" defer></script>
 <script src="./unified-welcome-v1.js?v=WELCOME-0005" async></script>
-<script src="./crew-room-v1.js?v=CREW-0003" defer></script>
+<script src="./crew-room-v1.js?v=CREW-0004" defer></script>
 <script src="./crew-cockpit-v1.js?v=CREW-0001" defer></script>
 <script src="./instructor-nonnormal-v1.js?v=INSTRUCTOR-NONNORMAL-0001" defer></script>
 <script src="../../audio-lab/owner-ra-callouts-v1.js?v=RA-CALLS-0001" defer></script>

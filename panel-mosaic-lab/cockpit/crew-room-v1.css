@@ -51,7 +51,36 @@
 #crewRoomDialog input { min-width: 0; width: 100%; }
 #crewRoomDialog [role="status"]:empty { display: none; }
 #crewRoomDialog [role="status"][data-error="true"] { color: #ffb79e; }
-#crewRoomDialog [data-crew-link] { margin-top: .75rem; }
+#crewRoomDialog .crew-link-entry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+#crewRoomDialog .crew-link-entry input { flex: 1 1 13rem; }
+#crewRoomDialog [data-crew-link-entry] { margin-block: .75rem 1rem; }
+
+#crewRoomDialog .crew-invite-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .85rem;
+  padding: .85rem;
+  border: 1px solid #334952;
+  border-radius: 8px;
+}
+
+#crewRoomDialog .crew-invite-share canvas {
+  width: min(12rem, 100%);
+  height: auto;
+  image-rendering: pixelated;
+  margin-inline: auto;
+}
+
+#crewRoomDialog .crew-invite-share > div { flex: 1 1 12rem; min-width: 0; }
+#crewRoomDialog [data-crew-invite-role] { margin: 0 0 .6rem; font-weight: 700; }
+#crewRoomDialog [data-crew-copy] { margin-top: .55rem; }
 
 #crewCockpitStatus {
   padding: .3rem .55rem;
