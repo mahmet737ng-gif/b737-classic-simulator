@@ -1753,6 +1753,14 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+    },
+    {
+      "path": "audio-lab/assets/fire-bell-owner-v1.m4a",
+      "sha256": "0388a802a685d00842c50b4c681b18a3a028aab773b7bfa59a813838b2cbd83c"
+    },
+    {
+      "path": "audio-lab/assets/shaker-owner-v1.m4a",
+      "sha256": "e46a1bb1e3df8c02fc845bff7a2cedfd69802deb13f8c2901d65ea65aaed0d4e"
     }
   ]
 }
