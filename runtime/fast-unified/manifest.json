@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "18744a548c79cc6adf369379b5da15620f391bc50a3feddeeefbec5b507b95ee"
+      "sha256": "e4cc2ed40d03aa2fa065fcce183dff77787150915cd98a7f0cd14bcb9c2b40af"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -1725,6 +1725,14 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/instructor-advanced-failures-v1.js",
+      "sha256": "464924c26916e790c42132d165684821afbf2db0da31913ad4a0c25e5d722566"
+    },
+    {
+      "path": "engine/systems/unified-instructor-fcom-mrg-effects-v2.js",
+      "sha256": "0a05c28715af11bda16fe553cae5979d265d3de4a236fc06bf45c6da3cc431e4"
     }
   ]
 }
