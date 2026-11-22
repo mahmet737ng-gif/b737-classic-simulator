@@ -109,16 +109,22 @@
         const speedsForStation=speeds?.[station];
         const nav=window.B737UnifiedEfisSources?.project(station==='captain'?'CAPT':'FO',snapshot);
         const hdg=nav?.heading??scene?.headingMagDeg??0;
-        const bearing=n=>nav?.bearings?.find(x=>x.channel===n)?.angle??null;
-        const adc=valid('airdata.adc'+(station==='captain'?1:2));
-        const adf=n=>{
-          const signal=valid('navigation.adf'+n);
-          if(!Number.isFinite(signal?.bearingDeg)) return null;
-          if(signal.bearingReference==='RELATIVE') return hdg+signal.bearingDeg;
-          if(signal.bearingReference==='TRUE') return Number.isFinite(nav?.magneticVariationDeg) ?
-            signal.bearingDeg-nav.magneticVariationDeg : null;
-          return signal.bearingDeg;
+        // RMI VOR 1/2 needles follow valid NAV receivers, not the
+        // ADF-only EHSI compass pointer array.
+        const magneticBearing=signal=>{
+          if(!Number.isFinite(signal?.bearingDeg))return null;
+          const normal=angle=>((angle%360)+360)%360;
+          if(signal.bearingReference==='MAGNETIC')return normal(signal.bearingDeg);
+          if(signal.bearingReference==='RELATIVE'&&Number.isFinite(hdg))
+            return normal(hdg+signal.bearingDeg);
+          if(signal.bearingReference==='TRUE'&&Number.isFinite(nav?.magneticVariationDeg))
+            return normal(signal.bearingDeg-nav.magneticVariationDeg);
+          return null;
         };
+        const bearing=n=>magneticBearing(valid('navigation.vor'+n));
+        const adc=valid('airdata.adc'+(station==='captain'?1:2));
+        const adf=n=>magneticBearing(valid('navigation.adf'+n))??
+          nav?.bearings?.find(x=>x.channel===n)?.angle??null;
         const altitude=live?.altitudeFt??adc?.pressureAltitudeFt??0;
         const selectedCas=mcp?.powered===true&&mcp.speedBlank!==true?
           (mcp.speedDisplayMode==='MACH'&&Number.isFinite(mcp.selectedMachHundredths)?
