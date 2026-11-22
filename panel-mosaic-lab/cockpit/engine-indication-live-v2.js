@@ -13,7 +13,7 @@
  const api=()=>window.B737EngineIndicationsV1;
  let db=null,prior=null,current=null,lastTime=null,lastRaw=null,error=null,loadPromise=null;
  let mode='EIS',fuelMode='RATE',filterThreshold=null,fuelUsedExpiresAt=null,resetFuelPending=false;
- let fuelResetDueAt=null,fuelResetZeroUntil=null;
+ let fuelResetDueAt=null,fuelResetZeroUntil=null,fuelResetTransition=null;
  let displayFaults={},sensorOverrides={engine1:{},engine2:{}},displayLimits={};
  let lastPaint=new Map(),lastEmitted=-1,events=0,labFrame=null;
  let eventPowerRegistered=false;
@@ -57,8 +57,15 @@
     const visualValue=numeric(x.value)?x.value:null;
     // Fuel USED selects accumulated mass on the digital roller only; the
     // analogue fuel-flow pointer must continue to follow instantaneous flow.
-    const digitalValue=p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
+    let digitalValue=p==='fuelFlow'&&fuelMode==='USED'&&numeric(x.digitalValue)?
       x.digitalValue:visualValue;
+    if(p==='fuelFlow'&&mode==='EIS'&&fuelMode==='USED'&&fuelResetTransition){
+      const {startKg,startAt,endAt}=fuelResetTransition;
+      if(lastTime>=startAt){
+        const fraction=Math.max(0,Math.min(1,(lastTime-startAt)/(endAt-startAt)));
+        digitalValue=Math.max(0,(startKg[id]||0)*(1-fraction));
+      }else digitalValue=startKg[id]||0;
+    }
     if(DOT.has(p)&&!sharedSync){
      const attr=mode==='EIS'?'data-eis-readout':'data-conventional-readout';
      const node=$('#region-main ['+attr+'="'+key+'"]');
@@ -72,7 +79,8 @@
       node.dataset.fuelDisplayMode=fuelMode;node.dataset.displayUnit=fuelMode==='USED'?'t':'t/h';
      }
      if(!uncertain&&shown!=='hidden'&&(lastPaint.get(stamp)!==value||!node)){
-      window.B737EISDotReadoutsV1?.setReading(id,p,value,'ENGINE_INDICATION_BACKEND_V2');
+      window.B737EISDotReadoutsV1?.setReading(id,p,value,'ENGINE_INDICATION_BACKEND_V2',
+        {snap:mode==='EIS'&&p==='fuelFlow'});
       lastPaint.set(stamp,value);
      }
     }
@@ -245,18 +253,22 @@
    // EIS FUEL USED is a momentary ten-second display. Conventional uses its
    // own held RATE/USED selector and is not subject to this automatic timer.
    if(mode==='EIS'&&fuelResetDueAt!==null&&now>=fuelResetDueAt){
-    // Ch7.10.7: show accumulated USED for one second after RESET, then
-    // reset both engines' accumulated ledger and briefly show zero.
+    // Hold USED 1.5 seconds, then reset the ECU ledger;
+    // animate only the display to zero over the following three seconds.
     resetFuelPending=true;fuelResetDueAt=null;lastPaint.clear();
    }
    if(mode==='EIS'&&fuelResetZeroUntil!==null&&now>=fuelResetZeroUntil){
-    fuelMode='RATE';fuelResetZeroUntil=null;fuelUsedExpiresAt=null;lastPaint.clear();
+    fuelMode='RATE';fuelResetZeroUntil=null;fuelUsedExpiresAt=null;
+    fuelResetTransition=null;lastPaint.clear();
    }
    if(mode==='EIS'&&fuelMode==='USED'&&fuelUsedExpiresAt!==null&&now>=fuelUsedExpiresAt&&
       fuelResetZeroUntil===null){
     fuelMode='RATE';fuelUsedExpiresAt=null;lastPaint.clear();
    }
-   if(lastTime!==null&&now<lastTime){prior=null;lastPaint.clear();}
+   if(lastTime!==null&&now<lastTime){
+    prior=null;fuelResetDueAt=null;fuelResetZeroUntil=null;fuelResetTransition=null;
+    fuelUsedExpiresAt=null;fuelMode='RATE';lastPaint.clear();
+   }
    const next=api().calculate(db,{mode,electrical:state,observed,previous:prior,
     faults:displayFaults,limits:displayLimits,filterBypassThresholdPsid:filterThreshold,
     dtMs:dt,fuelMode,resetFuelUsed:resetFuelPending,burnedKg:live.fuel?.burnedKg});
@@ -333,12 +345,14 @@
     fuelMode=cmd.value;
     const clock=window.B737ISNCockpitV1?.getECUState?.()?.timeMs;
     fuelUsedExpiresAt=fuelMode==='USED'&&mode==='EIS'&&numeric(clock)?clock+10000:null;
-    if(cmd.value==='RATE'){fuelResetDueAt=null;fuelResetZeroUntil=null;}
+    fuelResetDueAt=null;fuelResetZeroUntil=null;fuelResetTransition=null;
     lastPaint.clear();return refresh();
    case 'RESET_FUEL_USED': {
     const now=window.B737ISNCockpitV1?.getECUState?.()?.timeMs;
     if(mode==='EIS'&&numeric(now)){
-     fuelMode='USED';fuelResetDueAt=now+1000;fuelResetZeroUntil=now+1350;
+     fuelMode='USED';fuelResetDueAt=now+1500;fuelResetZeroUntil=now+4500;
+     fuelResetTransition={startKg:{engine1:current?.fuelUsedKg?.engine1??0,
+       engine2:current?.fuelUsedKg?.engine2??0},startAt:now+1500,endAt:now+4500};
      fuelUsedExpiresAt=null;resetFuelPending=false;
     }else{
      resetFuelPending=true;fuelResetDueAt=null;fuelResetZeroUntil=null;
