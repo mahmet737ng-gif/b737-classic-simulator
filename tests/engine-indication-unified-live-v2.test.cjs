@@ -112,14 +112,14 @@ async function run(){
  assert.equal(live.getState().fuelMode,'USED',
   'EIS RESET displays old fuel USED for the first second');
  assert.equal(live.getState().snapshot.fuelUsedKg.engine1,beforeReset);
- raw.timeMs+=999;live.refresh();
+ raw.timeMs+=1499;live.refresh();
  assert.ok(live.getState().snapshot.fuelUsedKg.engine1>0,
-  'EIS fuel USED must not reset before the one-second hold expires');
+  'EIS fuel USED must not reset before the 1.5-second hold expires');
  raw.timeMs+=1;live.refresh();
  assert.equal(live.getState().snapshot.fuelUsedKg.engine1,0);
  assert.equal(live.getState().fuelMode,'USED','EIS momentarily shows zero');
- raw.timeMs+=350;live.refresh();
- assert.equal(live.getState().fuelMode,'RATE','EIS returns to RATE after reset');
+ raw.timeMs+=3000;live.refresh();
+ assert.equal(live.getState().fuelMode,'RATE','EIS returns instantly to RATE after the three-second visible countdown');
  // Conventional photo needles use same observed ECU but have different feeds.
  live.command({type:'MODE',mode:'CONVENTIONAL'});
  assert.equal(live.getState().mode,'CONVENTIONAL');

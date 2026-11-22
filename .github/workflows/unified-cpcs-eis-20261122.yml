@@ -1,0 +1,46 @@
+name: Unified CPCS / EIS / EHSI 2026-11-22 QA
+on:
+  push:
+    branches: [fix/unified-cpcs-eis-20261122]
+  pull_request:
+    paths:
+      - engine/systems/cpcs-v5.js
+      - engine/instruments/eis-dot-digits-v1.js
+      - panel-mosaic-lab/cockpit/pressurization-oh22*
+      - panel-mosaic-lab/cockpit/aircraft-settings.js
+      - panel-mosaic-lab/cockpit/engine-indication-live-v2.js
+      - panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js
+      - panel-mosaic-lab/cockpit/ehsi-unified-v1.js
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax check changed runtime scripts
+        run: |
+          node --check engine/systems/cpcs-v5.js
+          node --check panel-mosaic-lab/cockpit/aircraft-settings.js
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22-model.js
+          node --check panel-mosaic-lab/cockpit/pressurization-oh22.js
+          node --check panel-mosaic-lab/cockpit/eis-dot-readouts-v1.js
+          node --check panel-mosaic-lab/cockpit/engine-indication-live-v2.js
+          node --check engine/instruments/eis-dot-digits-v1.js
+          node --check panel-mosaic-lab/cockpit/ehsi-unified-v1.js
+      - name: CPCS and physical overhead tests
+        run: |
+          node tests/cpcs-v5.test.cjs
+          node panel-mosaic-lab/cockpit/pressurization-oh22.test.cjs
+          node panel-mosaic-lab/cockpit/pressurization-oh22-cpcs-fixes.test.cjs
+      - name: Engine numeric and EIS tests
+        run: |
+          node tests/eis-dot-readouts-v1.test.cjs
+          node tests/engine-indication-unified-live-v2.test.cjs
+          node tests/engine-indication-instructor-power-v1.test.cjs
+      - name: EHSI mode and symbology tests
+        run: |
+          node efis-display-lab/ehsi-v2.test.cjs
+          node tests/ehsi-selected-heading-svg-v1.test.cjs
+          node panel-mosaic-lab/cockpit/ehsi-radio-overlays-v1.test.cjs

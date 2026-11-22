@@ -30,7 +30,7 @@
  })));
  // Olive yellow of the reference, with lit-dot intensity compensated for
  // subpixel antialiasing at the native panel's much smaller display size.
- const style=Object.freeze({color:'#92913f',pitch:.8,radius:.36,advance:18,decimalAdvance:6,
+ const style=Object.freeze({color:'#80ec79',pitch:.8,radius:.38,advance:18,decimalAdvance:6,
   height:21,drumStride:24,windowTop:-8,windowHeight:36,bodyTop:-1,bodyHeight:22});
  function format(value,{decimals=0,integerDigits=3,divisor=1}={}){
   if(!Number.isInteger(decimals)||decimals<0||decimals>2)throw Error('EIS precision must be zero, one or two decimals');
