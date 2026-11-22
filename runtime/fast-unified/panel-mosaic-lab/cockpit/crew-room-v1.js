@@ -9,6 +9,7 @@
   const api = '/api/crew';
   const params = new URLSearchParams(win.location.hash.slice(1));
   const invitation = params.get('crew') || undefined;
+  const cockpitRoom = new URLSearchParams(win.location.search).get('crewRoom');
   let user = null;
   let room = null;
   let events = null;
@@ -20,7 +21,7 @@
   const guestAccount = find('[data-crew-accounts]');
   const username = account.elements.username;
   const password = account.elements.password;
-  const role = find('select');
+  const role = find('[data-crew-join] select');
   const roster = find('[data-crew-roster]');
   const online = find('[data-crew-online]');
   const invitePanel = find('[data-crew-invitations]');
@@ -54,6 +55,8 @@
     roster.hidden = !room;
     find('[data-crew-join]').hidden = !user || !room || !!room.role;
     role.hidden = !room?.manager;
+    find('[data-crew-enter]').hidden = !room?.role || !!cockpitRoom;
+    find('[data-crew-duties]').hidden = !(room?.manager || room?.role === 'instructor');
     find('[data-crew-leave]').hidden = !room?.role;
     invitePanel.hidden = !room?.manager;
     if (!room) linkBox.hidden = true;
@@ -73,6 +76,9 @@
     }));
     online.hidden = !online.childElementCount;
     if (role.selectedOptions[0]?.disabled) role.value = [...role.options].find(option => !option.disabled).value;
+    find('[data-crew-flying]').value = room.flying;
+    const pm = room.flying === 'captain' ? 'firstOfficer' : 'captain';
+    find('[data-crew-flight-duties]').textContent = 'PF: ' + roles[room.flying] + ' · PM: ' + roles[pm];
     find('[data-crew-seat-status]').textContent = room.role ? 'Your role: ' + roles[room.role] :
       room.invitedRole ? 'Invited as ' + roles[room.invitedRole] : '';
     find('[data-crew-confirm]').textContent = room.invitedRole ? 'Join as ' + roles[room.invitedRole] : 'Join Room';
@@ -119,8 +125,8 @@
   }
 
   async function inspectRoom() {
-    if (room || invitation) {
-      room = await request('inspect', {invite: invitation, roomId: room?.roomId});
+    if (room || invitation || cockpitRoom) {
+      room = await request('inspect', {invite: invitation, roomId: room?.roomId ?? cockpitRoom ?? undefined});
       trackRoster();
     }
     render();
@@ -183,7 +189,24 @@
     trackRoster();
   }));
 
+  find('[data-crew-flying]').addEventListener('change', event => busy(async () => {
+    room = await request('assignFlying', {roomId: room.roomId, role: event.target.value});
+  }));
+
+  find('[data-crew-enter]').addEventListener('click', () => busy(async () => {
+    const url = new URL('/panel-mosaic-lab/unified/', win.location.href);
+    url.searchParams.set('crewRoom', room.roomId);
+    if (invitation) sessionStorage.setItem('unified-crew-invite', invitation);
+    win.location.assign(url);
+  }));
+
   find('[data-crew-leave]').addEventListener('click', () => busy(async () => {
+    if (cockpitRoom) {
+      await request('leave', {roomId: cockpitRoom});
+      const saved = sessionStorage.getItem('unified-crew-invite');
+      win.location.assign(user?.owner ? '/panel-mosaic-lab/unified/' : '/crew/' + (saved ? '#crew=' + saved : ''));
+      return;
+    }
     room = await request('leave', {roomId: room.roomId, invite: invitation});
     trackRoster();
   }));

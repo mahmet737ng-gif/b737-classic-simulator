@@ -186,6 +186,7 @@ try{
    if(!model)return false;
    if(busy){output('FLAP '+position+' • moving');return false;}
    const route=model.sequence(position,target);
+   root.dispatchEvent(new CustomEvent('b737:flap-lever-command',{detail:{detent:Number(target)}}));
    stepAnimation(route,()=>{const gate=Number(target)!==position&&(position===1||position===15);
       output(gate?'GATE '+position+' • tap again':'FLAP '+position+(position===0?' / UP':''));});
    return true;
@@ -327,6 +328,7 @@ try{
      root.dispatchEvent(new CustomEvent('b737:flap-ready',{detail:{position:0,detents:VALUES.slice()}}));
      window.B737FlapVisualTest=Object.freeze({
        get position(){return position;},
+       ready:()=>!busy,
        request,select:request,
        presetFinal10,
        swipe:moveBySwipe,

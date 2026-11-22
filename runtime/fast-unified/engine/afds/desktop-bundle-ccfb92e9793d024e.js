@@ -599,7 +599,8 @@ try{
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
- let tickErrorCount=0,lastTickError=null;
+ let tickErrorCount=0,lastTickError=null,crewFollower=false;
+ const crewEvent=(type,value)=>win.dispatchEvent(new CustomEvent('b737:crew-flight-command',{detail:{type,value}}));
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0009-FINAL10-STARTPAUSE';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
@@ -740,6 +741,7 @@ try{
   publish();updateUI();
   status((pause?'PAUSED':'RUNNING')+' · '+state.icao+' RWY '+state.runway+
    ' · '+state.phase+' · '+Math.round(state.iasKt)+' KT');
+  crewEvent('pauseFlight',pause);
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-paused',{
    detail:{paused:pause,icao:state.icao,runway:state.runway,preset:state.preset}}));
   return true;
@@ -778,6 +780,7 @@ try{
   by('flightPause').textContent='PAUSE';
   status('Scenario feed stopped. IFR/IRS consumers will use their existing sources or show source unavailable.');
   updateUI();
+  crewEvent('stopFlight',true);
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-stopped',{detail:{version:VERSION}}));
   return true;
  }
@@ -831,6 +834,7 @@ try{
    }
    publish();lastPublish=performance.now();updateUI();
    if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+   crewEvent('loadFlight',config);
    status((pause?'PAUSED / READY':'ACTIVE')+' · '+state.icao+' RWY '+
     state.runway+' · '+state.phase+' · '+state.georefQuality);
    return true;
@@ -844,6 +848,8 @@ try{
    // Altitude capture is available; VS and bank follow the flight model/MCP.
    if(Math.abs(v('Alt')-state.altitudeFt)>50)
     state=Core.command(state,{type:'ALTITUDE',value:v('Alt')});
+   crewEvent('flightTargets',{speedKt:state.target.speedKt,
+    headingDeg:trueHeading(v('Heading'),state),altitudeFt:v('Alt')});
    status('Targets accepted — aircraft changes heading/bank, IAS and altitude over simulated time.');
   }catch(error){status('INVALID TARGET: '+String(error.message||error),true);}
  }
@@ -940,7 +946,7 @@ try{
     // Read actual flap actuator travel while paused; only flight time and
     // kinematics are frozen, not the physical setup of the aircraft.
     syncAeroConfiguration();
-    if(!pause){
+    if(!pause&&!crewFollower){
     if(now-lastEngineContextAt>=900){
      lastEngineContextAt=now;
      try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({
@@ -1021,6 +1027,15 @@ try{
    return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
+  crewFollower:value=>{crewFollower=value===true;lastTick=performance.now();},
+  followCrew:(sample,paused)=>{
+   const initial=!active||state?.icao!==sample.icao||state?.runway!==sample.runway||state?.preset!==sample.preset;
+   state=sample;active=true;pause=paused;crewFollower=true;lastTick=performance.now();
+   if(initial||lastTick-lastEngineContextAt>=900){
+    lastEngineContextAt=lastTick;syncInitialEngineContext();
+   }
+   publish();updateUI();
+  },
   pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,

@@ -386,6 +386,16 @@
    if(owner)for(const side of ['AC','DC'])acceptMeterSource(owner.read(side));
   }catch(_){}
   window.B737RotaryGuards=Object.freeze({getState:()=>engine.snapshot(),getRegistry:()=>JSON.parse(JSON.stringify(registry)),
+   setCrewRotary:(id,value)=>engine.setRotary(id,value,'crew-room'),
+   setCrewGuard:(id,next)=>{
+    const current=engine.guard(id);
+    if(!current)return false;
+    if(next.open||next.value!==current.value){
+     if(!engine.guardAction(id,'open').ok)return false;
+     if(!engine.guardAction(id,'set',next.value).ok)return false;
+    }
+    return next.open||engine.guardAction(id,'close').ok;
+   },
    // Narrow 737-400 adapter: retain existing pneumatic control channel for outer two zones.
    // No geometry or behavior change for 737-300/500 when this adapter is not called.
    setAirconTemperature:(id,value)=>{

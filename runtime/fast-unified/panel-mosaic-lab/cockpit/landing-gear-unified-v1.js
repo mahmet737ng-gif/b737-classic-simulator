@@ -142,7 +142,9 @@
     state=next;
     if(track)track.dataset.detent=position;
     if(ticker){root.clearInterval(ticker);ticker=0;lastAt=0;}
-    run();publish(true);return true;
+    run();publish(true);
+    emit('b737:landing-gear-command',{position,lockOverride:opts.lockOverride===true});
+    return true;
   }
   function mount(){
     if(track?.isConnected)return true;

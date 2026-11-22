@@ -788,6 +788,8 @@ try{
   window.addEventListener('resize',crop);
  }
  function open(id){
+  const role=document.documentElement.dataset.crewRole;
+  if(role&&role!=='instructor')return false;
   if(!panels.has(id))return false;
   if(id==='OH12'&&window.B737APULabShellV1?.open)return window.B737APULabShellV1.open();
   if(id==='OH17'&&window.B737HydraulicLabV1?.open)return window.B737HydraulicLabV1.open();
