@@ -1,0 +1,15 @@
+/* FCOM 7.10.1 EIS primary plate, TMD black window above MAN SET.
+ * Overlay only; owner-approved photo remains unchanged. Source-photo pixel
+ * registration is provisional and requires visual inspection on Unified.
+ */
+.texture-piece[data-piece="engine"] .unified-tmd-fcom{
+ position:absolute;left:40%;top:34%;width:25%;height:5%;
+ display:flex;align-items:center;justify-content:center;
+ margin:0;padding:0;box-sizing:border-box;pointer-events:none;
+ color:#e4edcf;background:#111614;
+ text-shadow:0 0 2px #d0dfac,0 0 5px #536741;
+ font:700 clamp(8px,1.35vw,16px)/1.1 "Lucida Console",Consolas,monospace;
+ letter-spacing:.035em;white-space:nowrap;z-index:7;
+ border-radius:1px;overflow:hidden}
+.texture-piece[data-piece="engine"] .unified-tmd-fcom[hidden]{display:none!important}
+.reference-mode .unified-tmd-fcom{display:none!important}

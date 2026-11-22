@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "c379f958ca3bb60b8404e2feeaf8c2f77d1a2b1a",
-  "mainBefore": 307,
-  "mainAfter": 96,
+  "sourceCommit": "a3f7e39513f4e886aee407ee4cec880d8217ffb6",
+  "mainBefore": 308,
+  "mainAfter": 97,
   "overheadBefore": 61,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "6459b19aa457009dbb1c7c9f906a0b7a95eb13feaae11049f9a3419c43b13d76"
+      "sha256": "f79fa538fbb365178a7e8e8970b1b1b337098b9f63cda3da412f703670de9775"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -143,8 +143,12 @@
       "sha256": "75446c3ce3970339f7cf0045c75a543db9c8b95add6ad399bfd03874969315dd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-881db6ef7279197c.js",
-      "sha256": "881db6ef7279197c8b1a4086391286c47d8cc5dc13dafaea546234249e93b482"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-2a8e93446f6786a5.js",
+      "sha256": "2a8e93446f6786a5ebc41a6ce0dfe1b524b8627a7f4ac90e6ba5e05bc2bf104b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-114ed98509ddb553.js",
+      "sha256": "114ed98509ddb553568005cfa0202ad28823e9ca0aeb7dbe98a99bb2e9a51342"
     },
     {
       "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
@@ -585,6 +589,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js",
       "sha256": "a406fdc0e46d34ef7c9f6302f6afdcecb5153da627e3d2179734cebc8b5dab53"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css",
+      "sha256": "c93f67d216d627acfa61d9246764906a4b253024c8ef14beb181064579afa346"
     },
     {
       "path": "panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js",
