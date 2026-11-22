@@ -79,7 +79,7 @@
 }
 
 #crewRoomDialog .crew-invite-share > div { flex: 1 1 12rem; min-width: 0; }
-#crewRoomDialog [data-crew-invite-role] { margin: 0 0 .6rem; font-weight: 700; }
+#crewRoomDialog .crew-invite-share p { margin: 0 0 .6rem; font-weight: 700; }
 #crewRoomDialog [data-crew-copy] { margin-top: .55rem; }
 
 #crewCockpitStatus {
@@ -88,3 +88,18 @@
   font: 600 .76rem system-ui, sans-serif;
   white-space: nowrap;
 }
+
+body[data-crew-page] {
+  margin: 0;
+  min-height: 100vh;
+  background: #071016;
+}
+
+body[data-crew-page] #crewRoomDialog {
+  margin: clamp(1rem, 5vh, 3rem) auto;
+  max-height: none;
+}
+
+#crewRoomDialog [data-crew-back] { color: #b8e8f5; }
+#crewRoomDialog .crew-credentials { display: grid; gap: .65rem; }
+#crewRoomDialog [data-crew-host] { margin-block: .85rem; }

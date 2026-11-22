@@ -2,7 +2,7 @@
 
 const assert = require('node:assert/strict');
 const {once} = require('node:events');
-const {createReadStream} = require('node:fs');
+const {createReadStream,readFileSync} = require('node:fs');
 const path = require('node:path');
 const {test} = require('node:test');
 const {createCrewRoomServer, makeVerifier} = require('../sync-server/crew-rooms');
@@ -13,7 +13,17 @@ const prefix = '/api/crew';
 function fixture(req, res) {
   const cockpit = path.resolve(__dirname, '../panel-mosaic-lab/cockpit');
   const pathname = new URL(req.url, 'http://127.0.0.1').pathname;
-  const file = pathname.endsWith('/') ? 'index.html' : path.basename(pathname);
+  if (pathname === '/crew/') {
+    const source = readFileSync(path.join(cockpit, 'index.html'), 'utf8');
+    const dialog = source.match(/<dialog id="crewRoomDialog"[^>]*>[\s\S]*?<\/dialog>/)[0];
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+    res.end('<!doctype html><meta charset="utf-8"><title>Unified Crew Room</title><link rel="stylesheet" href="/crew/crew-room-v1.css">' +
+      '<script src="/crew/crew-room-v1.js" defer></script><body data-crew-entry data-crew-page>' +
+      dialog.replace(/^<dialog/, '<main').replace(/<\/dialog>$/, '</main>') + '</body>');
+    return;
+  }
+  const file = pathname === '/crew/qrcode.js' ? 'qrcode-generator-2.0.4.js' :
+    pathname.endsWith('/') ? 'index.html' : path.basename(pathname);
   const type = {'index.html': 'text/html', 'qrcode-generator-2.0.4.js': 'text/javascript', 'crew-cockpit-v1.js': 'text/javascript', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
   if (!type) {
     res.writeHead(404).end();
@@ -51,13 +61,13 @@ function fixture(req, res) {
   createReadStream(path.join(cockpit, relative)).pipe(res);
 }
 
-async function start(t) {
+async function start(t, auth = {}) {
   // Node's test/browser clients connect to loopback only. The production
   // server checks this Origin against its configured public HTTPS origin.
   const origin = 'http://127.0.0.1';
   const ownerVerifier = await makeVerifier(password);
   const server = createCrewRoomServer({origin, database: ':memory:', ownerUsername: 'TrainerOwner', ownerVerifier,
-    staticHandler: fixture});
+    staticHandler: fixture, ...auth});
   const listen = once(server.listen(0, '127.0.0.1'), 'listening');
   await listen;
   t.after(() => {
@@ -130,15 +140,42 @@ test('crew authorization, exclusive seats and reusable observer invitations', as
   assert.equal((await firstOfficer('login', {username: 'Partner1', password})).status, 200);
 });
 
-test('Unified Welcome shows live role counts across independent browsers', {skip: !process.env.CHROME_PATH}, async t => {
+test('room-wide invitation accepts guest-selected roles and enforces occupied seats', async t => {
+  const {origin} = await start(t);
+  const owner = client(origin);
+  const guest = client(origin);
+  await owner('login', {username: 'TrainerOwner', password});
+  await owner('accounts', {username: 'GuestOne', password});
+  const hosted = await owner('create', {role: 'captain'});
+  assert.equal(hosted.data.role, 'captain');
+  const {roomId, roomInvite: invite} = hosted.data;
+  assert.match(invite, /^[A-Za-z0-9_-]{32}$/);
+  assert.equal((await owner()).data.hostedRoom.roomInvite, invite);
+  assert.equal((await guest('join', {roomId, role: 'firstOfficer', invite})).status, 401);
+  await guest('login', {username: 'GuestOne', password});
+  assert.equal((await guest('join', {roomId, role: 'firstOfficer'})).status, 404);
+  const preview = await guest('inspect', {invite});
+  assert.equal(preview.data.invitedRole, null);
+  assert.equal(preview.data.roomInvite, undefined);
+  assert.equal((await guest('join', {roomId, role: 'captain', invite})).status, 409);
+  assert.equal((await guest('join', {roomId, role: 'firstOfficer', invite})).data.role, 'firstOfficer');
+  const switched = await owner('create', {role: 'instructor'});
+  assert.equal(switched.data.role, 'instructor');
+  assert.equal(switched.data.roomInvite, invite);
+});
+
+test('Private Room opens after Welcome and admits signed-in and signed-out guests', {skip: !process.env.CHROME_PATH}, async t => {
   const {chromium} = require('playwright');
   const {origin} = await start(t);
   const browser = await chromium.launch({executablePath: process.env.CHROME_PATH});
   t.after(() => browser.close());
-  const root = origin + '/panel-mosaic-lab/cockpit/?welcomeTest=1';
-  async function signIn(page, username) {
+
+  async function credentials(page, username) {
     await page.getByLabel('Username', {exact: true}).fill(username);
     await page.getByLabel('Password', {exact: true}).fill(password);
+  }
+  async function signIn(page, username) {
+    await credentials(page, username);
     await page.getByRole('button', {name: 'Sign In', exact: true}).click();
     await page.getByText('Signed in as ' + username, {exact: true}).waitFor();
   }
@@ -148,69 +185,58 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
   }
 
   const host = await browser.newPage({viewport: {width: 1440, height: 900}});
-  await host.goto(root);
-  await host.locator('#unifiedWelcome').getByRole('button', {name: 'Join Private Room'}).click();
+  const cockpit = origin + '/panel-mosaic-lab/cockpit/';
+  await host.goto(cockpit + '?welcomeTest=1');
+  assert.equal(await host.locator('#unifiedWelcome [data-crew-open]').count(), 0);
+  await host.goto(cockpit);
+  await host.getByRole('button', {name: 'Private Room', exact: true}).click();
+  await host.waitForURL(origin + '/crew/');
   await signIn(host, 'TrainerOwner');
-  await host.getByRole('button', {name: 'Create Room', exact: true}).click();
-  await host.getByRole('button', {name: 'Join Room', exact: true}).click();
+  await host.getByLabel('Your Role').selectOption('captain');
   await count(host, 'captain', '1 / 1');
+  const linkField = host.getByLabel('Invitation Link');
+  await host.getByRole('img', {name: 'Private room invitation QR code'}).waitFor();
+  const url = await linkField.inputValue();
+  const invite = new URL(url);
+  assert.equal(invite.pathname, '/crew/');
+  assert.match(invite.hash, /^#crew=[A-Za-z0-9_-]{32}$/);
+  await host.getByRole('button', {name: 'Copy Link', exact: true}).click();
+  await host.getByText(/Invitation link (copied|selected)/).waitFor();
 
-  async function invite(role, username) {
-    await host.getByLabel('Assigned Username').fill(username ?? '');
-    await host.locator('[data-crew-invite="' + role + '"]').click();
-    await host.getByLabel('Invitation Link').waitFor();
-    await host.getByRole('img', {name: 'Private room invitation QR code'}).waitFor();
-    await host.getByRole('button', {name: 'Copy Link', exact: true}).click();
-    await host.getByText(/Invitation link (copied|selected)/).waitFor();
-    return host.getByLabel('Invitation Link').inputValue();
-  }
-  async function guest(role, username, seat) {
+  async function guest(role, username, alreadySignedIn = false) {
     await host.getByLabel('Guest Username').fill(username);
     await host.getByLabel('Guest Password').fill(password);
     await host.getByRole('button', {name: 'Create Guest Account'}).click();
-    await host.getByText('Account created for ' + username + '.').waitFor();
+    await host.getByText('Account created for ' + username + '.', {exact: true}).waitFor();
     const page = await browser.newPage({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});
-    const url = await invite(role, username);
-    if (role === 'firstOfficer') {
-      await page.goto(root);
-      await page.locator('#unifiedWelcome').getByRole('button', {name: 'Join Private Room'}).click();
-      const input = page.getByLabel('Private Room Link');
-      await input.fill('https://example.com/crew/#crew=' + 'a'.repeat(32));
-      await page.getByRole('button', {name: 'Open Invitation'}).click();
-      await page.getByText('Enter a valid Unified Private Room invitation link.', {exact: true}).waitFor();
-      await input.fill(url);
-      await page.getByRole('button', {name: 'Open Invitation'}).click();
-      await page.getByText('Invited as First Officer', {exact: true}).waitFor();
-    } else {
-      await page.goto(url);
+    if (alreadySignedIn) {
+      await page.goto(origin + '/crew/');
+      await signIn(page, username);
     }
-    await signIn(page, username);
-    await page.getByRole('button', {name: 'Join as ' + seat, exact: true}).click();
-    await page.getByText('Your role: ' + seat, {exact: true}).waitFor();
+    await page.goto(url);
+    await page.getByLabel('Guest Role').waitFor();
+    const captain = page.getByLabel('Guest Role').locator('option[value="captain"]');
+    assert.equal(await captain.evaluate(option => option.disabled), true);
+    assert.equal(await page.getByLabel('Username', {exact: true}).isVisible(), !alreadySignedIn);
+    if (!alreadySignedIn) await credentials(page, username);
+    await page.getByLabel('Guest Role').selectOption(role);
+    await page.getByRole('button', {name: 'Join Room', exact: true}).click();
+    await page.waitForURL(new RegExp('/panel-mosaic-lab/unified/\\?crewRoom='));
+    await page.getByText(/Connected$/).waitFor();
     return page;
   }
 
-  const first = await guest('firstOfficer', 'RemotePartner', 'First Officer');
+  const first = await guest('firstOfficer', 'RemotePartner');
   await count(host, 'firstOfficer', '1 / 1');
   await host.getByText('RemotePartner · First Officer (Right Seat)', {exact: true}).waitFor();
-  const instructor = await guest('instructor', 'SimInstructor', 'Instructor');
-  await count(first, 'instructor', '1 / 1');
-  const observer1 = await guest('observer', 'ClassObserver1', 'Observer');
-  const observer2 = await guest('observer', 'ClassObserver2', 'Observer');
-  await count(host, 'observer', '2');
-  await count(first, 'observer', '2');
-  await count(instructor, 'observer', '2');
-  await count(observer1, 'observer', '2');
-  await count(observer2, 'observer', '2');
-  assert.equal(await observer1.locator('[data-crew-invitations]').isVisible(), false);
-  await observer2.getByRole('button', {name: 'Leave Room', exact: true}).click();
+  const instructor = await guest('instructor', 'SimInstructor', true);
+  await count(host, 'instructor', '1 / 1');
+  const observer1 = await guest('observer', 'ClassObserver1');
   await count(host, 'observer', '1');
-  await instructor.getByLabel('Pilot Flying').selectOption('firstOfficer');
+  await host.getByLabel('Pilot Flying').selectOption('firstOfficer');
   await host.getByText('PF: First Officer · PM: Captain').waitFor();
-  for (const page of [host, first, instructor, observer1]) {
-    await page.getByRole('button', {name: 'Enter Shared Cockpit'}).click();
-    await page.getByText(/Connected$/).waitFor();
-  }
+  await host.getByRole('button', {name: 'Enter Shared Cockpit'}).click();
+  await host.getByText(/Connected$/).waitFor();
   assert.equal(await first.locator('#workspaceLabsToggle').isVisible(), false);
   assert.equal(await instructor.locator('#workspaceLabsToggle').isVisible(), true);
   await host.getByRole('button', {name: 'Rotate heading'}).click();

@@ -215,7 +215,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./smiths-fuel-quantity-v1.js?v=FUEL-QTY-20KG-0001" defer></script>
 <link rel="stylesheet" href="./unified-workspace-v1.css?v=WORKSPACE-0002">
 <link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0005">
-<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0004">
+<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0005">
 <script>
 (function(){
  const test=new URLSearchParams(location.search).get('welcomeTest')==='1';
@@ -280,7 +280,6 @@ body > header.unified-minimal-header .header-settings>button{
     <span class="welcome-spinner" aria-hidden="true"></span>
     <span id="unifiedWelcomeStatus" role="status">Loading Main Instrument Panel…</span>
    </div>
-   <button data-crew-open type="button" aria-haspopup="dialog" aria-controls="crewRoomDialog">Join Private Room</button>
    <button id="unifiedWelcomeRetry" type="button" hidden>Reload Trainer</button>
    <button id="unifiedWelcomeStart" type="button" hidden>Start Flight</button>
   </div>
@@ -292,8 +291,8 @@ body > header.unified-minimal-header .header-settings>button{
 </script>
 <header class="unified-minimal-header"><div class="header-settings">
 <button id="flightScenarioHeader" style="order:100" type="button" aria-haspopup="dialog" aria-controls="flightScenarioDialog">FLT PHASE</button>
+<button data-crew-open style="order:101" type="button">Private Room</button>
 <span id="aircraftProfileHeader" class="aircraft-profile-header" dir="ltr" hidden>737-300/500 · DCPCS · Non-EIS</span>
-<button data-crew-open type="button" aria-haspopup="dialog" aria-controls="crewRoomDialog">Crew Room</button>
 <button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">Controls</button>
 <button id="aircraftSettingsOpen" type="button" aria-haspopup="dialog" aria-controls="aircraftSettingsDialog">⚙ Settings</button>
 <button id="unifiedEfisHeader" type="button" aria-haspopup="dialog" aria-controls="unifiedEfisDialog" style="display:none!important">EFIS CONTROL</button>
@@ -307,6 +306,7 @@ body > header.unified-minimal-header .header-settings>button{
   <div class="crew-title">
     <h2 id="crewRoomTitle">Unified Crew Room</h2>
     <button type="button" data-crew-close aria-label="Close Crew Room">Close</button>
+    <a href="/panel-mosaic-lab/unified/" data-crew-back hidden>Back to Unified</a>
   </div>
   <p data-crew-user></p>
   <form data-crew-link-entry autocomplete="off">
@@ -317,18 +317,41 @@ body > header.unified-minimal-header .header-settings>button{
     </div>
   </form>
   <form data-crew-login autocomplete="on">
-    <label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="40"></label>
-    <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
-    <div class="crew-actions">
-      <button type="submit">Sign In</button>
+    <div class="crew-credentials" data-crew-credentials>
+      <label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="40"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
     </div>
+    <label data-crew-join hidden>Guest Role
+      <select name="role" required>
+        <option value="">Select a role</option>
+        <option value="captain">Captain</option>
+        <option value="firstOfficer">First Officer</option>
+        <option value="instructor">Instructor</option>
+        <option value="observer">Observer</option>
+      </select>
+    </label>
+    <div class="crew-actions"><button type="submit" data-crew-confirm>Sign In</button></div>
   </form>
-  <form data-crew-accounts hidden>
-    <label>Guest Username<input name="username" autocomplete="off" required minlength="3" maxlength="40"></label>
-    <label>Guest Password<input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
-    <div class="crew-actions"><button type="submit">Create Guest Account</button></div>
-  </form>
-  <button type="button" data-crew-create hidden>Create Room</button>
+  <label data-crew-host hidden>Your Role
+    <select data-crew-host-role>
+        <option value="">Select a role</option>
+        <option value="captain">Captain</option>
+        <option value="firstOfficer">First Officer</option>
+        <option value="instructor">Instructor</option>
+        <option value="observer">Observer</option>
+    </select>
+  </label>
+  <section data-crew-invitations hidden aria-labelledby="crewInviteTitle">
+    <h3 id="crewInviteTitle">Invite to Private Room</h3>
+    <section class="crew-invite-share" data-crew-link hidden aria-label="Private room invitation">
+      <canvas data-crew-qr role="img" aria-label="Private room invitation QR code" hidden></canvas>
+      <div>
+        <p>Scan to join this room</p>
+        <label>Invitation Link<input readonly></label>
+        <button type="button" data-crew-copy>Copy Link</button>
+      </div>
+    </section>
+  </section>
   <section data-crew-roster hidden aria-labelledby="crewRosterTitle">
     <h3 id="crewRosterTitle">Participants</h3>
     <dl>
@@ -343,38 +366,16 @@ body > header.unified-minimal-header .header-settings>button{
     <label data-crew-duties hidden>Pilot Flying
       <select data-crew-flying><option value="captain">Captain</option><option value="firstOfficer">First Officer</option></select>
     </label>
-    <div class="crew-actions" data-crew-join hidden>
-      <select aria-label="Crew Role">
-        <option value="captain">Captain</option>
-        <option value="firstOfficer">First Officer</option>
-        <option value="instructor">Instructor</option>
-        <option value="observer">Observer</option>
-      </select>
-      <button type="button" data-crew-confirm>Join Room</button>
-    </div>
-    <section data-crew-invitations hidden aria-labelledby="crewInviteTitle">
-      <h3 id="crewInviteTitle">Invite to Private Room</h3>
-      <label>Assigned Username<input data-crew-assignee autocomplete="off" maxlength="40"></label>
-      <div class="crew-actions">
-        <button type="button" data-crew-invite="captain">Captain</button>
-        <button type="button" data-crew-invite="firstOfficer">First Officer</button>
-        <button type="button" data-crew-invite="instructor">Instructor</button>
-        <button type="button" data-crew-invite="observer">Observer</button>
-      </div>
-      <section class="crew-invite-share" data-crew-link hidden aria-label="Private room invitation">
-        <canvas data-crew-qr role="img" aria-label="Private room invitation QR code" hidden></canvas>
-        <div>
-          <p data-crew-invite-role></p>
-          <label>Invitation Link<input readonly></label>
-          <button type="button" data-crew-copy>Copy Link</button>
-        </div>
-      </section>
-    </section>
     <div class="crew-actions">
       <button type="button" data-crew-enter hidden>Enter Shared Cockpit</button>
       <button type="button" data-crew-leave hidden>Leave Room</button>
     </div>
   </section>
+  <form data-crew-accounts hidden>
+    <label>Guest Username<input name="username" autocomplete="off" required minlength="3" maxlength="40"></label>
+    <label>Guest Password<input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
+    <div class="crew-actions"><button type="submit">Create Guest Account</button></div>
+  </form>
   <button type="button" data-crew-logout hidden>Sign Out</button>
   <p role="status"></p>
 </dialog>
@@ -638,7 +639,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>
 <script src="./unified-workspace-v1.js?v=WORKSPACE-0002-P15-CTR-0043" defer></script>
 <script src="./unified-welcome-v1.js?v=WELCOME-0005" async></script>
-<script src="./crew-room-v1.js?v=CREW-0004" defer></script>
+<script src="./crew-room-v1.js?v=CREW-0005" defer></script>
 <script src="./crew-cockpit-v1.js?v=CREW-0001" defer></script>
 <script src="./instructor-nonnormal-v1.js?v=INSTRUCTOR-NONNORMAL-0001" defer></script>
 <script src="../../audio-lab/owner-ra-callouts-v1.js?v=RA-CALLS-0001" defer></script>

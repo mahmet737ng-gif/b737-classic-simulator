@@ -105,14 +105,14 @@ function frame(res, state, event = 'roster') {
   }
 }
 
-function createCrewRoomHandler({origin, database, accounts, ownerUsername, ownerVerifier, ownerAccess,
+function createCrewRoomHandler({origin, database, accounts, ownerUsername, ownerVerifier, gatewayIdentity, gatewayLogin,
   reservedUsernames = [], staticHandler, now = Date.now}) {
   if (!origin || new URL(origin).origin !== origin ||
       (!origin.startsWith('https://') && new URL(origin).hostname !== '127.0.0.1')) {
     throw Error('CREW_ORIGIN must be an HTTPS origin or the loopback development origin.');
   }
   if (!usernamePattern.test(ownerUsername ?? '') ||
-      (!ownerAccess && !/^[a-f0-9]{32}:[a-f0-9]{128}$/.test(ownerVerifier ?? ''))) {
+      (!gatewayIdentity && !/^[a-f0-9]{32}:[a-f0-9]{128}$/.test(ownerVerifier ?? ''))) {
     throw Error('Set CREW_OWNER_USERNAME and CREW_OWNER_VERIFIER.');
   }
 
@@ -234,15 +234,25 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     return invite && invite.room.expires > now() ? invite : null;
   }
 
+  function roomInvite(room) {
+    if (!room.invitation) {
+      room.invitation = randomToken();
+      invites.set(hash(room.invitation), {room, chooseRole: true});
+    }
+    return room.invitation;
+  }
+
   function stateFor(room, user, invite) {
     const key = user?.username.toLowerCase();
     const {online, ...counts} = roster(room);
+    const manager = room.manager === key;
     return {
       ...counts,
       online: room.manager === key || room.members.has(key) ? online : [],
       role: room.members.get(key)?.role ?? null,
       invitedRole: invite?.role ?? null,
-      manager: room.manager === key
+      manager,
+      ...(manager && room.invitation ? {roomInvite: room.invitation} : {})
     };
   }
 
@@ -282,11 +292,16 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     return username.toLowerCase();
   }
 
-  async function login(res, body, user) {
+  async function login(req, res, body, user) {
     if (user) throw new RequestError(409, 'Sign out before switching accounts.');
     const key = credentials(body);
+    if (gatewayLogin && reservedNames.has(key)) {
+      const {username, cookies} = await gatewayLogin(req, body.username, body.password);
+      return send(res, 200, {user: {username, owner: username.toLowerCase() === owner, gateway: true}},
+        {'Set-Cookie': cookies});
+    }
     const guest = reservedNames.has(key) ? null : await getAccount(key);
-    const localOwner = key === owner && !ownerAccess;
+    const localOwner = key === owner && !gatewayIdentity;
     const verifier = localOwner ? ownerVerifier : guest?.verifier ?? dummyVerifier;
     const verified = await checkCredential(key, () => verifyPassword(body.password, verifier));
     if (!verified || (!localOwner && !guest)) throw new RequestError(401, 'Incorrect username or password.');
@@ -307,11 +322,15 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
 
   async function route(req, res) {
     const url = new URL(req.url, origin);
-    const user = session(req) || (ownerAccess && await ownerAccess(req) ?
-      {username: ownerUsername, owner: true, gateway: true, expires: Infinity} : null);
+    let user = session(req);
+    if (!user && gatewayIdentity) {
+      const username = await gatewayIdentity(req);
+      if (username) user = {username, owner: username.toLowerCase() === owner, gateway: true, expires: Infinity};
+    }
     if (req.method === 'GET' && url.pathname === PREFIX) {
       const account = user ? {username: user.username, owner: user.owner, gateway: !!user.gateway} : null;
-      return send(res, 200, {user: account});
+      const hosted = user?.owner && [...rooms.values()].find(room => room.manager === owner && room.expires > now());
+      return send(res, 200, {user: account, ...(hosted ? {hostedRoom: stateFor(hosted, user)} : {})});
     }
     if (req.method === 'GET' && url.pathname === PREFIX + '/events') {
       if (!user) throw new RequestError(401, 'Sign in to join the room.');
@@ -350,7 +369,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
     const data = await readBody(req);
     const action = url.pathname.slice(PREFIX.length + 1);
-    if (action === 'login') return login(res, data, user);
+    if (action === 'login') return login(req, res, data, user);
 
     const invite = resolveInvite(data.invite);
     if (action === 'inspect') {
@@ -362,7 +381,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     if (action === 'accounts') return createAccount(res, data, user);
 
     if (action === 'logout') {
-      if (user.gateway) throw new RequestError(409, 'Sign out from Unified to end your owner session.');
+      if (user.gateway) throw new RequestError(409, 'Sign out from Unified to end your session.');
       const key = user.username.toLowerCase();
       for (const [id, record] of sessions) {
         if (record === user) sessions.delete(id);
@@ -383,6 +402,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
     if (action === 'create') {
       if (!user.owner) throw new RequestError(403, 'Only the Unified room host can create a room.');
+      if (data.role !== undefined && !ROLES.includes(data.role)) throw new RequestError(400, 'Choose a crew role.');
       // Reopen the current room if a create response was lost or another tab already created it.
       let room = [...rooms.values()].find(item => item.manager === owner && item.expires > now());
       if (!room) {
@@ -391,6 +411,10 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
           links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain', flight: null
         };
         rooms.set(room.id, room);
+      }
+      if (data.role !== undefined) {
+        admission(room, user, data.role);
+        roomInvite(room);
       }
       return send(res, 200, stateFor(room, user));
     }
@@ -468,7 +492,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
         if (invite?.room !== room || (invite.boundUser && invite.boundUser !== key)) {
           throw new RequestError(403, 'Use the invitation assigned to your account.');
         }
-        data.role = invite.role;
+        if (!invite.chooseRole) data.role = invite.role;
       }
       admission(room, user, data.role);
       return send(res, 200, stateFor(room, user, invite));
