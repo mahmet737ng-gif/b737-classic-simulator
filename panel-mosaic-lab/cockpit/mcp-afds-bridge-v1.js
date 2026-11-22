@@ -298,7 +298,7 @@ window.B737McpAFDSBridgeV1=Object.freeze({
   const r=window.B737UnifiedFccFlightV1?.getILS?.()||null;
   const tuner=window.B737UnifiedVHFNavControlsV1;
   return {power:out.power,course2Power:out.course2Power,
-   appArmed:out.pending.approach,vorLocArmed:out.armed.roll==='VOR/LOC',
+   appArmed:out.pending.approach,vorLocArmed:out.selectors?.vorLoc===true||out.armed.roll==='VOR/LOC',
    gsArmed:out.armed.pitch==='G/S',capture:{...out.capture},
    fmaNav:{...out.nav},lastRejection:out.rejection,
    navSignal:r?{valid:r.valid,kind:r.kind,ident:r.stationIdent,
