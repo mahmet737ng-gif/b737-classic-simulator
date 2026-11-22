@@ -25,7 +25,10 @@ for(const [id,positions] of Object.entries(cfg.detentLabels)){
 }
 const small=cfg.controls.filter(x=>x.visualFamily==='Small Silver');
 assert.equal(small.length,2);
-for(const c of small)assert.ok(cfg.controlFit[c.id]<.1,'Do not cover real CPCS face with oversized sprite');
+for(const c of small)assert.ok(cfg.controlFit[c.id]>.11&&cfg.controlFit[c.id]<.13,
+ 'CPCS toggle must fill its photographed aperture, without covering neighboring legends');
+assert.equal(cfg.valveIndicator.minAngle,-45);
+assert.equal(cfg.valveIndicator.maxAngle,45);
 const src=fs.readFileSync(path.join(__dirname,'pressurization-oh22.js'),'utf8');
 const css=fs.readFileSync(path.join(__dirname,'pressurization-oh22.css'),'utf8');
 const runtime=fs.readFileSync(path.join(__dirname,'aircraft-settings.js'),'utf8');
