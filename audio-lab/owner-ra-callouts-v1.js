@@ -1,7 +1,7 @@
 /* B737 Classic RA voice preview — owner-supplied a.mp3, trimmed before unidentified end beep.
- * Test Lab only. This audio is not a certified avionics source.
+ * Test Lab only. Original MP3, no synthesis; this is not a certified avionics source.
  * Each timeslice below is grounded in the actual uploaded voice recording.
- * The unverified last beep (after ~10.85 s) is intentionally excluded.
+ * The unverified last beep (after ~10.85 s) remains in the MP3 source but is excluded from all playback ranges.
  */
 (function(root,factory){
   const mod=factory();
@@ -9,7 +9,7 @@
   if(root)root.B737OwnerRACallouts=mod;
 })(typeof globalThis!=="undefined"?globalThis:this,function(){
 "use strict";
-const URL_PATH="./assets/owner-ra-callouts-v1.ogg";
+const URL_PATH="./assets/owner-ra-callouts-v1.mp3";
 const TIMELINE=Object.freeze({
   "radioAltitude|ONE THOUSAND":[0.000,0.960],
   "radioAltitude|500":[1.440,2.250],

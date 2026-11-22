@@ -2,7 +2,7 @@
 
 The user provided **a.mp3** (11.52 seconds, 44.1 kHz mono MP3). Ten voiced callouts were identified in that file. The ending unidentified sound at approximately 10.85–11.52 seconds is deliberately excluded from the preview and all triggers.
 
-The current web test asset at `audio-lab/assets/owner-ra-callouts-v1.ogg` is a low-bandwidth Opus copy, approximately 10.54 seconds, derived from the owner-supplied voice recording. The source recording is not overwritten. This is a training simulation, **not** certified avionics audio.
+The current web test asset at `audio-lab/assets/owner-ra-callouts-v1.mp3` is the exact uploaded original MP3 (188,694 bytes, SHA-256 a81fde2be7bbb10c2857af5e5c8721670f88c56fafdeb60f7cb15b560144b5a8), without any transcoding. The trailing unidentified beep remains in this source file but is excluded from playback. This is a training simulation, **not** certified avionics audio.
 
 | Alert | Time range (s) | Live trigger |
 | --- | --- | --- |

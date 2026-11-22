@@ -26,5 +26,5 @@ assert.equal(player.has("minimums|MINIMUMS"),true);
 assert.equal(player.has("radioAltitude|2500"),false);
 assert.equal(player.has("gpws|PULL UP"),false);
 player.stop();
-assert.ok(URL_PATH.endsWith(".ogg"));
+assert.ok(URL_PATH.endsWith(".mp3"));
 console.log("Owner RA sample map validated: 10 speech callouts; no trailing beep or 2500 assignment");
