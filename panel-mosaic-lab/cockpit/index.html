@@ -2,10 +2,8 @@
 /* Critical pre-paint suppression; existing event handlers remain intact. */
 body > header.unified-minimal-header .header-settings > #unifiedEfisHeader,
 body > header.unified-minimal-header .header-settings > #groundPowerHeader,
-body > header.unified-minimal-header .header-settings > #cbPanelOpen,
 body > header.unified-minimal-header .header-settings > #instrumentPhotoLabOpen,
 body > header.unified-minimal-header .header-settings > #busConsumerTestLabOpen,
-body > header.unified-minimal-header .header-settings > #failuresHeaderOpen,
 body > header.unified-minimal-header .header-settings > #unifiedNavDataHeader,
 body > header.unified-minimal-header .header-settings > #navDataHeader {
   display:none !important;
@@ -296,11 +294,11 @@ body > header.unified-minimal-header .header-settings>button{
 <button id="inspectorToggle" type="button" aria-expanded="false" aria-controls="inspector">Controls</button>
 <button id="aircraftSettingsOpen" type="button" aria-haspopup="dialog" aria-controls="aircraftSettingsDialog">⚙ Settings</button>
 <button id="unifiedEfisHeader" type="button" aria-haspopup="dialog" aria-controls="unifiedEfisDialog" style="display:none!important">EFIS CONTROL</button>
-<button id="cbPanelOpen" type="button" aria-haspopup="dialog" aria-controls="cbPanelDialog" style="display:none!important">CB PNL</button>
+<button id="cbPanelOpen" type="button" aria-haspopup="dialog" aria-controls="cbPanelDialog">CB PNL</button>
 <a href="./instrument-lab/" target="_blank" rel="noopener" class="toolbar-button" id="instrumentPhotoLabOpen" style="display:none!important">INSTRUMENT LAB</a>
 <a id="busConsumerTestLabOpen" href="../../bus-consumer-test-lab/v3.html" target="_blank" rel="noopener" title="Open 24 functional bus nodes and 340 consumers (versioned lab)" style="display:none!important;;align-items:center!important;justify-content:center!important;flex:0 1 auto!important;min-height:36px!important;max-width:128px!important;padding:5px 9px!important;border:1px solid #559dca!important;border-radius:7px!important;background:#193d54!important;color:#b5e1ff!important;text-decoration:none!important;font:600 11px/1.2 system-ui,Tahoma,sans-serif!important;white-space:normal!important;text-align:center!important;touch-action:manipulation">BUS TEST LAB</a>
 <button id="groundPowerHeader" type="button" aria-expanded="false" aria-controls="groundPowerPopover" aria-haspopup="dialog" title="External AC cable and GRD PWR ON/OFF per FCOM" style="display:none!important">GROUND POWER</button>
-<button id="failuresHeaderOpen" type="button" aria-expanded="false" aria-controls="failuresHeaderPopover" aria-haspopup="dialog" title="Instructor failure management: Electrical and Fuel" style="display:none!important">FAILURES</button>
+<button id="failuresHeaderOpen" type="button" aria-expanded="false" aria-controls="failuresHeaderPopover" aria-haspopup="dialog" title="Instructor failures: Electrical, Fuel and Fire">FAILURES</button>
 </div></header>
 <dialog id="flightScenarioDialog" aria-labelledby="flightScenarioTitle" dir="ltr">
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
@@ -548,7 +546,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./flight-display-motion-unified-v1.js?v=FLIGHT-DISPLAY-MOTION-0002-PAUSE-HIDDEN" defer></script><script src="../../engine/afds/autothrottle-speed-servo-v1.js?v=AT-SPEED-0001" defer></script><script src="./autothrottle-unified-v1.js?v=FLT-UI-SLIM-0001" defer></script><script src="../../engine/instruments/flight-dynamics-gauge-model-v1.js?v=FLIGHT-GAUGE-0001" defer></script><script src="./flight-instrument-dynamics-v1.js?v=FLT-UI-SLIM-0001" defer></script><script src="./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=EADI-DIRECT-0002&amp;ils=SHI-CH4-0004" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
 <script src="../../engine/instruments/mechanical-number-wheels-v1.js?v=MECH-ROLL-0020" defer></script><script src="./instrument-lab/gauges.js?v=PHOTO-GAUGES-ALT20-0002-DOWN-0002&amp;ias=ZERO-DIAMOND-0001" defer></script>
 <script src="./instrument-lab/photo-gauge-registration-v1.js?v=PHOTO-GAUGE-REG-0002-NATIVE-BEZEL" defer></script>
-<script src="./instrument-lab/unified.js?v=PHOTO-GAUGES-0005-FIT-SOURCES" defer></script>
+<script src="./instrument-lab/unified.js?v=PHOTO-GAUGES-0006-RMI-NAV-VALID" defer></script>
 <script src="../../engine/tcas/classic-tcas-v1.js?v=TCAS-CLASSIC-0001" defer></script>
 <script src="../../engine/tcas/classic-tcas-v2.js?v=TCAS-MOTION-0002" defer></script>
 <script src="./tcas-training-unified-v1.js?v=FLT-UI-SLIM-0001" defer></script>
