@@ -163,7 +163,8 @@ try{
  const $=id=>root.document.getElementById(id);
  const realBank=new Bank();
  let context=null,buffer=null,player=null,ready=false,verifiedAudio=false,seenTest={1:false,2:false};
- let last=null,panel=null,armed=false,reported='';
+ let last=null,panel=null,armed=false,reported='',loadError='';
+ const BUNDLED_SOURCE='../../audio-lab/assets/shaker-owner-v1.m4a';
  const finite=x=>typeof x==='number'&&Number.isFinite(x);
  const format=st=>st==null?'UNKNOWN':st?'ON':'OFF';
  class LoopPlayer{
@@ -227,8 +228,8 @@ try{
   armed=context.state==='running';
   draw();
  }
- async function load(file){
-  if(!ready)throw Error('Audio bank is not ready');
+ async function load(file,persist=true){
+  if(persist&&!ready)throw Error('Audio bank is not ready');
   if(!root.B737RealAudioBank.validAudioFile(file))throw Error('Invalid sample: use e.mp3 or supported audio');
   const AC=root.AudioContext||root.webkitAudioContext;
   if(!AC)throw Error('Audio decoder unavailable');
@@ -237,7 +238,7 @@ try{
   if(!decoded||decoded.duration<1.5||decoded.duration>5)throw Error('Expected an approximately 2 second approved shaker recording');
   if(player)player.destroy();
   buffer=decoded;player=new LoopPlayer(ctx,buffer);
-  await realBank.add('shaker',file);
+  if(persist)await realBank.add('shaker',file);
   verifiedAudio=true;
   draw();
   refresh();
@@ -253,8 +254,10 @@ try{
   }catch(_){}
   const ag=avionics('aircraft.airground'),tape=root.B737UnifiedSpeedTapeV1;
   const view=(()=>{try{return tape?.getView?.('CAPT')||null}catch(_){return null}})();
+  const electrical=root.B737UnifiedElectricalLive?.snapshot?.();
   const knownGround=typeof scene?.airborne==='boolean'?!scene.airborne:
    ag?.quality==='VALID'&&typeof ag.value?.onGround==='boolean'?ag.value.onGround:
+   typeof electrical?.controls?.onGround==='boolean'?electrical.controls.onGround:
    typeof view?.inFlight==='boolean'?!view.inFlight:null;
   let ias=null,boundary=null,origin='UNAVAILABLE';
   // Use EXACT lower-red-band boundary represented in the current CAPT speed tape.
@@ -280,10 +283,11 @@ try{
   if(!panel)return;
   const s=last||{};
   $('shakerAudioStatus').textContent=
-   (verifiedAudio?'APPROVED e.mp3 INSTALLED':'NO AUDIO — IMPORT e.mp3')+
+   (verifiedAudio?'OWNER e.mp3 AUDIO INSTALLED':'NO AUDIO'+(loadError?' · '+loadError:' · LOADING'))+
    ' | Audio '+(armed?'ARMED':'LOCKED — ENABLE AUDIO')+
    ' | State '+(s.reason||'OFF')+
    ' | Source '+(s.source||'UNAVAILABLE')+
+   ' | Ground '+format(s.onGround)+' | AC '+format(s.ac115Available)+
    (s.groundTest&&s.testPowerUnverified?' | AC power is unverified (trainer only)':'');
   for(const ch of [1,2]){
    const b=$('shakerTest'+ch);
@@ -293,7 +297,7 @@ try{
  function refresh(){
   const f=flightSnapshot();
   const st=Logic.evaluate({...f,test1:seenTest[1],test2:seenTest[2]});
-  last={...st,source:f.source};
+  last={...st,source:f.source,onGround:f.onGround,ac115Available:f.ac115Available};
   if(player&&armed){
    if(st.active&&!player.playing)player.start();
    if(!st.active&&player.playing)player.stop();
@@ -312,6 +316,20 @@ try{
   seenTest[ch]=Boolean(value);
   refresh();
  }
+ async function loadBundled(){
+   try{
+     const response=await root.fetch(BUNDLED_SOURCE,{cache:'force-cache'});
+     if(!response.ok)throw Error('HTTP_'+response.status);
+     const blob=await response.blob();
+     const file=new File([blob],'e.m4a',{type:'audio/mp4'});
+     await load(file,false);
+     loadError='';
+   }catch(error){
+     loadError='BUNDLED_FILE_UNAVAILABLE: '+error.message;
+     root.console?.warn?.('Owner Stick Shaker automatic audio loading failed',error);
+   }
+   draw();refresh();
+ }
  function mount(){
   if(panel||!$('inspector'))return;
   panel=root.document.createElement('section');
@@ -319,8 +337,8 @@ try{
   panel.style.cssText='border:1px solid #426179;border-radius:8px;padding:10px;background:#111f2a;color:#dceaf5;direction:ltr';
   panel.innerHTML='<h3 style="margin:0 0 7px">STALL WARNING · STICK SHAKER AUDIO</h3>'+
    '<p id="shakerAudioStatus" style="font-size:12px;line-height:1.4;margin:5px 0" role="status">LOADING AUDIO BANK</p>'+
-   '<label style="display:block;font-size:12px">Owner-approved source e.mp3 <input id="shakerFile" type="file" accept="audio/*,.mp3" style="max-width:100%;display:block;margin:4px 0 9px"></label>'+
-   '<button id="shakerUnlock" type="button">ENABLE AUDIO</button>'+
+   '<label style="display:block;font-size:12px">Approved source e.mp3 (manual fallback only) <input id="shakerFile" type="file" accept="audio/*,.mp3" style="max-width:100%;display:block;margin:4px 0 9px"></label>'+
+   '<button id="shakerUnlock" type="button">ENABLE / REPAIR AUDIO</button>'+
    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:9px 0">'+
    '<button id="shakerTest1" type="button" aria-pressed="false">AFT OH · STALL WARN TEST 1</button>'+
    '<button id="shakerTest2" type="button" aria-pressed="false">AFT OH · STALL WARN TEST 2</button></div>'+
@@ -360,19 +378,17 @@ try{
  root.document.addEventListener('visibilitychange',()=>{if(root.document.hidden){press(1,false);press(2,false)}});
  const init=async()=>{
   mount();
-  try{
-   await realBank.init();ready=true;
-   const item=realBank.get('shaker');
-   if(item?.blob){const AC=root.AudioContext||root.webkitAudioContext;
-    if(AC){context=new AC();buffer=await context.decodeAudioData(await item.blob.arrayBuffer());
-      player=new LoopPlayer(context,buffer);verifiedAudio=true;}
-   }
-  }catch(error){root.console?.warn?.('Stick Shaker local sample unavailable',error)}
+  realBank.init().then(async()=>{
+    ready=true;
+    const item=realBank.get('shaker');
+    if(item?.blob)await load(item.blob,false);
+  }).catch(error=>root.console?.warn?.('Stick Shaker local storage unavailable',error));
+  await loadBundled();
   draw();refresh();setInterval(refresh,125);
  };
  if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',init,{once:true});else init();
  root.B737UnifiedStickShakerAudioV1=Object.freeze({getState:()=>last,setTest:press,refresh,
-  audioStatus:()=>({installed:verifiedAudio,armed,playing:Boolean(player?.playing)})});
+  audioStatus:()=>({installed:verifiedAudio,armed,loadError,playing:Boolean(player?.playing)})});
 })(typeof window==='object'?window:null);
 
 }catch(error){queueMicrotask(()=>{throw error});}
