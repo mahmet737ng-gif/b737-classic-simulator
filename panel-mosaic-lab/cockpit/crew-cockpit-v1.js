@@ -23,6 +23,7 @@
   let roster = null;
   let currentOverhead = null;
   let lastPublishedOverhead = null;
+  let lastReceivedOverhead = null;
   let snapshotTimer = null;
   doc.documentElement.dataset.crewRole = 'pending';
 
@@ -226,31 +227,49 @@
         snapshot.sequence < lastSequence || !snapshot.overhead) return;
     const {toggles, rotaries, guards} = snapshot.overhead;
     if (!toggles || !rotaries || !guards) return;
-    // The state represents every switch at sequence N. Commands <= N must
-    // not be replayed after the state, or an old switch position would win.
-    queue.length = 0;
-    lastSequence = snapshot.sequence;
-    // Guarded/interlocked controls need the host's guard state installed first.
-    for (const [id, value] of Object.entries(guards)) {
-      queue.push({type: 'guard', id, value: {open: value.guard === 'open', value: value.value}});
+    // A snapshot covers overhead only. It must never discard pending MCP,
+    // flight or CDU commands waiting for independent instruments to hydrate.
+    lastSequence = Math.max(lastSequence, snapshot.sequence);
+    const previous = lastReceivedOverhead;
+    for (const [type, group] of [['guard', guards], ['rotary', rotaries], ['toggle', toggles]]) {
+      const groupName = type === 'guard' ? 'guards' : type === 'rotary' ? 'rotaries' : 'toggles';
+      for (const [id, value] of Object.entries(group)) {
+        if (previous && JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(value)) continue;
+        for (let i = queue.length - 1; i >= 0; i--) {
+          if (queue[i].type === type && queue[i].id === id &&
+              (queue[i].sequence === undefined || queue[i].sequence <= snapshot.sequence)) {
+            queue.splice(i, 1);
+          }
+        }
+        queue.push({type, id, value: type === 'guard' ?
+          {open: value.guard === 'open', value: value.value} : value});
+      }
     }
-    for (const [id, value] of Object.entries(rotaries)) queue.push({type: 'rotary', id, value});
-    for (const [id, value] of Object.entries(toggles)) queue.push({type: 'toggle', id, value});
+    lastReceivedOverhead = snapshot.overhead;
     drain();
   }
 
   function receiveFlight() {
-    if (!latestFlight || !flight() || queue.length) return;
+    if (!latestFlight || !flight() || queue.some(entry =>
+      ['profile', 'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type))) return;
     const update = latestFlight;
     latestFlight = null;
     if (update.client !== client && role !== controller) flight().followCrew(update.state, update.paused);
   }
 
   function drain() {
-    while (queue.length) {
-      const entry = queue[0];
-      if (!available(entry)) break;
-      queue.shift();
+    // One unready Overhead/CDU must not block independent MCP/radio controls.
+    // Commands targeting the same control keep their original order.
+    const blocked = new Set();
+    for (let index = 0; index < queue.length;) {
+      const entry = queue[index];
+      const key = entry.type + ':' + entry.id;
+      if (blocked.has(key) || !available(entry)) {
+        blocked.add(key);
+        index++;
+        continue;
+      }
+      queue.splice(index, 1);
       if (entry.client === client) continue;
       replay = true;
       try { apply(entry); }
@@ -317,8 +336,8 @@
     if (key && key !== 'engine-view') command('efis', d.seat + '.' + key,
       key === 'rst' ? true : d.state[key] ?? d.state.brightness[key] ?? d.state.options[key]);
   });
-  let lastBreakers = new Set(win.B737UnifiedCB?.snapshot().breakers.map(entry => entry.id));
-  let lastAutobrake = win.B737AutobrakeUnified?.getState().selector;
+  let lastBreakers = new Set((win.B737UnifiedCB?.snapshot?.()?.breakers || []).map(entry => entry.id));
+  let lastAutobrake = win.B737AutobrakeUnified?.getState?.()?.selector;
   listen(win, 'b737:autobrake-state', d => {
     if (d.selector !== lastAutobrake) command('autobrake', 'selector', d.selector);
     lastAutobrake = d.selector;
