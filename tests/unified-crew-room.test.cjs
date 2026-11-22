@@ -22,6 +22,27 @@ function fixture(req, res) {
       dialog.replace(/^<dialog/, '<main').replace(/<\/dialog>$/, '</main>') + '</body>');
     return;
   }
+  if (pathname === '/panel-mosaic-lab/cockpit/crew-overhead-test.html') {
+    res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+    res.end(`<!doctype html><button id="battery">Battery master</button><script>
+      window.switchState = {'battery-master':'OFF'};
+      window.B737CrewOverheadV1 = {
+        ready: () => true,
+        apply(type,id,value) {
+          if(type !== 'toggle' || id !== 'battery-master') return false;
+          window.switchState[id] = value;
+          return true;
+        }
+      };
+      document.getElementById('battery').onclick = () => {
+        const next = window.switchState['battery-master'] === 'ON' ? 'OFF' : 'ON';
+        window.switchState['battery-master'] = next;
+        parent.postMessage({type:'b737:cockpit-overhead',kind:'control-event',
+          event:{kind:'toggle',id:'battery-master',next}},location.origin);
+      };
+    <\/script>`);
+    return;
+  }
   const file = pathname === '/crew/qrcode.js' ? 'qrcode-generator-2.0.4.js' :
     pathname.endsWith('/') ? 'index.html' : path.basename(pathname);
   const type = {'index.html': 'text/html', 'qrcode-generator-2.0.4.js': 'text/javascript', 'crew-cockpit-v1.js': 'text/javascript', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
@@ -35,6 +56,7 @@ function fixture(req, res) {
       <button id="workspaceLabsToggle">Test Labs</button></div></header>
       <button id="pilotControl">Rotate heading</button><button id="phase">Load flight</button>
       <button id="zoomIn">Zoom</button>
+      <iframe id="overheadFrame" src="/panel-mosaic-lab/cockpit/crew-overhead-test.html"></iframe>
       <script>
       window.calls=[];let sample=null,paused=false;
       window.B737McpVisualV3={setValue:(id,value)=>calls.push([id,value])};
@@ -221,6 +243,51 @@ test('host aircraft configuration and overhead state are authoritative for late 
   assert.deepEqual((await guest('inspect', {roomId, invite})).data.profile, updated);
 });
 
+test('late-joiner receives earlier MCP state and live Overhead updates after host snapshot', async t => {
+  const {origin} = await start(t);
+  const host = client(origin);
+  const guest = client(origin);
+  await host('login', {username: 'TrainerOwner', password});
+  await host('accounts', {username: 'GuestSync', password});
+  await guest('login', {username: 'GuestSync', password});
+  const hosted = await host('create', {role: 'captain'});
+  const roomId = hosted.data.roomId;
+  const joined = await guest('join', {roomId, role: 'firstOfficer', invite: hosted.data.roomInvite});
+  assert.equal(joined.status, 200);
+  const first = await host('command', {roomId, client: 'captain-sync-01',
+    command: {type: 'mcpValue', id: 'heading', value: 137}});
+  assert.equal(first.status, 200);
+  const saved = await host('snapshot', {roomId, client: 'captain-sync-01', overhead: {
+    toggles: {'battery-master': 'ON'}, rotaries: {}, guards: {}
+  }});
+  assert.equal(saved.status, 200);
+  const second = await host('command', {roomId, client: 'captain-sync-01',
+    command: {type: 'toggle', id: 'battery-master', value: 'OFF'}});
+  assert.equal(second.status, 200);
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), 5000);
+  try {
+    const response = await fetch(origin + prefix + '/events?room=' + roomId + '&cockpit=1',
+      {headers: {Cookie: joined.cookie}, signal: abort.signal});
+    assert.equal(response.status, 200);
+    const reader = response.body.getReader();
+    let body = '';
+    while (!body.includes('"value":"OFF"')) {
+      const {value, done} = await reader.read();
+      if (done) break;
+      body += Buffer.from(value).toString('utf8');
+    }
+    const mcpAt = body.indexOf('"type":"mcpValue"');
+    const snapshotAt = body.indexOf('event: snapshot');
+    const toggleAt = body.indexOf('"value":"OFF"');
+    assert.ok(mcpAt >= 0 && snapshotAt > mcpAt && toggleAt > snapshotAt,
+      'MCP replay must precede Overhead snapshot and newer switch events');
+  } finally {
+    clearTimeout(timer);
+    abort.abort();
+  }
+});
+
 test('Private Room opens after Welcome and admits signed-in and signed-out guests', {skip: !process.env.CHROME_PATH}, async t => {
   const {chromium} = require('playwright');
   const {origin} = await start(t);
@@ -299,10 +366,21 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await host.getByRole('button', {name: 'Rotate heading'}).click();
   await first.waitForFunction(() => calls.some(([key, value]) => key === 'heading' && value === 35));
   await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'heading' && value === 35));
+  // Both isolated browser contexts must receive commands in both directions.
+  await first.getByRole('button', {name: 'Rotate heading'}).click();
+  await host.waitForFunction(() => calls.filter(([key, value]) => key === 'heading' && value === 35).length === 2);
+  await observer1.waitForFunction(() => calls.filter(([key, value]) => key === 'heading').length === 2);
   await observer1.getByRole('button', {name: 'Rotate heading'}).click();
   await observer1.getByRole('button', {name: 'Zoom'}).click();
-  assert.deepEqual(await observer1.evaluate(() => calls), [['heading', 35], ['zoom']]);
-  assert.deepEqual(await first.evaluate(() => calls), [['heading', 35]]);
+  assert.deepEqual(await observer1.evaluate(() => calls), [['heading', 35], ['heading', 35], ['zoom']]);
+  assert.deepEqual(await first.evaluate(() => calls), [['heading', 35], ['heading', 35]]);
+  // Exercise the actual postMessage -> room command -> iframe bridge path.
+  await host.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
+  await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
+    ?.switchState['battery-master'] === 'ON');
+  await first.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
+  await host.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
+    ?.switchState['battery-master'] === 'OFF');
   await first.getByRole('button', {name: 'Load flight'}).click();
   await host.waitForFunction(() => calls.some(([key, value]) => key === 'load' && value === 'FINAL_10'));
   await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'flight' && value === 6820));
