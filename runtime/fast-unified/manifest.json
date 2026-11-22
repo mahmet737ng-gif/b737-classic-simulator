@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "8d32891a7a08476cf9c40f9c819d3179bd762bb5",
+  "sourceCommit": "074bed810549f62a16387c7610cafec92c2c2cda",
   "mainBefore": 316,
   "mainAfter": 100,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "cd2fc34f7b9cc70c67b86fac981f02f9508c11e66a27b8bd816a65a394676887"
+      "sha256": "eeea82c6062d61d4f34368cb9b8632a01b5a68bca707e23144090229615a2aeb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -640,11 +640,11 @@
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
-      "sha256": "67ac5c4a184d18dd5a5b2a4b9382b6e88965bf46bfa5f73949c2972ed80935c8"
+      "sha256": "8ff4fa951e98a5cdaa47d9b474575f7eeb2d6653547827cd43d02575a4fe1394"
     },
     {
       "path": "panel-mosaic-lab/cockpit/radio-altimeter-audio-runtime-v1.js",
-      "sha256": "f541f5615401cb797a57d0af5ec9ebe828fbe062f6a616e25cb17a243fff10c6"
+      "sha256": "463dde57f9c4c84a914c41f64e86bd83053cf4397996a19a0e6e617e43abb815"
     },
     {
       "path": "panel-mosaic-lab/all-overhead/spec.json",
@@ -1009,6 +1009,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
       "sha256": "98e76a764ea0da2ba6d1e6da9ec199f5659f1940aa9c1adcd1939afdfef32eea"
+    },
+    {
+      "path": "audio-lab/assets/owner-ra-callouts-v1.mp3",
+      "sha256": "a81fde2be7bbb10c2857af5e5c8721670f88c56fafdeb60f7cb15b560144b5a8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assembly.json",
