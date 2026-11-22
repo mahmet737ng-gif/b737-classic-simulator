@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "5e3fb1ff5b485d09bfb78bd1b58d19026def7c6c",
+  "sourceCommit": "ce2f5e6f5639ca417b2dcdbdc537496deff8486c",
   "mainBefore": 307,
   "mainAfter": 96,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "782bebf1e99fff9a9454609463c7b002ca7de303bf33f3228c3af6c453b7b92f"
+      "sha256": "103ae559522ab476c92c574758b68552b59f5c2f5b1607d0db641b050be65586"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -131,8 +131,8 @@
       "sha256": "7508f29d61a33f3c89464fb735432bd4c8620b6498ef53766cf50ccddea07f1c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e20eb36fc09cce37.js",
-      "sha256": "e20eb36fc09cce372859bdf6ca3f8a0a53bb202d7889f7a3886dc5c15fa1a598"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-5e6242d3daf0a9e1.js",
+      "sha256": "5e6242d3daf0a9e13cf48c0fbc70a02fbc71f7b6d52852640689d29ac7a14d83"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-53b0f9894f4057d8.js",
@@ -167,20 +167,20 @@
       "sha256": "6e57d0ad6adfaf23b3deada1d6bfd32c915138a3e5db0960651c35d7c551e378"
     },
     {
-      "path": "engine/afds/desktop-bundle-e4cbef26ff933355.js",
-      "sha256": "e4cbef26ff93335506927cb9ca73f0ebaf49160d7696431f299f738a56b01401"
+      "path": "engine/afds/desktop-bundle-cdbd8d4bb8d969f2.js",
+      "sha256": "cdbd8d4bb8d969f2199e284ddd887b3f4786f2b73cf0eb5979463c7352db8d7b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1c1d8f30bafbf508.js",
-      "sha256": "1c1d8f30bafbf50829c2ca3b0ecc8ff1765e9245330f70ed74396a231446468c"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8673d6094962a42c.js",
+      "sha256": "8673d6094962a42c0849e17285570c6a1ac0edec3f2afe220de1cac69dc71a92"
     },
     {
       "path": "engine/afds/desktop-bundle-a2e69c39a90ae99b.js",
       "sha256": "a2e69c39a90ae99badb879d330e634b78ada9e190c02a388e30a310673d9d785"
     },
     {
-      "path": "engine/instruments/desktop-bundle-ea4db04b0bdc83e6.js",
-      "sha256": "ea4db04b0bdc83e635c8b6fe08bb94f8a1c40c3c8e361067c5c093e36360fc9c"
+      "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
+      "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -464,7 +464,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/lights.js",
-      "sha256": "1402fa68efe9572c6652fbe640a3fc268fae8b92bdc9850734b535e0350a6136"
+      "sha256": "6e12a0d8ef432f7337074f933f61719c85c7f185ebbef284deca4d3a42e6766c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",
@@ -612,7 +612,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "0a5e1d8ac5927e984544ff2cd653f6542c141dd87167094984acad3cda6b7e9b"
+      "sha256": "23e51990b311133fe134ddf827e10bd5a72655cd42f6e118e8aeb4db02df2a5d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",

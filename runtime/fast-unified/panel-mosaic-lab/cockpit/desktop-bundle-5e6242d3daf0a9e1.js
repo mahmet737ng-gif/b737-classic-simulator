@@ -545,7 +545,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./sixpack-live-integration-v1.js?v=SIXPACK-FCOM15-0008&amp;p8=ATA26-0003 */
+/* ./sixpack-live-integration-v1.js?v=SIXPACK-FCOM15-ELEC-V7-SYNC-0009&amp;p8=ATA26-0003 */
 try{
 /* SIXPACK-LIVE-0008 FCOM 15.20: read-only adapter from existing Unified system outputs.
  * Never creates a second electrical/overhead/fire engine or infers unobserved alarms.
@@ -719,6 +719,16 @@ try{
   function resolved(){
    const filtered=empty();
    for(const [k,v]of Object.entries(sources.overhead))filtered[k]=[...v];
+   // An old OH frame can outlive the V7 generator transfer and keep an
+   // obsolete ELEC bus-off annunciation latched in the Six-Pack.
+   // Only the bus-fed amber lamps are reconciled; IDG/drive oil warning
+   // inputs remain independent, real overhead evidence.
+   if(activeSource.electrical){
+    const v7=new Set(sources.electrical['CAPT.ELEC']);
+    const managed=new Set(Object.values(electricalAnnunciators).map(id=>'OH:'+id));
+    filtered['CAPT.ELEC']=filtered['CAPT.ELEC'].filter(id=>
+      !managed.has(id)||v7.has(id));
+   }
    if(activeSource.irs)filtered['CAPT.IRS']=[];
    if(activeSource.apuECU)filtered['CAPT.APU']=filtered['CAPT.APU'].filter(id=>id!=='OH:apu-low-pressure');
    if(activeSource.windowHeat)filtered['FO.ANTI ICE']=filtered['FO.ANTI ICE'].filter(id=>!id.startsWith('OH:window-'));
@@ -859,8 +869,14 @@ try{
   function refreshElectrical(fallback=null){
    const owner=win.B737ISNCockpitV1;
    const state=owner?.getElectricalState?.()||fallback?.state||fallback;
-   const evaluated=owner?.getState?.()?.state?.electrical||fallback?.evaluated;
    if(!state?.faults)return false;
+   let evaluated=owner?.getState?.()?.state?.electrical||fallback?.evaluated;
+   // Recompute lamp bits against the current authoritative V7 state,
+   // rather than accepting a possibly earlier ECU-rendered bus snapshot.
+   try{
+    const current=win.B737ElectricalV7?.evaluate?.(state);
+    if(current?.lamps)evaluated=current;
+   }catch(error){win.console?.warn?.('Six-Pack V7 evaluation',error);}
    update('electrical',electrical({state,evaluated}));
    return true;
   }

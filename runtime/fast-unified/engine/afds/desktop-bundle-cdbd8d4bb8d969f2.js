@@ -587,7 +587,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-PITCH-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-PITCH-0002-TE-OWNER&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -910,7 +910,9 @@ try{
  // proof that surfaces have moved. Keep instructor mass separate from ADC.
  function syncAeroConfiguration(){
   if(!state||!active)return false;
-  const le=win.B737LEDevicesUnifiedLink?.getState?.();
+  // Authoritative owner TE angle prevails over a stale iframe relay revision.
+  const le=win.B737Final10ApproachPresetV1?.getLiveFlapOwnerState?.()??
+   win.B737LEDevicesUnifiedLink?.getState?.();
   const projection=le?.projection;
   if(!projection||!Number.isFinite(projection.tePosition))return false;
   const flapLever=le.lever,flapActual=projection.tePosition;

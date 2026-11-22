@@ -121,7 +121,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./final10-approach-preset-v1.js?v=FINAL10-READY-FLAPS-0001 */
+/* ./final10-approach-preset-v1.js?v=FINAL10-READY-FLAPS-0002-TE-OWNER */
 try{
 /* FLT PHASE FINAL_10 — B737 Classic training initialization.
  * Instructor-approved initial state, never a new electrical, engine, flap
@@ -358,16 +358,49 @@ try{
     }
    }
    const now=win.B737LEDevicesUnifiedLink?.getState?.();
-   const ready=physical&&now?.projection?.scenario==='FINAL_10_READY'&&
+   const owner=readFlapOwner();
+   const relayReady=physical&&now?.projection?.scenario==='FINAL_10_READY'&&
     now?.projection?.teTarget===30&&now?.projection?.teMoving===false&&
     Number.isFinite(now.actualTe)&&Math.abs(now.actualTe-30)<.4;
-   if(ready)result('FLAP_OWNER_PRESET',true,'OWNER_PROJECTION_CONFIRMED');
+   // The frozen LE bridge can reject a legitimate post-reset revision.
+   // Confirm the actual locked TE actuator and full LE stage instead.
+   const ownerReady=physical&&owner?.lever===30&&
+    owner?.projection?.teTarget===30&&owner?.projection?.teMoving===false&&
+    owner?.projection?.leStage==='FULL'&&
+    owner?.projection?.center?.extended===true&&
+    Number.isFinite(owner.actualTe)&&Math.abs(owner.actualTe-30)<.4;
+   const ready=relayReady||ownerReady;
+   if(ownerReady&&!relayReady){
+    win.B737FlapNeedles?.setCommon?.(owner.actualTe);
+    win.B737CockpitLights?.setInputs?.({trailingFlaps:30,leadingEdge:'FULL'});
+   }
+   if(ready)result('FLAP_OWNER_PRESET',true,
+    ownerReady?'VERIFIED_LIVE_ACTUATOR_30':'OWNER_PROJECTION_CONFIRMED');
    result('FLAP_LEVER_30',physical,physical?'30':'INSTRUCTOR_PRESET_NOT_READY');
    result('FLAP_ACTUAL_30',ready,ready?
-    now.actualTe.toFixed(1)+' DEG / STABLE':
+    (ownerReady?owner.actualTe:now.actualTe).toFixed(1)+' DEG / STABLE':
     Number.isFinite(now?.actualTe)?now.actualTe.toFixed(1)+' DEG / WAITING_FOR_OWNER':
      'LE_PROJECTION_NOT_READY');
   }catch(error){result('FLAP_LEVER_30',false,error?.message);}
+ }
+ // Same-origin read-only observation of the already installed LE/TE owner.
+ // Never synthesize actuator movement from a lever command.
+ function readFlapOwner(){
+  const child=docs.getElementById('overheadFrame')?.contentWindow;
+  const owner=child?.B737LEDevicesTrainer;
+  const actuator=owner?.flapActuator?.();
+  const le=owner?.snapshot?.();
+  const detents=[0,1,2,5,10,15,25,30,40];
+  if(!detents.includes(le?.lever)||!Number.isFinite(actuator?.actual)||
+     actuator.actual<0||actuator.actual>40||
+     !Number.isFinite(actuator?.command)||actuator.command<0||
+     actuator.command>40||!le?.center)return null;
+  return {lever:le.lever,actualTe:actuator.actual,projection:{
+   tePosition:actuator.actual,teTarget:actuator.command,
+   teMoving:actuator.moving===true,leStage:le.leStage,
+   center:le.center,mismatch:Array.isArray(le.mismatch)?le.mismatch:[],
+   revision:le.revision
+  }};
  }
  function applyMcp(state){
   const m=magnetic(state.runwayHeadingTrueDeg,state);
@@ -415,7 +448,8 @@ try{
  function stop(){serial++;if(timer!==null){win.clearInterval(timer);timer=null;} }
  win.addEventListener('b737:flight-scenario-stopped',stop);
  win.B737Final10ApproachPresetV1=Object.freeze({version:VERSION,apply,stop,
-  getStatus:()=>({version:VERSION,serial,checks:check?JSON.parse(JSON.stringify(check)):{}})});
+  getStatus:()=>({version:VERSION,serial,checks:check?JSON.parse(JSON.stringify(check)):{}}),
+  getLiveFlapOwnerState:readFlapOwner});
 })(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}
