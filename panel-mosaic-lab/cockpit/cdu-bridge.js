@@ -10,6 +10,18 @@
  // The approved v6 app exposes these script bindings; no source engine or artwork edits.
  if(typeof state==='undefined'||typeof update!=='function'||!parent.B737UnifiedFmc){send({kind:'error',message:'Shared FMC unavailable'});return;}
  const originalUpdate=update,originalReset=reset;
+ const keys=new Set(map.controls.map(control=>control.id));
+ window.B737CrewCduV1=Object.freeze({press(id){
+  if(!keys.has(id))return false;
+  core.press(state,pages,id);
+  update();
+  return true;
+ }});
+ document.getElementById('clickmap').addEventListener('click',event=>{
+  const key=event.target.closest('.hotspot')?.title.split(' — ').at(-1);
+  if(keys.has(key))send({kind:'crew-key',key});
+ });
+
  let applying=false,session;
  const write=shared=>{for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}};
  update=function(){originalUpdate();if(!applying)session?.publish();report();};

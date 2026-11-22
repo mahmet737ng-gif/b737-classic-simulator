@@ -51,7 +51,7 @@ for(const relative of [cockpit+'index.html',cockpit+'overhead-stage.html',cockpi
 }
 for(const relative of [
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
- cockpit+'crew-room-v1.js',cockpit+'crew-room-v1.css',
+ cockpit+'crew-room-v1.js',cockpit+'crew-room-v1.css',cockpit+'crew-cockpit-v1.js',
  cockpit+'brand/unified-icon-192.webp',
  ...['frame','aircraft','orbit','white','wordmark','still']
    .map(layer=>cockpit+'brand/unified-intro-'+layer+'.webp'),

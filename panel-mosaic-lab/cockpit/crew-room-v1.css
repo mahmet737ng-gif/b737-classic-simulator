@@ -52,3 +52,10 @@
 #crewRoomDialog [role="status"]:empty { display: none; }
 #crewRoomDialog [role="status"][data-error="true"] { color: #ffb79e; }
 #crewRoomDialog [data-crew-link] { margin-top: .75rem; }
+
+#crewCockpitStatus {
+  padding: .3rem .55rem;
+  color: #b8e8f5;
+  font: 600 .76rem system-ui, sans-serif;
+  white-space: nowrap;
+}

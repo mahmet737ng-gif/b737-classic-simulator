@@ -10,11 +10,42 @@ const PREFIX = '/api/crew';
 const HOUR = 60 * 60 * 1000;
 const SESSION_AGE = 12 * HOUR;
 const ROOM_AGE = 12 * HOUR;
-const SEAT_GRACE = 25 * 1000;
+const SEAT_GRACE = 60 * 1000;
 const randomToken = () => randomBytes(24).toString('base64url');
 const hash = (text) => createHash('sha256').update(text).digest('hex');
 const usernamePattern = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{2,39}$/;
 const roleLabel = {captain: 'Captain', firstOfficer: 'First Officer', instructor: 'Instructor'};
+
+const FLIGHT_ROLES = ['captain', 'firstOfficer'];
+const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
+const CONTROL_ID = /^[a-zA-Z0-9_.-]{1,72}$/;
+const CONTROL_TYPES = new Set([
+  'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
+  'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga',
+  'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight',
+  'failure', 'failureScenario', 'profile', 'efis', 'cdu'
+]);
+
+function controlValue(value) {
+  return typeof value === 'boolean' || Number.isFinite(value) ||
+    typeof value === 'string' && value.length <= 72;
+}
+
+function crewCommand(data) {
+  const {type, id, value} = data ?? {};
+  if (!CONTROL_TYPES.has(type) || typeof id !== 'string' || !CONTROL_ID.test(id)) {
+    throw new RequestError(400, 'Unknown cockpit command.');
+  }
+  if (controlValue(value)) return {type, id, value};
+  if (type === 'guard' && typeof value?.open === 'boolean' && controlValue(value.value)) {
+    return {type, id, value: {open: value.open, value: value.value}};
+  }
+  if (['loadFlight', 'flightTargets', 'failureScenario', 'profile'].includes(type) &&
+      value && !Array.isArray(value) && typeof value === 'object' &&
+      Object.keys(value).length <= 12 && Object.entries(value).every(([key, item]) =>
+        CONTROL_ID.test(key) && controlValue(item))) return {type, id, value};
+  throw new RequestError(400, 'Invalid cockpit value.');
+}
 
 class RequestError extends Error {
   constructor(status, message) {
@@ -53,7 +84,7 @@ async function readBody(req) {
   let size = 0;
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 4096) throw new RequestError(413, 'Request is too large.');
+    if (size > 12288) throw new RequestError(413, 'Request is too large.');
     chunks.push(chunk);
   }
   try {
@@ -65,9 +96,9 @@ async function readBody(req) {
   }
 }
 
-function frame(res, state) {
-  if (!res.destroyed && !res.writableEnded && res.writableLength < 128 * 1024) {
-    res.write(`event: roster\ndata: ${JSON.stringify(state)}\n\n`);
+function frame(res, state, event = 'roster') {
+  if (!res.destroyed && !res.writableEnded && res.writableLength < 1024 * 1024) {
+    res.write(`${event === 'command' ? 'id: ' + state.sequence + '\n' : ''}event: ${event}\ndata: ${JSON.stringify(state)}\n\n`);
   } else {
     res.destroy();
   }
@@ -102,7 +133,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
   const rates = new Map();
   const cookieName = origin.startsWith('https://') ? '__Secure-unified_crew' : 'unified_crew';
 
-  const cookie = (token, age) => `${cookieName}=${token}; Path=${PREFIX}; HttpOnly; SameSite=Strict; Max-Age=${age}` +
+  const cookie = (token, age) => `${cookieName}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${age}` +
     (origin.startsWith('https://') ? '; Secure' : '');
 
   function session(req) {
@@ -111,6 +142,19 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     const key = item?.slice(cookieName.length + 1);
     const record = key && sessions.get(hash(key));
     return record && record.expires > now() ? record : null;
+  }
+
+  function cockpitAccess(req) {
+    const user = session(req);
+    if (!user) return null;
+    const key = user.username.toLowerCase();
+    for (const room of rooms.values()) {
+      const member = room.members.get(key);
+      if (room.expires > now() && member && (member.streams.size || member.lastSeen + SEAT_GRACE > now())) {
+        return {roomId: room.id, role: member.role, username: user.username};
+      }
+    }
+    return null;
   }
 
   function openSession(res, username) {
@@ -130,7 +174,10 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
         online.push({username: member.username, role: member.role});
       } else if (member.lastSeen + SEAT_GRACE > now()) reserved[member.role]++;
     }
-    return {roomId: room.id, counts, reserved, online};
+    const available = role => [...room.members.values()].some(member =>
+      member.role === role && [...member.streams.keys()].some(stream => room.cockpits.has(stream)));
+    const controller = [room.flying, ...FLIGHT_ROLES, 'instructor'].find(available) ?? null;
+    return {roomId: room.id, counts, reserved, online, flying: room.flying, controller};
   }
 
   function publish(room) {
@@ -140,9 +187,16 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
   }
 
+  function broadcast(room, event, payload) {
+    for (const stream of room.cockpits) frame(stream, payload, event);
+  }
+
   function closeMember(room, key, member) {
     room.members.delete(key);
-    for (const stream of member.streams.keys()) stream.end();
+    for (const stream of member.streams.keys()) {
+      room.cockpits.delete(stream);
+      stream.end();
+    }
     member.streams.clear();
   }
 
@@ -272,7 +326,16 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       req.socket.setNoDelay(true);
       res.write('retry: 1500\n\n');
       member.streams.set(res, user);
+      if (url.searchParams.get('cockpit') === '1') {
+        const after = Math.max(0, Number(req.headers['last-event-id'] ?? url.searchParams.get('after')) || 0);
+        room.cockpits.add(res);
+        for (const command of room.commands) {
+          if (command.sequence > after) frame(res, command, 'command');
+        }
+        if (room.flight) frame(res, room.flight, 'flight');
+      }
       res.on('close', () => {
+        room.cockpits.delete(res);
         member.streams.delete(res);
         member.lastSeen = now();
         publish(room);
@@ -322,7 +385,10 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       // Reopen the current room if a create response was lost or another tab already created it.
       let room = [...rooms.values()].find(item => item.manager === owner && item.expires > now());
       if (!room) {
-        room = {id: randomToken(), manager: owner, expires: now() + ROOM_AGE, members: new Map(), links: new Map()};
+        room = {
+          id: randomToken(), manager: owner, expires: now() + ROOM_AGE, members: new Map(),
+          links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain', flight: null
+        };
         rooms.set(room.id, room);
       }
       return send(res, 200, stateFor(room, user));
@@ -330,6 +396,56 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
 
     const room = readRoom(data.roomId ?? invite?.room.id, user, invite);
     const key = user.username.toLowerCase();
+    if (action === 'assignFlying') {
+      if (room.manager !== key && room.members.get(key)?.role !== 'instructor') {
+        throw new RequestError(403, 'Only the host or Instructor can assign PF.');
+      }
+      if (!FLIGHT_ROLES.includes(data.role)) throw new RequestError(400, 'Choose Captain or First Officer.');
+      room.flying = data.role;
+      publish(room);
+      return send(res, 200, stateFor(room, user));
+    }
+    if (['cockpit', 'command', 'flight'].includes(action)) {
+      purge(room);
+      const member = room.members.get(key);
+      if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
+      member.lastSeen = now();
+      if (action === 'cockpit') return send(res, 200, stateFor(room, user));
+      if (member.role === 'observer') throw new RequestError(403, 'Observer is read-only.');
+      if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
+        throw new RequestError(400, 'Invalid cockpit connection.');
+      }
+      if (action === 'flight') {
+        if (roster(room).controller !== member.role) throw new RequestError(403, 'Only the active flight controller publishes state.');
+        if (member.flightAt !== undefined && now() - member.flightAt < 120) return send(res, 429, {error: 'Flight update too fast.'});
+        if (!data.state || typeof data.state !== 'object' || !Number.isFinite(data.state.altitudeFt) ||
+            !Number.isFinite(data.state.iasKt) || typeof data.paused !== 'boolean') {
+          throw new RequestError(400, 'Invalid flight state.');
+        }
+        member.flightAt = now();
+        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role};
+        broadcast(room, 'flight', room.flight);
+        return send(res, 200, {});
+      }
+      const command = crewCommand(data.command);
+      if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
+        throw new RequestError(403, 'Only Instructor can send failures.');
+      }
+      if (command.type === 'profile' && room.manager !== key && member.role !== 'instructor') {
+        throw new RequestError(403, 'Only the host or Instructor can configure the shared aircraft.');
+      }
+      if (!member.commandAt || now() - member.commandAt > 1000) {
+        member.commandAt = now();
+        member.commandCount = 0;
+      }
+      if (++member.commandCount > 65) throw new RequestError(429, 'Too many cockpit commands.');
+      const entry = {...command, sequence: ++room.sequence, client: data.client};
+      if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
+      room.commands.push(entry);
+      if (room.commands.length > 2400) room.commands.shift();
+      broadcast(room, 'command', entry);
+      return send(res, 200, {sequence: entry.sequence});
+    }
     if (action === 'invite') {
       if (room.manager !== key || !ROLES.includes(data.role)) throw new RequestError(403, 'The room host issues invitations.');
       const boundUser = data.role === 'observer' ? null :
@@ -400,7 +516,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
   }, 15 * 1000);
   heartbeat.unref();
-  return {handle, close() {
+  return {handle, cockpitAccess, close() {
     clearInterval(heartbeat);
     db?.close();
   }};

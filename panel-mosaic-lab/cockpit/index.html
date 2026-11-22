@@ -215,7 +215,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./smiths-fuel-quantity-v1.js?v=FUEL-QTY-20KG-0001" defer></script>
 <link rel="stylesheet" href="./unified-workspace-v1.css?v=WORKSPACE-0002">
 <link rel="stylesheet" href="./unified-welcome-v1.css?v=WELCOME-0005">
-<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0002">
+<link rel="stylesheet" href="./crew-room-v1.css?v=CREW-0003">
 <script>
 (function(){
  const test=new URLSearchParams(location.search).get('welcomeTest')==='1';
@@ -332,6 +332,10 @@ body > header.unified-minimal-header .header-settings>button{
     </dl>
     <ul data-crew-online hidden></ul>
     <p data-crew-seat-status></p>
+    <p data-crew-flight-duties></p>
+    <label data-crew-duties hidden>Pilot Flying
+      <select data-crew-flying><option value="captain">Captain</option><option value="firstOfficer">First Officer</option></select>
+    </label>
     <div class="crew-actions" data-crew-join hidden>
       <select aria-label="Crew Role">
         <option value="captain">Captain</option>
@@ -352,7 +356,10 @@ body > header.unified-minimal-header .header-settings>button{
       </div>
       <label data-crew-link hidden>Invitation Link<input readonly></label>
     </section>
-    <button type="button" data-crew-leave hidden>Leave Room</button>
+    <div class="crew-actions">
+      <button type="button" data-crew-enter hidden>Enter Shared Cockpit</button>
+      <button type="button" data-crew-leave hidden>Leave Room</button>
+    </div>
   </section>
   <button type="button" data-crew-logout hidden>Sign Out</button>
   <p role="status"></p>
@@ -617,6 +624,7 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./landing-gear-unified-v1.js?v=ATA32-GEAR-0005" defer></script>
 <script src="./unified-workspace-v1.js?v=WORKSPACE-0002-P15-CTR-0043" defer></script>
 <script src="./unified-welcome-v1.js?v=WELCOME-0005" async></script>
-<script src="./crew-room-v1.js?v=CREW-0002" defer></script>
+<script src="./crew-room-v1.js?v=CREW-0003" defer></script>
+<script src="./crew-cockpit-v1.js?v=CREW-0001" defer></script>
 <script src="./instructor-nonnormal-v1.js?v=INSTRUCTOR-NONNORMAL-0001" defer></script>
 </body></html>

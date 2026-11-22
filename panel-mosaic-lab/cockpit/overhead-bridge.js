@@ -132,7 +132,20 @@
  function report(){if(!ready||pending)return;pending=true;requestAnimationFrame(()=>{pending=false;const s=window.B737OverheadLights.getState();send({kind:'state',lights:s.lights,frames:s.frames,context:s.context,lampTest:s.lampTest,power:s.power});send({kind:'controls-state',toggles:window.B737OverheadToggles.getState(),...window.B737RotaryGuards.getState(),context:s.context});applyProjection();});}
  function start(){if(ready||!window.B737OverheadLights||!window.B737RotaryGuards||!window.B737OverheadToggles)return;ready=true;send({kind:'ready',version:'LGT-0003',lampDefinitions:window.B737OverheadLights.getRegistry().lights.map(c=>({id:c.id,rule:c.rule,states:c.states||['OFF','ON']})),switches:58,rotaries:20,guards:11});report();}
  const observer=new MutationObserver(()=>{start();if(ready)observer.disconnect();});observer.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});start();
- for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>{send({kind:'control-event',event:{...e.detail,kind:type==='b737:switch-change'?'toggle':type==='b737:rotary-change'?'rotary':'guarded'}});report();});
+ let crewReplay=false;
+ window.B737CrewOverheadV1=Object.freeze({
+  ready:()=>ready,
+  apply(type,id,value){
+   if(!ready)return false;
+   crewReplay=true;
+   try{
+    if(type==='toggle')return window.B737OverheadToggles.setCrewSwitch(id,value);
+    if(type==='rotary')return window.B737RotaryGuards.setCrewRotary(id,value);
+    return window.B737RotaryGuards.setCrewGuard(id,value);
+   }finally{crewReplay=false;}
+  }
+ });
+ for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>{send({kind:'control-event',crewReplay,event:{...e.detail,kind:type==='b737:switch-change'?'toggle':type==='b737:rotary-change'?'rotary':'guarded'}});report();});
  window.addEventListener('b737:overhead-light-state',()=>{applyProjection();report();});
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;const d=e.data;if(!ready)return;
   if(d.action==='live-electrical-supply'&&typeof d.power==='boolean'){

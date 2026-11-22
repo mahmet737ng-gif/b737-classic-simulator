@@ -21,7 +21,7 @@
   const moved = [];
   const decoded = new WeakMap();
   let setup = false;
-  let startRequested = false;
+  let startRequested = new URLSearchParams(win.location.search).has('crewRoom');
   let lastProgressAt = performance.now();
   let currentStage = '';
   let currentLabel = '';
@@ -122,14 +122,15 @@
   }
 
   function beginFlight() {
+    const shared = new URLSearchParams(win.location.search).has('crewRoom');
     const startupLoad = fuel.value !== '' || mass.value !== '';
     const owner = win.B737ISNCockpitV1;
-    if (startupLoad && !owner?.applyStartupLoad) return;
+    if (!shared && startupLoad && !owner?.applyStartupLoad) return;
     const applyLoad = startupLoad ? () => owner.applyStartupLoad({
       fuelKg: fuel.value === '' ? null : fuel.valueAsNumber,
       massKg: mass.value === '' ? null : mass.valueAsNumber
     }) : null;
-    if (!win.B737UnifiedFlightScenarioV1.startFromSelection(applyLoad)) {
+    if (!shared && !win.B737UnifiedFlightScenarioV1.startFromSelection(applyLoad)) {
       error.textContent = by('flightScenarioStatus').textContent;
       error.hidden = false;
       startRequested = false;

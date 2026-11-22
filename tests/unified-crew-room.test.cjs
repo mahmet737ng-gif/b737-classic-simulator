@@ -14,12 +14,39 @@ function fixture(req, res) {
   const cockpit = path.resolve(__dirname, '../panel-mosaic-lab/cockpit');
   const pathname = new URL(req.url, 'http://127.0.0.1').pathname;
   const file = pathname.endsWith('/') ? 'index.html' : path.basename(pathname);
-  const type = {'index.html': 'text/html', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
+  const type = {'index.html': 'text/html', 'crew-cockpit-v1.js': 'text/javascript', 'crew-room-v1.js': 'text/javascript', 'crew-room-v1.css': 'text/css'}[file];
   if (!type) {
     res.writeHead(404).end();
     return;
   }
   res.setHeader('Content-Type', type);
+  if(pathname==='/panel-mosaic-lab/unified/'){
+    res.end(`<!doctype html><header class="unified-minimal-header"><div class="header-settings">
+      <button id="workspaceLabsToggle">Test Labs</button></div></header>
+      <button id="pilotControl">Rotate heading</button><button id="phase">Load flight</button>
+      <button id="zoomIn">Zoom</button>
+      <script>
+      window.calls=[];let sample=null,paused=false;
+      window.B737McpVisualV3={setValue:(id,value)=>calls.push([id,value])};
+      window.B737UnifiedFlightScenarioV1={
+        loadScenario(value){calls.push(['load',value.preset]);},
+        crewFollower(){},
+        followCrew(value,next){calls.push(['flight',value.altitudeFt]);sample=value;paused=next;},
+        getDiagnostics(){return {paused};},getState(){return sample;}
+      };
+      document.getElementById('pilotControl').onclick=()=>{
+        calls.push(['heading',35]);
+        dispatchEvent(new CustomEvent('b737:mcp-value-change',{detail:{control:'heading',value:35}}));
+      };
+      document.getElementById('phase').onclick=()=>{
+        dispatchEvent(new CustomEvent('b737:crew-flight-command',{detail:{type:'loadFlight',value:{preset:'FINAL_10'}}}));
+        setTimeout(()=>dispatchEvent(new CustomEvent('b737:flight-scenario-state',{detail:{target:{},altitudeFt:6820,iasKt:142}})),250);
+      };
+      document.getElementById('zoomIn').onclick=()=>calls.push(['zoom']);
+      </script>
+      <script src="/panel-mosaic-lab/cockpit/crew-cockpit-v1.js" defer></script>`);
+    return;
+  }
   createReadStream(path.join(cockpit, file)).pipe(res);
 }
 
@@ -87,6 +114,11 @@ test('crew authorization, exclusive seats and reusable observer invitations', as
     observerTwo('join', {roomId, role: 'instructor', invite: observerInvite})
   ]);
   assert.ok(observers.every(join => join.status === 200 && join.data.role === 'observer'));
+  assert.equal((await observerOne('command', {roomId, client: 'observer-client', command: {
+    type: 'mcpValue', id: 'heading', value: 90
+  }})).status, 403);
+  assert.equal((await observerOne('assignFlying', {roomId, role: 'firstOfficer'})).status, 403);
+  assert.equal((await owner('assignFlying', {roomId, role: 'firstOfficer'})).data.flying, 'firstOfficer');
   const result = await owner('inspect', {roomId});
   assert.equal(result.data.reserved.firstOfficer, 1);
   assert.equal(result.data.reserved.observer, 2);
@@ -156,6 +188,24 @@ test('Unified Welcome shows live role counts across independent browsers', {skip
   await count(observer1, 'observer', '2');
   await count(observer2, 'observer', '2');
   assert.equal(await observer1.locator('[data-crew-invitations]').isVisible(), false);
-  await observer1.getByRole('button', {name: 'Leave Room', exact: true}).click();
+  await observer2.getByRole('button', {name: 'Leave Room', exact: true}).click();
   await count(host, 'observer', '1');
+  await instructor.getByLabel('Pilot Flying').selectOption('firstOfficer');
+  await host.getByText('PF: First Officer · PM: Captain').waitFor();
+  for (const page of [host, first, instructor, observer1]) {
+    await page.getByRole('button', {name: 'Enter Shared Cockpit'}).click();
+    await page.getByText(/Connected$/).waitFor();
+  }
+  assert.equal(await first.locator('#workspaceLabsToggle').isVisible(), false);
+  assert.equal(await instructor.locator('#workspaceLabsToggle').isVisible(), true);
+  await host.getByRole('button', {name: 'Rotate heading'}).click();
+  await first.waitForFunction(() => calls.some(([key, value]) => key === 'heading' && value === 35));
+  await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'heading' && value === 35));
+  await observer1.getByRole('button', {name: 'Rotate heading'}).click();
+  await observer1.getByRole('button', {name: 'Zoom'}).click();
+  assert.deepEqual(await observer1.evaluate(() => calls), [['heading', 35], ['zoom']]);
+  assert.deepEqual(await first.evaluate(() => calls), [['heading', 35]]);
+  await first.getByRole('button', {name: 'Load flight'}).click();
+  await host.waitForFunction(() => calls.some(([key, value]) => key === 'load' && value === 'FINAL_10'));
+  await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'flight' && value === 6820));
 });

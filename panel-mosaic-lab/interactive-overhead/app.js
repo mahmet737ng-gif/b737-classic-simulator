@@ -320,6 +320,11 @@ function scenarioSet(id,next){
 window.B737OverheadToggles=Object.freeze({getState:()=>engine.snapshot(),
  getRegistry:()=>JSON.parse(JSON.stringify(registry)),baseVersion:registry.baseVersion,
  setScenarioSwitch:scenarioSet,
+ setCrewSwitch:(id,value)=>{
+  const control=registry.controls.find(entry=>entry.id===id);
+  if(!control?.states.includes(value)||interlocks.get(id)===false)return false;
+  return engine.set(id,value,'crew-room');
+ },
  setInterlock:(id,enabled)=>{interlocks.set(id,!!enabled);if(!enabled)engine.release(id);
  const c=registry.controls.find(c=>c.id===id);if(c)refreshOne(c);}});
   window.addEventListener('blur',()=>engine.releaseAll());
