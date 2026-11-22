@@ -210,13 +210,43 @@
   });
   draw();
  }
+ // Native pointer gestures in an overhead iframe do not bubble into parent.
+ // Unlock/resume the one approved audio engine in the iframe's actual gesture.
+ const gestureUnlock=()=>{
+  if(verifiedAudio&&!armed)unlock().then(refresh).catch(error=>{
+   loadError='AUDIO_UNLOCK_FAILED: '+error.message;draw();
+  });
+ };
+ root.document.addEventListener('pointerdown',gestureUnlock,true);
+ root.document.addEventListener('keydown',gestureUnlock,true);
+ let boundOverhead=null;
+ function bindOverheadUnlock(){
+  const frame=$('overheadFrame');
+  let doc=null;
+  try{doc=frame?.contentDocument||null;}catch(_){}
+  if(!doc||doc===boundOverhead)return false;
+  boundOverhead=doc;
+  doc.addEventListener('pointerdown',gestureUnlock,true);
+  doc.addEventListener('keydown',gestureUnlock,true);
+  return true;
+ }
  root.addEventListener('message',event=>{
   if(event.origin!==root.location.origin||event.source!==$('overheadFrame')?.contentWindow)return;
   const d=event.data;
-  if(d?.type!=='b737:cockpit-overhead'||d.kind!=='stick-shaker-test')return;
-  if(![1,2].includes(d.channel)||typeof d.pressed!=='boolean')return;
+  if(d?.type!=='b737:cockpit-overhead')return;
+  if(d.kind==='ready'){bindOverheadUnlock();return;}
+  if(d.kind!=='stick-shaker-test'||![1,2].includes(d.channel)||typeof d.pressed!=='boolean')return;
+  if(d.pressed)gestureUnlock();
   press(d.channel,d.pressed);
  });
+ root.addEventListener('b737:cockpit-mounted',bindOverheadUnlock);
+ const installGestureBinding=()=>{
+  const frame=$('overheadFrame');
+  frame?.addEventListener('load',bindOverheadUnlock);
+  bindOverheadUnlock();
+ };
+ if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',installGestureBinding,{once:true});
+ else installGestureBinding();
  for(const type of ['b737:flight-scenario-state','b737:flight-scenario-stopped','b737:avionics-data','b737:cockpit-mounted']){
   root.addEventListener(type,()=>refresh());
  }
