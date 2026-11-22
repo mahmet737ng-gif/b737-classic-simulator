@@ -358,7 +358,7 @@
    });
   };
   navCheck();
-  const legacy=new Set(['unifiedEfisHeader','groundPowerHeader','cbPanelOpen','instrumentPhotoLabOpen','busConsumerTestLabOpen','failuresHeaderOpen']);
+  const legacy=new Set(['unifiedEfisHeader','groundPowerHeader','instrumentPhotoLabOpen','busConsumerTestLabOpen']);
   function hideLegacyHeader(){
    for(const node of [...header.children]){
     if(legacy.has(node.id)||node.dataset.workspaceNavHidden==='true'){
