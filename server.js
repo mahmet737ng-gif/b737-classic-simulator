@@ -527,7 +527,21 @@ const crew=createCrewRoomHandler({
   origin: crewOrigin,
   ownerUsername: UNLIMITED_USER,
   reservedUsernames: [USER],
-  ownerAccess,
+  gatewayIdentity: unifiedIdentity,
+  async gatewayLogin(req, username, password) {
+    const result=await registerUnifiedDevice(req,username,password);
+    if(result.error){
+      const error=result.error;
+      const messages={
+        rate:[429,'Too many attempts. Retry in 15 minutes.'],
+        full:[409,'All three Unified guest device slots are registered.'],
+        invalid:[401,'Incorrect username or password.']
+      };
+      const [status,message]=messages[error];
+      throw Object.assign(new Error(message),{status});
+    }
+    return {username,cookies:result.cookies};
+  },
   accounts: {
     async get(key) {
       const result=await pool.query('SELECT username, verifier FROM unified_crew_accounts WHERE account_key=$1',[key]);
@@ -551,12 +565,14 @@ function serveCrewEntry(req,res,url){
     res.end(req.method==='HEAD'?undefined:optimizedSource(asset[0]));
     return true;
   }
+  const standalone=crewDialog.includes('data-crew-host-role');
+  const content=standalone?crewDialog.replace(/^<dialog/,'<main').replace(/<\/dialog>$/,'</main>'):crewDialog;
   res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
   res.end(req.method==='HEAD'?undefined:'<!doctype html><html lang="en"><meta charset="utf-8">'+
     '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Unified Crew Room</title>'+
     '<link rel="stylesheet" href="/crew/lobby.css"><script src="/crew/lobby.js" defer></script>'+
-    '<body data-crew-entry style="background:#071016"><button type="button" data-crew-open>Crew Room</button>'+
-    crewDialog+'</body></html>');
+    '<body data-crew-entry'+(standalone?' data-crew-page':' style="background:#071016"')+'>'+
+    (standalone?'':'<button type="button" data-crew-open>Crew Room</button>')+content+'</body></html>');
   return true;
 }
 
@@ -663,21 +679,18 @@ async function authorized(req) {
   }
   return inFlight;
 }
-async function signIn(req,res) {
+async function registerUnifiedDevice(req,username,password) {
   const now=Date.now(), ip=String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').split(',')[0].trim().slice(0,80);
   if (attemptMap.size>5000) attemptMap.clear();
   const bucket=attemptMap.get(ip)||{n:0,until:now+900000};
   if (bucket.until<now) { bucket.n=0; bucket.until=now+900000; }
-  if (bucket.n>=8) { redirect(res,'/login?e=rate');return; }
-  const payload=new URLSearchParams(await body(req));
-  const username=String(payload.get('username')||'');
-  const password=String(payload.get('password')||'');
+  if (bucket.n>=8) return {error:'rate'};
   const tier=(username===UNLIMITED_USER&&UNLIMITED_PASSWORD_SCRYPT&&
     verifyPassword(password,UNLIMITED_PASSWORD_SCRYPT))?'unlimited':
     (username===USER&&verifyPassword(password,PASSWORD_HASH))?'guest':null;
   if (!tier) {
     bucket.n++;attemptMap.set(ip,bucket);
-    redirect(res,'/login?e=invalid');return;
+    return {error:'invalid'};
   }
   attemptMap.delete(ip);
   const existing=cookies(req)[DEVICE_COOKIE];
@@ -708,11 +721,18 @@ async function signIn(req,res) {
     await client.query('ROLLBACK').catch(()=>{});
     throw e;
   } finally { client.release(); }
-  if (!allowed) { redirect(res,'/login?e=full');return; }
-  redirect(res,'/',{'Set-Cookie':[
+  if (!allowed) return {error:'full'};
+  return {cookies:[
     cookie(req,DEVICE_COOKIE,device,tier==='unlimited'?OWNER_SESSION_SECONDS:DEVICE_SESSION_SECONDS,'Lax'),
     cookie(req,TOKEN_COOKIE,token,tier==='unlimited'?OWNER_SESSION_SECONDS:GUEST_SESSION_SECONDS,'Lax')
-  ]});
+  ]};
+}
+
+async function signIn(req,res) {
+  const payload=new URLSearchParams(await body(req));
+  const result=await registerUnifiedDevice(req,payload.get('username')||'',payload.get('password')||'');
+  if(result.error){redirect(res,'/login?e='+result.error);return;}
+  redirect(res,'/',{'Set-Cookie':result.cookies});
 }
 async function readPrivateNavData(req){
  if(!String(req.headers['content-type']||'').startsWith('application/json'))throw Error('JSON_REQUIRED');
@@ -752,11 +772,16 @@ function devicesHTML(rows){
  '<table><thead><tr><th>#</th><th>Browser / OS</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
  (rows.length?'':'<p>No guest devices are registered.</p>')+'</body></html>';
 }
-async function ownerAccess(req){
+async function unifiedIdentity(req){
  const token=cookies(req)[TOKEN_COOKIE];
- if(!token)return false;
- const result=await pool.query("SELECT 1 FROM ata24_devices WHERE session_hash=$1 AND account_tier='unlimited'",[hash(token)]);
- return result.rowCount===1;
+ if(!token||token.length<30||token.length>128)return null;
+ const result=await pool.query('SELECT account_tier FROM ata24_devices WHERE session_hash=$1',[hash(token)]);
+ const tier=result.rows[0]?.account_tier;
+ return tier==='unlimited'?UNLIMITED_USER:tier==='guest'?USER:null;
+}
+
+async function ownerAccess(req){
+ return await unifiedIdentity(req)===UNLIMITED_USER;
 }
 
 function crewMayRead(url, role) {
