@@ -4,6 +4,7 @@
   const { WarningEngine } = window.B737WarningEngine;
   const { RealAudioBank, keyFor, validAudioFile } = window.B737RealAudioBank;
   const realBank = new RealAudioBank();
+  const ownerRA = window.B737OwnerRACallouts ? new window.B737OwnerRACallouts.Player() : null;
   let realReady = false;
   let model = new WarningEngine({ variant: "737-300" });
   let log = [];
@@ -46,7 +47,8 @@
     ["radioAltitude", "RA · 30", "Unassigned — awaiting owner definition", "30"],
     ["radioAltitude", "RA · 20", "Unassigned — awaiting owner definition", "20"],
     ["radioAltitude", "RA · 10", "Unassigned — awaiting owner definition", "10"],
-    ["altitude", "Altitude Alert — Deviation", "Unassigned — awaiting owner definition", "ALTITUDE DEVIATION"]
+    ["altitude", "Altitude Alert — Deviation", "Unassigned — awaiting owner definition", "ALTITUDE DEVIATION"],
+    ["radioAltitude", "RA · FULL CALL OUT COLLECTION", "Owner a.mp3 recording — segmented preview", "COLLECTION"]
   ];
   const matrix = byId("soundMatrix");
   for (const [id, label, desc, phrase] of SOUND_TESTS) {
@@ -55,31 +57,34 @@
     b.type = "button";
     b.innerHTML = '<span class="chip">PLAY ▶</span><b></b><small></small>';
     b.querySelector("b").textContent = label;
-    b.querySelector("small").textContent = desc;
+    b.querySelector("small").textContent = ownerRA && ownerRA.has(keyFor(id, phrase)) ? "OWNER RA RECORDING · READY FOR REVIEW" : desc;
     b.addEventListener("click", () => play(id, phrase));
     matrix.appendChild(b);
   }
   function clearSound() {
     realBank.stop();
+    if (ownerRA) ownerRA.stop();
   }
   function play(kind, message) {
     const soundKey = keyFor(kind, message);
     clearSound();
-    if (!realReady) {
-      byId("realImportStatus").textContent = "Audio storage is not ready. This warning remains silent.";
-      return false;
+    const volume=Number(byId("reviewVolume").value)/100;
+    if (realReady && realBank.has(soundKey)) {
+      realBank.play(soundKey,volume).then(entry => {
+        byId("realImportStatus").textContent = "Playing manually assigned recording: "+entry.name;
+      }).catch(err => {
+        byId("realImportStatus").textContent = "Assigned recording playback failed: "+err.message;
+      });
+      return true;
     }
-    if (!realBank.has(soundKey)) {
-      byId("realImportStatus").textContent =
-        "NO SOUND ASSIGNED: " + soundKey + " — waiting for the owner's definition and recording.";
-      return false;
+    if (ownerRA && ownerRA.has(soundKey)) {
+      ownerRA.enqueue(soundKey,volume);
+      byId("realImportStatus").textContent="OWNER RA RECORDING: "+soundKey;
+      return true;
     }
-    realBank.play(soundKey, Number(byId("reviewVolume").value) / 100).then(entry => {
-      byId("realImportStatus").textContent = "Playing manually assigned recording: " + entry.name;
-    }).catch(err => {
-      byId("realImportStatus").textContent = "Assigned recording playback failed: " + err.message;
-    });
-    return true;
+    byId("realImportStatus").textContent =
+      "NO SOUND ASSIGNED: "+soundKey+" — awaiting owner-provided recording.";
+    return false;
   }
   function state() {
     const s = {};
@@ -93,6 +98,7 @@
       "parkingBrakeSet", "stabilizerTrimTakeoff", "approachActive"
     ]) s[id] = byId(id).checked;
     s.egpwsMessage = byId("egpwsMessage").value;
+    s.minimumsRadioFt = Number(byId("raDhFt").value);
     return s;
   }
   function evaluate(noSound) {
@@ -107,10 +113,13 @@
     byId("events").textContent = log.join("\n") || "No one-shot transitions yet";
     if (!noSound) {
       const voices = out.events.filter(v => v.group === "voice").sort((a,b)=>b.priority-a.priority);
-      if (voices.length) play(voices[0].id, voices[0].message);
+      if (voices.length && ownerRA && voices.every(v=>ownerRA.has(keyFor(v.id,v.message)))) {
+        for (const event of voices) ownerRA.enqueue(keyFor(event.id,event.message), Number(byId("reviewVolume").value)/100);
+      }
+      else if (voices.length) play(voices[0].id, voices[0].message);
       else if (out.active.length) play([...out.active].sort((a,b)=>b.priority-a.priority)[0].id);
       else if (out.events.length) play(out.events[0].id, out.events[0].message);
-      else clearSound();
+      // Do not cut off the tail of an RA callout merely because there is no new event.
     }
   }
   byId("evaluate").addEventListener("click", () => evaluate(false));
@@ -150,6 +159,7 @@
     const liveKey = keyFor(id,SOUND_TESTS[reviewIndex][3]);
     byId("reviewDescription").textContent = desc +
        (realReady && realBank.has(liveKey) ? " · Imported file: " + realBank.getSummary(liveKey).name
+         : (ownerRA && ownerRA.has(liveKey)) ? " · OWNER RA recording — ready to preview"
          : " · No sample assigned — awaiting owner definition");
 
     byId("reviewNote").value = curReview().note || "";
@@ -157,8 +167,9 @@
     byId("reviewSummary").textContent = "Reviewed: " + complete + " of " + SOUND_TESTS.length +
       " | Approved: " + approved + " | Needs revision: " + fix +
       " | Current status: " + ({ approved: "Approved", fix: "Needs Revision", untested: "Not Tested" }[curReview().status] || "Not Tested");
-    byId("reviewApprove").disabled = !(realReady && realBank.has(liveKey));
-    byId("reviewFix").disabled = !(realReady && realBank.has(liveKey));
+    const hasSample=(realReady && realBank.has(liveKey)) || (ownerRA && ownerRA.has(liveKey));
+    byId("reviewApprove").disabled = !hasSample;
+    byId("reviewFix").disabled = !hasSample;
     byId("reviewPrev").disabled = reviewIndex === 0;
     byId("reviewNext").disabled = reviewIndex === SOUND_TESTS.length - 1;
     byId("reviewApprove").style.borderColor = curReview().status === "approved" ? "#80e4bd" : "";
@@ -178,17 +189,17 @@
       return { no:i+1,id,label,description:desc,status:entry.status || "untested",notes:entry.note || "" };
     });
     return { project:"B737 Classic Audio Warning Lab",version:"0.3",
-      provenance:"Owner-imported files are stored locally and manually mapped; unassigned slots remain silent.",
+      provenance:"RA owner audio from uploaded a.mp3; other unmapped slots remain silent.",
       results:rows.map((r,i)=>({...r,audioFile:realReady?realBank.getSummary(keyFor(SOUND_TESTS[i][0],SOUND_TESTS[i][3])):null})) };
   }
   byId("reviewPlay").addEventListener("click", () => {
     const s = SOUND_TESTS[reviewIndex]; play(s[0],s[3]);
-    const v = Number(byId("reviewVolume").value) / 100;
   });
   byId("reviewStop").addEventListener("click", clearSound);
   byId("reviewVolume").addEventListener("input", () => {
     const v = Number(byId("reviewVolume").value);
     byId("reviewVolumeValue").textContent = v + "%";
+    if (ownerRA)ownerRA.setVolume(v/100);
   });
   byId("reviewApprove").addEventListener("click", () => writeStatus("approved"));
   byId("reviewFix").addEventListener("click", () => writeStatus("fix"));

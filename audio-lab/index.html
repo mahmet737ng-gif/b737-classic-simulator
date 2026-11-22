@@ -56,6 +56,7 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 </style></head><body>
 <header><div class="kicker">B737 CLASSIC · AUDIO SYSTEM · EXPERIMENTAL</div><h1>Aural Warning Sound Lab</h1><div class="sub">Separate prototype for 737-300/-400/-500 warning logic and listening tests. All sound slots start unassigned and remain silent until the owner defines and manually assigns a recording. No synthesized tones or browser text-to-speech are used. No effect on the current cockpit page.</div></header>
 <main>
+<section class="panel" id="ownerRALab" style="border-color:#70c9aa"><h2>NEW · Radio Altimeter — Owner Recording</h2><p class="muted">Real RA voice callouts uploaded from a.mp3. Individual 1000/500/100/50/40/30/20/10 and DH / DH+100 minima; default DH −20 inhibits minima. Unidentified ending beep is excluded.</p><p><a href="./ra-test.html" style="display:inline-block;background:#1b604e;padding:11px 18px;color:#effef8;text-decoration:none;border-radius:9px;border:1px solid #438e78;font-weight:700">OPEN RA AUDIO TEST LAB</a></p></section>
 
 
 <section class="panel" id="realAudioImporter" dir="rtl" style="border-color:#6a7149">
@@ -103,6 +104,7 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 <label>MCP selected altitude (ft)<input id="selectedAltitudeFt" type="number" value="10000" step="100"></label>
 <label>Cabin altitude (ft)<input id="cabinAltitudeFt" type="number" value="5500" step="100"></label>
 <label>Radio altitude (ft)<input id="radioAltitudeFt" type="number" value="1600" step="10"></label>
+<label>Decision height — DH (ft)<input id="raDhFt" type="number" value="-20" step="10"></label>
 <label>Flaps<select id="flaps"><option>0</option><option selected>5</option><option>1</option><option>10</option><option>15</option><option>25</option><option>30</option><option>40</option></select></label>
 <label>IAS (kt)<input id="iasKt" type="number" value="230"></label>
 <label>VMO (kt)<input id="vmoKt" type="number" value="340"></label>
@@ -135,5 +137,5 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 <div><div class="kicker">TRANSITIONS / LOG</div><div class="out" id="events">Click Evaluate to initialize state.</div></div></div></section>
 <footer>Reference: user-provided Sepehran 737CL FCOM Chapter 15. Validated rules include cabin/takeoff shared horn, gear horn conditions, altitude alert thresholds and inhibits. Alert logic remains a separate prototype. Audio samples and sound-to-warning assignments are intentionally blank pending owner definition. Radio voice and TCAS scenarios require installed equipment / configuration verification. Educational software; never for real operations.</footer>
 </main>
-<script src="../audio/warning-engine.js"></script><script src="real-audio-bank.js"></script><script src="lab.js"></script>
+<script src="../audio/warning-engine.js"></script><script src="real-audio-bank.js"></script><script src="owner-ra-callouts-v1.js"></script><script src="lab.js"></script>
 </body></html>

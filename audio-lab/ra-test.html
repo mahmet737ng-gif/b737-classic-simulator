@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B737 Classic — Radio Altimeter Audio Test</title>
+<style>
+:root{color-scheme:dark;font:15px/1.5 system-ui,Arial;background:#0b151e;color:#e3f3f6}
+*{box-sizing:border-box}body{max-width:1040px;padding:18px;margin:0 auto}
+h1{font-size:clamp(25px,4vw,36px);margin:4px 0 6px}
+h2{font-size:20px;margin:0 0 8px}
+p{color:#a8c4ce;margin:8px 0 15px}
+.panel{padding:20px;margin-top:18px;border:1px solid #39616b;background:#142934;border-radius:12px}
+.tag{font:700 11px monospace;letter-spacing:.13em;color:#7bddc3}
+.controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.control{flex:1;min-width:120px;display:grid;gap:7px;color:#b5d3dc;font-size:12px}
+input{accent-color:#78ddca}input[type=number]{width:100%;max-width:165px;padding:10px;border-radius:7px;border:1px solid #476572;background:#0b1824;color:#fff;font:20px monospace}
+input[type=range]{width:100%}
+.readout{font:600 42px monospace;color:#86f0d1;margin:16px 0}
+button{background:#1e6857;color:#eafff9;border:1px solid #458b7a;padding:10px 13px;border-radius:8px;cursor:pointer;font:600 13px system-ui}
+button:hover{background:#2b7d6a}
+.btns,.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}
+.notice{font:13px/1.6 system-ui;color:#c8decc;background:#0d2429;padding:10px;border:1px solid #397468;border-radius:7px}
+#log{height:170px;overflow:auto;white-space:pre-wrap;font:12px/1.65 monospace;color:#b3e6da}
+a{color:#79d7dc}
+</style></head><body>
+<div class="tag">B737 CLASSIC · AUDIO WARNING LAB · OWNER RECORDING</div>
+<h1>Radio Altimeter — Audio Test</h1>
+<p>Original source: uploaded a.mp3. Ten voice callouts extracted; the unidentified final beep is deliberately excluded. Playback uses a compact Opus copy, not text-to-speech or generated tones.</p>
+<section class="panel">
+<h2>Live RA / DH simulation</h2>
+<div class="controls">
+<label class="control">RADIO ALTITUDE (FT)<input id="ra" type="number" min="0" max="2500" value="1200"></label>
+<label class="control">DECISION HEIGHT — DH (FT)<input id="dh" type="number" min="-20" max="999" value="-20"></label>
+<label class="control">SIMULATED DESCENT RATE (FT/S)<input id="rate" type="number" min="10" max="600" value="160"></label>
+</div>
+<div class="readout">RA <span id="raValue">1200</span> ft</div>
+<input id="raSlider" aria-label="Radio altitude" type="range" min="0" max="1500" step="1" value="1200">
+<p>At DH = −20 ft, both minima callouts are inhibited. For DH = 200 ft, APPROACHING MINIMUMS triggers at 300 ft and MINIMUMS at 200 ft.</p>
+<div class="btns"><button id="begin">START DESCENT</button><button id="reset">RESET RA 1200</button><button id="stop">STOP AUDIO</button></div>
+<p id="status" class="notice">Ready. Start descent or drag RA downward.</p>
+</section>
+<section class="panel"><h2>Individual voice previews</h2><div class="grid" id="clips"></div></section>
+<section class="panel"><h2>Event log</h2><div id="log"></div></section>
+<p><a href="./index.html">Back to Audio Warning Lab</a></p>
+<script src="../audio/warning-engine.js"></script><script src="./owner-ra-callouts-v1.js"></script>
+<script>
+(()=>{
+ "use strict";
+ const {WarningEngine}=window.B737WarningEngine;
+ const owner=window.B737OwnerRACallouts;
+ const sound=new owner.Player();
+ const $=id=>document.getElementById(id);
+ let engine=new WarningEngine({variant:"737-300"}),ra=1200,descentTimer=null;
+ const baseline={onGround:false,flaps:0,gearDownLocked:true,pressureAltitudeFt:6000,selectedAltitudeFt:6000,
+ cabinAltitudeFt:5500,thrustLever1Angle:45,thrustLever2Angle:45,iasKt:150,vmoKt:340,
+ leadingEdgeTakeoff:true,speedbrakeDown:true,parkingBrakeSet:false,stabilizerTrimTakeoff:true,approachActive:true};
+ const eventLog=(msg)=>{$("log").textContent=new Date().toLocaleTimeString()+" · "+msg+"\n"+$("log").textContent;};
+ function snapshot(){return engine.update({...baseline,radioAltitudeFt:ra,minimumsRadioFt:Number($("dh").value)});}
+ function playEvents(out){
+   for(const evt of out.events){
+     const key=owner.keyFor(evt.id,evt.message);
+     if(sound.has(key)){sound.enqueue(key,.20);eventLog("TRIGGER "+evt.message+" at "+Math.round(ra)+" ft RA");}
+   }
+ }
+ function setRA(n,play=true){
+   ra=Math.max(0,Math.min(2500,Number(n)||0));
+   $("ra").value=Math.round(ra);
+   $("raSlider").value=Math.min(1500,ra);
+   $("raValue").textContent=Math.round(ra);
+   const out=snapshot();
+   if(play)playEvents(out);
+   $("status").textContent="RA "+Math.round(ra)+" ft · DH "+$("dh").value+
+      (Number($("dh").value)<0?" · minima voice inhibited":" · approaching at DH+100 ft");
+ }
+ function stopDescent(){if(descentTimer!==null){clearInterval(descentTimer);descentTimer=null;}}
+ function reset(){
+   stopDescent();sound.stop();engine.reset();ra=1200;setRA(1200,false);eventLog("Reset RA = 1200 ft");
+ }
+ $("ra").onchange=e=>{stopDescent();setRA(e.target.value);};
+ $("raSlider").oninput=e=>{stopDescent();setRA(e.target.value);};
+ $("dh").onchange=reset;
+ $("reset").onclick=reset;
+ $("stop").onclick=()=>{stopDescent();sound.stop();eventLog("STOP");};
+ $("begin").onclick=()=>{
+   reset();let last=performance.now();
+   descentTimer=setInterval(()=>{
+     const now=performance.now(),delta=(now-last)/1000;last=now;
+     setRA(ra-delta*Math.max(10,Number($("rate").value)||160));
+     if(ra<=0){stopDescent();eventLog("Descent ended");}
+   },45);
+   eventLog("Descent started");
+ };
+ const order=["radioAltitude|ONE THOUSAND","radioAltitude|500",
+ "minimums|APPROACHING MINIMUMS","minimums|MINIMUMS","radioAltitude|100",
+ "radioAltitude|50","radioAltitude|40","radioAltitude|30","radioAltitude|20","radioAltitude|10"];
+ for(const key of order){
+   const b=document.createElement("button");b.type="button";b.textContent=key.split("|")[1];
+   b.onclick=()=>{sound.stop();sound.enqueue(key,.20);eventLog("MANUAL PLAY "+key);};
+   $("clips").appendChild(b);
+ }
+ setRA(1200,false);
+})();
+</script></body></html>
