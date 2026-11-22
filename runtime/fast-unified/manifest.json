@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "09bac197198bcff98c7cfe6cfa0ed4d3a9ebedd8",
+  "sourceCommit": "93c779a769f18e0f8361df51e5ce65b44cd29277",
   "mainBefore": 319,
   "mainAfter": 100,
   "overheadBefore": 62,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "99fc5d4ba6d8ac8c30d0aad4decd77a2542f17b3f0253a74fb5f4bf86ce386d6"
+      "sha256": "2586618122871ae6730bc3f55758358836e2600f90b7f2d6572d5f3aa34cd46a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -87,8 +87,8 @@
       "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-70414d7055570fd1.js",
-      "sha256": "70414d7055570fd1f9fcaa829ae9dd1aba6ba2f5239f5276d432d5497d2ed195"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-53bd780d633f809e.js",
+      "sha256": "53bd780d633f809e4e5629d7d1be19a676482bd94a90a76b6b7d8a557544bd16"
     },
     {
       "path": "fire-protection-lab/desktop-bundle-38daab6b98875ff2.js",
