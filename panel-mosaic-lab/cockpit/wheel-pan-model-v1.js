@@ -27,7 +27,7 @@
 
  // RAF-coalesced visual pan. Keep the original synchronous pan() API for
  // compatibility with standalone embedded panels and existing test fixtures.
- function createController(viewport,{requestFrame=null,cancelFrame=null,ease=0.48}={}){
+ function createController(viewport,{requestFrame=null,cancelFrame=null,ease=0.82}={}){
   const raf=requestFrame||(typeof requestAnimationFrame==='function'?requestAnimationFrame:null);
   const caf=cancelFrame||(typeof cancelAnimationFrame==='function'?cancelAnimationFrame:null);
   if(!viewport)throw Error('Wheel viewport required');
