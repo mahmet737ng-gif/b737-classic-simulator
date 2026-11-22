@@ -3,6 +3,11 @@ on:
   push:
     paths:
       - 'fire-protection-lab/**'
+      - 'audio/fire-bell-aural-gate-v1.js'
+      - 'panel-mosaic-lab/cockpit/fire-bell-audio-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/fire-hardware-unified.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/fire-bell-owner-audio-v1.test.cjs'
       - '.github/workflows/fire-protection-panel.yml'
   pull_request:
     paths:
@@ -26,3 +31,7 @@ jobs:
           node fire-protection-lab/tests/assets.test.cjs
           node fire-protection-lab/tests/geometry-v2.test.cjs
           node fire-protection-lab/tests/video-scenarios.test.cjs
+          node --check audio/fire-bell-aural-gate-v1.js
+          node --check panel-mosaic-lab/cockpit/fire-bell-audio-unified-v1.js
+          node --check panel-mosaic-lab/cockpit/fire-hardware-unified.js
+          node tests/fire-bell-owner-audio-v1.test.cjs
