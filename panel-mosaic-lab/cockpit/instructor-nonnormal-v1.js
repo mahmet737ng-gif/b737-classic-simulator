@@ -268,11 +268,88 @@
    '[data-instructor-failed="true"]::after{content:"";display:block;position:absolute;inset:0;background:#010306;pointer-events:none;z-index:40}' +
    '#instructorScenarioStatus[data-error="true"],#instructorFailuresStatus[data-error="true"]{color:#ff9e9e}';
  }
+ function mountAdvanced(){
+  const branch=$('advancedFailureBranch'),scene=$('advancedScenarioBlock');
+  if(!branch||!scene)return false;
+  // A concurrently installed instructor menu already owns these two tabs.
+  // Attach the actual system adapters to its controls instead of duplicating menus.
+  const mapping={
+   'irs.left':['navigation','irs.L'],'irs.right':['navigation','irs.R'],
+   'irs.both':['navigation','irs.BOTH'],'fmc.both':['navigation','fmc.BOTH'],
+   'air.autoFail':['air','autoFail'],'air.cargoDoor':['air','cargoDoor'],
+   'engine.1.startValveOpen':['engines','valve1'],
+   'engine.2.startValveOpen':['engines','valve2'],
+   'hyd.a.loss':['hydraulics','lossA'],'hyd.b.loss':['hydraulics','lossB']
+  };
+  for(const seat of ['cpt','fo'])for(const unit of ['eadi','ehsi','asi','altimeter','vsi','rdmi','ivsi'])
+   mapping[seat+'.'+unit]=['instruments',(seat==='cpt'?'CAPT':'FO')+'.'+unit.toUpperCase()];
+  const extraHyd={'hyd.standbyPump':'STBY_PUMP_FAIL','hyd.ptu':'PTU_FAIL','hyd.lgtu':'LGTU_FAIL'};
+  for(const input of doc.querySelectorAll('[data-advanced-failure]')){
+   const id=input.dataset.advancedFailure;
+   input.addEventListener('change',()=>{
+    const pair=mapping[id];
+    if(pair){if(!toggle(pair[0],pair[1],input.checked))input.checked=!input.checked;}
+    else if(extraHyd[id]){
+     const lab=root.B737HydraulicLabV1,code=extraHyd[id];
+     if(!lab?.inject){status('advancedFailureFeedback','HYDRAULIC LAB NOT READY',true);return;}
+     const present=lab.getState?.().faults?.includes(code)===true;
+     if(present!==input.checked)lab.inject(code);
+     announce('b737:instructor-hydraulic-failure',{id,active:input.checked,origin:'ISOLATED_HYDRAULIC_LAB'});
+    }else if(id.startsWith('fmc.')){
+     announce('b737:instructor-fmc-channel-request',{id,failed:input.checked,origin:'CHANNEL_ADAPTER_NOT_CONNECTED'});
+     status('advancedFailureFeedback','Individual FMC failure: native channel adapter pending; BOTH FMC failure is live.');
+    }
+   });
+  }
+  const selected=$('advScenarioSelect');
+  if(selected&&!selected.querySelector('option[value="hydraulic-both"]')){
+   const option=create('option','','LOSS OF BOTH HYDRAULIC SYSTEMS',selected);option.value='hydraulic-both';
+  }
+  const launch=scene.querySelector('.adv-action');
+  if(launch){
+   launch.onclick=()=>{
+    try{
+     const kind=selected?.value||'emergency-descent';
+     if(kind==='emergency-descent')startScenario('emergency',{
+      cause:$('advCause')?.value||'autoFail',severity:$('advSeverity')?.value||'uncontrolled'
+     });
+     else if(kind==='both-bus-off-climb')startScenario('bothBus');
+     else if(kind.startsWith('hydraulic-'))startScenario('hydraulic',{
+      system:kind==='hydraulic-a'?'lossA':kind==='hydraulic-b'?'lossB':'lossBoth'
+     });
+     status('advancedScenarioStatus','SCENARIO LOADED INTO FLT PHASE · '+kind.toUpperCase());
+    }catch(error){status('advancedScenarioStatus','SCENARIO FAILED: '+String(error.message||error),true);}
+   };
+  }
+  const extras=create('div','instructor-section',undefined,scene);
+  extras.id='instructorScenarioAdditions';
+  create('strong','','PRESSURIZATION PROCEDURE CONTROLS',extras);
+  const row=create('div','',undefined,extras);
+  function action(title,fn){
+   const b=create('button','',title,row);b.type='button';
+   b.onclick=()=>{try{fn();status('advancedScenarioStatus',title+' APPLIED');}
+    catch(error){status('advancedScenarioStatus','ACTION FAILED: '+String(error.message||error),true);}};
+  }
+  action('INITIATE EMERGENCY DESCENT',emergencyDescent);
+  action('MANUAL VALVE CLOSE',()=>manualControl('CLOSE'));
+  action('MANUAL VALVE NEUTRAL',()=>manualControl('NONE'));
+  const output=create('output','',undefined,extras);
+  output.id='instructorCabinReadings';output.textContent='No active pressurization scenario';
+  create('p','','Cabin readings use an educational pressure-loss model. Hydraulic loss runs in the independent Hydraulic Lab.',extras);
+  return true;
+ }
  function mount(){
   if(installed)return true;
   const fail=$('failuresHeaderPopover'),flight=$('flightScenarioDialog');
   if(!fail||!flight)return false;
   installStyle();
+  if(mountAdvanced()){
+   installed=true;render();
+   root.addEventListener('b737:cockpit-mounted',()=>{renderNeeded=true;});
+   root.setInterval(tick,200);
+   root.setInterval(maskDisplays,900);
+   return true;
+  }
   const branch=create('section','instructor-section',undefined,fail);branch.id='instructorFailureBranches';
   create('strong','','ADDITIONAL SYSTEM FAILURES · INSTRUCTOR',branch);
   for(const [group,label]of [['navigation','NAVIGATION / IRS / FMC'],['instruments','FLIGHT INSTRUMENTS · CAPT / FO'],['air','AIR SYSTEMS'],['engines','ENGINES · START VALVE'],['hydraulics','HYDRAULICS · FCOM / MRG LAB'],['electrical','ELECTRICAL · DUAL BUS']])categoryUI(branch,group,label);
