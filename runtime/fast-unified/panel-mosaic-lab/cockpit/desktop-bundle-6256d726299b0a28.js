@@ -1054,209 +1054,99 @@ win.B737UnifiedFireLights=Object.freeze({
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fire-hardware-unified.js?v=ATA26-0003-PERF-0001 */
+/* ../../audio-lab/real-audio-bank.js?v=FIREBELL-OWNER-0001 */
 try{
-/* P8-1 hardware registered to the same fitted photo plane as all 11 lenses. */
-(function(win){
-'use strict';
-const doc=win.document;
-function createHardware(owner,openLab){
-const controls=new Map(),handles=new Map(),held=new Map();
-const handleRoot='../assets/locked/2026-10-23/Switches/Fire_Handles/';
-const handleBounds={ENG1:[210,138,604,1274],APU:[254,117,517,1300],ENG2:[191,140,643,1278]};
-let layer,feedback,lastState=null,visualTest=false,manualRelease=false,releaseButton;
-function armRelease(armed){
- manualRelease=armed;
- releaseButton?.setAttribute('aria-pressed',String(armed));
+/* Owner-mapped 737 sample importer. No remote download or automatic sound assignment.
+   New blank v2 bank; legacy v1 browser recordings are left untouched but are not loaded. */
+(function(root,factory){
+  const api=factory();
+  if(typeof module==="object"&&module.exports) module.exports=api;
+  root.B737RealAudioBank=api;
+})(typeof globalThis!=="undefined"?globalThis:this,function(){
+"use strict";
+const TYPES=["wav","mp3","ogg","m4a","aac","flac","opus","webm"];
+function keyFor(kind,message){
+  const k=String(kind||"").trim();
+  if(!k) throw Error("Sound type is required");
+  const phrase=String(message||"").trim().toUpperCase();
+  return phrase?k+"|"+phrase:k;
 }
-function rect(el,x,y,w,h){
- Object.assign(el.style,{left:x/2172*100+'%',top:y/724*100+'%',width:w/2172*100+'%',height:h/724*100+'%'});
+function validAudioFile(file){
+  if(!file||typeof file.name!=="string")return false;
+  const ext=file.name.split(".").pop().toLowerCase();
+  return TYPES.includes(ext)&&Number(file.size)>0&&Number(file.size)<=40*1024*1024;
 }
-function button(label,cls){
- const el=doc.createElement('button');el.type='button';el.className=cls;
- el.title=label;el.setAttribute('aria-label',label);el.draggable=false;return el;
-}
-function command(cmd){
- const result=owner().dispatch(cmd);
- if(feedback&&!result.result.accepted)feedback.textContent=result.result.reason.replaceAll('_',' ');
- return result;
-}
-function touch(el,down,move,up){
- let id=null;
- el.addEventListener('pointerdown',e=>{
-  if(e.button!==0||id!==null)return;
-  e.preventDefault();e.stopPropagation();id=e.pointerId;el.setPointerCapture(id);down(e);
- });
- el.addEventListener('pointermove',e=>{if(e.pointerId===id&&move){e.preventDefault();e.stopPropagation();move(e);}});
- function release(e){if(e.pointerId!==id)return;id=null;up?.(e);}
- for(const name of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(name,release);
- el.addEventListener('click',e=>e.stopPropagation());
-}
-function switchAt(id,x,y,values,axis){
- const selector=id.startsWith('ENG'),isExt=id==='EXT',eventType=isExt?'EXT_TEST':'TEST';
- const label=selector?id+' OVHT DET':isExt?'EXT TEST':'Fire and overheat TEST';
- const sprite=doc.createElement('span');sprite.className='fire-toggle-silver';rect(sprite,x-85,y-85,170,170);
- layer.append(sprite);controls.set(id,{sprite,values,axis});
- function select(k){
-  if(selector)command({type:'SELECT_LOOP',unit:id,value:values[k]});
-  else if(k===1){held.delete(id);command({type:eventType,value:null});}
-  else{held.set(id,eventType);command({type:eventType,value:values[k]});}
- }
- const center=button(label,'fire-touch');rect(center,x-42,y-39,84,78);layer.append(center);
- const indexFor=e=>{
-  const r=center.getBoundingClientRect(),horizontal=axis==='x';
-  const t=horizontal?(e.clientX-r.left)/r.width:(e.clientY-r.top)/r.height;
-  return t<.36?0:t>.64?2:1;
- };
- touch(center,e=>select(indexFor(e)),e=>{const k=indexFor(e);if(values[k]!==currentValue())select(k);},
-  ()=>{if(!selector)select(1);});
- function currentValue(){return selector?lastState?.selectors[id]:isExt?lastState?.extTest:lastState?.test;}
- center.onkeydown=e=>{
-  const k={ArrowLeft:0,ArrowUp:0,Home:1,ArrowRight:2,ArrowDown:2}[e.key];
-  if(k!==undefined){e.preventDefault();e.stopPropagation();if(!e.repeat)select(k);}
- };
- center.onkeyup=e=>{if(!selector&&e.key.startsWith('Arrow')){e.preventDefault();select(1);}};
- center.onblur=()=>{if(!selector&&held.has(id))select(1);};
- const zones=selector?[[x-98,y-34,52,68],[x-60,y+43,120,42],[x+45,y-34,55,68]]:
-  isExt?[[x-112,y-62,65,60],null,[x-112,y+3,65,60]]:[[x-127,y-72,74,140],null,[x+55,y-72,78,140]];
- values.forEach((v,k)=>{
-  if(!zones[k])return;
-  const el=button(label+' '+v.replaceAll('_',' / '),'fire-touch fire-label-touch');rect(el,...zones[k]);layer.append(el);
-  if(selector){el.addEventListener('pointerdown',e=>e.stopPropagation());el.onclick=e=>{e.stopPropagation();select(k);};}
-  else{
-   touch(el,()=>select(k),null,()=>select(1));
-   el.onkeydown=e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();if(!e.repeat)select(k);}};
-   el.onkeyup=e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();select(1);}};
-   el.onblur=()=>{if(held.has(id))select(1);};
+class RealAudioBank {
+  constructor(){
+    this.cache=new Map();
+    this.db=null;
+    this.currentAudio=null;
+    this.currentUrl=null;
   }
- });
+  async init(){
+    if(typeof indexedDB==="undefined")throw Error("IndexedDB unavailable");
+    const db=await new Promise((resolve,reject)=>{
+      const r=indexedDB.open("b737cl-real-audio-bank-v2-owner-map",1);
+      r.onupgradeneeded=()=>{
+        if(!r.result.objectStoreNames.contains("clips"))r.result.createObjectStore("clips",{keyPath:"key"});
+      };
+      r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+    });
+    this.db=db;
+    const items=await new Promise((resolve,reject)=>{
+      const req=db.transaction("clips","readonly").objectStore("clips").getAll();
+      req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);
+    });
+    this.cache=new Map(items.map(item=>[item.key,item]));
+    return this.cache.size;
+  }
+  has(key){return this.cache.has(key);}
+  get(key){return this.cache.get(key)||null;}
+  getSummary(key){
+    const item=this.get(key);
+    return item?{name:item.name,bytes:item.bytes,addedAt:item.addedAt,format:item.format}:null;
+  }
+  get count(){return this.cache.size;}
+  async add(key,file){
+    if(!validAudioFile(file))throw Error("Unsupported/empty audio or file above 40MB");
+    if(!this.db)throw Error("Audio library storage not initialized");
+    const entry={
+      key,name:file.name,bytes:file.size,format:file.type||"unknown",addedAt:new Date().toISOString(),blob:file
+    };
+    await new Promise((resolve,reject)=>{
+      const req=this.db.transaction("clips","readwrite").objectStore("clips").put(entry);
+      req.onsuccess=()=>resolve();req.onerror=()=>reject(req.error);
+    });
+    this.cache.set(key,entry);
+    return this.getSummary(key);
+  }
+  async remove(key){
+    if(!this.db)throw Error("Audio library storage not initialized");
+    await new Promise((resolve,reject)=>{
+      const req=this.db.transaction("clips","readwrite").objectStore("clips").delete(key);
+      req.onsuccess=()=>resolve();req.onerror=()=>reject(req.error);
+    });
+    this.cache.delete(key);
+  }
+  stop(){
+    if(this.currentAudio){this.currentAudio.pause();this.currentAudio.src="";this.currentAudio=null;}
+    if(this.currentUrl){URL.revokeObjectURL(this.currentUrl);this.currentUrl=null;}
+  }
+  async play(key,volume){
+    const entry=this.get(key);
+    if(!entry)throw Error("No imported audio clip for "+key);
+    this.stop();
+    const url=URL.createObjectURL(entry.blob);
+    const el=new Audio(url);
+    el.volume=Math.max(0,Math.min(1,Number(volume)||.17));
+    this.currentAudio=el;this.currentUrl=url;
+    el.onended=()=>{if(this.currentAudio===el)this.stop();};
+    el.onerror=()=>{if(this.currentAudio===el)this.stop();};
+    try{await el.play();return entry;}catch(e){this.stop();throw e;}
+  }
 }
-function handleAt(unit,x){
- const h=button(unit+' fire handle · pull / push, hold left or right to discharge','fire-handle-control');
- rect(h,x-92,143,184,428);h.dataset.unit=unit;
- const img=new Image();img.alt='';img.draggable=false;img.loading='eager';
- const source=handleRoot+'FIRE_HANDEL_'+unit+'_OFF.webp';
- if(win.B737ImageLoader)win.B737ImageLoader.assign(img,source);else img.src=source;
- const [cropX,cropY,w,height]=handleBounds[unit];
- Object.assign(img.style,{left:-cropX/w*100+'%',top:-cropY/height*100+'%',width:1024/w*100+'%',height:1536/height*100+'%'});
- h.append(img);layer.append(h);
- const handle=()=>owner().getState().handles[unit];
- const turn=angle=>command({type:'ROTATE',unit,angle});
- function pull(out){
-  const released=out&&manualRelease;
-  if(released){armRelease(false);command({type:'OVERRIDE',unit,enabled:true});}
-  try{return command({type:'PULL',unit,pulled:out});}
-  finally{if(released)command({type:'OVERRIDE',unit,enabled:false});}
- }
- let gesture=null;
- touch(h,e=>{
-  const bounds=h.getBoundingClientRect();
-  gesture={x:e.clientX,y:e.clientY,action:null,width:bounds.width,height:bounds.height,
-   allowTurn:handle().pulled&&e.clientY<bounds.top+bounds.height/2};
- },e=>{
-  if(!gesture)return;
-  const dx=(e.clientX-gesture.x)/gesture.width,dy=(e.clientY-gesture.y)/gesture.height;
-  if(gesture.allowTurn&&Math.abs(dx)>.23&&Math.abs(dx)>Math.abs(dy)){
-   const angle=dx<0?-45:45;
-   if(gesture.action!==angle){gesture.action=angle;turn(angle);}
-  }else if(typeof gesture.action==='number'&&Math.abs(dx)<.12){
-   gesture.action='center';turn(0);
-  }else if(!gesture.action&&(Math.abs(dx)>.18||Math.abs(dy)>.18))gesture.action='drag';
- },e=>{
-  if(!gesture)return;
-  const tap=gesture.action===null&&e.type==='pointerup';gesture=null;
-  if(handle().angle)turn(0);else if(tap)pull(!handle().pulled);
- });
- h.onclick=e=>{e.stopPropagation();if(e.detail===0)pull(!handle().pulled);};
- h.onkeydown=e=>{
-  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home'].includes(e.key))return;
-  e.preventDefault();e.stopPropagation();if(e.repeat)return;
-  if(e.key==='ArrowLeft'||e.key==='ArrowRight')turn(e.key==='ArrowLeft'?-45:45);
-  else if(e.key==='Home')turn(0);else pull(e.key==='ArrowUp');
- };
- h.onkeyup=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();turn(0);}};
- h.onblur=()=>{if(handle().angle)turn(0);};
- handles.set(unit,h);
-}
-function release(){
- armRelease(false);
- for(const [id,type] of held){held.delete(id);command({type,value:null});}
- if(!owner())return;
- for(const [id,h] of Object.entries(owner().getState().handles)){
-  if(h.angle)command({type:'ROTATE',unit:id,angle:0});
-  if(h.override)command({type:'OVERRIDE',unit:id,enabled:false});
- }
-}
-function paint(state,derived,allOn=false){
- if(!state||!derived)return;lastState=state;visualTest=allOn;
- for(const [id,c] of controls){
-  const v=state.selectors[id]??(id==='EXT'?(state.extTest||state.test):state.test);
-  const k=c.values.indexOf(v),pose=k===0?(c.axis==='x'?0:3):k===2?(c.axis==='x'?2:4):1;
-  c.sprite.style.backgroundPositionX=pose*25+'%';c.sprite.dataset.detent=c.values[k]||'CENTER';
- }
- for(const [id,h] of handles){
-  const st=state.handles[id],lit=allOn||derived.activeFire[id];
-  h.style.transform='rotate('+st.angle+'deg)';
-  h.dataset.pulled=String(st.pulled);h.dataset.angle=String(st.angle);h.dataset.lit=String(lit);
-  h.setAttribute('aria-pressed',String(st.pulled));
- }
-}
-// Both P8 main panel and isolated lab request the same owner-approved bell voice.
-// Synthesized two-tone oscillator is permanently retired.
-const soundLane=openLab?'aircraft':'lab';
-let bellWanted=false,bellMuted=false;
-function playBell(){
-  return win.B737UnifiedFireBellAudioV1?.unlock?.();
-}
-function bell(active){
-  bellWanted=Boolean(active);
-  win.B737UnifiedFireBellAudioV1?.setDemand?.(soundLane,bellWanted&&!bellMuted);
-}
-function mount(host){
- if(layer||!owner()||!host)return;
- layer=doc.createElement('div');layer.className='fire-hardware-layer';host.append(layer);
- if(openLab){
- const labTarget=button('Fire Protection Test Lab · triple click','fire-lab-target');
- labTarget.onclick=e=>{
-  e.stopPropagation();
-  if(e.detail===0||e.detail>=3)openLab();
- };
- layer.append(labTarget);
- }
- const patch=new Image();patch.className='fire-surface-patch';patch.src='./assets/pedestal-hardware/fire-blanking.webp';patch.alt='';patch.draggable=false;rect(patch,1205,424,299,186);layer.append(patch);
- switchAt('ENG1',305,222,['A','NORMAL','B'],'x');switchAt('ENG2',1359,222,['A','NORMAL','B'],'x');
- switchAt('TEST',305,519,['FAULT_INOP','CENTER','OVHT_FIRE'],'x');switchAt('EXT',2047,486,['EXT_1','CENTER','EXT_2'],'x');
- handleAt('ENG1',544);handleAt('APU',1090);handleAt('ENG2',1614);
- const bell=button('Fire warning bell cutout','fire-bell-cutout');bell.textContent='BELL CUTOUT';rect(bell,1001,71,178,29);
- bell.onpointerdown=e=>e.stopPropagation();bell.onclick=e=>{e.stopPropagation();command({type:'BELL_CUTOUT'});};layer.append(bell);
- releaseButton=button('Fire handle manual lock release · arm next pull','fire-override');
- rect(releaseButton,1314,476,64,64);armRelease(false);
- releaseButton.onpointerdown=e=>e.stopPropagation();
- releaseButton.onclick=e=>{e.stopPropagation();armRelease(!manualRelease);};
- layer.append(releaseButton);
- feedback=doc.createElement('span');feedback.className='fire-sr-status';feedback.setAttribute('role','status');layer.append(feedback);
- paint(owner().getState(),owner().evaluate(),visualTest);
-}
-return {mount,release,paint(state,derived,allOn){
- paint(state,derived,allOn);bell(derived.indications.FIRE_BELL);
-},stopBell:()=>bell(false),muteBell:muted=>{bellMuted=muted;bell(bellWanted);},playBell};
-}
-win.B737FirePanelHardware=Object.freeze({create:createHardware});
-const owner=()=>win.B737UnifiedFireLights;
-const primary=createHardware(owner,()=>win.B737UnifiedFireLab?.open());
-function mount(){
- primary.mount(doc.querySelector('#region-pedestal [data-piece="fire-protection"] .fire-lamps-mounted'));
-}
-doc.addEventListener('pointerdown',primary.playBell,{passive:true});
-win.addEventListener('b737:ata26-panel-state',e=>primary.paint(e.detail.state,e.detail.derived,e.detail.visualTest));
-win.addEventListener('b737:fire-lab-visibility',e=>primary.muteBell(e.detail));
-win.addEventListener('b737:unified-fire-lamps-mounted',mount);
-win.addEventListener('b737:cockpit-mounted',mount);
-win.addEventListener('blur',primary.release);
-doc.addEventListener('visibilitychange',()=>{if(doc.hidden)primary.release();});
-win.addEventListener('b737:sixpack-fire-acknowledge',()=>owner()?.dispatch({type:'BELL_CUTOUT'}));
-queueMicrotask(mount);
-})(window);
+return {RealAudioBank,keyFor,validAudioFile};
+});
 
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
