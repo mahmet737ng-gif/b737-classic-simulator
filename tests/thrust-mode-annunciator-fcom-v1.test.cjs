@@ -29,3 +29,8 @@ test('Only rendered inside EIS primary plate, not in the engine oil panel or EAD
  assert.ok(js.includes("dataset.engineIndication!=='CONVENTIONAL'"));
  assert.ok(!js.includes('B737McpAFDSBridgeV1?.command'));
 });
+
+test('Both EIS N1 PULL TO SET knobs occupy lower FF/FU sockets, not oil quantity',()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../panel-mosaic-lab/cockpit/manual-n1-live-v1.js'),'utf8');
+ assert.match(source,/const coords=conventional\?\[\[\.318,\.404\],\[\.412,\.404\]\]:\[\[\.125,\.890\],\[\.690,\.890\]\]/);
+});
