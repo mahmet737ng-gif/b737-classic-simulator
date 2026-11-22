@@ -1,58 +1,52 @@
-/* Standalone sound audition lab. Generated waveforms/TTS are intentionally NOT aircraft-accurate. */
+/* Standalone warning-logic lab. No synthesized sound or browser TTS; only owner-assigned recordings can play. */
 (() => {
   "use strict";
-  const { WarningEngine, AUDIO } = window.B737WarningEngine;
-  const { RealAudioBank, keyFor, suggestKey, validAudioFile } = window.B737RealAudioBank;
+  const { WarningEngine } = window.B737WarningEngine;
+  const { RealAudioBank, keyFor, validAudioFile } = window.B737RealAudioBank;
   const realBank = new RealAudioBank();
   let realReady = false;
   let model = new WarningEngine({ variant: "737-300" });
-  let audioContext = null;
-  let master = null;
-  let currentNodes = [];
-  let currentSamples = [];
   let log = [];
   const byId = id => document.getElementById(id);
   const SOUND_TESTS = [
-    ["altitude", "Altitude Alert", "Momentary tone", "ALTITUDE ACQUISITION"],
-    ["intermittentHorn", "Takeoff Config", "Intermittent horn — shared with cabin", null],
-    ["intermittentHorn", "Cabin Altitude", "Same shared horn", null],
-    ["gearHorn", "Landing Gear", "Steady horn", null],
-    ["fireBell", "Fire Warning", "Repeated bell", null],
-    ["overspeed", "Mach/Airspeed", "Clacker", null],
-    ["shaker", "Stall", "Stick-shaker rumble", null],
-    ["apDisconnect", "Autopilot Disconnect", "Alert tone", null],
-    ["atDisconnect", "A/T Disconnect", "Indicative tone only", null],
-    ["gpws", "EGPWS · FULL RECORDING", "Owner-confirmed c.mp3 — EGPWS compilation; audition only until individual warnings are identified", "COLLECTION"],
-    ["gpws", "EGPWS · PULL UP", "Placeholder voice", "PULL UP"],
-    ["gpws", "EGPWS · SINK RATE", "Placeholder voice", "SINK RATE"],
-    ["gpws", "EGPWS · WINDSHEAR", "Placeholder voice", "WINDSHEAR"],
-    ["gpws", "EGPWS · TOO LOW GEAR", "Placeholder voice", "TOO LOW GEAR"],
-    ["tcas", "TCAS · TRAFFIC", "Placeholder voice", "TRAFFIC TRAFFIC"],
-    ["radioAltitude", "RA · FULL CALLOUT COLLECTION", "User-identified a.mp3; listening preview only — not mapped to individual height thresholds", "COLLECTION"],
-    ["radioAltitude", "RA · FIVE HUNDRED", "Placeholder voice", "FIVE HUNDRED"],
-    ["minimums", "Minimums", "Placeholder voice", "APPROACHING MINIMUMS"],
-    ["minimums", "MINIMUMS", "Radio minima", "MINIMUMS"],
-    ["gpws", "GPWS · TERRAIN", "Terrain closure", "TERRAIN"],
-    ["gpws", "GPWS · TERRAIN AHEAD", "Terrain ahead", "TERRAIN AHEAD"],
-    ["gpws", "GPWS · CAUTION TERRAIN", "Caution terrain", "CAUTION TERRAIN"],
-    ["gpws", "GPWS · DON'T SINK", "Altitude loss", "DON'T SINK"],
-    ["gpws", "GPWS · TOO LOW FLAPS", "Unsafe flap configuration", "TOO LOW FLAPS"],
-    ["gpws", "GPWS · TOO LOW TERRAIN", "Unsafe clearance", "TOO LOW TERRAIN"],
-    ["gpws", "GPWS · BANK ANGLE", "Excessive bank", "BANK ANGLE"],
-    ["gpws", "GPWS · GLIDESLOPE", "Deviation", "GLIDESLOPE"],
-    ["tcas", "TCAS · CLIMB", "TCAS advisory", "CLIMB"],
-    ["tcas", "TCAS · DESCEND", "TCAS advisory", "DESCEND"],
-    ["tcas", "TCAS · MAINTAIN VERTICAL SPEED", "TCAS advisory", "MAINTAIN VERTICAL SPEED"],
-    ["tcas", "TCAS · CLEAR OF CONFLICT", "TCAS advisory", "CLEAR OF CONFLICT"],
-    ["radioAltitude", "RA · 2500", "EGPWS radio-altitude", "TWO THOUSAND FIVE HUNDRED"],
-    ["radioAltitude", "RA · 1000", "EGPWS radio-altitude", "ONE THOUSAND"],
-    ["radioAltitude", "RA · 100", "EGPWS radio-altitude", "100"],
-    ["radioAltitude", "RA · 50", "EGPWS radio-altitude", "50"],
-    ["radioAltitude", "RA · 40", "EGPWS radio-altitude", "40"],
-    ["radioAltitude", "RA · 30", "EGPWS radio-altitude", "30"],
-    ["radioAltitude", "RA · 20", "EGPWS radio-altitude", "20"],
-    ["radioAltitude", "RA · 10", "EGPWS radio-altitude", "10"],
-    ["altitude", "Altitude Deviation", "Momentary alert on deviation from MCP selected altitude", "ALTITUDE DEVIATION"]
+    ["altitude", "Altitude Alert — Acquisition", "Unassigned — awaiting owner definition", "ALTITUDE ACQUISITION"],
+    ["intermittentHorn", "Takeoff Config", "Unassigned — awaiting owner definition", null],
+    ["intermittentHorn", "Cabin Altitude", "Unassigned — awaiting owner definition", null],
+    ["gearHorn", "Landing Gear", "Unassigned — awaiting owner definition", null],
+    ["fireBell", "Fire Warning", "Unassigned — awaiting owner definition", null],
+    ["overspeed", "Mach/Airspeed", "Unassigned — awaiting owner definition", null],
+    ["shaker", "Stall", "Unassigned — awaiting owner definition", null],
+    ["apDisconnect", "Autopilot Disconnect", "Unassigned — awaiting owner definition", null],
+    ["atDisconnect", "A/T Disconnect", "Unassigned — awaiting owner definition", null],
+    ["gpws", "EGPWS · PULL UP", "Unassigned — awaiting owner definition", "PULL UP"],
+    ["gpws", "EGPWS · SINK RATE", "Unassigned — awaiting owner definition", "SINK RATE"],
+    ["gpws", "EGPWS · WINDSHEAR", "Unassigned — awaiting owner definition", "WINDSHEAR"],
+    ["gpws", "EGPWS · TOO LOW GEAR", "Unassigned — awaiting owner definition", "TOO LOW GEAR"],
+    ["tcas", "TCAS · TRAFFIC", "Unassigned — awaiting owner definition", "TRAFFIC TRAFFIC"],
+    ["radioAltitude", "RA · FIVE HUNDRED", "Unassigned — awaiting owner definition", "500"],
+    ["minimums", "Approaching Minimums", "Unassigned — awaiting owner definition", "APPROACHING MINIMUMS"],
+    ["minimums", "MINIMUMS", "Unassigned — awaiting owner definition", "MINIMUMS"],
+    ["gpws", "GPWS · TERRAIN", "Unassigned — awaiting owner definition", "TERRAIN"],
+    ["gpws", "GPWS · TERRAIN AHEAD", "Unassigned — awaiting owner definition", "TERRAIN AHEAD"],
+    ["gpws", "GPWS · CAUTION TERRAIN", "Unassigned — awaiting owner definition", "CAUTION TERRAIN"],
+    ["gpws", "GPWS · DON'T SINK", "Unassigned — awaiting owner definition", "DON'T SINK"],
+    ["gpws", "GPWS · TOO LOW FLAPS", "Unassigned — awaiting owner definition", "TOO LOW FLAPS"],
+    ["gpws", "GPWS · TOO LOW TERRAIN", "Unassigned — awaiting owner definition", "TOO LOW TERRAIN"],
+    ["gpws", "GPWS · BANK ANGLE", "Unassigned — awaiting owner definition", "BANK ANGLE"],
+    ["gpws", "GPWS · GLIDESLOPE", "Unassigned — awaiting owner definition", "GLIDESLOPE"],
+    ["tcas", "TCAS · CLIMB", "Unassigned — awaiting owner definition", "CLIMB"],
+    ["tcas", "TCAS · DESCEND", "Unassigned — awaiting owner definition", "DESCEND"],
+    ["tcas", "TCAS · MAINTAIN VERTICAL SPEED", "Unassigned — awaiting owner definition", "MAINTAIN VERTICAL SPEED"],
+    ["tcas", "TCAS · CLEAR OF CONFLICT", "Unassigned — awaiting owner definition", "CLEAR OF CONFLICT"],
+    ["radioAltitude", "RA · 2500", "Unassigned — awaiting owner definition", "TWO THOUSAND FIVE HUNDRED"],
+    ["radioAltitude", "RA · 1000", "Unassigned — awaiting owner definition", "ONE THOUSAND"],
+    ["radioAltitude", "RA · 100", "Unassigned — awaiting owner definition", "100"],
+    ["radioAltitude", "RA · 50", "Unassigned — awaiting owner definition", "50"],
+    ["radioAltitude", "RA · 40", "Unassigned — awaiting owner definition", "40"],
+    ["radioAltitude", "RA · 30", "Unassigned — awaiting owner definition", "30"],
+    ["radioAltitude", "RA · 20", "Unassigned — awaiting owner definition", "20"],
+    ["radioAltitude", "RA · 10", "Unassigned — awaiting owner definition", "10"],
+    ["altitude", "Altitude Alert — Deviation", "Unassigned — awaiting owner definition", "ALTITUDE DEVIATION"]
   ];
   const matrix = byId("soundMatrix");
   for (const [id, label, desc, phrase] of SOUND_TESTS) {
@@ -65,108 +59,27 @@
     b.addEventListener("click", () => play(id, phrase));
     matrix.appendChild(b);
   }
-  function ensureAudio() {
-    if (!audioContext) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) { alert("Web Audio is not available in this browser."); return false; }
-      audioContext = new AC();
-      master = audioContext.createGain();
-      master.gain.value = 0.17; // conservative output level to avoid startling headphone users
-      master.connect(audioContext.destination);
-    }
-    if (audioContext.state === "suspended") audioContext.resume();
-    return true;
-  }
   function clearSound() {
     realBank.stop();
-    for (const src of currentSamples) { try { src.stop(); } catch (_) {} }
-    for (const osc of currentNodes) { try { osc.stop(); } catch (_) {} }
-    currentNodes = [];
-    currentSamples = [];
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-  }
-  function oscillator(hz, start, duration, type, vol, endHz) {
-    const o = audioContext.createOscillator(), g = audioContext.createGain();
-    o.type = type || "sine";
-    o.frequency.setValueAtTime(hz, start);
-    if (endHz) o.frequency.exponentialRampToValueAtTime(endHz, start + duration);
-    g.gain.setValueAtTime(0.001, start);
-    g.gain.linearRampToValueAtTime(vol || 0.4, start + .012);
-    g.gain.setTargetAtTime(0.0001, start + duration - .07, .017);
-    o.connect(g); g.connect(master);
-    o.start(start); o.stop(start + duration + .02);
-    currentNodes.push(o);
-  }
-  function noiseAt(start, duration, level, cutoff) {
-    const rate = audioContext.sampleRate, size = Math.ceil(rate * duration);
-    const b = audioContext.createBuffer(1, size, rate), c = b.getChannelData(0);
-    for (let i = 0; i < size; i++) c[i] = (Math.random() * 2 - 1);
-    const n = audioContext.createBufferSource(), filter = audioContext.createBiquadFilter();
-    const g = audioContext.createGain();
-    n.buffer = b; filter.type = "lowpass"; filter.frequency.value = cutoff || 850;
-    g.gain.setValueAtTime(0.001, start);
-    g.gain.linearRampToValueAtTime(level || 0.6, start + .01);
-    g.gain.exponentialRampToValueAtTime(.001, start + duration);
-    n.connect(filter); filter.connect(g); g.connect(master); n.start(start);
-    currentSamples.push(n);
-  }
-  function voice(message) {
-    if (!("speechSynthesis" in window)) {
-      byId("events").textContent = "This browser has no TTS capability for preview voice.";
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(message || "PULL UP");
-    utterance.lang = "en-US";
-    utterance.pitch = 0.80;
-    utterance.rate = 1.04;
-    utterance.volume = 0.65;
-    speechSynthesis.speak(utterance);
   }
   function play(kind, message) {
     const soundKey = keyFor(kind, message);
-    if (realReady && realBank.has(soundKey)) {
-      clearSound();
-      realBank.play(soundKey, Number(byId("reviewVolume").value) / 100).catch(err => {
-        byId("realImportStatus").textContent = "Real audio playback failed: " + err.message;
-      });
-      return;
-    }
-    if (!ensureAudio()) return;
     clearSound();
-    const t = audioContext.currentTime + .035;
-    switch (kind) {
-      case "altitude":
-        oscillator(775, t, .29, "sine", .7); break;
-      case "intermittentHorn":
-        for (let i = 0; i < 5; i++) {
-          oscillator(470, t + i * .78, .51, "sawtooth", .38);
-          oscillator(485, t + i * .78, .51, "triangle", .25);
-        } break;
-      case "gearHorn":
-        oscillator(445, t, 3, "sawtooth", .30);
-        oscillator(462, t, 3, "square", .16); break;
-      case "fireBell":
-        for (let i = 0; i < 5; i++) {
-          oscillator(950, t + i * .6, .47, "sine", .5, 800);
-          oscillator(1550, t + i * .6, .40, "triangle", .4, 1300);
-        } break;
-      case "overspeed":
-        for (let i = 0; i < 10; i++) noiseAt(t + i * .25, .055, .8, 4500);
-        break;
-      case "shaker":
-        for (let i = 0; i < 18; i++) noiseAt(t + i * .14, .12, .53, 500);
-        break;
-      case "apDisconnect":
-        for (let i = 0; i < 3; i++) {
-          oscillator(610, t + i * .52, .26, "square", .28);
-          oscillator(540, t + i * .52 + .27, .21, "square", .27);
-        } break;
-      case "atDisconnect":
-        oscillator(690, t, .28, "triangle", .45);
-        oscillator(560, t + .3, .28, "triangle", .38); break;
-      case "gpws": case "tcas": case "radioAltitude": case "minimums":
-        voice(message || "CHECK"); break;
+    if (!realReady) {
+      byId("realImportStatus").textContent = "Audio storage is not ready. This warning remains silent.";
+      return false;
     }
+    if (!realBank.has(soundKey)) {
+      byId("realImportStatus").textContent =
+        "NO SOUND ASSIGNED: " + soundKey + " — waiting for the owner's definition and recording.";
+      return false;
+    }
+    realBank.play(soundKey, Number(byId("reviewVolume").value) / 100).then(entry => {
+      byId("realImportStatus").textContent = "Playing manually assigned recording: " + entry.name;
+    }).catch(err => {
+      byId("realImportStatus").textContent = "Assigned recording playback failed: " + err.message;
+    });
+    return true;
   }
   function state() {
     const s = {};
@@ -184,7 +97,7 @@
   }
   function evaluate(noSound) {
     const out = model.update(state());
-    const lines = out.active.map(v => "▶ " + v.id + " · " + v.asset);
+    const lines = out.active.map(v => "▶ " + v.id + " · " + (realReady && realBank.has(keyFor(v.id)) ? "SAMPLE ASSIGNED" : "NO SOUND ASSIGNED"));
     lines.push(...Object.entries(out.lamps).filter(([,v]) => v).map(([k]) => "● LAMP " + k));
     if (!out.status.takeoffConfigEvaluated) lines.push("ⓘ Takeoff config not validated for this variant");
     if (out.status.altitudeInhibited) lines.push("ⓘ Altitude alert inhibited");
@@ -215,7 +128,7 @@
   evaluate(true);
 
   // Guided A/B approval workflow; no integration into the main cockpit.
-  const REVIEW_KEY = "b737cl-audio-listening-review-v1";
+  const REVIEW_KEY = "b737cl-audio-listening-review-v2-owner-reset";
   let review = [];
   let reviewIndex = 0;
   try { const saved = JSON.parse(localStorage.getItem(REVIEW_KEY) || "null");
@@ -237,13 +150,15 @@
     const liveKey = keyFor(id,SOUND_TESTS[reviewIndex][3]);
     byId("reviewDescription").textContent = desc +
        (realReady && realBank.has(liveKey) ? " · Imported file: " + realBank.getSummary(liveKey).name
-         : " · No licensed recording; synthetic test tone");
+         : " · No sample assigned — awaiting owner definition");
 
     byId("reviewNote").value = curReview().note || "";
     byId("reviewProgressFill").style.width = (100 * complete / SOUND_TESTS.length) + "%";
     byId("reviewSummary").textContent = "Reviewed: " + complete + " of " + SOUND_TESTS.length +
       " | Approved: " + approved + " | Needs revision: " + fix +
       " | Current status: " + ({ approved: "Approved", fix: "Needs Revision", untested: "Not Tested" }[curReview().status] || "Not Tested");
+    byId("reviewApprove").disabled = !(realReady && realBank.has(liveKey));
+    byId("reviewFix").disabled = !(realReady && realBank.has(liveKey));
     byId("reviewPrev").disabled = reviewIndex === 0;
     byId("reviewNext").disabled = reviewIndex === SOUND_TESTS.length - 1;
     byId("reviewApprove").style.borderColor = curReview().status === "approved" ? "#80e4bd" : "";
@@ -262,20 +177,18 @@
       const entry = review[i] || { status:"untested", note:"" };
       return { no:i+1,id,label,description:desc,status:entry.status || "untested",notes:entry.note || "" };
     });
-    return { project:"B737 Classic Audio Warning Lab",version:"0.2",
-      provenance:"User-imported files are local to this browser; fallback is synthetic/TTS.",
+    return { project:"B737 Classic Audio Warning Lab",version:"0.3",
+      provenance:"Owner-imported files are stored locally and manually mapped; unassigned slots remain silent.",
       results:rows.map((r,i)=>({...r,audioFile:realReady?realBank.getSummary(keyFor(SOUND_TESTS[i][0],SOUND_TESTS[i][3])):null})) };
   }
   byId("reviewPlay").addEventListener("click", () => {
     const s = SOUND_TESTS[reviewIndex]; play(s[0],s[3]);
     const v = Number(byId("reviewVolume").value) / 100;
-    if (master) master.gain.value = v;
   });
   byId("reviewStop").addEventListener("click", clearSound);
   byId("reviewVolume").addEventListener("input", () => {
     const v = Number(byId("reviewVolume").value);
     byId("reviewVolumeValue").textContent = v + "%";
-    if (master) master.gain.value = v / 100;
   });
   byId("reviewApprove").addEventListener("click", () => writeStatus("approved"));
   byId("reviewFix").addEventListener("click", () => writeStatus("fix"));
@@ -324,8 +237,8 @@
     const entry=realReady?realBank.getSummary(key):null;
     byId("realImportStatus").textContent = realReady
       ? "Imported recordings in this browser: "+realBank.count+" / "+optionKeys.size+
-      " | Other warnings use synthetic test tones."
-      : "IndexedDB unavailable; synthetic sounds can still be tested.";
+      " | Unassigned warning slots remain silent."
+      : "IndexedDB unavailable; no fallback sound is generated.";
     byId("realCurrentClip").textContent = entry
       ? "Selected file: "+entry.name+" ("+Math.round(entry.bytes/1024)+" KB)"
       : "No recording imported for this warning.";
@@ -349,7 +262,6 @@
   };
   byId("realTarget").addEventListener("change",refreshImportUI);
   byId("importOne").addEventListener("click",()=>byId("realSingleFile").click());
-  byId("importMany").addEventListener("click",()=>byId("realMultipleFiles").click());
   byId("realSingleFile").addEventListener("change",async()=>{
     const input=byId("realSingleFile"),file=input.files&&input.files[0];
     if(!file)return;
@@ -358,19 +270,6 @@
       byId("realImportStatus").textContent = "Loaded and decoded: "+file.name+" ("+duration+")";
       refreshImportUI();
     }catch(e){byId("realImportStatus").textContent="Error: "+e.message;}
-    input.value="";
-  });
-  byId("realMultipleFiles").addEventListener("change",async()=>{
-    const input=byId("realMultipleFiles");
-    const files=[...(input.files||[])];let success=0;
-    const failed=[];
-    for(const file of files){
-      const key=suggestKey(file.name,SOUND_TESTS);
-      if(!key||!optionKeys.has(key)){failed.push(file.name+": filename has no matching warning ID");continue;}
-      try{await persistOne(key,file);success++;}catch(e){failed.push(file.name+": "+e.message);}
-    }
-    refreshImportUI();
-    byId("realImportStatus").textContent="Batch Import: "+success+" files imported. "+(failed.length? "Failures: "+failed.join(" | "):"");
     input.value="";
   });
 

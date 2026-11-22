@@ -1,36 +1,24 @@
 "use strict";
 const assert=require("node:assert/strict");
-const {keyFor,suggestKey,validAudioFile}=require("../audio-lab/real-audio-bank.js");
-const tests=[
-  ["altitude","Altitude Alert","Momentary tone","ALTITUDE ACQUISITION"],
-  ["intermittentHorn","Takeoff Config","Intermittent horn",null],
-  ["intermittentHorn","Cabin Altitude","Same horn",null],
-  ["gearHorn","Landing Gear","Steady horn",null],
-  ["fireBell","Fire Warning","Bell",null],
-  ["overspeed","Mach/Airspeed","Clacker",null],
-  ["shaker","Stall","Shaker",null],
-  ["apDisconnect","Autopilot Disconnect","Tone",null],
-  ["atDisconnect","Autothrottle Disconnect","Tone",null],
-  ["gpws","EGPWS · PULL UP","Voice","PULL UP"],
-  ["gpws","EGPWS · SINK RATE","Voice","SINK RATE"],
-  ["gpws","EGPWS · WINDSHEAR","Voice","WINDSHEAR"],
-  ["tcas","TCAS · TRAFFIC","Voice","TRAFFIC TRAFFIC"]
-];
+const fs=require("node:fs");
+const {keyFor,validAudioFile}=require("../audio-lab/real-audio-bank.js");
+
 assert.equal(keyFor("intermittentHorn",null),"intermittentHorn");
 assert.equal(keyFor("gpws","pull up"),"gpws|PULL UP");
 assert.equal(keyFor("radioAltitude","500"),"radioAltitude|500");
-assert.equal(suggestKey("a.mp3",tests),"radioAltitude|COLLECTION");
-assert.equal(suggestKey("e.mp3",tests),"shaker");
-assert.equal(suggestKey("c.mp3",tests),"gpws|COLLECTION");
-assert.equal(suggestKey("b.mp3",tests),null);
-assert.equal(suggestKey("fire bell.wav",tests),"fireBell");
-assert.equal(suggestKey("stall_warning.wav",tests),"shaker");
-assert.equal(suggestKey("takeoff_config.wav",tests),"intermittentHorn");
-assert.equal(suggestKey("overspeed-clacker.mp3",tests),"overspeed");
-assert.equal(suggestKey("autopilot_disconnect.wav",tests),"apDisconnect");
-assert.equal(suggestKey("silent.wav",tests),null);
+assert.equal(keyFor("altitude","ALTITUDE ACQUISITION"),"altitude|ALTITUDE ACQUISITION");
+assert.equal(keyFor("altitude","ALTITUDE DEVIATION"),"altitude|ALTITUDE DEVIATION");
 assert.equal(validAudioFile({name:"fire-bell.wav",size:1234}),true);
 assert.equal(validAudioFile({name:"fire-bell.mp4",size:1234}),false);
 assert.equal(validAudioFile({name:"fire-bell.wav",size:0}),false);
 assert.equal(validAudioFile({name:"fire-bell.wav",size:41*1024*1024}),false);
-console.log("17 real-audio import registry tests passed");
+
+const lab=fs.readFileSync(require.resolve("../audio-lab/lab.js"),"utf8");
+const bank=fs.readFileSync(require.resolve("../audio-lab/real-audio-bank.js"),"utf8");
+for(const forbidden of ["createOscillator(","createBufferSource(","SpeechSynthesisUtterance","speechSynthesis.speak","suggestKey("]) {
+  assert.equal(lab.includes(forbidden),false,"generated audio / auto mapping remains in lab: "+forbidden);
+}
+assert.equal(bank.includes("suggestKey("),false,"filename-based audio assignment must remain disabled");
+assert.ok(bank.includes("b737cl-real-audio-bank-v2-owner-map"),"new clean browser audio bank must be used");
+assert.ok(lab.includes("NO SOUND ASSIGNED"),"unassigned warnings must remain silent");
+console.log("Manual audio assignment and silent-default tests passed");

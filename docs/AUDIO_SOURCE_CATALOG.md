@@ -1,12 +1,13 @@
 # B737 Classic — authentic audio sourcing and QA (22 Oct 2026)
 
-## Current implementation
-- Audio Lab: 38 sequential test slots, **not** 38 licensed source recordings.
-- Imported personal WAV/MP3/OGG/M4A samples stay in browser-local IndexedDB and override synthesized examples only for the matching warning/callout.
-- 0 third-party authentic recordings added to this publicly accessible GitHub repository so far.
-- 20 warning-engine tests and 13 importer/mapping tests pass; browser real-sample listening is unverified.
-- Added per-file audio decoding, duration verification, silence/clipping quality check, stop/start, approve/reject, notes and export.
-- Production cockpit assets and controls remain unchanged.
+## Current implementation (reset 22 Nov 2026)
+- Audio Lab retains discrete warning-test slots and the FCOM-based warning-condition logic.
+- All generated Web Audio waveforms and browser text-to-speech playback have been removed. Unassigned slots remain silent.
+- Sound files must be imported one at a time against an explicitly selected warning; filename-based auto-assignment is disabled.
+- The lab now uses a new empty browser IndexedDB namespace. Legacy browser-stored recordings are not loaded or played and are left untouched in the old namespace.
+- 0 third-party authentic recordings are committed to this public GitHub repository.
+- Per-file decoding, duration checks, silence/clipping checks, stop/start, review notes and JSON export remain available.
+- Production cockpit assets and controls remain unchanged; warning trigger logic is retained separately from sound assets.
 
 ## Audio source register and rights
 | Collection | What it actually contains | Status |

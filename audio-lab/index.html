@@ -54,21 +54,19 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 .sources a{border:1px solid #39535a;border-radius:7px;background:#101b27;color:#8fc4d3;padding:10px;font-size:12px;text-decoration:none}
 .sources a:hover{text-decoration:underline}
 </style></head><body>
-<header><div class="kicker">B737 CLASSIC · AUDIO SYSTEM · EXPERIMENTAL</div><h1>Aural Warning Sound Lab</h1><div class="sub">Separate prototype for 737-300/-400/-500 warning logic and listening tests. Synthesized tones and browser text-to-speech are <strong>placeholders</strong>, not authentic aircraft samples. No effect on the current cockpit page.</div></header>
+<header><div class="kicker">B737 CLASSIC · AUDIO SYSTEM · EXPERIMENTAL</div><h1>Aural Warning Sound Lab</h1><div class="sub">Separate prototype for 737-300/-400/-500 warning logic and listening tests. All sound slots start unassigned and remain silent until the owner defines and manually assigns a recording. No synthesized tones or browser text-to-speech are used. No effect on the current cockpit page.</div></header>
 <main>
 
 
 <section class="panel" id="realAudioImporter" dir="rtl" style="border-color:#6a7149">
  <div class="kicker">REAL RECORDINGS · USER-OWNED FILES</div>
  <h2 style="font-size:22px;margin-top:7px">Real Sound Library — Import and Test</h2>
- <p class="muted">Choose licensed recordings from your device. They stay in this browser and are not uploaded to the public repository. Until a real recording is imported, the simulator plays its synthetic test tone.</p>
+ <p class="muted">Choose one recording only after the owner defines its warning assignment. Files stay in this browser and are not uploaded to the public repository. Unassigned warnings remain silent.</p>
  <div class="import-grid">
   <label>Target Warning<select id="realTarget" aria-label="Target warning"></select></label>
   <div class="actions"><button class="action" id="importOne">Choose File for Selected Warning</button>
-   <button class="action secondary" id="importMany">Batch Import WAV / MP3</button>
    <button class="action secondary" id="deleteCurrent">Remove Selected Warning File</button><button class="action secondary" id="diagnoseImported">Check Imported File Health</button></div>
   <input type="file" id="realSingleFile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" hidden />
-  <input type="file" id="realMultipleFiles" accept="audio/*,.wav,.mp3,.ogg,.m4a,.aac,.flac,.opus,.webm" multiple hidden />
   <p id="realImportStatus" class="source-status" role="status">Checking Browser Sound Library…</p>
   <p id="realDiagnostics" class="source-status">Click Health Check to validate imported files.</p>
   <p id="realCurrentClip" class="source-status">No real recording has been registered for this warning.</p>
@@ -84,7 +82,7 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 <section class="panel" id="guidedTest" dir="rtl" style="border-color:#3b8576">
   <div class="guided-heading"><div><div class="kicker">GUIDED LISTENING REVIEW · Step-by-Step Test</div><h2>Review each simulator warning sound</h2></div><strong id="reviewCounter">1 / 16</strong></div>
   <div class="review-progress"><div id="reviewProgressFill"></div></div>
-  <div class="review-current"><div class="review-number" id="reviewNumber">01</div><div><h3 id="reviewTitle">Altitude Alert</h3><p id="reviewDescription">Altitude Warning Tone</p><p class="muted">These are playback and logic test samples, not certified aircraft recordings.</p></div></div>
+  <div class="review-current"><div class="review-number" id="reviewNumber">01</div><div><h3 id="reviewTitle">Altitude Alert</h3><p id="reviewDescription">Altitude Warning Tone</p><p class="muted">These are warning slots only. No sound is assigned until the owner defines and approves a recording.</p></div></div>
   <label class="review-volume">Test Playback Volume <input id="reviewVolume" type="range" min="4" max="45" value="17" step="1" aria-label="Preview volume"/><span id="reviewVolumeValue">17%</span></label>
   <div class="review-buttons">
     <button class="action" id="reviewPlay">▶ Play Sound</button>
@@ -96,7 +94,7 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
   <div class="review-navigation"><button class="action secondary" id="reviewPrev">→ Previous Sound</button><button class="action secondary" id="reviewNext">Next Sound ←</button></div>
   <div class="review-footer"><div id="reviewSummary">No Items Reviewed Yet</div><div class="review-buttons"><button class="action secondary" id="reviewCopy">Copy Report</button><button class="action secondary" id="reviewDownload">Download Report JSON</button><button class="action secondary" id="reviewReset">Clear Results</button></div></div>
 </section>
-<section class="panel"><h2>01 · Listen to the warning palette</h2><p class="muted">Tap any sound. Browser audio must be activated by a user click. Voice warnings use your installed browser voice for now.</p>
+<section class="panel"><h2>01 · Listen to the warning palette</h2><p class="muted">Select any warning slot. It remains silent until a recording is manually assigned to it.</p>
 <div class="matrix" id="soundMatrix"></div></section>
 <section class="panel"><h2>02 · Condition-driven engine test</h2><p class="muted">Change inputs and choose Evaluate. Active indications and alert transitions follow the separate FCOM-based prototype logic; it is not yet connected to live systems.</p>
 <div class="params">
@@ -135,7 +133,7 @@ button.action.secondary{background:#142931;color:#b5d8d5;border-color:#385b5a}bu
 </div>
 <div class="status-grid"><div><div class="kicker">ACTIVE WARNING OUTPUT</div><div class="out" id="active">Engine idle</div></div>
 <div><div class="kicker">TRANSITIONS / LOG</div><div class="out" id="events">Click Evaluate to initialize state.</div></div></div></section>
-<footer>Reference: user-provided Sepehran 737CL FCOM Chapter 15. Validated rules include cabin/takeoff shared horn, gear horn conditions, altitude alert thresholds and inhibits. Alert arbitration priorities and sound timbres here are provisional engineering choices, not Boeing-certified behaviors. Radio voice and TCAS scenarios require installed equipment / configuration verification. Educational software; never for real operations.</footer>
+<footer>Reference: user-provided Sepehran 737CL FCOM Chapter 15. Validated rules include cabin/takeoff shared horn, gear horn conditions, altitude alert thresholds and inhibits. Alert logic remains a separate prototype. Audio samples and sound-to-warning assignments are intentionally blank pending owner definition. Radio voice and TCAS scenarios require installed equipment / configuration verification. Educational software; never for real operations.</footer>
 </main>
 <script src="../audio/warning-engine.js"></script><script src="real-audio-bank.js"></script><script src="lab.js"></script>
 </body></html>

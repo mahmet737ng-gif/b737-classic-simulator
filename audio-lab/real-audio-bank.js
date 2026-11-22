@@ -1,62 +1,17 @@
-/* User-owned 737 sample importer. No remote download, scraping or third-party sound redistribution.
-   Browser IndexedDB persists audio under this browser profile only. v1. */
+/* Owner-mapped 737 sample importer. No remote download or automatic sound assignment.
+   New blank v2 bank; legacy v1 browser recordings are left untouched but are not loaded. */
 (function(root,factory){
   const api=factory();
   if(typeof module==="object"&&module.exports) module.exports=api;
   root.B737RealAudioBank=api;
 })(typeof globalThis!=="undefined"?globalThis:this,function(){
 "use strict";
-const VOICE_TYPES=new Set(["gpws","tcas","radioAltitude","minimums"]);
 const TYPES=["wav","mp3","ogg","m4a","aac","flac","opus","webm"];
 function keyFor(kind,message){
   const k=String(kind||"").trim();
   if(!k) throw Error("Sound type is required");
-  return VOICE_TYPES.has(k)?k+"|"+String(message||"").trim().toUpperCase():k;
-}
-function fileNameBase(name){
-  return String(name||"").toLowerCase().replace(/\.[^.]+$/,"")
-    .replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
-}
-function suggestKey(filename,tests){
-  const base=fileNameBase(filename);
-  // Owner-confirmed A/RA, C/EGPWS and E/Stick Shaker labels; b.mp3 remains absent.
-  if(base === 'a') return 'radioAltitude|COLLECTION';
-  if(base === 'e') return 'shaker';
-  if(base === 'c') return 'gpws|COLLECTION';
-  const tokens=base.split("_");
-  if(/^(?:sfx|sound|b737|boeing|737|b737ng|737ng)_/.test(base)) {
-    // intentional: preserve original tokens for matching
-  }
-  const candidates=[];
-  const seen=new Set();
-  for(const row of tests) {
-    const kind=row[0], title=row[1], msg=row[3];
-    const key=keyFor(kind,msg);
-    if(seen.has(key))continue;
-    seen.add(key);
-    let score=0;
-    const titleWords=fileNameBase(title).split("_").filter(w=>w.length>2 && !["the","and","warning","737","egpws"].includes(w));
-    const messageWords=fileNameBase(msg||"").split("_").filter(w=>w.length>2);
-    if(base.includes(fileNameBase(kind)))score+=3;
-    if(messageWords.length && messageWords.every(w=>tokens.includes(w)))score+=7;
-    if(titleWords.length && titleWords.every(w=>tokens.includes(w)))score+=5;
-    for(const w of titleWords) if(tokens.includes(w))score++;
-    if(score>=5)candidates.push({key,score});
-  }
-  const fixes=[
-    [/fire|bell/, "fireBell"],
-    [/overspeed|clacker/, "overspeed"],
-    [/stick_shak|stall/, "shaker"],
-    [/takeoff_config|cabin_altitude|intermittent_horn/, "intermittentHorn"],
-    [/landing_gear_horn|gear_warning/, "gearHorn"],
-    [/autopilot_disconnect|ap_disconnect/, "apDisconnect"],
-    [/autothrottle_disconnect|at_disconnect/, "atDisconnect"],
-    [/altitude_alert|altitude_tone/, "altitude"]
-  ];
-  for(const [regex,k] of fixes) if(regex.test(base))candidates.push({key:k,score:12});
-  candidates.sort((a,b)=>b.score-a.score);
-  return candidates.length===1 || (candidates.length>1 && candidates[0].score>candidates[1].score)
-    ? candidates[0].key:null;
+  const phrase=String(message||"").trim().toUpperCase();
+  return phrase?k+"|"+phrase:k;
 }
 function validAudioFile(file){
   if(!file||typeof file.name!=="string")return false;
@@ -73,7 +28,7 @@ class RealAudioBank {
   async init(){
     if(typeof indexedDB==="undefined")throw Error("IndexedDB unavailable");
     const db=await new Promise((resolve,reject)=>{
-      const r=indexedDB.open("b737cl-real-audio-bank",1);
+      const r=indexedDB.open("b737cl-real-audio-bank-v2-owner-map",1);
       r.onupgradeneeded=()=>{
         if(!r.result.objectStoreNames.contains("clips"))r.result.createObjectStore("clips",{keyPath:"key"});
       };
@@ -132,5 +87,5 @@ class RealAudioBank {
     try{await el.play();return entry;}catch(e){this.stop();throw e;}
   }
 }
-return {RealAudioBank,keyFor,suggestKey,validAudioFile};
+return {RealAudioBank,keyFor,validAudioFile};
 });
