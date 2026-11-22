@@ -49,7 +49,8 @@ try{
   const gate=new Gate.FireBellGate(),bank=new Bank.RealAudioBank();
   const $=id=>root.document.getElementById(id);
   let context=null,buffer=null,player=null,bankReady=false,assetReady=false,armed=false,panel=null;
-  let latest='';
+  let latest='',loadError='';
+  const BUNDLED_SOURCE='../../audio-lab/assets/fire-bell-owner-v1.m4a';
   class LoopPlayer{
     constructor(ctx,clip){this.ctx=ctx;this.clip=clip;this.playing=false;this.items=new Set();this.timer=null;this.next=0;}
     schedule(when,first){
@@ -90,9 +91,9 @@ try{
   function status(){
     if(!panel)return;
     const s=gate.snapshot();
-    const text=!bankReady?'INITIALIZING AUDIO BANK':!assetReady?'IMPORT fire-alarm.mp3 TO ENABLE ACTUAL BELL':
-      !armed?'SOURCE READY · ENABLE AUDIO':'SOURCE READY · AUDIO ARMED';
-    const signature=[text,s.active,s.sources.join(','),Boolean(player?.playing)].join('|');
+    const text=!assetReady?'OWNER AUDIO NOT READY'+(loadError?' · '+loadError:' · LOADING AUDIO'): 
+      !armed?'OWNER AUDIO INSTALLED · TAP COCKPIT TO ENABLE SOUND':'OWNER AUDIO READY · ARMED';
+    const signature=[text,s.active,s.sources.join(','),Boolean(player?.playing),loadError].join('|');
     if(signature===latest)return;
     latest=signature;
     $('fireBellAudioStatus').textContent=text+' | FIRE BELL '+(s.active?'REQUESTED':'OFF')+
@@ -123,16 +124,30 @@ try{
     if(save){if(!bankReady)throw Error('LOCAL_AUDIO_BANK_NOT_READY');await bank.add('fireBell',file);}
     assetReady=true;sync();return audio.duration;
   }
+  async function loadBundled(){
+    try{
+      const response=await root.fetch(BUNDLED_SOURCE,{cache:'force-cache'});
+      if(!response.ok)throw Error('HTTP_'+response.status);
+      const blob=await response.blob();
+      const file=new File([blob],'fire-alarm.m4a',{type:'audio/mp4'});
+      await useFile(file,false);
+      loadError='';
+    }catch(error){
+      loadError='BUNDLED_FILE_UNAVAILABLE: '+error.message;
+      root.console?.warn?.('Owner Fire Bell automatic loading failed',error);
+    }
+    status();
+  }
   function mount(){
     if(panel||!$('inspector'))return;
     panel=root.document.createElement('section');panel.id='ownerFireBellAudioV1';
     panel.style.cssText='border:1px solid #79534b;border-radius:8px;padding:10px;background:#271923;color:#f6e1dd;direction:ltr';
     panel.innerHTML='<h3 style="margin:0 0 7px">FIRE BELL · OWNER AUDIO</h3>'+
       '<p id="fireBellAudioStatus" role="status" style="font-size:12px;line-height:1.4">AUDIO INITIALIZING</p>'+
-      '<label style="font-size:12px;display:block">Owner source fire-alarm.mp3'+
+      '<label style="font-size:12px;display:block">Automatic owner Fire Bell (manual fallback only)'+
       '<input id="fireBellSource" type="file" accept="audio/mpeg,.mp3" style="display:block;max-width:100%;margin:5px 0 9px"></label>'+
       '<button id="fireBellEnable" type="button">ENABLE FIRE BELL AUDIO</button>'+
-      '<small style="display:block;margin-top:7px">One shared loop for ENG 1, ENG 2, APU, wheel well and OVHT/FIRE test; stops at BELL CUTOUT. FAULT/INOP, EXT TEST and lamp push tests never trigger the bell.</small>';
+      '<small style="display:block;margin-top:7px">Owner audio loads automatically. Import manually only if it fails. One voice for ENG 1/2, APU and OVHT/FIRE test; BELL CUTOUT silences. Lamp/EXT test does not ring.</small>';
     $('inspector').append(panel);
     $('fireBellSource').addEventListener('change',async e=>{
       const file=e.target.files?.[0];if(!file)return;
@@ -162,14 +177,17 @@ try{
       const imported=bank.get('fireBell');
       if(imported?.blob)await useFile(imported.blob,false);
       status();
-    }).catch(error=>{root.console?.warn?.('Fire Bell sample unavailable:',error);status();});
+    }).catch(error=>{root.console?.warn?.('Fire Bell local storage unavailable:',error);status();});
+    // Always load the shipped owner recording when no browser sample exists.
+    // Local storage failure must not disable audio playback.
+    loadBundled();
   }
   if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   root.B737UnifiedFireBellAudioV1=Object.freeze({
     setDemand(source,on){const s=gate.setDemand(source,on);sync();return s;},
     setMuted(source,on){const s=gate.setMuted(source,on);sync();return s;},
     unlock,useFile,
-    getState(){return {...gate.snapshot(),bankReady,assetReady,armed,playing:Boolean(player?.playing)};}
+    getState(){return {...gate.snapshot(),bankReady,assetReady,armed,loadError,playing:Boolean(player?.playing)};}
   });
 })(typeof window==='object'?window:null);
 
