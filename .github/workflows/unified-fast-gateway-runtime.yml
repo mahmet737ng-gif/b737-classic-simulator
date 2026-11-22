@@ -100,3 +100,25 @@ jobs:
       - name: Show fixture launch log
         if: always()
         run: if [ -f /tmp/unified-release.log ]; then tail -30 /tmp/unified-release.log; fi
+
+  crew-browser-sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser for isolated crew sessions
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.58.2
+          if command -v google-chrome >/dev/null; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+            echo "CHROME_PATH=$(find "$HOME/.cache/ms-playwright" -type f -name chrome -print -quit)" >> "$GITHUB_ENV"
+          fi
+      - name: Verify two independent crew browsers and bidirectional controls
+        run: node --test tests/unified-crew-room.test.cjs
