@@ -16,7 +16,7 @@
   electrical:[['bothBus','BOTH GENERATOR BUSES OFF']]
  };
  const busy={navigation:new Set(),instruments:new Set(),air:new Set(),engines:new Set(),hydraulics:new Set(),electrical:new Set()};
- let previousIRS={},ownBuses=[],pressure=null,mode='AUTO',lastPerformance=0,installed=false,renderNeeded=true;
+ let previousIRS={},ownBuses=[],pressure=null,mode='AUTO',lastPerformance=0,installed=false,renderNeeded=true,advancedRetries=0;
  const $=id=>doc.getElementById(id);
  const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
  const pressurePsi=ft=>14.696*Math.pow(Math.max(.00001,1-.00000687535*clamp(ft,-1000,60000)),5.2559);
@@ -342,6 +342,11 @@
   if(installed)return true;
   const fail=$('failuresHeaderPopover'),flight=$('flightScenarioDialog');
   if(!fail||!flight)return false;
+  // Advanced instructor mounts its scenario controls after the FLT PHASE dialog;
+  // defer our bridge until that asynchronous DOM mount finishes.
+  if(root.B737UnifiedAdvancedInstructorV1&&!$('advancedScenarioBlock')&&++advancedRetries<18){
+   root.setTimeout(mount,300);return false;
+  }
   installStyle();
   if(mountAdvanced()){
    installed=true;render();
