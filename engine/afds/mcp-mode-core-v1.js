@@ -175,6 +175,25 @@ function transition(state,action){
   s.togaSingleEngine=action.singleEngine===true;
   return done();
  }
+ // Verified hardware retune is an approved APP exit. A NAV signal
+ // dropout or another push of the unlit APP switch is not.
+ if(action.type==="NAV_RETUNED"){
+  if(action.confirmed!==true||action.source!=="VHF_NAV_HARDWARE"||
+     !["CAPT","FO"].includes(action.seat)||
+     !Number.isInteger(action.previousFrequencyKhz)||
+     !Number.isInteger(action.activeFrequencyKhz)||
+     action.previousFrequencyKhz===action.activeFrequencyKhz)
+   return rejected(s,"QUALIFIED_ACTIVE_NAV_RETUNE_REQUIRED");
+  if(s.pending.approach){
+   s.pending.approach=false;s.armed={pitch:null,roll:null};
+   s.capture={pitch:null,roll:null};s.nav={loc:false,gs:false};
+   s.modes.lateral=null;s.modes.vertical=null;
+   s.dualApproach={second:null,coupled:false,flareArmed:false,
+    flareEngaged:false,retard:false,touchdownStartSec:null};
+   s.targets={pitch:null,roll:null};
+  }
+  return done();
+ }
  if(action.type==="FCC_ALTITUDE_CAPTURE"){
   if(action.confirmed!==true||action.source!=="SIMULATED_FCC"||
      !["ACQUIRE","HOLD"].includes(action.stage))
@@ -291,7 +310,11 @@ function transition(state,action){
    if(s.modes.lateral==="LNAV")s.modes.lateral=null;
    if(s.modes.vertical==="VNAV")s.modes.vertical=null;
   }
-  if(action.key==="approachCapture"&&action.value!==true)s.pending.approach=false;
+  if(action.key==="approachCapture"&&action.value!==true){
+   if(s.pending.approach&&s.nav.loc&&s.nav.gs)
+    return rejected(s,"CAPTURED_APP_REQUIRES_APPROVED_EXIT");
+   s.pending.approach=false;
+  }
   return done();
  }
  if(action.type==="FLIGHT_OBSERVATION"){
@@ -504,6 +527,9 @@ function transition(state,action){
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
  const id=action.id;
  if(id==="APP"){
+  // The APP light extinguishes on capture, not the selected mode.
+  if(s.pending.approach&&s.nav.loc&&s.nav.gs)
+   return rejected(s,"CAPTURED_APP_REQUIRES_TOGA_AP_FD_RESET_OR_NAV_RETUNE");
   // A pilot can arm the ILS BEFORE valid localizer and glideslope reception.
   // Signal validity is still mandatory later for each FCC capture.
   s.pending.approach=!s.pending.approach;
@@ -528,6 +554,8 @@ function transition(state,action){
   if(s.evidence.fmcRouteReady!==true)return rejected(s,"FMC_ROUTE_EVIDENCE_REQUIRED");
  }
  if(id==="VOR_LOC"){
+  if(s.pending.approach&&s.nav.loc&&s.nav.gs)
+   return rejected(s,"CAPTURED_APP_ROLL_MODE_LOCKED");
   // The VOR/LOC switch arms even when no station is yet received. FCC
   // verifies NAV quality, geometry and capture before commanding the airplane.
   const wasApp=s.pending.approach===true;
@@ -563,6 +591,13 @@ function transition(state,action){
    return rejected(s,"AP_ENGAGEMENT_INHIBITED_DISENGAGE_BAR");
   const selected=s.modes.autopilot;
   if(id.startsWith('CMD_')&&selected?.startsWith('CMD_')&&id!==selected&&s.pending.approach){
+   // The 800-ft rule inhibits engaging a NEW second channel, not
+   // disconnecting an already-armed second CMD channel after descent.
+   if(s.dualApproach.second===id){
+    s.dualApproach.second=null;s.dualApproach.coupled=false;
+    s.dualApproach.flareArmed=false;s.dualApproach.flareEngaged=false;
+    s.dualApproach.retard=false;return done();
+   }
    if(Number.isFinite(s.flight?.radioAltitudeFt)&&s.flight.radioAltitudeFt<800)
     return rejected(s,'DUAL_AP_SELECTION_INHIBITED_BELOW_800_RA');
    if(s.flight?.dualIlsValid!==true)
@@ -605,6 +640,8 @@ function transition(state,action){
   return done();
  }
  if(lateral.includes(id)){
+  if(s.pending.approach&&s.nav.loc&&s.nav.gs)
+   return rejected(s,"CAPTURED_APP_ROLL_MODE_LOCKED");
   // A new lateral selector replaces the former one, without requiring
   // a separate disengage click and without a second active roll lamp.
   s.modes.lateral=s.modes.lateral===id?null:id;
@@ -616,6 +653,8 @@ function transition(state,action){
   s.togaActive=false;s.togaSingleEngine=false;
   // FCOM 4.10.9–11: ALT HOLD, LVL CHG and V/S are inhibited
   // following G/S capture in APP.
+  if(s.pending.approach&&s.nav.loc&&s.nav.gs&&vertical.includes(id))
+   return rejected(s,"CAPTURED_APP_PITCH_MODE_LOCKED");
   if(s.nav.gs&&["ALT_HLD","LVL_CHG","VS"].includes(id))
    return rejected(s,"PITCH_MODE_INHIBITED_AFTER_GS_CAPTURE");
   selectPitch(s,id);return done();
@@ -653,7 +692,10 @@ function output(s){
   lamps.APP=s.pending.approach&&!(s.nav.loc&&s.nav.gs);
   // FCOM 4.10.14: VOR/LOC pushbutton illuminates while armed,
   // independently of the green VOR/LOC roll capture annunciation.
-  lamps.VOR_LOC=lamps.VOR_LOC||(s.armed.roll==="VOR/LOC"&&!s.pending.approach);
+  // APP supersedes the VOR/LOC selector lamp while the FMA keeps
+  // its green VOR/LOC capture annunciation.
+  lamps.VOR_LOC=!s.pending.approach&&
+   (lamps.VOR_LOC||s.armed.roll==="VOR/LOC");
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},

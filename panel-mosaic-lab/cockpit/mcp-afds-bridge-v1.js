@@ -130,7 +130,29 @@ function hardwareCommand(e){
   project();notify();
  }
 }
-function requestMode(id){
+// Read both live NAV receivers before adding the second CMD.
+ // A one-second radio publication cadence cannot inhibit an already
+ // valid dual ILS merely because the last flight sample was stale.
+ function refreshSecondApproachChannel(id){
+  const out=Core.output(state),first=out.modes?.autopilot;
+  if(!/^CMD_[AB]$/.test(id)||!/^CMD_[AB]$/.test(first)||
+     id===first||out.pending?.approach!==true)return;
+  const frame=window.B737UnifiedFlightScenarioV1?.getState?.();
+  if(!frame||!Number.isFinite(frame.radioAltitudeFt))return;
+  window.B737UnifiedIranRadioNavV1?.refresh?.();
+  const radio=window.B737UnifiedFccFlightV1?.getILS?.();
+  if(radio?.dualIlsValid!==true||radio?.kind!=="ILS"||radio?.valid!==true)return;
+  send({type:"FLIGHT_OBSERVATION",sample:{
+   schema:"B737_AFDS_FLIGHT_OBSERVATION_V1",confirmed:true,
+   source:"SIMULATED_FCC",navValid:true,navKind:"ILS",
+   dualIlsValid:true,radioAltitudeFt:frame.radioAltitudeFt,
+   navCaptureConfirmed:radio.navCaptureConfirmed===true,
+   gsCaptureConfirmed:radio.gsCaptureConfirmed===true,
+   gsDeviationDots:radio.gsDeviationDots??null,
+   gsBelowDots:radio.gsBelowDots??null
+  }});
+ }
+ function requestMode(id){
  if(!id)return;
  // The source-grounded TO/GA FCC controls pitch until 400 ft RA, not an
  // unrelated MCP pushbutton. Also inhibit a new single A/P engagement below
@@ -161,6 +183,7 @@ function requestMode(id){
   }
   project();notify();return Core.output(state);
  }
+ refreshSecondApproachChannel(id);
  return send({type:"BUTTON",id});
 }
 function visualRequest(e){
@@ -220,6 +243,24 @@ window.addEventListener("b737:mcp-bank-limit-preview",e=>{
 window.addEventListener("b737:visual-test",e=>{visualTest=!!e.detail?.active;project()});
 document.addEventListener("DOMContentLoaded",()=>{decorate();project();electrical()});
 if(document.readyState!=="loading"){decorate();project();electrical()}
+// Only a change of a currently active NAV receiver frequency permits
+// leaving a fully captured APP. Editing the inactive drum does not count.
+const observedNavFrequency={CAPT:null,FO:null};
+function observeActiveNavFrequency(detail){
+ const seat=detail?.seat,after=detail?.activeFrequencyKhz;
+ if(!["CAPT","FO"].includes(seat))return;
+ const before=observedNavFrequency[seat];
+ observedNavFrequency[seat]=Number.isInteger(after)?after:null;
+ if(!Number.isInteger(before)||!Number.isInteger(after)||before===after)return;
+ const out=Core.output(state);
+ if(out.pending.approach&&out.nav.loc&&out.nav.gs){
+  send({type:"NAV_RETUNED",source:"VHF_NAV_HARDWARE",confirmed:true,
+   seat,previousFrequencyKhz:before,activeFrequencyKhz:after});
+ }
+}
+window.addEventListener("b737:vhf-nav-mode",e=>observeActiveNavFrequency(e.detail));
+for(const seat of ["CAPT","FO"])
+ observeActiveNavFrequency(window.B737UnifiedVHFNavControlsV1?.getState?.(seat));
 // The existing MCP AFDS state machine remains the SOLE owner of mode/values.
 // Scenario setup calls ordinary FCC-verified knob/paddle transitions, never
 // sets the visible display text or overrides bus/CB power.
