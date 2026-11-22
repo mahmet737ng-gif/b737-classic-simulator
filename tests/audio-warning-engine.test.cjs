@@ -121,4 +121,21 @@ test("GPWS phrase originates from discrete source", () => {
   assert.ok(event(run(e,{egpwsMessage:"PULL UP"}),"gpws","PULL UP"));
   assert.equal(event(run(e,{egpwsMessage:"PULL UP"}),"gpws"),false);
 });
+test("approaching minimums exactly DH + 100 on RA descent", () => {
+  const e = new WarningEngine();
+  run(e,{radioAltitudeFt:350,minimumsRadioFt:200,approachActive:true});
+  assert.equal(event(run(e,{radioAltitudeFt:301,minimumsRadioFt:200,approachActive:true}),"minimums","APPROACHING MINIMUMS"),false);
+  assert.ok(event(run(e,{radioAltitudeFt:300,minimumsRadioFt:200,approachActive:true}),"minimums","APPROACHING MINIMUMS"));
+});
+test("minimums exactly at DH on RA descent", () => {
+  const e = new WarningEngine();
+  run(e,{radioAltitudeFt:201,minimumsRadioFt:200,approachActive:true});
+  assert.ok(event(run(e,{radioAltitudeFt:200,minimumsRadioFt:200,approachActive:true}),"minimums","MINIMUMS"));
+});
+test("negative DH mutes both minimums callouts", () => {
+  const e = new WarningEngine();
+  run(e,{radioAltitudeFt:150,minimumsRadioFt:-20,approachActive:true});
+  const out = run(e,{radioAltitudeFt:0,minimumsRadioFt:-20,approachActive:true});
+  assert.equal(out.events.some(v=>v.id==="minimums"),false);
+});
 console.log(n + " audio-engine assertions passed");
