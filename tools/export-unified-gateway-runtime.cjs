@@ -27,7 +27,7 @@ const filesToPublish=new Map([
 ]);
 const origin='https://release.invalid/';
 function add(relative){
- if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|png|ttf|woff2)$/.test(relative)||relative.includes('..'))
+ if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|png|ttf|woff2|mp3)$/.test(relative)||relative.includes('..'))
   throw Error('Bad release resource path '+relative);
  if(filesToPublish.has(relative))return;
  const bytes=fs.readFileSync(path.join(root,relative));
@@ -50,6 +50,7 @@ for(const relative of [cockpit+'index.html',cockpit+'overhead-stage.html',cockpi
  }
 }
 for(const relative of [
+ 'audio-lab/assets/owner-ra-callouts-v1.mp3',
  cockpit+'assembly.json',cockpit+'boot-trace.js',cockpit+'sw.js',
  cockpit+'crew-room-v1.js',cockpit+'crew-room-v1.css',cockpit+'crew-cockpit-v1.js',
  cockpit+'brand/unified-icon-192.webp',

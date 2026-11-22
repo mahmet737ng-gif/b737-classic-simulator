@@ -92,8 +92,8 @@
         "20",
         "10"
       ],
-      "assetPath": "audio-lab/assets/owner-ra-callouts-v1.ogg",
-      "validation": "Owner-supplied a.mp3 was trimmed to a compact OGG timeline with ten individually timed voice callouts; unidentified ending beep excluded. Timeline is reused by Unified live RA audio bridge.",
+      "assetPath": "audio-lab/assets/owner-ra-callouts-v1.mp3",
+      "validation": "Owner-supplied a.mp3 was trimmed to a compact MP3 timeline with ten individually timed voice callouts; unidentified ending beep excluded. Timeline is reused by Unified live RA audio bridge.",
       "previewKey": "radioAltitude|ONE THOUSAND"
     },
     {

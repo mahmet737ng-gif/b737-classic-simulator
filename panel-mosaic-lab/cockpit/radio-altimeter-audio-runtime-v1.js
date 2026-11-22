@@ -11,7 +11,7 @@
   return;
  }
  const engine=new Warning({variant:'737-300'});
- const audioUrl=new URL('../../audio-lab/assets/owner-ra-callouts-v1.ogg',root.location.href).href;
+ const audioUrl=new URL('../../audio-lab/assets/owner-ra-callouts-v1.mp3',root.location.href).href;
  const player=new Owner.Player(audioUrl);
  let approachId=null,lastElapsed=null,lastDH=null,lastStatus='WAITING FOR FINAL APPROACH';
  let statusNode=null;
@@ -104,7 +104,7 @@
   reset:stopAndReset,getStatus:()=>lastStatus,getDiagnostics,
   getConfig:()=>({approachPhase:'FINAL_APPROACH',raSource:'B737UnifiedEfisSources.project(CAPT).ra',
    dhSource:'B737UnifiedEFISPedestalV1.getState(CAPT).dh',approachingMinimumsOffsetFt:100,
-   minimumsOffsetFt:0,negativeDhInhibitsBoth:true,audioAsset:'audio-lab/assets/owner-ra-callouts-v1.ogg',
+   minimumsOffsetFt:0,negativeDhInhibitsBoth:true,audioAsset:'audio-lab/assets/owner-ra-callouts-v1.mp3',
    missingClipBehavior:'SILENT'})
  });
  status('WAITING FOR FINAL APPROACH');

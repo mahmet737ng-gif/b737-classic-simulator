@@ -6,7 +6,7 @@
     "a.mp3",
     "c.mp3"
   ],
-  "access": "Owner-supplied audio remains in the compact OGG player asset; original a.mp3 is not redistributed. Unified runtime uses exact time slices from owner-ra-callouts-v1.js.",
+  "access": "Owner-supplied audio is played from the compact MP3 timeline in audio-lab/assets/owner-ra-callouts-v1.mp3; original a.mp3 is not redistributed. Unified runtime uses exact time slices from owner-ra-callouts-v1.js.",
   "segments": [
     {
       "id": "RA-01",

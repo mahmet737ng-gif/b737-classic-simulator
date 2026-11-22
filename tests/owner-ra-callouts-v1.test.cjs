@@ -16,7 +16,7 @@ for(const key of expected){
  assert.ok(start>=0&&end>start&&end<10.6,"invalid segment "+key);
 }
 assert.equal(keyFor("minimums","approaching minimums"),"minimums|APPROACHING MINIMUMS");
-const player=new Player("./assets/owner-ra-callouts-v1.ogg",()=>({
+const player=new Player("./assets/owner-ra-callouts-v1.mp3",()=>({
  pause(){},addEventListener(){},removeEventListener(){},preload:"",readyState:1,
  set currentTime(v){this._t=v;},get currentTime(){return this._t||0;},
  set volume(v){this._v=v;},get volume(){return this._v||0;},

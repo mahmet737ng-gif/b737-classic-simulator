@@ -1,5 +1,5 @@
-/* B737 Classic RA voice preview — owner-supplied a.mp3, trimmed before unidentified end beep.
- * Test Lab only. Original MP3, no synthesis; this is not a certified avionics source.
+/* B737 Classic RA voice player — owner-supplied a.mp3, trimmed before unidentified end beep.
+ * Shared by the Audio Test Lab and Unified live RA bridge. Original MP3, no synthesis; training audio, not a certified avionics source.
  * Each timeslice below is grounded in the actual uploaded voice recording.
  * The unverified last beep (after ~10.85 s) remains in the MP3 source but is excluded from all playback ranges.
  */
