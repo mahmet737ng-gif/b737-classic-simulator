@@ -814,6 +814,7 @@ try{
       this.deviationActive = false;
       this.bankTriggered = new Set();
       this.radioCalled = new Set();
+      this.minimumsCalled = new Set();
     }
     cutoutCabin() { this.cabinCutout = true; }
     cutoutGear() { if (this.lastGearCutoutEligible) this.gearCutout = true; }
@@ -932,9 +933,20 @@ try{
         }
       }
       const dh = s.minimumsRadioFt;
+      const newApproach = !p || (!truth(p.approachActive) && truth(s.approachActive));
+      const resetMinima = newApproach || !truth(s.approachActive) || ground ||
+        (p && p.minimumsRadioFt !== dh) ||
+        (finite(ra) && finite(pra) && ra > pra + 50);
+      if (resetMinima) this.minimumsCalled.clear();
       if (truth(s.approachActive) && !ground && finite(dh) && dh >= 0 && finite(ra) && finite(pra) && ra < pra) {
-        if (pra > dh + 100 && ra <= dh + 100) push("minimums", "APPROACHING MINIMUMS");
-        if (pra > dh && ra <= dh) push("minimums", "MINIMUMS");
+        if (pra > dh + 100 && ra <= dh + 100 && !this.minimumsCalled.has("APPROACHING MINIMUMS")) {
+          this.minimumsCalled.add("APPROACHING MINIMUMS");
+          push("minimums", "APPROACHING MINIMUMS");
+        }
+        if (pra > dh && ra <= dh && !this.minimumsCalled.has("MINIMUMS")) {
+          this.minimumsCalled.add("MINIMUMS");
+          push("minimums", "MINIMUMS");
+        }
       }
 
       const bank = Math.abs(s.bankAngleDeg || 0);
