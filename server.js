@@ -763,7 +763,7 @@ function crewMayRead(url, role) {
   if (role === 'instructor') return true;
   if (!asset.endsWith('.html')) return true;
   return ['panel-mosaic-lab/cockpit/overhead-stage.html',
-    'panel-mosaic-lab/cockpit/cdu-stage.html','cdu-standalone-v6/index.html'].includes(asset);
+    'panel-mosaic-lab/cockpit/cdu-stage.html','cdu-standalone-v6/index.html','cb-panel-lab/index.html'].includes(asset);
 }
 
 async function handle(req,res) {
