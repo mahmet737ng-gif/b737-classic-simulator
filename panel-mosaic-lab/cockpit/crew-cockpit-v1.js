@@ -230,11 +230,12 @@
     // not be replayed after the state, or an old switch position would win.
     queue.length = 0;
     lastSequence = snapshot.sequence;
-    for (const [id, value] of Object.entries(toggles)) queue.push({type: 'toggle', id, value});
-    for (const [id, value] of Object.entries(rotaries)) queue.push({type: 'rotary', id, value});
+    // Guarded/interlocked controls need the host's guard state installed first.
     for (const [id, value] of Object.entries(guards)) {
       queue.push({type: 'guard', id, value: {open: value.guard === 'open', value: value.value}});
     }
+    for (const [id, value] of Object.entries(rotaries)) queue.push({type: 'rotary', id, value});
+    for (const [id, value] of Object.entries(toggles)) queue.push({type: 'toggle', id, value});
     drain();
   }
 
@@ -303,7 +304,13 @@
 
   const listen = (target, name, project) => target.addEventListener(name, event => project(event.detail ?? {}));
   listen(win, 'b737:aircraft-profile-change', d => {
-    if (d.reason === 'updated' && roster?.manager) command('profile', 'aircraft', d.profile);
+    if (d.reason === 'updated' && roster?.manager) {
+      command('profile', 'aircraft', d.profile);
+      // The newly selected airframe may alter valid Overhead detents/artwork.
+      // Re-publish its settled switches after the profile command.
+      lastPublishedOverhead = null;
+      publishHostSnapshot();
+    }
   });
   listen(win, 'b737:unified-efis-control', d => {
     const key = d.control;
