@@ -108,7 +108,27 @@
   // Do NOT silently interpret missing PACK data as a real electrical bus state.
   const pressureEnvironment={aircraftAltitudeFt:groundSelection.fieldElevationFt??0,
     onGround:true,packsAvailable:false,bleedAirAvailable:false};
-  let pressureRunning=true,packInstructorOverride=false,packSource='COLD_DARK_NO_BLEED';
+  // Apply a loaded FLT PHASE scenario to the physical pressure trainer BEFORE
+   // the next one-second plant update. The CPCS FLT/GRD selector must reflect
+   // airborne scenarios even when the aircraft did not start on the ground.
+   window.addEventListener('b737:flight-scenario-state',event=>{
+     const flight=event.detail;
+     if(typeof flight?.airborne!=='boolean')return;
+     const onGround=!flight.airborne;
+     const altitude=Number.isFinite(flight.altitudeFt)?flight.altitudeFt:null;
+     const changed=pressureEnvironment.onGround!==onGround;
+     const altitudeChanged=altitude!==null&&Math.abs(pressureEnvironment.aircraftAltitudeFt-altitude)>1;
+     if(!changed&&!altitudeChanged)return;
+     pressureEnvironment.onGround=onGround;
+     if(altitude!==null)pressureEnvironment.aircraftAltitudeFt=altitude;
+     if(groundBox)groundBox.checked=onGround;
+     if(altitudeBox&&altitude!==null)altitudeBox.value=String(Math.round(altitude));
+     if(changed&&selectedPressure()==='CPCS'){
+       getPressureSession('CPCS').dispatch({type:'FLIGHT_GROUND',value:onGround?'GRD':'FLT'});
+     }
+     publishPressureState();
+   });
+   let pressureRunning=true,packInstructorOverride=false,packSource='COLD_DARK_NO_BLEED';
   const pressureMount=byId('pressurePhysicsDiagnostics');
   const details=document.createElement('details');
   details.innerHTML='<summary>Cabin pressure · physical trainer / diagnostics</summary>'+
@@ -288,7 +308,10 @@
         pressureEnvironment.aircraftAltitudeFt=value;altitudeBox.value=String(value);
       }
       if(system===selectedPressure()&&key==='onGround'){
-        pressureEnvironment.onGround=Boolean(value);groundBox.checked=Boolean(value);
+        const onGround=Boolean(value),changed=pressureEnvironment.onGround!==onGround;
+         pressureEnvironment.onGround=onGround;groundBox.checked=onGround;
+         if(changed&&system==='CPCS')
+           getPressureSession('CPCS').dispatch({type:'FLIGHT_GROUND',value:onGround?'GRD':'FLT'});
       }
       if(system===selectedPressure()&&key==='bleedAirAvailable'){
         pressureEnvironment.bleedAirAvailable=Boolean(value);packsBox.checked=Boolean(value);
@@ -324,6 +347,11 @@
     byId('openSelectedPressurizationPanel').textContent = 'Open '+pressure+' Pressure Panel';
     try {
       activeSession = getPressureSession(pressure);
+      if(pressure==='CPCS'){
+        const expected=pressureEnvironment.onGround?'GRD':'FLT';
+        if(activeSession.snapshot().flightGround!==expected)
+          activeSession.dispatch({type:'FLIGHT_GROUND',value:expected});
+      }
       window.B737ActivePressurization = activeSession;
       publishPressureState(pressure);
       byId('activeProfileStatus').textContent = pressure+' V'+activeSession.engineVersion+' active. OH22 indications use the selected pressure controller. Cabin-pressure plant is a training model; coefficients and actuator timing are not aircraft-validated.';
