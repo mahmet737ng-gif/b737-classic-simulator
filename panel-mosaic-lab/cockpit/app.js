@@ -365,9 +365,21 @@
  },{passive:false});
  // Pan only on inert panel surfaces. Interactive instruments retain their click/drag inputs.
  const panControlSelector='button,input,select,textarea,a,iframe,[contenteditable="true"],[role="button"],[role="switch"],[role="slider"],[data-control],.cockpit-light,.mounted-light,.mounted-toggle,.mounted-rotary,.guard-node,.rg-detent-hit,.cdu-station';
+ let panPaintFrame=0,pendingPointerPosition=null;
+ function paintParentPan(){
+  panPaintFrame=0;
+  const point=pendingPointerPosition;
+  pendingPointerPosition=null;
+  if(drag?.source!=='parent'||!point)return;
+  const step=panGuard?.step({x:drag.lastX,y:drag.lastY},point,vp);
+  drag.lastX=point.x;drag.lastY=point.y;
+  if(step?.accepted)panGuard.boundedPan(vp,step.dx,step.dy);
+ }
  function endParentDrag(pointerId){
   if(drag?.source!=='parent')return;
   if(pointerId!==undefined&&pointerId!==drag.pointer)return;
+  if(panPaintFrame)cancelAnimationFrame(panPaintFrame);
+  paintParentPan();
   const id=drag.pointer;drag=null;
   vp.classList.remove('dragging');
   if(vp.hasPointerCapture?.(id))vp.releasePointerCapture(id);
@@ -389,10 +401,8 @@
    if(!vp.hasPointerCapture(e.pointerId))vp.setPointerCapture(e.pointerId);
   }
   if(!drag.started)return;
-  const step=panGuard?.step({x:drag.lastX,y:drag.lastY},
-   {x:e.clientX,y:e.clientY},vp);
-  drag.lastX=e.clientX;drag.lastY=e.clientY;
-  if(step?.accepted)panGuard.boundedPan(vp,step.dx,step.dy);
+  pendingPointerPosition={x:e.clientX,y:e.clientY};
+  if(!panPaintFrame)panPaintFrame=requestAnimationFrame(paintParentPan);
   if(e.cancelable)e.preventDefault();
  });
  window.addEventListener('pointerup',e=>endParentDrag(e.pointerId));
