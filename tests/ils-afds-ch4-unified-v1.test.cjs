@@ -427,3 +427,20 @@ test('real MCP bridge re-evaluates fresh dual ILS before accepting second CMD in
  assert.equal(invalid.api.getOutput().rejection,'DUAL_AP_REQUIRES_MATCHING_NAV1_NAV2_ILS');
  assert.equal(invalid.refreshCount(),1);
 });
+
+test('800ft inhibit does not trap an already armed second CMD: pilot can deselect it below 800ft',()=>{
+ let s=powered();const push=a=>s=MCP.transition(s,a);
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1200})});
+ push({type:'BUTTON',id:'CMD_A'});push({type:'BUTTON',id:'APP'});
+ push({type:'BUTTON',id:'CMD_B'});
+ assert.equal(s.dualApproach.second,'CMD_B');
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:700})});
+ push({type:'BUTTON',id:'CMD_B'});
+ assert.equal(s.lastRejection,null);
+ assert.equal(s.dualApproach.second,null);
+ assert.equal(s.modes.autopilot,'CMD_A');
+ assert.equal(MCP.output(s).lamps.CMD_B,false);
+ push({type:'BUTTON',id:'CMD_B'});
+ assert.equal(s.dualApproach.second,null);
+ assert.equal(s.lastRejection,'DUAL_AP_SELECTION_INHIBITED_BELOW_800_RA');
+});
