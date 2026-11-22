@@ -34,7 +34,7 @@ a{color:#79d7dc}
 <div class="readout">RA <span id="raValue">1200</span> ft</div>
 <input id="raSlider" aria-label="Radio altitude" type="range" min="0" max="1500" step="1" value="1200">
 <p>At DH = −20 ft, both minima callouts are inhibited. For DH = 200 ft, APPROACHING MINIMUMS triggers at 300 ft and MINIMUMS at 200 ft.</p>
-<div class="btns"><button id="begin">START DESCENT</button><button id="reset">RESET RA 1200</button><button id="stop">STOP AUDIO</button></div>
+<div class="btns"><button id="enable">ENABLE AUDIO</button><button id="begin">START DESCENT</button><button id="reset">RESET RA 1200</button><button id="stop">STOP AUDIO</button></div>
 <p id="status" class="notice">Ready. Start descent or drag RA downward.</p>
 </section>
 <section class="panel"><h2>Individual voice previews</h2><div class="grid" id="clips"></div></section>
@@ -79,8 +79,9 @@ a{color:#79d7dc}
  $("dh").onchange=reset;
  $("reset").onclick=reset;
  $("stop").onclick=()=>{stopDescent();sound.stop();eventLog("STOP");};
- $("begin").onclick=()=>{
-   reset();let last=performance.now();
+ $("enable").onclick=async()=>{$("status").textContent=(await sound.enable())?"Audio enabled for this browser":"Audio playback blocked; tap preview again";};
+ $("begin").onclick=async()=>{
+   reset();await sound.enable();let last=performance.now();
    descentTimer=setInterval(()=>{
      const now=performance.now(),delta=(now-last)/1000;last=now;
      setRA(ra-delta*Math.max(10,Number($("rate").value)||160));
@@ -93,7 +94,7 @@ a{color:#79d7dc}
  "radioAltitude|50","radioAltitude|40","radioAltitude|30","radioAltitude|20","radioAltitude|10"];
  for(const key of order){
    const b=document.createElement("button");b.type="button";b.textContent=key.split("|")[1];
-   b.onclick=()=>{sound.stop();sound.enqueue(key,.20);eventLog("MANUAL PLAY "+key);};
+   b.onclick=async()=>{await sound.enable();sound.stop();sound.enqueue(key,.20);eventLog("MANUAL PLAY "+key);};
    $("clips").appendChild(b);
  }
  setRA(1200,false);

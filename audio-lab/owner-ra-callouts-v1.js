@@ -32,7 +32,27 @@ class Player{
     this.audio=audioFactory?audioFactory(url):typeof Audio==="function"?new Audio(url):null;
     this.queue=[];this.active=null;this.timer=null;
     this.lastError=null;
-    if(this.audio){this.audio.preload="auto";this.audio.addEventListener("ended",()=>this.finish());}
+    if(this.audio){
+      this.audio.preload="auto";
+      this.audio.addEventListener("ended",()=>this.finish());
+      try{this.audio.load();}catch(_){}
+    }
+  }
+  async enable(){
+    if(!this.audio)return false;
+    if(this.active)return true;
+    this.audio.muted=true;
+    try{
+      await this.audio.play();
+      this.audio.pause();
+      this.audio.currentTime=0;
+      return true;
+    }catch(err){
+      this.lastError=String(err&&err.message||err);
+      return false;
+    }finally{
+      this.audio.muted=false;
+    }
   }
   has(kind,message){const key=message===undefined?kind:keyFor(kind,message);return Object.prototype.hasOwnProperty.call(TIMELINE,key);}
   get(key){return TIMELINE[key]||null;}
