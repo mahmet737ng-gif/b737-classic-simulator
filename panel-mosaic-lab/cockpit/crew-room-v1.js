@@ -161,7 +161,20 @@
       room.invitedRole ? 'Invited as ' + roles[room.invitedRole] : invited ? 'Choose an available role.' : '';
   }
 
+  const AIRCRAFT_PROFILE_KEY = 'b737classic.aircraft-profile.v1';
+  function hostAircraftProfile() {
+    try {
+      return win.B737AircraftProfileStore?.get() ??
+        JSON.parse(win.localStorage.getItem(AIRCRAFT_PROFILE_KEY) || 'null');
+    } catch { return null; }
+  }
   function enterCockpit() {
+    // Apply the host profile BEFORE navigation, so initial image selection,
+    // Overhead, EIS/Non-EIS and CPCS/DCPCS boot from the same airframe.
+    if (room?.profile) {
+      try { win.localStorage.setItem(AIRCRAFT_PROFILE_KEY, JSON.stringify(room.profile)); }
+      catch { message('Unable to apply the host aircraft configuration.', true); return; }
+    }
     const url = new URL('/panel-mosaic-lab/unified/', win.location.href);
     url.searchParams.set('crewRoom', room.roomId);
     if (invitation) sessionStorage.setItem('unified-crew-invite', invitation);
@@ -320,7 +333,7 @@
     const selectedRole = hostRole.value;
     if (!selectedRole) { render(); return; }
     busy(async () => {
-      room = await request('create', {role: selectedRole});
+      room = await request('create', {role: selectedRole, ...(hostAircraftProfile() ? {profile: hostAircraftProfile()} : {})});
       trackRoster();
       await showRoomInvite();
     });
