@@ -284,8 +284,8 @@ try{
    if(!this.playing)return;
    const now=this.ctx.currentTime;
    while(this.next<now+.48){
-    this.piece(.44,1.32,this.next,.075,.075);
-    this.next+=.88-.075;
+    this.piece(.30,1.25,this.next,.075,.075);
+    this.next+=.95-.075;
    }
   }
   start(){
@@ -293,8 +293,8 @@ try{
    this.halt();
    this.playing=true;
    const now=this.ctx.currentTime+.018;
-   this.piece(0,.52,now,0,.10);
-   this.next=now+.44;
+   this.piece(0,1.25,now,0,.075);
+   this.next=now+1.175;
    this.pump();
    this.timer=setInterval(()=>this.pump(),90);
   }
@@ -312,7 +312,7 @@ try{
    this.halt();
    // Natural deceleration is only ever played when all stall/test sources clear.
    const now=this.ctx.currentTime+.022;
-   this.piece(1.36,this.clip.duration,now,.035,0,.95);
+   this.piece(1.25,this.clip.duration,now,.035,0,.95);
   }
   destroy(){this.halt();}
  }
