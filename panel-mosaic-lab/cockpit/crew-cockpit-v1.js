@@ -21,6 +21,9 @@
   let flightWrite = false;
   let flightChangedAt = 0;
   let roster = null;
+  let currentOverhead = null;
+  let lastPublishedOverhead = null;
+  let snapshotTimer = null;
   doc.documentElement.dataset.crewRole = 'pending';
 
   const status = doc.createElement('span');
@@ -95,6 +98,20 @@
     if (!online || role === 'observer' || replay || value === undefined || value === null) return;
     commandWrites = commandWrites.then(() => send('command', {command: {type, id, value}}))
       .catch(error => refreshStatus(error.message));
+  }
+  function publishHostSnapshot() {
+    if (snapshotTimer || !roster?.manager || !online || !currentOverhead) return;
+    snapshotTimer = setTimeout(() => {
+      snapshotTimer = null;
+      if (!roster?.manager || !online || !currentOverhead) return;
+      const overhead = currentOverhead;
+      const serialized = JSON.stringify(overhead);
+      if (serialized === lastPublishedOverhead) return;
+      lastPublishedOverhead = serialized;
+      // Preserve ordering with all interactive changes already accepted locally.
+      commandWrites = commandWrites.then(() => send('snapshot', {overhead}))
+        .catch(error => { lastPublishedOverhead = null; refreshStatus(error.message); });
+    }, 350);
   }
 
   const flight = () => win.B737UnifiedFlightScenarioV1;
@@ -197,6 +214,23 @@
     }
   }
 
+  function receiveHostSnapshot(snapshot) {
+    if (snapshot.client === client || !Number.isSafeInteger(snapshot.sequence) ||
+        snapshot.sequence < lastSequence || !snapshot.overhead) return;
+    const {toggles, rotaries, guards} = snapshot.overhead;
+    if (!toggles || !rotaries || !guards) return;
+    // The state represents every switch at sequence N. Commands <= N must
+    // not be replayed after the state, or an old switch position would win.
+    queue.length = 0;
+    lastSequence = snapshot.sequence;
+    for (const [id, value] of Object.entries(toggles)) queue.push({type: 'toggle', id, value});
+    for (const [id, value] of Object.entries(rotaries)) queue.push({type: 'rotary', id, value});
+    for (const [id, value] of Object.entries(guards)) {
+      queue.push({type: 'guard', id, value: {open: value.guard === 'open', value: value.value}});
+    }
+    drain();
+  }
+
   function receiveFlight() {
     if (!latestFlight || !flight() || queue.length) return;
     const update = latestFlight;
@@ -224,11 +258,20 @@
     flight()?.crewFollower(role !== controller);
     refreshStatus();
     syncLabAccess();
+    publishHostSnapshot();
   }
 
   win.addEventListener('message', event => {
     if (event.origin !== win.location.origin) return;
     const data = event.data;
+    if (data?.type === 'b737:cockpit-overhead' && data.kind === 'controls-state' &&
+        event.source === byId('overheadFrame')?.contentWindow) {
+      if (data.toggles && data.rotaries && data.guards) {
+        currentOverhead = {toggles: data.toggles, rotaries: data.rotaries, guards: data.guards};
+        if (!replay) publishHostSnapshot();
+      }
+      return;
+    }
     if (data?.type === 'b737:cb-state-changed' && event.source === byId('cbPanelFrame')?.contentWindow) {
       const state = win.B737UnifiedCB?.snapshot();
       const next = new Set(state?.breakers.filter(entry => entry.pulled || entry.tripped).map(entry => entry.id));
@@ -342,8 +385,11 @@
       url.searchParams.set('room', roomId);
       url.searchParams.set('cockpit', '1');
       const feed = new EventSource(url);
-      feed.addEventListener('open', () => { online = true; refreshStatus(); });
+      feed.addEventListener('open', () => {
+        online = true; refreshStatus(); publishHostSnapshot();
+      });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));
+      feed.addEventListener('snapshot', event => receiveHostSnapshot(JSON.parse(event.data)));
       feed.addEventListener('command', event => {
         const entry = JSON.parse(event.data);
         if (entry.sequence <= lastSequence) return;
