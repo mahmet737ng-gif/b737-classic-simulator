@@ -281,3 +281,101 @@ test('Actual Unified includes FCC and captured radio module in boot order',()=>{
  assert.match(body,/navCaptureConfirmed:radio\?\.navCaptureConfirmed===true/);
  assert.match(body,/gsCaptureConfirmed:radio\?\.gsCaptureConfirmed===true/);
 });
+
+test('LOC captured in VOR/LOC transfers into APP without dropping FMA LOC capture',()=>{
+ let s=powered();const push=a=>(s=MCP.transition(s,a),MCP.output(s));
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1600})});
+ push({type:'BUTTON',id:'CMD_A'});
+ push({type:'BUTTON',id:'VOR_LOC'});
+ push({type:'FLIGHT_OBSERVATION',sample:sample({navCaptureConfirmed:true})});
+ assert.equal(s.nav.loc,true);
+ assert.equal(s.capture.roll,'VOR_LOC');
+ assert.equal(push({type:'BUTTON',id:'APP'}).pending.approach,true);
+ assert.equal(MCP.output(s).lamps.VOR_LOC,false,'APP supersedes VOR/LOC selector lamp');
+ assert.equal(MCP.output(s).lamps.APP,true);
+ assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').roll.active,'VOR/LOC');
+ assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').pitch.armed,'G/S');
+ push({type:'FLIGHT_OBSERVATION',sample:sample({
+   navCaptureConfirmed:true,gsCaptureConfirmed:true,gsDeviationDots:0.1})});
+ assert.equal(MCP.output(s).lamps.APP,false);
+ assert.equal(MCP.output(s).pending.approach,true,'unlit APP button is still captured');
+ assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').pitch.active,'G/S');
+ const before=MCP.output(s);
+ push({type:'BUTTON',id:'APP'});
+ assert.equal(s.lastRejection,'CAPTURED_APP_REQUIRES_TOGA_AP_FD_RESET_OR_NAV_RETUNE');
+ assert.equal(MCP.output(s).nav.gs,true);
+ assert.deepEqual(MCP.output(s).capture,before.capture);
+ for(const button of ['VOR_LOC','HDG_SEL','LNAV','VS','ALT_HLD']){
+  push({type:'BUTTON',id:button});
+  assert.equal(s.nav.gs,true,button+' must not discard captured G/S');
+  assert.equal(s.pending.approach,true);
+ }
+});
+
+test('second CMD arms with live dual ILS above 800 RA even after APP lamp extinguishes',()=>{
+ let s=powered();const push=a=>(s=MCP.transition(s,a),MCP.output(s));
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1300,dualIlsValid:true})});
+ push({type:'BUTTON',id:'CMD_A'});
+ push({type:'BUTTON',id:'APP'});
+ push({type:'FLIGHT_OBSERVATION',sample:sample({
+  radioAltitudeFt:1200,navCaptureConfirmed:true,gsCaptureConfirmed:true,gsDeviationDots:0})});
+ assert.equal(MCP.output(s).lamps.APP,false);
+ const out=push({type:'BUTTON',id:'CMD_B'});
+ assert.equal(s.lastRejection,null);
+ assert.equal(out.lamps.CMD_A,true);
+ assert.equal(out.lamps.CMD_B,true);
+ assert.equal(out.dualApproach.second,'CMD_B');
+ push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1100,dualIlsValid:true})});
+ assert.equal(s.dualApproach.coupled,true);
+ assert.equal(s.dualApproach.flareArmed,true);
+ assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').pitch.armed,'FLARE');
+});
+
+test('captured APP exits only with FCOM-authorized TOGA, two FD OFF after AP removal, or active NAV retune',()=>{
+ function captured(){
+  let s=powered();
+  const push=a=>(s=MCP.transition(s,a),s);
+  push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1200})});
+  push({type:'BUTTON',id:'CMD_A'});
+  push({type:'BUTTON',id:'APP'});
+  push({type:'FLIGHT_OBSERVATION',sample:sample({
+    radioAltitudeFt:1100,navCaptureConfirmed:true,gsCaptureConfirmed:true,gsDeviationDots:0})});
+  assert.equal(s.nav.gs,true);
+  return {get:()=>s,push};
+ }
+ const a=captured();
+ a.push({type:'FD',side:'left',on:false});
+ a.push({type:'FD',side:'right',on:false});
+ assert.equal(a.get().nav.gs,true,'AP still engaged must keep ILS approach');
+ a.push({type:'AP_DISENGAGE_CONFIRMED',confirmed:true,source:'COCKPIT_HARDWARE',
+  reason:'CONTROL_WHEEL_AP_DISCONNECT'});
+ assert.equal(a.get().pending.approach,false,'two FD OFF plus A/P OFF clears APP');
+ a.push({type:'FD',side:'left',on:true});
+ a.push({type:'BUTTON',id:'APP'});
+ assert.equal(a.get().pending.approach,true,'reselection after proper reset succeeds');
+ const b=captured();
+ b.push({type:'TOGA_ENGAGED',confirmed:true,source:'SIMULATED_FCC',dualApGA:false});
+ assert.equal(b.get().pending.approach,false);
+ assert.equal(b.get().togaActive,true);
+ const c=captured();
+ c.push({type:'NAV_RETUNED',confirmed:true,source:'VHF_NAV_HARDWARE',seat:'FO',
+  previousFrequencyKhz:109900,activeFrequencyKhz:110300});
+ assert.equal(c.get().pending.approach,false);
+ assert.equal(c.get().nav.gs,false);
+ const d=captured();
+ d.push({type:'NAV_RETUNED',confirmed:true,source:'VHF_NAV_HARDWARE',seat:'FO',
+  previousFrequencyKhz:109900,activeFrequencyKhz:109900});
+ assert.equal(d.get().pending.approach,true);
+ assert.equal(d.get().lastRejection,'QUALIFIED_ACTIVE_NAV_RETUNE_REQUIRED');
+});
+
+test('real tuned NAV1+NAV2 check, live second CMD recheck and active NAV retune are wired in cockpit',()=>{
+ const bridge=fs.readFileSync(path.join(__dirname,
+   '../panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'),'utf8');
+ assert.match(bridge,/function refreshSecondApproachChannel\(id\)/);
+ assert.match(bridge,/B737UnifiedIranRadioNavV1\?\.refresh\?\.\(\)/);
+ assert.match(bridge,/radio\?\.dualIlsValid!==true/);
+ assert.match(bridge,/refreshSecondApproachChannel\(id\)/);
+ assert.match(bridge,/b737:vhf-nav-mode/);
+ assert.match(bridge,/type:"NAV_RETUNED"/);
+});
