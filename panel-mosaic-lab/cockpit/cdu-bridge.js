@@ -2,26 +2,25 @@
  'use strict';
  const seat=new URLSearchParams(location.search).get('seat');if(!['CAPT','FO'].includes(seat))return;
  document.documentElement.dataset.cduSeat=seat;document.title=(seat==='CAPT'?'Captain':'First Officer')+' CDU — Unified';
- const send=detail=>{if(parent!==window)parent.postMessage({type:'b737:unified-cdu',seat,...detail},location.origin);};
+ const sendToParent=detail=>{if(parent!==window)parent.postMessage({type:'b737:unified-cdu',seat,...detail},location.origin);};
  let pending=false;
- function report(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;send({kind:'state',page:document.getElementById('page-now').textContent,scratch:document.getElementById('scratch-now').textContent,key:document.getElementById('key-now').textContent});});}
+ function report(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;sendToParent({kind:'state',page:document.getElementById('page-now').textContent,scratch:document.getElementById('scratch-now').textContent,key:document.getElementById('key-now').textContent});});}
  const count=document.querySelectorAll('#clickmap .hotspot').length;
- if(count!==70||!document.getElementById('fmc-lines').children.length){send({kind:'error',message:'CDU source failed to initialize'});return;}
+ if(count!==70||!document.getElementById('fmc-lines').children.length){sendToParent({kind:'error',message:'CDU source failed to initialize'});return;}
  // The approved v6 app exposes these script bindings; no source engine or artwork edits.
- if(typeof state==='undefined'||typeof update!=='function'||!parent.B737UnifiedFmc){send({kind:'error',message:'Shared FMC unavailable'});return;}
+ if(typeof state==='undefined'||typeof update!=='function'||!parent.B737UnifiedFmc){sendToParent({kind:'error',message:'Shared FMC unavailable'});return;}
  const originalUpdate=update,originalReset=reset;
  const keys=new Set(map.controls.map(control=>control.id));
+ const originalKey=send;
+ send=function(id){
+  originalKey(id);
+  if(keys.has(id))sendToParent({kind:'crew-key',key:id});
+ };
  window.B737CrewCduV1=Object.freeze({press(id){
   if(!keys.has(id))return false;
-  core.press(state,pages,id);
-  update();
+  originalKey(id);
   return true;
  }});
- document.getElementById('clickmap').addEventListener('click',event=>{
-  const key=event.target.closest('.hotspot')?.title.split(' — ').at(-1);
-  if(keys.has(key))send({kind:'crew-key',key});
- });
-
  let applying=false,session;
  const write=shared=>{for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}};
  update=function(){originalUpdate();if(!applying)session?.publish();report();};
@@ -30,15 +29,15 @@
  // A CDU reset clears its screen/input; shared flight data survives it.
  reset=function(){const shared=session.snapshot();applying=true;try{originalReset();write(shared);}finally{applying=false;}update();};
  document.getElementById('reset').onclick=reset;
- send({kind:'ready',controls:count});report();
+ sendToParent({kind:'ready',controls:count});report();
  const observer=new MutationObserver(report);for(const id of ['page-now','scratch-now','key-now'])observer.observe(document.getElementById(id),{childList:true,subtree:true,characterData:true});
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:unified-cdu-command'||e.data.seat!==seat)return;if(e.data.action==='reset')reset();if(e.data.action==='reset-fmc'){originalReset();session.publish();}});
- document.addEventListener('pointerdown',e=>{if(e.target.closest('.hotspot'))send({kind:'focus'});});
+ document.addEventListener('pointerdown',e=>{if(e.target.closest('.hotspot'))sendToParent({kind:'focus'});});
  document.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();send({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY,inputAt:performance.timeOrigin+e.timeStamp});return;}
+  if(e.ctrlKey||e.metaKey){e.preventDefault();e.stopImmediatePropagation();sendToParent({kind:'zoom',delta:e.deltaY,clientX:e.clientX,clientY:e.clientY,inputAt:performance.timeOrigin+e.timeStamp});return;}
   if(e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
   if(!Number.isFinite(e.deltaX)||!Number.isFinite(e.deltaY))return;
   e.preventDefault();e.stopImmediatePropagation();
-  send({kind:'wheel-pan',deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode,shiftKey:e.shiftKey});
+  sendToParent({kind:'wheel-pan',deltaX:e.deltaX,deltaY:e.deltaY,deltaMode:e.deltaMode,shiftKey:e.shiftKey});
  },{capture:true,passive:false});
 })();

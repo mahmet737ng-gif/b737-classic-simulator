@@ -18,12 +18,13 @@ const roleLabel = {captain: 'Captain', firstOfficer: 'First Officer', instructor
 
 const FLIGHT_ROLES = ['captain', 'firstOfficer'];
 const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
-const CONTROL_ID = /^[a-zA-Z0-9_.-]{1,72}$/;
+const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
   'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
   'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga',
   'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight',
-  'failure', 'failureScenario', 'profile', 'efis', 'cdu'
+  'failure', 'failureScenario', 'profile', 'efis', 'cdu',
+  'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb'
 ]);
 
 function controlValue(value) {
@@ -40,7 +41,7 @@ function crewCommand(data) {
   if (type === 'guard' && typeof value?.open === 'boolean' && controlValue(value.value)) {
     return {type, id, value: {open: value.open, value: value.value}};
   }
-  if (['loadFlight', 'flightTargets', 'failureScenario', 'profile'].includes(type) &&
+  if (['loadFlight', 'flightTargets', 'failureScenario', 'profile', 'firePanel'].includes(type) &&
       value && !Array.isArray(value) && typeof value === 'object' &&
       Object.keys(value).length <= 12 && Object.entries(value).every(([key, item]) =>
         CONTROL_ID.test(key) && controlValue(item))) return {type, id, value};

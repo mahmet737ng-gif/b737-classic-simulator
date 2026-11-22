@@ -142,6 +142,9 @@ function armClock(){
 function dispatch(cmd){
  if(!unit)throw Error('Fire protection behavior core not loaded');
  advanceClock();const x=unit.dispatch(cmd);
+ if(['SELECT_LOOP','PULL','ROTATE','OVERRIDE','BELL_CUTOUT','TEST','EXT_TEST'].includes(cmd.type)){
+  win.dispatchEvent(new CustomEvent('b737:crew-fire-panel-command',{detail:cmd}));
+ }
  if(cmd.type==='RESET')syncPower(true);
  draw();armClock();
  if(!['TEST','EXT_TEST','TICK','OVERRIDE','BELL_CUTOUT'].includes(cmd.type))
