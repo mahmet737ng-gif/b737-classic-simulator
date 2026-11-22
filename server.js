@@ -8,6 +8,7 @@ const zlib = require('node:zlib');
 const {performance} = require('node:perf_hooks');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
+const {createCrewRoomHandler}=require('./crew-rooms.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
 const NavdataRelay=require('./navdata-relay.js');
 const {OWNER_SESSION_SECONDS,GUEST_SESSION_SECONDS,DEVICE_SESSION_SECONDS,isDocumentNavigation,canRegisterDevice}=require('./auth-policy.js');
@@ -509,6 +510,52 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false,authMs}
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30000 });
 const navdata=PrivateNavData.create(pool);
+const crewAssets=new Map([
+  ['/crew/lobby.js', [cockpitSource+'crew-room-v1.js', 'text/javascript']],
+  ['/crew/lobby.css', [cockpitSource+'crew-room-v1.css', 'text/css']]
+]);
+const crewDialog=optimizedSource(cockpitSource+'index.html')?.toString()
+  .match(/<dialog id="crewRoomDialog"\b[\s\S]*?<\/dialog>/)?.[0];
+const crewReady=crewDialog && [...crewAssets.values()].every(([file])=>optimizedSource(file));
+const crewOrigin=process.env.CREW_ORIGIN || (process.env.RAILWAY_PUBLIC_DOMAIN ?
+  'https://'+process.env.RAILWAY_PUBLIC_DOMAIN : 'http://127.0.0.1');
+const crew=createCrewRoomHandler({
+  origin: crewOrigin,
+  ownerUsername: UNLIMITED_USER,
+  reservedUsernames: [USER],
+  ownerAccess,
+  accounts: {
+    async get(key) {
+      const result=await pool.query('SELECT username, verifier FROM unified_crew_accounts WHERE account_key=$1',[key]);
+      return result.rows[0];
+    },
+    async add(key, username, verifier) {
+      const result=await pool.query(
+        'INSERT INTO unified_crew_accounts(account_key, username, verifier) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',
+        [key,username,verifier]);
+      return result.rowCount===1;
+    }
+  }
+});
+
+function serveCrewEntry(req,res,url){
+  const asset=crewAssets.get(url.pathname);
+  if(!crewReady || (!asset && url.pathname!=='/crew/'))return false;
+  if(req.method!=='GET' && req.method!=='HEAD')return false;
+  if(asset){
+    res.writeHead(200,{'Content-Type':asset[1]+'; charset=utf-8'});
+    res.end(req.method==='HEAD'?undefined:optimizedSource(asset[0]));
+    return true;
+  }
+  res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
+  res.end(req.method==='HEAD'?undefined:'<!doctype html><html lang="en"><meta charset="utf-8">'+
+    '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Unified Crew Room</title>'+
+    '<link rel="stylesheet" href="/crew/lobby.css"><script src="/crew/lobby.js" defer></script>'+
+    '<body data-crew-entry style="background:#071016"><button type="button" data-crew-open>Crew Room</button>'+
+    crewDialog+'</body></html>');
+  return true;
+}
+
 const attemptMap = new Map();
 const assets = Object.freeze({
   '/': ['index.html','text/html; charset=utf-8'],
@@ -710,6 +757,11 @@ async function handle(req,res) {
   commonHeaders(req,res);
   const url=new URL(req.url,'http://localhost');
   if (url.pathname==='/healthz') { res.writeHead(200,{'Content-Type':'text/plain'});res.end('ok');return; }
+  if(crewReady && (url.pathname==='/api/crew' || url.pathname.startsWith('/api/crew/'))){
+    crew.handle(req,res);return;
+  }
+  if(serveCrewEntry(req,res,url))return;
+
   if (req.method==='GET' && url.pathname==='/login') {
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});
     res.end(loginHTML(url.searchParams.get('e')));return;
@@ -924,6 +976,8 @@ async function start() {
   await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS device_user_agent text NOT NULL DEFAULT 'Unknown browser'");
   await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS last_ip text NOT NULL DEFAULT ''");
   await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS registered_at timestamptz NOT NULL DEFAULT now()");
+  if(crewReady)await pool.query('CREATE TABLE IF NOT EXISTS unified_crew_accounts ('+
+    'account_key text PRIMARY KEY, username text NOT NULL, verifier text NOT NULL)');
   await navdata.initialize();
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.
