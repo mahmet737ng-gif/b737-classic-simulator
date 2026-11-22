@@ -102,17 +102,30 @@ test('VOR/LOC arms without signal, survives null G/S, captures only with valid F
  assert.equal(out.modes.lateral,null);
  assert.equal(out.lamps.VOR_LOC,false);
 });
-test('APP and VOR/LOC share exclusive arming; switching from APP to LOC-only removes G/S arm',()=>{
- let s=powered(),push=a=>{s=MCP.transition(s,a);return MCP.output(s)};
- push({type:'BUTTON',id:'APP'});
- let out=push({type:'BUTTON',id:'VOR_LOC'});
- assert.equal(out.pending.approach,false);
- assert.equal(out.armed.pitch,null);
- assert.equal(out.armed.roll,'VOR/LOC');
- assert.equal(out.lamps.APP,false);
+test('APP followed by VOR/LOC selects BOTH without disarming glideslope',()=>{
+ let s=powered(),push=a=>(s=MCP.transition(s,a),MCP.output(s));
+ let out=push({type:'BUTTON',id:'APP'});
+ assert.equal(out.lamps.APP,true);
+ assert.equal(out.lamps.VOR_LOC,false,'LOC button requires a separate selection');
+ out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.lamps.APP,true);
  assert.equal(out.lamps.VOR_LOC,true);
+ assert.equal(out.pending.approach,true);
+ assert.equal(out.armed.pitch,'G/S');
+ assert.equal(out.armed.roll,'VOR/LOC');
+ assert.equal(out.capture.pitch,null,'selecting both never fabricates G/S capture');
  out=push({type:'BUTTON',id:'VOR_LOC'});
  assert.equal(out.lamps.VOR_LOC,false);
+ assert.equal(out.lamps.APP,true,'deselecting LOC button preserves APP arm');
+ assert.equal(out.armed.pitch,'G/S');
+ assert.equal(out.armed.roll,'VOR/LOC','APP still arms LOC independently');
+ out=push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(out.lamps.VOR_LOC,true);
+ out=push({type:'BUTTON',id:'APP'});
+ assert.equal(out.lamps.APP,false);
+ assert.equal(out.lamps.VOR_LOC,true,'deselecting APP preserves explicit LOC');
+ assert.equal(out.armed.pitch,null);
+ assert.equal(out.armed.roll,'VOR/LOC');
 });
 test('APP captures LOC first, G/S second and drives green FCC FMA',()=>{
  let s=powered(),q=stationSnapshot();
@@ -291,7 +304,7 @@ test('LOC captured in VOR/LOC transfers into APP without dropping FMA LOC captur
  assert.equal(s.nav.loc,true);
  assert.equal(s.capture.roll,'VOR_LOC');
  assert.equal(push({type:'BUTTON',id:'APP'}).pending.approach,true);
- assert.equal(MCP.output(s).lamps.VOR_LOC,false,'APP supersedes VOR/LOC selector lamp');
+ assert.equal(MCP.output(s).lamps.VOR_LOC,true,'LOC selection remains illuminated with APP');
  assert.equal(MCP.output(s).lamps.APP,true);
  assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').roll.active,'VOR/LOC');
  assert.equal(FMA.fromMcp(MCP.output(s),'CAPT').pitch.armed,'G/S');
@@ -443,4 +456,49 @@ test('800ft inhibit does not trap an already armed second CMD: pilot can deselec
  push({type:'BUTTON',id:'CMD_B'});
  assert.equal(s.dualApproach.second,null);
  assert.equal(s.lastRejection,'DUAL_AP_SELECTION_INHIBITED_BELOW_800_RA');
+});
+
+test('LOC-first and APP-first both work through dual channel ILS capture',()=>{
+ for(const order of [['VOR_LOC','APP'],['APP','VOR_LOC']]){
+  let s=powered(),push=a=>(s=MCP.transition(s,a),MCP.output(s));
+  push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1200})});
+  push({type:'BUTTON',id:'CMD_A'});
+  for(const id of order)push({type:'BUTTON',id});
+  assert.equal(MCP.output(s).lamps.APP,true,order.join('->'));
+  assert.equal(MCP.output(s).lamps.VOR_LOC,true,order.join('->'));
+  assert.equal(s.armed.pitch,'G/S');
+  assert.equal(s.armed.roll,'VOR/LOC');
+  const fma=FMA.fromMcp(MCP.output(s),'CAPT');
+  assert.equal(fma.roll.armed,'VOR/LOC');
+  assert.equal(fma.pitch.armed,'G/S');
+  push({type:'BUTTON',id:'CMD_B'});
+  assert.equal(s.dualApproach.second,'CMD_B');
+  assert.equal(MCP.output(s).lamps.CMD_A,true);
+  assert.equal(MCP.output(s).lamps.CMD_B,true);
+  push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1100,
+   navCaptureConfirmed:true})});
+  assert.equal(s.capture.roll,'VOR_LOC');
+  assert.equal(s.pending.approach,true);
+  assert.equal(MCP.output(s).lamps.VOR_LOC,true);
+  push({type:'FLIGHT_OBSERVATION',sample:sample({radioAltitudeFt:1000,
+   gsCaptureConfirmed:true,gsDeviationDots:0})});
+  assert.equal(s.capture.pitch,'G/S');
+  assert.equal(MCP.output(s).lamps.APP,false,'APP extinguishes only after dual capture');
+  assert.equal(s.dualApproach.coupled,true);
+ }
+});
+test('TOGA and reset clear both independently selected MCP buttons',()=>{
+ let s=powered();const push=a=>(s=MCP.transition(s,a),MCP.output(s));
+ push({type:'BUTTON',id:'VOR_LOC'});push({type:'BUTTON',id:'APP'});
+ assert.equal(MCP.output(s).lamps.APP,true);
+ assert.equal(MCP.output(s).lamps.VOR_LOC,true);
+ push({type:'TOGA_ENGAGED',confirmed:true,source:'SIMULATED_FCC'});
+ assert.equal(MCP.output(s).lamps.APP,false);
+ assert.equal(MCP.output(s).lamps.VOR_LOC,false);
+ assert.equal(s.selectors.vorLoc,false);
+ push({type:'BUTTON',id:'VOR_LOC'});
+ assert.equal(MCP.output(s).lamps.VOR_LOC,true);
+ s=MCP.transition(s,{type:'RESET'});
+ assert.equal(s.selectors.vorLoc,false);
+ assert.equal(s.pending.approach,false);
 });
