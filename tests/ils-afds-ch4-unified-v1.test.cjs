@@ -379,3 +379,51 @@ test('real tuned NAV1+NAV2 check, live second CMD recheck and active NAV retune 
  assert.match(bridge,/b737:vhf-nav-mode/);
  assert.match(bridge,/type:"NAV_RETUNED"/);
 });
+
+test('real MCP bridge re-evaluates fresh dual ILS before accepting second CMD instead of using stale observation',()=>{
+ const vm=require('node:vm');
+ const bridgeSrc=fs.readFileSync(path.join(__dirname,
+  '../panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'),'utf8');
+ const create=dualValid=>{
+  const handlers={};let refreshCount=0;
+  const bus=Object.fromEntries(required.map(k=>[k,k==='dc1'||k==='battery'||k==='hotBattery']));
+  bus.electronic1=true;
+  const snapshot={schema:'B737_ELECTRICAL_V7_RESULT',revision:1,bus};
+  const doc={readyState:'loading',addEventListener(){},querySelector(){return null}};
+  const win={
+   document:doc,B737McpModeCoreV1:MCP,
+   B737ISNCockpitV1:{getElectricalState:()=>({})},
+   B737ElectricalV7:{evaluate:()=>snapshot},
+   B737UnifiedBusConsumerLiveV1:{getBus:()=>({powered:true})},
+   B737UnifiedFlightScenarioV1:{getState:()=>({radioAltitudeFt:1100})},
+   B737UnifiedIranRadioNavV1:{refresh:()=>{refreshCount++;return true}},
+   B737UnifiedFccFlightV1:{getILS:()=>({
+    dualIlsValid:dualValid,kind:'ILS',valid:true,
+    navCaptureConfirmed:false,gsCaptureConfirmed:false})},
+   B737UnifiedVHFNavControlsV1:{getState:()=>({activeFrequencyKhz:109900})},
+   addEventListener(type,fn){(handlers[type]??=[]).push(fn)},
+   dispatchEvent(event){for(const fn of handlers[event.type]||[])fn(event)},
+   console:{warn(){},error(){}}
+  };
+  class CustomEvent{constructor(type,{detail}={}){this.type=type;this.detail=detail}}
+  vm.runInNewContext(bridgeSrc,{window:win,document:doc,CustomEvent,
+   console:win.console,JSON,Number,Object},{timeout:3000});
+  const api=win.B737McpAFDSBridgeV1;
+  win.dispatchEvent({type:'b737:electrical-v7-state'});
+  api.observeFlight(sample({radioAltitudeFt:1100,dualIlsValid:false}));
+  api.press('CMD_A');api.press('APP');
+  return {api,win,refreshCount:()=>refreshCount};
+ };
+ const valid=create(true);
+ assert.equal(valid.api.getOutput().flight.dualIlsValid,false);
+ valid.api.press('CMD_B');
+ assert.equal(valid.api.getOutput().dualApproach.second,'CMD_B');
+ assert.equal(valid.api.getOutput().lamps.CMD_A,true);
+ assert.equal(valid.api.getOutput().lamps.CMD_B,true);
+ assert.equal(valid.refreshCount(),1);
+ const invalid=create(false);
+ invalid.api.press('CMD_B');
+ assert.equal(invalid.api.getOutput().dualApproach.second,null);
+ assert.equal(invalid.api.getOutput().rejection,'DUAL_AP_REQUIRES_MATCHING_NAV1_NAV2_ILS');
+ assert.equal(invalid.refreshCount(),1);
+});
