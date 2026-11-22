@@ -21,7 +21,7 @@
     ["atDisconnect", "A/T Disconnect", "Unassigned — awaiting owner definition", null],
     ["gpws", "EGPWS · PULL UP", "Unassigned — awaiting owner definition", "PULL UP"],
     ["gpws", "EGPWS · SINK RATE", "Unassigned — awaiting owner definition", "SINK RATE"],
-    ["gpws", "EGPWS · WINDSHEAR", "Unassigned — awaiting owner definition", "WINDSHEAR"],
+    ["gpws", "EGPWS · WINDSHEAR (TONE + 3 CALLOUTS)", "Unassigned — complete source sequence pending approval", "WINDSHEAR"],
     ["gpws", "EGPWS · TOO LOW GEAR", "Unassigned — awaiting owner definition", "TOO LOW GEAR"],
     ["gpws", "EGPWS · TERRAIN TERRAIN PULL UP", "Unassigned — compound recording", "TERRAIN TERRAIN PULL UP"],
     ["gpws", "EGPWS · SINK RATE PULL UP", "Unassigned — compound recording", "SINK RATE PULL UP"],
