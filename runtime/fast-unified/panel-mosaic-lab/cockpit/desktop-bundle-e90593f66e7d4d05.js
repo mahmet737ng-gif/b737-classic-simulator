@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -604,7 +604,7 @@ function initialState(){return {
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
  evidence:{fmcRouteReady:null,approachCapture:null},
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
- pending:{approach:false},armed:{pitch:null,roll:null},
+ pending:{approach:false},selectors:{vorLoc:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
  nav:{loc:false,gs:false},togaActive:false,togaSingleEngine:false,dualApproach:{second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null},flight:null,targets:{pitch:null,roll:null},
  speedLimit:SpeedLimit?.initialState?.()??null,flightDirectorBarsRetracted:false,
@@ -645,7 +645,7 @@ function projectPower(s){
 }
 function clearModes(s){
  s.modes={lateral:null,vertical:null,thrust:null,autopilot:null};
- s.pending.approach=false;
+ s.pending.approach=false;s.selectors.vorLoc=false;
  s.armed={pitch:null,roll:null};s.capture={pitch:null,roll:null};
  s.override={pitch:false,roll:false,altHold:false};s.nav={loc:false,gs:false};
  s.dualApproach={second:null,coupled:false,flareArmed:false,flareEngaged:false,retard:false,touchdownStartSec:null};
@@ -721,7 +721,7 @@ function transition(state,action){
  if(action.type==='TOGA_ENGAGED'){
   if(action.confirmed!==true||action.source!=='SIMULATED_FCC')
    return rejected(s,'TOGA_REQUIRES_CONFIRMED_FCC');
-  s.pending.approach=false;s.armed={pitch:null,roll:null};
+  s.pending.approach=false;s.selectors.vorLoc=false;s.armed={pitch:null,roll:null};
   s.capture={pitch:null,roll:null};s.nav={loc:false,gs:false};
   s.modes.lateral=null;s.modes.vertical=null;
   const preserveDual=s.dualApproach.coupled&&action.dualApGA===true;
@@ -742,7 +742,7 @@ function transition(state,action){
      action.previousFrequencyKhz===action.activeFrequencyKhz)
    return rejected(s,"QUALIFIED_ACTIVE_NAV_RETUNE_REQUIRED");
   if(s.pending.approach){
-   s.pending.approach=false;s.armed={pitch:null,roll:null};
+   s.pending.approach=false;s.selectors.vorLoc=false;s.armed={pitch:null,roll:null};
    s.capture={pitch:null,roll:null};s.nav={loc:false,gs:false};
    s.modes.lateral=null;s.modes.vertical=null;
    s.dualApproach={second:null,coupled:false,flareArmed:false,
@@ -912,7 +912,7 @@ function transition(state,action){
    if(['G/S','FLARE'].includes(s.capture.pitch))s.capture.pitch=null;
    if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
    if(s.pending.approach)s.armed.pitch='G/S';
-   s.armed.roll='VOR/LOC';
+   s.armed.roll=(s.pending.approach||s.selectors.vorLoc)?'VOR/LOC':null;
    s.dualApproach.coupled=false;s.dualApproach.flareArmed=false;
    s.dualApproach.flareEngaged=false;s.dualApproach.retard=false;
    if(wasCoupled){
@@ -1084,23 +1084,27 @@ function transition(state,action){
  if(action.type!=="BUTTON"||!buttons.includes(action.id))throw Error("Unrecognized MCP mode command");
  const id=action.id;
  if(id==="APP"){
-  // The APP light extinguishes on capture, not the selected mode.
+  // Independent APP/LOC pushbutton intent; capture stays FCC-verified.
   if(s.pending.approach&&s.nav.loc&&s.nav.gs)
    return rejected(s,"CAPTURED_APP_REQUIRES_TOGA_AP_FD_RESET_OR_NAV_RETUNE");
-  // A pilot can arm the ILS BEFORE valid localizer and glideslope reception.
-  // Signal validity is still mandatory later for each FCC capture.
   s.pending.approach=!s.pending.approach;
   if(s.pending.approach){
    s.armed.roll=s.nav.loc?null:"VOR/LOC";
    s.armed.pitch=s.nav.gs?null:"G/S";
   }else{
-   s.armed.roll=null;s.armed.pitch=null;
-   if(s.nav.gs||['G/S','FLARE'].includes(s.capture.pitch)){
+   s.armed.pitch=null;
+   if(s.nav.gs||["G/S","FLARE"].includes(s.capture.pitch)){
     s.nav.gs=false;s.capture.pitch=null;s.modes.vertical=null;
    }
-   if(s.nav.loc||s.capture.roll==='VOR_LOC'){
-    s.nav.loc=false;s.capture.roll=null;
-    if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
+   // Removing APP must not deselect an independently selected VOR/LOC.
+   if(s.selectors.vorLoc){
+    s.armed.roll=s.nav.loc?null:"VOR/LOC";
+   }else{
+    s.armed.roll=null;
+    if(s.nav.loc||s.capture.roll==="VOR_LOC"){
+     s.nav.loc=false;s.capture.roll=null;
+     if(s.modes.lateral==="VOR_LOC")s.modes.lateral=null;
+    }
    }
    s.dualApproach={second:null,coupled:false,flareArmed:false,
     flareEngaged:false,retard:false,touchdownStartSec:null};
@@ -1113,25 +1117,16 @@ function transition(state,action){
  if(id==="VOR_LOC"){
   if(s.pending.approach&&s.nav.loc&&s.nav.gs)
    return rejected(s,"CAPTURED_APP_ROLL_MODE_LOCKED");
-  // The VOR/LOC switch arms even when no station is yet received. FCC
-  // verifies NAV quality, geometry and capture before commanding the airplane.
-  const wasApp=s.pending.approach===true;
-  const selected=s.armed.roll==='VOR/LOC'||s.capture.roll==='VOR_LOC'||
-   s.modes.lateral==='VOR_LOC';
-  s.pending.approach=false;s.armed.pitch=null;
-  if(s.nav.gs||['G/S','FLARE'].includes(s.capture.pitch)){
-   s.nav.gs=false;s.capture.pitch=null;s.modes.vertical=null;
+  // VOR/LOC lamp is independently selected. Never cancel APP or G/S arm.
+  s.selectors.vorLoc=!s.selectors.vorLoc;
+  if(s.pending.approach){
+   s.armed.roll=s.nav.loc?null:"VOR/LOC";
+   return done();
   }
-  s.dualApproach={second:null,coupled:false,flareArmed:false,
-   flareEngaged:false,retard:false,touchdownStartSec:null};
-  if(wasApp){
-   // Downgrade APP to LOC-only without losing an existing LOC capture.
-   s.armed.roll=s.nav.loc?null:'VOR/LOC';
-  }else if(selected){
-   // Second press actually deselects an active or armed VOR/LOC.
+  if(!s.selectors.vorLoc){
    s.armed.roll=null;s.capture.roll=null;s.nav.loc=false;
-   if(s.modes.lateral==='VOR_LOC')s.modes.lateral=null;
-  }else s.armed.roll='VOR/LOC';
+   if(s.modes.lateral==="VOR_LOC")s.modes.lateral=null;
+  }else s.armed.roll=s.nav.loc?null:"VOR/LOC";
   return done();
  }
  if(id.startsWith("CMD_")||id.startsWith("CWS_")){
@@ -1202,6 +1197,7 @@ function transition(state,action){
   // A new lateral selector replaces the former one, without requiring
   // a separate disengage click and without a second active roll lamp.
   s.modes.lateral=s.modes.lateral===id?null:id;
+  s.selectors.vorLoc=false;
   s.capture.roll=null;s.override.roll=false;s.targets.roll=null;
   if(!s.pending.approach)s.armed.roll=null;
   return done();
@@ -1249,10 +1245,9 @@ function output(s){
   lamps.APP=s.pending.approach&&!(s.nav.loc&&s.nav.gs);
   // FCOM 4.10.14: VOR/LOC pushbutton illuminates while armed,
   // independently of the green VOR/LOC roll capture annunciation.
-  // APP supersedes the VOR/LOC selector lamp while the FMA keeps
-  // its green VOR/LOC capture annunciation.
-  lamps.VOR_LOC=!s.pending.approach&&
-   (lamps.VOR_LOC||s.armed.roll==="VOR/LOC");
+  // Both explicitly selected buttons can illuminate while armed.
+  // Actual LOC and G/S captures still require verified flight evidence.
+  lamps.VOR_LOC=s.selectors.vorLoc===true;
  }
  return {schema:"B737_MCP_AFDS_OUTPUT_V1",power:s.electrical.mcpPower,course2Power:s.electrical.course2Power,powerEvidence:s.electrical.feed,
   electricalRevision:s.electrical.rawRevision,feedStatus:{electronic1:s.electrical.electronic1,dc1:s.electrical.dc1,batteryBus:s.electrical.batteryBus},lamps,values:{...s.values},
@@ -1266,7 +1261,7 @@ function output(s){
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
-  pending:{...s.pending},rejection:s.lastRejection,
+  pending:{...s.pending},selectors:{...s.selectors},rejection:s.lastRejection,
   limitations:["TRAINING_ONLY_NO_FLIGHT_DYNAMICS","MCP_ELEX1_28VDC_AND_COURSE2_BAT_BUS_MRG_TRAINING_MAPPING_NOT_EPFSI_WDM_VERIFIED","NO_AUTOLAND_SERVO_DYNAMICS","AUTO_IAS_MACH_CROSSOVER_AT_FL260_REQUIRES_VALID_FLIGHT_ALTITUDE"]};
 }
 return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState,globalPowerPossible,transition,output});
@@ -1274,7 +1269,7 @@ return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./mcp-afds-bridge-v1.js?v=MCP-FINAL10-LOAD-0001&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001 */
+/* ./mcp-afds-bridge-v1.js?v=MCP-FINAL10-LOAD-0001&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001 */
 try{
 /* MCP Phase 3 / slice 1: real Electrical V7 evidence -> conservative AFDS
  * educational mode core -> visual/hardware projection. No invented LRU feed.
@@ -1576,7 +1571,7 @@ window.B737McpAFDSBridgeV1=Object.freeze({
   const r=window.B737UnifiedFccFlightV1?.getILS?.()||null;
   const tuner=window.B737UnifiedVHFNavControlsV1;
   return {power:out.power,course2Power:out.course2Power,
-   appArmed:out.pending.approach,vorLocArmed:out.armed.roll==='VOR/LOC',
+   appArmed:out.pending.approach,vorLocArmed:out.selectors?.vorLoc===true||out.armed.roll==='VOR/LOC',
    gsArmed:out.armed.pitch==='G/S',capture:{...out.capture},
    fmaNav:{...out.nav},lastRejection:out.rejection,
    navSignal:r?{valid:r.valid,kind:r.kind,ident:r.stationIdent,
