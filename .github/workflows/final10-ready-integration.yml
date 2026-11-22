@@ -6,6 +6,7 @@ on:
       - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
       - 'tests/final10-approach-ready-integration.test.cjs'
       - 'tests/final10-approach-unified-v1.test.cjs'
+      - 'tests/unified-final10-rdmi-flap-elec-topbar-regression.test.cjs'
       - '.github/workflows/final10-ready-integration.yml'
   push:
     branches: [main]
@@ -34,6 +35,7 @@ jobs:
         run: |
           node --test tests/final10-approach-ready-integration.test.cjs
           node --test tests/final10-approach-unified-v1.test.cjs
+          node --test tests/unified-final10-rdmi-flap-elec-topbar-regression.test.cjs
           node --test panel-mosaic-lab/cockpit/autobrake-rto-selftest-v1.test.cjs
           node --test panel-mosaic-lab/cockpit/flap-needles.test.cjs
       - name: Verify protected panel asset integrity
