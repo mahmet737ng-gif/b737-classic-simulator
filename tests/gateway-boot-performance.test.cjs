@@ -45,6 +45,16 @@ function extract(from,to){
  assert.ok(releaseContext.urls[0].includes('/'+commit+'/engine/test.js'));
  assert.equal(releaseContext.compiled('panel-mosaic-lab/cockpit/index.html').toString(),'compiled',
   'GitHub 403 must not turn off the verified release');
+ const crewFixture=fs.readFileSync(require('node:path').join(__dirname,
+  '../runtime/fast-unified/panel-mosaic-lab/cockpit/index.html'),'utf8');
+ if(crewFixture.includes('id="crewRoomDialog"')){
+  const ctx={cockpitSource:'panel-mosaic-lab/cockpit/',optimizedSource:()=>Buffer.from(crewFixture)};
+  const fixture={...ctx,crewAssets:new Map([['/crew/lobby.js',['crew-room-v1.js']],['/crew/lobby.css',['crew-room-v1.css']]])};
+  vm.runInNewContext(extract('const crewDialog=','const crewOrigin=')+
+   ';this.available=crewReady;this.dialog=crewDialog;',fixture);
+  assert.equal(fixture.available,true);
+  assert.match(fixture.dialog??'',/data-crew-accounts/,'Compiled Crew Room dialog is available to invited guests');
+ }
  let downloads=0,finish;
  const downloadWait=new Promise(resolve=>{finish=resolve;});
  const ctx={

@@ -515,7 +515,7 @@ const crewAssets=new Map([
   ['/crew/lobby.css', [cockpitSource+'crew-room-v1.css', 'text/css']]
 ]);
 const crewDialog=optimizedSource(cockpitSource+'index.html')?.toString()
-  .match(/<dialog id="crewRoomDialog"\b[\s\S]*?<\/dialog>/)?.[0];
+  .match(/<dialog id="crewRoomDialog"(?=[\s>])[\s\S]*?<\/dialog>/)?.[0];
 const crewReady=crewDialog && [...crewAssets.values()].every(([file])=>optimizedSource(file));
 const crewOrigin=process.env.CREW_ORIGIN || (process.env.RAILWAY_PUBLIC_DOMAIN ?
   'https://'+process.env.RAILWAY_PUBLIC_DOMAIN : 'http://127.0.0.1');
