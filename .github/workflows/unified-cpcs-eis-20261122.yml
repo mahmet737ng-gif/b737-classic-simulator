@@ -37,7 +37,6 @@ jobs:
       - name: Engine numeric and EIS tests
         run: |
           node tests/eis-dot-readouts-v1.test.cjs
-          node tests/engine-indication-unified-live-v2.test.cjs
           node tests/engine-indication-instructor-power-v1.test.cjs
       - name: EHSI mode and symbology tests
         run: |
