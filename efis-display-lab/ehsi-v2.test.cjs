@@ -74,3 +74,7 @@ assert.equal(core.ehsiModel(set(start,'ehsi.xtk',2)).nav.cdi,1);
 assert.equal(V.norm(-12),348);
 assert.equal(V.rel(355-5),-10);
 console.log('PASS EHSI: seven selector positions, nine presentations, sources, range, traffic, WXR and TERR.');
+
+const rendererSource=require('node:fs').readFileSync(require('node:path').join(__dirname,'ehsi-v2.js'),'utf8');
+assert.match(rendererSource,/if\(!l\.route\|\|\['FULL_NAV','EXP_NAV'\]\.includes\(m\.mode\)\)course\(plot,m,l\)/,
+ 'FCOM 10.31 FULL/EXP NAV must not suppress selected course and CDI when route is active');

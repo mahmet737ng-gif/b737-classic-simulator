@@ -163,3 +163,34 @@ test('Dedicated OH17 lab supersedes generic picker and shares real stage/control
  assert.ok(source.includes('data-hyd-rotor'));
  assert.ok(source.includes('hyd-elec-1-overheat')&&source.includes('hyd-elec-2-overheat'));
 });
+
+test('MRG IV.14: B supplies normal brakes; below 1500 psi A supplies alternate brakes',()=>{
+ const m=Core.BRAKE_MRG;
+ assert.equal(m.alternateThresholdPsi,1500);
+ assert.equal(m.prechargePsi,1000);
+ assert.equal(m.minimumFullApplications,6);
+ let s=Core.loadPreset('healthy');
+ s.pressure.B=1500;
+ assert.equal(Core.evaluate(s).brakes.mode,'NORMAL_B');
+ s.pressure.B=1499;
+ assert.equal(Core.evaluate(s).brakes.mode,'ALTERNATE_A');
+ const before=s.brakeAccumulator;
+ s=Core.command(s,{type:'BRAKE',count:3});
+ assert.equal(s.brakeAccumulator,before,'A pressure preserves the stored emergency reserve');
+ s.pressure.A=0;s.pressure.B=0;
+ assert.equal(Core.evaluate(s).brakes.mode,'ACCUMULATOR_ONLY');
+ for(let i=0;i<6;i++){
+  assert.equal(Core.evaluate(s).brakes.accumulatorFullApplicationsRemaining,6-i);
+  s=Core.command(s,{type:'BRAKE',count:1});
+ }
+ const out=Core.evaluate(s);
+ assert.ok(Math.abs(out.pressurePsi.BRAKE-1000)<=1,'six full applications use nominal reserve down to 1000 PSI precharge');
+ assert.equal(out.brakes.accumulatorFullApplicationsRemaining,0);
+ assert.equal(out.brakes.mode,'UNAVAILABLE');
+ s=Core.command(s,{type:'BRAKE',count:1});
+ assert.equal(Core.evaluate(s).pressurePsi.BRAKE,1000,'no artificial negative PSI after reserve exhaustion');
+ s.pressure.B=3000;
+ s=Core.step(s,15);
+ assert.equal(Core.evaluate(s).brakes.mode,'NORMAL_B');
+ assert.ok(Core.evaluate(s).brakes.accumulatorFullApplicationsRemaining>=5,'system B recharges accumulator');
+});
