@@ -475,7 +475,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       if (room.manager !== key || !ROLES.includes(data.role)) throw new RequestError(403, 'The room host issues invitations.');
       const boundUser = data.role === 'observer' ? null :
         typeof data.username === 'string' && usernamePattern.test(data.username) ? data.username.toLowerCase() : null;
-      if (data.role !== 'observer' && (!boundUser || !await getAccount(boundUser))) {
+      if (data.role !== 'observer' && (!boundUser || (!await getAccount(boundUser) && !reservedNames.has(boundUser)))) {
         throw new RequestError(400, 'Enter the username of an existing guest account.');
       }
       const assignment = data.role + ':' + (boundUser ?? '');
