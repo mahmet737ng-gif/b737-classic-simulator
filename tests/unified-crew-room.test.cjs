@@ -164,6 +164,63 @@ test('room-wide invitation accepts guest-selected roles and enforces occupied se
   assert.equal(switched.data.roomInvite, invite);
 });
 
+test('host aircraft configuration and overhead state are authoritative for late joiners', async t => {
+  const {origin} = await start(t);
+  const host = client(origin);
+  const guest = client(origin);
+  await host('login', {username: 'TrainerOwner', password});
+  await host('accounts', {username: 'ShayanTest', password});
+  await guest('login', {username: 'ShayanTest', password});
+  const profile = {
+    schema: 'b737-classic-aircraft-profile/1', aircraftFamily: 'B737-400',
+    aircraftModel: '737-400', engineVariant: 'CFM56-3B2',
+    pressurization: 'CPCS', engineInstruments: 'CONVENTIONAL'
+  };
+  const created = await host('create', {role: 'captain', profile});
+  assert.equal(created.status, 200);
+  assert.deepEqual(created.data.profile, profile);
+  const {roomId, roomInvite: invite} = created.data;
+  const viewed = await guest('inspect', {roomId, invite});
+  assert.deepEqual(viewed.data.profile, profile);
+  const joined = await guest('join', {roomId, role: 'firstOfficer', invite});
+  assert.deepEqual(joined.data.profile, profile);
+
+  const overhead = {
+    toggles: {'battery-master': 'ON', 'fuel-boost-left-aft': 'OFF'},
+    rotaries: {'ignition-source': 'BOTH'},
+    guards: {'passenger-oxygen': {guard: 'closed', value: 'NORMAL'}}
+  };
+  assert.equal((await guest('snapshot', {roomId, client: 'shayan-test-client', overhead})).status, 403);
+  assert.equal((await host('snapshot', {roomId, client: 'owner-test-client', overhead})).status, 200);
+  const stream = new AbortController();
+  const cancel = setTimeout(() => stream.abort(), 3000);
+  try {
+    const response = await fetch(origin + prefix + '/events?room=' + roomId + '&cockpit=1', {
+      headers: {Cookie: joined.cookie}, signal: stream.signal
+    });
+    assert.equal(response.status, 200);
+    const chunks = [];
+    const reader = response.body.getReader();
+    while (!chunks.join('').includes('event: snapshot')) {
+      const {value, done} = await reader.read();
+      if (done) break;
+      chunks.push(Buffer.from(value).toString('utf8'));
+    }
+    const result = chunks.join('');
+    assert.match(result, /event: snapshot/);
+    assert.match(result, /"battery-master":"ON"/);
+    assert.match(result, /"sequence":0/);
+  } finally {
+    clearTimeout(cancel);
+    stream.abort();
+  }
+  const updated = {...profile, aircraftFamily: 'B737-300-500',
+    aircraftModel: '737-300', engineVariant: 'CFM56-3B3', pressurization: 'DCPCS', engineInstruments: 'EIS'};
+  assert.equal((await host('command', {roomId, client: 'owner-test-client',
+    command: {type: 'profile', id: 'aircraft', value: updated}})).status, 200);
+  assert.deepEqual((await guest('inspect', {roomId, invite})).data.profile, updated);
+});
+
 test('Private Room opens after Welcome and admits signed-in and signed-out guests', {skip: !process.env.CHROME_PATH}, async t => {
   const {chromium} = require('playwright');
   const {origin} = await start(t);
