@@ -80,7 +80,8 @@
      }
      if(!uncertain&&shown!=='hidden'&&(lastPaint.get(stamp)!==value||!node)){
       window.B737EISDotReadoutsV1?.setReading(id,p,value,'ENGINE_INDICATION_BACKEND_V2',
-        {snap:mode==='EIS'&&p==='fuelFlow'});
+        {snap:mode==='EIS'&&p==='fuelFlow'&&
+         !(fuelResetTransition&&lastTime>=fuelResetTransition.startAt&&lastTime<fuelResetTransition.endAt)});
       lastPaint.set(stamp,value);
      }
     }
