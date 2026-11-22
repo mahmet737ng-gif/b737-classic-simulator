@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "b667bf2208bfdb6becdec55cae8a472fe422b2a1",
+  "sourceCommit": "2af5ec2f1ba77634182482124793c46efd1d52e1",
   "mainBefore": 316,
   "mainAfter": 100,
   "overheadBefore": 61,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "98e35113e84f26a75b057b9ee32340037b69b124a4423ec9a6136dab4680284f"
+      "sha256": "3ac42dca5ff229ba92b3f3a723ad39178a12f276728b30288cb2024fe57d301f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -187,8 +187,8 @@
       "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1e97233919aaccbb.js",
-      "sha256": "1e97233919aaccbb0ff936b2134309499e0c6829d19f90d65b82a3d20fed0c81"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-f2583185cc39bfd9.js",
+      "sha256": "f2583185cc39bfd9870ba7d08a8cb2d3d8b36cabf940b2b919ec50dd81de980b"
     },
     {
       "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
@@ -452,7 +452,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
-      "sha256": "6b0cc6009161184f16f3c422d10df000d3a1741f0ca6a663550cc40ce0db5bc6"
+      "sha256": "27ad8f883a944f4cb9c8bcd123208ab1ebc9d7b70a468fc6dac2e9ae8c1ad1a2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
@@ -1028,11 +1028,15 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.js",
-      "sha256": "8782f25030e93bbeb17917d00bb9041ca1b51791c9c35931b645661c31b88887"
+      "sha256": "f0e2a170294b1dabeadd994ff038442bf31a6bbe2193871e81a5df396daa3481"
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
       "sha256": "b6d74cff62bb5aa7695f5d6ae6c1be0e65d495b37ca1e2084f76a1a69545e9fe"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/vendor/qrcode-generator-2.0.4.js",
+      "sha256": "4cafa28b1abd28b1b4a22779cbcbd10a9a205b9132cb3e1b905f8ff30ed3c29c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",

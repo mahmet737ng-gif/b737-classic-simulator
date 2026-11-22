@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./crew-room-v1.js?v=CREW-0003 */
+/* ./crew-room-v1.js?v=CREW-0004 */
 try{
 (function (win, doc) {
   'use strict';
@@ -11,14 +11,16 @@ try{
   const roles = {captain: 'Captain', firstOfficer: 'First Officer', instructor: 'Instructor', observer: 'Observer'};
   const seats = {...roles, captain: 'Captain (Left Seat)', firstOfficer: 'First Officer (Right Seat)'};
   const api = '/api/crew';
-  const params = new URLSearchParams(win.location.hash.slice(1));
-  const invitation = params.get('crew') || undefined;
+  const tokenPattern = /^[A-Za-z0-9_-]{32}$/;
+  const initialInvitation = new URLSearchParams(win.location.hash.slice(1)).get('crew');
+  let invitation = tokenPattern.test(initialInvitation ?? '') ? initialInvitation : undefined;
   const cockpitRoom = new URLSearchParams(win.location.search).get('crewRoom');
   let user = null;
   let room = null;
   let events = null;
   let refreshTimer = null;
   let working = false;
+  let qrLoading;
   const find = selector => dialog.querySelector(selector);
   const status = find('[role="status"]');
   const account = find('[data-crew-login]');
@@ -29,11 +31,64 @@ try{
   const roster = find('[data-crew-roster]');
   const online = find('[data-crew-online]');
   const invitePanel = find('[data-crew-invitations]');
+  const linkEntry = find('[data-crew-link-entry]');
   const linkBox = find('[data-crew-link]');
+  const linkOutput = linkBox.querySelector('input');
+  const qrCanvas = find('[data-crew-qr]');
 
   function message(text, error = false) {
     status.textContent = text;
     status.dataset.error = String(error);
+  }
+
+  function inviteToken(value) {
+    let url;
+    try { url = new URL(value.trim()); } catch {}
+    const tokens = url && new URLSearchParams(url.hash.slice(1)).getAll('crew');
+    if (url?.origin !== win.location.origin || url.username || url.password ||
+        !['/crew', '/crew/'].includes(url.pathname) || tokens.length !== 1 || !tokenPattern.test(tokens[0])) {
+      throw Error('Enter a valid Unified Private Room invitation link.');
+    }
+    return tokens[0];
+  }
+
+  function loadQrEncoder() {
+    if (typeof win.qrcode === 'function') return Promise.resolve();
+    if (qrLoading) return qrLoading;
+    qrLoading = new Promise((resolve, reject) => {
+      const script = doc.createElement('script');
+      script.src = doc.body.hasAttribute('data-crew-entry') ?
+        '/crew/qrcode.js' : new URL('./vendor/qrcode-generator-2.0.4.js', doc.baseURI).href;
+      script.onload = () => typeof win.qrcode === 'function' ? resolve() : reject(Error('QR encoder unavailable'));
+      script.onerror = () => {
+        script.remove();
+        reject(Error('QR encoder unavailable'));
+      };
+      doc.head.append(script);
+    }).catch(error => {
+      qrLoading = null;
+      throw error;
+    });
+    return qrLoading;
+  }
+
+  async function showQr(link) {
+    await loadQrEncoder();
+    const qr = win.qrcode(0, 'M');
+    qr.addData(link);
+    qr.make();
+    const count = qr.getModuleCount(), quiet = 4, scale = 5;
+    qrCanvas.width = qrCanvas.height = (count + quiet * 2) * scale;
+    const ctx = qrCanvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
+    ctx.fillStyle = '#000';
+    for (let row = 0; row < count; row++) {
+      for (let col = 0; col < count; col++) {
+        if (qr.isDark(row, col)) ctx.fillRect((col + quiet) * scale, (row + quiet) * scale, scale, scale);
+      }
+    }
+    qrCanvas.hidden = false;
   }
 
   async function request(action, body) {
@@ -51,6 +106,7 @@ try{
   }
 
   function render() {
+    linkEntry.hidden = !!room?.role || !!(room && invitation);
     account.hidden = !!user;
     guestAccount.hidden = !user?.owner;
     find('[data-crew-user]').textContent = user ? 'Signed in as ' + user.username : '';
@@ -164,6 +220,24 @@ try{
   find('[data-crew-close]').addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => clearInterval(refreshTimer));
 
+  linkEntry.addEventListener('submit', event => {
+    event.preventDefault();
+    busy(async () => {
+      const next = inviteToken(linkEntry.elements.url.value);
+      const state = await request('inspect', {invite: next});
+      invitation = next;
+      room = state;
+      const url = new URL(win.location.href);
+      const hash = new URLSearchParams(url.hash.slice(1));
+      hash.set('crew', next);
+      url.hash = hash;
+      win.history.replaceState(win.history.state, '', url);
+      linkEntry.reset();
+      trackRoster();
+      if (!user) username.focus();
+    });
+  });
+
   account.addEventListener('submit', event => {
     event.preventDefault();
     busy(async () => {
@@ -234,16 +308,30 @@ try{
       });
       const url = new URL('/crew/', win.location.href);
       url.hash = new URLSearchParams({crew: invite});
-      const input = linkBox.querySelector('input');
-      input.value = url.href;
+      linkOutput.value = url.href;
+      find('[data-crew-invite-role]').textContent = roles[button.dataset.crewInvite] + ' invitation';
+      qrCanvas.hidden = true;
       linkBox.hidden = false;
-      input.focus();
-      input.select();
-      let copied = false;
-      if (win.navigator.clipboard?.writeText) {
-        copied = await win.navigator.clipboard.writeText(url.href).then(() => true, () => false);
+      try {
+        await showQr(url.href);
+        message('Scan the QR code or copy the invitation link.');
+      } catch {
+        message('QR code unavailable. Use Copy Link to share this invitation.');
       }
-      message(roles[button.dataset.crewInvite] + (copied ? ' invite copied.' : ' invite ready to copy.'));
+      linkBox.scrollIntoView({block: 'nearest'});
+    });
+  });
+
+  find('[data-crew-copy]').addEventListener('click', () => {
+    busy(async () => {
+      const copied = await win.navigator.clipboard?.writeText(linkOutput.value).then(() => true, () => false);
+      if (copied) {
+        message('Invitation link copied.');
+        return;
+      }
+      linkOutput.focus();
+      linkOutput.select();
+      message('Invitation link selected. Use your browser’s Copy command.');
     });
   });
 
