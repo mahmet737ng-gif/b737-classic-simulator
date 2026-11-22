@@ -591,6 +591,13 @@ function transition(state,action){
    return rejected(s,"AP_ENGAGEMENT_INHIBITED_DISENGAGE_BAR");
   const selected=s.modes.autopilot;
   if(id.startsWith('CMD_')&&selected?.startsWith('CMD_')&&id!==selected&&s.pending.approach){
+   // The 800-ft rule inhibits engaging a NEW second channel, not
+   // disconnecting an already-armed second CMD channel after descent.
+   if(s.dualApproach.second===id){
+    s.dualApproach.second=null;s.dualApproach.coupled=false;
+    s.dualApproach.flareArmed=false;s.dualApproach.flareEngaged=false;
+    s.dualApproach.retard=false;return done();
+   }
    if(Number.isFinite(s.flight?.radioAltitudeFt)&&s.flight.radioAltitudeFt<800)
     return rejected(s,'DUAL_AP_SELECTION_INHIBITED_BELOW_800_RA');
    if(s.flight?.dualIlsValid!==true)
