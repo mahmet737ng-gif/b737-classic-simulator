@@ -525,8 +525,8 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
-      if (command.type === 'profile' && room.manager !== key && member.role !== 'instructor') {
-        throw new RequestError(403, 'Only the host or Instructor can configure the shared aircraft.');
+      if (command.type === 'profile' && room.manager !== key) {
+        throw new RequestError(403, 'Only the host can configure the shared aircraft.');
       }
       if (command.type === 'profile') {
         room.profile = aircraftProfile(command.value);
