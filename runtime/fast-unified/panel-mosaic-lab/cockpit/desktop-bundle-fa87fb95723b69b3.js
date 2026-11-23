@@ -409,7 +409,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./crew-cockpit-v1.js?v=CREW-HOST-SYNC-0002 */
+/* ./crew-cockpit-v1.js?v=CREW-RELIABLE-SCENE-0001 */
 try{
 (function (win, doc) {
   'use strict';
@@ -431,6 +431,7 @@ try{
   let lastSequence = 0;
   let latestFlight;
   let commandWrites = Promise.resolve();
+  let requestSerial = 0;
   let flightWrite = false;
   let flightChangedAt = 0;
   let roster = null;
@@ -438,6 +439,48 @@ try{
   let lastPublishedOverhead = null;
   let lastReceivedOverhead = null;
   let snapshotTimer = null;
+  let activeScenario = null, reportingScenario = false, lastScenarioReport = '';
+  let lastScenarioProbeAt = 0;
+  const applyDurations = [], syncFailures = [], networkDurations = [], longTasks = [];
+  if (typeof win.PerformanceObserver === 'function' &&
+      win.PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+    try {
+      new win.PerformanceObserver(list => {
+        for (const e of list.getEntries()) {
+          longTasks.push({at:Number(e.startTime.toFixed(1)),durationMs:Number(e.duration.toFixed(1))});
+          if (longTasks.length>90) longTasks.shift();
+        }
+      }).observe({entryTypes:['longtask']});
+    } catch {}
+  }
+  async function profileRender(durationMs=2500) {
+    const duration=Math.min(6000,Math.max(500,Number(durationMs)||2500));
+    return new Promise(resolve=>{
+      const started=performance.now(),frames=[],longTasksBefore=longTasks.length;
+      let previous=null;
+      const step=time=>{
+        if(previous!==null) frames.push(time-previous);
+        previous=time;
+        if(time-started<duration){win.requestAnimationFrame(step);return;}
+        const ordered=frames.slice().sort((a,b)=>a-b);
+        const p95=ordered[Math.max(0,Math.ceil(ordered.length*.95)-1)]??null;
+        resolve({durationMs:Number((time-started).toFixed(1)),frames:frames.length,
+          approximateFps:frames.length?Number((1000*frames.length/(time-started)).toFixed(1)):0,
+          frameP95Ms:p95===null?null:Number(p95.toFixed(1)),
+          framesOver50ms:frames.filter(ms=>ms>50).length,
+          longTasksObserved:Math.max(0,longTasks.length-longTasksBefore)});
+      };
+      win.requestAnimationFrame(step);
+    });
+  }
+  let lastSharedSequence = 0, lastAppliedSequence = 0;
+  // Physical readiness and network delivery are separate states. This gate
+  // is consumed by the FLT PHASE START button and stays local to crew sessions.
+  win.B737CrewScenarioReadyV1 = Object.freeze({
+    canStart: () => !activeScenario?.active ||
+      activeScenario.config?.preset !== 'FINAL_10' || activeScenario.ready === true,
+    getState: () => activeScenario ? JSON.parse(JSON.stringify(activeScenario)) : null
+  });
   doc.documentElement.dataset.crewRole = 'pending';
 
   const status = doc.createElement('span');
@@ -483,11 +526,48 @@ try{
     if (labs && role) labs.hidden = role !== 'instructor';
   }
 
+  // Each iframe has its own JS heap and can reload independently of SSE.
+  // Reconcile mounted physical owners against the last known shared detents.
+  function reconcileMountedOverhead() {
+    const expected = lastReceivedOverhead ?? currentOverhead;
+    const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
+    if (!expected || !actual) return;
+    for (const [type, groupName] of [['guard','guards'],['rotary','rotaries'],['toggle','toggles']]) {
+      for (const [id, state] of Object.entries(expected[groupName] ?? {})) {
+        if (JSON.stringify(actual[groupName]?.[id]) === JSON.stringify(state)) continue;
+        // A newer queued change for this control always beats the cache.
+        if (queue.some(entry => entry.type === type && entry.id === id)) continue;
+        const value = type === 'guard' ? {open: state.guard === 'open', value: state.value} : state;
+        queue.push({type, id, value, client: 'crew-restore'});
+      }
+    }
+    drain();
+  }
+  function rememberSharedOverhead(type, id, value) {
+    const group = type === 'guard' ? 'guards' : type === 'rotary' ? 'rotaries' :
+      type === 'toggle' ? 'toggles' : null;
+    const expected = lastReceivedOverhead ?? currentOverhead;
+    if (!group || !expected?.[group] || !id) return;
+    expected[group][id] = type === 'guard' ?
+      {guard: value.open ? 'open' : 'closed', value: value.value} : value;
+  }
   function bindFrames() {
     for (const frame of doc.querySelectorAll('iframe')) {
       try {
         if (frame.contentDocument) protect(frame.contentDocument, true);
-      } catch {}
+        // The real Overhead is progressively injected after the main photo.
+        // Ask the mounted child for a fresh state even if its initial ready
+        // event occurred before this crew listener was installed.
+        if (frame.id === 'overheadFrame' && frame.hasAttribute('src')) {
+          frame.contentWindow?.postMessage({
+            type: 'b737:cockpit-command', action: 'crew-sync-request'
+          }, win.location.origin);
+          drain();
+          reconcileMountedOverhead();
+        }
+      } catch (error) {
+        console.warn('Crew Overhead frame handshake deferred', error);
+      }
     }
   }
   protect(doc);
@@ -504,24 +584,57 @@ try{
       ['captain', 'firstOfficer'].includes(role) ? ' · PM' : '';
     const pending = queue.filter(entry => entry.client !== client).length;
     const connection = !online ? ' · Reconnecting…' : pending ? ' · Sync pending (' + pending + ')' : ' · Connected';
-    const next = (labels[role] ?? 'Crew Room') + duty + connection;
+    const phase = activeScenario?.config?.preset === 'FINAL_10' ?
+      (activeScenario.ready ? ' · FINAL 10 READY (CPT+FO)' :
+        ' · FINAL 10 PREPARING (CPT/FO)') : '';
+    const next = (labels[role] ?? 'Crew Room') + duty + connection + phase;
     if (status.textContent !== next) status.textContent = next;
   }
 
   async function send(action, body = {}) {
-    const reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
-      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({roomId, client, ...body})});
-    if (!reply.ok) {
-      const failure = await reply.json().catch(() => ({}));
-      throw Error(failure.error || 'Crew Room connection unavailable.');
+    const payload = JSON.stringify({roomId, client, ...body});
+    const requestStart = performance.now();
+    let retries = 0;
+    const retryable = action === 'command' && typeof body.requestId === 'string';
+    for (;;) {
+      let reply;
+      try {
+        reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
+          headers: {'Content-Type': 'application/json'}, body: payload});
+      } catch (error) {
+        if (!retryable || retries >= 5) throw error;
+        await new Promise(resolve => setTimeout(resolve,Math.min(1200,250*2**retries++)));
+        continue;
+      }
+      // The stable requestId prevents duplicate execution even if the first
+      // POST committed before a network failure or lost 5xx response.
+      if (retryable && (reply.status === 429 || reply.status >= 500) && retries < 5) {
+        await new Promise(resolve => setTimeout(resolve,Math.min(1200,250*2**retries++)));
+        continue;
+      }
+      if (!reply.ok) {
+        const failure = await reply.json().catch(() => ({}));
+        throw Error(failure.error || 'Crew Room connection unavailable.');
+      }
+      if (action === 'command') {
+        networkDurations.push(Number((performance.now()-requestStart).toFixed(2)));
+        if (networkDurations.length>400) networkDurations.shift();
+      }
+      return reply.json();
     }
-    return reply.json();
   }
 
   function command(type, id, value) {
     if (!online || role === 'observer' || replay || value === undefined || value === null) return;
-    commandWrites = commandWrites.then(() => send('command', {command: {type, id, value}}))
-      .catch(error => refreshStatus(error.message));
+    rememberSharedOverhead(type, id, value);
+    const requestId = client + '-' + (++requestSerial).toString(36);
+    commandWrites = commandWrites.then(() => send('command',
+      {requestId,command:{type,id,value}}))
+      .catch(error => {
+        syncFailures.push({at:Date.now(),type,id,reason:error.message});
+        if (syncFailures.length>60) syncFailures.shift();
+        refreshStatus('Sync command failed: '+error.message);
+      });
   }
   function publishHostSnapshot() {
     if (snapshotTimer || !roster?.manager || !online || !currentOverhead) return;
@@ -614,7 +727,7 @@ try{
       case 'mcpHardware': win.B737McpHardwareV1?.setState(id, value); break;
       case 'mcpMode': win.B737McpAFDSBridgeV1?.press(id); break;
       case 'throttle': win.B737ThrottlePositions.set(Number(id), value); break;
-      case 'flap': win.B737FlapVisualTest.request(value); break;
+      case 'flap': return win.B737FlapVisualTest.request(value,{crewReplay:true});
       case 'gear': win.B737LandingGearUnifiedV1.select(id, {lockOverride: value}); break;
       case 'speedbrake': win.B737SpeedbrakeLever.set(value); break;
       case 'startLever': win.B737EngineStartLevers.request(id, value); break;
@@ -655,10 +768,19 @@ try{
     // flight or CDU commands waiting for independent instruments to hydrate.
     lastSequence = Math.max(lastSequence, snapshot.sequence);
     const previous = lastReceivedOverhead;
+    // Check the real child owner's detents, not only the last SSE message.
+    // A stale local storage value or a recreated iframe needs correction
+    // even when the host snapshot JSON itself has not changed.
+    const installed = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
     for (const [type, group] of [['guard', guards], ['rotary', rotaries], ['toggle', toggles]]) {
       const groupName = type === 'guard' ? 'guards' : type === 'rotary' ? 'rotaries' : 'toggles';
       for (const [id, value] of Object.entries(group)) {
-        if (previous && JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(value)) continue;
+        const desired = type === 'guard' ? {guard: value.guard, value: value.value} : value;
+        const previouslySent = previous &&
+          JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(desired);
+        const alreadyApplied = installed &&
+          JSON.stringify(installed[groupName]?.[id]) === JSON.stringify(desired);
+        if (previouslySent && alreadyApplied) continue;
         for (let i = queue.length - 1; i >= 0; i--) {
           if (queue[i].type === type && queue[i].id === id &&
               (queue[i].sequence === undefined || queue[i].sequence <= snapshot.sequence)) {
@@ -673,6 +795,86 @@ try{
     drain();
   }
 
+  // The latest room projection is authoritative; never replay stale
+  // historical A/B toggles over a newer switch state after reconnect.
+  function receiveShared(shared) {
+    if (!Number.isSafeInteger(shared?.sequence) || !shared.overhead ||
+        shared.sequence < lastSharedSequence) return;
+    lastSharedSequence = shared.sequence;
+    lastSequence = Math.max(lastSequence, shared.sequence);
+    lastReceivedOverhead = shared.overhead;
+    const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
+    const push = (entry, actualValue, desired) => {
+      for (let i=queue.length-1;i>=0;i--) {
+        if (queue[i].type === entry.type && queue[i].id === entry.id &&
+            (queue[i].sequence === undefined || queue[i].sequence <= shared.sequence))
+          queue.splice(i,1);
+      }
+      if (JSON.stringify(actualValue) !== JSON.stringify(desired))
+        queue.push({...entry,client:'crew-shared',sequence:shared.sequence});
+    };
+    for (const [type,name] of [['guard','guards'],['rotary','rotaries'],['toggle','toggles']]) {
+      for (const [id, state] of Object.entries(shared.overhead[name] ?? {})) {
+        push({type,id,value:type==='guard' ?
+          {open:state.guard==='open',value:state.value}:state},actual?.[name]?.[id],state);
+      }
+    }
+    // One latest value per instrument; never include non-idempotent button
+    // presses such as TOGA or CDU keystrokes in this state projection.
+    for (const entry of shared.controls ?? []) {
+      const existing = queue.findIndex(item=>item.type===entry.type&&item.id===entry.id&&
+        (item.sequence===undefined||item.sequence<=shared.sequence));
+      if (existing!==-1) queue.splice(existing,1);
+      queue.push({...entry,client:'crew-shared'});
+    }
+    drain();
+  }
+  function receiveScenario(scenario) {
+    const previousGeneration = activeScenario?.generation ?? null;
+    activeScenario = scenario?.active ? scenario : null;
+    if ((activeScenario?.generation ?? null) !== previousGeneration)
+      lastScenarioReport = '';
+    if (activeScenario?.config?.preset === 'FINAL_10' && role !== 'observer') {
+      const config=activeScenario.config, current=flight()?.getState?.();
+      const matching = current?.preset === config.preset &&
+        current?.icao === config.airport && current?.runway === config.runway;
+      // Late joiners might never receive the original loadFlight command.
+      // Do not reset an already loaded aircraft on every readiness update.
+      if (!matching && !queue.some(item=>item.type==='loadFlight')) {
+        if (typeof flight()?.loadScenario === 'function')
+          flight().loadScenario(config);
+      }
+    }
+    refreshStatus();
+    reportScenarioReadiness();
+  }
+  function reportScenarioReadiness() {
+    if (!online || reportingScenario || !['captain','firstOfficer'].includes(role) ||
+        !activeScenario?.active || activeScenario.config?.preset !== 'FINAL_10') return;
+    const now=performance.now();
+    if (now-lastScenarioProbeAt < 750) return;
+    lastScenarioProbeAt=now;
+    const sc=activeScenario, flightState=flight()?.getState?.();
+    const config=sc.config;
+    const matching=flightState?.preset === config.preset &&
+      flightState?.icao === config.airport && flightState?.runway === config.runway;
+    const check=matching?win.B737Final10ApproachPresetV1?.getStatus?.():null;
+    const missing=matching && check && Array.isArray(check.missing) ?
+      check.missing.slice(0,64) : ['SCENARIO_OWNER_NOT_READY'];
+    const complete=matching && check?.complete===true && missing.length===0;
+    const key=JSON.stringify({generation:sc.generation,complete,missing});
+    if (lastScenarioReport === key) return;
+    reportingScenario = true;
+    send('scenarioStatus',{generation:sc.generation,complete,missing})
+      .then(()=>{lastScenarioReport=key;})
+      .catch(error=>{
+        if (!/flight scenario has changed/i.test(error.message)) {
+          syncFailures.push({at:Date.now(),type:'scenarioStatus',reason:error.message});
+          if (syncFailures.length>60) syncFailures.shift();
+        }
+      })
+      .finally(()=>{reportingScenario=false;});
+  }
   function receiveFlight() {
     if (!latestFlight || !flight() || queue.some(entry =>
       ['profile', 'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type))) return;
@@ -701,7 +903,29 @@ try{
       }
       replay = true;
       try {
+        const started = performance.now();
         if (apply(entry) === false) throw Error('Control declined the remote value');
+        // Explicitly verify the installed switch owner's real detent before
+        // acknowledging that a replicated Overhead change was successful.
+        if (['toggle','rotary','guard'].includes(entry.type)) {
+          const observed=byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
+          const group=entry.type==='toggle'?'toggles':entry.type==='rotary'?'rotaries':'guards';
+          const target=entry.type==='guard' ?
+            {guard:entry.value.open?'open':'closed',value:entry.value.value}:entry.value;
+          if (JSON.stringify(observed?.[group]?.[entry.id])!==JSON.stringify(target))
+            throw Error('Physical Overhead detent mismatch');
+          if (Number.isSafeInteger(entry.sequence) &&
+              !['crew-shared','crew-restore'].includes(entry.client)) {
+            send('applied',{sequence:entry.sequence,status:'VERIFIED'})
+              .catch(error=>{
+                syncFailures.push({at:Date.now(),type:'applied',reason:error.message});
+                if (syncFailures.length>60) syncFailures.shift();
+              });
+          }
+        }
+        applyDurations.push(Number((performance.now()-started).toFixed(2)));
+        if (applyDurations.length>400) applyDurations.shift();
+        lastAppliedSequence=Math.max(lastAppliedSequence,entry.sequence??0);
         queue.splice(index, 1);
         changed = true;
       } catch (error) {
@@ -710,6 +934,8 @@ try{
         if (!entry.lastWarning || now - entry.lastWarning > 10000) {
           entry.lastWarning = now;
           console.warn('Crew cockpit command pending; will retry', entry.type, entry.id, error.message);
+          syncFailures.push({at:Date.now(),type:entry.type,id:entry.id,reason:error.message});
+          if (syncFailures.length>60) syncFailures.shift();
         }
         blocked.add(key);
         index++;
@@ -738,6 +964,7 @@ try{
       if (data.toggles && data.rotaries && data.guards) {
         currentOverhead = {toggles: data.toggles, rotaries: data.rotaries, guards: data.guards};
         if (!replay) publishHostSnapshot();
+        if (role && !roster?.manager) reconcileMountedOverhead();
       }
       return;
     }
@@ -755,7 +982,15 @@ try{
       return;
     }
     if (event.source !== byId('overheadFrame')?.contentWindow) return;
-    if (data?.kind === 'ready') drain();
+    if (data?.type === 'b737:cockpit-overhead' && data.kind === 'ready') {
+      // Request an explicit full-state snapshot after the child finishes
+      // hydration, instead of waiting for a future pilot switch input.
+      event.source.postMessage({type:'b737:cockpit-command',
+        action:'crew-sync-request'}, win.location.origin);
+      drain();
+      reconcileMountedOverhead();
+      return;
+    }
     if (data?.type !== 'b737:cockpit-overhead' || data.kind !== 'control-event' || data.crewReplay) return;
     const {kind, id, next, reason} = data.event ?? {};
     if (['meter-owner-sync', 'aircon-variant-change', 'ISN03_STARTER_CUTOUT', 'flight-scenario-instructor'].includes(reason)) return;
@@ -812,7 +1047,14 @@ try{
   });
   listen(win, 'b737:mcp-button-request', d => command('mcpMode', d.id, true));
   listen(doc, 'b737:throttle-position', d => command('throttle', String(d.engine), d.percent));
-  listen(doc, 'b737:flap-lever-command', d => command('flap', 'flap', d.detent));
+  listen(doc, 'b737:flap-lever-command', d => {
+    if (!d.crewReplay) command('flap','flap',d.detent);
+  });
+  // Source of truth for a pilot-selected Flap is the DETENT actually reached
+  // after crossing mechanical gates 1 and 15, not the requested target.
+  listen(doc, 'b737:flap-lever-settled', d => {
+    if (!d.crewReplay) command('flap','flap',d.detent);
+  });
   listen(doc, 'b737:speedbrake-position', d => command('speedbrake', 'speedbrake', d.position));
   listen(win, 'b737:landing-gear-command', d => command('gear', d.position, d.lockOverride));
   listen(win, 'b737:engine-start-lever-command', d => command('startLever', d.device, d.position));
@@ -856,6 +1098,9 @@ try{
       role = data.role;
       doc.documentElement.dataset.crewRole = role;
       readRoster(data);
+      // This initial view is provisional; the SSE shared event that follows
+      // becomes authoritative after all replay traffic and host snapshots.
+      if (data.scenario?.active) receiveScenario(data.scenario);
       const url = new URL('/api/crew/events', win.location.href);
       url.searchParams.set('room', roomId);
       url.searchParams.set('cockpit', '1');
@@ -865,11 +1110,15 @@ try{
       });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));
       feed.addEventListener('snapshot', event => receiveHostSnapshot(JSON.parse(event.data)));
+      feed.addEventListener('shared', event => receiveShared(JSON.parse(event.data)));
+      feed.addEventListener('scenario', event => receiveScenario(JSON.parse(event.data)));
       feed.addEventListener('command', event => {
         const entry = JSON.parse(event.data);
         if (entry.sequence <= lastSequence) return;
         lastSequence = entry.sequence;
         queue.push(entry);
+        if (['toggle','rotary','guard'].includes(entry.type))
+          rememberSharedOverhead(entry.type, entry.id, entry.value);
         drain();
       });
       feed.addEventListener('flight', event => {
@@ -880,13 +1129,29 @@ try{
         online = false;refreshStatus();
         if (feed.readyState === EventSource.CLOSED) refreshStatus('Crew Room disconnected. Rejoin to continue.');
       });
-      setInterval(() => {drain();syncLabAccess();}, 120);
+      setInterval(() => {drain();syncLabAccess();reportScenarioReadiness();}, 120);
       bindFrames();
     } catch (error) {
       refreshStatus(error.message);
     }
   }
 
+  win.B737CrewDiagnosticsV1 = Object.freeze({
+    profileRender,
+    report: () => {
+      const sorted=[...applyDurations].sort((a,b)=>a-b);
+      const network=[...networkDurations].sort((a,b)=>a-b);
+      const quantile=(numbers,f)=>numbers.length ? numbers[Math.max(0,Math.ceil(numbers.length*f)-1)] : null;
+      return {online,role,controller,lastSequence,lastSharedSequence,lastAppliedSequence,
+        queued:queue.map(e=>({sequence:e.sequence??null,type:e.type,id:e.id,
+          retryAt:e.retryAt??null})),applyP50Ms:quantile(sorted,.5),applyP95Ms:quantile(sorted,.95),
+        applyP99Ms:quantile(sorted,.99),networkP50Ms:quantile(network,.5),
+        networkP95Ms:quantile(network,.95),networkP99Ms:quantile(network,.99),
+        recentLongTasks:longTasks.slice(),failures:syncFailures.slice(),
+        scenario:win.B737CrewScenarioReadyV1.getState(),
+        final10:win.B737Final10ApproachPresetV1?.getStatus?.()??null};
+    }
+  });
   connect();
 })(window, document);
 

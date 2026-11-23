@@ -587,7 +587,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-UI-FINAL10-PITCH-0002-TE-OWNER&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ./flight-scenario-panel-v1.js?v=FLT-READY-GATE-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -737,6 +737,11 @@ try{
  }
  function togglePause(){
   if(!active||!state)return false;
+   // Shared FINAL_10 starts only when both cockpit owner checks pass.
+   if(pause&&state.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false){
+    status('PRIVATE ROOM NOT READY · Captain and FO must verify FINAL_10 systems.',true);
+    return false;
+   }
   pause=!pause;lastTick=performance.now();
   publish();updateUI();
   status((pause?'PAUSED':'RUNNING')+' · '+state.icao+' RWY '+state.runway+
@@ -749,10 +754,10 @@ try{
  function updateUI(){
   const stopButton=by('flightStop'),pauseButton=by('flightPause'),takeoffButton=by('flightTakeoff');
   if(stopButton)stopButton.disabled=!state||state.airborne===true;
-  if(pauseButton){pauseButton.disabled=!state;pauseButton.textContent=state&&pause?'START':'PAUSE';}
+  if(pauseButton){pauseButton.disabled=!state||(pause&&state?.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false);pauseButton.textContent=state&&pause?'START':'PAUSE';}
   const sceneToggle=by('flightScenarioSceneToggle');
   if(sceneToggle){
-   sceneToggle.disabled=!state||!active;
+   sceneToggle.disabled=!state||!active||(pause&&state?.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false);
    sceneToggle.textContent=state&&pause?'START':'PAUSE';
    sceneToggle.setAttribute('aria-pressed',String(!!state&&!pause));
    sceneToggle.dataset.flightStatus=!state?'NOT_LOADED':pause?'PAUSED':'RUNNING';
@@ -835,7 +840,7 @@ try{
    publish();lastPublish=performance.now();updateUI();
    if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    crewEvent('loadFlight',config);
-   status((pause?'PAUSED / READY':'ACTIVE')+' · '+state.icao+' RWY '+
+   status((pause?'PAUSED / CONFIGURING':'ACTIVE')+' · '+state.icao+' RWY '+
     state.runway+' · '+state.phase+' · '+state.georefQuality);
    return true;
   }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);return false;}
@@ -1035,6 +1040,11 @@ try{
     lastEngineContextAt=lastTick;syncInitialEngineContext();
    }
    publish();updateUI();
+   // A follower can receive a flight sample before loadFlight after
+   // a late join/reconnect. Restore real FINAL_10 cockpit owners, including
+   // immediate FLAPS 30 and LE FULL, not only the flight display numbers.
+   if(initial&&sample.preset==='FINAL_10')
+    win.B737Final10ApproachPresetV1?.apply?.(state);
   },
   pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,

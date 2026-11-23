@@ -149,7 +149,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT-FINAL10-READY-0001 */
+/* ./flap-lever-test.js?v=FLAP-SETTLED-SYNC-0001 */
 try{
 (function(){
  'use strict';
@@ -182,13 +182,19 @@ try{
    if(sequence.length){queuedTimer=setTimeout(()=>stepAnimation(sequence,done),90);}
    else {queuedTimer=setTimeout(()=>{queuedTimer=null;busy=false;done?.();},95);}
  }
- function request(target){
+ function request(target,options={}){
    if(!model)return false;
    if(busy){output('FLAP '+position+' • moving');return false;}
    const route=model.sequence(position,target);
-   root.dispatchEvent(new CustomEvent('b737:flap-lever-command',{detail:{detent:Number(target)}}));
-   stepAnimation(route,()=>{const gate=Number(target)!==position&&(position===1||position===15);
-      output(gate?'GATE '+position+' • tap again':'FLAP '+position+(position===0?' / UP':''));});
+   const crewReplay=options?.crewReplay===true;
+   root.dispatchEvent(new CustomEvent('b737:flap-lever-command',
+    {detail:{detent:Number(target),crewReplay}}));
+   stepAnimation(route,()=>{
+     const gate=Number(target)!==position&&(position===1||position===15);
+     output(gate?'GATE '+position+' • tap again':'FLAP '+position+(position===0?' / UP':''));
+     root.dispatchEvent(new CustomEvent('b737:flap-lever-settled',
+      {detail:{detent:position,requested:Number(target),crewReplay}}));
+   });
    return true;
  }
  // Scenario initialization only; normal pilot movement retains gate detents.

@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ../cockpit/overhead-bridge.js?v=PRESS-OH22-DCPCS-WHITE-WHEEL-0001-PAN-RAF-0001&amp;wheel=0002 */
+/* ../cockpit/overhead-bridge.js?v=CREW-ACTUAL-DETENT-0001&amp;wheel=0002 */
 try{
 (function(){
  'use strict';
@@ -150,21 +150,39 @@ try{
  function start(){if(ready||!window.B737OverheadLights||!window.B737RotaryGuards||!window.B737OverheadToggles)return;ready=true;send({kind:'ready',version:'LGT-0003',lampDefinitions:window.B737OverheadLights.getRegistry().lights.map(c=>({id:c.id,rule:c.rule,states:c.states||['OFF','ON']})),switches:58,rotaries:20,guards:11});report();}
  const observer=new MutationObserver(()=>{start();if(ready)observer.disconnect();});observer.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});start();
  let crewReplay=false;
+ // Read-only actual state avoids mistaking an accepted HTTP command for a
+ // successfully moved cockpit control, including hydration/reconnect cases.
+ function crewSnapshot(){
+  if(!ready)return null;
+  const rotary=window.B737RotaryGuards.getState();
+  return {toggles:window.B737OverheadToggles.getState(),
+   rotaries:rotary.rotaries,guards:rotary.guards};
+ }
  window.B737CrewOverheadV1=Object.freeze({
   ready:()=>ready,
+  snapshot:crewSnapshot,
   apply(type,id,value){
    if(!ready)return false;
+   const state=crewSnapshot();
+   // Underlying owners return false for a no-op; matching state is success.
+   if(type==='toggle'&&state.toggles[id]===value)return true;
+   if(type==='rotary'&&state.rotaries[id]===value)return true;
+   if(type==='guard'&&state.guards[id]?.guard===(value.open?'open':'closed')&&
+    state.guards[id]?.value===value.value)return true;
    crewReplay=true;
    try{
     if(type==='toggle')return window.B737OverheadToggles.setCrewSwitch(id,value);
     if(type==='rotary')return window.B737RotaryGuards.setCrewRotary(id,value);
-    return window.B737RotaryGuards.setCrewGuard(id,value);
+    if(type==='guard')return window.B737RotaryGuards.setCrewGuard(id,value);
+    return false;
    }finally{crewReplay=false;}
   }
  });
  for(const type of ['b737:switch-change','b737:rotary-change','b737:guarded-change'])window.addEventListener(type,e=>{send({kind:'control-event',crewReplay,event:{...e.detail,kind:type==='b737:switch-change'?'toggle':type==='b737:rotary-change'?'rotary':'guarded'}});report();});
  window.addEventListener('b737:overhead-light-state',()=>{applyProjection();report();});
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;const d=e.data;if(!ready)return;
+  // Child may hydrate before parent connects; force an unchanged state reply.
+  if(d.action==='crew-sync-request'){lastControlsPayload='';report();return;}
   if(d.action==='live-electrical-supply'&&typeof d.power==='boolean'){
    if(liveElectricalPower!==d.power){liveElectricalPower=d.power;window.B737OverheadLights.setAircraftElectricalPower?.(d.power);}
    applyProjection();report();return;
