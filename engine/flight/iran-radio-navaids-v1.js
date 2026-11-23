@@ -20,9 +20,24 @@
   {ident:'IKA',type:'VOR_DME',freqKhz:114300,lat:35.409698,lon:51.178501,elevationFt:3280,source:'OURAIRPORTS_COMMUNITY',note:'SIMULATED_ONLY_STATION_STATUS_UNVERIFIED'},
   {ident:'MSD',type:'VOR_DME',freqKhz:114000,lat:36.231201,lon:59.650600,elevationFt:3251,source:'OURAIRPORTS_COMMUNITY'},
   {ident:'SYZ',type:'VOR_DME',freqKhz:117800,lat:29.540199,lon:52.588799,elevationFt:4920,source:'OURAIRPORTS_COMMUNITY'},
-  {ident:'IFN',type:'VORTAC',freqKhz:117100,lat:32.746389,lon:51.824722,elevationFt:5063,source:'PUBLIC_IR_ENR_REFERENCE'},
+  {"ident":"ISN","type":"DVOR_DME","freqKhz":113200,"lat":32.74697222,"lon":51.82802778,"source":"IRAN_AIP_OIFM_AD2_19","quality":"AIP_PUBLISHED","dmeChannel":"79X","elevationFt":5072,"airport":"OIFM"},
+  {"ident":"IFN","type":"TACAN","freqKhz":117100,"lat":32.74638889,"lon":51.82472222,"source":"IRAN_AIP_OIFM_AD2_19","quality":"AIP_PUBLISHED","tacanChannel":"118X","military":true,"airport":"OIFM","note":"TACAN_ONLY_NOT_CIVIL_VOR"},
+  {"ident":"IFN","type":"NDB","freqKhz":337,"lat":32.749,"lon":51.88080556,"source":"IRAN_AIP_OIFM_AD2_19","quality":"AIP_PUBLISHED","airport":"OIFM"},
+  {"ident":"VR","type":"NDB","freqKhz":373,"lat":35.34266667,"lon":51.63716667,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","airport":"TEHRAN_REGION","note":"AIP_373_KHZ_ICAO_ASIA_PAC_MAY_2026_LISTS_380_KHZ_VERIFY_BEFORE_USE"},
+  {"ident":"KAZ","type":"NDB","freqKhz":358,"lat":35.516701,"lon":51.366901,"source":"OURAIRPORTS_COMMUNITY","quality":"COMMUNITY_ONLY_NOT_CURRENT_AIP_CONFIRMED","airport":"TEHRAN_REGION","note":"ICAO_FREQUENCY_LIST_HAS_KZ_AT_358_NOT_KAZ"},
+  {"ident":"SAV","type":"NDB_DME","freqKhz":408,"lat":35.01855556,"lon":50.37136111,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","dmeFreqKhz":115200,"dmeChannel":"99X","name":"Saveh"},
+  {"ident":"RSR","type":"NDB_DME","freqKhz":332,"lat":36.90347222,"lon":50.68044444,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","dmeFreqKhz":115500,"dmeChannel":"102X","name":"Ramsar"},
+  {"ident":"DZF","type":"NDB","freqKhz":293,"lat":32.43802778,"lon":48.37827778,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Dezful"},
+  {"ident":"KLH","type":"NDB","freqKhz":325,"lat":37.38808333,"lon":55.45661111,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Kalaleh"},
+  {"ident":"JSK","type":"NDB","freqKhz":349,"lat":25.65161111,"lon":57.78347222,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Jask"},
+  {"ident":"SRN","type":"NDB_DME","freqKhz":300,"lat":27.41502778,"lon":62.32541667,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Saravan","dmeChannel":"88X"},
+  {"ident":"RAF","type":"NDB_DME","freqKhz":260,"lat":30.30275,"lon":56.05563889,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Rafsanjan","dmeChannel":"70X"},
+  {"ident":"KHM","type":"NDB_DME","freqKhz":335,"lat":26.76308333,"lon":55.90766667,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Kishm","dmeChannel":"118X"},
+  {"ident":"ABM","type":"NDB_DME","freqKhz":285,"lat":25.878,"lon":55.02280556,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Abumusa","dmeChannel":"101X"},
+  {"ident":"ESH","type":"NDB","freqKhz":413,"lat":32.567166,"lon":51.69111,"source":"OURAIRPORTS_COMMUNITY","quality":"COMMUNITY_ONLY_NOT_AIP_CONFIRMED","name":"Shahid Vatan Pour","airport":"OIFH"},
   {ident:'DHN',type:'VOR_DME',freqKhz:114500,lat:35.254167,lon:52.720278,elevationFt:2756,source:'PUBLIC_IR_ENR_REFERENCE'},
   // ITRN is shown as OIIE RWY 29L in user chart; OIII uses ITHL.
+  {"ident":"IIFN","type":"ILS_DME","freqKhz":109900,"lat":32.75701944,"lon":51.883725,"elevationFt":5043,"courseTrueDeg":257.96,"glideDeg":2.63,"tchFt":55,"runway":"25R","airport":"OIFM","source":"IRAN_AIP_OIFM_AD2_12_AD2_19","positionQuality":"AIP_SURVEYED_RWY_THR","localizerAntenna":{"lat":32.74786111,"lon":51.83302778},"glideAntenna":{"lat":32.75505556,"lon":51.88019444},"glideFreqKhz":333800,"dmeChannel":"36X","dmeLat":32.75508333,"dmeLon":51.88019444,"dmeElevationFt":5041,"locMaxNm":18,"gsMaxNm":10,"note":"CAT_I_25R_ILS_ONLY_NO_PUBLISHED_25L_ILS"},
   {ident:'ITRN',type:'ILS_DME',freqKhz:110700,lat:35.4114,lon:51.165798,elevationFt:3305,courseTrueDeg:290,glideDeg:3,runway:'29L',airport:'OIIE',source:'USER_IRAN_CHART_2620',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'IIKA',type:'ILS_DME',freqKhz:110300,lat:35.413101,lon:51.166000,elevationFt:3305,courseTrueDeg:288.88,glideDeg:3,runway:'29R',airport:'OIIE',source:'PUBLIC_OIIE_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   // Mehrabad OIII RWY 29L: ident ITHL, frequency 109.90 MHz; threshold is a TRAINING proxy, not localizer/DME surveyed antenna.
@@ -30,9 +45,11 @@
   {ident:'IMSD',type:'ILS_DME',freqKhz:109900,lat:36.224098,lon:59.657100,elevationFt:3263,courseTrueDeg:313.74,glideDeg:3,runway:'31R',airport:'OIMM',source:'PUBLIC_OIMM_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'ISYZ',type:'ILS_DME',freqKhz:109900,lat:29.5391667,lon:52.5898333,elevationFt:4927,courseTrueDeg:294.4,glideDeg:3,runway:'29L',airport:'OISS',source:'PUBLIC_OISS_APPROACH_REF',positionQuality:'PROVISIONAL_AIRPORT_ARP'}
  ];
- const STATIONS=Object.freeze(sites.map(s=>Object.freeze(s)));
- const ALIASES=Object.freeze({MHD:'MSD'}); // MHD is an IATA airport code, not a separate VOR
- const byIdent=ident=>STATIONS.find(s=>s.ident===(ALIASES[String(ident).toUpperCase()]||String(ident).toUpperCase()))||null;
+ const MORSE=Object.freeze({A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..'});
+ const morseOf=ident=>String(ident||'').toUpperCase().split('').map(ch=>MORSE[ch]||'').join(' ').trim();
+ const STATIONS=Object.freeze(sites.map(s=>Object.freeze({...s,morseCode:morseOf(s.ident)})));
+ const ALIASES=Object.freeze({MHD:'MSD',KZ:'KAZ'}); // MHD is an IATA airport code, not a separate VOR
+ const byIdent=(ident,type=null)=>STATIONS.find(s=>s.ident===(ALIASES[String(ident).toUpperCase()]||String(ident).toUpperCase())&&(!type||(type==='NDB'?s.type==='NDB'||s.type==='NDB_DME':s.type===type)))||null;
  function ground(from,to){
   const a=rad(from.lat),b=rad(to.lat),dl=rad(to.lon-from.lon),dp=b-a;
   const h=Math.sin(dp/2)**2+Math.cos(a)*Math.cos(b)*Math.sin(dl/2)**2;
@@ -41,16 +58,19 @@
   return {distanceNm,bearingTrue};
  }
  function dmeSlantNm(aircraft,station){
-  const g=ground(aircraft,station).distanceNm;
+  if(station.type==='NDB')return null;
+  const dme=Number.isFinite(station.dmeLat)&&Number.isFinite(station.dmeLon)?{lat:station.dmeLat,lon:station.dmeLon}:station;
+  const g=ground(aircraft,dme).distanceNm;
   return Math.hypot(g,(Number(aircraft.altitudeFt)-Number(station.dmeElevationFt??station.elevationFt))/FT_PER_NM);
  }
  function validAircraft(a){return a&&Number.isFinite(a.lat)&&Math.abs(a.lat)<=90&&Number.isFinite(a.lon)&&Math.abs(a.lon)<=180&&Number.isFinite(a.altitudeFt);}
  function evaluate(aircraft,station,{variationDeg=null,courseMagDeg=null}={}){
   if(!validAircraft(aircraft)||!station)return null;
   const g=ground(aircraft,station),out={stationIdent:station.ident,stationLat:station.lat,stationLon:station.lon,
-   tunedFrequencyMHz:station.freqKhz/1000,distanceNm:dmeSlantNm(aircraft,station),
+   tunedFrequencyMHz:station.freqKhz>=100000?station.freqKhz/1000:null,tunedFrequencyKHz:station.freqKhz,distanceNm:dmeSlantNm(aircraft,station),morseCode:station.morseCode,
    bearingDeg:g.bearingTrue,bearingReference:'TRUE',groundDistanceNm:g.distanceNm,
    quality:'TRAINING_GEOMETRY',source:station.source};
+  if(station.type==='NDB'||station.type==='NDB_DME')return {...out,radialMagDeg:null,toFrom:null,deviationDots:null,quality:'TRAINING_ADF_BEARING_ONLY_NO_SIGNAL_MODEL'};
   if(station.type!=='ILS_DME'){
    const radialTrue=ground(station,aircraft).bearingTrue;
    const radialMag=Number.isFinite(variationDeg)?wrap(radialTrue-variationDeg):null;
@@ -76,11 +96,11 @@
  }
  function match(freqKhz,type,aircraft=null){
   if(!Number.isInteger(freqKhz))return null;
-  const options=STATIONS.filter(s=>s.freqKhz===freqKhz&&(type==='ILS'?s.type==='ILS_DME':s.type!=='ILS_DME'));
+  const options=STATIONS.filter(s=>s.freqKhz===freqKhz&&(type==='ILS'?s.type==='ILS_DME':type==='NDB'?(s.type==='NDB'||s.type==='NDB_DME'):type==='TACAN'?s.type==='TACAN':(s.type==='VOR_DME'||s.type==='DVOR_DME'||s.type==='VORTAC')));
   if(!options.length)return null;
   if(options.length===1)return options[0];
   if(!validAircraft(aircraft))return null;
   return options.sort((a,b)=>ground(aircraft,a).distanceNm-ground(aircraft,b).distanceNm)[0];
  }
- return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0003',STATIONS,ALIASES,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
+ return Object.freeze({version:'IRAN-RADIONAV-TRAINING-0004-OIFM-AIP-NDB',STATIONS,ALIASES,morseOf,byIdent,ground,dmeSlantNm,evaluate,match,wrap,delta});
 });
