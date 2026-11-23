@@ -12,7 +12,7 @@ const actuator=require('../engine/systems/te-flap-actuator-v1.js');
 const ownerPath='panel-mosaic-lab/le-devices/trainer-bridge-v1.js';
 const ownerSrc=read(ownerPath),final10=read('panel-mosaic-lab/cockpit/final10-approach-preset-v1.js');
 const locked=JSON.parse(read('engine/locks/le-devices-final-lock-v1.json'));
-const blobHash=bytes=>crypto.createHash('sha1').update(Buffer.from('blob '+bytes.length+'\\0')).update(bytes).digest('hex');
+const blobHash=bytes=>crypto.createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex');
 
 test('Pages LE trainer is byte-for-byte the immutable owner-approved blob',()=>{
  assert.equal(blobHash(Buffer.from(ownerSrc)),locked.frozenFiles[ownerPath]);
@@ -41,12 +41,12 @@ test('locked LE owner replays original physical 48-second initial extension and 
   clearInterval:()=>{motionTimer=null;}},{filename:'owner-locked-trainer.js'});
  const owner=window.B737LEDevicesTrainer;
  assert.equal(owner.presetFinal10ReadyFlaps,undefined,'the frozen bridge stays unchanged');
- const matched=final10.match(/function prepareLockedFinal10Flaps[\\s\\S]*?\\n}\\n/);
+ const matched=final10.match(/function prepareLockedFinal10Flaps[\s\S]*?\n}\n/);
  assert(matched,'safe scenario adapter must exist in an unlocked integration source');
  const log=[];
  const win={location:{origin:'https://trainer.test'},setTimeout:fn=>schedule.push(fn)};
  const sandbox={win,serial:1,result:(name,ok,reason)=>log.push({name,ok,reason}),console};
- const adapter=vm.runInNewContext(matched[0]+'\\nprepareLockedFinal10Flaps;',sandbox);
+ const adapter=vm.runInNewContext(matched[0]+'\nprepareLockedFinal10Flaps;',sandbox);
  const overhead={postMessage:(data,origin)=>{
   assert.equal(origin,'https://trainer.test');
   assert.equal(data.originator,'physical-flap-lever');
