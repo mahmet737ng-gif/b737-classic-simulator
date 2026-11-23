@@ -51,6 +51,19 @@ test('Varamin VR and Kahrizak KAZ ADF freqs cannot leak into VHF NAV match',()=>
  assert(map.some(x=>x.ident==='KAZ'&&x.type==='NDB'));
  assert(map.some(x=>x.ident==='OIFM'&&x.type==='AIRPORT'));
 });
+test('Tehran NDB twin identifiers and independent co-located VOR radios',()=>{
+ for(const [ident,kHz] of [['AA',397],['RUS',275],['PIM',306],['SKD',376],['HSA',230]]){
+  assert.equal(nav.byIdent(ident,'NDB').freqKhz,kHz);
+  assert.equal(nav.match(kHz,'NDB').ident,ident);
+  assert.equal(nav.match(kHz,'VOR'),null);
+  assert(map.some(s=>s.ident===ident&&s.type==='NDB'));
+ }
+ assert.equal(nav.byIdent('RUS','VOR_DME').freqKhz,116950);
+ assert.equal(nav.byIdent('PIM','VOR_DME').freqKhz,117500);
+ assert.equal(nav.byIdent('SKD','VOR_DME').freqKhz,117300);
+ assert.equal(nav.byIdent('HSA','NDB_DME').dmeChannel,'81Y');
+ assert.equal(nav.dmeSlantNm({lat:32.9326,lon:51.5601,altitudeFt:5250},nav.byIdent('HSA','NDB')),null);
+});
 test('Flight scenario includes OIFM and 10nm final references true runway course',()=>{
  const thr=aip.runways['25R'];
  const prepared=core.newScenario({airport:'OIFM',runway:'25R',preset:'FINAL_10'},{OIFM:{
