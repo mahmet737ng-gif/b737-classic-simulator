@@ -580,6 +580,42 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
         throw new RequestError(400, 'Invalid cockpit connection.');
       }
+      if (action === 'applied') {
+        if (!FLIGHT_ROLES.includes(member.role))
+          throw new RequestError(403, 'Only pilots report cockpit application.');
+        if (!Number.isSafeInteger(data.sequence) || data.sequence <= 0 ||
+            data.sequence > room.sequence || !['APPLIED','VERIFIED','FAILED'].includes(data.status))
+          throw new RequestError(400, 'Invalid control application report.');
+        const target = room.commands.find(command => command.sequence === data.sequence);
+        if (!target) throw new RequestError(404, 'The command is no longer retained.');
+        const status = data.status, reason = typeof data.reason === 'string' ?
+          data.reason.slice(0, 160) : '';
+        const report = room.applied.get(data.sequence) ?? {};
+        report[member.role] = {status, reason};
+        room.applied.set(data.sequence, report);
+        if (room.applied.size > 512) room.applied.delete(room.applied.keys().next().value);
+        broadcast(room, 'applied', {sequence:data.sequence,type:target.type,id:target.id,reports:report});
+        return send(res, 200, {sequence:data.sequence,status});
+      }
+      if (action === 'scenarioStatus') {
+        if (!FLIGHT_ROLES.includes(member.role))
+          throw new RequestError(403, 'Only pilots report flight scenario readiness.');
+        if (!room.scenario || room.scenario.generation !== data.generation)
+          throw new RequestError(409, 'The flight scenario has changed.');
+        if (typeof data.complete !== 'boolean' || !Array.isArray(data.missing) ||
+            data.missing.length > 64 || !data.missing.every(id =>
+              typeof id === 'string' && SCENARIO_REPORT_KEYS.test(id)))
+          throw new RequestError(400, 'Invalid flight scenario readiness report.');
+        const missing = [...new Set(data.missing)];
+        const next = {complete:data.complete && missing.length === 0, missing};
+        if (JSON.stringify(room.scenario.reports[member.role]) !== JSON.stringify(next)) {
+          room.scenario.reports[member.role] = next;
+          room.scenario.ready = FLIGHT_ROLES.every(role =>
+            room.scenario.reports[role]?.complete === true);
+          broadcast(room, 'scenario', publicScenario(room));
+        }
+        return send(res, 200, {generation:room.scenario.generation,ready:room.scenario.ready});
+      }
       if (action === 'snapshot') {
         if (room.manager !== key) throw new RequestError(403, 'Only the host publishes the shared cockpit snapshot.');
         const overhead = overheadSnapshot(data.overhead);
