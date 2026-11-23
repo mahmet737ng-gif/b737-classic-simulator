@@ -3,6 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const Core=require('../engine/flight/flight-scenario-core-v1.js');
 const Aero=require('../engine/flight/classic-low-speed-envelope-v1.js');
 const Toga=require('../engine/afds/classic-toga-ch4-v1.js');
+const MCP=require('../engine/afds/mcp-mode-core-v1.js');
 const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
 const thrust={valid:true,engines:[{running:true,n1Percent:95},{running:true,n1Percent:95}]};
 function flight(){return Core.command(Core.newScenario({airport:'OIMM',preset:'RUNWAY_READY'}),{type:'TAKEOFF_ROLL'});}
@@ -89,4 +90,18 @@ test('Integration wires automatic FD follow and manual control distinctly',()=>{
  assert.ok(visual.includes("minimumManeuverKt:envelope.minimumManeuverKt"));
  assert.ok(toga.includes("state=T.initial()")&&toga.includes('T.selectN1(state,context())'));
  assert.ok(mode.includes("s.togaActive===true&&id==='N1'"));
+});
+
+test('real MCP mode core permits N1 after 400 RA with both F/D switches OFF only in TOGA',()=>{
+ const fresh=()=>{const s=MCP.initialState();
+  s.electrical.mcpPower=true;s.autoThrottleArm=true;
+  s.togaActive=true;s.flight={radioAltitudeFt:450};
+  s.fd.left=false;s.fd.right=false;return s;};
+ const accepted=MCP.transition(fresh(),{type:'BUTTON',id:'N1'});
+ assert.equal(accepted.modes.thrust,'N1');
+ const early=fresh();early.flight.radioAltitudeFt=399;
+ const blocked=MCP.transition(early,{type:'BUTTON',id:'N1'});
+ assert.notEqual(blocked.modes.thrust,'N1');
+ const withoutToga=fresh();withoutToga.togaActive=false;
+ assert.notEqual(MCP.transition(withoutToga,{type:'BUTTON',id:'N1'}).modes.thrust,'N1');
 });
