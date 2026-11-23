@@ -7,12 +7,15 @@ on:
       - 'panel-mosaic-lab/cockpit/unified-welcome-readiness-v2.js'
       - 'panel-mosaic-lab/cockpit/index.html'
       - 'tests/unified-welcome-readiness-v2.test.cjs'
+      - 'tests/unified-ecu-startup-handshake.test.cjs'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
   push:
     branches: [main]
     paths:
       - 'panel-mosaic-lab/cockpit/unified-welcome-v1.js'
       - 'panel-mosaic-lab/cockpit/unified-welcome-readiness-v2.js'
       - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/isn-cockpit.js'
 jobs:
   welcome-gate:
     runs-on: ubuntu-latest
@@ -26,5 +29,6 @@ jobs:
         run: |
           node --check panel-mosaic-lab/cockpit/unified-welcome-v1.js
           node --check panel-mosaic-lab/cockpit/unified-welcome-readiness-v2.js
+          node --check panel-mosaic-lab/cockpit/isn-cockpit.js
       - name: Assert 70 percent + fully initialized main + FLT PHASE repaint
-        run: node --test tests/unified-welcome-readiness-v2.test.cjs tests/flight-phase-shell-v1.test.cjs
+        run: node --test tests/unified-ecu-startup-handshake.test.cjs tests/unified-welcome-readiness-v2.test.cjs tests/flight-phase-shell-v1.test.cjs
