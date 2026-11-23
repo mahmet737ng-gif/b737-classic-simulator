@@ -6,7 +6,7 @@
  */
 (function(win){
  'use strict';
- const VERSION='FINAL10-INTEGRATED-0004-ACTUAL-READY';
+ const VERSION='FINAL10-INTEGRATED-0005-LOCKED-OWNER-COMPAT';
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null,flapPresetSentFor=null,flapPresetLastAt=0;
@@ -29,6 +29,43 @@
    'runway-turnoff-l','runway-turnoff-r','taxi'].map(id=>'LIGHT_'+id)
  ]);
  const ready=()=>REQUIRED_FINAL10.every(key=>check?.[key]?.ok===true);
+
+// Final-approach initialization uses only the approved LE/TE owner's public
+// ports. The owner-locked trainer bridge itself stays byte-identical.
+function prepareLockedFinal10Flaps(owner,overhead,session){
+ if(typeof owner?.reset!=='function'||typeof owner?.dispatch!=='function'||
+    typeof owner?.advance!=='function'||typeof owner?.flapActuator!=='function')
+  throw Error('LOCKED_LE_OWNER_PORTS_UNAVAILABLE');
+ owner.reset('NORMAL');
+ owner.dispatch({type:'GROUND',value:false});
+ // The *original* physical lever message enables the approved timed LE/TE laws.
+ // Never bypass the locked owner's lever/actuator sequencing.
+ overhead.postMessage({type:'b737:cockpit-command',action:'le-devices',
+  originator:'physical-flap-lever',command:{type:'FLAP_LEVER',value:30}},
+  win.location.origin);
+ let attempts=0;
+ const settle=()=>{
+  if(session!==serial)return;
+  const a=owner.flapActuator();
+  if(a?.command!==30){
+   if(++attempts<12)win.setTimeout(settle,35);
+   else result('FLAP_OWNER_PRESET',false,'LOCKED_LE_OWNER_LEVER_ACK_TIMEOUT');
+   return;
+  }
+  try{
+   // Owner-authorized time laws, replayed without changing physical panel
+   // assets or the frozen bridge. No UI animation is emitted between turns.
+   for(let i=0;i<48;i++)owner.advance(1);
+   const done=owner.flapActuator(),s=owner.snapshot?.();
+   const ok=Math.abs((done?.actual??-1)-30)<0.4 &&
+    done?.moving===false&&s?.leStage==='FULL'&&s?.center?.extended===true;
+   result('FLAP_OWNER_PRESET',ok,ok?'LOCKED_OWNER_ACTUATOR_SETTLED_30':
+    'LOCKED_OWNER_ACTUATOR_NOT_READY');
+  }catch(error){result('FLAP_OWNER_PRESET',false,String(error?.message||error));}
+ };
+ win.setTimeout(settle,35);
+}
+
  function magnetic(trueDeg,state){
   const w=win.B737WMM2025V1;
   const p=w?.evaluate?.({lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt});
@@ -221,9 +258,15 @@
    const link=win.B737LEDevicesUnifiedLink?.getState?.();
    const actual=link?.actualTe;
    // Retry if overhead announced READY before its LE trainer mounted.
-   const confirmed=link?.projection?.scenario==='FINAL_10_READY'&&
+   const currentOwner=readFlapOwner();
+   const confirmed=(link?.projection?.scenario==='FINAL_10_READY'&&
     link?.projection?.lever===30&&link?.projection?.teTarget===30&&
-    link?.projection?.teMoving===false;
+    link?.projection?.teMoving===false)||
+    (currentOwner?.lever===30&&currentOwner?.projection?.teTarget===30&&
+    currentOwner?.projection?.teMoving===false&&
+    currentOwner?.projection?.leStage==='FULL'&&
+    currentOwner?.projection?.center?.extended===true&&
+    Math.abs(currentOwner.actualTe-30)<.4);
    if(physical&&link?.overheadReady===true&&
       (!confirmed||!Number.isFinite(actual)||Math.abs(actual-30)>.4)&&
       (flapPresetSentFor!==serial||Date.now()-flapPresetLastAt>=1500)){
@@ -235,11 +278,9 @@
        owner.presetFinal10ReadyFlaps({originator:'FLIGHT_SCENARIO_FINAL10'});
        result('FLAP_OWNER_PRESET',true,'OWNER_ATOMIC_CONFIG_ACKNOWLEDGED');
       }else{
-       // Legacy postMessage path remains safe until the owner registers.
-       overhead.postMessage({type:'b737:cockpit-command',
-        action:'final10-flight-preset',flaps:30,
-        originator:'FLIGHT_SCENARIO_FINAL10'},win.location.origin);
-       result('FLAP_OWNER_PRESET',false,'AWAITING_LE_OWNER_REGISTRATION');
+       // Compatible with the actual 2026-10-28 owner-approved frozen bridge.
+       prepareLockedFinal10Flaps(owner,overhead,serial);
+       result('FLAP_OWNER_PRESET',false,'LOCKED_LE_OWNER_PRESET_STARTED');
       }
       flapPresetSentFor=serial;flapPresetLastAt=Date.now();
      }catch(error){result('FLAP_OWNER_PRESET',false,error?.message);}
