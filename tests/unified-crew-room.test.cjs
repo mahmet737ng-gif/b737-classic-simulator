@@ -440,4 +440,19 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await first.getByRole('button', {name: 'Load flight'}).click();
   await host.waitForFunction(() => calls.some(([key, value]) => key === 'load' && value === 'FINAL_10'));
   await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'flight' && value === 6820));
+
+  // Reproduce a fast MCP rotation burst. Commands 66+ previously got 429
+  // and were silently lost because the client had no retry policy.
+  const beforeBurst = await first.evaluate(() => calls.filter(([key]) => key === 'heading').length);
+  await host.evaluate(() => {
+    for (let i = 0; i < 100; i++) {
+      window.dispatchEvent(new CustomEvent('b737:mcp-value-change', {detail: {control: 'heading', value: i}}));
+    }
+  });
+  await first.waitForFunction(expected =>
+    calls.filter(([key]) => key === 'heading').length >= expected, beforeBurst + 100, {timeout: 20000});
+  const observedBurst = await first.evaluate(() =>
+    calls.filter(([key]) => key === 'heading').slice(-100).map(([, value]) => value));
+  assert.deepEqual(observedBurst, Array.from({length: 100}, (_, i) => i),
+    'All 100 rapid heading updates must arrive in original sequence despite server 429');
 });
