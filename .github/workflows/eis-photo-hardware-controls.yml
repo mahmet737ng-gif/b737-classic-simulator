@@ -1,0 +1,46 @@
+name: EIS N1 Manual and Recessed Fuel Used Photo Hardware
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/manual-n1-live-v1.*'
+      - 'panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.*'
+      - 'panel-mosaic-lab/cockpit/engine-photo-four-control-registration-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/assets/recessed-pushbutton-v2.svg'
+      - 'panel-mosaic-lab/cockpit/assets/manual-n1-photo-knob-v1.png'
+      - 'engine/instruments/engine-indication-technical-db-v1.json'
+      - 'tests/eis-photo-four-controls-fit-v1.test.cjs'
+      - '.github/workflows/eis-photo-hardware-controls.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/manual-n1-live-v1.*'
+      - 'panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.*'
+      - 'panel-mosaic-lab/cockpit/engine-photo-four-control-registration-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'engine/instruments/engine-indication-technical-db-v1.json'
+      - 'tests/eis-photo-four-controls-fit-v1.test.cjs'
+      - '.github/workflows/eis-photo-hardware-controls.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-photo-control-fit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check hardware-owner JS and source-photo registration
+        run: |
+          node --check panel-mosaic-lab/cockpit/manual-n1-live-v1.js
+          node --check panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.js
+          node --check panel-mosaic-lab/cockpit/engine-photo-four-control-registration-v1.js
+      - name: Source-photo and four-controls acceptance with physical UI interactions
+        run: node --test tests/eis-photo-four-controls-fit-v1.test.cjs
+      - name: Existing EIS/Conventional and Fuel Used backend regressions
+        run: |
+          node tests/engine-indication-tech-db-v1.test.cjs
+          node tests/engine-indication-unified-live-v2.test.cjs
