@@ -25,6 +25,17 @@
   let lastPublishedOverhead = null;
   let lastReceivedOverhead = null;
   let snapshotTimer = null;
+  let activeScenario = null, reportingScenario = false, lastScenarioReport = '';
+  let lastScenarioProbeAt = 0;
+  const applyDurations = [], syncFailures = [];
+  let lastSharedSequence = 0, lastAppliedSequence = 0;
+  // Physical readiness and network delivery are separate states. This gate
+  // is consumed by the FLT PHASE START button and stays local to crew sessions.
+  win.B737CrewScenarioReadyV1 = Object.freeze({
+    canStart: () => !activeScenario?.active ||
+      activeScenario.config?.preset !== 'FINAL_10' || activeScenario.ready === true,
+    getState: () => activeScenario ? JSON.parse(JSON.stringify(activeScenario)) : null
+  });
   doc.documentElement.dataset.crewRole = 'pending';
 
   const status = doc.createElement('span');
@@ -319,6 +330,84 @@
     drain();
   }
 
+  // The latest room projection is authoritative; never replay stale
+  // historical A/B toggles over a newer switch state after reconnect.
+  function receiveShared(shared) {
+    if (!Number.isSafeInteger(shared?.sequence) || !shared.overhead ||
+        shared.sequence < lastSharedSequence) return;
+    lastSharedSequence = shared.sequence;
+    lastSequence = Math.max(lastSequence, shared.sequence);
+    lastReceivedOverhead = shared.overhead;
+    const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
+    const push = (entry, actualValue, desired) => {
+      for (let i=queue.length-1;i>=0;i--) {
+        if (queue[i].type === entry.type && queue[i].id === entry.id &&
+            (queue[i].sequence === undefined || queue[i].sequence <= shared.sequence))
+          queue.splice(i,1);
+      }
+      if (JSON.stringify(actualValue) !== JSON.stringify(desired))
+        queue.push({...entry,client:'crew-shared',sequence:shared.sequence});
+    };
+    for (const [type,name] of [['guard','guards'],['rotary','rotaries'],['toggle','toggles']]) {
+      for (const [id, state] of Object.entries(shared.overhead[name] ?? {})) {
+        push({type,id,value:type==='guard' ?
+          {open:state.guard==='open',value:state.value}:state},actual?.[name]?.[id],state);
+      }
+    }
+    // One latest value per instrument; never include non-idempotent button
+    // presses such as TOGA or CDU keystrokes in this state projection.
+    for (const entry of shared.controls ?? []) {
+      const existing = queue.findIndex(item=>item.type===entry.type&&item.id===entry.id&&
+        (item.sequence===undefined||item.sequence<=shared.sequence));
+      if (existing!==-1) queue.splice(existing,1);
+      queue.push({...entry,client:'crew-shared'});
+    }
+    drain();
+  }
+  function receiveScenario(scenario) {
+    activeScenario = scenario?.active ? scenario : null;
+    lastScenarioReport = '';
+    if (activeScenario?.config?.preset === 'FINAL_10' && role !== 'observer') {
+      const config=activeScenario.config, current=flight()?.getState?.();
+      const matching = current?.preset === config.preset &&
+        current?.icao === config.airport && current?.runway === config.runway;
+      // Late joiners might never receive the original loadFlight command.
+      // Do not reset an already loaded aircraft on every readiness update.
+      if (!matching && !queue.some(item=>item.type==='loadFlight')) {
+        if (typeof flight()?.loadScenario === 'function')
+          flight().loadScenario(config);
+      }
+    }
+    refreshStatus();
+    reportScenarioReadiness();
+  }
+  function reportScenarioReadiness() {
+    if (!online || reportingScenario || !['captain','firstOfficer'].includes(role) ||
+        !activeScenario?.active || activeScenario.config?.preset !== 'FINAL_10') return;
+    const now=performance.now();
+    if (now-lastScenarioProbeAt < 750) return;
+    lastScenarioProbeAt=now;
+    const sc=activeScenario, flightState=flight()?.getState?.();
+    const config=sc.config;
+    const matching=flightState?.preset === config.preset &&
+      flightState?.icao === config.airport && flightState?.runway === config.runway;
+    const check=matching?win.B737Final10ApproachPresetV1?.getStatus?.():null;
+    const missing=matching && check && Array.isArray(check.missing) ?
+      check.missing.slice(0,64) : ['SCENARIO_OWNER_NOT_READY'];
+    const complete=matching && check?.complete===true && missing.length===0;
+    const key=JSON.stringify({generation:sc.generation,complete,missing});
+    if (lastScenarioReport === key) return;
+    reportingScenario = true;
+    send('scenarioStatus',{generation:sc.generation,complete,missing})
+      .then(()=>{lastScenarioReport=key;})
+      .catch(error=>{
+        if (!/flight scenario has changed/i.test(error.message)) {
+          syncFailures.push({at:Date.now(),type:'scenarioStatus',reason:error.message});
+          if (syncFailures.length>60) syncFailures.shift();
+        }
+      })
+      .finally(()=>{reportingScenario=false;});
+  }
   function receiveFlight() {
     if (!latestFlight || !flight() || queue.some(entry =>
       ['profile', 'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type))) return;
