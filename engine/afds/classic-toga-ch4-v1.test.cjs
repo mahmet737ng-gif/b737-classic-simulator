@@ -112,6 +112,8 @@ reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:158,
  radioAltitudeFt:450,vsFpm:1300},10);
 reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:161,
  radioAltitudeFt:450,vsFpm:1300},10);
+reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:165,
+ radioAltitudeFt:450,vsFpm:1300},9);
 assert.equal(reselect.atMode,'ARM');
 assert.equal(T.selectN1(reselect,{...ctx,radioAltitudeFt:350}).atMode,'ARM');
 const selected=T.selectN1(reselect,{...ctx,radioAltitudeFt:450});
