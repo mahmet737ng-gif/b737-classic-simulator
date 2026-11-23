@@ -154,7 +154,9 @@
    if(ias>=84&&next.atMode==='N1'&&!next.n1SelectedAfterArm){next.atMode='THR HLD';next.thrustDemand='THR_HOLD';}
    if(ctx.airborne===true&&next.liftoffSec!==null){
     const after=elapsed-next.liftoffSec;
-    if(ra>=400&&after>=18&&next.atMode==='THR HLD'){next.atMode='ARM';next.thrustDemand='ARM';}
+    // Unified instructor schedule: THR HLD -> ARM at 400 ft AGL; N1
+    // may then be explicitly reselected from the real MCP pushbutton.
+    if(ra>=400&&next.atMode==='THR HLD'){next.atMode='ARM';next.thrustDemand='ARM';}
     if(ctx.autopilotEngaged===true&&ra>=400){
      next={...next,afdsMode:'CMD',pitchMode:'MCP SPD',
       rollMode:ctx.otherRollMode||next.rollMode,reason:'CMD_AFTER_TAKEOFF'};
