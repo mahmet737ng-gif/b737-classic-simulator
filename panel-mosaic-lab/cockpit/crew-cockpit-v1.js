@@ -28,7 +28,38 @@
   let snapshotTimer = null;
   let activeScenario = null, reportingScenario = false, lastScenarioReport = '';
   let lastScenarioProbeAt = 0;
-  const applyDurations = [], syncFailures = [];
+  const applyDurations = [], syncFailures = [], networkDurations = [], longTasks = [];
+  if (typeof win.PerformanceObserver === 'function' &&
+      win.PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+    try {
+      new win.PerformanceObserver(list => {
+        for (const e of list.getEntries()) {
+          longTasks.push({at:Number(e.startTime.toFixed(1)),durationMs:Number(e.duration.toFixed(1))});
+          if (longTasks.length>90) longTasks.shift();
+        }
+      }).observe({entryTypes:['longtask']});
+    } catch {}
+  }
+  async function profileRender(durationMs=2500) {
+    const duration=Math.min(6000,Math.max(500,Number(durationMs)||2500));
+    return new Promise(resolve=>{
+      const started=performance.now(),frames=[],longTasksBefore=longTasks.length;
+      let previous=null;
+      const step=time=>{
+        if(previous!==null) frames.push(time-previous);
+        previous=time;
+        if(time-started<duration){win.requestAnimationFrame(step);return;}
+        const ordered=frames.slice().sort((a,b)=>a-b);
+        const p95=ordered[Math.max(0,Math.ceil(ordered.length*.95)-1)]??null;
+        resolve({durationMs:Number((time-started).toFixed(1)),frames:frames.length,
+          approximateFps:frames.length?Number((1000*frames.length/(time-started)).toFixed(1)):0,
+          frameP95Ms:p95===null?null:Number(p95.toFixed(1)),
+          framesOver50ms:frames.filter(ms=>ms>50).length,
+          longTasksObserved:Math.max(0,longTasks.length-longTasksBefore)});
+      };
+      win.requestAnimationFrame(step);
+    });
+  }
   let lastSharedSequence = 0, lastAppliedSequence = 0;
   // Physical readiness and network delivery are separate states. This gate
   // is consumed by the FLT PHASE START button and stays local to crew sessions.
@@ -149,6 +180,7 @@
 
   async function send(action, body = {}) {
     const payload = JSON.stringify({roomId, client, ...body});
+    const requestStart = performance.now();
     let retries = 0;
     const retryable = action === 'command' && typeof body.requestId === 'string';
     for (;;) {
@@ -170,6 +202,10 @@
       if (!reply.ok) {
         const failure = await reply.json().catch(() => ({}));
         throw Error(failure.error || 'Crew Room connection unavailable.');
+      }
+      if (action === 'command') {
+        networkDurations.push(Number((performance.now()-requestStart).toFixed(2)));
+        if (networkDurations.length>400) networkDurations.shift();
       }
       return reply.json();
     }
@@ -681,13 +717,17 @@
   }
 
   win.B737CrewDiagnosticsV1 = Object.freeze({
+    profileRender,
     report: () => {
       const sorted=[...applyDurations].sort((a,b)=>a-b);
-      const quantile=f=>sorted.length ? sorted[Math.max(0,Math.ceil(sorted.length*f)-1)] : null;
+      const network=[...networkDurations].sort((a,b)=>a-b);
+      const quantile=(numbers,f)=>numbers.length ? numbers[Math.max(0,Math.ceil(numbers.length*f)-1)] : null;
       return {online,role,controller,lastSequence,lastSharedSequence,lastAppliedSequence,
         queued:queue.map(e=>({sequence:e.sequence??null,type:e.type,id:e.id,
-          retryAt:e.retryAt??null})),applyP50Ms:quantile(.5),applyP95Ms:quantile(.95),
-        applyP99Ms:quantile(.99),failures:syncFailures.slice(),
+          retryAt:e.retryAt??null})),applyP50Ms:quantile(sorted,.5),applyP95Ms:quantile(sorted,.95),
+        applyP99Ms:quantile(sorted,.99),networkP50Ms:quantile(network,.5),
+        networkP95Ms:quantile(network,.95),networkP99Ms:quantile(network,.99),
+        recentLongTasks:longTasks.slice(),failures:syncFailures.slice(),
         scenario:win.B737CrewScenarioReadyV1.getState(),
         final10:win.B737Final10ApproachPresetV1?.getStatus?.()??null};
     }
