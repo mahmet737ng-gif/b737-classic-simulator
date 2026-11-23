@@ -27,6 +27,21 @@
   let currentLabel = '';
   let labelIndex = 0;
   let labelChangedAt = 0;
+  let readySince = null;
+  let scenarioStarted = false;
+  let scenarioStartedAt = null;
+  let directorPaintBaseline = null;
+  let latestReadiness = null;
+  const STABLE_MS = 500;
+  const mainPaints = () => ['CAPT', 'FO'].map(seat =>
+    Number(doc.querySelector('[data-eadi-stage1-seat="'+seat+'"]')?.dataset.eadiPaintCount)||0);
+  // Accessible on the live page without opening the instrument controls.
+  win.B737UnifiedWelcomeGateV2 = Object.freeze({
+    snapshot: () => latestReadiness ? JSON.parse(JSON.stringify({
+      ...latestReadiness,scenarioStarted,stableSinceMs:readySince,
+      scenarioStartedAt
+    })) : null
+  });
 
   function mark(name) {
     performance.mark('b737:welcome-' + name);
@@ -121,22 +136,43 @@
     win.dispatchEvent(new Event('b737:welcome-panels-ready'));
   }
 
-  function beginFlight() {
+  function beginFlight(now) {
     const shared = new URLSearchParams(win.location.search).has('crewRoom');
-    const startupLoad = fuel.value !== '' || mass.value !== '';
-    const owner = win.B737ISNCockpitV1;
-    if (!shared && startupLoad && !owner?.applyStartupLoad) return;
-    const applyLoad = startupLoad ? () => owner.applyStartupLoad({
-      fuelKg: fuel.value === '' ? null : fuel.valueAsNumber,
-      massKg: mass.value === '' ? null : mass.valueAsNumber
-    }) : null;
-    if (!shared && !win.B737UnifiedFlightScenarioV1.startFromSelection(applyLoad)) {
-      error.textContent = by('flightScenarioStatus').textContent;
-      error.hidden = false;
-      startRequested = false;
-      start.disabled = false;
-      start.textContent = 'Start Flight';
+    if (!scenarioStarted) {
+      const startupLoad = fuel.value !== '' || mass.value !== '';
+      const owner = win.B737ISNCockpitV1;
+      if (!shared && startupLoad && !owner?.applyStartupLoad) return;
+      const applyLoad = startupLoad ? () => owner.applyStartupLoad({
+        fuelKg: fuel.value === '' ? null : fuel.valueAsNumber,
+        massKg: mass.value === '' ? null : mass.valueAsNumber
+      }) : null;
+      directorPaintBaseline = mainPaints();
+      if (!shared && !win.B737UnifiedFlightScenarioV1?.startFromSelection?.(applyLoad)) {
+        error.textContent = by('flightScenarioStatus')?.textContent || 'FLIGHT SCENARIO NOT READY';
+        error.hidden = false;
+        startRequested = false;
+        start.disabled = false;
+        start.textContent = 'Start Flight';
+        return;
+      }
+      scenarioStarted = true;
+      scenarioStartedAt = now;
+      mark('flight-initialized');
+      // Do not expose a half-painted MAIN PANEL in the same task as
+      // FLT PHASE initialization. Wait for both EADIs to repaint.
       return;
+    }
+    if (!shared) {
+      const scenario = win.B737UnifiedFlightScenarioV1;
+      const state = scenario?.getState?.();
+      const active = scenario?.getDiagnostics?.()?.active === true;
+      const paints = mainPaints();
+      const repainted = paints.every((count, index) =>
+        count > (directorPaintBaseline?.[index] || 0));
+      const final10Ready = state?.preset !== 'FINAL_10' ||
+        win.B737Final10ApproachPresetV1?.getStatus?.()?.complete === true;
+      if (!active || !repainted || !final10Ready ||
+          now - scenarioStartedAt < STABLE_MS) return;
     }
     for (const [node, anchor] of moved) anchor.replaceWith(node);
     cockpit.forEach(node => { node.inert = false; });
@@ -166,29 +202,65 @@
   }
 
   function refresh() {
-    const {main, throttle, forward, aft, pedestal} = panelReadiness();
+    const now = performance.now();
+    const visual = panelReadiness();
+    const {main, throttle, forward, aft, pedestal} = visual;
     const priorityReady = main && throttle && forward;
     const panelComplete = priorityReady && aft && pedestal;
-    if (priorityReady && !setup && !introTitle.getAnimations().some(animation =>
-      animation.animationName === 'unified-intro-title' && animation.playState !== 'finished'
-    )) showSetup();
+    const profile = win.B737AircraftProfileStore?.get?.();
+    const full = profile ? win.CockpitStartupGate?.inspectFull?.(win, profile) : null;
+    const gate = win.B737WelcomeReadinessV2?.evaluate?.({
+      visual,full,mcpMounted:!!doc.querySelector('[data-mcp-hardware="AT_ARM"]')
+    }) || null;
+    latestReadiness = gate;
+    // Only continuous, measurable readiness counts. A briefly ready photo
+    // followed by a failed/removed instrument resets the release timer.
+    if (gate?.canEnter === true && panelComplete) {
+      if (readySince === null) readySince = now;
+    } else readySince = null;
+    const stable = readySince !== null && now - readySince >= STABLE_MS;
+    if (priorityReady && gate?.mainReady && gate.percent >= 70 && !setup &&
+        !introTitle.getAnimations().some(animation =>
+          animation.animationName === 'unified-intro-title' &&
+          animation.playState !== 'finished')) showSetup();
+    // Existing panel owners are released on their original full-photo gate,
+    // never on an estimated percentage.
     if (panelComplete) releaseSystems();
-    if (panelComplete && startRequested) beginFlight();
+    if (stable && startRequested) beginFlight(now);
     if (welcome.hidden) {
       win.clearInterval(timer);
       return;
     }
     const labels = [];
-    if (!main) labels.push('Loading Main Instrument Panel…');
-    if (!doc.querySelector('[data-mcp-hardware="AT_ARM"]')) labels.push('Loading MCP…');
+    if (!gate) labels.push('Preparing cockpit readiness checks…');
+    if (!main || !full?.main) labels.push('Loading Main Instrument Panel photographs…');
+    if (full?.instruments !== true) labels.push('Initializing EADI, EHSI and engine instruments…');
+    if (full?.controls !== true ||
+        !doc.querySelector('[data-mcp-hardware="AT_ARM"]')) labels.push('Connecting MCP controls…');
+    if (full?.electrical !== true) labels.push('Synchronizing ECU and electrical systems…');
+    if (full?.cdu !== true) labels.push('Preparing Captain and First Officer CDU…');
     if (!throttle) labels.push('Loading Throttle Quadrant…');
     if (!forward) labels.push('Loading Forward Overhead…');
     if (setup && !aft) labels.push('Loading Aft Overhead…');
     if (setup && !pedestal) labels.push('Loading Pedestal…');
-    if (panelComplete && !setup) labels.push('Preparing Flight Setup…');
-    if (setup && doc.querySelectorAll('.cdu-station.ready').length < 2) labels.push('Loading CDU…');
-    if (panelComplete && !win.B737ISNCockpitV1?.startupSynchronized()) labels.push('Initializing Systems…');
-    report(labels, performance.now());
+    if (scenarioStarted) {
+      const preset = win.B737UnifiedFlightScenarioV1?.getState?.()?.preset;
+      if (preset === 'FINAL_10') {
+        const status = win.B737Final10ApproachPresetV1?.getStatus?.();
+        if (status?.complete !== true)
+          labels.unshift('Configuring 10 NM Final: ' +
+            (status?.missing?.slice(0, 2).join(', ') || 'owner confirmations'));
+      }
+      if (!new URLSearchParams(win.location.search).has('crewRoom') &&
+          mainPaints().some((count, index) =>
+            count <= (directorPaintBaseline?.[index] || 0)))
+        labels.push('Applying Flight Phase to both EADIs…');
+    }
+    if (gate?.canEnter && !setup) labels.push('Preparing Flight Setup…');
+    if (!labels.length && !startRequested) labels.push('Cockpit ready · select a flight phase');
+    if (!labels.length && startRequested) labels.push('Finalizing cockpit and flight phase…');
+    const prefix = gate ? gate.percent + '% readiness · ' : '';
+    report(labels.map(label => prefix + label), now);
   }
 
   cockpit.forEach(node => { node.inert = true; });
