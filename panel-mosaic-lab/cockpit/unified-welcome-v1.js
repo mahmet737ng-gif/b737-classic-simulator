@@ -208,7 +208,14 @@
     const priorityReady = main && throttle && forward;
     const panelComplete = priorityReady && aft && pedestal;
     const profile = win.B737AircraftProfileStore?.get?.();
-    const full = profile ? win.CockpitStartupGate?.inspectFull?.(win, profile) : null;
+    // inspectFull only contains subsystem fields; inspect owns MAIN, PROFILE,
+    // and CONTROLS. Combine both rather than assuming inspectFull exposes them.
+    const startup = profile ? win.CockpitStartupGate?.inspect?.(win, profile) : null;
+    const subsystems = profile ?
+      win.CockpitStartupGate?.inspectFull?.(win, profile, startup) : null;
+    const full = {...subsystems,
+      main:startup?.main===true && startup?.profile===true,
+      controls:startup?.controls===true};
     const gate = win.B737WelcomeReadinessV2?.evaluate?.({
       visual,full,mcpMounted:!!doc.querySelector('[data-mcp-hardware="AT_ARM"]')
     }) || null;
