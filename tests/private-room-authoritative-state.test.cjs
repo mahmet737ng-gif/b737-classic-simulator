@@ -14,13 +14,21 @@ test('authoritative crew room keeps latest FO overhead detent across stale host 
   const root='http://127.0.0.1:'+server.address().port;
   function client() {
     let cookie='';
-    return async (action, body={})=>{
+    const request=async (action, body={})=>{
       const res=await fetch(root+'/api/crew/'+action,{method:'POST',
         headers:{'Content-Type':'application/json',Origin:root,...(cookie?{Cookie:cookie}:{})},
         body:JSON.stringify(body)});
       const set=res.headers.get('set-cookie')?.split(';',1)[0];if(set)cookie=set;
       return {status:res.status,data:await res.json()};
     };
+    request.events=async roomId=>{
+      const abort=new AbortController();
+      const response=await fetch(root+'/api/crew/events?cockpit=1&room='+roomId,
+        {headers:{Cookie:cookie},signal:abort.signal});
+      assert.equal(response.status,200,'Cockpit SSE must be live for READY');
+      return ()=>abort.abort();
+    };
+    return request;
   }
   const c=client(),fo=client(),obs=client();
   assert.equal((await c('login',{username:'TrainerOwner',password})).status,200);
@@ -31,6 +39,9 @@ test('authoritative crew room keeps latest FO overhead detent across stale host 
   const {data:{roomId,roomInvite}}=await c('create',{role:'captain'});
   assert.equal((await fo('join',{roomId,invite:roomInvite,role:'firstOfficer'})).status,200);
   assert.equal((await obs('join',{roomId,invite:roomInvite,role:'observer'})).status,200);
+  const stopCapSSE=await c.events(roomId);
+  const stopFoSSE=await fo.events(roomId);
+  t.after(()=>{stopCapSSE();stopFoSSE();});
   const capClient='captain-state-qa',foClient='firstofficer-state-qa';
   const on={toggles:{'battery-master':'ON'},rotaries:{'ignition-source':'BOTH'},guards:{}};
   assert.equal((await c('snapshot',{roomId,client:capClient,overhead:on})).status,200);
