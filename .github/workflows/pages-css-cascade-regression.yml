@@ -1,0 +1,17 @@
+name: Pages CSS cascade guard
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/performance.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/pages-css-cascade-regression.yml'
+jobs:
+  css:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node panel-mosaic-lab/cockpit/performance.test.cjs

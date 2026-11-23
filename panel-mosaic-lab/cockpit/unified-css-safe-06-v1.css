@@ -24,7 +24,7 @@
 
 /* END engine-indication-live-v2.css */
 
-/* BEGIN manual-n1-live-v1.css 93439a9d5a15b05ec0677155208af7726343adda */
+/* BEGIN manual-n1-live-v1.css c613bf450b1886c12777ddba718c39581111040e */
 /* FCOM Ch 7.10 N1 manual-set hardware. Raster PNG, not SVG. */
 .manual-n1-overlay{position:absolute;z-index:8;pointer-events:none;user-select:none;overflow:visible}
 .manual-n1-knob{position:absolute;transform:translate(-50%,-50%);
@@ -51,21 +51,47 @@
  white-space:nowrap;max-width:65%;overflow:hidden;text-overflow:ellipsis}
 .reference-mode .manual-n1-overlay{display:none!important}
 
+/* EIS: only the dark inner apertures are filled, not the steel photo rims.
+ * Local image pixel geometry remains glued to the photo on zoom/pan. */
+html[data-engine-indication="EIS"] #region-main .manual-n1-knob{
+ min-width:0!important;min-height:0!important;
+ max-width:none!important;max-height:none!important;
+ padding:0!important;border:0!important;box-shadow:none!important;
+ border-radius:50%!important;overflow:visible
+}
+html[data-engine-indication="EIS"] #region-main .manual-n1-knob-label{
+ display:none!important /* labels are already printed on the original photo */
+}
+
 /* END manual-n1-live-v1.css */
 
-/* BEGIN fuel-used-physical-ch7-v1.css e54a023b9010af4275d6e61665713ee968dbd0db */
+/* BEGIN fuel-used-physical-ch7-v1.css bed40a338fcd939580e0aa2eda1e19b5b0a1d8ca */
 /* Ch7.10 EIS recessed FUEL USED/RESET buttons; non-EIS real photographed selector. */
 .fuel-used-physical-ch7{position:absolute;z-index:11;pointer-events:none;overflow:visible}
 .fuel-used-physical-ch7 button{pointer-events:auto;touch-action:manipulation}
-.fuel-used-eis{position:absolute;left:49%;top:85%;height:6%;width:25%}
-.fuel-used-eis .fuel-recessed{position:absolute;top:0;border-radius:50%;
- width:23px;height:23px;min-width:16px;min-height:16px;max-width:25px;max-height:25px;
- padding:0;margin:0;cursor:pointer;background:#0b151c;border:3px solid #6b7074;
- box-shadow:inset 0 3px 6px #050708,0 1px 2px #202326;appearance:none}
-.fuel-used-eis .fuel-recessed:hover,.fuel-used-eis .fuel-recessed:active{
- background:#0b151c;border-color:#6b7074;box-shadow:inset 0 3px 6px #050708,0 1px 2px #202326}
-.fuel-used-eis .fuel-used-show{left:12%}
-.fuel-used-eis .fuel-used-reset{left:58%}
+/* Full-size photographic registration surface, sharing the engine texture
+ * transform. JS installs exact local x/y/diameter from the locked source PNG. */
+.fuel-used-eis{position:absolute;inset:0;height:100%;width:100%}
+.fuel-used-eis .fuel-recessed{
+ position:absolute;transform:translate(-50%,-50%);
+ display:block;appearance:none!important;
+ border:none!important;border-radius:50%!important;
+ min-width:0!important;min-height:0!important;
+ max-width:none!important;max-height:none!important;
+ padding:0!important;margin:0!important;
+ background-color:transparent!important;
+ background-image:url('./assets/recessed-pushbutton-v2.svg');
+ background-repeat:no-repeat!important;
+ background-position:center!important;
+ background-size:100% 100%!important;
+ box-shadow:none!important;outline-offset:2px;
+ cursor:pointer;touch-action:manipulation
+}
+.fuel-used-eis .fuel-recessed:hover{filter:brightness(1.12)}
+.fuel-used-eis .fuel-recessed:active{
+ transform:translate(-50%,-50%) scale(.94);
+ filter:brightness(.80)
+}
 .fuel-used-eis .fuel-recessed:focus-visible,
 .fuel-used-conventional .fuel-flow-selector:focus-visible{outline:2px solid #f2cd53;outline-offset:3px}
 .fuel-used-conventional{display:none;position:absolute;left:42.75%;top:9.50%;
