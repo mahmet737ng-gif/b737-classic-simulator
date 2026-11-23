@@ -4,6 +4,8 @@ on:
     paths:
       - 'tests/private-room-1000-transport.test.cjs'
       - 'tests/private-room-burst-diagnostic.test.cjs'
+      - 'tests/private-room-authoritative-state.test.cjs'
+      - 'sync-server/crew-rooms.js'
       - 'tests/unified-crew-room.test.cjs'
       - 'panel-mosaic-lab/cockpit/crew-cockpit-v1.js'
       - 'panel-mosaic-lab/cockpit/overhead-bridge.js'
@@ -22,7 +24,7 @@ jobs:
         with:
           node-version: '22'
       - name: 1000 real HTTP and SSE command checks in one isolated Private Room
-        run: node --test tests/private-room-1000-transport.test.cjs tests/private-room-burst-diagnostic.test.cjs
+        run: node --test tests/private-room-1000-transport.test.cjs tests/private-room-burst-diagnostic.test.cjs tests/private-room-authoritative-state.test.cjs
       - name: FINAL 10 physical-ready and scenario fidelity regression
         run: node --test tests/final10-approach-ready-integration.test.cjs tests/final10-approach-unified-v1.test.cjs tests/flight-scenario-core-v1.test.cjs
       - name: Existing private room access and late-join regression
