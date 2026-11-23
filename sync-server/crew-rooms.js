@@ -291,6 +291,17 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
   function broadcast(room, event, payload) {
     for (const stream of room.cockpits) frame(stream, payload, event);
   }
+  function recheckScenario(room) {
+    if (!room.scenario) return;
+    const connected = role => [...room.members.values()].some(member =>
+      member.role === role && [...member.streams.keys()].some(stream => room.cockpits.has(stream)));
+    const ready = FLIGHT_ROLES.every(role =>
+      connected(role) && room.scenario.reports[role]?.complete === true);
+    if (room.scenario.ready !== ready) {
+      room.scenario.ready = ready;
+      broadcast(room, 'scenario', publicScenario(room));
+    }
+  }
 
   function closeMember(room, key, member) {
     room.members.delete(key);
@@ -299,6 +310,10 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       stream.end();
     }
     member.streams.clear();
+    if (room.scenario && FLIGHT_ROLES.includes(member.role)) {
+      delete room.scenario.reports[member.role];
+      recheckScenario(room);
+    }
   }
 
   function purge(room) {
@@ -479,6 +494,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (url.searchParams.get('cockpit') === '1') {
         const after = Math.max(0, Number(req.headers['last-event-id'] ?? url.searchParams.get('after')) || 0);
         room.cockpits.add(res);
+        recheckScenario(room);
         // A late joiner must receive the host's current controls before any
         // commands newer than that snapshot (rather than replay stale history).
         // The snapshot covers the Overhead only. Replay earlier MCP, CDU,
@@ -508,6 +524,11 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         room.cockpits.delete(res);
         member.streams.delete(res);
         member.lastSeen = now();
+        if (room.scenario && FLIGHT_ROLES.includes(member.role) &&
+            ![...member.streams.keys()].some(stream => room.cockpits.has(stream))) {
+          delete room.scenario.reports[member.role];
+          recheckScenario(room);
+        }
         publish(room);
       });
       publish(room);
@@ -632,8 +653,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         const next = {complete:data.complete && missing.length === 0, missing};
         if (JSON.stringify(room.scenario.reports[member.role]) !== JSON.stringify(next)) {
           room.scenario.reports[member.role] = next;
-          room.scenario.ready = FLIGHT_ROLES.every(role =>
-            room.scenario.reports[role]?.complete === true);
+          recheckScenario(room);
           broadcast(room, 'scenario', publicScenario(room));
         }
         return send(res, 200, {generation:room.scenario.generation,ready:room.scenario.ready});
@@ -688,15 +708,16 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
           throw new RequestError(409, 'A command ID cannot be reused for a different action.');
         return send(res, 200, {sequence:receipt.sequence,duplicate:true});
       }
-      if (command.type === 'profile') {
-        room.profile = aircraftProfile(command.value);
-        room.snapshot = null;
-      }
+      const nextProfile = command.type === 'profile' ? aircraftProfile(command.value) : null;
       if (!member.commandAt || now() - member.commandAt > 1000) {
         member.commandAt = now();
         member.commandCount = 0;
       }
       if (++member.commandCount > 65) throw new RequestError(429, 'Too many cockpit commands.');
+      if (nextProfile) {
+        room.profile = nextProfile;
+        room.snapshot = null;
+      }
       const entry = {...command, sequence: ++room.sequence, client: data.client};
       if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
       if (STORED_CONTROL_TYPES.has(command.type))
