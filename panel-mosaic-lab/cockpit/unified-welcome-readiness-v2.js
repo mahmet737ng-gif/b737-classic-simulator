@@ -38,5 +38,14 @@
    canEnter:percent>=MIN_PERCENT&&missing.length===0,
    checks,missing};
  }
- return Object.freeze({VERSION,MIN_PERCENT,REQUIRED,evaluate});
+ function scenarioReady({shared=false,active=false,
+   beforePaints=[],afterPaints=[],final10=false,final10Complete=false,
+   elapsedMs=0}={}){
+  if(shared===true)return true;
+  const fresh=beforePaints.length===2&&afterPaints.length===2&&
+   afterPaints.every((paint,index)=>Number.isFinite(paint)&&
+    paint>beforePaints[index]);
+  return active===true&&fresh&&(!final10||final10Complete===true)&&elapsedMs>=500;
+ }
+ return Object.freeze({VERSION,MIN_PERCENT,REQUIRED,evaluate,scenarioReady});
 });
