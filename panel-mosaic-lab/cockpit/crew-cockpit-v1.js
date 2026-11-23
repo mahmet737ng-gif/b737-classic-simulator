@@ -74,7 +74,18 @@
     for (const frame of doc.querySelectorAll('iframe')) {
       try {
         if (frame.contentDocument) protect(frame.contentDocument, true);
-      } catch {}
+        // The real Overhead is progressively injected after the main photo.
+        // Ask the mounted child for a fresh state even if its initial ready
+        // event occurred before this crew listener was installed.
+        if (frame.id === 'overheadFrame' && frame.hasAttribute('src')) {
+          frame.contentWindow?.postMessage({
+            type: 'b737:cockpit-command', action: 'crew-sync-request'
+          }, win.location.origin);
+          drain();
+        }
+      } catch (error) {
+        console.warn('Crew Overhead frame handshake deferred', error);
+      }
     }
   }
   protect(doc);
@@ -254,10 +265,19 @@
     // flight or CDU commands waiting for independent instruments to hydrate.
     lastSequence = Math.max(lastSequence, snapshot.sequence);
     const previous = lastReceivedOverhead;
+    // Check the real child owner's detents, not only the last SSE message.
+    // A stale local storage value or a recreated iframe needs correction
+    // even when the host snapshot JSON itself has not changed.
+    const installed = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
     for (const [type, group] of [['guard', guards], ['rotary', rotaries], ['toggle', toggles]]) {
       const groupName = type === 'guard' ? 'guards' : type === 'rotary' ? 'rotaries' : 'toggles';
       for (const [id, value] of Object.entries(group)) {
-        if (previous && JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(value)) continue;
+        const desired = type === 'guard' ? {guard: value.guard, value: value.value} : value;
+        const previouslySent = previous &&
+          JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(desired);
+        const alreadyApplied = installed &&
+          JSON.stringify(installed[groupName]?.[id]) === JSON.stringify(desired);
+        if (previouslySent && alreadyApplied) continue;
         for (let i = queue.length - 1; i >= 0; i--) {
           if (queue[i].type === type && queue[i].id === id &&
               (queue[i].sequence === undefined || queue[i].sequence <= snapshot.sequence)) {
@@ -354,7 +374,14 @@
       return;
     }
     if (event.source !== byId('overheadFrame')?.contentWindow) return;
-    if (data?.kind === 'ready') drain();
+    if (data?.type === 'b737:cockpit-overhead' && data.kind === 'ready') {
+      // Request an explicit full-state snapshot after the child finishes
+      // hydration, instead of waiting for a future pilot switch input.
+      event.source.postMessage({type:'b737:cockpit-command',
+        action:'crew-sync-request'}, win.location.origin);
+      drain();
+      return;
+    }
     if (data?.type !== 'b737:cockpit-overhead' || data.kind !== 'control-event' || data.crewReplay) return;
     const {kind, id, next, reason} = data.event ?? {};
     if (['meter-owner-sync', 'aircon-variant-change', 'ISN03_STARTER_CUTOUT', 'flight-scenario-instructor'].includes(reason)) return;
