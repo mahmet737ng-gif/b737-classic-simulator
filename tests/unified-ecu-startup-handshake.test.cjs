@@ -30,10 +30,11 @@ test('lost initial postMessage triggers repeated requests until a genuine gatewa
  const bridge={initialized:false};
  const context={liveGateway:bridge,byId:()=>({contentWindow:child}),location:{origin:'https://sim.test'},
   clearInterval:id=>stopped.push(id)};
- const f=vm.runInNewContext(`let overheadSnapshotPoll=99;
+ vm.runInNewContext(`let overheadSnapshotPoll=99;
  let overheadSnapshotRequests=0; ${functionSource}
  this.request=requestInitialOverheadSnapshot;
  this.result=()=>({requests:overheadSnapshotRequests,poll:overheadSnapshotPoll});`,context);
+ const f=context;
  f.request();f.request();
  assert.equal(sent.length,2);
  assert.deepEqual(Array.from(sent, ({message})=>message.action),['crew-sync-request','crew-sync-request']);
