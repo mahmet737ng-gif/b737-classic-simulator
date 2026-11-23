@@ -125,7 +125,7 @@
     find('[data-crew-join]').hidden = role.disabled = !invited;
     submit.textContent = invited ? 'Join Room' : 'Sign In';
     guestAccount.hidden = !user?.owner;
-    find('[data-crew-host]').hidden = !user?.owner || invited;
+    find('[data-crew-host]').hidden = !user || invited;
     hostRole.value = room?.role ?? '';
     updateRoles(hostRole);
     updateRoles(role, invited ? room.invitedRole : null);
