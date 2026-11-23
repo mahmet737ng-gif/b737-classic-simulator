@@ -33,7 +33,7 @@ jobs:
       - name: Protect owner-locked IRS, 18 guarded switches and LE devices
         run: |
           test "$(git hash-object panel-mosaic-lab/cockpit/irs-13seg-owner-lock-v1.json)" = "436671dc6c217484e463fab01f119348a8e67115"
-          test "$(git hash-object panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py)" = "3e45517e5331e10732861b31a7d2c55d17fcf0e1" || test "$(git hash-object panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py)" = "3e45517e5331e10732861b31a7d2c55d17fcf0e1"
+          test "$(git hash-object panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py)" = "3e45517e5331e10732861be83702805fbcda55bc"
           python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
           python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
           python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
