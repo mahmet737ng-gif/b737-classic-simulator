@@ -38,6 +38,14 @@
   {ident:'DHN',type:'VOR_DME',freqKhz:114500,lat:35.254167,lon:52.720278,elevationFt:2756,source:'PUBLIC_IR_ENR_REFERENCE'},
   // ITRN is shown as OIIE RWY 29L in user chart; OIII uses ITHL.
   {"ident":"IIFN","type":"ILS_DME","freqKhz":109900,"lat":32.75701944,"lon":51.883725,"elevationFt":5043,"courseTrueDeg":257.96,"glideDeg":2.63,"tchFt":55,"runway":"25R","airport":"OIFM","source":"IRAN_AIP_OIFM_AD2_12_AD2_19","positionQuality":"AIP_SURVEYED_RWY_THR","localizerAntenna":{"lat":32.74786111,"lon":51.83302778},"glideAntenna":{"lat":32.75505556,"lon":51.88019444},"glideFreqKhz":333800,"dmeChannel":"36X","dmeLat":32.75508333,"dmeLon":51.88019444,"dmeElevationFt":5041,"locMaxNm":18,"gsMaxNm":10,"note":"CAT_I_25R_ILS_ONLY_NO_PUBLISHED_25L_ILS"},
+  {"ident":"AA","type":"NDB","freqKhz":397,"lat":35.6337,"lon":51.4178,"source":"COMMUNITY_NAVAIDS_2026","quality":"NOT_AIP_VERIFIED","name":"Aliabad","airport":"TEHRAN_REGION"},
+  {"ident":"RUS","type":"NDB","freqKhz":275,"lat":35.4451,"lon":50.9013,"source":"COMMUNITY_NAVAIDS_2026","quality":"NOT_AIP_VERIFIED","name":"Rudeshur","airport":"TEHRAN_REGION","note":"SEPARATE_FROM_RUS_VOR_DME_116_950"},
+  {"ident":"PIM","type":"NDB","freqKhz":306,"lat":35.7618,"lon":50.8494,"source":"COMMUNITY_NAVAIDS_2026","quality":"NOT_AIP_VERIFIED","name":"Payam","airport":"OIIP"},
+  {"ident":"SKD","type":"NDB","freqKhz":376,"lat":32.3055,"lon":50.8386,"source":"COMMUNITY_NAVAIDS_2026","quality":"NOT_AIP_VERIFIED","name":"Shahre Kord","airport":"OIFS"},
+  {"ident":"HSA","type":"NDB_DME","freqKhz":230,"lat":32.9326,"lon":51.5601,"dmeChannel":"81Y","dmeFreqKhz":113450,"source":"COMMUNITY_NAVAIDS_2026","quality":"NOT_AIP_VERIFIED","name":"Hesa","airport":"OIFE","note":"DME_ANTENNA_ELEVATION_NOT_SURVEYED_NO_NUMERIC_DME"},
+  {"ident":"PIM","type":"VOR_DME","freqKhz":117500,"lat":35.762001,"lon":50.851601,"elevationFt":4125,"source":"OURAIRPORTS_COMMUNITY","name":"Payam","airport":"OIIP"},
+  {"ident":"SKD","type":"VOR_DME","freqKhz":117300,"lat":32.2798,"lon":50.8549,"elevationFt":6723,"source":"OURAIRPORTS_COMMUNITY","name":"Shahre Kord","airport":"OIFS"},
+  {"ident":"RUS","type":"VOR_DME","freqKhz":116950,"lat":35.44547222,"lon":50.90536111,"elevationFt":3661,"source":"IRAN_AIP_ENR41","quality":"AIP_PUBLISHED","name":"Rudeshur","airport":"TEHRAN_REGION","note":"NOT_NDB_RUS_275_KHZ"},
   {ident:'ITRN',type:'ILS_DME',freqKhz:110700,lat:35.4114,lon:51.165798,elevationFt:3305,courseTrueDeg:290,glideDeg:3,runway:'29L',airport:'OIIE',source:'USER_IRAN_CHART_2620',positionQuality:'PROVISIONAL_RWY_THR'},
   {ident:'IIKA',type:'ILS_DME',freqKhz:110300,lat:35.413101,lon:51.166000,elevationFt:3305,courseTrueDeg:288.88,glideDeg:3,runway:'29R',airport:'OIIE',source:'PUBLIC_OIIE_APPROACH_REF',positionQuality:'PROVISIONAL_RWY_THR'},
   // Mehrabad OIII RWY 29L: ident ITHL, frequency 109.90 MHz; threshold is a TRAINING proxy, not localizer/DME surveyed antenna.
