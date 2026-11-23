@@ -43,13 +43,13 @@ test('welcome never opens the cockpit simply because photos loaded; checks scena
  const source=read('unified-welcome-v1.js');
  assert.match(source,/CockpitStartupGate\?\.inspectFull\?\./);
  assert.match(source,/B737WelcomeReadinessV2\?\.evaluate\?\./);
- assert.match(source,/gate\?\.canEnter === true && panelComplete/);
+ assert.match(source,/gate\?\.canEnter === true && priorityReady/);
  assert.match(source,/now - readySince >= STABLE_MS/);
  assert.match(source,/directorPaintBaseline = mainPaints\(\)/);
  assert.match(source,/repainted = paints\.every/);
  assert.match(source,/B737Final10ApproachPresetV1\?\.getStatus\?\.\(\)\?\.complete === true/);
  assert.match(source,/if \(!active \|\| !repainted \|\| !final10Ready/);
- assert.match(source,/if \(panelComplete\) releaseSystems\(\)/);
+ assert.match(source,/if \(priorityReady\) releaseSystems\(\)/);
 });
 test('compiled entry loads the gate and a new welcome cache key without mutating protected photos',()=>{
  const index=read('index.html'),gate=index.indexOf('unified-welcome-readiness-v2.js'),
