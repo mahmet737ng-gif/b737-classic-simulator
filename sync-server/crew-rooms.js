@@ -155,7 +155,7 @@ function frame(res, state, event = 'roster') {
   }
 }
 
-function createCrewRoomHandler({origin, database, accounts, ownerUsername, ownerVerifier, gatewayIdentity, gatewayLogin,
+function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUsername, ownerVerifier, gatewayIdentity, gatewayLogin,
   reservedUsernames = [], staticHandler, now = Date.now}) {
   if (!origin || new URL(origin).origin !== origin ||
       (!origin.startsWith('https://') && new URL(origin).hostname !== '127.0.0.1')) {
@@ -278,9 +278,15 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     return member;
   }
 
-  function resolveInvite(raw) {
+  async function resolveInvite(raw) {
     if (typeof raw !== 'string' || !/^[A-Za-z0-9_-]{32}$/.test(raw)) return null;
-    const invite = invites.get(hash(raw));
+    const key = hash(raw);
+    let invite = invites.get(key);
+    if (!invite && roomStore) {
+      const record = await roomStore.findInvitedRoom(key, now());
+      if (record) restoreRoom(record);
+      invite = invites.get(key);
+    }
     return invite && invite.room.expires > now() ? invite : null;
   }
 
@@ -309,6 +315,18 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
 
   function findHostedRoom(key) {
     return [...rooms.values()].find(room => room.manager === key && room.expires > now());
+  }
+
+  function restoreRoom(record) {
+    const existing = rooms.get(record.id);
+    if (existing) return existing;
+    const room = {
+      ...record, members: new Map(), links: new Map(), cockpits: new Set(), commands: [],
+      sequence: 0, flying: 'captain', snapshot: null, flight: null
+    };
+    rooms.set(room.id, room);
+    if (room.invitation) invites.set(hash(room.invitation), {room, chooseRole: true});
+    return room;
   }
 
   function readRoom(id, user, invite) {
@@ -384,7 +402,12 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
     if (req.method === 'GET' && url.pathname === PREFIX) {
       const account = user ? {username: user.username, owner: user.owner, gateway: !!user.gateway} : null;
-      const hosted = user && findHostedRoom(user.username.toLowerCase());
+      const key = user?.username.toLowerCase();
+      let hosted = key && findHostedRoom(key);
+      if (key && !hosted && roomStore) {
+        const record = await roomStore.findHostedRoom(key, now());
+        if (record) hosted = restoreRoom(record);
+      }
       return send(res, 200, {user: account, ...(hosted ? {hostedRoom: stateFor(hosted, user)} : {})});
     }
     if (req.method === 'GET' && url.pathname === PREFIX + '/events') {
@@ -442,7 +465,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     const action = url.pathname.slice(PREFIX.length + 1);
     if (action === 'login') return login(req, res, data, user);
 
-    const invite = resolveInvite(data.invite);
+    const invite = await resolveInvite(data.invite);
     if (action === 'inspect') {
       const room = readRoom(data.roomId ?? invite?.room.id, user, invite);
       return send(res, 200, stateFor(room, user, invite));
@@ -477,13 +500,17 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       // Reopen the current room if a create response was lost or another tab already created it.
       let room = findHostedRoom(key);
       if (!room) {
-        room = {
-          id: randomToken(), manager: key, expires: now() + ROOM_AGE, members: new Map(),
-          links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain',
-          profile: aircraftProfile(data.profile || DEFAULT_AIRCRAFT_PROFILE),
-          snapshot: null, flight: null
+        const at = now();
+        const record = {
+          id: randomToken(), manager: key, expires: at + ROOM_AGE,
+          profile: aircraftProfile(data.profile || DEFAULT_AIRCRAFT_PROFILE)
         };
-        rooms.set(room.id, room);
+        if (roomStore) {
+          record.invitation = randomToken();
+          room = restoreRoom(await roomStore.createRoom(record, hash(record.invitation), at));
+        } else {
+          room = restoreRoom(record);
+        }
       }
       if (data.profile) {
         const next = aircraftProfile(data.profile);

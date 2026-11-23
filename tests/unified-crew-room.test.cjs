@@ -251,6 +251,50 @@ test('host aircraft configuration and overhead state are authoritative for late 
   assert.deepEqual((await guest('inspect', {roomId, invite})).data.profile, updated);
 });
 
+test('room-wide invitations survive a fresh server and still expire', async t => {
+  const {createHash} = require('node:crypto');
+  const records = [];
+  let time = Date.now();
+  const roomStore = {
+    async findHostedRoom(manager, at) {
+      return records.find(record => record.manager === manager && record.expires > at);
+    },
+    async findInvitedRoom(hash, at) {
+      return records.find(record => record.expires > at &&
+        createHash('sha256').update(record.invitation).digest('hex') === hash);
+    },
+    async createRoom(record, hash, at) {
+      const existing = await this.findHostedRoom(record.manager, at);
+      if (existing) return existing;
+      records.push(record);
+      return record;
+    }
+  };
+  const options = {roomStore, now: () => time};
+  const first = await start(t, options);
+  const host = client(first.origin);
+  await host('login', {username: 'TrainerOwner', password});
+  const hosted = await host('create', {role: 'captain'});
+  assert.equal(hosted.status, 200);
+  const {roomId, roomInvite: invite} = hosted.data;
+
+  const second = await start(t, options);
+  const guest = client(second.origin);
+  const viewed = await guest('inspect', {invite});
+  assert.equal(viewed.status, 200);
+  assert.equal(viewed.data.roomId, roomId);
+  assert.equal(viewed.data.roomInvite, undefined);
+  const returningHost = client(second.origin);
+  await returningHost('login', {username: 'TrainerOwner', password});
+  assert.equal((await returningHost()).data.hostedRoom.roomInvite, invite);
+  assert.equal((await returningHost('create', {role: 'captain'})).data.roomId, roomId);
+  await returningHost('accounts', {username: 'GuestOne', password});
+  await guest('login', {username: 'GuestOne', password});
+  assert.equal((await guest('join', {invite, role: 'firstOfficer'})).data.roomId, roomId);
+  time += 12 * 60 * 60 * 1000 + 1;
+  assert.equal((await guest('inspect', {invite})).status, 404);
+});
+
 test('late-joiner receives earlier MCP state and live Overhead updates after host snapshot', async t => {
   const {origin} = await start(t);
   const host = client(origin);
