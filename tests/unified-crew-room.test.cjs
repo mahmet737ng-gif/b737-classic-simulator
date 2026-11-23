@@ -26,19 +26,29 @@ function fixture(req, res) {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
     res.end(`<!doctype html><button id="battery">Battery master</button><script>
       window.switchState = {'battery-master':'OFF'};
+      const report=()=>parent.postMessage({type:'b737:cockpit-overhead',
+        kind:'controls-state',toggles:{...window.switchState},rotaries:{},guards:{}},location.origin);
       window.B737CrewOverheadV1 = {
         ready: () => true,
+        snapshot:()=>({toggles:{...window.switchState},rotaries:{},guards:{}}),
         apply(type,id,value) {
           if(type !== 'toggle' || id !== 'battery-master') return false;
           window.switchState[id] = value;
+          report();
           return true;
         }
       };
+      window.addEventListener('message',event=>{
+        if(event.origin===location.origin&&event.source===parent&&
+          event.data?.action==='crew-sync-request') report();
+      });
+      setTimeout(()=>parent.postMessage({type:'b737:cockpit-overhead',kind:'ready'},location.origin),0);
       document.getElementById('battery').onclick = () => {
         const next = window.switchState['battery-master'] === 'ON' ? 'OFF' : 'ON';
         window.switchState['battery-master'] = next;
         parent.postMessage({type:'b737:cockpit-overhead',kind:'control-event',
           event:{kind:'toggle',id:'battery-master',next}},location.origin);
+        report();
       };
     <\/script>`);
     return;
@@ -434,6 +444,16 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await host.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
   await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
     ?.switchState['battery-master'] === 'ON');
+  // Simulate a slow/hydrating Overhead iframe on FO after a synchronized
+  // Captain switch. The fresh frame initially boots with BATTERY OFF.
+  await first.waitForTimeout(700); // host snapshot debounce is 350ms
+  await first.evaluate(() => new Promise(resolve => {
+    const frame = document.getElementById('overheadFrame');
+    frame.addEventListener('load', resolve, {once: true});
+    frame.src = '/panel-mosaic-lab/cockpit/crew-overhead-test.html?reload=1';
+  }));
+  await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
+    ?.switchState['battery-master'] === 'ON', null, {timeout: 7000});
   await first.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
   await host.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
     ?.switchState['battery-master'] === 'OFF');
