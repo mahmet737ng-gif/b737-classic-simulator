@@ -1,0 +1,16 @@
+name: Pages active overhead source smoke
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/test.cjs'
+      - '.github/workflows/pages-unified-smoke-current-overhead.yml'
+jobs:
+  active:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node panel-mosaic-lab/cockpit/test.cjs
