@@ -174,7 +174,8 @@
      slatsFull:next.slatsFull,
      slatExtension:next.autoSlatTrainingFraction,
      bankDeg:next.bankDeg,airborne:next.airborne,
-     autoSlatPreviouslyRequested:state.autoSlatRequest
+     autoSlatPreviouslyRequested:state.autoSlatRequest,
+     takeoffTrainingProfile:next.preset==='RUNWAY_READY'
     });
     break;
    case 'MANUAL_HOLD':
@@ -208,7 +209,8 @@
    massKg:s.massKg,flapLever:s.flapLever,flapActual:s.flapActual,
    slatsFull:s.slatsFull,slatExtension:s.autoSlatTrainingFraction,
    bankDeg:s.bankDeg,airborne:s.airborne,
-   autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
+   autoSlatPreviouslyRequested:state.autoSlatRequest,
+   takeoffTrainingProfile:s.preset==='RUNWAY_READY'})??null;
   if(s.phase==='GROUND_READY'){
    s.altitudeCapture=null;
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
