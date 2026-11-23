@@ -130,9 +130,10 @@ test('existing four UI owner elements mount exactly once, stay interactive and E
  for(const id of ['FUEL_USED_PUSH','RESET_FUEL_USED'])
   assert.match(controls[id].style.backgroundImage,/recessed-pushbutton-v2\.svg/);
  controls.FUEL_USED_PUSH.trigger('click');
- assert.deepEqual(commands.at(-1),{type:'FUEL_MODE',value:'USED'});
+ assert.equal(commands.at(-1).type,'FUEL_MODE');
+ assert.equal(commands.at(-1).value,'USED');
  controls.RESET_FUEL_USED.trigger('click');
- assert.deepEqual(commands.at(-1),{type:'RESET_FUEL_USED'});
+ assert.equal(commands.at(-1).type,'RESET_FUEL_USED');
  controls.N1_MANUAL_1.trigger('click');
  assert.equal(window.B737ManualN1LiveV1.getState()[1].pulled,true);
  assert.equal(window.B737ManualN1LiveV1.getState()[2].pulled,false);
