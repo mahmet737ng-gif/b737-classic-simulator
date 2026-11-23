@@ -485,12 +485,30 @@
   ecu.core.fuelSystem.commandCrossfeed(detent);
   ecu.core.refreshFuelDelivery();return true;
  }
+ // Cold-start handshake: Overhead may broadcast its first controls-state
+ // before ISN's deferred ECU modules finish loading. Its transport suppresses
+ // unchanged snapshots, so without a direct request the ECU can wait forever.
+ // The child 'crew-sync-request' handler rebroadcasts existing physical state.
+ let overheadSnapshotRequests=0;
+ let overheadSnapshotPoll=null;
+ function requestInitialOverheadSnapshot(){
+  if(liveGateway.initialized){
+   if(overheadSnapshotPoll!==null){clearInterval(overheadSnapshotPoll);overheadSnapshotPoll=null;}
+   return;
+  }
+  const child=byId('overheadFrame')?.contentWindow;
+  if(!child)return;
+  overheadSnapshotRequests++;
+  child.postMessage({type:'b737:cockpit-command',action:'crew-sync-request',
+   source:'ISN_ECU_STARTUP_HANDSHAKE'},location.origin);
+ }
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==byId('overheadFrame')?.contentWindow||e.data?.type!=='b737:cockpit-overhead')return;
   try{
    if(e.data.kind==='controls-state'){
     lastPhysicalPacket=e.data;
     liveGateway.synchronize(mergeOwnerGuards(e.data));
+    if(overheadSnapshotPoll!==null){clearInterval(overheadSnapshotPoll);overheadSnapshotPoll=null;}
     bootDefaultAPU();
     observeCrossfeed(e.data.rotaries?.crossfeed);
     for(const event of pendingEvents.splice(0))liveGateway.dispatch(event);
@@ -506,6 +524,10 @@
   }catch(error){byId('isnError').textContent='ISN Connection Error: '+error.message;
    startFeedback('UNIFIED ENGINE LINK ERROR: '+error.message,'warning');}
  });
+ // Send only after installing the receiver; retry during slow iframe mount.
+ // Stop as soon as the first authentic physical snapshot is accepted.
+ overheadSnapshotPoll=setInterval(requestInitialOverheadSnapshot,750);
+ requestInitialOverheadSnapshot();
  let lastTime=performance.now(),lastPassiveCoolingAt=lastTime;
  setInterval(()=>{
   const tickStarted=profileStart();
@@ -582,7 +604,19 @@
  if(initialFirePanel?.evaluate())applyFirePanel(initialFirePanel.getState(),initialFirePanel.evaluate());
  let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
-  startupSynchronized:()=>liveGateway.initialized&&apuDefaultBootChecked,
+  // A verified electrical snapshot is required for startup. The optional APU
+  // training preset is NOT a prerequisite; it completes after Battery guard
+  // mounting, and can never lock the Welcome screen.
+  startupSynchronized:()=>liveGateway.initialized&&!!lastPhysicalPacket,
+  getStartupReadiness:()=>({
+   overheadSnapshotReceived:!!lastPhysicalPacket,
+   gatewayInitialized:liveGateway.initialized,
+   bridgeInitialized:bridge.get()?.initialized===true,
+   ownerBatteryMounted:!!ownerElectricalGuards()['battery-master'],
+   apuDefaultBootChecked,
+   snapshotRequests:overheadSnapshotRequests,
+   lastGatewayFailure:liveGateway.lastFailure??null
+  }),
   getPropulsionSnapshot:()=>({
    schema:'B737_ISN_PROPULSION_SNAPSHOT_V1',source:'SHARED_ISN18_ECU',
    onGround:ecu.aircraft.onGround,
