@@ -20,9 +20,16 @@ send({type:'BUTTON',id:'CMD_A'});
 assert.equal(f().afds.active,'CMD');
 assert.equal(f().afds.secondary,'CWS P');
 assert.equal(f().afds.tertiary,'CWS R');
-assert.equal(send({type:'BUTTON',id:'APP'}).rejection,'APP_ILS_NAV_EVIDENCE_REQUIRED');
+// FCOM Ch4 separate switch arming: APP may arm before an ILS becomes valid;
+// actual LOC/GS capture remains impossible without qualified FCC nav evidence.
+const noSignal=send({type:'BUTTON',id:'APP'});
+assert.equal(noSignal.rejection,null);
+assert.equal(noSignal.lamps.APP,true);
+assert.equal(f().roll.armed,'VOR/LOC');
+assert.equal(f().pitch.armed,'G/S');
+assert.notEqual(f().roll.active,'VOR/LOC');
+assert.notEqual(f().pitch.active,'G/S');
 sample({navKind:'ILS',navValid:true});
-send({type:'BUTTON',id:'APP'});
 assert.equal(core.output(s).lamps.APP,true,'APP lamp must light when armed');
 assert.equal(f().roll.armed,'VOR/LOC');
 assert.equal(f().pitch.armed,'G/S');
@@ -44,7 +51,7 @@ assert.equal(f().pitch.armed,'');
 // Start a separate, non-APP ALT HOLD scenario: ALT HLD is inhibited
 // after G/S capture and cannot be used to escape an engaged ILS.
 assert.equal(send({type:'BUTTON',id:'ALT_HLD'}).rejection,
- 'PITCH_MODE_INHIBITED_AFTER_GS_CAPTURE');
+ 'CAPTURED_APP_PITCH_MODE_LOCKED');
 send({type:'RESET'});
 send({type:'ELECTRICAL',snapshot:{schema:'B737_ELECTRICAL_V7_RESULT',revision:2,bus}});
 send({type:'FD',side:'left',on:true});

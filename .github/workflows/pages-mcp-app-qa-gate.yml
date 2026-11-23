@@ -1,0 +1,20 @@
+name: Pages MCP APP independence evidence QA
+on:
+  pull_request:
+    paths:
+      - 'engine/afds/mcp-cws-flight-evidence-v1.test.cjs'
+      - 'engine/afds/mcp-mode-core-v1.js'
+      - 'engine/afds/fma-mode-engine-v1.js'
+      - '.github/workflows/pages-mcp-app-qa-gate.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node engine/afds/mcp-cws-flight-evidence-v1.test.cjs
+      - run: node engine/afds/mcp-exclusive-modes-v1.test.cjs
+      - run: node engine/afds/mcp-cws-axis-v1.test.cjs
