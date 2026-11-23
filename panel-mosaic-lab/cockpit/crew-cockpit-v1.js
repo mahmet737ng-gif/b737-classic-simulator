@@ -314,7 +314,7 @@
       case 'mcpHardware': win.B737McpHardwareV1?.setState(id, value); break;
       case 'mcpMode': win.B737McpAFDSBridgeV1?.press(id); break;
       case 'throttle': win.B737ThrottlePositions.set(Number(id), value); break;
-      case 'flap': win.B737FlapVisualTest.request(value); break;
+      case 'flap': return win.B737FlapVisualTest.request(value,{crewReplay:true});
       case 'gear': win.B737LandingGearUnifiedV1.select(id, {lockOverride: value}); break;
       case 'speedbrake': win.B737SpeedbrakeLever.set(value); break;
       case 'startLever': win.B737EngineStartLevers.request(id, value); break;
@@ -634,7 +634,14 @@
   });
   listen(win, 'b737:mcp-button-request', d => command('mcpMode', d.id, true));
   listen(doc, 'b737:throttle-position', d => command('throttle', String(d.engine), d.percent));
-  listen(doc, 'b737:flap-lever-command', d => command('flap', 'flap', d.detent));
+  listen(doc, 'b737:flap-lever-command', d => {
+    if (!d.crewReplay) command('flap','flap',d.detent);
+  });
+  // Source of truth for a pilot-selected Flap is the DETENT actually reached
+  // after crossing mechanical gates 1 and 15, not the requested target.
+  listen(doc, 'b737:flap-lever-settled', d => {
+    if (!d.crewReplay) command('flap','flap',d.detent);
+  });
   listen(doc, 'b737:speedbrake-position', d => command('speedbrake', 'speedbrake', d.position));
   listen(win, 'b737:landing-gear-command', d => command('gear', d.position, d.lockOverride));
   listen(win, 'b737:engine-start-lever-command', d => command('startLever', d.device, d.position));
