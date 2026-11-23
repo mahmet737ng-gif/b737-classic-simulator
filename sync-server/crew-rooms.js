@@ -648,6 +648,9 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
+      if (command.type === 'pauseFlight' && command.value === false &&
+          room.scenario?.config?.preset === 'FINAL_10' && !room.scenario.ready)
+        throw new RequestError(409, 'FINAL_10 requires Captain and FO physical readiness before START.');
       if (command.type === 'profile' && room.manager !== key) {
         throw new RequestError(403, 'Only the host can configure the shared aircraft.');
       }
