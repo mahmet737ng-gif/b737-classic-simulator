@@ -13,7 +13,7 @@ const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.equal(view.VERSION,'EADI-FMA-FCOM-0004-CWS-AXIS');
 assert.match(html,/src="\.\/eadi-fma-fcom-v2\.js\?v=[A-Z0-9-]+"/);
 assert.equal(fma.VERSION,'B737-FMA-ENGINE-0002-CWS-AXIS');
-assert.match(html,/src="[^"]*fma-mode-engine-v1\.js\?v=[A-Z0-9-]+"/);
+assert.match(html,/src="[^"]*fma-mode-engine-v1\.js\?v=[A-Z0-9-]+(?:&amp;[A-Za-z0-9_-]+=[A-Za-z0-9_-]+)*"/);
 assert.equal(freeze.status,'OWNER_FINAL_EIS_GEOMETRY');
 const listeners={};
 const layers={},repaints=[];
