@@ -546,5 +546,63 @@
       ]
     },
     "note": "Primary/Secondary units require an independent 28VDC display feed. MRG signal functional supplies are not proof of the installed EIS LRU power pin. Do not invent a common unit bus or isolate the whole panel on one signal bus."
+  },
+  "physicalControlAtlas": {
+    "version": "EIS-FOUR-CONTROLS-20261123-0001",
+    "sourcePhoto": {
+      "path": "panel-mosaic-lab/assets/locked/2026-10-23/B737_Engine_Standby_Instruments_Blank.png",
+      "width": 1235,
+      "height": 1274,
+      "sha256": "7763f8f700ff42f2179d3f8f46eee06444b6439b71f428c328b14f48ac0f4856"
+    },
+    "controls": {
+      "N1_MANUAL_1": {
+        "kind": "PULL_ROTATE",
+        "engine": 1,
+        "asset": "panel-mosaic-lab/cockpit/assets/manual-n1-photo-knob-v1.png",
+        "sourceCenter": [
+          441.7,
+          1135.2
+        ],
+        "sourceDiameter": 25,
+        "physicalFunction": "N1_MANUAL_BUG_ONLY_NO_AT_THROTTLE"
+      },
+      "N1_MANUAL_2": {
+        "kind": "PULL_ROTATE",
+        "engine": 2,
+        "asset": "panel-mosaic-lab/cockpit/assets/manual-n1-photo-knob-v1.png",
+        "sourceCenter": [
+          813.9,
+          1133.4
+        ],
+        "sourceDiameter": 25,
+        "physicalFunction": "N1_MANUAL_BUG_ONLY_NO_AT_THROTTLE"
+      },
+      "FUEL_USED_PUSH": {
+        "kind": "RECESSED_MOMENTARY",
+        "asset": "panel-mosaic-lab/cockpit/assets/recessed-pushbutton-v2.svg",
+        "sourceCenter": [
+          627,
+          1175.2
+        ],
+        "sourceDiameter": 30,
+        "physicalFunction": "FUEL_MODE_USED_TEN_SECONDS"
+      },
+      "RESET_FUEL_USED": {
+        "kind": "RECESSED_MOMENTARY",
+        "asset": "panel-mosaic-lab/cockpit/assets/recessed-pushbutton-v2.svg",
+        "sourceCenter": [
+          691.3,
+          1175.6
+        ],
+        "sourceDiameter": 23,
+        "physicalFunction": "RESET_FUEL_USED_ECU_TIMED"
+      }
+    },
+    "notes": [
+      "Positions are measured in the original untouched natural-pixel EIS photo; colored screenshot circles are not the sizing source.",
+      "EIS-only; the locked conventional photo and original LE/guard controls are unchanged.",
+      "Source measurements include the dark inner N1 holes and the different fuel-button bezels. The runtime registry is a precompiled copy validated against this DB in CI."
+    ]
   }
 }
