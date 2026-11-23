@@ -475,4 +475,12 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
     calls.filter(([key]) => key === 'heading').slice(-100).map(([, value]) => value));
   assert.deepEqual(observedBurst, Array.from({length: 100}, (_, i) => i),
     'All 100 rapid heading updates must arrive in original sequence despite server 429');
+  const metrics = await first.evaluate(() => window.B737CrewDiagnosticsV1.report());
+  assert.ok(metrics.lastSequence >= 100, 'Crew room reports last received transport sequence');
+  assert.ok(Number.isFinite(metrics.networkP95Ms) || metrics.networkP95Ms === null);
+  assert.ok(Array.isArray(metrics.queued));
+  assert.ok(Array.isArray(metrics.recentLongTasks));
+  const render = await first.evaluate(() => window.B737CrewDiagnosticsV1.profileRender(650));
+  assert.ok(render.frames > 0 && render.approximateFps > 0,
+    'Read-only render profiler must return actual browser frames');
 });
