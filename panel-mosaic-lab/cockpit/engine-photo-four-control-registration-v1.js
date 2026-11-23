@@ -59,8 +59,8 @@
  }
  function within(expected,actual,tolerancePx=.5){
   if(!expected||!actual)throw new TypeError('Missing expected or actual rectangle');
-  const centerError=Math.hypot(actual.left+actual.width/2-expected.left,
-    actual.top+actual.height/2-expected.top);
+  const centerError=Math.hypot(actual.left+actual.width/2-expected.cx,
+    actual.top+actual.height/2-expected.cy);
   return Object.freeze({centerError,widthError:Math.abs(actual.width-expected.width),
    heightError:Math.abs(actual.height-expected.height),
    pass:centerError<=tolerancePx&&Math.abs(actual.width-expected.width)<=tolerancePx&&
