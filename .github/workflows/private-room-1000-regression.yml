@@ -4,6 +4,8 @@ on:
     paths:
       - 'tests/private-room-1000-transport.test.cjs'
       - 'tests/private-room-burst-diagnostic.test.cjs'
+      - 'tests/unified-crew-room.test.cjs'
+      - 'panel-mosaic-lab/cockpit/crew-cockpit-v1.js'
       - '.github/workflows/private-room-1000-regression.yml'
 permissions:
   contents: read
