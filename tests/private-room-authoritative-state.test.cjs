@@ -51,12 +51,12 @@ test('authoritative crew room keeps latest FO overhead detent across stale host 
   const idempotent='fo-verified-req-001';
   const same={roomId,client:foClient,requestId:idempotent,
     command:{type:'toggle',id:'battery-master',value:'OFF'}};
-  const once=await fo('command',same);
+  const acceptedReceipt=await fo('command',same);
   const twice=await fo('command',same);
-  assert.equal(once.status,200);
+  assert.equal(acceptedReceipt.status,200);
   assert.equal(twice.status,200);
   assert.equal(twice.data.duplicate,true);
-  assert.equal(twice.data.sequence,once.data.sequence,
+  assert.equal(twice.data.sequence,acceptedReceipt.data.sequence,
     'Lost HTTP responses must not re-execute physical controls');
   assert.equal((await fo('command',{...same,
     command:{type:'toggle',id:'battery-master',value:'ON'}})).status,409);
@@ -65,7 +65,7 @@ test('authoritative crew room keeps latest FO overhead detent across stale host 
   assert.equal(state.overhead.toggles['battery-master'],'OFF',
     'Newer FO command must defeat stale host snapshot');
   assert.equal(state.overhead.rotaries['ignition-source'],'BOTH');
-  assert.equal(state.sequence,once.data.sequence);
+  assert.equal(state.sequence,acceptedReceipt.data.sequence);
   const issued=await c('command',{roomId,client:capClient,
     command:{type:'loadFlight',id:'flight',value:{airport:'OIII',runway:'29L',preset:'FINAL_10'}}});
   assert.equal(issued.status,200);
