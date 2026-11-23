@@ -368,8 +368,10 @@
     drain();
   }
   function receiveScenario(scenario) {
+    const previousGeneration = activeScenario?.generation ?? null;
     activeScenario = scenario?.active ? scenario : null;
-    lastScenarioReport = '';
+    if ((activeScenario?.generation ?? null) !== previousGeneration)
+      lastScenarioReport = '';
     if (activeScenario?.config?.preset === 'FINAL_10' && role !== 'observer') {
       const config=activeScenario.config, current=flight()?.getState?.();
       const matching = current?.preset === config.preset &&
