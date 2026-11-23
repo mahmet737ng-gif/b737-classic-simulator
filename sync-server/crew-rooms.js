@@ -75,6 +75,24 @@ const STORED_CONTROL_TYPES = new Set([
   'speedbrake','startLever','throttle','cb'
 ]);
 const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
+const INVALIDATED_BY_SCENARIO = new Set([
+  'flap','gear','autobrake','speedbrake','throttle','startLever',
+  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer'
+]);
+const FINAL10_OVERHEAD_IDS = new Set([
+  'bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r',
+  'isolation-valve','gen-1','gen-2','apu-gen-1','apu-gen-2','apu-start',
+  'landing-out-l','landing-out-r','landing-in-l','landing-in-r',
+  'strobe','position-lights','anti-collision','logo','wing-lights',
+  'runway-turnoff-l','runway-turnoff-r','taxi'
+]);
+function invalidatedByScenario(command,scenario) {
+  if (!scenario || command.sequence >= scenario.generation) return false;
+  return INVALIDATED_BY_SCENARIO.has(command.type) ||
+    (scenario.config.preset === 'FINAL_10' &&
+     ['toggle','rotary'].includes(command.type) &&
+     FINAL10_OVERHEAD_IDS.has(command.id));
+}
 function sharedState(room) {
   const base = room.snapshot?.overhead;
   const overhead = {
@@ -470,7 +488,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         if (room.snapshot) {
           for (const command of room.commands) {
             if (command.sequence > after && command.sequence <= snapshotSequence &&
-                !['toggle', 'rotary', 'guard'].includes(command.type)) {
+                !['toggle', 'rotary', 'guard'].includes(command.type) &&
+                !invalidatedByScenario(command,room.scenario)) {
               frame(res, command, 'command');
             }
           }
@@ -478,7 +497,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         }
         const replayFrom = Math.max(after, snapshotSequence);
         for (const command of room.commands) {
-          if (command.sequence > replayFrom) frame(res, command, 'command');
+          if (command.sequence > replayFrom &&
+              !invalidatedByScenario(command,room.scenario)) frame(res, command, 'command');
         }
         if (room.flight) frame(res, room.flight, 'flight');
         frame(res, sharedState(room), 'shared');
@@ -685,11 +705,13 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false};
         // A new flight preset replaces the previous physical configuration.
         // Do not replay stale flap/MCP/autobrake detents over FINAL_10 READY.
-        for (const key of room.sharedControls.keys()) {
-          if (['flap','gear','autobrake','speedbrake','throttle','startLever',
-               'mcpMode','mcpValue','mcpHardware','trim'].includes(key.split(':')[0]))
-            room.sharedControls.delete(key);
+        for (const [name, older] of room.sharedControls) {
+          if (invalidatedByScenario(older,room.scenario))
+            room.sharedControls.delete(name);
         }
+        // The host will provide a fresh post-preset snapshot. No stale OH
+        // baseline may be replayed while FINAL_10 systems are configuring.
+        room.snapshot=null;
       } else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
       if (receiptKey) {
