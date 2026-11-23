@@ -470,7 +470,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fcc-flight-runtime-v1.js?v=FLT-UI-SLIM-0001&amp;fd=EADI-DIRECT-0002&amp;ils=SHI-CH4-0004 */
+/* ./fcc-flight-runtime-v1.js?v=FCC-FD-SPEED-20261123&amp;fd=EADI-DIRECT-0002&amp;ils=SHI-CH4-0004 */
 try{
 /* Live scenario FCC coupler, EADI F/D source, and FCOM §4.20 A/P protections.
  * Reads only already-modeled flight/airdata and existing MCP AFDS owners.
@@ -503,11 +503,12 @@ try{
   const radio=win.B737ClassicILSApproachCH4V1?.evaluate?.({
    output,flight:frame,snapshot:snap,declinationDeg:variation})||null;
   const t=win.B737UnifiedTOGACh4V1?.getState?.();
-  const togaActive=t?.phase==='GA';
+  const togaActive=t?.phase==='TO'||t?.phase==='GA';
   return {fmcTrackValid:false,fmcVerticalValid:false,
    courseTrackValid:radio?.courseTrackValid===true,courseDeg:radio?.courseDeg??null,
    glideValid:radio?.glideValid===true,gsVsFpm:radio?.gsVsFpm??null,
-   togaActive,togaPitchDeg:togaActive?t.fdPitchDeg:null,
+   togaActive,togaFdAutoPopUp:togaActive&&t.fdAutoPopUp===true,
+   togaPitchDeg:togaActive?t.fdPitchDeg:null,
    togaTrackDeg:togaActive?t.fdRollTrackDeg:null,
    togaVsFpm:togaActive?(t.singleEngine?1000:1500):null,
    radio,magneticVariationDeg:variation,magneticVariationSource:field?.source??null};
@@ -546,9 +547,12 @@ try{
   // TO/GA guidance remains subject to independent director-axis validity.
   // No blank mode may gain an invented cross-axis command.
   const pitchGoal=togaGuidance?toga.fdPitchDeg:view.pitchCommandDeg;
-  const rollGoal=togaGuidance?0:view.rollCommandDeg;
+  const rollGoal=togaGuidance&&!out?.modes?.lateral?0:view.rollCommandDeg;
   if(showPitch&&Number.isFinite(pitchGoal))
-   directorServo.pitch=directorServo.pitch===null?frame.pitchDeg:
+   // FCOM ground-roll detents must appear immediately at -10/+15.
+   // Once airborne speed control starts, pitch command remains rate limited.
+   directorServo.pitch=toga?.phase==='TO'&&toga.speedGuidanceActive!==true?
+    pitchGoal:directorServo.pitch===null?frame.pitchDeg:
     slew(directorServo.pitch,pitchGoal,2.2);
   else directorServo.pitch=null;
   if(showRoll&&Number.isFinite(rollGoal))
