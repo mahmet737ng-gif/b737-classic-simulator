@@ -25,6 +25,8 @@
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
  const finite=(v,lo,hi,name)=>{const n=Number(v);if(!Number.isFinite(n)||n<lo||n>hi)throw RangeError(name);return n;};
  const AIRPORTS=Object.freeze({
+  OIFM:Object.freeze({icao:'OIFM',name:'Esfahan / Shahid Beheshti International',lat:32.75083333,lon:51.86277778,elevationFt:5058,defaultRunway:'25R',
+   runways:Object.freeze({ '07L':77.93,'25R':257.96,'07R':77.93,'25L':257.96 })}),
   OIMM:Object.freeze({icao:'OIMM',name:'Mashhad / Shahid Hashemi Nejad',lat:36.2348333,lon:59.643,elevationFt:3263,defaultRunway:'31R',
    runways:Object.freeze({ '13L':134,'13R':134,'31L':314,'31R':314 })}),
   OIII:Object.freeze({icao:'OIII',name:'Tehran / Mehrabad',lat:35.6891667,lon:51.3143333,elevationFt:3962,defaultRunway:'29L',
