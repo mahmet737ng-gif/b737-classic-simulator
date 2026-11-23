@@ -17,7 +17,16 @@
  const scenario=()=>getFlight()?.getState?.()??null;
  function context(light=false){
   const f=scenario(),m=mcp(),c=m?.controls||{},engines=light?null:owner()?.getPropulsionSnapshot?.()?.engines;
-  return {groundReady:f?.phase==='GROUND_READY',airborne:f?.airborne===true,
+  return {groundReady:['GROUND_READY','TAKEOFF_ROLL'].includes(f?.phase),
+   airborne:f?.airborne===true,
+   // This Unified trainer explicitly requests V2+15. Pure Chapter 4 core
+   // retains the FCOM V2+20 default for reference/profile tests.
+   takeoffSpeedIncrementKt:15,
+   vsFpm:f?.vsFpm,pitchDeg:f?.pitchDeg,
+   massKg:f?.massKg,flapActualDeg:f?.flapActual,
+   availableN1Percent:f?.propulsion?.n1Equivalent??null,
+   sinceLiftoffSec:state.liftoffSec===null?0:
+    Math.max(0,state.elapsedSec-state.liftoffSec),
    radioAltitudeFt:f?.radioAltitudeFt,iasKt:f?.iasKt,groundTrackDeg:f?.trueTrackDeg??f?.trueHeadingDeg,
    fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,
    allowFdAutoEngage:f?.airborne===true&&Number.isFinite(f?.radioAltitudeFt)&&f.radioAltitudeFt<2000,
