@@ -6,7 +6,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const isn=read('panel-mosaic-lab/cockpit/isn-cockpit.js');
 const overhead=read('panel-mosaic-lab/cockpit/overhead-bridge.js');
 test('ISN readiness waits for actual Overhead physical packet, never the optional APU startup preset',()=>{
- assert.match(isn,/startupSynchronized:()=>liveGateway\.initialized&&!!lastPhysicalPacket/);
+ assert.match(isn,/startupSynchronized:\\(\\)=>liveGateway\\.initialized&&!!lastPhysicalPacket/);
  assert.doesNotMatch(isn,/startupSynchronized:()=>liveGateway\.initialized&&apuDefaultBootChecked/);
  assert.match(isn,/getStartupReadiness:()=>\(\{/);
  assert.match(isn,/ownerBatteryMounted:!!ownerElectricalGuards\(\)\['battery-master'\]/);
