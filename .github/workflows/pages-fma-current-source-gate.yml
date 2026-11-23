@@ -1,0 +1,19 @@
+name: Pages FMA current-source gate
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/cockpit/eadi-cws-fma-status-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - '.github/workflows/pages-fma-current-source-gate.yml'
+jobs:
+  fma:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node panel-mosaic-lab/cockpit/eadi-cws-fma-status-v1.test.cjs
+      - run: node panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.test.cjs
+      - run: node panel-mosaic-lab/cockpit/eadi-fma-mcp-live-v1.test.cjs
