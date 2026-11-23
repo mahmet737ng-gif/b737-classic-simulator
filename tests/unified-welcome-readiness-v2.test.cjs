@@ -16,6 +16,8 @@ test('source: no partially ready main instrument panel may enter flight',()=>{
  assert.equal(baseline.percent,78);
  assert.equal(baseline.mainReady,true);assert.equal(baseline.canEnter,true);
  const visualOnly=sample();visualOnly.full.instruments=false;
+ visualOnly.visual.aft=true;visualOnly.visual.pedestal=true;
+ visualOnly.full.overhead=true;
  const broken=Gate.evaluate(visualOnly);
  assert.ok(broken.percent>=Gate.MIN_PERCENT,'score alone must not permit entry');
  assert.equal(broken.canEnter,false);
