@@ -113,6 +113,10 @@
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
    glideslopeBelowDots:gsBelowDots,flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
+   // Instructor automation is independent of the aircraft's physical A/P.
+   takeoffAutoMode:kind==='RUNWAY_READY',
+   rotationSpeedKt:145,rotationRateDegSec:2.5,rotationTargetDeg:10,
+   rotationStarted:false,
    autoSlatRequest:false,aeroEnvelope:null,altitudeCapture:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
    notices:['TRAINING_SURROGATE','NO_FCOM_PERFORMANCE_CLAIM',anchor.source]};
@@ -144,7 +148,10 @@
     break;
    case 'PITCH':
     next.target.pitchDeg=finite(action.value,-10,15,'PITCH');
-    next.target.verticalMode='PITCH';next.altitudeCapture=null;break;
+    next.target.verticalMode='PITCH';next.altitudeCapture=null;
+    if(action.source!=='TRAINER_AUTO_TO'&&action.source!=='FCC_CMD')
+     next.takeoffAutoMode=false;
+    break;
    case 'VS':
     next.target.vsFpm=finite(action.value,-5000,5000,'VS');
     next.target.verticalMode='VS';next.altitudeCapture=null;
@@ -275,10 +282,18 @@
   s.aeroEnvelope=assessAero();
   s.autoSlatRequest=requested;
   if(groundRoll){
-   s.pitchDeg=s.iasKt>=128?clamp((s.iasKt-128)*.65,0,9):0;
-   if(s.iasKt>=145){
+   // VR=145 kt in this classroom scenario. No pre-rotation at 128 kt.
+   // Liftoff is conditional on actual pitch, NOT merely IAS >= VR.
+   if(s.takeoffAutoMode===true&&s.iasKt>=s.rotationSpeedKt){
+    s.rotationStarted=true;
+    s.pitchDeg=clamp(state.pitchDeg+s.rotationRateDegSec*dt,0,s.rotationTargetDeg);
+    s.flightControl={source:'TRAINER_AUTO_ROTATION_NOT_AP',
+     desiredPitchDeg:s.rotationTargetDeg,commandedPitchDeg:s.pitchDeg};
+   }else if(s.takeoffAutoMode===true)s.pitchDeg=0;
+   if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
-    s.target.verticalMode='VS';s.target.vsFpm=1500;
+    s.target.verticalMode='PITCH';s.target.pitchDeg=15;
+    s.target.vsFpm=1500;
    }
   }
   if(!s.airborne){
