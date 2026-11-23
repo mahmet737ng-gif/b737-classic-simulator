@@ -1,8 +1,8 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const geo=require('../engine/flight/iran-radio-navaids-v1.js');
 const cockpit=path.join(__dirname,'../panel-mosaic-lab/cockpit');
-test('all eleven real facilities and the MHD airport-code alias',()=>{
- assert.equal(geo.STATIONS.length,11);
+test('preserve all eleven legacy facilities while expanding Iran AIP navaids',()=>{
+ assert.ok(geo.STATIONS.length>=26,'new NDB/VOR/ILS records must not replace legacy facilities');
  assert.equal(geo.byIdent('MHD').ident,'MSD');
  for(const id of ['TRN','IKA','MSD','SYZ','IFN','DHN','IMSD','ITRN','IIKA','ISYZ','ITHL'])assert.ok(geo.byIdent(id));
  assert.equal(geo.byIdent('IMSD').freqKhz,109900);
