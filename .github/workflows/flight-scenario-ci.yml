@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'engine/flight/**'
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/classic-toga-ch4-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
       - 'engine/instruments/flight-display-motion-v1.js'
       - 'engine/instruments/mechanical-number-wheels-v1.js'
       - 'panel-mosaic-lab/cockpit/flight-display-motion-unified-v1.js'
@@ -69,6 +72,13 @@ on:
       - '.github/workflows/flight-scenario-ci.yml'
   pull_request:
     paths:
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/classic-toga-ch4-v1.test.cjs'
+      - 'engine/afds/fcc-flight-guidance-v1.js'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+      - 'tests/fcc-director-visual-servo-v1.test.cjs'
+      - 'tests/fcc-flight-guidance-v1.test.cjs'
       - 'engine/flight/**'
       - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
       - 'tests/flight-scenario-core-v1.test.cjs'
@@ -113,6 +123,8 @@ jobs:
           node --check panel-mosaic-lab/cockpit/avionics-network-runtime-v1.js
           node --check panel-mosaic-lab/cockpit/flight-instrument-dynamics-v1.js
           node --check panel-mosaic-lab/cockpit/flight-needles-unified.js
+          node --check engine/afds/classic-toga-ch4-v1.js
+          node --check panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js
           node --check engine/afds/autothrottle-speed-servo-v1.js
           node --check engine/afds/fcc-flight-guidance-v1.js
           node --check engine/afds/fcom-ch4-ap-protection-v1.js
@@ -126,4 +138,4 @@ jobs:
       - name: Flight instrument photo socket placement QA
         run: node --test panel-mosaic-lab/cockpit/instrument-lab/photo-gauge-registration-v1.test.cjs
       - name: Deterministic flight scenario acceptance tests
-        run: node --test tests/flight-scenario-core-v1.test.cjs tests/classic-low-speed-envelope-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/flight-display-motion-v1.test.cjs tests/mechanical-number-wheels-v1.test.cjs tests/photo-gauge-mcp-speed-bugs-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/photo-gauge-rolling-svg-v1.test.cjs tests/flight-scenario-stop-guard-v1.test.cjs tests/unified-efis-source-health-v1.test.cjs tests/flight-scenario-efis-continuity-v1.test.cjs tests/classic-tcas-v1.test.cjs tests/classic-tcas-display-v1.test.cjs tests/classic-tcas-v2.test.cjs tests/classic-tcas-integration-v2.test.cjs tests/flight-phase-shell-v1.test.cjs
+        run: node --test engine/afds/classic-toga-ch4-v1.test.cjs tests/flight-scenario-core-v1.test.cjs tests/classic-low-speed-envelope-v1.test.cjs tests/autothrottle-speed-servo-v1.test.cjs tests/flight-dynamics-gauges-v1.test.cjs tests/flight-instrument-bridge-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcom-ch4-ap-protection-v1.test.cjs tests/fcom-ch4-mcp-disengagement-v1.test.cjs tests/selected-heading-reference-v1.test.cjs tests/ehsi-selected-heading-svg-v1.test.cjs tests/wmm2025-magnetic-v1.test.cjs tests/flight-scenario-magnetic-ui-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/flight-display-motion-v1.test.cjs tests/mechanical-number-wheels-v1.test.cjs tests/photo-gauge-mcp-speed-bugs-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/photo-gauge-rolling-svg-v1.test.cjs tests/flight-scenario-stop-guard-v1.test.cjs tests/unified-efis-source-health-v1.test.cjs tests/flight-scenario-efis-continuity-v1.test.cjs tests/classic-tcas-v1.test.cjs tests/classic-tcas-display-v1.test.cjs tests/classic-tcas-v2.test.cjs tests/classic-tcas-integration-v2.test.cjs tests/flight-phase-shell-v1.test.cjs
