@@ -535,8 +535,31 @@ const crewCockpitReady=crewReady && crewDialog.includes('data-crew-enter') &&
   optimizedSource(cockpitSource+'crew-cockpit-v1.js');
 const crewOrigin=process.env.CREW_ORIGIN || (process.env.RAILWAY_PUBLIC_DOMAIN ?
   'https://'+process.env.RAILWAY_PUBLIC_DOMAIN : 'http://127.0.0.1');
+const roomStore={
+  async findHostedRoom(manager, at) {
+    const result=await pool.query(
+      'SELECT room FROM unified_crew_rooms WHERE manager=$1 AND expires_at>$2',[manager,at]);
+    return result.rows[0]?.room;
+  },
+  async findInvitedRoom(invitationHash, at) {
+    const result=await pool.query(
+      'SELECT room FROM unified_crew_rooms WHERE invitation_hash=$1 AND expires_at>$2',[invitationHash,at]);
+    return result.rows[0]?.room;
+  },
+  async createRoom(record, invitationHash, at) {
+    const result=await pool.query(`
+      INSERT INTO unified_crew_rooms (manager, expires_at, invitation_hash, room)
+      VALUES ($1,$2,$3,$4)
+      ON CONFLICT (manager) DO UPDATE SET
+        expires_at=EXCLUDED.expires_at, invitation_hash=EXCLUDED.invitation_hash, room=EXCLUDED.room
+      WHERE unified_crew_rooms.expires_at<=$5
+      RETURNING room`,[record.manager,record.expires,invitationHash,JSON.stringify(record),at]);
+    return result.rows[0]?.room ?? roomStore.findHostedRoom(record.manager,at);
+  }
+};
 const crew=createCrewRoomHandler({
   origin: crewOrigin,
+  roomStore,
   ownerUsername: UNLIMITED_USER,
   reservedUsernames: [USER, ...Object.keys(EXTRA_USERS)],
   gatewayIdentity: unifiedIdentity,
@@ -1059,6 +1082,8 @@ async function start() {
   await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS registered_at timestamptz NOT NULL DEFAULT now()");
   if(crewReady)await pool.query('CREATE TABLE IF NOT EXISTS unified_crew_accounts ('+
     'account_key text PRIMARY KEY, username text NOT NULL, verifier text NOT NULL)');
+  if(crewReady)await pool.query('CREATE TABLE IF NOT EXISTS unified_crew_rooms ('+
+    'manager text PRIMARY KEY, expires_at bigint NOT NULL, invitation_hash text UNIQUE NOT NULL, room jsonb NOT NULL)');
   await navdata.initialize();
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.
