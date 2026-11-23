@@ -68,6 +68,37 @@ function overheadSnapshot(value) {
   };
 }
 const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
+const STORED_CONTROL_TYPES = new Set([
+  'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
+  'commTransfer','navMode','autobrake','trim','flap','gear',
+  'speedbrake','startLever','throttle','cb'
+]);
+const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
+function sharedState(room) {
+  const base = room.snapshot?.overhead;
+  const overhead = {
+    toggles: {...(base?.toggles ?? {})},
+    rotaries: {...(base?.rotaries ?? {})},
+    guards: {...(base?.guards ?? {})}
+  };
+  const controls = [];
+  for (const entry of room.sharedControls.values()) {
+    if (entry.type === 'toggle') overhead.toggles[entry.id] = entry.value;
+    else if (entry.type === 'rotary') overhead.rotaries[entry.id] = entry.value;
+    else if (entry.type === 'guard') overhead.guards[entry.id] = {
+      guard: entry.value.open ? 'open' : 'closed', value: entry.value.value
+    };
+    else controls.push(entry);
+  }
+  controls.sort((a,b) => a.sequence-b.sequence);
+  return {sequence:room.sequence, overhead, controls, snapshotSequence:room.snapshot?.sequence ?? 0};
+}
+function publicScenario(room) {
+  const scenario = room.scenario;
+  if (!scenario) return {active:false};
+  return {active:true,generation:scenario.generation,config:scenario.config,
+    ready:scenario.ready, reports:scenario.reports};
+}
 const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
   'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
@@ -322,7 +353,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
     if (existing) return existing;
     const room = {
       ...record, members: new Map(), links: new Map(), cockpits: new Set(), commands: [],
-      sequence: 0, flying: 'captain', snapshot: null, flight: null
+      sequence: 0, flying: 'captain', snapshot: null, flight: null,
+      sharedControls: new Map(), scenario: null, applied: new Map()
     };
     rooms.set(room.id, room);
     if (room.invitation) invites.set(hash(room.invitation), {room, chooseRole: true});
@@ -447,6 +479,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
           if (command.sequence > replayFrom) frame(res, command, 'command');
         }
         if (room.flight) frame(res, room.flight, 'flight');
+        frame(res, sharedState(room), 'shared');
+        frame(res, publicScenario(room), 'scenario');
       }
       res.on('close', () => {
         room.cockpits.delete(res);
@@ -534,12 +568,14 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       publish(room);
       return send(res, 200, stateFor(room, user));
     }
-    if (['cockpit', 'command', 'flight', 'snapshot'].includes(action)) {
+    if (['cockpit', 'command', 'flight', 'snapshot', 'applied', 'scenarioStatus'].includes(action)) {
       purge(room);
       const member = room.members.get(key);
       if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
       member.lastSeen = now();
-      if (action === 'cockpit') return send(res, 200, stateFor(room, user));
+      if (action === 'cockpit') return send(res, 200, {
+          ...stateFor(room, user), shared: sharedState(room), scenario: publicScenario(room)
+        });
       if (member.role === 'observer') throw new RequestError(403, 'Observer is read-only.');
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
         throw new RequestError(400, 'Invalid cockpit connection.');
@@ -581,9 +617,16 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (++member.commandCount > 65) throw new RequestError(429, 'Too many cockpit commands.');
       const entry = {...command, sequence: ++room.sequence, client: data.client};
       if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
+      if (STORED_CONTROL_TYPES.has(command.type))
+        room.sharedControls.set(command.type + ':' + command.id, entry);
+      if (command.type === 'loadFlight') {
+        room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false};
+      } else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
       if (room.commands.length > 2400) room.commands.shift();
       broadcast(room, 'command', entry);
+      if (command.type === 'loadFlight' || command.type === 'stopFlight')
+        broadcast(room, 'scenario', publicScenario(room));
       return send(res, 200, {sequence: entry.sequence});
     }
     if (action === 'invite') {
