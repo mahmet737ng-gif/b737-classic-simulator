@@ -54,6 +54,7 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
   {id:'logo',states:['OFF','AUTO','ON']},
  ];
  let flap=0,actualFlap=0,flapOwnerReady=false,autobrake='OFF',autobrakePhase='OFF',runNext=null;
+ let overheadMounted=false;
  const sw={
   getRegistry:()=>({controls:definitions}),
   getState:()=>oh,
@@ -105,7 +106,7 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
    applyFinal10Preset:x=>{selected.mcp=x;return {accepted:true};}},
   dispatchEvent:x=>events.push(x),
   setInterval:fn=>{runNext=fn;return 13;},clearInterval(){},addEventListener(){},location:{origin:'https://unified.test'},
-  document:{getElementById:id=>id==='overheadFrame'?{contentWindow:{
+  document:{getElementById:id=>id==='overheadFrame'&&overheadMounted?{contentWindow:{
    B737OverheadToggles:sw,
    B737LEDevicesTrainer:{presetFinal10ReadyFlaps(){
     flapOwnerReady=true;actualFlap=30;return {lever:30};
@@ -119,8 +120,12 @@ test('Cockpit 10 NM simulator uses one physical owner per system and reports all
  const response=cockpit.B737Final10ApproachPresetV1.apply(state);
  assert.equal(response.started,true);
  assert.equal(typeof runNext,'function');
+ assert.equal(cockpit.B737Final10ApproachPresetV1.getStatus().checks.OVERHEAD.ok,false);
+ overheadMounted=true;
+ runNext();
  runNext(); // Wait for confirmed Electrical V7 contactor source on next preset cycle.
  const result=cockpit.B737Final10ApproachPresetV1.getStatus().checks;
+ assert.equal(result.OVERHEAD.ok,true);
  assert.equal(result.ENGINE_1.ok,true);
  assert.equal(result.ENGINE_2.ok,true);
  assert.equal(result.APU_OFF.ok,true);

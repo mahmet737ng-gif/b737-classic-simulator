@@ -10,6 +10,7 @@
  const docs=win.document,GET=()=>win.B737UnifiedFlightScenarioV1?.getState?.();
  const rad=Math.PI/180,normal=x=>(x%360+360)%360;
  let serial=0,timer=null,check=null,flapPresetSentFor=null,flapPresetLastAt=0;
+ let applying=false;
  const genPulseLastAt={1:0,2:0};
  const STRATEGY={
   OIII:{vor:'TRN',ilsByRunway:{'29L':'ITHL'}},
@@ -54,6 +55,7 @@
  function applyOverhead(){
   const w=child();
   if(!w){result('OVERHEAD',false,'OVERHEAD_FRAME_NOT_READY');return;}
+  result('OVERHEAD',true,'OVERHEAD_FRAME_READY');
   // Engine start preset is applied BEFORE switching away from APU power.
   const eng=win.B737ISNCockpitV1;
   const phases=eng?.getStartState?.()?.phase||{};
@@ -85,7 +87,10 @@
   const both=running.engine1==='RUNNING'&&running.engine2==='RUNNING';
   const electrical=eng?.getElectricalState?.();
   let evaluated=null;
-  try{evaluated=electrical?win.B737ElectricalV7?.evaluate?.(electrical):null;}
+  try{
+   evaluated=electrical?win.B737ElectricalV7?.evaluate?.(electrical):null;
+   if(evaluated)result('ELECTRICAL_EVALUATION',true,'ELECTRICAL_SOURCES_EVALUATED');
+  }
   catch(error){result('ELECTRICAL_EVALUATION',false,error?.message);}
   const generator1=electrical?.source?.[1]==='GEN1'&&evaluated?.bus?.generator1===true;
   const generator2=electrical?.source?.[2]==='GEN2'&&evaluated?.bus?.generator2===true;
@@ -304,14 +309,19 @@
    const live=GET();
    if(live?.preset!=='FINAL_10'||live.icao!==state.icao||live.runway!==state.runway){
     win.clearInterval(timer);timer=null;return;}
-   // Avoid reasserting physical controls once the setup is complete.
-   if(!check.MCP?.ok||!check.ENGINE_1?.ok||!check.ENGINE_2?.ok||!check.APU_OFF?.ok)
-    applyOverhead();
-   if(!check.NAV1_VOR?.ok||!check.NAV2_ILS?.ok)applyNavigation(live);
-   if(!check.FLAP_LEVER_30?.ok||!check.FLAP_ACTUAL_30?.ok||
-      !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok||
-      !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
-   if(!check.MCP?.ok)applyMcp(live);
+   applying=true;
+   try{
+    const pendingOverhead=Object.entries(check).some(([key,value])=>
+     /^(OH_|LIGHT_|OVERHEAD$|ELECTRICAL_EVALUATION$|GEN[12]_ON_BUS$)/.test(key)&&!value.ok);
+    // Run local setup on every seat, and recheck any still-mounting hardware.
+    if(pendingOverhead||!check.ENGINE_1?.ok||!check.ENGINE_2?.ok||!check.APU_OFF?.ok)
+     applyOverhead();
+    if(!check.NAV1_VOR?.ok||!check.NAV2_ILS?.ok)applyNavigation(live);
+    if(!check.FLAP_LEVER_30?.ok||!check.FLAP_ACTUAL_30?.ok||
+       !check.AUTOBRAKE_2?.ok||!check.SPEED_BRAKE_ARMED?.ok||
+       !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
+    if(!check.MCP?.ok)applyMcp(live);
+   }finally{applying=false;}
    publish();
    if(++count>=180||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){
     win.clearInterval(timer);timer=null;
@@ -323,6 +333,7 @@
  function stop(){serial++;if(timer!==null){win.clearInterval(timer);timer=null;} }
  win.addEventListener('b737:flight-scenario-stopped',stop);
  win.B737Final10ApproachPresetV1=Object.freeze({version:VERSION,apply,stop,
+  isApplying:()=>applying,
   getStatus:()=>({version:VERSION,serial,checks:check?JSON.parse(JSON.stringify(check)):{}}),
   getLiveFlapOwnerState:readFlapOwner});
 })(window);

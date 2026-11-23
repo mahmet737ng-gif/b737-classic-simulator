@@ -76,6 +76,8 @@ const CONTROL_TYPES = new Set([
   'failure', 'failureScenario', 'profile', 'efis', 'cdu',
   'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb'
 ]);
+const FLIGHT_COMMANDS = new Set(['loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight', 'failureScenario']);
+const SCENARIO_COMMANDS = new Set(['loadFlight', 'stopFlight', 'failureScenario']);
 
 function controlValue(value) {
   return typeof value === 'boolean' || Number.isFinite(value) ||
@@ -228,7 +230,13 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
     const available = role => [...room.members.values()].some(member =>
       member.role === role && [...member.streams.keys()].some(stream => room.cockpits.has(stream)));
     const controller = [room.flying, ...FLIGHT_ROLES, 'instructor'].find(available) ?? null;
-    return {roomId: room.id, counts, reserved, online, flying: room.flying, controller};
+    if (!room.flightReady) {
+      const peers = [...room.members.values()].filter(member => member.role !== 'observer' &&
+        [...member.streams.keys()].some(stream => room.flightPeers.has(stream)));
+      if (peers.length && peers.every(member => member.readyScenario === room.scenarioSequence)) room.flightReady = true;
+    }
+    return {roomId: room.id, counts, reserved, online, flying: room.flying, controller,
+      flightRevision: room.flightRevision, scenarioSequence: room.scenarioSequence, flightReady: room.flightReady};
   }
 
   function publish(room) {
@@ -322,7 +330,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
     if (existing) return existing;
     const room = {
       ...record, members: new Map(), links: new Map(), cockpits: new Set(), commands: [],
-      sequence: 0, flying: 'captain', snapshot: null, flight: null
+      sequence: 0, flying: 'captain', snapshot: null, flight: null,
+      flightRevision: 0, scenarioSequence: 0, flightReady: true, flightPeers: new Map()
     };
     rooms.set(room.id, room);
     if (room.invitation) invites.set(hash(room.invitation), {room, chooseRole: true});
@@ -427,6 +436,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (url.searchParams.get('cockpit') === '1') {
         const after = Math.max(0, Number(req.headers['last-event-id'] ?? url.searchParams.get('after')) || 0);
         room.cockpits.add(res);
+        const client = url.searchParams.get('client');
+        if (CLIENT_ID.test(client ?? '')) room.flightPeers.set(res, client);
         // A late joiner must receive the host's current controls before any
         // commands newer than that snapshot (rather than replay stale history).
         // The snapshot covers the Overhead only. Replay earlier MCP, CDU,
@@ -450,6 +461,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       }
       res.on('close', () => {
         room.cockpits.delete(res);
+        room.flightPeers.delete(res);
         member.streams.delete(res);
         member.lastSeen = now();
         publish(room);
@@ -534,7 +546,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       publish(room);
       return send(res, 200, stateFor(room, user));
     }
-    if (['cockpit', 'command', 'flight', 'snapshot'].includes(action)) {
+    if (['cockpit', 'command', 'flight', 'snapshot', 'scenarioReady', 'receipt'].includes(action)) {
       purge(room);
       const member = room.members.get(key);
       if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
@@ -544,6 +556,23 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
         throw new RequestError(400, 'Invalid cockpit connection.');
       }
+      if (action === 'scenarioReady' || action === 'receipt') {
+        const linked = [...member.streams.keys()].some(stream => room.flightPeers.get(stream) === data.client);
+        if (!linked) throw new RequestError(409, 'Cockpit stream is reconnecting.');
+        if (action === 'scenarioReady') {
+          if (data.scenarioSequence === room.scenarioSequence && member.readyScenario !== data.scenarioSequence) {
+            member.readyScenario = data.scenarioSequence;
+            publish(room);
+          }
+        } else {
+          if (!Array.isArray(data.applied) || data.applied.length > 40 ||
+              !data.applied.every(sequence => Number.isSafeInteger(sequence) && sequence > 0 && sequence <= room.sequence)) {
+            throw new RequestError(400, 'Invalid cockpit receipt.');
+          }
+          broadcast(room, 'receipt', {role: member.role, client: data.client, applied: data.applied});
+        }
+        return send(res, 200, {});
+      }
       if (action === 'snapshot') {
         if (room.manager !== key) throw new RequestError(403, 'Only the host publishes the shared cockpit snapshot.');
         const overhead = overheadSnapshot(data.overhead);
@@ -552,18 +581,29 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         return send(res, 200, {sequence: room.sequence});
       }
       if (action === 'flight') {
-        if (roster(room).controller !== member.role) throw new RequestError(403, 'Only the active flight controller publishes state.');
+        const active = roster(room);
+        if (active.controller !== member.role) throw new RequestError(403, 'Only the active flight controller publishes state.');
+        if ((data.flightRevision ?? 0) !== room.flightRevision || !active.flightReady) {
+          return send(res, 200, {accepted: false});
+        }
         if (member.flightAt !== undefined && now() - member.flightAt < 120) return send(res, 429, {error: 'Flight update too fast.'});
         if (!data.state || typeof data.state !== 'object' || !Number.isFinite(data.state.altitudeFt) ||
             !Number.isFinite(data.state.iasKt) || typeof data.paused !== 'boolean') {
           throw new RequestError(400, 'Invalid flight state.');
         }
         member.flightAt = now();
-        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role};
+        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role,
+          flightRevision: room.flightRevision};
         broadcast(room, 'flight', room.flight);
         return send(res, 200, {});
       }
       const command = crewCommand(data.command);
+      const commandId = data.commandId;
+      if (commandId !== undefined) {
+        if (!Number.isSafeInteger(commandId) || commandId <= 0) throw new RequestError(400, 'Invalid cockpit command ID.');
+        const previous = room.commands.find(entry => entry.client === data.client && entry.commandId === commandId);
+        if (previous) return send(res, 200, {sequence: previous.sequence});
+      }
       if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
@@ -579,8 +619,20 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         member.commandCount = 0;
       }
       if (++member.commandCount > 65) throw new RequestError(429, 'Too many cockpit commands.');
-      const entry = {...command, sequence: ++room.sequence, client: data.client};
-      if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
+      const entry = {...command, sequence: ++room.sequence, client: data.client, commandId};
+      if (FLIGHT_COMMANDS.has(command.type)) {
+        room.flight = null;
+        // Legacy cockpit pages have no revision field. A versioned flight
+        // transaction prevents their late samples from overwriting the load.
+        if (commandId !== undefined || room.flightRevision !== 0) room.flightRevision = entry.sequence;
+        if (SCENARIO_COMMANDS.has(command.type)) {
+          room.scenarioSequence = room.flightRevision;
+          room.flightReady = command.type !== 'loadFlight' || commandId === undefined;
+        }
+        entry.flightRevision = room.flightRevision;
+        entry.scenarioSequence = room.scenarioSequence;
+        entry.flightReady = room.flightReady;
+      }
       room.commands.push(entry);
       if (room.commands.length > 2400) room.commands.shift();
       broadcast(room, 'command', entry);

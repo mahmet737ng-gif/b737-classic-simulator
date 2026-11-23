@@ -9,7 +9,8 @@
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  let tickErrorCount=0,lastTickError=null,crewFollower=false;
- const crewEvent=(type,value)=>win.dispatchEvent(new CustomEvent('b737:crew-flight-command',{detail:{type,value}}));
+ const crewRequest=(type,value)=>win.dispatchEvent(new CustomEvent('b737:crew-flight-command',{
+  cancelable:true,detail:{type,value}}))===false;
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0009-FINAL10-STARTPAUSE';
  const html=`
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
@@ -146,11 +147,15 @@
  }
  function togglePause(){
   if(!active||!state)return false;
-  pause=!pause;lastTick=performance.now();
+  if(crewRequest('pauseFlight',!pause))return true;
+  return setPaused(!pause);
+ }
+ function setPaused(value){
+  if(!active||!state)return false;
+  pause=value===true;lastTick=performance.now();
   publish();updateUI();
   status((pause?'PAUSED':'RUNNING')+' · '+state.icao+' RWY '+state.runway+
    ' · '+state.phase+' · '+Math.round(state.iasKt)+' KT');
-  crewEvent('pauseFlight',pause);
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-paused',{
    detail:{paused:pause,icao:state.icao,runway:state.runway,preset:state.preset}}));
   return true;
@@ -170,13 +175,14 @@
   }
   if(takeoffButton)takeoffButton.disabled=!state||!(state.phase==='GROUND_READY'||(state.airborne===true&&state.radioAltitudeFt<2000));
  }
- function stop(){
+ function stop(shared=false){
   // Never withdraw the only IRS/ADC/RA telemetry source while the aircraft
   // is airborne. Core STOP already prohibits this; the panel/API must match.
   if(active&&state?.airborne===true){
    status('STOP FEED BLOCKED WHILE AIRBORNE · land first; use PAUSE if required.',true);
    return false;
   }
+  if(shared!==true&&crewRequest('stopFlight',true))return true;
   try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
   catch(error){console.warn('ISN flight context restore',error);}
   active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;
@@ -189,7 +195,6 @@
   by('flightPause').textContent='PAUSE';
   status('Scenario feed stopped. IFR/IRS consumers will use their existing sources or show source unavailable.');
   updateUI();
-  crewEvent('stopFlight',true);
   win.dispatchEvent(new CustomEvent('b737:flight-scenario-stopped',{detail:{version:VERSION}}));
   return true;
  }
@@ -231,35 +236,45 @@
    }
    const next=Core.newScenario(config,approachThresholds(config));
    if(typeof beforeStart==='function')beforeStart();
-   state=next;
-   win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
-   active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
-   syncInitialEngineContext();
-   if(preset!=='MANUAL'){
-    by('flightAlt').value=Math.round(state.altitudeFt);
-    const mag=magneticHeading(state.trueHeadingDeg,state);
-     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
-    by('flightSpeed').value=Math.round(state.iasKt);
-   }
-   publish();lastPublish=performance.now();updateUI();
-   if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
-   crewEvent('loadFlight',config);
-   status((pause?'PAUSED / READY':'ACTIVE')+' · '+state.icao+' RWY '+
-    state.runway+' · '+state.phase+' · '+state.georefQuality);
+   if(crewRequest('loadFlight',config))status('Waiting for the shared FLT PHASE load.');
+   else activateScenario(next);
    return true;
   }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);return false;}
+ }
+ function activateScenario(next){
+  win.B737Final10ApproachPresetV1?.stop?.();
+  state=next;
+  const {preset}=state;
+  active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+  lastPropulsionAt=0;lastPropulsion=null;lastEngineContextAt=0;
+  win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
+  syncInitialEngineContext();
+  if(preset!=='MANUAL'){
+   by('flightAlt').value=Math.round(state.altitudeFt);
+   const mag=magneticHeading(state.trueHeadingDeg,state);
+   by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
+   by('flightSpeed').value=Math.round(state.iasKt);
+  }
+  publish();lastPublish=performance.now();updateUI();
+  if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+  status((pause?'PAUSED':'ACTIVE')+' · '+state.icao+' RWY '+state.runway+' · '+state.phase+' · '+state.georefQuality);
+  return snapshot();
  }
  function targets(){
   if(!active||!state){status('Load a scenario first.',true);return;}
   try{
-   state=Core.command(state,{type:'SPEED',value:v('Speed')});
-   state=Core.command(state,{type:'HEADING',value:trueHeading(v('Heading'),state)});
+   const heading=trueHeading(v('Heading'),state);
+   let next=Core.command(state,{type:'SPEED',value:v('Speed')});
+   next=Core.command(next,{type:'HEADING',value:heading});
    // Altitude capture is available; VS and bank follow the flight model/MCP.
    if(Math.abs(v('Alt')-state.altitudeFt)>50)
-    state=Core.command(state,{type:'ALTITUDE',value:v('Alt')});
-   crewEvent('flightTargets',{speedKt:state.target.speedKt,
-    headingDeg:trueHeading(v('Heading'),state),altitudeFt:v('Alt')});
-   status('Targets accepted — aircraft changes heading/bank, IAS and altitude over simulated time.');
+    next=Core.command(next,{type:'ALTITUDE',value:v('Alt')});
+   if(crewRequest('flightTargets',{speedKt:next.target.speedKt,headingDeg:heading,altitudeFt:v('Alt')})){
+    status('Waiting for shared flight targets.');
+   }else{
+    state=next;
+    status('Targets accepted — aircraft changes heading/bank, IAS and altitude over simulated time.');
+   }
   }catch(error){status('INVALID TARGET: '+String(error.message||error),true);}
  }
  function followMcp(){
@@ -427,13 +442,7 @@
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
-  loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));
-   win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
-   active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
-   syncInitialEngineContext();
-   publish();lastPublish=performance.now();updateUI();
-   if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
-   return snapshot();},
+  loadScenario:config=>activateScenario(Core.newScenario(config,approachThresholds(config))),
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   crewFollower:value=>{crewFollower=value===true;lastTick=performance.now();},
@@ -445,7 +454,7 @@
    }
    publish();updateUI();
   },
-  pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
+  pause:setPaused,togglePause,stop,
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
    lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,

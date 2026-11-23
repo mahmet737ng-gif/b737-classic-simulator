@@ -38,6 +38,14 @@
    dispatch(ecu,{id:'apu-start',kind:'toggle',next:'START',reason:'SNAPSHOT_RECOVERY'});
    recovered.push('apu-start');
   }
+  // A shared cockpit may receive the stable switch position after missing
+  // the selector's OFF event. Recover the physical shutdown once, without
+  // resetting a shutdown timer that is already running.
+  if(packet.toggles['apu-start']==='OFF'&&
+    !['OFF','STOPPING','PROTECTIVE_SHUTDOWN'].includes(ecu.chain.get().phase.apu)){
+   dispatch(ecu,{id:'apu-start',kind:'toggle',next:'OFF',reason:'SNAPSHOT_RECOVERY'});
+   recovered.push('apu-start');
+  }
   for(const [id,engine] of Object.entries(ENGINE_START))if(packet.rotaries[id]==='GRD'&&
    ecu.chain.get().phase[engine]==='OFF'){
     const response=dispatch(ecu,{id,kind:'rotary',next:'GRD',reason:'SNAPSHOT_RECOVERY'});

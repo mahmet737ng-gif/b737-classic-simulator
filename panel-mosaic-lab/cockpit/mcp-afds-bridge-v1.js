@@ -195,8 +195,9 @@ function visualRequest(e){
 function visualValue(e){
  const d=e.detail;
  if(!d||d.method==="external"||!d.control)return;
- send({type:"VALUE",id:d.control,value:d.value});
+ applySelectedValue(d.control,d.value);
 }
+function applySelectedValue(id,value){return send({type:"VALUE",id,value});}
 function decorate(){
  if(ready)return;
  const target=document.querySelector("#inspector")||document.querySelector("header")||document.body;
@@ -292,6 +293,12 @@ function applyFinal10Preset({speedKt,headingMag,courseMag,altitudeFt}={}){
 window.B737McpAFDSBridgeV1=Object.freeze({
  getState:()=>JSON.parse(JSON.stringify(state)),
  getOutput:()=>Core.output(state),
+ applySelectedValue,
+ applyCrewHardware:(id,value)=>{
+  window.B737McpHardwareV1.setState(id,value);
+  hardwareCommand({detail:{id,value}});
+  return Core.output(state);
+ },
  applyFinal10Preset,
  getApproachDiagnostics:()=>{
   const out=Core.output(state);

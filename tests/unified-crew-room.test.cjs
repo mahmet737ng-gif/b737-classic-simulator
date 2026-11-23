@@ -26,10 +26,13 @@ function fixture(req, res) {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
     res.end(`<!doctype html><button id="battery">Battery master</button><script>
       window.switchState = {'battery-master':'OFF'};
+      window.overheadAttempts = [];
+      window.B737OverheadToggles = {getState:() => window.switchState};
       window.B737CrewOverheadV1 = {
         ready: () => true,
         apply(type,id,value) {
-          if(type !== 'toggle' || id !== 'battery-master') return false;
+          window.overheadAttempts.push([type,id,value]);
+          if(type !== 'toggle' || id !== 'battery-master' || window.switchState[id] === value) return false;
           window.switchState[id] = value;
           return true;
         }
@@ -59,9 +62,12 @@ function fixture(req, res) {
       <iframe id="overheadFrame" src="/panel-mosaic-lab/cockpit/crew-overhead-test.html"></iframe>
       <script>
       window.calls=[];let sample=null,paused=false;
-      window.B737McpVisualV3={setValue:(id,value)=>calls.push([id,value])};
+      window.B737McpAFDSBridgeV1={applySelectedValue(id,value){
+        calls.push([id,value]);return {values:{[id]:value}};
+      }};
+      window.B737Final10ApproachPresetV1={apply(){},getStatus:()=>({checks:{fixture:{ok:true}}})};
       window.B737UnifiedFlightScenarioV1={
-        loadScenario(value){calls.push(['load',value.preset]);},
+        loadScenario(value){sample={preset:value.preset,target:{},altitudeFt:6820,iasKt:142};calls.push(['load',value.preset]);},
         crewFollower(){},
         followCrew(value,next){calls.push(['flight',value.altitudeFt]);sample=value;paused=next;},
         getDiagnostics(){return {paused};},getState(){return sample;}
@@ -340,6 +346,49 @@ test('late-joiner receives earlier MCP state and live Overhead updates after hos
   }
 });
 
+test('shared flight waits for both cockpit streams and rejects late samples after load and pause', async t => {
+  const {origin} = await start(t);
+  const host = client(origin);
+  const guest = client(origin);
+  await host('login', {username: 'TrainerOwner', password});
+  await host('accounts', {username: 'GuestClock', password});
+  await guest('login', {username: 'GuestClock', password});
+  const {data: invitation, cookie: hostCookie} = await host('create', {role: 'captain'});
+  const {roomId} = invitation;
+  const {cookie: guestCookie} = await guest('join', {roomId, role: 'firstOfficer', invite: invitation.roomInvite});
+  const lead = {roomId, client: 'captain-clock-01'};
+  const wing = {roomId, client: 'firstofficer-clock-01'};
+  const abort = new AbortController();
+  t.after(() => abort.abort());
+  for (const [seat, cookie] of [[lead, hostCookie], [wing, guestCookie]]) {
+    const stream = await fetch(`${origin}${prefix}/events?room=${roomId}&cockpit=1&client=${seat.client}`,
+      {headers: {Cookie: cookie}, signal: abort.signal});
+    assert.equal(stream.status, 200);
+  }
+
+  const load = {...wing, commandId: 1, command: {type: 'loadFlight', id: 'flight', value: {preset: 'FINAL_10'}}};
+  const sample = {...lead, state: {altitudeFt: 6820, iasKt: 142}, paused: true};
+  const accepted = await guest('command', load);
+  assert.equal(accepted.status, 200);
+  const revision = accepted.data.sequence;
+  assert.equal((await guest('command', load)).data.sequence, revision);
+  assert.equal((await host('flight', {...sample, flightRevision: 0})).data.accepted, false);
+  assert.equal((await host('flight', {...sample, flightRevision: revision})).data.accepted, false);
+  assert.equal((await host('scenarioReady', {...lead, scenarioSequence: revision})).status, 200);
+  assert.equal((await host('cockpit', lead)).data.flightReady, false);
+  assert.equal((await guest('scenarioReady', {...wing, scenarioSequence: revision})).status, 200);
+  assert.equal((await host('cockpit', lead)).data.flightReady, true);
+  assert.equal((await guest('receipt', {...wing, applied: [revision]})).status, 200);
+  assert.equal((await host('flight', {...sample, flightRevision: revision})).status, 200);
+
+  const paused = await guest('command', {...wing, commandId: 2, command: {type: 'pauseFlight', id: 'flight', value: false}});
+  assert.equal(paused.data.sequence, revision + 1);
+  const next = (await host('cockpit', lead)).data;
+  assert.equal(next.scenarioSequence, revision);
+  assert.equal(next.flightRevision, revision + 1);
+  assert.equal((await host('flight', {...sample, flightRevision: revision})).data.accepted, false);
+});
+
 test('Private Room opens after Welcome and admits signed-in and signed-out guests', {skip: !process.env.CHROME_PATH}, async t => {
   const {chromium} = require('playwright');
   const {origin} = await start(t);
@@ -430,6 +479,14 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await observer1.getByRole('button', {name: 'Zoom'}).click();
   assert.deepEqual(await observer1.evaluate(() => calls), [['heading', 35], ['heading', 35], ['zoom']]);
   assert.deepEqual(await first.evaluate(() => calls), [['heading', 35], ['heading', 35]]);
+  // An unchanged baseline must not leave a retry ahead of the first detent change.
+  await host.frameLocator('#overheadFrame').locator('#battery').evaluate(button => {
+    const child = button.ownerDocument.defaultView;
+    child.parent.postMessage({type:'b737:cockpit-overhead',kind:'controls-state',
+      toggles:{'battery-master':'OFF'},rotaries:{},guards:{}},child.location.origin);
+  });
+  await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
+    ?.overheadAttempts.some(([type,id,value]) => type === 'toggle' && id === 'battery-master' && value === 'OFF'));
   // Exercise the actual postMessage -> room command -> iframe bridge path.
   await host.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
   await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
