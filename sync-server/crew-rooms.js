@@ -68,6 +68,7 @@ function overheadSnapshot(value) {
   };
 }
 const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
+const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
 const STORED_CONTROL_TYPES = new Set([
   'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
   'commTransfer','navMode','autobrake','trim','flap','gear',
@@ -354,7 +355,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
     const room = {
       ...record, members: new Map(), links: new Map(), cockpits: new Set(), commands: [],
       sequence: 0, flying: 'captain', snapshot: null, flight: null,
-      sharedControls: new Map(), scenario: null, applied: new Map()
+      sharedControls: new Map(), scenario: null, applied: new Map(),
+      commandReceipts: new Map()
     };
     rooms.set(room.id, room);
     if (room.invitation) invites.set(hash(room.invitation), {room, chooseRole: true});
@@ -654,6 +656,18 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (command.type === 'profile' && room.manager !== key) {
         throw new RequestError(403, 'Only the host can configure the shared aircraft.');
       }
+      // A request with an explicit ID can be safely retried even if the
+      // first HTTP response was lost after the command committed.
+      const requestId=data.requestId;
+      if (requestId !== undefined && !COMMAND_REQUEST_ID.test(requestId))
+        throw new RequestError(400, 'Invalid command request ID.');
+      const receiptKey=requestId === undefined ? null : data.client+':'+requestId;
+      const receipt=receiptKey && room.commandReceipts.get(receiptKey);
+      if (receipt) {
+        if (receipt.username !== key || JSON.stringify(receipt.command) !== JSON.stringify(command))
+          throw new RequestError(409, 'A command ID cannot be reused for a different action.');
+        return send(res, 200, {sequence:receipt.sequence,duplicate:true});
+      }
       if (command.type === 'profile') {
         room.profile = aircraftProfile(command.value);
         room.snapshot = null;
@@ -678,6 +692,11 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         }
       } else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
+      if (receiptKey) {
+        room.commandReceipts.set(receiptKey,{username:key,command,sequence:entry.sequence});
+        if (room.commandReceipts.size > 3500)
+          room.commandReceipts.delete(room.commandReceipts.keys().next().value);
+      }
       if (room.commands.length > 2400) room.commands.shift();
       broadcast(room, 'command', entry);
       if (command.type === 'loadFlight' || command.type === 'stopFlight')
