@@ -1,0 +1,22 @@
+name: Pages current overhead controller regression
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/interactive-overhead/test.cjs'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'panel-mosaic-lab/interactive-overhead/app.js'
+      - '.github/workflows/pages-overhead-qa-release-gate.yml'
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node panel-mosaic-lab/interactive-overhead/test.cjs
+          node panel-mosaic-lab/interactive-overhead/rotary-guards.test.cjs
+          node panel-mosaic-lab/interactive-overhead/no-old-guards.test.cjs
+          node panel-mosaic-lab/cockpit/no-old-guards.test.cjs
