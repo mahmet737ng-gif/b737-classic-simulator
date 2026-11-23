@@ -40,8 +40,8 @@ test('native photo registration is invariant under zoom/pan/resize and respects 
   const rect={w:461*scale,h:475.5578947368421*scale};
   for(const id of Object.keys(REG.controls)){
    const g=REG.fit(id,rect),def=REG.controls[id];
-   assert.equal(g.cx,def.cx*rect.w/1235);
-   assert.equal(g.cy,def.cy*rect.h/1274);
+   assert.ok(Math.abs(g.cx-def.cx*rect.w/1235)<1e-9);
+   assert.ok(Math.abs(g.cy-def.cy*rect.h/1274)<1e-9);
    const element={style:{},dataset:{}};
    REG.apply(element,id,rect);
    assert.equal(element.dataset.enginePhotoHole,id);
