@@ -67,6 +67,7 @@ test('Post-400 ARM to N1 requires armed A/T and preserves N1 beyond 84kt',()=>{
  s=Toga.advance(s,{...ctx,iasKt:85},1);
  s=Toga.advance(s,{...ctx,airborne:true,radioAltitudeFt:401,iasKt:160,vsFpm:1100},10);
  s=Toga.advance(s,{...ctx,airborne:true,radioAltitudeFt:450,iasKt:170,vsFpm:1100},10);
+ s=Toga.advance(s,{...ctx,airborne:true,radioAltitudeFt:450,iasKt:175,vsFpm:1100},9);
  assert.equal(s.atMode,'ARM');
  assert.equal(Toga.selectN1(s,{...ctx,radioAltitudeFt:399}).atMode,'ARM');
  assert.equal(Toga.selectN1(s,{...ctx,radioAltitudeFt:450,atArmed:false}).atMode,'ARM');
