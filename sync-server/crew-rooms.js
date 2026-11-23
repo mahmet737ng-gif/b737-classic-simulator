@@ -68,6 +68,56 @@ function overheadSnapshot(value) {
   };
 }
 const CLIENT_ID = /^[a-zA-Z0-9_-]{12,64}$/;
+const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
+const STORED_CONTROL_TYPES = new Set([
+  'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
+  'commTransfer','navMode','autobrake','trim','flap','gear',
+  'speedbrake','startLever','throttle','cb'
+]);
+const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
+const INVALIDATED_BY_SCENARIO = new Set([
+  'flap','gear','autobrake','speedbrake','throttle','startLever',
+  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer'
+]);
+const FINAL10_OVERHEAD_IDS = new Set([
+  'bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r',
+  'isolation-valve','gen-1','gen-2','apu-gen-1','apu-gen-2','apu-start',
+  'landing-out-l','landing-out-r','landing-in-l','landing-in-r',
+  'strobe','position-lights','anti-collision','logo','wing-lights',
+  'runway-turnoff-l','runway-turnoff-r','taxi'
+]);
+function invalidatedByScenario(command,scenario) {
+  if (!scenario || command.sequence >= scenario.generation) return false;
+  return INVALIDATED_BY_SCENARIO.has(command.type) ||
+    (scenario.config.preset === 'FINAL_10' &&
+     ['toggle','rotary'].includes(command.type) &&
+     FINAL10_OVERHEAD_IDS.has(command.id));
+}
+function sharedState(room) {
+  const base = room.snapshot?.overhead;
+  const overhead = {
+    toggles: {...(base?.toggles ?? {})},
+    rotaries: {...(base?.rotaries ?? {})},
+    guards: {...(base?.guards ?? {})}
+  };
+  const controls = [];
+  for (const entry of room.sharedControls.values()) {
+    if (entry.type === 'toggle') overhead.toggles[entry.id] = entry.value;
+    else if (entry.type === 'rotary') overhead.rotaries[entry.id] = entry.value;
+    else if (entry.type === 'guard') overhead.guards[entry.id] = {
+      guard: entry.value.open ? 'open' : 'closed', value: entry.value.value
+    };
+    else controls.push(entry);
+  }
+  controls.sort((a,b) => a.sequence-b.sequence);
+  return {sequence:room.sequence, overhead, controls, snapshotSequence:room.snapshot?.sequence ?? 0};
+}
+function publicScenario(room) {
+  const scenario = room.scenario;
+  if (!scenario) return {active:false};
+  return {active:true,generation:scenario.generation,config:scenario.config,
+    ready:scenario.ready, reports:scenario.reports};
+}
 const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
   'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
@@ -241,6 +291,17 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
   function broadcast(room, event, payload) {
     for (const stream of room.cockpits) frame(stream, payload, event);
   }
+  function recheckScenario(room) {
+    if (!room.scenario) return;
+    const connected = role => [...room.members.values()].some(member =>
+      member.role === role && [...member.streams.keys()].some(stream => room.cockpits.has(stream)));
+    const ready = FLIGHT_ROLES.every(role =>
+      connected(role) && room.scenario.reports[role]?.complete === true);
+    if (room.scenario.ready !== ready) {
+      room.scenario.ready = ready;
+      broadcast(room, 'scenario', publicScenario(room));
+    }
+  }
 
   function closeMember(room, key, member) {
     room.members.delete(key);
@@ -249,6 +310,10 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       stream.end();
     }
     member.streams.clear();
+    if (room.scenario && FLIGHT_ROLES.includes(member.role)) {
+      delete room.scenario.reports[member.role];
+      recheckScenario(room);
+    }
   }
 
   function purge(room) {
@@ -322,7 +387,9 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
     if (existing) return existing;
     const room = {
       ...record, members: new Map(), links: new Map(), cockpits: new Set(), commands: [],
-      sequence: 0, flying: 'captain', snapshot: null, flight: null
+      sequence: 0, flying: 'captain', snapshot: null, flight: null,
+      sharedControls: new Map(), scenario: null, applied: new Map(),
+      commandReceipts: new Map()
     };
     rooms.set(room.id, room);
     if (room.invitation) invites.set(hash(room.invitation), {room, chooseRole: true});
@@ -427,6 +494,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (url.searchParams.get('cockpit') === '1') {
         const after = Math.max(0, Number(req.headers['last-event-id'] ?? url.searchParams.get('after')) || 0);
         room.cockpits.add(res);
+        recheckScenario(room);
         // A late joiner must receive the host's current controls before any
         // commands newer than that snapshot (rather than replay stale history).
         // The snapshot covers the Overhead only. Replay earlier MCP, CDU,
@@ -436,7 +504,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         if (room.snapshot) {
           for (const command of room.commands) {
             if (command.sequence > after && command.sequence <= snapshotSequence &&
-                !['toggle', 'rotary', 'guard'].includes(command.type)) {
+                !['toggle', 'rotary', 'guard'].includes(command.type) &&
+                !invalidatedByScenario(command,room.scenario)) {
               frame(res, command, 'command');
             }
           }
@@ -444,14 +513,22 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         }
         const replayFrom = Math.max(after, snapshotSequence);
         for (const command of room.commands) {
-          if (command.sequence > replayFrom) frame(res, command, 'command');
+          if (command.sequence > replayFrom &&
+              !invalidatedByScenario(command,room.scenario)) frame(res, command, 'command');
         }
         if (room.flight) frame(res, room.flight, 'flight');
+        frame(res, sharedState(room), 'shared');
+        frame(res, publicScenario(room), 'scenario');
       }
       res.on('close', () => {
         room.cockpits.delete(res);
         member.streams.delete(res);
         member.lastSeen = now();
+        if (room.scenario && FLIGHT_ROLES.includes(member.role) &&
+            ![...member.streams.keys()].some(stream => room.cockpits.has(stream))) {
+          delete room.scenario.reports[member.role];
+          recheckScenario(room);
+        }
         publish(room);
       });
       publish(room);
@@ -534,19 +611,65 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       publish(room);
       return send(res, 200, stateFor(room, user));
     }
-    if (['cockpit', 'command', 'flight', 'snapshot'].includes(action)) {
+    if (['cockpit', 'command', 'flight', 'snapshot', 'applied', 'scenarioStatus'].includes(action)) {
       purge(room);
       const member = room.members.get(key);
       if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
       member.lastSeen = now();
-      if (action === 'cockpit') return send(res, 200, stateFor(room, user));
+      if (action === 'cockpit') return send(res, 200, {
+          ...stateFor(room, user), shared: sharedState(room), scenario: publicScenario(room)
+        });
       if (member.role === 'observer') throw new RequestError(403, 'Observer is read-only.');
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
         throw new RequestError(400, 'Invalid cockpit connection.');
       }
+      if (action === 'applied') {
+        if (!FLIGHT_ROLES.includes(member.role))
+          throw new RequestError(403, 'Only pilots report cockpit application.');
+        if (!Number.isSafeInteger(data.sequence) || data.sequence <= 0 ||
+            data.sequence > room.sequence || !['APPLIED','VERIFIED','FAILED'].includes(data.status))
+          throw new RequestError(400, 'Invalid control application report.');
+        const target = room.commands.find(command => command.sequence === data.sequence);
+        if (!target) throw new RequestError(404, 'The command is no longer retained.');
+        const status = data.status, reason = typeof data.reason === 'string' ?
+          data.reason.slice(0, 160) : '';
+        const report = room.applied.get(data.sequence) ?? {};
+        report[member.role] = {status, reason};
+        room.applied.set(data.sequence, report);
+        if (room.applied.size > 512) room.applied.delete(room.applied.keys().next().value);
+        broadcast(room, 'applied', {sequence:data.sequence,type:target.type,id:target.id,reports:report});
+        return send(res, 200, {sequence:data.sequence,status});
+      }
+      if (action === 'scenarioStatus') {
+        if (!FLIGHT_ROLES.includes(member.role))
+          throw new RequestError(403, 'Only pilots report flight scenario readiness.');
+        if (!room.scenario || room.scenario.generation !== data.generation)
+          throw new RequestError(409, 'The flight scenario has changed.');
+        if (typeof data.complete !== 'boolean' || !Array.isArray(data.missing) ||
+            data.missing.length > 64 || !data.missing.every(id =>
+              typeof id === 'string' && SCENARIO_REPORT_KEYS.test(id)))
+          throw new RequestError(400, 'Invalid flight scenario readiness report.');
+        const missing = [...new Set(data.missing)];
+        const next = {complete:data.complete && missing.length === 0, missing};
+        if (JSON.stringify(room.scenario.reports[member.role]) !== JSON.stringify(next)) {
+          room.scenario.reports[member.role] = next;
+          recheckScenario(room);
+          broadcast(room, 'scenario', publicScenario(room));
+        }
+        return send(res, 200, {generation:room.scenario.generation,ready:room.scenario.ready});
+      }
       if (action === 'snapshot') {
         if (room.manager !== key) throw new RequestError(403, 'Only the host publishes the shared cockpit snapshot.');
         const overhead = overheadSnapshot(data.overhead);
+        // A late/stale host snapshot must never roll back a newer FO switch
+        // command that already entered the authoritative room state.
+        for (const entry of room.sharedControls.values()) {
+          if (entry.type === 'toggle') overhead.toggles[entry.id] = entry.value;
+          else if (entry.type === 'rotary') overhead.rotaries[entry.id] = entry.value;
+          else if (entry.type === 'guard') overhead.guards[entry.id] = {
+            guard:entry.value.open ? 'open' : 'closed',value:entry.value.value
+          };
+        }
         room.snapshot = {sequence: room.sequence, client: data.client, overhead};
         broadcast(room, 'snapshot', room.snapshot);
         return send(res, 200, {sequence: room.sequence});
@@ -567,23 +690,60 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
+      if (command.type === 'pauseFlight' && command.value === false &&
+          room.scenario?.config?.preset === 'FINAL_10' && !room.scenario.ready)
+        throw new RequestError(409, 'FINAL_10 requires Captain and FO physical readiness before START.');
       if (command.type === 'profile' && room.manager !== key) {
         throw new RequestError(403, 'Only the host can configure the shared aircraft.');
       }
-      if (command.type === 'profile') {
-        room.profile = aircraftProfile(command.value);
-        room.snapshot = null;
+      // A request with an explicit ID can be safely retried even if the
+      // first HTTP response was lost after the command committed.
+      const requestId=data.requestId;
+      if (requestId !== undefined && !COMMAND_REQUEST_ID.test(requestId))
+        throw new RequestError(400, 'Invalid command request ID.');
+      const receiptKey=requestId === undefined ? null : data.client+':'+requestId;
+      const receipt=receiptKey && room.commandReceipts.get(receiptKey);
+      if (receipt) {
+        if (receipt.username !== key || JSON.stringify(receipt.command) !== JSON.stringify(command))
+          throw new RequestError(409, 'A command ID cannot be reused for a different action.');
+        return send(res, 200, {sequence:receipt.sequence,duplicate:true});
       }
+      const nextProfile = command.type === 'profile' ? aircraftProfile(command.value) : null;
       if (!member.commandAt || now() - member.commandAt > 1000) {
         member.commandAt = now();
         member.commandCount = 0;
       }
       if (++member.commandCount > 65) throw new RequestError(429, 'Too many cockpit commands.');
+      if (nextProfile) {
+        room.profile = nextProfile;
+        room.snapshot = null;
+      }
       const entry = {...command, sequence: ++room.sequence, client: data.client};
       if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
+      if (STORED_CONTROL_TYPES.has(command.type))
+        room.sharedControls.set(command.type + ':' + command.id, entry);
+      if (command.type === 'loadFlight') {
+        room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false};
+        // A new flight preset replaces the previous physical configuration.
+        // Do not replay stale flap/MCP/autobrake detents over FINAL_10 READY.
+        for (const [name, older] of room.sharedControls) {
+          if (invalidatedByScenario(older,room.scenario))
+            room.sharedControls.delete(name);
+        }
+        // The host will provide a fresh post-preset snapshot. No stale OH
+        // baseline may be replayed while FINAL_10 systems are configuring.
+        room.snapshot=null;
+      } else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
+      if (receiptKey) {
+        room.commandReceipts.set(receiptKey,{username:key,command,sequence:entry.sequence});
+        if (room.commandReceipts.size > 3500)
+          room.commandReceipts.delete(room.commandReceipts.keys().next().value);
+      }
       if (room.commands.length > 2400) room.commands.shift();
       broadcast(room, 'command', entry);
+      if (command.type === 'loadFlight' || command.type === 'stopFlight')
+        broadcast(room, 'scenario', publicScenario(room));
       return send(res, 200, {sequence: entry.sequence});
     }
     if (action === 'invite') {

@@ -26,19 +26,29 @@ function fixture(req, res) {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
     res.end(`<!doctype html><button id="battery">Battery master</button><script>
       window.switchState = {'battery-master':'OFF'};
+      const report=()=>parent.postMessage({type:'b737:cockpit-overhead',
+        kind:'controls-state',toggles:{...window.switchState},rotaries:{},guards:{}},location.origin);
       window.B737CrewOverheadV1 = {
         ready: () => true,
+        snapshot:()=>({toggles:{...window.switchState},rotaries:{},guards:{}}),
         apply(type,id,value) {
           if(type !== 'toggle' || id !== 'battery-master') return false;
           window.switchState[id] = value;
+          report();
           return true;
         }
       };
+      window.addEventListener('message',event=>{
+        if(event.origin===location.origin&&event.source===parent&&
+          event.data?.action==='crew-sync-request') report();
+      });
+      setTimeout(()=>parent.postMessage({type:'b737:cockpit-overhead',kind:'ready'},location.origin),0);
       document.getElementById('battery').onclick = () => {
         const next = window.switchState['battery-master'] === 'ON' ? 'OFF' : 'ON';
         window.switchState['battery-master'] = next;
         parent.postMessage({type:'b737:cockpit-overhead',kind:'control-event',
           event:{kind:'toggle',id:'battery-master',next}},location.origin);
+        report();
       };
     <\/script>`);
     return;
@@ -434,10 +444,43 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await host.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
   await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
     ?.switchState['battery-master'] === 'ON');
+  // Simulate a slow/hydrating Overhead iframe on FO after a synchronized
+  // Captain switch. The fresh frame initially boots with BATTERY OFF.
+  await first.waitForTimeout(700); // host snapshot debounce is 350ms
+  await first.evaluate(() => new Promise(resolve => {
+    const frame = document.getElementById('overheadFrame');
+    frame.addEventListener('load', resolve, {once: true});
+    frame.src = '/panel-mosaic-lab/cockpit/crew-overhead-test.html?reload=1';
+  }));
+  await first.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
+    ?.switchState['battery-master'] === 'ON', null, {timeout: 7000});
   await first.frameLocator('#overheadFrame').getByRole('button', {name: 'Battery master'}).click();
   await host.waitForFunction(() => document.getElementById('overheadFrame')?.contentWindow
     ?.switchState['battery-master'] === 'OFF');
   await first.getByRole('button', {name: 'Load flight'}).click();
   await host.waitForFunction(() => calls.some(([key, value]) => key === 'load' && value === 'FINAL_10'));
   await observer1.waitForFunction(() => calls.some(([key, value]) => key === 'flight' && value === 6820));
+
+  // Reproduce a fast MCP rotation burst. Commands 66+ previously got 429
+  // and were silently lost because the client had no retry policy.
+  const beforeBurst = await first.evaluate(() => calls.filter(([key]) => key === 'heading').length);
+  await host.evaluate(() => {
+    for (let i = 0; i < 100; i++) {
+      window.dispatchEvent(new CustomEvent('b737:mcp-value-change', {detail: {control: 'heading', value: i}}));
+    }
+  });
+  await first.waitForFunction(expected =>
+    calls.filter(([key]) => key === 'heading').length >= expected, beforeBurst + 100, {timeout: 20000});
+  const observedBurst = await first.evaluate(() =>
+    calls.filter(([key]) => key === 'heading').slice(-100).map(([, value]) => value));
+  assert.deepEqual(observedBurst, Array.from({length: 100}, (_, i) => i),
+    'All 100 rapid heading updates must arrive in original sequence despite server 429');
+  const metrics = await first.evaluate(() => window.B737CrewDiagnosticsV1.report());
+  assert.ok(metrics.lastSequence >= 100, 'Crew room reports last received transport sequence');
+  assert.ok(Number.isFinite(metrics.networkP95Ms) || metrics.networkP95Ms === null);
+  assert.ok(Array.isArray(metrics.queued));
+  assert.ok(Array.isArray(metrics.recentLongTasks));
+  const render = await first.evaluate(() => window.B737CrewDiagnosticsV1.profileRender(650));
+  assert.ok(render.frames > 0 && render.approximateFps > 0,
+    'Read-only render profiler must return actual browser frames');
 });

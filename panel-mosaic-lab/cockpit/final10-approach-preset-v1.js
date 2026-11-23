@@ -16,6 +16,19 @@
   OIMM:{vor:'MSD',ilsByRunway:{'31R':'IMSD'}},
   OISS:{vor:'SYZ',ilsByRunway:{'29L':'ISYZ'}}
  };
+ // The 10 NM FINAL is READY only after EVERY owner reports success.
+ // In particular the Flap lever, TE actuator and LE FULL must all agree.
+ const REQUIRED_FINAL10=Object.freeze([
+  'ENGINE_1','ENGINE_2','GEN1_ON_BUS','GEN2_ON_BUS','APU_OFF',
+  'OH_bleed-apu','OH_bleed-eng-1','OH_bleed-eng-2','OH_pack-l','OH_pack-r',
+  'OH_isolation-valve','OH_gen-1','OH_gen-2','OH_apu-gen-1','OH_apu-gen-2',
+  'NAV1_VOR','NAV2_ILS','AUTOBRAKE_2','SPEED_BRAKE_ARMED',
+  'LANDING_GEAR_DOWN','FLAP_LEVER_30','FLAP_ACTUAL_30','MCP',
+  ...['landing-out-l','landing-out-r','landing-in-l','landing-in-r',
+   'strobe','position-lights','anti-collision','logo','wing-lights',
+   'runway-turnoff-l','runway-turnoff-r','taxi'].map(id=>'LIGHT_'+id)
+ ]);
+ const ready=()=>REQUIRED_FINAL10.every(key=>check?.[key]?.ok===true);
  function magnetic(trueDeg,state){
   const w=win.B737WMM2025V1;
   const p=w?.evaluate?.({lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt});
@@ -291,8 +304,8 @@
  function publish(){
   const map=check?JSON.parse(JSON.stringify(check)):{};
   win.dispatchEvent(new CustomEvent('b737:final10-preset-status',{detail:{
-   version:VERSION,serial,checks:map,complete:Object.values(map).length>0&&
-    Object.values(map).every(x=>x.ok)}}));
+   version:VERSION,serial,checks:map,complete:ready(),
+   missing:REQUIRED_FINAL10.filter(key=>map[key]?.ok!==true)}}));
  }
  function apply(state){
   if(!state||state.preset!=='FINAL_10')return null;
@@ -305,7 +318,9 @@
    if(live?.preset!=='FINAL_10'||live.icao!==state.icao||live.runway!==state.runway){
     win.clearInterval(timer);timer=null;return;}
    // Avoid reasserting physical controls once the setup is complete.
-   if(!check.MCP?.ok||!check.ENGINE_1?.ok||!check.ENGINE_2?.ok||!check.APU_OFF?.ok)
+   if(REQUIRED_FINAL10.some(key=>!check[key]?.ok&&(
+    key.startsWith('OH_')||key.startsWith('LIGHT_')||
+    ['ENGINE_1','ENGINE_2','GEN1_ON_BUS','GEN2_ON_BUS','APU_OFF'].includes(key))))
     applyOverhead();
    if(!check.NAV1_VOR?.ok||!check.NAV2_ILS?.ok)applyNavigation(live);
    if(!check.FLAP_LEVER_30?.ok||!check.FLAP_ACTUAL_30?.ok||
@@ -313,7 +328,7 @@
       !check.LANDING_GEAR_DOWN?.ok)applyConfiguration();
    if(!check.MCP?.ok)applyMcp(live);
    publish();
-   if(++count>=180||Object.values(check).length>0&&Object.values(check).every(x=>x.ok)){
+   if(++count>=180||ready()){
     win.clearInterval(timer);timer=null;
    }
   };
@@ -323,6 +338,8 @@
  function stop(){serial++;if(timer!==null){win.clearInterval(timer);timer=null;} }
  win.addEventListener('b737:flight-scenario-stopped',stop);
  win.B737Final10ApproachPresetV1=Object.freeze({version:VERSION,apply,stop,
-  getStatus:()=>({version:VERSION,serial,checks:check?JSON.parse(JSON.stringify(check)):{}}),
+  getStatus:()=>({version:VERSION,serial,complete:ready(),
+   missing:REQUIRED_FINAL10.filter(key=>check?.[key]?.ok!==true),
+   checks:check?JSON.parse(JSON.stringify(check)):{}}),
   getLiveFlapOwnerState:readFlapOwner});
 })(window);

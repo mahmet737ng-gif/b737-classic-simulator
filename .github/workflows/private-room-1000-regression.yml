@@ -1,0 +1,54 @@
+name: Private Room 1000-command regression
+on:
+  pull_request:
+    paths:
+      - 'tests/private-room-1000-transport.test.cjs'
+      - 'tests/private-room-burst-diagnostic.test.cjs'
+      - 'tests/private-room-authoritative-state.test.cjs'
+      - 'tests/private-room-flap-convergence.test.cjs'
+      - 'panel-mosaic-lab/cockpit/flap-lever-test.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
+      - 'sync-server/crew-rooms.js'
+      - 'tests/unified-crew-room.test.cjs'
+      - 'panel-mosaic-lab/cockpit/crew-cockpit-v1.js'
+      - 'panel-mosaic-lab/cockpit/overhead-bridge.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'
+      - '.github/workflows/private-room-1000-regression.yml'
+permissions:
+  contents: read
+jobs:
+  transport-1000:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 1000 real HTTP and SSE command checks in one isolated Private Room
+        run: node --test tests/private-room-1000-transport.test.cjs tests/private-room-burst-diagnostic.test.cjs tests/private-room-authoritative-state.test.cjs tests/private-room-flap-convergence.test.cjs
+      - name: FINAL 10 physical-ready and scenario fidelity regression
+        run: node --test tests/final10-approach-ready-integration.test.cjs tests/final10-approach-unified-v1.test.cjs tests/flight-scenario-core-v1.test.cjs
+      - name: Existing private room access and late-join regression
+        run: node --test tests/unified-crew-room.test.cjs
+  browser-crew:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless browser driver
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.58.2
+          if command -v google-chrome >/dev/null; then
+            echo "CHROME_PATH=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+            echo "CHROME_PATH=$(find "$HOME/.cache/ms-playwright" -type f -name chrome -print -quit)" >> "$GITHUB_ENV"
+          fi
+      - name: Independent browser contexts, two-way Overhead and MCP, Observer and FLT PHASE
+        run: node --test tests/unified-crew-room.test.cjs
