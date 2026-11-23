@@ -1,0 +1,38 @@
+name: TOGA FD Chapter 4 acceptance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/toga-fd-acceptance.yml'
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/classic-toga-ch4-v1.test.cjs'
+      - 'engine/afds/fcc-flight-guidance-v1.js'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+      - 'tests/fcc-flight-guidance-v1.test.cjs'
+      - 'tests/fcc-director-visual-servo-v1.test.cjs'
+      - 'panel-mosaic-lab/cockpit/index.html'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/fcc-flight-guidance-v1.js'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'
+jobs:
+  takeoff-fd:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: |
+          node --check engine/afds/classic-toga-ch4-v1.js
+          node --check engine/afds/fcc-flight-guidance-v1.js
+          node --check panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js
+          node --check panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js
+      - name: TOGA FCOM plus V2+15 trainer and independent FD acceptance
+        run: |
+          node --test engine/afds/classic-toga-ch4-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs

@@ -4,7 +4,7 @@ const Guidance=require('../engine/afds/fcc-flight-guidance-v1.js');
 const Protection=require('../engine/afds/fcom-ch4-ap-protection-v1.js');
 const Flight=require('../engine/flight/flight-scenario-core-v1.js');
 const source=fs.readFileSync(path.resolve(__dirname,'../panel-mosaic-lab/cockpit/fcc-flight-runtime-v1.js'),'utf8');
-function boot(){
+function boot(toga=null){
  const callbacks={},published=[];let currentMs=100;
  const scenario=Flight.newScenario({airport:'OIII',preset:'MANUAL',airborne:true,
   altitudeFt:6000,speedKt:220,headingDeg:85,vsFpm:0});
@@ -20,6 +20,7 @@ function boot(){
   B737UnifiedFlightScenarioV1:{getDiagnostics:()=>({active:true}),
    getState:()=>scenario},
   B737McpAFDSBridgeV1:{getOutput:()=>modes},B737UnifiedAvionicsNetworkV1:net,
+  B737UnifiedTOGACh4V1:{getState:()=>toga},
   addEventListener:(k,fn)=>callbacks[k]=fn,setInterval(){return 1;},
   dispatchEvent(){},console:{error(){},warn(){}}};
  class CustomEvent{constructor(type,opt){this.type=type;this.detail=opt.detail;}}
@@ -45,4 +46,18 @@ test('after many frames FD demand converges on the same FCC pitch and bank limit
  const v=r.get(1);
  assert.ok(v.pitchDeg>6&&v.pitchDeg<8);
  assert.equal(v.rollDeg,20);
+});
+
+test('TOGA ground pitch bars instantly show FCOM -10 and +15, then speed commands slew',()=>{
+ const toga={phase:'TO',fdPitchDeg:-10,speedGuidanceActive:false,
+  fdAutoPopUp:false,fdRollTrackDeg:90};
+ const r=boot(toga);r.paint();
+ assert.equal(r.get(1).pitchDeg,-10);
+ assert.equal(r.get(2).pitchDeg,-10);
+ toga.fdPitchDeg=15;r.advance(100);
+ assert.equal(r.get(1).pitchDeg,15);
+ toga.speedGuidanceActive=true;toga.fdPitchDeg=7;r.advance(250);
+ const updated=r.get(1).pitchDeg;
+ assert.ok(updated<15&&updated>=15-.55-1e-7);
+ assert.equal(r.get(2).pitchDeg,updated);
 });

@@ -156,3 +156,28 @@ test('screenshot case: V/S plus CWS R with CMD selected produces pitch bar only 
  assert.equal(s.rollValid,true);
  assert.equal(s.status,'COUPLED_CMD');
 });
+
+
+test('TOGA axis cues appear for both pilots with FD switches OFF only when pop-up qualified',()=>{
+ const m=mcp(),f=frame();m.modes.autopilot=null;
+ m.modes.vertical=null;m.modes.lateral=null;m.controls.fd.left=false;m.controls.fd.right=false;
+ const nav={togaActive:true,togaFdAutoPopUp:true,togaPitchDeg:15,togaTrackDeg:270};
+ let o=evaluateMag(Guidance.createState(),m,f,nav);
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:true});
+ assert.deepEqual(o.fdAxes.firstOfficer,{pitch:true,roll:true});
+ assert.equal(o.pitchCommandDeg,15);
+ assert.equal(o.actions.length,0,'F/D-only TOGA must never drive AP servos');
+ o=evaluateMag(Guidance.createState(),m,f,{...nav,togaFdAutoPopUp:false});
+ assert.equal(o.fd.captain,false);assert.equal(o.fd.firstOfficer,false);
+ m.flightDirectorBarsRetracted=true;
+ o=evaluateMag(Guidance.createState(),m,f,nav);
+ assert.equal(o.fd.captain,false);assert.equal(o.fd.firstOfficer,false);
+});
+test('CMD TOGA pitch uses same commanded position as FD, without inventing roll mode',()=>{
+ const m=mcp(),f=frame();m.modes.lateral=null;
+ const o=evaluateMag(Guidance.createState(),m,f,
+  {togaActive:true,togaFdAutoPopUp:false,togaPitchDeg:9,togaTrackDeg:270});
+ assert.equal(o.pitchCommandDeg,9);
+ assert.ok(o.actions.some(a=>a.type==='PITCH'&&a.value===9));
+ assert.deepEqual(o.fdAxes.captain,{pitch:true,roll:true});
+});

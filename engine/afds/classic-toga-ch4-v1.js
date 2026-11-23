@@ -7,11 +7,42 @@
  const VERSION='TOGA-CH4-SHI-0001';
  const finite=x=>typeof x==='number'&&Number.isFinite(x);
  const safe=(x,defaultValue)=>finite(x)?x:defaultValue;
+ const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+ const FCOM_TAKEOFF_INCREMENT_KT=20;
+ const trainerIncrement=c=>c.takeoffSpeedIncrementKt===15?15:FCOM_TAKEOFF_INCREMENT_KT;
+ function eligibleTakeoffFdPopUp(c){
+  // SHI 4.20.14: OFF-switch pop-up only after 80 KIAS,
+  // below 2000ft AGL, and less than 150s since lift-off.
+  return safe(c.iasKt,0)>80&&safe(c.radioAltitudeFt,Infinity)<2000&&
+   safe(c.sinceLiftoffSec,0)<150;
+ }
+ function speedPitch(state,c,dt){
+  const ias=safe(c.iasKt,state.previousIasKt??0);
+  const accel=finite(c.iasAccelerationKtSec)?c.iasAccelerationKtSec:
+   dt>=.05&&finite(state.previousIasKt)?(ias-state.previousIasKt)/dt:0;
+  const acceleration=clamp(accel,-5,5);
+  const error=ias+2*acceleration-safe(state.targetSpeedKt,ias);
+  const n1=safe(c.availableN1Percent,85),vs=safe(c.vsFpm,1500);
+  const massKg=safe(c.massKg,60000),flapDeg=safe(c.flapActualDeg,5);
+  // Classroom surrogate: NOT Boeing-published FCC gains.
+  const equilibrium=clamp(9+.07*(n1-85)+clamp((vs-1500)/1500,-1,1)+
+   clamp((massKg-60000)/1000,-25,20)*.035-
+   clamp(flapDeg,0,40)*.025,6,12);
+  let demand=clamp(equilibrium+.30*error-.25*safe(c.pitchRateDegSec,0),1,15);
+  if(ias<safe(state.targetSpeedKt,ias)-20)demand=Math.min(demand,7);
+  const current=safe(state.fdPitchDeg,15);
+  return {pitch:clamp(current+clamp(demand-current,-3*dt,3*dt),1,15),
+   acceleration,raw:demand};
+ }
  const initial=()=>({version:VERSION,phase:'OFF',presses:0,elapsedSec:0,liftoffSec:null,
   initialSpeedKt:null,fdPitchDeg:0,fdRollTrackDeg:null,thrustDemand:'NONE',
   atMode:'',pitchMode:'',rollMode:'',afdsMode:'',apDisengage:false,
   targetSpeedKt:null,atLimit:'NONE',throttleFraction:0,reason:'NOT_ENGAGED',
-  singleEngine:false,engineFailureAfterEngagement:false,gaFullReady:false});
+  singleEngine:false,engineFailureAfterEngagement:false,gaFullReady:false,
+  fdAutoPopUp:false,takeoffV2Kt:null,takeoffIncrementKt:FCOM_TAKEOFF_INCREMENT_KT,
+  speedGuidanceActive:false,climbQualifiedSec:0,previousIasKt:null,
+  previousPitchDeg:null,
+  accelerationKtSec:0,pitchDemandRawDeg:null});
  function engineCount(c){return Number(c.engine1Running===true)+Number(c.engine2Running===true);}
  function engage(previous,ctx={}){
   if(!['OFF','TO','GA'].includes(previous?.phase))throw Error('Invalid TOGA previous state');
@@ -24,22 +55,28 @@
    (postTouchdown&&safe(ctx.sinceTouchdownSec,Infinity)<=2);
   if(!airborne&&ctx.groundReady!==true&&!postTouchdown)return {...previous,reason:'GROUND_TAKEOFF_NOT_ARMED'};
   if(airborne&&!canGA)return {...previous,reason:'GA_NOT_AVAILABLE'};
-  if(!fd&&(!airborne||ctx.fdLeft===false&&ctx.fdRight===false)&&ctx.allowFdAutoEngage!==true)
-   return {...previous,reason:'BOTH_FD_REQUIRED'};
+  const phase=airborne||postTouchdown?'GA':'TO';
+  const autoPop=phase==='TO'?eligibleTakeoffFdPopUp(ctx):
+   ctx.allowFdAutoEngage===true&&altitude<2000;
+  if(!fd&&!autoPop)return {...previous,reason:'BOTH_FD_REQUIRED'};
   // FCOM 4.20.24: only dual A/P with FLARE armed retains A/P for GA.
   const dual=ctx.apChannels===2&&ctx.flareArmed===true&&!postTouchdown;
-  const phase=airborne||postTouchdown?'GA':'TO';
   const target=safe(ctx.iasKt,0);
   const approachTarget=safe(ctx.selectedSpeedKt,target);
   const single=engines===1;
+  const v2=safe(ctx.selectedSpeedKt,safe(ctx.v2Kt,target));
+  const increment=trainerIncrement(ctx);
   return {...initial(),phase,presses:1,initialSpeedKt:target,
-   fdPitchDeg:phase==='TO'?-10:single?13:15,
+   fdAutoPopUp:!fd&&autoPop,takeoffV2Kt:phase==='TO'?v2:null,
+   takeoffIncrementKt:increment,previousIasKt:target,
+   fdPitchDeg:phase==='TO'?(target<60?-10:15):single?13:15,
    fdRollTrackDeg:safe(ctx.groundTrackDeg,0),
    thrustDemand:at&&engines>0?(phase==='TO'?'TAKEOFF_LIMIT':'GA_REDUCED'):'NONE',
    atMode:at&&engines>0?(phase==='TO'?'N1':'GA'):'',
    pitchMode:'TO/GA',rollMode:phase==='TO'&&ctx.takeoffRollHdGSel===true?'HDG SEL':'',
    afdsMode:dual?'CMD':'FD',apDisengage:(ctx.apChannels??0)>0&&!dual,
-   targetSpeedKt:single?Math.max(safe(ctx.v2Kt,0),approachTarget):approachTarget,
+   targetSpeedKt:phase==='TO'?(single?Math.max(safe(ctx.v2Kt,v2),v2):v2+increment):
+    single?Math.max(safe(ctx.v2Kt,0),approachTarget):approachTarget,
    atLimit:phase==='TO'?'TO':'G/A',singleEngine:single,gaFullReady:false,
    // First GA press is reduced GA; first TO press selects FMC takeoff N1.
    throttleFraction:at&&engines>0?(phase==='TO'?1:.86):0,
@@ -71,17 +108,43 @@
      targetSpeedKt:Math.max(v2,target),reason:'ENGINE_FAILURE_AFTER_GA'};
    }else{
     // FCOM 4.20.15: engine-out takeoff target is clamped V2..V2+20.
+    // MCP takeoff V2 is retained even when separate takeoff-data is absent.
+    const takeoffV2=safe(previous.takeoffV2Kt,safe(ctx.selectedSpeedKt,v2));
     next={...next,singleEngine:true,engineFailureAfterEngagement:true,
-     targetSpeedKt:v2>0?Math.max(v2,Math.min(v2+20,ias)):safe(ctx.selectedSpeedKt,ias),
+     targetSpeedKt:takeoffV2>0?Math.max(takeoffV2,Math.min(takeoffV2+20,ias)):
+      safe(ctx.selectedSpeedKt,ias),
      reason:'ENGINE_FAILURE_DURING_TAKEOFF'};
    }
   }
   if(previous.phase==='TO'){
-   // Takeoff-specific FCOM phases: -10° until 60 kt; 15° after 60;
-   // 84 kt disconnects thrust servo while TAKEOFF remains selected.
-   next.fdPitchDeg=ias<60?-10:15;
-   if(ias>=84&&next.atMode==='N1'){next.atMode='THR HLD';next.thrustDemand='THR_HOLD';}
+   // Fixed ground-roll cue, then a predictive IAS director after positive
+   // climb is established. MCP V2 stays the speed reference for this mode.
+   if(!next.singleEngine&&finite(ctx.selectedSpeedKt)){
+    next.takeoffV2Kt=ctx.selectedSpeedKt;
+    next.targetSpeedKt=ctx.selectedSpeedKt+next.takeoffIncrementKt;
+   }
    if(ctx.airborne===true&&previous.liftoffSec===null)next.liftoffSec=elapsed;
+   if(ctx.airborne===true){
+    next.climbQualifiedSec=safe(ctx.vsFpm,0)>=300?
+     previous.climbQualifiedSec+dtSec:0;
+    next.speedGuidanceActive=previous.speedGuidanceActive||
+     next.climbQualifiedSec>=.75;
+   }
+   if(next.speedGuidanceActive&&ctx.airborne===true){
+    const actualPitchRate=dtSec>=.05&&finite(previous.previousPitchDeg)&&
+     finite(ctx.pitchDeg)?clamp((ctx.pitchDeg-previous.previousPitchDeg)/dtSec,-6,6):0;
+    const cue=speedPitch({...previous,targetSpeedKt:next.targetSpeedKt},
+     {...ctx,pitchRateDegSec:actualPitchRate},dtSec);
+    next.fdPitchDeg=cue.pitch;
+    next.accelerationKtSec=cue.acceleration;
+    next.pitchDemandRawDeg=cue.raw;
+   }else{
+    next.fdPitchDeg=ias<60?-10:15;
+    next.pitchDemandRawDeg=next.fdPitchDeg;
+   }
+   next.previousIasKt=ias;
+   next.previousPitchDeg=safe(ctx.pitchDeg,previous.previousPitchDeg);
+   if(ias>=84&&next.atMode==='N1'){next.atMode='THR HLD';next.thrustDemand='THR_HOLD';}
    if(ctx.airborne===true&&next.liftoffSec!==null){
     const after=elapsed-next.liftoffSec;
     if(ra>=400&&after>=18&&next.atMode==='THR HLD'){next.atMode='ARM';next.thrustDemand='ARM';}
@@ -109,5 +172,6 @@
   return {at:s.atMode,pitch:s.pitchMode,roll:s.rollMode,afds:s.afdsMode,
    fdPitch:s.fdPitchDeg,targetSpeedKt:s.targetSpeedKt,thrust:s.thrustDemand};
  }
- return Object.freeze({VERSION,initial,engage,press,advance,fma});
+ return Object.freeze({VERSION,FCOM_TAKEOFF_INCREMENT_KT,eligibleTakeoffFdPopUp,
+  initial,engage,press,advance,fma});
 });
