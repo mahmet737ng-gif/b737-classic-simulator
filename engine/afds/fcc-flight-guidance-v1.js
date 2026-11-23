@@ -209,7 +209,9 @@
    const trainingCmd=cmd&&mcp.flightDirectorBarsRetracted!==true;
    // FCOM 4.20.7/26: pressing TO/GA in flight may automatically bring
    // both flight director bars into view even if physical F/D switches are OFF.
-   const permitted=selected||trainingCmd||nav?.togaActive===true;
+   const permitted=selected||trainingCmd||
+    (nav?.togaActive===true&&nav?.togaFdAutoPopUp===true&&
+     mcp.flightDirectorBarsRetracted!==true);
    out.fdAxes[side]={pitch:permitted&&pitchBar,roll:permitted&&rollBar};
    out.fd[side]=out.fdAxes[side].pitch||out.fdAxes[side].roll;
   }
