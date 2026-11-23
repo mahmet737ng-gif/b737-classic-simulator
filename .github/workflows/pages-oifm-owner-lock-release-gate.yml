@@ -1,0 +1,37 @@
+name: Pages OIFM owner-lock release gate
+on:
+  pull_request:
+    paths:
+      - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/pages-deploy-oifm-owner-final-regression.test.cjs'
+      - '.github/workflows/pages-oifm-owner-lock-release-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/le-devices/trainer-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/final10-approach-preset-v1.js'
+      - 'tests/pages-deploy-oifm-owner-final-regression.test.cjs'
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify immutable owner bridge and integration behavior
+        run: |
+          node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
+          node --check panel-mosaic-lab/cockpit/final10-approach-preset-v1.js
+          node --test tests/pages-deploy-oifm-owner-final-regression.test.cjs tests/te-flap-live-bridge.test.cjs tests/flight-phase-oifm-live.test.cjs
+      - name: Compile production-equivalent Unified and verify visible OIFM
+        run: |
+          node tools/build-unified-web.cjs
+          grep -q '<option value="OIFM">ESFAHAN' web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -R -q 'FINAL10-INTEGRATED-0005-LOCKED-OWNER-COMPAT' web-dist/panel-mosaic-lab/cockpit/
+          grep -q 'OIFM' web-dist/engine/flight/flight-scenario-core-v1.js
