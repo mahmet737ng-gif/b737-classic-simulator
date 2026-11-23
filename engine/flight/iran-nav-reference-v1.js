@@ -19,6 +19,13 @@
   Object.freeze({type:'NDB',ident:'IFN',lat:32.749,lon:51.88080556,verified:true,source:'IRAN_AIP_OIFM_AD2_19'}),
   Object.freeze({type:'NDB',ident:'VR',lat:35.34266667,lon:51.63716667,verified:true,source:'IRAN_AIP_ENR4_1'}),
   Object.freeze({type:'NDB',ident:'KAZ',lat:35.516701,lon:51.366901,verified:true,source:'OURAIRPORTS_REFERENCE_NOT_AIP_VERIFIED'}),
+  Object.freeze({"type":"NDB","ident":"AA","lat":35.6337,"lon":51.4178,"verified":true,"source":"COMMUNITY_NOT_AIP_VERIFIED"}),
+  Object.freeze({"type":"NDB","ident":"RUS","lat":35.4451,"lon":50.9013,"verified":true,"source":"COMMUNITY_NOT_AIP_VERIFIED"}),
+  Object.freeze({"type":"NDB","ident":"PIM","lat":35.7618,"lon":50.8494,"verified":true,"source":"COMMUNITY_NOT_AIP_VERIFIED"}),
+  Object.freeze({"type":"NDB","ident":"HSA","lat":32.9326,"lon":51.5601,"verified":true,"source":"COMMUNITY_NOT_AIP_VERIFIED"}),
+  Object.freeze({"type":"NDB","ident":"SKD","lat":32.3055,"lon":50.8386,"verified":true,"source":"COMMUNITY_NOT_AIP_VERIFIED"}),
+  Object.freeze({"type":"VOR","ident":"SKD","lat":32.2798,"lon":50.8549,"verified":true,"source":"OURAIRPORTS_COMMUNITY"}),
+  Object.freeze({"type":"VOR","ident":"RUS","lat":35.44547222,"lon":50.90536111,"verified":true,"source":"IRAN_AIP_ENR41"}),
   // Public VOR-DME reference points. Operational service status is NOT verified.
   Object.freeze({type:'VOR',ident:'TRN',lat:35.696999,lon:51.283798,verified:true}),
   Object.freeze({type:'VOR',ident:'IKA',lat:35.409698,lon:51.178501,verified:true}),
