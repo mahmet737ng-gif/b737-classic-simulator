@@ -222,7 +222,7 @@
     latestReadiness = gate;
     // Only continuous, measurable readiness counts. A briefly ready photo
     // followed by a failed/removed instrument resets the release timer.
-    if (gate?.canEnter === true && panelComplete) {
+    if (gate?.canEnter === true && priorityReady) {
       if (readySince === null) readySince = now;
     } else readySince = null;
     const stable = readySince !== null && now - readySince >= STABLE_MS;
@@ -230,9 +230,10 @@
         !introTitle.getAnimations().some(animation =>
           animation.animationName === 'unified-intro-title' &&
           animation.playState !== 'finished')) showSetup();
-    // Existing panel owners are released on their original full-photo gate,
-    // never on an estimated percentage.
-    if (panelComplete) releaseSystems();
+    // ECU was previously blocked until even AFT/Pedestal photos decoded.
+    // Release it as soon as MAIN + throttle + forward images are present,
+    // then KEEP the welcome overlay until functional instruments/ECU pass.
+    if (priorityReady) releaseSystems();
     if (stable && startRequested) beginFlight(now);
     if (welcome.hidden) {
       win.clearInterval(timer);
