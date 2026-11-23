@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "98f6d8d31436d1c9b17082831d1d810b16f9d8be",
-  "mainBefore": 325,
+  "sourceCommit": "952712fbcb2fa8e4c10dd792b53f536352653ed8",
+  "mainBefore": 326,
   "mainAfter": 103,
   "overheadBefore": 62,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "9d76734f165784529b2a641b88cbed6a5ca5d0abf14d0a94837b787da70c29b0"
+      "sha256": "6e63f186efea5afc620eb2d685448d03ddb25f2e7bda12cc015e3a88c81bcbec"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -189,6 +189,10 @@
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
       "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-80caabdb05a512d8.js",
+      "sha256": "80caabdb05a512d893954d240e39e55a74d647dbb148bfa7dacb420e37516b8f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
@@ -651,12 +655,8 @@
       "sha256": "ee2bab060a1fbfb5a8e73d8ed92735c98fe40cba1eefbdabacc1398b38606d69"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.js",
-      "sha256": "23e51990b311133fe134ddf827e10bd5a72655cd42f6e118e8aeb4db02df2a5d"
-    },
-    {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "209f1091a75317b1db665c98ff2fcad854413224ec6e1d1c4ffaec0b240143ad"
+      "sha256": "6292d07989bdfc7f7c9c31bc495475aa288db62a27c169ac9ac7c720aaf56369"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
