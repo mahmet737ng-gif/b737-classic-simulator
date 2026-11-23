@@ -7,6 +7,8 @@ on:
       - 'tests/private-room-authoritative-state.test.cjs'
       - 'tests/private-room-flap-convergence.test.cjs'
       - 'panel-mosaic-lab/cockpit/flap-lever-test.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/overhead-stage.html'
       - 'sync-server/crew-rooms.js'
       - 'tests/unified-crew-room.test.cjs'
       - 'panel-mosaic-lab/cockpit/crew-cockpit-v1.js'
