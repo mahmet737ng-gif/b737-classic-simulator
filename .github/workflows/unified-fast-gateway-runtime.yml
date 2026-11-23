@@ -38,7 +38,24 @@ jobs:
           rm -rf gateway/runtime/fast-unified
           mkdir -p gateway/runtime/fast-unified
           cp -a source/gateway-fast-runtime/. gateway/runtime/fast-unified/
-          git -C gateway add runtime/fast-unified
+          # The Railway Gateway serves a root-level crew-rooms.js, not the
+          # main repo's sync-server path. Sync protocol and frontend atomically.
+          # Preserve the Gateway-only allowance for reserved Unified users.
+          node <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync('source/sync-server/crew-rooms.js','utf8');
+          const before = "if (data.role !== 'observer' && (!boundUser || !await getAccount(boundUser))) {";
+          const after = "if (data.role !== 'observer' && (!boundUser || (!await getAccount(boundUser) && !reservedNames.has(boundUser)))) {";
+          if (!source.includes(before)) throw Error('Gateway invite compatibility patch needs re-audit');
+          const gatewayCrew = source.replace(before,after);
+          if (!gatewayCrew.includes("action === 'scenarioStatus'") ||
+              !gatewayCrew.includes("action === 'applied'") ||
+              !gatewayCrew.includes('function sharedState(room)')) {
+            throw Error('Gateway Crew Room protocol is incomplete');
+          }
+          fs.writeFileSync('gateway/crew-rooms.js',gatewayCrew);
+          NODE
+          git -C gateway add runtime/fast-unified crew-rooms.js
           if git -C gateway diff --cached --quiet; then
             echo "Compiled Gateway runtime is unchanged"
             exit 0
@@ -78,6 +95,7 @@ jobs:
       - name: Check release identity and install browser dependencies
         run: |
           node -e 'require("node:assert/strict").equal(require("./runtime/fast-unified/manifest.json").sourceCommit,process.env.GITHUB_SHA)'
+          node -e 'const fs=require("node:fs"),s=fs.readFileSync("crew-rooms.js","utf8");for(const key of ["function sharedState(room)","action === '\''scenarioStatus'\''","action === '\''applied'\''"]) if(!s.includes(key))throw Error("Crew server frontend protocol mismatch: "+key)'
           npm install --ignore-scripts --no-audit --no-fund
           npm install --no-save --ignore-scripts playwright@1.58.2 --no-audit --no-fund
           if command -v google-chrome >/dev/null; then
