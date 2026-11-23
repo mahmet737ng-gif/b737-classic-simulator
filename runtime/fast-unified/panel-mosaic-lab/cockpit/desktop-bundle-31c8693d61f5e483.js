@@ -873,7 +873,9 @@ try{
   OIII:Object.freeze({icao:'OIII',name:'Tehran / Mehrabad',lat:35.6891667,lon:51.3143333,elevationFt:3962,defaultRunway:'29L',
    runways:Object.freeze({ '11L':109,'11R':109,'29L':289,'29R':289 })}),
   OISS:Object.freeze({icao:'OISS',name:'Shiraz / Shahid Dastghaib',lat:29.5391667,lon:52.5898333,elevationFt:4927,defaultRunway:'29L',
-   runways:Object.freeze({ '11L':114,'11R':114,'29L':294,'29R':294 })})
+   runways:Object.freeze({ '11L':114,'11R':114,'29L':294,'29R':294 })}),
+  OIFM:Object.freeze({icao:'OIFM',name:'Esfahan / Shahid Beheshti International',lat:32.75083333,lon:51.86277778,elevationFt:5058,defaultRunway:'25R',
+   runways:Object.freeze({ '07L':77.93,'25R':257.96,'07R':77.93,'25L':257.96 })})
  });
  const PRESETS=Object.freeze(['RUNWAY_READY','FINAL_5','FINAL_10','MANUAL']);
  function move(lat,lon,heading,distNm){
