@@ -42,6 +42,7 @@ test('missing aft and pedestal photos do not stop 70%-ready cockpit if all essen
 test('welcome never opens the cockpit simply because photos loaded; checks scenario repaint and FINAL_10 owner ACK',()=>{
  const source=read('unified-welcome-v1.js');
  assert.match(source,/CockpitStartupGate\?\.inspectFull\?\./);
+ assert.match(source,/CockpitStartupGate\?\.inspect\?\./);
  assert.match(source,/B737WelcomeReadinessV2\?\.evaluate\?\./);
  assert.match(source,/gate\?\.canEnter === true && priorityReady/);
  assert.match(source,/now - readySince >= STABLE_MS/);
@@ -56,8 +57,8 @@ test('compiled entry loads the gate and a new welcome cache key without mutating
   welcome=index.indexOf('unified-welcome-v1.js');
  assert.ok(gate>0&&welcome>gate,'helper must be listed ahead of the welcome controller');
  assert.match(index,/unified-welcome-v1\.js\?v=WELCOME-GATE-0001/);
- assert.match(index,/id="region-main"/);
- assert.match(index,/overhead-stage\.html/);
+ assert.match(index,/id="unifiedWelcome"/);
+ assert.match(index,/src="\.\/app\.js/);
 });
 
 test('scenario entry never precedes repaint by BOTH EADIs, and FINAL_10 owner ACK',()=>{
