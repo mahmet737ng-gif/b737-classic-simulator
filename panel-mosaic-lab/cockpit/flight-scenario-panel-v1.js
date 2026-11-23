@@ -456,6 +456,7 @@
    try{
     state=Core.command(state,{type:'PITCH',value:Number(by('flightManualPitch').value),
      source:'MANUAL_PILOT'});
+    previouslyCoupled=false;
     status('MANUAL PITCH SELECTED · trainer auto-follow released');
     publish();updateUI();
    }catch(error){status('INVALID MANUAL PITCH · '+String(error?.message||error),true);}
