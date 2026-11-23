@@ -55,8 +55,48 @@ gaFast=T.advance(gaFast,{...ctx,engine1Running:true,engine2Running:true,iasKt:15
 gaFast=T.advance(gaFast,{...ctx,engine1Running:true,engine2Running:false,
  iasKt:170,selectedSpeedKt:140,v2Kt:140},1);
 assert.equal(gaFast.targetSpeedKt,170,'After 10 s >5 knots: current IAS');
-let toFail=T.press(T.initial(),ctx);
+let toFail=T.press(T.initial(),{...ctx,selectedSpeedKt:145});
 toFail=T.advance(toFail,{...ctx,engine1Running:true,engine2Running:false,
  v2Kt:145,iasKt:178},4);
 assert.equal(toFail.targetSpeedKt,165,'Engine-out takeoff target clamps to V2+20');
+let noSecondary=T.press(T.initial(),{...ctx,selectedSpeedKt:150,
+ takeoffSpeedIncrementKt:15});
+noSecondary=T.advance(noSecondary,{...ctx,selectedSpeedKt:150,v2Kt:null,
+ engine1Running:true,engine2Running:false,iasKt:190},.5);
+assert.equal(noSecondary.targetSpeedKt,170,
+ 'Engine-out clamp uses MCP V2+20 when external V2 data is missing');
+
+ // User-requested Unified V2+15 profile stays separate from the 2023 SHI V2+20 baseline.
+ const popCtx={...ctx,fdLeft:false,fdRight:false,iasKt:85,
+  takeoffSpeedIncrementKt:15,selectedSpeedKt:140};
+ assert.equal(T.eligibleTakeoffFdPopUp({...popCtx,iasKt:80}),false);
+ assert.equal(T.eligibleTakeoffFdPopUp({...popCtx,radioAltitudeFt:2000}),false);
+ assert.equal(T.eligibleTakeoffFdPopUp({...popCtx,sinceLiftoffSec:150}),false);
+ assert.equal(T.eligibleTakeoffFdPopUp({...popCtx,sinceLiftoffSec:149}),true);
+ let pop=T.press(T.initial(),popCtx);
+ assert.equal(pop.phase,'TO','After 80 KIAS TOGA may pop FD despite both switches OFF');
+ assert.equal(pop.fdAutoPopUp,true);
+ assert.equal(pop.targetSpeedKt,155,'Trainer schedule holds MCP V2 + 15 kt');
+ assert.equal(T.press(T.initial(),{...popCtx,iasKt:79}).phase,'OFF');
+ pop=T.advance(pop,{...popCtx,airborne:true,radioAltitudeFt:20,
+  iasKt:145,vsFpm:650,availableN1Percent:90},.4);
+ assert.equal(pop.fdPitchDeg,15,'Do not switch to IAS control until sufficient climb');
+ assert.equal(pop.speedGuidanceActive,false);
+ pop=T.advance(pop,{...popCtx,airborne:true,radioAltitudeFt:35,
+  iasKt:145,vsFpm:850,availableN1Percent:90},.4);
+ assert.equal(pop.speedGuidanceActive,true,'Positive climb activates speed guidance');
+ for(let i=0;i<20;i++)pop=T.advance(pop,{...popCtx,airborne:true,
+  radioAltitudeFt:80,iasKt:145,vsFpm:1400,availableN1Percent:90},.15);
+ assert.ok(pop.fdPitchDeg<12&&pop.fdPitchDeg>1,
+  'Below target speed, guidance should reduce pitch without freezing at +15');
+ const lowSpeedPitch=pop.fdPitchDeg;
+ for(let i=0;i<20;i++)pop=T.advance(pop,{...popCtx,airborne:true,
+  radioAltitudeFt:120,iasKt:174,vsFpm:1400,availableN1Percent:90},.15);
+ assert.ok(pop.fdPitchDeg>lowSpeedPitch,'High IAS commands more pitch');
+ pop=T.advance(pop,{...popCtx,airborne:true,radioAltitudeFt:140,
+  iasKt:160,selectedSpeedKt:150,vsFpm:1400,availableN1Percent:85},.2);
+ assert.equal(pop.targetSpeedKt,165,'Changing MCP V2 changes the trainer target');
+ assert.equal(T.FCOM_TAKEOFF_INCREMENT_KT,20);
+ assert.equal(T.press(T.initial(),ctx).targetSpeedKt,160,
+  'FCOM profile remains V2+20 with no trainer customization');
 console.log('PASS CH4 TOGA: FD N1/THR HLD, 60/84 kt thresholds, FD-only GA, dual AP GA, single-engine 13°, reduced-to-full GA');
