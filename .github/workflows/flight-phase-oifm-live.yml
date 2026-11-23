@@ -1,0 +1,28 @@
+name: OIFM FLT PHASE live selection regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'tests/flight-phase-oifm-live.test.cjs'
+  pull_request:
+    paths:
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'tests/flight-phase-oifm-live.test.cjs'
+      - '.github/workflows/flight-phase-oifm-live.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check engine/flight/flight-scenario-core-v1.js
+      - run: node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
+      - run: node --test tests/flight-phase-oifm-live.test.cjs
