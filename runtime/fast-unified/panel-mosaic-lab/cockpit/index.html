@@ -402,6 +402,10 @@ body > header.unified-minimal-header .header-settings>button{
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
   </div>
+  <div class="flight-actions" data-training-manual-fd="TRAINER-MANUAL-PITCH-0001">
+   <label>MANUAL PITCH (°)<input id="flightManualPitch" type="number" min="-10" max="15" step="0.5" value="0" aria-label="Manual aircraft pitch command degrees"></label>
+   <button type="button" id="flightManualPitchApply">APPLY MANUAL PITCH</button>
+  </div>
   <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
  </dialog>
 <script src="./flight-scenario-shell-v1.js?v=WEB-5b6d2e548e7b78c9"></script>
