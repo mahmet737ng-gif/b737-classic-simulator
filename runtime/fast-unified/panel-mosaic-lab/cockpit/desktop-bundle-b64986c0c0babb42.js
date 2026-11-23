@@ -102,15 +102,17 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./fuel-used-physical-ch7-v1.js?v=FUEL-USED-0001 */
+/* ./fuel-used-physical-ch7-v1.js?v=FUEL-RECESSED-DB-0001 */
 try{
 /* Chapter 7.10.6-7 (EIS) and 7.10.16-17 (Conventional) physical
  * FUEL USED controls: EIS recessed PUSH / RESET, Conventional spring-loaded
  * RESET-RATE-USED selector. Always use the existing backend's one ECU ledger.
  */
 (function(win){'use strict';
- const doc=win.document;const VERSION='FUEL_USED_PHYSICAL_CH7_0001';
+ const doc=win.document,REG=win.B737EnginePhotoControlRegistrationV1;
+ const VERSION='FUEL_USED_PHYSICAL_CH7_0002-RECESSED-DB-PHOTO';
  let root=null,eis=null,conv=null,lastMode=null,lastError=null,mounts=0;
+ let showButton=null,resetButton=null,lastGeometry=null;
  const api=()=>win.B737UnifiedEngineIndicationsV2;
  function command(type,value){
   try{
@@ -131,9 +133,9 @@ try{
   root=doc.createElement('div');root.className='fuel-used-physical-ch7';root.id='fuelUsedPhysicalCh7';
   root.setAttribute('aria-label','Fuel used controls Chapter 7.10');
   eis=doc.createElement('div');eis.className='fuel-used-eis';root.appendChild(eis);
-  makeButton(eis,'EIS: push to display FUEL USED for ten seconds','fuelUsedEisShow',
+  showButton=makeButton(eis,'EIS: push to display FUEL USED for ten seconds','fuelUsedEisShow',
    'fuel-recessed fuel-used-show',()=>command('FUEL_MODE','USED'));
-  makeButton(eis,'EIS: RESET FUEL USED','fuelUsedEisReset',
+  resetButton=makeButton(eis,'EIS: RESET FUEL USED','fuelUsedEisReset',
    'fuel-recessed fuel-used-reset',()=>command('RESET_FUEL_USED'));
   conv=doc.createElement('div');conv.className='fuel-used-conventional';root.appendChild(conv);
   const control=makeButton(conv,'Conventional fuel flow switch, spring return RATE',
@@ -183,6 +185,18 @@ try{
   if(!Object.values(rect).every(Number.isFinite))return false;
   Object.assign(root.style,{left:rect.x+'px',top:rect.y+'px',width:rect.w+'px',height:rect.h+'px'});
   root.dataset.mode=mode;
+  if(mode==='EIS'){
+   // Existing buttons, not decorative replacements. Fit the approved
+   // recessed-button database asset into each unique EIS photo aperture.
+   if(!REG?.apply){lastError='Engine photo registration unavailable';return false;}
+   const show=REG.apply(showButton,'FUEL_USED_PUSH',rect);
+   const reset=REG.apply(resetButton,'RESET_FUEL_USED',rect);
+   for(const [button,geo] of [[showButton,show],[resetButton,reset]]){
+    button.style.backgroundImage='url("'+geo.asset+'")';
+    button.dataset.assetSource='B737EnginePhotoControlRegistrationV1';
+   }
+   lastGeometry={show,reset};
+  }else lastGeometry=null;
   lastMode=mode;
   mounts++;
   return true;
@@ -192,7 +206,8 @@ try{
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
  else mount();
  win.B737FuelUsedPhysicalCh7V1=Object.freeze({version:VERSION,mount,getStatus:()=>({
-  mode:lastMode,mounts,error:lastError,ledger:api()?.getState?.()?.snapshot?.fuelUsedKg||null})});
+  mode:lastMode,mounts,error:lastError,photoRegistration:lastGeometry,
+  ledger:api()?.getState?.()?.snapshot?.fuelUsedKg||null})});
 })(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}

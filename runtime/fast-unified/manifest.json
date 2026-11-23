@@ -1,14 +1,14 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "3be7d5252bdc52d6e470979620b9e98e9fe36b67",
-  "mainBefore": 324,
-  "mainAfter": 102,
+  "sourceCommit": "21fb8dc8c6aec73f4677a51dad33ebf6d6fa2034",
+  "mainBefore": 325,
+  "mainAfter": 103,
   "overheadBefore": 62,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "3eecece6cec1b5fbaf98657cae1241d4cf24abc16daf4a71d8431294cb356b91"
+      "sha256": "c6151de8ede0c79cfeff7194679f074b25b10e5bd6ddcd4c7e9e636e8e31ed91"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -143,12 +143,16 @@
       "sha256": "75446c3ce3970339f7cf0045c75a543db9c8b95add6ad399bfd03874969315dd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-2a8e93446f6786a5.js",
-      "sha256": "2a8e93446f6786a5ebc41a6ce0dfe1b524b8627a7f4ac90e6ba5e05bc2bf104b"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ade8c2cc4c5b8b45.js",
+      "sha256": "ade8c2cc4c5b8b45006ced491562b2967c8f862ff7447ba49b782f00e99b5401"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-114ed98509ddb553.js",
-      "sha256": "114ed98509ddb553568005cfa0202ad28823e9ca0aeb7dbe98a99bb2e9a51342"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
+      "sha256": "1ae3c18134f3bb31510f31742e9341a6852f4368d7d3320785b3a11e865a9763"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
+      "sha256": "b64986c0c0babb423631c172bab1673fa98495ee063f04d22130bb53ec941217"
     },
     {
       "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
@@ -605,6 +609,14 @@
     {
       "path": "panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js",
       "sha256": "a406fdc0e46d34ef7c9f6302f6afdcecb5153da627e3d2179734cebc8b5dab53"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/manual-n1-live-v1.css",
+      "sha256": "7a6c3aa52a734701a91850535d93b45bfad0f32003820db15684817fc7f230ed"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.css",
+      "sha256": "d2457c2edaf78ae3f33ffdea8ce7b0d51e5555f53e43e6d1cd1c5639ced1d7f9"
     },
     {
       "path": "panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css",

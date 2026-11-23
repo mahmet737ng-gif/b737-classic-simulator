@@ -1,0 +1,39 @@
+/* Ch7.10 EIS recessed FUEL USED/RESET buttons; non-EIS real photographed selector. */
+.fuel-used-physical-ch7{position:absolute;z-index:11;pointer-events:none;overflow:visible}
+.fuel-used-physical-ch7 button{pointer-events:auto;touch-action:manipulation}
+/* Full-size photographic registration surface, sharing the engine texture
+ * transform. JS installs exact local x/y/diameter from the locked source PNG. */
+.fuel-used-eis{position:absolute;inset:0;height:100%;width:100%}
+.fuel-used-eis .fuel-recessed{
+ position:absolute;transform:translate(-50%,-50%);
+ display:block;appearance:none!important;
+ border:none!important;border-radius:50%!important;
+ min-width:0!important;min-height:0!important;
+ max-width:none!important;max-height:none!important;
+ padding:0!important;margin:0!important;
+ background-color:transparent!important;
+ background-image:url('./assets/recessed-pushbutton-v2.svg');
+ background-repeat:no-repeat!important;
+ background-position:center!important;
+ background-size:100% 100%!important;
+ box-shadow:none!important;outline-offset:2px;
+ cursor:pointer;touch-action:manipulation
+}
+.fuel-used-eis .fuel-recessed:hover{filter:brightness(1.12)}
+.fuel-used-eis .fuel-recessed:active{
+ transform:translate(-50%,-50%) scale(.94);
+ filter:brightness(.80)
+}
+.fuel-used-eis .fuel-recessed:focus-visible,
+.fuel-used-conventional .fuel-flow-selector:focus-visible{outline:2px solid #f2cd53;outline-offset:3px}
+.fuel-used-conventional{display:none;position:absolute;left:42.75%;top:9.50%;
+ transform:translate(-50%,-50%);height:37px;width:37px}
+.fuel-used-conventional .fuel-flow-selector{display:block;height:100%;width:100%;
+ padding:0;cursor:ns-resize;background:transparent!important;border:none!important;
+ box-shadow:none!important;border-radius:50%}
+.fuel-used-conventional .fuel-flow-indicator{position:absolute;left:50%;bottom:-10px;
+ transform:translateX(-50%);font:700 8px system-ui;color:#faf7e3;
+ background:#121b21da;padding:0 2px;pointer-events:none}
+.fuel-used-physical-ch7[data-mode="CONVENTIONAL"] .fuel-used-eis{display:none}
+.fuel-used-physical-ch7[data-mode="CONVENTIONAL"] .fuel-used-conventional{display:block}
+.reference-mode .fuel-used-physical-ch7{display:none!important}
