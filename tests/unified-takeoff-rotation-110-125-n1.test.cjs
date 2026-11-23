@@ -105,3 +105,11 @@ test('real MCP mode core permits N1 after 400 RA with both F/D switches OFF only
  const withoutToga=fresh();withoutToga.togaActive=false;
  assert.notEqual(MCP.transition(withoutToga,{type:'BUTTON',id:'N1'}).modes.thrust,'N1');
 });
+
+test('published static FLT PHASE HTML includes actual manual FD-follow control',()=>{
+ const html=read('panel-mosaic-lab/cockpit/index.html');
+ assert.match(html,/id="flightScenarioDialog"/);
+ assert.match(html,/id="flightManualPitch"/);
+ assert.match(html,/id="flightManualPitchApply"/);
+ assert.match(html,/data-training-manual-fd="TRAINER-MANUAL-PITCH-0001"/);
+});
