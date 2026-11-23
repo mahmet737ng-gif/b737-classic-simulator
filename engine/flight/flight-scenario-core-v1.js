@@ -113,6 +113,10 @@
    bankDeg:bank,pitchDeg:ground?0:vs>100?3:vs< -100?-2:2,vsFpm:ground?0:vs,
    glideslopeBelowDots:gsBelowDots,flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
+   // Instructor automation is independent of the aircraft's physical A/P.
+   takeoffAutoMode:kind==='RUNWAY_READY',
+   rotationSpeedKt:145,rotationRateDegSec:2.5,rotationTargetDeg:10,
+   rotationStarted:false,
    autoSlatRequest:false,aeroEnvelope:null,altitudeCapture:null,
    target:guidance,windFromDeg:0,windKt:0,elapsedSec:0,georefQuality:anchor.quality,
    notices:['TRAINING_SURROGATE','NO_FCOM_PERFORMANCE_CLAIM',anchor.source]};
@@ -144,7 +148,10 @@
     break;
    case 'PITCH':
     next.target.pitchDeg=finite(action.value,-10,15,'PITCH');
-    next.target.verticalMode='PITCH';next.altitudeCapture=null;break;
+    next.target.verticalMode='PITCH';next.altitudeCapture=null;
+    if(action.source!=='TRAINER_AUTO_TO'&&action.source!=='FCC_CMD')
+     next.takeoffAutoMode=false;
+    break;
    case 'VS':
     next.target.vsFpm=finite(action.value,-5000,5000,'VS');
     next.target.verticalMode='VS';next.altitudeCapture=null;
@@ -167,7 +174,8 @@
      slatsFull:next.slatsFull,
      slatExtension:next.autoSlatTrainingFraction,
      bankDeg:next.bankDeg,airborne:next.airborne,
-     autoSlatPreviouslyRequested:state.autoSlatRequest
+     autoSlatPreviouslyRequested:state.autoSlatRequest,
+     takeoffTrainingProfile:next.preset==='RUNWAY_READY'
     });
     break;
    case 'MANUAL_HOLD':
@@ -179,6 +187,7 @@
     next.target.vsFpm=next.vsFpm;
     next.altitudeCapture=null;
     next.target.flightControlOwner='MANUAL_TRIM_NO_AP';
+    next.takeoffAutoMode=false;
     break;
    case 'WIND':next.windFromDeg=wrap(finite(action.direction,0,360,'WIND_DIR'));next.windKt=finite(action.speed,0,150,'WIND_KT');break;
    case 'TAKEOFF_ROLL':
@@ -201,7 +210,8 @@
    massKg:s.massKg,flapLever:s.flapLever,flapActual:s.flapActual,
    slatsFull:s.slatsFull,slatExtension:s.autoSlatTrainingFraction,
    bankDeg:s.bankDeg,airborne:s.airborne,
-   autoSlatPreviouslyRequested:state.autoSlatRequest})??null;
+   autoSlatPreviouslyRequested:state.autoSlatRequest,
+   takeoffTrainingProfile:s.preset==='RUNWAY_READY'})??null;
   if(s.phase==='GROUND_READY'){
    s.altitudeCapture=null;
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
@@ -275,10 +285,26 @@
   s.aeroEnvelope=assessAero();
   s.autoSlatRequest=requested;
   if(groundRoll){
-   s.pitchDeg=s.iasKt>=128?clamp((s.iasKt-128)*.65,0,9):0;
-   if(s.iasKt>=145){
+   // VR=145 kt in this classroom scenario. No pre-rotation at 128 kt.
+   // Liftoff is conditional on actual pitch, NOT merely IAS >= VR.
+   if(s.takeoffAutoMode===true&&s.iasKt>=s.rotationSpeedKt){
+    s.rotationStarted=true;
+    s.pitchDeg=clamp(state.pitchDeg+s.rotationRateDegSec*dt,0,s.rotationTargetDeg);
+    s.flightControl={source:'TRAINER_AUTO_ROTATION_NOT_AP',
+     desiredPitchDeg:s.rotationTargetDeg,commandedPitchDeg:s.pitchDeg};
+   }else if(s.takeoffAutoMode===true)s.pitchDeg=0;
+   else if(target.verticalMode==='PITCH'){
+    // Manual pilot/controller input can independently follow F/D. It is
+    // never auto-applied by merely making F/D command bars visible.
+    s.pitchDeg=clamp(state.pitchDeg+
+     clamp(target.pitchDeg-state.pitchDeg,-2.5*dt,2.5*dt),-10,15);
+    s.flightControl={source:'MANUAL_PILOT_PITCH_INPUT',
+     desiredPitchDeg:target.pitchDeg,commandedPitchDeg:s.pitchDeg};
+   }
+   if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
-    s.target.verticalMode='VS';s.target.vsFpm=1500;
+    if(s.takeoffAutoMode===true){s.target.verticalMode='PITCH';s.target.pitchDeg=15;}
+    s.target.vsFpm=1500;
    }
   }
   if(!s.airborne){

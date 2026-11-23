@@ -619,7 +619,12 @@ function transition(state,action){
   if(selected===id&&!s.fd.left&&!s.fd.right)clearModes(s);
   return done();
  }
- if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot)
+ // TO/GA is permitted with both F/D switches OFF. After 400 ft and
+ // verified takeoff mode, MCP N1 may re-engage the armed A/T without
+ // falsely requiring the physical flight director selectors ON.
+ const togaN1=s.togaActive===true&&id==='N1'&&
+  Number.isFinite(s.flight?.radioAltitudeFt)&&s.flight.radioAltitudeFt>=400;
+ if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot&&!togaN1)
   return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
  if(thrust.includes(id)){
   if(!s.autoThrottleArm)return rejected(s,"AUTOTHROTTLE_NOT_ARMED");

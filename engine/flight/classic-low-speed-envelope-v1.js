@@ -43,9 +43,13 @@
   const bank=clamp(input.bankDeg,-65,65);
   const loadFactor=1/Math.cos(bank*Math.PI/180);
   const clMax=interpolateFlap(input.flapActual)*(1+.055*slatExtension);
-  const stallKt=Math.sqrt(2*massKg*GRAVITY*loadFactor/(RHO*AREA_M2*clMax))/.514444;
-  // These margins are demonstrative for trainer visuals, not shaker switch values.
-  const shakerKt=stallKt*1.09,minManeuverKt=stallKt*1.30;
+  const derivedStallKt=Math.sqrt(2*massKg*GRAVITY*loadFactor/(RHO*AREA_M2*clMax))/.514444;
+  // User-approved RUNWAY_READY instructor-only speed band. This is NOT
+  // the flap/weight-specific AFM stall speed or a real stick-shaker setting.
+  const trainingTakeoff=input.takeoffTrainingProfile===true;
+  const stallKt=trainingTakeoff?110:derivedStallKt;
+  const shakerKt=trainingTakeoff?110:stallKt*1.09;
+  const minManeuverKt=trainingTakeoff?125:stallKt*1.30;
   const threshold=input.autoSlatPreviouslyRequested===true?1.20:1.12;
   const autoSlatRequest=eligible&&input.iasKt<=shakerKt*threshold;
   const belowShaker=input.airborne&&input.iasKt<=shakerKt;
@@ -60,6 +64,7 @@
    slatEffectSource:observedSlatsFull?'LE_OWNER_FULL_CONFIRMED':
     slatExtension>0?'TRAINING_AUTO_SLAT_DELAY_PROXY':'NOT_EXTENDED',
    clMax,loadFactor,stallKt,stickShakerKt:shakerKt,minimumManeuverKt:minManeuverKt,
+   takeoffTrainingProfile:trainingTakeoff,derivedStallKt,
    buffer:{lowerKt:shakerKt,upperKt:minManeuverKt},
    belowShaker,belowStall,sinkDemandFpm,flapDragKtSec,
    autoSlatRequest,autoSlatEligible:eligible,

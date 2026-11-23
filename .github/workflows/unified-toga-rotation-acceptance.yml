@@ -1,0 +1,38 @@
+name: Unified TOGA rotation FD N1 and low-speed acceptance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/unified-toga-rotation-acceptance.yml'
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/afds/classic-toga-ch4-v1.test.cjs'
+      - 'engine/afds/mcp-mode-core-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'engine/flight/classic-low-speed-envelope-v1.js'
+      - 'panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js'
+      - 'panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/unified-takeoff-rotation-110-125-n1.test.cjs'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/afds/classic-toga-ch4-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+jobs:
+  takeoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax validation
+        run: |
+          for f in engine/afds/classic-toga-ch4-v1.js engine/afds/mcp-mode-core-v1.js engine/flight/flight-scenario-core-v1.js engine/flight/classic-low-speed-envelope-v1.js panel-mosaic-lab/cockpit/toga-unified-ch4-v1.js panel-mosaic-lab/cockpit/mcp-afds-bridge-v1.js panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js; do node --check "$f"; done
+      - name: Core rotation, N1, Manual, flight and stall regression
+        run: |
+          node engine/afds/classic-toga-ch4-v1.test.cjs
+          node --test tests/unified-takeoff-rotation-110-125-n1.test.cjs tests/flight-scenario-core-v1.test.cjs tests/classic-low-speed-envelope-v1.test.cjs tests/fcc-flight-guidance-v1.test.cjs

@@ -160,6 +160,13 @@ function hardwareCommand(e){
  // handled by the TO/GA FCC logic and is not a new MCP button selection.
  const t=window.B737UnifiedTOGACh4V1?.getState?.();
  const f=window.B737UnifiedFlightScenarioV1?.getState?.();
+ if(t?.phase==='TO'&&id==='N1'&&
+    (f?.airborne!==true||!Number.isFinite(f.radioAltitudeFt)||
+     f.radioAltitudeFt<400||t.atMode!=='ARM')){
+  state={...state,lastRejection:'TOGA_N1_REQUIRES_ARM_ABOVE_400_RA',
+   revision:state.revision+1};
+  project();notify();return Core.output(state);
+ }
  if((t?.phase==='TO'||t?.phase==='GA')&&f?.airborne===true&&
     Number.isFinite(f.radioAltitudeFt)&&f.radioAltitudeFt<400){
   const lockedPitch=['VNAV','LVL_CHG','VS','ALT_HLD'].includes(id);

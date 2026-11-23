@@ -16,7 +16,8 @@ s=T.advance(s,{...ctx,airborne:true,iasKt:170,radioAltitudeFt:450},20>10?10:10);
 s=T.advance(s,{...ctx,airborne:true,iasKt:170,radioAltitudeFt:450},9);
 assert.equal(s.atMode,'ARM');
 let below=T.press(T.initial(),{...ctx,fdLeft:false});
-assert.equal(below.phase,'OFF','Both FDs required for on-ground takeoff');
+assert.equal(below.phase,'TO','A runway TO/GA press is valid with F/D switches OFF');
+assert.equal(below.fdAutoPopUp,false,'Pre-80KT runway TOGA must not pop director bars');
 let ga=T.press(T.initial(),{...ctx,groundReady:false,airborne:true,radioAltitudeFt:700,
  apChannels:1,selectedSpeedKt:145});
 assert.equal(ga.phase,'GA');assert.equal(ga.apDisengage,true);
@@ -77,7 +78,11 @@ assert.equal(noSecondary.targetSpeedKt,170,
  assert.equal(pop.phase,'TO','After 80 KIAS TOGA may pop FD despite both switches OFF');
  assert.equal(pop.fdAutoPopUp,true);
  assert.equal(pop.targetSpeedKt,155,'Trainer schedule holds MCP V2 + 15 kt');
- assert.equal(T.press(T.initial(),{...popCtx,iasKt:79}).phase,'OFF');
+ assert.equal(T.press(T.initial(),{...popCtx,iasKt:79}).phase,'TO');
+let cold=T.press(T.initial(),{...popCtx,iasKt:0});
+assert.equal(cold.fdAutoPopUp,false);
+cold=T.advance(cold,{...popCtx,iasKt:81},.3);
+assert.equal(cold.fdAutoPopUp,true,'F/D popup occurs after 80 KIAS even if TOGA was pressed at zero');
  pop=T.advance(pop,{...popCtx,airborne:true,radioAltitudeFt:20,
   iasKt:145,vsFpm:650,availableN1Percent:90},.4);
  assert.equal(pop.fdPitchDeg,15,'Do not switch to IAS control until sufficient climb');
@@ -100,3 +105,19 @@ assert.equal(noSecondary.targetSpeedKt,170,
  assert.equal(T.press(T.initial(),ctx).targetSpeedKt,160,
   'FCOM profile remains V2+20 with no trainer customization');
 console.log('PASS CH4 TOGA: FD N1/THR HLD, 60/84 kt thresholds, FD-only GA, dual AP GA, single-engine 13°, reduced-to-full GA');
+
+let reselect=T.press(T.initial(),{...ctx,takeoffSpeedIncrementKt:15});
+reselect=T.advance(reselect,{...ctx,iasKt:88},2);
+reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:158,
+ radioAltitudeFt:450,vsFpm:1300},10);
+reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:161,
+ radioAltitudeFt:450,vsFpm:1300},10);
+reselect=T.advance(reselect,{...ctx,airborne:true,iasKt:165,
+ radioAltitudeFt:450,vsFpm:1300},9);
+assert.equal(reselect.atMode,'ARM');
+assert.equal(T.selectN1(reselect,{...ctx,radioAltitudeFt:350}).atMode,'ARM');
+const selected=T.selectN1(reselect,{...ctx,radioAltitudeFt:450});
+assert.equal(selected.atMode,'N1');
+assert.equal(selected.n1SelectedAfterArm,true);
+assert.equal(T.advance(selected,{...ctx,airborne:true,iasKt:175,radioAltitudeFt:600},1).atMode,'N1',
+ 'Reselected N1 must not revert to THR HLD due to 84kt takeoff rollout logic');
