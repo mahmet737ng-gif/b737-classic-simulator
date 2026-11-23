@@ -1,0 +1,286 @@
+{
+  "id": "IRAN_AIP_OIFM_AD2_REVIEW_2026",
+  "icao": "OIFM",
+  "iata": "IFN",
+  "airport": "Esfahan / Shahid Beheshti International",
+  "purpose": "EDUCATIONAL_NOT_FOR_OPERATIONAL_FLIGHT",
+  "source": "https://ais.airport.ir/documents/452631/186839523/OIFM.pdf",
+  "sections": [
+    "AD 2.2",
+    "AD 2.12",
+    "AD 2.13",
+    "AD 2.14",
+    "AD 2.18",
+    "AD 2.19"
+  ],
+  "airacIndex": "AIRAC AMDT 2/26 WEF 2026-10-01; page dates differ",
+  "arp": {
+    "lat": 32.75083333,
+    "lon": 51.86277778,
+    "latDms": "324503N",
+    "lonDms": "0515146E"
+  },
+  "airportElevationFt": 5058,
+  "magVarPublished": {
+    "eastDeg": 4,
+    "epoch": 2019
+  },
+  "parallelSeparationM": 460,
+  "runwaySurface": "ASPHALT (first 305 m concrete)",
+  "runways": {
+    "07L": {
+      "trueBearingDeg": 77.93,
+      "threshold": {
+        "lat": 32.74873611,
+        "lon": 51.83781944,
+        "latDms": "324455.45N",
+        "lonDms": "0515016.15E"
+      },
+      "thresholdElevationFt": 5057,
+      "lengthM": 4399,
+      "widthM": 45,
+      "declaredDistancesM": {
+        "tora": 4399,
+        "toda": 4760,
+        "asda": 4760,
+        "lda": 4399
+      },
+      "papiAngleDeg": 3,
+      "approachLighting": "SALS 420 m",
+      "ilsIdent": null
+    },
+    "25R": {
+      "trueBearingDeg": 257.96,
+      "threshold": {
+        "lat": 32.75701944,
+        "lon": 51.883725,
+        "latDms": "324525.27N",
+        "lonDms": "0515301.41E"
+      },
+      "thresholdElevationFt": 5043,
+      "lengthM": 4399,
+      "widthM": 45,
+      "declaredDistancesM": {
+        "tora": 4399,
+        "toda": 4762,
+        "asda": 4762,
+        "lda": 4399
+      },
+      "papiAngleDeg": 2.6,
+      "approachLighting": "PALS CAT I 900 m",
+      "ilsIdent": "IIFN"
+    },
+    "07R": {
+      "trueBearingDeg": 77.93,
+      "threshold": {
+        "lat": 32.74468056,
+        "lon": 51.83884444,
+        "latDms": "324440.85N",
+        "lonDms": "0515019.84E"
+      },
+      "thresholdElevationFt": 5058,
+      "lengthM": 4399,
+      "widthM": 45,
+      "declaredDistancesM": {
+        "tora": 4399,
+        "toda": 4759,
+        "asda": 4759,
+        "lda": 4399
+      },
+      "papiAngleDeg": 3,
+      "approachLighting": "SALS 420 m",
+      "ilsIdent": null
+    },
+    "25L": {
+      "trueBearingDeg": 257.96,
+      "threshold": {
+        "lat": 32.75296389,
+        "lon": 51.88474444,
+        "latDms": "324510.67N",
+        "lonDms": "0515305.08E"
+      },
+      "thresholdElevationFt": 5037,
+      "lengthM": 4399,
+      "widthM": 45,
+      "declaredDistancesM": {
+        "tora": 4399,
+        "toda": 4760,
+        "asda": 4760,
+        "lda": 4399
+      },
+      "papiAngleDeg": 3,
+      "approachLighting": "PALS CAT I 900 m",
+      "ilsIdent": null
+    }
+  },
+  "comMHz": {
+    "APP": 124.6,
+    "TWR": 118.3,
+    "GND": 121.9,
+    "ATIS": 128.25,
+    "EMERGENCY": 121.5
+  },
+  "aids": {
+    "IFN_NDB": {
+      "ident": "IFN",
+      "type": "NDB",
+      "frequencyKHz": 337,
+      "morse": ".. ..-. -.",
+      "site": {
+        "lat": 32.749,
+        "lon": 51.88080556,
+        "latDms": "324456.4N",
+        "lonDms": "0515250.9E"
+      },
+      "hours": "H24"
+    },
+    "ISN": {
+      "ident": "ISN",
+      "type": "DVOR_DME",
+      "frequencyMHz": 113.2,
+      "channel": "79X",
+      "morse": ".. ... -.",
+      "site": {
+        "lat": 32.74697222,
+        "lon": 51.82802778,
+        "latDms": "324449.1N",
+        "lonDms": "0514940.9E"
+      },
+      "dmeElevationFt": 5072,
+      "hours": "H24",
+      "aipServiceRestrictions": {
+        "implementedInTrainer": false,
+        "note": "Clockwise coverage exclusions from OIFM AD2.19; NOTAM may supersede",
+        "beyond30Nm": [
+          {
+            "fromDeg": 30,
+            "toDeg": 70,
+            "belowFtAmsl": 11000
+          },
+          {
+            "fromDeg": 70,
+            "toDeg": 80,
+            "belowFtAmsl": 8000
+          }
+        ],
+        "beyond40Nm": [
+          {
+            "fromDeg": 360,
+            "toDeg": 30,
+            "belowFtAmsl": 11000
+          },
+          {
+            "fromDeg": 80,
+            "toDeg": 150,
+            "belowFtAmsl": 8000
+          },
+          {
+            "fromDeg": 150,
+            "toDeg": 250,
+            "belowFtAmsl": 10500
+          },
+          {
+            "fromDeg": 260,
+            "toDeg": 270,
+            "belowFtAmsl": 9500
+          },
+          {
+            "fromDeg": 280,
+            "toDeg": 310,
+            "belowFtAmsl": 8000
+          },
+          {
+            "fromDeg": 320,
+            "toDeg": 330,
+            "belowFtAmsl": 8500
+          },
+          {
+            "fromDeg": 340,
+            "toDeg": 360,
+            "belowFtAmsl": 11000
+          }
+        ]
+      }
+    },
+    "IFN_TACAN": {
+      "ident": "IFN",
+      "type": "TACAN_MILITARY",
+      "channel": "118X",
+      "morse": ".. ..-. -.",
+      "site": {
+        "lat": 32.74638889,
+        "lon": 51.82472222,
+        "latDms": "324447N",
+        "lonDms": "0514929E"
+      },
+      "hours": "H24",
+      "remark": "IRIAF"
+    },
+    "IIFN": {
+      "ident": "IIFN",
+      "type": "ILS_CAT_I",
+      "runway": "25R",
+      "frequencyMHz": 109.9,
+      "morse": ".. .. ..-. -.",
+      "localizerSite": {
+        "lat": 32.74786111,
+        "lon": 51.83302778,
+        "latDms": "324452.3N",
+        "lonDms": "0514958.9E"
+      },
+      "glidePathFrequencyMHz": 333.8,
+      "glidePathSite": {
+        "lat": 32.75505556,
+        "lon": 51.88019444,
+        "latDms": "324518.2N",
+        "lonDms": "0515248.7E"
+      },
+      "glidePathAngleDeg": 2.63,
+      "referenceDatumHeightFt": 55,
+      "dmeChannel": "36X",
+      "dmeSite": {
+        "lat": 32.75508333,
+        "lon": 51.88019444,
+        "latDms": "324518.3N",
+        "lonDms": "0515248.7E"
+      },
+      "dmeElevationFt": 5041,
+      "hours": "H24",
+      "localizerAxisQuality": "RUNWAY_TRUE_BEARING_PROXY_FOR_TRAINING; USE CURRENT APPROACH_CHART_FOR_PUBLISHED_MAGNETIC_COURSE"
+    }
+  },
+  "notes": [
+    "No ILS listed for RWY 25L in AD 2.19",
+    "True runway bearing distinct from modelled magnetic heading",
+    "VOR service restrictions and NOTAM not simulated"
+  ],
+  "airportCategoryICAO": "4E",
+  "rescueFireFightingCategory": 8,
+  "runwayPCN": "65/F/C/X/T",
+  "apron": {
+    "surface": "CONCRETE",
+    "PCN": "75/R/B/W/T"
+  },
+  "taxiways": {
+    "typicalWidthM": 23,
+    "exceptionWidthM": {
+      "S": 7
+    },
+    "asphaltSections": [
+      "D",
+      "E"
+    ],
+    "otherTaxiways": "CONCRETE",
+    "holdBays": {
+      "G": "max width 85 m",
+      "J": "max width 85 m"
+    }
+  },
+  "vorCheckpoint": {
+    "lat": 32.74633333,
+    "lon": 51.87166667,
+    "radialMagDeg": 88,
+    "distanceNm": 2.2,
+    "source": "OIFM AD2.8"
+  }
+}

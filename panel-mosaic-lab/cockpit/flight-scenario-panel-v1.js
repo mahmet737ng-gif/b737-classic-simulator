@@ -15,7 +15,7 @@
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
   <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
   <div class="flight-grid">
-   <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option></select></label>
+   <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option><option value="OIFM">ESFAHAN · OIFM</option></select></label>
    <label>Runway<select id="flightRunway"></select></label>
    <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
   </div>
@@ -196,7 +196,16 @@
  // Prefer the selected runway's local ILS reference over the ARP for
  // training finals. The current coordinates are PROVISIONAL, not surveyed
  // localizer, GP or DME antennas; never label them verified navigation data.
+ const OIFM_AIP_THRESHOLDS=Object.freeze({
+  '07L':Object.freeze({lat:32.74873611,lon:51.83781944,elevationFt:5057,courseTrueDeg:77.93,glideDeg:3,tchFt:50}),
+  '25R':Object.freeze({lat:32.75701944,lon:51.883725,elevationFt:5043,courseTrueDeg:257.96,glideDeg:2.63,tchFt:55}),
+  '07R':Object.freeze({lat:32.74468056,lon:51.83884444,elevationFt:5058,courseTrueDeg:77.93,glideDeg:3,tchFt:50}),
+  '25L':Object.freeze({lat:32.75296389,lon:51.88474444,elevationFt:5037,courseTrueDeg:257.96,glideDeg:3,tchFt:50})
+ });
  function approachThresholds(config){
+  if(config.airport==='OIFM'&&OIFM_AIP_THRESHOLDS[config.runway])
+   return {OIFM:{[config.runway]:{...OIFM_AIP_THRESHOLDS[config.runway],
+    quality:'AIP_SURVEYED_RWY_THR',source:'IRAN_AIP_OIFM_AD2_12'}}};
   if(!['FINAL_5','FINAL_10','RUNWAY_READY'].includes(config.preset))return {};
   const station=win.B737IranRadioNavaidsV1?.STATIONS?.find(s=>
    s.type==='ILS_DME'&&s.airport===config.airport&&s.runway===config.runway);

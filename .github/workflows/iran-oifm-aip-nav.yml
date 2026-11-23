@@ -1,0 +1,28 @@
+name: OIFM AIP radio navigation regression
+on:
+  pull_request:
+    paths:
+      - 'engine/flight/iran-radio-navaids-v1.js'
+      - 'engine/flight/iran-nav-reference-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'engine/flight/data/iran-oifm-official-aip-v1.json'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'tests/iran-oifm-aip-nav.test.cjs'
+      - '.github/workflows/iran-oifm-aip-nav.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'engine/flight/iran-radio-navaids-v1.js'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'engine/flight/data/iran-oifm-official-aip-v1.json'
+      - 'tests/iran-oifm-aip-nav.test.cjs'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/iran-oifm-aip-nav.test.cjs
