@@ -444,6 +444,11 @@
     lastEngineContextAt=lastTick;syncInitialEngineContext();
    }
    publish();updateUI();
+   // A follower can receive a flight sample before loadFlight after
+   // a late join/reconnect. Restore real FINAL_10 cockpit owners, including
+   // immediate FLAPS 30 and LE FULL, not only the flight display numbers.
+   if(initial&&sample.preset==='FINAL_10')
+    win.B737Final10ApproachPresetV1?.apply?.(state);
   },
   pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
   getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
