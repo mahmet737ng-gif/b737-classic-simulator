@@ -166,13 +166,13 @@
       const scenario = win.B737UnifiedFlightScenarioV1;
       const state = scenario?.getState?.();
       const active = scenario?.getDiagnostics?.()?.active === true;
-      const paints = mainPaints();
-      const repainted = paints.every((count, index) =>
-        count > (directorPaintBaseline?.[index] || 0));
-      const final10Ready = state?.preset !== 'FINAL_10' ||
-        win.B737Final10ApproachPresetV1?.getStatus?.()?.complete === true;
-      if (!active || !repainted || !final10Ready ||
-          now - scenarioStartedAt < STABLE_MS) return;
+      const ready = win.B737WelcomeReadinessV2?.scenarioReady?.({
+        active, beforePaints:directorPaintBaseline || [],
+        afterPaints:mainPaints(), final10:state?.preset === 'FINAL_10',
+        final10Complete:win.B737Final10ApproachPresetV1?.getStatus?.()?.complete,
+        elapsedMs:now-scenarioStartedAt
+      }) === true;
+      if (!ready) return;
     }
     for (const [node, anchor] of moved) anchor.replaceWith(node);
     cockpit.forEach(node => { node.inert = false; });
