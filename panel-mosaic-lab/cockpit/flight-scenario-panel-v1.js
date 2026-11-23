@@ -281,10 +281,23 @@
   const fcc=win.B737UnifiedFccFlightV1;
   const mcp=win.B737McpAFDSBridgeV1;
   const output=mcp?.getOutput?.();
+  const toga=win.B737UnifiedTOGACh4V1?.getState?.();
   if(!mcpFollow||output?.power!==true||!output.modes?.autopilot){
    if(previouslyCoupled){
     state=Core.command(state,{type:'MANUAL_HOLD'});
     previouslyCoupled=false;
+   }
+   // Classroom instructor-auto mode follows the SAME TOGA pitch as the FD.
+   // No fake CMD/autopilot annunciation. Manual pitch input disables it.
+   if(mcpFollow&&output?.power===true&&state.takeoffAutoMode===true&&
+      toga?.phase==='TO'&&Number.isFinite(toga.fdPitchDeg)){
+    const demand=Math.max(-10,Math.min(15,toga.fdPitchDeg));
+    if(state.target.verticalMode!=='PITCH'||
+       Math.abs((state.target.pitchDeg??0)-demand)>.05)
+     state=Core.command(state,{type:'PITCH',value:demand,source:'TRAINER_AUTO_TO'});
+    if(Number.isFinite(toga.targetSpeedKt)&&
+       Math.abs(state.target.speedKt-toga.targetSpeedKt)>.05)
+     state=Core.command(state,{type:'SPEED',value:toga.targetSpeedKt});
    }
    return;
   }
@@ -309,7 +322,7 @@
   };
   for(const command of commands.actions){
    if(matches(command))continue;
-   try{state=Core.command(state,command);}
+   try{state=Core.command(state,{...command,source:'FCC_CMD'});}
    catch(error){console.warn('FCC flight command rejected',command,error);}
   }
   if(commands.altAcquireConfirmed&&
