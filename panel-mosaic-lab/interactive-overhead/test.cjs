@@ -70,7 +70,10 @@ assert.match(extCss,/\[data-control="apu-start"\] \.toggle-sprite\s*\{\s*transit
 for(const c of registry.controls){const p=model.mapPoint(c,layout.placements.find(x=>x.id===c.placementId));assert.ok(p.diameter>0&&Number.isFinite(p.x+p.y));}
 assert.ok(events.length>0);
 const page=fs.readFileSync(path.join(__dirname,'../cockpit/overhead-stage.html'),'utf8');
-assert.ok(page.includes('app.js?v=EXTL-INBOARD-L-CENTER-0003'),'Embedded overhead must use the current photo-registered switch bundle');
+assert.ok(page.includes('app.js?v=FINAL10-OH-SCENARIO-0001&amp;repair=NO-FILL-0004'),
+ 'Embedded overhead must use the current complete FLT PHASE switch controller');
+assert.ok(app.includes("button.dataset.registration='EXTL-INBOARD-L-CENTER-0003'"),
+ 'Current overhead controller must retain the photo-registered inboard landing-light socket');
 assert.ok(app.includes("const photoOnly=c.id==='emergency-exit-lights';"),'OH14 remains unchanged by exterior switch version');
 assert.ok(!page.includes('socket-cleanup-v3.js'));
 console.log('PASS 59 overhead controls with one explicitly owner-requested OH14 Small Silver actuator; other frozen toggles preserved.');
