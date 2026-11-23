@@ -96,13 +96,25 @@
   }
 
   async function send(action, body = {}) {
-    const reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
-      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({roomId, client, ...body})});
-    if (!reply.ok) {
-      const failure = await reply.json().catch(() => ({}));
-      throw Error(failure.error || 'Crew Room connection unavailable.');
+    const payload = JSON.stringify({roomId, client, ...body});
+    let retries = 0;
+    for (;;) {
+      const reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
+        headers: {'Content-Type': 'application/json'}, body: payload});
+      // A 429 guarantees rejection by the server, so this specific retry is
+      // safe; do not automatically retry ambiguous network failures.
+      // Keep commandWrites serialized so A/B/A/B switch order is preserved.
+      if (action === 'command' && reply.status === 429 && retries < 5) {
+        const backoffMs = Math.min(1200, 250 * (2 ** retries++));
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+        continue;
+      }
+      if (!reply.ok) {
+        const failure = await reply.json().catch(() => ({}));
+        throw Error(failure.error || 'Crew Room connection unavailable.');
+      }
+      return reply.json();
     }
-    return reply.json();
   }
 
   function command(type, id, value) {
