@@ -434,7 +434,8 @@
   // The UI and scenario core must never drift: reconcile both the static dialog and dynamic fallback.
   const airportSelect=by('flightAirport');
   for(const airport of Object.values(Core.AIRPORTS)){
-   if(!Array.from(airportSelect.options).some(option=>option.value===airport.icao)){
+   if(typeof airportSelect?.add==='function'&&
+      !Array.from(airportSelect.options||[]).some(option=>option.value===airport.icao)){
     airportSelect.add(new Option(airport.name.toUpperCase()+' · '+airport.icao,airport.icao));
    }
   }
@@ -449,7 +450,7 @@
    // pushbutton. The Chapter 4 bridge resolves takeoff versus go-around.
    win.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{source:'FLT_PHASE'}}));
   });
-  by('flightManualPitchApply').addEventListener('click',()=>{
+  by('flightManualPitchApply')?.addEventListener('click',()=>{
    if(!active||!state)return status('LOAD FLIGHT BEFORE MANUAL PITCH',true);
    if(win.B737McpAFDSBridgeV1?.getOutput?.()?.modes?.autopilot)
     return status('DISENGAGE A/P BEFORE MANUAL PITCH CONTROL',true);
