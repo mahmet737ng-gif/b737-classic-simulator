@@ -54,9 +54,15 @@ test('authoritative crew room keeps latest FO overhead detent across stale host 
   assert.equal((await status()).ready,false,'Captain alone must not arm START');
   assert.equal((await fo('scenarioStatus',{roomId,client:foClient,generation,complete:false,missing:['FLAP_ACTUAL_30']})).status,200);
   assert.equal((await status()).ready,false,'A physical flap disagreement blocks READY');
+  assert.equal((await c('command',{roomId,client:capClient,
+    command:{type:'pauseFlight',id:'flight',value:false}})).status,409,
+    'Neither crew member may START until physical checks pass');
   assert.deepEqual((await status()).reports.firstOfficer.missing,['FLAP_ACTUAL_30']);
   assert.equal((await fo('scenarioStatus',{roomId,client:foClient,generation,complete:true,missing:[]})).status,200);
   assert.equal((await status()).ready,true);
+  assert.equal((await c('command',{roomId,client:capClient,
+    command:{type:'pauseFlight',id:'flight',value:false}})).status,200,
+    'START is accepted only after Captain and FO readiness');
   assert.equal((await obs('scenarioStatus',{roomId,client:'observer-state-qa',generation,complete:true,missing:[]})).status,403);
   assert.equal((await fo('scenarioStatus',{roomId,client:foClient,generation:generation-1,complete:true,missing:[]})).status,409);
   assert.equal((await fo('scenarioStatus',{roomId,client:foClient,generation,complete:true,missing:['NOT VALID']})).status,400);
