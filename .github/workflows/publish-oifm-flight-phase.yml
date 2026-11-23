@@ -1,0 +1,105 @@
+name: Publish OIFM FLT PHASE verified hotfix
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-oifm-flight-phase.yml'
+      - 'engine/flight/flight-scenario-core-v1.js'
+      - 'panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-oifm-flight-phase.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: oifm-pages-owner-verified-hotfix
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Protect owner-locked IRS, 18 guarded switches and LE devices
+        run: |
+          test "$(git hash-object panel-mosaic-lab/cockpit/irs-13seg-owner-lock-v1.json)" = "436671dc6c217484e463fab01f119348a8e67115"
+          test "$(git hash-object panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py)" = "3e45517e5331e10732861be83702805fbcda55bc"
+          python3 panel-mosaic-lab/cockpit/verify-irs-13seg-owner-lock-v1.py --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-irs-sys-dspl-owner-lock-v1.py
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
+          node engine/locks/verify-le-devices-photolens-v2.cjs --negative-self-test
+          node tests/le-photolens-runtime-v3.test.cjs
+          python3 panel-mosaic-lab/verify-final-overhead.py
+      - name: Verify OIFM selectable and exact FOUR runway/simulator presets
+        run: |
+          node --check engine/flight/flight-scenario-core-v1.js
+          node --check panel-mosaic-lab/cockpit/flight-scenario-panel-v1.js
+          node --check panel-mosaic-lab/cockpit/final10-approach-preset-v1.js
+          node --test tests/flight-phase-oifm-live.test.cjs tests/pages-deploy-oifm-owner-final-regression.test.cjs
+          node panel-mosaic-lab/cockpit/performance.test.cjs
+          node panel-mosaic-lab/interactive-overhead/test.cjs
+      - name: Build the full production Unified web runtime
+        run: |
+          node tools/build-unified-web.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -Fq '<option value="OIFM">ESFAHAN · OIFM</option>' web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -Rq 'OIFM' web-dist/engine/flight/
+          node tools/prune-pages-artifact.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -Fq '<option value="OIFM">ESFAHAN · OIFM</option>' web-dist/panel-mosaic-lab/cockpit/index.html
+          echo "READY FOR OIFM HOTFIX DEPLOYMENT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: oifm-release-verification
+          path: web-dist/panel-mosaic-lab/cockpit/index.html
+          if-no-files-found: ignore
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Recheck owner locks and OIFM before immutable publish
+        run: |
+          node engine/locks/verify-le-devices-final-v1.cjs --negative-self-test
+          python3 panel-mosaic-lab/cockpit/verify-guard-redzone.py --negative-self-test
+          node --test tests/flight-phase-oifm-live.test.cjs tests/pages-deploy-oifm-owner-final-regression.test.cjs
+      - name: Compile and prune exact verified sources
+        run: |
+          node tools/build-unified-web.cjs
+          test -f web-dist/panel-mosaic-lab/cockpit/index.html
+          grep -Fq '<option value="OIFM">ESFAHAN · OIFM</option>' web-dist/panel-mosaic-lab/cockpit/index.html
+          node tools/prune-pages-artifact.cjs
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web-dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
+          error_count: 30
+          reporting_interval: 10000
