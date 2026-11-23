@@ -70,6 +70,31 @@
     if (labs && role) labs.hidden = role !== 'instructor';
   }
 
+  // Each iframe has its own JS heap and can reload independently of SSE.
+  // Reconcile mounted physical owners against the last known shared detents.
+  function reconcileMountedOverhead() {
+    const expected = roster?.manager ? currentOverhead : lastReceivedOverhead;
+    const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
+    if (!expected || !actual) return;
+    for (const [type, groupName] of [['guard','guards'],['rotary','rotaries'],['toggle','toggles']]) {
+      for (const [id, state] of Object.entries(expected[groupName] ?? {})) {
+        if (JSON.stringify(actual[groupName]?.[id]) === JSON.stringify(state)) continue;
+        // A newer queued change for this control always beats the cache.
+        if (queue.some(entry => entry.type === type && entry.id === id)) continue;
+        const value = type === 'guard' ? {open: state.guard === 'open', value: state.value} : state;
+        queue.push({type, id, value, client: 'crew-restore'});
+      }
+    }
+    drain();
+  }
+  function rememberSharedOverhead(type, id, value) {
+    const group = type === 'guard' ? 'guards' : type === 'rotary' ? 'rotaries' :
+      type === 'toggle' ? 'toggles' : null;
+    const expected = roster?.manager ? currentOverhead : lastReceivedOverhead;
+    if (!group || !expected?.[group] || !id) return;
+    expected[group][id] = type === 'guard' ?
+      {guard: value.open ? 'open' : 'closed', value: value.value} : value;
+  }
   function bindFrames() {
     for (const frame of doc.querySelectorAll('iframe')) {
       try {
@@ -82,6 +107,7 @@
             type: 'b737:cockpit-command', action: 'crew-sync-request'
           }, win.location.origin);
           drain();
+          reconcileMountedOverhead();
         }
       } catch (error) {
         console.warn('Crew Overhead frame handshake deferred', error);
@@ -130,6 +156,7 @@
 
   function command(type, id, value) {
     if (!online || role === 'observer' || replay || value === undefined || value === null) return;
+    rememberSharedOverhead(type, id, value);
     commandWrites = commandWrites.then(() => send('command', {command: {type, id, value}}))
       .catch(error => refreshStatus(error.message));
   }
@@ -357,6 +384,7 @@
       if (data.toggles && data.rotaries && data.guards) {
         currentOverhead = {toggles: data.toggles, rotaries: data.rotaries, guards: data.guards};
         if (!replay) publishHostSnapshot();
+        if (role && !roster?.manager) reconcileMountedOverhead();
       }
       return;
     }
@@ -380,6 +408,7 @@
       event.source.postMessage({type:'b737:cockpit-command',
         action:'crew-sync-request'}, win.location.origin);
       drain();
+      reconcileMountedOverhead();
       return;
     }
     if (data?.type !== 'b737:cockpit-overhead' || data.kind !== 'control-event' || data.crewReplay) return;
@@ -496,6 +525,8 @@
         if (entry.sequence <= lastSequence) return;
         lastSequence = entry.sequence;
         queue.push(entry);
+        if (['toggle','rotary','guard'].includes(entry.type))
+          rememberSharedOverhead(entry.type, entry.id, entry.value);
         drain();
       });
       feed.addEventListener('flight', event => {
