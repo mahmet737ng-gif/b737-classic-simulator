@@ -619,6 +619,15 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (action === 'snapshot') {
         if (room.manager !== key) throw new RequestError(403, 'Only the host publishes the shared cockpit snapshot.');
         const overhead = overheadSnapshot(data.overhead);
+        // A late/stale host snapshot must never roll back a newer FO switch
+        // command that already entered the authoritative room state.
+        for (const entry of room.sharedControls.values()) {
+          if (entry.type === 'toggle') overhead.toggles[entry.id] = entry.value;
+          else if (entry.type === 'rotary') overhead.rotaries[entry.id] = entry.value;
+          else if (entry.type === 'guard') overhead.guards[entry.id] = {
+            guard:entry.value.open ? 'open' : 'closed',value:entry.value.value
+          };
+        }
         room.snapshot = {sequence: room.sequence, client: data.client, overhead};
         broadcast(room, 'snapshot', room.snapshot);
         return send(res, 200, {sequence: room.sequence});
@@ -657,6 +666,13 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         room.sharedControls.set(command.type + ':' + command.id, entry);
       if (command.type === 'loadFlight') {
         room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false};
+        // A new flight preset replaces the previous physical configuration.
+        // Do not replay stale flap/MCP/autobrake detents over FINAL_10 READY.
+        for (const key of room.sharedControls.keys()) {
+          if (['flap','gear','autobrake','speedbrake','throttle','startLever',
+               'mcpMode','mcpValue','mcpHardware','trim'].includes(key.split(':')[0]))
+            room.sharedControls.delete(key);
+        }
       } else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
       if (room.commands.length > 2400) room.commands.shift();
