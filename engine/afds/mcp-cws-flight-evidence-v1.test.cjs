@@ -51,7 +51,7 @@ assert.equal(f().pitch.armed,'');
 // Start a separate, non-APP ALT HOLD scenario: ALT HLD is inhibited
 // after G/S capture and cannot be used to escape an engaged ILS.
 assert.equal(send({type:'BUTTON',id:'ALT_HLD'}).rejection,
- 'PITCH_MODE_INHIBITED_AFTER_GS_CAPTURE');
+ 'CAPTURED_APP_PITCH_MODE_LOCKED');
 send({type:'RESET'});
 send({type:'ELECTRICAL',snapshot:{schema:'B737_ELECTRICAL_V7_RESULT',revision:2,bus}});
 send({type:'FD',side:'left',on:true});
