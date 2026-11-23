@@ -7,7 +7,9 @@
 (function(win){'use strict';
  const doc=win.document;
  const EST=win.EPFSI_ESTIMATED_N1_V19;
- const VERSION='MANUAL_N1_RASTER_CH7_10_0002-FF-ROW',knobs={1:null,2:null};
+ const REG=win.B737EnginePhotoControlRegistrationV1;
+ const VERSION='MANUAL_N1_RASTER_CH7_10_0003-SOURCE-HOLE-FIT',knobs={1:null,2:null};
+ const fitted={1:null,2:null};
  const state={1:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null},
               2:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null}};
  let mountNode=null,frame=null,status=null,marker=null,mode='EIS',events=0;
@@ -52,7 +54,8 @@
   const button=el('button',parent,'manual-n1-knob');button.type='button';
   button.setAttribute('aria-label','Engine '+n+' N1 pull to set');
   button.title='N1 ENG '+n+' · click PULL/PUSH, scroll or swipe to SET';
-  const img=el('img',button,'manual-n1-raster');img.src='./assets/manual-n1-photo-knob-v1.png';
+  const img=el('img',button,'manual-n1-raster');
+  img.src=REG?.controls?.['N1_MANUAL_'+n]?.asset||'./assets/manual-n1-photo-knob-v1.png';
   img.alt='';img.draggable=false;
   const note=el('span',button,'manual-n1-knob-label');note.textContent='N1 '+n;
   let drag=null;
@@ -107,6 +110,7 @@
     marker[n].title='N1 reference bug · yellow, per FCOM Chapter 7.10';
    }
   }
+  if(frame.parentNode!==native)native.appendChild(frame);
   const view=doc.documentElement.dataset.engineIndication||'EIS';
   const geo=win.B737EngineIndicationModeV1?.layout?.();
   const conventional=view==='CONVENTIONAL'&&geo?.w>0;
@@ -116,19 +120,23 @@
   if(!Object.values(rectangle).every(num))return false;
   css(frame,{left:rectangle.x+'px',top:rectangle.y+'px',
    width:rectangle.w+'px',height:rectangle.h+'px'});
-  // Conventional photo: N1 reference controls are small circular recesses
-  // in the N1 dial faces. EIS photo: PULL TO SET knobs sit by the FF/FU row.
-  // EIS FCOM 7.10.1: the two PULL TO SET N1 rotary sockets flank the
-  // FF/FU row, near the lower left and lower right EIS plate corners.
-  // The former .585 Y aligned ENG 2's knob with the oil-quantity display.
-  // Fractions below are photo-registration estimates pending pixel approval.
-  const coords=conventional?[[.318,.404],[.412,.404]]:[[.125,.890],[.690,.890]];
+  // Conventional registration remains unchanged. EIS holes are measured
+  // in natural pixels of the SHA-verified, unmodified engine photograph.
+  // Fitting the image into the dark aperture must not alter the switch owner.
+  const coords=conventional?[[.318,.404],[.412,.404]]:null;
   const dial=conventional?[[.293,.402],[.408,.402]]:[[.426,.425],[.587,.425]];
-  const size=conventional?0.038:.038;
   for(const n of [1,2]){
-   css(knobs[n],{left:(coords[n-1][0]*100)+'%',top:(coords[n-1][1]*100)+'%',
-    width:(size*rectangle.w)+'px',height:(size*rectangle.w)+'px'});
-   marker[n].dataset.faceX=dial[n-1][0];marker[n].dataset.faceY=dial[n-1][1];
+   if(conventional){
+    css(knobs[n],{left:(coords[n-1][0]*100)+'%',
+     top:(coords[n-1][1]*100)+'%',
+     width:(.038*rectangle.w)+'px',height:(.038*rectangle.w)+'px'});
+    fitted[n]=null;
+   }else{
+    if(!REG?.apply){win.console?.warn?.('N1 EIS photo registration missing');return false;}
+    fitted[n]=REG.apply(knobs[n],'N1_MANUAL_'+n,rectangle);
+   }
+   marker[n].dataset.faceX=dial[n-1][0];
+   marker[n].dataset.faceY=dial[n-1][1];
   }
   paint();
   return true;
@@ -177,7 +185,8 @@
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
  else mount();
  win.B737ManualN1LiveV1=Object.freeze({version:VERSION,
-  getState:()=>({1:source(1),2:source(2),mode,events}),
+  getState:()=>({1:source(1),2:source(2),mode,events,
+   photoRegistration:mode==='EIS'?{1:fitted[1],2:fitted[2]}:null}),
   setManual:(engine,percent)=>{if(![1,2].includes(engine)||!num(percent))return false;
    state[engine].pulled=true;change(engine,percent);return true;},
   setAuto:engine=>{if(![1,2].includes(engine))return false;
