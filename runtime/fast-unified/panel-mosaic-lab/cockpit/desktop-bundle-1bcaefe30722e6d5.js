@@ -553,7 +553,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001 */
+/* ../../engine/afds/mcp-mode-core-v1.js?v=LVLCHG-CH4-0001&amp;exclusive=MCP-FMA-0001&amp;cws=CWS-AXIS-0001&amp;cb=CB-UNIFIED-0008&amp;fd=FCOM-CH4-0002&amp;alt=ACQ-0001&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* MCP AFDS integration slice 1: deterministic educational state machine.
  * Not an autopilot flight dynamics model; unobserved FMS/NAV, capture, and servo
@@ -1176,7 +1176,12 @@ function transition(state,action){
   if(selected===id&&!s.fd.left&&!s.fd.right)clearModes(s);
   return done();
  }
- if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot)
+ // TO/GA is permitted with both F/D switches OFF. After 400 ft and
+ // verified takeoff mode, MCP N1 may re-engage the armed A/T without
+ // falsely requiring the physical flight director selectors ON.
+ const togaN1=s.togaActive===true&&id==='N1'&&
+  Number.isFinite(s.flight?.radioAltitudeFt)&&s.flight.radioAltitudeFt>=400;
+ if(!s.fd.left&&!s.fd.right&&!s.modes.autopilot&&!togaN1)
   return rejected(s,"FLIGHT_DIRECTOR_NOT_SELECTED");
  if(thrust.includes(id)){
   if(!s.autoThrottleArm)return rejected(s,"AUTOTHROTTLE_NOT_ARMED");
@@ -1269,7 +1274,7 @@ return Object.freeze({STATES,MODE_OWNERS,autoSpeedPitch,axisControl,initialState
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./mcp-afds-bridge-v1.js?v=MCP-FINAL10-LOAD-0001&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001 */
+/* ./mcp-afds-bridge-v1.js?v=MCP-FINAL10-LOAD-0001&amp;cb=CB-UNIFIED-0008&amp;ils=SHI-CH4-ARM-FIX-0005&amp;dual=DUAL-ILS-CAPTURE-0001&amp;locapp=INDEPENDENT-0001&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* MCP Phase 3 / slice 1: real Electrical V7 evidence -> conservative AFDS
  * educational mode core -> visual/hardware projection. No invented LRU feed.
@@ -1433,6 +1438,13 @@ function hardwareCommand(e){
  // handled by the TO/GA FCC logic and is not a new MCP button selection.
  const t=window.B737UnifiedTOGACh4V1?.getState?.();
  const f=window.B737UnifiedFlightScenarioV1?.getState?.();
+ if(t?.phase==='TO'&&id==='N1'&&
+    (f?.airborne!==true||!Number.isFinite(f.radioAltitudeFt)||
+     f.radioAltitudeFt<400||t.atMode!=='ARM')){
+  state={...state,lastRejection:'TOGA_N1_REQUIRES_ARM_ABOVE_400_RA',
+   revision:state.revision+1};
+  project();notify();return Core.output(state);
+ }
  if((t?.phase==='TO'||t?.phase==='GA')&&f?.airborne===true&&
     Number.isFinite(f.radioAltitudeFt)&&f.radioAltitudeFt<400){
   const lockedPitch=['VNAV','LVL_CHG','VS','ALT_HLD'].includes(id);

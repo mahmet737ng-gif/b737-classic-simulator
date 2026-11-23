@@ -470,7 +470,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ../../engine/afds/classic-toga-ch4-v1.js?v=CH4-TOGA-FD-SPEED-20261123 */
+/* ../../engine/afds/classic-toga-ch4-v1.js?v=CH4-TOGA-FD-SPEED-20261123&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* Boeing 737 Classic Chapter 4 TO/GA — instructor-only flight-mode state machine.
  * Source: Sepehran FCOM D6-27370-300/400/500-SHI 4.20.14-16,
@@ -515,14 +515,14 @@ try{
   singleEngine:false,engineFailureAfterEngagement:false,gaFullReady:false,
   fdAutoPopUp:false,takeoffV2Kt:null,takeoffIncrementKt:FCOM_TAKEOFF_INCREMENT_KT,
   speedGuidanceActive:false,climbQualifiedSec:0,previousIasKt:null,
-  previousPitchDeg:null,
+  previousPitchDeg:null,n1SelectedAfterArm:false,
   accelerationKtSec:0,pitchDemandRawDeg:null});
  function engineCount(c){return Number(c.engine1Running===true)+Number(c.engine2Running===true);}
  function engage(previous,ctx={}){
   if(!['OFF','TO','GA'].includes(previous?.phase))throw Error('Invalid TOGA previous state');
   const airborne=ctx.airborne===true;
   const engines=engineCount(ctx);
-  const fd=ctx.fdLeft===true&&ctx.fdRight===true;
+  const fdSelected=ctx.fdLeft===true||ctx.fdRight===true;
   const at=ctx.atArmed===true;
   const altitude=safe(ctx.radioAltitudeFt,Infinity),postTouchdown=ctx.touchedDown===true;
   const canGA=(airborne&&altitude<2000&&ctx.isTakeoffMode!==true)||
@@ -532,7 +532,10 @@ try{
   const phase=airborne||postTouchdown?'GA':'TO';
   const autoPop=phase==='TO'?eligibleTakeoffFdPopUp(ctx):
    ctx.allowFdAutoEngage===true&&altitude<2000;
-  if(!fd&&!autoPop)return {...previous,reason:'BOTH_FD_REQUIRED'};
+  // Pressing TO/GA on the runway is permitted with BOTH FD switches OFF.
+  // Command bars are a separate indication and pop up when qualified.
+  if(phase==='GA'&&!fdSelected&&!autoPop)
+   return {...previous,reason:'GO_AROUND_FD_CONDITION_NOT_MET'};
   // FCOM 4.20.24: only dual A/P with FLARE armed retains A/P for GA.
   const dual=ctx.apChannels===2&&ctx.flareArmed===true&&!postTouchdown;
   const target=safe(ctx.iasKt,0);
@@ -541,7 +544,7 @@ try{
   const v2=safe(ctx.selectedSpeedKt,safe(ctx.v2Kt,target));
   const increment=trainerIncrement(ctx);
   return {...initial(),phase,presses:1,initialSpeedKt:target,
-   fdAutoPopUp:!fd&&autoPop,takeoffV2Kt:phase==='TO'?v2:null,
+   fdAutoPopUp:!fdSelected&&autoPop,takeoffV2Kt:phase==='TO'?v2:null,
    takeoffIncrementKt:increment,previousIasKt:target,
    fdPitchDeg:phase==='TO'?(target<60?-10:15):single?13:15,
    fdRollTrackDeg:safe(ctx.groundTrackDeg,0),
@@ -568,6 +571,10 @@ try{
   if(previous.phase==='OFF')return previous;
   const elapsed=previous.elapsedSec+dtSec,ias=safe(ctx.iasKt,0),ra=safe(ctx.radioAltitudeFt,0);
   let next={...previous,elapsedSec:elapsed};
+  // An OFF-switch ground TO/GA starts immediately; the two FD bars
+  // automatically appear only after the documented 80 KIAS threshold.
+  if(previous.phase==='TO'&&ctx.fdLeft!==true&&ctx.fdRight!==true)
+   next.fdAutoPopUp=previous.fdAutoPopUp||eligibleTakeoffFdPopUp(ctx);
   const observedEngines=typeof ctx.engine1Running==='boolean'&&
     typeof ctx.engine2Running==='boolean'?engineCount(ctx):null;
   if(observedEngines===1&&!previous.singleEngine){
@@ -618,10 +625,12 @@ try{
    }
    next.previousIasKt=ias;
    next.previousPitchDeg=safe(ctx.pitchDeg,previous.previousPitchDeg);
-   if(ias>=84&&next.atMode==='N1'){next.atMode='THR HLD';next.thrustDemand='THR_HOLD';}
+   if(ias>=84&&next.atMode==='N1'&&!next.n1SelectedAfterArm){next.atMode='THR HLD';next.thrustDemand='THR_HOLD';}
    if(ctx.airborne===true&&next.liftoffSec!==null){
     const after=elapsed-next.liftoffSec;
-    if(ra>=400&&after>=18&&next.atMode==='THR HLD'){next.atMode='ARM';next.thrustDemand='ARM';}
+    // Unified instructor schedule: THR HLD -> ARM at 400 ft AGL; N1
+    // may then be explicitly reselected from the real MCP pushbutton.
+    if(ra>=400&&next.atMode==='THR HLD'){next.atMode='ARM';next.thrustDemand='ARM';}
     if(ctx.autopilotEngaged===true&&ra>=400){
      next={...next,afdsMode:'CMD',pitchMode:'MCP SPD',
       rollMode:ctx.otherRollMode||next.rollMode,reason:'CMD_AFTER_TAKEOFF'};
@@ -642,18 +651,27 @@ try{
   }
   return next;
  }
+ function selectN1(previous,ctx={}){
+  if(previous?.phase!=='TO')return {...previous,reason:'N1_RESELECT_REQUIRES_TAKEOFF'};
+  if(safe(ctx.radioAltitudeFt,0)<400)return {...previous,reason:'N1_BELOW_400_RA'};
+  if(ctx.atArmed!==true||engineCount(ctx)<1)
+   return {...previous,reason:'N1_REQUIRES_ARMED_RUNNING_ENGINE'};
+  if(previous.atMode!=='ARM')return {...previous,reason:'WAIT_THR_HLD_TO_ARM'};
+  return {...previous,atMode:'N1',thrustDemand:'TAKEOFF_LIMIT',
+   throttleFraction:1,n1SelectedAfterArm:true,reason:'N1_SELECTED_AFTER_400_RA'};
+ }
  function fma(s){
   return {at:s.atMode,pitch:s.pitchMode,roll:s.rollMode,afds:s.afdsMode,
    fdPitch:s.fdPitchDeg,targetSpeedKt:s.targetSpeedKt,thrust:s.thrustDemand};
  }
  return Object.freeze({VERSION,FCOM_TAKEOFF_INCREMENT_KT,eligibleTakeoffFdPopUp,
-  initial,engage,press,advance,fma});
+  initial,engage,press,advance,selectN1,fma});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./flight-scenario-panel-v1.js?v=FLT-READY-GATE-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004 */
+/* ./flight-scenario-panel-v1.js?v=FLT-READY-GATE-0001&amp;aero=ACTUAL-TE-0001&amp;alt=ACQ-0001&amp;ils=SHI-CH4-0004&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* Unified Flight Scenario Lab v1. Optional instructor feed; no panel DOM overrides. */
 (function(win){
@@ -690,6 +708,10 @@ try{
    <button type="button" id="flightTakeoff">PRESS TOGA</button>
    <button type="button" id="flightPause">PAUSE</button>
    <button type="button" id="flightStop">STOP FEED</button>
+  </div>
+  <div class="flight-actions">
+   <label>MANUAL PITCH (°)<input id="flightManualPitch" type="number" min="-10" max="15" step=".5" value="0"></label>
+   <button type="button" id="flightManualPitchApply">APPLY MANUAL PITCH</button>
   </div>
   <p id="flightScenarioStatus" class="flight-status" role="status">Select airport, runway and scenario; then press LOAD SCENARIO. Current Unified avionics remain unchanged until activated.</p>
  `;
@@ -938,10 +960,23 @@ try{
   const fcc=win.B737UnifiedFccFlightV1;
   const mcp=win.B737McpAFDSBridgeV1;
   const output=mcp?.getOutput?.();
+  const toga=win.B737UnifiedTOGACh4V1?.getState?.();
   if(!mcpFollow||output?.power!==true||!output.modes?.autopilot){
    if(previouslyCoupled){
     state=Core.command(state,{type:'MANUAL_HOLD'});
     previouslyCoupled=false;
+   }
+   // Classroom instructor-auto mode follows the SAME TOGA pitch as the FD.
+   // No fake CMD/autopilot annunciation. Manual pitch input disables it.
+   if(mcpFollow&&output?.power===true&&state.takeoffAutoMode===true&&
+      toga?.phase==='TO'&&Number.isFinite(toga.fdPitchDeg)){
+    const demand=Math.max(-10,Math.min(15,toga.fdPitchDeg));
+    if(state.target.verticalMode!=='PITCH'||
+       Math.abs((state.target.pitchDeg??0)-demand)>.05)
+     state=Core.command(state,{type:'PITCH',value:demand,source:'TRAINER_AUTO_TO'});
+    if(Number.isFinite(toga.targetSpeedKt)&&
+       Math.abs(state.target.speedKt-toga.targetSpeedKt)>.05)
+     state=Core.command(state,{type:'SPEED',value:toga.targetSpeedKt});
    }
    return;
   }
@@ -966,7 +1001,7 @@ try{
   };
   for(const command of commands.actions){
    if(matches(command))continue;
-   try{state=Core.command(state,command);}
+   try{state=Core.command(state,{...command,source:'FCC_CMD'});}
    catch(error){console.warn('FCC flight command rejected',command,error);}
   }
   if(commands.altAcquireConfirmed&&
@@ -1074,7 +1109,8 @@ try{
   // The UI and scenario core must never drift: reconcile both the static dialog and dynamic fallback.
   const airportSelect=by('flightAirport');
   for(const airport of Object.values(Core.AIRPORTS)){
-   if(!Array.from(airportSelect.options).some(option=>option.value===airport.icao)){
+   if(typeof airportSelect?.add==='function'&&
+      !Array.from(airportSelect.options||[]).some(option=>option.value===airport.icao)){
     airportSelect.add(new Option(airport.name.toUpperCase()+' · '+airport.icao,airport.icao));
    }
   }
@@ -1088,6 +1124,18 @@ try{
    // Same TO/GA request is generated by either photographed thrust-lever
    // pushbutton. The Chapter 4 bridge resolves takeoff versus go-around.
    win.dispatchEvent(new CustomEvent('b737:toga-request',{detail:{source:'FLT_PHASE'}}));
+  });
+  by('flightManualPitchApply')?.addEventListener('click',()=>{
+   if(!active||!state)return status('LOAD FLIGHT BEFORE MANUAL PITCH',true);
+   if(win.B737McpAFDSBridgeV1?.getOutput?.()?.modes?.autopilot)
+    return status('DISENGAGE A/P BEFORE MANUAL PITCH CONTROL',true);
+   try{
+    state=Core.command(state,{type:'PITCH',value:Number(by('flightManualPitch').value),
+     source:'MANUAL_PILOT'});
+    previouslyCoupled=false;
+    status('MANUAL PITCH SELECTED · trainer auto-follow released');
+    publish();updateUI();
+   }catch(error){status('INVALID MANUAL PITCH · '+String(error?.message||error),true);}
   });
   by('flightPause').addEventListener('click',togglePause);
   by('flightStop').addEventListener('click',stop);

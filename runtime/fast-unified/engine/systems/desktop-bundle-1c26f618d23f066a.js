@@ -900,7 +900,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-FD-SPEED-20261123&amp;ils=SHI-CH4-0004 */
+/* ./toga-unified-ch4-v1.js?v=CH4-TOGA-FD-SPEED-20261123&amp;ils=SHI-CH4-0004&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* TCAS-independent Unified TO/GA integration.
  * Source: Sepehran 737CL FCOM Ch 4 §§4.20.14–16,4.20.24–27.
@@ -967,7 +967,7 @@ try{
   if(state.phase==='GA'&&m?.modes?.lateral==='HDG_SEL')fm.roll='HDG SEL';
   else if(state.phase==='GA'&&m?.modes?.lateral==='LNAV')fm.roll='LNAV';
   else if(state.phase==='GA'&&m?.capture?.roll==='VOR_LOC')fm.roll='VOR/LOC';
-  const fingerprint=JSON.stringify([fm,m.power,m.controls?.fd]);
+  const fingerprint=JSON.stringify([fm,m.power,m.controls?.fd,state.fdAutoPopUp]);
   if(lastFma===fingerprint)return;
   lastFma=fingerprint;
   for(const seat of ['CAPT','FO']){
@@ -976,7 +976,7 @@ try{
     source:'SIMULATED_FCC',evidence:{togaModeConfirmed:true},
     fields:{at:{active:fm.at},pitch:{active:fm.pitch},
      roll:{active:fm.roll},
-     afds:{active:fm.afds==='CMD'||state.phase==='GA'||
+     afds:{active:fm.afds==='CMD'||state.phase==='GA'||state.fdAutoPopUp===true||
       m.controls?.fd?.[seat==='CAPT'?'left':'right']===true?
       fm.afds:''}}
    }}));
@@ -985,7 +985,7 @@ try{
  function thrust(){
   const fm=T.fma(state);
   if(!['TAKEOFF_LIMIT','GA_REDUCED','GA_FULL'].includes(fm.thrust))return;
-  const finger=state.phase+':'+state.presses+':'+state.throttleFraction;
+  const finger=state.phase+':'+state.presses+':'+state.throttleFraction+':'+state.n1SelectedAfterArm;
   if(lastThrust===finger)return;
   const result=[];let attempts=0,reason='NO_RUNNING_ENGINE';
   for(const n of [1,2]){
@@ -1027,7 +1027,7 @@ try{
    banner('TO/GA BLOCKED · '+next.reason,true);return state;
   }
   state=next;
-  if(state.phase==='GA'&&was!=='GA')
+  if((state.phase==='GA'&&was!=='GA')||(state.phase==='TO'&&was==='OFF'))
    win.B737McpAFDSBridgeV1?.beginToga?.(next.afdsMode==='CMD',next.singleEngine===true);
   if(state.phase==='OFF'){banner('TO/GA BLOCKED · '+state.reason,true);return state;}
   if((was==='OFF'||was==='TO')&&state.phase==='TO'&&f.phase==='GROUND_READY'){
@@ -1083,6 +1083,15 @@ try{
  // 400ft only turning BOTH FD OFF may terminate the protected phase.
  win.addEventListener('b737:mcp-button-request',e=>{
   const id=e.detail?.id;
+  if(state.phase==='TO'&&id==='N1'&&
+     (scenario()?.radioAltitudeFt??0)>=400&&mcp()?.modes?.thrust==='N1'){
+   const next=T.selectN1(state,context());
+   if(next.n1SelectedAfterArm===true){
+    state=next;lastFma='';publishFma();thrust();
+    win.dispatchEvent(new CustomEvent('b737:toga-mode',{detail:{...state,source:'MCP_N1'}}));
+   }else banner('N1 NOT SELECTED · '+next.reason,true);
+   return;
+  }
   if(!active()||(scenario()?.radioAltitudeFt??0)<400)return;
   if(/^CMD_[AB]$/.test(id)&&mcp()?.modes?.autopilot===id){
    releaseToga();return;
@@ -1093,7 +1102,7 @@ try{
   if(!active())return;
   if(!['FD_LEFT','FD_RIGHT'].includes(e.detail?.id))return;
   const controls=mcp()?.controls?.fd;
-  if(controls?.left===false&&controls?.right===false)releaseToga();
+  if(state.phase==='GA'&&controls?.left===false&&controls?.right===false)releaseToga();
  });
  const api=Object.freeze({getState:()=>({...state}),press,tickForTest:tick,
   getDiagnostics:()=>({version:T.VERSION,errors:errors.slice(-12),

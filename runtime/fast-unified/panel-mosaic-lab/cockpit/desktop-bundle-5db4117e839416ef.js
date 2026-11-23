@@ -1,6 +1,6 @@
 (async()=>{
 ;
-/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-GA-BUG-0014-3DRUM-DOWN-0002-GROUND-RED-0001&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001 */
+/* ./eadi-speed-tape-v1.js?v=EADI-SPEED-TAPE-GA-BUG-0014-3DRUM-DOWN-0002-GROUND-RED-0001&amp;ias=ZERO-HOLD-0001&amp;aero=TRN-LOW-0001&amp;trainer=TOGA-145-FD-N1-110-125-0001 */
 try{
 /* B737 Classic EADI speed tape — event-driven read-only integration and paint.
  * FCOM 10.30.13–15, 10.40.6–8; uses independent CAPT ADC1 / FO ADC2.
@@ -28,7 +28,20 @@ try{
  const stamps={CAPT:null,FO:null},fingerprints={CAPT:new Map(),FO:new Map()};
  function validateSeat(seat){if(!['CAPT','FO'].includes(seat))throw Error('INVALID_EADI_SEAT');}
  function getState(seat){validateSeat(seat);return JSON.parse(JSON.stringify(states[seat]));}
- function getView(seat){validateSeat(seat);return model().view(states[seat]);}
+ function getView(seat){
+  validateSeat(seat);
+  const view=model().view(states[seat]);
+  const f=win?.B737UnifiedFlightScenarioV1?.getState?.();
+  // Instructor RUNWAY_READY only; never override a certified ADC limit.
+  const envelope=f?.preset==='RUNWAY_READY'&&f?.airborne===true?
+   f.aeroEnvelope:null;
+  if(envelope?.takeoffTrainingProfile!==true)return view;
+  return {...view,inFlight:true,trainingLowSpeed:{
+   source:'INSTRUCTOR_AERO_PROXY_NOT_FCOM_DATA',
+   stallKt:envelope.stallKt,
+   stickShakerKt:envelope.stickShakerKt,
+   minimumManeuverKt:envelope.minimumManeuverKt}};
+ }
  function repaint(seat){
   const eadi=win?.B737UnifiedEADIStage1;
   if(eadi?.requestPaint){eadi.requestPaint();return;}
@@ -388,7 +401,7 @@ try{
   win=root;ready=true;
   for(const seat of ['CAPT','FO']){
    states[seat]=engine.initialState(seat);
-   unsubscribers.push(eadi.registerLayer(seat,'speedTape',(ctx)=>draw(ctx,engine.view(states[seat]))));
+   unsubscribers.push(eadi.registerLayer(seat,'speedTape',(ctx)=>draw(ctx,getView(seat))));
   }
   // The Chapter 4 FCC report carries the verified *command* limits.
   // Do not confuse minimum AFDS speed with Chapter 10 minimum-maneuver
