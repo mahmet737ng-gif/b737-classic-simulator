@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'tests/private-room-1000-transport.test.cjs'
+      - 'tests/private-room-burst-diagnostic.test.cjs'
       - '.github/workflows/private-room-1000-regression.yml'
 permissions:
   contents: read
@@ -16,7 +17,7 @@ jobs:
         with:
           node-version: '22'
       - name: 1000 real HTTP and SSE command checks in one isolated Private Room
-        run: node --test tests/private-room-1000-transport.test.cjs
+        run: node --test tests/private-room-1000-transport.test.cjs tests/private-room-burst-diagnostic.test.cjs
       - name: Existing private room access and late-join regression
         run: node --test tests/unified-crew-room.test.cjs
   browser-crew:
