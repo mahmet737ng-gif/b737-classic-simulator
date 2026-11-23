@@ -146,6 +146,11 @@
  }
  function togglePause(){
   if(!active||!state)return false;
+   // Shared FINAL_10 starts only when both cockpit owner checks pass.
+   if(pause&&state.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false){
+    status('PRIVATE ROOM NOT READY · Captain and FO must verify FINAL_10 systems.',true);
+    return false;
+   }
   pause=!pause;lastTick=performance.now();
   publish();updateUI();
   status((pause?'PAUSED':'RUNNING')+' · '+state.icao+' RWY '+state.runway+
@@ -158,10 +163,10 @@
  function updateUI(){
   const stopButton=by('flightStop'),pauseButton=by('flightPause'),takeoffButton=by('flightTakeoff');
   if(stopButton)stopButton.disabled=!state||state.airborne===true;
-  if(pauseButton){pauseButton.disabled=!state;pauseButton.textContent=state&&pause?'START':'PAUSE';}
+  if(pauseButton){pauseButton.disabled=!state||(pause&&state?.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false);pauseButton.textContent=state&&pause?'START':'PAUSE';}
   const sceneToggle=by('flightScenarioSceneToggle');
   if(sceneToggle){
-   sceneToggle.disabled=!state||!active;
+   sceneToggle.disabled=!state||!active||(pause&&state?.preset==='FINAL_10'&&win.B737CrewScenarioReadyV1?.canStart?.()===false);
    sceneToggle.textContent=state&&pause?'START':'PAUSE';
    sceneToggle.setAttribute('aria-pressed',String(!!state&&!pause));
    sceneToggle.dataset.flightStatus=!state?'NOT_LOADED':pause?'PAUSED':'RUNNING';
@@ -244,7 +249,7 @@
    publish();lastPublish=performance.now();updateUI();
    if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    crewEvent('loadFlight',config);
-   status((pause?'PAUSED / READY':'ACTIVE')+' · '+state.icao+' RWY '+
+   status((pause?'PAUSED / CONFIGURING':'ACTIVE')+' · '+state.icao+' RWY '+
     state.runway+' · '+state.phase+' · '+state.georefQuality);
    return true;
   }catch(error){status('SCENARIO NOT LOADED: '+String(error.message||error),true);return false;}
