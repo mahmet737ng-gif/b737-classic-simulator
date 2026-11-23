@@ -292,6 +292,14 @@
     s.flightControl={source:'TRAINER_AUTO_ROTATION_NOT_AP',
      desiredPitchDeg:s.rotationTargetDeg,commandedPitchDeg:s.pitchDeg};
    }else if(s.takeoffAutoMode===true)s.pitchDeg=0;
+   else if(target.verticalMode==='PITCH'){
+    // Manual pilot/controller input can independently follow F/D. It is
+    // never auto-applied by merely making F/D command bars visible.
+    s.pitchDeg=clamp(state.pitchDeg+
+     clamp(target.pitchDeg-state.pitchDeg,-2.5*dt,2.5*dt),-10,15);
+    s.flightControl={source:'MANUAL_PILOT_PITCH_INPUT',
+     desiredPitchDeg:target.pitchDeg,commandedPitchDeg:s.pitchDeg};
+   }
    if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
     s.target.verticalMode='PITCH';s.target.pitchDeg=15;
