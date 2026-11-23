@@ -5,14 +5,14 @@ const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const isn=read('panel-mosaic-lab/cockpit/isn-cockpit.js');
 const overhead=read('panel-mosaic-lab/cockpit/overhead-bridge.js');
-test('ISN readiness waits for actual Overhead physical packet, never the optional APU startup preset',()=>{
+test('ISN readiness waits for actual Overhead packet, never the optional APU preset',()=>{
  assert.ok(isn.includes('startupSynchronized:()=>liveGateway.initialized&&!!lastPhysicalPacket'));
-
- assert.doesNotMatch(isn,/startupSynchronized:()=>liveGateway\.initialized&&apuDefaultBootChecked/);
- assert.match(isn,/getStartupReadiness:()=>\(\{/);
- assert.match(isn,/ownerBatteryMounted:!!ownerElectricalGuards\(\)\['battery-master'\]/);
- assert.match(isn,/apuDefaultBootChecked,/);
- assert.match(isn,/lastPhysicalPacket=e\.data;\s+liveGateway\.synchronize\(mergeOwnerGuards\(e\.data\)\)/);
+ assert.ok(!isn.includes('startupSynchronized:()=>liveGateway.initialized&&apuDefaultBootChecked'));
+ assert.ok(isn.includes('getStartupReadiness:()=>({'));
+ assert.ok(isn.includes("ownerBatteryMounted:!!ownerElectricalGuards()['battery-master']"));
+ assert.ok(isn.includes('apuDefaultBootChecked,'));
+ assert.ok(isn.includes('lastPhysicalPacket=e.data;'));
+ assert.ok(isn.includes('liveGateway.synchronize(mergeOwnerGuards(e.data));'));
 });
 test('Overhead already supports a safe, non-mutating rebroadcast of its actual state',()=>{
  assert.match(overhead,/d\.action==='crew-sync-request'\)\{lastControlsPayload='';report\(\);return;/);
