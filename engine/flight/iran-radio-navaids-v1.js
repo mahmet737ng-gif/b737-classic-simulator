@@ -58,7 +58,7 @@
   return {distanceNm,bearingTrue};
  }
  function dmeSlantNm(aircraft,station){
-  if(station.type==='NDB')return null;
+  if(station.type==='NDB'||(!Number.isFinite(station.dmeElevationFt)&&!Number.isFinite(station.elevationFt)))return null;
   const dme=Number.isFinite(station.dmeLat)&&Number.isFinite(station.dmeLon)?{lat:station.dmeLat,lon:station.dmeLon}:station;
   const g=ground(aircraft,dme).distanceNm;
   return Math.hypot(g,(Number(aircraft.altitudeFt)-Number(station.dmeElevationFt??station.elevationFt))/FT_PER_NM);
