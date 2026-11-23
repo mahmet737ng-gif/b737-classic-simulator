@@ -133,7 +133,7 @@ for(const detent of flapManifest.detents){
  const point=require('./flap-lever-model').nativePoint(background,target);
  assert.ok(point.x>background.x+background.w/2,'FLAP tooth must sit to the right of the throttle core');
 }
-assert.ok(unified.includes('flap-lever-test.js?v=FLAP-BMP-0006-PHOTO-FIT'),'Require photo-registered nine-position FLAP actuator release');
+assert.ok(unified.includes('flap-lever-test.js?v=FLAP-SETTLED-SYNC-0001'),'Require photo-registered nine-position FLAP actuator release');
 const safeFlapCss=fs.readFileSync(path.join(__dirname,'unified-css-safe-02-v1.css'),'utf8');
 assert.ok(safeFlapCss.includes('BEGIN flap-lever-test.css'),
  'Flap lever CSS is loaded once in the optimized, order-preserving bundle');
