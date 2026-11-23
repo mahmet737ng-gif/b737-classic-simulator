@@ -18,6 +18,7 @@
   let lastSequence = 0;
   let latestFlight;
   let commandWrites = Promise.resolve();
+  let requestSerial = 0;
   let flightWrite = false;
   let flightChangedAt = 0;
   let roster = null;
@@ -149,15 +150,21 @@
   async function send(action, body = {}) {
     const payload = JSON.stringify({roomId, client, ...body});
     let retries = 0;
+    const retryable = action === 'command' && typeof body.requestId === 'string';
     for (;;) {
-      const reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
-        headers: {'Content-Type': 'application/json'}, body: payload});
-      // A 429 guarantees rejection by the server, so this specific retry is
-      // safe; do not automatically retry ambiguous network failures.
-      // Keep commandWrites serialized so A/B/A/B switch order is preserved.
-      if (action === 'command' && reply.status === 429 && retries < 5) {
-        const backoffMs = Math.min(1200, 250 * (2 ** retries++));
-        await new Promise(resolve => setTimeout(resolve, backoffMs));
+      let reply;
+      try {
+        reply = await fetch('/api/crew/' + action, {method: 'POST', cache: 'no-store',
+          headers: {'Content-Type': 'application/json'}, body: payload});
+      } catch (error) {
+        if (!retryable || retries >= 5) throw error;
+        await new Promise(resolve => setTimeout(resolve,Math.min(1200,250*2**retries++)));
+        continue;
+      }
+      // The stable requestId prevents duplicate execution even if the first
+      // POST committed before a network failure or lost 5xx response.
+      if (retryable && (reply.status === 429 || reply.status >= 500) && retries < 5) {
+        await new Promise(resolve => setTimeout(resolve,Math.min(1200,250*2**retries++)));
         continue;
       }
       if (!reply.ok) {
@@ -171,8 +178,14 @@
   function command(type, id, value) {
     if (!online || role === 'observer' || replay || value === undefined || value === null) return;
     rememberSharedOverhead(type, id, value);
-    commandWrites = commandWrites.then(() => send('command', {command: {type, id, value}}))
-      .catch(error => refreshStatus(error.message));
+    const requestId = client + '-' + (++requestSerial).toString(36);
+    commandWrites = commandWrites.then(() => send('command',
+      {requestId,command:{type,id,value}}))
+      .catch(error => {
+        syncFailures.push({at:Date.now(),type,id,reason:error.message});
+        if (syncFailures.length>60) syncFailures.shift();
+        refreshStatus('Sync command failed: '+error.message);
+      });
   }
   function publishHostSnapshot() {
     if (snapshotTimer || !roster?.manager || !online || !currentOverhead) return;
