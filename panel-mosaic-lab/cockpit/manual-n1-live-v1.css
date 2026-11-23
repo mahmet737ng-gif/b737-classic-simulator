@@ -23,3 +23,15 @@
  color:#ffe095;background:#0c1826d9;padding:3px 6px;border-radius:3px;pointer-events:none;
  white-space:nowrap;max-width:65%;overflow:hidden;text-overflow:ellipsis}
 .reference-mode .manual-n1-overlay{display:none!important}
+
+/* EIS: only the dark inner apertures are filled, not the steel photo rims.
+ * Local image pixel geometry remains glued to the photo on zoom/pan. */
+html[data-engine-indication="EIS"] #region-main .manual-n1-knob{
+ min-width:0!important;min-height:0!important;
+ max-width:none!important;max-height:none!important;
+ padding:0!important;border:0!important;box-shadow:none!important;
+ border-radius:50%!important;overflow:visible
+}
+html[data-engine-indication="EIS"] #region-main .manual-n1-knob-label{
+ display:none!important /* labels are already printed on the original photo */
+}
