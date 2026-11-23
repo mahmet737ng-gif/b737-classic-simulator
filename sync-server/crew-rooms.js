@@ -307,6 +307,10 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     };
   }
 
+  function findHostedRoom(key) {
+    return [...rooms.values()].find(room => room.manager === key && room.expires > now());
+  }
+
   function readRoom(id, user, invite) {
     const room = rooms.get(id);
     const key = user?.username.toLowerCase();
@@ -380,7 +384,7 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
     if (req.method === 'GET' && url.pathname === PREFIX) {
       const account = user ? {username: user.username, owner: user.owner, gateway: !!user.gateway} : null;
-      const hosted = user?.owner && [...rooms.values()].find(room => room.manager === owner && room.expires > now());
+      const hosted = user && findHostedRoom(user.username.toLowerCase());
       return send(res, 200, {user: account, ...(hosted ? {hostedRoom: stateFor(hosted, user)} : {})});
     }
     if (req.method === 'GET' && url.pathname === PREFIX + '/events') {
@@ -467,14 +471,14 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
       }
       return send(res, 200, {}, {'Set-Cookie': cookie('', 0)});
     }
+    const key = user.username.toLowerCase();
     if (action === 'create') {
-      if (!user.owner) throw new RequestError(403, 'Only the Unified room host can create a room.');
       if (data.role !== undefined && !ROLES.includes(data.role)) throw new RequestError(400, 'Choose a crew role.');
       // Reopen the current room if a create response was lost or another tab already created it.
-      let room = [...rooms.values()].find(item => item.manager === owner && item.expires > now());
+      let room = findHostedRoom(key);
       if (!room) {
         room = {
-          id: randomToken(), manager: owner, expires: now() + ROOM_AGE, members: new Map(),
+          id: randomToken(), manager: key, expires: now() + ROOM_AGE, members: new Map(),
           links: new Map(), cockpits: new Set(), commands: [], sequence: 0, flying: 'captain',
           profile: aircraftProfile(data.profile || DEFAULT_AIRCRAFT_PROFILE),
           snapshot: null, flight: null
@@ -494,7 +498,6 @@ function createCrewRoomHandler({origin, database, accounts, ownerUsername, owner
     }
 
     const room = readRoom(data.roomId ?? invite?.room.id, user, invite);
-    const key = user.username.toLowerCase();
     if (action === 'assignFlying') {
       if (room.manager !== key && room.members.get(key)?.role !== 'instructor') {
         throw new RequestError(403, 'Only the host or Instructor can assign PF.');

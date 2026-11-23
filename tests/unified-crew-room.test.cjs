@@ -184,6 +184,14 @@ test('room-wide invitation accepts guest-selected roles and enforces occupied se
   const switched = await owner('create', {role: 'instructor'});
   assert.equal(switched.data.role, 'instructor');
   assert.equal(switched.data.roomInvite, invite);
+  const secondRoom = await guest('create', {role: 'captain'});
+  assert.equal(secondRoom.status, 200);
+  assert.equal(secondRoom.data.manager, true);
+  assert.notEqual(secondRoom.data.roomId, roomId);
+  assert.notEqual(secondRoom.data.roomInvite, invite);
+  assert.equal((await guest()).data.hostedRoom.roomId, secondRoom.data.roomId);
+  assert.equal((await owner()).data.hostedRoom.roomId, roomId);
+  assert.equal((await owner('inspect', {roomId: secondRoom.data.roomId})).status, 404);
 });
 
 test('host aircraft configuration and overhead state are authoritative for late joiners', async t => {
@@ -308,6 +316,9 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
       document.querySelector('[data-crew-count="' + role + '"]').textContent === value, [role, value]);
   }
 
+  const admin = client(origin);
+  await admin('login', {username: 'TrainerOwner', password});
+  assert.equal((await admin('accounts', {username: 'ShayanTest', password})).status, 201);
   const host = await browser.newPage({viewport: {width: 1440, height: 900}});
   const cockpit = origin + '/panel-mosaic-lab/cockpit/';
   await host.goto(cockpit + '?welcomeTest=1');
@@ -315,7 +326,8 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   await host.goto(cockpit);
   await host.getByRole('button', {name: 'Private Room', exact: true}).click();
   await host.waitForURL(origin + '/crew/');
-  await signIn(host, 'TrainerOwner');
+  await signIn(host, 'ShayanTest');
+  assert.equal(await host.getByRole('button', {name: 'Create Guest Account'}).isVisible(), false);
   await host.getByLabel('Your Role').selectOption('captain');
   await count(host, 'captain', '1 / 1');
   const linkField = host.getByLabel('Invitation Link');
@@ -326,12 +338,12 @@ test('Private Room opens after Welcome and admits signed-in and signed-out guest
   assert.match(invite.hash, /^#crew=[A-Za-z0-9_-]{32}$/);
   await host.getByRole('button', {name: 'Copy Link', exact: true}).click();
   await host.getByText(/Invitation link (copied|selected)/).waitFor();
+  await host.reload();
+  await host.getByRole('img', {name: 'Private room invitation QR code'}).waitFor();
+  assert.equal(await linkField.inputValue(), url);
 
   async function guest(role, username, alreadySignedIn = false) {
-    await host.getByLabel('Guest Username').fill(username);
-    await host.getByLabel('Guest Password').fill(password);
-    await host.getByRole('button', {name: 'Create Guest Account'}).click();
-    await host.getByText('Account created for ' + username + '.', {exact: true}).waitFor();
+    assert.equal((await admin('accounts', {username, password})).status, 201);
     const page = await browser.newPage({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});
     if (alreadySignedIn) {
       await page.goto(origin + '/crew/');
