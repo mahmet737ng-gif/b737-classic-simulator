@@ -187,6 +187,7 @@
     next.target.vsFpm=next.vsFpm;
     next.altitudeCapture=null;
     next.target.flightControlOwner='MANUAL_TRIM_NO_AP';
+    next.takeoffAutoMode=false;
     break;
    case 'WIND':next.windFromDeg=wrap(finite(action.direction,0,360,'WIND_DIR'));next.windKt=finite(action.speed,0,150,'WIND_KT');break;
    case 'TAKEOFF_ROLL':
@@ -302,7 +303,7 @@
    }
    if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
-    s.target.verticalMode='PITCH';s.target.pitchDeg=15;
+    if(s.takeoffAutoMode===true){s.target.verticalMode='PITCH';s.target.pitchDeg=15;}
     s.target.vsFpm=1500;
    }
   }
