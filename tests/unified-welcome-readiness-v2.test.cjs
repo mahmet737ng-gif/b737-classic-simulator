@@ -46,9 +46,9 @@ test('welcome never opens the cockpit simply because photos loaded; checks scena
  assert.match(source,/gate\?\.canEnter === true && priorityReady/);
  assert.match(source,/now - readySince >= STABLE_MS/);
  assert.match(source,/directorPaintBaseline = mainPaints\(\)/);
- assert.match(source,/repainted = paints\.every/);
- assert.match(source,/B737Final10ApproachPresetV1\?\.getStatus\?\.\(\)\?\.complete === true/);
- assert.match(source,/if \(!active \|\| !repainted \|\| !final10Ready/);
+ assert.match(source,/beforePaints:directorPaintBaseline \|\| \[\]/);
+ assert.match(source,/B737Final10ApproachPresetV1\?\.getStatus\?\.\(\)\?\.complete/);
+ assert.match(source,/if \(!ready\) return/);
  assert.match(source,/if \(priorityReady\) releaseSystems\(\)/);
 });
 test('compiled entry loads the gate and a new welcome cache key without mutating protected photos',()=>{
@@ -58,4 +58,20 @@ test('compiled entry loads the gate and a new welcome cache key without mutating
  assert.match(index,/unified-welcome-v1\.js\?v=WELCOME-GATE-0001/);
  assert.match(index,/id="region-main"/);
  assert.match(index,/overhead-stage\.html/);
+});
+
+test('scenario entry never precedes repaint by BOTH EADIs, and FINAL_10 owner ACK',()=>{
+ const basic={active:true,beforePaints:[3,4],afterPaints:[4,5],elapsedMs:600};
+ assert.equal(Gate.scenarioReady(basic),true);
+ assert.equal(Gate.scenarioReady({...basic,afterPaints:[4,4]}),false,
+  'FO must repaint after scenario load');
+ assert.equal(Gate.scenarioReady({...basic,afterPaints:[3,5]}),false,
+  'Captain must repaint after scenario load');
+ assert.equal(Gate.scenarioReady({...basic,elapsedMs:300}),false,
+  'first frame cannot be exposed immediately');
+ assert.equal(Gate.scenarioReady({...basic,active:false}),false);
+ assert.equal(Gate.scenarioReady({...basic,final10:true}),false);
+ assert.equal(Gate.scenarioReady({...basic,final10:true,final10Complete:true}),true);
+ assert.equal(Gate.scenarioReady({shared:true}),true,
+  'crew room does not fabricate a local instructor scenario');
 });
