@@ -38,7 +38,8 @@
     constructor(options) {
       const opt = options || {};
       this.variant = opt.variant || "737-300";
-      this.takeoffFlapMinimum = this.variant === "737-500" ? 5 : this.variant === "737-300" ? 1 : null;
+      // Classic model-specific T/O ranges: 737-300 1-15, 737-400/-500 5-15.
+      this.takeoffFlapMinimum = this.variant === "737-300" ? 1 : ["737-400","737-500"].includes(this.variant) ? 5 : null;
       this.reset();
     }
     reset() {

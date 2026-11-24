@@ -603,7 +603,10 @@
  const initialFirePanel=window.B737UnifiedFireLights;
  if(initialFirePanel?.evaluate())applyFirePanel(initialFirePanel.getState(),initialFirePanel.evaluate());
  let flightScenarioBaseline=null;
- window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
+ window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),
+   // Lightweight readonly horn demand snapshot — no 250-event diagnostic cloning.
+   getWarningSnapshot:()=>({sensors:{...session.sensors},warnings:session.getLive().warnings}),
+   getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
   // A verified electrical snapshot is required for startup. The optional APU
   // training preset is NOT a prerequisite; it completes after Battery guard
   // mounting, and can never lock the Welcome screen.

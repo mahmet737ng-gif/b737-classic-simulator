@@ -41,6 +41,8 @@
     cabinAltitudeFt: 0, engine1Fire: false, engine2Fire: false, apuFire: false, wheelWellFire: false
   }; }
   const SENSOR_FIELDS = Object.freeze({onGround: 'boolean', cabinAltitudeFt: 'number',
+    flaps:'number',leadingEdgeTakeoff:'boolean',speedbrakeDown:'boolean',
+    parkingBrakeSet:'boolean',stabilizerTrimTakeoff:'boolean',takeoffThrust:'boolean',
     engine1Fire: 'boolean', engine2Fire: 'boolean', apuFire: 'boolean', wheelWellFire:'boolean'});
 
   class Session {
@@ -123,10 +125,18 @@
             pump.overheat = command.value;
           }
         }
-      } else if (command.type === 'WARNING_SENSOR') {
-        const kind = SENSOR_FIELDS[command.key];
-        if (!kind || typeof command.value !== kind || (kind === 'number' && !Number.isFinite(command.value))) throw Error('Unrecognized warning sensor');
-        this.sensors[command.key] = command.value;
+      } else if (command.type === 'WARNING_SENSOR' || command.type === 'WARNING_SENSORS') {
+        // Batch the installed cockpit's real switch/lever observations into a single
+        // authoritative warning update to avoid a frame of intermediate horn demands.
+        const values=command.type==='WARNING_SENSOR'?{[command.key]:command.value}:command.values;
+        if(!values||typeof values!=='object'||Array.isArray(values)||!Object.keys(values).length)
+          throw Error('Warning sensor values required');
+        for(const [key,value] of Object.entries(values)){
+          const kind=SENSOR_FIELDS[key];
+          if(!kind||typeof value!==kind||(kind==='number'&&!Number.isFinite(value)))
+            throw Error('Unrecognized warning sensor '+key);
+        }
+        Object.assign(this.sensors,values);
       } else if (command.type === 'CUTOUT_CABIN') {
         this.warningEngine.cutoutCabin();
       } else if (command.type === 'ACK_FIRE') {
