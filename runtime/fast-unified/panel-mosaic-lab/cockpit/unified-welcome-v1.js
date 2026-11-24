@@ -21,6 +21,7 @@
   const moved = [];
   const decoded = new WeakMap();
   let setup = false;
+  let restoreWelcomeLocation = () => {};
   let startRequested = new URLSearchParams(win.location.search).has('crewRoom');
   let lastProgressAt = performance.now();
   let currentStage = '';
@@ -82,14 +83,115 @@
     for (const input of aircraft.querySelectorAll('input[name]')) {
       input.checked = input.value === current[input.name];
     }
-    relocate(by('flightSetupTabs') || by('flightAirport').closest('.flight-grid'), flight);
+    const locationGrid = by('flightAirport').closest('.flight-grid');
+    const locationSelect = by('flightPreset');
+    const setupRoot = by('flightSetupTabs');
+    const setupButtons = [...(setupRoot?.querySelectorAll('button[aria-controls]') || [])];
+    const locationButton = setupButtons.find(b => b.getAttribute('aria-controls') === 'flightLocationGrid');
+    const generalButton = setupButtons.find(b => b.getAttribute('aria-controls') === 'flightGeneralSetup');
+    // Move only the location controls; leave the in-cockpit tabs and ground services intact.
+    relocate(locationGrid, flight);
+    const remove5 = [...locationSelect.options].find(o => o.value === 'FINAL_5');
+    if (remove5) {
+      if (locationSelect.value === 'FINAL_5') locationSelect.value = 'FINAL_10';
+      remove5.remove();
+    }
+    for (const o of locationSelect.options) {
+      if (o.value === 'RUNWAY_READY') o.textContent = 'ON THRESHOLD';
+      if (o.value === 'FINAL_10') o.textContent = '10 NM FINAL';
+      if (o.value === 'MANUAL') o.textContent = 'MANUAL';
+    }
+    flight.querySelector('h2').textContent = 'Flight Phase';
+    const stripRunwayHeadings = () => {
+      for (const o of by('flightRunway').options) o.textContent = 'RWY ' + o.value;
+    };
+    stripRunwayHeadings();
+    by('flightAirport').addEventListener('change', stripRunwayHeadings);
+    const layoutStyle = doc.createElement('style');
+    layoutStyle.textContent = `
+      #unifiedWelcome[data-stage="setup"] .welcome-card{width:min(100%,1180px)}
+      #unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:14px}
+      #unifiedWelcome .welcome-section{min-width:0;box-sizing:border-box;box-shadow:0 10px 24px #0003}
+      #unifiedWelcome .welcome-section h2{margin-top:0}
+      #unifiedWelcome .welcome-subheading{font-size:14px;font-weight:700;margin:15px 0 9px;padding-top:14px;border-top:1px solid #334952;color:#e4f4fa}
+      #unifiedWelcome .welcome-choice{display:flex;align-items:center;gap:8px;border:1px solid #365564;border-radius:7px;padding:9px 10px;margin:7px 0;background:#142731}
+      #unifiedWelcome .welcome-choice:has(input:checked){border-color:#65e0d3;background:#17413f}
+      #unifiedWelcome .welcome-choice:has(input:disabled){opacity:.56}
+      #unifiedWelcome .welcome-choice small{margin-left:auto;color:#a7b8c0;font-size:10px;text-align:right}
+      #unifiedWelcome .welcome-note{font-size:12px;color:#a8c2cd;margin:8px 0 0}
+      #unifiedWelcome .welcome-weather{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      #unifiedWelcome input:disabled,#unifiedWelcome select:disabled{opacity:.6}
+      @media(max-width:900px){#unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(2,minmax(0,1fr))}}
+      @media(max-width:680px){#unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:minmax(0,1fr)}}
+    `;
+    doc.head.append(layoutStyle);
+    const general = doc.createElement('div');
+    general.id = 'welcomeGeneralState';
+    general.innerHTML = '<h3 class="welcome-subheading">Aircraft General State</h3>' +
+      '<label class="welcome-choice"><input id="welcomeColdDark" type="checkbox"> <span>COLD &amp; DARK</span><small>AVAILABLE</small></label>' +
+      '<label class="welcome-choice"><input type="radio" disabled> <span>READY FOR START</span><small>COMING SOON</small></label>' +
+      '<label class="welcome-choice"><input type="radio" disabled> <span>READY FOR TAKEOFF</span><small>COMING SOON</small></label>' +
+      '<p class="welcome-note" id="welcomeGeneralNote">Optional: existing flight-location presets are retained when no general state is selected.</p>';
+    aircraft.append(general);
+    const cold = by('welcomeColdDark');
+    cold.disabled = !locationButton || !generalButton;
+    if (cold.disabled) by('welcomeGeneralNote').textContent = 'Cold & Dark owner selector unavailable.';
+    const scenarios = doc.createElement('section');
+    scenarios.className = 'welcome-section';
+    scenarios.id = 'unifiedWelcomeScenarios';
+    scenarios.innerHTML = '<h2>Scenarios</h2>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="NONE" checked> <span>NORMAL FLIGHT</span></label>' +
+      '<h3 class="welcome-subheading">Engine Failure</h3>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE AT V1</span><small>COMING SOON</small></label>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE ON FINAL</span><small>COMING SOON</small></label>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE IN CRUISE</span><small>COMING SOON</small></label>' +
+      '<h3 class="welcome-subheading">Special Operations</h3>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>RAPID DECOMPRESSION</span><small>COMING SOON</small></label>' +
+      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>EMERGENCY DESCENT</span><small>COMING SOON</small></label>' +
+      '<p class="welcome-note">Unverified training scenarios are locked until their trigger and aircraft-state owners are validated.</p>';
+    by('unifiedWelcomeSetup').append(scenarios);
     flight.append(manual, initialLoad);
     relocate(by('flightAlt').closest('.flight-grid'), manual);
-    const setManualVisibility = () => { manual.hidden = (win.B737UnifiedFlightScenarioV1?.getSelectedPreset?.() || by('flightPreset').value) !== 'MANUAL'; };
-    by('flightPreset').addEventListener('change', setManualVisibility);
-    setManualVisibility();
+    const weather = doc.createElement('div');
+    weather.id = 'welcomeOnlineWeather';
+    weather.innerHTML = '<h3 class="welcome-subheading">Weather Online</h3>' +
+      '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span><small>NOT CONNECTED</small></label>' +
+      '<div class="welcome-weather"><label>Temperature (°C)<input type="number" disabled placeholder="—"></label>' +
+      '<label>QNH (hPa)<input type="number" disabled placeholder="—"></label></div>' +
+      '<p class="welcome-note">No verified weather-to-aircraft connection. Simulator defaults remain unchanged.</p>';
+    flight.append(weather);
+    let syncing = false;
+    const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'; };
+    const syncGeneral = () => {
+      if (syncing) return;
+      syncing = true;
+      try {
+        const ground = locationSelect.value === 'RUNWAY_READY';
+        if (!ground) cold.checked = false;
+        cold.disabled = !ground || !locationButton || !generalButton;
+        const target = cold.checked ? generalButton : locationButton;
+        if (target && target.getAttribute('aria-pressed') !== 'true') target.click();
+        locationGrid.hidden = false;
+        locationGrid.style.display = '';
+        setManualVisibility();
+        if (ground && !cold.disabled) by('welcomeGeneralNote').textContent = 'Optional: no selection retains the existing flight-location preset.';
+        else if (!ground) by('welcomeGeneralNote').textContent = 'Cold & Dark requires ON THRESHOLD. No airborne power-off preset is applied.';
+      } finally { syncing = false; }
+    };
+    cold.addEventListener('change', syncGeneral);
+    locationSelect.addEventListener('change', syncGeneral);
+    locationSelect.dispatchEvent(new Event('change', {bubbles:true}));
+    syncGeneral();
+    // Restore the original dialog visibility and listeners when entering the cockpit.
+    restoreWelcomeLocation = () => {
+      locationSelect.removeEventListener('change', syncGeneral);
+      by('flightAirport').removeEventListener('change', stripRunwayHeadings);
+      const isGeneral = generalButton?.getAttribute('aria-pressed') === 'true';
+      locationGrid.hidden = isGeneral;
+      locationGrid.style.display = isGeneral ? 'none' : '';
+    };
     aircraft.addEventListener('change', () => {
-      const changes = Object.fromEntries([...aircraft.querySelectorAll('input:checked')]
+      const changes = Object.fromEntries([...aircraft.querySelectorAll('input[name]:checked')]
         .map(input => [input.name, input.value]));
       win.B737AircraftProfileStore.set(changes);
       lastProgressAt = performance.now();
@@ -174,6 +276,7 @@
       }) === true;
       if (!ready) return;
     }
+    restoreWelcomeLocation();
     for (const [node, anchor] of moved) anchor.replaceWith(node);
     cockpit.forEach(node => { node.inert = false; });
     stage.unifiedWelcome = 'entered';
