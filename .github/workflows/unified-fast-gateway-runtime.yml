@@ -31,7 +31,8 @@ jobs:
         working-directory: source
         run: |
           node engine/afds/classic-toga-ch4-v1.test.cjs
-          node --test tests/unified-takeoff-rotation-110-125-n1.test.cjs tests/unified-ecu-startup-handshake.test.cjs tests/unified-welcome-readiness-v2.test.cjs tests/unified-crew-room.test.cjs tests/final10-approach-unified-v1.test.cjs tests/flight-phase-shell-v1.test.cjs tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs tests/unified-testlabs-visible.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/classic-low-speed-envelope-v1.test.cjs tests/le-devices-unified-link.test.cjs tests/flight-envelope-le-external-port-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/fcc-director-independent-eadi-v1.test.cjs tests/altitude-capture-training-v1.test.cjs
+          node --check panel-mosaic-lab/cockpit/parking-brake-unified-v1.js
+          node --test tests/parking-brake-unified-v1.test.cjs tests/unified-takeoff-rotation-110-125-n1.test.cjs tests/unified-ecu-startup-handshake.test.cjs tests/unified-welcome-readiness-v2.test.cjs tests/unified-crew-room.test.cjs tests/final10-approach-unified-v1.test.cjs tests/flight-phase-shell-v1.test.cjs tests/unified-web-build.test.cjs tests/unified-runtime-performance-v2.test.cjs tests/unified-testlabs-visible.test.cjs tests/fcc-flight-guidance-v1.test.cjs tests/flight-control-laws-v1.test.cjs tests/classic-low-speed-envelope-v1.test.cjs tests/le-devices-unified-link.test.cjs tests/flight-envelope-le-external-port-v1.test.cjs tests/le-devices-owner-sequence-v1.test.cjs tests/fcc-director-visual-servo-v1.test.cjs tests/fcc-director-independent-eadi-v1.test.cjs tests/altitude-capture-training-v1.test.cjs
           node tools/export-unified-gateway-runtime.cjs gateway-fast-runtime
       - name: Sync the version-pinned public boot release
         run: |
