@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "74290538f63188719477ecf8c8588dc4fc92debd",
+  "sourceCommit": "6565e69a0c3ef68fe0c733aa4064468bb6cb2987",
   "mainBefore": 327,
   "mainAfter": 103,
   "overheadBefore": 62,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "30321cd3b7c2dc5da3476910f1136c15e527ed86e30462d462167aad06aebb9e"
+      "sha256": "0470a611a157f8005ffe837d71c0b9bfd3fe342faefbfd0525c69b46d12f84bb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -59,8 +59,8 @@
       "sha256": "5633b67f183051c529bf3ef96b727c682d11989d413756d35ecc1141c68f03a0"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e45a07df47f3f310.js",
-      "sha256": "e45a07df47f3f310011d22855f8386521a404d88cebfe40966ee998402f3def4"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
+      "sha256": "a7262b13b5fc72a5ea3b0455701eac74b317cead187033eb9eaba559afda1765"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-f1289c3f47af2175.js",
@@ -1117,6 +1117,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg",
       "sha256": "340cbaa176b3dd4e8c12c76b25b17f62cd7dafcc005a4c36b711e885443c5c60"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg",
+      "sha256": "1b6398e3547a6ad8bd5173c35161df42ca09351635b721b606ee62b1968a74f4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",

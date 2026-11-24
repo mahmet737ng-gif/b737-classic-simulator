@@ -795,7 +795,7 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 ;
-/* ./parking-brake-unified-v1.js?v=PARK-BRAKE-001-SLOT-LAMP */
+/* ./parking-brake-unified-v1.js?v=PARK-BRAKE-002-DUAL-ART-20261124 */
 try{
 /* PARK-BRAKE-001 — Boeing 737 Classic parking brake visual owner.
    Native Throttle Quadrant source image: 800px wide.
@@ -809,10 +809,11 @@ try{
  if(root)root.B737UnifiedParkingBrakeV1=api;
 })(typeof globalThis!=='undefined'?globalThis:null,function(win){
  'use strict';
- const VERSION='PARK-BRAKE-001-SLOT-127-925-LAMP-207-892';
+ const VERSION='PARK-BRAKE-002-DUAL-OFF-ON-ART-SLOT-127-925';
  const SLOT=Object.freeze({x:127,y:925}),LAMP=Object.freeze({x:207,y:892});
- const ASSET='./assets/parking-brake-off-front-v1.svg';
- let engaged=false,holder=null,lever=null,lamp=null;
+ const OFF_ASSET='./assets/parking-brake-off-front-v1.svg';
+ const ON_ASSET='./assets/parking-brake-on-top-left-v1.svg';
+ let engaged=false,holder=null,lever=null,lamp=null,offImage=null,onImage=null;
  const listeners=new Set();
  function geometry(piece={}){
   const scale=(Number(piece.w)||606)/(Number(piece.sourceWidth)||800);
@@ -830,7 +831,11 @@ try{
   if(!holder)return;
   holder.dataset.parkingBrake=engaged?'ON':'OFF';
   if(lever){
-   lever.style.transform='translateY('+(engaged?-geometryForHolder().raise:0)+'px)';
+   // Two user-approved images share the same hinge (41,185) in a 140x189
+   // canvas. No translation of the pivot on ON/OFF changes.
+   lever.style.transform='none';
+   if(offImage)offImage.style.opacity=engaged?'0':'1';
+   if(onImage)onImage.style.opacity=engaged?'1':'0';
    lever.setAttribute('aria-pressed',String(engaged));
    lever.setAttribute('aria-label','Parking brake '+(engaged?'ON. Press to release':'OFF. Pull to engage'));
    lever.title=engaged?'Parking Brake ON — pull to release':'Parking Brake OFF — pull to engage';
@@ -884,12 +889,19 @@ try{
    width:q.width+'px',height:q.height+'px',padding:'0',margin:'0',border:'0',
    borderRadius:'0',background:'transparent',boxShadow:'none',overflow:'visible',
    lineHeight:'0',cursor:'pointer',pointerEvents:'auto',touchAction:'manipulation',
-   zIndex:'5',transformOrigin:'29.3% 98%',transition:'transform 180ms ease-out'});
-  const asset=doc.createElement('img');
-  asset.src=ASSET;asset.alt='';asset.draggable=false;
-  Object.assign(asset.style,{width:'100%',height:'100%',display:'block',
-   objectFit:'contain',pointerEvents:'none',userSelect:'none'});
-  lever.append(asset);
+   zIndex:'5',transformOrigin:'29.3% 98%'});
+  function makeLeverImage(src,role){
+   const image=doc.createElement('img');
+   image.src=src;image.alt='';image.draggable=false;
+   image.dataset.parkingBrakeArt=role;
+   Object.assign(image.style,{position:'absolute',inset:'0',width:'100%',height:'100%',
+    display:'block',objectFit:'contain',pointerEvents:'none',userSelect:'none',
+    opacity:role==='OFF'?'1':'0',transition:'opacity 160ms ease-out'});
+   return image;
+  }
+  offImage=makeLeverImage(OFF_ASSET,'OFF');
+  onImage=makeLeverImage(ON_ASSET,'ON');
+  lever.append(offImage,onImage);
   lever.addEventListener('click',()=>setEngaged(!engaged,'COCKPIT_LEVER'));
   holder.append(lamp,lever);
   native.append(holder);
@@ -909,7 +921,7 @@ try{
   return true;
  }
  function subscribe(fn){if(typeof fn!=='function')throw new TypeError('SUBSCRIBER');listeners.add(fn);return()=>listeners.delete(fn);}
- const api=Object.freeze({VERSION,SLOT,LAMP,geometry,getState:snapshot,setEngaged,
+ const api=Object.freeze({VERSION,SLOT,LAMP,OFF_ASSET,ON_ASSET,geometry,getState:snapshot,setEngaged,
   toggle:()=>setEngaged(!engaged),mount,subscribe,getGeometry:()=>currentGeometry});
  if(win?.document){
   const ready=()=>{
