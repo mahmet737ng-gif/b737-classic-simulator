@@ -166,7 +166,7 @@
       const scenario = win.B737UnifiedFlightScenarioV1;
       const state = scenario?.getState?.();
       const active = scenario?.getDiagnostics?.()?.active === true;
-      const ready = win.B737WelcomeReadinessV2?.scenarioReady?.({
+      const ready = state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
         active, beforePaints:directorPaintBaseline || [],
         afterPaints:mainPaints(), final10:state?.preset === 'FINAL_10',
         final10Complete:win.B737Final10ApproachPresetV1?.getStatus?.()?.complete,
@@ -253,6 +253,10 @@
     if (setup && !pedestal) labels.push('Loading Pedestal…');
     if (scenarioStarted) {
       const preset = win.B737UnifiedFlightScenarioV1?.getState?.()?.preset;
+      if (preset === 'COLD_DARK') {
+        const cd=win.B737ColdDarkGeneralPresetV1?.getStatus();
+        if(!cd?.settled)labels.unshift('Configuring Cold & Dark: owner confirmations…');
+      }
       if (preset === 'FINAL_10') {
         const status = win.B737Final10ApproachPresetV1?.getStatus?.();
         if (status?.complete !== true)

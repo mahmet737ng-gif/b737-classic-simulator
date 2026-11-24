@@ -300,7 +300,8 @@ const SCENARIO_SWITCHES=new Set([
  'bleed-eng-1','bleed-eng-2','pack-l','pack-r','isolation-valve',
  'landing-out-l','landing-out-r','landing-in-l','landing-in-r',
  'strobe','position-lights','anti-collision','logo','wing-lights',
- 'runway-turnoff-l','runway-turnoff-r','taxi'
+ 'runway-turnoff-l','runway-turnoff-r','taxi',
+ 'ground-power','yaw-damper','vhf-nav','irs-transfer','efi-transfer','fuel-center-l','fuel-center-r','fuel-1-aft','fuel-1-fwd','fuel-2-fwd','fuel-2-aft','galley','equip-cooling-supply','equip-cooling-exhaust','no-smoking','fasten-belts','window-l-side','window-l-fwd','window-r-fwd','window-r-side','window-power-test','pitot-a','pitot-b','wing-anti-ice','engine-anti-ice-1','engine-anti-ice-2','hyd-eng-1','hyd-eng-2','hyd-elec-1','hyd-elec-2','wheel-well'
 ]);
 function scenarioSet(id,next){
  if(!SCENARIO_SWITCHES.has(id))return {accepted:false,reason:'SCENARIO_SWITCH_NOT_WHITELISTED'};
