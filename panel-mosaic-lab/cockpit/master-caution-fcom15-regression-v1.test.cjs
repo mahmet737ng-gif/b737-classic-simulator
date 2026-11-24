@@ -120,3 +120,62 @@ test('Never turn simulated blue advisory or overhead lamp test into physical MC 
  assert.match(owner,/lamps\[id\]===true/);
  assert(!owner.includes("result['CAPT.ELEC'].push('ELEC:'+id)"));
 });
+
+test('Projected physical amber lamps override stale base frames in every mapped group',()=>{
+ const core=sixpack();
+ const projected={'flight-pressure-a':'ON','standby-power-off':'ON','irs-l-fault':'ON',
+ 'apu-high-oil-temp':'ON','fuel-1-fwd':'ON','fuel-1-aft':'ON','window-l-side-overheat':'ON',
+ 'reverser-1':'ON','hyd-eng-1':'ON','equip-supply-off':'ON','door-fwd-entry':'ON','dual-bleed':'ON',
+ 'gen-off-bus-1':'ON'};
+ const reasons=mapper.overhead({frames:{'hyd-eng-2':'ON'},cautionFrames:projected,power:true});
+ assert.deepEqual(reasons['FO.HYD'],['OH:hyd-eng-1']);
+ for(const key of Object.keys(mapper.groups).filter(k=>k!=='CAPT.OVHT/DET'))assert(reasons[key].length,key);
+ core.setLiveConditions(reasons);
+ for(const key of Object.keys(mapper.groups).filter(k=>k!=='CAPT.OVHT/DET'))assert.equal(core.getEffectiveState()[key],true,key);
+ assert.equal(core.getEffectiveState()['CAPT.MASTER CAUTION'],true);
+ assert.equal(core.getEffectiveState()['FO.MASTER CAUTION'],true);
+ core.acknowledge();
+ assert.equal(core.getEffectiveState()['CAPT.MASTER CAUTION'],false);
+ core.recall('FO');
+ assert.equal(core.getEffectiveState()['CAPT.FUEL'],true);
+ assert.equal(core.getEffectiveState()['FO.HYD'],true);
+ const cleared=mapper.overhead({frames:projected,cautionFrames:{},power:true});
+ assert(Object.values(cleared).every(x=>x.length===0));
+ core.setLiveConditions(cleared);
+ assert.equal(core.getEffectiveState()['FO.MASTER CAUTION'],false);
+ assert.equal(mapper.overhead({frames:{},cautionFrames:projected,power:true,cautionTest:true}),null);
+ assert(Object.values(mapper.overhead({frames:{},cautionFrames:projected,power:false})).every(x=>x.length===0));
+ const single=mapper.overhead({frames:{'fuel-1-aft':'ON'},cautionFrames:{'fuel-1-fwd':'ON'},power:true});
+ assert.deepEqual(single['CAPT.FUEL'],[{id:'OH:fuel-1-fwd',mode:'RECALL_ONLY'}]);
+});
+test('Overhead bridge transmits projected frames before DOM mounts, including clearing and resync',()=>{
+ const listeners=new Map(),sent=[],queue=[],classes=new Set();
+ const base={frames:{'fuel-1-fwd':'OFF','hyd-eng-1':'ON','dual-bleed':'OFF'},lights:{},context:{},lampTest:false,power:true};
+ const parent={postMessage:d=>sent.push(d)},location={origin:'https://trainer.example'};
+ const doc={querySelector:()=>null,querySelectorAll:()=>[],getElementById:()=>({}),addEventListener(){},
+ documentElement:{classList:{contains:k=>classes.has(k),toggle(k,v){if(v)classes.add(k);else classes.delete(k);}}}};
+ const win={B737OverheadLights:{getState:()=>base,getRegistry:()=>({lights:Object.keys(base.frames).map(id=>({id}))})},
+ B737OverheadToggles:{getState:()=>({'battery-master':'ON'})},B737RotaryGuards:{getState:()=>({})},
+ addEventListener(k,cb){if(!listeners.has(k))listeners.set(k,[]);listeners.get(k).push(cb);},dispatchEvent(){}};
+ const flush=()=>{while(queue.length)queue.shift()();};
+ const command=(action,extra={})=>{for(const cb of listeners.get('message')||[])cb({origin:location.origin,source:parent,data:{type:'b737:cockpit-command',action,...extra}});flush();};
+ const packet=()=>sent.filter(x=>x.kind==='state').at(-1);
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'overhead-bridge.js'),'utf8'),{window:win,parent,location,document:doc,
+ localStorage:{getItem:()=>null},MutationObserver:class{observe(){}disconnect(){}},
+ requestAnimationFrame:cb=>{queue.push(cb);return queue.length;},CustomEvent:class{}});
+ flush();
+ command('isn-projection',{lamps:{'fuel-1-fwd':true,'hyd-eng-1':false,'dual-bleed':true}});
+ assert.equal(packet().frames['fuel-1-fwd'],'OFF');
+ assert.equal(packet().cautionFrames['fuel-1-fwd'],'ON');
+ assert.equal(packet().cautionFrames['hyd-eng-1'],'OFF');
+ assert.equal(packet().cautionFrames['dual-bleed'],'ON');
+ command('visual-test',{active:true});
+ assert.equal(mapper.overhead(packet()),null);
+ command('visual-test',{active:false});
+ assert.equal(packet().cautionFrames['dual-bleed'],'ON');
+ command('caution-state-request');
+ assert.equal(packet().cautionFrames['dual-bleed'],'ON');
+ command('isn-projection',{lamps:{'fuel-1-fwd':false,'hyd-eng-1':false,'dual-bleed':false}});
+ assert.equal(packet().cautionFrames['dual-bleed'],'OFF');
+ assert.equal(mapper.overhead(packet())['FO.AIR COND'].length,0);
+});
