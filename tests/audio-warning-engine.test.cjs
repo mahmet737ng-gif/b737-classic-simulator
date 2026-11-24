@@ -68,9 +68,12 @@ test("737-500 minimum takeoff flap 5", () => {
   const e = new WarningEngine({variant:"737-500"});
   assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:1}).lamps.takeoffConfig,true);
 });
-test("737-400 takeoff config remains unverified", () => {
+test("737-400 flap 5 through 15 is allowed for takeoff", () => {
   const e = new WarningEngine({variant:"737-400"});
-  assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:0}).status.takeoffConfigEvaluated,false);
+  assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:0}).lamps.takeoffConfig,true);
+  assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:5}).lamps.takeoffConfig,false);
+  assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:15}).lamps.takeoffConfig,false);
+  assert.equal(run(e,{onGround:true,takeoffThrust:true,flaps:25}).lamps.takeoffConfig,true);
 });
 test("landing gear horn with flaps >15 cannot cut out", () => {
   const e = new WarningEngine();
