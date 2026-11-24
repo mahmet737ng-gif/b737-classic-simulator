@@ -36,8 +36,13 @@ const root={
  B737UnifiedVHFNavControlsV1:{setMode(seat,mode){mem[seat].mode=mode;return true;},getState(seat){const s=mem[seat];return {...s,activeFrequencyKhz:s.mode==='manual'?s.manualFrequencyKhz:s.autoFrequencyKhz};}}
 };
 assert.equal(plan.applyNav(root,index,'OIII','29L').ok,true);
-assert.equal(mem.CAPT.manualFrequencyKhz,115300);
-assert.equal(mem.FO.manualFrequencyKhz,109900);
-assert.equal(mem.FO.autoFrequencyKhz,115300);
+assert.equal(mem.CAPT.manualFrequencyKhz,109900);
+assert.equal(mem.CAPT.autoFrequencyKhz,115300);
+assert.equal(mem.CAPT.mode,'auto');
+assert.equal(mem.FO.manualFrequencyKhz,115300);
+assert.equal(mem.FO.mode,'manual');
+assert.equal(mem.FO.autoFrequencyKhz,undefined);
+assert.equal(root.B737UnifiedVHFNavControlsV1.getState('CAPT').activeFrequencyKhz,115300);
+assert.equal(root.B737UnifiedVHFNavControlsV1.getState('FO').activeFrequencyKhz,115300);
 assert.equal(plan.applyNav({},index,'OIII','29L').ok,false);
 console.log('Aircraft general state plan assertions passed (mock owners only)');
