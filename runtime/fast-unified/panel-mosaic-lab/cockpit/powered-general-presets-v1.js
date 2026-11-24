@@ -22,8 +22,8 @@ function apply(state){
  const pulse=(id,value)=>once(id,()=>oh?.setScenarioSwitch(id,value));
  const guardSet=(id,value,closed)=>{let s=guard?.inspect()?.[id];if(!s)return false;if(s.value!==value||s.closed!==closed)guard.set(id,value,closed);s=guard.inspect()[id];return s.value===value&&s.closed===closed;};
  attempt('BATTERY',()=>guardSet('battery-master','ON',true)&&elec()?.config?.batterySwitch===true);
- const common={'yaw-damper':'ON','galley':'ON','vhf-nav':'NORMAL','irs-transfer':'NORMAL','efi-transfer':'NORMAL','equip-cooling-supply':'NORMAL','equip-cooling-exhaust':'NORMAL','no-smoking':'ON','fasten-belts':'ON','window-l-side':'ON','window-l-fwd':'ON','window-r-fwd':'ON','window-r-side':'ON','hyd-eng-1':'ON','hyd-eng-2':'ON','hyd-elec-1':'ON','hyd-elec-2':'ON','fuel-1-aft':'ON','fuel-1-fwd':'ON','fuel-2-aft':'ON','fuel-2-fwd':'ON','wing-anti-ice':'OFF','engine-anti-ice-1':'OFF','engine-anti-ice-2':'OFF','bleed-eng-1':'ON','bleed-eng-2':'ON','isolation-valve':'AUTO'};
- for(const [id,v] of Object.entries(common))attempt(id,()=>set(id,v),true);
+ const common={'yaw-damper':'ON','galley':'OFF','pitot-a':'ON','pitot-b':'ON','vhf-nav':'NORMAL','irs-transfer':'NORMAL','efi-transfer':'NORMAL','equip-cooling-supply':'NORMAL','equip-cooling-exhaust':'NORMAL','no-smoking':'ON','fasten-belts':'ON','window-l-side':'ON','window-l-fwd':'ON','window-r-fwd':'ON','window-r-side':'ON','hyd-eng-1':'ON','hyd-eng-2':'ON','hyd-elec-1':'ON','hyd-elec-2':'ON','fuel-1-aft':'ON','fuel-1-fwd':'ON','fuel-2-aft':'ON','fuel-2-fwd':'ON','wing-anti-ice':'OFF','engine-anti-ice-1':'OFF','engine-anti-ice-2':'OFF','bleed-eng-1':'ON','bleed-eng-2':'ON','isolation-valve':'AUTO'};
+ for(const [id,v] of Object.entries(common))attempt(id,()=>set(id,v),!['galley','pitot-a','pitot-b'].includes(id));
  for(const id of ['flight-control-a','flight-control-b','spoiler-a','spoiler-b'])attempt(id,()=>guardSet(id,'ON',true),true);
  const fuel=eng?.getFuelQuantityIndications?.()?.tanksKg;
  const center=Number(fuel?.center);

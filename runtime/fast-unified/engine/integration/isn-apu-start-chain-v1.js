@@ -36,6 +36,7 @@
    this.effects=[];this.lastError='';this.apuProtectionReason=null;this.controls={};this.guards={};this.started={engine1:false,engine2:false};
    this.dynamic={engine1:null,engine2:null};this.fuelAvailable={engine1:true,engine2:true}; // Legacy direct Chain tests use explicitly simulated fuel; ISN-12 replaces this with source resolution.
    this.operating={engine1:null,engine2:null};this.throttle={engine1:0,engine2:0};
+   this.flightDamage={engine1:null,engine2:null};
    this.flight={onGround:true,pressureAltitudeFt:0,iasKt:0};
    // Pneumatics V6 exposes measured duct pressure as UNKNOWN unless a
    // sensor is supplied. This is an independent ECU bench TRAINING input,
@@ -69,10 +70,24 @@
   updateDynamics(at){for(const device of ['engine1','engine2']){
    const operating=this.operating[device];
    if(this.phase[device]==='RUNNING'&&operating&&at>=operating.at){
-    const values=Dynamics.stepRunning(operating.values,{
+    const nominal=Dynamics.stepRunning(operating.nominal||operating.values,{
      deltaMs:at-operating.at,throttle:this.throttle[device],onGround:this.flight.onGround,
      pressureAltitudeFt:this.flight.pressureAltitudeFt,iasKt:this.flight.iasKt});
-    this.operating[device]={at,values};
+    let values=nominal;
+    const fault=this.flightDamage[device];
+    // Training-only spool approximation, not CFM56 performance data.
+    if(fault?.type==='SEVERE_DAMAGE'){
+     const t=Math.max(0,(at-fault.at)/1000),wave=t<30?Math.sin(t*5.8):0,slow=t<30?Math.sin(t*2.3):0;
+     values={...nominal,n1Percent:Math.max(0,Math.min(110,nominal.n1Percent*(.56+.18*wave))),
+      n2Percent:Math.max(0,Math.min(110,nominal.n2Percent*(.70+.10*slow))),
+      egtC:Math.max(0,Math.min(900,nominal.egtC+115+90*wave+30*slow)),
+      fuelFlowKgHr:Math.max(0,nominal.fuelFlowKgHr*(.70+.15*slow))};
+    }else if(fault?.type==='FIRE'){
+     const t=Math.max(0,(at-fault.at)/1000),d=Math.min(t/25,1);
+     values={...nominal,n1Percent:nominal.n1Percent*(1-.16*d),n2Percent:nominal.n2Percent*(1-.09*d),
+      egtC:Math.min(900,nominal.egtC+160*d)};
+    }
+    this.operating[device]={at,values,nominal};
     // Training feedback never replaces externally-owned sensor/instructor observations.
     const feedback=this.start.getLive().observation[device].feedback;
     for(const [key,value] of [['n2Percent',values.n2Percent],['egtC',values.egtC],
@@ -305,6 +320,7 @@
    return this.get();
   }
   startEngine(device){
+   if(this.flightDamage[device]?.type==='SEPARATION'){this.lastError='ENGINE SEPARATED — RESTART INHIBITED';return;}
    const fuelLever=this.start.getLive().observation[device].feedback.fuelStartLever.value;
    if(globalThis.B737UnifiedCB?.available(device+'.starter')===false){this.phase[device]='BLOCKED';this.lastError=device.toUpperCase()+': START VALVE CB OPEN';return;}
    if(!['OFF','BLOCKED'].includes(this.phase[device])){
@@ -367,6 +383,22 @@
    this.lastError=device.toUpperCase()+': TRAINING FUEL SUPPLY LOSS — '+reason+
      '; START LEVER remains '+this.start.getLive().observation[device].feedback.fuelStartLever.value;
    return this.get();
+  }
+  injectFlightFailure(device,type){
+   if(!['engine1','engine2'].includes(device)||!['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'].includes(type))throw Error('Invalid flight engine failure');
+   if(this.flightDamage[device]||this.phase[device]!=='RUNNING')throw Error('Engine must be running and not already failed');
+   if(type==='FLAME_OUT'||type==='SEPARATION'){
+    this.fuelFlameout(device,'INSTRUCTOR_'+type);
+    if(this.phase[device]==='RUNNING')throw Error('Native combustion loss not acknowledged');
+    this.phase[device]='FLAMEOUT';
+   }
+   this.flightDamage[device]={type,at:this.time};
+   return {accepted:true,device,type};
+  }
+  clearFlightFailure(device){
+   if(!['engine1','engine2'].includes(device))throw Error('Invalid engine');
+   this.flightDamage[device]=null;
+   if(this.operating[device])delete this.operating[device].nominal;
   }
   // Lever mechanics and fuel valve commands are independent of N2 and start
   // phase. Spark requires an electrically eligible selected ignition channel.
@@ -479,6 +511,7 @@
   }
   instructorRunEngine(device,{instructor=false}={}){
    if(instructor!==true||!['engine1','engine2'].includes(device))throw Error('Explicit instructor engine preset required');
+   if(this.flightDamage[device]?.type==='SEPARATION')throw Error('Engine separated — load new aircraft first');
    if(this.phase[device]==='RUNNING')return this.get();
    this.cancel(device);this.dynamic[device]=null;
    this.command({type:'SOURCE_REQUEST',device,request:'START'});

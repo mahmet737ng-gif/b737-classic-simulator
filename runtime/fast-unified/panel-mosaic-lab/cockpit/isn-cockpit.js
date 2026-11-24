@@ -41,7 +41,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(global==='B737ISN1318ECUTestbenchV1'?'APU-OIL4-0001-ENG-OIL-DYNAMIC-0002':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':global==='B737ClassicFuelSystemV1'?'ATA28-FAILURES-FUEL-0002':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(['B737ISN1318ECUTestbenchV1','B737ISNAPUStartChainV1'].includes(global)?'V1-ENGINE-FAILURE-0001':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':global==='B737ClassicFuelSystemV1'?'ATA28-FAILURES-FUEL-0002':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -572,6 +572,7 @@
  let lastFireOutputs='',fireRenderQueued=false;
  function applyFirePanel(state,derived){
   const {outputs,indications}=derived;
+  for(const n of [1,2])if(chain.flightDamage?.['engine'+n]?.type==='FIRE'&&state.engineFire?.['ENG'+n]===false)chain.clearFlightFailure('engine'+n);
   const key=JSON.stringify([outputs,derived.activeFire,indications.WHEEL_WELL,indications.FIRE_BELL,indications.MASTER_FIRE_WARN]);
   if(key===lastFireOutputs)return;
   lastFireOutputs=key;
@@ -626,7 +627,7 @@
    schema:'B737_ISN_PROPULSION_SNAPSHOT_V1',source:'SHARED_ISN18_ECU',
    onGround:ecu.aircraft.onGround,
    engines:Object.fromEntries(['engine1','engine2'].map(id=>[id,{
-    phase:ecu.chain.phase[id],running:ecu.chain.phase[id]==='RUNNING',
+    phase:ecu.chain.phase[id],running:ecu.chain.phase[id]==='RUNNING',flightFailure:ecu.chain.flightDamage?.[id]?.type??null,
     throttle:ecu.chain.throttle[id],n1Percent:ecu.coast[id]?.n1??null
    }]))
   }),
@@ -816,6 +817,29 @@
   // Instrument/start lab: explicit INSTRUCTOR actions only, on the existing ISN-18 ECU.
   // Starting via GRD / ignition-source still requires the actual OH control;
   // this adapter NEVER secretly moves a physical switch or guarded control.
+  injectFlightEngineFailure:({engine,type}={})=>{
+    if(!['engine1','engine2'].includes(engine)||!['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'].includes(type))throw Error('Invalid flight failure');
+    if(chain.phase[engine]!=='RUNNING'||chain.flightDamage?.[engine])throw Error('Engine not available for failure injection');
+    if(type==='FIRE'){
+      const fire=window.B737UnifiedFireLights,unit='ENG'+engine.at(-1);
+      if(!fire?.dispatch||!fire?.getState)throw Error('Fire owner unavailable');
+      if(fire.getState().engineFire?.[unit]===true)throw Error('Fire already active');
+      fire.dispatch({type:'SET_FIRE',unit,active:true});
+      if(fire.getState().engineFire?.[unit]!==true)throw Error('Fire owner rejected request');
+    }
+    const result=chain.injectFlightFailure(engine,type);
+    if(type==='SEPARATION')ecu.coast[engine]={...ecu.coast[engine],n1:0,n2:0,egt:ecu.aircraft.oatC};
+    chain.syncPower();ecu.core.refreshFuelDelivery();render();
+    return result;
+  },
+  clearFlightEngineFailures:()=>{
+    for(const n of [1,2]){
+      const id='engine'+n,damage=chain.flightDamage?.[id];
+      if(damage?.type==='FIRE')window.B737UnifiedFireLights?.dispatch({type:'SET_FIRE',unit:'ENG'+n,active:false});
+      if(damage)chain.clearFlightFailure(id);
+    }
+    render();return true;
+  },
   engineTrainerAction:command=>{
     if(!command||command.instructor!==true||
        !['engine1','engine2'].includes(command.engine)&&!['ELECTRICAL_FAULT','APU_PRESET'].includes(command.type))
