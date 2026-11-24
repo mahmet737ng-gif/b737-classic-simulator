@@ -34,7 +34,7 @@
   OIFM:Object.freeze({icao:'OIFM',name:'Esfahan / Shahid Beheshti International',lat:32.75083333,lon:51.86277778,elevationFt:5058,defaultRunway:'25R',
    runways:Object.freeze({ '07L':77.93,'25R':257.96,'07R':77.93,'25L':257.96 })})
  });
- const PRESETS=Object.freeze(['RUNWAY_READY','FINAL_5','FINAL_10','MANUAL']);
+ const PRESETS=Object.freeze(['RUNWAY_READY','COLD_DARK','FINAL_5','FINAL_10','MANUAL']);
  function move(lat,lon,heading,distNm){
   const d=distNm/EARTH_NM,br=heading*RAD,la=lat*RAD,lo=lon*RAD;
   const lat2=Math.asin(Math.sin(la)*Math.cos(d)+Math.cos(la)*Math.sin(d)*Math.cos(br));
@@ -79,7 +79,7 @@
    tchFt=Number.isFinite(anchor.tchFt)?anchor.tchFt:50;
   const finalNm=kind==='FINAL_5'?5:kind==='FINAL_10'?10:0;
   const isFinal=finalNm>0, manual=kind==='MANUAL';
-  const ground=kind==='RUNWAY_READY'||(manual&&config.airborne===false);
+  const ground=kind==='COLD_DARK'||kind==='RUNWAY_READY'||(manual&&config.airborne===false);
   const latitude=manual&&config.lat!==undefined?finite(config.lat,-90,90,'LAT'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lat:anchor.lat;
   const longitude=manual&&config.lon!==undefined?finite(config.lon,-180,180,'LON'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lon:anchor.lon;
   // FINAL_10 training starts one GS dot BELOW the received ILS beam.
