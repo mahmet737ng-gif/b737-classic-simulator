@@ -57,3 +57,9 @@ test('lever is mounted on pedestal native layer; lamp on/off with no scene-zoom 
  assert.ok(js.includes("data-parking-brake=\"ON\""));
  assert.ok(!js.includes('viewport.scrollLeft')&&!js.includes('viewport.scrollTop'));
 });
+
+test('Railway fast runtime exporter includes the SVG, not just its script',()=>{
+ const exporter=read('tools/export-unified-gateway-runtime.cjs');
+ assert.ok(exporter.includes("cockpit+'assets/parking-brake-off-front-v1.svg'"));
+ assert.ok(exporter.includes('webmanifest|svg|webp|png'));
+});
