@@ -1,0 +1,27 @@
+name: Unified parking brake lever and lamp acceptance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/unified-parking-brake.yml'
+      - 'panel-mosaic-lab/cockpit/parking-brake-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'tests/parking-brake-unified-v1.test.cjs'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/parking-brake-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg'
+jobs:
+  parking-brake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: node --check panel-mosaic-lab/cockpit/parking-brake-unified-v1.js
+      - name: Source geometry and ON/OFF indicator tests
+        run: node --test tests/parking-brake-unified-v1.test.cjs
