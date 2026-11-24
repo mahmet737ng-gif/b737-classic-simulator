@@ -68,7 +68,7 @@
       this.sensors = warningInputs();
       // 737-400 suppresses an unverified takeoff-flap threshold; fire and cabin
       // alerts have separate, source-located behavior in the existing engine.
-      this.warningEngine = new this.WarningEngine({variant: '737-400'});
+      this.warningEngine = new this.WarningEngine({variant: '737-300'});
       this.seq = 0;
       this.events = [];
       this.snapshot = this.compute(null);
@@ -137,6 +137,12 @@
             throw Error('Unrecognized warning sensor '+key);
         }
         Object.assign(this.sensors,values);
+      } else if (command.type === 'WARNING_VARIANT') {
+        const variant=command.value;
+        if(!['737-300','737-400','737-500'].includes(variant))throw Error('Unsupported B737 warning variant');
+        // Preserve existing cabin cutout and active warning demand on family swap.
+        this.warningEngine.variant=variant;
+        this.warningEngine.takeoffFlapMinimum=variant==='737-300'?1:5;
       } else if (command.type === 'CUTOUT_CABIN') {
         this.warningEngine.cutoutCabin();
       } else if (command.type === 'ACK_FIRE') {
