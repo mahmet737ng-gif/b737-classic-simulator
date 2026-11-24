@@ -4,7 +4,8 @@
  const Core=win.B737FlightScenarioCoreV1;
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
- let mounted=false;
+ let mounted=false, setupTab='LOCATION';
+ const selectedPreset=()=>setupTab==='GENERAL'?'COLD_DARK':by('flightPreset').value;
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
@@ -17,7 +18,7 @@
   <div class="flight-grid">
    <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option><option value="OIFM">ESFAHAN · OIFM</option></select></label>
    <label>Runway<select id="flightRunway"></select></label>
-   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="COLD_DARK">COLD &amp; DARK</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
+   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">ON RUNWAY</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
   </div>
   <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
   <div class="flight-grid flight-numbers">
@@ -65,7 +66,7 @@
   if(!choiceArmed)return;
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(!a)return;
-  const manual=by('flightPreset').value==='MANUAL';
+  const manual=selectedPreset()==='MANUAL';
   const lat=manual?Number(by('flightLat').value):a.lat;
   const lon=manual?Number(by('flightLon').value):a.lon;
   if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
@@ -80,17 +81,17 @@
    const opt=new Option('RWY '+id+' · '+magLabel(hdg,airportPoint(a)),id);rw.add(opt);
   }
   rw.value=Object.hasOwn(a.runways,previous)?previous:a.defaultRunway;
-  const manual=by('flightPreset').value==='MANUAL';
+  const manual=selectedPreset()==='MANUAL';
   if(!manual){
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
    const mag=magneticHeading(a.runways[rw.value],airportPoint(a));
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
-   by('flightAlt').value=a.elevationFt+(['RUNWAY_READY','COLD_DARK'].includes(by('flightPreset').value)?0:3000);
+   by('flightAlt').value=a.elevationFt+(['RUNWAY_READY','COLD_DARK'].includes(selectedPreset())?0:3000);
   }
   publishSelectedReference();
  }
  function presetChanged(){
-  const kind=by('flightPreset').value;
+  const kind=selectedPreset();
   const a=Core.AIRPORTS[by('flightAirport').value];
   if(kind!=='MANUAL'){
    const mag=magneticHeading(a.runways[by('flightRunway').value],airportPoint(a));
@@ -237,7 +238,7 @@
  }
  function load(beforeStart){
   try{
-   const preset=by('flightPreset').value;
+   const preset=selectedPreset();
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
     airborne:!['RUNWAY_READY','COLD_DARK'].includes(preset)};
    if(preset==='MANUAL'){
@@ -413,6 +414,39 @@
    if(now-lastUI>=400){updateUI();lastUI=now;}
   }else lastTick=now;
  }
+ function mountSetupTabs(){
+  const select=by('flightPreset'),grid=select.closest('.flight-grid');
+  if(!grid||by('flightSetupTabs'))return;
+  const root=doc.createElement('div');root.id='flightSetupTabs';
+  grid.before(root);
+  const nav=doc.createElement('div');nav.className='flight-actions';nav.setAttribute('role','group');nav.setAttribute('aria-label','Aircraft initial setup');
+  const location=doc.createElement('button'),general=doc.createElement('button');
+  for(const [button,label] of [[location,'FLIGHT LOCATION'],[general,'GENERAL SETUP']]){
+   button.type='button';button.textContent=label;nav.append(button);
+  }
+  const panel=doc.createElement('fieldset');panel.id='flightGeneralSetup';panel.style.cssText='border:1px solid #52748a;border-radius:8px;padding:12px;margin:8px 0;color:inherit;';
+  const legend=doc.createElement('legend');legend.textContent='Aircraft General Setup';panel.append(legend);
+  for(const [value,label,disabled] of [['COLD_DARK','COLD & DARK',false],['READY_FOR_START','READY FOR START',true],['READY_FOR_TAKEOFF','READY FOR TAKEOFF',true]]){
+   const row=doc.createElement('label');row.style.cssText='display:flex;align-items:center;gap:8px;padding:7px 0;'+(disabled?'opacity:.45;':'');
+   const input=doc.createElement('input');input.type='radio';input.name='flightGeneralSetup';input.value=value;input.disabled=disabled;input.checked=!disabled;
+   const title=doc.createElement('span');title.textContent=label;row.append(input,title);
+   if(disabled){const note=doc.createElement('small');note.textContent='COMING SOON';note.style.marginLeft='auto';row.append(note);}
+   panel.append(row);
+  }
+  root.append(nav,grid,panel);
+  location.setAttribute('aria-controls','flightLocationGrid');grid.id='flightLocationGrid';general.setAttribute('aria-controls',panel.id);
+  function choose(tab,notify=true){
+   setupTab=tab;const isGeneral=tab==='GENERAL';
+   grid.hidden=isGeneral;grid.style.display=isGeneral?'none':'';
+   panel.hidden=!isGeneral;panel.style.display=isGeneral?'':'none';
+   for(const [button,active] of [[location,!isGeneral],[general,isGeneral]]){
+    button.setAttribute('aria-pressed',String(active));button.classList.toggle('flight-primary',active);
+   }
+   if(notify)select.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  location.addEventListener('click',()=>choose('LOCATION'));general.addEventListener('click',()=>choose('GENERAL'));
+  choose('LOCATION',false);
+ }
  function mount(){
   if(mounted)return;
   const header=doc.querySelector('.unified-minimal-header .header-settings');
@@ -441,10 +475,11 @@
     airportSelect.add(new Option(airport.name.toUpperCase()+' · '+airport.icao,airport.icao));
    }
   }
+  mountSetupTabs();
   by('flightAirport').addEventListener('change',()=>{choiceArmed=true;airportChanged();presetChanged();});
   by('flightRunway').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
   by('flightPreset').addEventListener('change',()=>{choiceArmed=true;presetChanged();});
-  for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(by('flightPreset').value==='MANUAL'){choiceArmed=true;publishSelectedReference();}});
+  for(const field of ['Lat','Lon'])by('flight'+field).addEventListener('change',()=>{if(selectedPreset()==='MANUAL'){choiceArmed=true;publishSelectedReference();}});
   by('flightLoad').addEventListener('click',load);
   by('flightTargets').addEventListener('click',targets);
   by('flightTakeoff').addEventListener('click',()=>{
@@ -479,7 +514,7 @@
   airportChanged();presetChanged();updateUI();
   timer=win.setInterval(tick,100);mounted=true;
  }
- const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
+ const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,
   loadScenario:config=>{win.B737ColdDarkGeneralPresetV1?.stop();state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();

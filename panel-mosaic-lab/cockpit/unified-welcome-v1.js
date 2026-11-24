@@ -82,10 +82,10 @@
     for (const input of aircraft.querySelectorAll('input[name]')) {
       input.checked = input.value === current[input.name];
     }
-    relocate(by('flightAirport').closest('.flight-grid'), flight);
+    relocate(by('flightSetupTabs') || by('flightAirport').closest('.flight-grid'), flight);
     flight.append(manual, initialLoad);
     relocate(by('flightAlt').closest('.flight-grid'), manual);
-    const setManualVisibility = () => { manual.hidden = by('flightPreset').value !== 'MANUAL'; };
+    const setManualVisibility = () => { manual.hidden = (win.B737UnifiedFlightScenarioV1?.getSelectedPreset?.() || by('flightPreset').value) !== 'MANUAL'; };
     by('flightPreset').addEventListener('change', setManualVisibility);
     setManualVisibility();
     aircraft.addEventListener('change', () => {
