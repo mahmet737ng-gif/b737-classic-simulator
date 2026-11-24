@@ -293,6 +293,11 @@
     win.dispatchEvent(new Event('b737:welcome-panels-ready'));
   }
 
+  function preparationFailed(message){
+    win.B737PoweredGeneralPresetsV1?.stop();
+    error.textContent=message;error.hidden=false;scenarioStarted=false;startRequested=false;
+    start.disabled=pendingEngineScenario();start.textContent='Start Flight';
+  }
   function beginFlight(now) {
     const shared = new URLSearchParams(win.location.search).has('crewRoom');
     if (!scenarioStarted) {
@@ -325,8 +330,7 @@
       const powered=win.B737PoweredGeneralPresetsV1;
       const p=powered?.getStatus();
       if(powered?.applies(state?.preset)&&p?.state===state.preset&&p.timedOut&&!p.coreReady){
-        error.textContent='Preset incomplete: '+p.missing.join(', ');
-        error.hidden=false;scenarioStarted=false;startRequested=false;start.disabled=false;start.textContent='Start Flight';return;
+        preparationFailed('Preset incomplete: '+p.missing.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | '));return;
       }
       const ready = powered?.applies(state?.preset) ? active&&p?.state===state.preset&&p?.settled===true&&p?.coreReady===true : state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
         active, beforePaints:directorPaintBaseline || [],
@@ -365,6 +369,7 @@
       currentLabel = text;
     }
     progress.parentElement.dataset.ready = String(labels.length === 0);
+    progress.parentElement.style.display=labels.length===0?'none':'';
     retry.hidden = labels.length === 0 || now - lastProgressAt < 25000;
   }
 
@@ -401,6 +406,16 @@
     // Release it as soon as MAIN + throttle + forward images are present,
     // then KEEP the welcome overlay until functional instruments/ECU pass.
     if (priorityReady) releaseSystems();
+    if(startRequested&&scenarioStarted){
+      const state=win.B737UnifiedFlightScenarioV1?.getState?.();
+      const p=win.B737PoweredGeneralPresetsV1?.getStatus?.();
+      if(p?.state===state?.preset&&p?.timedOut&&!p.coreReady){
+        preparationFailed('Preset incomplete: '+p.missing.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | '));
+      }else if(now-scenarioStartedAt>40000&&['READY_FOR_START','READY_FOR_TAKEOFF'].includes(state?.preset)){
+        const keys=[...(p?.missing||[]),...(p?.pending||[])];
+        preparationFailed('Cockpit preparation timed out: '+(keys.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | ')||'Readiness gate not satisfied'));
+      }
+    }
     if (stable && startRequested) beginFlight(now);
     if (welcome.hidden) {
       win.clearInterval(timer);
@@ -426,7 +441,7 @@
       }
       if(win.B737PoweredGeneralPresetsV1?.applies(preset)){
         const p=win.B737PoweredGeneralPresetsV1.getStatus();
-        if(!p?.settled)labels.unshift('Configuring '+preset.replaceAll('_',' ')+': '+[...(p?.missing||[]),...(p?.pending||[])].slice(0,2).join(', '));
+        if(!p?.settled)labels.unshift('Configuring '+preset.replaceAll('_',' ')+': '+[...(p?.missing||[]),...(p?.pending||[])].slice(0,2).map(k=>k+(p?.reasons?.[k]?': '+p.reasons[k]:'')).join(' | '));
       }
       if (preset === 'FINAL_10') {
         const status = win.B737Final10ApproachPresetV1?.getStatus?.();
@@ -440,7 +455,8 @@
         labels.push('Applying Flight Phase to both EADIs…');
     }
     if (gate?.canEnter && !setup) labels.push('Preparing Flight Setup…');
-    if (!labels.length && !startRequested) labels.push('Cockpit ready · select a flight phase');
+    if (!labels.length && !startRequested) {progress.parentElement.hidden=true;report([],now);return;}
+    progress.parentElement.hidden=false;
     if (!labels.length && startRequested) labels.push('Finalizing cockpit and flight phase…');
     const prefix = gate ? gate.percent + '% readiness · ' : '';
     report(labels.map(label => prefix + label), now);
