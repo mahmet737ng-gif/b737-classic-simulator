@@ -46,7 +46,10 @@
    if(s!==lastStatus){
      lastStatus=s;
      const node=$('intermittentHornStatus');if(node)node.textContent=s;
-     if(testStatus)testStatus.textContent=s;
+     if(testStatus){
+       testStatus.textContent=lastError?'HORN ERROR':source?'HORN PLAYING':ready&&armed?'AUDIO READY':ready?'AUDIO LOCKED':'DECODING';
+       testStatus.title=s;
+     }
      if(testButton)testButton.dataset.audioReady=ready&&armed?'yes':'no';
    }
  }
@@ -175,18 +178,20 @@
    // Visible cockpit test: differentiates autoplay, asset decoding and
    // warning-input failures; inspector strip is frequently hidden.
    if(!testButton){
-     const toolbar=root.document.querySelector('.workbench .toolbar .tools:last-child')||
-        root.document.querySelector('.workbench .toolbar');
+     // The old workbench toolbar is display:none in production Unified.
+     // Mount on the visible minimal-header controls instead.
+     const toolbar=root.document.querySelector('header.unified-minimal-header .header-settings')||
+        root.document.querySelector('.workbench .toolbar .tools:last-child');
      if(toolbar){
        testButton=root.document.createElement('button');testButton.type='button';
-       testButton.id='unifiedHornTestButton';testButton.textContent='🔊 HORN TEST';
+       testButton.id='unifiedHornTestButton';testButton.textContent='🔊 HORN TEST';testButton.style.cssText='order:102;white-space:nowrap';
        testButton.title='Play the actual takeoff / cabin warning horn for 2.2 seconds';
        testButton.setAttribute('aria-label','Test actual takeoff and cabin altitude warning sound');
        testButton.addEventListener('click',event=>{
          event.stopPropagation();testHorn().catch(e=>root.console?.error?.('Horn test failed',e));
        });
        testStatus=root.document.createElement('span');testStatus.id='unifiedHornAudioStatus';
-       testStatus.setAttribute('role','status');testStatus.style.cssText='font:10px monospace;max-width:220px;white-space:normal';
+       testStatus.setAttribute('role','status');testStatus.style.cssText='order:103;font:10px monospace;max-width:90px;white-space:normal';
        toolbar.append(testButton,testStatus);
      }
    }
