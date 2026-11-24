@@ -360,7 +360,7 @@ try{
           setVisible(sprite['bearing-flag'],s.bearingFlag);
           setVisible(placard,s.adfInop);
           setVisible(sprite['double-needle'],!s.bearingFlag&&(!s.adf2||!s.adfInop)&&Number.isFinite(s.adf2?s.adfBearing2:s.bearing2));
-          setVisible(sprite['single-needle'],(!s.adf1||!s.adfInop)&&Number.isFinite(s.adf1?s.adfBearing1:s.bearing1));
+          setVisible(sprite['single-needle'],!s.bearingFlag&&(!s.adf1||!s.adfInop)&&Number.isFinite(s.adf1?s.adfBearing1:s.bearing1));
           [s.dme1,s.dme2].forEach((value,i)=>{
             const chars=Number.isFinite(value)?Math.round(value*10).toString().padStart(4,'0').slice(-4):'––––';
             dme[i].forEach((node,j)=>{node.textContent=chars[j];});
@@ -620,6 +620,15 @@ try{
         snapshot['mcp.state'].value:null;
       const fmc=snapshot?.['fmc.computed']?.value;
       const valid=(topic)=>snapshot?.[topic]?.quality==='VALID'?snapshot[topic].value:null;
+      const supply=window.B737UnifiedBusConsumerLiveV1;
+      let derived;
+      const busPowered=(id,voltage='115VAC')=>{
+        const reported=supply?.getBus?.(id,voltage)?.powered;
+        if(typeof reported==='boolean')return reported;
+        if(!derived){const input=window.B737ISNCockpitV1?.getElectricalState?.();const evaluated=input&&window.B737ElectricalV7?.evaluate?.(input);derived=evaluated?window.B737ClassicBusConsumersV1?.defineBuses?.(evaluated,{electricalState:input})||{}:{};}
+        return derived[id+'@'+voltage]?.powered===true;
+      };
+      const devicePowered=(name,bus)=>busPowered(bus)&&supply?.getDevice?.(name)?.state!=='OFF';
       const base={...photos.defaults, ias:0, mach:0, altitude:0, standbyAltitude:0,
         altitudeBug:500, dme1:null, dme2:null, ivsiOff:false,
         bugs:[85,92,100,107],orangeBugs:[null,null]};
@@ -649,7 +658,19 @@ try{
           (mcp.speedDisplayMode==='MACH'&&Number.isFinite(mcp.selectedMachHundredths)?
            photos.calibratedSpeed(mcp.selectedMachHundredths/100,altitude):
            mcp.speedDisplayMode==='IAS'?mcp.selectedSpeedKt:null):null;
+        const isCapt=station==='captain',electronic=isCapt?'electronic1':'electronic2';
+        const altPowered=devicePowered(isCapt?'Altimeter Captain':'Altimeter FO',electronic);
+        const asiPowered=devicePowered(isCapt?'Mach ASI Captain':'MachASI FO',electronic);
+        const vsiPowered=devicePowered(isCapt?'VSI Captain':'VSI FO',electronic);
+        const peer=window.B737UnifiedEfisSources?.project(isCapt?'FO':'CAPT',snapshot);
+        const captainRdmiPower=devicePowered('RDMI Captain','electronic2')||(nav?.irs===1&&peer?.irs===1&&busPowered('standby'));
+        const rdmiNoPower=isCapt&&!captainRdmiPower;
+        const chosen1=settings[station].adf1?adf(1):bearing(1),chosen2=settings[station].adf2?adf(2):bearing(2);
         const state={...base,...settings[station],
+          altFlag:!altPowered,airDataOff:!asiPowered,ivsiOff:!vsiPowered,
+          headingFlag:rdmiNoPower||!Number.isFinite(nav?.heading),
+          bearingFlag:rdmiNoPower||(!Number.isFinite(chosen1)&&!Number.isFinite(chosen2)),
+          adfInop:rdmiNoPower,
           orangeBugs:Number.isFinite(selectedCas)?[selectedCas,selectedCas]:[null,null],
           ias:live?.indicatedSpeedKt??adc?.casKt??speedsForStation?.airspeedKts??0,
           limit:speedsForStation?.vmoMmoKts??base.limit,
@@ -673,7 +694,7 @@ try{
   }
   for(const name of ['b737:flight-presentation-frame',
     'b737:photo-needle-update','b737:photo-airspeed-update',
-    'b737:standby-altimeter-sample','b737:flight-scenario-stopped','b737:mcp-afds-state','b737:avionics-data']){
+    'b737:standby-altimeter-sample','b737:flight-scenario-stopped','b737:mcp-afds-state','b737:avionics-data','b737:bus-consumer-snapshot','b737:electrical-distribution-changed','b737:cb-state-change']){
     window.addEventListener(name,repaint);
   }
   // Owner F/O image and mode transforms mount in an animation frame.
