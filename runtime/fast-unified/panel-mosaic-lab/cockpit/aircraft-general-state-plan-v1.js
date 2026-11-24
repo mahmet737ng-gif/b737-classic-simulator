@@ -42,7 +42,7 @@
   const ils=index?.STATIONS?.filter(s=>s.airport===icao&&s.runway===runway&&s.type==='ILS_DME')??[];
   if(!vor||vor.type!=='VOR_DME'||!Number.isInteger(vor.freqKhz))return {ok:false,reason:'AIRPORT_VOR_NOT_IN_DATABASE'};
   if(ils.length!==1||!Number.isInteger(ils[0].freqKhz))return {ok:false,reason:'SELECTED_RUNWAY_ILS_NOT_UNIQUE_OR_MISSING',vor};
-  return {ok:true,vor,ils:ils[0],capt:{mode:'manual',manual:vor.freqKhz},fo:{mode:'manual',manual:ils[0].freqKhz,auto:vor.freqKhz}};
+  return {ok:true,vor,ils:ils[0],capt:{mode:'auto',manual:ils[0].freqKhz,auto:vor.freqKhz},fo:{mode:'manual',manual:vor.freqKhz}};
  }
  function applyNav(root,index,icao,runway){
   const p=resolveNav(index,icao,runway);if(!p.ok)return p;
@@ -51,10 +51,10 @@
   try{
    const accepted=tuner.setFrequency('nav-capt-manual',p.capt.manual)===true&&
     tuner.setFrequency('nav-fo-manual',p.fo.manual)===true&&
-    mechanical.setNavAuto('FO',p.fo.auto)===true&&
-    controls.setMode('CAPT','manual')===true&&controls.setMode('FO','manual')===true;
+    mechanical.setNavAuto('CAPT',p.capt.auto)===true&&
+    controls.setMode('CAPT','auto')===true&&controls.setMode('FO','manual')===true;
    const c=controls.getState('CAPT'),f=controls.getState('FO');
-   return {...p,ok:accepted&&c?.activeFrequencyKhz===p.capt.manual&&f?.activeFrequencyKhz===p.fo.manual&&f?.autoFrequencyKhz===p.fo.auto};
+   return {...p,ok:accepted&&c?.mode==='auto'&&c?.activeFrequencyKhz===p.capt.auto&&c?.manualFrequencyKhz===p.capt.manual&&f?.mode==='manual'&&f?.activeFrequencyKhz===p.fo.manual};
   }catch(e){return {...p,ok:false,reason:String(e.message||e)};}
  }
  const api=Object.freeze({build,resolveNav,applyNav});
