@@ -10,9 +10,9 @@ const get=()=>status;
 function apply(state){
  stop();if(!applies(state?.preset))return false;
  const run=serial,takeoff=state.preset==='READY_FOR_TAKEOFF',started=Date.now(),sent=new Map();
- const check={},optional={};
- const attempt=(id,fn,extra=false)=>{try{(extra?optional:check)[id]=fn()===true;}catch(e){(extra?optional:check)[id]=false;}};
- const once=(id,fn,ms=1200)=>{if(Date.now()-(sent.get(id)||0)<ms)return;fn();sent.set(id,Date.now());};
+ const check={},optional={},reasons={};
+ const attempt=(id,fn,extra=false)=>{try{const ok=fn()===true;(extra?optional:check)[id]=ok;if(ok)delete reasons[id];}catch(e){(extra?optional:check)[id]=false;reasons[id]=String(e?.message||e);}};
+ const once=(id,fn,ms=1200)=>{if(Date.now()-(sent.get(id)||0)<ms)return;sent.set(id,Date.now());return fn();};
  function pass(){
  if(run!==serial)return;
  const child=win.document.getElementById('overheadFrame')?.contentWindow,oh=child?.B737OverheadToggles,rg=child?.B737RotaryGuards,guard=child?.B737GuardOwner18;
@@ -30,20 +30,37 @@ function apply(state){
  for(const id of ['fuel-center-l','fuel-center-r'])attempt(id,()=>Number.isFinite(center)&&set(id,center>453?'ON':'OFF'),true);
  // Start from an actual APU-backed electrical state before transferring.
  if(!takeoff||elec()?.source?.[1]!=='GEN1'||elec()?.source?.[2]!=='GEN2'){
-  attempt('APU_READY',()=>{if(phases().apu!=='READY')once('APU_PRESET',()=>eng.engineTrainerAction({instructor:true,type:'APU_PRESET'}));return phases().apu==='READY';},takeoff);
+  attempt('APU_READY',()=>{
+   if(!check.BATTERY)throw Error('Waiting for battery owner');
+   const phase=phases().apu;
+   if(phase==='OFF')once('APU_PRESET',()=>eng.engineTrainerAction({instructor:true,type:'APU_PRESET'}));
+   else if(['BLOCKED','PROTECTIVE_SHUTDOWN'].includes(phase))once('APU_RESET',()=>set('apu-start','OFF'));
+   if(phases().apu!=='READY')throw Error(eng?.getStartState?.()?.lastError||'APU '+phases().apu);
+   return true;
+  },takeoff);
   if(phases().apu==='READY'){set('apu-start','ON');if(!takeoff||elec()?.source?.[1]!=='GEN1')if(elec()?.source?.[1]!=='APU')pulse('apu-gen-1','ON');
    if(!takeoff||elec()?.source?.[2]!=='GEN2')if(elec()?.source?.[2]!=='APU')pulse('apu-gen-2','ON');}
  }
  const readySource=()=>{const e=elec();return [1,2].every(n=>e?.source?.[n]==='APU'||e?.source?.[n]==='GEN'+n);};
  for(const n of [1,2])attempt('ENGINE_'+n,()=>{
   const id='engine'+n;
-  if(takeoff){if(phases()[id]!=='RUNNING'&&readySource())once(id,()=>eng.engineTrainerAction({instructor:true,type:'PRESET_RUNNING',engine:id}));return phases()[id]==='RUNNING';}
+  if(takeoff){
+   if(phases()[id]==='RUNNING')return true;
+   // Match FINAL_10: the existing instructor running preset is an initial
+   // condition, not a pneumatic start. Do not require APU dual contactors.
+   // Keep the true battery/fuel/fire prerequisites and final generator gate.
+   if(!check.BATTERY)throw Error('Waiting for BATTERY ON acknowledgement');
+   if(!eng?.engineTrainerAction)throw Error('ISN18 ECU owner not loaded');
+   once(id,()=>eng.engineTrainerAction({instructor:true,type:'PRESET_RUNNING',engine:id}));
+   if(phases()[id]!=='RUNNING')throw Error(eng.getStartState()?.lastError||id+' phase '+phases()[id]);
+   return true;
+  }
   if(phases()[id]!=='OFF')once(id,()=>{eng.engineTrainerAction({instructor:true,type:'LEVER',engine:id,position:'CUTOFF'});eng.engineTrainerAction({instructor:true,type:'SHUTDOWN',engine:id});});
   return phases()[id]==='OFF';
  });
  if(takeoff){
-  for(const n of [1,2])attempt('GEN_'+n,()=>{if(phases()['engine'+n]==='RUNNING'&&elec()?.source?.[n]!=='GEN'+n)pulse('gen-'+n,'ON');const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);return e?.source?.[n]==='GEN'+n&&v?.bus?.['generator'+n]===true;});
-  if(check.GEN_1&&check.GEN_2){pulse('apu-gen-1','OFF');pulse('apu-gen-2','OFF');set('apu-start','OFF');}
+  for(const n of [1,2])attempt('GEN_'+n,()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);if(e?.faults?.['GEN'+n+'_FAILED'])throw Error('GEN'+n+' fault / drive disconnected');if(phases()['engine'+n]==='RUNNING'&&e?.config?.['engine'+n+'Running']===true&&e?.source?.[n]!=='GEN'+n)pulse('gen-'+n,'ON');if(e?.source?.[n]==='GEN'+n&&v?.bus?.['generator'+n]===true)return true;throw Error('GEN'+n+' not on bus; source='+String(e?.source?.[n]??'NONE')+'; engine='+String(phases()['engine'+n]??'UNKNOWN'));});
+  if(check.GEN_1&&check.GEN_2){optional.APU_READY=true;delete reasons.APU_READY;for(const n of [1,2])if(elec()?.source?.[n]==='APU')pulse('apu-gen-'+n,'OFF');set('apu-start','OFF');}
   attempt('APU_OFF',()=>phases().apu==='OFF'&&check.GEN_1&&check.GEN_2);
   attempt('GPU_DISCONNECTED',()=>{if(elec()?.config?.groundPowerAttached)once('gpu',()=>eng.instructor({type:'ELECTRICAL',action:{type:'CONTROL',key:'groundPowerAttached',value:false}}));return elec()?.config?.groundPowerAttached===false;},true);
  }else attempt('APU_ON_BOTH_BUSES',()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);return phases().apu==='READY'&&e?.source?.[1]==='APU'&&e?.source?.[2]==='APU'&&v?.bus?.transfer1===true&&v?.bus?.transfer2===true;});
@@ -90,9 +107,9 @@ function apply(state){
  },true);
  const coreReady=Object.values(check).every(Boolean),missing=Object.keys(check).filter(k=>!check[k]),pending=Object.keys(optional).filter(k=>!optional[k]);
  const done=coreReady&&pending.length===0,expired=Date.now()-started>=30000;
- status={state:state.preset,complete:done,coreReady,settled:done||expired,timedOut:expired&&!done,missing,pending,checks:{...check,...optional}};
+ status={state:state.preset,complete:done,coreReady,settled:done||expired,timedOut:expired&&!done,missing,pending,checks:{...check,...optional},reasons:{...reasons},observed:{phase:{...phases()},source:{...elec()?.source},battery:elec()?.config?.batterySwitch}};
  const node=win.document.getElementById('flightScenarioStatus');
- if(node)node.textContent=state.preset.replaceAll('_',' ')+' · '+(done?'OWNER CHECKS PASSED':expired?'INCOMPLETE — '+[...missing,...pending].join(', '):'CONFIGURING — '+[...missing,...pending].join(', '));
+ if(node)node.textContent=state.preset.replaceAll('_',' ')+' · '+(done?'OWNER CHECKS PASSED':(expired?'INCOMPLETE — ':'CONFIGURING — ')+[...missing,...pending].map(k=>k+(reasons[k]?': '+reasons[k]:'')).join(', '));
  win.dispatchEvent(new win.CustomEvent('b737:powered-general-preset-status',{detail:status}));
  if(done||expired)stop();
  }
