@@ -30,8 +30,8 @@ function apply(state){
  for(const id of ['fuel-center-l','fuel-center-r'])attempt(id,()=>Number.isFinite(center)&&set(id,center>453?'ON':'OFF'),true);
  // Start from an actual APU-backed electrical state before transferring.
  if(!takeoff||elec()?.source?.[1]!=='GEN1'||elec()?.source?.[2]!=='GEN2'){
-  attempt('APU_READY',()=>{if(phases().apu!=='RUNNING')once('APU_PRESET',()=>eng.engineTrainerAction({instructor:true,type:'APU_PRESET'}));return phases().apu==='RUNNING';},takeoff);
-  if(phases().apu==='RUNNING'){if(!takeoff||elec()?.source?.[1]!=='GEN1')if(elec()?.source?.[1]!=='APU')pulse('apu-gen-1','ON');
+  attempt('APU_READY',()=>{if(phases().apu!=='READY')once('APU_PRESET',()=>eng.engineTrainerAction({instructor:true,type:'APU_PRESET'}));return phases().apu==='READY';},takeoff);
+  if(phases().apu==='READY'){set('apu-start','ON');if(!takeoff||elec()?.source?.[1]!=='GEN1')if(elec()?.source?.[1]!=='APU')pulse('apu-gen-1','ON');
    if(!takeoff||elec()?.source?.[2]!=='GEN2')if(elec()?.source?.[2]!=='APU')pulse('apu-gen-2','ON');}
  }
  const readySource=()=>{const e=elec();return [1,2].every(n=>e?.source?.[n]==='APU'||e?.source?.[n]==='GEN'+n);};
@@ -46,7 +46,7 @@ function apply(state){
   if(check.GEN_1&&check.GEN_2){pulse('apu-gen-1','OFF');pulse('apu-gen-2','OFF');set('apu-start','OFF');}
   attempt('APU_OFF',()=>phases().apu==='OFF'&&check.GEN_1&&check.GEN_2);
   attempt('GPU_DISCONNECTED',()=>{if(elec()?.config?.groundPowerAttached)once('gpu',()=>eng.instructor({type:'ELECTRICAL',action:{type:'CONTROL',key:'groundPowerAttached',value:false}}));return elec()?.config?.groundPowerAttached===false;},true);
- }else attempt('APU_ON_BOTH_BUSES',()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);return phases().apu==='RUNNING'&&e?.source?.[1]==='APU'&&e?.source?.[2]==='APU'&&v?.bus?.transfer1===true&&v?.bus?.transfer2===true;});
+ }else attempt('APU_ON_BOTH_BUSES',()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);return phases().apu==='READY'&&e?.source?.[1]==='APU'&&e?.source?.[2]==='APU'&&v?.bus?.transfer1===true&&v?.bus?.transfer2===true;});
  for(const id of ['pack-l','pack-r'])attempt(id,()=>set(id,takeoff?'AUTO':'OFF'),true);
  attempt('APU_BLEED',()=>set('bleed-apu',takeoff?'OFF':'ON'),true);
  for(const id of ['engine-start-1','engine-start-2'])attempt(id,()=>{if(!rg)return false;const v=takeoff?'CONT':'OFF';let s=rg.getState();if((s.rotaries?.[id]??s[id])!==v)rg.setEngineLabDetent(id,v);s=rg.getState();return (s.rotaries?.[id]??s[id])===v;},true);
