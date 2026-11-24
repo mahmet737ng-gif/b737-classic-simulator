@@ -239,6 +239,7 @@
     // Restore the original dialog visibility and listeners when entering the cockpit.
     restoreWelcomeLocation = () => {
       locationSelect.removeEventListener('change', syncGeneral);
+      locationSelect.disabled=false;
       by('flightAirport').removeEventListener('change', stripRunwayHeadings);
       const isGeneral = generalButton?.getAttribute('aria-pressed') === 'true';
       locationGrid.hidden = isGeneral;
