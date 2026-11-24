@@ -1574,7 +1574,24 @@ function applyFinal10Preset({speedKt,headingMag,courseMag,altitudeFt}={}){
  }
  return {accepted:true,output:Core.output(state)};
 }
+// Ground preset uses the same AFDS transitions as knob/paddle actions.
+function applyGroundPreset({speedKt,headingMag,altitudeFt,atArm=false}={}){
+ electrical();
+ let out=Core.output(state);
+ if(out.power!==true)return {accepted:false,reason:'MCP_NOT_POWERED',feed:out.feedStatus};
+ const heading=(Math.round(headingMag)%360+360)%360;
+ const targets={speed:Math.round(speedKt),heading,courseL:heading,courseR:heading,altitude:Math.round(altitudeFt/100)*100};
+ if(!Object.values(targets).every(Number.isFinite))return {accepted:false,reason:'INVALID_GROUND_TARGETS'};
+ for(const [id,value] of Object.entries(targets)){
+  if(out.values[id]!==value){out=send({type:'VALUE',id,value});if(out.values[id]!==value)return {accepted:false,reason:out.rejection||'VALUE_NOT_ACKNOWLEDGED',step:id};}
+ }
+ for(const side of ['left','right'])if(out.controls.fd[side]!==true)out=send({type:'FD',side,on:true});
+ if(out.controls.atArm!==atArm)out=send({type:'AT_ARM',armed:atArm});
+ const accepted=out.power===true&&out.controls.fd.left===true&&out.controls.fd.right===true&&out.controls.atArm===atArm&&Object.entries(targets).every(([id,v])=>out.values[id]===v);
+ return {accepted,reason:accepted?null:out.rejection||'PADDLE_NOT_ACKNOWLEDGED',output:out};
+}
 window.B737McpAFDSBridgeV1=Object.freeze({
+ applyGroundPreset,
  getState:()=>JSON.parse(JSON.stringify(state)),
  getOutput:()=>Core.output(state),
  applyFinal10Preset,
@@ -1602,7 +1619,7 @@ window.B737McpAFDSBridgeV1=Object.freeze({
   source:'SIMULATED_FCC',singleEngine:singleEngine===true}),
  disconnectConfirmed:sample=>send({type:"AP_DISENGAGE_CONFIRMED",...sample}),
  press:requestMode,
- reset:()=>send({type:"RESET"})
+ reset:()=>{send({type:"RESET"});lastElectrical="";electrical();return Core.output(state);}
 });
 })();
 }catch(error){queueMicrotask(()=>{throw error});}
