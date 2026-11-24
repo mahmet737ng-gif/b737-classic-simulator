@@ -1,6 +1,6 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "4ad7958a90cd6d2bd0e85fdb40f988d7e005c30d",
+  "sourceCommit": "a16e545d711bb437a22357517c06cd878847036c",
   "mainBefore": 328,
   "mainAfter": 103,
   "overheadBefore": 62,
@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "cdbfd7f18d6d11eecbbfa54e40dcee594762af820ad6b2dc66d8850e8336451b"
+      "sha256": "2794648ff7ac027357e3a30c86069ea5e141a258b6cd6153adf7a38b9c147379"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "b2bc74069beef2d6716cb95dabb9712eebb4042af9eb5692bdb2015e92537fd3"
+      "sha256": "35cfd866a327a7e8443929da0c7eb1e476b3d4656bf588050ddc6517e234d8b1"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
