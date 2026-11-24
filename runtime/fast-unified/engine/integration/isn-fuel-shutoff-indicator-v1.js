@@ -10,15 +10,19 @@
  function create({travelMs=820}={}){
   if(!Number.isFinite(travelMs)||travelMs<=0)throw Error('Invalid training transit time');
   const states=Object.fromEntries(sides.map(id=>[id,{position:'CLOSED',command:'CLOSED',from:'CLOSED',startedAt:null}]));
-  function observe({levers,fireHandles={},observedPositions={},nowMs}={}){
+  function observe({levers,fireHandles={},observedPositions={},actuationPowered={},indicationPowered=true,nowMs}={}){
    if(!levers||!Number.isFinite(nowMs)||nowMs<0)throw Error('Fuel lever feedback and monotonic time required');
    const frames={},positions={},commands={};let transitionStarted=false;
    for(const id of sides){
     const lever=levers[id],s=states[id];
     if(!['IDLE','CUTOFF'].includes(lever))throw Error('Missing engine fuel start lever '+id);
     const commanded=fireHandles[id]===true||lever==='CUTOFF'?'CLOSED':'OPEN';
-    if(s.startedAt!==null&&nowMs-s.startedAt>=travelMs){s.position=s.command;s.startedAt=null;}
-    if(s.command!==commanded){
+    const motorPower=actuationPowered[id]!==false;
+    // Hot battery feed controls movement independently of the indicator supply.
+    if(!motorPower)s.startedAt=null;
+    if(motorPower&&s.position==='TRANSIT'&&s.startedAt===null){s.startedAt=nowMs;transitionStarted=true;}
+    if(motorPower&&s.startedAt!==null&&nowMs-s.startedAt>=travelMs){s.position=s.command;s.startedAt=null;}
+    if(motorPower&&s.command!==commanded){
      const previous=s.position==='TRANSIT'?s.from:s.position;
      s.from=previous;s.command=commanded;
      if(previous===commanded){s.position=commanded;s.startedAt=null;}
@@ -26,7 +30,7 @@
     }
     const actual=observedPositions[id]??s.position;
     if(!allowed.includes(actual))throw Error('Invalid actual valve position '+id);
-    frames[id]=actual==='TRANSIT'||actual!==commanded?'BRIGHT_BLUE':actual==='CLOSED'?'DIM_BLUE':'OFF';
+    frames[id]=indicationPowered!==true?'OFF':actual==='TRANSIT'||actual!==commanded?'BRIGHT_BLUE':actual==='CLOSED'?'DIM_BLUE':'OFF';
     positions[id]=actual;commands[id]=commanded;
    }
    return {frames,positions,commands,transitionStarted,travelMs,source:'ECU_COMMAND_WITH_TRAINING_TRANSIT_UNLESS_OBSERVED'};
