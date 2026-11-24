@@ -572,6 +572,7 @@
  let lastFireOutputs='',fireRenderQueued=false;
  function applyFirePanel(state,derived){
   const {outputs,indications}=derived;
+  for(const n of [1,2])if(chain.flightDamage?.['engine'+n]?.type==='FIRE'&&state.engineFire?.['ENG'+n]===false)chain.clearFlightFailure('engine'+n);
   const key=JSON.stringify([outputs,derived.activeFire,indications.WHEEL_WELL,indications.FIRE_BELL,indications.MASTER_FIRE_WARN]);
   if(key===lastFireOutputs)return;
   lastFireOutputs=key;
@@ -816,6 +817,29 @@
   // Instrument/start lab: explicit INSTRUCTOR actions only, on the existing ISN-18 ECU.
   // Starting via GRD / ignition-source still requires the actual OH control;
   // this adapter NEVER secretly moves a physical switch or guarded control.
+  injectFlightEngineFailure:({engine,type}={})=>{
+    if(!['engine1','engine2'].includes(engine)||!['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'].includes(type))throw Error('Invalid flight failure');
+    if(chain.phase[engine]!=='RUNNING'||chain.flightDamage?.[engine])throw Error('Engine not available for failure injection');
+    if(type==='FIRE'){
+      const fire=window.B737UnifiedFireLights,unit='ENG'+engine.at(-1);
+      if(!fire?.dispatch||!fire?.getState)throw Error('Fire owner unavailable');
+      if(fire.getState().engineFire?.[unit]===true)throw Error('Fire already active');
+      fire.dispatch({type:'SET_FIRE',unit,active:true});
+      if(fire.getState().engineFire?.[unit]!==true)throw Error('Fire owner rejected request');
+    }
+    const result=chain.injectFlightFailure(engine,type);
+    if(type==='SEPARATION')ecu.coast[engine]={...ecu.coast[engine],n1:0,n2:0,egt:ecu.aircraft.oatC};
+    chain.syncPower();ecu.core.refreshFuelDelivery();render();
+    return result;
+  },
+  clearFlightEngineFailures:()=>{
+    for(const n of [1,2]){
+      const id='engine'+n,damage=chain.flightDamage?.[id];
+      if(damage?.type==='FIRE')window.B737UnifiedFireLights?.dispatch({type:'SET_FIRE',unit:'ENG'+n,active:false});
+      if(damage)chain.clearFlightFailure(id);
+    }
+    render();return true;
+  },
   engineTrainerAction:command=>{
     if(!command||command.instructor!==true||
        !['engine1','engine2'].includes(command.engine)&&!['ELECTRICAL_FAULT','APU_PRESET'].includes(command.type))
