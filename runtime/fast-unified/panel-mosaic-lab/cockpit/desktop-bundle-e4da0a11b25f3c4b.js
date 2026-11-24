@@ -1248,6 +1248,14 @@ try{
     s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;s.pitchDeg=0;s.bankDeg=0;
    }
   }
+  // Bounded yaw disturbance from the two observed engine thrusts. This is a
+  // trainer approximation; no calibrated rudder/engine-out aerodynamics.
+  if(observed&&propulsion.engines.some(e=>e.flightFailure)){
+   const [l,r]=propulsion.engines.map(e=>e.running?clamp((e.n1Percent-22)/78,0,1):0);
+   const yawDegSec=clamp((l-r)*1.8,-1.8,1.8)*clamp(s.iasKt/140,0,1);
+   if(s.airborne||groundRoll)s.trueHeadingDeg=wrap(s.trueHeadingDeg+yawDegSec*dt);
+   s.engineAsymmetry={yawDegSec,left:l,right:r,source:'TRAINING_OBSERVED_N1_ASYMMETRY'};
+  }else delete s.engineAsymmetry;
   const windTo=wrap(s.windFromDeg+180),heading=s.trueHeadingDeg;
   const speedEast=Math.sin(heading*RAD)*s.tasKt+Math.sin(windTo*RAD)*s.windKt;
   const speedNorth=Math.cos(heading*RAD)*s.tasKt+Math.cos(windTo*RAD)*s.windKt;
