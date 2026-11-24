@@ -97,31 +97,43 @@
  syncAirconPlate();
  window.addEventListener('storage',e=>{if(e.key===PROFILE_KEY){setPressurizationArtwork(savedPressurization());setAirframeArtwork(savedAirframe());}});
  function applyProjection(){
-  if(!ready||(!projection&&!windowHeatProjection&&!tatProbeProjection)||document.documentElement.classList.contains('cockpit-visual-test'))return;
+  if(!ready)return;
   const base=window.B737OverheadLights.getState();
-  if(base.lampTest)return;
+  const frames={...base.frames};
+  if(base.lampTest||document.documentElement.classList.contains('cockpit-visual-test')||
+    (!projection&&!windowHeatProjection&&!tatProbeProjection))return frames;
   // ISN provides the general panel projections; WINDOW HEAT is the owner
   // of its eight real OH15 lamps and is layered AFTER ISN every time.
   const merged={...(projection||{}),...(windowHeatProjection||{}),...(tatProbeProjection||{})};
   const batteryMasterOn=String(window.B737OverheadToggles?.getState()?.['battery-master']||'').toUpperCase()==='ON';
-  for(const node of document.querySelectorAll('.mounted-light')){
-   // OH14 is owned solely by its three-position switch, never ISN AC/lamp projections.
-   if(node.dataset.light==='emergency-not-armed')continue;
-   if(!Object.prototype.hasOwnProperty.call(merged,node.dataset.light))continue;
-   const v=merged[node.dataset.light],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,node.dataset.light),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,node.dataset.light);
-   const fuelValve=(node.dataset.light==='fuel-valve-closed-1'||node.dataset.light==='fuel-valve-closed-2')&&typeof v==='string';
-   node.dataset.isnProjection=fuelValve?v:v===null?'UNKNOWN':v?'ON':'OFF';
+  // Resolve the same authoritative frames used by the renderer even before
+  // their DOM nodes mount. The Six-Pack must not consume the legacy base model
+  // while the physical lamps are painted from the ISN/WH/TAT projections.
+  for(const [id,v] of Object.entries(merged)){
+   if(id==='emergency-not-armed')continue;
+   const isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,id),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,id);
+   const fuelValve=(id==='fuel-valve-closed-1'||id==='fuel-valve-closed-2')&&typeof v==='string';
    // WH projection already includes authoritative electrical/CB gating;
    // the legacy overhead preview's separate battery flag must not mask it.
    // LAN ATA 28-40: FUEL VALVE CLOSED annunciator supply requires BATTERY switch ON (relay R41).
    const frame=fuelValve?(liveElectricalPower===false||base.power===false||!batteryMasterOn?'OFF':
-    base.context?.faults?.[node.dataset.light]===true?'BRIGHT_BLUE':v):
-    liveElectricalPower===false?'OFF':isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[node.dataset.light]||'OFF'):v?'ON':'OFF';
+    base.context?.faults?.[id]===true?'BRIGHT_BLUE':v):
+    liveElectricalPower===false?'OFF':isWH||isTAT?(v?'ON':'OFF'):base.power===false?'OFF':v===null?(base.frames[id]||'OFF'):v?'ON':'OFF';
+   frames[id]=frame;
+  }
+  for(const node of document.querySelectorAll('.mounted-light')){
+   const id=node.dataset.light;
+   if(id==='emergency-not-armed'||!Object.prototype.hasOwnProperty.call(merged,id))continue;
+   const v=merged[id],isWH=windowHeatProjection&&Object.prototype.hasOwnProperty.call(windowHeatProjection,id),isTAT=tatProbeProjection&&Object.prototype.hasOwnProperty.call(tatProbeProjection,id);
+   const fuelValve=(id==='fuel-valve-closed-1'||id==='fuel-valve-closed-2')&&typeof v==='string';
+   node.dataset.isnProjection=fuelValve?v:v===null?'UNKNOWN':v?'ON':'OFF';
+   const frame=frames[id];
    for(const face of node.querySelectorAll('.light-face'))face.classList.toggle('active',face.dataset.frame===frame);
    node.dataset.frame=frame;node.dataset.state=frame;
    node.setAttribute('aria-label',node.dataset.light+(v===null?' — UNKNOWN '+frame:isWH?' — WINDOW HEAT '+frame:isTAT?' — TAT PROBE '+frame:' — ISN '+frame));
    node.title=node.dataset.light+(isWH?' · WINDOW HEAT '+frame:isTAT?' · TAT PROBE '+frame:v===null?' · UNKNOWN':' · ISN '+frame);
   }
+  return frames;
  }
 
  function visualTest(active){document.documentElement.classList.toggle('cockpit-visual-test',active);let count=0;for(const node of document.querySelectorAll('.mounted-light')){const faces=[...node.querySelectorAll('.light-face')],bright=faces.find(n=>n.dataset.frame==='BRIGHT_BLUE')||faces.find(n=>n.dataset.frame==='ON');for(const img of faces)img.dataset.visualOn=String(active&&img===bright);if(active&&bright){node.dataset.visualFrame=bright.dataset.frame;count++;}else delete node.dataset.visualFrame;}if(!active)applyProjection();
@@ -133,7 +145,9 @@
  function report(){if(!ready||pending)return;pending=true;requestAnimationFrame(()=>{
   pending=false;
   const s=window.B737OverheadLights.getState();
-  send({kind:'state',lights:s.lights,frames:s.frames,context:s.context,lampTest:s.lampTest,power:s.power});
+  const cautionFrames=applyProjection();
+  const cautionTest=document.documentElement.classList.contains('cockpit-visual-test');
+  send({kind:'state',lights:s.lights,frames:s.frames,cautionFrames,cautionTest,context:s.context,lampTest:s.lampTest,power:s.power});
   // Frequent electrical/lamp refreshes must not rebroadcast unchanged switches.
   const controls={toggles:window.B737OverheadToggles.getState(),...window.B737RotaryGuards.getState()};
   const serialized=JSON.stringify(controls);
@@ -141,7 +155,6 @@
    lastControlsPayload=serialized;
    send({kind:'controls-state',...controls,context:s.context});
   }
-  applyProjection();
  });}
  function start(){if(ready||!window.B737OverheadLights||!window.B737RotaryGuards||!window.B737OverheadToggles)return;ready=true;send({kind:'ready',version:'LGT-0003',lampDefinitions:window.B737OverheadLights.getRegistry().lights.map(c=>({id:c.id,rule:c.rule,states:c.states||['OFF','ON']})),switches:58,rotaries:20,guards:11});report();}
  const observer=new MutationObserver(()=>{start();if(ready)observer.disconnect();});observer.observe(document.getElementById('atlasAbsolute'),{childList:true,subtree:true});start();
@@ -179,6 +192,7 @@
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==parent||e.data?.type!=='b737:cockpit-command')return;const d=e.data;if(!ready)return;
   // Child may hydrate before parent connects; force an unchanged state reply.
   if(d.action==='crew-sync-request'){lastControlsPayload='';report();return;}
+  if(d.action==='caution-state-request'){report();return;}
   if(d.action==='live-electrical-supply'&&typeof d.power==='boolean'){
    if(liveElectricalPower!==d.power){liveElectricalPower=d.power;window.B737OverheadLights.setAircraftElectricalPower?.(d.power);}
    applyProjection();report();return;
@@ -207,7 +221,7 @@
    // signal, relight it after LGT/ISN. No new lamp faces or source art.
    if(typeof d.lamps['probe-temp']==='boolean'){
     tatProbeProjection={'probe-temp':d.lamps['probe-temp']};
-    applyProjection();
+    applyProjection();report();
    }
    return;
   }
@@ -219,7 +233,7 @@
    const next={};for(const [id,value] of Object.entries(d.lamps)){
     if(allowed.has(id)&&typeof value==='boolean')next[id]=value;
    }
-   if(Object.keys(next).length===8){windowHeatProjection=next;applyProjection();}
+   if(Object.keys(next).length===8){windowHeatProjection=next;applyProjection();report();}
    return;
   }
   if(d.action==='isn-projection'&&d.lamps&&typeof d.lamps==='object'){

@@ -32,15 +32,17 @@
  const empty=()=>Object.fromEntries(Object.keys(groups).map(k=>[k,[]]));
  const validOn=v=>v==='ON'||v==='FLASH';
  function overhead(packet){
-  if(!packet||typeof packet!=='object'||!packet.frames||packet.lampTest===true)return null;
+  if(!packet||typeof packet!=='object'||packet.lampTest===true||packet.cautionTest===true)return null;
+  const frames=packet.cautionFrames??packet.frames;
+  if(!frames||typeof frames!=='object')return null;
   const result=empty();
   if(packet.power!==true)return result;
-  for(const [name,ids]of Object.entries(groups))result[name]=ids.filter(id=>validOn(packet.frames[id])).map(id=>'OH:'+id);
+  for(const [name,ids]of Object.entries(groups))result[name]=ids.filter(id=>validOn(frames[id])).map(id=>'OH:'+id);
   // FCOM 12.10.3: one main tank LOW PRESSURE is recall-only,
   // both FWD and AFT LOW PRESSURE on the same tank prompt master caution.
   // Center-tank caution depends on aircraft modifications: keep separate.
   for(const pair of [['fuel-1-fwd','fuel-1-aft'],['fuel-2-fwd','fuel-2-aft']]){
-   const affected=pair.filter(id=>validOn(packet.frames[id]));
+   const affected=pair.filter(id=>validOn(frames[id]));
    if(affected.length===1){
     const id='OH:'+affected[0],idx=result['CAPT.FUEL'].indexOf(id);
     if(idx>=0)result['CAPT.FUEL'][idx]={id,mode:'RECALL_ONLY'};
@@ -284,7 +286,7 @@
    const d=e.data;
    if(d?.type!=='b737:cockpit-overhead')return;
    if(d.kind==='state'){
-   if(d.lampTest!==true&&d.frames&&typeof d.power==='boolean')overheadPowered=d.power;
+   if(d.lampTest!==true&&d.cautionTest!==true&&(d.cautionFrames||d.frames)&&typeof d.power==='boolean')overheadPowered=d.power;
    update('overhead',overhead(d));
   }
    if(d.kind==='pressurization-live-output')update('pressurization',pressurization(d));
@@ -340,7 +342,12 @@
    win.addEventListener(event,publishPhysical);
   }
   const frame=win.document.getElementById('overheadFrame');
-  frame?.addEventListener?.('load',publishPhysical);
+  function requestCautionState(){
+   const current=win.document.getElementById('overheadFrame');
+   if(current?.contentWindow&&win.location?.origin)
+    current.contentWindow.postMessage?.({type:'b737:cockpit-command',action:'caution-state-request'},win.location.origin);
+  }
+  frame?.addEventListener?.('load',()=>{publishPhysical();requestCautionState();});
   win.addEventListener('b737:irs-trainer-state',e=>update('irs',irs(e.detail)));
   win.addEventListener('b737:window-heat-annunciations',()=>update('windowHeat',windowHeat(win.B737WindowHeatUnifiedV1?.getOutput?.())));
   win.addEventListener('b737:tat-probe-output',e=>update('tatProbe',tatProbe(e.detail)));
@@ -388,6 +395,7 @@
   if(win.document.readyState!=='loading')mountRedundancyControls();
   else win.document.addEventListener?.('DOMContentLoaded',mountRedundancyControls);
   win.B737SixPackLiveV1.refresh();
+  requestCautionState();
   publishPhysical();
   return win.B737SixPackLiveV1;
  }
