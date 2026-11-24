@@ -253,6 +253,8 @@ try{
    for(const id of ['engine1','engine2'])for(const [param,override] of Object.entries(sensorOverrides[id])){
     observed[id][param]=copy(override);
    }
+   for(const id of ['engine1','engine2'])if(live.engines?.[id]?.flightFailure==='SEPARATION')
+    for(const param of P)observed[id][param]={valid:false,reason:'ENGINE_SEPARATION',origin:'INSTRUCTOR_FLIGHT_FAILURE'};
    const now=numeric(live.timeMs)?live.timeMs:0;
    const dt=lastTime===null?0:Math.max(0,Math.min(60000,Math.round(now-lastTime)));
    // EIS FUEL USED is a momentary ten-second display. Conventional uses its
