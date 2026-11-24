@@ -94,17 +94,56 @@ function apply(state){
  attempt('SPEEDBRAKE_DOWN',()=>{const a=win.B737SpeedbrakeLever;if(!a?.mounted())return false;if(a.get()!==0)a.set('DOWN');return a.get()===0;});
  attempt('THROTTLES_IDLE',()=>{const a=win.B737ThrottlePositions;if(!a?.mounted())return false;for(const n of [1,2])if(a.get(n)!==0)a.set(n,0);return [1,2].every(n=>a.get(n)===0);});
  attempt('GEAR_DOWN',()=>{const a=win.B737LandingGearUnifiedV1;if(!a)return false;let s=a.getState();if(s.lever!=='DN')a.select('DN');s=a.getState();return s.lever==='DN'&&['nose','left','right'].every(k=>s.gear[k]==='DOWN');});
- attempt('FLAPS',()=>{const a=win.B737FlapVisualTest,target=takeoff?5:0;if(!a)return false;if(a.position!==target&&a.ready())a.request(target);const actual=child?.B737LEDevicesTrainer?.flapActuator?.()?.actual;return a.position===target&&Number.isFinite(actual)&&Math.abs(actual-target)<.4;},true);
+ attempt('FLAPS',()=>{
+  const target=takeoff?5:0,a=win.B737FlapVisualTest,owner=child?.B737LEDevicesTrainer;
+  if(!a?.presetDetent||!owner?.flapActuator||!owner?.advance)throw Error('Flap lever or LE/TE owner unavailable');
+  if(takeoff&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
+  if(!takeoff&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
+  let actuator=owner.flapActuator(),le=owner.snapshot?.();
+  // Initial aircraft configuration, not a pilot move through the 1/15 gates.
+  if(a.position!==target&&!a.presetDetent(target))throw Error('Physical lever preset not accepted');
+  if(actuator.command!==target||le?.lever!==target||le?.leStage==null){
+   once('FLAP_OWNER_COMMAND',()=>{
+    win.B737LEDevicesUnifiedLink?.syncLever(target);
+    child.postMessage({type:'b737:cockpit-command',action:'le-devices',originator:'physical-flap-lever',command:{type:'FLAP_LEVER',value:target}},win.location.origin);
+   },500);
+   throw Error('Waiting for flap '+target+' command acknowledgement; actual '+actuator.actual);
+  }
+  const settled=()=>Math.abs(actuator.actual-target)<.01&&!actuator.moving&&le?.leStage===(takeoff?'EXT':'RETRACTED')&&Array.isArray(le?.mismatch)&&le.mismatch.length===0&&le.center?.power===true&&le.center.transit===false&&le.center.extended===takeoff;
+  if(!settled()){
+   if(!(actuator.pressureFactor>0))throw Error('Hydraulic B unavailable: '+actuator.pressurePsi+' psi');
+   // Replay the existing timed actuator/LE laws only during initialization.
+   // No direct writes to position, hydraulic pressure or electrical power.
+   once('FLAP_OWNER_ADVANCE',()=>{
+    for(let n=0;n<60;n++){
+     const prior=actuator.actual,priorLE=JSON.stringify(le?.position);
+     owner.advance(1);actuator=owner.flapActuator();le=owner.snapshot?.();
+     if(settled())break;
+     if(prior===actuator.actual&&priorLE===JSON.stringify(le?.position)&&n>=7)break;
+    }
+   },1000);
+  }
+  if(a.position!==target||actuator.command!==target||!settled())throw Error('Flap readback: lever '+a.position+' TE '+actuator.actual+' target '+actuator.command+' LE '+le?.leStage+' HYD '+actuator.pressurePsi+' psi; disagreement '+(le?.mismatch||[]).join(','));
+  // Like FINAL_10, reconcile indication from verified owner readback only.
+  win.B737FlapNeedles?.setCommon?.(actuator.actual);
+  win.B737CockpitLights?.setInputs?.({trailingFlaps:target,leadingEdge:takeoff?'INTERMEDIATE':'RETRACTED',leCenterPowered:le.center.power,leDirectValid:true,leDirectTransit:le.center.transit,leDirectExtended:le.center.extended});
+  return true;
+ },!takeoff);
  attempt('AUTOBRAKE_RTO',()=>{const a=win.B737AutobrakeUnified;if(!a)return false;if(a.getState().selector!=='RTO')a.setSelector('RTO');return a.getState().selector==='RTO';},true);
- attempt('MCP',()=>{const a=win.B737McpAFDSBridgeV1;if(!a)return false;a.refreshElectrical();let o=a.getOutput();if(!o.power)return false;
-  if(!sent.has('MCP_RESET')){a.reset();sent.set('MCP_RESET',Date.now());a.refreshElectrical();}
+ attempt('MCP',()=>{
+  const a=win.B737McpAFDSBridgeV1;
+  if(!a?.applyGroundPreset)throw Error('MCP owner API not available');
+  if(takeoff&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
+  if(!takeoff&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
+  a.refreshElectrical();let o=a.getOutput();
+  if(o.power!==true)throw Error('MCP power '+o.power+' / '+JSON.stringify(o.feedStatus));
+  if(!sent.has('MCP_RESET')){a.reset();sent.set('MCP_RESET',Date.now());}
   const mag=win.B737WMM2025V1?.evaluate?.({lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt});
-  if(!mag?.valid)return false;const h=(Math.round(state.runwayHeadingTrueDeg-mag.declinationDeg)%360+360)%360;
-  const targets={speed:160,heading:h,courseL:h,courseR:h,altitude:10000};
-  if(takeoff)for(const [control,value] of Object.entries(targets))if(a.getOutput().values[control]!==value)win.dispatchEvent(new win.CustomEvent('b737:mcp-value-change',{detail:{control,value,method:'preset'}}));
-  for(const id of ['FD_LEFT','FD_RIGHT','AT_ARM'])win.dispatchEvent(new win.CustomEvent('b737:mcp-hardware-change',{detail:{id,value:id==='AT_ARM'?(takeoff?'ARM':'OFF'):'ON',method:'preset'}}));
-  o=a.getOutput();return o.power===true&&o.controls?.fd?.left===true&&o.controls?.fd?.right===true&&o.controls?.atArm===takeoff&&(!takeoff||Object.entries(targets).every(([k,v])=>o.values[k]===v));
- },true);
+  if(!mag?.valid)throw Error('WMM runway magnetic heading unavailable');
+  const r=a.applyGroundPreset({speedKt:160,headingMag:state.runwayHeadingTrueDeg-mag.declinationDeg,altitudeFt:10000,atArm:takeoff});
+  if(!r?.accepted)throw Error((r?.step||'MCP')+': '+(r?.reason||'not acknowledged'));
+  return true;
+ },!takeoff);
  const coreReady=Object.values(check).every(Boolean),missing=Object.keys(check).filter(k=>!check[k]),pending=Object.keys(optional).filter(k=>!optional[k]);
  const done=coreReady&&pending.length===0,expired=Date.now()-started>=30000;
  status={state:state.preset,complete:done,coreReady,settled:done||expired,timedOut:expired&&!done,missing,pending,checks:{...check,...optional},reasons:{...reasons},observed:{phase:{...phases()},source:{...elec()?.source},battery:elec()?.config?.batterySwitch}};

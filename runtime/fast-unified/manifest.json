@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "642ac63d7c8834d0f9c7190ce8cc7f55e458d1ec99b02c3d913b61ed9ff09700"
+      "sha256": "7b65a918f30a53cec42ecaa8970d38efe5215a4a115c1a267aa3de89c2f6762e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -28,7 +28,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1bcaefe30722e6d5.js",
-      "sha256": "1bcaefe30722e6d5d65921496b75ac819213f6d1551fae133784037bf2d13681"
+      "sha256": "e4d4b6f28fb3f00de18597b46c05e82be15b9bc56c77d691bea19946e106b703"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-68d4f5acf351d53f.js",
@@ -64,7 +64,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-f1289c3f47af2175.js",
-      "sha256": "f1289c3f47af2175396bc4a0aa14e6bbe1e9e29593c36448efb701f0409bcf22"
+      "sha256": "1ec7d3fd863c2ed115d17bcaebf06970e417796ff2d79a5e354c2e31ab53f359"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-c1b91f69a0cfc771.js",
@@ -1788,7 +1788,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/powered-general-presets-v1.js",
-      "sha256": "39c52f4d3c5a1e896f9d783a422ebfc4815e3d326c899dded6eb3d09105c9031"
+      "sha256": "9ef120780a1ab1a4dd5811f2fe832af394160660350f73f4bb8b511faa41d5d3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
