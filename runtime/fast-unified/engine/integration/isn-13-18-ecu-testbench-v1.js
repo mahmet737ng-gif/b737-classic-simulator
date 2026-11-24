@@ -33,7 +33,7 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  // 12s fast phase reaches 50°C from 800°C in ~33.3s; from 620°C in ~30.2s.
  // Below 50°C the long slow tail approaches the indicated zero mark.
  apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1800000,
- engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
+ engineN1WindDownMs:10400,engineN2WindDownMs:14400,engineEGTWindDownMs:24000,
  maxStepMs:250});
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
 const round=(x,d=2)=>Number(x.toFixed(d));
@@ -198,7 +198,7 @@ function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
   s.n2=smooth(s.n2,0,dtMs,CONFIG.engineN2WindDownMs);
   s.egt=smooth(s.egt,CONFIG.oilAmbientTempC,dtMs,CONFIG.engineEGTWindDownMs);
  }
- for(const k of ['n1','n2','egt'])s[k]=round(s[k]);
+ for(const k of ['n1','n2'])if(Math.abs(s[k])<.001)s[k]=0;
  return s;
 }
 class Testbench{

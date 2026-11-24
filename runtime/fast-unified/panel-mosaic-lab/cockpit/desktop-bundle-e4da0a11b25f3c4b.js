@@ -1077,6 +1077,17 @@ try{
    propulsion.engines.length===2&&propulsion.engines.every(e=>
     typeof e?.running==='boolean'&&Number.isFinite(e.n1Percent)&&
     e.n1Percent>=0&&e.n1Percent<=120);
+  const singleEngine=observed?propulsion.engines.filter(e=>e.running).length===1:state.singleEngine===true;
+  s.singleEngine=singleEngine;
+  const maxClimbFpm=singleEngine?400:5000;
+  s.maxClimbFpm=maxClimbFpm;
+  if(singleEngine){
+   let h=state.oeiHeadingHold?{...state.oeiHeadingHold}:{referenceDeg:state.airborne?state.trueHeadingDeg:state.runwayHeadingTrueDeg,selectedDeg:target.headingDeg,mode:target.lateralMode,selectedBank:target.bankCommandDeg,turning:false};
+   if(Math.abs(angle(h.selectedDeg,target.headingDeg))>.1||h.mode!==target.lateralMode||(target.lateralMode==='BANK'&&Math.abs(h.selectedBank-target.bankCommandDeg)>.1))h={referenceDeg:target.lateralMode==='HEADING'?target.headingDeg:state.trueHeadingDeg,selectedDeg:target.headingDeg,mode:target.lateralMode,selectedBank:target.bankCommandDeg,turning:true};
+   if(h.turning&&target.lateralMode==='HEADING'&&Math.abs(angle(state.trueHeadingDeg,h.referenceDeg))<=2.5)h.turning=false;
+   s.oeiHeadingHold=h;
+  }else delete s.oeiHeadingHold;
+  const headingHold=singleEngine&&s.oeiHeadingHold&&!s.oeiHeadingHold.turning?s.oeiHeadingHold:null;
   if(groundRoll&&observed){
    // At idle N1 there is no takeoff acceleration. Real observed engine
    // spool drives a bounded training surrogate with rolling/drag losses.
@@ -1152,12 +1163,17 @@ try{
    if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
     if(s.takeoffAutoMode===true){s.target.verticalMode='PITCH';s.target.pitchDeg=15;}
-    s.target.vsFpm=1500;
+    s.target.vsFpm=Math.min(1500,maxClimbFpm);
    }
   }
   if(!s.airborne){
    s.bankDeg=0;s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;
   }else{
+   const plan=s.altitudeCapture;
+   if(singleEngine&&target.verticalMode==='ALT_ACQ'&&plan?.phase==='ACQUIRE'&&plan.targetAltitudeFt>s.altitudeFt&&AltCapture){
+    const rate=120*(plan.targetAltitudeFt-plan.entryAltitudeFt)/plan.durationSec*(1-plan.elapsedSec/plan.durationSec);
+    if(rate>400+1e-6){const gap=plan.targetAltitudeFt-s.altitudeFt;const revised=AltCapture.begin({altitudeFt:s.altitudeFt,targetAltitudeFt:plan.targetAltitudeFt,vsFpm:400});const durationSec=Math.max(revised.durationSec,120*gap/400);s.altitudeCapture={...revised,durationSec,decelerationFpmPerSec:120*gap/(durationSec*durationSec)};}
+   }
    const captureStep=target.verticalMode==='ALT_ACQ'&&
     s.altitudeCapture?.phase==='ACQUIRE'?
     AltCapture?.advance(s.altitudeCapture,dt):null;
@@ -1172,7 +1188,9 @@ try{
     wantVS=clamp(-Math.max(0,s.gsKt)*5.307+
      clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
-   const commanded={...target,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
+   wantVS=Math.min(wantVS,maxClimbFpm);
+   const lateralTarget=headingHold?{...target,lateralMode:'HEADING',headingDeg:headingHold.referenceDeg}:target;
+   const commanded={...lateralTarget,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
    const control=Laws?.stepAttitude(s,commanded,dt);
    if(control){
     // Pitch, vertical response, and bank are one physical control chain.
@@ -1188,8 +1206,8 @@ try{
    }else{
     // Fallback for isolated fixture environments without the new module.
     const limit=Number.isFinite(target.bankLimitDeg)?target.bankLimitDeg:25;
-    const error=angle(s.trueHeadingDeg,target.headingDeg);
-    const bank=target.lateralMode==='BANK'?target.bankCommandDeg:clamp(error*.65,-limit,limit);
+    const error=angle(s.trueHeadingDeg,lateralTarget.headingDeg);
+    const bank=lateralTarget.lateralMode==='BANK'?lateralTarget.bankCommandDeg:clamp(error*.65,-limit,limit);
     s.bankDeg+=clamp(bank-s.bankDeg,-3.2*dt,3.2*dt);
     const desiredPitch=target.verticalMode==='PITCH'?clamp(target.pitchDeg,-10,15):
      clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
@@ -1211,6 +1229,7 @@ try{
      commandedPitchDeg:Number.isFinite(pitchDemand)?pitchDemand:s.pitchDeg,
      desiredVsFpm:captureStep.vsFpm};
    }
+   if(singleEngine){s.vsFpm=Math.min(s.vsFpm,400);if(s.flightControl&&Number.isFinite(s.flightControl.desiredVsFpm))s.flightControl.desiredVsFpm=Math.min(s.flightControl.desiredVsFpm,400);}
    // Bounded training disturbance. Positive bank is toward the heavier right wing.
    // The shared controller continues to apply its corrective bank command.
    const imbalance=propulsion?.fuelImbalanceKg;
@@ -1256,6 +1275,7 @@ try{
    if(s.airborne||groundRoll)s.trueHeadingDeg=wrap(s.trueHeadingDeg+yawDegSec*dt);
    s.engineAsymmetry={yawDegSec,left:l,right:r,source:'TRAINING_OBSERVED_N1_ASYMMETRY'};
   }else delete s.engineAsymmetry;
+  if(headingHold&&(s.airborne||groundRoll))s.trueHeadingDeg=wrap(headingHold.referenceDeg+clamp(angle(headingHold.referenceDeg,s.trueHeadingDeg),-2.5,2.5));
   const windTo=wrap(s.windFromDeg+180),heading=s.trueHeadingDeg;
   const speedEast=Math.sin(heading*RAD)*s.tasKt+Math.sin(windTo*RAD)*s.windKt;
   const speedNorth=Math.cos(heading*RAD)*s.tasKt+Math.cos(windTo*RAD)*s.windKt;

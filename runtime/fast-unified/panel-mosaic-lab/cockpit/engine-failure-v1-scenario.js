@@ -10,25 +10,28 @@
  function create({inject,clear=()=>{},random=Math.random}={}){
   if(typeof inject!=='function')throw Error('Live engine owner is required');
   let run=null;
-  const getStatus=()=>run?{status:run.status,type:run.type,triggerKt:THRESHOLD,
+  const getStatus=()=>run?{status:run.status,type:run.type,scenario:run.scenario,triggerKt:run.scenario==='FINAL_10'?null:THRESHOLD,
    ...(run.status==='ARMED'?{}:{engine:run.engine,observedIasKt:run.observedIasKt??null,error:run.error??null})}:{status:'IDLE'};
-  function arm({type,state,ready}={}){
+  function arm({type,state,ready,scenario='V1'}={}){
    if(run)throw Error('Reset V1 before arming a new flight');
-   if(!TYPES.includes(type)||state?.preset!=='READY_FOR_TAKEOFF'||state.phase!=='GROUND_READY'||
-      state.airborne!==false||state.iasKt!==0||ready!==true)throw Error('READY FOR TAKEOFF ground state not confirmed');
+   const final=scenario==='FINAL_10';
+   if(!TYPES.includes(type)||ready!==true||!(final?state?.preset==='FINAL_10'&&state.airborne===true&&state.phase==='FINAL_APPROACH':scenario==='V1'&&state?.preset==='READY_FOR_TAKEOFF'&&state.phase==='GROUND_READY'&&state.airborne===false&&state.iasKt===0))throw Error(final?'10 NM FINAL state not confirmed':'READY FOR TAKEOFF ground state not confirmed');
    const r=random();if(!Number.isFinite(r)||r<0||r>=1)throw Error('Invalid engine randomization');
-   run={type,engine:r<.5?'engine1':'engine2',status:'ARMED'};
+   run={type,scenario,engine:r<.5?'engine1':'engine2',status:'ARMED'};
    return getStatus();
   }
   function observe(before,after){
-   if(run?.status!=='ARMED'||before?.preset!=='READY_FOR_TAKEOFF'||after?.preset!==before.preset||
+   if(run?.status!=='ARMED')return getStatus();
+   const final=run.scenario==='FINAL_10';
+   if(final){if(before?.preset!=='FINAL_10'||after?.preset!=='FINAL_10'||before.airborne!==true||after.airborne!==true||!(after.elapsedSec>before.elapsedSec))return getStatus();}
+   else if(before?.preset!=='READY_FOR_TAKEOFF'||after?.preset!==before.preset||
       before.phase!=='TAKEOFF_ROLL'||before.airborne!==false||
       !['TAKEOFF_ROLL','INITIAL_CLIMB'].includes(after.phase)||
       !Number.isFinite(before.iasKt)||!Number.isFinite(after.iasKt)||
       before.iasKt>=THRESHOLD||after.iasKt<THRESHOLD)return getStatus();
    run.status='TRIGGERING';run.observedIasKt=after.iasKt;
    try{
-    const result=inject({engine:run.engine,type:run.type,triggerKt:THRESHOLD,observedIasKt:after.iasKt});
+    const result=inject({engine:run.engine,type:run.type,scenario:run.scenario,triggerKt:final?null:THRESHOLD,observedIasKt:after.iasKt});
     if(result?.accepted!==true)throw Error('Live engine owner did not acknowledge failure');
     run.status='FIRED';
    }catch(error){run.status='ERROR';run.error=String(error?.message||error);}
@@ -60,7 +63,15 @@
      throw Error('READY FOR TAKEOFF NOT CONFIRMED'+(missing.length?' — '+missing.join(', '):''));
    return controller.arm({type,state,ready:true});
   }
-  return Object.freeze({...controller,arm});
+  function armFinal(type,state){
+   if(new URLSearchParams(win.location.search).has('crewRoom'))throw Error('Engine-out final shared-cockpit synchronization is not yet validated');
+   const owner=win.B737ISNCockpitV1,phase=owner?.getStartState?.()?.phase;
+   const final=win.B737Final10ApproachPresetV1?.getStatus?.();
+   const paused=win.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.paused===true;
+   if(!owner?.injectFlightEngineFailure||final?.complete!==true||!paused||phase?.engine1!=='RUNNING'||phase?.engine2!=='RUNNING')throw Error('10 NM FINAL cockpit readiness not confirmed');
+   return controller.arm({type,state,ready:true,scenario:'FINAL_10'});
+  }
+  return Object.freeze({...controller,arm,armFinal});
  }
  return Object.freeze({TYPES,THRESHOLD,create,install});
 });

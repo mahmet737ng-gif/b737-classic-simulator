@@ -1188,9 +1188,10 @@ try{
     }
     followMcp();
     if(dt>0){const before=state;state=Core.step(state,dt,propulsionObservation(now));
+     const wasArmed=win.B737EngineFailureV1Scenario?.getStatus?.()?.status==='ARMED';
      const v1=win.B737EngineFailureV1Scenario?.observe(before,state);
-     if(v1?.status==='FIRED'&&before.iasKt<140&&state.iasKt>=140){lastPropulsionAt=0;lastPropulsion=null;}
-     if(v1?.status==='ERROR')status('V1 FAILURE INJECTION ERROR · '+v1.error,true);
+     if(wasArmed&&v1?.status==='FIRED'){lastPropulsionAt=0;lastPropulsion=null;}
+     if(wasArmed&&v1?.status==='ERROR')status('ENGINE FAILURE INJECTION ERROR · '+v1.error,true);
     }
    }}catch(error){
     // An FCC/plant update error must not withdraw healthy IRS/ADC/RA

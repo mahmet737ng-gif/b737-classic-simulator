@@ -21,6 +21,7 @@
   let pendingEngineScenario = () => false;
   let selectedV1Type = () => null;
   let requestedV1Type = null;
+  let selectedFinalType=()=>null,requestedFinalType=null;
   let restoreWelcomeLocation = () => {};
   let startRequested = new URLSearchParams(win.location.search).has('crewRoom');
   let lastProgressAt = performance.now();
@@ -163,7 +164,7 @@
       '<h3 class="welcome-subheading">Engine Failure</h3>' +
       engineScenarios.map(([id, title, types]) =>
         '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="' + id +
-        '" aria-controls="welcomeFailure_' + id + '" aria-expanded="false"> <span>' + title + '</span><small>'+(id==='ENGINE_FAILURE_V1'?'AVAILABLE':'SETUP ONLY')+'</small></label>' +
+        '" aria-controls="welcomeFailure_' + id + '" aria-expanded="false"> <span>' + title + '</span><small>'+(['ENGINE_FAILURE_V1','ENGINE_FAILURE_FINAL'].includes(id)?'AVAILABLE':'SETUP ONLY')+'</small></label>' +
         '<fieldset class="welcome-failure-options" id="welcomeFailure_' + id + '" hidden disabled><legend>Failure Type</legend>' +
         types.map(([value, label]) => '<label class="welcome-choice"><input type="radio" name="welcomeFailure_' +
           id + '" value="' + value + '"> <span>' + label + '</span></label>').join('') + '</fieldset>'
@@ -175,7 +176,8 @@
     by('unifiedWelcomeSetup').append(scenarios);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
-    pendingEngineScenario = () => currentScenario()!=='NONE'&&!(currentScenario()==='ENGINE_FAILURE_V1'&&selectedV1Type()&&!new URLSearchParams(win.location.search).has('crewRoom'));
+    selectedFinalType=()=>currentScenario()==='ENGINE_FAILURE_FINAL'?by('welcomeFailure_ENGINE_FAILURE_FINAL')?.querySelector('input:checked')?.value||null:null;
+    pendingEngineScenario = () => currentScenario()!=='NONE'&&!((selectedV1Type()||selectedFinalType())&&!new URLSearchParams(win.location.search).has('crewRoom'));
     let enforceV1Ground=()=>{};
     const syncEngineScenario = () => {
       const selected = scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
@@ -191,6 +193,7 @@
       const subtype = pending ? by('welcomeFailure_' + selected)?.querySelector('input:checked') : null;
       by('welcomeScenarioNote').textContent = selected==='ENGINE_FAILURE_V1'
         ? (new URLSearchParams(win.location.search).has('crewRoom')?'V1 is single cockpit only.':selectedV1Type()?'Ready for Takeoff · random engine · 140 KT IAS.':'Select a failure type. Ready for Takeoff is required.')
+        : selected==='ENGINE_FAILURE_FINAL'?(new URLSearchParams(win.location.search).has('crewRoom')?'Engine-out final is single cockpit only.':selectedFinalType()?'10 NM FINAL · random engine · failure on START.':'Select a failure type. 10 NM FINAL is required.')
         : pending?(subtype?'Failure type selected. Scenario execution is not configured yet.':'Select a failure type. Scenario execution is not configured yet.'):'Normal Flight available.';
       enforceV1Ground();
       if (!startRequested) start.disabled = pending;
@@ -215,7 +218,9 @@
       try {
         const v1=currentScenario()==='ENGINE_FAILURE_V1';
         if(v1){locationSelect.value='RUNWAY_READY';for(const choice of groundChoices)choice.checked=choice.value==='READY_FOR_TAKEOFF';}
-        locationSelect.disabled=v1;
+        const final=currentScenario()==='ENGINE_FAILURE_FINAL';
+        if(final)locationSelect.value='FINAL_10';
+        locationSelect.disabled=v1||final;
         const ground = locationSelect.value === 'RUNWAY_READY';
         for(const choice of groundChoices){if(!ground)choice.checked=false;choice.disabled=v1||!ground||!locationButton||!generalButton;}
         const chosen=groundChoices.find(x=>x.checked);
@@ -226,7 +231,8 @@
         locationGrid.hidden = false;
         locationGrid.style.display = '';
         setManualVisibility();
-        if(v1)by('welcomeGeneralNote').textContent='Ready for Takeoff is required for Engine Failure at V1.';
+        if(final)by('welcomeGeneralNote').textContent='10 NM FINAL is required for Engine Failure on Final.';
+        else if(v1)by('welcomeGeneralNote').textContent='Ready for Takeoff is required for Engine Failure at V1.';
         else if (ground && !cold.disabled) by('welcomeGeneralNote').textContent = 'Optional: no selection retains the existing flight-location preset.';
         else if (!ground) by('welcomeGeneralNote').textContent = 'Ground presets require ON THRESHOLD.';
       } finally { syncing = false; }
@@ -339,8 +345,8 @@
         elapsedMs:now-scenarioStartedAt
       }) === true;
       if (!ready) return;
-      if(requestedV1Type){
-       try{if(!win.B737EngineFailureV1Scenario)throw Error('V1 scenario owner not loaded');win.B737EngineFailureV1Scenario.arm(requestedV1Type,state);}
+      if(requestedV1Type||requestedFinalType){
+       try{if(!win.B737EngineFailureV1Scenario)throw Error('Engine failure scenario owner not loaded');if(requestedFinalType)win.B737EngineFailureV1Scenario.armFinal(requestedFinalType,state);else win.B737EngineFailureV1Scenario.arm(requestedV1Type,state);}
        catch(e){error.textContent=String(e.message||e);error.hidden=false;scenarioStarted=false;startRequested=false;start.disabled=false;start.textContent='Start Flight';return;}
       }
     }
@@ -468,7 +474,7 @@
     const controls = [...flight.querySelectorAll('input, select')];
     if (controls.some(node => !node.closest('[hidden]') && !node.reportValidity())) return;
     error.hidden = true;
-    requestedV1Type=selectedV1Type();
+    requestedV1Type=selectedV1Type();requestedFinalType=selectedFinalType();
     startRequested = true;
     start.disabled = true;
     start.textContent = 'Preparing Cockpit…';

@@ -172,11 +172,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
-      "sha256": "354497514ae89f21ac92f42fe3da1885fa7fd9fe840fbaf7047c18cef2d19536"
+      "sha256": "e9508d2e73b9afa7d851066fcce37304861d360b07408391a53b1f6e1bd1ecd6"
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "e1ce894e22f4cd15356006c5554edc2e61b1331b591321a2d16b28ed58e4d4cf"
+      "sha256": "499fb24ee0a5ea4d393bb38a2afc96b22f8d78d5f7af7815e602ae7fc1d7f4b2"
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
@@ -296,7 +296,7 @@
     },
     {
       "path": "engine/integration/isn-13-18-ecu-testbench-v1.js",
-      "sha256": "358253dbbf2d64aa8260314331022fb80a28d68369ef1a8060e64823a5cbd621"
+      "sha256": "39c0966804ad2a79edaa50cb07e4b04b3293da9be93d966e2fa0af36280de907"
     },
     {
       "path": "engine/runtime/unified-live-gateway-v1.js",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "a38abfac74d050e80927e7003fa1bf2a1b59e803fa11fe25c42e1b08b55882e4"
+      "sha256": "ac7cdc5a804ba259ad1c9d801cd92bf06c17809c76a4fc59dd35b015386a0174"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
@@ -1792,7 +1792,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
-      "sha256": "0f46065c911cdb358065269a72ecdde1b6fbfe3c11770aba57be5caa911aee9a"
+      "sha256": "cb4a4e650242569582d5eadb46a132e66df0d33e9a231755de5a50d17f1a9ffb"
     }
   ]
 }
