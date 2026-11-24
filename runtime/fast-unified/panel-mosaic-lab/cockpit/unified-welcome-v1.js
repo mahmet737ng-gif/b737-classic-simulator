@@ -130,12 +130,13 @@
     const general = doc.createElement('div');
     general.id = 'welcomeGeneralState';
     general.innerHTML = '<h3 class="welcome-subheading">Aircraft General State</h3>' +
-      '<label class="welcome-choice"><input id="welcomeColdDark" type="checkbox"> <span>COLD &amp; DARK</span><small>AVAILABLE</small></label>' +
-      '<label class="welcome-choice"><input type="radio" disabled> <span>READY FOR START</span><small>COMING SOON</small></label>' +
-      '<label class="welcome-choice"><input type="radio" disabled> <span>READY FOR TAKEOFF</span><small>COMING SOON</small></label>' +
+      '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span><small>AVAILABLE</small></label>' +
+      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span><small>TEST</small></label>' +
+      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span><small>TEST</small></label>' +
       '<p class="welcome-note" id="welcomeGeneralNote">Optional: existing flight-location presets are retained when no general state is selected.</p>';
     aircraft.append(general);
     const cold = by('welcomeColdDark');
+    const groundChoices=[...general.querySelectorAll('input[name="welcomeGroundState"]')];
     cold.disabled = !locationButton || !generalButton;
     if (cold.disabled) by('welcomeGeneralNote').textContent = 'Cold & Dark owner selector unavailable.';
     const scenarios = doc.createElement('section');
@@ -207,18 +208,20 @@
       syncing = true;
       try {
         const ground = locationSelect.value === 'RUNWAY_READY';
-        if (!ground) cold.checked = false;
-        cold.disabled = !ground || !locationButton || !generalButton;
-        const target = cold.checked ? generalButton : locationButton;
+        for(const choice of groundChoices){if(!ground)choice.checked=false;choice.disabled=!ground||!locationButton||!generalButton;}
+        const chosen=groundChoices.find(x=>x.checked);
+        const native=chosen&&doc.querySelector('input[name="flightGeneralSetup"][value="'+chosen.value+'"]');
+        if(native)native.checked=true;
+        const target = native ? generalButton : locationButton;
         if (target && target.getAttribute('aria-pressed') !== 'true') target.click();
         locationGrid.hidden = false;
         locationGrid.style.display = '';
         setManualVisibility();
         if (ground && !cold.disabled) by('welcomeGeneralNote').textContent = 'Optional: no selection retains the existing flight-location preset.';
-        else if (!ground) by('welcomeGeneralNote').textContent = 'Cold & Dark requires ON THRESHOLD. No airborne power-off preset is applied.';
+        else if (!ground) by('welcomeGeneralNote').textContent = 'Ground presets require ON THRESHOLD.';
       } finally { syncing = false; }
     };
-    cold.addEventListener('change', syncGeneral);
+    for(const choice of groundChoices)choice.addEventListener('change',syncGeneral);
     locationSelect.addEventListener('change', syncGeneral);
     locationSelect.dispatchEvent(new Event('change', {bubbles:true}));
     syncGeneral();
@@ -231,7 +234,7 @@
       locationGrid.style.display = isGeneral ? 'none' : '';
     };
     aircraft.addEventListener('change', () => {
-      const changes = Object.fromEntries([...aircraft.querySelectorAll('input[name]:checked')]
+      const changes = Object.fromEntries([...aircraft.querySelectorAll('fieldset input[name]:checked')]
         .map(input => [input.name, input.value]));
       win.B737AircraftProfileStore.set(changes);
       lastProgressAt = performance.now();
@@ -307,7 +310,13 @@
       const scenario = win.B737UnifiedFlightScenarioV1;
       const state = scenario?.getState?.();
       const active = scenario?.getDiagnostics?.()?.active === true;
-      const ready = state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
+      const powered=win.B737PoweredGeneralPresetsV1;
+      const p=powered?.getStatus();
+      if(powered?.applies(state?.preset)&&p?.state===state.preset&&p.timedOut&&!p.coreReady){
+        error.textContent='Preset incomplete: '+p.missing.join(', ');
+        error.hidden=false;scenarioStarted=false;startRequested=false;start.disabled=false;start.textContent='Start Flight';return;
+      }
+      const ready = powered?.applies(state?.preset) ? active&&p?.state===state.preset&&p?.settled===true&&p?.coreReady===true : state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
         active, beforePaints:directorPaintBaseline || [],
         afterPaints:mainPaints(), final10:state?.preset === 'FINAL_10',
         final10Complete:win.B737Final10ApproachPresetV1?.getStatus?.()?.complete,
@@ -398,6 +407,10 @@
       if (preset === 'COLD_DARK') {
         const cd=win.B737ColdDarkGeneralPresetV1?.getStatus();
         if(!cd?.settled)labels.unshift('Configuring Cold & Dark: owner confirmations…');
+      }
+      if(win.B737PoweredGeneralPresetsV1?.applies(preset)){
+        const p=win.B737PoweredGeneralPresetsV1.getStatus();
+        if(!p?.settled)labels.unshift('Configuring '+preset.replaceAll('_',' ')+': '+[...(p?.missing||[]),...(p?.pending||[])].slice(0,2).join(', '));
       }
       if (preset === 'FINAL_10') {
         const status = win.B737Final10ApproachPresetV1?.getStatus?.();

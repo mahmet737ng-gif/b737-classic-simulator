@@ -882,7 +882,7 @@ try{
   OIFM:Object.freeze({icao:'OIFM',name:'Esfahan / Shahid Beheshti International',lat:32.75083333,lon:51.86277778,elevationFt:5058,defaultRunway:'25R',
    runways:Object.freeze({ '07L':77.93,'25R':257.96,'07R':77.93,'25L':257.96 })})
  });
- const PRESETS=Object.freeze(['RUNWAY_READY','COLD_DARK','FINAL_5','FINAL_10','MANUAL']);
+ const PRESETS=Object.freeze(['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_5','FINAL_10','MANUAL']);
  function move(lat,lon,heading,distNm){
   const d=distNm/EARTH_NM,br=heading*RAD,la=lat*RAD,lo=lon*RAD;
   const lat2=Math.asin(Math.sin(la)*Math.cos(d)+Math.cos(la)*Math.sin(d)*Math.cos(br));
@@ -927,7 +927,7 @@ try{
    tchFt=Number.isFinite(anchor.tchFt)?anchor.tchFt:50;
   const finalNm=kind==='FINAL_5'?5:kind==='FINAL_10'?10:0;
   const isFinal=finalNm>0, manual=kind==='MANUAL';
-  const ground=kind==='COLD_DARK'||kind==='RUNWAY_READY'||(manual&&config.airborne===false);
+  const ground=['COLD_DARK','RUNWAY_READY','READY_FOR_START','READY_FOR_TAKEOFF'].includes(kind)||(manual&&config.airborne===false);
   const latitude=manual&&config.lat!==undefined?finite(config.lat,-90,90,'LAT'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lat:anchor.lat;
   const longitude=manual&&config.lon!==undefined?finite(config.lon,-180,180,'LON'):isFinal?move(anchor.lat,anchor.lon,wrap(hdg+180),finalNm).lon:anchor.lon;
   // FINAL_10 training starts one GS dot BELOW the received ILS beam.
@@ -962,7 +962,7 @@ try{
    glideslopeBelowDots:gsBelowDots,flapLever:0,flapActual:0,slatsFull:false,autoSlatTrainingFraction:0,
    massKg:config.massKg===undefined?null:finite(config.massKg,30000,75000,'MASS_KG'),
    // Instructor automation is independent of the aircraft's physical A/P.
-   takeoffAutoMode:kind==='RUNWAY_READY',
+   takeoffAutoMode:['RUNWAY_READY','READY_FOR_TAKEOFF'].includes(kind),
    rotationSpeedKt:145,rotationRateDegSec:2.5,rotationTargetDeg:10,
    rotationStarted:false,
    autoSlatRequest:false,aeroEnvelope:null,altitudeCapture:null,
@@ -1023,7 +1023,7 @@ try{
      slatExtension:next.autoSlatTrainingFraction,
      bankDeg:next.bankDeg,airborne:next.airborne,
      autoSlatPreviouslyRequested:state.autoSlatRequest,
-     takeoffTrainingProfile:next.preset==='RUNWAY_READY'
+     takeoffTrainingProfile:['RUNWAY_READY','READY_FOR_TAKEOFF'].includes(next.preset)
     });
     break;
    case 'MANUAL_HOLD':
@@ -1059,7 +1059,7 @@ try{
    slatsFull:s.slatsFull,slatExtension:s.autoSlatTrainingFraction,
    bankDeg:s.bankDeg,airborne:s.airborne,
    autoSlatPreviouslyRequested:state.autoSlatRequest,
-   takeoffTrainingProfile:s.preset==='RUNWAY_READY'})??null;
+   takeoffTrainingProfile:['RUNWAY_READY','READY_FOR_TAKEOFF'].includes(s.preset)})??null;
   if(s.phase==='GROUND_READY'){
    s.altitudeCapture=null;
    s.airborne=false;s.iasKt=0;s.tasKt=0;s.gsKt=0;s.vsFpm=0;s.pitchDeg=0;s.bankDeg=0;
