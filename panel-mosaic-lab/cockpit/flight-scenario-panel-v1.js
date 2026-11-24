@@ -17,7 +17,7 @@
   <div class="flight-grid">
    <label>Airport<select id="flightAirport"><option value="OIMM">MASHHAD · OIMM</option><option value="OIII">TEHRAN MEHRABAD · OIII</option><option value="OISS">SHIRAZ · OISS</option><option value="OIFM">ESFAHAN · OIFM</option></select></label>
    <label>Runway<select id="flightRunway"></select></label>
-   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
+   <label>Start location<select id="flightPreset"><option value="RUNWAY_READY">READY FOR TAKEOFF</option><option value="COLD_DARK">COLD &amp; DARK</option><option value="FINAL_5">5 NM FINAL</option><option value="FINAL_10">10 NM FINAL</option><option value="MANUAL">MANUAL INITIAL STATE</option></select></label>
   </div>
   <div class="flight-heading">INITIAL STATE / MANUAL TARGET</div>
   <div class="flight-grid flight-numbers">
@@ -85,7 +85,7 @@
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
    const mag=magneticHeading(a.runways[rw.value],airportPoint(a));
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
-   by('flightAlt').value=a.elevationFt+(by('flightPreset').value==='RUNWAY_READY'?0:3000);
+   by('flightAlt').value=a.elevationFt+(['RUNWAY_READY','COLD_DARK'].includes(by('flightPreset').value)?0:3000);
   }
   publishSelectedReference();
  }
@@ -215,7 +215,7 @@
   if(config.airport==='OIFM'&&OIFM_AIP_THRESHOLDS[config.runway])
    return {OIFM:{[config.runway]:{...OIFM_AIP_THRESHOLDS[config.runway],
     quality:'AIP_SURVEYED_RWY_THR',source:'IRAN_AIP_OIFM_AD2_12'}}};
-  if(!['FINAL_5','FINAL_10','RUNWAY_READY'].includes(config.preset))return {};
+  if(!['FINAL_5','FINAL_10','RUNWAY_READY','COLD_DARK'].includes(config.preset))return {};
   const station=win.B737IranRadioNavaidsV1?.STATIONS?.find(s=>
    s.type==='ILS_DME'&&s.airport===config.airport&&s.runway===config.runway);
   if(!station)return {};
@@ -239,7 +239,7 @@
   try{
    const preset=by('flightPreset').value;
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
-    airborne:preset!=='RUNWAY_READY'};
+    airborne:!['RUNWAY_READY','COLD_DARK'].includes(preset)};
    if(preset==='MANUAL'){
     config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
     config.speedKt=v('Speed');
@@ -249,6 +249,7 @@
    }
    const next=Core.newScenario(config,approachThresholds(config));
    if(typeof beforeStart==='function')beforeStart();
+   win.B737ColdDarkGeneralPresetV1?.stop();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
@@ -261,6 +262,7 @@
    }
    publish();lastPublish=performance.now();updateUI();
    if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+   if(preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
    crewEvent('loadFlight',config);
    status((pause?'PAUSED / CONFIGURING':'ACTIVE')+' · '+state.icao+' RWY '+
     state.runway+' · '+state.phase+' · '+state.georefQuality);
@@ -478,12 +480,13 @@
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,startFromSelection:load,
-  loadScenario:config=>{state=Core.newScenario(config,approachThresholds(config));
+  loadScenario:config=>{win.B737ColdDarkGeneralPresetV1?.stop();state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
+   if(state.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
    return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
@@ -498,6 +501,7 @@
    // A follower can receive a flight sample before loadFlight after
    // a late join/reconnect. Restore real FINAL_10 cockpit owners, including
    // immediate FLAPS 30 and LE FULL, not only the flight display numbers.
+   if(initial&&sample.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
    if(initial&&sample.preset==='FINAL_10')
     win.B737Final10ApproachPresetV1?.apply?.(state);
   },
