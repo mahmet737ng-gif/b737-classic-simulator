@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "44aaaaa3b488e07b314c2aa0bf36f1908aa79f92d3849b66e254aada5b6a170a"
+      "sha256": "357943cbc15cacc66a969bfa53be7171243a75c9cc464dc9aa44d841fd023e2d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -140,11 +140,11 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-75446c3ce3970339.js",
-      "sha256": "75446c3ce3970339f7cf0045c75a543db9c8b95add6ad399bfd03874969315dd"
+      "sha256": "e45fec564b8ccb0f5de228edd4b77c26e96589831c4b4f697bffe7ed2e86b393"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-ade8c2cc4c5b8b45.js",
-      "sha256": "ade8c2cc4c5b8b45006ced491562b2967c8f862ff7447ba49b782f00e99b5401"
+      "sha256": "1a37f3fcf8cb7a0023443ccadcb8f52191ccbc057c1dd69fabfbd08ee892af96"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
@@ -172,11 +172,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
-      "sha256": "7628c66b159cdff8a0582dc181086b28153da03553942c25276d51c020568011"
+      "sha256": "354497514ae89f21ac92f42fe3da1885fa7fd9fe840fbaf7047c18cef2d19536"
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "ae92003a32f493bc83ea70e0ff5910c858c601930088ff958a1d5d627e144299"
+      "sha256": "e1ce894e22f4cd15356006c5554edc2e61b1331b591321a2d16b28ed58e4d4cf"
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
@@ -264,7 +264,7 @@
     },
     {
       "path": "engine/integration/isn-apu-start-chain-v1.js",
-      "sha256": "cf06f6274d1488448cfdfa2b774dc5d739eea305f2e7a418b8fd3542333ee4e4"
+      "sha256": "67458323d23129fcfa0bca4056410146a9f92530de82d279f36b9b426dc3fb05"
     },
     {
       "path": "engine/integration/isn-start-indications-v1.js",
@@ -296,7 +296,7 @@
     },
     {
       "path": "engine/integration/isn-13-18-ecu-testbench-v1.js",
-      "sha256": "9a9c1825cd6c0b02b855da9543d3e6999da8af3c7e03bbf28732f38c26b12eb1"
+      "sha256": "358253dbbf2d64aa8260314331022fb80a28d68369ef1a8060e64823a5cbd621"
     },
     {
       "path": "engine/runtime/unified-live-gateway-v1.js",
@@ -512,7 +512,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "2b75daf024835c80bbd66d5540b5d062b8a1904f1f9f9a8fab9825019e1bec03"
+      "sha256": "c4642008d74b549abe1cd1ea2789fcd9ae36f9b857338fc9a6fe8c6c47df789d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "831a6dd74578beeeb9eabe7cde3edec6de385f2a68adbdc3e30d13ea739b43e9"
+      "sha256": "15f280fbe52c825874fa91c23f39682adb8d0a15c2b294034452cd64c384f55d"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
@@ -1788,7 +1788,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/powered-general-presets-v1.js",
-      "sha256": "d82a0fc20fd5524cabd9dd0906af80732f3dbbcdd69e54ea848af714e7683d94"
+      "sha256": "4cca1ece021ed717285db32902f8e1da35fe6310e9e93eec2a14f5f9deca13c9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
+      "sha256": "0f46065c911cdb358065269a72ecdde1b6fbfe3c11770aba57be5caa911aee9a"
     }
   ]
 }
