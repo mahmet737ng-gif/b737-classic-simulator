@@ -21,7 +21,7 @@
   (typeof module==='object'&&typeof require==='function'?
    require('./altitude-capture-training-v1.js'):null);
  // User-defined training ceiling, not an AFM performance guarantee.
- const OEI_MAX_CLIMB_FPM=400;
+ const OEI_MAX_CLIMB_FPM=400,OEI_HEADING_TOLERANCE_DEG=2.5;
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -237,6 +237,26 @@
   s.singleEngine=singleEngine;
   const maxClimbFpm=singleEngine?OEI_MAX_CLIMB_FPM:5000;
   s.maxClimbFpm=maxClimbFpm;
+  // Instructor engine-out heading stabilization. Retain the heading at
+  // failure (runway heading on ground), not track or a stale MCP selection.
+  if(singleEngine){
+   const prior=state.oeiHeadingHold;
+   const selected=target.headingDeg;
+   const selectedBank=target.bankCommandDeg;
+   const mode=target.lateralMode;
+   let hold=prior?{...prior}:{referenceDeg:state.airborne?state.trueHeadingDeg:state.runwayHeadingTrueDeg,
+    selectedDeg:selected,selectedBank,mode,turning:false};
+   if(prior&&(Math.abs(angle(prior.selectedDeg,selected))>.1||mode!==prior.mode||
+     (mode==='BANK'&&Math.abs(selectedBank-prior.selectedBank)>.1))){
+    // A deliberate new lateral command remains available, rather than
+    // snapping to the newly selected heading or locking out manual turns.
+    hold={...hold,referenceDeg:mode==='HEADING'?selected:state.trueHeadingDeg,
+     selectedDeg:selected,selectedBank,mode,turning:true};
+   }
+   if(hold.turning&&mode==='HEADING'&&Math.abs(angle(state.trueHeadingDeg,hold.referenceDeg))<=OEI_HEADING_TOLERANCE_DEG)
+    hold.turning=false;
+   s.oeiHeadingHold=hold;
+  }else delete s.oeiHeadingHold;
   if(groundRoll&&observed){
    // At idle N1 there is no takeoff acceleration. Real observed engine
    // spool drives a bounded training surrogate with rolling/drag losses.
@@ -348,7 +368,9 @@
      clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
    wantVS=Math.min(wantVS,maxClimbFpm);
-   const commanded={...target,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
+   const headingHold=singleEngine&&s.oeiHeadingHold&&!s.oeiHeadingHold.turning?s.oeiHeadingHold:null;
+   const lateralTarget=headingHold?{...target,lateralMode:'HEADING',headingDeg:headingHold.referenceDeg}:target;
+   const commanded={...lateralTarget,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
    const control=Laws?.stepAttitude(s,commanded,dt);
    if(control){
     // Pitch, vertical response, and bank are one physical control chain.
@@ -364,8 +386,8 @@
    }else{
     // Fallback for isolated fixture environments without the new module.
     const limit=Number.isFinite(target.bankLimitDeg)?target.bankLimitDeg:25;
-    const error=angle(s.trueHeadingDeg,target.headingDeg);
-    const bank=target.lateralMode==='BANK'?target.bankCommandDeg:clamp(error*.65,-limit,limit);
+    const error=angle(s.trueHeadingDeg,lateralTarget.headingDeg);
+    const bank=lateralTarget.lateralMode==='BANK'?lateralTarget.bankCommandDeg:clamp(error*.65,-limit,limit);
     s.bankDeg+=clamp(bank-s.bankDeg,-3.2*dt,3.2*dt);
     const desiredPitch=target.verticalMode==='PITCH'?clamp(target.pitchDeg,-10,15):
      clamp(2+Math.atan2(wantVS/60*.3048,Math.max(s.tasKt*KT_TO_MPS,35))/RAD,-10,15);
@@ -405,7 +427,12 @@
    // Gravity coordinated-turn relation, using the RATE-LIMITED bank angle.
    const velocity=Math.max(s.tasKt*KT_TO_MPS,50);
    const turnDegPerSec=(9.80665*Math.tan(s.bankDeg*RAD)/velocity)/RAD;
-   s.trueHeadingDeg=wrap(s.trueHeadingDeg+turnDegPerSec*dt);
+   // Small instructor-only asymmetric-thrust yaw; stabilized heading is
+   // bounded symmetrically and wrap-safe (including north crossing).
+   const yawBias=headingHold&&observed?(propulsion.engines[0].running?.35:-.35):0;
+   const nextHeading=wrap(s.trueHeadingDeg+(turnDegPerSec+yawBias)*dt);
+   s.trueHeadingDeg=headingHold?wrap(headingHold.referenceDeg+clamp(
+    angle(headingHold.referenceDeg,nextHeading),-OEI_HEADING_TOLERANCE_DEG,OEI_HEADING_TOLERANCE_DEG)):nextHeading;
    const oldAlt=s.altitudeFt;
    s.altitudeFt=Math.max(s.elevationFt,captureStep?
     captureStep.altitudeFt:s.altitudeFt+s.vsFpm/60*dt);
@@ -443,5 +470,5 @@
   return s;
  }
  return Object.freeze({VERSION:'FLIGHT-SCENARIO-CORE-0001',
-  OEI_MAX_CLIMB_FPM,AIRPORTS,PRESETS,newScenario,command,step,move,distanceNm,bearing,runwayAnchor,wrap,angle});
+  OEI_MAX_CLIMB_FPM,OEI_HEADING_TOLERANCE_DEG,AIRPORTS,PRESETS,newScenario,command,step,move,distanceNm,bearing,runwayAnchor,wrap,angle});
 });
