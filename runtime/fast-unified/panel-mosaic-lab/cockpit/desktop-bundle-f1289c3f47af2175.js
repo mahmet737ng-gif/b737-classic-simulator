@@ -198,9 +198,10 @@ try{
    return true;
  }
  // Scenario initialization only; normal pilot movement retains gate detents.
- function presetFinal10(){if(!mounted||!config||!overlay||!sprite)return false;
+ function presetDetent(target){if(!mounted||!config||!overlay||!sprite||!VALUES.includes(target))return false;
   if(queuedTimer!==null){clearTimeout(queuedTimer);queuedTimer=null;}
-  busy=false;position=30;paint();return true;}
+  busy=false;position=target;paint();return true;}
+ function presetFinal10(){return presetDetent(30);}
  function moveBySwipe(direction){
    if(!model||busy)return false;
    return request(model.swipe(position,direction));
@@ -336,7 +337,7 @@ try{
        get position(){return position;},
        ready:()=>!busy,
        request,select:request,
-       presetFinal10,
+       presetFinal10,presetDetent,
        swipe:moveBySwipe,
        reset(){if(busy)return false;position=0;paint();return true;},
        positions:Object.freeze(VALUES.slice()),
