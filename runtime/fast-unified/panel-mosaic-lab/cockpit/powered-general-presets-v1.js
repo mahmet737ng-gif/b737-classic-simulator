@@ -102,23 +102,31 @@ function apply(state){
   let actuator=owner.flapActuator(),le=owner.snapshot?.();
   // Initial aircraft configuration, not a pilot move through the 1/15 gates.
   if(a.position!==target&&!a.presetDetent(target))throw Error('Physical lever preset not accepted');
-  if(actuator.command!==target||le?.lever!==target){
+  if(actuator.command!==target||le?.lever!==target||le?.leStage==null){
    once('FLAP_OWNER_COMMAND',()=>{
     win.B737LEDevicesUnifiedLink?.syncLever(target);
     child.postMessage({type:'b737:cockpit-command',action:'le-devices',originator:'physical-flap-lever',command:{type:'FLAP_LEVER',value:target}},win.location.origin);
    },500);
    throw Error('Waiting for flap '+target+' command acknowledgement; actual '+actuator.actual);
   }
-  if(Math.abs(actuator.actual-target)>.01||actuator.moving||le?.leStage!==(takeoff?'EXT':'RETRACTED')){
+  const settled=()=>Math.abs(actuator.actual-target)<.01&&!actuator.moving&&le?.leStage===(takeoff?'EXT':'RETRACTED')&&Array.isArray(le?.mismatch)&&le.mismatch.length===0&&le.center?.power===true&&le.center.transit===false&&le.center.extended===takeoff;
+  if(!settled()){
    if(!(actuator.pressureFactor>0))throw Error('Hydraulic B unavailable: '+actuator.pressurePsi+' psi');
    // Replay the existing timed actuator/LE laws only during initialization.
    // No direct writes to position, hydraulic pressure or electrical power.
-   for(let n=0;n<60;n++){
-    owner.advance(1);actuator=owner.flapActuator();le=owner.snapshot?.();
-    if(Math.abs(actuator.actual-target)<.01&&!actuator.moving&&le?.leStage===(takeoff?'EXT':'RETRACTED'))break;
-   }
+   once('FLAP_OWNER_ADVANCE',()=>{
+    for(let n=0;n<60;n++){
+     const prior=actuator.actual,priorLE=JSON.stringify(le?.position);
+     owner.advance(1);actuator=owner.flapActuator();le=owner.snapshot?.();
+     if(settled())break;
+     if(prior===actuator.actual&&priorLE===JSON.stringify(le?.position)&&n>=7)break;
+    }
+   },1000);
   }
-  if(a.position!==target||actuator.command!==target||Math.abs(actuator.actual-target)>.01||actuator.moving||le?.leStage!==(takeoff?'EXT':'RETRACTED'))throw Error('Flap readback: lever '+a.position+' TE '+actuator.actual+' target '+actuator.command+' LE '+le?.leStage+' HYD '+actuator.pressurePsi+' psi');
+  if(a.position!==target||actuator.command!==target||!settled())throw Error('Flap readback: lever '+a.position+' TE '+actuator.actual+' target '+actuator.command+' LE '+le?.leStage+' HYD '+actuator.pressurePsi+' psi; disagreement '+(le?.mismatch||[]).join(','));
+  // Like FINAL_10, reconcile indication from verified owner readback only.
+  win.B737FlapNeedles?.setCommon?.(actuator.actual);
+  win.B737CockpitLights?.setInputs?.({trailingFlaps:target,leadingEdge:takeoff?'INTERMEDIATE':'RETRACTED',leCenterPowered:le.center.power,leDirectValid:true,leDirectTransit:le.center.transit,leDirectExtended:le.center.extended});
   return true;
  },!takeoff);
  attempt('AUTOBRAKE_RTO',()=>{const a=win.B737AutobrakeUnified;if(!a)return false;if(a.getState().selector!=='RTO')a.setSelector('RTO');return a.getState().selector==='RTO';},true);
