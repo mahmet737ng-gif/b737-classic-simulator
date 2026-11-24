@@ -33,7 +33,9 @@ const CONFIG=Object.freeze({oilPressureLampOnPsi:11.75,oilPressureLampOffPsi:13,
  // 12s fast phase reaches 50°C from 800°C in ~33.3s; from 620°C in ~30.2s.
  // Below 50°C the long slow tail approaches the indicated zero mark.
  apuEGTChangeoverC:50,apuCoolFastTauMs:12000,apuCoolTailTauMs:1800000,
- engineN1WindDownMs:5200,engineN2WindDownMs:7200,engineEGTWindDownMs:12000,
+ // Slower engine-out trainer instrument decay (time constants, not AFM data).
+ engineN1WindDownMs:10400,engineN2WindDownMs:14400,engineEGTWindDownMs:24000,
+ engineFuelIndicationWindDownMs:1800,
  maxStepMs:250});
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
 const round=(x,d=2)=>Number(x.toFixed(d));
@@ -184,21 +186,25 @@ function apuLowOilPressureLamp(phase,pressurePsi){
  return ['INLET_DOOR','STARTING','READY'].includes(phase)&&
   pressurePsi<CONFIG.apuOilLampOutPsi;
 }
-function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,lastRunning:false};}
-function coastStep(prev,{runningN1=null,n2=null,egtC=null,phase='OFF'}={},dtMs){
+function initialCoast(){return {n1:0,n2:0,egt:CONFIG.oilAmbientTempC,ff:0,lastRunning:false};}
+function coastStep(prev,{runningN1=null,n2=null,egtC=null,fuelFlowKgHr=null,phase='OFF'}={},dtMs){
  const s={...prev};
  if(phase==='RUNNING'&&finite(runningN1)&&finite(n2)){
   s.n1=runningN1;s.n2=n2;s.egt=finite(egtC)?egtC:s.egt;s.lastRunning=true;
+  s.ff=finite(fuelFlowKgHr)?fuelFlowKgHr:(s.ff??0);
  }else if(phase==='MOTORING'||phase==='AWAIT_FUEL_LEVER_IDLE'||phase==='LIGHT_OFF_SEQUENCE'||phase==='ABNORMAL_EGT'||phase==='NO_LIGHT_OFF'||phase==='HUNG_START'){
   s.n2=finite(n2)?n2:s.n2;
   s.n1=clip(s.n2*0.17,0,12);
   if(finite(egtC))s.egt=egtC;
+  if(finite(fuelFlowKgHr))s.ff=fuelFlowKgHr;
  }else{
   s.n1=smooth(s.n1,0,dtMs,CONFIG.engineN1WindDownMs);
   s.n2=smooth(s.n2,0,dtMs,CONFIG.engineN2WindDownMs);
   s.egt=smooth(s.egt,CONFIG.oilAmbientTempC,dtMs,CONFIG.engineEGTWindDownMs);
+  s.ff=smooth(s.ff??0,0,dtMs,CONFIG.engineFuelIndicationWindDownMs);
  }
- for(const k of ['n1','n2','egt'])s[k]=round(s[k]);
+ // Keep full precision internally to prevent rounded-down coast from sticking.
+ for(const k of ['n1','n2','ff'])if(Math.abs(s[k]??0)<.001)s[k]=0;
  return s;
 }
 class Testbench{
@@ -339,7 +345,7 @@ class Testbench{
    throw Error('Engine preset requires fuel and an available fuel path');
   this.chain.instructorRunEngine(engine,{instructor:true});
   const values=this.chain.operating[engine].values;
-  this.coast[engine]={n1:values.n1Percent,n2:values.n2Percent,egt:values.egtC};
+  this.coast[engine]={n1:values.n1Percent,n2:values.n2Percent,egt:values.egtC,ff:values.fuelFlowKgHr??0,lastRunning:true};
   this.oil[engine]=oilStep(this.oil[engine],{n2Percent:values.n2Percent,engineRunning:true,ambientC:this.aircraft.oatC},10000);
   this.core.refreshFuelDelivery();
   this.log('INSTRUCTOR_RUNNING_PRESET',{engine});
@@ -411,7 +417,8 @@ class Testbench{
     const running=phase==='RUNNING';
     this.coast[id]=coastStep(this.coast[id],{
      runningN1:env?.n1Percent??null,n2:finite(n2)?n2:null,
-     egtC:snap.observations[id].feedback.egtC.value,phase},dt);
+     egtC:snap.observations[id].feedback.egtC.value,
+     fuelFlowKgHr:snap.observations[id].feedback.fuelFlowKgHr?.value,phase},dt);
     this.oil[id]=oilStep(this.oil[id],{n2Percent:this.coast[id].n2,
      throttle:snap.runningEnvelope.throttle[id],engineRunning:running,ambientC:this.aircraft.oatC},dt);
    }
@@ -453,8 +460,9 @@ class Testbench{
    const fuelReady=this.core.fuelPath(id,{fuelStartLever:'IDLE'});
    const n2Observed=snap.observations[id].feedback.n2Percent.value;
    const startCue=fuelReady.reason; // State only; no pilot-facing instructions.
-   engines[id]={phase,n1Percent:needle.n1,n2Percent:needle.n2,
-    egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
+   engines[id]={phase,n1Percent:round(needle.n1),n2Percent:round(needle.n2),
+    egtC:round(needle.egt), fuelFlowKgHr:!running&&needle.lastRunning&&finite(needle.ff)?round(needle.ff):e.fuelFlowKgHr,
+    actualFuelFlowKgHr:e.fuelFlowKgHr,
     oil:{pressurePsi:round(oil.pressurePsi),temperatureC:round(oil.temperatureC),quantityPct:round(oil.quantityPct,5),
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
      hydraulic:{system:id==='engine1'?'A':'B',engineDrivenPressurePsi:hydraulicPressure(needle.n2),origin:ORIGIN},
