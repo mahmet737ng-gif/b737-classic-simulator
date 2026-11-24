@@ -1,2 +1,0 @@
-Unified connector write/read test — 2026-11-25
-Temporary diagnostic file; no application changes.
