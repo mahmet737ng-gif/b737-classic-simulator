@@ -412,6 +412,7 @@ class Testbench{
     this.coast[id]=coastStep(this.coast[id],{
      runningN1:env?.n1Percent??null,n2:finite(n2)?n2:null,
      egtC:snap.observations[id].feedback.egtC.value,phase},dt);
+    if(this.chain.flightDamage?.[id]?.type==='SEPARATION')this.coast[id]={...this.coast[id],n1:0,n2:0,egt:this.aircraft.oatC};
     this.oil[id]=oilStep(this.oil[id],{n2Percent:this.coast[id].n2,
      throttle:snap.runningEnvelope.throttle[id],engineRunning:running,ambientC:this.aircraft.oatC},dt);
    }
@@ -453,7 +454,7 @@ class Testbench{
    const fuelReady=this.core.fuelPath(id,{fuelStartLever:'IDLE'});
    const n2Observed=snap.observations[id].feedback.n2Percent.value;
    const startCue=fuelReady.reason; // State only; no pilot-facing instructions.
-   engines[id]={phase,n1Percent:needle.n1,n2Percent:needle.n2,
+   engines[id]={phase,flightFailure:this.chain.flightDamage?.[id]?.type??null,n1Percent:needle.n1,n2Percent:needle.n2,
     egtC:needle.egt, fuelFlowKgHr:e.fuelFlowKgHr,
     oil:{pressurePsi:round(oil.pressurePsi),temperatureC:round(oil.temperatureC),quantityPct:round(oil.quantityPct,5),
      lowPressureLamp:oil.lowPressureLamp,filterBypassLamp:oil.filterBypassLamp,origin:ORIGIN},
