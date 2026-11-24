@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "35625b340646b3730bec901041c7fca85efefc3846bb15713019444c07d571f1"
+      "sha256": "e665279342f8e54135ea1a7662111fc5a8fff5b2f05e59bcc082cc39bce0c351"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -1781,6 +1781,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
       "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/cold-dark-general-preset-v1.js",
+      "sha256": "cec23799fe9ad2359ca0dc98a2a6f9876ed51fc5af5b9dc82f264b21edada97c"
     }
   ]
 }
