@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e665279342f8e54135ea1a7662111fc5a8fff5b2f05e59bcc082cc39bce0c351"
+      "sha256": "511ca348772e8659a734c81c7b417a1c6a111d70dff77618da4b8c4f4f492d20"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -156,7 +156,7 @@
     },
     {
       "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
-      "sha256": "087e5841318998ab427a80c7068d8874974e8679fd6858b74758ededd4f4cb42"
+      "sha256": "54dd5f35957e2c87cdc6b88128569dbc66fb617631e531be9d0524e7fc446fd9"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-5db4117e839416ef.js",
@@ -188,7 +188,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
-      "sha256": "3c2a43159f0a9d87a9580f2f85bfb9234ba4946113231f1da965d9152d33c72d"
+      "sha256": "155d5e937c5b8b632527f8caf9eb653b6557f9b8eb492559803dfeec1c90bb4e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-80caabdb05a512d8.js",
@@ -272,7 +272,7 @@
     },
     {
       "path": "engine/integration/isn-fuel-shutoff-indicator-v1.js",
-      "sha256": "6a47e304007483e297e9c194691c5904c8bc99c4778a6db0bdb95a98fd8130fa"
+      "sha256": "77b342710973f4785f48823ccb4f011061bb964db5d8936646d03e9d3a6cf0b9"
     },
     {
       "path": "engine/integration/isn-unified-control-router-v1.js",
@@ -512,7 +512,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "b5dca585b6603ce700ff399d887cec62cb796c19116b6d9e1e0d7d8c8a335b0e"
+      "sha256": "2b75daf024835c80bbd66d5540b5d062b8a1904f1f9f9a8fab9825019e1bec03"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
@@ -648,7 +648,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.js",
-      "sha256": "68bd2d3949f481081360f995b5edc70048d3065fe3fb3895a48cc99fa3ea63a3"
+      "sha256": "77b5e90999f1830af6cf5be1a5e13a3d25ffeb72f839d845f55b17b17164a362"
     },
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
@@ -1784,7 +1784,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cold-dark-general-preset-v1.js",
-      "sha256": "cec23799fe9ad2359ca0dc98a2a6f9876ed51fc5af5b9dc82f264b21edada97c"
+      "sha256": "32db27a555175195d1ea5c5fe942e4e5bf33c090c57f8fc938cd2fff46e12c6d"
     }
   ]
 }

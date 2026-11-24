@@ -351,16 +351,21 @@
    });
   }
   // FCOM 12.10.1 / LAN ATA 28: valve-position indications, NOT engine-running lights.
+  const batteryFeeds=pack.electrical.bus;
   const valveState=fuelValveIndication.observe({
+   actuationPowered:{engine1:batteryFeeds.hotBattery===true,engine2:batteryFeeds.hotBattery===true},
+   indicationPowered:batteryFeeds.switchedHotBattery===true,
    levers:{engine1:s.observations.engine1.feedback.fuelStartLever.value,
     engine2:s.observations.engine2.feedback.fuelStartLever.value},
    fireHandles:ecu.core.fireSwitch,nowMs:performance.now()});
   for(const n of [1,2])if(ecu.core.fireSwitch['engine'+n])lamps['hyd-eng-'+n]=false;
-  for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
+
    // Fuel indications derive from the existing ISN09 ledger + same live Pack.
    const actualFuel=live.fuel?.system;
    if(actualFuel){Object.assign(lamps,actualFuel.lamps);
     lamps['crossfeed-valve']=actualFuel.valves.crossfeed.lamp;}
+  // Fuel network projection must not overwrite the switched-hot-battery lamp gate.
+  for(const n of [1,2])lamps['fuel-valve-closed-'+n]=valveState.frames['engine'+n];
   // Settle even when the passive ECU is sleeping with both engines stopped.
   if(valveState.transitionStarted)setTimeout(()=>postProjection(),valveState.travelMs+20);
   // ECU owns availability; V7 evaluated source (not selected detent)

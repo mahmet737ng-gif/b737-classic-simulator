@@ -169,6 +169,18 @@
   const adc=window.B737UnifiedAvionicsNetworkV1?.getSnapshot?.()?.['airdata.adc'+side];
   const motion=window.B737UnifiedFlightDisplayMotionV1?.sample?.();
   const own=window.B737UnifiedFlightScenarioV1?.getState?.()||{};
+  const supply=window.B737UnifiedBusConsumerLiveV1;
+  const feed=supply?.getBus?.('electronic'+side,'115VAC')?.powered;
+  let power=feed;
+  if(typeof power!=='boolean'){
+   const input=window.B737ISNCockpitV1?.getElectricalState?.();
+   const evaluated=input&&window.B737ElectricalV7?.evaluate?.(input);
+   power=evaluated&&window.B737ClassicBusConsumersV1?.defineBuses?.(evaluated,{electricalState:input})?.['electronic'+side+'@115VAC']?.powered;
+  }
+  const powered=power===true&&supply?.getDevice?.(side===1?'VSI Captain':'VSI FO')?.state!=='OFF';
+  // The existing analog IVSI underneath owns its mechanical OFF flag.
+  d.node.style.display=powered?'':'none';
+  if(!powered)return;
   const valid=adc?.quality==='VALID'&&!controls.failures?.['adc'+side];
   const vs=adc?.value?.verticalSpeedFpm??motion?.vsFpm??own.vsFpm??0;
   if(!paintFace(g,state,controls,own,vs,valid,pref.full))return;
@@ -271,6 +283,6 @@
  window.addEventListener('b737:tcas-state',e=>{state=e.detail;controls=api.getControls();queue();});
  for(const name of ['b737:ivsi-equipment','b737:cockpit-mounted','b737:engine-indication-view','b737:aircraft-profile-change'])
   window.addEventListener(name,()=>requestAnimationFrame(()=>requestAnimationFrame(mount)));
- window.addEventListener('b737:flight-presentation-frame',queue);
+ for(const event of ['b737:flight-presentation-frame','b737:bus-consumer-snapshot','b737:electrical-distribution-changed','b737:cb-state-change'])window.addEventListener(event,queue);
  mount();
 })();

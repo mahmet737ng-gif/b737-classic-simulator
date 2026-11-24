@@ -86,6 +86,7 @@
     const e=eng?.getElectricalState?.(),v=e&&win.B737ElectricalV7?.evaluate(e);
     if(!v?.bus)return false;
     const keys=['generator1','generator2','transfer1','transfer2','main1','main2','dc1','dc2','battery','switchedHotBattery','acStandby','dcStandby','groundService'];
+    checks.HOT_BAT_BUS=v.bus.hotBattery===true;
     return keys.every(k=>v.bus[k]===false);
    });
    const complete=Object.values(checks).every(Boolean);
@@ -94,7 +95,7 @@
   };
   win.dispatchEvent(new win.CustomEvent('b737:aircraft-general-state',{detail:{state:STATE}}));
   pass();
-  if(run===serial){timer=win.setInterval(pass,250);win.setTimeout(()=>{if(run===serial){stop();result={...result,settled:true};}},8000);}
+  if(run===serial){timer=win.setInterval(pass,250);win.setTimeout(()=>{if(run===serial){stop();result={...result,settled:true,timedOut:true};}},8000);}
   return result;
  }
  function stop(){serial++;if(timer!==null){win.clearInterval(timer);timer=null;}}

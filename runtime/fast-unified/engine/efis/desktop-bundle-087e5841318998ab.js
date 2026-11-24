@@ -318,7 +318,9 @@ try{
   const faults={1:false,2:false};
   const notify=()=>win.dispatchEvent(new CustomEvent('b737:efis-source-change'));
   function trainingSupply(bus,voltage){
-   return preset==='FULL_ALIGN'&&win.B737UnifiedBusFailureInjectionV1?.live?.isUnavailable(bus,voltage)!==true;
+   const flight=win.B737UnifiedFlightScenarioV1;
+   const cold=flight?.getDiagnostics?.()?.active===true&&flight?.getState?.()?.preset==='COLD_DARK';
+   return !cold&&preset==='FULL_ALIGN'&&win.B737UnifiedBusFailureInjectionV1?.live?.isUnavailable(bus,voltage)!==true;
   }
   function applySelection(snapshot){
    const supply=win.B737UnifiedBusConsumerLiveV1;
@@ -429,7 +431,7 @@ try{
   if(!src)return false;
   const panel=root.B737UnifiedEFISPedestalV1;
   const cp=panel?.getState?.(seat); // DH/dimmer always belong to the receiving pilot
-  const powered=root.B737UnifiedEfisSources.getPreset()!=='COLD_DARK'&&(station.powered??(src.displayPowered&&src.video));
+  const powered=root.B737UnifiedEfisSources.getPreset()!=='COLD_DARK'&&src.displayPowered===true&&src.video===true&&station.powered!==false;
   const injected=station.source==='SIMULATOR_INJECTION';
   const numeric=v=>Number.isFinite(v)?v:null;
   const radAlt=numeric(src.ra?.heightFt),front=typeof src.ils?.frontCourse==='boolean'?src.ils.frontCourse:src.frontCourse;
