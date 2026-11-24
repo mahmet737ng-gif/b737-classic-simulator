@@ -74,7 +74,7 @@
     return ['L','R'].every(side=>irs.getState().units[side].mode==='OFF'&&!irs.getState().units[side].positionValid)&&src.getPreset()==='LIVE';
    });
    attempt('AUTOBRAKE',()=>{const a=win.B737AutobrakeUnified;if(!a)return false;if(a.getState().selector!=='OFF')a.setSelector('OFF');return a.getState().selector==='OFF';});
-   attempt('SPEEDBRAKE',()=>{const a=win.B737SpeedbrakeLever;if(!a?.mounted())return false;a.set('UP');return a.get()===a.stops.find(x=>x.key==='UP')?.t;});
+   attempt('SPEEDBRAKE',()=>{const a=win.B737SpeedbrakeLever;if(!a?.mounted())return false;a.set('DOWN');return a.get()===a.stops.find(x=>x.key==='DOWN')?.t;});
    attempt('FLAP_LEVER',()=>{const a=win.B737FlapVisualTest;if(!a)return false;if(a.position!==0)a.reset();return a.position===0;});
    attempt('FLAP_INDICATOR',()=>{const a=win.B737FlapNeedles;if(!a)return false;a.setCommon(0);const s=a.getState();return s.left===0&&s.right===0;});
    attempt('GEAR',()=>{const a=win.B737LandingGearUnifiedV1;if(!a)return false;let s=a.getState();if(s.lever!=='DN')a.select('DN');s=a.getState();return s.lever==='DN'&&['nose','left','right'].every(x=>s.gear[x]==='DOWN');});
