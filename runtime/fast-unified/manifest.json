@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "511ca348772e8659a734c81c7b417a1c6a111d70dff77618da4b8c4f4f492d20"
+      "sha256": "44aaaaa3b488e07b314c2aa0bf36f1908aa79f92d3849b66e254aada5b6a170a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -172,11 +172,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
-      "sha256": "e4da0a11b25f3c4b29666b3e11593139e4ee678c38a2f684168c57c0cc086cd4"
+      "sha256": "7628c66b159cdff8a0582dc181086b28153da03553942c25276d51c020568011"
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "041e2850eaa0172a021a03f0d976eae1b109b2668ab891a965aa1c72ddc8578f"
+      "sha256": "ae92003a32f493bc83ea70e0ff5910c858c601930088ff958a1d5d627e144299"
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "998ecf73e5fffabb5dc44ad32173f7a9ca717bddf5f3ffa12c768297e57052de"
+      "sha256": "831a6dd74578beeeb9eabe7cde3edec6de385f2a68adbdc3e30d13ea739b43e9"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
@@ -1785,6 +1785,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/cold-dark-general-preset-v1.js",
       "sha256": "32db27a555175195d1ea5c5fe942e4e5bf33c090c57f8fc938cd2fff46e12c6d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/powered-general-presets-v1.js",
+      "sha256": "f5084c42e18aa7650cdc3e356463ee296005bb2c34e9f2f0d4046117ffc6c787"
     }
   ]
 }
