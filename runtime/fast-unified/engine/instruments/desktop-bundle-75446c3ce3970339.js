@@ -59,7 +59,7 @@ try{
   if(pow===null)return {...res,status:"POWER_UNKNOWN"};
   if(channelFault||reading.valid===false){
    const elapsed=(old.status==="SENSOR_FAILURE_TRANSIENT"?old.invalidElapsedMs:0)+dtMs;
-   if(mode==="EIS"&&db.instruments[param].section==="primary"&&elapsed<db.eis.primaryFailureHoldMs)
+   if(reading.reason!=="ENGINE_SEPARATION"&&mode==="EIS"&&db.instruments[param].section==="primary"&&elapsed<db.eis.primaryFailureHoldMs)
     return {...res,status:"SENSOR_FAILURE_TRANSIENT",pointer:"LOW_STOP",digital:"LOW_STOP",value:0,invalidElapsedMs:elapsed};
    return {...res,status:"SENSOR_FAILED",pointer:mode==="EIS"?"HIDDEN":"OFF_SCALE",
     digital:mode==="EIS"?"DASHES":"BLANK",invalidElapsedMs:elapsed};
