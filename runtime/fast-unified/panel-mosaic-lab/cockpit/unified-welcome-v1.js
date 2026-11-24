@@ -14,13 +14,11 @@
   const aircraft = by('unifiedWelcomeAircraft');
   const flight = by('unifiedWelcomeFlight');
   const manual = by('unifiedWelcomeManual');
-  const initialLoad = by('unifiedWelcomeLoad');
-  const fuel = by('unifiedWelcomeFuel');
-  const mass = by('unifiedWelcomeMass');
   const cockpit = [...doc.querySelectorAll('body > header, body > main')];
   const moved = [];
   const decoded = new WeakMap();
   let setup = false;
+  let pendingEngineScenario = () => false;
   let restoreWelcomeLocation = () => {};
   let startRequested = new URLSearchParams(win.location.search).has('crewRoom');
   let lastProgressAt = performance.now();
@@ -101,7 +99,7 @@
       if (o.value === 'FINAL_10') o.textContent = '10 NM FINAL';
       if (o.value === 'MANUAL') o.textContent = 'MANUAL';
     }
-    flight.querySelector('h2').textContent = 'Flight Phase';
+    flight.querySelector('h2').textContent = 'Location and Weather';
     const stripRunwayHeadings = () => {
       for (const o of by('flightRunway').options) o.textContent = 'RWY ' + o.value;
     };
@@ -119,6 +117,10 @@
       #unifiedWelcome .welcome-choice:has(input:disabled){opacity:.56}
       #unifiedWelcome .welcome-choice small{margin-left:auto;color:#a7b8c0;font-size:10px;text-align:right}
       #unifiedWelcome .welcome-note{font-size:12px;color:#a8c2cd;margin:8px 0 0}
+      #unifiedWelcome .welcome-failure-options{margin:0 0 12px 18px;padding:4px 10px 8px;border:1px solid #365564;border-radius:7px;min-width:0}
+      #unifiedWelcome .welcome-failure-options[hidden]{display:none!important}
+      #unifiedWelcome .welcome-failure-options legend{font-size:12px;color:#a8c2cd;padding:0 5px}
+      #unifiedWelcome .welcome-failure-options .welcome-choice{padding:6px 8px;margin:5px 0;font-size:12px}
       #unifiedWelcome .welcome-weather{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       #unifiedWelcome input:disabled,#unifiedWelcome select:disabled{opacity:.6}
       @media(max-width:900px){#unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -139,18 +141,56 @@
     const scenarios = doc.createElement('section');
     scenarios.className = 'welcome-section';
     scenarios.id = 'unifiedWelcomeScenarios';
+    const engineFailureTypes = [
+      ['FLAME_OUT', 'FLAME OUT'], ['FIRE', 'FIRE'],
+      ['SEVERE_DAMAGE', 'SEVERE DAMAGE'], ['SEPARATION', 'SEPARATION']
+    ];
+    const abnormalStartTypes = [
+      ['HOT_START', 'HOT START'], ['HUNG_START', 'HUNG START'],
+      ['WET_START', 'WET START'], ['OIL_PRESSURE', 'OIL PRESSURE']
+    ];
+    const engineScenarios = [
+      ['ENGINE_FAILURE_V1', 'ENGINE FAILURE AT V1', engineFailureTypes],
+      ['ENGINE_FAILURE_FINAL', 'ENGINE FAILURE ON FINAL', engineFailureTypes],
+      ['ENGINE_FAILURE_CRUISE', 'ENGINE FAILURE IN CRUISE', engineFailureTypes],
+      ['ABNORMAL_ENGINE_START', 'ABNORMAL ENGINE START', abnormalStartTypes]
+    ];
     scenarios.innerHTML = '<h2>Scenarios</h2>' +
       '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="NONE" checked> <span>NORMAL FLIGHT</span></label>' +
       '<h3 class="welcome-subheading">Engine Failure</h3>' +
-      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE AT V1</span><small>COMING SOON</small></label>' +
-      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE ON FINAL</span><small>COMING SOON</small></label>' +
-      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>ENGINE FAILURE IN CRUISE</span><small>COMING SOON</small></label>' +
+      engineScenarios.map(([id, title, types]) =>
+        '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="' + id +
+        '" aria-controls="welcomeFailure_' + id + '" aria-expanded="false"> <span>' + title + '</span><small>SETUP ONLY</small></label>' +
+        '<fieldset class="welcome-failure-options" id="welcomeFailure_' + id + '" hidden disabled><legend>Failure Type</legend>' +
+        types.map(([value, label]) => '<label class="welcome-choice"><input type="radio" name="welcomeFailure_' +
+          id + '" value="' + value + '"> <span>' + label + '</span></label>').join('') + '</fieldset>'
+      ).join('') +
       '<h3 class="welcome-subheading">Special Operations</h3>' +
       '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>RAPID DECOMPRESSION</span><small>COMING SOON</small></label>' +
       '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>EMERGENCY DESCENT</span><small>COMING SOON</small></label>' +
-      '<p class="welcome-note">Unverified training scenarios are locked until their trigger and aircraft-state owners are validated.</p>';
+      '<p class="welcome-note" id="welcomeScenarioNote" role="status">Normal Flight available. Engine scenario behavior is not yet configured.</p>';
     by('unifiedWelcomeSetup').append(scenarios);
-    flight.append(manual, initialLoad);
+    pendingEngineScenario = () => scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value !== 'NONE';
+    const syncEngineScenario = () => {
+      const selected = scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
+      for (const [id] of engineScenarios) {
+        const group = by('welcomeFailure_' + id);
+        const active = selected === id;
+        group.hidden = !active;
+        group.disabled = !active;
+        scenarios.querySelector('input[name="welcomeScenario"][value="' + id + '"]').setAttribute('aria-expanded', String(active));
+        if (!active) group.querySelectorAll('input').forEach(input => { input.checked = false; });
+      }
+      const pending = pendingEngineScenario();
+      const subtype = pending ? by('welcomeFailure_' + selected)?.querySelector('input:checked') : null;
+      by('welcomeScenarioNote').textContent = pending
+        ? (subtype ? 'Failure type selected. Scenario execution is not configured yet.' : 'Select a failure type. Scenario execution is not configured yet.')
+        : 'Normal Flight available. Engine scenario behavior is not yet configured.';
+      if (!startRequested) start.disabled = pending;
+    };
+    scenarios.addEventListener('change', syncEngineScenario);
+    syncEngineScenario();
+    flight.append(manual);
     relocate(by('flightAlt').closest('.flight-grid'), manual);
     const weather = doc.createElement('div');
     weather.id = 'welcomeOnlineWeather';
@@ -241,15 +281,14 @@
   function beginFlight(now) {
     const shared = new URLSearchParams(win.location.search).has('crewRoom');
     if (!scenarioStarted) {
-      const startupLoad = fuel.value !== '' || mass.value !== '';
-      const owner = win.B737ISNCockpitV1;
-      if (!shared && startupLoad && !owner?.applyStartupLoad) return;
-      const applyLoad = startupLoad ? () => owner.applyStartupLoad({
-        fuelKg: fuel.value === '' ? null : fuel.valueAsNumber,
-        massKg: mass.value === '' ? null : mass.valueAsNumber
-      }) : null;
+      if (!shared && pendingEngineScenario()) {
+        startRequested = false;
+        start.disabled = true;
+        start.textContent = 'Start Flight';
+        return;
+      }
       directorPaintBaseline = mainPaints();
-      if (!shared && !win.B737UnifiedFlightScenarioV1?.startFromSelection?.(applyLoad)) {
+      if (!shared && !win.B737UnifiedFlightScenarioV1?.startFromSelection?.(null)) {
         error.textContent = by('flightScenarioStatus')?.textContent || 'FLIGHT SCENARIO NOT READY';
         error.hidden = false;
         startRequested = false;
@@ -380,6 +419,7 @@
 
   cockpit.forEach(node => { node.inert = true; });
   start.addEventListener('click', () => {
+    if (pendingEngineScenario()) return;
     const controls = [...flight.querySelectorAll('input, select')];
     if (controls.some(node => !node.closest('[hidden]') && !node.reportValidity())) return;
     error.hidden = true;
