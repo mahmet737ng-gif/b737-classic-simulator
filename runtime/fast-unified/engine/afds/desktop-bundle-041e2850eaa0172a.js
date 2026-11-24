@@ -974,6 +974,7 @@ try{
   }
   try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
   catch(error){console.warn('ISN flight context restore',error);}
+  win.B737EngineFailureV1Scenario?.reset();
   active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;
   lastPropulsionAt=0;lastPropulsion=null;lastEngineContextAt=0;
   win.B737IRSTrainerUnified?.stopMotion?.();
@@ -1035,6 +1036,7 @@ try{
    }
    const next=Core.newScenario(config,approachThresholds(config));
    if(typeof beforeStart==='function')beforeStart();
+   win.B737EngineFailureV1Scenario?.reset();
    win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
@@ -1135,6 +1137,7 @@ try{
   const engines=[1,2].map(n=>{
    const id='engine'+n;
    return {running:fast?.engines?.[id]?.running??(chain?.phase?.[id]==='RUNNING'),
+    flightFailure:fast?.engines?.[id]?.flightFailure??ecu?.engines?.[id]?.flightFailure??null,
     n1Percent:fast?.engines?.[id]?.n1Percent??ecu?.engines?.[id]?.n1Percent??null};
   });
   lastPropulsion=engines.every(e=>Number.isFinite(e.n1Percent))?
@@ -1184,7 +1187,11 @@ try{
      catch(error){console.warn('ISN scenario flight context',error);}
     }
     followMcp();
-    if(dt>0)state=Core.step(state,dt,propulsionObservation(now));
+    if(dt>0){const before=state;state=Core.step(state,dt,propulsionObservation(now));
+     const v1=win.B737EngineFailureV1Scenario?.observe(before,state);
+     if(v1?.status==='FIRED'&&before.iasKt<140&&state.iasKt>=140){lastPropulsionAt=0;lastPropulsion=null;}
+     if(v1?.status==='ERROR')status('V1 FAILURE INJECTION ERROR · '+v1.error,true);
+    }
    }}catch(error){
     // An FCC/plant update error must not withdraw healthy IRS/ADC/RA
     // sources. Publish the last valid simulated state, as during PAUSE,
@@ -1301,7 +1308,7 @@ try{
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,
-  loadScenario:config=>{win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=Core.newScenario(config,approachThresholds(config));
+  loadScenario:config=>{win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
@@ -1333,7 +1340,7 @@ try{
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
    lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,
    tickErrorCount,lastTickError:lastTickError?{...lastTickError}:null,
-   mcpFollow,producers:Object.keys(producers),producerErrors:{...producerErrors}})});
+   mcpFollow,v1:win.B737EngineFailureV1Scenario?.getStatus?.()||null,producers:Object.keys(producers),producerErrors:{...producerErrors}})});
  win.B737UnifiedFlightScenarioV1=api;
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })(window);
