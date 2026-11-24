@@ -27,7 +27,7 @@ const filesToPublish=new Map([
 ]);
 const origin='https://release.invalid/';
 function add(relative){
- if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|webp|png|ttf|woff2|mp3)$/.test(relative)||relative.includes('..'))
+ if(!/^(?:[a-zA-Z0-9._-]+\/)+[a-zA-Z0-9._-]+\.(?:html|js|cjs|css|json|webmanifest|svg|webp|png|ttf|woff2|mp3)$/.test(relative)||relative.includes('..'))
   throw Error('Bad release resource path '+relative);
  if(filesToPublish.has(relative))return;
  const bytes=fs.readFileSync(path.join(root,relative));
@@ -62,6 +62,8 @@ for(const relative of [
  cockpit+'assets/p15-refuel-photo-v1.webp',
  cockpit+'assets/p15-toggle-photo-approved-v2.webp',
  cockpit+'assets/p15-approved-switch-5state-v3.webp',
+ // Self-contained user-supplied parking brake lever, rendered over the photograph.
+ cockpit+'assets/parking-brake-off-front-v1.svg',
  // Authenticated TCAS Test Lab: keep its exact reference HTML, JS and CSS
  // on the same verified fast runtime as Unified (no broken Pages dependency).
  cockpit+'tcas-lab/index.html',
