@@ -14,7 +14,7 @@
  let lastError=null,lastDemand=false,lastSensorFingerprint='',panel=null,lastStatus='';
  const finite=n=>typeof n==='number'&&Number.isFinite(n);
  const owner=()=>root.B737ISNCockpitV1;
- function publishedState(){return owner()?.getState?.()?.state||null;}
+ function publishedState(){return owner()?.getWarningSnapshot?.()||owner()?.getState?.()?.state||null;}
  function playerStop(){
    if(!source)return;
    const old=source,g=gain;source=null;gain=null;
@@ -92,7 +92,7 @@
  }
  function syncHardware(){
    const bridge=owner();
-   const current=bridge?.getState?.()?.state?.sensors;
+   const current=publishedState()?.sensors;
    if(!current||typeof bridge.instructor!=='function')return;
    const readings=collectSensors();
    const changes=Object.fromEntries(Object.entries(readings).filter(([k,v])=>current[k]!==v));
