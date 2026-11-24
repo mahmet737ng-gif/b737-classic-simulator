@@ -64,6 +64,7 @@ for(const relative of [
  cockpit+'assets/p15-approved-switch-5state-v3.webp',
  // Self-contained user-supplied parking brake lever, rendered over the photograph.
  cockpit+'assets/parking-brake-off-front-v1.svg',
+ cockpit+'assets/parking-brake-on-top-left-v1.svg',
  // Authenticated TCAS Test Lab: keep its exact reference HTML, JS and CSS
  // on the same verified fast runtime as Unified (no broken Pages dependency).
  cockpit+'tcas-lab/index.html',
