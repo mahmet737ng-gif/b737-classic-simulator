@@ -20,6 +20,8 @@
  const AltCapture=(typeof globalThis==='object'?globalThis.B737AltitudeCaptureTrainingV1:null)||
   (typeof module==='object'&&typeof require==='function'?
    require('./altitude-capture-training-v1.js'):null);
+ // User-defined training ceiling, not an AFM performance guarantee.
+ const OEI_MAX_CLIMB_FPM=400;
  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
  const wrap=h=>(h%360+360)%360;
  const angle=(a,b)=>((wrap(b)-wrap(a)+540)%360)-180;
@@ -229,6 +231,12 @@
    propulsion.engines.length===2&&propulsion.engines.every(e=>
     typeof e?.running==='boolean'&&Number.isFinite(e.n1Percent)&&
     e.n1Percent>=0&&e.n1Percent<=120);
+  // Preserve valid engine availability through transient telemetry gaps.
+  const singleEngine=observed?propulsion.engines.filter(e=>e.running).length===1:
+   state.singleEngine===true;
+  s.singleEngine=singleEngine;
+  const maxClimbFpm=singleEngine?OEI_MAX_CLIMB_FPM:5000;
+  s.maxClimbFpm=maxClimbFpm;
   if(groundRoll&&observed){
    // At idle N1 there is no takeoff acceleration. Real observed engine
    // spool drives a bounded training surrogate with rolling/drag losses.
@@ -304,12 +312,27 @@
    if(s.iasKt>=s.rotationSpeedKt&&s.pitchDeg>=8){
     s.airborne=true;s.groundRoll=false;s.phase='INITIAL_CLIMB';
     if(s.takeoffAutoMode===true){s.target.verticalMode='PITCH';s.target.pitchDeg=15;}
-    s.target.vsFpm=1500;
+    s.target.vsFpm=Math.min(1500,maxClimbFpm);
    }
   }
   if(!s.airborne){
    s.bankDeg=0;s.vsFpm=0;s.altitudeFt=s.elevationFt;s.radioAltitudeFt=0;
   }else{
+   // Rebase upward capture if engine failure makes the profile unattainable.
+   const plan=s.altitudeCapture;
+   if(singleEngine&&target.verticalMode==='ALT_ACQ'&&plan?.phase==='ACQUIRE'&&
+      plan.targetAltitudeFt>s.altitudeFt&&AltCapture){
+    const remainingRate=120*(plan.targetAltitudeFt-plan.entryAltitudeFt)/plan.durationSec*
+     (1-plan.elapsedSec/plan.durationSec);
+    if(remainingRate>maxClimbFpm+1e-6){
+     const gap=plan.targetAltitudeFt-s.altitudeFt;
+     const revised=AltCapture.begin({altitudeFt:s.altitudeFt,
+      targetAltitudeFt:plan.targetAltitudeFt,vsFpm:maxClimbFpm});
+     const durationSec=Math.max(revised.durationSec,120*gap/maxClimbFpm);
+     s.altitudeCapture={...revised,durationSec,
+      decelerationFpmPerSec:120*gap/(durationSec*durationSec)};
+    }
+   }
    const captureStep=target.verticalMode==='ALT_ACQ'&&
     s.altitudeCapture?.phase==='ACQUIRE'?
     AltCapture?.advance(s.altitudeCapture,dt):null;
@@ -324,6 +347,7 @@
     wantVS=clamp(-Math.max(0,s.gsKt)*5.307+
      clamp((height-s.altitudeFt)*.8,-900,900),-2200,600);
    }
+   wantVS=Math.min(wantVS,maxClimbFpm);
    const commanded={...target,verticalMode:target.verticalMode==='PITCH'?'PITCH':'VS',vsFpm:wantVS};
    const control=Laws?.stepAttitude(s,commanded,dt);
    if(control){
@@ -362,6 +386,13 @@
      source:'ALT_ACQ_SHARED_TRAINING_PROFILE',
      commandedPitchDeg:Number.isFinite(pitchDemand)?pitchDemand:s.pitchDeg,
      desiredVsFpm:captureStep.vsFpm};
+   }
+   // Limit actual climb after every vertical controller (including TOGA/manual)
+   // and before altitude/RA integration. Descent and MCP selection stay intact.
+   if(singleEngine){
+    s.vsFpm=Math.min(s.vsFpm,maxClimbFpm);
+    if(s.flightControl&&Number.isFinite(s.flightControl.desiredVsFpm))
+     s.flightControl.desiredVsFpm=Math.min(s.flightControl.desiredVsFpm,maxClimbFpm);
    }
    // Bounded training disturbance. Positive bank is toward the heavier right wing.
    // The shared controller continues to apply its corrective bank command.
@@ -412,5 +443,5 @@
   return s;
  }
  return Object.freeze({VERSION:'FLIGHT-SCENARIO-CORE-0001',
-  AIRPORTS,PRESETS,newScenario,command,step,move,distanceNm,bearing,runwayAnchor,wrap,angle});
+  OEI_MAX_CLIMB_FPM,AIRPORTS,PRESETS,newScenario,command,step,move,distanceNm,bearing,runwayAnchor,wrap,angle});
 });
