@@ -10,8 +10,10 @@
  const minAudioGain=.76, THRUST_TAKEOFF_PROXY_PERCENT=55;
  // Approximate green-band trim limits: training model, not AFM dispatch data.
  const TRIM_GREEN_MIN=4.5,TRIM_GREEN_MAX=7.5;
- let ctx=null,buffer=null,source=null,gain=null,ready=false,armed=false,loading=false;
+ let ctx=null,buffer=null,source=null,gain=null,ready=false,armed=false;
+ let loadPromise=null,testing=false,testTimer=null,testButton=null,testStatus=null;
  let lastError=null,lastDemand=false,lastSensorFingerprint='',panel=null,lastStatus='';
+ let playCount=0,stopCount=0,unlockAttempts=0;
  const finite=n=>typeof n==='number'&&Number.isFinite(n);
  const owner=()=>root.B737ISNCockpitV1;
  function publishedState(){return owner()?.getWarningSnapshot?.()||owner()?.getState?.()?.state||null;}
@@ -23,6 +25,7 @@
        g.gain.linearRampToValueAtTime(0,now+.008);old.stop(now+.010);}catch(_){
      try{old.stop(0);}catch(__){}
    }
+   stopCount++;
    old.onended=()=>{try{old.disconnect();g.disconnect();}catch(_){}};
  }
  function playerStart(){
@@ -31,22 +34,29 @@
    node.buffer=buffer;node.loop=true;node.loopStart=0;node.loopEnd=buffer.duration;
    amp.gain.setValueAtTime(0,now);amp.gain.linearRampToValueAtTime(minAudioGain,now+.006);
    node.connect(amp);amp.connect(ctx.destination);
-   source=node;gain=amp;node.start(now+.004);
+   source=node;gain=amp;node.start(now+.004);playCount++;
  }
  function status(){
-   if(!panel)return;
-   const s=(ready?'OWNER HORN LOADED':'OWNER HORN LOADING')+' | '+
-      (armed?'AUDIO ARMED':'TAP COCKPIT TO ENABLE AUDIO')+' | '+
-      (lastDemand?'WARNING REQUESTED':'OFF')+' | '+
-      (source?'PLAYING':'SILENT')+(lastError?' | '+lastError:'');
-   if(s!==lastStatus){lastStatus=s;$('intermittentHornStatus').textContent=s;}
+   const s=(ready?'DECODE OK':'DECODING / FAILED')+' | '+
+      (armed?'AUDIO UNLOCKED':'AUDIO LOCKED')+' | '+
+      (lastDemand?'WARNING ON':'NO WARNING')+' | '+
+      (testing?'TEST ACTIVE':'TEST OFF')+' | '+
+      (source?'PLAYING':'SILENT')+' | '+(ctx?.state||'NO AUDIO CONTEXT')+
+      (lastError?' | '+lastError:'');
+   if(s!==lastStatus){
+     lastStatus=s;
+     const node=$('intermittentHornStatus');if(node)node.textContent=s;
+     if(testStatus)testStatus.textContent=s;
+     if(testButton)testButton.dataset.audioReady=ready&&armed?'yes':'no';
+   }
  }
  function sampleDemands(){
    const s=publishedState(),active=s?.warnings?.audio?.active;
    return Array.isArray(active)&&active.some(a=>a.id==='intermittentHorn');
  }
  function syncPlayer(){
-   const demand=sampleDemands();
+   let demand=false;
+   try{demand=sampleDemands();}catch(e){lastError='WARNING_OWNER: '+e.message;}
    if(demand!==lastDemand){
      lastDemand=demand;
      root.dispatchEvent(new CustomEvent('b737:intermittent-horn-audio-state',{detail:{
@@ -54,7 +64,7 @@
        takeoff:publishedState()?.warnings?.audio?.lamps?.takeoffConfig===true
      }}));
    }
-   if(demand)playerStart();else playerStop();
+   if(demand||testing)playerStart();else playerStop();
    status();return demand;
  }
  function collectSensors(){
@@ -112,29 +122,75 @@
    for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
    return bytes.buffer;
  }
- async function loadClip(){
-   if(loading||ready)return;loading=true;
-   try{
-     if(!clip?.base64)throw Error('OWNER_AUDIO_ASSET_MISSING');
-     const AC=root.AudioContext||root.webkitAudioContext;
-     if(!AC)throw Error('WEB_AUDIO_UNAVAILABLE');
-     if(!ctx)ctx=new AC();
-     buffer=await ctx.decodeAudioData(decodeBase64(clip.base64));
-     if(!buffer||buffer.duration<.35||buffer.duration>.9)throw Error('INVALID_OWNER_HORN_CLIP');
-     ready=true;lastError=null;
-     syncPlayer();
-   }catch(e){lastError='HORN_DECODE: '+e.message;root.console?.error?.(lastError);}
-   finally{loading=false;status();}
+ function ensureContext(){
+   if(ctx&&ctx.state!=='closed')return ctx;
+   const AC=root.AudioContext||root.webkitAudioContext;
+   if(!AC)throw Error('WEB_AUDIO_UNAVAILABLE');
+   ctx=new AC();return ctx;
+ }
+ function loadClip(){
+   if(ready)return Promise.resolve(true);
+   if(loadPromise)return loadPromise;
+   loadPromise=(async()=>{
+     try{
+       if(!clip?.base64)throw Error('OWNER_AUDIO_ASSET_MISSING');
+       const audio=ensureContext();
+       buffer=await audio.decodeAudioData(decodeBase64(clip.base64));
+       if(!buffer||buffer.duration<.35||buffer.duration>.9)throw Error('INVALID_OWNER_HORN_CLIP');
+       ready=true;lastError=null;syncPlayer();return true;
+     }catch(e){lastError='HORN_DECODE: '+e.message;root.console?.error?.(lastError);throw e;}
+     finally{loadPromise=null;status();}
+   })();
+   return loadPromise;
  }
  async function enable(){
-   await loadClip();
-   if(!ctx)throw Error(lastError||'OWNER_AUDIO_UNAVAILABLE');
-   if(ctx.state==='suspended')await ctx.resume();
-   armed=ctx.state==='running';
-   syncPlayer();return armed;
+   // The browser requires resume() DURING a direct user activation. The old
+   // runtime awaited asynchronous MP4 decoding first, losing that activation.
+   unlockAttempts++;
+   let audio,resume;
+   try{audio=ensureContext();
+       resume=audio.state==='suspended'?audio.resume():Promise.resolve();
+   }catch(e){lastError='AUDIO_UNLOCK: '+e.message;status();throw e;}
+   const loading=loadClip();
+   try{
+     await resume;
+     armed=audio.state==='running';
+     await loading;
+     if(!armed)throw Error('AUDIO_CONTEXT_NOT_RUNNING');
+     lastError=null;syncPlayer();return true;
+   }catch(e){lastError='AUDIO_UNLOCK: '+e.message;status();throw e;}
+ }
+ function testHorn(){
+   // Diagnostic button plays the exact owner sample, without changing any
+   // aircraft warning sensor or creating a second audio engine.
+   testing=true;
+   if(testTimer!==null)clearTimeout(testTimer);
+   testTimer=setTimeout(()=>{testTimer=null;testing=false;syncPlayer();},2200);
+   status();
+   return enable().then(()=>{syncPlayer();return true;}).catch(e=>{
+     lastError='TEST_HORN: '+e.message;status();throw e;
+   });
  }
  function mount(){
-   if(panel||!$('inspector'))return;
+   // Visible cockpit test: differentiates autoplay, asset decoding and
+   // warning-input failures; inspector strip is frequently hidden.
+   if(!testButton){
+     const toolbar=root.document.querySelector('.workbench .toolbar .tools:last-child')||
+        root.document.querySelector('.workbench .toolbar');
+     if(toolbar){
+       testButton=root.document.createElement('button');testButton.type='button';
+       testButton.id='unifiedHornTestButton';testButton.textContent='🔊 HORN TEST';
+       testButton.title='Play the actual takeoff / cabin warning horn for 2.2 seconds';
+       testButton.setAttribute('aria-label','Test actual takeoff and cabin altitude warning sound');
+       testButton.addEventListener('click',event=>{
+         event.stopPropagation();testHorn().catch(e=>root.console?.error?.('Horn test failed',e));
+       });
+       testStatus=root.document.createElement('span');testStatus.id='unifiedHornAudioStatus';
+       testStatus.setAttribute('role','status');testStatus.style.cssText='font:10px monospace;max-width:220px;white-space:normal';
+       toolbar.append(testButton,testStatus);
+     }
+   }
+   if(panel||!$('inspector')){status();return;}
    panel=root.document.createElement('section');
    panel.id='ownerIntermittentHornAudioV1';
    panel.style.cssText='font:11px/1.45 system-ui;background:#14242b;color:#e4eefa;border:1px solid #47687b;border-radius:8px;padding:9px;margin:8px 0;direction:ltr';
@@ -143,10 +199,10 @@
     '<button type="button" id="intermittentHornEnable">ENABLE HORN AUDIO</button>'+
     '<small style="display:block;margin-top:5px">One shared intermittent horn. Repeats while either ISN warning is active; stops immediately on clear. Aircraft cutout applies only to Cabin Altitude.</small>';
    $('inspector').prepend(panel);
-   $('intermittentHornEnable').addEventListener('click',()=>enable().catch(e=>{lastError=e.message;status();}));
+   $('intermittentHornEnable').addEventListener('click',()=>testHorn().catch(e=>{lastError=e.message;status();}));
    status();
  }
- const promptUnlock=()=>{if(ready&&!armed)enable().catch(e=>{lastError=e.message;status();});};
+ const promptUnlock=()=>{if(!armed)enable().catch(e=>{lastError=e.message;status();});};
  root.document.addEventListener('pointerdown',promptUnlock,true);
  root.document.addEventListener('keydown',promptUnlock,true);
  // Overhead controls live inside same-origin iframe, not the parent event tree.
@@ -170,12 +226,15 @@
  // Also observe the existing ALT HORN CUTOUT message after aircraft-settings handles it.
  root.addEventListener('message',trigger);
  root.addEventListener('pagehide',()=>{playerStop();if(ctx)ctx.close().catch(()=>{});});
- function init(){mount();loadClip();bindOverhead();refresh();
-   setInterval(()=>{bindOverhead();refresh();},65);
+ function init(){mount();loadClip().catch(()=>{});bindOverhead();refresh();
+   setInterval(()=>{try{bindOverhead();refresh();}catch(e){lastError='HORN_RUNTIME: '+e.message;status();}},65);
  }
  root.B737UnifiedIntermittentHornAudioV1=Object.freeze({
-   enable,refresh,getState:()=>({ready,armed,active:lastDemand,playing:Boolean(source),
-     lastError,lastSensorFingerprint,sharedOwner:'B737ISNCockpitV1'})
+   enable,testHorn,refresh,getState:()=>({ready,armed,active:lastDemand,testing,
+     playing:Boolean(source),contextState:ctx?.state||'absent',
+     ownerReady:!!owner()?.getWarningSnapshot,decodedDurationSec:buffer?.duration??null,
+     lastError,lastSensorFingerprint,playCount,stopCount,unlockAttempts,
+     sharedOwner:'B737ISNCockpitV1'})
  });
  if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(typeof window==='object'?window:null);
