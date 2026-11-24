@@ -1,0 +1,30 @@
+name: Parking Brake ON/OFF artwork acceptance
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/parking-brake-two-assets.yml'
+      - 'panel-mosaic-lab/cockpit/parking-brake-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/index.html'
+      - 'panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg'
+      - 'panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg'
+      - 'tools/export-unified-gateway-runtime.cjs'
+      - 'tests/parking-brake-unified-v1.test.cjs'
+  push:
+    branches: [main]
+    paths:
+      - 'panel-mosaic-lab/cockpit/parking-brake-unified-v1.js'
+      - 'panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg'
+jobs:
+  parking-brake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Script syntax and both ON/OFF art states
+        run: |
+          node --check panel-mosaic-lab/cockpit/parking-brake-unified-v1.js
+          node --check tests/parking-brake-unified-v1.test.cjs
+          node --test tests/parking-brake-unified-v1.test.cjs

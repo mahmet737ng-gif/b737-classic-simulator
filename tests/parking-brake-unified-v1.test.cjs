@@ -49,7 +49,7 @@ test('parking brake owner defaults OFF and emits a single state-change per toggl
 test('lever is mounted on pedestal native layer; lamp on/off with no scene-zoom offsets',()=>{
  const js=read('panel-mosaic-lab/cockpit/parking-brake-unified-v1.js');
  const html=read('panel-mosaic-lab/cockpit/index.html');
- assert.ok(html.includes('parking-brake-unified-v1.js?v=PARK-BRAKE-001-SLOT-LAMP'));
+ assert.ok(html.includes('parking-brake-unified-v1.js?v=PARK-BRAKE-002-DUAL-ART-20261124'));
  assert.ok(js.includes('#region-pedestal .region-native .texture-piece[data-piece="throttle-quadrant"]'));
  assert.ok(js.includes("left:(q.light.x-d/2)+'px'"));
  assert.ok(js.includes("top:(q.light.y-d/2)+'px'"));
@@ -62,4 +62,37 @@ test('Railway fast runtime exporter includes the SVG, not just its script',()=>{
  const exporter=read('tools/export-unified-gateway-runtime.cjs');
  assert.ok(exporter.includes("cockpit+'assets/parking-brake-off-front-v1.svg'"));
  assert.ok(exporter.includes('webmanifest|svg|webp|png'));
+});
+
+test('two physical lever pictures are present and both share the green slot hinge without moving the pivot',()=>{
+ const js=read('panel-mosaic-lab/cockpit/parking-brake-unified-v1.js');
+ const svg=read('panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg');
+ assert.match(svg,/<svg[^>]+viewBox="0 0 140 189"/);
+ assert.match(svg,/<image x="36" y="172" width="100" height="17"/);
+ const encoded=svg.match(/data:image\/webp;base64,([^"]+)/)?.[1];
+ assert.ok(encoded,'ON image must include the approved transparent lever image');
+ const data=Buffer.from(encoded,'base64');
+ assert.equal(data.subarray(0,4).toString('ascii'),'RIFF');
+ assert.equal(data.subarray(8,12).toString('ascii'),'WEBP');
+ assert.ok(data.length>500 && data.length<5000,'ON asset is lightweight');
+ assert.ok(api.OFF_ASSET.endsWith('parking-brake-off-front-v1.svg'));
+ assert.ok(api.ON_ASSET.endsWith('parking-brake-on-top-left-v1.svg'));
+ assert.ok(js.includes("offImage=makeLeverImage(OFF_ASSET,'OFF')"));
+ assert.ok(js.includes("onImage=makeLeverImage(ON_ASSET,'ON')"));
+ assert.ok(js.includes("lever.append(offImage,onImage)"));
+ assert.ok(js.includes("lever.style.transform='none'"),'state changes must not shift pivot from slot');
+ assert.ok(js.includes("offImage.style.opacity=engaged?'0':'1'"));
+ assert.ok(js.includes("onImage.style.opacity=engaged?'1':'0'"));
+ api.setEngaged(false);assert.equal(api.getState().position,'OFF');
+ api.setEngaged(true);assert.equal(api.getState().position,'ON');
+ api.setEngaged(false);
+});
+test('Railway Gateway exporter contains both images; lamp remains a separate element',()=>{
+ const exporter=read('tools/export-unified-gateway-runtime.cjs');
+ const js=read('panel-mosaic-lab/cockpit/parking-brake-unified-v1.js');
+ assert.ok(exporter.includes("cockpit+'assets/parking-brake-off-front-v1.svg'"));
+ assert.ok(exporter.includes("cockpit+'assets/parking-brake-on-top-left-v1.svg'"));
+ assert.ok(js.includes("holder.append(lamp,lever)"));
+ assert.ok(js.includes('b737:parking-brake-state'));
+ assert.ok(js.includes("data-parking-brake=\"ON\""));
 });
