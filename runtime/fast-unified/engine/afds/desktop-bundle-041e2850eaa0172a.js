@@ -789,7 +789,8 @@ try{
  if(!Core){console.error('B737FlightScenarioCoreV1 dependency missing');return;}
  const doc=win.document,by=id=>doc.getElementById(id);
  let mounted=false, setupTab='LOCATION';
- const selectedPreset=()=>setupTab==='GENERAL'?'COLD_DARK':by('flightPreset').value;
+ const groundPresets=['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF'];
+ const selectedPreset=()=>setupTab==='GENERAL'?(doc.querySelector('input[name="flightGeneralSetup"]:checked')?.value||'COLD_DARK'):by('flightPreset').value;
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
@@ -870,7 +871,7 @@ try{
    by('flightLat').value=String(a.lat);by('flightLon').value=String(a.lon);
    const mag=magneticHeading(a.runways[rw.value],airportPoint(a));
     by('flightHeading').value=Number.isFinite(mag)?Math.round(mag)%360:'';
-   by('flightAlt').value=a.elevationFt+(['RUNWAY_READY','COLD_DARK'].includes(selectedPreset())?0:3000);
+   by('flightAlt').value=a.elevationFt+(groundPresets.includes(selectedPreset())?0:3000);
   }
   publishSelectedReference();
  }
@@ -1000,7 +1001,7 @@ try{
   if(config.airport==='OIFM'&&OIFM_AIP_THRESHOLDS[config.runway])
    return {OIFM:{[config.runway]:{...OIFM_AIP_THRESHOLDS[config.runway],
     quality:'AIP_SURVEYED_RWY_THR',source:'IRAN_AIP_OIFM_AD2_12'}}};
-  if(!['FINAL_5','FINAL_10','RUNWAY_READY','COLD_DARK'].includes(config.preset))return {};
+  if(!['FINAL_5','FINAL_10',...groundPresets].includes(config.preset))return {};
   const station=win.B737IranRadioNavaidsV1?.STATIONS?.find(s=>
    s.type==='ILS_DME'&&s.airport===config.airport&&s.runway===config.runway);
   if(!station)return {};
@@ -1024,7 +1025,7 @@ try{
   try{
    const preset=selectedPreset();
    const config={airport:by('flightAirport').value,runway:by('flightRunway').value,preset,
-    airborne:!['RUNWAY_READY','COLD_DARK'].includes(preset)};
+    airborne:!groundPresets.includes(preset)};
    if(preset==='MANUAL'){
     config.altitudeFt=v('Alt');config.headingDeg=trueHeading(v('Heading'),airportPoint(Core.AIRPORTS[config.airport]));
     config.speedKt=v('Speed');
@@ -1034,7 +1035,7 @@ try{
    }
    const next=Core.newScenario(config,approachThresholds(config));
    if(typeof beforeStart==='function')beforeStart();
-   win.B737ColdDarkGeneralPresetV1?.stop();
+   win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
@@ -1048,6 +1049,7 @@ try{
    publish();lastPublish=performance.now();updateUI();
    if(preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    if(preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
+   if(win.B737PoweredGeneralPresetsV1?.applies(preset))win.B737PoweredGeneralPresetsV1.apply(state);
    crewEvent('loadFlight',config);
    status((pause?'PAUSED / CONFIGURING':'ACTIVE')+' · '+state.icao+' RWY '+
     state.runway+' · '+state.phase+' · '+state.georefQuality);
@@ -1210,9 +1212,9 @@ try{
   }
   const panel=doc.createElement('fieldset');panel.id='flightGeneralSetup';panel.style.cssText='border:1px solid #52748a;border-radius:8px;padding:12px;margin:8px 0;color:inherit;';
   const legend=doc.createElement('legend');legend.textContent='Aircraft General Setup';panel.append(legend);
-  for(const [value,label,disabled] of [['COLD_DARK','COLD & DARK',false],['READY_FOR_START','READY FOR START',true],['READY_FOR_TAKEOFF','READY FOR TAKEOFF',true]]){
+  for(const [value,label,disabled] of [['COLD_DARK','COLD & DARK',false],['READY_FOR_START','READY FOR START',false],['READY_FOR_TAKEOFF','READY FOR TAKEOFF',false]]){
    const row=doc.createElement('label');row.style.cssText='display:flex;align-items:center;gap:8px;padding:7px 0;'+(disabled?'opacity:.45;':'');
-   const input=doc.createElement('input');input.type='radio';input.name='flightGeneralSetup';input.value=value;input.disabled=disabled;input.checked=!disabled;
+   const input=doc.createElement('input');input.type='radio';input.name='flightGeneralSetup';input.value=value;input.disabled=disabled;input.checked=value==='COLD_DARK';
    const title=doc.createElement('span');title.textContent=label;row.append(input,title);
    if(disabled){const note=doc.createElement('small');note.textContent='COMING SOON';note.style.marginLeft='auto';row.append(note);}
    panel.append(row);
@@ -1299,13 +1301,14 @@ try{
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,
-  loadScenario:config=>{win.B737ColdDarkGeneralPresetV1?.stop();state=Core.newScenario(config,approachThresholds(config));
+  loadScenario:config=>{win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=Core.newScenario(config,approachThresholds(config));
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    if(state.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
+   if(win.B737PoweredGeneralPresetsV1?.applies(state.preset))win.B737PoweredGeneralPresetsV1.apply(state);
    return snapshot();},
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
@@ -1321,6 +1324,7 @@ try{
    // a late join/reconnect. Restore real FINAL_10 cockpit owners, including
    // immediate FLAPS 30 and LE FULL, not only the flight display numbers.
    if(initial&&sample.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
+   if(initial&&win.B737PoweredGeneralPresetsV1?.applies(sample.preset))win.B737PoweredGeneralPresetsV1.apply(sample);
    if(initial&&sample.preset==='FINAL_10')
     win.B737Final10ApproachPresetV1?.apply?.(state);
   },
