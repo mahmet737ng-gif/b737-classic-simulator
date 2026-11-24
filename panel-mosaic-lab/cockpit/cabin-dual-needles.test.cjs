@@ -61,7 +61,7 @@ assert.ok(ui.includes('needle.tipRadius/220'));
 assert.ok(ui.includes("min:'0',max:'360',step:'0.5'"));
 const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8');
 assert.ok(html.includes('cabin-dual-needles-model.js?v=CDN-0004'));
-assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-0004'));
+assert.ok(html.includes('cabin-dual-needles-unified.js?v=CDN-SMOOTH-0001'));
 console.log('PASS: separate OH19 CAB ALT and PRESS needles share a pivot, rotate independently, and stack PRESS behind CAB ALT while preserving PSI outer and ALT inner printed scales.');
 
 
