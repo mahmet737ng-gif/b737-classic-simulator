@@ -605,7 +605,7 @@
  let flightScenarioBaseline=null;
  window.B737ISNCockpitV1=Object.freeze({getState:()=>bridge.get(),
    // Lightweight readonly horn demand snapshot — no 250-event diagnostic cloning.
-   getWarningSnapshot:()=>({sensors:{...session.sensors},warnings:session.getLive().warnings}),
+   getWarningSnapshot:()=>({variant:session.warningEngine.variant,sensors:{...session.sensors},warnings:session.getLive().warnings}),
    getStartState:()=>chain.get(),getECUState:()=>ecu.get(),
   // A verified electrical snapshot is required for startup. The optional APU
   // training preset is NOT a prerequisite; it completes after Battery guard

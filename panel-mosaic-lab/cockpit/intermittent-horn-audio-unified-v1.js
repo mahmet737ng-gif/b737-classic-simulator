@@ -92,8 +92,13 @@
  }
  function syncHardware(){
    const bridge=owner();
-   const current=publishedState()?.sensors;
+   const state=publishedState(),current=state?.sensors;
    if(!current||typeof bridge.instructor!=='function')return;
+   const variant=root.B737AircraftProfileStore?.get?.()?.aircraftModel;
+   if(['737-300','737-400','737-500'].includes(variant)&&state.variant!==variant){
+     try{bridge.instructor({type:'WARNING_VARIANT',value:variant});}
+     catch(e){lastError='WARNING_VARIANT_BRIDGE: '+e.message;}
+   }
    const readings=collectSensors();
    const changes=Object.fromEntries(Object.entries(readings).filter(([k,v])=>current[k]!==v));
    if(Object.keys(changes).length){
@@ -157,7 +162,7 @@
  const trigger=()=>queueMicrotask(refresh);
  for(const name of ['b737:parking-brake-state','b737:stabilizer-trim-position',
     'b737:flight-scenario-state','b737:pressurization-state',
-    'b737:flight-scenario-stopped','b737:cockpit-mounted'])
+    'b737:flight-scenario-stopped','b737:aircraft-profile-change','b737:cockpit-mounted'])
    root.addEventListener(name,trigger);
  for(const name of ['b737:throttle-position','b737:speedbrake-position',
     'b737:flap-detent-visual-test','b737:flap-ready'])
