@@ -1430,6 +1430,7 @@ try{
  }
  // Match the calibrated EHSI plot aperture and clip the actual coordinates.
  // This also keeps visibility independent of a document's HTML base URL.
+ let clipSerial=0;
  const PLOT={left:1,right:511,top:49,bottom:511};
  const onPlot=([x,y],pad=0)=>x>=PLOT.left+pad&&x<=PLOT.right-pad&&
   y>=PLOT.top+pad&&y<=PLOT.bottom-pad;
@@ -1465,7 +1466,7 @@ try{
    {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.entries(active)
     .filter(([k,g])=>valid(g)&&!(g.kind==='RUNWAY'&&pending?.[k]&&
       JSON.stringify(g)!==JSON.stringify(pending[k]))).map(([,g])=>g)},
-   ...(changed?[{stage:'MOD',color:'#00c8f2',dash:'7 5',
+   ...(changed?[{stage:'MOD',color:'#00a9ff',dash:'7 5',
     geometries:Object.values(changed).filter(valid)}]:[])
   ].filter(layer=>layer.geometries.length);
   if(!layers.length)return 0;
@@ -1493,9 +1494,17 @@ try{
    const d=offset(ref,{lat,lon});
    return typeof project==='function'?project(d.x,d.y):[252+d.x*scale,294-d.y*scale];
   };
-  let count=0;
+  let count=0,rangeClip=null;
+  if(typeof project==='function'){
+   const c=project(0,0),a=project(range,0),b=project(0,range);
+   if([c,a,b].every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))){
+    const rx=Math.hypot(a[0]-c[0],b[0]-c[0]),ry=Math.hypot(a[1]-c[1],b[1]-c[1]);
+    if(rx>0&&ry>0){const id='iran-route-aperture-'+(++clipSerial),defs=make(group,'defs'),clip=make(defs,'clipPath',{id,clipPathUnits:'userSpaceOnUse'});
+     make(clip,'ellipse',{cx:c[0],cy:c[1],rx,ry});rangeClip='url(#'+id+')';}
+   }
+  }
   for(const layer of layers){
-   const plot=make(group,'g',{'data-cdu-sg-plot':'true','data-reference-stage':layer.stage});
+   const plot=make(group,'g',{'data-cdu-sg-plot':'true','data-reference-stage':layer.stage,'clip-path':rangeClip});
    for(const g of layer.geometries){
     if(g.kind==='RUNWAY'){
      const axis=g.segments?.[0],threshold=g.fixes?.[0];
@@ -1539,7 +1548,9 @@ try{
      continue;
     }
     // Source-command leg programs take priority over raw fix-to-fix chords.
-    const model=g.program?Trajectory?.trajectory?.(g.program,flight):null;
+    const model=g.program?.version==='IRAN-ROUTE-PREVIEW-V2'?
+     globalThis.B737IranRoutePreviewV2?.trajectory(g.program,flight):
+     g.program?Trajectory?.trajectory?.(g.program,flight):null;
     if(model&&Array.isArray(model.segments)){
      for(const leg of model.segments){
       if(!Array.isArray(leg.points)||leg.points.length<2)continue;
@@ -1560,7 +1571,7 @@ try{
        'data-reference-only':'true'});count++;
      }
     }
-    if(!g.program)for(const segment of (g.segments||[]).slice(0,300)){
+    if(!g.program)for(const segment of (g.segments||[]).slice(0,1600)){
      if(!Array.isArray(segment)||segment.length!==2||!segment.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)))continue;
      const xy=clipSegment(segment.map(([lon,lat])=>xyFor(lon,lat)));
      if(!xy)continue;
@@ -1570,7 +1581,7 @@ try{
       'data-cdu-sg-geometry':'PROCEDURE'});
      count++;
     }
-    for(const point of (g.fixes||[]).slice(0,150)){
+    for(const point of (model?.fixes||g.fixes||[]).slice(0,150)){
      if(!Number.isFinite(point.lon)||!Number.isFinite(point.lat))continue;
      const xy=xyFor(point.lon,point.lat);
      if(!onPlot(xy,7))continue;
