@@ -288,7 +288,11 @@
      const key='RTE@'+(i+1),g=bank?.geometries?.[key];
      const pts=pilotGeometryLegs(g,key);
      if(pts&&pts.at(-1)?.ident===row.to){if(pts.length>1)typed.push(...pts.slice(1));else typed.push(...pts);}
-     else typed.push({ident:row.to,sourceOnly:true});
+     else {
+      const proof=s.verifiedToEntries?.['TO'+(i+1)];
+      const verified=proof?.source==='OWNER_WPNAVRTE_VERIFIED'&&proof.airway===row.via&&proof.to===row.to&&proof.origin===origin&&proof.destination===dest&&Array.isArray(proof.fixes)&&proof.fixes.at(-1)===row.to;
+      typed.push(...(verified?proof.fixes:[row.to]).map(ident=>({ident,sourceOnly:true})));
+     }
     }
     native=typed;
    }
