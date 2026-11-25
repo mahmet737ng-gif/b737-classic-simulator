@@ -9,6 +9,7 @@ const {performance} = require('node:perf_hooks');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
 const IranNavDataV2=require('./iran-navdata-v2.js');
+const IranBootstrapV2=require('./iran-navdata-bootstrap-v2.js');
 const {createCrewRoomHandler}=require('./crew-rooms.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
 const NavdataRelay=require('./navdata-relay.js');
@@ -834,7 +835,7 @@ async function ownerAccess(req){
 
 function crewMayRead(url, role) {
   if (['/static/session.js','/static/guest-cockpit.js','/static/guest-cockpit.css'].includes(url.pathname) ||
-      directDocuments.has(url.pathname) || navdata.supports(url.pathname)) return true;
+      directDocuments.has(url.pathname) || navdata.supports(url.pathname) || iranNavdata.supports(url.pathname)) return true;
   const asset = repoAssetPath(url.pathname);
   if (!asset) return false;
   if (role === 'instructor') return true;
@@ -1101,6 +1102,7 @@ async function start() {
     'manager text PRIMARY KEY, expires_at bigint NOT NULL, invitation_hash text UNIQUE NOT NULL, room jsonb NOT NULL)');
   await navdata.initialize();
   await iranNavdata.initialize();
+  try {const result=await IranBootstrapV2.bootstrap(iranNavdata);console.log('IRAN NAVDATA V2:',JSON.stringify(result));}catch(e){console.error('IRAN NAVDATA V2 IMPORT REJECTED:',e.message);}
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.
   try{
