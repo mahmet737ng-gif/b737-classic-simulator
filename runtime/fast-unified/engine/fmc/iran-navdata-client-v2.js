@@ -21,7 +21,7 @@ function turnDirect(p,h,target,r,turn='Auto'){
   for(let angle of [base+a,base-a]){let end=add(c,mul(v(angle),r)),tangent=v(angle+sign*90);if(dot(sub(target,end),tangent)<1e-7)continue;let sweep=sign*wrap(sign*(angle-start));if(Math.abs(sweep)>359.99)continue;options.push({points:arc(c,p,sweep),end,sweep});}
  }return options.sort((a,b)=>Math.abs(a.sweep)-Math.abs(b.sweep))[0]||null;
 }
-function normalize(raw){let n=k=>raw[k]!==undefined&&raw[k]!==''?Number(raw[k]):null;return {ident:raw.Name??raw.ident,type:raw.Type??raw.type??'Normal',lat:n('Latitude')??raw.lat,lon:n('Longitude')??raw.lon,alt:n('Altitude')??raw.alt,speed:n('Speed')??raw.speed,restriction:raw.AltitudeRestriction??raw.restriction,heading:n('Hdg_Crs_value')??raw.heading,headingKind:n('Hdg_Crs')??raw.headingKind,bank:n('BankLimit')??raw.bank,turn:raw.Sp_Turn??raw.turn??'Auto',fly:raw.Flytype??raw.fly??'Fly-by',radial:n('RadialtoIntercept')??raw.radial,dme:n('DMEtoIntercept')??raw.dme};}
+function normalize(raw){let n=k=>raw[k]!==undefined&&raw[k]!==''?Number(raw[k]):null;return {ident:raw.Name??raw.ident,type:raw.Type??raw.type??'Normal',lat:n('Latitude')??raw.lat,lon:n('Longitude')??raw.lon,alt:n('Altitude')??raw.alt,speed:n('Speed')??raw.speed,restriction:raw.AltitudeRestriction??raw.restriction,heading:n('Hdg_Crs_value')??raw.heading,headingKind:n('Hdg_Crs')??raw.headingKind,bank:n('BankLimit')??raw.bank,turn:raw.Sp_Turn??raw.turn??'Auto',fly:raw.Flytype??raw.fly??'Fly-by',radial:n('RadialtoIntercept')??raw.radial,dme:n('DMEtoIntercept')??raw.dme,pilotType:raw.pilotType};}
 function build(input){
  const p={...limits,...input.performance},warnings=[],segments=[],fixes=[];const warn=(code,leg)=>warnings.push({code,ident:leg?.ident??null});
  if(![p.gsKt,p.vsFpm,p.rollNm,p.bankDeg,p.variationDeg].every(Number.isFinite)||p.gsKt<=0||p.vsFpm<=0||p.rollNm<0||p.bankDeg<=0||p.bankDeg>35)throw Error('INVALID_PERFORMANCE');
@@ -29,13 +29,15 @@ function build(input){
  let pos=valid(start)?[0,0]:null,h=Number.isFinite(input.headingMag)?wrap(input.headingMag+p.variationDeg):null,alt=Number.isFinite(input.altFt)?input.altFt:null,ground=!!input.onGround,afterConditional=false;
  const state=input.state==='MOD'?'MOD':'ACT';
  function segment(type,pts,leg,extra={}){if(pts.length<2||norm(sub(pts[0],pts.at(-1)))<1e-8&&pts.length===2)return;segments.push({type,points:pts.map(x=>geo(origin,x)),state,ident:leg?.ident,estimated:!['DIRECT','RUNWAY'].includes(type),...extra});}
- function mark(leg,xy,estimated=false){fixes.push({ident:leg.ident, ...geo(origin,xy),alt:leg.alt,restriction:leg.restriction,estimated,fly:leg.fly});}
+ function mark(leg,xy,estimated=false){fixes.push({ident:leg.ident, ...geo(origin,xy),alt:leg.alt,restriction:leg.restriction,estimated,fly:leg.fly,pilotType:leg.pilotType});}
  function straight(end,leg,type='DIRECT'){if(pos){let d=sub(end,pos);if(norm(d)>1e-7){segment(type,[pos,end],leg);h=hd(d);}}pos=end;}
  function bankFor(l){return Math.min(p.bankDeg,l.bank>0?l.bank:p.bankDeg);}
  function breakAt(code,l){warn(code,l);pos=null;h=null;afterConditional=false;ground=false;alt=null;}
  for(let i=0;i<legs.length;i++){
   let l=legs[i],b=bankFor(l),r=radius(p.gsKt,b),wanted=Number.isFinite(l.heading)?wrap(l.heading+p.variationDeg):null;
-  if(l.type==='Discontinuity'||l.type==='Vectors'){breakAt('OPEN_LEG_'+l.type.toUpperCase(),l);continue;}
+  if(l.type==='Discontinuity'||l.type==='Vectors'){
+   if(l.type==='Vectors'&&pos&&wanted!==null){const end=add(pos,mul(v(wanted),25));segment('VECTOR_OPEN',[pos,end],l,{openEnded:true});}
+   breakAt('OPEN_LEG_'+l.type.toUpperCase(),l);continue;}
   if(['Normal','Runway'].includes(l.type)){
    if(!valid(l)){breakAt('INVALID_FIX',l);continue;}let end=local(origin,l);
    if(pos&&h!==null&&(afterConditional||l.turn==='Left'||l.turn==='Right')&&norm(sub(end,pos))>1e-5){let t=turnDirect(pos,h,end,r,l.turn);if(!t){breakAt('TURN_GEOMETRY_UNRESOLVED',l);}else{segment('TURN',t.points,l,{sweepDeg:t.sweep,radiusNm:r});pos=t.end;}}
@@ -56,7 +58,7 @@ function build(input){
    if(l.type==='DmeIntc'&&l.dme>0){let q=sub(pos,ref),b=dot(q,dir),c=dot(q,q)-l.dme*l.dme,disc=b*b-c;if(disc>=0)d=[-b-Math.sqrt(disc),-b+Math.sqrt(disc)].filter(x=>x>1e-5).sort((a,b)=>a-b)[0]??null;}
    else if(Number.isFinite(l.radial)){let ray=v(l.radial+p.variationDeg),den=cross(dir,ray);if(Math.abs(den)>1e-7){let q=sub(ref,pos),t=cross(q,ray)/den,u=cross(q,dir)/den;if(t>1e-5&&u>=0)d=t;}}
    if(d===null||d>200){breakAt('NO_FORWARD_INTERCEPT',l);continue;}
-   let end=add(pos,mul(dir,d));segment(l.type==='DmeIntc'?'DME_INTERCEPT':'RADIAL_INTERCEPT',[pos,end],l);pos=end;h=wanted;mark({...l,ident:l.type==='DmeIntc'?`${l.ident}/${l.dme}D`:'(INTC)'},end,true);afterConditional=true;alt=null;continue;
+   let end=add(pos,mul(dir,d));segment(l.type==='DmeIntc'?'DME_INTERCEPT':'RADIAL_INTERCEPT',[pos,end],l);pos=end;h=wanted;mark({...l,ident:l.type==='DmeIntc'?`(${l.ident}-${l.dme})`:l.type==='VorRadialIntc'?`(${l.ident}${String(l.radial).padStart(3,'0')})`:'(INTC)'},end,true);afterConditional=true;alt=null;continue;
   }
   // Holds and PBD are not treated as ordinary fixes without reference semantics.
   breakAt('UNSUPPORTED_'+l.type.toUpperCase(),l);
@@ -251,7 +253,25 @@ function mount(){
    });
    // Evaluate catalog requests synchronously before resolving the response.
    const bridge=root.B737CduSgBridgeV1;
-   root.B737CduSgBridgeV1=Object.freeze({...bridge,async request(path){
+   root.B737CduSgBridgeV1=Object.freeze({...bridge,
+    magneticVariation(point){
+     // Local training estimate from the nearest source runway axis, not a
+     // certified magnetic model. Reject remote points rather than guess.
+     const samples=[];
+     for(const a of Object.values(catalog.airports)){
+      const rs=a.airport.runways;
+      for(const r of rs){const other=rs.find(x=>x.runway===reciprocal(r.runway));
+       if(!other||!Number.isFinite(r.magnetic_heading_deg))continue;
+       const p={lat:r.threshold_lat,lon:r.threshold_lon},q={lat:other.threshold_lat,lon:other.threshold_lon};
+       if(!coord(p)||!coord(q))continue;
+       const v=((E.bearing(p,q)-r.magnetic_heading_deg+540)%360)-180;
+       if(Math.abs(v)<=15)samples.push({d:E.distance(point,p),v});
+      }
+     }
+     samples.sort((a,b)=>a.d-b.d);
+     return samples[0]?.d<=200?samples[0].v:null;
+    },
+    async request(path){
     if(/^\/api\/(?:cdu\/airway-check|iran-navdata\/fix)\?/.test(path))return bridge.request(path);
     try{const value=catalog.request(path);return {ok:true,json:async()=>value};}catch(e){return {ok:false,json:async()=>({error:e.message})};}
    }});
