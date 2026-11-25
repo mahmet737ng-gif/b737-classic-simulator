@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "0b71a2c237aee779634d46d4b360279686a255cf2691dbff5c5e75c06e7545e0"
+      "sha256": "366ae45f66ff9b0fed69e36d5b31b1bb8bc835eb4ad69b2f4bba56a74c2faaac"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -120,7 +120,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-3aa8890257a17c94.js",
-      "sha256": "75a605ad035255dc35462ab24bdd09a267b76e01853848dc7517fb32ec7a9068"
+      "sha256": "5c5887a7f3bfe077e9793d5f4bcb58d6fd927d9806b827dc3e9669c143166b0b"
     },
     {
       "path": "engine/systems/desktop-bundle-18d585c6839bd074.js",
@@ -184,7 +184,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "90abfb091735b41b2f61427e9387b8991c58ba265aa4322e1ae76c174bb80c82"
+      "sha256": "36746f8b16c71c33abf2b244d0f24fae6adcd30c6e4bf31515b28f34a3649552"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "efa71d836e5f41976378f29c013c315ceef84513f566e202886a55f96515a798"
+      "sha256": "3aa20d3ebd6abbcb5fa81212030514acf697c559c17f524fa3f78e7c44d51b34"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,11 +908,11 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "b6ad5d4ed4735f7c05dd40298bcfc992fd58ff5e1c27cce95f95d13da1346d76"
+      "sha256": "d3be8b5a59f1a1c4fae7a68e0803cff94795808431a43fc5b87af72f5bf7b027"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "9509706d5064ba3c7a96859c445d9c0051c97446d7665f04586358a51d970cd5"
+      "sha256": "82b1a6a63e826594692213af525efab67c400f993c6ebaba4b1953ba46eee00a"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -992,7 +992,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "56a5aab200244fcada80f1d7597b5e5418ad37c7148a74cc7a8a58c979233d24"
+      "sha256": "7c7ed66ac4a227bae89448e145fa5bd8bc012a62fdc83f517728b9b48641848e"
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",

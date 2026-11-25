@@ -474,6 +474,27 @@
     core.choose(s,pages,next===1?'PROG':'PROG2');s.subpage=next;return true;
    }
   }
+
+  if(s.page==='PROG2'&&s.subpage!==3&&/^LSK_[LR][1-6]$/.test(key)){
+   const input=String(s.scratch||'').trim(),draft=s.pending,active=s.active;
+   if(key==='LSK_L6'){core.choose(s,pages,'PERF_LIMITS');return true;}
+   if(key==='LSK_L1'){
+    if(!input){s.scratch=entered(s,'RTA_WPT');return true;}
+    if(input==='DELETE'){draft.RTA_WPT='';draft.RTA_TIME='';s.scratch='';s.message='';return true;}
+    if(!s.routeActivated||visibleLegs(s).filter(l=>l.ident===input&&!l.gap&&!l.conditional).length!==1){core.addMessage(s,'NOT IN FLIGHT PLAN');return true;}
+    draft.RTA_WPT=input;const eta=s.fmcPageInputs?.trainingPerformance?.waypoints?.find(l=>l.ident===input)?.eta;
+    draft.RTA_TIME=eta?.replace('Z','')||'';s.scratch='';s.message='';return true;
+   }
+   if(key==='LSK_R1'){
+    if(!entered(s,'RTA_WPT')){core.addMessage(s,'ENTER RTA WPT');return true;}
+    if(!input){s.scratch=entered(s,'RTA_TIME');return true;}
+    const m=/^(\d{2})(\d{2})(?:(\d{2})|\.(\d))?([AB])?$/.exec(input);
+    if(!m||+m[1]>23||+m[2]>59||m[3]&&+m[3]>59){core.addMessage(s,'INVALID ENTRY');return true;}
+    draft.RTA_TIME=m[1]+m[2]+(m[3]??(m[4]?String(+m[4]*6).padStart(2,'0'):''))+(m[5]||'');s.scratch='';s.message='';return true;
+   }
+   if(key==='LSK_L5'&&('RTA_WPT'in draft||'RTA_TIME'in draft)){delete draft.RTA_WPT;delete draft.RTA_TIME;s.scratch='';s.message='';return true;}
+   core.addMessage(s,'KEY INACTIVE');return true;
+  }
   if(s.page==='FIX'&&/^LSK_[LR][1-6]$/.test(key)){
    const n=s.subpage===2?2:1,fix=s.fixInfo?.[n];
    if(key==='LSK_L6'){core.choose(s,pages,'INDEX');return true;}
@@ -581,13 +602,17 @@
  const wind=(direction,speed)=>Number.isFinite(direction)&&Number.isFinite(speed)?
   String(Math.round(direction)%360).padStart(3,'0')+'°/'+Math.round(speed)+'KT':'';
  function progress(s){
-  const f=s.fmcPageInputs??{},p=f.predictions?.quality==='VALID'?f.predictions:{};
+  const f=s.fmcPageInputs??{},p=f.predictions?.quality==='VALID'?f.predictions:f.trainingPerformance?.quality==='TRAINING_ESTIMATE'?f.trainingPerformance:{};
   const flight=s.active.FLIGHT?'FLT '+s.active.FLIGHT+' ':'';
   const number=s.page==='PROG'?1:s.subpage===3?3:2;
   const rows=Array.from({length:6},empty);
   if(number===2){
-   rows[0]=pair('RTA WPT','-----');
-   return {title:'RTA PROGRESS',number,count:3,rows};
+   const wpt=entered(s,'RTA_WPT'),time=entered(s,'RTA_TIME'),draft='RTA_WPT'in s.pending||'RTA_TIME'in s.pending,r=draft?null:f.rta;
+   rows[0]=pair('RTA WPT',wpt||'-----','RTA',time||'------');
+   rows[1]=pair('RTA SPD',Number.isFinite(r?.targetKt)?String(r.targetKt):'---','TIME ERROR',r?.status||'');
+   rows[2]=pair('DIST TO '+(wpt||'WPT'),Number.isFinite(r?.distanceNm)?nm(r.distanceNm):'','ETA',r?.eta||'');
+   rows[4]=pair('',draft?'<ERASE':'','','');rows[5]=pair(DASH,'<LIMITS',DASH,'');
+   return {title:(draft?'MOD ':'')+'RTA PROGRESS',number,count:3,rows};
   }
   if(number===3){
    rows[1]=pair('WIND',wind(f.motion?.windFromDeg,f.motion?.windKt),'SAT/ISA DEV',
@@ -611,7 +636,8 @@
  }
  function routeData(s){
   const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5)),number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
-  const pred=s.fmcPageInputs?.predictions;const records=!modified(s)&&pred?.quality==='VALID'?[pred.from,pred.active,pred.next,pred.destination,...(Array.isArray(pred.waypoints)?pred.waypoints:[])].filter(Boolean):[];
+  const f=s.fmcPageInputs,pred=f?.predictions?.quality==='VALID'?f.predictions:f?.trainingPerformance;
+  const records=!modified(s)&&['VALID','TRAINING_ESTIMATE'].includes(pred?.quality)?(Array.isArray(pred.waypoints)&&pred.waypoints.length?pred.waypoints:[pred.from,pred.active,pred.next,pred.destination].filter(Boolean)):[];
   for(let i=0;i<5;i++){
    const leg=all[(number-1)*5+i],matches=leg?.ident?records.filter(x=>x.ident===leg.ident):[];
    const unique=leg?.ident&&all.filter(x=>x.ident===leg.ident).length===1&&matches.length===1?matches[0]:null;

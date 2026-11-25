@@ -16,7 +16,7 @@
    ground.value.onGround:null;
   const data=network?.getSignal('fmc.computed');
   const next=data?.quality==='VALID'?{
-   predictions:data.value.predictions,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,guidance:data.value.guidance,
+   predictions:data.value.predictions,trainingPerformance:data.value.trainingPerformance,rta:data.value.rta,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,guidance:data.value.guidance,
    position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
   }:null;
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
@@ -24,6 +24,8 @@
   lastInputs=signature;state.fmcPageInputs=next;
   // Settle the weight once and publish via the existing CDU shared-state bridge.
   const weightSettled=core.settlePerfWeight?.(state)===true;
+  const warning=next?.trainingPerformance?.reserveWarning;
+  if(warning&&!state.message&&warning!==state.lastTrainingFuelWarning){state.message=warning;state.lastTrainingFuelWarning=warning;}if(!warning)state.lastTrainingFuelWarning=null;
   if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
   if(weightSettled||performancePages.has(state.page))update();
  }

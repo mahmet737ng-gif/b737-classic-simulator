@@ -263,7 +263,7 @@ function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)
   }
  }
  if(st.page==='DEP_ARR'){selectDepArrAirport(st,pages,key);return;}
- if(st.page==='PERF_LIMITS'&&key==='R6'){addMessage(st,'RTA NOT AVAILABLE');return;}
+ if(st.page==='PERF_LIMITS'&&key==='R6'){choose(st,pages,'PROG2');st.subpage=2;return;}
  const [side,number]=[key[0],Number(key[1])];const item=def.rows[number-1]?.[side==='L'?0:1];
  if(!item){addMessage(st,'KEY INACTIVE');return;}
  if(st.page==='RTE' && key==='L5'){activateStagedRoute(st,pages);return;}
