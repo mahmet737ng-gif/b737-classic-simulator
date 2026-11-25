@@ -380,7 +380,12 @@ try{
   // data before it can be placed on a CAS tape. Never interpret Mach as knots.
   const event={type:'MCP',powered:o.power,displayBlank:o.displayBlank?.speed===true,
    selectedCasKt:selected,speedDisplayMode:o.speedDisplayMode};
-  for(const seat of ['CAPT','FO'])dispatch(seat,event);
+  for(const seat of ['CAPT','FO']){
+   dispatch(seat,event);
+   const vnav=o.power===true&&o.modes?.vertical==='VNAV'&&o.fmcGuidance?.vertical===true&&Number.isFinite(o.fmcGuidance.targetKt);
+   if(vnav){const previous=states[seat].fmc;dispatch(seat,{...previous,type:'FMC',valid:true,grossWeightAvailable:true,commandCasKt:o.fmcGuidance.targetKt});dispatch(seat,{type:'COMMAND_AUTHORITY',source:'FMC'});}
+   else if(states[seat].commandAuthority==='FMC'&&states[seat].mcp.displayBlank!==true)dispatch(seat,{type:'COMMAND_AUTHORITY',source:'AUTO'});
+  }
   return true;
  }
  function observe(seat,event){return dispatch(seat,event);}

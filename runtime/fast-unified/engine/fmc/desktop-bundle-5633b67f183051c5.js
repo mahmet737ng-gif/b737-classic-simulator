@@ -120,17 +120,17 @@ try{
  const isIdent=x=>typeof x==='string'&&/^[A-Z0-9._-]{2,16}$/.test(x);
  const validPoint=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)&&Math.abs(p[0])<=180&&Math.abs(p[1])<=90;
  function create(){
-  let revision=0,connected=false,origin='',destination='',activeContext=null;
+  let revision=0,activeRevision=0,connected=false,origin='',destination='',activeContext=null;
   const empty=()=>({selections:{},geometries:{},runways:{}}),listeners=new Set();
   let active=empty(),mod=null;
   const working=()=>mod??active;
   const startMod=()=>mod??(mod=copy(active));
   const snapshot=()=>copy({version:VERSION,revision,connected,origin,destination,cycle:CYCLE,
-   sourceOnly:true,fmcExecutable:false,activeContext,active,modified:mod,...working()});
-  function execute(){if(!mod){if(!activeContext){activeContext={origin,destination};return publish();}return snapshot();}active=mod;mod=null;activeContext={origin,destination};return publish();}
+   sourceOnly:true,fmcExecutable:false,activeRevision,activeContext,active,modified:mod,...working()});
+  function execute(){if(!mod){if(!activeContext){activeContext={origin,destination};activeRevision++;return publish();}return snapshot();}active=mod;mod=null;activeContext={origin,destination};activeRevision++;return publish();}
   function erase(){if(!mod)return snapshot();mod=null;if(activeContext){origin=activeContext.origin;destination=activeContext.destination;}return publish();}
   function publish(){revision++;const v=snapshot();for(const fn of [...listeners])try{fn(v)}catch(_){/* Observer isolation */}return v}
-  function clearAll(){active=empty();mod=null;activeContext=null;}
+  function clearAll(){active=empty();mod=null;activeContext=null;activeRevision++;}
   function setConnected(on){if(connected===(on===true))return snapshot();connected=on===true;if(!connected)clearAll();return publish()}
   function setContext({origin:a='',destination:b=''}={}){
    a=String(a||'').toUpperCase().trim();b=String(b||'').toUpperCase().trim();

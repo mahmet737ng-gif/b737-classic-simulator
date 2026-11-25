@@ -329,12 +329,13 @@
    if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
    const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
-   const activeIdent=prediction?.quality==='VALID'?prediction.active?.ident:null;
+   const live=s.fmcPageInputs?.guidance?.activeLeg;
+   const activeIdent=s.fmcPageInputs?.guidance?.simulatorCoupled===true?live?.ident:prediction?.quality==='VALID'?prediction.active?.ident:null;
    const activeMatch=activeIdent?all.filter(x=>x.ident===activeIdent).length===1&&leg.ident===activeIdent:index===0;
    const position=activeMatch?ownship(s):null;
    const from=validPosition(position)?position:!previous?.gap&&!previous?.conditional&&validPosition(previous)?previous:null;
-   const trueCourse=!leg.conditional&&from&&validPosition(leg)?legCourse(from,leg):leg.course;
-   const distance=!leg.conditional&&from&&validPosition(leg)?legDistance(from,leg):leg.distance;
+   const trueCourse=activeMatch&&live?.ident===leg.ident&&Number.isFinite(live.bearingTrueDeg)?live.bearingTrueDeg:!leg.conditional&&from&&validPosition(leg)?legCourse(from,leg):leg.course;
+   const distance=activeMatch&&live?.ident===leg.ident&&Number.isFinite(live.distanceNm)?live.distanceNm:!leg.conditional&&from&&validPosition(leg)?legDistance(from,leg):leg.distance;
    let magnetic=leg.courseMag;
    if(!Number.isFinite(magnetic)&&Number.isFinite(trueCourse)){
     const point=from||leg;
@@ -502,7 +503,8 @@
    rows[3]=pair('','','TAS',Number.isFinite(f.airData?.tasKt)?fixed(f.airData.tasKt)+'KT':'');
    return {title:flight+'PROGRESS',number,count:3,rows};
   }
-  const from=p.from??{},active=p.active??{},next=p.next??{},dest=p.destination??{};
+  const live=f.guidance?.simulatorCoupled===true?f.guidance.activeLeg:null;
+  const from=p.from??{},active=p.active??(live?{ident:live.ident,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg}:{}),next=p.next??{},dest=p.destination??{};
   const metrics=(x,time)=>[fixed(x.distanceNm),utc(time),mass(x.fuelKg)].filter(Boolean).join(' ');
   rows[0]=pair('FROM',from.ident||'','ALT  ATA  FUEL',
    [Number.isFinite(from.altitudeFt)?'FL'+Math.round(from.altitudeFt/100):'',utc(from.ata),mass(from.fuelKg)].filter(Boolean).join(' '));

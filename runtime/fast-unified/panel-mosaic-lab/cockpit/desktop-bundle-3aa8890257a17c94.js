@@ -721,8 +721,13 @@ try{
   data.predictions={fuelAtDestinationKg:null,topOfDescentNm:null,optimumAltitudeFt:null,
    n1TargetPercent:null,quality:'UNKNOWN',reason:'NO_VALIDATED_PERFORMANCE_AND_FLIGHT_MODEL'};
   const ready=powerReady&&!!fix&&active&&data.route.legsVerified&&!data.route.discontinuitiesUnknown;
-  data.guidance={routeEvidenceReady:ready,canCommandAircraft:false,authority:'ADVISORY_ONLY',
-   reason:ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
+  const live=typeof globalThis==='object'?globalThis.B737UnifiedFccFlightV1?.getFmcGuidance?.():null;
+  const training=operational&&!!fix&&active&&live?.fmcTrackValid===true&&Number.isFinite(live.observedAtMs)&&Date.now()-live.observedAtMs<2000;
+  const navActive=training?{ident:live.activeIdent,index:live.activeIndex,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg,bearingTrueDeg:live.bearingTrueDeg,crossTrackNm:live.crossTrackNm,position:live.position}:null;
+  const vertical=training&&live.fmcVerticalValid===true&&mcp?.value?.verticalMode==='VNAV';
+  data.guidance={routeEvidenceReady:ready||training,canCommandAircraft:false,authority:training?'SIMULATOR_FCC_ONLY':'ADVISORY_ONLY',simulatorCoupled:training,
+   activeLeg:navActive,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
+   reason:training?'EXECUTED_TRAINING_GUIDANCE':ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
   return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,motion,operational,failed:fmcFeed?.failed===true,
    radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,
    route:data.route,mcp:data.mcp,autoflight:data.autoflight,predictions:data.predictions,
@@ -1079,7 +1084,7 @@ try{
    thrustMode:m.thrust??null,autopilotMode:m.autopilot??null,
    fdLeft:c.fd?.left===true,fdRight:c.fd?.right===true,
    atArm:c.atArm===true,axisControl:s.axisControl||null,
-   armed:s.armed||{},capture:s.capture||{},pending:s.pending||{}},'TRAINING_SCENARIO');
+   armed:s.armed||{},capture:s.capture||{},pending:s.pending||{},fmcGuidance:s.fmcGuidance||null},'TRAINING_SCENARIO');
   send('AFDS','afds.state',{lateralMode:m.lateral??null,verticalMode:m.vertical??null,autopilotMode:m.autopilot??null,
    fdLeft:c.fd?.left??null,fdRight:c.fd?.right??null,power:s.power},'TRAINING_SCENARIO');
   send('AUTOTHROTTLE','autothrottle.state',{armed:c.atArm===true,mode:m.thrust??null,

@@ -195,7 +195,7 @@ try{
   const mapValid=src.fmc?.operational===true&&(d.mode==='PLAN'||src.fmc.position?.quality==='VALID');
   const cdi=src.ils?loc:number(src.vor?.deviationDots);
   const fmcMode=['FULL_NAV','EXP_NAV'].includes(d.mode);
-  const fmcActive=fmcMode&&fmcNav?.valid===true;
+  const fmcActive=!radio&&fmcNav?.valid===true;
   return {mode:d.mode,range:d.range,heading:src.heading,track:src.track,geoTrack:src.trueTrack,
    selectedHeading:src.selectedHeading,
    course:radio?src.course:fmcActive?fmcNav.course:null,trueRef:src.trueRef,

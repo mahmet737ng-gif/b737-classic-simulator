@@ -259,6 +259,8 @@ try{
   const route=displayRoute||{},points=route.points;
   const fmc=src?.fmc;
   const i=route.activeIndex;
+  const live=fmc?.guidance?.activeLeg,variation=src?.magneticVariationDeg,wrap=v=>((v%360)+360)%360;
+  if(fmc?.operational&&fmc.failed!==true&&fmc.position?.quality==='VALID'&&fmc.guidance?.simulatorCoupled===true&&live?.ident&&Number.isFinite(live.courseTrueDeg)&&Number.isFinite(variation))return {valid:true,course:wrap(live.courseTrueDeg-variation),cdi:Number.isFinite(live.crossTrackNm)?live.crossTrackNm/2:null,crossTrackNm:live.crossTrackNm,waypointBearing:Number.isFinite(live.bearingTrueDeg)?wrap(live.bearingTrueDeg-variation):null,activeWaypoint:live.ident,distanceNm:live.distanceNm,eta:null,source:'EXECUTED_FMC_TRAINING_LEG'};
   if(!route.verified||!fmc?.operational||fmc.failed===true||
    fmc.position?.quality!=='VALID'||!Number.isFinite(src.magneticVariationDeg)||
    !Array.isArray(points)||!Number.isInteger(i)||i<1||i>=points.length||

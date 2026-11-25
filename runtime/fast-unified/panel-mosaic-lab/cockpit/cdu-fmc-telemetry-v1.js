@@ -16,7 +16,7 @@
    ground.value.onGround:null;
   const data=network?.getSignal('fmc.computed');
   const next=data?.quality==='VALID'?{
-   predictions:data.value.predictions,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,
+   predictions:data.value.predictions,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,guidance:data.value.guidance,
    position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
   }:null;
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
