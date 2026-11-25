@@ -223,7 +223,17 @@ try{
  }
  // Selecting an airport/runway in DEP/ARR provides a verified PLAN anchor.
  // MAP and CTR MAP remain aircraft-centered when a real IRS/FMC position exists.
- function referenceAnchor(mode,route,aircraftPosition,flightLocation,sg){
+
+ function referencePlanPoints(sg){
+  const geometries=Object.values((sg?.modified||sg?.active)?.geometries||{});
+  const order=g=>g.kind==='RUNWAY'?0:g.kind==='SID'?1:g.kind==='RTE'?2:g.kind==='STAR'?3:g.kind==='APP'?4:5;
+  const list=geometries.filter(g=>g.kind!=='RUNWAY').sort((a,b)=>order(a)-order(b)).flatMap(g=>g.fixes||[]);
+  const runway=geometries.find(g=>g.kind==='RUNWAY')?.fixes?.[0];
+  return [runway,...list].filter(p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon))
+    .filter((p,i,a)=>!i||p.ident!==a[i-1].ident||p.lat!==a[i-1].lat||p.lon!==a[i-1].lon);
+ }
+
+ function referenceAnchor(mode,route,aircraftPosition,flightLocation,sg,planStep=0){
   const working=sg?.modified||sg?.active;
   const runway=Object.values(working?.geometries||{}).find(g=>
    g?.kind==='RUNWAY'&&g.fixes?.some(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)));
@@ -233,7 +243,7 @@ try{
    flightLocation:null;
   const live=aircraftPosition&&Number.isFinite(aircraftPosition.lat)&&Number.isFinite(aircraftPosition.lon)?
    aircraftPosition:null;
-  if(mode==='PLAN')return threshold??route?.points?.[route.centerIndex]??selected??live;
+  if(mode==='PLAN'){const points=referencePlanPoints(sg);return points[Math.max(0,Math.min(points.length-1,planStep||0))]??route?.points?.[route.centerIndex]??threshold??selected??live;}
   return live??selected??threshold;
  }
  function mount(win){
@@ -447,7 +457,7 @@ try{
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
     const anchor=referenceAnchor(mode,route,src.mapPosition,
-     win.B737UnifiedFlightLocationV1?.getLocation?.(),sg);
+     win.B737UnifiedFlightLocationV1?.getLocation?.(),sg,origin.ehsi.planStep);
     // The reviewed runway is the reference origin in PLAN. Do not subtract
      // the unrelated FMC route's selected center waypoint a second time.
      const project=mode==='PLAN'?
@@ -499,7 +509,7 @@ try{
   });
   for(const dir of [-1,1])doc.getElementById(dir<0?'unifiedPlanPrev':'unifiedPlanNext')?.addEventListener('click',()=>{
    const src=sources.project(selected),setup=state[selected];
-   const length=src.fmc?.route?.displayRoute?.points?.length??0;
+   const length=referencePlanPoints(win.B737CduSgRouteV1?.snapshot()).length||src.fmc?.route?.displayRoute?.points?.length||0;
    if(!length||setup.ehsi.mode!=='PLAN')return;
    setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
    schedule();
