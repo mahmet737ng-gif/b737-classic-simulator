@@ -604,7 +604,7 @@ function defaults(){return {
  heldSeconds:{ENG1:0,ENG2:0,APU:0},
  loops:{ENG1:{A:true,B:true},ENG2:{A:true,B:true}},
  sensing:{ENG1:{A:{fire:false,overheat:false},B:{fire:false,overheat:false}},ENG2:{A:{fire:false,overheat:false},B:{fire:false,overheat:false}}},
- apuDetector:true,engineFire:{ENG1:false,ENG2:false},engineOverheat:{ENG1:false,ENG2:false},apuFire:false,wheelWellFire:false,
+ apuDetector:true,engineFire:{ENG1:false,ENG2:false},persistentFire:{ENG1:false,ENG2:false},engineOverheat:{ENG1:false,ENG2:false},apuFire:false,wheelWellFire:false,
  bottles:{L:false,R:false,APU:false},dischargedTo:{L:null,R:null,APU:null},pressureLow:{L:false,R:false,APU:false},pending:{L:null,R:null,APU:null},
  circuits:{L:true,R:true,APU:true},squibs:{L:{1:true,2:true},R:{1:true,2:true},APU:{1:true,2:true}},
  handles:{ENG1:{pulled:false,angle:0,override:false},ENG2:{pulled:false,angle:0,override:false},APU:{pulled:false,angle:0,override:false}},
@@ -723,7 +723,7 @@ function createEngine(initialPower,{available=liveCB}={}){
    engine();if(!['A','B'].includes(cmd.loop)||!['fire','overheat'].includes(cmd.kind))throw new RangeError('Invalid sensor');
    n.sensing[unit][cmd.loop][cmd.kind]=Boolean(cmd.active);break;
  case 'SET_APU_DETECTOR':n.apuDetector=Boolean(cmd.healthy);break;
- case 'SET_FIRE':known();if(unit==='APU')n.apuFire=Boolean(cmd.active);else n.engineFire[unit]=Boolean(cmd.active);break;
+ case 'SET_FIRE':known();if(unit==='APU')n.apuFire=Boolean(cmd.active);else {n.engineFire[unit]=Boolean(cmd.active);n.persistentFire??={ENG1:false,ENG2:false};if(!cmd.active)n.persistentFire[unit]=false;else if(cmd.persistent!==undefined)n.persistentFire[unit]=cmd.persistent===true;}break;
  case 'SET_OVERHEAT':engine();n.engineOverheat[unit]=Boolean(cmd.active);break;
  case 'SET_WHEEL_FIRE':n.wheelWellFire=Boolean(cmd.active);break;
  case 'SET_BOTTLE_LOW':bottleCheck();n.pressureLow[cmd.bottle]=Boolean(cmd.active);break;
@@ -781,7 +781,7 @@ function createEngine(initialPower,{available=liveCB}={}){
      // injected heat and detector faults remain under the instructor's control.
      const target=n.dischargedTo[bottle];
      if(target==='APU')n.apuFire=false;
-     else if(target)n.engineFire[target]=false;
+     else if(target&&!n.persistentFire?.[target])n.engineFire[target]=false;
     }
    }
    break;}
