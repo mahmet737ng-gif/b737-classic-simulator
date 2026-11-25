@@ -344,7 +344,9 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  box.dataset.sourceVerified=String(output.sourceVerified);
  box.dataset.compositorVersion=output.version;
  box.style.opacity=state.brightness;
- const all=core.lights(state);if(state.stage6AwaitingExec||window.CDU_SG_API?.execLit?.())all.EXEC=true;
+ const all=core.lights(state);
+ // Route selection is not a pending EXEC until ACTIVATE or an active-route MOD.
+ if(state.stage6AwaitingExec===true||((state.routeActivated===true||state.routeActivationArmed===true)&&window.CDU_SG_API?.execLit?.()))all.EXEC=true;
  for(const [l,on] of Object.entries(all)){const el=byId['CDU_CAPT_'+l+'_LIGHT'];if(el)el.classList.toggle('on',on)}
  for(const [id,value] of [
   ['page-now',state.page],['scratch-now',state.message||state.scratch||'—'],

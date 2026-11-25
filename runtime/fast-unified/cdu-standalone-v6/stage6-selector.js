@@ -300,7 +300,7 @@ async function finishSelection(clear=false){
    body:JSON.stringify({plan_id:state.stage6BasePlanId,selections})});
   const valid=model.validate(output);
   if(valid.origin!==state.active.ORIGIN||valid.destination!==state.active.DEST||valid.executable!==false)throw Error('Source route drift');
-  state.stage6Selections=selections;state.stage6PendingPlan=copy(output);state.stage6AwaitingExec=false;state.stage6Page=1;
+  state.stage6Selections=selections;state.stage6PendingPlan=copy(output);state.stage6AwaitingExec=state.routeActivated===true;state.stage6Page=1;
   core.choose(state,pages,'DEP_ARR');state.stage6View={mode:'MENU',page:1};state.message='';updates();
  }catch(e){f.mode='ERROR';f.error=e.message;error(e.message)}
 }

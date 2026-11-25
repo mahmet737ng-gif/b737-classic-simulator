@@ -44,7 +44,9 @@ case 'TEXT':return s.length>0&&s.length<=24;
 default:return s.length>0&&s.length<=24;}}
 function getRouteScreens(st){return st.chapter11RoutePages?globalThis.CDU_CH11_ROUTE_PAGES:null;}
 function isRouteField(field){return ROUTE_FIELDS.has(field);}
-function routeField(st,field){return isRouteField(field)||getRouteScreens(st)?.isRouteField(field);}
+function routeField(st,field){return isRouteField(field)||/^(?:SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+)$/.test(field)||!!getRouteScreens(st)?.isRouteField(field);}
+ function routeExecAuthorized(st){return st.routeActivated===true||st.routeActivationArmed===true;}
+ function executableKeys(st){return Object.keys(st.pending).filter(k=>st.pending[k]!==st.active[k]&&(!routeField(st,k)||routeExecAuthorized(st)));}
 function hasStagedRoute(st){return Object.keys(st.stagedRoute).length>0;}
 function pendingCount(st){return Object.keys(st.pending).filter(k=>st.pending[k]!==st.active[k]).length;}
 function readValue(st,key,pageName=''){if(Object.prototype.hasOwnProperty.call(st.pending,key))return st.pending[key]??''; if(ROUTE_PAGES.has(pageName||st.page)&&Object.prototype.hasOwnProperty.call(st.stagedRoute,key))return st.stagedRoute[key]??''; return st.active[key]??'';}
@@ -88,13 +90,13 @@ function enterPosInitField(st,cell){
 }
 function field(st,cell){const f=cell.field; if(!f)return;
  if(st.page==='POS_INIT'&&enterPosInitField(st,cell))return;
- if(st.depArrSelection?.referenceOnly&&['DEPARTURES','ARRIVALS'].includes(st.page)){addMessage(st,'NOT ON ROUTE');return;} if(st.page==='RTE'&&isRouteField(f)){stageRouteField(st,cell);return;}
+ if(st.depArrSelection?.referenceOnly&&['DEPARTURES','ARRIVALS'].includes(st.page)){addMessage(st,'NOT ON ROUTE');return;} if(routeField(st,f)&&!routeExecAuthorized(st)){stageRouteField(st,cell);return;}
  if(st.scratch==='DELETE'){ if(Object.prototype.hasOwnProperty.call(st.pending,f)||st.active[f]){st.pending[f]='';} st.scratch='';st.message='';return; }
  if(!st.scratch){const existing=readValue(st,f);if(existing){st.scratch=String(existing)}else addMessage(st,'INVALID ENTRY');return;}
  const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} if(st.active[f]===value)delete st.pending[f];else st.pending[f]=value; st.scratch='';st.message=''; }
-function activateStagedRoute(st,pages){ if(!hasStagedRoute(st)){addMessage(st,'KEY INACTIVE'); return;} for(const [f,v] of Object.entries(st.stagedRoute)){ if((st.active[f]??'')!==v) st.pending[f]=v; }
- st.stagedRoute={}; choose(st,pages,'ACTIVATE'); }
-function eraseRouteChanges(st,pages){ clearRoutePending(st); st.stagedRoute={}; st.scratch=''; st.message=''; choose(st,pages,'RTE'); }
+function activateStagedRoute(st,pages){ if(st.routeActivated===true||st.routeActivationArmed===true||(!hasStagedRoute(st)&&!getRouteScreens(st)?.canActivate(st))){addMessage(st,'KEY INACTIVE'); return false;} for(const [f,v] of Object.entries(st.stagedRoute)){ if((st.active[f]??'')!==v) st.pending[f]=v; }
+ st.stagedRoute={}; st.routeActivationArmed=true; choose(st,pages,'ACTIVATE'); return true; }
+function eraseRouteChanges(st,pages){ clearRoutePending(st); st.routeActivationArmed=false; st.stagedRoute={}; st.scratch=''; st.message=''; choose(st,pages,'RTE'); }
 function selectDepArrAirport(st,pages,key){
  const select={
   L1:{source:'ORIGIN',mode:'DEP',page:'DEPARTURES'},
@@ -143,11 +145,12 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_CAPT_/,'');st.
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
  if(k==='EXEC'){
-  if(pendingCount(st)||st.routeActivationArmed===true){
-   const routeChanged=routeScreens&&(st.routeActivationArmed===true||st.routeActivated===true&&
-    Object.keys(st.pending).some(routeScreens.isRouteField));
-   for(const [f,v] of Object.entries(st.pending)){if(v==='')delete st.active[f];else st.active[f]=v;}
-   clearPending(st);st.message='';
+  const keys=executableKeys(st);
+  if(keys.length||st.routeActivationArmed===true){
+   const routeChanged=st.routeActivationArmed===true||st.routeActivated===true&&keys.some(f=>routeField(st,f));
+   for(const f of keys){const v=st.pending[f];if(v==='')delete st.active[f];else st.active[f]=v;delete st.pending[f];}
+   for(const f of Object.keys(st.pending))if(st.pending[f]===st.active[f])delete st.pending[f];
+   st.message='';
    if(routeChanged){
     st.routeActivated=true;st.routeActivationArmed=false;st.routeRevision=(st.routeRevision||0)+1;
     st.activeNavFixEvidence={...st.navFixEvidence};
@@ -179,7 +182,7 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  }
  lines[13]=st.message||st.scratch||'';
  return lines.map(l=>String(l).slice(0,24)); }
-function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:pendingCount(st)>0};}
+function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:st.routeActivationArmed===true||executableKeys(st).length>0};}
 function inspect(st,pages,key){if(!/^([LR][1-6])$/.test(key))return null;const c=pages[st.page]?.rows[Number(key[1])-1]?.[key[0]==='L'?0:1];return c?{page:st.page,lsk:key,...c,reference:pages[st.page].source_ref}:null;}
 return {makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
 });

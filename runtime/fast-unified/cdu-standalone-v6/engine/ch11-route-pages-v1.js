@@ -7,7 +7,7 @@
  'use strict';
  const RTE=new Set(['RTE','FLIGHT_PLAN','ACTIVATE']);
  const SOURCE='PMDG_WORLD_2610_WITH_PROCEDURES_R1';
- const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+)$/;
+ const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+)$/;
  const DASH='------------';
  const ROUTE_ROWS=5,MAX_ROUTE_ROWS=250;
  const empty=()=>({labelL:'',valueL:'',labelR:'',valueR:''});
@@ -16,11 +16,11 @@
  const field=(side,name,format,required=false)=>({side,field:name,format,required});
  const isRouteField=name=>ROUTE_FIELD.test(name);
  const modified=s=>s.routeActivationArmed===true||s.stage6AwaitingExec===true||
-  !!s.stage6PendingPlan||(s.routeActivated===true&&(Object.keys(s.pending).some(isRouteField)||Boolean(sourceSnapshot(s)?.modified)));
+  (s.routeActivated===true&&(!!s.stage6PendingPlan||Object.keys(s.pending).some(k=>isRouteField(k)&&s.pending[k]!==s.active[k])||Boolean(sourceSnapshot(s)?.modified)));
  const sourcePlan=s=>s.stage6PendingPlan||s.stage5Pending||s.stage5Committed;
  const currentNav=s=>s.navdbPending||s.navdbActive;
  const entered=(s,name)=>s.pending[name]??s.stagedRoute[name]??s.active[name]??'';
- const routeStatus=s=>modified(s)?'MOD ':s.routeActivated||s.stage5Committed||s.navdbActive?'ACT ':'';
+ const routeStatus=s=>modified(s)?'MOD ':s.routeActivated===true?'ACT ':'';
  const titleWithStatus=(s,title)=>(routeStatus(s)+title);
  function segments(s){
   const plan=sourcePlan(s);
@@ -114,7 +114,7 @@
    for(let i=0;i<ROUTE_ROWS;i++)rows.push(routeRow(list,first+i,i===0));
   }
   const action=routeAction(s,native);
-  const needsActivation=s.stage6PendingPlan&&!s.stage6AwaitingExec;
+  const needsActivation=!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec;
   rows.push(pair(DASH,action?.side==='L'?action.label:'',DASH,
    needsActivation?'ACTIVATE>':action?.side==='R'?action.label:''));
   return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,list),rows};
@@ -346,7 +346,7 @@
    rows.push(pair(angle,leg.ident,nm(distance),constraint(s,leg,index)));
   }
   const action=routeAction(s);
-  const right=canActivate(s)||s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
+  const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
    s.routeActivated||s.navdbActive||s.stage5Committed?'RTE DATA>':'';
   rows.push(pair(DASH,action?.command==='erase'?'<ERASE':'',DASH,right));
   return {title:titleWithStatus(s,'RTE LEGS'),number,count,rows};
@@ -399,7 +399,7 @@
    const command=routeAction(s,segments(s));
    if(command?.command==='activate'){
     const page=s.page,subpage=s.subpage;
-    core.activateStagedRoute(s,pages);
+    if(core.activateStagedRoute(s,pages)!==true)return true;
     s.page=page==='ACTIVATE'?'RTE':page;s.subpage=subpage;
     s.routeActivationArmed=true;
     return true;
@@ -445,21 +445,21 @@
     }
    }
    const before=entered(s,cell.field),input=s.scratch;
-   if(s.routeActivated)core.field(s,cell);
+   if(s.routeActivated||s.routeActivationArmed)core.field(s,cell);
    else core.stageRouteField(s,cell);
    if(input&&s.scratch===''&&cell.field.startsWith('VIA')&&input!==before){
-    const to='TO'+cell.field.slice(3),draft=s.routeActivated?s.pending:s.stagedRoute;
+    const to='TO'+cell.field.slice(3),draft=(s.routeActivated||s.routeActivationArmed)?s.pending:s.stagedRoute;
     draft[to]='';
     if(s.verifiedToEntries)delete s.verifiedToEntries[to];
     if(s.navFixEvidence)delete s.navFixEvidence[to];
    }
    if(input&&s.scratch===''&&cell.field==='ORIGIN'&&before&&entered(s,'ORIGIN')!==before){
-    const draft=s.routeActivated?s.pending:s.stagedRoute;
+    const draft=(s.routeActivated||s.routeActivationArmed)?s.pending:s.stagedRoute;
     for(const name of new Set([...Object.keys(s.active),...Object.keys(draft)]))
      if(isRouteField(name)&&name!=='ORIGIN')draft[name]='';
    }
    if(input==='DELETE'&&cell.field.startsWith('TO')&&s.scratch===''){
-    const draft=s.routeActivated?s.pending:s.stagedRoute;
+    const draft=(s.routeActivated||s.routeActivationArmed)?s.pending:s.stagedRoute;
     draft['VIA'+cell.field.slice(2)]='';
    }
    return true;
@@ -469,7 +469,7 @@
    if(key.startsWith('LSK_R')&&Number(key[5])<=5&&leg&&!leg.gap){
     const field=constraintKey(s,leg,index),old=constraint(s,leg,index);
     if(!s.scratch){s.scratch=old;s.message='';return true;}
-    const draft=s.routeActivated?s.pending:s.stagedRoute;
+    const draft=(s.routeActivated||s.routeActivationArmed)?s.pending:s.stagedRoute;
     if(s.scratch==='DELETE'){draft[field]='';s.scratch='';s.message='';return true;}
     const next=parseConstraint(s.scratch,old);
     if(!next){core.addMessage(s,'INVALID ENTRY');return true;}

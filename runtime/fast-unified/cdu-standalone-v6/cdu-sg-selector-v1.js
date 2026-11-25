@@ -158,7 +158,7 @@
     };
    }
   }
-  rows[5]={...blank(),valueL:!v.referenceOnly&&snapshot.modified?'<ERASE':'<INDEX',valueR:'ROUTE>'};
+  rows[5]={...blank(),valueL:!v.referenceOnly&&snapshot.modified&&mayExecute()?'<ERASE':'<INDEX',valueR:'ROUTE>'};
   return {title:v.airport+' '+state.page,number,count:total,rows};
  }
  function fromCatalogKey(k){
@@ -166,7 +166,7 @@
   if(!v||!['DEPARTURES','ARRIVALS'].includes(state.page))return false;
   if(k==='LSK_L6'){
    ++serial;state.message='';
-   if(!v.referenceOnly&&shared.snapshot().modified){
+   if(!v.referenceOnly&&shared.snapshot().modified&&mayExecute()){
     shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;v.inlineApp=null;
    }else{delete state.cduSgView;core.choose(state,pages,'DEP_ARR');}
    update();return true;
@@ -430,7 +430,7 @@
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
-  if(k==='EXEC')revisionBeforeExec=state.routeRevision||0;
+  if(k==='EXEC')revisionBeforeExec=mayExecute()?(state.routeRevision||0):null;
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FIX'&&k==='LSK_L1'&&state.scratch){void selectInfoFix();return true;}
   if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&state.scratch){
    const api=globalThis.CDU_CH11_ROUTE_PAGES,route=api?.visibleLegs?.(state)||[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
@@ -475,7 +475,7 @@
    }
   }
   if(state.page==='DEP_ARR')return indexKey(k);
-  if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified){
+  if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified&&mayExecute()){
    if(core.pendingCount?.(state)||state.routeActivationArmed)core.press(state,pages,code);
    shared.erase();
    state.message='';return true;
@@ -484,11 +484,11 @@
  }
  function afterKey(code){
   if(attached)void preloadAirports();
-  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!hasReferenceChanges()||state.routeActivated!==true)return;
+  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||revisionBeforeExec===null||!hasReferenceChanges()||state.routeActivated!==true)return;
   // The shared state is a verified display reference, not a flight-leg
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
   // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.
-  if(revisionBeforeExec===null||revisionBeforeExec===(state.routeRevision||0))state.routeRevision=(state.routeRevision||0)+1;
+  if(revisionBeforeExec===(state.routeRevision||0))state.routeRevision=(state.routeRevision||0)+1;
   revisionBeforeExec=null;state.activeNavFixEvidence={...state.navFixEvidence};shared.execute();
   state.message='';
  }
