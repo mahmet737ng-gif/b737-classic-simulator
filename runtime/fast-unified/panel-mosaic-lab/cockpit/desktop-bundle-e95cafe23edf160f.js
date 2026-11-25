@@ -475,6 +475,28 @@ try{
       Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
     reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
      src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor,trajectoryFlight);
+    // HOLD overlay uses the same projection/clip as the selected seat's route.
+    screen.svg.querySelector('[data-fmc-holding]')?.remove();
+    const guidance=win.B737FmcTrainingGuidanceV1,session=win.B737UnifiedFmc?.snapshot?.();
+    if(guidance&&session&&anchor&&project&&['MAP','CTR_MAP','PLAN'].includes(mode)&&src.displayPowered===true&&src.video===true&&!preview){
+     const ns='http://www.w3.org/2000/svg',g=doc.createElementNS(ns,'g');g.setAttribute('data-fmc-holding','true');
+     const rangeId=(screen.svg.id||'ehsi')+'-route-range',plotId=(screen.svg.id||'ehsi')+'-plot';
+     g.setAttribute('clip-path','url(#'+(screen.svg.querySelector('[id="'+rangeId+'"]')?rangeId:plotId)+')');
+     const flight=scenarioState||{},live=win.B737UnifiedFccFlightV1?.getFmcGuidance?.()?.hold;
+     const draw=(hold,key,mod)=>{
+      if(!hold||!Number.isFinite(hold.inbound)||!Number.isFinite(hold.lat)||!Number.isFinite(hold.lon)||!['L','R'].includes(hold.dir))return;
+      let points=!mod&&live?.key===key&&live.active?live.points:null;
+      if(!points){const variation=win.B737CduSgBridgeV1?.magneticVariation?.(hold),gs=hold.speed??flight.gsKt??src.fmc?.motion?.gsKt;
+       const altitude=flight.altitudeFt??src.fmc?.airData?.pressureAltitudeFt;
+       if(!Number.isFinite(variation)||!Number.isFinite(gs)||gs<=0||!Number.isFinite(altitude))return;
+       points=guidance.holdGeometry({...hold,hold},hold.inbound+variation,gs,altitude,20);}
+      const xy=points.map(p=>{const o=sources.offsets(anchor,p);return project(o.x,o.y);});
+      if(!xy.every(p=>p.every(Number.isFinite)))return;
+      const path=doc.createElementNS(ns,'polyline');path.setAttribute('points',xy.map(p=>p.map(v=>v.toFixed(2)).join(',')).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',mod?'#65edfa':'#ef6afc');path.setAttribute('stroke-width','2');if(mod)path.setAttribute('stroke-dasharray','7 5');g.appendChild(path);
+     };
+     for(let i=1;i<=5;i++){const key='HOLD_'+i;for(const [bank,mod] of [[session.active,false],[session.pending,true],[session.stagedRoute,true]]){try{const hold=JSON.parse(bank?.[key]);if(hold.origin===(mod?(session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??session.active?.ORIGIN):session.active?.ORIGIN)&&hold.dest===(mod?(session.pending?.DEST??session.stagedRoute?.DEST??session.active?.DEST):session.active?.DEST))draw(hold,key,mod);}catch(_){}}}
+     if(g.childNodes.length)screen.svg.appendChild(g);
+    }
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
    const output=doc.getElementById('unifiedEfisSources');

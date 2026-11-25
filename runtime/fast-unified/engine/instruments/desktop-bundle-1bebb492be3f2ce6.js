@@ -592,6 +592,15 @@ try{
   pts.push(p(-L,2*sign*radius));for(let i=1;i<=12;i++){const t=Math.PI*i/12;pts.push(p(-L-radius*Math.sin(t),sign*radius*(1+Math.cos(t))));}
   pts.push(p(0,0));return pts;
  }
+ function holdEntry(fix,course,arrival,gs,altitude,bank){
+  const race=holdGeometry(fix,course,gs,altitude,bank),dir=fix.hold.dir==='L'?-1:1,d=dir*delta(course,arrival);
+  // Conventional sector approximation for training; not a protected-airspace calculation.
+  const kind=d>70?'PARALLEL':d< -110?'TEARDROP':'DIRECT';
+  if(kind==='DIRECT')return {kind,points:race,race};
+  if(kind==='TEARDROP')return {kind,points:[race[0],...race.slice(13)],race};
+  const outbound=vec(race[12],race[13]),end={lat:fix.lat+outbound.y/60,lon:fix.lon+outbound.x/(60*Math.cos(fix.lat*Math.PI/180))};
+  return {kind,points:[race[0],end,race[0]],race};
+ }
  function create(){
   let holding=null;
   let plan=null,signature='',index=0,from=null,previousAltitude=null,previousCondition=null,lastElapsed=null,wasDescending=false;
@@ -628,11 +637,13 @@ try{
    const hold=leg.hold,mag=hold?(conditions.variationAt?.(leg)??conditions.variation):null;
    if(hold&&finite(mag)&&frame.airborne===true){
     const inbound=norm(hold.inbound+mag),atFix=length(vec(frame,leg))<=.18;
-    if(!holding&&atFix){holding={key:hold.key,points:holdGeometry(leg,inbound,Math.max(100,frame.gsKt||frame.iasKt||180),frame.altitudeFt,mcp?.bankAngleLimit),step:1,laps:0};}
+    if(!holding&&atFix){const arrival=coord(leg.from)?bearing(vec(leg.from,leg)):frame.trueHeadingDeg;const entry=holdEntry(leg,inbound,arrival,Math.max(100,frame.gsKt||frame.iasKt||180),frame.altitudeFt,mcp?.bankAngleLimit);holding={key:hold.key,points:entry.points,race:entry.race,entry:entry.kind,step:1,laps:0};}
     if(holding?.key===hold.key){
-     const pts=holding.points;let target=pts[holding.step],start=pts[holding.step-1],s=segment(start,target,frame,frame.trueHeadingDeg);
-     if(length(vec(frame,target))<=.13||s&&s.along>=s.len&&Math.abs(s.xtk)<.3){holding.step++;if(holding.step>=pts.length){if(hold.exit){holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}else{holding.step=1;holding.laps++;}}}
-     if(holding){target=pts[holding.step];start=pts[holding.step-1];s=segment(start,target,frame,frame.trueHeadingDeg);track=s?.track??bearing(vec(frame,target));course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=s?.xtk??null;holdStatus={key:hold.key,active:true,exit:hold.exit===true,lap:holding.laps,points:pts};}
+     let pts=holding.points;
+     if(hold.exit&&holding.points===holding.race&&holding.step===13&&!holding.shortened){const traveled=length(vec(pts[12],frame));const lengthNm=Math.max(.2,Math.min(length(vec(pts[12],pts[13])),traveled));pts=holdGeometry({...leg,hold:{...hold,dist:lengthNm}},inbound,Math.max(100,frame.gsKt||frame.iasKt||180),frame.altitudeFt,mcp?.bankAngleLimit);holding.points=pts;holding.race=pts;holding.step=14;holding.shortened=true;}
+     let target=pts[holding.step],start=pts[holding.step-1],s=segment(start,target,frame,frame.trueHeadingDeg);
+     if(length(vec(frame,target))<=.13||s&&s.along>=s.len&&Math.abs(s.xtk)<.3){holding.step++;if(holding.step>=pts.length){if(hold.exit){holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}else{holding.points=holding.race;pts=holding.points;holding.step=1;holding.laps++;}}}
+     if(holding){target=pts[holding.step];start=pts[holding.step-1];s=segment(start,target,frame,frame.trueHeadingDeg);track=s?.track??bearing(vec(frame,target));course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=s?.xtk??null;holdStatus={key:hold.key,active:true,exit:hold.exit===true,lap:holding.laps,entry:holding.entry,points:holding.race};}
     }
    }
    if(holdStatus){/* the holding controller owns lateral guidance until exit */}
@@ -663,7 +674,7 @@ try{
   }
   return {evaluate,reset};
  }
- return Object.freeze({compile,segment,vertical,holdGeometry,create});
+ return Object.freeze({compile,segment,vertical,holdGeometry,holdEntry,create});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}

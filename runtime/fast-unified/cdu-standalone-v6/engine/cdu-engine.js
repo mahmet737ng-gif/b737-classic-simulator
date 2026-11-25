@@ -145,6 +145,7 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_CAPT_/,'');st.
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
  if(k==='EXEC'){
+  if(routeScreens?.holdExecReady?.(st)===false){addMessage(st,'ENTER INBD CRS');return st;}
   const keys=executableKeys(st);
   if(keys.length||st.routeActivationArmed===true){
    const routeChanged=st.routeActivationArmed===true||st.routeActivated===true&&keys.some(f=>routeField(st,f));

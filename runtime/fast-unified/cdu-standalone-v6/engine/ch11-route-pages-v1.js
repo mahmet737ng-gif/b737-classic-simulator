@@ -340,6 +340,7 @@
   // FCOM SP.11.9 and 11.43.32–35: HOLD AT, RTE HOLD and EXEC transaction.
  const holdKey=i=>'HOLD_'+i;
  function readHold(s,i,activeOnly=false){try{const v=JSON.parse(activeOnly?s.active[holdKey(i)]:entered(s,holdKey(i)));return v&&validPosition(v)&&typeof v.ident==='string'?v:null;}catch(_){return null;}}
+ function holdExecReady(s){return [1,2,3,4,5].every(i=>{const h=readHold(s,i);return !h||Number.isFinite(h.inbound)&&h.inbound>=0&&h.inbound<360;});}
  function holdList(s){return [1,2,3,4,5].map(i=>({i,h:readHold(s,i)})).filter(x=>x.h);}
  function holdTime(s,h){return h.time??((s.fmcPageInputs?.airData?.pressureAltitudeFt??0)>14000?1.5:1);}
  function holdWrite(s,i,h){const draft=s.routeActivated||s.routeActivationArmed?s.pending:s.stagedRoute,k=holdKey(i),v=h?JSON.stringify(h):'';if(v===(s.active[k]??''))delete draft[k];else draft[k]=v;s.scratch='';s.message='';}
@@ -374,7 +375,7 @@
   if(s.page!=='HOLD')return false;
   const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){if(list.length)s.holdPage=list[(list.indexOf(entry)+(key==='NEXT_PAGE'?1:-1)+list.length)%list.length].i;return true;}
-  if(key==='EXEC'&&list.some(x=>x.h.inbound===null)){core.addMessage(s,'ENTER INBD CRS');return true;}
+  if(key==='EXEC'&&!holdExecReady(s)){core.addMessage(s,'ENTER INBD CRS');return true;}
   if(!/^LSK_[LR][1-6]$/.test(key))return false;
   if(key==='LSK_L6'){if(entry&&(Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i)))){delete s.pending[holdKey(entry.i)];delete s.stagedRoute[holdKey(entry.i)];s.scratch='';s.message='';if(!readHold(s,entry.i))core.choose(s,pages,'LEGS');return true;}if(list.length<5&&!modified(s))holdStart(s,pages,core);return true;}
   if(!h){core.addMessage(s,'KEY INACTIVE');return true;}
@@ -619,5 +620,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs,planMode,planCenter,planStep});
+ return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
 });
