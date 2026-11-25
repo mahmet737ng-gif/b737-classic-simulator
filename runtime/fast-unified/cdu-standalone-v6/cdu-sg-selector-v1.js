@@ -315,32 +315,84 @@
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
+
+ async function pilotPoint(input,route=[],index=null){
+  const api=globalThis.B737PilotWaypointsV1;if(!api)throw Error('NAV DATA UNAVAILABLE');
+  const spec=api.parse(input),snap=shared.snapshot();
+  const points=Object.values(snap.geometries||{}).flatMap(g=>g.fixes||[]);
+  const used=[...new Set([...points.map(p=>p.ident),...route.map(p=>p.ident),...Object.values(state.navFixEvidence||{}).map(p=>p.ident),...Object.values(state.activeNavFixEvidence||{}).map(p=>p.ident)])];
+  async function lookup(id){
+   const list=points.filter(p=>p.ident===id&&Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+   if(list.length){if(list.some(p=>api.distance(p,list[0])>.05))throw Error('DUPLICATE WAYPOINT');return list[0];}
+   const res=await bridge.request('/api/iran-navdata/fix?ident='+encoded(id)),body=await res.json();
+   if(!res.ok||body.matches?.length!==1)throw Error(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');
+   return body.matches[0];
+  }
+  const p=await api.resolve(spec,{lookup,variation:point=>bridge.magneticVariation?.(point),route,index,used});
+  // Avoid clashing with an existing database identifier.
+  for(let attempt=0;attempt<999;attempt++){
+   const res=await bridge.request('/api/iran-navdata/fix?ident='+encoded(p.ident));
+   if(res.status===404)return p;
+   if(!res.ok)throw Error('NAV DATA UNAVAILABLE');
+   const v=await res.json();if(!v.matches?.length)return p;
+   used.push(p.ident);p.ident=api.name(spec.prefix,used);
+  }
+  throw Error('WAYPOINT LIMIT');
+ }
+ async function insertLegPilot(k){
+  if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
+  const page=globalThis.CDU_CH11_ROUTE_PAGES,route=page?.visibleLegs?.(state)||[];
+  const selected=((page?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1,input=String(state.scratch||'').trim().toUpperCase();
+  const ref=route[selected],revision=shared.snapshot().revision,ticket=++airwayTicket;
+  if(!ref||ref.conditional||ref.gap){issue('INVALID LEG');return;}
+  airwayBusy=true;state.message='VERIFY NAV DATA';update();
+  try{
+   const spec=globalThis.B737PilotWaypointsV1.parse(input);
+   if(spec.kind==='ATW'&&spec.place!==ref.ident)throw Error('INVALID ALONG TRACK');
+   const p=await pilotPoint(input,route,spec.kind==='ATW'?selected:null);
+   const index=p.insertIndex??selected,next=route[index],prev=route[index-1];
+   if(!attached||ticket!==airwayTicket||state.page!=='LEGS'||String(state.scratch||'').trim().toUpperCase()!==input||shared.snapshot().revision!==revision)return;
+   if(!prev||!next||prev.conditional||next.conditional||prev.gap||next.gap||!next.geoKey)throw Error('INVALID LEG');
+   shared.insertPilotBefore(next.geoKey,next.rawIndex,p,prev.ident,next.ident);
+   state.scratch='';state.message='';update();
+  }catch(e){if(attached&&ticket===airwayTicket)issue(e.message);}
+  finally{if(ticket===airwayTicket)airwayBusy=false;}
+ }
+
  async function verifyDirectKey(key,cell){
   if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
   const n=Number(cell.field.slice(2)),input=String(state.scratch||'').trim().toUpperCase();
-  if(!Number.isInteger(n)||!core.validate?.('WAYPOINT',input)){issue('INVALID ENTRY');return;}
+  const isPilot=/[\/]/.test(input)||/^[NS]\d{2}.*[EW]\d{3}/.test(input);
+  if(!Number.isInteger(n)||(!isPilot&&!core.validate?.('WAYPOINT',input))){issue('INVALID ENTRY');return;}
+  if(isPilot){try{if(globalThis.B737PilotWaypointsV1.parse(input).kind==='ATW'){issue('USE LEGS PAGE');return;}}catch(e){issue(e.message);return;}}
   shared.setContext({origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE')});
   const from=precedingFix('VIA'+n),revision=shared.snapshot().revision,ticket=++airwayTicket;
   airwayBusy=true;state.message='VERIFY NAV DATA';update();
   try{
-   const result=await bridge.request('/api/iran-navdata/fix?ident='+encoded(input)),body=await result.json();
+   let p;
+   if(isPilot)p=await pilotPoint(input);
+   else {const result=await bridge.request('/api/iran-navdata/fix?ident='+encoded(input)),body=await result.json();
+    if(!result.ok||body.matches?.length!==1)throw Error(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');
+    p=body.matches[0];}
    if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||shared.snapshot().revision!==revision||
     String(state.scratch||'').trim().toUpperCase()!==input||globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
-   if(!result.ok||body.matches?.length!==1){issue(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');return;}
-   const p=body.matches[0];if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||p.ident!==input){issue('NOT IN DATABASE');return;}
-   state.message='';core.press(state,pages,'CDU_CAPT_'+key);
-   if(core.readValue(state,cell.field,'FLIGHT_PLAN')===input){
+   if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||(!isPilot&&p.ident!==input)){issue('NOT IN DATABASE');return;}
+   state.message='';state.scratch=p.ident;core.press(state,pages,'CDU_CAPT_'+key);
+   if(core.readValue(state,cell.field,'FLIGHT_PLAN')===p.ident){
     state.navFixEvidence={...(state.navFixEvidence||{}),[cell.field]:p};
     const pts=from&&Number.isFinite(from.lat)&&Number.isFinite(from.lon)&&from.ident!==p.ident?[from,p]:[p];
     shared.stageEnroute?.(n,pts,'DIRECT');
    }
    update();
-  }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
+  }catch(e){if(attached&&ticket===airwayTicket)issue(e.message||'NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&(/[\/]/.test(state.scratch)||/^[NS]\d{2}.*[EW]\d{3}/.test(state.scratch))){
+   void insertLegPilot(k);return true;
+  }
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FLIGHT_PLAN'&&/^LSK_[LR][1-5]$/.test(k)&&
    ['DELETE','DCT','DIRECT'].includes(String(state.scratch||'').toUpperCase())){
    const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
