@@ -262,22 +262,24 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  }
  function update(){syncPlanReview();const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const perf=state.page==='PERF_INIT'?core.perfRows(state):state.page==='PERF_LIMITS'?core.perfLimitsRows(state):null; const chapter11=perf??window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
  else if(chapter11){
-   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed},index)=>{
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator},index)=>{
      const {label,value}=lskTextTops(index+1);
-     const line=makePairRow(label,labelL,labelR,false,true);
+     const line=centerLabel?makeDepArrTriplet(label,labelL,centerLabel,labelR,true):makePairRow(label,labelL,labelR,false,true);
+     if(separator){line.textContent='------------------------';line.classList.add('fmc-perf-separator');line.style.textAlign='center';}
      if(state.page==='LEGS'&&/^\d{3}°$/.test(labelL||'')){
       const left=line.querySelector('.fmc-left');left.classList.add('cdu-leg-angle');left.textContent=labelL.slice(0,-1);const deg=document.createElement('span');deg.className='cdu-leg-degree';deg.textContent='°';left.appendChild(deg);
      }
      if(state.page==='LEGS'&&/NM$/.test(labelR||''))line.querySelector('.fmc-right').classList.add('cdu-leg-distance');
      frame.appendChild(line);
-     const valueRow=makePairRow(value,valueL,valueR);
+     const valueRow=centerValue?makeDepArrTriplet(value,valueL,centerValue,valueR):makePairRow(value,valueL,valueR);
+     if(perf){valueRow.classList.add('fmc-perf-value');for(const span of valueRow.querySelectorAll('.fmc-left,.fmc-right')){span.style.setProperty('white-space','pre','important');}}
      if(activeSpeed){const field=valueRow.querySelector('.fmc-right');field.style.setProperty('background','#29ff31','important');field.style.setProperty('color','#071208','important');}
      frame.appendChild(valueRow);
    });
