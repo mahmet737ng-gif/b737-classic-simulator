@@ -33,7 +33,7 @@ try{
   const previous=document.querySelector('#unifiedCabinDualNeedles');if(previous)previous.after(section);else document.querySelector('.overhead-tools').before(section);paint();
  }
  window.B737UnifiedCabinRateNeedle=Object.freeze({getOffset:()=>currentOffset,setOffset});
- window.addEventListener('b737:cabin-rate-needle-offset',event=>{try{setOffset(event.detail);}catch(error){console.error(error);}});
+ window.addEventListener('b737:cabin-rate-needle-offset',event=>{if(window.B737UnifiedInstructorNonNormalV1?.pressureState?.()?.rapid)return;try{setOffset(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:cockpit-mounted',connect);connect();if(document.querySelector('.inspector'))controls();
 })();
 
