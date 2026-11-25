@@ -505,9 +505,17 @@ try{
   function append(g,kind){
    const raw=g?.program?.input?.legs;
    if(g?.program?.version!=='IRAN-ROUTE-PREVIEW-V2'||!Array.isArray(raw)){gap('UNSUPPORTED_PROCEDURE');return;}
-   for(const l of raw){
+   for(const [rawIndex,l] of raw.entries()){
     const t=l.Type??l.type,id=l.Name??l.ident,lat=Number(l.Latitude??l.lat),lon=Number(l.Longitude??l.lon);
     if(t==='Runway'&&kind==='SID'&&!legs.length){if(validFix({ident:id,lat,lon}))previous={ident:id,lat,lon};continue;}
+    if(t==='Hold'){
+     const published=globalThis.B737RouteEngine?.publishedHold?.(l,g,rawIndex,origin,dest);
+     if(!published){gap('INVALID_PUBLISHED_HOLD');continue;}
+     fixed({ident:id,lat,lon},l,kind);const target=legs.at(-1);if(target?.type!=='FIX'||target.ident!==id){gap('INVALID_HOLD_FIX');continue;}
+     let override=null;try{override=JSON.parse(a[published.key]);}catch(_){}
+     if(override?.deleted!==true){const h={...published,...override,key:published.key,ident:published.ident,lat:published.lat,lon:published.lon,origin,dest,published:true};if(!finite(h.inbound)||!['L','R'].includes(h.dir)){gap('INVALID_HOLD_OVERRIDE');continue;}target.hold=h;target.flyOver=true;}
+     continue;
+    }
     if(t==='Normal'||t==='Runway'){fixed({ident:id,lat,lon},l,kind);continue;}
     if(t==='ConstHdgtoAlt'){
      const h=Number(l.Hdg_Crs_value??l.heading),target=Number(l.Altitude??l.alt);
@@ -705,7 +713,7 @@ function followHold(points,step,frame,gs){
      }
      let p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;
      if(p.done){
-       if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident};completed.set(hold.key,JSON.stringify(hold));holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}
+       if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident,expected:plan.performance[hold.key]};completed.set(hold.key,JSON.stringify(hold));holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}
        else{holding.race=geometry();holding.points=holding.race;holding.step=1;holding.laps++;holding.exitInhibited=false;p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;}
      }
      if(holding){
@@ -795,6 +803,7 @@ try{
   attachFmc();
   const sample=frame&&isActive()?fmcTrainer.evaluate(sessionCache??win.B737UnifiedFmc?.snapshot?.(),sourceCache??win.B737CduSgRouteV1?.snapshot?.(),frame,output,{power:value?.operational===true&&value.failed!==true,positionValid:value?.position?.quality==='VALID',variation,variationAt:p=>{const w=win.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;},n1Ready,idle,utcMs:net?.getSignal?.('clock.utc')?.quality==='VALID'?net.getSignal('clock.utc').value?.epochMs:null,fuelFlowKgHr:(()=>{const a=[1,2].map(n=>net?.getSignal?.('propulsion.engine'+n));return a.every(x=>x?.quality==='VALID'&&finiteNumber(x.value?.fuelFlowKgHr))?a.reduce((sum,x)=>sum+x.value.fuelFlowKgHr,0):null;})(),fuelKg:value?.fuel?.quality==='VALID'?value.fuel.totalKg:null}):{fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false};
   lastFmc={...sample,position:frame&&sample.fmcTrackValid?{lat:frame.lat,lon:frame.lon}:null,observedAtMs:Date.now()};
+  if(sample.holdExited?.expected)win.B737UnifiedFmc?.completeHold?.(sample.holdExited);
   return {...sample,
    courseTrackValid:radio?.courseTrackValid===true,courseDeg:radio?.courseDeg??null,
    glideValid:radio?.glideValid===true,gsVsFpm:radio?.gsVsFpm??null,

@@ -265,7 +265,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
  else if(chapter11){
-   chapter11.rows.forEach(({labelL,valueL,labelR,valueR},index)=>{
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed},index)=>{
      const {label,value}=lskTextTops(index+1);
      const line=makePairRow(label,labelL,labelR,false,true);
      if(state.page==='LEGS'&&/^\d{3}°$/.test(labelL||'')){
@@ -273,7 +273,9 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
      }
      if(state.page==='LEGS'&&/NM$/.test(labelR||''))line.querySelector('.fmc-right').classList.add('cdu-leg-distance');
      frame.appendChild(line);
-     frame.appendChild(makePairRow(value,valueL,valueR));
+     const valueRow=makePairRow(value,valueL,valueR);
+     if(activeSpeed){const field=valueRow.querySelector('.fmc-right');field.style.setProperty('background','#29ff31','important');field.style.setProperty('color','#071208','important');}
+     frame.appendChild(valueRow);
    });
  }else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);
    let labelL=pair?.[0]?.label||'',labelR=pair?.[1]?.label||'';

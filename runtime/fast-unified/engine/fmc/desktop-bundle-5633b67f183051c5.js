@@ -299,7 +299,7 @@ try{
 /* One shared FMC dataset, with separate CDU display/input state. Unified only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.B737CduSession=api;})(typeof window==='undefined'?globalThis:window,function(){
  'use strict';
- const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo']);
+ const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo','lastHoldExit']);
  const copy=value=>JSON.parse(JSON.stringify(value));
  function extract(state){const shared={};for(const key of keys)if(Object.hasOwn(state,key))shared[key]=copy(state[key]);return shared;}
  function apply(state,shared){for(const key of keys){if(Object.hasOwn(shared,key))state[key]=copy(shared[key]);else delete state[key];}}
@@ -317,7 +317,15 @@ try{
     revision:()=>revision
    });
   }
-  return Object.freeze({attach,snapshot:()=>copy(shared||{}),subscribe(fn){
+  function completeHold(event){
+   const k=event?.key;if(!/^HOLD_(?:[1-5]|PUB_[A-F0-9]{8})$/.test(k||'')||!shared?.routeActivated||typeof event.expected!=='string'||shared.active?.[k]!==event.expected)return false;
+   let h;try{h=JSON.parse(event.expected);}catch(_){return false;}if(h.exit!==true||h.ident!==event.ident)return false;
+   if(k.startsWith('HOLD_PUB_'))shared.active[k]=JSON.stringify({deleted:true});else delete shared.active[k];
+   if(shared.pending)delete shared.pending[k];if(shared.stagedRoute)delete shared.stagedRoute[k];shared.routeRevision=(shared.routeRevision||0)+1;
+   shared.lastHoldExit={key:k,ident:event.ident,revision:shared.routeRevision};revision++;
+   for(const peer of peers.values())deliver(peer);notify();return true;
+  }
+  return Object.freeze({attach,completeHold,snapshot:()=>copy(shared||{}),subscribe(fn){
     if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
     subscribers.add(fn);fn(copy(shared||{}));return ()=>subscribers.delete(fn);
    }});

@@ -21,7 +21,18 @@ function turnDirect(p,h,target,r,turn='Auto'){
   for(let angle of [base+a,base-a]){let end=add(c,mul(v(angle),r)),tangent=v(angle+sign*90);if(dot(sub(target,end),tangent)<1e-7)continue;let sweep=sign*wrap(sign*(angle-start));if(Math.abs(sweep)>359.99)continue;options.push({points:arc(c,p,sweep),end,sweep});}
  }return options.sort((a,b)=>Math.abs(a.sweep)-Math.abs(b.sweep))[0]||null;
 }
-function normalize(raw){let n=k=>raw[k]!==undefined&&raw[k]!==''?Number(raw[k]):null;return {ident:raw.Name??raw.ident,type:raw.Type??raw.type??'Normal',lat:n('Latitude')??raw.lat,lon:n('Longitude')??raw.lon,alt:n('Altitude')??raw.alt,speed:n('Speed')??raw.speed,restriction:raw.AltitudeRestriction??raw.restriction,heading:n('Hdg_Crs_value')??raw.heading,headingKind:n('Hdg_Crs')??raw.headingKind,bank:n('BankLimit')??raw.bank,turn:raw.Sp_Turn??raw.turn??'Auto',fly:raw.Flytype??raw.fly??'Fly-by',radial:n('RadialtoIntercept')??raw.radial,dme:n('DMEtoIntercept')??raw.dme,pilotType:raw.pilotType};}
+function publishedHold(raw,g,index,origin,dest){
+ if((raw?.Type??raw?.type)!=='Hold')return null;
+ const n=k=>raw[k]!==undefined&&String(raw[k]).trim()!==''?Number(raw[k]):null;
+ const fix={ident:raw.Name??raw.ident,lat:n('Latitude')??raw.lat,lon:n('Longitude')??raw.lon};
+ const course=n('Hld_Rad_value'),mode=raw.Hld_Rad_or_Inbd,dir={Left:'L',Right:'R'}[raw.Hld_Turn],size=n('Hld_td_value'),unit=raw.Hld_Time_or_Dist;
+ if(!valid(fix)||typeof fix.ident!=='string'||!Number.isFinite(course)||course<0||course>360||!['Inbd','Rad'].includes(mode)||!dir||!Number.isFinite(size)||size<=0||!['Time','Dist'].includes(unit))return null;
+ const inbound=wrap(course+(mode==='Rad'?180:0)),speed=n('Speed');
+ const signature=JSON.stringify([origin,dest,g?.airport,g?.kind,g?.ident,g?.program?.runway,index,fix,course,mode,dir,size,unit]);
+ let hash=2166136261;for(let i=0;i<signature.length;i++)hash=Math.imul(hash^signature.charCodeAt(i),16777619)>>>0;
+ return {...fix,key:'HOLD_PUB_'+hash.toString(16).toUpperCase().padStart(8,'0'),origin,dest,dir,inbound,time:unit==='Time'?size:null,dist:unit==='Dist'?size:null,speed:Number.isFinite(speed)&&speed>=100&&speed<=350?speed:null,efc:null,exit:false,ppos:false,published:true};
+}
+function normalize(raw){let n=k=>raw[k]!==undefined&&raw[k]!==''?Number(raw[k]):null;return {ident:raw.Name??raw.ident,type:raw.Type??raw.type??'Normal',lat:n('Latitude')??raw.lat,lon:n('Longitude')??raw.lon,alt:n('Altitude')??raw.alt,speed:n('Speed')??raw.speed,restriction:raw.AltitudeRestriction??raw.restriction,heading:n('Hdg_Crs_value')??raw.heading,headingKind:n('Hdg_Crs')??raw.headingKind,bank:n('BankLimit')??raw.bank,turn:raw.Sp_Turn??raw.turn??'Auto',fly:raw.Flytype??raw.fly??'Fly-by',radial:n('RadialtoIntercept')??raw.radial,dme:n('DMEtoIntercept')??raw.dme,pilotType:raw.pilotType,raw};}
 function build(input){
  const p={...limits,...input.performance},warnings=[],segments=[],fixes=[];const warn=(code,leg)=>warnings.push({code,ident:leg?.ident??null});
  if(![p.gsKt,p.vsFpm,p.rollNm,p.bankDeg,p.variationDeg].every(Number.isFinite)||p.gsKt<=0||p.vsFpm<=0||p.rollNm<0||p.bankDeg<=0||p.bankDeg>35)throw Error('INVALID_PERFORMANCE');
@@ -38,6 +49,11 @@ function build(input){
   if(l.type==='Discontinuity'||l.type==='Vectors'){
    if(l.type==='Vectors'&&pos&&wanted!==null){const end=add(pos,mul(v(wanted),25));segment('VECTOR_OPEN',[pos,end],l,{openEnded:true});}
    breakAt('OPEN_LEG_'+l.type.toUpperCase(),l);continue;}
+  if(l.type==='Hold'){
+   const hold=publishedHold(l.raw,{kind:input.kind,airport:input.airport},i,null,null);
+   if(!hold){breakAt('INVALID_PUBLISHED_HOLD',l);continue;}
+   const end=local(origin,l);straight(end,l);mark(l,end);h=wrap(hold.inbound+p.variationDeg);afterConditional=false;ground=false;continue;
+  }
   if(['Normal','Runway'].includes(l.type)){
    if(!valid(l)){breakAt('INVALID_FIX',l);continue;}let end=local(origin,l);
    if(pos&&h!==null&&(afterConditional||l.turn==='Left'||l.turn==='Right')&&norm(sub(end,pos))>1e-5){let t=turnDirect(pos,h,end,r,l.turn);if(!t){breakAt('TURN_GEOMETRY_UNRESOLVED',l);}else{segment('TURN',t.points,l,{sweepDeg:t.sweep,radiusNm:r});pos=t.end;}}
@@ -92,7 +108,7 @@ function project(route,{mode='MAP',range=20,ownship,headingMag=0,variationDeg=0,
 }
 // Atomic CDU MOD / EXEC store: route rendering is entirely independent from AFDS.
 function createStore(initial=null){let act=initial,mod=null,rev=0;return {stage(input){mod=build({...input,state:'MOD'});rev++;return this.snapshot();},exec(){if(mod){act={...mod,segments:mod.segments.map(s=>({...s,state:'ACT'}))};mod=null;rev++;}return this.snapshot();},erase(){mod=null;rev++;return this.snapshot();},snapshot(){return {revision:rev,active:act,modified:mod};}};}
-return Object.freeze({build,project,normalize,createStore,distance,bearing,destination,radius,turnDirect,MODES,RANGES});
+return Object.freeze({build,project,normalize,publishedHold,createStore,distance,bearing,destination,radius,turnDirect,MODES,RANGES});
 });
 
 

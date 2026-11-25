@@ -333,7 +333,7 @@ try{
    const value=key=>String(data.pending?.[key]??data.stagedRoute?.[key]??data.active?.[key]??'').toUpperCase();
    window.B737CduSgRouteV1?.setContext({origin:value('ORIGIN'),destination:value('DEST')});
   });
- window.B737UnifiedFmc=Object.freeze({snapshot:()=>fmcSession.snapshot(),subscribe:fn=>fmcSession.subscribe(fn),attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
+ window.B737UnifiedFmc=Object.freeze({snapshot:()=>fmcSession.snapshot(),subscribe:fn=>fmcSession.subscribe(fn),completeHold:event=>fmcSession.completeHold(event),attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);
  const panGuard=window.B737PanStabilityV1;
  let galleryMounted=false,viewRefreshTimer=0;

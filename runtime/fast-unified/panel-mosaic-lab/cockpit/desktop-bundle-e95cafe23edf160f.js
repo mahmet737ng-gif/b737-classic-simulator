@@ -495,6 +495,8 @@ try{
       const path=doc.createElementNS(ns,'polyline');path.setAttribute('points',xy.map(p=>p.map(v=>v.toFixed(2)).join(',')).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',mod?'#65edfa':'#ef6afc');path.setAttribute('stroke-width','2');if(mod)path.setAttribute('stroke-dasharray','7 5');g.appendChild(path);
      };
      for(let i=1;i<=5;i++){const key='HOLD_'+i;for(const [bank,mod] of [[session.active,false],[session.pending,true],[session.stagedRoute,true]]){try{const hold=JSON.parse(bank?.[key]);if(hold.origin===(mod?(session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??session.active?.ORIGIN):session.active?.ORIGIN)&&hold.dest===(mod?(session.pending?.DEST??session.stagedRoute?.DEST??session.active?.DEST):session.active?.DEST))draw(hold,key,mod);}catch(_){}}}
+     const parser=win.B737RouteEngine?.publishedHold;
+     if(parser){for(const [bank,mod] of [[sg?.active,false],[sg?.modified,true]]){if(!bank)continue;const origin=mod?(session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??session.active?.ORIGIN):session.active?.ORIGIN,dest=mod?(session.pending?.DEST??session.stagedRoute?.DEST??session.active?.DEST):session.active?.DEST;for(const geometry of Object.values(bank.geometries||{})){for(const [i,raw] of (geometry.program?.input?.legs||[]).entries()){const h=parser(raw,geometry,i,origin,dest);if(!h)continue;let override=null;try{override=JSON.parse(mod?(session.pending?.[h.key]??session.stagedRoute?.[h.key]??session.active?.[h.key]):session.active?.[h.key]);}catch(_){}if(override?.deleted!==true)draw({...h,...override},h.key,mod);}}}}
      if(g.childNodes.length)screen.svg.appendChild(g);
     }
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';

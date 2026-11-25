@@ -22,7 +22,7 @@
   return true;
  }});
  let applying=false,session;
- const write=shared=>{for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}};
+ const write=shared=>{const old=state.lastHoldExit?.revision;for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}if(state.page==='HOLD'&&state.lastHoldExit&&old!==state.lastHoldExit.revision){core.choose(state,pages,'LEGS');state.subpage=1;}};
  update=function(){originalUpdate();if(!applying)session?.publish();report();};
  window.updateStage5View=update;
  session=parent.B737UnifiedFmc.attach(seat,window,{read:()=>state,write,refresh(){applying=true;try{update();}finally{applying=false;}}});

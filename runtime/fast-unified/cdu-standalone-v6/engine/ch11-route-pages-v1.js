@@ -7,7 +7,7 @@
  'use strict';
  const RTE=new Set(['RTE','FLIGHT_PLAN','ACTIVATE']);
  const SOURCE='PMDG_WORLD_2610_WITH_PROCEDURES_R1';
- const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+|HOLD_[1-5])$/;
+ const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+|HOLD_(?:[1-5]|PUB_[A-F0-9]{8}))$/;
  const DASH='------------';
  const ROUTE_ROWS=5,MAX_ROUTE_ROWS=250;
  const empty=()=>({labelL:'',valueL:'',labelR:'',valueR:''});
@@ -210,9 +210,10 @@
     if(conditional){const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed);result.push({...conditional,geoKey:key,rawIndex:i,constraint:(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+(t==='ConstHdgtoAlt'?'A':''):'-----')});prev=null;continue;}
     if(t==='Discontinuity'){result.push({gap:true,sourceOnly:true,geoKey:key,rawIndex:i});prev=null;continue;}
     const id=l.Name??l.ident,lat=Number(l.Latitude??l.lat),lon=Number(l.Longitude??l.lon);
-    if(!['Normal','Runway'].includes(t)||typeof id!=='string'||![lat,lon].every(Number.isFinite)||Math.abs(lat)>90||Math.abs(lon)>180||lat===0&&lon===0){result.push({gap:true,sourceOnly:true});prev=null;continue;}
+    const pub=t==='Hold'?root?.parent?.B737RouteEngine?.publishedHold?.(l,g,i,g.kind==='SID'?g.airport:null,null):null;
+    if(!['Normal','Runway'].includes(t)&&!pub||typeof id!=='string'||![lat,lon].every(Number.isFinite)||Math.abs(lat)>90||Math.abs(lon)>180||lat===0&&lon===0){result.push({gap:true,sourceOnly:true});prev=null;continue;}
     const point={ident:id,lat,lon,pilotType:l.pilotType,sourceOnly:true,geoKey:key,rawIndex:i,
-     course:prev?legCourse(prev,{lat,lon}):null,distance:prev?legDistance(prev,{lat,lon}):null};
+     course:prev?legCourse(prev,{lat,lon}):null,distance:prev?legDistance(prev,{lat,lon}):null,...(pub?{publishedRaw:l,publishedGeometry:g,publishedIndex:i,courseMag:pub.inbound}:{})};
     const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed),restriction=l.AltitudeRestriction??l.restriction;
     const suffix=restriction==='above'?'A':restriction==='below'?'B':'';
     point.constraint=(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+suffix:'-----');
@@ -300,7 +301,7 @@
     if(!item?.ident&&!item?.gap)continue;
     if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap){
      // The pending source row can carry geometry the native row lacks.
-     if(!all.at(-1).sourceOnly&&item.sourceOnly||item.geoKey&&Number.isFinite(item.lat)&&!Number.isFinite(all.at(-1).lat))all[all.length-1]=item;
+     if(item.publishedRaw||!all.at(-1).sourceOnly&&item.sourceOnly||item.geoKey&&Number.isFinite(item.lat)&&!Number.isFinite(all.at(-1).lat))all[all.length-1]=item;
      continue;
     }
     all.push(item);
@@ -338,16 +339,26 @@
    const {leg,index}=next;s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};s.subpage=Math.floor(index/5)+1;s.message='';return true;
   }
   // FCOM SP.11.9 and 11.43.32–35: HOLD AT, RTE HOLD and EXEC transaction.
- const holdKey=i=>'HOLD_'+i;
- function readHold(s,i,activeOnly=false){try{const v=JSON.parse(activeOnly?s.active[holdKey(i)]:entered(s,holdKey(i)));return v&&validPosition(v)&&typeof v.ident==='string'?v:null;}catch(_){return null;}}
- function holdExecReady(s){return [1,2,3,4,5].every(i=>{const h=readHold(s,i);return !h||Number.isFinite(h.inbound)&&h.inbound>=0&&h.inbound<360;});}
- function holdList(s){return [1,2,3,4,5].map(i=>({i,h:readHold(s,i)})).filter(x=>x.h);}
+ const holdKey=i=>String(i).startsWith('HOLD_PUB_')?i:'HOLD_'+i;
+ function publishedHolds(s){
+  const parser=root?.parent?.B737RouteEngine?.publishedHold;if(!parser)return [];
+  const origin=entered(s,'ORIGIN'),dest=entered(s,'DEST');
+  return visibleLegs(s).filter(l=>l.publishedRaw).map(l=>parser(l.publishedRaw,l.publishedGeometry,l.publishedIndex,origin,dest)).filter(Boolean);
+ }
+ function readHold(s,i,activeOnly=false,source=null){
+  const k=holdKey(i);let v=null;try{v=JSON.parse(activeOnly?s.active[k]:entered(s,k));}catch(_){}
+  if(k.startsWith('HOLD_PUB_')){if(v?.deleted===true)return null;const base=source??publishedHolds(s).find(h=>h.key===k);return base?{...base,...v,key:base.key,ident:base.ident,lat:base.lat,lon:base.lon,origin:base.origin,dest:base.dest,published:true}:null;}
+  return v&&validPosition(v)&&typeof v.ident==='string'&&v.origin===entered(s,'ORIGIN')&&v.dest===entered(s,'DEST')?v:null;
+ }
+ function holdExecReady(s){return holdList(s).every(({h})=>Number.isFinite(h.inbound)&&h.inbound>=0&&h.inbound<360);}
+ function holdList(s){return [...[1,2,3,4,5].map(i=>({i,h:readHold(s,i)})),...publishedHolds(s).map(h=>({i:h.key,h:readHold(s,h.key,false,h)}))].filter(x=>x.h);}
+
  function holdTime(s,h){const alt=s.fmcPageInputs?.airData?.pressureAltitudeFt;return h.time??(Number.isFinite(alt)?alt>14000?1.5:1:null);}
- function holdWrite(s,i,h){const draft=s.routeActivated||s.routeActivationArmed?s.pending:s.stagedRoute,k=holdKey(i),v=h?JSON.stringify(h):'';if(v===(s.active[k]??''))delete draft[k];else draft[k]=v;s.scratch='';s.message='';}
+ function holdWrite(s,i,h){const draft=s.routeActivated||s.routeActivationArmed?s.pending:s.stagedRoute,k=holdKey(i),v=h?JSON.stringify(h):k.startsWith('HOLD_PUB_')?JSON.stringify({deleted:true}):'';if(v===(s.active[k]??''))delete draft[k];else draft[k]=v;s.scratch='';s.message='';}
  function holdStart(s,pages,core){s.holdAt=true;s.holdPage=1;core.choose(s,pages,'LEGS');}
  function holdSelect(s,pages,core,ppos){
   if(!s.routeActivated&&!s.routeActivationArmed&&(!entered(s,'ORIGIN')||!entered(s,'DEST'))){core.addMessage(s,'ENTER ROUTE FIRST');return;}
-  const i=[1,2,3,4,5].find(i=>!readHold(s,i));if(!i){core.addMessage(s,'HOLD LIMIT');return;}
+  const i=[1,2,3,4,5].find(i=>!readHold(s,i));if(!i||holdList(s).length>=5){core.addMessage(s,'HOLD LIMIT');return;}
   const all=visibleLegs(s),live=s.fmcPageInputs?.guidance?.activeLeg;
   const matches=all.map((l,i)=>({l,i})).filter(x=>x.l.ident===s.scratch.trim().toUpperCase()&&!x.l.gap&&!x.l.conditional&&validPosition(x.l));
   let point,prev,anchor=null,course=null;
@@ -376,7 +387,7 @@
  }
  function holdInvoke(s,pages,key,core){
   if(key==='HOLD'){s.holdAt=false;const list=holdList(s);if(!list.length)holdStart(s,pages,core);else{const current=list.findIndex(x=>x.i===s.holdPage);s.holdPage=s.page==='HOLD'&&current>=0?list[(current+1)%list.length].i:list.find(x=>s.fmcPageInputs?.guidance?.hold?.key===holdKey(x.i))?.i??list[0].i;core.choose(s,pages,'HOLD');}return true;}
-  if(s.page==='LEGS'&&s.holdAt){if(/^LSK_L[1-5]$/.test(key)&&s.scratch){holdSelect(s,pages,core,false);return true;}if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
+  if(s.page==='LEGS'&&s.holdAt){if(/^LSK_L[1-5]$/.test(key)){if(!s.scratch){const l=visibleLegs(s)[((s.subpage||1)-1)*5+Number(key[5])-1];if(l&&!l.gap&&!l.conditional){s.scratch=l.ident;s.message='';}else core.addMessage(s,'INVALID HOLD FIX');return true;}holdSelect(s,pages,core,false);return true;}if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
   if(s.page!=='HOLD')return false;
   const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){if(list.length)s.holdPage=list[(list.indexOf(entry)+(key==='NEXT_PAGE'?1:-1)+list.length)%list.length].i;return true;}
@@ -386,7 +397,7 @@
   if(!h){core.addMessage(s,'KEY INACTIVE');return true;}
   const input=s.scratch.trim().toUpperCase(),next={...h};
   if(key==='LSK_R6'){const live=s.fmcPageInputs?.guidance?.hold;if(live?.key===holdKey(entry.i)&&live.active){if(!h.exit&&!live.exitInhibited){next.exit=true;holdWrite(s,entry.i,next);}else if(live.exitInhibited)core.addMessage(s,'WAIT FOR FIX');}else if(!modified(s)){const j=list.indexOf(entry);if(j<list.length-1)s.holdPage=list[j+1].i;else if(list.length<5)holdStart(s,pages,core);else if(list.length>1)s.holdPage=list[0].i;}return true;}
-  if(key==='LSK_L1'&&input==='DELETE'){holdWrite(s,entry.i,null);core.choose(s,pages,'LEGS');return true;}
+  if(key==='LSK_L1'&&input==='DELETE'){if(s.fmcPageInputs?.guidance?.hold?.key===holdKey(entry.i)&&s.fmcPageInputs.guidance.hold.active){core.addMessage(s,'USE EXIT HOLD');return true;}holdWrite(s,entry.i,null);core.choose(s,pages,'LEGS');return true;}
   if(!input){const v={LSK_L1:h.ident,LSK_L2:h.dir,LSK_L3:h.inbound,LSK_L4:h.dist===null?holdTime(s,h):null,LSK_L5:h.dist,LSK_R1:h.speed,LSK_R3:h.efc}[key];if(v!=null)s.scratch=String(v);return true;}
   const num=Number(input),numeric=/^\d+(?:\.\d)?$/.test(input);
   if(key==='LSK_L2'&&/^[LR]$/.test(input))next.dir=input;
