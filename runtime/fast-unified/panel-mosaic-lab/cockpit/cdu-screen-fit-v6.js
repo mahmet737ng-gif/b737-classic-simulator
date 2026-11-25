@@ -8,10 +8,10 @@
  */
 (function(root){
  'use strict';
- const VERSION='CDU-24COL-0006';
+ const VERSION='CDU-24COL-0007';
  const PHOTO_PROFILE=Object.freeze({
   id:'OWNER-CLASSIC-CDU-LEGS-PHOTO-20261031',
-  smallCapHeightToLarge:0.70,headerToLarge:0.94,
+  smallCapHeightToLarge:0.62,headerToLarge:0.90,
   lskPromptToLarge:1.00,dataToLarge:1,scratchToLarge:1
  });
  const Metrics=root.B737CDU24ColumnMetricsV1;
