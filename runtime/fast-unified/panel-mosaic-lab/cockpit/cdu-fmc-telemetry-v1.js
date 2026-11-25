@@ -6,7 +6,7 @@
  const seat=new URLSearchParams(location.search).get('seat');
  if(!['CAPT','FO'].includes(seat)||parent===window||typeof state==='undefined'||typeof update!=='function')return;
  const original=update;let queued=false,feed='UNKNOWN',pendingPowerEvidence=true;
- const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2','PERF_INIT','N1_LIMIT','TAKEOFF','CLB','CRZ','DES','APP_REF','RTE_DATA']);
+ const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2','PERF_INIT','N1_LIMIT','TAKEOFF','CLB','CRZ','DES','APP_REF','RTE_DATA','FIX']);
  let avionicsFrame=0,lastInputs='';
  function receiveAvionics(){
   avionicsFrame=0;

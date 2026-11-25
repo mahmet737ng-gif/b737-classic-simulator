@@ -370,6 +370,7 @@
     core.choose(s,pages,number===1?'RTE':'FLIGHT_PLAN');s.subpage=number;
     return true;
    }
+   if(s.page==='FIX'){s.subpage=(s.subpage===2?1:2);s.message='';return true;}
    if(legPage||s.page==='RTE_DATA'){
     const {count,number}=legPage?legs(s):routeData(s);
     s.subpage=(number-1+change+count)%count+1;s.message='';return true;
@@ -379,6 +380,18 @@
     const next=(number-1+change+3)%3+1;
     core.choose(s,pages,next===1?'PROG':'PROG2');s.subpage=next;return true;
    }
+  }
+  if(s.page==='FIX'&&/^LSK_[LR][1-6]$/.test(key)){
+   const n=s.subpage===2?2:1,fix=s.fixInfo?.[n];
+   if(key==='LSK_L6'){core.choose(s,pages,'INDEX');return true;}
+   if(key==='LSK_L1'&&!s.scratch){if(fix?.ident)s.scratch=fix.ident;return true;}
+   if(/^LSK_L[2-4]$/.test(key)&&fix){
+    const i=Number(key[5])-2,entries=[...(fix.entries||[])],input=s.scratch.trim();
+    if(!input){if(entries[i])s.scratch=entries[i];return true;}
+    if(input==='DELETE'){entries[i]='';}else if(/^(?:\d{1,3}|\/\d{1,3}(?:\.\d)?)$/.test(input)&&Number(input.replace('/',''))>0&&Number(input.replace('/',''))<=(input.startsWith('/')?999:360)){entries[i]=input;}else{core.addMessage(s,'INVALID ENTRY');return true;}
+    s.fixInfo={...s.fixInfo,[n]:{...fix,entries}};s.scratch='';s.message='';return true;
+   }
+   if(s.scratch)core.addMessage(s,'INVALID ENTRY');return true;
   }
   if(s.page==='RTE_DATA'&&key==='LSK_L6'){const number=routeData(s).number;core.choose(s,pages,'LEGS');s.subpage=number;return true;}
   if(key==='LSK_R6'&&(rte||legPage)){
@@ -503,7 +516,7 @@
  }
  function routeData(s){
   const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5)),number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
-  const pred=s.fmcPageInputs?.predictions;const records=pred?.quality==='VALID'?[pred.from,pred.active,pred.next,pred.destination,...(Array.isArray(pred.waypoints)?pred.waypoints:[])].filter(Boolean):[];
+  const pred=s.fmcPageInputs?.predictions;const records=!modified(s)&&pred?.quality==='VALID'?[pred.from,pred.active,pred.next,pred.destination,...(Array.isArray(pred.waypoints)?pred.waypoints:[])].filter(Boolean):[];
   for(let i=0;i<5;i++){
    const leg=all[(number-1)*5+i],matches=leg?.ident?records.filter(x=>x.ident===leg.ident):[];
    const unique=leg?.ident&&all.filter(x=>x.ident===leg.ident).length===1&&matches.length===1?matches[0]:null;
@@ -512,10 +525,18 @@
   }
   rows.push(pair(DASH,'<LEGS',DASH,''));return {title:titleWithStatus(s,'RTE DATA'),number,count,rows};
  }
+ function fixInfo(s){
+  const number=s.subpage===2?2:1,fix=s.fixInfo?.[number],p=ownship(s),rows=Array.from({length:6},empty);
+  let relative='';if(validPosition(fix)&&p){let variation=null;try{variation=root?.parent?.B737CduSgBridgeV1?.magneticVariation?.(fix);}catch(_){}const d=legDistance(fix,p);if(Number.isFinite(variation)&&Number.isFinite(d)){const radial=(legCourse(fix,p)-variation+360)%360;relative=String(Math.round(radial)%360).padStart(3,'0')+'/'+Math.round(d);}}
+  rows[0]=pair('FIX',fix?.ident||'□□□□□','RAD/DIS FR',relative);
+  for(let i=1;i<=3;i++)rows[i]=pair(i===1?'RAD/DIS':'',fix?.entries?.[i-1]||'---',i===1?'ETA DTG ALT':'','');
+  rows[5]=pair(DASH,'<INDEX',DASH,'');return {title:'FIX INFO',number,count:2,rows};
+ }
  function view(s){
   if(RTE.has(s.page))return route(s);
   if(s.page==='LEGS')return legs(s);
   if(s.page==='RTE_DATA')return routeData(s);
+  if(s.page==='FIX')return fixInfo(s);
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }

@@ -22,7 +22,7 @@
  };
 })(typeof window==='undefined'?null:window,function(state,core,pages,bridge,shared,refresh,converter){
  'use strict';
- let serial=0,unsubscribe=null,attached=false,airwayBusy=false,airwayTicket=0;
+ let serial=0,unsubscribe=null,attached=false,airwayBusy=false,airwayTicket=0,revisionBeforeExec=null,fixTicket=0;
  const CYCLE='UNSPECIFIED_IN_UPLOADED_FILES';
  const allowedAirport=s=>typeof s==='string'&&/^[A-Z0-9]{4}$/.test(s);
  const encoded=s=>encodeURIComponent(s);
@@ -416,9 +416,22 @@
   }catch(e){if(attached&&ticket===airwayTicket)issue(e.message||'NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
+ async function selectInfoFix(){
+  const input=String(state.scratch||'').trim().toUpperCase(),number=state.subpage===2?2:1,ticket=++fixTicket;
+  if(input==='DELETE'){const info={...state.fixInfo};delete info[number];state.fixInfo=info;state.scratch='';state.message='';update();return;}
+  if(!/^[A-Z0-9]{2,7}$/.test(input)){issue('INVALID ENTRY');return;}
+  try{const response=await bridge.request('/api/iran-navdata/fix?ident='+encoded(input)),body=await response.json();
+   if(!attached||ticket!==fixTicket||state.page!=='FIX'||(state.subpage===2?2:1)!==number||state.scratch!==input)return;
+   if(!response.ok||body.matches?.length!==1){issue(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');return;}
+   const point=body.matches[0];if(point.ident!==input||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||Math.abs(point.lat)>90||Math.abs(point.lon)>180)throw Error('INVALID FIX DATA');
+   state.fixInfo={...state.fixInfo,[number]:{ident:point.ident,lat:point.lat,lon:point.lon,entries:[]}};state.scratch='';state.message='';update();
+  }catch(e){if(attached&&ticket===fixTicket)issue(e.message||'NAV DATA UNAVAILABLE');}
+ }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(k==='EXEC')revisionBeforeExec=state.routeRevision||0;
+  if(bridge.cycle==='AIRAC-2611'&&state.page==='FIX'&&k==='LSK_L1'&&state.scratch){void selectInfoFix();return true;}
   if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&state.scratch){
    const api=globalThis.CDU_CH11_ROUTE_PAGES,route=api?.visibleLegs?.(state)||[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
    const gap=route[index],next=route[index+1],prev=route[index-1];
@@ -475,8 +488,8 @@
   // The shared state is a verified display reference, not a flight-leg
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
   // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.
-  shared.execute();
-  if(state.routeActivated===true){state.routeRevision=(state.routeRevision||0)+1;state.activeNavFixEvidence={...state.navFixEvidence};}
+  if(revisionBeforeExec===null||revisionBeforeExec===(state.routeRevision||0))state.routeRevision=(state.routeRevision||0)+1;
+  revisionBeforeExec=null;state.activeNavFixEvidence={...state.navFixEvidence};shared.execute();
   state.message='';
  }
  function execLit(){return attached&&mayExecute()&&hasReferenceChanges();}
@@ -492,7 +505,7 @@
   unsubscribe=shared.subscribe(()=>{if(attached)update();});
  }
  function detach(){
-  ++serial;++airwayTicket;airwayBusy=false;attached=false;unsubscribe?.();unsubscribe=null;
+  ++serial;++airwayTicket;++fixTicket;airwayBusy=false;attached=false;unsubscribe?.();unsubscribe=null;
   if(state.cduSgView){delete state.cduSgView;if(['DEPARTURES','ARRIVALS'].includes(state.page))
    core.choose(state,pages,'DEP_ARR');}
  }
