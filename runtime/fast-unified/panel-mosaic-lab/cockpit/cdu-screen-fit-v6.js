@@ -8,7 +8,7 @@
  */
 (function(root){
  'use strict';
- const VERSION='CDU-24COL-0007';
+ const VERSION='CDU-24COL-0008';
  const PHOTO_PROFILE=Object.freeze({
   id:'OWNER-CLASSIC-CDU-LEGS-PHOTO-20261031',
   smallCapHeightToLarge:0.62,headerToLarge:0.90,
@@ -40,14 +40,8 @@
   const pct=cy=>(cy-SCREEN_TOP)/SCREEN_HEIGHT*100;
   return {
    header:TOP.header,scratch:TOP.scratch,
-   label:centers.map((cy,i)=>{
-    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.09));
-    return pct(cy-(i===0?42:50)-shift);
-   }),
-   value:centers.map(cy=>{
-    const value=cy-13,shift=Math.max(0,value-(565-4-SCREEN_HEIGHT*.09));
-    return pct(value-shift);
-   })
+   label:centers.map(cy=>pct(Math.min(cy-19,SCREEN_TOP+SCREEN_HEIGHT*.932-32)-29)),
+   value:centers.map(cy=>pct(Math.min(cy-19,SCREEN_TOP+SCREEN_HEIGHT*.932-32)))
   };
  }
  let scheduled=false,lastResult=null,lockedCalibration=null;
@@ -166,7 +160,7 @@
   // Match cap height rather than the numerical CSS font size.
   const dataCap=capHeight(largeFamily,large);
   const smallCap=capHeight(smallFamily,100);
-  return Math.min(large*.73,100*dataCap*PHOTO_PROFILE.smallCapHeightToLarge/smallCap);
+  return Math.min(large,100*dataCap*PHOTO_PROFILE.smallCapHeightToLarge/smallCap);
  }
  function calibrate(){
   const scratch=box.querySelector('.fmc-line.scratch');
@@ -217,7 +211,7 @@
   box.style.setProperty('font-size',main+'px','important');
   if(header){
    header.style.setProperty('top',grid.header+'%','important');
-   header.style.setProperty('height','10%','important');
+   header.style.setProperty('height','7%','important');
    typography(header,model.headerPx);
    for(const span of header.querySelectorAll('span'))fitFragment(span,model.headerPx,false);
   }
@@ -229,7 +223,7 @@
    // Special FCOM overlays retain their authored registration and font scale.
    if(standard&&row<6)
     line.style.setProperty('top',grid[label?'label':'value'][row]+'%','important');
-   line.style.setProperty('height',(label?'6%':'6.1%'),'important');
+   line.style.setProperty('height',(label?'5.7%':'7%'),'important');
    line.style.setProperty('overflow','visible','important');
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
@@ -276,7 +270,7 @@
    headerPx:model.headerPx,promptPx:model.promptPx,photoProfile:PHOTO_PROFILE.id,promptsMoved,
    large:model.large,little:model.little,widthPx:model.widthPx,
    scratchLength:(scratch?.querySelector('.fmc-left')?.textContent||'').length,
-   source:'OWNER_LEGS_PHOTO_20261031_ROLE_TYPOGRAPHY_24_COLUMNS'};
+   source:'OWNER_LEGS_PHOTO_20261031_ROLE_TYPOGRAPHY_24_COLUMNS_LSK_GRID_V8'};
   return lastResult;
  }
  function schedule(){
