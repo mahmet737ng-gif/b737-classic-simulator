@@ -249,11 +249,16 @@ try{
  function mount(win){
   const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer,B737UnifiedEfisSources:sources}=win;
   if(!core||!renderer||!sources)return null;
-  const state={},instructor={},screens={},painted={};
+  const state={},instructor={},screens={},painted={},planCenters={};
   const fcom32=win.B737FCOM1032LiveV1;
   const fcomState=fcom32?.makeSeatState?.();
   for(const seat of SEATS){state[seat]=core.initial();state[seat].seat=seat;instructor[seat]=false;}
   let selected='CAPT',frame=0,expiry=0,fmcFailureStarted=null,fmcTimeout=0;
+   win.B737UnifiedCduPlanV1=Object.freeze({getMode:seat=>state[seat]?.ehsi?.mode??null,
+    setCenter(seat,point){if(!SEATS.includes(seat)||state[seat].ehsi.mode!=='PLAN')return false;
+     if(point!==null&&(!point||typeof point.ident!=='string'||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||Math.abs(point.lat)>90||Math.abs(point.lon)>180))return false;
+     planCenters[seat]=point?{ident:point.ident,lat:point.lat,lon:point.lon}:null;schedule();return true;},
+    getCenter:seat=>planCenters[seat]?{...planCenters[seat]}:null});
   const cockpit=doc.getElementById('unifiedEfisDialog');
   function syncControls(){
    const button=doc.getElementById('unifiedEfisDemo');
@@ -362,7 +367,10 @@ try{
       if(last?.[key]!==angle)gauges?.setAngle(station,key,angle);
      }
     }
-    const route=sources.route(src.fmc,origin.ehsi.mode,origin.ehsi.planStep);
+    const planCenter=origin.ehsi.mode==='PLAN'?planCenters[seat]:null;
+     const nativePoints=src.fmc?.route?.displayRoute?.points||[];
+     const matching=planCenter?nativePoints.findIndex(p=>(p.name??p.ident)===planCenter.ident&&Math.abs(p.lat-planCenter.lat)<.0001&&Math.abs(p.lon-planCenter.lon)<.0001):-1;
+     const route=sources.route(src.fmc,origin.ehsi.mode,matching>=0?matching:origin.ehsi.planStep);
     const fmcNav=sources.fullNavFromRoute?.(src,route);
     const model=preview?core.ehsiModel(setup):
      liveModel(src,origin,setup,screen.aspect,route,failure,fmcNav);
@@ -379,7 +387,7 @@ try{
     // not automatically a valid aligned IRS NAV solution.
     const location=win.B737UnifiedFlightLocationV1;
     const chosen=location?.getLocation?.();
-    const center=chosen||src.mapPosition; // Instructor-selected chart center has priority for preview
+    const center=planCenter||chosen||src.mapPosition; // PLAN uses the same center as LEGS
     if(!preview&&location&&center&&['MAP','CTR_MAP','PLAN'].includes(origin.ehsi.mode)){
      const extra=[],vor=src.vor;
      if(vor?.stationIdent&&Number.isFinite(vor.stationLat)&&Number.isFinite(vor.stationLon))
@@ -456,8 +464,8 @@ try{
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
-    const anchor=referenceAnchor(mode,route,src.mapPosition,
-     win.B737UnifiedFlightLocationV1?.getLocation?.(),sg,origin.ehsi.planStep);
+    const anchor=planCenter||referenceAnchor(mode,route,src.mapPosition,
+      win.B737UnifiedFlightLocationV1?.getLocation?.(),sg,origin.ehsi.planStep);
     // The reviewed runway is the reference origin in PLAN. Do not subtract
      // the unrelated FMC route's selected center waypoint a second time.
      const project=mode==='PLAN'?
@@ -481,7 +489,7 @@ try{
    const d=event.detail||{},seat=d.seat,p=d.state;
    if(!SEATS.includes(seat)||!p||!state[seat])return;
    const x=state[seat];
-   if(core.MODES.includes(p.mode))x.ehsi.mode=p.mode;
+   if(core.MODES.includes(p.mode)){if(p.mode!=='PLAN')delete planCenters[seat];x.ehsi.mode=p.mode;}
    if(core.RANGES.includes(p.range))x.ehsi.range=p.range;
    if(Number.isFinite(p.dh))x.eadi.dh=Math.max(-20,Math.min(999,Math.trunc(p.dh)));
    if(p.brightness){
@@ -511,7 +519,7 @@ try{
    const src=sources.project(selected),setup=state[selected];
    const length=referencePlanPoints(win.B737CduSgRouteV1?.snapshot()).length||src.fmc?.route?.displayRoute?.points?.length||0;
    if(!length||setup.ehsi.mode!=='PLAN')return;
-   setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
+   delete planCenters[selected];setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
    schedule();
   });
   doc.getElementById('unifiedEfisClose')?.addEventListener('click',()=>cockpit.close());

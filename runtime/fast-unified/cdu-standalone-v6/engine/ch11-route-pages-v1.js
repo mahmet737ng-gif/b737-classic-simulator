@@ -68,9 +68,9 @@
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
   native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
-  if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
-   rows.push({via:'---',to:'---',nativeIndex:native.length+1});
   if(star)rows.push(star);
+   if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
+    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
   return rows;
  }
  function routeCount(s,list){
@@ -160,7 +160,7 @@
     .map(x=>({ident:x.label,gap:x.type==='DISCONTINUITY',course:x.reference_course_true_deg,
      distance:x.reference_leg_distance_nm}));
   }
-  if(nav?.legs)return nav.legs.map(x=>({ident:x.to,gap:x.discontinuity,course:x.trueInitialTrackDeg,distance:x.distanceNm}));
+  if(nav?.legs)return nav.legs.map(x=>({ident:x.to,gap:x.discontinuity,course:x.trueInitialTrackDeg,distance:x.distanceNm,lat:x.lat,lon:x.lon}));
   const reference=activeReferenceRoute(s);
   if(reference&&!modified(s))return reference.points.slice(1).map((x,i)=>{
    const start=reference.points[i],rad=Math.PI/180;
@@ -287,7 +287,8 @@
      else {
       const proof=s.verifiedToEntries?.['TO'+(i+1)];
       const verified=proof?.source==='OWNER_WPNAVRTE_VERIFIED'&&proof.airway===row.via&&proof.to===row.to&&proof.origin===origin&&proof.destination===dest&&Array.isArray(proof.fixes)&&proof.fixes.at(-1)===row.to;
-      typed.push(...(verified?proof.fixes:[row.to]).map(ident=>({ident,sourceOnly:true})));
+      const evidence=(s.navFixEvidence||{})['TO'+(i+1)]||(s.activeNavFixEvidence||{})['TO'+(i+1)];
+       typed.push(...(verified?proof.fixes:[row.to]).map(ident=>({ident,sourceOnly:true,...(evidence?.ident===ident&&validPosition(evidence)?{lat:evidence.lat,lon:evidence.lon}:{})})));
      }
     }
     native=typed;
@@ -320,8 +321,24 @@
   const [speed,alt]=String(old||'----/-----').split('/');
   return (m[1]||speed||'----')+'/'+(m[2]?m[2]+(m[3]||''):alt||'-----');
  }
- function legs(s){
-  const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5));
+ function planMode(s){return s.planReviewMode===undefined?s.ehsi?.mode==='PLAN':s.planReviewMode===true;}
+  function planCandidates(all){return all.map((leg,index)=>({leg,index})).filter(({leg})=>!leg.gap&&!leg.conditional&&validPosition(leg)&&typeof leg.ident==='string');}
+  function planCenter(s,all=visibleLegs(s)){
+   const candidates=planCandidates(all);if(!candidates.length){delete s.planReviewCenter;return null;}
+   const old=s.planReviewCenter;
+   const same=x=>old&&x.leg.ident===old.ident&&x.leg.lat===old.lat&&x.leg.lon===old.lon;
+   const chosen=candidates.find(x=>x.index===old?.index&&same(x))||candidates.find(same)||candidates.find(x=>x.index>=((s.subpage||1)-1)*5)||candidates[0];
+   const {leg,index}=chosen;return s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};
+  }
+  function planStep(s){
+   const all=visibleLegs(s),current=planCenter(s,all),candidates=planCandidates(all);if(!current||!candidates.length)return false;
+   const page=Math.max(1,s.subpage||1),start=(page-1)*5,end=start+5;
+   const i=candidates.findIndex(x=>x.index===current.index);
+   const next=current.index<start||current.index>=end?candidates.find(x=>x.index>=start&&x.index<end)||candidates[(i+1)%candidates.length]:candidates[(i+1)%candidates.length];
+   const {leg,index}=next;s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};s.subpage=Math.floor(index/5)+1;s.message='';return true;
+  }
+  function legs(s){
+   const all=visibleLegs(s),center=planMode(s)?planCenter(s,all):null,count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const at=(number-1)*5;
   for(let i=0;i<5;i++){
@@ -343,12 +360,12 @@
     if(Number.isFinite(variation))magnetic=(trueCourse-variation+360)%360;
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
-   rows.push(pair(angle,leg.ident,nm(distance),constraint(s,leg,index)));
+   rows.push(pair(angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),constraint(s,leg,index)));
   }
   const action=routeAction(s);
   const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
    s.routeActivated||s.navdbActive||s.stage5Committed?'RTE DATA>':'';
-  rows.push(pair(DASH,action?.command==='erase'?'<ERASE':'',DASH,right));
+  rows.push(pair(DASH,action?.command==='erase'?'<ERASE':'',planMode(s)?'MAP CTR':DASH,planMode(s)?'STEP>':right));
   return {title:titleWithStatus(s,'RTE LEGS'),number,count,rows};
  }
  function erase(s){
@@ -395,7 +412,8 @@
    if(s.scratch)core.addMessage(s,'INVALID ENTRY');return true;
   }
   if(s.page==='RTE_DATA'&&key==='LSK_L6'){const number=routeData(s).number;core.choose(s,pages,'LEGS');s.subpage=number;return true;}
-  if(key==='LSK_R6'&&(rte||legPage)){
+  if(key==='LSK_R6'&&legPage&&planMode(s)){if(!planStep(s))core.addMessage(s,'KEY INACTIVE');return true;}
+   if(key==='LSK_R6'&&(rte||legPage)){
    const command=routeAction(s,segments(s));
    if(command?.command==='activate'){
     const page=s.page,subpage=s.subpage;
@@ -542,5 +560,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs});
+ return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs,planMode,planCenter,planStep});
 });

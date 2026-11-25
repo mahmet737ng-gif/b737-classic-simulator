@@ -245,7 +245,18 @@ function applyCDUScreenTypography(box){
 }
 // Avoid repainting unchanged FMC glyphs on unrelated network/SG notifications.
 let lastCduVisualMarkup=null;
-function update(){const box=$('fmc-lines'); const frame=document.createElement('div');
+const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO':'CAPT';
+ let planSyncKey='';
+ function syncPlanReview(){
+  let parentApi=null;try{if(window.parent!==window)parentApi=window.parent.B737UnifiedCduPlanV1;}catch(_){}
+  if(parentApi)state.planReviewMode=parentApi.getMode(cduSeat)==='PLAN';
+  else delete state.planReviewMode;
+  if(!chapter11RoutePages?.planMode(state)){delete state.planReviewCenter;planSyncKey='';return;}
+  if(state.page!=='LEGS')return;
+  const center=chapter11RoutePages.planCenter(state);
+  const key=JSON.stringify(center);if(key!==planSyncKey){planSyncKey=key;parentApi?.setCenter(cduSeat,center);}
+ }
+ function update(){syncPlanReview();const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
  const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const chapter11=window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
@@ -373,7 +384,9 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
 function send(k){
  const prior=procedureLedger?.capture(state)||null;
  try{const before=state.page;
- if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
+  syncPlanReview();
+  if(state.page==='LEGS'&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_CAPT_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
+  if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
   if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}
  core.press(state,pages,k);window.CDU_NAV_API?.afterPage?.(k);window.CDU_NAV_API?.afterKey?.(k);
@@ -456,4 +469,5 @@ window.CDU_SCREEN_QA_V1=Object.freeze({
  getPromptAudit:()=>window.CDU_PROMPT_POLICY_V1?.audit(pages,(field,page)=>core.readValue(state,field,page))
 });
 window.updateStage5View=update;
-init();
+ try{if(window.parent!==window)window.parent.addEventListener('b737:unified-efis-control',e=>{if(e.detail?.seat===cduSeat)update();});}catch(_){}
+ init();

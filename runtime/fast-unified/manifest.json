@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "fa97749e878b03c10d409c4994fe04a86c28bea8016f366d042706098e5f2018"
+      "sha256": "e19f1b03ebff7905824374b36e14cdc7d2a1b659716b2e3e11cfec7da5b7fd33"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -168,7 +168,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e95cafe23edf160f.js",
-      "sha256": "aa90d51d790de8aa410d9b664c48e9e616829cba984b0846ccc96565c930dd7f"
+      "sha256": "e6b1021b4fa0313cf17a55235934b111802e57ab598df2ad4b92692df62a28cb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "51c86b2d6a55880be9db8f7e3a32041506b1c9fc538c6d33fdbdcbad10fbf1c5"
+      "sha256": "91eff68dbc8fe798626637c106945e6eca12c674187721aabd5ba7a9fe2a15e5"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "360b2105505f93b01b9462451606af6121fca148130db3b195ebc8f8eba43de6"
+      "sha256": "572a949bde85dcf5aa692403ad75066bad02685c14d590cfd023c5d1a7e7f15f"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "027941834563fc2f34dcf99be9dfd5ba17684d1ac1fed63c913851f207811f62"
+      "sha256": "e29e6c92c3f907c7a9df9cdd21fda709cf593993390d7ca9a16df53d2817a2f0"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "95848d6f701a3d36a2551206969dafcb564c02e54bbcda05350a5728ca552272"
+      "sha256": "be911f45598670219e413137bc7bc634152652418df1fe2cc7c0fe6623075024"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",

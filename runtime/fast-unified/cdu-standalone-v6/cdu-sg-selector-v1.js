@@ -222,7 +222,7 @@
  async function confirm(v){
   const entry=v.candidate;if(!entry)return;
   const ticket=++serial;
-  if(entry.kind!=='APP')v.mode='VERIFYING';v.page=1;update();
+  if(entry.kind!=='APP'&&bridge.cycle!=='AIRAC-2611')v.mode='VERIFYING';v.page=1;update();
   const query='airport='+encoded(v.airport)+'&kind='+encoded(entry.kind)+'&ident='+encoded(entry.ident)+
    (v.runway?'&runway='+encoded(v.runway):'')+(v.transition?'&transition='+encoded(v.transition):'');
   try{
