@@ -1466,7 +1466,7 @@ try{
    {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.entries(active)
     .filter(([k,g])=>valid(g)&&!(g.kind==='RUNWAY'&&pending?.[k]&&
       JSON.stringify(g)!==JSON.stringify(pending[k]))).map(([,g])=>g)},
-   ...(changed?[{stage:'MOD',color:'#00a9ff',dash:'7 5',
+   ...(changed?[{stage:'MOD',color:Object.keys(active).length?'#ffffff':'#00d9f5',dash:Object.keys(active).length?'4 4':'12 7',
     geometries:Object.values(changed).filter(valid)}]:[])
   ].filter(layer=>layer.geometries.length);
   if(!layers.length)return 0;
@@ -1587,7 +1587,8 @@ try{
      if(!onPlot(xy,7))continue;
      const [x,y]=xy,right=x>450;
      {
-      make(plot,'circle',{cx:x,cy:y,r:3.2,fill:layer.color,'data-sourced-fix':'true'});
+      if(point.estimated)make(plot,'circle',{cx:x,cy:y,r:3.2,fill:'none',stroke:layer.color,'data-conditional-fix':'true'});
+      else make(plot,'path',{d:'M'+x+' '+(y-4)+' L'+(x+4)+' '+y+' L'+x+' '+(y+4)+' L'+(x-4)+' '+y+' Z',fill:'none',stroke:layer.color,'stroke-width':1.3,'data-sourced-fix':'true'});
       const t=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:layer.color,
        'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace',
        'data-source-ident':'true'});
