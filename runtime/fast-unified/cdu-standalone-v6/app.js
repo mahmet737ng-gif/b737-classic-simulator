@@ -71,9 +71,13 @@ function markEntryPlaceholder(span){
  glyphs.className='cdu-square-glyphs';
  glyphs.textContent=span.textContent;
  glyphs.style.display='inline-block';
- glyphs.style.transform='scale(2)';
- glyphs.style.transformOrigin=span.classList.contains('fmc-right')?'right center':'left center';
- span.style.overflow='visible';
+ // Required-entry squares use the calibrated single-character grid.
+ // Never enlarge beyond the LSK column or overlap the field title.
+ glyphs.style.transform='none';
+ glyphs.style.fontSize='1em';
+ glyphs.style.maxWidth='100%';
+ glyphs.style.overflow='hidden';
+ span.style.overflow='hidden';
  span.replaceChildren(glyphs);
 }
 function makePairRow(topPct,leftText,rightText,isScratch=false,isSmall=false){const d=document.createElement('div'); d.className='fmc-line'+(isScratch?' scratch':'')+(isSmall?' fmc-small':'')+' fmc-pairline'; d.style.top=topPct+'%'; const l=document.createElement('span'); l.className='fmc-left'; l.textContent=leftText||''; const r=document.createElement('span'); r.className='fmc-right'; r.textContent=rightText||''; if(!isScratch&&!isSmall){for(const span of [l,r]){if(isEntryPromptText(span.textContent))markEntryPlaceholder(span);else if(isNavigationLSKText(span.textContent))span.classList.add('cdu-lsk-prompt');}} if(isScratch){l.classList.add('full'); r.remove(); d.appendChild(l);} else {d.appendChild(l); d.appendChild(r);} return d;}
