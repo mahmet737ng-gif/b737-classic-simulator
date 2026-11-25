@@ -996,7 +996,7 @@ function aircraft(svg,l,full){
 function projection(m,l,plan=false){
  const [cx,cy]=plan?[252,294]:l.roseCenter;
  const scale=l.radius/m.range,scaleX=(l.radiusX??l.radius)/m.range;
- const anchor=plan?m.route.points[clamp(m.route.centerIndex,0,m.route.points.length-1)]:null;
+ const anchor=plan?(m.route.centerAnchor??m.route.points[clamp(m.route.centerIndex,0,m.route.points.length-1)]):null;
  return (east,north)=>{
   const a=rad(plan?0:m.geoTrack??m.reference);
   const e=east-(anchor?.x??0),n=north-(anchor?.y??0);

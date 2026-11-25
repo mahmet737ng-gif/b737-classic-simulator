@@ -371,6 +371,8 @@ try{
      const nativePoints=src.fmc?.route?.displayRoute?.points||[];
      const matching=planCenter?nativePoints.findIndex(p=>(p.name??p.ident)===planCenter.ident&&Math.abs(p.lat-planCenter.lat)<.0001&&Math.abs(p.lon-planCenter.lon)<.0001):-1;
      const route=sources.route(src.fmc,origin.ehsi.mode,matching>=0?matching:origin.ehsi.planStep);
+     // Both the executed route and source overlay must project from the exact CDU review fix.
+     if(planCenter){route.points=route.points.map(p=>({...p,...sources.offsets(planCenter,p)}));route.centerAnchor={x:0,y:0};}
     const fmcNav=sources.fullNavFromRoute?.(src,route);
     const model=preview?core.ehsiModel(setup):
      liveModel(src,origin,setup,screen.aspect,route,failure,fmcNav);
@@ -519,7 +521,8 @@ try{
    const src=sources.project(selected),setup=state[selected];
    const length=referencePlanPoints(win.B737CduSgRouteV1?.snapshot()).length||src.fmc?.route?.displayRoute?.points?.length||0;
    if(!length||setup.ehsi.mode!=='PLAN')return;
-   delete planCenters[selected];setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));
+   const request={seat:selected,dir,handled:false};win.dispatchEvent(new CustomEvent('b737:cdu-plan-step',{detail:request}));
+    if(!request.handled){delete planCenters[selected];setup.ehsi.planStep=Math.max(0,Math.min(length-1,setup.ehsi.planStep+dir));}
    schedule();
   });
   doc.getElementById('unifiedEfisClose')?.addEventListener('click',()=>cockpit.close());

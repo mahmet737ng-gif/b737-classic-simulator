@@ -252,7 +252,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
   if(parentApi)state.planReviewMode=parentApi.getMode(cduSeat)==='PLAN';
   else delete state.planReviewMode;
   if(!chapter11RoutePages?.planMode(state)){delete state.planReviewCenter;planSyncKey='';return;}
-  if(state.page!=='LEGS')return;
+  if(state.page!=='LEGS'&&!state.planReviewCenter)return;
   const center=chapter11RoutePages.planCenter(state);
   const key=JSON.stringify(center);if(key!==planSyncKey){planSyncKey=key;parentApi?.setCenter(cduSeat,center);}
  }
@@ -469,5 +469,5 @@ window.CDU_SCREEN_QA_V1=Object.freeze({
  getPromptAudit:()=>window.CDU_PROMPT_POLICY_V1?.audit(pages,(field,page)=>core.readValue(state,field,page))
 });
 window.updateStage5View=update;
- try{if(window.parent!==window)window.parent.addEventListener('b737:unified-efis-control',e=>{if(e.detail?.seat===cduSeat)update();});}catch(_){}
+ try{if(window.parent!==window){window.parent.addEventListener('b737:unified-efis-control',e=>{if(e.detail?.seat===cduSeat)update();});window.parent.addEventListener('b737:cdu-plan-step',e=>{if(e.detail?.seat!==cduSeat||e.detail.dir!==1||state.page!=='LEGS')return;syncPlanReview();if(!chapter11RoutePages?.planMode(state))return;e.detail.handled=chapter11RoutePages.planStep(state);update();});}}catch(_){}
  init();
