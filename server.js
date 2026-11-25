@@ -8,6 +8,7 @@ const zlib = require('node:zlib');
 const {performance} = require('node:perf_hooks');
 const { Pool } = require('pg');
 const PrivateNavData=require('./navdata-store.js');
+const IranNavDataV2=require('./iran-navdata-v2.js');
 const {createCrewRoomHandler}=require('./crew-rooms.js');
 const NavdataBootstrap=require('./navdata-bootstrap.js');
 const NavdataRelay=require('./navdata-relay.js');
@@ -522,6 +523,7 @@ async function serveGitHubSource(req,res,relative,{cockpitDocument=false,authMs}
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 30000 });
 const navdata=PrivateNavData.create(pool);
+const iranNavdata=IranNavDataV2.create(pool);
 const crewAssets=new Map([
   ['/crew/lobby.js', [cockpitSource+'crew-room-v1.js', 'text/javascript']],
   ['/crew/lobby.css', [cockpitSource+'crew-room-v1.css', 'text/css']]
@@ -939,6 +941,19 @@ async function handle(req,res) {
     if (token) await pool.query('DELETE FROM ata24_devices WHERE session_hash=$1',[hash(token)]);
     redirect(res,'/login',{'Set-Cookie':cookie(req,TOKEN_COOKIE,'',0)});return;
   }
+  // Owner-only import; the legacy dataset is left intact until client migration.
+  if(req.method==='POST'&&url.pathname==='/api/iran-navdata/import'){
+    res.setHeader('Cache-Control','private, no-store');
+    res.setHeader('Content-Type','application/json; charset=utf-8');
+    if(!sameOriginRequest(req)||!await ownerAccess(req)){res.writeHead(403);res.end(JSON.stringify({error:'OWNER_ACCESS_REQUIRED'}));return;}
+    try{const input=await readPrivateNavData(req);const result=await iranNavdata.importData(input);res.writeHead(200);res.end(JSON.stringify(result));return;}
+    catch(e){res.writeHead(422);res.end(JSON.stringify({error:String(e.message||'INVALID_NAVDATA').slice(0,120)}));return;}
+  }
+  if(req.method==='GET'&&iranNavdata.supports(url.pathname)){
+    const {status,body}=await iranNavdata.lookup(url);
+    res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'private, no-store','Cross-Origin-Resource-Policy':'same-origin','X-Content-Type-Options':'nosniff'});
+    res.end(JSON.stringify(body));return;
+  }
   // Source files stay in Railway PostgreSQL and require the established user session.
   if(req.method==='POST'&&url.pathname==='/api/navdata/import'){
     if(!sameOriginRequest(req)){
@@ -1085,6 +1100,7 @@ async function start() {
   if(crewReady)await pool.query('CREATE TABLE IF NOT EXISTS unified_crew_rooms ('+
     'manager text PRIMARY KEY, expires_at bigint NOT NULL, invitation_hash text UNIQUE NOT NULL, room jsonb NOT NULL)');
   await navdata.initialize();
+  await iranNavdata.initialize();
   // Imports owner-provided reference data into private PostgreSQL once;
   // never sends the source outside Railway or exposes it as a static asset.
   try{
