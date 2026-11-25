@@ -434,7 +434,13 @@
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
    const hold=holdList(s).some(x=>x.h.ident===leg.ident&&Math.abs(x.h.lat-leg.lat)<.00001&&Math.abs(x.h.lon-leg.lon)<.00001);
-   rows.push(pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),constraint(s,leg,index)));
+   const original=constraint(s,leg,index),perf=s.fmcPageInputs?.trainingPerformance,estimate=perf?.quality==='TRAINING_ESTIMATE'&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident):[];
+   // Preserve every published or pilot altitude constraint. Only fill the missing predicted altitude of an unambiguous cruise fix.
+   const q=estimate?.length===1&&estimate[0].phase==='CRUISE'?estimate[0]:null;
+   const [sp,al]=original.split('/');const ta=perf?.transitionAltitudeFt??18000;
+   const predictedAlt=q&&Number.isFinite(q.altitudeFt)?q.altitudeFt>=ta?'FL'+Math.round(q.altitudeFt/100):String(Math.round(q.altitudeFt)):null;
+   const display=predictedAlt&&al==='-----'?sp+'/'+predictedAlt:original;
+   rows.push(pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),display));
   }
   const action=routeAction(s);
   const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':

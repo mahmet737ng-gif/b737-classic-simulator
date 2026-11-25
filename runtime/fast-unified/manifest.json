@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "366ae45f66ff9b0fed69e36d5b31b1bb8bc835eb4ad69b2f4bba56a74c2faaac"
+      "sha256": "9ca03862cc272c83463842d9f0039c4d27d262382dd8e4a5aa0321f1487e6950"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -184,7 +184,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "36746f8b16c71c33abf2b244d0f24fae6adcd30c6e4bf31515b28f34a3649552"
+      "sha256": "2f6a506bb43dc0ff99bbed4ddecb752286f7d6a64713c1434532760c1dd954d9"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "3aa20d3ebd6abbcb5fa81212030514acf697c559c17f524fa3f78e7c44d51b34"
+      "sha256": "c4777a3d4bda8991ff13738af11cb929c87669a04c6747ddae7fcc763003591a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "82b1a6a63e826594692213af525efab67c400f993c6ebaba4b1953ba46eee00a"
+      "sha256": "ef16e235de19feb6ca7719e45bf65a0c13f2463fc34e23e67ba0ad4a5bd9de74"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "77ec1506ac51f89bca20401f9fd06edf307a4a24993a44602a7b9f14a7505640"
+      "sha256": "7057cb163b52b59d75945a7a9b279f02fadf7a41b69cc1149a367c013f815e12"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",

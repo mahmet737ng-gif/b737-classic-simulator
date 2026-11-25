@@ -44,6 +44,11 @@ function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stag
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);
+  if(['CLB','CRZ','DES'].includes(state.page)&&/^(CLB|CRZ|DES)_SPEED$/.test(cell.field)&&!get(cell.field,state.page)){
+   const phase={CLB:'CLIMB',CRZ:'CRUISE',DES:'DESCENT'}[state.page],p=state.fmcPageInputs?.trainingPerformance,r=state.fmcPageInputs?.rta;
+   const speed=phase==='CRUISE'&&Number.isFinite(r?.targetKt)?r.targetKt:p?.phaseSpeeds?.[phase];
+   if(p?.quality==='TRAINING_ESTIMATE'&&Number.isFinite(speed))return String(speed);
+  }
   if(state.page==='PERF_INIT'||state.page==='APP_REF'){
    const fuel=state.fmcPageInputs?.fuel,tonnes=fuel?.quality==='VALID'&&Number.isFinite(fuel.totalKg)&&fuel.totalKg>=0?fuel.totalKg/1000:null;
    const number=v=>/^\d+(?:\.\d+)?$/.test(String(v||'').split('/')[0])?Number(String(v).split('/')[0]):null;
@@ -51,7 +56,7 @@ function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,p
    if(cell.field==='FUEL'&&tonnes!==null)return tonnes.toFixed(1);
    if(cell.field==='GW_CG'&&gw===null&&zfw!==null&&tonnes!==null)return (zfw+tonnes).toFixed(1);
    if(cell.field==='ZFW'&&zfw===null&&gw!==null&&tonnes!==null&&gw>=tonnes)return (gw-tonnes).toFixed(1);
-   if(cell.field==='LANDING_WEIGHT'&&!get('LANDING_WEIGHT','APP_REF')&&zfw!==null){const pred=state.fmcPageInputs?.predictions;if(pred?.quality==='VALID'&&Number.isFinite(pred.destination?.fuelKg)&&pred.destination.fuelKg>=0)return (zfw+pred.destination.fuelKg/1000).toFixed(1);}
+   if(cell.field==='LANDING_WEIGHT'&&!get('LANDING_WEIGHT','APP_REF')&&zfw!==null){const f=state.fmcPageInputs,pred=f?.predictions?.quality==='VALID'?f.predictions:f?.trainingPerformance;if(['VALID','TRAINING_ESTIMATE'].includes(pred?.quality)&&Number.isFinite(pred.destination?.fuelKg)&&pred.destination.fuelKg>=0)return (zfw+pred.destination.fuelKg/1000).toFixed(1);}
   }return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
 // CDU entry placeholders have the original small baseline size, independently
 // of enlarged field labels and interactive LSK navigation options.
@@ -332,6 +337,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       if(left?.action&&!left.field&&!left.value&&labelL&&!valueL){valueL=labelL;labelL='';}
       if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
     }
+    if(state.page==='CRZ'&&row===4){const p=state.fmcPageInputs?.trainingPerformance;if(Number.isFinite(p?.fuelAtDestinationKg))valueL=(p.fuelAtDestinationKg/1000).toFixed(1);}
     if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
    frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));

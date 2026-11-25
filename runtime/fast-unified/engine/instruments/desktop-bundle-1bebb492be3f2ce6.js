@@ -609,6 +609,7 @@ try{
   const a=plan.performance,d=perfInputs(a,conditions.fuelKg),out={quality:'TRAINING_ESTIMATE',reason:'NOT_CERTIFIED_PERFORMANCE',...d,waypoints:[],destination:null};
   if(!d.ready||!coord(frame))return {...out,reason:'PERF_INPUTS_REQUIRED'};
   const now=conditions.utcMs,flow=conditions.fuelFlowKgHr;
+  out.phaseSpeeds=Object.fromEntries(['CLIMB','CRUISE','DESCENT'].map(phase=>[phase,phaseSpeed(a,d,phase,phase==='CRUISE'?d.crz:Math.min(d.crz,Math.max(10000,frame.altitudeFt)),frame.trueHeadingDeg,{})?.targetKt??null]));
   let prev=frame,total=0,seconds=0,complete=true;
   for(let j=index;j<plan.legs.length;j++){
    const l=plan.legs[j];if(l.type!=='FIX'||!coord(l)||l.hold){complete=false;break;}
@@ -620,7 +621,7 @@ try{
    total+=nm;seconds+=nm/gs*3600;
    const eta=finite(now)?new Date(now+seconds*1000).toISOString().slice(11,16).replace(':','')+'Z':null;
    const fuel=finite(flow)&&flow>0&&d.fuelKg!==null?Math.max(0,d.fuelKg-flow*seconds/3600):null;
-   out.waypoints.push({ident:l.ident,index:j,distanceNm:total,courseTrueDeg:course,phase,altitudeFt:ft,eta,etaMs:finite(now)?now+seconds*1000:null,fuelKg:fuel,forecastWindFromDeg:phase==='CRUISE'?d.windFromDeg:null,forecastWindKt:phase==='CRUISE'?d.windKt:null});
+   out.waypoints.push({ident:l.ident,index:j,distanceNm:total,segmentNm:nm,speedRestrictionKt:finite(l.speed)?l.speed:null,courseTrueDeg:course,phase,altitudeFt:ft,eta,etaMs:finite(now)?now+seconds*1000:null,fuelKg:fuel,forecastWindFromDeg:phase==='CRUISE'?d.windFromDeg:null,forecastWindKt:phase==='CRUISE'?d.windKt:null});
    prev=l;
   }
   out.active=out.waypoints[0]??null;out.next=out.waypoints[1]??null;
@@ -639,16 +640,24 @@ try{
   const match=/^(\d{2})(\d{2})(?:(\d{2}))?([AB])?$/.exec(a.RTA_TIME);if(!match)return null;
   const day=new Date(conditions.utcMs);day.setUTCHours(+match[1],+match[2],+(match[3]||0),0);
   let t=day.getTime();if(t<conditions.utcMs-12*3600000)t+=86400000;
-  const seconds=(t-conditions.utcMs)/1000,tol=num(a.RTA_TOL)??30;
-  const error=(x.etaMs-t)/1000,met=Math.abs(error)<=tol||match[4]==='A'&&error>=-tol||match[4]==='B'&&error<=tol;
-  const b=selected.bounds;if(seconds<=0||!b)return {wpt,targetMs:t,errorSec:error,toleranceSec:tol,status:'UNABLE RTA',targetKt:selected.targetKt};
-  const requiredGS=x.distanceNm*3600/seconds,wind=forecast.windKt*Math.cos(delta(x.courseTrueDeg,forecast.windFromDeg)*Math.PI/180);
-  let low=b.min,high=b.max;
-  for(let i=0;i<20;i++){const mid=(low+high)/2;if(tasAtCas(mid,frame.altitudeFt,forecast.isa)<requiredGS+wind)low=mid;else high=mid;}
-  const target=met?selected.targetKt:Math.round((low+high)/2);
-  const minGS=tasAtCas(b.min,frame.altitudeFt,forecast.isa)-wind,maxGS=tasAtCas(b.max,frame.altitudeFt,forecast.isa)-wind;
-  const unable=!met&&(requiredGS<minGS||requiredGS>maxGS);
-  return {wpt,targetMs:t,errorSec:error,toleranceSec:tol,status:met?'ON TIME':unable?'UNABLE RTA':error>0?'LATE':'EARLY',targetKt:target,distanceNm:x.distanceNm,eta:x.eta,quality:'TRAINING_ESTIMATE'};
+  const seconds=(t-conditions.utcMs)/1000,tol=num(a.RTA_TOL)??30,b=selected.bounds;
+  if(seconds<=0||!b)return {wpt,targetMs:t,errorSec:(x.etaMs-t)/1000,toleranceSec:tol,status:'UNABLE RTA',targetKt:selected.targetKt};
+  const travel=cas=>legs.reduce((sum,l)=>{
+   const restricted=finite(l.speedRestrictionKt)?Math.min(cas,l.speedRestrictionKt):cas;
+   const wind=forecast.windKt*Math.cos(delta(l.courseTrueDeg,forecast.windFromDeg)*Math.PI/180);
+   const gs=tasAtCas(restricted,frame.altitudeFt,forecast.isa)-wind;
+   return gs>30?sum+l.segmentNm/gs*3600:Infinity;
+  },0);
+  const error=travel(selected.targetKt)-seconds;
+  const within=err=>Math.abs(err)<=tol||match[4]==='A'&&err>=-tol||match[4]==='B'&&err<=tol;
+  let lo=b.min,hi=b.max;
+  for(let i=0;i<22;i++){const mid=(lo+hi)/2;if(travel(mid)>seconds)lo=mid;else hi=mid;}
+  const target=within(error)?selected.targetKt:Math.round((lo+hi)/2);
+  const predicted=travel(target),after=predicted-seconds;
+  const unable=!within(travel(b.min)-seconds)&&!within(travel(b.max)-seconds)&&(seconds>travel(b.min)+tol||seconds<travel(b.max)-tol);
+  const status=within(after)?'ON TIME':unable?'UNABLE RTA':after>0?'LATE':'EARLY';
+  return {wpt,targetMs:t,errorSec:after,toleranceSec:tol,status,targetKt:target,distanceNm:x.distanceNm,eta:finite(predicted)?new Date(conditions.utcMs+predicted*1000).toISOString().slice(11,16).replace(':','')+'Z':null,quality:'TRAINING_ESTIMATE'};
+
  }
 
  function vertical(plan,leg,frame,mcp,index,remaining,liveFuel,conditions={}){
@@ -768,7 +777,7 @@ function followHold(points,step,frame,gs){
    if(source?.connected!==true){reset();return {...off,reason:'NAV_SOURCE_LOST'};}
    if((source.activeContext?.origin??source.origin)===a.ORIGIN&&(source.activeContext?.destination??source.destination)===a.DEST){
     const sig=JSON.stringify([revision,a,source.activeRevision??source.active]);
-    if(sig!==signature){const next=compile(session,source);if(next){const old=plan?.legs?.[index],match=old?.ident?next.legs.map((l,i)=>l.ident===old.ident&&l.type===old.type?i:-1).filter(i=>i>=0):[];const newPpos=next.legs.findIndex(l=>l.hold?.ppos&&!plan?.legs?.some(x=>x.hold?.key===l.hold.key));index=newPpos>=0?newPpos:match.length===1?match[0]:0;if(!next.legs[index]?.hold||next.legs[index].hold.key!==holding?.key)holding=null;from=null;previousAltitude=null;previousCondition=null;wasDescending=false;plan=next;}else{plan=null;index=0;}signature=sig;}
+    if(sig!==signature){const next=compile(session,source);if(next){const sameGeometry=plan?.origin===next.origin&&plan?.dest===next.dest&&JSON.stringify(plan.legs)===JSON.stringify(next.legs);const old=plan?.legs?.[index],match=old?.ident?next.legs.map((l,i)=>l.ident===old.ident&&l.type===old.type?i:-1).filter(i=>i>=0):[];const newPpos=next.legs.findIndex(l=>l.hold?.ppos&&!plan?.legs?.some(x=>x.hold?.key===l.hold.key));index=newPpos>=0?newPpos:match.length===1?match[0]:0;if(!next.legs[index]?.hold||next.legs[index].hold.key!==holding?.key)holding=null;if(!sameGeometry){from=null;previousAltitude=null;previousCondition=null;wasDescending=false;}plan=next;}else{plan=null;index=0;}signature=sig;}
    }else if(!plan||plan.origin!==a.ORIGIN||plan.dest!==a.DEST||plan.revision!==revision){reset();return off;}
    if(!plan)return off;
    if(!conditions.power||!conditions.positionValid||!coord(frame)||!finite(frame.trueHeadingDeg)||!finite(frame.altitudeFt))return {...off,reason:'FMC_OR_IRS_UNAVAILABLE'};
