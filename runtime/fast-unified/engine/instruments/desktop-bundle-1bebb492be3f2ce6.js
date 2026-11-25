@@ -539,7 +539,7 @@ try{
    if(hold.ppos){const matches=legs.map((l,j)=>same(l,hold.anchor)?j:-1).filter(j=>j>=0);if(matches.length!==1)continue;const j=matches[0];legs.splice(j,0,{type:'FIX',kind:'RTE',ident:'PPOS',lat:hold.lat,lon:hold.lon,from:null,flyOver:true,hold:{...hold,key}});}
    else{const matches=legs.filter(l=>same(l,hold));if(matches.length!==1)continue;matches[0].hold={...hold,key};matches[0].flyOver=true;}
   }
-  return {origin,dest,legs,revision:session.routeRevision||0,performance:{...a}};
+  return {origin,dest,legs,revision:session.routeRevision||0,performance:{...a},destinationPoint:geo['RUNWAY_ARR@'+dest]?.fixes?.[0]||session.activeNavFixEvidence?.DEST||null};
  }
  function segment(from,to,p,heading){
   const ab=vec(from,to),ap=vec(from,p),len=length(ab);if(len<.001)return null;
@@ -585,7 +585,7 @@ try{
  // Approximate simulator racetrack; no certified holding performance model.
  function holdGeometry(fix,course,gs,altitude,bank=20){
   const hold=fix.hold,sign=hold.dir==='L'?-1:1,rad=course*Math.PI/180;
-  const radius=clamp((Math.max(100,gs)*.514444)**2/(9.80665*Math.tan(clamp(bank,10,25)*Math.PI/180))/1852,.2,5);
+  const radius=clamp((Math.max(100,gs)*.514444)**2/(9.80665*Math.tan(clamp(bank,10,30)*Math.PI/180))/1852,.2,8);
   const L=hold.dist??Math.max(.2,gs*(hold.time??(altitude>14000?1.5:1))/60);
   const p=(x,y)=>({lat:fix.lat+(x*Math.cos(rad)-y*Math.sin(rad))/60,lon:fix.lon+(x*Math.sin(rad)+y*Math.cos(rad))/(60*Math.cos(fix.lat*Math.PI/180))});
   const pts=[p(0,0)];for(let i=1;i<=12;i++){const t=Math.PI*i/12;pts.push(p(radius*Math.sin(t),sign*radius*(1-Math.cos(t))));}
@@ -595,16 +595,46 @@ try{
  function holdEntry(fix,course,arrival,gs,altitude,bank){
   const race=holdGeometry(fix,course,gs,altitude,bank),dir=fix.hold.dir==='L'?-1:1,d=dir*delta(course,arrival);
   // Conventional sector approximation for training; not a protected-airspace calculation.
-  const kind=d>70?'PARALLEL':d< -110?'TEARDROP':'DIRECT';
+  const kind=d>110?'TEARDROP':d< -70?'PARALLEL':'DIRECT';
   if(kind==='DIRECT')return {kind,points:race,race};
-  if(kind==='TEARDROP')return {kind,points:[race[0],...race.slice(13)],race};
-  const outbound=vec(race[12],race[13]),end={lat:fix.lat+outbound.y/60,lon:fix.lon+outbound.x/(60*Math.cos(fix.lat*Math.PI/180))};
-  return {kind,points:[race[0],end,race[0]],race};
+  const L=fix.hold.dist??gs*(fix.hold.time??(altitude>14000?1.5:1))/60;
+  const project=(brg,nm)=>({lat:fix.lat+Math.cos(brg*Math.PI/180)*nm/60,lon:fix.lon+Math.sin(brg*Math.PI/180)*nm/(60*Math.cos(fix.lat*Math.PI/180))});
+  if(kind==='TEARDROP'){const p=project(norm(course+180-dir*30),L);return {kind,points:[race[0],p,race[13],...race.slice(14)],race};}
+  const end=project(norm(course+180),L),intercept=project(norm(course+180),Math.max(.3,L*.45));
+  return {kind,points:[race[0],end,project(norm(course+180-dir*45),L*.65),intercept,race[0]],race};
+ }
+ // Explicitly approximate training performance, separate from certified Boeing tables.
+ function holdBestSpeed(performance,fuelKg){
+  const raw=String(performance.GW_CG||'').split('/')[0],z=String(performance.ZFW||'');
+  const valid=x=>/^\d+(?:\.\d+)?$/.test(x)&&Number(x)>0;
+  const gw=valid(z)&&finite(fuelKg)?Number(z)+fuelKg/1000:valid(raw)?Number(raw):null;
+  return finite(gw)&&gw>=25&&gw<=80?Math.round(clamp(210*Math.sqrt(gw/50),170,260)):null;
+ }
+ function holdStats(plan,index,frame,conditions,holding){
+  const out={},gs=frame.gsKt,now=conditions.utcMs,flow=conditions.fuelFlowKgHr,availableFuel=conditions.fuelKg;
+  if(!finite(gs)||gs<30)return out;
+  const bestKt=holdBestSpeed(plan.performance,availableFuel),res=Number(plan.performance.RESERVES);
+  for(let i=index;i<plan.legs.length;i++){
+   const l=plan.legs[i];if(l.type==='GAP')break;if(!l.hold)continue;
+   const h=l.hold;let distance=0,valid=true,prev=frame;
+   for(let j=index;j<=i;j++){const x=plan.legs[j];if(x.type!=='FIX'){valid=false;break;}distance+=length(vec(prev,x));prev=x;}
+   if(holding?.key===h.key){const pts=holding.points,step=holding.step;if(pts?.[step]){distance=length(vec(frame,pts[step]));for(let k=step+1;k<pts.length;k++)distance+=length(vec(pts[k-1],pts[k]));valid=true;}}
+   const etaMs=valid&&finite(now)?now+distance/gs*3600000:null;
+   const eta=finite(etaMs)?new Date(etaMs).toISOString().slice(11,16).replace(':','')+'Z':null;
+   let rest=0,complete=true;prev=l;
+   for(let j=i+1;j<plan.legs.length;j++){const x=plan.legs[j];if(x.type!=='FIX'){complete=false;break;}rest+=length(vec(prev,x));prev=x;}
+   const destination=plan.destinationPoint;
+   if(!coord(destination)||length(vec(prev,destination))>3)complete=false;
+   const availableMinutes=valid&&complete&&finite(flow)&&flow>0&&finite(availableFuel)&&String(plan.performance.RESERVES??'').trim()!==''&&finite(res)&&res>=0?Math.max(0,(availableFuel-res*1000-(distance+rest)/gs*flow)/flow*60):null;
+   let efcMinutes=null;if(h.efc&&finite(etaMs)){const t=new Date(etaMs);const [hh,mm]=[Number(h.efc.slice(0,2)),Number(h.efc.slice(2))];let end=Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate(),hh,mm);if(end<etaMs)end+=86400000;efcMinutes=(end-etaMs)/60000;}
+   out[h.key]={bestKt,eta,availableMinutes,efcMinutes,projectedDestinationFuelKg:availableMinutes!==null&&finite(efcMinutes)?Math.max(0,availableFuel-flow*((distance+rest)/gs+efcMinutes/60)):null,quality:'TRAINING_ESTIMATE'};
+  }
+  return out;
  }
  function create(){
-  let holding=null;
+  let holding=null,completed=new Map();
   let plan=null,signature='',index=0,from=null,previousAltitude=null,previousCondition=null,lastElapsed=null,wasDescending=false;
-  function reset(){holding=null;plan=null;signature='';index=0;from=null;previousAltitude=null;previousCondition=null;lastElapsed=null;wasDescending=false;}
+  function reset(){holding=null;completed.clear();plan=null;signature='';index=0;from=null;previousAltitude=null;previousCondition=null;lastElapsed=null;wasDescending=false;}
   function evaluate(session,source,frame,mcp,conditions={}){
    const off={fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false,reason:'NO_EXECUTED_ROUTE'};
    if(!session?.routeActivated){reset();return off;}
@@ -617,9 +647,10 @@ try{
    }else if(!plan||plan.origin!==a.ORIGIN||plan.dest!==a.DEST||plan.revision!==revision){reset();return off;}
    if(!plan)return off;
    if(!conditions.power||!conditions.positionValid||!coord(frame)||!finite(frame.trueHeadingDeg)||!finite(frame.altitudeFt))return {...off,reason:'FMC_OR_IRS_UNAVAILABLE'};
-   if(finite(lastElapsed)&&finite(frame.elapsedSec)&&frame.elapsedSec<lastElapsed){index=0;from=null;previousAltitude=null;previousCondition=null;wasDescending=false;holding=null;}
+   if(finite(lastElapsed)&&finite(frame.elapsedSec)&&frame.elapsedSec<lastElapsed){index=0;from=null;previousAltitude=null;previousCondition=null;wasDescending=false;holding=null;completed.clear();}
    lastElapsed=frame.elapsedSec;
    let leg=plan.legs[index];
+   if(leg?.hold&&completed.get(leg.hold.key)===JSON.stringify(leg.hold)){index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];}
    if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};
    if(leg.type==='ALTITUDE'){
     const crossed=finite(previousAltitude)&&(leg.climb?previousAltitude<leg.altitude.ft&&frame.altitudeFt>=leg.altitude.ft:previousAltitude>leg.altitude.ft&&frame.altitudeFt<=leg.altitude.ft);
@@ -633,17 +664,43 @@ try{
    previousAltitude=frame.altitudeFt;
    if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};
    let track=null,engage=false,remaining=null,course=null,xtk=null,bearingTo=null;
-   let holdStatus=null;
+   let holdStatus=null,holdExited=null;
    const hold=leg.hold,mag=hold?(conditions.variationAt?.(leg)??conditions.variation):null;
    if(hold&&finite(mag)&&frame.airborne===true){
-    const inbound=norm(hold.inbound+mag),atFix=length(vec(frame,leg))<=.18;
-    if(!holding&&atFix){const arrival=coord(leg.from)?bearing(vec(leg.from,leg)):frame.trueHeadingDeg;const entry=holdEntry(leg,inbound,arrival,Math.max(100,frame.gsKt||frame.iasKt||180),frame.altitudeFt,mcp?.bankAngleLimit);holding={key:hold.key,points:entry.points,race:entry.race,entry:entry.kind,step:1,laps:0};}
+    const inbound=norm(hold.inbound+mag),atFix=length(vec(frame,leg))<=.22;
+    const arrival=coord(leg.from)?bearing(vec(leg.from,leg)):frame.trueHeadingDeg;
+    const gs=Math.max(100,frame.gsKt||frame.iasKt||180),bank=30;
+    const config=JSON.stringify([hold.inbound,hold.dir,hold.time,hold.dist,hold.speed]);
+    const geometry=()=>holdGeometry(leg,inbound,gs,frame.altitudeFt,bank);
+    const arrivalSeg=coord(leg.from)?segment(leg.from,leg,frame,frame.trueHeadingDeg):null;
+    if(!holding&&(atFix||arrivalSeg&&arrivalSeg.along>=arrivalSeg.len&&Math.abs(arrivalSeg.xtk)<.25)){
+     const entry=holdEntry(leg,inbound,arrival,gs,frame.altitudeFt,bank);
+     holding={key:hold.key,points:entry.points,race:entry.race,entry:entry.kind,step:1,laps:0,config,exitInhibited:false,exitPath:false};
+    }
     if(holding?.key===hold.key){
-     let pts=holding.points;
-     if(hold.exit&&holding.points===holding.race&&holding.step===13&&!holding.shortened){const traveled=length(vec(pts[12],frame));const lengthNm=Math.max(.2,Math.min(length(vec(pts[12],pts[13])),traveled));pts=holdGeometry({...leg,hold:{...hold,dist:lengthNm}},inbound,Math.max(100,frame.gsKt||frame.iasKt||180),frame.altitudeFt,mcp?.bankAngleLimit);holding.points=pts;holding.race=pts;holding.step=14;holding.shortened=true;}
-     let target=pts[holding.step],start=pts[holding.step-1],s=segment(start,target,frame,frame.trueHeadingDeg);
-     if(length(vec(frame,target))<=.13||s&&s.along>=s.len&&Math.abs(s.xtk)<.3){holding.step++;if(holding.step>=pts.length){if(hold.exit){holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}else{holding.points=holding.race;pts=holding.points;holding.step=1;holding.laps++;}}}
-     if(holding){target=pts[holding.step];start=pts[holding.step-1];s=segment(start,target,frame,frame.trueHeadingDeg);track=s?.track??bearing(vec(frame,target));course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=s?.xtk??null;holdStatus={key:hold.key,active:true,exit:hold.exit===true,lap:holding.laps,entry:holding.entry,points:holding.race};}
+     if(holding.config!==config){holding.config=config;holding.exitInhibited=true;}
+     if(hold.exit&&!holding.exitInhibited&&!holding.exitPath){
+      holding.exitPath=true;holding.points=[{lat:frame.lat,lon:frame.lon},{lat:leg.lat,lon:leg.lon}];holding.step=1;
+     }
+     let pts=holding.points,target=pts[holding.step],start=pts[holding.step-1];
+     let s=segment(start,target,frame,frame.trueHeadingDeg);
+     // Advance only on crossing or close capture, never jump the route at EXEC.
+     const capture=Math.min(.18,Math.max(.035,(s?.len||.1)*.3));
+     if(length(vec(frame,target))<=capture||s&&s.along>=s.len&&Math.abs(s.xtk)<.28){
+      holding.step++;
+      if(holding.step>=pts.length){
+       if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident};completed.set(hold.key,JSON.stringify(hold));holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}
+       else{holding.race=geometry();holding.points=holding.race;holding.step=1;holding.laps++;holding.exitInhibited=false;}
+      }
+     }
+     if(holding){
+      pts=holding.points;target=pts[holding.step];start=pts[holding.step-1];s=segment(start,target,frame,frame.trueHeadingDeg);
+      // Short look-ahead on turn chords, so they do not command a distant
+      // straight-leg heading or reverse direction at the turn boundary.
+      track=s?norm(s.course+clamp(Math.atan2(s.xtk,Math.max(.12,Math.min(.6,s.len)))*180/Math.PI,-35,35)):bearing(vec(frame,target));
+      course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=s?.xtk??null;
+      holdStatus={key:hold.key,active:true,exit:hold.exit===true,exitInhibited:holding.exitInhibited,lap:holding.laps,entry:holding.entry,points:holding.race,phase:holding.exitPath?'EXIT':holding.points!==holding.race?'ENTRY':holding.step<=12?'OUTBOUND TURN':holding.step===13?'OUTBOUND':holding.step<=25?'INBOUND TURN':'INBOUND'};
+     }
     }
    }
    if(holdStatus){/* the holding controller owns lateral guidance until exit */}
@@ -665,16 +722,18 @@ try{
     }
    }
    const v=vertical(plan,leg,frame,mcp,index,remaining??0,conditions.fuelKg,{...conditions,wasDescending});
-   if(holdStatus&&v.valid){const target=leg.hold.speed;if(finite(target))v.targetKt=target;}
+   const metrics=holdStats(plan,index,frame,conditions,holding),nextHold=plan.legs.slice(index).find(l=>l.hold);
+   if(v.valid&&nextHold?.hold){const h=nextHold.hold,best=metrics[h.key]?.bestKt,target=h.speed??best,eta=metrics[h.key]?.eta;const close=holdStatus||leg===nextHold&&finite(remaining)&&finite(frame.gsKt)&&remaining/frame.gsKt*60<=3;if(close&&finite(target)){v.targetKt=target;}}
+   if(holdStatus&&v.valid){const holdAltitude=finite(mcp?.values?.altitude)?mcp.values.altitude:frame.altitudeFt;v.targetAltitudeFt=holdAltitude;v.vsFpm=clamp((holdAltitude-frame.altitudeFt)*2,-1200,1200);v.mode='VNAV PTH';v.thrust='FMC SPD';}
    wasDescending=v.phase==='DESCENT';
    return {fmcTrackValid:finite(track),trackDeg:track,lnavEngage:engage&&finite(track),
     fmcVerticalValid:finite(track)&&v.valid===true,vnavEngage:finite(track)&&v.engage===true,
     vsFpm:v.vsFpm,vnavMode:v.mode,targetKt:v.targetKt,thrust:v.thrust,targetAltitudeFt:v.targetAltitudeFt,
-    hold:holdStatus,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',vertical:v};
+    hold:holdStatus,holdExited,holdMetrics:metrics,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',vertical:v};
   }
   return {evaluate,reset};
  }
- return Object.freeze({compile,segment,vertical,holdGeometry,holdEntry,create});
+ return Object.freeze({compile,segment,vertical,holdGeometry,holdEntry,holdStats,holdBestSpeed,create});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}
@@ -723,7 +782,7 @@ try{
   const running=Object.values(engineValues||{}).filter(x=>x?.running===true),idle=running.length>0&&running.every(x=>finiteNumber(x.throttle)&&x.throttle<=.06);
   const limit=win.B737ManualN1LiveV1?.getState?.(),n1Ready=[1,2].every(n=>limit?.[n]?.automaticSource==='FMC'&&finiteNumber(limit[n].automaticPct));
   attachFmc();
-  const sample=frame&&isActive()?fmcTrainer.evaluate(sessionCache??win.B737UnifiedFmc?.snapshot?.(),sourceCache??win.B737CduSgRouteV1?.snapshot?.(),frame,output,{power:value?.operational===true&&value.failed!==true,positionValid:value?.position?.quality==='VALID',variation,variationAt:p=>{const w=win.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;},n1Ready,idle,fuelKg:value?.fuel?.quality==='VALID'?value.fuel.totalKg:null}):{fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false};
+  const sample=frame&&isActive()?fmcTrainer.evaluate(sessionCache??win.B737UnifiedFmc?.snapshot?.(),sourceCache??win.B737CduSgRouteV1?.snapshot?.(),frame,output,{power:value?.operational===true&&value.failed!==true,positionValid:value?.position?.quality==='VALID',variation,variationAt:p=>{const w=win.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;},n1Ready,idle,utcMs:net?.getSignal?.('clock.utc')?.quality==='VALID'?net.getSignal('clock.utc').value?.epochMs:null,fuelFlowKgHr:(()=>{const a=[1,2].map(n=>net?.getSignal?.('propulsion.engine'+n));return a.every(x=>x?.quality==='VALID'&&finiteNumber(x.value?.fuelFlowKgHr))?a.reduce((sum,x)=>sum+x.value.fuelFlowKgHr,0):null;})(),fuelKg:value?.fuel?.quality==='VALID'?value.fuel.totalKg:null}):{fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false};
   lastFmc={...sample,position:frame&&sample.fmcTrackValid?{lat:frame.lat,lon:frame.lon}:null,observedAtMs:Date.now()};
   return {...sample,
    courseTrackValid:radio?.courseTrackValid===true,courseDeg:radio?.courseDeg??null,

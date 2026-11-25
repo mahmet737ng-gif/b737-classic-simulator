@@ -342,10 +342,11 @@
  function readHold(s,i,activeOnly=false){try{const v=JSON.parse(activeOnly?s.active[holdKey(i)]:entered(s,holdKey(i)));return v&&validPosition(v)&&typeof v.ident==='string'?v:null;}catch(_){return null;}}
  function holdExecReady(s){return [1,2,3,4,5].every(i=>{const h=readHold(s,i);return !h||Number.isFinite(h.inbound)&&h.inbound>=0&&h.inbound<360;});}
  function holdList(s){return [1,2,3,4,5].map(i=>({i,h:readHold(s,i)})).filter(x=>x.h);}
- function holdTime(s,h){return h.time??((s.fmcPageInputs?.airData?.pressureAltitudeFt??0)>14000?1.5:1);}
+ function holdTime(s,h){const alt=s.fmcPageInputs?.airData?.pressureAltitudeFt;return h.time??(Number.isFinite(alt)?alt>14000?1.5:1:null);}
  function holdWrite(s,i,h){const draft=s.routeActivated||s.routeActivationArmed?s.pending:s.stagedRoute,k=holdKey(i),v=h?JSON.stringify(h):'';if(v===(s.active[k]??''))delete draft[k];else draft[k]=v;s.scratch='';s.message='';}
  function holdStart(s,pages,core){s.holdAt=true;s.holdPage=1;core.choose(s,pages,'LEGS');}
  function holdSelect(s,pages,core,ppos){
+  if(!s.routeActivated&&!s.routeActivationArmed&&(!entered(s,'ORIGIN')||!entered(s,'DEST'))){core.addMessage(s,'ENTER ROUTE FIRST');return;}
   const i=[1,2,3,4,5].find(i=>!readHold(s,i));if(!i){core.addMessage(s,'HOLD LIMIT');return;}
   const all=visibleLegs(s),live=s.fmcPageInputs?.guidance?.activeLeg;
   const matches=all.map((l,i)=>({l,i})).filter(x=>x.l.ident===s.scratch.trim().toUpperCase()&&!x.l.gap&&!x.l.conditional&&validPosition(x.l));
@@ -361,26 +362,30 @@
  function holdView(s){
   const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;if(!h)return {title:'RTE HOLD',number:1,count:1,rows:[empty(),empty(),empty(),empty(),empty(),pair('','<NEXT HOLD')]};
   const live=s.fmcPageInputs?.guidance?.hold,active=live?.key===holdKey(entry.i)&&live?.active===true,mod=Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i));
+  const metrics=s.fmcPageInputs?.guidance?.holdMetrics?.[holdKey(entry.i)],best=Number.isFinite(metrics?.bestKt)?Math.round(metrics.bestKt):null,t=h.speed??best,time=holdTime(s,h);
+  const minutes=metrics?.availableMinutes,available=Number.isFinite(minutes)?Math.floor(minutes/60)+'+'+String(Math.floor(minutes%60)).padStart(2,'0'):'-+--';
+  const right=active?(h.exit?'EXIT ARMED':live?.exitInhibited?'':'EXIT HOLD>'):(!mod&&!modified(s)&&(list.length<5||list.length>1)?'NEXT HOLD>':'');
   return {title:(mod?'MOD ':active?'ACT ':'')+'RTE HOLD',number:list.indexOf(entry)+1,count:list.length,rows:[
-   pair('FIX',h.ident,'TGT SPD',h.speed!==null?h.speed+'KT':'---KT'),pair('TURN DIR',h.dir,'FIX ETA','----Z'),
+   pair('FIX',h.ident,'TGT SPD',Number.isFinite(t)?t+'KT':'---KT',{activeSpeed:active}),
+   pair('TURN DIR',h.dir,'FIX ETA',metrics?.eta||'----Z'),
    pair('INBD CRS',h.inbound===null?'□□□':String(h.inbound).padStart(3,'0')+'°','EFC TIME',h.efc?h.efc+'Z':'----Z'),
-   pair('LEG TIME',h.dist!==null?'--.-MIN':holdTime(s,h).toFixed(1)+'MIN','HOLD AVAIL','-+--'),
-   pair('LEG DIST',h.dist!==null?h.dist.toFixed(1)+'NM':'--.-NM','BEST SPEED','---KT'),
-   pair('',mod?'<ERASE':list.length<5&&!modified(s)?'<NEXT HOLD':'','',active?(h.exit?'EXIT ARMED':'EXIT HOLD>'):'')
+   pair('LEG TIME',h.dist!==null||time===null?'--.-MIN':time.toFixed(1)+'MIN','HOLD AVAIL',available),
+   pair('LEG DIST',h.dist!==null?h.dist.toFixed(1)+'NM':'--.-NM','BEST SPEED',best!==null?best+'KT':'---KT'),
+   pair('------------',mod?'<ERASE':'','------------',right)
   ]};
  }
  function holdInvoke(s,pages,key,core){
-  if(key==='HOLD'){s.holdAt=false;const list=holdList(s);if(!list.length)holdStart(s,pages,core);else{s.holdPage=list.find(x=>s.fmcPageInputs?.guidance?.hold?.key===holdKey(x.i))?.i??list[0].i;core.choose(s,pages,'HOLD');}return true;}
-  if(s.page==='LEGS'&&s.holdAt){if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
+  if(key==='HOLD'){s.holdAt=false;const list=holdList(s);if(!list.length)holdStart(s,pages,core);else{const current=list.findIndex(x=>x.i===s.holdPage);s.holdPage=s.page==='HOLD'&&current>=0?list[(current+1)%list.length].i:list.find(x=>s.fmcPageInputs?.guidance?.hold?.key===holdKey(x.i))?.i??list[0].i;core.choose(s,pages,'HOLD');}return true;}
+  if(s.page==='LEGS'&&s.holdAt){if(/^LSK_L[1-5]$/.test(key)&&s.scratch){holdSelect(s,pages,core,false);return true;}if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
   if(s.page!=='HOLD')return false;
   const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){if(list.length)s.holdPage=list[(list.indexOf(entry)+(key==='NEXT_PAGE'?1:-1)+list.length)%list.length].i;return true;}
   if(key==='EXEC'&&!holdExecReady(s)){core.addMessage(s,'ENTER INBD CRS');return true;}
   if(!/^LSK_[LR][1-6]$/.test(key))return false;
-  if(key==='LSK_L6'){if(entry&&(Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i)))){delete s.pending[holdKey(entry.i)];delete s.stagedRoute[holdKey(entry.i)];s.scratch='';s.message='';if(!readHold(s,entry.i))core.choose(s,pages,'LEGS');return true;}if(list.length<5&&!modified(s))holdStart(s,pages,core);return true;}
+  if(key==='LSK_L6'){if(entry&&(Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i)))){delete s.pending[holdKey(entry.i)];delete s.stagedRoute[holdKey(entry.i)];s.scratch='';s.message='';if(!readHold(s,entry.i))core.choose(s,pages,'LEGS');return true;}return true;}
   if(!h){core.addMessage(s,'KEY INACTIVE');return true;}
   const input=s.scratch.trim().toUpperCase(),next={...h};
-  if(key==='LSK_R6'){if(s.fmcPageInputs?.guidance?.hold?.key===holdKey(entry.i)&&s.fmcPageInputs.guidance.hold.active&&!h.exit){next.exit=true;holdWrite(s,entry.i,next);}return true;}
+  if(key==='LSK_R6'){const live=s.fmcPageInputs?.guidance?.hold;if(live?.key===holdKey(entry.i)&&live.active){if(!h.exit&&!live.exitInhibited){next.exit=true;holdWrite(s,entry.i,next);}else if(live.exitInhibited)core.addMessage(s,'WAIT FOR FIX');}else if(!modified(s)){const j=list.indexOf(entry);if(j<list.length-1)s.holdPage=list[j+1].i;else if(list.length<5)holdStart(s,pages,core);else if(list.length>1)s.holdPage=list[0].i;}return true;}
   if(key==='LSK_L1'&&input==='DELETE'){holdWrite(s,entry.i,null);core.choose(s,pages,'LEGS');return true;}
   if(!input){const v={LSK_L1:h.ident,LSK_L2:h.dir,LSK_L3:h.inbound,LSK_L4:h.dist===null?holdTime(s,h):null,LSK_L5:h.dist,LSK_R1:h.speed,LSK_R3:h.efc}[key];if(v!=null)s.scratch=String(v);return true;}
   const num=Number(input),numeric=/^\d+(?:\.\d)?$/.test(input);

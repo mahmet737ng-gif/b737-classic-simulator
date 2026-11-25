@@ -111,8 +111,9 @@ try{
   }else if(direction==='LNAV'){
    if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
-    out.actions.push({type:'BANK_LIMIT',value:bankLimit});
-    out.rollCommandDeg=bankForHeading(nav.trackDeg);
+    const holdBank=nav.hold?.active===true?30:bankLimit;
+    out.actions.push({type:'BANK_LIMIT',value:holdBank});
+    out.rollCommandDeg=nav.hold?.active===true?Laws?.bankForHeading(flight.trueHeadingDeg,nav.trackDeg,holdBank)??clamp(delta(flight.trueHeadingDeg,nav.trackDeg)*.65,-holdBank,holdBank):bankForHeading(nav.trackDeg);
     out.rollValid=true;
    }else out.reasons.push('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED');
   }else if(direction==='VOR_LOC'||mcp.capture?.roll==='VOR_LOC'){

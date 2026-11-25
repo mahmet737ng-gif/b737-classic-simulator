@@ -22,6 +22,7 @@
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
   if(signature===lastInputs)return;
   lastInputs=signature;state.fmcPageInputs=next;
+  if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
   if(performancePages.has(state.page))update();
  }
  function queueAvionics(){
