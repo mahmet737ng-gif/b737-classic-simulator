@@ -222,6 +222,54 @@ function compile(source,opt){
  }
  return {type:'FeatureCollection',metadata:{airport:opt.airport,kind:opt.kind,ident:opt.ident,airac:LEGACY,source_cycle:CYCLE,selected_runway:opt.runway||null,selected_transition:opt.transition||null,fmc_executable:false,source_only:true,pathProgram:p,warnings:model.warnings},features};
 }
+// Authenticated in-memory navigation lookup; mirrors the server's exact matching rules.
+const enrouteIdent=s=>typeof s==='string'&&/^[A-Z0-9._-]{1,24}$/.test(s);
+function distanceNM(a,b){
+ const r=Math.PI/180,dl=(b.lon-a.lon)*r,dp=(b.lat-a.lat)*r;
+ const h=Math.sin(dp/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dl/2)**2;
+ return 3440.065*2*Math.asin(Math.sqrt(Math.min(1,h)));
+}
+function airwayCheck(d,url){
+ const q=k=>String(url.searchParams.get(k)||'').toUpperCase().trim(),from=q('from'),airway=q('airway'),to=q('to')||null;
+ const out={source:'OWNER_WPNAVRTE_VERIFIED',cycle:CYCLE,fmc_executable:false,available:true,valid:false,from,airway,...(to?{to,fixes:[],points:[]}:{})};
+ if(!enrouteIdent(from)||!enrouteIdent(airway)||(to&&!enrouteIdent(to)))return out;
+ const loc={lat:Number(url.searchParams.get('lat')),lon:Number(url.searchParams.get('lon'))};
+ const hasLoc=url.searchParams.has('lat')&&url.searchParams.has('lon')&&coord(loc)&&!(loc.lat===0&&loc.lon===0);
+ const matches=[];
+ for(const seg of d.enroute.airway_segments){
+  if(seg.airway!==airway)continue;
+  for(let i=0;i<seg.points.length;i++){
+   const p=seg.points[i];if(p.ident!==from||(hasLoc&&distanceNM(p,loc)>.1))continue;
+   if(!to){if(seg.points.length>1)matches.push([p]);continue;}
+   if(!hasLoc||to===from)continue;
+   for(let j=0;j<seg.points.length;j++)if(seg.points[j].ident===to&&i!==j){
+    const points=seg.points.slice(Math.min(i,j),Math.max(i,j)+1);matches.push(i>j?points.reverse():points);
+   }
+  }
+ }
+ if(matches.length!==1)return out;
+ out.valid=true;
+ if(to){out.points=matches[0].map(({ident,lat,lon})=>({ident,lat,lon}));out.fixes=out.points.slice(1).map(p=>p.ident);}
+ return out;
+}
+function resolveFix(d,id){
+ const all=[...d.enroute.fixes,...d.enroute.navaids.filter(x=>!['ILS','ILSD'].includes(x.type))].filter(p=>p.ident===id);
+ const distinct=[];
+ for(const p of all){if(!distinct.some(x=>distanceNM(x,p)<.05))distinct.push({ident:p.ident,lat:p.lat,lon:p.lon});}
+ return distinct;
+}
+
+
+function createEnrouteLookup(d){
+ if(d?.cycle!==CYCLE||d.training_only!==true||!['fixes','navaids','airway_segments'].every(k=>Array.isArray(d.enroute?.[k])))throw Error('INVALID ENROUTE BANK');
+ return path=>{
+  const url=new URL(path,'https://training.invalid');
+  if(url.pathname.endsWith('/airway-check'))return {status:200,body:airwayCheck(d,url)};
+  const id=String(url.searchParams.get('ident')||'').trim().toUpperCase();
+  if(!enrouteIdent(id))return {status:400,body:{error:'INVALID_IDENT'}};
+  const matches=resolveFix(d,id);return {status:matches.length?200:404,body:{matches}};
+ };
+}
 function mount(){
  if(!root.document)return;
  const doc=root.document,frames=()=>Array.from(doc.querySelectorAll('iframe.cdu-frame'));
@@ -253,7 +301,13 @@ function mount(){
    });
    // Evaluate catalog requests synchronously before resolving the response.
    const bridge=root.B737CduSgBridgeV1;
-   root.B737CduSgBridgeV1=Object.freeze({...bridge,
+   let enrouteLookup=null,enroutePromise=null;
+   function preloadEnroute(){
+    if(enrouteLookup)return Promise.resolve(true);
+    if(!enroutePromise)enroutePromise=root.fetch('/api/iran-navdata/enroute-reference',{credentials:'same-origin',cache:'no-store',redirect:'error',headers:{Accept:'application/json'}}).then(async response=>{if(!response.ok)throw Error('ENROUTE UNAVAILABLE');enrouteLookup=createEnrouteLookup(await response.json());return true;}).catch(()=>{enroutePromise=null;return false;});
+    return enroutePromise;
+   }
+   root.B737CduSgBridgeV1=Object.freeze({...bridge,preloadEnroute,
     magneticVariation(point){
      const wmm=root.B737WMM2025V1?.evaluate?.({lat:point.lat,lon:point.lon,altitudeFt:0,date:new Date()});
      if(wmm?.valid===true&&Number.isFinite(wmm.declinationDeg))return wmm.declinationDeg;
@@ -274,7 +328,10 @@ function mount(){
      return samples[0]?.d<=200?samples[0].v:null;
     },
     async request(path){
-    if(/^\/api\/(?:cdu\/airway-check|iran-navdata\/fix)\?/.test(path))return bridge.request(path);
+    if(/^\/api\/(?:cdu\/airway-check|iran-navdata\/fix)\?/.test(path)){
+     if(enrouteLookup){const r=enrouteLookup(path);return {ok:r.status===200,status:r.status,json:async()=>r.body};}
+     return bridge.request(path);
+    }
     try{const value=catalog.request(path);return {ok:true,json:async()=>value};}catch(e){return {ok:false,json:async()=>({error:e.message})};}
    }});
    installed=true;shared.setConnected(true);announce('B737CDUAttachCduSgV1');
@@ -285,7 +342,7 @@ function mount(){
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',()=>root.setTimeout(connect,0),{once:true});else root.setTimeout(connect,0);
 }
-const api={createCatalog,program,trajectory,compile,VERSION};
+const api={createCatalog,createEnrouteLookup,program,trajectory,compile,VERSION};
 root.B737IranRoutePreviewV2=api;
 if(typeof module==='object'&&module.exports)module.exports=api;
 mount();

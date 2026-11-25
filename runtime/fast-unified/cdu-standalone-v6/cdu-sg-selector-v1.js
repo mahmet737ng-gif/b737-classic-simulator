@@ -43,8 +43,9 @@
   for(const airport of [origin,dest]){
    if(!allowedAirport(airport)||preloadKey!==key)continue;
    try{await Promise.all([request('/api/cdu/airport?icao='+encoded(airport)),
-    ...['SID','STAR','APP'].map(kind=>request('/api/cdu/catalog?airport='+encoded(airport)+'&kind='+kind))]);}catch(_){}
+    ...['SID','STAR','APP'].map(kind=>request('/api/cdu/catalog?airport='+encoded(airport)+'&kind='+kind))]);}catch(_){return;}
   }
+  if(preloadKey===key&&allowedAirport(origin)&&allowedAirport(dest))void bridge.preloadEnroute?.();
  }
  const routePages=['RTE','FLIGHT_PLAN','ACTIVATE','LEGS'];
  // Reference-only EXEC commits the SG preview state, never an operational FMC route.

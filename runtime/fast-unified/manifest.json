@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "2c4fd8b6e04bc1b1524f75119b493852760d4cfed321244cf195e9b29d4c6478"
+      "sha256": "8f833f1758e1dec15c60b2397b0ca13af0f0418f9ea0457d16b777722914ba8c"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",
@@ -1796,7 +1796,7 @@
     },
     {
       "path": "engine/fmc/iran-navdata-client-v2.js",
-      "sha256": "668b4990077acc4c67b3b96c0ba850c3899cbcf2eff9bf60cc3389983dc2c950"
+      "sha256": "040d00f13977167080c95afb33711d36b851fb435a7b910d4885f01220769f0d"
     },
     {
       "path": "engine/fmc/pilot-waypoints-v1.js",
