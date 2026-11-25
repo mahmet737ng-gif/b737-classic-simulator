@@ -207,15 +207,15 @@
    const result=[];
    for(let i=0;i<raw.length;i++){
     const l=raw[i],t=l.Type??l.type,conditional=api.conditional(l);
-    if(conditional){result.push({...conditional,geoKey:key,rawIndex:i});prev=null;continue;}
-    if(t==='Discontinuity'){result.push({gap:true,sourceOnly:true});prev=null;continue;}
+    if(conditional){const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed);result.push({...conditional,geoKey:key,rawIndex:i,constraint:(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+(t==='ConstHdgtoAlt'?'A':''):'-----')});prev=null;continue;}
+    if(t==='Discontinuity'){result.push({gap:true,sourceOnly:true,geoKey:key,rawIndex:i});prev=null;continue;}
     const id=l.Name??l.ident,lat=Number(l.Latitude??l.lat),lon=Number(l.Longitude??l.lon);
     if(!['Normal','Runway'].includes(t)||typeof id!=='string'||![lat,lon].every(Number.isFinite)||Math.abs(lat)>90||Math.abs(lon)>180||lat===0&&lon===0){result.push({gap:true,sourceOnly:true});prev=null;continue;}
     const point={ident:id,lat,lon,pilotType:l.pilotType,sourceOnly:true,geoKey:key,rawIndex:i,
      course:prev?legCourse(prev,{lat,lon}):null,distance:prev?legDistance(prev,{lat,lon}):null};
     const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed),restriction=l.AltitudeRestriction??l.restriction;
     const suffix=restriction==='above'?'A':restriction==='below'?'B':'';
-    point.constraint=(speed>0?String(speed)+'/':'')+(alt>0?String(alt)+suffix:'');
+    point.constraint=(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+suffix:'-----');
     result.push(point);prev=point;
    }
    return result;
@@ -233,15 +233,11 @@
     const rw=runway.fixes[0];
     if(Number.isFinite(rw.lat)&&Number.isFinite(rw.lon)){
      previous=rw;
-     result.push({ident:'RW'+selected.runway,courseMag:Number.isFinite(program?.trackMagneticDeg)?
-      program.trackMagneticDeg:null,
-      constraint:Number.isFinite(program?.altitudeMSLFt)?
-       'UNTIL '+Math.round(program.altitudeMSLFt):'',
-      sourceOnly:true});
+     if(Number.isFinite(program?.altitudeMSLFt))result.push({ident:'('+Math.round(program.altitudeMSLFt)+')',courseMag:program.trackMagneticDeg,constraint:'----/'+Math.round(program.altitudeMSLFt)+'A',conditional:true,sourceOnly:true});
     }
    }
    const typed=pilotGeometryLegs(g,key);
-   if(typed)return [...result,...typed];
+   if(typed)return [...result,...(kind==='SID'?typed.filter((x,i)=>!(i===0&&/^RW\d{2}[LRC]?$/.test(x.ident||''))):typed)];
    // program.fixes carries the exact order from the airport's variant source;
    // the geometry fallback retains only verified FIX_PASSAGE records.
    const fixes=program?.fixes?.length?program.fixes:g.fixes||[];
@@ -320,10 +316,15 @@
    const leg=all[at+i];
    if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
-   rows.push(pair(leg.headingLabel|| (Number.isFinite(leg.courseMag)?
-    String(Math.round(leg.courseMag)%360).padStart(3,'0')+'°M':
-    track(leg.course)),leg.ident,nm(leg.distance),
-    leg.constraint||s.active['LEG_CONSTRAINT_'+(at+i)]||''));
+   let magnetic=leg.courseMag;
+   if(!Number.isFinite(magnetic)&&Number.isFinite(leg.course)){
+    const previous=all[at+i-1],point=previous&&Number.isFinite(previous.lat)?previous:leg;
+    let variation=null;try{if(Number.isFinite(point?.lat)&&Number.isFinite(point.lon))variation=root?.parent?.B737CduSgBridgeV1?.magneticVariation?.(point);}catch(_){}
+    if(Number.isFinite(variation))magnetic=(leg.course-variation+360)%360;
+   }
+   const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
+   rows.push(pair(angle?' '+angle:'',leg.ident,nm(leg.distance),
+    leg.constraint||s.active['LEG_CONSTRAINT_'+(at+i)]||'----/-----'));
   }
   const action=routeAction(s);
   const right=canActivate(s)||s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':

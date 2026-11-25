@@ -36,10 +36,15 @@
  // Reference-only EXEC commits the SG preview state, never an operational FMC route.
  // Native Route activation and source-only reference acceptance are separate.
  const hasReferenceChanges=()=>Boolean(shared.snapshot().modified);
+ const mayExecute=()=>state.routeActivated===true||state.routeActivationArmed===true;
  function visible(v,snapshot=shared.snapshot()){
   const role=v.departure?'DEP':'ARR',slot=role+'@'+v.airport;
-  const runway=snapshot.runways?.[slot],fits=item=>!runway||!item.item?.runways?.length||item.item.runways.includes(runway);
-  return {slot,runway,left:v.left.filter(fits),right:v.right.filter(fits)};
+  const chosen=!v.departure&&(v.inlineApp||snapshot.selections?.['APP@'+v.airport]);
+  const app=chosen&&v.right.find(x=>x.kind==='APP'&&x.ident===chosen.ident);
+  const runway=chosen?.runway||snapshot.runways?.[slot],fits=item=>!runway||!item.item?.runways?.length||item.item.runways.includes(runway);
+  const right=app?[app,...app.item.transitions.map(ident=>({kind:'APP_TRANS',ident,app}))]:
+    v.right.filter(x=>x.kind==='RUNWAY'?!runway||x.ident===runway:fits(x));
+  return {slot,runway,left:v.left.filter(fits),right};
  }
  function marker(snapshot,field,key,ident){
   const value=bank=>field==='runways'?bank?.runways?.[key]:bank?.selections?.[key]?.ident;
@@ -55,8 +60,8 @@
   const rows=base.rows.map(row=>({...row}));
   const runway=snap.runways['DEP@'+snap.origin];
   if(state.page==='RTE'&&base.number===1&&runway)rows[2].valueL=runway;
-  if(snap.modified)rows[5].valueL='<ERASE';
-  const stage=snap.modified?'MOD':hasReference?'ACT':'';
+  if(snap.modified&&mayExecute())rows[5].valueL='<ERASE';
+  const stage=snap.modified&&mayExecute()?'MOD':state.routeActivated&&hasReference?'ACT':'';
   return {...base,rows,title:stage?stage+' '+base.title.replace(/^(ACT|MOD) /,''):base.title};
  }
  function indexKey(k){
@@ -127,14 +132,14 @@
    for(let i=0;i<5;i++){
     const l=catalog.left[start+i],r=catalog.right[start+i],previous=catalog.right[start+i-1];
     const lm=l?marker(snapshot,'selections',l.kind+'@'+v.airport,l.ident):'';
-    const rm=r?marker(snapshot,r.kind==='RUNWAY'?'runways':'selections',
+    const rm=r?.kind==='APP_TRANS'?(snapshot.selections?.['APP@'+v.airport]?.transition===r.ident?marker(snapshot,'selections','APP@'+v.airport,r.app.ident)||'<SEL>':''):r?marker(snapshot,r.kind==='RUNWAY'?'runways':'selections',
      r.kind==='RUNWAY'?catalog.slot:r.kind+'@'+v.airport,r.ident):'';
     rows[i]={
      labelL:i===0?(v.departure?'SIDS':'STARS'):'',
      valueL:l?l.ident+(lm?' '+lm:''):'',
-     labelR:r?.kind==='RUNWAY'&&(i===0||previous?.kind!=='RUNWAY')?'RUNWAYS':
+     labelR:r?.kind==='APP_TRANS'&&previous?.kind!=='APP_TRANS'?'TRANS':r?.kind==='RUNWAY'&&(i===0||previous?.kind!=='RUNWAY')?'RUNWAYS':
       i===0?(v.departure?'RUNWAYS':'APPROACHES'):'',
-     valueR:r?(rm?rm+' ':'')+r.ident:''
+     valueR:r?((rm||r.kind==='APP'&&v.inlineApp?.ident===r.ident&&'<SEL>')? (rm||'<SEL>')+' ':'')+r.ident:''
     };
    }
   }
@@ -147,7 +152,7 @@
   if(k==='LSK_L6'){
    ++serial;state.message='';
    if(!v.referenceOnly&&shared.snapshot().modified){
-    shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;
+    shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;v.inlineApp=null;
    }else{delete state.cduSgView;core.choose(state,pages,'DEP_ARR');}
    update();return true;
   }
@@ -164,6 +169,14 @@
    const entry=(m[1]==='L'?catalog.left:catalog.right)[row];
    if(!entry){issue('KEY INACTIVE');return true;}
    if(v.referenceOnly){issue('NOT ON ROUTE');return true;}
+   if(entry.kind==='APP_TRANS'){
+    v.candidate=entry.app;v.runway=catalog.runway;v.transition=entry.ident;void confirm(v);return true;
+   }
+   if(entry.kind==='APP'&&entry.item.runways.length===1){
+    v.inlineApp={ident:entry.ident,runway:entry.item.runways[0]};v.candidate=entry;v.runway=v.inlineApp.runway;v.transition=null;
+    try{shared.chooseRunway({airport:v.airport,runway:v.runway,airportRecord:v.airportRecord,role:'ARR'});}catch(e){issue(e.message);return true;}
+    void confirm(v);return true;
+   }
    if(entry.kind==='RUNWAY'){
     try{
      shared.chooseRunway({airport:v.airport,runway:entry.ident,airportRecord:v.airportRecord,role:v.departure?'DEP':'ARR'});
@@ -193,7 +206,7 @@
  async function confirm(v){
   const entry=v.candidate;if(!entry)return;
   const ticket=++serial;
-  v.mode='VERIFYING';v.page=1;update();
+  if(entry.kind!=='APP')v.mode='VERIFYING';v.page=1;update();
   const query='airport='+encoded(v.airport)+'&kind='+encoded(entry.kind)+'&ident='+encoded(entry.ident)+
    (v.runway?'&runway='+encoded(v.runway):'')+(v.transition?'&transition='+encoded(v.transition):'');
   try{
@@ -204,7 +217,7 @@
    if(ticket!==serial||state.cduSgView!==v)return;
    shared.select({airport:v.airport,kind:entry.kind,ident:entry.ident,
     runway:v.runway,transition:v.transition,procedure,geometry,airportRecord:v.airportRecord});
-   v.mode='CATALOG';v.page=1;v.candidate=null;
+   v.mode='CATALOG';v.page=1;v.candidate=null;v.inlineApp=null;
    state.message='';update();
   }catch(err){
    if(ticket===serial&&state.cduSgView===v){
@@ -239,7 +252,7 @@
   const from=precedingFix(cell.field),value=String(state.scratch||'').trim().toUpperCase();
   if(!from||!value){issue('NOT IN DATABASE');return;}
   airwayBusy=true;const ticket=++airwayTicket,revision=shared.snapshot().revision;
-  state.message='VERIFY NAV DATA';update();
+  state.message='';update();
   try{
    const url='/api/cdu/airway-check?from='+encoded(from.ident)+'&airway='+encoded(value)+
     (Number.isFinite(from.lat)&&Number.isFinite(from.lon)?
@@ -282,7 +295,7 @@
    issue('NAV DATA UNAVAILABLE');return;
   }
   airwayBusy=true;const ticket=++airwayTicket,revision=shared.snapshot().revision;
-  state.message='VERIFY NAV DATA';update();
+  state.message='';update();
   try{
    const url='/api/cdu/airway-check?from='+encoded(from.ident)+
     '&airway='+encoded(via)+'&to='+encoded(input)+
@@ -345,7 +358,7 @@
   const selected=((page?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1,input=String(state.scratch||'').trim().toUpperCase();
   const ref=route[selected],revision=shared.snapshot().revision,ticket=++airwayTicket;
   if(!ref||ref.conditional||ref.gap){issue('INVALID LEG');return;}
-  airwayBusy=true;state.message='VERIFY NAV DATA';update();
+  airwayBusy=true;state.message='';update();
   try{
    const spec=globalThis.B737PilotWaypointsV1.parse(input);
    if(spec.kind==='ATW'&&spec.place!==ref.ident)throw Error('INVALID ALONG TRACK');
@@ -367,7 +380,7 @@
   if(isPilot){try{if(globalThis.B737PilotWaypointsV1.parse(input).kind==='ATW'){issue('USE LEGS PAGE');return;}}catch(e){issue(e.message);return;}}
   shared.setContext({origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE')});
   const from=precedingFix('VIA'+n),revision=shared.snapshot().revision,ticket=++airwayTicket;
-  airwayBusy=true;state.message='VERIFY NAV DATA';update();
+  airwayBusy=true;state.message='';update();
   try{
    let p;
    if(isPilot)p=await pilotPoint(input);
@@ -390,6 +403,15 @@
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&state.scratch){
+   const api=globalThis.CDU_CH11_ROUTE_PAGES,route=api?.visibleLegs?.(state)||[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
+   const gap=route[index],next=route[index+1],prev=route[index-1];
+   if(gap?.gap){
+    try{if(!next||!prev||state.scratch.trim().toUpperCase()!==next.ident||gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey)throw Error('INVALID ENTRY');
+     shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident);state.scratch='';state.message='';update();
+    }catch(e){issue(e.message);}return true;
+   }
+  }
   if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&(/[\/]/.test(state.scratch)||/^[NS]\d{2}.*[EW]\d{3}/.test(state.scratch))){
    void insertLegPilot(k);return true;
   }
@@ -432,14 +454,14 @@
   return fromCatalogKey(k);
  }
  function afterKey(code){
-  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!hasReferenceChanges())return;
+  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!hasReferenceChanges()||state.routeActivated!==true)return;
   // The shared state is a verified display reference, not a flight-leg
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
   // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.
   shared.execute();
   state.message='';
  }
- function execLit(){return attached&&hasReferenceChanges();}
+ function execLit(){return attached&&mayExecute()&&hasReferenceChanges();}
  function attach(){
   if(attached)return;attached=true;
   if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView){

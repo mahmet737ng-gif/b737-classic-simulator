@@ -268,9 +268,19 @@ try{
    return publish();
   }
 
+  // Close an explicit database discontinuity only between verified fixed legs.
+  function linkDiscontinuity(key,index,expectedPrevious,expectedNext){
+   const g=working().geometries[key],raw=g?.program?.input?.legs;
+   const type=l=>l?.Type??l?.type,id=l=>l?.Name??l?.ident;
+   const fixed=l=>type(l)==='Normal'&&validPoint([Number(l.Longitude??l.lon),Number(l.Latitude??l.lat)]);
+   if(!connected||!Array.isArray(raw)||!Number.isInteger(index)||index<1||index>=raw.length-1||
+      type(raw[index])!=='Discontinuity'||!fixed(raw[index-1])||!fixed(raw[index+1])||
+      id(raw[index-1])!==expectedPrevious||id(raw[index+1])!==expectedNext)throw Error('INVALID LEG');
+   const bank=startMod();bank.geometries[key].program.input.legs.splice(index,1);return publish();
+  }
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}
-  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore});
+  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore,linkDiscontinuity});
  }
  return Object.freeze({VERSION,CYCLE,create});
 });
