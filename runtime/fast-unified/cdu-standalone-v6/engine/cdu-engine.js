@@ -143,7 +143,7 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_CAPT_/,'');st.
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
  if(k==='EXEC'){
-  if(pendingCount(st)){
+  if(pendingCount(st)||st.routeActivationArmed===true){
    const routeChanged=routeScreens&&(st.routeActivationArmed===true||st.routeActivated===true&&
     Object.keys(st.pending).some(routeScreens.isRouteField));
    for(const [f,v] of Object.entries(st.pending)){if(v==='')delete st.active[f];else st.active[f]=v;}

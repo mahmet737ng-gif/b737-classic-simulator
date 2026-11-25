@@ -463,8 +463,8 @@
   }
   if(state.page==='DEP_ARR')return indexKey(k);
   if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified){
-   shared.erase();
    if(core.pendingCount?.(state)||state.routeActivationArmed)core.press(state,pages,code);
+   shared.erase();
    state.message='';return true;
   }
   return fromCatalogKey(k);
@@ -476,6 +476,7 @@
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
   // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.
   shared.execute();
+  if(state.routeActivated===true){state.routeRevision=(state.routeRevision||0)+1;state.activeNavFixEvidence={...state.navFixEvidence};}
   state.message='';
  }
  function execLit(){return attached&&mayExecute()&&hasReferenceChanges();}

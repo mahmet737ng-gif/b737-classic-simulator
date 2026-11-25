@@ -16,7 +16,7 @@
  const field=(side,name,format,required=false)=>({side,field:name,format,required});
  const isRouteField=name=>ROUTE_FIELD.test(name);
  const modified=s=>s.routeActivationArmed===true||s.stage6AwaitingExec===true||
-  !!s.stage6PendingPlan||(s.routeActivated===true&&Object.keys(s.pending).some(isRouteField));
+  !!s.stage6PendingPlan||(s.routeActivated===true&&(Object.keys(s.pending).some(isRouteField)||Boolean(sourceSnapshot(s)?.modified)));
  const sourcePlan=s=>s.stage6PendingPlan||s.stage5Pending||s.stage5Committed;
  const currentNav=s=>s.navdbPending||s.navdbActive;
  const entered=(s,name)=>s.pending[name]??s.stagedRoute[name]??s.active[name]??'';
@@ -370,8 +370,8 @@
     core.choose(s,pages,number===1?'RTE':'FLIGHT_PLAN');s.subpage=number;
     return true;
    }
-   if(legPage){
-    const {count,number}=legs(s);
+   if(legPage||s.page==='RTE_DATA'){
+    const {count,number}=legPage?legs(s):routeData(s);
     s.subpage=(number-1+change+count)%count+1;s.message='';return true;
    }
    if(s.page==='PROG'||s.page==='PROG2'){
@@ -380,6 +380,7 @@
     core.choose(s,pages,next===1?'PROG':'PROG2');s.subpage=next;return true;
    }
   }
+  if(s.page==='RTE_DATA'&&key==='LSK_L6'){const number=routeData(s).number;core.choose(s,pages,'LEGS');s.subpage=number;return true;}
   if(key==='LSK_R6'&&(rte||legPage)){
    const command=routeAction(s,segments(s));
    if(command?.command==='activate'){
@@ -390,7 +391,7 @@
     return true;
    }
    const target=legPage?(s.routeActivated||s.navdbActive||s.stage5Committed?'RTE_DATA':null):command?.page;
-   if(target){core.choose(s,pages,target);return true;}
+   if(target){const number=legPage?legs(s).number:1;core.choose(s,pages,target);if(target==='RTE_DATA')s.subpage=number;return true;}
   }
   if(key==='LSK_L6'&&(rte||legPage)&&modified(s)){erase(s);return true;}
   if(rte&&/^LSK_/.test(key)){
@@ -500,9 +501,21 @@
   rows[5]=pair('WIND',wind(f.motion?.windFromDeg,f.motion?.windKt));
   return {title:flight+'PROGRESS',number,count:3,rows};
  }
+ function routeData(s){
+  const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5)),number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
+  const pred=s.fmcPageInputs?.predictions;const records=pred?.quality==='VALID'?[pred.from,pred.active,pred.next,pred.destination,...(Array.isArray(pred.waypoints)?pred.waypoints:[])].filter(Boolean):[];
+  for(let i=0;i<5;i++){
+   const leg=all[(number-1)*5+i],matches=leg?.ident?records.filter(x=>x.ident===leg.ident):[];
+   const unique=leg?.ident&&all.filter(x=>x.ident===leg.ident).length===1&&matches.length===1?matches[0]:null;
+   const eta=unique?utc(unique.eta):'',forecast=unique?wind(unique.forecastWindFromDeg,unique.forecastWindKt):'';
+   rows.push(pair(i===0?'':'',leg?.gap?'□□□□□':leg?.ident||'',i===0?'ETA    WIND':'',[eta,forecast].filter(Boolean).join(' ')));
+  }
+  rows.push(pair(DASH,'<LEGS',DASH,''));return {title:titleWithStatus(s,'RTE DATA'),number,count,rows};
+ }
  function view(s){
   if(RTE.has(s.page))return route(s);
   if(s.page==='LEGS')return legs(s);
+  if(s.page==='RTE_DATA')return routeData(s);
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
