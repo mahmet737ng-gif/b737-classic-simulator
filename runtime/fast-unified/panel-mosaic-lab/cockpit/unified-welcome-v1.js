@@ -324,7 +324,7 @@
       let loaded=false;
       if(!shared){try{
         if(requestedRapidType){
-          const s=win.B737UnifiedFlightScenarioV1.loadScenario({airport:by('flightAirport').value,runway:by('flightRunway').value,preset:'MANUAL',airborne:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});
+          const s=win.B737UnifiedFlightScenarioV1.loadScenario({airport:by('flightAirport').value,runway:by('flightRunway').value,preset:'MANUAL',airborne:true,holdStart:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});
           if(!s||!win.B737PoweredGeneralPresetsV1?.applyCruise)throw Error('Cruise owner unavailable');
           win.B737PoweredGeneralPresetsV1.applyCruise(s);loaded=true;
         }else loaded=win.B737UnifiedFlightScenarioV1?.startFromSelection?.(null)===true;
@@ -378,6 +378,7 @@
     stage.unifiedWelcome = 'entered';
     welcome.hidden = true;
     mark('entered');
+    if(requestedRapidType)win.B737UnifiedFlightScenarioV1?.pause(false);
     by('viewport')?.focus({preventScroll: true});
   }
 
@@ -403,7 +404,7 @@
   }
 
   let prewarmKey='';
-  function prewarm(){const api=win.B737UnifiedFlightScenarioV1,airport=by('flightAirport')?.value,runway=by('flightRunway')?.value;if(!api?.prepareScenario||!airport||!runway)return;const key=airport+'|'+runway;if(key===prewarmKey)return;try{for(const preset of ['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_10'])api.prepareScenario({airport,runway,preset,airborne:preset==='FINAL_10'});api.prepareScenario({airport,runway,preset:'MANUAL',airborne:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});prewarmKey=key;}catch(e){console.warn('Scenario preload',e);}}
+  function prewarm(){const api=win.B737UnifiedFlightScenarioV1,airport=by('flightAirport')?.value,runway=by('flightRunway')?.value;if(!api?.prepareScenario||!airport||!runway)return;const key=airport+'|'+runway;if(key===prewarmKey)return;try{for(const preset of ['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_10'])api.prepareScenario({airport,runway,preset,airborne:preset==='FINAL_10'});api.prepareScenario({airport,runway,preset:'MANUAL',airborne:true,holdStart:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});prewarmKey=key;}catch(e){console.warn('Scenario preload',e);}}
   function refresh() {
     prewarm();
     const now = performance.now();
