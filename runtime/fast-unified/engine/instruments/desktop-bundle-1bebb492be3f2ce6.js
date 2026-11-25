@@ -563,7 +563,8 @@ try{
   const a=plan.performance,crz=alt(a.CRZ_ALT),m=mcp?.values?.altitude,now=frame.altitudeFt;
   const numeric=x=>/^\d+(?:\.\d+)?$/.test(String(x??'').split('/')[0])?Number(String(x).split('/')[0]):null;
   const z=numeric(a.ZFW),gw=numeric(a.GW_CG),fuel=finite(liveFuel)&&liveFuel>=0?liveFuel/1000:numeric(a.FUEL);
-  const ready=crz&&finite(m)&&finite(now)&&fuel!==null&&(z!==null&&z>0||gw!==null&&gw>fuel)&&numeric(a.RESERVES)!==null&&numeric(a.CI)!==null&&finite(frame.radioAltitudeFt)&&frame.radioAltitudeFt>=400&&frame.airborne===true;
+  const ci=numeric(a.CI),res=numeric(a.RESERVES);
+  const ready=crz&&crz.ft>0&&finite(m)&&finite(now)&&fuel!==null&&fuel>=0&&(z!==null&&z>0||gw!==null&&gw>fuel)&&res!==null&&res>=0&&res<=99.9&&ci!==null&&Number.isInteger(ci)&&ci>=0&&ci<=200&&finite(frame.radioAltitudeFt)&&frame.radioAltitudeFt>=400&&frame.airborne===true;
   if(!ready)return {valid:false,engage:false,reason:'PERF_INIT_OR_RA_REQUIRED'};
   let distance=remaining,nextConstraint=null;
   for(let i=index;i<plan.legs.length;i++){

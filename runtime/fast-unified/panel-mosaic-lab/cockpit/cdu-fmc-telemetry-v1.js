@@ -22,8 +22,10 @@
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
   if(signature===lastInputs)return;
   lastInputs=signature;state.fmcPageInputs=next;
+  // Settle the weight once and publish via the existing CDU shared-state bridge.
+  const weightSettled=core.settlePerfWeight?.(state)===true;
   if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
-  if(performancePages.has(state.page))update();
+  if(weightSettled||performancePages.has(state.page))update();
  }
  function queueAvionics(){
   if(!avionicsFrame)avionicsFrame=requestAnimationFrame(receiveAvionics);

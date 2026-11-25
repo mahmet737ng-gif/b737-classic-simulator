@@ -108,16 +108,34 @@ function perfData(s){
  const raw=String(perfValue(s,'GW_CG')||''),parts=raw.split('/'),gw0=perfNum(parts[0]),z0=perfNum(perfValue(s,'ZFW')),f=perfFuel(s);
  const cg=perfNum(parts[1])??18.5,source=perfValue(s,'PERF_WEIGHT_SOURCE');
  let gw=gw0,z=z0;
- if(f.n!==null){if(source==='GW'||z0===null){if(gw0!==null&&gw0>=f.n)z=gw0-f.n;}else if(z0!==null)gw=z0+f.n;}
+ // 11.40.39–40: derived ZFW is the fixed mass, not a moving value.
+ if(f.n!==null){if(z0!==null)gw=z0+f.n;else if(gw0!==null&&gw0>=f.n)z=gw0-f.n;}
+ else if(z0!==null&&source==='ZFW')gw=null;
  const crz=perfAlt(perfValue(s,'CRZ_ALT')),std=crz===null?null:Math.round(15-1.9812*Math.min(crz,36089)/1000);
  let isa=perfSigned(perfValue(s,'ISA_DEV')),oat=perfSigned(perfValue(s,'TC_OAT'));
  if(std!==null){if(perfValue(s,'PERF_TEMP_SOURCE')==='OAT'||isa===null){if(oat!==null)isa=oat-std;}else oat=std+isa;}
- const pred=s.fmcPageInputs?.predictions,trip=pred?.quality==='VALID'&&Number.isFinite(pred.tripAltitudeFt)?pred.tripAltitudeFt:null;
+ const pred=s.fmcPageInputs?.predictions,ci=perfValue(s,'CI');
+ const origin=readValue(s,'ORIGIN','RTE'),dest=readValue(s,'DEST','RTE');
+ // 11.40.41: TRIP is computed minimum-cost altitude, never CRZ or OPT by substitution.
+ const tripReady=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest&&gw!==null&&gw>0&&validate('CI_CL',ci);
+ const trip=tripReady&&pred?.quality==='VALID'&&Number.isFinite(pred.tripAltitudeFt)&&pred.tripAltitudeFt>0&&pred.origin===origin&&pred.destination===dest&&pred.costIndex===Number(ci)&&Math.abs(pred.grossWeightKg-gw*1000)<=100?pred.tripAltitudeFt:null;
  const sid=s.cduSgReference?.modified?.geometries??s.cduSgReference?.active?.geometries??{};
  const ta=Object.values(sid).find(g=>g.kind==='SID')?.transitionAltitudeFt;
  const trans=perfAlt(perfValue(s,'TRANS_ALT'))??(Number.isFinite(ta)?ta:18000);
  const wind=String(perfValue(s,'CRZ_WIND')||'').split('/');
- return {gw,z,cg,f,crz,trip,isa,oat,trans,wind,res:perfNum(perfValue(s,'RESERVES')),ci:perfValue(s,'CI')};
+ const res=perfNum(perfValue(s,'RESERVES'));
+ return {gw,z,cg,f,crz,trip,isa,oat,trans,wind,res,ci,ready:gw!==null&&gw>0&&z!==null&&z>0&&f.n!==null&&crz!==null&&crz>0&&res!==null&&validate('CI_CL',ci),
+  forecast:{windFromDeg:wind.length===2?Number(wind[0]):0,windKt:wind.length===2?Number(wind[1]):0,isaDeviationC:isa??0,topOfClimbOatC:oat??std},std};
+}
+// Called on authoritative fuel updates; resolve a previously entered GW once.
+function settlePerfWeight(s){
+ const d=perfData(s);
+ if(d.f.n===null||d.z===null||d.z<=0)return false;
+ // Never silently commit a pending pilot modification.
+ if(perfNum(String(s.active.GW_CG||'').split('/')[0])!==null&&perfNum(s.active.ZFW)===null&&!Object.hasOwn(s.pending,'GW_CG')&&!Object.hasOwn(s.pending,'ZFW')&&!Object.hasOwn(s.pending,'FUEL')){
+  s.active.ZFW=d.z.toFixed(1);s.active.PERF_WEIGHT_SOURCE='ZFW';return true;
+ }
+ return false;
 }
 function perfRows(s){
  const d=perfData(s),w=n=>n===null?'□□□.□':n.toFixed(1),temp=n=>n===null?'---°F ---°C':signed(Math.round(n*9/5))+'°F '+signed(n)+'°C';
@@ -126,11 +144,11 @@ function perfRows(s){
  const pair=(labelL,valueL,labelR,valueR,extra={})=>({labelL,valueL,labelR,valueR,...extra});
  const dirty=Object.keys(s.pending||{}).some(k=>PERF_KEYS.has(k)&&s.pending[k]!==s.active[k]);
  return {title:(dirty?'MOD ':'')+'PERF INIT',number:1,count:2,rows:[
- pair('GW/CRZ CG',w(d.gw)+'/'+d.cg.toFixed(1)+'%','TRIP/CRZ ALT',(d.trip===null?'':perfFL(d.trip))+'/'+perfFL(d.crz)),
+ pair('GW/CRZ CG',w(d.gw)+'/'+d.cg.toFixed(1)+'%','TRIP/CRZ ALT',(d.trip===null?'':perfFL(d.trip))+'/'+perfFL(d.crz),{smallSuffixL:!String(perfValue(s,'GW_CG')).split('/')[1]?'18.5%':null}),
  pair('FUEL',d.f.n===null?(s.fmcOnGroundVerified===false?'---.-':''):d.f.n.toFixed(1)+(d.f.manual?' MAN':''),'CRZ WIND',d.wind.length===2?d.wind[0]+'°/'+d.wind[1]:'---°/---'),
  pair('ZFW',w(d.z),'ISA DEV',temp(d.isa)),
  pair('RESERVES',d.res===null?'□□.□':d.res.toFixed(1),'T/C OAT',oat),
- pair('COST INDEX',d.ci===''?'□□□':d.ci,'TRANS ALT',String(d.trans)),
+ pair('COST INDEX',d.ci===''?'□□□':d.ci,'TRANS ALT',String(d.trans),{smallR:!perfValue(s,'TRANS_ALT')}),
  pair('','<INDEX','','N1 LIMIT>',{separator:true})
  ]};
 }
@@ -139,10 +157,10 @@ function perfLimitValue(s,k){return readValue(s,k,'PERF_LIMITS')||(k.endsWith('_
 function perfLimitsRows(s){
  const pair=(labelL,valueL,labelR,valueR,extra={})=>({labelL,valueL,labelR,valueR,...extra});
  return {title:'PERF LIMITS',number:2,count:2,rows:[
- pair('','','','',{centerLabel:'TIME ERROR TOLERANCE',centerValue:(readValue(s,'RTA_TOL','PERF_LIMITS')||'30')+' SEC AT RTA WPT'}),
- pair('MIN SPD',perfLimitValue(s,'CLB_MIN'),'MAX SPD',perfLimitValue(s,'CLB_MAX'),{centerLabel:'--CLB--'}),
- pair('',perfLimitValue(s,'CRZ_MIN'),'',perfLimitValue(s,'CRZ_MAX'),{centerLabel:'--CRZ--'}),
- pair('',perfLimitValue(s,'DES_MIN'),'',perfLimitValue(s,'DES_MAX'),{centerLabel:'--DES--'}),
+ pair('','','','',{centerLabel:'TIME ERROR TOLERANCE',centerValue:(readValue(s,'RTA_TOL','PERF_LIMITS')||'30')+' SEC AT RTA WPT',smallCenter:!readValue(s,'RTA_TOL','PERF_LIMITS')}),
+ pair('MIN SPD',perfLimitValue(s,'CLB_MIN'),'MAX SPD',perfLimitValue(s,'CLB_MAX'),{centerLabel:'--CLB--',smallL:!readValue(s,'CLB_MIN','PERF_LIMITS'),smallR:!readValue(s,'CLB_MAX','PERF_LIMITS')}),
+ pair('',perfLimitValue(s,'CRZ_MIN'),'',perfLimitValue(s,'CRZ_MAX'),{centerLabel:'--CRZ--',smallL:!readValue(s,'CRZ_MIN','PERF_LIMITS'),smallR:!readValue(s,'CRZ_MAX','PERF_LIMITS')}),
+ pair('',perfLimitValue(s,'DES_MIN'),'',perfLimitValue(s,'DES_MAX'),{centerLabel:'--DES--',smallL:!readValue(s,'DES_MIN','PERF_LIMITS'),smallR:!readValue(s,'DES_MAX','PERF_LIMITS')}),
  pair('','','',''),
  pair('','<INDEX','','RTA>',{separator:true})]};
 }
@@ -155,9 +173,12 @@ function perfStore(s,fields){
 }
 function perfEnter(s,cell){
  const k=cell.field,input=clean(s.scratch),d=perfData(s),bad=()=>{addMessage(s,'INVALID ENTRY');return true;};
+ if(!input){
+  // Scratchpad is canonical, not the decorated screen string.
+  const v={GW_CG:d.gw===null?'':d.gw.toFixed(1)+'/'+d.cg.toFixed(1),FUEL:d.f.n===null?'':d.f.n.toFixed(1),ZFW:d.z===null?'':d.z.toFixed(1),RESERVES:d.res===null?'':d.res.toFixed(1),CI:d.ci,CRZ_ALT:d.crz===null?'':perfFL(d.crz),CRZ_WIND:d.wind.length===2?d.wind.join('/'):'',ISA_DEV:d.isa===null?'':String(d.isa),TC_OAT:d.oat===null?'':String(d.oat),TRANS_ALT:String(d.trans)}[k];
+  if(v!==undefined&&v!==''){s.scratch=v;s.message='';}else addMessage(s,'INVALID ENTRY');return true;
+ }
  if(k==='FUEL'&&(d.f.n!==null&&!d.f.manual||s.fmcOnGroundVerified!==false)){addMessage(s,'KEY INACTIVE');return true;}
- if(!input){const row=perfRows(s).rows.flatMap(r=>[r.valueL,r.valueR]);const v=row[(Number(cell.lsk[1])-1)*2+(cell.lsk[0]==='R'?1:0)];
-  if(v&&!/[□]|--/.test(v))s.scratch=v.replace(/ MAN$/,'');else addMessage(s,'INVALID ENTRY');return true;}
  if(input==='DELETE'){
   if(['GW_CG','ZFW','RESERVES','CI','CRZ_ALT'].includes(k)){addMessage(s,'INVALID DELETE');return true;}
   const patch={[k]:''};if(k==='ISA_DEV'||k==='TC_OAT')Object.assign(patch,{ISA_DEV:'',TC_OAT:'',PERF_TEMP_SOURCE:''});
@@ -167,22 +188,22 @@ function perfEnter(s,cell){
  if(k==='GW_CG'){
   const a=input.split('/');if(a.length>2)return bad();
   const g=a[0]===''?null:perfNum(a[0]),c=a.length===2?perfNum(a[1].replace(/%$/,'')):null;
-  if((a[0]!==''&&(g===null||g<=0))||(a.length===2&&(c===null||c>100))||(g===null&&c===null)||g!==null&&d.f.n!==null&&g<d.f.n)return bad();
-  const old=String(perfValue(s,'GW_CG')||'').split('/')[0];
+  if((a[0]!==''&&(g===null||g<=0))||(a.length===2&&(c===null||c>100))||(g===null&&c===null)||g!==null&&d.f.n!==null&&g<=d.f.n)return bad();
+  const old=d.gw===null?'':d.gw.toFixed(1);
   patch.GW_CG=(g===null?old:g.toFixed(1))+'/'+(c??d.cg).toFixed(1);
-  if(g!==null){patch.PERF_WEIGHT_SOURCE='GW';if(d.f.n!==null)patch.ZFW=(g-d.f.n).toFixed(1);else patch.ZFW='';}
+  if(g!==null){patch.PERF_WEIGHT_SOURCE=d.f.n!==null?'ZFW':'GW';if(d.f.n!==null)patch.ZFW=(g-d.f.n).toFixed(1);else patch.ZFW='';}
  }else if(['ZFW','FUEL','RESERVES'].includes(k)){
   const n=perfNum(input);if(n===null||k==='ZFW'&&n<=0||k==='RESERVES'&&!/^\d{1,2}(?:\.\d)?$/.test(input))return bad();
   patch[k]=n.toFixed(1);if(k==='ZFW'){patch.PERF_WEIGHT_SOURCE='ZFW';patch.GW_CG=(d.f.n===null?'':(n+d.f.n).toFixed(1))+'/'+d.cg.toFixed(1);}
  }else if(k==='CI'){
   if(!validate('CI_CL',input))return bad();patch[k]=String(Number(input));
  }else if(k==='CRZ_ALT'||k==='TRANS_ALT'){
-  const n=perfAlt(input);if(n===null||n<0||n>45000||k==='CRZ_ALT'&&n<1000)return bad();patch[k]=k==='CRZ_ALT'?perfFL(n):String(n);
+  const n=perfAlt(input);if(n===null||n<0||n>41000||k==='CRZ_ALT'&&n<1000)return bad();patch[k]=k==='CRZ_ALT'?perfFL(n):String(n);
  }else if(k==='CRZ_WIND'){
   const a=input.replace('°','').split('/');if(a.length!==2||!/^\d{1,3}$/.test(a[0])||Number(a[0])>360||!/^\d{1,3}$/.test(a[1]))return bad();
   patch[k]=String(Number(a[0])%360).padStart(3,'0')+'/'+String(Number(a[1]));
  }else if(k==='ISA_DEV'||k==='TC_OAT'){
-  const n=perfSigned(input.replace(/°?C$/,''));if(n===null||Math.abs(n)>99)return bad();
+  const unit=/F$/.test(input)?'F':'C',raw=perfSigned(input.replace(/°?[CF]$/,''));const n=raw===null?null:unit==='F'?Math.round((raw-(k==='TC_OAT'?32:0))*5/9):raw;if(n===null||Math.abs(n)>99)return bad();
   patch[k]=String(n);patch[k==='ISA_DEV'?'TC_OAT':'ISA_DEV']='';patch.PERF_TEMP_SOURCE=k==='ISA_DEV'?'ISA':'OAT';
  }else return false;
  perfStore(s,patch);return true;
@@ -299,5 +320,5 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  return lines.map(l=>String(l).slice(0,24)); }
 function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:st.routeActivationArmed===true||executableKeys(st).length>0};}
 function inspect(st,pages,key){if(!/^([LR][1-6])$/.test(key))return null;const c=pages[st.page]?.rows[Number(key[1])-1]?.[key[0]==='L'?0:1];return c?{page:st.page,lsk:key,...c,reference:pages[st.page].source_ref}:null;}
-return {perfRows,perfLimitsRows,perfData,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
+return {perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
 });

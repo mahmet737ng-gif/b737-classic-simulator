@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "2ec97ea4fbf01f874ba2976e99d662bb16d8d4fbc26af7c0d6577993c93d77f7"
+      "sha256": "0b71a2c237aee779634d46d4b360279686a255cf2691dbff5c5e75c06e7545e0"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -184,7 +184,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "bf78b98fba63964f22894b4515683d25ef5abbdf937b49bcf11b20ce9521a6eb"
+      "sha256": "90abfb091735b41b2f61427e9387b8991c58ba265aa4322e1ae76c174bb80c82"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "124620a1446ecb3588da6195defe0255641c142e43c90533f5e92bd5ae9f9d0f"
+      "sha256": "efa71d836e5f41976378f29c013c315ceef84513f566e202886a55f96515a798"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,11 +908,11 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "c56dccec1a3a2b70f1c48d3225bc72971b89c903b65784ba3daf2e98ed4556c1"
+      "sha256": "b6ad5d4ed4735f7c05dd40298bcfc992fd58ff5e1c27cce95f95d13da1346d76"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "ef867a23ad94608ed50ff4d54611b6ba2399a64f47fffb093cd23c7fb3ec024a"
+      "sha256": "9509706d5064ba3c7a96859c445d9c0051c97446d7665f04586358a51d970cd5"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "df591c438259c4e79ba2fb15b61633e5dfeed8a067a4c0526162dd77759e584c"
+      "sha256": "77ec1506ac51f89bca20401f9fd06edf307a4a24993a44602a7b9f14a7505640"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -992,7 +992,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "970d87ede3d515358987566b920df6985311ff304bfc116053bbe68c9a522b5f"
+      "sha256": "56a5aab200244fcada80f1d7597b5e5418ad37c7148a74cc7a8a58c979233d24"
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",
@@ -1024,7 +1024,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js",
-      "sha256": "ce1f97b3fd5a3e13d85096c826eb6626a4e79cd007ffab2a36b41a0521f33ad5"
+      "sha256": "0f755e8a416f864670f024dc644c904e5d3953bff9dbb4df79fd54bdb6c03793"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",

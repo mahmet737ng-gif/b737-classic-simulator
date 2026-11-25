@@ -90,7 +90,7 @@
   if(!s.routeActivated)return null;
   if(s.fmcOnGroundVerified===true){
    const a=s.active;
-   const perfReady=Boolean((a.GW_CG||a.ZFW)&&a.RESERVES&&a.CI&&a.CRZ_ALT);
+   const perfReady=root.CDU_ENGINE?.perfData?.({...s,pending:{}})?.ready===true;
    return perfReady?{label:'TAKEOFF>',side:'R',page:'TAKEOFF'}:
     {label:'PERF INIT>',side:'R',page:'PERF_INIT'};
   }
@@ -615,7 +615,9 @@
   for(let i=0;i<5;i++){
    const leg=all[(number-1)*5+i],matches=leg?.ident?records.filter(x=>x.ident===leg.ident):[];
    const unique=leg?.ident&&all.filter(x=>x.ident===leg.ident).length===1&&matches.length===1?matches[0]:null;
-   const eta=unique?utc(unique.eta):'',forecast=unique?wind(unique.forecastWindFromDeg,unique.forecastWindKt):'';
+   const eta=unique?utc(unique.eta):'';
+   const perf=root.CDU_ENGINE?.perfData?.(s),cruise=unique?.phase==='CRUISE'||unique?.flightPhase==='CRUISE';
+   const forecast=unique?(wind(unique.forecastWindFromDeg,unique.forecastWindKt)||(cruise&&perf?.wind?.length===2?wind(perf.forecast.windFromDeg,perf.forecast.windKt):'')):'';
    rows.push(pair(i===0?'':'',leg?.gap?'□□□□□':leg?.ident||'',i===0?'ETA    WIND':'',[eta,forecast].filter(Boolean).join(' ')));
   }
   rows.push(pair(DASH,'<LEGS',DASH,''));return {title:titleWithStatus(s,'RTE DATA'),number,count,rows};
