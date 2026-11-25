@@ -7,7 +7,7 @@
  'use strict';
  const RTE=new Set(['RTE','FLIGHT_PLAN','ACTIVATE']);
  const SOURCE='PMDG_WORLD_2610_WITH_PROCEDURES_R1';
- const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|(?:VIA|TO)\d+)$/;
+ const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+)$/;
  const DASH='------------';
  const ROUTE_ROWS=5,MAX_ROUTE_ROWS=250;
  const empty=()=>({labelL:'',valueL:'',labelR:'',valueR:''});
@@ -82,7 +82,7 @@
  function canActivate(s,list=segments(s)){
   return !s.routeActivated&&!modified(s)&&/^[A-Z]{4}$/.test(entered(s,'ORIGIN'))&&
    /^[A-Z]{4}$/.test(entered(s,'DEST'))&&entered(s,'ORIGIN')!==entered(s,'DEST')&&
-   list.some(x=>x.to)&&list.every(x=>x.to);
+   (list.some(x=>x.to)||visibleLegs(s).some(x=>x.ident&&!x.gap))&&list.every(x=>x.to);
  }
  function routeAction(s,list){
   if(modified(s))return {label:'<ERASE',side:'L',command:'erase'};
@@ -113,7 +113,7 @@
    const first=1+(number-2)*ROUTE_ROWS;
    for(let i=0;i<ROUTE_ROWS;i++)rows.push(routeRow(list,first+i,i===0));
   }
-  const action=routeAction(s,list);
+  const action=routeAction(s,native);
   const needsActivation=s.stage6PendingPlan&&!s.stage6AwaitingExec;
   rows.push(pair(DASH,action?.side==='L'?action.label:'',DASH,
    needsActivation?'ACTIVATE>':action?.side==='R'?action.label:''));
@@ -168,7 +168,7 @@
    const chord=Math.sin((b-a)/2)**2+Math.cos(a)*Math.cos(b)*Math.sin(longitude/2)**2;
    const bearing=Math.atan2(Math.sin(longitude)*Math.cos(b),
     Math.cos(a)*Math.sin(b)-Math.sin(a)*Math.cos(b)*Math.cos(longitude));
-   return {ident:x.name,distance:3440.065*2*Math.asin(Math.sqrt(Math.min(1,chord))),course:(bearing/rad+360)%360};
+   return {ident:x.name,lat:x.lat,lon:x.lon,distance:3440.065*2*Math.asin(Math.sqrt(Math.min(1,chord))),course:(bearing/rad+360)%360};
   });
   return segments(s).filter(x=>x.to).map(x=>({ident:x.to}));
  }
@@ -248,7 +248,7 @@
     result.push({ident:fix.ident,
      course:previous?.lat!==undefined?legCourse(previous,current):null,
      distance:previous?.lat!==undefined?legDistance(previous,current):null,
-     sourceOnly:true});
+     lat:current.lat,lon:current.lon,sourceOnly:true});
     previous=current;
    }
    return result;
@@ -266,7 +266,7 @@
     const fixes=verified&&Array.isArray(proof.fixes)&&proof.fixes.at(-1)===row.to&&
      proof.fixes.length<=250&&proof.fixes.every(x=>typeof x==='string'&&
       /^[A-Z0-9._-]{2,16}$/.test(x))?proof.fixes:[row.to];
-    for(const ident of fixes)expanded.push({ident,sourceOnly:verified});
+    for(const ident of fixes){const evidence=(s.navFixEvidence||{})['TO'+(i+1)]||(s.activeNavFixEvidence||{})['TO'+(i+1)];expanded.push({ident,sourceOnly:verified,...(evidence?.ident===ident&&Number.isFinite(evidence.lat)&&Number.isFinite(evidence.lon)?{lat:evidence.lat,lon:evidence.lon}:{})});}
    }
    return expanded;
   }
@@ -307,7 +307,19 @@
    return all;
   }
  const track=n=>Number.isFinite(n)?String(Math.round(n)%360).padStart(3,'0')+'°T':'';
- const nm=n=>Number.isFinite(n)&&n>=0?String(Math.round(n))+'NM':'';
+ const nm=n=>Number.isFinite(n)&&n>=0?(n<10?n.toFixed(1):String(Math.round(n)))+'NM':'';
+ const validPosition=p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180;
+ function ownship(s){const p=s.fmcPageInputs?.position;return p?.quality==='VALID'&&validPosition({lat:p.latitudeDeg,lon:p.longitudeDeg})?{lat:p.latitudeDeg,lon:p.longitudeDeg}:null;}
+ function constraintKey(s,leg,index){return 'LEG_CONSTRAINT_'+[entered(s,'ORIGIN'),entered(s,'DEST'),index,leg.ident].join('_').replace(/[^A-Z0-9_]/g,'_');}
+ function constraint(s,leg,index){return entered(s,constraintKey(s,leg,index))||leg.constraint||'----/-----';}
+ function parseConstraint(input,old){
+  const m=/^(?:(\d{2,3}|\.\d{2,3}))?\/(?:(FL\d{2,3}|\d{3,5})([AB])?)?$/.exec(input);
+  if(!m||!m[1]&&!m[2])return null;
+  if(m[1]&&!m[1].startsWith('.')&&(Number(m[1])<100||Number(m[1])>399))return null;
+  if(m[2]&&(m[2].startsWith('FL')?Number(m[2].slice(2))*100:Number(m[2]))>41000)return null;
+  const [speed,alt]=String(old||'----/-----').split('/');
+  return (m[1]||speed||'----')+'/'+(m[2]?m[2]+(m[3]||''):alt||'-----');
+ }
  function legs(s){
   const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
@@ -316,15 +328,21 @@
    const leg=all[at+i];
    if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
+   const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
+   const activeIdent=prediction?.quality==='VALID'?prediction.active?.ident:null;
+   const activeMatch=activeIdent?all.filter(x=>x.ident===activeIdent).length===1&&leg.ident===activeIdent:index===0;
+   const position=activeMatch?ownship(s):null;
+   const from=validPosition(position)?position:!previous?.gap&&!previous?.conditional&&validPosition(previous)?previous:null;
+   const trueCourse=!leg.conditional&&from&&validPosition(leg)?legCourse(from,leg):leg.course;
+   const distance=!leg.conditional&&from&&validPosition(leg)?legDistance(from,leg):leg.distance;
    let magnetic=leg.courseMag;
-   if(!Number.isFinite(magnetic)&&Number.isFinite(leg.course)){
-    const previous=all[at+i-1],point=previous&&Number.isFinite(previous.lat)?previous:leg;
+   if(!Number.isFinite(magnetic)&&Number.isFinite(trueCourse)){
+    const point=from||leg;
     let variation=null;try{if(Number.isFinite(point?.lat)&&Number.isFinite(point.lon))variation=root?.parent?.B737CduSgBridgeV1?.magneticVariation?.(point);}catch(_){}
-    if(Number.isFinite(variation))magnetic=(leg.course-variation+360)%360;
+    if(Number.isFinite(variation))magnetic=(trueCourse-variation+360)%360;
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
-   rows.push(pair(angle?' '+angle:'',leg.ident,nm(leg.distance),
-    leg.constraint||s.active['LEG_CONSTRAINT_'+(at+i)]||'----/-----'));
+   rows.push(pair(angle,leg.ident,nm(distance),constraint(s,leg,index)));
   }
   const action=routeAction(s);
   const right=canActivate(s)||s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
@@ -433,9 +451,18 @@
   }
   if(legPage&&/^LSK_/.test(key)){
    const index=(legs(s).number-1)*5+Number(key[5])-1,leg=visibleLegs(s)[index];
+   if(key.startsWith('LSK_R')&&Number(key[5])<=5&&leg&&!leg.gap){
+    const field=constraintKey(s,leg,index),old=constraint(s,leg,index);
+    if(!s.scratch){s.scratch=old;s.message='';return true;}
+    const draft=s.routeActivated?s.pending:s.stagedRoute;
+    if(s.scratch==='DELETE'){draft[field]='';s.scratch='';s.message='';return true;}
+    const next=parseConstraint(s.scratch,old);
+    if(!next){core.addMessage(s,'INVALID ENTRY');return true;}
+    draft[field]=next;s.scratch='';s.message='';return true;
+   }
    if(key.startsWith('LSK_L')&&Number(key[5])<=5&&leg&&!leg.gap&&!s.scratch){
     s.scratch=leg.ident;s.message='';
-   }else core.addMessage(s,'KEY INACTIVE');
+   }else if(s.scratch)core.addMessage(s,'INVALID ENTRY');
    return true;
   }
   return false;

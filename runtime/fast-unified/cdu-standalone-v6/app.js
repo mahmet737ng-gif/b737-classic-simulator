@@ -43,7 +43,16 @@ function makeControls(){const click=$('clickmap');for(const c of map.controls){l
 function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stage5Committed) && state.ehsi?.options) state.ehsi.options.demoRoute=false; window.EHSI_ENGINE.renderToDom(state,core,$('ehsi-svg'),document); window.CDU_NAV_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE5_MAP?.render(state,$('ehsi-svg')); window.CDU_STAGE9_ADVISORY?.render(state,$('ehsi-svg')); window.CDU_STAGE10_ADVISORY?.render(state,$('ehsi-svg')); } }
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
-function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
+function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);
+  if(state.page==='PERF_INIT'||state.page==='APP_REF'){
+   const fuel=state.fmcPageInputs?.fuel,tonnes=fuel?.quality==='VALID'&&Number.isFinite(fuel.totalKg)&&fuel.totalKg>=0?fuel.totalKg/1000:null;
+   const number=v=>/^\d+(?:\.\d+)?$/.test(String(v||'').split('/')[0])?Number(String(v).split('/')[0]):null;
+   const gw=number(get('GW_CG','PERF_INIT')),zfw=number(get('ZFW','PERF_INIT'));
+   if(cell.field==='FUEL'&&tonnes!==null)return tonnes.toFixed(1);
+   if(cell.field==='GW_CG'&&gw===null&&zfw!==null&&tonnes!==null)return (zfw+tonnes).toFixed(1);
+   if(cell.field==='ZFW'&&zfw===null&&gw!==null&&tonnes!==null&&gw>=tonnes)return (gw-tonnes).toFixed(1);
+   if(cell.field==='LANDING_WEIGHT'&&!get('LANDING_WEIGHT','APP_REF')&&zfw!==null){const pred=state.fmcPageInputs?.predictions;if(pred?.quality==='VALID'&&Number.isFinite(pred.destination?.fuelKg)&&pred.destination.fuelKg>=0)return (zfw+pred.destination.fuelKg/1000).toFixed(1);}
+  }return window.CDU_PROMPT_POLICY_V1?.placeholder(state.page,cell,get)||get(cell.field,state.page)||(cell.required?'□□□□':'-----');} return shown(cell.value||'');}
 // CDU entry placeholders have the original small baseline size, independently
 // of enlarged field labels and interactive LSK navigation options.
 function isEntryPromptText(text){
@@ -247,7 +256,12 @@ function update(){const box=$('fmc-lines'); const frame=document.createElement('
  else if(chapter11){
    chapter11.rows.forEach(({labelL,valueL,labelR,valueR},index)=>{
      const {label,value}=lskTextTops(index+1);
-     frame.appendChild(makePairRow(label,labelL,labelR,false,true));
+     const line=makePairRow(label,labelL,labelR,false,true);
+     if(state.page==='LEGS'&&/^\d{3}°$/.test(labelL||'')){
+      const left=line.querySelector('.fmc-left');left.classList.add('cdu-leg-angle');left.textContent=labelL.slice(0,-1);const deg=document.createElement('span');deg.className='cdu-leg-degree';deg.textContent='°';left.appendChild(deg);
+     }
+     if(state.page==='LEGS'&&/NM$/.test(labelR||''))line.querySelector('.fmc-right').classList.add('cdu-leg-distance');
+     frame.appendChild(line);
      frame.appendChild(makePairRow(value,valueL,valueR));
    });
  }else for(let row=1;row<=6;row++){ const pair=page.rows[row-1]; const {label:labelTop,value:valueTop}=lskTextTops(row);

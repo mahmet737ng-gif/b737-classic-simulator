@@ -228,6 +228,9 @@
    typography(line,px);
    for(const span of line.querySelectorAll('span')){
     if(span.classList.contains('cdu-square-glyphs'))continue;
+    if(span.classList.contains('cdu-leg-degree')){span.style.setProperty('font-size',(pageLabelPx*.78)+'px','important');continue;}
+    if(span.classList.contains('cdu-leg-angle')){typography(span,pageLabelPx*1.12);span.style.setProperty('text-indent','1ch','important');continue;}
+    if(span.classList.contains('cdu-leg-distance')){typography(span,pageLabelPx);span.style.setProperty('text-align','left','important');continue;}
     if(ownerIdent){
      typography(span,px);
      span.style.setProperty('font-family',label?'"BoeingCDUSmall"':'"BoeingCDULarge"','important');

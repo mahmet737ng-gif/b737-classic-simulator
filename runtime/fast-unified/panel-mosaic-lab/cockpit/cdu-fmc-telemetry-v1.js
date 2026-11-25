@@ -6,7 +6,7 @@
  const seat=new URLSearchParams(location.search).get('seat');
  if(!['CAPT','FO'].includes(seat)||parent===window||typeof state==='undefined'||typeof update!=='function')return;
  const original=update;let queued=false,feed='UNKNOWN',pendingPowerEvidence=true;
- const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','PROG','PROG2']);
+ const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2','PERF_INIT','N1_LIMIT','TAKEOFF','CLB','CRZ','DES','APP_REF','RTE_DATA']);
  let avionicsFrame=0,lastInputs='';
  function receiveAvionics(){
   avionicsFrame=0;
@@ -16,7 +16,8 @@
    ground.value.onGround:null;
   const data=network?.getSignal('fmc.computed');
   const next=data?.quality==='VALID'?{
-   predictions:data.value.predictions,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData
+   predictions:data.value.predictions,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,
+   position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
   }:null;
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
   if(signature===lastInputs)return;
