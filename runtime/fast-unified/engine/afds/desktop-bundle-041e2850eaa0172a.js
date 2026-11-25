@@ -1022,6 +1022,12 @@ try{
     altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'})?.active===true;
   }catch(error){console.warn('FLT PHASE initial ECU context',error);return false;}
  }
+ const preparedScenarios=new Map();
+ function prepareScenario(config){
+  const {holdStart,...initial}=config,thresholds=approachThresholds(initial),key=JSON.stringify([initial,thresholds]);
+  if(!preparedScenarios.has(key)){if(preparedScenarios.size>=32)preparedScenarios.clear();preparedScenarios.set(key,Core.newScenario(initial,thresholds));}
+  return JSON.parse(JSON.stringify(preparedScenarios.get(key)));
+ }
  function load(beforeStart){
   try{
    const preset=selectedPreset();
@@ -1034,9 +1040,9 @@ try{
    if(preset==='MANUAL'){
     config.lat=v('Lat');config.lon=v('Lon');
    }
-   const next=Core.newScenario(config,approachThresholds(config));
+   const next=prepareScenario(config);
    if(typeof beforeStart==='function')beforeStart();
-   win.B737EngineFailureV1Scenario?.reset();
+   win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();
    win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();
    state=next;
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
@@ -1308,10 +1314,10 @@ try{
   airportChanged();presetChanged();updateUI();
   timer=win.setInterval(tick,100);mounted=true;
  }
- const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,
-  loadScenario:config=>{win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=Core.newScenario(config,approachThresholds(config));
+ const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,prepareScenario,
+  loadScenario:config=>{win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=prepareScenario(config);
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
-   active=true;pause=state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+   active=true;pause=config.holdStart===true||state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
