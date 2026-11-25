@@ -36,7 +36,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-25fa9f115da165b4.js",
-      "sha256": "25fa9f115da165b4cc8fdffb3a07399e01a705fa8411c50ff4223de89f8ec73f"
+      "sha256": "95bb157c29bd91c2803af0bab97d7be9dd2c4215cd1e80b94ae0147d7806fa3f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-656e682a7ed7a058.js",
@@ -88,7 +88,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-6256d726299b0a28.js",
-      "sha256": "6256d726299b0a28d386033de065071bd0efeee76c7bafe02f065a2570d8e9ed"
+      "sha256": "28dc876055189b6b951459c863797f58148e02372fd07d363036e207a281abc9"
     },
     {
       "path": "audio/desktop-bundle-c60801bce01e92be.js",
@@ -176,7 +176,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "499fb24ee0a5ea4d393bb38a2afc96b22f8d78d5f7af7815e602ae7fc1d7f4b2"
+      "sha256": "41302d095104d7856894dfe21530e9ef4416b8c5817fd8aee0577db67f812b98"
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
@@ -196,7 +196,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
-      "sha256": "fa87fb95723b69b39ab2c89526606d673531a70ccb313338ddc3ff10e7073c1e"
+      "sha256": "3fabc4a78d5bc9cd47fbbe2fe1da33a757fc6db2f09965ab033613d37ab9cbcc"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-8141a7a984c68908.js",
@@ -512,7 +512,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "c4642008d74b549abe1cd1ea2789fcd9ae36f9b857338fc9a6fe8c6c47df789d"
+      "sha256": "0d76022bd054d3f6b00c212fd14a5c33e1e0e6c7f264af8b696da5082ce9ae2e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "ac7cdc5a804ba259ad1c9d801cd92bf06c17809c76a4fc59dd35b015386a0174"
+      "sha256": "a9aec07a6953c682da10bfb7cf1c5353e920740183de0327072cf6f82a3e03a6"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
@@ -1788,11 +1788,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/powered-general-presets-v1.js",
-      "sha256": "9ef120780a1ab1a4dd5811f2fe832af394160660350f73f4bb8b511faa41d5d3"
+      "sha256": "9b5807f905e614786b5585a8144fa7c2e3f14553de8f69cd4c811586fead7340"
     },
     {
       "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
-      "sha256": "cb4a4e650242569582d5eadb46a132e66df0d33e9a231755de5a50d17f1a9ffb"
+      "sha256": "2018a0fb7a4cdd6c1f976b921e57233ec5dead9fc7e7164e7542a016dba7cfdf"
     }
   ]
 }
