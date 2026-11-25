@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "8fbccfaf63ecb64198742be2f219a78956bf9198df0bccea42c11aaecc17c264"
+      "sha256": "4cfbbfab474508de8b6786ef5b1d070629e7c7c4b63dfcfd1591bc5cc88176d7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "a9aec07a6953c682da10bfb7cf1c5353e920740183de0327072cf6f82a3e03a6"
+      "sha256": "01a7a6c5a7edd9600f98d3297fc214f061fb40f92111782c06afb978536a403a"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",
@@ -1792,7 +1792,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
-      "sha256": "2018a0fb7a4cdd6c1f976b921e57233ec5dead9fc7e7164e7542a016dba7cfdf"
+      "sha256": "a7ad76eec146599d73570cf71f6947ce70be26f519dc0a5e9f4b86b60dc987db"
     }
   ]
 }

@@ -124,7 +124,9 @@
       #unifiedWelcome .welcome-note,#unifiedWelcome .welcome-choice small{display:none!important}
       #unifiedWelcome .welcome-failure-options{margin:0 0 12px 18px;padding:4px 10px 8px;border:1px solid #365564;border-radius:7px;min-width:0}
       #unifiedWelcome .welcome-failure-options[hidden]{display:none!important}
-      #unifiedWelcome .welcome-failure-options legend{font-size:12px;color:#a8c2cd;padding:0 5px}
+      #unifiedWelcome .welcome-failure-options legend{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+      #unifiedWelcome .welcome-spinner{display:none!important}
+      #unifiedWelcome .welcome-progress[hidden]{display:none!important}
       #unifiedWelcome .welcome-failure-options .welcome-choice{padding:6px 8px;margin:5px 0;font-size:12px}
       #unifiedWelcome .welcome-weather{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       #unifiedWelcome input:disabled,#unifiedWelcome select:disabled{opacity:.6}
@@ -137,13 +139,11 @@
     general.innerHTML = '<h3 class="welcome-subheading">Aircraft General State</h3>' +
       '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span></label>' +
       '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span></label>' +
-      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span></label>' +
-      '<p class="welcome-note" id="welcomeGeneralNote">Optional: existing flight-location presets are retained when no general state is selected.</p>';
+      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span></label>';
     aircraft.append(general);
     const cold = by('welcomeColdDark');
     const groundChoices=[...general.querySelectorAll('input[name="welcomeGroundState"]')];
     cold.disabled = !locationButton || !generalButton;
-    if (cold.disabled) by('welcomeGeneralNote').textContent = 'Cold & Dark owner selector unavailable.';
     const scenarios = doc.createElement('section');
     scenarios.className = 'welcome-section';
     scenarios.id = 'unifiedWelcomeScenarios';
@@ -175,8 +175,7 @@
           id + '" value="' + value + '"> <span>' + label + '</span></label>').join('') + '</fieldset>'
       ).join('') +
       '<h3 class="welcome-subheading">Special Operations</h3>' +
-      renderChoice(rapid) +
-      '<p class="welcome-note" id="welcomeScenarioNote" role="status">Normal Flight available. Engine scenario behavior is not yet configured.</p>';
+      renderChoice(rapid);
     by('unifiedWelcomeSetup').append(scenarios);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
@@ -196,11 +195,6 @@
         if (!active) group.querySelectorAll('input').forEach(input => { input.checked = false; });
       }
       const pending = pendingEngineScenario();
-      const subtype = pending ? by('welcomeFailure_' + selected)?.querySelector('input:checked') : null;
-      by('welcomeScenarioNote').textContent = selected==='ENGINE_FAILURE_V1'
-        ? (new URLSearchParams(win.location.search).has('crewRoom')?'V1 is single cockpit only.':selectedV1Type()?'Ready for Takeoff · random engine · 140 KT IAS.':'Select a failure type. Ready for Takeoff is required.')
-        : selected==='ENGINE_FAILURE_FINAL'?(new URLSearchParams(win.location.search).has('crewRoom')?'Engine-out final is single cockpit only.':selectedFinalType()?'10 NM FINAL · random engine · failure on START.':'Select a failure type. 10 NM FINAL is required.')
-        : pending?(subtype?'Failure type selected. Scenario execution is not configured yet.':'Select a failure type. Scenario execution is not configured yet.'):'Normal Flight available.';
       enforceV1Ground();
       if (!startRequested) start.disabled = pending;
     };
@@ -211,8 +205,7 @@
     const weather = doc.createElement('div');
     weather.id = 'welcomeOnlineWeather';
     weather.innerHTML = '<h3 class="welcome-subheading">Weather Online</h3>' +
-      '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span></label>' +
-      '<p class="welcome-note">No verified weather-to-aircraft connection. Simulator defaults remain unchanged.</p>';
+      '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span></label>';
     flight.append(weather);
     let syncing = false;
     const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'||currentScenario()==='RAPID_DECOMPRESSION'; };
@@ -237,10 +230,6 @@
         locationGrid.hidden = false;
         locationGrid.style.display = '';
         setManualVisibility();
-        if(final)by('welcomeGeneralNote').textContent='10 NM FINAL is required for Engine Failure on Final.';
-        else if(v1)by('welcomeGeneralNote').textContent='Ready for Takeoff is required for Engine Failure at V1.';
-        else if (ground && !cold.disabled) by('welcomeGeneralNote').textContent = 'Optional: no selection retains the existing flight-location preset.';
-        else if (!ground) by('welcomeGeneralNote').textContent = 'Ground presets require ON THRESHOLD.';
       } finally { syncing = false; }
     };
     enforceV1Ground=syncGeneral;
@@ -393,18 +382,31 @@
       labelChangedAt = now;
     }
     const stalled=labels.length>0&&now-lastProgressAt>=25000;
-    const text = stalled?'Something went wrong.':labels.length?'Preparing cockpit…':'';
+    const text = stalled?'Something went wrong.':'';
     if (text !== currentLabel) {
       progress.textContent = text;
       currentLabel = text;
     }
     progress.parentElement.dataset.ready = String(labels.length === 0);
-    progress.parentElement.style.display=labels.length===0?'none':'';
+    progress.parentElement.hidden = !stalled;
+    progress.parentElement.style.display=stalled?'':'none';
     retry.hidden = error.hidden && !stalled;
   }
 
-  let prewarmKey='';
-  function prewarm(){const api=win.B737UnifiedFlightScenarioV1,airport=by('flightAirport')?.value,runway=by('flightRunway')?.value;if(!api?.prepareScenario||!airport||!runway)return;const key=airport+'|'+runway;if(key===prewarmKey)return;try{for(const preset of ['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_10'])api.prepareScenario({airport,runway,preset,airborne:preset==='FINAL_10'});api.prepareScenario({airport,runway,preset:'MANUAL',airborne:true,holdStart:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});prewarmKey=key;}catch(e){console.warn('Scenario preload',e);}}
+  let prewarmKey='',prewarmIndex=0;
+  function prewarm(){
+    const api=win.B737UnifiedFlightScenarioV1,airport=by('flightAirport')?.value,runway=by('flightRunway')?.value;
+    if(!api?.prepareScenario||!airport||!runway)return;
+    const key=airport+'|'+runway;
+    if(key!==prewarmKey){prewarmKey=key;prewarmIndex=0;}
+    const presets=['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_10','MANUAL'];
+    if(prewarmIndex>=presets.length)return;
+    const preset=presets[prewarmIndex];
+    try{
+      api.prepareScenario(preset==='MANUAL'?{airport,runway,preset,airborne:true,holdStart:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0}:{airport,runway,preset,airborne:preset==='FINAL_10'});
+      prewarmIndex++;
+    }catch(e){console.warn('Scenario preload',preset,e);}
+  }
   function refresh() {
     prewarm();
     const now = performance.now();
@@ -504,7 +506,7 @@
     requestedV1Type=selectedV1Type();requestedFinalType=selectedFinalType();requestedRapidType=selectedRapidType();requestedGroundFireType=selectedGroundFireType();
     startRequested = true;
     start.disabled = true;
-    start.textContent = 'STARTING…';
+    start.textContent = 'START';
     refresh();
   });
   retry.addEventListener('click', () => win.location.reload());

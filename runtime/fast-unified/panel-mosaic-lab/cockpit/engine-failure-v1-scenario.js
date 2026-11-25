@@ -10,7 +10,7 @@
  function create({inject,clear=()=>{},random=Math.random}={}){
   if(typeof inject!=='function')throw Error('Live engine owner is required');
   let run=null;
-  const getStatus=()=>run?{status:run.status,type:run.type,scenario:run.scenario,triggerKt:run.scenario==='FINAL_10'?null:THRESHOLD,
+  const getStatus=()=>run?{status:run.status,type:run.type,scenario:run.scenario,triggerKt:run.scenario==='V1'?THRESHOLD:null,
    ...(run.status==='ARMED'?{}:{engine:run.engine,observedIasKt:run.observedIasKt??null,error:run.error??null})}:{status:'IDLE'};
   function arm({type,state,ready,scenario='V1',persisting=false}={}){
    if(run)throw Error('Reset V1 before arming a new flight');
