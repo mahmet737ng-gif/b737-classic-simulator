@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "d047a889cbc8a1fbc903bfb255b8f7872b8079a1604c1c82545f6f5c4e01b578"
+      "sha256": "1ed2ff4aa7856b084bf58fecea8ea28e2d234e2b50859dd0f4edec09f050b6bc"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "048d94b0bfa1b769bdba81286c52fa70c4e5e2b48cdc564d828b50c6310a59f9"
+      "sha256": "bcdd4224cd665e9101756449dbfc98f5d630cf327753c24a38c2865539034a09"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "b7d3ec67d3527c923e19d7e81fd3a563845587f204550c5a040ff3fe1a324817"
+      "sha256": "c8b662e82371b7ae05ef3fad634bdcde3e6552510acfdd9bebcbe7189ed0d46f"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -1024,7 +1024,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js",
-      "sha256": "d9afacaff7a1bd936ece88828cfe775ac3e85ac72c0af1ca3f18bd92f59c4575"
+      "sha256": "16a772d7a7e38bbd1ced4d282421819afa241053baa30c1f7d5a0ee6229f86ff"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
@@ -1796,11 +1796,11 @@
     },
     {
       "path": "engine/fmc/iran-navdata-client-v2.js",
-      "sha256": "097047a09add929d2c3295136bdc5eeade073a7498902442f0d628a5405341ae"
+      "sha256": "668b4990077acc4c67b3b96c0ba850c3899cbcf2eff9bf60cc3389983dc2c950"
     },
     {
       "path": "engine/fmc/pilot-waypoints-v1.js",
-      "sha256": "dba511c86b48a50244a5b539357ddb2e7e80b1c69a4e0928166064fd8c77edf2"
+      "sha256": "deed5cb1a4b007ef93d43d9847a07851d303e9c0a1aa24ae123f946d0c41967a"
     }
   ]
 }
