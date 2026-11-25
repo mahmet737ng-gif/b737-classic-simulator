@@ -7,9 +7,9 @@ let timer=null,serial=0,status=null;
 const stop=()=>{serial++;if(timer!==null){win.clearInterval(timer);timer=null;}};
 const applies=s=>names.includes(s);
 const get=()=>status;
-function apply(state){
- stop();if(!applies(state?.preset))return false;
- const run=serial,takeoff=state.preset==='READY_FOR_TAKEOFF',started=Date.now(),sent=new Map();
+function apply(state,{cruise=false}={}){
+ stop();if(!cruise&&!applies(state?.preset))return false;
+ const run=serial,takeoff=state.preset==='READY_FOR_TAKEOFF',powered=takeoff||cruise,started=Date.now(),sent=new Map();
  const check={},optional={},reasons={};
  const attempt=(id,fn,extra=false)=>{try{const ok=fn()===true;(extra?optional:check)[id]=ok;if(ok)delete reasons[id];}catch(e){(extra?optional:check)[id]=false;reasons[id]=String(e?.message||e);}};
  const once=(id,fn,ms=1200)=>{if(Date.now()-(sent.get(id)||0)<ms)return;sent.set(id,Date.now());return fn();};
@@ -29,7 +29,7 @@ function apply(state){
  const center=Number(fuel?.center);
  for(const id of ['fuel-center-l','fuel-center-r'])attempt(id,()=>Number.isFinite(center)&&set(id,center>453?'ON':'OFF'),true);
  // Start from an actual APU-backed electrical state before transferring.
- if(!takeoff||elec()?.source?.[1]!=='GEN1'||elec()?.source?.[2]!=='GEN2'){
+ if(!powered||elec()?.source?.[1]!=='GEN1'||elec()?.source?.[2]!=='GEN2'){
   attempt('APU_READY',()=>{
    if(!check.BATTERY)throw Error('Waiting for battery owner');
    const phase=phases().apu;
@@ -37,14 +37,14 @@ function apply(state){
    else if(['BLOCKED','PROTECTIVE_SHUTDOWN'].includes(phase))once('APU_RESET',()=>set('apu-start','OFF'));
    if(phases().apu!=='READY')throw Error(eng?.getStartState?.()?.lastError||'APU '+phases().apu);
    return true;
-  },takeoff);
-  if(phases().apu==='READY'){set('apu-start','ON');if(!takeoff||elec()?.source?.[1]!=='GEN1')if(elec()?.source?.[1]!=='APU')pulse('apu-gen-1','ON');
-   if(!takeoff||elec()?.source?.[2]!=='GEN2')if(elec()?.source?.[2]!=='APU')pulse('apu-gen-2','ON');}
+  },powered);
+  if(phases().apu==='READY'){set('apu-start','ON');if(!powered||elec()?.source?.[1]!=='GEN1')if(elec()?.source?.[1]!=='APU')pulse('apu-gen-1','ON');
+   if(!powered||elec()?.source?.[2]!=='GEN2')if(elec()?.source?.[2]!=='APU')pulse('apu-gen-2','ON');}
  }
  const readySource=()=>{const e=elec();return [1,2].every(n=>e?.source?.[n]==='APU'||e?.source?.[n]==='GEN'+n);};
  for(const n of [1,2])attempt('ENGINE_'+n,()=>{
   const id='engine'+n;
-  if(takeoff){
+  if(powered){
    if(phases()[id]==='RUNNING')return true;
    // Match FINAL_10: the existing instructor running preset is an initial
    // condition, not a pneumatic start. Do not require APU dual contactors.
@@ -58,14 +58,14 @@ function apply(state){
   if(phases()[id]!=='OFF')once(id,()=>{eng.engineTrainerAction({instructor:true,type:'LEVER',engine:id,position:'CUTOFF'});eng.engineTrainerAction({instructor:true,type:'SHUTDOWN',engine:id});});
   return phases()[id]==='OFF';
  });
- if(takeoff){
+ if(powered){
   for(const n of [1,2])attempt('GEN_'+n,()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);if(e?.faults?.['GEN'+n+'_FAILED'])throw Error('GEN'+n+' fault / drive disconnected');if(phases()['engine'+n]==='RUNNING'&&e?.config?.['engine'+n+'Running']===true&&e?.source?.[n]!=='GEN'+n)pulse('gen-'+n,'ON');if(e?.source?.[n]==='GEN'+n&&v?.bus?.['generator'+n]===true)return true;throw Error('GEN'+n+' not on bus; source='+String(e?.source?.[n]??'NONE')+'; engine='+String(phases()['engine'+n]??'UNKNOWN'));});
   if(check.GEN_1&&check.GEN_2){optional.APU_READY=true;delete reasons.APU_READY;for(const n of [1,2])if(elec()?.source?.[n]==='APU')pulse('apu-gen-'+n,'OFF');set('apu-start','OFF');}
   attempt('APU_OFF',()=>phases().apu==='OFF'&&check.GEN_1&&check.GEN_2);
   attempt('GPU_DISCONNECTED',()=>{if(elec()?.config?.groundPowerAttached)once('gpu',()=>eng.instructor({type:'ELECTRICAL',action:{type:'CONTROL',key:'groundPowerAttached',value:false}}));return elec()?.config?.groundPowerAttached===false;},true);
  }else attempt('APU_ON_BOTH_BUSES',()=>{const e=elec(),v=e&&win.B737ElectricalV7?.evaluate(e);return phases().apu==='READY'&&e?.source?.[1]==='APU'&&e?.source?.[2]==='APU'&&v?.bus?.transfer1===true&&v?.bus?.transfer2===true;});
- for(const id of ['pack-l','pack-r'])attempt(id,()=>set(id,takeoff?'AUTO':'OFF'),true);
- attempt('APU_BLEED',()=>set('bleed-apu',takeoff?'OFF':'ON'),true);
+ for(const id of ['pack-l','pack-r'])attempt(id,()=>set(id,powered?'AUTO':'OFF'),true);
+ attempt('APU_BLEED',()=>set('bleed-apu',powered?'OFF':'ON'),true);
  for(const id of ['engine-start-1','engine-start-2'])attempt(id,()=>{if(!rg)return false;const v=takeoff?'CONT':'OFF';let s=rg.getState();if((s.rotaries?.[id]??s[id])!==v)rg.setEngineLabDetent(id,v);s=rg.getState();return (s.rotaries?.[id]??s[id])===v;},true);
  for(const id of ['landing-out-l','landing-out-r','landing-in-l','landing-in-r','strobe','position-lights','anti-collision','wing-lights','runway-turnoff-l','runway-turnoff-r','taxi','logo','wheel-well'])attempt(id,()=>set(id,takeoff&&!['logo','wheel-well'].includes(id)?'ON':id.startsWith('landing-out')?'RETRACT':id==='position-lights'||id==='anti-collision'?'ON':'OFF'),true);
  attempt('IRS_ALIGNED',()=>{
@@ -90,15 +90,15 @@ function apply(state){
   const a=dual.setFrequency('nav-fo-manual',vor.freqKhz),b=dual.setFrequency('nav-capt-manual',ils.freqKhz);
   return a===true&&b===true&&tuner.setMode('FO','manual')===true&&tuner.setMode('CAPT','auto')===true;
  },true);
- attempt('PARKING_BRAKE',()=>{const a=win.B737UnifiedParkingBrakeV1;if(!a)return false;if(!a.getState().engaged)a.setEngaged(true,'AIRCRAFT_GENERAL_STATE');return a.getState().engaged===true;});
+ attempt('PARKING_BRAKE',()=>{const a=win.B737UnifiedParkingBrakeV1;if(!a)return false;if(a.getState().engaged===cruise)a.setEngaged(!cruise,'AIRCRAFT_GENERAL_STATE');return a.getState().engaged===!cruise;});
  attempt('SPEEDBRAKE_DOWN',()=>{const a=win.B737SpeedbrakeLever;if(!a?.mounted())return false;if(a.get()!==0)a.set('DOWN');return a.get()===0;});
- attempt('THROTTLES_IDLE',()=>{const a=win.B737ThrottlePositions;if(!a?.mounted())return false;for(const n of [1,2])if(a.get(n)!==0)a.set(n,0);return [1,2].every(n=>a.get(n)===0);});
- attempt('GEAR_DOWN',()=>{const a=win.B737LandingGearUnifiedV1;if(!a)return false;let s=a.getState();if(s.lever!=='DN')a.select('DN');s=a.getState();return s.lever==='DN'&&['nose','left','right'].every(k=>s.gear[k]==='DOWN');});
+ attempt('THROTTLES_IDLE',()=>{const a=win.B737ThrottlePositions;if(!a?.mounted())return false;if(cruise){if(!sent.has('cruise-thrust')){for(const n of [1,2])a.set(n,.55);sent.set('cruise-thrust',Date.now());}return true;}for(const n of [1,2])if(a.get(n)!==0)a.set(n,0);return [1,2].every(n=>a.get(n)===0);});
+ attempt('GEAR_DOWN',()=>{const a=win.B737LandingGearUnifiedV1;if(!a)return false;let s=a.getState();const lever=cruise?'UP':'DN',position=cruise?'UP':'DOWN';if(s.lever!==lever)a.select(lever);s=a.getState();return s.lever===lever&&['nose','left','right'].every(k=>s.gear[k]===position);});
  attempt('FLAPS',()=>{
   const target=takeoff?5:0,a=win.B737FlapVisualTest,owner=child?.B737LEDevicesTrainer;
   if(!a?.presetDetent||!owner?.flapActuator||!owner?.advance)throw Error('Flap lever or LE/TE owner unavailable');
-  if(takeoff&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
-  if(!takeoff&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
+  if(powered&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
+  if(!powered&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
   let actuator=owner.flapActuator(),le=owner.snapshot?.();
   // Initial aircraft configuration, not a pilot move through the 1/15 gates.
   if(a.position!==target&&!a.presetDetent(target))throw Error('Physical lever preset not accepted');
@@ -128,22 +128,23 @@ function apply(state){
   win.B737FlapNeedles?.setCommon?.(actuator.actual);
   win.B737CockpitLights?.setInputs?.({trailingFlaps:target,leadingEdge:takeoff?'INTERMEDIATE':'RETRACTED',leCenterPowered:le.center.power,leDirectValid:true,leDirectTransit:le.center.transit,leDirectExtended:le.center.extended});
   return true;
- },!takeoff);
- attempt('AUTOBRAKE_RTO',()=>{const a=win.B737AutobrakeUnified;if(!a)return false;if(a.getState().selector!=='RTO')a.setSelector('RTO');return a.getState().selector==='RTO';},true);
+ },!powered);
+ attempt('AUTOBRAKE_RTO',()=>{const a=win.B737AutobrakeUnified;if(!a)return false;const target=cruise?'OFF':'RTO';if(a.getState().selector!==target)a.setSelector(target);return a.getState().selector===target;},true);
  attempt('MCP',()=>{
   const a=win.B737McpAFDSBridgeV1;
   if(!a?.applyGroundPreset)throw Error('MCP owner API not available');
-  if(takeoff&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
-  if(!takeoff&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
+  if(powered&&(!check.GEN_1||!check.GEN_2))throw Error('Waiting for both generators');
+  if(!powered&&!check.APU_ON_BOTH_BUSES)throw Error('Waiting for APU buses');
   a.refreshElectrical();let o=a.getOutput();
   if(o.power!==true)throw Error('MCP power '+o.power+' / '+JSON.stringify(o.feedStatus));
   if(!sent.has('MCP_RESET')){a.reset();sent.set('MCP_RESET',Date.now());}
   const mag=win.B737WMM2025V1?.evaluate?.({lat:state.lat,lon:state.lon,altitudeFt:state.altitudeFt});
   if(!mag?.valid)throw Error('WMM runway magnetic heading unavailable');
-  const r=a.applyGroundPreset({speedKt:160,headingMag:state.runwayHeadingTrueDeg-mag.declinationDeg,altitudeFt:10000,atArm:takeoff});
+  const r=a.applyGroundPreset({speedKt:cruise?279:160,headingMag:(cruise?state.trueHeadingDeg:state.runwayHeadingTrueDeg)-mag.declinationDeg,altitudeFt:cruise?30000:10000,atArm:powered});
   if(!r?.accepted)throw Error((r?.step||'MCP')+': '+(r?.reason||'not acknowledged'));
+  if(cruise){for(const [id,key,value] of [['HDG_SEL','lateral','HDG_SEL'],['ALT_HLD','vertical','ALT_HLD'],['CMD_A','autopilot','CMD_A'],['SPEED','thrust','SPEED']]){if(a.getOutput().modes?.[key]!==value)a.press(id);}const modes=a.getOutput().modes;return modes?.lateral==='HDG_SEL'&&modes?.vertical==='ALT_HLD'&&modes?.autopilot==='CMD_A'&&modes?.thrust==='SPEED';}
   return true;
- },!takeoff);
+ },!powered);
  const coreReady=Object.values(check).every(Boolean),missing=Object.keys(check).filter(k=>!check[k]),pending=Object.keys(optional).filter(k=>!optional[k]);
  const done=coreReady&&pending.length===0,expired=Date.now()-started>=30000;
  status={state:state.preset,complete:done,coreReady,settled:done||expired,timedOut:expired&&!done,missing,pending,checks:{...check,...optional},reasons:{...reasons},observed:{phase:{...phases()},source:{...elec()?.source},battery:elec()?.config?.batterySwitch}};
@@ -156,5 +157,5 @@ function apply(state){
  return status;
 }
 win.addEventListener('b737:flight-scenario-stopped',stop);
-win.B737PoweredGeneralPresetsV1=Object.freeze({applies,apply,stop,getStatus:get});
+win.B737PoweredGeneralPresetsV1=Object.freeze({applies,apply,applyCruise:state=>apply(state,{cruise:true}),stop,getStatus:get});
 })(window);
