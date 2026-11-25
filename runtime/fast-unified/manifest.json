@@ -56,7 +56,7 @@
     },
     {
       "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
-      "sha256": "74c85718c4420470a358abd32293fba29d5da23e0c458141223fefe01171101f"
+      "sha256": "60e24bb8bc0cc7a92a75fad145f56d9835c29500889df192ac9c42f899ec47c4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "d5944c9e406cb1c440208c82bdabd4a77a6098ff0e644a1acb4491d0eb2bdf97"
+      "sha256": "2c4fd8b6e04bc1b1524f75119b493852760d4cfed321244cf195e9b29d4c6478"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",

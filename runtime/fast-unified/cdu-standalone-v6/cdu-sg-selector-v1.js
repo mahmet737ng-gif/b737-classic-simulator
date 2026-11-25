@@ -28,9 +28,23 @@
  const encoded=s=>encodeURIComponent(s);
  const update=()=>refresh?.();
  function issue(message){state.message=String(message||'NAV DATA ERROR').slice(0,24);update();}
- async function request(path){
-  const r=await bridge.request(path),body=await r.json();
-  if(!r.ok)throw Error(body.error||'PRIVATE SOURCE UNAVAILABLE');return body;
+ const catalogCache=new Map();
+ function request(path){
+  if(catalogCache.has(path))return catalogCache.get(path);
+  const promise=(async()=>{const r=await bridge.request(path),body=await r.json();
+   if(!r.ok)throw Error(body.error||'PRIVATE SOURCE UNAVAILABLE');return body;})();
+  if(/^\/api\/cdu\/(airport|catalog|procedure)\?/.test(path)){catalogCache.set(path,promise);promise.catch(()=>catalogCache.delete(path));}
+  return promise;
+ }
+ let preloadKey='';
+ async function preloadAirports(){
+  const origin=core.readValue?.(state,'ORIGIN','RTE'),dest=core.readValue?.(state,'DEST','RTE'),key=origin+'|'+dest;
+  if(key===preloadKey)return;preloadKey=key;
+  for(const airport of [origin,dest]){
+   if(!allowedAirport(airport)||preloadKey!==key)continue;
+   try{await Promise.all([request('/api/cdu/airport?icao='+encoded(airport)),
+    ...['SID','STAR','APP'].map(kind=>request('/api/cdu/catalog?airport='+encoded(airport)+'&kind='+kind))]);}catch(_){}
+  }
  }
  const routePages=['RTE','FLIGHT_PLAN','ACTIVATE','LEGS'];
  // Reference-only EXEC commits the SG preview state, never an operational FMC route.
@@ -172,8 +186,8 @@
    if(entry.kind==='APP_TRANS'){
     v.candidate=entry.app;v.runway=catalog.runway;v.transition=entry.ident;void confirm(v);return true;
    }
-   if(entry.kind==='APP'&&entry.item.runways.length===1){
-    v.inlineApp={ident:entry.ident,runway:entry.item.runways[0]};v.candidate=entry;v.runway=v.inlineApp.runway;v.transition=null;
+   if(entry.kind==='APP'&&(entry.item.runways.length===1||catalog.runway&&entry.item.runways.includes(catalog.runway))){
+    v.inlineApp={ident:entry.ident,runway:entry.item.runways.length===1?entry.item.runways[0]:catalog.runway};v.candidate=entry;v.runway=v.inlineApp.runway;v.transition=null;
     try{shared.chooseRunway({airport:v.airport,runway:v.runway,airportRecord:v.airportRecord,role:'ARR'});}catch(e){issue(e.message);return true;}
     void confirm(v);return true;
    }
@@ -198,7 +212,8 @@
   if(v.referenceOnly){issue('NOT ON ROUTE');return true;}
   if(v.mode==='RUNWAY'){
    v.runway=value;
-   if(v.transitions.length){v.mode='TRANSITION';v.options=v.transitions;v.page=1;update();}
+   if(v.candidate?.kind==='APP'){v.inlineApp={ident:v.candidate.ident,runway:value};v.mode='CATALOG';void confirm(v);}
+   else if(v.transitions.length){v.mode='TRANSITION';v.options=v.transitions;v.page=1;update();}
    else void confirm(v);
   }else if(v.mode==='TRANSITION'){v.transition=value;void confirm(v);}
   return true;
@@ -454,6 +469,7 @@
   return fromCatalogKey(k);
  }
  function afterKey(code){
+  if(attached)void preloadAirports();
   if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||!hasReferenceChanges()||state.routeActivated!==true)return;
   // The shared state is a verified display reference, not a flight-leg
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
@@ -463,7 +479,7 @@
  }
  function execLit(){return attached&&mayExecute()&&hasReferenceChanges();}
  function attach(){
-  if(attached)return;attached=true;
+  if(attached)return;attached=true;void preloadAirports();
   if(['DEPARTURES','ARRIVALS'].includes(state.page)&&!state.cduSgView){
    const {source,mode}=state.depArrSelection||{};
    const key=source==='ORIGIN'?(mode==='DEP'?'LSK_L1':'LSK_R1'):

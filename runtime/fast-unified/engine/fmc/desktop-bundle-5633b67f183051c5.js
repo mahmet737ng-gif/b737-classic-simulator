@@ -182,7 +182,7 @@ try{
       !Array.isArray(procedure?.runway_options)||
       !Array.isArray(procedure?.transition_options))throw Error('UNVERIFIED PROCEDURE');
    if(runway&&!procedure.runway_options.includes(runway)||transition&&!procedure.transition_options.includes(transition)||
-      procedure.runway_options.length>1&&!runway||procedure.transition_options.length>1&&!transition)
+      procedure.runway_options.length>1&&!runway||kind!=='APP'&&procedure.transition_options.length>1&&!transition)
     throw Error('SELECT PUBLISHED VARIANT');
    const meta=geometry?.metadata;
    if(geometry?.type!=='FeatureCollection'||!Array.isArray(geometry.features)||
