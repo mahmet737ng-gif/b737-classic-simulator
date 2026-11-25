@@ -244,16 +244,33 @@ try{
    if(!connected||!Number.isInteger(row)||row<1||!Array.isArray(points)||points.length<1||points.length>250||
     !points.every(p=>isIdent(p.ident)&&validPoint([p.lon,p.lat])&&!(p.lon===0&&p.lat===0)))throw Error('INVALID ENROUTE REFERENCE');
    const bank=startMod();for(const k of Object.keys(bank.geometries))if(/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row)delete bank.geometries[k];
-   const fixes=points.map(({ident,lat,lon})=>({ident,lat,lon}));
+   const fixes=points.map(({ident,lat,lon,pilotType})=>({ident,lat,lon,...(pilotType?{pilotType}:{})}));
    const segments=fixes.slice(1).map((p,i)=>[[fixes[i].lon,fixes[i].lat],[p.lon,p.lat]]);
    const program={version:'IRAN-ROUTE-PREVIEW-V2',sourceOnly:true,fmcExecutable:false,runway:null,input:{kind:'RTE',legs:fixes.map(p=>({...p,type:'Normal',fly:'Fly-by'})),performance:{gsKt:250,vsFpm:2000,rollNm:0,bankDeg:25,variationDeg:0}}};
    bank.geometries['RTE@'+row]={kind:'RTE',ident:String(via),segments,fixes,program,renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
    return publish();
   }
 
+
+  // Pilot waypoints change a known fixed leg only. No crossing a vector or
+  // unresolved conditional boundary, and no changes to the AFDS command bus.
+  function insertPilotBefore(key,index,point,expectedPrevious,expectedNext){
+   if(!connected||!isIdent(point?.ident)||!validPoint([point.lon,point.lat])||!['PBD','PBPB','ATW','LATLON'].includes(point.pilotType))throw Error('INVALID ENTRY');
+   const current=working().geometries[key],program=current?.program,legs=program?.input?.legs;
+   if(program?.version!=='IRAN-ROUTE-PREVIEW-V2'||!Array.isArray(legs)||!Number.isInteger(index)||index<1||index>=legs.length||legs.length>=150)throw Error('INVALID LEG');
+   const fixed=l=>['Normal','Runway'].includes(l?.Type??l?.type)&&validPoint([Number(l.Longitude??l.lon),Number(l.Latitude??l.lat)]);
+   const id=l=>l?.Name??l?.ident;
+   if(!fixed(legs[index-1])||!fixed(legs[index])||id(legs[index-1])!==expectedPrevious||id(legs[index])!==expectedNext)throw Error('INVALID LEG');
+   const bank=startMod(),g=bank.geometries[key],raw=g.program.input.legs;
+   raw.splice(index,0,{ident:point.ident,type:'Normal',lat:point.lat,lon:point.lon,fly:'Fly-by',pilotType:point.pilotType});
+   const next=g.fixes.findIndex(p=>p.ident===expectedNext);
+   if(next>=0)g.fixes.splice(next,0,copy(point));else g.fixes.push(copy(point));
+   return publish();
+  }
+
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}
-  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom});
+  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore});
  }
  return Object.freeze({VERSION,CYCLE,create});
 });
