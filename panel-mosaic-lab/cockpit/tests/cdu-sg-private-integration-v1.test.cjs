@@ -88,7 +88,7 @@ test('CDU stages runway and SID on both seats, executes and erases independently
  assert.equal(shared.snapshot().fmcExecutable,false);
  a.detach();b.detach();
 });
-test('EXEC confirms reference-only MOD without arming aircraft FMC or LNAV',()=>{
+test('reference-only MOD waits for native route activation before EXEC',()=>{
  const shared=routeAPI.create();
  shared.setConnected(true);shared.setContext({origin:'OIII',destination:'OIMM'});
  const state={page:'DEPARTURES',routeActivated:false,navdbActive:null,
@@ -100,12 +100,19 @@ test('EXEC confirms reference-only MOD without arming aircraft FMC or LNAV',()=>
  shared.chooseRunway({airport:'OIII',runway:'29L',airportRecord:{icao:'OIII',
   runways:[{runway:'29L',threshold_lat:35.68,threshold_lon:51.31}]}});
  assert.ok(shared.snapshot().modified);
+ assert.equal(selector.execLit(),false);
+ selector.afterKey('EXEC');
+ assert.ok(shared.snapshot().modified);
+ assert.deepEqual(shared.snapshot().active.runways,{});
+ state.routeActivationArmed=true;
  assert.equal(selector.execLit(),true);
+ // The native FMC handles ACTIVATE/EXEC before the reference adapter runs.
+ state.routeActivated=true;state.routeActivationArmed=false;
  selector.afterKey('EXEC');
  const snap=shared.snapshot();
  assert.equal(snap.modified,null);
  assert.equal(snap.active.runways['DEP@OIII'],'29L');
- assert.equal(state.routeActivated,false);
+ assert.equal(state.routeActivated,true);
  assert.equal(state.navdbActive,null);
  assert.equal(snap.fmcExecutable,false);
  assert.equal(selector.execLit(),false);
