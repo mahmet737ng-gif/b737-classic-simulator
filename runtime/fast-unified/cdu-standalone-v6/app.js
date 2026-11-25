@@ -385,7 +385,7 @@ function send(k){
  const prior=procedureLedger?.capture(state)||null;
  try{const before=state.page;
   syncPlanReview();
-  if(state.page==='LEGS'&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_CAPT_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
+  if(state.page==='LEGS'&&!state.holdAt&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_CAPT_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
   if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
   if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}

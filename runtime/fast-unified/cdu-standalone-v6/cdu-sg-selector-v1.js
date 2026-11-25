@@ -75,7 +75,7 @@
   const rows=base.rows.map(row=>({...row}));
   const runway=snap.runways['DEP@'+snap.origin];
   if(state.page==='RTE'&&base.number===1&&runway)rows[2].valueL=runway;
-  if(snap.modified&&mayExecute())rows[5].valueL='<ERASE';
+  if(snap.modified&&mayExecute()&&!state.holdAt)rows[5].valueL='<ERASE';
   const stage=snap.modified&&mayExecute()?'MOD':state.routeActivated&&hasReference?'ACT':'';
   return {...base,rows,title:stage?stage+' '+base.title.replace(/^(ACT|MOD) /,''):base.title};
  }
@@ -475,7 +475,7 @@
    }
   }
   if(state.page==='DEP_ARR')return indexKey(k);
-  if(routePages.includes(state.page)&&k==='LSK_L6'&&shared.snapshot().modified&&mayExecute()){
+  if(routePages.includes(state.page)&&!state.holdAt&&k==='LSK_L6'&&shared.snapshot().modified&&mayExecute()){
    if(core.pendingCount?.(state)||state.routeActivationArmed)core.press(state,pages,code);
    shared.erase();
    state.message='';return true;

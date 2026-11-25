@@ -726,7 +726,7 @@ try{
   const navActive=training?{ident:live.activeIdent,index:live.activeIndex,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg,bearingTrueDeg:live.bearingTrueDeg,crossTrackNm:live.crossTrackNm,position:live.position}:null;
   const vertical=training&&live.fmcVerticalValid===true&&mcp?.value?.verticalMode==='VNAV';
   data.guidance={routeEvidenceReady:ready||training,canCommandAircraft:false,authority:training?'SIMULATOR_FCC_ONLY':'ADVISORY_ONLY',simulatorCoupled:training,
-   activeLeg:navActive,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
+   activeLeg:navActive,hold:training?live.hold:null,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
    reason:training?'EXECUTED_TRAINING_GUIDANCE':ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
   return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,motion,operational,failed:fmcFeed?.failed===true,
    radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,

@@ -7,7 +7,7 @@
  'use strict';
  const RTE=new Set(['RTE','FLIGHT_PLAN','ACTIVATE']);
  const SOURCE='PMDG_WORLD_2610_WITH_PROCEDURES_R1';
- const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+)$/;
+ const ROUTE_FIELD=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|SID|STAR|APP|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+|HOLD_[1-5])$/;
  const DASH='------------';
  const ROUTE_ROWS=5,MAX_ROUTE_ROWS=250;
  const empty=()=>({labelL:'',valueL:'',labelR:'',valueR:''});
@@ -337,13 +337,69 @@
    const next=current.index<start||current.index>=end?candidates.find(x=>x.index>=start&&x.index<end)||candidates[(i+1)%candidates.length]:candidates[(i+1)%candidates.length];
    const {leg,index}=next;s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};s.subpage=Math.floor(index/5)+1;s.message='';return true;
   }
-  function legs(s){
+  // FCOM SP.11.9 and 11.43.32–35: HOLD AT, RTE HOLD and EXEC transaction.
+ const holdKey=i=>'HOLD_'+i;
+ function readHold(s,i,activeOnly=false){try{const v=JSON.parse(activeOnly?s.active[holdKey(i)]:entered(s,holdKey(i)));return v&&validPosition(v)&&typeof v.ident==='string'?v:null;}catch(_){return null;}}
+ function holdList(s){return [1,2,3,4,5].map(i=>({i,h:readHold(s,i)})).filter(x=>x.h);}
+ function holdTime(s,h){return h.time??((s.fmcPageInputs?.airData?.pressureAltitudeFt??0)>14000?1.5:1);}
+ function holdWrite(s,i,h){const draft=s.routeActivated||s.routeActivationArmed?s.pending:s.stagedRoute,k=holdKey(i),v=h?JSON.stringify(h):'';if(v===(s.active[k]??''))delete draft[k];else draft[k]=v;s.scratch='';s.message='';}
+ function holdStart(s,pages,core){s.holdAt=true;s.holdPage=1;core.choose(s,pages,'LEGS');}
+ function holdSelect(s,pages,core,ppos){
+  const i=[1,2,3,4,5].find(i=>!readHold(s,i));if(!i){core.addMessage(s,'HOLD LIMIT');return;}
+  const all=visibleLegs(s),live=s.fmcPageInputs?.guidance?.activeLeg;
+  const matches=all.map((l,i)=>({l,i})).filter(x=>x.l.ident===s.scratch.trim().toUpperCase()&&!x.l.gap&&!x.l.conditional&&validPosition(x.l));
+  let point,prev,anchor=null,course=null;
+  if(ppos){point=ownship(s);if(s.fmcOnGroundVerified!==false||!point||!live?.ident){core.addMessage(s,'PPOS UNAVAILABLE');return;}const anchors=all.filter(x=>x.ident===live.ident&&!x.gap&&!x.conditional&&validPosition(x));if(anchors.length!==1){core.addMessage(s,'PPOS UNAVAILABLE');return;}anchor=anchors[0];course=s.fmcPageInputs?.motion?.trueTrackDeg;point={...point,ident:'PPOS'};}
+  else{if(matches.length!==1){core.addMessage(s,matches.length?'DUPLICATE WAYPOINT':'NOT IN ROUTE');return;}point=matches[0].l;prev=all[matches[0].i-1];course=point.courseMag;if(!Number.isFinite(course)){course=validPosition(prev)?legCourse(prev,point):point.course;}}
+  let variation=null;try{variation=root?.parent?.B737CduSgBridgeV1?.magneticVariation?.(point);}catch(_){}
+  const inbound=Number.isFinite(point.courseMag)&&!ppos?Math.round(point.courseMag)%360:Number.isFinite(course)&&Number.isFinite(variation)?Math.round((course-variation+360)%360)%360:null;
+  if(holdList(s).some(x=>x.h.ident===point.ident&&Math.abs(x.h.lat-point.lat)<.00001&&Math.abs(x.h.lon-point.lon)<.00001)){core.addMessage(s,'HOLD EXISTS');return;}
+  holdWrite(s,i,{ident:point.ident,lat:point.lat,lon:point.lon,origin:entered(s,'ORIGIN'),dest:entered(s,'DEST'),dir:'R',inbound,time:null,dist:null,speed:null,efc:null,exit:false,ppos,anchor:anchor?{ident:anchor.ident,lat:anchor.lat,lon:anchor.lon}:null});
+  s.holdAt=false;s.holdPage=i;core.choose(s,pages,'HOLD');
+ }
+ function holdView(s){
+  const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;if(!h)return {title:'RTE HOLD',number:1,count:1,rows:[empty(),empty(),empty(),empty(),empty(),pair('','<NEXT HOLD')]};
+  const live=s.fmcPageInputs?.guidance?.hold,active=live?.key===holdKey(entry.i)&&live?.active===true,mod=Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i));
+  return {title:(mod?'MOD ':active?'ACT ':'')+'RTE HOLD',number:list.indexOf(entry)+1,count:list.length,rows:[
+   pair('FIX',h.ident,'TGT SPD',h.speed!==null?h.speed+'KT':'---KT'),pair('TURN DIR',h.dir,'FIX ETA','----Z'),
+   pair('INBD CRS',h.inbound===null?'□□□':String(h.inbound).padStart(3,'0')+'°','EFC TIME',h.efc?h.efc+'Z':'----Z'),
+   pair('LEG TIME',h.dist!==null?'--.-MIN':holdTime(s,h).toFixed(1)+'MIN','HOLD AVAIL','-+--'),
+   pair('LEG DIST',h.dist!==null?h.dist.toFixed(1)+'NM':'--.-NM','BEST SPEED','---KT'),
+   pair('',mod?'<ERASE':list.length<5&&!modified(s)?'<NEXT HOLD':'','',active?(h.exit?'EXIT ARMED':'EXIT HOLD>'):'')
+  ]};
+ }
+ function holdInvoke(s,pages,key,core){
+  if(key==='HOLD'){s.holdAt=false;const list=holdList(s);if(!list.length)holdStart(s,pages,core);else{s.holdPage=list.find(x=>s.fmcPageInputs?.guidance?.hold?.key===holdKey(x.i))?.i??list[0].i;core.choose(s,pages,'HOLD');}return true;}
+  if(s.page==='LEGS'&&s.holdAt){if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
+  if(s.page!=='HOLD')return false;
+  const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;
+  if(key==='NEXT_PAGE'||key==='PREV_PAGE'){if(list.length)s.holdPage=list[(list.indexOf(entry)+(key==='NEXT_PAGE'?1:-1)+list.length)%list.length].i;return true;}
+  if(key==='EXEC'&&list.some(x=>x.h.inbound===null)){core.addMessage(s,'ENTER INBD CRS');return true;}
+  if(!/^LSK_[LR][1-6]$/.test(key))return false;
+  if(key==='LSK_L6'){if(entry&&(Object.hasOwn(s.pending,holdKey(entry.i))||Object.hasOwn(s.stagedRoute,holdKey(entry.i)))){delete s.pending[holdKey(entry.i)];delete s.stagedRoute[holdKey(entry.i)];s.scratch='';s.message='';if(!readHold(s,entry.i))core.choose(s,pages,'LEGS');return true;}if(list.length<5&&!modified(s))holdStart(s,pages,core);return true;}
+  if(!h){core.addMessage(s,'KEY INACTIVE');return true;}
+  const input=s.scratch.trim().toUpperCase(),next={...h};
+  if(key==='LSK_R6'){if(s.fmcPageInputs?.guidance?.hold?.key===holdKey(entry.i)&&s.fmcPageInputs.guidance.hold.active&&!h.exit){next.exit=true;holdWrite(s,entry.i,next);}return true;}
+  if(key==='LSK_L1'&&input==='DELETE'){holdWrite(s,entry.i,null);core.choose(s,pages,'LEGS');return true;}
+  if(!input){const v={LSK_L1:h.ident,LSK_L2:h.dir,LSK_L3:h.inbound,LSK_L4:h.dist===null?holdTime(s,h):null,LSK_L5:h.dist,LSK_R1:h.speed,LSK_R3:h.efc}[key];if(v!=null)s.scratch=String(v);return true;}
+  const num=Number(input),numeric=/^\d+(?:\.\d)?$/.test(input);
+  if(key==='LSK_L2'&&/^[LR]$/.test(input))next.dir=input;
+  else if(key==='LSK_L3'&&/^\d{1,3}$/.test(input)&&num<=360)next.inbound=num%360;
+  else if(key==='LSK_L4'&&numeric&&num>=.1&&num<=9.9){next.time=num;next.dist=null;}
+  else if(key==='LSK_L5'&&numeric&&num>=.1&&num<=99.9){next.dist=num;next.time=null;}
+  else if(key==='LSK_R1'&&/^\d{3}$/.test(input)&&num>=100&&num<=350)next.speed=num;
+  else if(key==='LSK_R3'&&/^([01]\d|2[0-3])[0-5]\dZ?$/.test(input))next.efc=input.replace(/Z$/,'');
+  else if(input==='DELETE'&&['LSK_L4','LSK_L5','LSK_R1','LSK_R3'].includes(key))next[{LSK_L4:'time',LSK_L5:'dist',LSK_R1:'speed',LSK_R3:'efc'}[key]]=null;
+  else{core.addMessage(s,'INVALID ENTRY');return true;}
+  holdWrite(s,entry.i,next);return true;
+ }
+ function legs(s){
    const all=visibleLegs(s),center=planMode(s)?planCenter(s,all):null,count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const at=(number-1)*5;
   for(let i=0;i<5;i++){
    const leg=all[at+i];
-   if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
+   if(!leg){rows.push(empty());continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
    const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
    const live=s.fmcPageInputs?.guidance?.activeLeg;
@@ -360,12 +416,13 @@
     if(Number.isFinite(variation))magnetic=(trueCourse-variation+360)%360;
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
-   rows.push(pair(angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),constraint(s,leg,index)));
+   const hold=holdList(s).some(x=>x.h.ident===leg.ident&&Math.abs(x.h.lat-leg.lat)<.00001&&Math.abs(x.h.lon-leg.lon)<.00001);
+   rows.push(pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),constraint(s,leg,index)));
   }
   const action=routeAction(s);
   const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
    s.routeActivated||s.navdbActive||s.stage5Committed?'RTE DATA>':'';
-  rows.push(pair(DASH,action?.command==='erase'?'<ERASE':'',planMode(s)?'MAP CTR':DASH,planMode(s)?'STEP>':right));
+  rows.push(s.holdAt?pair('HOLD AT','□□□□□','',s.fmcOnGroundVerified===false?'PPOS>':''):pair('',action?.command==='erase'?'<ERASE':'',planMode(s)?'MAP CTR':'',planMode(s)?'STEP>':right));
   return {title:titleWithStatus(s,'RTE LEGS'),number,count,rows};
  }
  function erase(s){
@@ -379,6 +436,7 @@
   if(s.navdbPending){delete s.navdbPending;delete s.navdbStage;}
  }
  function invoke(s,pages,key,core){
+  if(holdInvoke(s,pages,key,core))return true;
   const rte=RTE.has(s.page),legPage=s.page==='LEGS';
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){
    const change=key==='NEXT_PAGE'?1:-1;
@@ -555,6 +613,7 @@
  function view(s){
   if(RTE.has(s.page))return route(s);
   if(s.page==='LEGS')return legs(s);
+  if(s.page==='HOLD')return holdView(s);
   if(s.page==='RTE_DATA')return routeData(s);
   if(s.page==='FIX')return fixInfo(s);
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
