@@ -22,6 +22,8 @@
   let selectedV1Type = () => null;
   let requestedV1Type = null;
   let selectedFinalType=()=>null,requestedFinalType=null;
+  let selectedRapidType=()=>null,requestedRapidType=null,selectedGroundFireType=()=>null,requestedGroundFireType=null;
+  retry.textContent='RELOAD';
   let restoreWelcomeLocation = () => {};
   let startRequested = new URLSearchParams(win.location.search).has('crewRoom');
   let lastProgressAt = performance.now();
@@ -119,7 +121,7 @@
       #unifiedWelcome .welcome-choice:has(input:checked){border-color:#65e0d3;background:#17413f}
       #unifiedWelcome .welcome-choice:has(input:disabled){opacity:.56}
       #unifiedWelcome .welcome-choice small{margin-left:auto;color:#a7b8c0;font-size:10px;text-align:right}
-      #unifiedWelcome .welcome-note{font-size:12px;color:#a8c2cd;margin:8px 0 0}
+      #unifiedWelcome .welcome-note,#unifiedWelcome .welcome-choice small{display:none!important}
       #unifiedWelcome .welcome-failure-options{margin:0 0 12px 18px;padding:4px 10px 8px;border:1px solid #365564;border-radius:7px;min-width:0}
       #unifiedWelcome .welcome-failure-options[hidden]{display:none!important}
       #unifiedWelcome .welcome-failure-options legend{font-size:12px;color:#a8c2cd;padding:0 5px}
@@ -133,9 +135,9 @@
     const general = doc.createElement('div');
     general.id = 'welcomeGeneralState';
     general.innerHTML = '<h3 class="welcome-subheading">Aircraft General State</h3>' +
-      '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span><small>AVAILABLE</small></label>' +
-      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span><small>TEST</small></label>' +
-      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span><small>TEST</small></label>' +
+      '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span></label>' +
+      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span></label>' +
+      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span></label>' +
       '<p class="welcome-note" id="welcomeGeneralNote">Optional: existing flight-location presets are retained when no general state is selected.</p>';
     aircraft.append(general);
     const cold = by('welcomeColdDark');
@@ -157,31 +159,35 @@
       ['ENGINE_FAILURE_V1', 'ENGINE FAILURE AT V1', engineFailureTypes],
       ['ENGINE_FAILURE_FINAL', 'ENGINE FAILURE ON FINAL', engineFailureTypes],
       ['ENGINE_FAILURE_CRUISE', 'ENGINE FAILURE IN CRUISE', engineFailureTypes],
-      ['ABNORMAL_ENGINE_START', 'ABNORMAL ENGINE START', abnormalStartTypes]
+      ['ABNORMAL_ENGINE_START', 'ABNORMAL ENGINE START', abnormalStartTypes],
+      ['ENGINE_FIRE_GROUND','ENGINE FIRE ON GROUND',[['PERSISTING','PERSISTING'],['CONTROLLABLE','CONTROLLABLE']]]
     ];
+    const rapid=['RAPID_DECOMPRESSION','RAPID DECOMPRESSION',[['CONTROLLABLE','CONTROLLABLE'],['UNCONTROLLABLE','UNCONTROLLABLE']]];
+    const renderChoice=([id,title,types])=>'<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="'+id+'" aria-controls="welcomeFailure_'+id+'" aria-expanded="false"> <span>'+title+'</span></label><fieldset class="welcome-failure-options" id="welcomeFailure_'+id+'" hidden disabled><legend>Failure Type</legend>'+types.map(([v,l])=>'<label class="welcome-choice"><input type="radio" name="welcomeFailure_'+id+'" value="'+v+'"> <span>'+l+'</span></label>').join('')+'</fieldset>';
     scenarios.innerHTML = '<h2>Scenarios</h2>' +
       '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="NONE" checked> <span>NORMAL FLIGHT</span></label>' +
       '<h3 class="welcome-subheading">Engine Failure</h3>' +
       engineScenarios.map(([id, title, types]) =>
         '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="' + id +
-        '" aria-controls="welcomeFailure_' + id + '" aria-expanded="false"> <span>' + title + '</span><small>'+(['ENGINE_FAILURE_V1','ENGINE_FAILURE_FINAL'].includes(id)?'AVAILABLE':'SETUP ONLY')+'</small></label>' +
+        '" aria-controls="welcomeFailure_' + id + '" aria-expanded="false"> <span>' + title + '</span></label>' +
         '<fieldset class="welcome-failure-options" id="welcomeFailure_' + id + '" hidden disabled><legend>Failure Type</legend>' +
         types.map(([value, label]) => '<label class="welcome-choice"><input type="radio" name="welcomeFailure_' +
           id + '" value="' + value + '"> <span>' + label + '</span></label>').join('') + '</fieldset>'
       ).join('') +
       '<h3 class="welcome-subheading">Special Operations</h3>' +
-      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>RAPID DECOMPRESSION</span><small>COMING SOON</small></label>' +
-      '<label class="welcome-choice"><input type="radio" name="welcomeScenario" disabled> <span>EMERGENCY DESCENT</span><small>COMING SOON</small></label>' +
+      renderChoice(rapid) +
       '<p class="welcome-note" id="welcomeScenarioNote" role="status">Normal Flight available. Engine scenario behavior is not yet configured.</p>';
     by('unifiedWelcomeSetup').append(scenarios);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
     selectedFinalType=()=>currentScenario()==='ENGINE_FAILURE_FINAL'?by('welcomeFailure_ENGINE_FAILURE_FINAL')?.querySelector('input:checked')?.value||null:null;
-    pendingEngineScenario = () => currentScenario()!=='NONE'&&!((selectedV1Type()||selectedFinalType())&&!new URLSearchParams(win.location.search).has('crewRoom'));
+    selectedRapidType=()=>currentScenario()==='RAPID_DECOMPRESSION'?by('welcomeFailure_RAPID_DECOMPRESSION')?.querySelector('input:checked')?.value||null:null;
+    selectedGroundFireType=()=>currentScenario()==='ENGINE_FIRE_GROUND'?by('welcomeFailure_ENGINE_FIRE_GROUND')?.querySelector('input:checked')?.value||null:null;
+    pendingEngineScenario = () => currentScenario()!=='NONE'&&!((selectedV1Type()||selectedFinalType()||selectedRapidType()||selectedGroundFireType())&&!new URLSearchParams(win.location.search).has('crewRoom'));
     let enforceV1Ground=()=>{};
     const syncEngineScenario = () => {
       const selected = scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
-      for (const [id] of engineScenarios) {
+      for (const [id] of [...engineScenarios,rapid]) {
         const group = by('welcomeFailure_' + id);
         const active = selected === id;
         group.hidden = !active;
@@ -205,22 +211,22 @@
     const weather = doc.createElement('div');
     weather.id = 'welcomeOnlineWeather';
     weather.innerHTML = '<h3 class="welcome-subheading">Weather Online</h3>' +
-      '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span><small>NOT CONNECTED</small></label>' +
-      '<div class="welcome-weather"><label>Temperature (°C)<input type="number" disabled placeholder="—"></label>' +
-      '<label>QNH (hPa)<input type="number" disabled placeholder="—"></label></div>' +
+      '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span></label>' +
       '<p class="welcome-note">No verified weather-to-aircraft connection. Simulator defaults remain unchanged.</p>';
     flight.append(weather);
     let syncing = false;
-    const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'; };
+    const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'||currentScenario()==='RAPID_DECOMPRESSION'; };
     const syncGeneral = () => {
       if (syncing) return;
       syncing = true;
       try {
-        const v1=currentScenario()==='ENGINE_FAILURE_V1';
+        const v1=['ENGINE_FAILURE_V1','ENGINE_FIRE_GROUND'].includes(currentScenario());
+        const rapidSelected=currentScenario()==='RAPID_DECOMPRESSION';
         if(v1){locationSelect.value='RUNWAY_READY';for(const choice of groundChoices)choice.checked=choice.value==='READY_FOR_TAKEOFF';}
         const final=currentScenario()==='ENGINE_FAILURE_FINAL';
         if(final)locationSelect.value='FINAL_10';
-        locationSelect.disabled=v1||final;
+        if(rapidSelected)locationSelect.value='MANUAL';
+        locationSelect.disabled=v1||final||rapidSelected;
         const ground = locationSelect.value === 'RUNWAY_READY';
         for(const choice of groundChoices){if(!ground)choice.checked=false;choice.disabled=v1||!ground||!locationButton||!generalButton;}
         const chosen=groundChoices.find(x=>x.checked);
@@ -261,6 +267,7 @@
     welcome.dataset.stage = 'setup';
     by('unifiedWelcomeSetup').hidden = false;
     start.hidden = false;
+    start.textContent='START';
     setup = true;
     mark('settings-ready');
     by('unifiedWelcomeTitle').focus({preventScroll: true});
@@ -301,8 +308,8 @@
 
   function preparationFailed(message){
     win.B737PoweredGeneralPresetsV1?.stop();
-    error.textContent=message;error.hidden=false;scenarioStarted=false;startRequested=false;
-    start.disabled=pendingEngineScenario();start.textContent='Start Flight';
+    console.warn('Welcome preparation failed',message);error.textContent='Something went wrong.';error.hidden=false;retry.hidden=false;scenarioStarted=false;startRequested=false;
+    start.disabled=pendingEngineScenario();start.textContent='START';
   }
   function beginFlight(now) {
     const shared = new URLSearchParams(win.location.search).has('crewRoom');
@@ -310,16 +317,24 @@
       if (!shared && pendingEngineScenario()) {
         startRequested = false;
         start.disabled = true;
-        start.textContent = 'Start Flight';
+        start.textContent = 'START';
         return;
       }
       directorPaintBaseline = mainPaints();
-      if (!shared && !win.B737UnifiedFlightScenarioV1?.startFromSelection?.(null)) {
-        error.textContent = by('flightScenarioStatus')?.textContent || 'FLIGHT SCENARIO NOT READY';
+      let loaded=false;
+      if(!shared){try{
+        if(requestedRapidType){
+          const s=win.B737UnifiedFlightScenarioV1.loadScenario({airport:by('flightAirport').value,runway:by('flightRunway').value,preset:'MANUAL',airborne:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});
+          if(!s||!win.B737PoweredGeneralPresetsV1?.applyCruise)throw Error('Cruise owner unavailable');
+          win.B737PoweredGeneralPresetsV1.applyCruise(s);loaded=true;
+        }else loaded=win.B737UnifiedFlightScenarioV1?.startFromSelection?.(null)===true;
+      }catch(e){console.warn(e);}}
+      if (!shared && !loaded) {
+        console.warn(by('flightScenarioStatus')?.textContent);error.textContent='Something went wrong.';retry.hidden=false;
         error.hidden = false;
         startRequested = false;
         start.disabled = false;
-        start.textContent = 'Start Flight';
+        start.textContent = 'START';
         return;
       }
       scenarioStarted = true;
@@ -335,19 +350,26 @@
       const active = scenario?.getDiagnostics?.()?.active === true;
       const powered=win.B737PoweredGeneralPresetsV1;
       const p=powered?.getStatus();
-      if(powered?.applies(state?.preset)&&p?.state===state.preset&&p.timedOut&&!p.coreReady){
+      const poweredSetup=Boolean(requestedRapidType)||powered?.applies(state?.preset);
+      if(poweredSetup&&p?.state===state.preset&&p.timedOut&&!p.coreReady){
         preparationFailed('Preset incomplete: '+p.missing.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | '));return;
       }
-      const ready = powered?.applies(state?.preset) ? active&&p?.state===state.preset&&p?.settled===true&&p?.coreReady===true : state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
+      const ready = poweredSetup ? active&&p?.state===state.preset&&p?.settled===true&&p?.coreReady===true : state?.preset==='COLD_DARK' ? active && win.B737ColdDarkGeneralPresetV1?.getStatus()?.settled===true : win.B737WelcomeReadinessV2?.scenarioReady?.({
         active, beforePaints:directorPaintBaseline || [],
         afterPaints:mainPaints(), final10:state?.preset === 'FINAL_10',
         final10Complete:win.B737Final10ApproachPresetV1?.getStatus?.()?.complete,
         elapsedMs:now-scenarioStartedAt
       }) === true;
       if (!ready) return;
+      if(requestedGroundFireType||requestedRapidType){
+        try{
+          if(requestedGroundFireType){if(!win.B737EngineFailureV1Scenario?.armGround)throw Error('Fire owner unavailable');win.B737EngineFailureV1Scenario.armGround(requestedGroundFireType,state);}
+          if(requestedRapidType){if(!win.B737UnifiedInstructorNonNormalV1?.armRapid)throw Error('Pressure owner unavailable');win.B737UnifiedInstructorNonNormalV1.armRapid(requestedRapidType);}
+        }catch(e){preparationFailed(String(e.message||e));return;}
+      }
       if(requestedV1Type||requestedFinalType){
        try{if(!win.B737EngineFailureV1Scenario)throw Error('Engine failure scenario owner not loaded');if(requestedFinalType)win.B737EngineFailureV1Scenario.armFinal(requestedFinalType,state);else win.B737EngineFailureV1Scenario.arm(requestedV1Type,state);}
-       catch(e){error.textContent=String(e.message||e);error.hidden=false;scenarioStarted=false;startRequested=false;start.disabled=false;start.textContent='Start Flight';return;}
+       catch(e){preparationFailed(String(e.message||e));return;}
       }
     }
     restoreWelcomeLocation();
@@ -369,17 +391,21 @@
       labelIndex = (labelIndex + 1) % labels.length;
       labelChangedAt = now;
     }
-    const text = labels[labelIndex] || 'Cockpit ready';
+    const stalled=labels.length>0&&now-lastProgressAt>=25000;
+    const text = stalled?'Something went wrong.':labels.length?'Preparing cockpit…':'';
     if (text !== currentLabel) {
       progress.textContent = text;
       currentLabel = text;
     }
     progress.parentElement.dataset.ready = String(labels.length === 0);
     progress.parentElement.style.display=labels.length===0?'none':'';
-    retry.hidden = labels.length === 0 || now - lastProgressAt < 25000;
+    retry.hidden = error.hidden && !stalled;
   }
 
+  let prewarmKey='';
+  function prewarm(){const api=win.B737UnifiedFlightScenarioV1,airport=by('flightAirport')?.value,runway=by('flightRunway')?.value;if(!api?.prepareScenario||!airport||!runway)return;const key=airport+'|'+runway;if(key===prewarmKey)return;try{for(const preset of ['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF','FINAL_10'])api.prepareScenario({airport,runway,preset,airborne:preset==='FINAL_10'});api.prepareScenario({airport,runway,preset:'MANUAL',airborne:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});prewarmKey=key;}catch(e){console.warn('Scenario preload',e);}}
   function refresh() {
+    prewarm();
     const now = performance.now();
     const visual = panelReadiness();
     const {main, throttle, forward, aft, pedestal} = visual;
@@ -417,7 +443,7 @@
       const p=win.B737PoweredGeneralPresetsV1?.getStatus?.();
       if(p?.state===state?.preset&&p?.timedOut&&!p.coreReady){
         preparationFailed('Preset incomplete: '+p.missing.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | '));
-      }else if(now-scenarioStartedAt>40000&&['READY_FOR_START','READY_FOR_TAKEOFF'].includes(state?.preset)){
+      }else if(now-scenarioStartedAt>40000&&(requestedRapidType||['READY_FOR_START','READY_FOR_TAKEOFF'].includes(state?.preset))){
         const keys=[...(p?.missing||[]),...(p?.pending||[])];
         preparationFailed('Cockpit preparation timed out: '+(keys.map(k=>k+(p.reasons?.[k]?': '+p.reasons[k]:'')).join(' | ')||'Readiness gate not satisfied'));
       }
@@ -474,10 +500,10 @@
     const controls = [...flight.querySelectorAll('input, select')];
     if (controls.some(node => !node.closest('[hidden]') && !node.reportValidity())) return;
     error.hidden = true;
-    requestedV1Type=selectedV1Type();requestedFinalType=selectedFinalType();
+    requestedV1Type=selectedV1Type();requestedFinalType=selectedFinalType();requestedRapidType=selectedRapidType();requestedGroundFireType=selectedGroundFireType();
     startRequested = true;
     start.disabled = true;
-    start.textContent = 'Preparing Cockpit…';
+    start.textContent = 'STARTING…';
     refresh();
   });
   retry.addEventListener('click', () => win.location.reload());
