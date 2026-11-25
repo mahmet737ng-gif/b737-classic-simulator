@@ -224,7 +224,27 @@ body > header.unified-minimal-header .header-settings>button{
  if(test||live)document.documentElement.dataset.unifiedWelcome='active';
 })();
 </script>
-</head><body>
+
+<style id="owner-flt-phase-clean-v1">
+/* UI-only suppression: original controls stay mounted for the systems owners. */
+#flightScenarioDialog #flightTargets,
+#flightScenarioDialog #flightTakeoff,
+#flightScenarioDialog #flightPause,
+#flightScenarioDialog #flightStop,
+#flightScenarioDialog [data-training-manual-fd],
+#flightScenarioDialog #instructorScenarioAdditions,
+#flightScenarioDialog .flight-at-mode,
+#flightScenarioDialog [data-owner-flt-suppressed],
+#flightScenarioDialog #flightScenarioStatus:not([data-error="true"]){display:none!important}
+#flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #advancedScenarioBlock,
+#flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #instructorScenarioPresets{display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] > :not(.flight-head):not(.flight-sub):not(#flightSetupTabs):not(#advancedScenarioBlock):not(#instructorScenarioPresets):not(#flightScenarioStatus){display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] #flightSetupTabs > :not(.flight-actions){display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock{display:grid!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock .adv-label{display:flex!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock .adv-label select{display:block!important}
+#flightScenarioDialog #advancedPressurizationOptions[hidden]{display:none!important}
+</style></head><body>
 <section id="unifiedWelcome" data-stage="welcome" aria-labelledby="unifiedWelcomeTitle" hidden>
  <div class="welcome-card">
   <div class="welcome-intro" aria-hidden="true">
@@ -605,4 +625,58 @@ body > header.unified-minimal-header .header-settings>button{
 <script src="./desktop-bundle-80caabdb05a512d8.js?v=WEB-80caabdb05a512d8" defer></script><script src="./cold-dark-general-preset-v1.js?v=CD-HOTBAT-0002" defer></script><script src="./powered-general-presets-v1.js?v=UNIFIED-SCENARIOS-20261125" defer></script><script src="./engine-failure-v1-scenario.js?v=WEB-a7ad76eec146599d" defer></script><script src="./unified-welcome-v1.js?v=WEB-30712a3da1c77d7b" async></script>
 <script src="./desktop-bundle-fa87fb95723b69b3.js?v=UNIFIED-SCENARIOS-20261125" defer></script>
 <script src="../../audio-lab/owner-ra-callouts-v1.js?v=RA-CALLS-0001" defer></script>
-<script src="./desktop-bundle-8141a7a984c68908.js?v=WEB-8141a7a984c68908" defer></script><script src="../../audio/owner-egpws-approved-samples-v1.js?v=EGPWS-CH15-0001" defer></script><script src="./desktop-bundle-80ca1e7d3efede04.js?v=WEB-80ca1e7d3efede04" defer></script><script src="../../engine/fmc/iran-navdata-client-v2.js?v=PILOT-WPT-0002" defer></script></body></html>
+<script src="./desktop-bundle-8141a7a984c68908.js?v=WEB-8141a7a984c68908" defer></script><script src="../../audio/owner-egpws-approved-samples-v1.js?v=EGPWS-CH15-0001" defer></script><script src="./desktop-bundle-80ca1e7d3efede04.js?v=WEB-80ca1e7d3efede04" defer></script><script src="../../engine/fmc/iran-navdata-client-v2.js?v=PILOT-WPT-0002" defer></script><script id="owner-flt-phase-tabs-v1">
+(function(doc){
+ 'use strict';
+ const dialog=doc.getElementById('flightScenarioDialog');
+ if(!dialog)return;
+ const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toUpperCase();
+ const hide=node=>{if(node&&!node.hasAttribute('data-owner-flt-suppressed'))node.setAttribute('data-owner-flt-suppressed','');};
+ function cleanup(){
+  for(const summary of dialog.querySelectorAll('details > summary')){
+   const label=norm(summary.textContent);
+   if(/^APU CONTROL\b/.test(label)||/^EFIS\s*\/\s*IRS CONTROL\b/.test(label))hide(summary.parentElement);
+  }
+  for(const legend of dialog.querySelectorAll('fieldset > legend')){
+   if(/^TCAS\s*\/\s*TRANSPONDER\b/.test(norm(legend.textContent)))hide(legend.parentElement);
+  }
+  for(const node of dialog.querySelectorAll('p,output,div.flight-status,div.flight-at-mode')){
+   const label=norm(node.textContent);
+   if(/^LVL CHG A\/T\b/.test(label)&&node.children.length===0)hide(node);
+  }
+  // Remove duplicate emergency controls from the fallback instructor UI too.
+  const fallback=dialog.querySelector('#instructorScenarioPresets');
+  if(fallback)for(const button of fallback.querySelectorAll('button')){
+   if(/^(INITIATE DESCENT|MANUAL VALVE CLOSE|MANUAL VALVE NEUTRAL)$/.test(norm(button.textContent)))hide(button);
+  }
+  const tabs=dialog.querySelector('#flightSetupTabs');
+  const nav=tabs?.querySelector('.flight-actions');
+  const location=nav?.querySelector('button[aria-controls="flightLocationGrid"]');
+  const general=nav?.querySelector('button[aria-controls="flightGeneralSetup"]');
+  if(!location||!general||doc.getElementById('ownerFlightScenariosTab'))return;
+  const scenario=doc.createElement('button');
+  scenario.type='button';scenario.id='ownerFlightScenariosTab';scenario.textContent='SCENARIOS';
+  scenario.setAttribute('aria-controls','advancedScenarioBlock');scenario.setAttribute('aria-pressed','false');
+  nav.append(scenario);
+  function select(name){
+   dialog.dataset.ownerFltTab=name;
+   const isScenario=name==='scenarios';
+   scenario.classList.toggle('flight-primary',isScenario);scenario.setAttribute('aria-pressed',String(isScenario));
+   if(isScenario)for(const native of [location,general]){
+    native.classList.remove('flight-primary');native.setAttribute('aria-pressed','false');
+   }
+   dialog.scrollTop=0;
+  }
+  // Native listeners still own LOCATION and GENERAL state, including Welcome.
+  location.addEventListener('click',()=>select('location'));
+  general.addEventListener('click',()=>select('general'));
+  scenario.addEventListener('click',()=>select('scenarios'));
+  select(general.getAttribute('aria-pressed')==='true'?'general':'location');
+ }
+ cleanup();
+ const observer=new MutationObserver(records=>{
+  if(records.some(r=>[...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1)))cleanup();
+ });
+ observer.observe(dialog,{childList:true,subtree:true});
+})(document);
+</script></body></html>
