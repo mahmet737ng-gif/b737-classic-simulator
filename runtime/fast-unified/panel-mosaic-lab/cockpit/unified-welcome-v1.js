@@ -208,25 +208,42 @@
       '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span></label>';
     flight.append(weather);
     let syncing = false;
+    let previousScenario='NONE', normalLocation=locationSelect.value;
     const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'||currentScenario()==='RAPID_DECOMPRESSION'; };
-    const syncGeneral = () => {
+    const syncGeneral = event => {
       if (syncing) return;
       syncing = true;
       try {
-        const v1=['ENGINE_FAILURE_V1','ENGINE_FIRE_GROUND'].includes(currentScenario());
-        const rapidSelected=currentScenario()==='RAPID_DECOMPRESSION';
+        const scenario=currentScenario();
+        const normal=scenario==='NONE';
+        const v1=['ENGINE_FAILURE_V1','ENGINE_FIRE_GROUND'].includes(scenario);
+        const rapidSelected=scenario==='RAPID_DECOMPRESSION';
+        const final=scenario==='ENGINE_FAILURE_FINAL';
+        const previousLocation=locationSelect.value;
+        if(previousScenario==='NONE'&&!normal)normalLocation=previousLocation;
+        if(normal&&previousScenario!=='NONE'){
+          locationSelect.value=normalLocation;
+          if(!locationSelect.value)locationSelect.value='RUNWAY_READY';
+          for(const choice of groundChoices)choice.checked=false;
+        }
         if(v1){locationSelect.value='RUNWAY_READY';for(const choice of groundChoices)choice.checked=choice.value==='READY_FOR_TAKEOFF';}
-        const final=currentScenario()==='ENGINE_FAILURE_FINAL';
         if(final)locationSelect.value='FINAL_10';
         if(rapidSelected)locationSelect.value='MANUAL';
+        if(normal&&groundChoices.includes(event?.target)&&event.target.checked)locationSelect.value='RUNWAY_READY';
         locationSelect.disabled=v1||final||rapidSelected;
         const ground = locationSelect.value === 'RUNWAY_READY';
-        for(const choice of groundChoices){if(!ground)choice.checked=false;choice.disabled=v1||!ground||!locationButton||!generalButton;}
+        for(const choice of groundChoices){
+          if(!ground)choice.checked=false;
+          choice.disabled=!locationButton||!generalButton||v1||(!normal&&!ground);
+        }
+        if(normal)normalLocation=locationSelect.value;
+        previousScenario=scenario;
         const chosen=groundChoices.find(x=>x.checked);
         const native=chosen&&doc.querySelector('input[name="flightGeneralSetup"][value="'+chosen.value+'"]');
         if(native)native.checked=true;
         const target = native ? generalButton : locationButton;
         if (target && target.getAttribute('aria-pressed') !== 'true') target.click();
+        else if(previousLocation!==locationSelect.value)locationSelect.dispatchEvent(new Event('change',{bubbles:true}));
         locationGrid.hidden = false;
         locationGrid.style.display = '';
         setManualVisibility();
