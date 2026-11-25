@@ -253,7 +253,7 @@ try{
   const fcom32=win.B737FCOM1032LiveV1;
   const fcomState=fcom32?.makeSeatState?.();
   for(const seat of SEATS){state[seat]=core.initial();state[seat].seat=seat;instructor[seat]=false;}
-  let selected='CAPT',frame=0,expiry=0,fmcFailureStarted=null,fmcTimeout=0;
+  let selected='CAPT',frame=0,expiry=0,fmcFailureStarted=null,fmcTimeout=0,holdSubscription=null;
    win.B737UnifiedCduPlanV1=Object.freeze({getMode:seat=>state[seat]?.ehsi?.mode??null,
     setCenter(seat,point){if(!SEATS.includes(seat)||state[seat].ehsi.mode!=='PLAN')return false;
      if(point!==null&&(!point||typeof point.ident!=='string'||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||Math.abs(point.lat)>90||Math.abs(point.lon)>180))return false;
@@ -478,26 +478,52 @@ try{
     // HOLD overlay uses the same projection/clip as the selected seat's route.
     screen.svg.querySelector('[data-fmc-holding]')?.remove();
     const guidance=win.B737FmcTrainingGuidanceV1,session=win.B737UnifiedFmc?.snapshot?.();
+    if(!holdSubscription&&typeof win.B737UnifiedFmc?.subscribe==='function')holdSubscription=win.B737UnifiedFmc.subscribe(schedule)||true;
+    screen.host.dataset.holdRendered='0';
     if(guidance&&session&&anchor&&project&&['MAP','CTR_MAP','PLAN'].includes(mode)&&src.displayPowered===true&&src.video===true&&!preview){
      const ns='http://www.w3.org/2000/svg',g=doc.createElementNS(ns,'g');g.setAttribute('data-fmc-holding','true');
      const rangeId=(screen.svg.id||'ehsi')+'-route-range',plotId=(screen.svg.id||'ehsi')+'-plot';
-     g.setAttribute('clip-path','url(#'+(screen.svg.querySelector('[id="'+rangeId+'"]')?rangeId:plotId)+')');
+     const clipId=screen.svg.querySelector('[id="'+rangeId+'"]')?rangeId:plotId;
+     g.setAttribute('clip-path','url("'+doc.URL.split('#')[0]+'#'+clipId+'")');
      const flight=scenarioState||{},live=win.B737UnifiedFccFlightV1?.getFmcGuidance?.()?.hold;
+     const positive=(...values)=>values.find(v=>Number.isFinite(v)&&v>=100&&v<=450);
+     const performance={...session.active,...session.stagedRoute,...session.pending};
+     const planned=guidance.holdBestSpeed?.(performance,src.fmc?.fuel?.totalKg);
+     const previewSpeed=210; // ground/route-review estimate only; not an FMC speed command
      const draw=(hold,key,mod)=>{
       if(!hold||!Number.isFinite(hold.inbound)||!Number.isFinite(hold.lat)||!Number.isFinite(hold.lon)||!['L','R'].includes(hold.dir))return;
-      let points=!mod&&live?.key===key&&live.active?live.points:null;
-      if(!points){const variation=win.B737CduSgBridgeV1?.magneticVariation?.(hold),gs=hold.speed??flight.gsKt??src.fmc?.motion?.gsKt;
-       const altitude=flight.altitudeFt??src.fmc?.airData?.pressureAltitudeFt;
-       if(!Number.isFinite(variation)||!Number.isFinite(gs)||gs<=0||!Number.isFinite(altitude))return;
+      let points=!mod&&live?.key===key&&live.active?live.points:null;const estimated=!Array.isArray(points)||points.length<2;
+      if(estimated){const variation=win.B737CduSgBridgeV1?.magneticVariation?.(hold);
+       const gs=positive(hold.speed,flight.airborne===true?flight.gsKt:null,flight.airborne===true?src.fmc?.motion?.gsKt:null,planned,previewSpeed);
+       const rawAlt=String(performance.CRZ_ALT||''),cruise=/^FL\d{2,3}$/.test(rawAlt)?Number(rawAlt.slice(2))*100:/^\d{3,5}$/.test(rawAlt)?Number(rawAlt):null;
+       const altitude=[hold.altitudeFt,flight.altitudeFt,src.fmc?.airData?.pressureAltitudeFt,cruise,0].find(Number.isFinite);
+       if(!Number.isFinite(variation)){screen.host.dataset.holdGeometryStatus='MAG_VAR_UNAVAILABLE';return;}
        points=guidance.holdGeometry({...hold,hold},hold.inbound+variation,gs,altitude,20);}
       const xy=points.map(p=>{const o=sources.offsets(anchor,p);return project(o.x,o.y);});
       if(!xy.every(p=>p.every(Number.isFinite)))return;
-      const path=doc.createElementNS(ns,'polyline');path.setAttribute('points',xy.map(p=>p.map(v=>v.toFixed(2)).join(',')).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',mod?'#65edfa':'#ef6afc');path.setAttribute('stroke-width','2');if(mod)path.setAttribute('stroke-dasharray','7 5');g.appendChild(path);
+      const path=doc.createElementNS(ns,'polyline');path.setAttribute('points',xy.map(p=>p.map(v=>v.toFixed(2)).join(',')).join(' '));path.setAttribute('fill','none');path.setAttribute('stroke',mod?'#65edfa':'#ef6afc');path.setAttribute('stroke-width','2');path.setAttribute('stroke-linejoin','round');path.setAttribute('data-hold-fix',hold.ident||'');path.setAttribute('data-hold-stage',mod?'MOD':'ACT');path.setAttribute('data-hold-estimate',String(estimated));if(mod)path.setAttribute('stroke-dasharray','7 5');g.appendChild(path);
      };
-     for(let i=1;i<=5;i++){const key='HOLD_'+i;for(const [bank,mod] of [[session.active,false],[session.pending,true],[session.stagedRoute,true]]){try{const hold=JSON.parse(bank?.[key]);if(hold.origin===(mod?(session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??session.active?.ORIGIN):session.active?.ORIGIN)&&hold.dest===(mod?(session.pending?.DEST??session.stagedRoute?.DEST??session.active?.DEST):session.active?.DEST))draw(hold,key,mod);}catch(_){}}}
+     const parse=v=>{try{return JSON.parse(v);}catch(_){return null;}};
+     const ao=session.active?.ORIGIN,ad=session.active?.DEST,mo=session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??ao,md=session.pending?.DEST??session.stagedRoute?.DEST??ad;
+     for(let i=1;i<=5;i++){
+      const k='HOLD_'+i,a=parse(session.active?.[k]),v=session.pending?.[k]??session.stagedRoute?.[k],h=parse(v);
+      if(session.routeActivated===true&&a?.origin===ao&&a?.dest===ad)draw(a,k,false);
+      if(v!==undefined&&v!==session.active?.[k]&&h?.origin===mo&&h?.dest===md)draw(h,k,true);
+     }
      const parser=win.B737RouteEngine?.publishedHold;
-     if(parser){for(const [bank,mod] of [[sg?.active,false],[sg?.modified,true]]){if(!bank)continue;const origin=mod?(session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??session.active?.ORIGIN):session.active?.ORIGIN,dest=mod?(session.pending?.DEST??session.stagedRoute?.DEST??session.active?.DEST):session.active?.DEST;for(const geometry of Object.values(bank.geometries||{})){for(const [i,raw] of (geometry.program?.input?.legs||[]).entries()){const h=parser(raw,geometry,i,origin,dest);if(!h)continue;let override=null;try{override=JSON.parse(mod?(session.pending?.[h.key]??session.stagedRoute?.[h.key]??session.active?.[h.key]):session.active?.[h.key]);}catch(_){}if(override?.deleted!==true)draw({...h,...override},h.key,mod);}}}}
-     if(g.childNodes.length)screen.svg.appendChild(g);
+     if(parser){
+      const active=sg?.active?.geometries||{},draft=sg?.modified?.geometries||active;
+      for(const [geometries,mod] of [[active,false],[draft,true]]){
+       if(!mod&&session.routeActivated!==true)continue;
+       for(const [geoKey,geometry] of Object.entries(geometries))for(const [i,raw] of (geometry.program?.input?.legs||[]).entries()){
+        const h=parser(raw,geometry,i,mod?mo:ao,mod?md:ad);if(!h)continue;
+        const v=mod?(session.pending?.[h.key]??session.stagedRoute?.[h.key]??session.active?.[h.key]):session.active?.[h.key];
+        if(mod&&session.routeActivated&&JSON.stringify(geometry)===JSON.stringify(active[geoKey])&&v===session.active?.[h.key])continue;
+        const override=parse(v);if(override?.deleted!==true)draw({...h,...override},h.key,mod);
+       }
+      }
+     }
+     if(g.childNodes.length){screen.svg.appendChild(g);screen.host.dataset.holdRendered=String(g.childNodes.length);screen.host.dataset.holdGeometryStatus='VISIBLE';}
     }
     screen.host.dataset.input=preview?'INSTRUCTOR':'UNIFIED';
    }
