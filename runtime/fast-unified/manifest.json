@@ -56,7 +56,7 @@
     },
     {
       "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
-      "sha256": "0be9ffcccdbe2516bd07ce7e9770f3a26f4ffb7149f4e79642eb411a7fc35858"
+      "sha256": "5570eb324259b9899e5752c47291cbb33c6082540760ed008749fbc89329df4e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
@@ -164,7 +164,7 @@
     },
     {
       "path": "efis-display-lab/desktop-bundle-d98e6f1d2a33c62b.js",
-      "sha256": "cfea2827cd34c8cb62d2b2245f7fb3ea2613257568c12a10afe59e4542171889"
+      "sha256": "bdd23d0623df45ba18dee3fd1ccecea7f8a49b81ab98f0f1c51694e522c42cf0"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-e95cafe23edf160f.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "4872b6548732dc646a4e0acf860a311107e88949a756bc4bc96c0e0fc104cd86"
+      "sha256": "048d94b0bfa1b769bdba81286c52fa70c4e5e2b48cdc564d828b50c6310a59f9"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "226b74cede7f8a0f9421cbe3033c87e769cde354f5dda80f343298a7ebc5a942"
+      "sha256": "b7d3ec67d3527c923e19d7e81fd3a563845587f204550c5a040ff3fe1a324817"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "d431f10843a5da240e05a058cff4cc3a07f5aad04d4044d9fdad6ec06c4c88c7"
+      "sha256": "50d54d9132acc8ad0b136c97e297246c8c8aa1c9855caf5adddc60dd3acb9cf5"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",
@@ -1024,7 +1024,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js",
-      "sha256": "321743721826520392cd78cc1b53b5a2e6bfea5a2093ba0da3e4c64f7b3c8859"
+      "sha256": "d9afacaff7a1bd936ece88828cfe775ac3e85ac72c0af1ca3f18bd92f59c4575"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
@@ -1796,7 +1796,11 @@
     },
     {
       "path": "engine/fmc/iran-navdata-client-v2.js",
-      "sha256": "fa08ab0ef1ffaf4d267a2a53baf30f3eb2ed99648679b39e7cb3aa0ea93f4b0d"
+      "sha256": "097047a09add929d2c3295136bdc5eeade073a7498902442f0d628a5405341ae"
+    },
+    {
+      "path": "engine/fmc/pilot-waypoints-v1.js",
+      "sha256": "dba511c86b48a50244a5b539357ddb2e7e80b1c69a4e0928166064fd8c77edf2"
     }
   ]
 }
