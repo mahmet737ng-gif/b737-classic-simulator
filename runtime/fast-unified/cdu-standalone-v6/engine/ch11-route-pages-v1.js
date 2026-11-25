@@ -197,6 +197,30 @@
    const h=Math.sin((b-a)/2)**2+Math.cos(a)*Math.cos(b)*Math.sin(d/2)**2;
    return 3440.065*2*Math.asin(Math.min(1,Math.sqrt(Math.max(0,h))));
   }
+
+  function pilotGeometryLegs(g,key){
+   const p=g?.program,raw=p?.input?.legs;
+   if(p?.version!=='IRAN-ROUTE-PREVIEW-V2'||!Array.isArray(raw))return null;
+   const api=root.B737PilotWaypointsV1;
+   if(!api)return null;
+   let prev=null;
+   const result=[];
+   for(let i=0;i<raw.length;i++){
+    const l=raw[i],t=l.Type??l.type,conditional=api.conditional(l);
+    if(conditional){result.push({...conditional,geoKey:key,rawIndex:i});prev=null;continue;}
+    if(t==='Discontinuity'){result.push({gap:true,sourceOnly:true});prev=null;continue;}
+    const id=l.Name??l.ident,lat=Number(l.Latitude??l.lat),lon=Number(l.Longitude??l.lon);
+    if(!['Normal','Runway'].includes(t)||typeof id!=='string'||![lat,lon].every(Number.isFinite)||Math.abs(lat)>90||Math.abs(lon)>180||lat===0&&lon===0){result.push({gap:true,sourceOnly:true});prev=null;continue;}
+    const point={ident:id,lat,lon,pilotType:l.pilotType,sourceOnly:true,geoKey:key,rawIndex:i,
+     course:prev?legCourse(prev,{lat,lon}):null,distance:prev?legDistance(prev,{lat,lon}):null};
+    const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed),restriction=l.AltitudeRestriction??l.restriction;
+    const suffix=restriction==='above'?'A':restriction==='below'?'B':'';
+    point.constraint=(speed>0?String(speed)+'/':'')+(alt>0?String(alt)+suffix:'');
+    result.push(point);prev=point;
+   }
+   return result;
+  }
+
   function sourceProcedureLegs(s,snap,kind,airport){
    const bank=snap?.modified||snap?.active;
    const key=kind+'@'+airport,selected=bank?.selections?.[key],g=bank?.geometries?.[key];
@@ -216,6 +240,8 @@
       sourceOnly:true});
     }
    }
+   const typed=pilotGeometryLegs(g,key);
+   if(typed)return [...result,...typed];
    // program.fixes carries the exact order from the airport's variant source;
    // the geometry fallback retains only verified FIX_PASSAGE records.
    const fixes=program?.fixes?.length?program.fixes:g.fixes||[];
@@ -249,19 +275,31 @@
    return expanded;
   }
   function visibleLegs(s){
-   const native=expandedRouteLegs(s),source=sourceSnapshot(s);
+   let native=expandedRouteLegs(s);const source=sourceSnapshot(s);
    if(!source)return native;
    const origin=entered(s,'ORIGIN'),dest=entered(s,'DEST');
    const sid=sourceProcedureLegs(s,source,'SID',origin);
-   const star=sourceProcedureLegs(s,source,'STAR',dest);
+   const star=sourceProcedureLegs(s,source,'STAR',dest),app=sourceProcedureLegs(s,source,'APP',dest);
+   const bank=source.modified||source.active;
+   if(!sourcePlan(s)&&!currentNav(s)){
+    const typed=[];
+    for(const [i,row] of segments(s).entries()){
+     if(!row.to)continue;
+     const key='RTE@'+(i+1),g=bank?.geometries?.[key];
+     const pts=pilotGeometryLegs(g,key);
+     if(pts&&pts.at(-1)?.ident===row.to){if(pts.length>1)typed.push(...pts.slice(1));else typed.push(...pts);}
+     else typed.push({ident:row.to,sourceOnly:true});
+    }
+    native=typed;
+   }
    // Preserve enroute rows, with consecutive source boundary duplicates
    // collapsed. A segment's every sourced intermediate fix remains visible.
    const all=[];
-   for(const item of [...sid,...native,...star]){
+   for(const item of [...sid,...native,...star,...app]){
     if(!item?.ident&&!item?.gap)continue;
     if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap){
      // The pending source row can carry geometry the native row lacks.
-     if(!all.at(-1).sourceOnly&&item.sourceOnly)all[all.length-1]=item;
+     if(!all.at(-1).sourceOnly&&item.sourceOnly||item.geoKey&&Number.isFinite(item.lat)&&!Number.isFinite(all.at(-1).lat))all[all.length-1]=item;
      continue;
     }
     all.push(item);
@@ -278,9 +316,9 @@
    const leg=all[at+i];
    if(!leg){rows.push(pair('',at+i===all.length?'-----':''));continue;}
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
-   rows.push(pair(Number.isFinite(leg.courseMag)?
+   rows.push(pair(leg.headingLabel|| (Number.isFinite(leg.courseMag)?
     String(Math.round(leg.courseMag)%360).padStart(3,'0')+'°M':
-    track(leg.course),leg.ident,nm(leg.distance),
+    track(leg.course)),leg.ident,nm(leg.distance),
     leg.constraint||s.active['LEG_CONSTRAINT_'+(at+i)]||''));
   }
   const action=routeAction(s);
@@ -436,5 +474,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute});
+ return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs});
 });
