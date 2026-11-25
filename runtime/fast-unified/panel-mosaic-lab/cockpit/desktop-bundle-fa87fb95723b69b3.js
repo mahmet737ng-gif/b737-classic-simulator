@@ -1293,6 +1293,34 @@ try{
   const s=root.B737UnifiedFlightScenarioV1?.getState?.();
   return Number.isFinite(s?.altitudeFt)?s.altitudeFt:31000;
  }
+ function syncTakeAction(){
+  let button=$('rapidDecompressionTakeAction');
+  const show=pressure?.rapid===true&&pressure.severity==='uncontrolled'&&pressure.passengerOxygenDeployed&&!pressure.emergencyDescent;
+  if(!button&&show){const pause=$('flightScenarioSceneToggle');if(pause){button=doc.createElement('button');button.id='rapidDecompressionTakeAction';button.type='button';button.textContent='TAKE ACTION';button.className=pause.className;button.style.marginLeft='8px';button.addEventListener('click',()=>emergencyDescent());pause.after(button);}}
+  if(button)button.hidden=!show;
+ }
+ function clearRapid(){
+  if(!pressure?.rapid)return false;
+  pressure=null;present('air','autoFail',false);overheadFault('press-auto-fail',false);overheadFault('pass-oxygen',false);
+  try{root.B737ISNCockpitV1?.instructor?.({type:'WARNING_SENSOR',key:'cabinAltitudeFt',value:0});}catch(_){}
+  syncTakeAction();renderNeeded=true;return true;
+ }
+ function armRapid(type){
+  if(!['CONTROLLABLE','UNCONTROLLABLE'].includes(type))throw Error('INVALID RAPID DECOMPRESSION TYPE');
+  const flight=root.B737UnifiedFlightScenarioV1?.getState?.();
+  if(!flight?.airborne||Math.abs(flight.altitudeFt-30000)>200)throw Error('FL300 CRUISE NOT READY');
+  clearRapid();
+  pressure={rapid:true,cause:'autoFail',severity:type==='CONTROLLABLE'?'controlled':'uncontrolled',cabinAltitudeFt:5200,cabinRateFtMin:0,aircraftAltitudeFt:flight.altitudeFt,differentialPsid:difference(flight.altitudeFt,5200),emergencyDescent:false,elapsedSec:0,delaySec:10,manualControl:'NONE',passengerOxygenDeployed:false,state:'NORMAL'};
+  renderNeeded=true;reportPressure();return pressureState();
+ }
+ function readRapidManual(s){
+  try{const snap=$('overheadFrame')?.contentWindow?.B737OH22Pressurization?.getDiagnosticSnapshot?.(),v=snap?.state;
+   const mode=v?.selectedMode??v?.selector,cmd=v?.valveSwitch??v?.manualCommand;
+   if(!['MAN','MAN_AC','MAN_DC'].includes(mode)){s.manualControl='NONE';return;}
+   if(cmd==='CLOSE')s.manualControl='CLOSE';
+   if(cmd==='OPEN')s.manualControl='OPEN';
+  }catch(_){}
+ }
  function startPressure({cause='autoFail',severity='uncontrolled',loadFlight=true}={}){
   if(!['autoFail','cargoDoor'].includes(cause)||!['controlled','uncontrolled'].includes(severity))throw Error('INVALID PRESSURIZATION SCENARIO');
   const phase=root.B737UnifiedFlightScenarioV1;
@@ -1347,9 +1375,13 @@ try{
   if(!pressure)throw Error('NO ACTIVE PRESSURIZATION SCENARIO');
   const flight=root.B737UnifiedFlightScenarioV1;
   if(!flight?.command)throw Error('FLT PHASE ENGINE NOT READY');
+  if(pressure.rapid){
+   const mcp=root.B737MCPAFDSV1||root.B737McpAfdsV1||root.B737MCPV1;
+   try{mcp?.applyGroundPreset?.({speedKt:279,headingMag:90,altitudeFt:10000,atArm:true});mcp?.press?.('LVL_CHG');}catch(_){}
+  }
   flight.command({type:'ALTITUDE',value:10000});
   flight.command({type:'VS',value:-3000});
-  pressure.emergencyDescent=true;
+  pressure.emergencyDescent=true;syncTakeAction();
   announce('b737:instructor-emergency-descent-request',{targetAltitudeFt:10000,trainingVerticalRateFtMin:-3000});
   status('instructorScenarioStatus','EMERGENCY DESCENT IN PROGRESS · TARGET 10,000 FT · TRAINING V/S −3,000 FT/MIN');
   return true;
@@ -1357,13 +1389,20 @@ try{
  function stepPressure(seconds){
   if(!pressure||seconds<=0)return pressureState();
   const s=pressure,aircraft=aircraftAltitude(),base=s.cabinAltitudeFt;
+  if(s.rapid&&s.delaySec>0){
+   const waiting=Math.min(seconds,s.delaySec);s.delaySec-=waiting;s.elapsedSec+=waiting;seconds-=waiting;
+   if(s.delaySec>0)return pressureState();
+   present('air','autoFail',true);overheadFault('press-auto-fail',true);renderNeeded=true;
+   if(seconds<=0)return pressureState();
+  }
+  if(s.rapid)readRapidManual(s);
   // Pressure-loss training surrogate: relaxation toward ambient at a rate that
   // depends on the failure source, severity and (for controlled failures) recovery.
   // Never let pressure altitude exceed local aircraft ambient by model overshoot.
-  const rate=s.cause==='cargoDoor'?(s.severity==='uncontrolled'?4800:1500):
+  const rate=s.rapid?(s.severity==='uncontrolled'?2500:1000):s.cause==='cargoDoor'?(s.severity==='uncontrolled'?4800:1500):
                                       (s.severity==='uncontrolled'?3200:850);
   const recovery=s.severity==='controlled'&&s.manualControl==='CLOSE';
-  const target=recovery?Math.min(5500,aircraft):aircraft;
+  const target=recovery?Math.min(s.rapid?5200:5500,aircraft):aircraft;
   const maxStep=rate*seconds/60;
   const change=clamp(target-base,-maxStep,maxStep);
   s.cabinAltitudeFt=clamp(base+change,-1000,Math.max(0,aircraft));
@@ -1371,6 +1410,11 @@ try{
   s.aircraftAltitudeFt=aircraft;
   s.differentialPsid=difference(aircraft,s.cabinAltitudeFt);
   s.elapsedSec+=seconds;
+  if(s.rapid&&s.cabinAltitudeFt>=14000&&!s.passengerOxygenDeployed){
+   s.passengerOxygenDeployed=true;overheadFault('pass-oxygen',true);
+   announce('b737:passenger-oxygen-deployed',{cabinAltitudeFt:s.cabinAltitudeFt});
+  }
+  if(s.rapid)syncTakeAction();
   s.state=s.cabinAltitudeFt>=10000?'CABIN ALTITUDE WARNING':
     s.severity==='uncontrolled'?'UNCONTROLLED DEPRESSURIZATION':'CONTROLLED PRESSURE LOSS';
   return pressureState();
@@ -1378,6 +1422,7 @@ try{
  function reportPressure(){
   if(!pressure)return;
   const p=pressureState();
+  if(p.rapid){try{root.B737ISNCockpitV1?.instructor?.({type:'WARNING_SENSOR',key:'cabinAltitudeFt',value:p.cabinAltitudeFt});}catch(_){}}
   const system=root.B737AircraftProfileStore?.get?.()?.pressurization||'CPCS';
   root.B737UnifiedCabinNeedles?.setMeasuredReadings?.({
    cabinAltitudeFt:p.cabinAltitudeFt,differentialPsid:p.differentialPsid,
@@ -1398,7 +1443,7 @@ try{
  }
  function tick(){
   const t=root.performance.now();const elapsed=lastPerformance?clamp((t-lastPerformance)/1000,0,.5):0;lastPerformance=t;
-  if(pressure){stepPressure(elapsed);reportPressure();}
+  if(pressure){if(!pressure.rapid||!root.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.paused)stepPressure(elapsed);reportPressure();}
   if(renderNeeded){render();renderNeeded=false;}
  }
  function create(tag,cls,txt,parent){
@@ -1556,7 +1601,7 @@ try{
   return true;
  }
  const api=Object.freeze({version:'INSTRUCTOR-NONNORMAL-0001',catalog:G,toggle,startScenario,
-  startPressure,stepPressure,pressureState,manualControl,emergencyDescent,
+  startPressure,stepPressure,pressureState,manualControl,emergencyDescent,armRapid,clearRapid,
   getState:()=>({active:Object.fromEntries(Object.entries(busy).map(([k,v])=>[k,[...v]])),pressure:pressureState(),installed}),mount});
  root.B737UnifiedInstructorNonNormalV1=api;
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
