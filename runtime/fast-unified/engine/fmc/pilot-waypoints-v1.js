@@ -15,14 +15,14 @@ function parse(input){
  let m=/^([NS])(\d{2})(?:(\d{2}\.\d))?([EW])(\d{3})(?:(\d{2}\.\d))?$/.exec(s);
  if(m){let a=+m[2],b=+m[5],am=+(m[3]||0),bm=+(m[6]||0);if(a>90||b>180||am>=60||bm>=60||a===90&&am||b===180&&bm)throw Error('INVALID ENTRY');return {kind:'LATLON',prefix:'WPT',lat:(a+am/60)*(m[1]==='S'?-1:1),lon:(b+bm/60)*(m[4]==='W'?-1:1)};}
  m=/^([A-Z0-9._-]{2,16})(\d{3})\/([A-Z0-9._-]{2,16})(\d{3})$/.exec(s);
- if(m){if(+m[2]>360||+m[4]>360)throw Error('INVALID ENTRY');return {kind:'PBPB',place:m[1],bearing:+m[2],other:m[3],otherBearing:+m[4],prefix:m[1]};}
+ if(m){if(+m[2]>360||+m[4]>360)throw Error('INVALID ENTRY');return {kind:'PBPB',place:m[1],bearing:+m[2],other:m[3],otherBearing:+m[4],prefix:s.slice(0,3)};}
  m=/^([A-Z0-9._-]{2,16})(\d{3})\/(\d+(?:\.\d)?)$/.exec(s);
- if(m){if(+m[2]>360||!(+m[3]>0)||+m[3]>9999)throw Error('INVALID ENTRY');return {kind:'PBD',place:m[1],bearing:+m[2],distance:+m[3],prefix:m[1]};}
+ if(m){if(+m[2]>360||!(+m[3]>0)||+m[3]>9999)throw Error('INVALID ENTRY');return {kind:'PBD',place:m[1],bearing:+m[2],distance:+m[3],prefix:s.slice(0,3)};}
  m=/^([A-Z0-9._-]{2,16})\/(-?\d+(?:\.\d)?)$/.exec(s);
  if(m){if(+m[2]===0)throw Error('INVALID ENTRY');return {kind:'ATW',place:m[1],offset:+m[2],prefix:m[1]};}
  throw Error('INVALID ENTRY');
 }
-function name(prefix,used=[]){const p=String(prefix).padEnd(3,'X');for(let i=1;i<=999;i++){let id=i<100?p.slice(0,3)+String(i).padStart(2,'0'):p.slice(0,2)+i;if(!used.includes(id))return id;}throw Error('WAYPOINT LIMIT');}
+function name(prefix,used=[]){const p=String(prefix).padEnd(3,'0');for(let i=1;i<=999;i++){let id=i<100?p.slice(0,3)+String(i).padStart(2,'0'):p.slice(0,2)+i;if(!used.includes(id))return id;}throw Error('WAYPOINT LIMIT');}
 async function resolve(spec,{lookup,variation,route=[],index=null,used=[]}={}){
  const id=name(spec.prefix,used);
  if(spec.kind==='LATLON')return {ident:id,lat:spec.lat,lon:spec.lon,pilotType:spec.kind};
@@ -42,5 +42,32 @@ async function resolve(spec,{lookup,variation,route=[],index=null,used=[]}={}){
 function conditional(raw){const t=raw.Type??raw.type,id=String(raw.Name??raw.ident??''),h=Number(raw.Hdg_Crs_value??raw.heading),mode=String(raw.Hdg_Crs??'0'),headingLabel=Number.isFinite(h)?String(Math.round(h)%360).padStart(3,'0')+(mode==='0'?' HDG':'°'):'';
  let label=null;if(t==='ConstHdgtoAlt')label='('+Number(raw.Altitude??raw.alt)+')';else if(t==='DmeIntc')label='('+id.replace(/[()]/g,'')+'-'+Number(raw.DMEtoIntercept??raw.dme)+')';else if(t==='Intc')label='(INTC)';else if(t==='VorRadialIntc')label='('+id.replace(/[()]/g,'')+String(raw.RadialtoIntercept??raw.radial).padStart(3,'0')+')';else if(t==='Vectors')label='(VECTOR)';return label?{ident:label,headingLabel,conditional:true,sourceOnly:true,conditionType:t}:null;
 }
-return Object.freeze({parse,resolve,name,distance,bearing,destination,intersect,conditional});
+
+// Actual sensor condition contract, distinct from predicted map coordinates.
+// The vector rule is from FCOM 11.31.21. Other event-crossing predicates
+// consume verified simulated telemetry; they do not choose the next AFDS mode.
+function conditionSatisfied(raw,previous={},actual={}){
+ const type=raw.Type??raw.type;
+ const crossed=(a,b,target)=>[a,b,target].every(Number.isFinite)&&a!==b&&((a<target&&b>=target)||(a>target&&b<=target));
+ if(type==='ConstHdgtoAlt'){
+  const target=Number(raw.Altitude??raw.alt),a=previous.altitudeFt,b=actual.altitudeFt;
+  return crossed(a,b,target)&&(actual.direction==='DESCENT'?b<a:actual.direction==='CLIMB'?b>a:false);
+ }
+ if(type==='DmeIntc')return actual.dmeValid===true&&previous.dmeValid===true&&actual.stationIdent===previous.stationIdent&&actual.stationIdent===(raw.Name??raw.ident)&&crossed(previous.dmeNm,actual.dmeNm,Number(raw.DMEtoIntercept??raw.dme));
+ if(type==='VorRadialIntc'){
+  if(actual.radialValid!==true||previous.radialValid!==true||actual.stationIdent!==previous.stationIdent||actual.stationIdent!==(raw.Name??raw.ident))return false;
+  const target=Number(raw.RadialtoIntercept??raw.radial);
+  if(![target,previous.radialDeg,actual.radialDeg].every(Number.isFinite))return false;
+  const a=wrap(previous.radialDeg-target+180)-180,b=wrap(actual.radialDeg-target+180)-180;
+  return Math.abs(a-b)<180&&crossed(a,b,0);
+ }
+ if(type==='Intc')return actual.courseInterceptValid===true&&actual.courseInterceptCaptured===true;
+ if(type==='Vectors'){
+  if(actual.lnavEngaged===true)return actual.directToExecuted===true||actual.interceptLegExecuted===true;
+  return actual.lnavEngaged===false&&actual.nextLegValid===true&&Number.isFinite(actual.nextLegDistanceNm)&&actual.nextLegDistanceNm>=0&&actual.nextLegDistanceNm<=3;
+ }
+ return false;
+}
+
+return Object.freeze({parse,resolve,name,distance,bearing,destination,intersect,conditional,conditionSatisfied});
 });
