@@ -1,0 +1,13 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),api=require('../iran-navdata-v2.js');
+const pts=[{airway:'A1',sequence:1,ident:'AAA',lat:32,lon:51},{airway:'A1',sequence:2,ident:'BBB',lat:33,lon:51},{airway:'A1',sequence:4,ident:'CCC',lat:34,lon:51}];
+function sample(){
+ const airports=Object.fromEntries(['OIII','OIFM','OIMM','OISS'].map(icao=>[icao,{icao,version:'AIRAC 2611',runways:Object.fromEntries(['11L','11R','29L','29R'].map(r=>[r,{lat:32,lon:51,alt:1000}])),procedures:[{kind:'SID',name:'TEST1A',runway:'29L',legs:[{Name:'AAA',Type:'Normal',Latitude:'32',Longitude:'51'}]}],approaches:[]}]));
+ return {schema:api.SCHEMA,cycle:api.CYCLE,training_only:true,procedures:{airports},enroute:{metadata:{cycle:api.CYCLE},fixes:pts,navaids:[pts[0]],airports:[{icao:'OIII',lat:32,lon:51}],airways:pts,airway_segments:[{airway:'A1',points:pts.slice(0,2)},{airway:'A1',points:pts.slice(2)}],airway_edges:[{airway:'A1'}]}};
+}
+test('validated sample and forward/reverse expansion',()=>{const d=api.validate(sample());assert.deepEqual(api.expandAirway(d,'A1','AAA','BBB').map(p=>p.ident),['AAA','BBB']);assert.deepEqual(api.expandAirway(d,'A1','BBB','AAA').map(p=>p.ident),['BBB','AAA']);});
+test('disconnected airway rejected',()=>assert.throws(()=>api.expandAirway(sample(),'A1','AAA','CCC'),/AIRWAY_NOT_CONNECTED/));
+test('invalid gap rejected at import',()=>{const d=sample();d.enroute.airway_segments=[{airway:'A1',points:pts}];assert.throws(()=>api.validate(d),/AIRWAY_DISCONTINUITY/);});
+test('invalid cycle rejected',()=>{const d=sample();d.cycle='AIRAC-0000';assert.throws(()=>api.validate(d),/INVALID_SCHEMA/);});
+test('isolated database, import and lookup',async()=>{let saved;const pool={async query(q,args){if(q.startsWith('INSERT'))saved=JSON.parse(args[1]);return {rowCount:saved?1:0,rows:saved?[{payload:saved}]:[]};}};const s=api.create(pool);await s.initialize();assert.equal((await s.lookup(new URL('http://localhost/api/iran-navdata/status'))).status,503);await s.importData(sample());assert.equal((await s.lookup(new URL('http://localhost/api/iran-navdata/airport?icao=OIFM'))).status,200);assert.equal((await s.lookup(new URL('http://localhost/api/iran-navdata/airway?via=A1&from=AAA&to=CCC'))).status,422);const reloaded=api.create(pool);assert.equal((await reloaded.lookup(new URL('http://localhost/api/iran-navdata/status'))).body.cycle,api.CYCLE);});
+if(process.env.UNIFIED_PRIVATE_NAVDATA_FILE)test('owner supplied full dataset',()=>{const d=api.validate(JSON.parse(require('node:fs').readFileSync(process.env.UNIFIED_PRIVATE_NAVDATA_FILE,'utf8')));assert.equal(d.enroute.airways.length,1301);assert.equal(Object.keys(d.procedures.airports).length,4);});
