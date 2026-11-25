@@ -687,6 +687,7 @@ try{
  });
  window.addEventListener('b737:cabin-needle-angles',event=>{try{setAngles(event.detail);}catch(error){console.error(error);}});
  window.addEventListener('b737:pressurization-state',event=>{
+  if(window.B737UnifiedInstructorNonNormalV1?.pressureState?.()?.rapid)return;
   const detail=event.detail;
   if(detail?.system!=='CPCS'&&detail?.system!=='DCPCS')return;
   // Ignore inactive installation's delayed or replayed pressure readings.
