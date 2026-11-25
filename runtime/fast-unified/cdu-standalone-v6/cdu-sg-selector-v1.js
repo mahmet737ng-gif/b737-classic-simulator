@@ -50,7 +50,7 @@
   if(!base||!routePages.includes(state.page))return base;
   const snap=shared.snapshot();
   const hasReference=Object.keys(snap.selections||{}).length>0||
-   Object.keys(snap.runways||{}).some(key=>key.includes('@'));
+   Object.keys(snap.runways||{}).some(key=>key.includes('@'))||Object.keys(snap.geometries||{}).some(key=>key.startsWith('RTE@'));
   if(!snap.modified&&!hasReference)return base;
   const rows=base.rows.map(row=>({...row}));
   const runway=snap.runways['DEP@'+snap.origin];
@@ -257,8 +257,11 @@
     [cell.field]:{airway:value,from:from.ident,
      origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE'),
      source:'OWNER_WPNAVRTE_VERIFIED'}};
+   const previous=core.readValue(state,cell.field,'FLIGHT_PLAN');
    state.message='';
-   core.press(state,pages,'CDU_CAPT_'+key);update();
+   core.press(state,pages,'CDU_CAPT_'+key);
+   if(bridge.cycle==='AIRAC-2611'&&previous!==value&&core.readValue(state,cell.field,'FLIGHT_PLAN')===value)shared.clearEnrouteFrom?.(Number(cell.field.slice(3)));
+   update();
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
@@ -302,13 +305,52 @@
     [cell.field]:{to:input,airway:via,from:from.ident,origin,destination,
      fixes,source:'OWNER_WPNAVRTE_VERIFIED'}};
    state.message='';
-   core.press(state,pages,'CDU_CAPT_'+key);update();
+   core.press(state,pages,'CDU_CAPT_'+key);
+   if(bridge.cycle==='AIRAC-2611'&&core.readValue(state,cell.field,'FLIGHT_PLAN')===input&&
+      Array.isArray(proof.points)&&proof.points.length>1&&proof.points.at(-1).ident===input){
+    const p=proof.points.at(-1);state.navFixEvidence={...(state.navFixEvidence||{}),[cell.field]:p};
+    shared.stageEnroute?.(n,proof.points,via);
+   }
+   update();
+  }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
+  finally{if(ticket===airwayTicket)airwayBusy=false;}
+ }
+ async function verifyDirectKey(key,cell){
+  if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
+  const n=Number(cell.field.slice(2)),input=String(state.scratch||'').trim().toUpperCase();
+  if(!Number.isInteger(n)||!core.validate?.('WAYPOINT',input)){issue('INVALID ENTRY');return;}
+  shared.setContext({origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE')});
+  const from=precedingFix('VIA'+n),revision=shared.snapshot().revision,ticket=++airwayTicket;
+  airwayBusy=true;state.message='VERIFY NAV DATA';update();
+  try{
+   const result=await bridge.request('/api/iran-navdata/fix?ident='+encoded(input)),body=await result.json();
+   if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||shared.snapshot().revision!==revision||
+    String(state.scratch||'').trim().toUpperCase()!==input||globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
+   if(!result.ok||body.matches?.length!==1){issue(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');return;}
+   const p=body.matches[0];if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||p.ident!==input){issue('NOT IN DATABASE');return;}
+   state.message='';core.press(state,pages,'CDU_CAPT_'+key);
+   if(core.readValue(state,cell.field,'FLIGHT_PLAN')===input){
+    state.navFixEvidence={...(state.navFixEvidence||{}),[cell.field]:p};
+    const pts=from&&Number.isFinite(from.lat)&&Number.isFinite(from.lon)&&from.ident!==p.ident?[from,p]:[p];
+    shared.stageEnroute?.(n,pts,'DIRECT');
+   }
+   update();
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
  }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(bridge.cycle==='AIRAC-2611'&&state.page==='FLIGHT_PLAN'&&/^LSK_[LR][1-5]$/.test(k)&&
+   ['DELETE','DCT','DIRECT'].includes(String(state.scratch||'').toUpperCase())){
+   const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
+   if(cell&&/^(VIA|TO)\d+$/.test(cell.field)&&(state.scratch==='DELETE'||cell.field.startsWith('VIA'))){
+    const row=Number(cell.field.replace(/^(VIA|TO)/,''));
+    const before=core.readValue(state,cell.field,'FLIGHT_PLAN');core.press(state,pages,code);
+    if(!state.scratch&&core.readValue(state,cell.field,'FLIGHT_PLAN')!==before)shared.clearEnrouteFrom?.(row);
+    update();return true;
+   }
+  }
   if(state.page==='FLIGHT_PLAN'&&/^LSK_L[1-5]$/.test(k)&&state.scratch&&
      !['DELETE','DCT','DIRECT'].includes(state.scratch.trim().toUpperCase())){
    const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
@@ -326,6 +368,7 @@
      if(!core.validate?.('WAYPOINT',state.scratch)){issue('INVALID ENTRY');return true;}
      void verifyToKey(k,cell,via);return true;
     }
+    if(bridge.cycle==='AIRAC-2611'){void verifyDirectKey(k,cell);return true;}
    }
   }
   if(state.page==='DEP_ARR')return indexKey(k);
