@@ -817,14 +817,14 @@
   // Instrument/start lab: explicit INSTRUCTOR actions only, on the existing ISN-18 ECU.
   // Starting via GRD / ignition-source still requires the actual OH control;
   // this adapter NEVER secretly moves a physical switch or guarded control.
-  injectFlightEngineFailure:({engine,type}={})=>{
+  injectFlightEngineFailure:({engine,type,persisting=false}={})=>{
     if(!['engine1','engine2'].includes(engine)||!['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'].includes(type))throw Error('Invalid flight failure');
     if(chain.phase[engine]!=='RUNNING'||chain.flightDamage?.[engine])throw Error('Engine not available for failure injection');
     if(type==='FIRE'){
       const fire=window.B737UnifiedFireLights,unit='ENG'+engine.at(-1);
       if(!fire?.dispatch||!fire?.getState)throw Error('Fire owner unavailable');
       if(fire.getState().engineFire?.[unit]===true)throw Error('Fire already active');
-      fire.dispatch({type:'SET_FIRE',unit,active:true});
+      fire.dispatch({type:'SET_FIRE',unit,active:true,persistent:persisting===true});
       if(fire.getState().engineFire?.[unit]!==true)throw Error('Fire owner rejected request');
     }
     const result=chain.injectFlightFailure(engine,type);
