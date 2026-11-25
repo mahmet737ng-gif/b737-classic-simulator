@@ -91,13 +91,26 @@ function create(pool){
  async function importData(data){const d=validate(data);await pool.query('INSERT INTO unified_iran_navdata_v2(cycle,payload) VALUES($1,$2::jsonb) ON CONFLICT(cycle) DO UPDATE SET payload=excluded.payload,imported_at=now()',[CYCLE,JSON.stringify(d)]);cached=d;return summary(d);}
  async function getData(){if(cached)return cached;const r=await pool.query('SELECT payload FROM unified_iran_navdata_v2 WHERE cycle=$1',[CYCLE]);if(!r.rowCount)return null;cached=validate(r.rows[0].payload);return cached;}
  function summary(d){return {schema:SCHEMA,cycle:CYCLE,training_only:true,airports:ICAOS,procedures:ICAOS.reduce((n,a)=>n+d.procedures.airports[a].procedures.length,0),approaches:ICAOS.reduce((n,a)=>n+d.procedures.airports[a].approaches.length,0),fixes:d.enroute.fixes.length,navaids:d.enroute.navaids.length,airway_points:d.enroute.airways.length};}
- const supports=p=>['/api/iran-navdata/status','/api/iran-navdata/airport','/api/iran-navdata/fix','/api/iran-navdata/airway','/api/iran-navdata/local-reference','/api/iran-navdata/airway-check'].includes(p);
+ const supports=p=>['/api/iran-navdata/status','/api/iran-navdata/airport','/api/iran-navdata/fix','/api/iran-navdata/airway','/api/iran-navdata/local-reference','/api/iran-navdata/airway-check','/api/iran-navdata/navaid','/api/iran-navdata/airport-runways'].includes(p);
  async function lookup(url){
   const d=await getData();if(!d)return {status:503,body:{error:'IMPORT_REQUIRED'}};
   const q=k=>String(url.searchParams.get(k)||'').trim().toUpperCase();
   if(url.pathname.endsWith('/status'))return {status:200,body:summary(d)};
   if(url.pathname.endsWith('/local-reference'))return {status:200,body:localReference(d)};
   if(url.pathname.endsWith('/airway-check'))return {status:200,body:airwayCheck(d,url)};
+  if(url.pathname.endsWith('/navaid')){
+   const id=q('ident'),type=q('type'),frequency=url.searchParams.get('frequency');
+   if(!id&&frequency===null)return {status:400,body:{error:'IDENT_OR_FREQUENCY_REQUIRED'}};
+   if(id&&!ident(id)||frequency!==null&&!Number.isFinite(Number(frequency)))return {status:400,body:{error:'INVALID_QUERY'}};
+   const matches=d.enroute.navaids.filter(p=>(!id||p.ident===id)&&(!type||p.type===type)&&
+    (frequency===null||Math.abs(p.frequency-Number(frequency))<.0001));
+   return {status:matches.length?200:404,body:{matches,cycle:CYCLE,training_only:true}};
+  }
+  if(url.pathname.endsWith('/airport-runways')){
+   const icao=q('icao');if(!/^OI[A-Z]{2}$/.test(icao))return {status:400,body:{error:'INVALID_ICAO'}};
+   const matches=d.enroute.airports.filter(p=>p.icao===icao);
+   return {status:matches.length?200:404,body:{matches,cycle:CYCLE,training_only:true}};
+  }
   if(url.pathname.endsWith('/airport')){const a=d.procedures.airports[q('icao')];return ICAOS.includes(q('icao'))&&a?{status:200,body:a}:{status:404,body:{error:'AIRPORT_NOT_FOUND'}};}
   if(url.pathname.endsWith('/fix')){const id=q('ident');if(!ident(id))return {status:400,body:{error:'INVALID_IDENT'}};const f=resolveFix(d,id);return {status:f.length?200:404,body:{matches:f}};}
   if(url.pathname.endsWith('/airway')){try{return {status:200,body:{points:expandAirway(d,q('via'),q('from'),q('to')),training_only:true}};}catch(e){return {status:422,body:{error:e.message}};}}
