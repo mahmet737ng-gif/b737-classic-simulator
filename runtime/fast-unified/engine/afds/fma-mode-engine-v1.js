@@ -109,13 +109,13 @@
   const automaticSpeed=['ALT_HLD','VS'].includes(m.vertical)||
    output.capture?.pitch==='G/S'||output.capture?.pitch==='ALT_HOLD';
   state.at.active=at?(output.dualApproach?.retard===true?'RETARD':automaticSpeed?'MCP SPD':
-   sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD',RETARD:'RETARD',ARM:'ARM'})||'ARM'):'';
+   sourceMode(m.thrust,{N1:'N1',SPEED:'MCP SPD',FMC_SPD:'FMC SPD',RETARD:'RETARD',ARM:'ARM'})||'ARM'):'';
   state.at.origin=ORIGIN.MCP;
   state.pitch.active=sourceMode(output.capture?.pitch,
    {ALT_ACQ:'ALT ACQ',ALT_HOLD:'ALT HOLD','G/S':'G/S',FLARE:'FLARE'})||
-   sourceMode(m.vertical,{LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'});
+   (m.vertical==='VNAV'&&output.fmcGuidance?.vertical===true?output.fmcGuidance.mode||'':sourceMode(m.vertical,{LVL_CHG:'MCP SPD',ALT_HLD:'ALT HOLD',VS:'V/S'}));
   state.roll.active=sourceMode(output.capture?.roll,{VOR_LOC:'VOR/LOC'})||
-   sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:'LNAV'});
+   sourceMode(m.lateral,{HDG_SEL:'HDG SEL',LNAV:output.fmcGuidance?.lateral===true?'LNAV':''});
   state.pitch.armed=output.dualApproach?.flareArmed===true&&
     output.dualApproach.flareEngaged!==true?'FLARE':output.armed?.pitch==='G/S'?'G/S':
    output.armed?.pitch==='V/S'?'V/S':'';

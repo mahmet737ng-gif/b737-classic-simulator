@@ -111,6 +111,7 @@ try{
   }else if(direction==='LNAV'){
    if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
+    out.actions.push({type:'BANK_LIMIT',value:bankLimit});
     out.rollCommandDeg=bankForHeading(nav.trackDeg);
     out.rollValid=true;
    }else out.reasons.push('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED');
@@ -170,7 +171,9 @@ try{
    }else out.reasons.push('LVL_CHG_VALID_IAS_AND_ALTITUDE_REQUIRED');
   }else if(pitchMode==='VNAV'){
    if(nav?.fmcVerticalValid===true&&valid(nav.vsFpm)){
-    out.actions.push({type:'VS',value:clamp(nav.vsFpm,-5000,5000)});
+    if(valid(nav.targetKt))out.actions.push({type:'SPEED',value:nav.targetKt});
+    if(valid(nav.targetAltitudeFt)&&Math.abs(nav.targetAltitudeFt-flight.altitudeFt)<=80)out.actions.push({type:'ALTITUDE',value:nav.targetAltitudeFt});
+    else out.actions.push({type:'VS',value:clamp(nav.vsFpm,-5000,5000)});
     out.pitchCommandDeg=pitchForVs(clamp(nav.vsFpm,-5000,5000));
     out.pitchValid=true;
    }else out.reasons.push('VNAV_FMC_VERTICAL_PROFILE_UNVERIFIED');

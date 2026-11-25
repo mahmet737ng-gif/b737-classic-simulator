@@ -602,7 +602,7 @@ function initialState(){return {
  values:{courseL:261,courseR:261,speed:110,machHundredths:60,heading:134,altitude:10000,verticalSpeed:0},
   speedDisplayMode:"IAS",bankAngleLimit:20,
  modes:{lateral:null,vertical:null,thrust:null,autopilot:null},
- evidence:{fmcRouteReady:null,approachCapture:null},
+ evidence:{fmcRouteReady:null,approachCapture:null},fmcGuidance:null,
  autoThrustByPitch:false,lvlChgPhase:'UNKNOWN',
  pending:{approach:false},selectors:{vorLoc:false},armed:{pitch:null,roll:null},
  capture:{pitch:null,roll:null},override:{pitch:false,roll:false,altHold:false},
@@ -676,7 +676,7 @@ function selectPitch(s,id){
   setLvlChgThrust(s);
  }else if(next==="VNAV"){
   // A generic VNAV selection cannot prove N1/RETARD/FMC SPD.
-  s.modes.thrust=null;
+  s.modes.thrust=s.autoThrottleArm&&s.fmcGuidance?.vertical?(s.fmcGuidance.thrust==='FMC SPD'?'FMC_SPD':s.fmcGuidance.thrust):null;
  }else if(autoSpeedPitch(next)&&s.autoThrottleArm){
   // FCOM 4.10.5/4.10.11: V/S and ALT HOLD engage A/T SPEED.
   s.modes.thrust="SPEED";
@@ -860,10 +860,19 @@ function transition(state,action){
   s.targets.pitch=null;s.targets.roll=null;
   return done();
  }
+ if(action.type==='FMC_GUIDANCE'){
+  const g=action.sample;
+  if(g?.confirmed!==true||g.source!=='SIMULATED_FCC'||typeof g.lateral!=='boolean'||typeof g.vertical!=='boolean')return rejected(s,'INVALID_FMC_GUIDANCE');
+  s.fmcGuidance={lateral:g.lateral,vertical:g.vertical,lnavEngage:g.lnavEngage===true,vnavEngage:g.vnavEngage===true,mode:['VNAV SPD','VNAV PTH'].includes(g.mode)?g.mode:null,targetKt:Number.isFinite(g.targetKt)?g.targetKt:null,thrust:['FMC SPD','N1','ARM'].includes(g.thrust)?g.thrust:null};
+  if(!g.lateral&&s.modes.lateral==='LNAV'){s.modes.lateral=null;s.capture.roll=null;}
+  if(!g.vertical&&s.modes.vertical==='VNAV'){s.modes.vertical=null;s.capture.pitch=null;s.modes.thrust=null;}
+  if(s.modes.vertical==='VNAV'&&s.autoThrottleArm)s.modes.thrust=s.fmcGuidance.thrust==='FMC SPD'?'FMC_SPD':s.fmcGuidance.thrust;
+  return done();
+ }
  if(action.type==="EVIDENCE"){
   if(!["fmcRouteReady","approachCapture"].includes(action.key)||![true,false,null].includes(action.value))throw Error("Unrecognized AFDS evidence");
   s.evidence[action.key]=action.value;
-  if(action.key==="fmcRouteReady"&&action.value!==true){
+  if(action.key==="fmcRouteReady"&&action.value!==true&&!s.fmcGuidance){
    if(s.modes.lateral==="LNAV")s.modes.lateral=null;
    if(s.modes.vertical==="VNAV")s.modes.vertical=null;
   }
@@ -1112,7 +1121,9 @@ function transition(state,action){
   return done();
  }
  if(id==="LNAV"||id==="VNAV"){
-  if(s.evidence.fmcRouteReady!==true)return rejected(s,"FMC_ROUTE_EVIDENCE_REQUIRED");
+  const g=s.fmcGuidance;
+  if(id==='LNAV'&&s.modes.lateral!=='LNAV'&&!(g?.lateral&&g.lnavEngage))return rejected(s,'LNAV_CAPTURE_CRITERIA_NOT_MET');
+  if(id==='VNAV'&&s.modes.vertical!=='VNAV'&&!(g?.vertical&&g.vnavEngage))return rejected(s,'VNAV_PROFILE_OR_RA_REQUIRED');
  }
  if(id==="VOR_LOC"){
   if(s.pending.approach&&s.nav.loc&&s.nav.gs)
@@ -1262,7 +1273,7 @@ function output(s){
   speedLimit:SpeedLimit?.view(s.speedLimit)??null,
   flightDirectorBarsRetracted:s.flightDirectorBarsRetracted,
   lastAutopilotDisengagement:s.lastAutopilotDisengagement?{...s.lastAutopilotDisengagement}:null,
-  modes:{...s.modes},togaActive:s.togaActive===true,togaSingleEngine:s.togaSingleEngine===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
+  modes:{...s.modes},fmcGuidance:s.fmcGuidance?{...s.fmcGuidance}:null,togaActive:s.togaActive===true,togaSingleEngine:s.togaSingleEngine===true,dualApproach:{...s.dualApproach},lvlChgPhase:s.lvlChgPhase,axisControl:axisControl(s,powered),
   armed:{...s.armed},capture:{...s.capture},nav:{...s.nav},
   flight:s.flight?{...s.flight}:null,
   axisDemand:{pitch:s.targets.pitch,roll:s.targets.roll},
@@ -1468,6 +1479,7 @@ function hardwareCommand(e){
   }
   project();notify();return Core.output(state);
  }
+ if(id==='LNAV'||id==='VNAV')window.B737UnifiedFccFlightV1?.refreshFmcGuidance?.();
  refreshSecondApproachChannel(id);
  return send({type:"BUTTON",id});
 }
@@ -1612,6 +1624,7 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  observePower:()=>Core.output(state), // compatibility: read-only, no manual power injection
  setEvidence:(key,value)=>send({type:"EVIDENCE",key,value}),
  observeFlight:sample=>send({type:"FLIGHT_OBSERVATION",sample}),
+ observeFmcGuidance:sample=>send({type:'FMC_GUIDANCE',sample}),
  observeAltitudeCapture:sample=>send({type:"FCC_ALTITUDE_CAPTURE",...sample}),
  beginToga:(dualApGA,singleEngine)=>send({type:'TOGA_ENGAGED',confirmed:true,
   source:'SIMULATED_FCC',dualApGA:dualApGA===true,singleEngine:singleEngine===true}),
