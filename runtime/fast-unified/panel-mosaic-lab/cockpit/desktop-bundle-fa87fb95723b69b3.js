@@ -1376,8 +1376,8 @@ try{
   const flight=root.B737UnifiedFlightScenarioV1;
   if(!flight?.command)throw Error('FLT PHASE ENGINE NOT READY');
   if(pressure.rapid){
-   const mcp=root.B737MCPAFDSV1||root.B737McpAfdsV1||root.B737MCPV1;
-   try{mcp?.applyGroundPreset?.({speedKt:279,headingMag:90,altitudeFt:10000,atArm:true});mcp?.press?.('LVL_CHG');}catch(_){}
+   const mcp=root.B737McpAFDSBridgeV1;
+   try{mcp?.applyGroundPreset?.({speedKt:279,headingMag:mcp?.getOutput?.()?.selected?.headingDeg??90,altitudeFt:10000,atArm:true});mcp?.press?.('LVL_CHG');}catch(_){}
   }
   flight.command({type:'ALTITUDE',value:10000});
   flight.command({type:'VS',value:-3000});
@@ -1604,6 +1604,7 @@ try{
   startPressure,stepPressure,pressureState,manualControl,emergencyDescent,armRapid,clearRapid,
   getState:()=>({active:Object.fromEntries(Object.entries(busy).map(([k,v])=>[k,[...v]])),pressure:pressureState(),installed}),mount});
  root.B737UnifiedInstructorNonNormalV1=api;
+ root.addEventListener('b737:flight-scenario-stopped',clearRapid);
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })(window);
 
