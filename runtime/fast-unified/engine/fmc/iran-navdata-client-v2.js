@@ -255,7 +255,9 @@ function mount(){
    const bridge=root.B737CduSgBridgeV1;
    root.B737CduSgBridgeV1=Object.freeze({...bridge,
     magneticVariation(point){
-     // Local training estimate from the nearest source runway axis, not a
+     const wmm=root.B737WMM2025V1?.evaluate?.({lat:point.lat,lon:point.lon,altitudeFt:0,date:new Date()});
+     if(wmm?.valid===true&&Number.isFinite(wmm.declinationDeg))return wmm.declinationDeg;
+     // Local training fallback from the nearest source runway axis, not a
      // certified magnetic model. Reject remote points rather than guess.
      const samples=[];
      for(const a of Object.values(catalog.airports)){
