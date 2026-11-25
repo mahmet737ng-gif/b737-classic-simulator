@@ -1135,7 +1135,7 @@ try{
  function tick(){
   const m=output(),mode=m?.modes||{};
   const active=m?.power===true&&m.controls?.atArm===true&&
-   mode.vertical==='LVL_CHG'&&['N1','RETARD','ARM'].includes(mode.thrust);
+   (mode.vertical==='LVL_CHG'||mode.vertical==='VNAV'&&m.fmcGuidance?.vertical===true)&&['N1','RETARD','ARM'].includes(mode.thrust);
   if(!active){lastMode='';lastReason='INACTIVE';display();return;}
   const source=owner();
   if(!source?.levelChangeThrottleCommand){

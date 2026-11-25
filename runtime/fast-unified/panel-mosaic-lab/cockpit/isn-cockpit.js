@@ -638,7 +638,7 @@
       !Number.isFinite(value)||value<0||value>1)
     throw Error('Invalid A/T speed servo command');
    const mcp=window.B737McpAFDSBridgeV1?.getOutput?.();
-   if(mcp?.power!==true||mcp.controls?.atArm!==true||mcp.modes?.thrust!=='SPEED')
+   if(mcp?.power!==true||mcp.controls?.atArm!==true||!(mcp.modes?.thrust==='SPEED'||mcp.modes?.thrust==='FMC_SPD'&&mcp.modes?.vertical==='VNAV'&&mcp.fmcGuidance?.vertical===true))
     return {accepted:false,reason:'MCP_A/T_SPEED_NOT_ENGAGED'};
    if(ecu.chain.phase[engine]!=='RUNNING')
     return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
@@ -692,7 +692,7 @@
     throw Error('Invalid LVL CHG throttle request');
    const out=window.B737McpAFDSBridgeV1?.getOutput?.();
    if(out?.power!==true||out.controls?.atArm!==true||
-      out.modes?.vertical!=='LVL_CHG'||out.modes?.thrust!==(phase==='CLIMB'?'N1':'RETARD'))
+      !(out.modes?.vertical==='LVL_CHG'||out.modes?.vertical==='VNAV'&&out.fmcGuidance?.vertical===true)||out.modes?.thrust!==(phase==='CLIMB'?'N1':'RETARD'))
     return {accepted:false,reason:'LVL_CHG_NOT_ACTIVE'};
    if(ecu.chain.phase[engine]!=='RUNNING')
     return {accepted:false,reason:'ENGINE_NOT_RUNNING'};
