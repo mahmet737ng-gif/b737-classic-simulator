@@ -631,6 +631,27 @@ try{
   }
   return out;
  }
+function followHold(points,step,frame,gs){
+ const n=points.length-1;let j=Math.max(1,Math.min(step,n)),s=segment(points[j-1],points[j],frame,frame.trueHeadingDeg);
+ // Follow the nearest point on a short future window; monotonic progress.
+ let best=Infinity,along=0;
+ for(let k=j;k<=Math.min(n,j+5);k++){
+  const a=points[k-1],b=points[k],ab=vec(a,b),ap=vec(a,frame),l=length(ab);
+  if(l<.0001)continue;
+  const t=clamp(dot(ap,ab)/(l*l),0,1);
+  const dist=length({x:ap.x-ab.x*t,y:ap.y-ab.y*t});
+  if(dist<best){best=dist;step=k;along=t*l;}
+ }
+ j=step;s=segment(points[j-1],points[j],frame,frame.trueHeadingDeg);
+ if(j===n&&(length(vec(frame,points[n]))<=.22||s&&s.along>=s.len&&Math.abs(s.xtk)<.22))return {done:true,step:j};
+ let look=Math.max(.35,Math.min(1.15,gs/3600*14)),target=points[n];
+ for(let k=j;k<=n;k++){
+  const a=points[k-1],b=points[k],l=length(vec(a,b)),offset=k===j?along:0;
+  if(look<=l-offset&&l>0){const f=(offset+look)/l;target={lat:a.lat+(b.lat-a.lat)*f,lon:a.lon+(b.lon-a.lon)*f};break;}
+  look-=Math.max(0,l-offset);
+ }
+ return {done:false,step:j,track:bearing(vec(frame,target)),xtk:s?.xtk??null};
+}
  function create(){
   let holding=null,completed=new Map();
   let plan=null,signature='',index=0,from=null,previousAltitude=null,previousCondition=null,lastElapsed=null,wasDescending=false;
@@ -669,7 +690,7 @@ try{
    if(hold&&finite(mag)&&frame.airborne===true){
     const inbound=norm(hold.inbound+mag),atFix=length(vec(frame,leg))<=.22;
     const arrival=coord(leg.from)?bearing(vec(leg.from,leg)):frame.trueHeadingDeg;
-    const gs=Math.max(100,frame.gsKt||frame.iasKt||180),bank=30;
+    const gs=Math.max(100,frame.gsKt||frame.iasKt||180),bank=20;
     const config=JSON.stringify([hold.inbound,hold.dir,hold.time,hold.dist,hold.speed]);
     const geometry=()=>holdGeometry(leg,inbound,gs,frame.altitudeFt,bank);
     const arrivalSeg=coord(leg.from)?segment(leg.from,leg,frame,frame.trueHeadingDeg):null;
@@ -682,23 +703,13 @@ try{
      if(hold.exit&&!holding.exitInhibited&&!holding.exitPath){
       holding.exitPath=true;holding.points=[{lat:frame.lat,lon:frame.lon},{lat:leg.lat,lon:leg.lon}];holding.step=1;
      }
-     let pts=holding.points,target=pts[holding.step],start=pts[holding.step-1];
-     let s=segment(start,target,frame,frame.trueHeadingDeg);
-     // Advance only on crossing or close capture, never jump the route at EXEC.
-     const capture=Math.min(.18,Math.max(.035,(s?.len||.1)*.3));
-     if(length(vec(frame,target))<=capture||s&&s.along>=s.len&&Math.abs(s.xtk)<.28){
-      holding.step++;
-      if(holding.step>=pts.length){
+     let p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;
+     if(p.done){
        if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident};completed.set(hold.key,JSON.stringify(hold));holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}
-       else{holding.race=geometry();holding.points=holding.race;holding.step=1;holding.laps++;holding.exitInhibited=false;}
-      }
+       else{holding.race=geometry();holding.points=holding.race;holding.step=1;holding.laps++;holding.exitInhibited=false;p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;}
      }
      if(holding){
-      pts=holding.points;target=pts[holding.step];start=pts[holding.step-1];s=segment(start,target,frame,frame.trueHeadingDeg);
-      // Short look-ahead on turn chords, so they do not command a distant
-      // straight-leg heading or reverse direction at the turn boundary.
-      track=s?norm(s.course+clamp(Math.atan2(s.xtk,Math.max(.12,Math.min(.6,s.len)))*180/Math.PI,-35,35)):bearing(vec(frame,target));
-      course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=s?.xtk??null;
+      track=p.track;course=inbound;engage=true;remaining=length(vec(frame,leg));bearingTo=bearing(vec(frame,leg));xtk=p.xtk;
       holdStatus={key:hold.key,active:true,exit:hold.exit===true,exitInhibited:holding.exitInhibited,lap:holding.laps,entry:holding.entry,points:holding.race,phase:holding.exitPath?'EXIT':holding.points!==holding.race?'ENTRY':holding.step<=12?'OUTBOUND TURN':holding.step===13?'OUTBOUND':holding.step<=25?'INBOUND TURN':'INBOUND'};
      }
     }
