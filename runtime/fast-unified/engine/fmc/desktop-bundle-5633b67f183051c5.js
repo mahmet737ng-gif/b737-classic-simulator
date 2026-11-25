@@ -198,7 +198,7 @@ try{
        pts.length!==2||!pts.every(validPoint)||feature.properties?.fmc_executable!==false||
        !String(feature.properties?.render_style||'').includes('reference'))continue;
     segments.push(pts.map(p=>[p[0],p[1]]));
-    if(segments.length>=300)break;
+    if(segments.length>=1600)break;
    }
    // Source coordinate fixes are display symbols, not inferred flyable legs.
    const fixes=[];
@@ -213,11 +213,13 @@ try{
    const key=kind+'@'+airport;
    if(!segments.length&&!fixes.length)throw Error('NO VERIFIED GEOMETRY');
    const bank=startMod();
+   if(kind==='SID'&&JSON.stringify(bank.selections[key])!==JSON.stringify({airport,kind,ident,runway,transition,cycle:CYCLE,sourceOnly:true,fmcExecutable:false}))for(const k of Object.keys(bank.geometries))if(/^RTE@\d+$/.test(k))delete bank.geometries[k];
    bank.selections[key]={airport,kind,ident,runway,transition,cycle:CYCLE,sourceOnly:true,fmcExecutable:false};
-   const program=meta?.pathProgram?.version==='SG-PROCEDURE-TRAJECTORY-0001'&&
-    meta.pathProgram.sourceOnly===true&&meta.pathProgram.fmcExecutable===false&&
-    meta.pathProgram.runway===runway&&meta.pathProgram.fixes?.length===2?
-    copy(meta.pathProgram):null;
+   const candidate=meta?.pathProgram;
+   const program=candidate?.sourceOnly===true&&candidate.fmcExecutable===false&&candidate.runway===runway&&(
+    candidate.version==='SG-PROCEDURE-TRAJECTORY-0001'&&candidate.fixes?.length===2||
+    candidate.version==='IRAN-ROUTE-PREVIEW-V2'&&Array.isArray(candidate.input?.legs)&&candidate.input.legs.length<=150)?
+    copy(candidate):null;
    bank.geometries[key]={airport,kind,ident,segments,fixes,
     ...(program?{program}:{}),
     warnings:Array.isArray(meta?.warnings)?meta.warnings.slice(0,100):[],
@@ -231,9 +233,27 @@ try{
   function clear(kind,airport){if(!connected)throw Error('NAV SOURCE DISCONNECTED');const key=kind+'@'+airport;
    if(!working().selections[key])return snapshot();const bank=startMod();
    delete bank.selections[key];delete bank.geometries[key];return publish();}
+
+  function clearEnrouteFrom(row){
+   if(!connected||!Number.isInteger(row)||row<1)return snapshot();
+   const keys=Object.keys(working().geometries).filter(k=>/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row);
+   if(!keys.length)return snapshot();const bank=startMod();
+   for(const k of keys)delete bank.geometries[k];return publish();
+  }
+  function stageEnroute(row,points,via='DIRECT'){
+   if(!connected||!Number.isInteger(row)||row<1||!Array.isArray(points)||points.length<1||points.length>250||
+    !points.every(p=>isIdent(p.ident)&&validPoint([p.lon,p.lat])&&!(p.lon===0&&p.lat===0)))throw Error('INVALID ENROUTE REFERENCE');
+   const bank=startMod();for(const k of Object.keys(bank.geometries))if(/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row)delete bank.geometries[k];
+   const fixes=points.map(({ident,lat,lon})=>({ident,lat,lon}));
+   const segments=fixes.slice(1).map((p,i)=>[[fixes[i].lon,fixes[i].lat],[p.lon,p.lat]]);
+   const program={version:'IRAN-ROUTE-PREVIEW-V2',sourceOnly:true,fmcExecutable:false,runway:null,input:{kind:'RTE',legs:fixes.map(p=>({...p,type:'Normal',fly:'Fly-by'})),performance:{gsKt:250,vsFpm:2000,rollNm:0,bankDeg:25,variationDeg:0}}};
+   bank.geometries['RTE@'+row]={kind:'RTE',ident:String(via),segments,fixes,program,renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
+   return publish();
+  }
+
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}
-  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase});
+  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom});
  }
  return Object.freeze({VERSION,CYCLE,create});
 });
