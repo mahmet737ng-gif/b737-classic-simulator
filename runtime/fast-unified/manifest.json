@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "2a7e5f1dc167f6c5cedc842a5b8e992b02610d98c19feb336e1ce6ded8b46970"
+      "sha256": "6cd1160408f3eec5888066d159850f3c472904e64d31040cb5fb090115620288"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "5d3cb2bb99dec3471f121a25d70bf2beee1c7b23cf1f1b8b4d31876e03b32466"
+      "sha256": "ac9fe9cf77af5a5e6b531a2a50c7e5100946d96b0a38dd54831e566fdaae0a20"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -992,7 +992,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "07401cbea7fcd41852be64f89fc62abcecaa3b1977ad426ad26625a406f14dd7"
+      "sha256": "a3c07ac8c044fa4f6838c5ec75d15ecd37a0fcc78d69f64376b79c84e9d4a2d7"
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",

@@ -644,6 +644,92 @@
  const mass=kg=>Number.isFinite(kg)&&kg>=0?fixed(kg/1000,1):'';
  const wind=(direction,speed)=>Number.isFinite(direction)&&Number.isFinite(speed)?
   String(Math.round(direction)%360).padStart(3,'0')+'°/'+Math.round(speed)+'KT':'';
+ // Training-only fuel/time prediction from the committed, continuous route.
+ // No straight-line shortcut through a gap and no fabricated FMC performance tables.
+ function fuelWarnings(remaining,reserves){
+  if(!Number.isFinite(remaining))return [];
+  const out=[];if(remaining<900)out.push('INSUFFICIENT FUEL');
+  if(Number.isFinite(reserves)&&reserves>=0&&remaining<reserves)out.push('USING RSV FUEL');
+  return out;
+ }
+ function trainingFuelPrediction(s,inputs={},env={}){
+  const fuel=inputs.fuel,act=s.active||{};
+  if(!s.routeActivated||modified(s)||fuel?.quality!=='VALID'||!Number.isFinite(fuel.totalKg)||fuel.totalKg<0)return null;
+  const perf=env.perf||{},crz=perf.crz,gw=perf.gw;
+  if(!Number.isFinite(crz)||crz<1000||!Number.isFinite(gw)||gw<=0||!/^\d{1,3}$/.test(String(act.CI??'')))return null;
+  const all=visibleLegs(s);
+  if(!all.length||all.some(p=>p.gap||!validPosition(p)))return null;
+  const bank=sourceSnapshot(s)?.active?.geometries||{};
+  const start=bank['RUNWAY_DEP@'+act.ORIGIN]?.fixes?.[0]||env.origin;
+  const end=bank['RUNWAY_ARR@'+act.DEST]?.fixes?.[0]||env.destination;
+  if(!validPosition(start)||!validPosition(end))return null;
+  let points=[{...start,ident:act.ORIGIN},...all,{...end,ident:act.DEST}];
+  points=points.filter((p,i,a)=>i===0||legDistance(a[i-1],p)>.001||i===a.length-1);
+  let index=1,pos=points[0];
+  const air=env.onGround===false;
+  if(air){
+   pos=env.position;if(!validPosition(pos))return null;
+   const ident=inputs.guidance?.activeLeg?.ident;
+   const matches=ident?points.map((p,i)=>p.ident===ident?i:-1).filter(i=>i>0):[];
+   if(matches.length===1)index=matches[0];
+   else{
+    // Match position to the closest actual route segment. Do not select
+    // an arbitrary waypoint when far away from the planned path.
+    let best=Infinity,second=Infinity,chosen=0;
+    for(let i=1;i<points.length;i++){
+     const a=points[i-1],b=points[i],cos=Math.cos(pos.lat*Math.PI/180);
+     const dlon=(a,b)=>((a-b+540)%360)-180;
+     const ax=dlon(a.lon,pos.lon)*cos*60,ay=(a.lat-pos.lat)*60,bx=dlon(b.lon,pos.lon)*cos*60,by=(b.lat-pos.lat)*60;
+     const dx=bx-ax,dy=by-ay,d=dx*dx+dy*dy;if(d<.00001)continue;
+     const t=Math.max(0,Math.min(1,-(ax*dx+ay*dy)/d)),cross=Math.hypot(ax+t*dx,ay+t*dy);
+     if(cross<best){second=best;best=cross;chosen=i;}else if(cross<second)second=cross;
+    }
+    if(!chosen||best>15||second-best<.05&&legDistance(pos,points[chosen])>1)return null;
+    index=chosen;
+   }
+  }else if(env.onGround!==true)return null;
+  const legs=[];let previous=pos,total=0;
+  for(let i=index;i<points.length;i++){
+   const p=points[i],distance=legDistance(previous,p),course=legCourse(previous,p);
+   if(!Number.isFinite(distance)||!Number.isFinite(course))return null;
+   total+=distance;legs.push({ident:p.ident,distanceNm:distance,courseTrueDeg:course});previous=p;
+  }
+  const altitude=Number.isFinite(env.altitudeFt)?env.altitudeFt:0;
+  const destinationAltitude=Number.isFinite(env.destinationAltitudeFt)?env.destinationAltitudeFt:0;
+  // Approximate clean-aircraft phase model, kg/h for both engines combined.
+  // These coefficients are not AFM fuel-planning data.
+  const ci=Math.max(0,Math.min(200,Number(act.CI)));
+  const weightFactor=Math.max(.75,Math.min(1.45,gw/55));
+  const climbNm=Math.min(total*.65,Math.max(0,crz-altitude)/1600*300/60);
+  const descentNm=Math.min(total-climbNm,Math.max(0,crz-destinationAltitude)/1800*280/60);
+  const inDescent=air&&Number.isFinite(env.verticalSpeedFpm)&&env.verticalSpeedFpm< -300&&total<=descentNm+15;
+  const climbEnd=inDescent?0:climbNm,descentStart=inDescent?0:total-descentNm;
+  const measured=env.flowKgHr;
+  const cruiseTas=390+ci*.20;
+  const cruiseFlow=(2450+ci*2)*weightFactor;
+  const stableCruise=air&&Math.abs(altitude-crz)<1500&&Number.isFinite(measured)&&measured>=1000&&measured<=6500;
+  const rates=[{end:climbEnd,tas:300,flow:3800*weightFactor},{end:descentStart,tas:cruiseTas,flow:stableCruise?measured:cruiseFlow},{end:total,tas:280,flow:1250*weightFactor}];
+  const wind=perf.forecast||{},wd=wind.windFromDeg,wk=wind.windKt;
+  let elapsed=0,used=env.onGround===true?100:0,cumulative=0;
+  const clock=Number.isFinite(env.nowMs)?env.nowMs:Date.now();
+  const records=[];
+  for(const leg of legs){
+   let remain=leg.distanceNm;
+   for(const rate of rates){
+    const distance=Math.min(remain,Math.max(0,rate.end-cumulative));
+    if(distance<=0)continue;
+    const head=Number.isFinite(wd)&&Number.isFinite(wk)?wk*Math.cos((wd-leg.courseTrueDeg)*Math.PI/180):0;
+    const gs=Math.max(120,rate.tas-head),hours=distance/gs;
+    elapsed+=hours;used+=hours*rate.flow;cumulative+=distance;remain-=distance;
+   }
+   const eta=new Date(clock+elapsed*3600000).toISOString().slice(11,16).replace(':','')+'Z';
+   records.push({...leg,eta,fuelKg:Math.max(0,fuel.totalKg-used)});
+  }
+  const remaining=fuel.totalKg-used,rawDest=records.at(-1),destination={...rawDest,ident:act.DEST,distanceNm:total};
+  const reserves=/^\d{1,2}(?:\.\d)?$/.test(String(act.RESERVES??''))?Number(act.RESERVES)*1000:null;
+  const warnings=fuelWarnings(remaining,reserves);
+  return {quality:'TRAINING_ESTIMATE',source:'CLEAN_PHASE_APPROXIMATION',origin:act.ORIGIN,destination,active:records[0],next:records[1],waypoints:records,from:{ident:points[index-1]?.ident},fuelAtDestinationKg:destination.fuelKg,requiredFuelKg:used,remainingFuelRawKg:remaining,reserveWarnings:warnings,reserveWarning:warnings[0]||null};
+ }
  function progress(s){
   const f=s.fmcPageInputs??{},p=f.predictions?.quality==='VALID'?f.predictions:f.trainingPerformance?.quality==='TRAINING_ESTIMATE'?f.trainingPerformance:{};
   const flight=s.active.FLIGHT?'FLT '+s.active.FLIGHT+' ':'';
@@ -707,5 +793,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,routeIncomplete,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
+ return Object.freeze({trainingFuelPrediction,fuelWarnings,view,invoke,routeCell,isRouteField,modified,canActivate,routeIncomplete,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
 });

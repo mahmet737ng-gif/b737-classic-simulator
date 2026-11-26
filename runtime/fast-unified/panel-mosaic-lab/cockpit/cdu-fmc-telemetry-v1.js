@@ -8,27 +8,68 @@
  const original=update;let queued=false,feed='UNKNOWN',pendingPowerEvidence=true;
  const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2','PERF_INIT','PERF_LIMITS','N1_LIMIT','TAKEOFF','CLB','CRZ','DES','APP_REF','RTE_DATA','FIX','HOLD']);
  let avionicsFrame=0,lastInputs='';
+ // Use exactly the same ATA28 tank readings and electrical gates as
+ // the physical Smiths quantity indicators, not a local 6000 kg constant.
+ function fuelInput(host){
+  const owner=host.B737ISNCockpitV1,reading=owner?.getFuelQuantityIndications?.();
+  if(!reading)return null;
+  const cb=id=>host.B737UnifiedCB?.available(id)!==false;
+  const keys=['main1','center','main2'];
+  if(reading.standbyAc!==true||!cb('fuel.quantityCommon')||keys.some(k=>!cb('fuel.quantity.'+k)||!Number.isFinite(reading.tanksKg?.[k])||reading.tanksKg[k]<0))return {quality:'INVALID',source:'ATA28'};
+  return {quality:'VALID',source:'ATA28',totalKg:keys.reduce((sum,k)=>sum+reading.tanksKg[k],0)};
+ }
+ let warningSignature='',announced=new Set();
+ function displayFuelWarnings(warnings){
+  const signature=warnings.join('|');
+  if(signature!==warningSignature){
+   if(['INSUFFICIENT FUEL','USING RSV FUEL'].includes(state.message)&&!warnings.includes(state.message))state.message='';
+   announced=new Set([...announced].filter(w=>warnings.includes(w)));warningSignature=signature;
+  }
+  const warning=warnings.find(w=>!announced.has(w));
+  if(warning&&!state.message&&!state.scratch){state.message=warning;announced.add(warning);return true;}
+  return false;
+ }
  function receiveAvionics(){
   avionicsFrame=0;
   const network=parent.B737UnifiedAvionicsNetworkV1;
   const ground=network?.getSignal('aircraft.airground');
+  const ecu=parent.B737ISNCockpitV1?.getECUState?.();
   state.fmcOnGroundVerified=ground?.quality==='VALID'&&typeof ground.value?.onGround==='boolean'?
-   ground.value.onGround:null;
+   ground.value.onGround:typeof ecu?.aircraft?.onGround==='boolean'?ecu.aircraft.onGround:null;
   const refCleared=core.onAirGround?.(state,state.fmcOnGroundVerified)===true;
   const data=network?.getSignal('fmc.computed');
   const next=data?.quality==='VALID'?{
    predictions:data.value.predictions,trainingPerformance:data.value.trainingPerformance,rta:data.value.rta,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,guidance:data.value.guidance,
    position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
-  }:null;
+  }:{};
+  const actual=fuelInput(parent);if(actual)next.fuel=actual;
+  const route=window.CDU_CH11_ROUTE_PAGES,scenario=parent.B737UnifiedFlightScenarioV1;
+  const flight=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
+  const arp=icao=>window.B737CDUIRSAdapterV1?.arp?.(icao);
+  // PERF data is derived against the same current quantity, with no second fuel ledger.
+  const prior=state.fmcPageInputs;state.fmcPageInputs=next;
+  const perf=core.perfData?.({...state,pending:{},stagedRoute:{}});
+  const p=next.position,position=p?.quality==='VALID'?{lat:p.latitudeDeg,lon:p.longitudeDeg}:flight;
+  const flows=['engine1','engine2'].map(k=>ecu?.engines?.[k]?.fuelFlowKgHr);
+  const native=next.predictions?.quality==='VALID'&&next.predictions.destination?.ident===state.active.DEST&&Number.isFinite(next.predictions.destination?.fuelKg)?next.predictions:null;
+  if(!native){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
+   if(estimate){next.predictions=null;next.trainingPerformance=estimate;}
+  }
+  const pred=native||next.trainingPerformance;
+  const reserve=/^\\d{1,2}(?:\\.\\d)?$/.test(String(state.active.RESERVES??''))?Number(state.active.RESERVES)*1000:null;
+  const validPrediction=next.fuel?.quality==='VALID'&&state.routeActivated===true&&!route?.modified?.(state)&&pred?.destination?.ident===state.active.DEST;
+  const warnings=validPrediction?route?.fuelWarnings?.(pred.remainingFuelRawKg??pred.destination.fuelKg,reserve)||[]:[];
+  if(next.fuel?.quality==='INVALID'){next.predictions=null;next.trainingPerformance=null;}
+  state.fmcPageInputs=prior;
+  const warningChanged=displayFuelWarnings(warnings);
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
-  if(signature===lastInputs){if(refCleared)update();return;}
+  if(signature===lastInputs){if(refCleared||warningChanged)update();return;}
   lastInputs=signature;state.fmcPageInputs=next;
   // Settle the weight once and publish via the existing CDU shared-state bridge.
   const weightSettled=core.settlePerfWeight?.(state)===true;
-  const warning=next?.trainingPerformance?.reserveWarning;
-  if(warning&&!state.message&&warning!==state.lastTrainingFuelWarning){state.message=warning;state.lastTrainingFuelWarning=warning;}if(!warning)state.lastTrainingFuelWarning=null;
+
   if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
-  if(refCleared||weightSettled||performancePages.has(state.page))update();
+  if(refCleared||weightSettled||warningChanged||performancePages.has(state.page))update();
  }
  function queueAvionics(){
   if(!avionicsFrame)avionicsFrame=requestAnimationFrame(receiveAvionics);
@@ -95,6 +136,8 @@
   window.addEventListener('pagehide',()=>unsubscribes.forEach(unsubscribe=>unsubscribe()),{once:true});
   queueAvionics();
  }
+ // Poll the authoritative ATA28 ledger even when the optional avionics bus is absent.
+ const poll=setInterval(queueAvionics,1000);window.addEventListener('pagehide',()=>clearInterval(poll),{once:true});queueAvionics();
  paintFeed();send();parent.postMessage({type:'b737:fmc-cdu-power-ready',seat},location.origin);
  window.B737CduFmcTelemetryV1=Object.freeze({snapshot,getFeed:()=>feed,
   awaitingPower:()=>pendingPowerEvidence});
