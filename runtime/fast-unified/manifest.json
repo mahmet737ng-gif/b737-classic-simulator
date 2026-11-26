@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "31cee64cbf335d7d2ae95a5996e54c86c6ae6181c2d4cbcce597167ab8ed3ac8"
+      "sha256": "6651b2ccfb9622f7d3d9feac7e3e6564a25ad1c0c91dd6cfa0c823f6b2095c75"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -1672,7 +1672,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css",
-      "sha256": "2e88580f834180ae3c0133121d9d7909b992b591a54c5fc5d1f55fd22ccde550"
+      "sha256": "4d533b882dc85ac6aa70e1d3c17234a12c2542524250365ae2d980c182bd8318"
     },
     {
       "path": "panel-mosaic-lab/cockpit/toggle-base-matte-v1.css",

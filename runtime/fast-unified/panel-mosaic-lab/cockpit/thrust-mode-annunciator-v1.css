@@ -1,16 +1,19 @@
-/* FCOM 7.10.1 EIS primary plate, TMD black window above MAN SET.
- * Overlay only; owner-approved photo remains unchanged. Source-photo pixel
- * registration is provisional and requires visual inspection on Unified.
+/* TMA/TMD registration on the approved 1235x1274 EIS photo.
+ * Aperture measured on its 744x768 proportional derivative: inner glass
+ * x344..418, y205..222. Percent geometry follows the image on zoom/pan.
+ * Only the glyphs emit light; the original black aperture remains intact.
  */
+.texture-piece[data-piece="engine"]{container-type:inline-size}
 .texture-piece[data-piece="engine"] .unified-tmd-fcom{
- position:absolute;left:46.05%;top:26.45%;width:10.45%;height:2.65%;
+ position:absolute;left:46.236559%;top:26.692708%;width:9.946237%;height:2.213542%;
  display:flex;align-items:center;justify-content:center;
  margin:0;padding:0;box-sizing:border-box;pointer-events:none;
- color:#f0f4e8;background:transparent;
- text-shadow:0 0 2px #d0dfac,0 0 5px #536741;
- font:700 clamp(7px,.85vw,14px)/1.1 "Lucida Console",Consolas,monospace;
- letter-spacing:.035em;white-space:nowrap;z-index:7;
- border-radius:1px;overflow:hidden}
+ color:#e4ebd9;background:transparent;
+ font:600 1.62cqw/1 "Lucida Console",Consolas,monospace;
+ letter-spacing:.025em;white-space:nowrap;z-index:7;
+ text-shadow:0 0 .065em rgba(210,233,180,.46),0 0 .12em rgba(181,208,147,.18);
+ border:0;border-radius:0;box-shadow:none;filter:none;overflow:hidden;
+}
 .texture-piece[data-piece="engine"] .unified-tmd-fcom[hidden]{display:none!important}
 .reference-mode .unified-tmd-fcom{display:none!important}
 
