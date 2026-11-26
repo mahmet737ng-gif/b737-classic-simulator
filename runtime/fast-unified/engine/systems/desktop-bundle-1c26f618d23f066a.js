@@ -985,20 +985,37 @@ try{
  function thrust(){
   const fm=T.fma(state);
   if(!['TAKEOFF_LIMIT','GA_REDUCED','GA_FULL'].includes(fm.thrust))return;
+  const api=win.B737PerformanceEngineV07;
+  const phase=state.phase==='TO'?(state.n1SelectedAfterArm?'CLB':'TO'):'GA';
+  const packet=api?.coupledLimits?.(phase);
+  // Reduced GA retains the existing climb-rate training proxy. Full GA and
+  // takeoff follow the computed limit; manual reference bugs are irrelevant.
+  const tracking=fm.thrust!=='GA_REDUCED'&&packet?.valid===true;
+  if(phase==='TO'&&packet&&!tracking){thrustFeedback='NOT_APPLIED_'+packet.reason;return;}
   const finger=state.phase+':'+state.presses+':'+state.throttleFraction+':'+state.n1SelectedAfterArm;
-  if(lastThrust===finger)return;
+  if(!tracking&&lastThrust===finger)return;
+  const engines=tracking?owner()?.getPropulsionSnapshot?.()?.engines:null;
   const result=[];let attempts=0,reason='NO_RUNNING_ENGINE';
   for(const n of [1,2]){
    if(!engineRunning(n))continue;
    attempts++;
    try{
+    const e=engines?.['engine'+n];
+    let demand=state.throttleFraction;
+    if(tracking){
+     if(!Number.isFinite(e?.n1Percent)||!Number.isFinite(e?.throttle)){reason='N1_FEEDBACK_UNAVAILABLE';continue;}
+     const error=packet.atLimitPct-e.n1Percent;
+     if(Math.abs(error)<.2){result.push(n);continue;}
+     // Same ECU feedback servo, with a bounded incremental lever request.
+     demand=Math.max(0,Math.min(1,e.throttle+Math.max(-.025,Math.min(.025,error*.004))));
+    }
     const r=owner()?.togaThrottleCommand?.({engine:'engine'+n,
-     value:state.throttleFraction,controller:'B737_TOGA_CH4_TRAINING',
+     value:demand,controller:'B737_TOGA_CH4_TRAINING',
      phase:state.phase});
     if(r?.accepted){
      result.push(n);
      doc.dispatchEvent(new CustomEvent('b737:throttle-state',{detail:{
-      engine:n,percent:state.throttleFraction*100,source:'CH4_TOGA',visualOnly:true}}));
+      engine:n,percent:demand*100,source:'CH4_TOGA',visualOnly:true}}));
     }else reason=r?.reason||'THROTTLE_OWNER_NOT_READY';
    }catch(e){reason=String(e?.message||e);}
   }
@@ -1148,9 +1165,8 @@ try{
   if(!engines){lastReason='ENGINE N1 / THROTTLE FEEDBACK UNAVAILABLE';display();return;}
   const phase=mode.thrust==='N1'?'CLIMB':'DESCENT';
   if(phase==='CLIMB'){
-   const lim=n1();
-   const valid=lim?.[1]?.automaticSource==='FMC'&&lim?.[2]?.automaticSource==='FMC'&&
-    [lim[1].automaticPct,lim[2].automaticPct].every(Number.isFinite);
+   const lim=win.B737PerformanceEngineV07?.coupledLimits?.('CLB');
+   const valid=lim?.valid===true&&Number.isFinite(lim.atLimitPct);
    if(!valid){lastReason='N1 · VERIFIED FMC LIMIT NOT AVAILABLE · NO ENGINE COMMAND';
     display();return;}
   }
@@ -1160,7 +1176,7 @@ try{
    if(!e?.running||!Number.isFinite(e.n1Percent)||!Number.isFinite(e.throttle))continue;
    let demand=0;
    if(phase==='CLIMB'){
-    const target=n1()[side].automaticPct,err=target-e.n1Percent;
+    const target=win.B737PerformanceEngineV07.coupledLimits('CLB').atLimitPct,err=target-e.n1Percent;
     if(Math.abs(err)<.15)continue;
     // Incremental feedback against the actual ECU-measured N1; command
     // limits and dynamics are only an instructor simulator approximation.

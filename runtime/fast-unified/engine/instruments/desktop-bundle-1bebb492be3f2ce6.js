@@ -169,16 +169,17 @@ try{
   const feedforward=holdN1(out.iasKt,flight.vsFpm??0);
   // Anti-windup: integrate only where the N1 range permits correction,
   // or when the error would move the demand back into the permitted range.
+  const limit=finite(input.n1LimitPct,IDLE_N1,120)?input.n1LimitPct:92;
   const unsaturated=feedforward+kp*out.errorKt+ki*integral;
-  const wouldWindup=unsaturated>92&&out.errorKt>0||unsaturated<IDLE_N1&&out.errorKt<0;
+  const wouldWindup=unsaturated>limit&&out.errorKt>0||unsaturated<IDLE_N1&&out.errorKt<0;
   if(!wouldWindup)integral=clamp(integral+dt*out.errorKt,-300,300);
-  const n1=clamp(feedforward+kp*out.errorKt+ki*integral,IDLE_N1,92);
+  const n1=clamp(feedforward+kp*out.errorKt+ki*integral,IDLE_N1,limit);
   const required=throttleForN1(n1);
   const measured=running.reduce((sum,id)=>sum+engines[id].throttle,0)/running.length;
   const baseline=fresh?previous.throttle:measured;
   // Training motorized-thrust-lever rate limit; engine N1 then follows
   // the independent ISN-18 response dynamics.
-  const command=clamp(required,baseline-.22*dt,baseline+.22*dt);
+  const command=Math.min(throttleForN1(limit),clamp(required,baseline-.22*dt,baseline+.22*dt));
   out.active=true;out.reason=running.length<2?'AT_SPEED_SINGLE_ENGINE_TRAINING':'AT_SPEED_ACTIVE';
   out.integral=integral;out.throttle=clamp(command,0,1);out.demandN1=n1;
   out.commands=running.map(engine=>({engine,throttle:out.throttle}));
@@ -251,7 +252,7 @@ try{
   if(!activeMode(src.mcp)){manualOverride=false;lastCommands={};}
   try{
    state=Servo.step(state,{dtSec:dt,mcp:src.mcp,flight:src.flight,
-    engines:src.engines,paused:src.paused,inhibited:manualOverride});
+    engines:src.engines,paused:src.paused,inhibited:manualOverride,n1LimitPct:win.B737PerformanceEngineV07?.coupledLimits?.()?.atLimitPct});
    if(state.active){
     if(typeof src.owner?.autoThrottleCommand!=='function'){
      state={...state,active:false,reason:'ISN18_THROTTLE_INTERFACE_MISSING',commands:[]};

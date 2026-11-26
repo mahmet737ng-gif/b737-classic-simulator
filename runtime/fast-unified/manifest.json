@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "38b20f435746f509ce3ff308bf1ca8cc9225f58ec50ee6d7211f4fd84d916fd7"
+      "sha256": "e86b23f2bfe26f51e94789c727adf6a5109cbe646a08cb8b03f61732f17a4f7f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -148,11 +148,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
-      "sha256": "d09088363b62ada3a242a7cb7b65ca4fc6d9d0d5be6a9e69f952855af415111d"
+      "sha256": "3ffc3c2b9e2d2b2abad8b5ddfd3caf09237dca30f2f178ce763756bce2d3fe44"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
-      "sha256": "234d86f2ec0d2ddcf717e6b3b059019aba8cbfeff768bb8d01654868ff3c20ce"
+      "sha256": "2249c4a8b0f7911d9d73c193a571dd61106a825abd6ccf98ddbf73ad34531df7"
     },
     {
       "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
@@ -180,11 +180,11 @@
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
-      "sha256": "9153dafc2f45b7a5969250a02c49e00ad474e3be595fc71c6adabc9a02a5228c"
+      "sha256": "91c67b86144e4090820fd43236ca5c2d1a9d68307ef4a0545915d860df0cf7e0"
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "2f6a506bb43dc0ff99bbed4ddecb752286f7d6a64713c1434532760c1dd954d9"
+      "sha256": "d135eb7413da0fba13f80ec32be2fcfb40f117a85c6360d211b405a27dc1c4ac"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -1812,7 +1812,7 @@
     },
     {
       "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "77d6e22f047ae58144714e49759bcc7d9efb04815f80c70dbc509812feb8b20c"
+      "sha256": "9d58aef4edd24906768295cba8864762e2b438eaa0f1b0078d6b475b3cbebc5d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",

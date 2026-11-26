@@ -107,5 +107,44 @@
  }
  function live(mode,override={}){const x={...liveContext(),...override,mode};return {...safe(()=>n1(x)),contextQuality:x.contextQuality};}
  function livePerformance(kind,override={}){const x={...liveContext(),...override,kind};return safe(()=>flightPerformance(x));}
- return Object.freeze({version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
+ // Shared committed FMC thrust schedule. No CDU-page dependence or manual bug feedback.
+ const parseTemp=v=>{const m=/^([+-]?\d+(?:\.\d+)?)\s*(?:°?([CF]))?$/i.exec(String(v??'').trim());return m?(m[2]?.toUpperCase()==='F'?(Number(m[1])-32)*5/9:Number(m[1])):null;};
+ let departure=null;
+ function coupledLimits(request){
+  const bank=root.B737UnifiedFmc?.snapshot?.(),active=bank?.active;
+  const ctx=liveContext(),toga=root.B737UnifiedTOGACh4V1?.getState?.(),scenario=root.B737UnifiedFlightScenarioV1;
+  const f=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
+  const ecu=root.B737ISNCockpitV1?.getECUState?.()?.aircraft;
+  const onGround=typeof f?.airborne==='boolean'?!f.airborne:typeof f?.onGround==='boolean'?f.onGround:ecu?.onGround;
+  const invalid=reason=>({valid:false,mode:null,reason,referencePct:null,atLimitPct:null,trainingOnly:true});
+  if(!active||!variants[ctx.model])return invalid('FMC_OR_PROFILE_UNAVAILABLE');
+  const profileKey=ctx.model+'/'+ctx.rating;
+  if(departure?.profileKey!==profileKey)departure=null;
+  const manual=active.N1_MANUAL_MODE;
+  const selectedClimb=['CLB','CLB-1','CLB-2'].includes(active.CLB_DERATE)?active.CLB_DERATE:'CLB';
+  let mode=request||(toga?.phase==='GA'?'GA':toga?.phase==='TO'&&!toga?.n1SelectedAfterArm?'TO':onGround===true?'TO':ctx.engines===1?'CON':manual&&manual!=='AUTO'?manual:String(f?.phase||'').includes('CRUISE')?'CRZ':onGround===false?'CLB':null);
+  if(!mode)return invalid('FLIGHT_PHASE_UNAVAILABLE');
+  if(mode==='CLB')mode=selectedClimb;
+  if(['CLB-1','CLB-2'].includes(mode)&&ctx.altFt>=15000)mode='CLB';
+  const options={clb2Available:true};
+  if(mode==='TO'){
+   const derate=active.TO_DERATE||'TO',base=ctx.model.replace(/W$/,'');
+   const rating=derate==='TO'?ctx.rating:derate==='TO-1'&&base==='737-300'&&ctx.rating===22000?20000:derate==='TO-1'&&base==='737-400'&&ctx.rating===23500?22000:null;
+   if(!rating)return invalid('FIXED_DERATE_TABLE_UNAVAILABLE');
+   const oat=parseTemp(active.OAT),sel=parseTemp(active.SEL_TEMP);
+   const signature=[profileKey,derate,oat,sel].join('/');
+   if(onGround===false&&departure?.signature===signature)return departure.packet;
+   const o={...options,takeoffRating:rating,...(oat===null?{}:{oatC:oat})};
+   const full=live('TO',o),reduced=sel===null?full:live('R-TO',{...o,assumedC:sel});
+   if(full.status!=='TRAINING_TABLE'||reduced.status!=='TRAINING_TABLE'||!finite(full.n1Pct)||!finite(reduced.n1Pct))return invalid(reduced.reason||full.reason||'N1_TABLE_UNAVAILABLE');
+   if(sel!==null&&reduced.n1Pct>full.n1Pct+.01)return invalid('REDUCED_N1_ABOVE_RATED');
+   const packet={valid:true,mode:sel===null?'TO':'R-TO',rating,derate,referencePct:full.n1Pct,atLimitPct:reduced.n1Pct,source:reduced.source,proxy:reduced.proxy,pages:reduced.pages,trainingOnly:true};
+   if(onGround===true)departure={profileKey,signature,packet};
+   return packet;
+  }
+  const r=live(mode,options);
+  if(r.status!=='TRAINING_TABLE'||!finite(r.n1Pct))return invalid(r.reason||'N1_TABLE_UNAVAILABLE');
+  return {valid:true,mode:mode==='GA'?'G/A':mode.startsWith('CLB-')?'R-CLB':mode,referencePct:r.n1Pct,atLimitPct:r.n1Pct,source:r.source,proxy:r.proxy,pages:r.pages,trainingOnly:true};
+ }
+ return Object.freeze({coupledLimits,version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
 };const api=make(root,root.B737N1TablesV07,root.B737PerfTablesV05);root.B737PerformanceEngineV07=api;if(typeof module==='object'&&module.exports)module.exports=api;})(globalThis);

@@ -114,13 +114,15 @@ try{
   const r=api.live(mode);
   return r.status==='TRAINING_TABLE'?{...r,maxN1Pct:r.n1Pct}:null;
  }
- function source(n){const st=state[n],est=estimate();
-  const auto=num(st.fmcPct)?st.fmcPct:num(est?.maxN1Pct)?est.maxN1Pct:null;
-  const label=st.pulled?'MAN':num(st.fmcPct)?'FMC':'EST';
+ function source(n){const st=state[n],engine=win.B737PerformanceEngineV07,packet=engine?.coupledLimits?.();
+  const coupled=packet?.valid===true,est=packet?null:estimate();
+  const legacy=!packet&&num(st.fmcPct);
+  const auto=coupled?packet.referencePct:legacy?st.fmcPct:num(est?.maxN1Pct)?est.maxN1Pct:null;
+  const label=st.pulled?'MAN':coupled||legacy?'FMC':'EST';
   return {targetPct:st.pulled?st.manualPct:auto,source:label,
-   automaticPct:auto,automaticSource:num(st.fmcPct)?'FMC':'EST',
+   automaticPct:auto,automaticSource:coupled||legacy?'FMC':'EST',atLimitPct:coupled?packet.atLimitPct:null,
    pulled:st.pulled,atInfluenced:false,
-   maxN1Pct:num(est?.maxN1Pct)?est.maxN1Pct:null,estimateNotAfm:true,tableSource:est?.source||null,tableProxy:est?.proxy||null};
+   maxN1Pct:coupled?packet.atLimitPct:num(est?.maxN1Pct)?est.maxN1Pct:null,estimateNotAfm:true,tableSource:packet?.source||est?.source||null,tableProxy:packet?.proxy||est?.proxy||null};
  }
  function change(n,value){
   if(!num(value))return;
@@ -280,6 +282,8 @@ try{
   setAuto:engine=>{if(![1,2].includes(engine))return false;
    state[engine].pulled=false;paint();return true;},
   refresh:()=>mount()});
+ let sharedAttached=false;function attachFmc(){if(sharedAttached||!win.B737UnifiedFmc?.subscribe)return;sharedAttached=true;win.B737UnifiedFmc.subscribe(()=>{if(!frame)mount();else paint();});}
+ win.addEventListener('b737:cockpit-mounted',attachFmc);attachFmc();
 })(window);
 
 }catch(error){queueMicrotask(()=>{throw error});}

@@ -21,8 +21,8 @@ try{
  function resolve(input={}){
   const fmcMode=typeof input.fmcMode==='string'?input.fmcMode.trim().toUpperCase():null;
   if(input.togaPhase==='GA')return info('G/A','SIMULATED_FCC_TOGA');
-  if(input.togaPhase==='TO')return info('TO','SIMULATED_FCC_TOGA');
   if(input.fmcConfirmed===true&&VALID.has(fmcMode))return info(fmcMode,'FMC_CONFIRMED');
+  if(input.togaPhase==='TO')return info('TO','SIMULATED_FCC_TOGA');
   // Flight scenario fallbacks are approximate, not authoritative FMC limits.
   if(input.phase==='TAKEOFF_ROLL')return info('TO','TRAINING_PHASE_PROXY');
   if(input.phase==='INITIAL_CLIMB'&&Number(input.elapsedSec)>=50)
@@ -35,6 +35,9 @@ try{
   const doc=win.document;
   let face=null,tat=null,mode=null,revision=0,fmcPacket=null;
   function fmcSignal(){
+   const coupled=win.B737PerformanceEngineV07?.coupledLimits?.();
+   if(coupled?.valid&&VALID.has(coupled.mode))return {mode:coupled.mode,confirmed:true};
+   if(coupled)return {mode:null,confirmed:false};
    const net=win.B737UnifiedAvionicsNetworkV1;
    const record=net?.getSignal?.('fmc.computed');
    const value=record?.quality==='VALID'?record.value:null;
@@ -108,6 +111,8 @@ try{
   win.B737UnifiedThrustModeDisplayV1=Object.freeze({version:'FCOM-TMD-0001',
    getState:()=>({...(mode||resolve()),revision,mounted:!!face&&face.isConnected}),
    update:present});
+  let attached=false;function attach(){if(attached||!win.B737UnifiedFmc?.subscribe)return;attached=true;win.B737UnifiedFmc.subscribe(present);}
+  win.addEventListener('b737:cockpit-mounted',attach);attach();
   return win.B737UnifiedThrustModeDisplayV1;
  }
  return Object.freeze({version:'FCOM-TMD-0001',MODES,resolve,mount});
