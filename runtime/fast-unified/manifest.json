@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "efd43cc4f94da0a5bf46e2f6b61d1bca3bb0d5d5789b5dd9228009777fb93646"
+      "sha256": "31c88a0a44fcc395db2c0a8487f8bbc1b413f0c3c825c6036bc03c2ba1d2db90"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,7 +908,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "1c63bd1660dcbbe8e76a99a4fdca7fec827aec900a592b2dc6f1e6e7d1a14bfd"
+      "sha256": "5e6eac625d58a3ab943ca45d496418d90dc74e0486a8f94d98dccfc02b1ba982"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -988,7 +988,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
-      "sha256": "95a5f44e3eaf07009f118b5acbb5c67fb8e7a26f0e7ac71df665ad79c224e3a3"
+      "sha256": "45fcf3be00d468bc60f6ec6ec9250d7e092ccfd0acb3d1219d98b76c7ebdd270"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",

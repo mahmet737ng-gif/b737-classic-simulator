@@ -12,7 +12,7 @@ const ARP=Object.freeze({OIII:{lat:35+41.3/60,lon:51+18.9/60},OIMM:{lat:36+14.1/
 function arp(icao){const p=ARP[icao];return p?{icao,...p,display:fmt(p).join(' '),source:'JEPPESEN_2621_10_9'}:null;}
 function syncArp(){state.refAirportArp=arp(state.active.REF_AIRPORT);}
 function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch{return null}}
-function syncEnteredPosition(){const record=sharedPosition(),raw=parentIRS()?.getCoreState?.();if(!record||!raw?.units)return;const match=u=>u?.enteredPosition&&Math.abs(u.enteredPosition.lat-record.lat)<1e-7&&Math.abs(u.enteredPosition.lon-record.lon)<1e-7;if(['L','R'].some(s=>match(raw.units[s])))state.active.IRS_POS=record.display;}
+function syncEnteredPosition(){ /* Shared CDU session owns active.IRS_POS; never restore a stale or preset position after FMC reset. */ }
 function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
 function inputFormat(raw){
  const s=String(raw||'').trim().toUpperCase().replace(/[\s./°]+/g,'');
@@ -93,6 +93,18 @@ update=function(){syncPosInitEvidence();syncArp();syncEnteredPosition();original
 window.updateStage5View=update;
 function handleKey(key){
  const normalized=String(key).replace(/^CDU_(?:CAPT|FO)_/,'');
+ // Route the photographed key here, before any legacy stage interceptors.
+ if(normalized==='INIT_REF'){
+  const g=parent.B737UnifiedAvionicsNetworkV1?.getSignal?.('aircraft.airground');
+  const f=parent.B737UnifiedFlightScenarioV1;
+  const flight=f?.getDiagnostics?.()?.active===true?f.getState?.():null;
+  if(g?.quality==='VALID'&&typeof g.value?.onGround==='boolean')state.fmcOnGroundVerified=g.value.onGround;
+  else if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
+  core.press(state,pages,'CDU_CAPT_INIT_REF');update();return true;
+ }
+ if(state.page==='POS_INIT'&&normalized==='LSK_L6'){
+  core.press(state,pages,'CDU_CAPT_LSK_L6');update();return true;
+ }
  if(state.page==='POS_INIT'&&normalized==='LSK_L2'){
   const icao=String(state.scratch).trim().toUpperCase();
   if(icao&&icao!=='DELETE'&&!/^[A-Z]{4}$/.test(icao)){state.message='INVALID ENTRY';update();return true;}
@@ -116,16 +128,34 @@ function handleKey(key){
   try{
    const input=inputFormat(state.scratch);
    const t=parentIRS();if(!t)throw Error('IRS TRAINER NOT READY');
-   const result=t.setFmcPosition(input);
-   if(!result.ok)throw Error('IRS POSITION NOT ACCEPTED');
-   const p=result.position,raw=t.getCoreState?.();
-   const accepted=(result.sides||[]).filter(s=>{const q=raw?.units?.[s]?.enteredPosition;return q&&Math.abs(q.lat-p.lat)<1e-7&&Math.abs(q.lon-p.lon)<1e-7;});
-   if(!accepted.length)throw Error('ENTER IRS POS');
+   // Validate the FMC reference even if the IRS is already in NAV.
+   const parse=(part,d,max)=>{const deg=Number(part.slice(1,d+1)),minute=Number(part.slice(d+1))/10;
+    if(deg>max||minute>=60||(deg===max&&minute!==0))throw Error('INVALID IRS POSITION');
+    return (part[0]==='S'||part[0]==='W'?-1:1)*(deg+minute/60);};
+   const [lat,lon]=input.split(' ');const p={lat:parse(lat,2,90),lon:parse(lon,3,180)};
+   let result=null,delivery='ACCEPTED',accepted=[];
+   try{result=t.setFmcPosition(input);}catch(error){
+    if(!String(error?.message||error).includes('NO IRS ALIGNING'))throw error;
+    delivery='NOT_ALIGNING';
+   }
+   const raw=t.getCoreState?.();
+   const matches=q=>q&&Math.abs(q.lat-p.lat)<1e-7&&Math.abs(q.lon-p.lon)<1e-7;
+   if(result){
+    if(!result.ok)throw Error('IRS POSITION NOT ACCEPTED');
+    accepted=(result.sides||[]).filter(s=>matches(raw?.units?.[s]?.enteredPosition));
+    if(!accepted.length)throw Error('ENTER IRS POS');
+   }else{
+    accepted=['L','R'].filter(s=>matches(raw?.units?.[s]?.enteredPosition));
+    if(accepted.length)delivery='ALREADY_INITIALIZED';
+   }
    const display=fmt(p).join(' ');
    state.active.IRS_POS=display;delete state.pending.IRS_POS;
-   parent.B737FmcEnteredPositionV1=Object.freeze({lat:p.lat,lon:p.lon,display,sides:accepted,source:'FMC_POS_INIT'});
+   parent.B737FmcEnteredPositionV1=Object.freeze({lat:p.lat,lon:p.lon,display,sides:accepted,source:'FMC_POS_INIT',irsDelivery:delivery});
+   state.scratch='';state.message=delivery==='NOT_ALIGNING'?'IRS NOT ALIGNING':'';
+   // Publish shared FMC state before notifying the other CDU.
+   update();
    parent.dispatchEvent(new parent.CustomEvent('b737:fmc-entered-position',{detail:parent.B737FmcEnteredPositionV1}));
-   state.scratch='';state.message='';
+   return true;
   }catch(e){state.message=String(e.message||e).slice(0,32);}
   update();return true;
  }

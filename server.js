@@ -57,9 +57,11 @@ const runtimeFiles = new Set(require('./runtime/manifest.json'));
 // worker's scope. Their original relative asset bases and same-origin session
 // remain valid. Only these documents are routed through the new entry.
 const cockpitSource='panel-mosaic-lab/cockpit/';
+const cduLab=require('./unified-cdu-lab.js');
 const directPath='/panel-mosaic-lab/unified/';
 const directDocuments=new Map([
  [directPath,cockpitSource+'index.html'],
+ [cduLab.labPath,cockpitSource+'index.html'],
  [directPath+'overhead-stage.html',cockpitSource+'overhead-stage.html'],
  [directPath+'cdu-stage.html',cockpitSource+'cdu-stage.html']
 ]);
@@ -95,7 +97,7 @@ const fastRuntime=(()=>{
    !bytes.has('panel-mosaic-lab/cockpit/overhead-stage.html'))
     throw Error('Compiled cockpit or overhead entry missing');
   console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
-  return {sourceCommit:manifest.sourceCommit,bytes,compressed,digests};
+  return {sourceCommit:manifest.sourceCommit,releaseId:crypto.createHash('sha256').update(JSON.stringify(manifest)).digest('hex'),bytes,compressed,digests};
  } catch(error){
   if(error.code==='ENOENT'&&!require('node:fs').existsSync(fastRuntimeDir))return null;
   throw Error('Invalid Unified release', {cause:error});
@@ -319,7 +321,7 @@ function directBootSetup(){
  const photoPreloads=photoURLs.map(url=>'<link rel="preload" as="image" href="'+url+'" fetchpriority="high">').join('');
  return photoPreloads+'<script>window.B737GatewayBoot='+setup.replace(/</g,'\\u003c')+';</script>';
 }
-function transformCockpitHTML(content,{direct=false}={}) {
+function transformCockpitHTML(content,{direct=false,lab=false}={}) {
   // Preserve the original ordered simulator scripts. Direct mode embeds the
   // release layout and starts the same documents under the sibling route.
   // Start an immediate same-origin session renewal BEFORE the hundreds of
@@ -334,7 +336,7 @@ function transformCockpitHTML(content,{direct=false}={}) {
     '<script src="/static/guest-cockpit.js" defer></script>'+
     '<script src="/static/session.js" defer></script>';
   if(!/<head\b[^>]*>/i.test(content))throw Error('Source cockpit document is malformed');
-  let result=content.replace(/<head\b[^>]*>/i,m=>m+injection);
+  let result=cduLab.addLink(content).replace(/<head\b[^>]*>/i,m=>m+(lab?cduLab.head(true):'')+injection);
   // Photo preloads win the first lane; remove speculative ECU preload burst.
   // Deferred simulator scripts retain their original ordering and behavior.
   if(direct)result=result.replace(/<link\s+rel="preload"\s+as="script"[^>]*>\s*/gi,'');
@@ -380,18 +382,18 @@ function versionCompiledLinks(html,relative){
       /(?:irs-|guard|owner18)/i.test(asset.pathname)||
       !/\.(?:js|css)$/.test(asset.pathname)||!optimizedSource(asset.pathname.slice(1)))return match;
    const url=asset.pathname+asset.search.replaceAll('&','&amp;')+
-    (asset.search?'&amp;':'?')+'unifiedRelease='+fastRuntime.sourceCommit+asset.hash;
+    (asset.search?'&amp;':'?')+'unifiedRelease='+fastRuntime.releaseId+asset.hash;
    return match.slice(0,match.indexOf(quote)+1)+url+quote;
   });
  });
 }
 const compiledDocuments=new Map();
-function compiledDocument(relative,bytes,cockpitDocument,direct){
- const key=direct?'direct:'+relative:relative;
+function compiledDocument(relative,bytes,cockpitDocument,direct,lab=false){
+ const key=lab?'cdu-lab:'+relative:direct?'direct:'+relative:relative;
  if(!compiledDocuments.has(key)){
   const original=bytes.toString('utf8');
-  const rendered=cockpitDocument?transformCockpitHTML(original,{direct}):
-   original.replace(/<head\b[^>]*>/i,m=>m+'<script src="/static/session.js" defer></script>');
+  const rendered=cockpitDocument?transformCockpitHTML(original,{direct,lab}):
+   original.replace(/<head\b[^>]*>/i,m=>m+(relative.endsWith('-stage.html')?cduLab.head(false):'')+'<script src="/static/session.js" defer></script>');
   const html=direct?versionCompiledLinks(rendered,relative):rendered;
   const raw=Buffer.from(html);
   const brotli=zlib.brotliCompressSync(raw,{
@@ -405,7 +407,7 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
  const ext=path.posix.extname(relative).toLowerCase();
  if(ext!=='.html'){
   const releasePinned=/\.(?:js|css)$/.test(relative)&&
-   new URL(req.url,'http://localhost').searchParams.get('unifiedRelease')===fastRuntime.sourceCommit;
+   new URL(req.url,'http://localhost').searchParams.get('unifiedRelease')===fastRuntime.releaseId;
   const immutable=releasePinned||/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative)||
    /^panel-mosaic-lab\/cockpit\/performance\/boot-art\/[a-z0-9-]+-[a-f0-9]{20}\.webp$/.test(relative);
   res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':'private, max-age=0, must-revalidate');
@@ -423,7 +425,8 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
   return;
  }
  const mime='text/html; charset=utf-8';
- res.setHeader('X-Unified-Release',fastRuntime.sourceCommit);
+ res.setHeader('X-Unified-Release',fastRuntime.releaseId);
+ res.setHeader('X-Unified-Source-Commit',fastRuntime.sourceCommit);
  const timing=['unified-compiled;desc="'+fastRuntime.sourceCommit+'"'];
  if(direct)timing.push('unified-direct');
  if(Number.isFinite(authMs))timing.push('gateway-auth;dur='+authMs.toFixed(1));
@@ -434,7 +437,8 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
   "connect-src 'self' https:; font-src 'self' data:; media-src 'self' blob: https:; "+
   "worker-src 'self' blob:; frame-src 'self'; object-src 'none'; "+
   "base-uri 'self'; form-action 'self'; frame-ancestors 'self'");
- const {html,brotli,gzip}=compiledDocument(relative,bytes,cockpitDocument,direct);
+ const lab=new URL(req.url,'http://localhost').pathname===cduLab.labPath;
+ const {html,brotli,gzip}=compiledDocument(relative,bytes,cockpitDocument,direct,lab);
  res.setHeader('Cache-Control','private, no-store');
  res.setHeader('Vary','Accept-Encoding');
  const accepts=String(req.headers['accept-encoding']||'');
@@ -1044,6 +1048,8 @@ async function handle(req,res) {
     redirect(res,fastRuntime?directPath:'/panel-mosaic-lab/cockpit/');return;
   }
   if (req.method==='GET' || req.method==='HEAD') {
+    // The old standalone entry is retired; shared assets and embedded CDU remain.
+    if(cduLab.legacy.test(url.pathname)&&!url.searchParams.has('seat')){redirect(res,cduLab.labPath);return;}
     const document=directDocuments.get(url.pathname);
     const compiled=document&&optimizedSource(document);
     if(compiled){
