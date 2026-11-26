@@ -1631,9 +1631,16 @@ window.B737McpAFDSBridgeV1=Object.freeze({
   source:'SIMULATED_FCC',dualApGA:dualApGA===true,singleEngine:singleEngine===true}),
  updateTogaEngine:singleEngine=>send({type:'TOGA_ENGINE_STATUS',confirmed:true,
   source:'SIMULATED_FCC',singleEngine:singleEngine===true}),
- disconnectConfirmed:sample=>send({type:"AP_DISENGAGE_CONFIRMED",...sample}),
+ disconnectConfirmed:sample=>{
+  const before=Core.output(state);
+  if(!before.modes.autopilot&&sample?.confirmed===true&&sample?.reason==="CONTROL_WHEEL_AP_DISCONNECT"&&sample?.source==="COCKPIT_HARDWARE"){
+   window.B737AFDSAnnunciatorUnifiedV1?.acknowledge?.("AP");return before;
+  }
+  return send({type:"AP_DISENGAGE_CONFIRMED",...sample});
+ },
+ disconnectAutothrottle:()=>{const before=Core.output(state);if(!before.controls.atArm){window.B737AFDSAnnunciatorUnifiedV1?.acknowledge?.("AT");return before;}return send({type:"AT_ARM",armed:false});},
  press:requestMode,
- reset:()=>{send({type:"RESET"});lastElectrical="";electrical();return Core.output(state);}
+ reset:()=>{window.dispatchEvent(new CustomEvent("b737:afds-owner-reset"));send({type:"RESET"});lastElectrical="";electrical();return Core.output(state);}
 });
 })();
 }catch(error){queueMicrotask(()=>{throw error});}

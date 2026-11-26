@@ -1043,6 +1043,7 @@ function select(seat,detent){
 function acknowledge(id){
  // Real A/P, A/T, FMC alerts are mirrored to both crew sides.
  for(const seat of Object.keys(INSTALL))transition(seat,{type:"ACKNOWLEDGE",id});
+ root.dispatchEvent(new CustomEvent("b737:afds-annunciator-ack",{detail:{id}}));
 }
 function setAlert(id,status){
  for(const seat of Object.keys(INSTALL))transition(seat,{type:"SET_ALERT",id,status});
@@ -1176,6 +1177,102 @@ root.B737AFDSAnnunciatorUnifiedV1=Object.freeze({
  release:(seat="FO")=>release(seat),
  setAlert,acknowledge,mount
 });
+
+/* AFDS live warning adapter — FCOM 4.10.22/23, 11.10.11. The existing MCP
+   and FMA remain the owners; this is a projection, never a second FCC. */
+function createLiveMonitor(){
+ const activeModes=new Set(['N1','GA','RETARD','THR HLD','MCP SPD','FMC SPD','SPEED','FMC_SPD']);
+ let previous=null,atEngaged=false,apRed=false,atRed=false,airStart=null,autoStart=null,priorSpeed=false,priorQualified=false,fmcKey='',fmcAck='',atErrorAck=false,atError=false;
+ let last={AP:'OFF',AT:'OFF',FMC:'OFF',apTone:false};
+ function reset(){previous=null;atEngaged=false;apRed=false;atRed=false;airStart=null;autoStart=null;priorSpeed=false;priorQualified=false;fmcKey='';fmcAck='';atErrorAck=false;atError=false;last={AP:'OFF',AT:'OFF',FMC:'OFF',apTone:false};return {...last};}
+ function ack(id){if(id==='AP')apRed=false;if(id==='AT'){atRed=false;atErrorAck=atError;autoStart=null;}if(id==='FMC')fmcAck=fmcKey;return {...last};}
+ function update(s,now){
+  const m=s.mcp;if(!m||m.schema!=='B737_MCP_AFDS_OUTPUT_V1')return {...last};
+  const power=m.power===true,ap=power&&/^(CMD|CWS)_[AB]$/.test(m.modes?.autopilot||''),arm=power&&m.controls?.atArm===true;
+  const mode=s.fmaAt||m.modes?.thrust||'',active=arm&&activeModes.has(mode);
+  if(previous?.ap&&!ap)apRed=true;
+  if(ap)apRed=false;
+  if(active)atEngaged=true;
+  if(previous?.arm&&!arm&&atEngaged){atRed=true;atEngaged=false;}
+  if(arm&&!previous?.arm){atRed=false;atEngaged=active;}
+  if(!arm)atEngaged=false;
+  const airborne=s.airborne===true;
+  if(airborne&&airStart===null)airStart=now;
+  if(s.airborne===false){airStart=null;autoStart=null;}
+  const speedMode=arm&&['MCP SPD','FMC SPD','SPEED','FMC_SPD'].includes(mode);
+  const qualified=airborne&&Number.isFinite(s.flap)&&s.flap>0&&speedMode;
+  if(qualified&&!priorQualified&&(!priorSpeed||!previous?.arm)&&airStart!==null&&now-airStart>150000)autoStart=now;
+  if(!qualified)autoStart=null;
+  if(autoStart!==null&&now-autoStart>=6000)autoStart=null;
+  const error=Number.isFinite(s.ias)&&Number.isFinite(s.target)?s.ias-s.target:null;
+  atError=qualified&&error!==null&&(error>10||error< -5);
+  if(!atError)atErrorAck=false;
+  const automatic=autoStart!==null&&(now-autoStart<2000||now-autoStart>=4000);
+  const bothFail=s.cdu?.CAPT?.fail===true&&s.cdu?.FO?.fail===true;
+  const bothAlert=!!s.cdu?.CAPT?.alert&&!!s.cdu?.FO?.alert;
+  const key=bothFail?'BOTH_FAIL':bothAlert?'ALERT:'+s.cdu.CAPT.alert+'|'+s.cdu.FO.alert:'';
+  if(key!==fmcKey){fmcKey=key;fmcAck='';}
+  previous={ap,arm};priorSpeed=speedMode;priorQualified=qualified;
+  last={AP:apRed?'FLASH_RED':s.apSteady===true?'STEADY_RED':'OFF',
+   AT:atRed?'FLASH_RED':(atError&&!atErrorAck||automatic)?'FLASH_AMBER':'OFF',
+   FMC:fmcKey&&fmcKey!==fmcAck?'STEADY_AMBER':'OFF',apTone:apRed};
+  return {...last};
+ }
+ return Object.freeze({update,ack,reset,getState:()=>({...last})});
+}
+ const monitor=createLiveMonitor();
+ const cdu={CAPT:null,FO:null};
+ let lastTone=false,lastOutput=null,scheduled=0,clock=0,previousWall=performance.now();
+ function publishTone(active){
+  if(lastTone===active)return;lastTone=active;
+  root.dispatchEvent(new CustomEvent('b737:ap-disconnect-aural-demand',{detail:{active,source:'AFDS_ANNUNCIATOR'}}));
+ }
+ function applyLive(){
+  const m=root.B737McpAFDSBridgeV1?.getOutput?.();if(!m)return;
+  const scenario=root.B737UnifiedFlightScenarioV1;
+  const f=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
+  const wall=performance.now(),dt=Math.max(0,Math.min(500,wall-previousWall));previousWall=wall;
+  if(scenario?.getDiagnostics?.()?.paused!==true)clock+=dt;
+  const net=root.B737UnifiedAvionicsNetworkV1;
+  const get=topic=>{const r=net?.getSignal?.(topic);return r?.quality==='VALID'?r.value:null;};
+  const air=get('aircraft.airground'),adc=get('airdata.adc1')||get('airdata.adc2');
+  const airborne=typeof f?.airborne==='boolean'?f.airborne:typeof air?.onGround==='boolean'?!air.onGround:m.flight?.airborne;
+  const mode=root.B737EADIFMAFcomV2?.getState?.('CAPT')?.fields?.at?.active;
+  // Ignore a stale FMA on ARM OFF; owner output remains authoritative.
+  const fmaAt=m.controls?.atArm===true?mode:null;
+  const flap=root.B737LEDevicesUnifiedLink?.getState?.()?.actualTe;
+  const target=fmaAt==='FMC SPD'?m.fmcGuidance?.targetKt:
+   fmaAt==='MCP SPD'&&m.speedDisplayMode==='IAS'?m.values?.speed:null;
+  const ias=Number.isFinite(adc?.casKt)?adc.casKt:f?.iasKt;
+  // No invented steady-red conditions: accept explicit verified evidence
+  // only from the same existing flight observation owner.
+  const ev=m.flight,steady=(ev?.apGroundTestFailed===true||ev?.altAcqInhibitedByStabTrim===true||
+   (m.dualApproach?.coupled===true&&Number.isFinite(ev?.radioAltitudeFt)&&ev.radioAltitudeFt<800&&ev?.stabOutOfTrim===true));
+  const result=monitor.update({mcp:m,airborne,flap,ias,target,fmaAt,cdu,apSteady:steady},clock);
+  for(const id of ['AP','AT','FMC'])if(lastOutput?.[id]!==result[id])setAlert(id,result[id]);
+  publishTone(result.apTone);lastOutput=result;
+ }
+ function queue(){if(!scheduled)scheduled=root.requestAnimationFrame(()=>{scheduled=0;applyLive();});}
+ function resetLive(){monitor.reset();cdu.CAPT=cdu.FO=null;lastOutput=null;publishTone(false);queue();}
+ root.addEventListener('b737:afds-annunciator-ack',e=>{monitor.ack(e.detail?.id);lastOutput=null;applyLive();});
+ root.addEventListener('b737:afds-owner-reset',resetLive);
+ root.addEventListener('b737:aircraft-general-state',resetLive);
+ root.addEventListener('b737:flight-scenario-stopped',resetLive);
+ for(const event of ['b737:mcp-afds-state','b737:fma-fcc-observation','b737:fma-fcc-clear','b737:cockpit-mounted','b737:flight-scenario-state','b737:trailing-flaps'])root.addEventListener(event,queue);
+ root.addEventListener('message',e=>{
+  if(e.origin!==root.location.origin||e.data?.type!=='b737:fmc-cdu-snapshot')return;
+  const d=e.data;if(!['CAPT','FO'].includes(d.seat))return;
+  const valid=Array.from(root.document.querySelectorAll('iframe')).some(frame=>{
+   try{return frame.contentWindow===e.source&&new URL(frame.src,root.location.href).searchParams.get('seat')===d.seat;}catch(_){return false;}
+  });
+  if(!valid)return;
+  cdu[d.seat]={fail:d.failLight===true,alert:typeof d.alertingMessage==='string'?d.alertingMessage:null};queue();
+ });
+ const tick=root.setInterval(applyLive,200);
+ root.addEventListener('pagehide',()=>{root.clearInterval(tick);publishTone(false);},{once:true});
+ root.B737AFDSAnnunciatorLiveV1=Object.freeze({getState:monitor.getState,refresh:applyLive,createMonitor:createLiveMonitor});
+ queue();
+
 root.addEventListener("blur",releaseAll);
 root.document.addEventListener("visibilitychange",()=>{if(root.document.hidden)releaseAll();});
 root.addEventListener("pagehide",releaseAll);

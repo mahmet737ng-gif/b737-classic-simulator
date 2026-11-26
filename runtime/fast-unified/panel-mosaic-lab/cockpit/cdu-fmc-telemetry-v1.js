@@ -133,7 +133,8 @@
    routeRevision:state.routeRevision||0,
    hasNavDb:Boolean(state.navdbActive),hasVerifiedLegs:false,
    displayRoute:importedRoute??window.CDU_CH11_ROUTE_PAGES?.activeReferenceRoute(state)??null,
-   scratchpadMessage:state.message||null};
+   scratchpadMessage:state.message||null,failLight:core.lights(state).FAIL===true&&feed!=="ABSENT",
+   alertingMessage:feed!=="ABSENT"&&["INSUFFICIENT FUEL","USING RSV FUEL","UNABLE RTA","VERIFY POSITION","FMC DISAGREE"].includes(state.message)?state.message:null};
  }
  function send(){
   if(queued)return;queued=true;
