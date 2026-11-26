@@ -18,7 +18,7 @@
  };
  window.B737CrewCduV1=Object.freeze({press(id){
   if(!keys.has(id))return false;
-  originalKey(id);
+  if(!window.B737CDUIRSAdapterV1?.handleKey?.(id))originalKey(id);
   return true;
  }});
  let applying=false,session;

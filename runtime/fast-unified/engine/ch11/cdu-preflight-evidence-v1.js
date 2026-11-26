@@ -58,7 +58,8 @@
   return [data?.irs?.L,data?.irs?.R].some(u=>isObj(u)&&u.mode==='ATT'&&u.powered===true);
  }
  function irsPositionPrompt(data){
-  const align=[data?.irs?.L,data?.irs?.R].some(u=>isObj(u)&&u.mode==='ALIGN'&&u.powered===true&&u.positionEntered!==true);
+  const phases=['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN'];
+  const align=[data?.irs?.L,data?.irs?.R].some(u=>isObj(u)&&u.powered===true&&u.positionEntered!==true&&['ALIGN','NAV'].includes(u.mode)&&(phases.includes(u.phase)||(!u.phase&&u.mode==='ALIGN')));
   return align?'□□□□':'';
  }
  function identValue(key,data){return verifiedText(data,key);}

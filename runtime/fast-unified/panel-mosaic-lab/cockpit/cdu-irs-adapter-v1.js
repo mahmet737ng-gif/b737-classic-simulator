@@ -15,7 +15,7 @@ function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch
 function syncEnteredPosition(){const record=sharedPosition(),raw=parentIRS()?.getCoreState?.();if(!record||!raw?.units)return;const match=u=>u?.enteredPosition&&Math.abs(u.enteredPosition.lat-record.lat)<1e-7&&Math.abs(u.enteredPosition.lon-record.lon)<1e-7;if(['L','R'].some(s=>match(raw.units[s])))state.active.IRS_POS=record.display;}
 function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
 function inputFormat(raw){
- const s=String(raw||'').trim().toUpperCase().replace(/[\s./]+/g,'');
+ const s=String(raw||'').trim().toUpperCase().replace(/[\s./°]+/g,'');
  const match=s.match(/^([NS]\d{5})([EW]\d{6})$/);
  if(!match)throw Error('INVALID IRS POSITION · NDDMMm EDDDMMm');
  return match[1]+' '+match[2];
@@ -39,7 +39,7 @@ function syncPosInitEvidence(){
   const u=snap.units[side],r=raw?.units?.[side];
   if(!u)continue;
   stateUnits[side]={mode:u.mode||'OFF',powered:u.powered===true,
-   positionEntered:!!r?.enteredPosition};
+   phase:r?.phase||u.phase||null,positionEntered:!!r?.enteredPosition};
  }
  const previous=JSON.stringify(state.preflightEvidence?.irs||{});
  state.preflightEvidence={...(state.preflightEvidence||{}),irs:stateUnits};
@@ -91,20 +91,28 @@ function syncIrsAlerts(snapshot){
 }
 update=function(){syncPosInitEvidence();syncArp();syncEnteredPosition();originalUpdate();patchPositionPages();};
 window.updateStage5View=update;
-send=function(key){
+function handleKey(key){
  const normalized=String(key).replace(/^CDU_(?:CAPT|FO)_/,'');
- if(state.page==='POS_INIT'&&normalized==='LSK_L2'&&state.scratch&&state.scratch!=='DELETE'){
+ if(state.page==='POS_INIT'&&normalized==='LSK_L2'){
   const icao=String(state.scratch).trim().toUpperCase();
-  if(!/^[A-Z]{4}$/.test(icao)){state.message='INVALID ENTRY';update();return;}
-  if(!arp(icao)){state.message='NOT IN DATABASE';update();return;}
-  return original(key);
+  if(icao&&icao!=='DELETE'&&!/^[A-Z]{4}$/.test(icao)){state.message='INVALID ENTRY';update();return true;}
+  if(icao&&icao!=='DELETE'&&!arp(icao)){state.message='NOT IN DATABASE';update();return true;}
+  core.press(state,pages,'CDU_CAPT_LSK_L2');update();return true;
+ }
+ if(state.page==='POS_INIT'&&normalized==='LSK_L3'){
+  core.press(state,pages,'CDU_CAPT_LSK_L3');update();return true;
  }
  if(state.page==='POS_INIT'&&normalized==='LSK_R2'){
   const ref=arp(state.active.REF_AIRPORT);
   if(ref){state.scratch=ref.display;state.message='';}else state.message='ENTER REF AIRPORT';
-  update();return;
+  update();return true;
  }
  if(state.page==='POS_INIT'&&normalized==='LSK_R4'){
+  if(!state.scratch){
+   if(state.active.IRS_POS){state.scratch=state.active.IRS_POS;state.message='';}
+   else state.message='ENTER IRS POS';
+   update();return true;
+  }
   try{
    const input=inputFormat(state.scratch);
    const t=parentIRS();if(!t)throw Error('IRS TRAINER NOT READY');
@@ -119,10 +127,11 @@ send=function(key){
    parent.dispatchEvent(new parent.CustomEvent('b737:fmc-entered-position',{detail:parent.B737FmcEnteredPositionV1}));
    state.scratch='';state.message='';
   }catch(e){state.message=String(e.message||e).slice(0,32);}
-  update();return;
+  update();return true;
  }
- return original(key);
-};
+ return false;
+}
+send=function(key){if(handleKey(key))return;return original(key);};
 const previousRender=parentIRS()?.getState?.();
 let lastSig='';
 setInterval(()=>{
@@ -137,5 +146,5 @@ setInterval(()=>{
 try{parent.addEventListener('b737:fmc-entered-position',()=>{if(state.page==='POS_INIT'||state.page==='POS_REF')update();else syncEnteredPosition();});parent.addEventListener('b737:flight-location-reference',()=>{
  if(state.page==='POS_REF')patchPositionPages();
 });}catch(_){/* CDU iframe on a different origin cannot read the parent */ }
-window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence,arp});
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence,arp,handleKey});
 })();

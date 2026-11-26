@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "66bd1d620c8a69d0933e15fcba48b9434de5d19e888e3f329e61122ac30a326b"
+      "sha256": "eff8030b6617854883343148b823333d7e67ef88d9a0f7f457655769e4fb141d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -928,7 +928,7 @@
     },
     {
       "path": "engine/ch11/cdu-preflight-evidence-v1.js",
-      "sha256": "eed6f6f2463fbd029ca5d30e877cf6835c31b4965d91a053cc99ecaf43bf2ef2"
+      "sha256": "8b7e5b475ee6fac75ea15c635d17a89b1c8ef96bd2300166fa9ecae1c42fa3fb"
     },
     {
       "path": "engine/ch11/airac2611-middle-east-preview-v1.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "711ec88203c759a20b9472a42e92193e08d3b52e787ef98e2474609434b3722f"
+      "sha256": "edbc78bcbf64570450922e87ec542eb6f76cfdb8ddbd69bc33ccc7b49f9cf476"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -984,11 +984,11 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-bridge.js",
-      "sha256": "2ee54cc2b306b961ecd9f19701c1af31c183c5ec38adcb2ec6f0415cdfb0bcc6"
+      "sha256": "6e77bf1c75e8c531d92c381bdecf18e07ad41713fdf9b70c90cac13b549b832e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
-      "sha256": "ba07f0a1d88c9ee00ec96478acc5a4b0d5893f944d836d65636ac1ec401d58cd"
+      "sha256": "95a5f44e3eaf07009f118b5acbb5c67fb8e7a26f0e7ac71df665ad79c224e3a3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
