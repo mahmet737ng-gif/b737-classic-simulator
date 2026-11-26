@@ -2,13 +2,13 @@
   "schema": "b737-unified-fast-runtime/1",
   "sourceCommit": "a16e545d711bb437a22357517c06cd878847036c",
   "mainBefore": 328,
-  "mainAfter": 103,
+  "mainAfter": 107,
   "overheadBefore": 62,
   "overheadAfter": 43,
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "9ca03862cc272c83463842d9f0039c4d27d262382dd8e4a5aa0321f1487e6950"
+      "sha256": "96795d71c1c12f94220aaa1656c73b572d9cdd64fc4103ccb553d601d06ff5f0"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -48,11 +48,11 @@
     },
     {
       "path": "engine/config/desktop-bundle-0934f674ee3ca2e3.js",
-      "sha256": "0934f674ee3ca2e3be2786736cef746a79720e78f9ec44cb348e11988c75244c"
+      "sha256": "771f8f933e2cd5e93e5f9cf8f7a89990c9fcda9d2a6979e62c20e84671beaf1f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-df37b59c14eedab3.js",
-      "sha256": "df37b59c14eedab3ed6d01aff3b4d18e1ed193633ba075bd036d3b411803ace7"
+      "sha256": "a1793a09fe9f293fd88051f32480882f9361f4954b53f92c0138665d8f9ad7ac"
     },
     {
       "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
@@ -148,7 +148,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
-      "sha256": "1ae3c18134f3bb31510f31742e9341a6852f4368d7d3320785b3a11e865a9763"
+      "sha256": "0052b1674d68429daf1e6ad22605d7402fc47034c35ec942dc9d4533af15b9cb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "c4777a3d4bda8991ff13738af11cb929c87669a04c6747ddae7fcc763003591a"
+      "sha256": "5dcc9e4cd2ae87773c2539cceffd83e982954512df433a90a6829a284eb009c6"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -280,7 +280,7 @@
     },
     {
       "path": "engine/integration/isn-thrust-performance-v1.js",
-      "sha256": "f39cb00e0467da6cf3fa5d13c791bfc12fd189cd7b239aae470da03f445bcc14"
+      "sha256": "e4192d038767edbcb805db678cd39cef45c631530ed2f28c4856fe16902a9f0d"
     },
     {
       "path": "engine/systems/classic-fuel-system-v1.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "7057cb163b52b59d75945a7a9b279f02fadf7a41b69cc1149a367c013f815e12"
+      "sha256": "87b8f028770ac53e8ea14c956d205280cb0e1e74daaaa52cd5f9f89d207aa2e6"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -996,7 +996,7 @@
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",
-      "sha256": "6bc54d8c45f9cb04886cc479dabba3fa908cf40760b6f9564bb1b8855b93ace5"
+      "sha256": "863eaa4b33cb8c871bf991d3fcdaaab21529dd0f2cd4762fa7de68c4c3f30312"
     },
     {
       "path": "engine/ch11/cdu-airac-banks-v1.js",
@@ -1004,7 +1004,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-ident-profile-receiver-v1.js",
-      "sha256": "0ac1ee3299dd472ffb4454f8516db59beaea117c304e2c623346dd7a56453837"
+      "sha256": "5ae87e56fdb98e0543906e8924e0c200b79583c5753fbe382ba6295a36e6134e"
     },
     {
       "path": "engine/ch11/fmc-airac-banks-v1.js",
@@ -1801,6 +1801,22 @@
     {
       "path": "engine/fmc/pilot-waypoints-v1.js",
       "sha256": "deed5cb1a4b007ef93d43d9847a07851d303e9c0a1aa24ae123f946d0c41967a"
+    },
+    {
+      "path": "engine/performance/climb-tables-v05.js",
+      "sha256": "213c69909412bfb4b68653610ed3856c9197d17ba548a0d2d652bf77b9822308"
+    },
+    {
+      "path": "engine/performance/n1-tables-v07.js",
+      "sha256": "48b44050a48231b45aab131c41f7c2b2a6888706c4e0c08f74c01992dc84695a"
+    },
+    {
+      "path": "engine/performance/performance-engine-v07.js",
+      "sha256": "0eda5b3b902f034f3681bdb4a8bfd6d4c65a478dcfc5dd7b7808e71244c51cd4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",
+      "sha256": "d2375e33eb92223b2b9112f5383054dd5019cfb900f6250e37a4cc0f7de30d97"
     }
   ]
 }
