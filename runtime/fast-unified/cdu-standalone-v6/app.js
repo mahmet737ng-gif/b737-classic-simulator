@@ -328,7 +328,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
      if(row===1){valueL=preflight.lastPosition(sources);valueR='';}
      if(row===2){valueL=state.active.REF_AIRPORT||'----';valueR=state.refAirportArp&&state.refAirportArp.icao===state.active.REF_AIRPORT?(state.refAirportArp.display||''):'';}
      if(row===3&&!core.readValue(state,'REF_AIRPORT','POS_INIT'))valueL='-----';
-     if(row===4){valueR=state.active.IRS_POS||preflight.irsPositionPrompt(sources)||(state.fmcOnGroundVerified!==false?'□□□□':'');}
+     if(row===4){valueR=state.irsPositionDisplay||state.active.IRS_POS||preflight.irsPositionPrompt(sources)||(state.fmcOnGroundVerified!==false?'□□□□':'');}
      if(row===5){
        valueL=preflight.clock(sources);
        if(!preflight.irsHeadingAvailable(sources)){labelR='';valueR='';}

@@ -278,9 +278,9 @@ function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)
 function press(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|FO)_/,'');st.lastKey=k;st.events.push({key:k,page:st.page});if(st.events.length>300)st.events.shift();
  // INIT REF is context-sensitive; INDEX remains an independent LSK destination.
  if(k==='INIT_REF'){
-  // An IRS pre-aligned by a scenario is not a position entered in the FMC.
+  // An actual IRS reference (including scenario alignment or ISDU entry) initializes FMC position.
   const entered=/^[NS]\d{4}\.?\d\s*[EW]\d{5}\.?\d$/i.test(String(st.active?.IRS_POS||'').trim());
-  choose(st,pages,st.fmcOnGroundVerified===false?'APP_REF':entered?'PERF_INIT':'POS_INIT');
+  choose(st,pages,st.fmcOnGroundVerified===false?'APP_REF':entered&&st.irsPositionRequired!==true?'PERF_INIT':'POS_INIT');
   return st;
  }
  const routeScreens=getRouteScreens(st);

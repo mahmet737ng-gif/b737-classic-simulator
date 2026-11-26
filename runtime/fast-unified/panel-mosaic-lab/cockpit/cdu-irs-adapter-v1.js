@@ -21,7 +21,33 @@ function arp(icao){
 }
 function syncArp(){if(state.page==='POS_INIT')state.refAirportArp=arp(state.active?.REF_AIRPORT);}
 function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch{return null}}
-function syncEnteredPosition(){ /* Shared CDU session owns active.IRS_POS; never restore a stale or preset position after FMC reset. */ }
+// The actual IRS core, not a CDU-local entry or scenario flag, owns position.
+const alignmentPhases=new Set(['SELFTEST','ALIGNING','ALIGN_READY','WAIT_POSITION','HIGH_LAT_READY','FAST_REALIGN','WAIT_LATITUDE_SENSOR']);
+function validPosition(p){return !!p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180;}
+function syncEnteredPosition(){
+ const t=parentIRS(),snap=t?.getState?.(),raw=t?.getCoreState?.();
+ if(!snap?.units)return false;
+ const candidates=[];let missing=false;
+ for(const side of ['L','R']){
+  const u=snap.units[side],r=raw?.units?.[side];
+  if(!u||u.powered!==true||!['NAV','ALIGN'].includes(u.mode))continue;
+  const nav=u.positionValid===true&&validPosition(u.position);
+  const aligning=alignmentPhases.has(r?.phase||u.phase);
+  const entered=validPosition(r?.enteredPosition)&&r?.initialized!==false;
+  if(nav)candidates.push({side,nav:true,reference:entered?r.enteredPosition:u.position,current:u.position});
+  else if(aligning&&entered)candidates.push({side,nav:false,reference:r.enteredPosition,current:r.enteredPosition});
+  else if(aligning)missing=true;
+ }
+ candidates.sort((a,b)=>Number(b.nav)-Number(a.nav));
+ const selected=candidates[0],reference=selected?fmt(selected.reference).join(' '):'';
+ const display=selected?fmt(selected.current).join(' '):'';
+ const required=!selected||missing;
+ const changed=(state.active.IRS_POS||'')!==reference||state.irsPositionRequired!==required||state.irsPositionDisplay!==display;
+ if(reference)state.active.IRS_POS=reference;else delete state.active.IRS_POS;
+ delete state.pending.IRS_POS;
+ state.irsPositionRequired=required;state.irsPositionDisplay=display;
+ return changed;
+}
 function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
 function inputFormat(raw){
  const s=String(raw||'').trim().toUpperCase().replace(/[\s./°]+/g,'');
@@ -113,6 +139,7 @@ function handleKey(key){
   const flight=f?.getDiagnostics?.()?.active===true?f.getState?.():null;
   if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
   else if(g?.quality==='VALID'&&typeof g.value?.onGround==='boolean')state.fmcOnGroundVerified=g.value.onGround;
+  syncPosInitEvidence();syncEnteredPosition();
   core.press(state,pages,'CDU_CAPT_INIT_REF');update();return true;
  }
  if(state.page==='INDEX'&&/^LSK_[LR][1-6]$/.test(normalized)){
@@ -137,7 +164,8 @@ function handleKey(key){
  }
  if(state.page==='POS_INIT'&&normalized==='LSK_R4'){
   if(!state.scratch){
-   if(state.active.IRS_POS){state.scratch=state.active.IRS_POS;state.message='';}
+   syncEnteredPosition();
+   if(state.irsPositionDisplay||state.active.IRS_POS){state.scratch=state.irsPositionDisplay||state.active.IRS_POS;state.message='';}
    else state.message='ENTER IRS POS';
    update();return true;
   }
@@ -161,15 +189,17 @@ function handleKey(key){
     accepted=(result.sides||[]).filter(s=>matches(raw?.units?.[s]?.enteredPosition));
     if(!accepted.length)throw Error('ENTER IRS POS');
    }else{
-    accepted=['L','R'].filter(s=>matches(raw?.units?.[s]?.enteredPosition));
+    const snap=t.getState?.();
+    accepted=['L','R'].filter(s=>snap?.units?.[s]?.powered===true&&snap.units[s].mode==='NAV'&&snap.units[s].positionValid===true&&matches(raw?.units?.[s]?.enteredPosition));
     if(accepted.length)delivery='ALREADY_INITIALIZED';
+    else throw Error('SELECT IRS NAV OR ALIGN');
    }
    const display=fmt(p).join(' ');
    const flight=parent.B737UnifiedFlightScenarioV1;
-   if(flight?.getDiagnostics?.()?.active===true&&flight.getState()?.airborne!==true){
+   if(delivery==='ACCEPTED'&&flight?.getDiagnostics?.()?.active===true&&flight.getState()?.airborne!==true){
     if(typeof flight.setFmcPosition!=='function')throw Error('FLIGHT POSITION LINK NOT READY');
     flight.setFmcPosition(p);
-   }else if(flight?.getDiagnostics?.()?.active!==true){
+   }else if(delivery==='ACCEPTED'&&flight?.getDiagnostics?.()?.active!==true){
     parent.B737UnifiedFlightLocationV1?.choose({...p,icao:state.active.REF_AIRPORT,source:'FMC_POS_INIT'});
    }
    state.active.IRS_POS=display;delete state.pending.IRS_POS;
@@ -190,14 +220,26 @@ let lastSig='';
 setInterval(()=>{
  const t=parentIRS(),data=t?.getState?.();if(!data)return;
  const alertChanged=syncIrsAlerts(data);
- if(['POS_REF','POS_INIT'].includes(state.page)){
-  const signature=JSON.stringify({L:data.units.L,R:data.units.R,last:data.lastCDUSource});
-  if(signature!==lastSig){lastSig=signature;if(state.page==='POS_INIT'&&syncPosInitEvidence())update();else patchPositionPages();}
+ const before=state.active.IRS_POS||'',required=state.irsPositionRequired;
+ const evidenceChanged=syncPosInitEvidence(),changed=syncEnteredPosition();
+ if(alertChanged||before!==(state.active.IRS_POS||'')||required!==state.irsPositionRequired||(state.page==='POS_INIT'&&(changed||evidenceChanged)))update();
+ else if(state.page==='POS_REF'){
+  const signature=JSON.stringify({L:data.units.L,R:data.units.R});
+  if(signature!==lastSig){lastSig=signature;patchPositionPages();}
  }
- if(alertChanged)update();
 },1100);
 try{parent.addEventListener('b737:fmc-entered-position',()=>{if(state.page==='POS_INIT'||state.page==='POS_REF')update();else syncEnteredPosition();});parent.addEventListener('b737:flight-location-reference',()=>{
  if(state.page==='POS_REF')patchPositionPages();
 });}catch(_){/* CDU iframe on a different origin cannot read the parent */ }
-window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence,arp,handleKey});
+// Defer event handling until IRS writes finish; both CDU seats observe the same owner.
+let queued=false;
+try{parent.addEventListener('b737:irs-trainer-state',()=>{
+ if(queued)return;queued=true;
+ setTimeout(()=>{queued=false;const old=state.active.IRS_POS||'',required=state.irsPositionRequired;
+  const evidence=syncPosInitEvidence(),changed=syncEnteredPosition();
+  if(old!==(state.active.IRS_POS||'')||required!==state.irsPositionRequired||state.page==='POS_INIT'&&(changed||evidence))update();
+  else if(state.page==='POS_REF')patchPositionPages();
+ },0);
+});}catch(_){}
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence,syncEnteredPosition,arp,handleKey});
 })();
