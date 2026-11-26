@@ -1,9 +1,9 @@
-/* CLOCK-PHOTO-0003: independently operable captain and first officer clock.
+/* CLOCK-PHOTO-0004: independently operable captain and first officer clock.
    Uses the approved standalone face and the existing flight-needle photo registration.
    Does not alter locked photo masters or other instrument needles. */
 (function(win,doc){
  'use strict';
- const version='CLOCK-PHOTO-0003';
+ const version='CLOCK-PHOTO-0004';
  const regs=[
   {seat:'captain',piece:'captain',selector:'.texture-piece[data-piece="captain"]',width:3942,height:3591,x:3713,y:1610,radius:193},
   {seat:'firstOfficer',piece:'fo-outer',selector:'.texture-piece[data-piece="fo-outer"]',width:1123,height:1400,x:869,y:609,radius:103},
@@ -19,9 +19,11 @@
   frame.title=(reg.seat==='captain'?'Captain':'First Officer')+' clock';
   frame.src=new URL('./clock-test-lab-v3.html?embed=1&seat='+reg.seat+'&v='+version,doc.baseURI).href;
   frame.setAttribute('allowtransparency','true');
-  const size=reg.radius*2.4;
-  Object.assign(frame.style,{position:'absolute',left:((reg.x-size*624/1248)/reg.width*100)+'%',top:((reg.y-size*570/1248)/reg.height*100)+'%',width:(size/reg.width*100)+'%',height:(size/reg.height*100)+'%',border:'0',padding:'0',background:'transparent',pointerEvents:'auto',zIndex:'8',display:'block'});
-  frame.addEventListener('load',()=>{try{if(frame.contentWindow.clockTest){frame.dataset.ready='true';for(const old of host.querySelectorAll('[data-flight-needle="clock"]'))old.style.visibility='hidden'}}catch(e){}});
+  // Register the physical octagonal case, not the offset chronograph pivot.
+  // Source case occupies approximately 92% of the square artwork.
+  const size=reg.radius*2.62;
+  Object.assign(frame.style,{position:'absolute',left:((reg.x-size*624/1248)/reg.width*100)+'%',top:((reg.y-size*624/1248)/reg.height*100)+'%',width:(size/reg.width*100)+'%',height:(size/reg.height*100)+'%',border:'0',padding:'0',background:'transparent',pointerEvents:'auto',zIndex:'8',display:'block'});
+  frame.addEventListener('load',()=>{try{if(frame.contentWindow.clockTest){const ready=()=>{if(!frame.isConnected)return;if(!frame.contentWindow.clockTest?.artworkReady()){win.requestAnimationFrame(ready);return}frame.dataset.ready='true';for(const old of host.querySelectorAll('[data-flight-needle="clock"]'))old.style.visibility='hidden'};ready()}}catch(e){}});
   frames.set(reg.piece,frame);host.append(frame);
  }
  function mount(){
