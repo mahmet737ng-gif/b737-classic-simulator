@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "0728cdda5a3e1f4a9cd10c3eaa82b1b9d0226a00894a5eed651560f73284dc29"
+      "sha256": "249c65926882e0d79838e3c5bebf0009a03127b56549816caf75eed0f8d5b2b4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -656,7 +656,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "e451b80905bb537bcf037597fd9b0a1d36bcfbb9ee2ec8db10f74c14d65b5ec9"
+      "sha256": "0d4e2fc30d2a7980f9eaffc1eb9b8262a30a8bd1344eceeb69cc341b48c26bb3"
     },
     {
       "path": "audio-lab/owner-ra-callouts-v1.js",

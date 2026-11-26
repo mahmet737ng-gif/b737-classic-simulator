@@ -117,7 +117,12 @@
     by('flightAirport').addEventListener('change', stripRunwayHeadings);
     const layoutStyle = doc.createElement('style');
     layoutStyle.textContent = `
-      #unifiedWelcome[data-stage="setup"] .welcome-card{width:min(100%,1000px)}
+      #unifiedWelcome[data-stage="setup"] .welcome-card{width:min(100%,1000px);padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+      #unifiedWelcome[data-stage="setup"] .welcome-footer{position:fixed;z-index:2;left:0;right:0;bottom:0;display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:center;gap:12px;padding:10px max(20px,calc((100vw - 1000px)/2)) calc(10px + env(safe-area-inset-bottom,0px));background:#0c1821f5;border-top:1px solid #334952;box-shadow:0 -6px 24px #0005;box-sizing:border-box}
+      #unifiedWelcome[data-stage="setup"] .welcome-footer .welcome-progress{margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+      #unifiedWelcome[data-stage="setup"] #unifiedWelcomeStart{flex:0 0 auto;min-width:140px;min-height:42px;cursor:pointer}
+      #unifiedWelcome[data-stage="setup"] #unifiedWelcomeError{padding-bottom:12px}
+      @media(max-width:400px){#unifiedWelcome[data-stage="setup"] .welcome-footer{gap:6px;padding-left:10px;padding-right:10px}#unifiedWelcome[data-stage="setup"] #unifiedWelcomeStart{min-width:110px}}
       #unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
       #unifiedWelcome .welcome-section{min-width:0;box-sizing:border-box;box-shadow:0 10px 24px #0003}
       #unifiedWelcome .welcome-section h2{margin-top:0}
@@ -148,9 +153,11 @@
     doc.head.append(layoutStyle);
     const general = doc.createElement('label');
     general.id = 'welcomeGeneralState';
-    general.innerHTML = 'Aircraft General State (AGS)<select id="welcomeGroundState" aria-label="Aircraft General State"><option value="">SELECT STATE</option><option value="COLD_DARK">COLD &amp; DARK</option><option value="READY_FOR_START">READY FOR START</option><option value="READY_FOR_TAKEOFF">READY FOR TAKEOFF</option></select>';
+    general.innerHTML = 'Aircraft General State (AGS)<select id="welcomeGroundState" aria-label="Aircraft General State"><option value="">SELECT STATE</option><option value="COLD_DARK" selected>COLD &amp; DARK</option><option value="READY_FOR_START">READY FOR START</option><option value="READY_FOR_TAKEOFF">READY FOR TAKEOFF</option></select>';
     by('flightEngineRating').closest('label').after(general);
     const groundSelect = general.querySelector('select');
+    groundSelect.value='COLD_DARK';
+    locationSelect.value='RUNWAY_READY';
     groundSelect.disabled = !locationButton || !generalButton;
     const scenarios = doc.createElement('section');
     scenarios.className = 'welcome-section';
@@ -216,7 +223,7 @@
       '<label class="welcome-choice"><input type="checkbox" disabled> <span>LIVE METAR</span></label>';
     flight.append(weather);
     let syncing = false;
-    let previousScenario='NONE', normalLocation=locationSelect.value;
+    let previousScenario='NONE', normalLocation=locationSelect.value, normalState='COLD_DARK';
     const setManualVisibility = () => { manual.hidden = locationSelect.value !== 'MANUAL'||currentScenario()==='RAPID_DECOMPRESSION'; };
     const syncGeneral = event => {
       if (syncing) return;
@@ -228,11 +235,11 @@
         const rapidSelected=scenario==='RAPID_DECOMPRESSION';
         const final=scenario==='ENGINE_FAILURE_FINAL';
         const previousLocation=locationSelect.value;
-        if(previousScenario==='NONE'&&!normal)normalLocation=previousLocation;
+        if(previousScenario==='NONE'&&!normal){normalLocation=previousLocation;normalState=groundSelect.value;}
         if(normal&&previousScenario!=='NONE'){
           locationSelect.value=normalLocation;
           if(!locationSelect.value)locationSelect.value='RUNWAY_READY';
-          groundSelect.value='';
+          groundSelect.value=locationSelect.value==='RUNWAY_READY'?(normalState||'COLD_DARK'):'';
         }
         if(v1){locationSelect.value='RUNWAY_READY';groundSelect.value='READY_FOR_TAKEOFF';}
         if(final)locationSelect.value='FINAL_10';
@@ -242,13 +249,15 @@
         const ground = locationSelect.value === 'RUNWAY_READY';
         if(!ground)groundSelect.value='';
         groundSelect.disabled=!locationButton||!generalButton||v1||(!normal&&!ground);
-        if(normal)normalLocation=locationSelect.value;
+        if(normal){normalLocation=locationSelect.value;normalState=groundSelect.value;}
         previousScenario=scenario;
         const chosen=groundSelect.value;
         const native=chosen&&doc.querySelector('input[name="flightGeneralSetup"][value="'+chosen+'"]');
+        const changedNative=Boolean(native&&!native.checked);
         if(native)native.checked=true;
         const target = native ? generalButton : locationButton;
         if (target && target.getAttribute('aria-pressed') !== 'true') target.click();
+        else if(changedNative)native.dispatchEvent(new Event('change',{bubbles:true}));
         else if(previousLocation!==locationSelect.value)locationSelect.dispatchEvent(new Event('change',{bubbles:true}));
         locationGrid.hidden = false;
         locationGrid.style.display = '';
