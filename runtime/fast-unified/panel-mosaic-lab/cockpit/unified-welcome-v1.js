@@ -121,6 +121,7 @@
       #unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
       #unifiedWelcome .welcome-section{min-width:0;box-sizing:border-box;box-shadow:0 10px 24px #0003}
       #unifiedWelcome .welcome-section h2{margin-top:0}
+      #unifiedWelcome #unifiedWelcomeTitle,#unifiedWelcome #unifiedWelcomeTitle:focus{outline:none!important;box-shadow:none!important;border:0!important}
       #unifiedWelcome .welcome-equipment-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
       #unifiedWelcome .welcome-equipment-options fieldset{margin:0;min-width:0}
       #unifiedWelcome .welcome-equipment-options .profile-options{display:flex;flex-wrap:wrap;gap:6px}
@@ -145,15 +146,12 @@
       @media(max-width:680px){#unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:minmax(0,1fr)}}
     `;
     doc.head.append(layoutStyle);
-    const general = doc.createElement('div');
+    const general = doc.createElement('label');
     general.id = 'welcomeGeneralState';
-    general.innerHTML = '<h3 class="welcome-subheading">Aircraft General State</h3>' +
-      '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span></label>' +
-      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span></label>' +
-      '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span></label>';
-    const cold = general.querySelector('#welcomeColdDark');
-    const groundChoices=[...general.querySelectorAll('input[name="welcomeGroundState"]')];
-    cold.disabled = !locationButton || !generalButton;
+    general.innerHTML = 'Aircraft General State (AGS)<select id="welcomeGroundState" aria-label="Aircraft General State"><option value="">SELECT STATE</option><option value="COLD_DARK">COLD &amp; DARK</option><option value="READY_FOR_START">READY FOR START</option><option value="READY_FOR_TAKEOFF">READY FOR TAKEOFF</option></select>';
+    by('flightEngineRating').closest('label').after(general);
+    const groundSelect = general.querySelector('select');
+    groundSelect.disabled = !locationButton || !generalButton;
     const scenarios = doc.createElement('section');
     scenarios.className = 'welcome-section';
     scenarios.id = 'unifiedWelcomeScenarios';
@@ -186,7 +184,6 @@
       ).join('') +
       '<h3 class="welcome-subheading">Special Operations</h3>' +
       renderChoice(rapid);
-    scenarios.append(general);
     by('unifiedWelcomeSetup').append(scenarios);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
@@ -235,22 +232,20 @@
         if(normal&&previousScenario!=='NONE'){
           locationSelect.value=normalLocation;
           if(!locationSelect.value)locationSelect.value='RUNWAY_READY';
-          for(const choice of groundChoices)choice.checked=false;
+          groundSelect.value='';
         }
-        if(v1){locationSelect.value='RUNWAY_READY';for(const choice of groundChoices)choice.checked=choice.value==='READY_FOR_TAKEOFF';}
+        if(v1){locationSelect.value='RUNWAY_READY';groundSelect.value='READY_FOR_TAKEOFF';}
         if(final)locationSelect.value='FINAL_10';
         if(rapidSelected)locationSelect.value='MANUAL';
-        if(normal&&groundChoices.includes(event?.target)&&event.target.checked)locationSelect.value='RUNWAY_READY';
+        if(normal&&event?.target===groundSelect&&groundSelect.value)locationSelect.value='RUNWAY_READY';
         locationSelect.disabled=v1||final||rapidSelected;
         const ground = locationSelect.value === 'RUNWAY_READY';
-        for(const choice of groundChoices){
-          if(!ground)choice.checked=false;
-          choice.disabled=!locationButton||!generalButton||v1||(!normal&&!ground);
-        }
+        if(!ground)groundSelect.value='';
+        groundSelect.disabled=!locationButton||!generalButton||v1||(!normal&&!ground);
         if(normal)normalLocation=locationSelect.value;
         previousScenario=scenario;
-        const chosen=groundChoices.find(x=>x.checked);
-        const native=chosen&&doc.querySelector('input[name="flightGeneralSetup"][value="'+chosen.value+'"]');
+        const chosen=groundSelect.value;
+        const native=chosen&&doc.querySelector('input[name="flightGeneralSetup"][value="'+chosen+'"]');
         if(native)native.checked=true;
         const target = native ? generalButton : locationButton;
         if (target && target.getAttribute('aria-pressed') !== 'true') target.click();
@@ -261,12 +256,14 @@
       } finally { syncing = false; }
     };
     enforceV1Ground=syncGeneral;
-    for(const choice of groundChoices)choice.addEventListener('change',syncGeneral);
+    groundSelect.addEventListener('change',syncGeneral);
     locationSelect.addEventListener('change', syncGeneral);
     locationSelect.dispatchEvent(new Event('change', {bubbles:true}));
     syncGeneral();
     // Restore the original dialog visibility and listeners when entering the cockpit.
     restoreWelcomeLocation = () => {
+      groundSelect.removeEventListener('change',syncGeneral);
+      general.remove();
       locationSelect.removeEventListener('change', syncGeneral);
       locationSelect.disabled=false;
       by('flightAirport').removeEventListener('change', stripRunwayHeadings);
@@ -287,7 +284,7 @@
     start.textContent='START';
     setup = true;
     mark('settings-ready');
-    by('unifiedWelcomeTitle').focus({preventScroll: true});
+    // The title is not an interactive control; do not focus it.
   }
 
   function panelReadiness() {
