@@ -549,6 +549,8 @@ try{
  // Gear states are explicit training choices until a verified cockpit gear
  // system is connected. The selected limit is visual-only on both EADIs.
  function syncVisualGear(){
+  const actual=win?.B737LandingGearUnifiedV1?.getState?.()?.configuration;
+  if(['UP','DOWN','EXTENDING','RETRACTING'].includes(actual))lastVisualGearState=actual;
   const renderer=win?.B737UnifiedSpeedTapeV1;
   if(!ready||!renderer?.observe)return false;
   for(const seat of ['CAPT','FO']){
@@ -602,7 +604,7 @@ try{
     'TRN GEAR UP / no gear-specific placard';
   }
   const gearSelector=panel.querySelector('[data-gear-training-state]');
-  if(gearSelector)gearSelector.value=lastVisualGearState??'UNKNOWN';
+  if(gearSelector){gearSelector.value=lastVisualGearState??'UNKNOWN';gearSelector.disabled=!!win?.B737LandingGearUnifiedV1;}
   const option=panel.querySelector('[data-flap30-variant]');
   if(option)option.value=String(flap30MaximumKt);
  }
@@ -670,7 +672,8 @@ try{
  function bind(root){
   if(ready)return true;
   if(!root?.B737UnifiedSpeedTapeV1?.observe)return false;
-  win=root;ready=true;
+  win=root;
+  win.addEventListener('b737:landing-gear-state',syncVisualGear);ready=true;
   root.addEventListener('b737:avionics-data',e=>{
    if(['airdata.adc1','airdata.adc2','flightcontext.state'].includes(e.detail?.topic))
     sync();

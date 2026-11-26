@@ -648,7 +648,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-5db4117e839416ef.js",
-      "sha256": "bac2842525dc62b2fb38b4b88f3303c6ed174020e49581638e864133ed52dd67"
+      "sha256": "8acc655d1a46d47d87237b50580ec4b59f68504512b21d26483f1906f82edec2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-6256d726299b0a28.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "38839affa7430443e4b29cd5bbd661d40d157cdcda5fbbe9f68b6f304d175236"
+      "sha256": "a57f2754b06783c6208adab6e6e8e35d20d1c11ae5aa8c42102a13837cb01174"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -932,7 +932,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
-      "sha256": "ee2bab060a1fbfb5a8e73d8ed92735c98fe40cba1eefbdabacc1398b38606d69"
+      "sha256": "1e03b3c86197f9578be384aea2ca9c76f78edac6e140abba18f23a9c0bb68971"
     },
     {
       "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",

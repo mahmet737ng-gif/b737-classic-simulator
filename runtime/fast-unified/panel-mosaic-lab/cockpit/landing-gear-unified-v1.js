@@ -1,4 +1,4 @@
-/* ATA32-GEAR-0005 — B737 Classic landing gear selector and shared indicator state.
+/* ATA32-GEAR-0006 — B737 Classic landing gear selector and shared indicator state.
  * Additive panel control: no protected image, guarded switch or electrical owner is changed.
  * Transit timing and System A pressure cutoff are TRAINING ESTIMATES, not AFM calibration.
  */
@@ -10,17 +10,18 @@
   if(!root?.document)return;
   const doc=root.document,POS=api.core.POS,VISUAL=api.core.VISUAL;
   let state=api.core.initial(),track=null,handle=null,aux=null,lastPublished='',lastAt=0;
-  let flaps=0,radioAltitude=null,ground=null,hydPsi=null,lever1=null,lever2=null;
+  let flaps=0,radioAltitude=null,ground=null,hydPsi=null,lever1=null,lever2=null,hydraulicInput={},detailPanel=null;
   let warning=null,gearHorn=false,audioContext=null,audioOsc=null,audioGain=null,ticker=0;
   const safeNumber=v=>Number.isFinite(v)?v:null;
   const emit=(name,detail)=>root.dispatchEvent(new root.CustomEvent(name,{detail}));
-  const sprite=new URL('./assets/landing-gear-classic-3state.webp?v=ATA32-GEAR-0005',doc.currentScript?.src||root.location.href).href;
+  const sprite=new URL('./assets/landing-gear-classic-3state.webp?v=ATA32-GEAR-0006',doc.currentScript?.src||root.location.href).href;
   // The lever drives the aircraft sensors; cockpit and aft indications subscribe
   // to this same source of truth, never to a separate visual-test state.
 
   function source(){
     const live=root.B737ISNCockpitV1?.getECUState?.();
-    const scene=root.B737UnifiedFlightScenarioV1?.getState?.();
+    const scenario=root.B737UnifiedFlightScenarioV1;
+    const scene=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
     if(typeof scene?.airborne==='boolean')ground=!scene.airborne;
     else if(typeof live?.aircraft?.onGround==='boolean')ground=live.aircraft.onGround;
     const lab=doc.getElementById('hydraulicLiveLabV1');
@@ -32,18 +33,25 @@
     const enginePsi=safeNumber(live?.engines?.engine1?.hydraulic?.engineDrivenPressurePsi);
     let switches=null;
     try{switches=doc.getElementById('overheadFrame')?.contentWindow?.B737OverheadToggles?.getState?.()||null;}catch{}
-    const edpPsi=switches?.['hyd-eng-1']==='OFF'?null:enginePsi;
-    const elecPsi=switches?.['hyd-elec-2']==='OFF'?null:
-      out?.pumps?.['hyd-elec-2']?.delivering?safeNumber(out.pumps['hyd-elec-2'].pressurePsi):null;
-    const pumpPsi=edpPsi!==null||elecPsi!==null?Math.max(edpPsi??0,elecPsi??0):null;
     const labOverride=lab?.open===true||(out?.faults?.length||0)>0;
-    hydPsi=labOverride?labPsi:(livePsi??pumpPsi??labPsi);
+    const system=(letter,num,elec)=>{
+      const p=safeNumber(live?.hydraulics?.['system'+letter]?.pressurePsi),engine=safeNumber(live?.engines?.['engine'+num]?.hydraulic?.engineDrivenPressurePsi),lp=safeNumber(out?.pressurePsi?.[letter]);
+      if(labOverride&&lp!==null)return lp;
+      if(lp!==null)return lp; // hydraulic owner includes both EDP and EMDP and faults
+      const edp=switches?.['hyd-eng-'+num]==='OFF'?0:engine??p;
+      const ep=switches?.['hyd-elec-'+elec]==='OFF'?0:out?.pumps?.['hyd-elec-'+elec]?.delivering?safeNumber(out.pumps['hyd-elec-'+elec].pressurePsi):null;
+      return edp===null&&ep===null?null:Math.max(edp??0,ep??0);
+    };
+    hydPsi=system('A',1,2);
+    const hydB=system('B',2,1);
+    const n2=safeNumber(live?.engines?.engine1?.n2Percent);
+    hydraulicInput={onGround:ground,hydraulicSystemAPsi:hydPsi,hydraulicSystemBPsi:hydB,engine1N2:n2,systemBQuantityNormal:out?.reservoirs?.B?.quantityNormal??null,lgtuAvailable:!out?.faults?.includes?.('hydraulic.lgtu')};
     const propulsion=root.B737ISNCockpitV1?.getPropulsionSnapshot?.();
     for(const [i,id] of ['engine1','engine2'].entries()){
       const fraction=safeNumber(propulsion?.engines?.[id]?.throttle);
       if(fraction!==null)i===0?lever1=fraction*45:lever2=fraction*45;
     }
-    return {onGround:ground,hydraulicSystemAPsi:hydPsi};
+    return hydraulicInput;
   }
 
   function hornState(){
@@ -93,13 +101,16 @@
       for(const id of POS){const el=aux.querySelector('[data-aux-gear="'+id+'"]');
         if(el){el.dataset.on=String(l.auxiliary[id]);el.setAttribute('aria-label',id+' landing gear down locked '+l.auxiliary[id]);}}
     }
-    const detail={schema:'ATA32-GEAR-0005',lever:state.lever,gear:{...state.gear},
+    const detail={schema:'ATA32-GEAR-0006',lever:state.lever,gear:{...state.gear},
       selectedTarget:state.target,systemAPsi:hydPsi,onGround:ground,
+      progress:{...state.progress},uplock:{...state.uplock},downlock:{...state.downlock},manual:{...state.manual},fault:{...state.fault},direction:{...state.direction},
+      configuration:api.core.configuration(state),hydraulic:api.core.hydraulic(state,hydraulicInput),
       normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=api.core.HYD_MIN_PSI:null,
       nominalCycleSeconds:api.core.NOMINAL_CYCLE_SEC,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
-    const signature=JSON.stringify({lever:state.lever,gear:state.gear,target:state.target,
-      onGround:ground,hydraulicAvailable:detail.normalHydraulicAvailable});
+    if(detailPanel){const h=detail.hydraulic;detailPanel.querySelector('[data-gear-source]').textContent='LEVER '+state.lever+' · '+h.source+' · '+(h.pressure??'—')+' PSI';
+      for(const id of POS){const row=detailPanel.querySelector('[data-gear-row="'+id+'"]');row.querySelector('progress').value=state.progress[id]*100;row.querySelector('[data-lock]').textContent=state.gear[id]+' / '+(state.uplock[id]?'UPLOCK':state.downlock[id]?'DOWNLOCK':'UNLOCKED')+(state.manual[id]?' / MANUAL':'');}}
+    const signature=JSON.stringify({lever:state.lever,gear:state.gear,target:state.target,progress:Object.values(state.progress).map(x=>Math.round(x*100)),manual:state.manual,fault:state.fault,onGround:ground,source:detail.hydraulic.source,hydraulicAvailable:detail.hydraulic.available,main:l.main});
     if(!force&&signature===lastPublished)return;
     lastPublished=signature;
     const patch={gearLever:state.lever,gearNose:state.gear.nose,gearLeft:state.gear.left,gearRight:state.gear.right};
@@ -124,11 +135,11 @@
     source();
     const now=root.performance.now(),seconds=lastAt?Math.min(0.3,(now-lastAt)/1000):0;
     lastAt=now;
-    if(seconds>0)state=api.core.step(state,seconds,hydPsi);
+    if(seconds>0)state=api.core.step(state,seconds,hydraulicInput);
     const nextHorn=hornState();
     sound(nextHorn);
     publish();
-    const active=state.target&&POS.some(id=>state.gear[id]!==state.target)&&Number.isFinite(hydPsi)&&hydPsi>=api.core.HYD_MIN_PSI;
+    const active=api.core.movable(state,hydraulicInput);
     if(!active&&ticker){root.clearInterval(ticker);ticker=0;lastAt=0;}
   }
   function run(){
@@ -146,6 +157,8 @@
     emit('b737:landing-gear-command',{position,lockOverride:opts.lockOverride===true});
     return true;
   }
+  function manualRelease(id){const next=api.core.manualRelease(state,id,source());if(next.lastReject){emit('b737:landing-gear-selection-rejected',{position:id,reason:next.lastReject});return false;}state=next;run();publish(true);return true;}
+  function setFault(id,fault){state=api.core.setFault(state,id,fault);run();publish(true);return true;}
   function mount(){
     if(track?.isConnected)return true;
     const host=doc.querySelector('#region-main .region-native');
@@ -188,8 +201,11 @@
         '</div><small>Connected to the same gear sensors. Physical aft panel placement pending verified artwork.</small>';
       const style=doc.createElement('style');style.textContent='#b737GearAftIndicatorStatus [data-on="true"]{background:#135934;color:#a5ffc7!important;box-shadow:0 0 10px #29e67c77}';
       section.append(style);inspector.append(section);aux=section;
+      const panel=doc.createElement('section');panel.id='b737GearSystemStatus';panel.style.cssText='padding:12px;margin:12px 0;border:1px solid #576c5b;border-radius:8px';
+      panel.innerHTML='<h3>ATA32 · LANDING GEAR SYSTEM</h3><p data-gear-source></p>'+POS.map(id=>'<div data-gear-row="'+id+'" style="margin:8px 0"><b>'+id.toUpperCase()+' GEAR</b> <span data-lock></span><progress max="100" value="100" style="display:block;width:100%"></progress><button type="button" data-release="'+id+'">MANUAL RELEASE</button> <select aria-label="'+id+' gear instructor fault" data-fault="'+id+'"><option>NONE</option><option>JAM</option><option>UPLOCK_FAIL</option><option>DOWNLOCK_FAIL</option></select></div>').join('')+'<button type="button" data-manual-reset>Instructor reset manual release</button> <button type="button" data-override>Instructor lever lock override UP</button><small style="display:block;margin-top:8px">Training system schematic/status; manual controls here are not physical cockpit handle geometry.</small><p data-gear-reject role="status"></p>';
+      inspector.append(panel);detailPanel=panel;for(const el of panel.querySelectorAll('[data-release]'))el.addEventListener('click',()=>manualRelease(el.dataset.release));for(const el of panel.querySelectorAll('[data-fault]'))el.addEventListener('change',()=>setFault(el.dataset.fault,el.value));panel.querySelector('[data-manual-reset]').addEventListener('click',()=>{state=api.core.resetManual(state);publish(true);});panel.querySelector('[data-override]').addEventListener('click',()=>select('UP',{lockOverride:true}));root.addEventListener('b737:landing-gear-selection-rejected',e=>{panel.querySelector('[data-gear-reject]').textContent=e.detail?.reason||'';});
     }
-    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0005'});
+    emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0006'});
     publish(true);return true;
   }
   root.addEventListener('b737:cockpit-mounted',mount);
@@ -198,13 +214,13 @@
   if(doc.readyState!=='loading')mount();
   root.addEventListener('b737:unified-ecu-observation',()=>{
     source();if(ticker)return;
-    if(state.target&&POS.some(id=>state.gear[id]!==state.target)&&Number.isFinite(hydPsi)&&hydPsi>=api.core.HYD_MIN_PSI)run();
+    if(api.core.movable(state,hydraulicInput))run();
     else{sound(hornState());publish();}
   });
   root.addEventListener('b737:flight-scenario-state',e=>{
     if(typeof e.detail?.airborne==='boolean')ground=!e.detail.airborne;
     radioAltitude=safeNumber(e.detail?.radioAltitudeFt);
-    if(ticker)advance();else sound(hornState());
+    if(!ticker&&api.core.movable(state,source()))run();else if(!ticker){sound(hornState());publish();}
   });
   root.addEventListener('b737:trailing-flaps',e=>{
     const n=Number(e.detail?.position);
@@ -215,12 +231,12 @@
     warning?.cutoutGear?.();sound(hornState());
   });
   root.B737LandingGearUnifiedV1=Object.freeze({
-    select,getState:()=>({ ...state,gear:{...state.gear},pressureA:hydPsi,onGround:ground,horn:gearHorn}),
+    select,manualRelease,setFault,getState:()=>({...JSON.parse(JSON.stringify(state)),pressureA:hydPsi,onGround:ground,horn:gearHorn,configuration:api.core.configuration(state),hydraulic:api.core.hydraulic(state,hydraulicInput)}),
     cutoutHorn:()=>{warning?.cutoutGear?.();sound(hornState());},
     refresh:()=>{source();publish(true);return api.core.lamps(state);},
     getSpriteUrl:()=>sprite,getVisualSpec:()=>VISUAL,
     getNominalCycleSeconds:()=>api.core.NOMINAL_CYCLE_SEC,
-    version:'ATA32-GEAR-0005'
+    version:'ATA32-GEAR-0006'
   });
   root.setTimeout(mount,250);
 })(typeof window!=='undefined'?window:globalThis,function(){
@@ -238,42 +254,79 @@
     top:Object.freeze({UP:6,OFF:65,DN:125}),
     wheelY:Object.freeze({UP:40,OFF:125,DN:210})});
   const detentAtY=y=>y<82.5?'UP':y<167.5?'OFF':'DN';
-  const initial=()=>({lever:'DN',target:'DOWN',
-    gear:{nose:'DOWN',left:'DOWN',right:'DOWN'},
-    progress:{nose:1,left:1,right:1},elapsed:{nose:0,left:0,right:0},lastReject:null});
+  const map=(v)=>Object.fromEntries(POS.map(id=>[id,v]));
+  const initial=()=>({lever:'DN',target:'DOWN',gear:map('DOWN'),progress:map(1),elapsed:map(0),
+    uplock:map(false),downlock:map(true),manual:map(false),fault:map('NONE'),direction:map(null),lastReject:null});
+  const normalizeLever=lever=>lever==='DOWN'?'DN':lever;
   function select(s,lever,info={}){
+    lever=normalizeLever(lever);
     if(!['UP','OFF','DN'].includes(lever))throw Error('Landing gear selector UP/OFF/DN required');
-    if(lever==='UP'&&info.onGround!==false&&info.lockOverride!==true)
-      return {...s,lastReject:'GROUND_SAFETY_INTERLOCK'};
+    if(lever==='UP'&&info.onGround!==false&&info.lockOverride!==true)return {...s,lastReject:'GROUND_SAFETY_INTERLOCK'};
+    if(lever==='UP'&&POS.some(id=>s.manual[id]))return {...s,lastReject:'MANUAL_RELEASE_ACTIVE'};
     const target=lever==='UP'?'UP':lever==='DN'?'DOWN':null;
-    // OFF removes selector pressure, not the existing uplock/downlock.
-    // Reversing direction does not reset physical progress.
-    return {...s,lever,target,lastReject:null,elapsed:{nose:0,left:0,right:0}};
+    return {...s,lever,target,lastReject:null};
   }
-  function step(s,dt,psi){
+  function manualRelease(s,id,info={}){
+    if(!POS.includes(id))throw Error('Invalid gear');
+    if(s.lever!=='OFF')return {...s,lastReject:'SELECT_OFF_FOR_MANUAL_EXTENSION'};
+    if(info.onGround!==false)return {...s,lastReject:'MANUAL_EXTENSION_AIRBORNE_TRAINING_ONLY'};
+    return {...s,manual:{...s.manual,[id]:true},lastReject:null};
+  }
+  function setFault(s,id,fault){
+    if(!POS.includes(id)||!['NONE','JAM','UPLOCK_FAIL','DOWNLOCK_FAIL'].includes(fault))throw Error('Invalid gear fault');
+    const n={...s,fault:{...s.fault,[id]:fault},gear:{...s.gear},uplock:{...s.uplock},downlock:{...s.downlock}};
+    if(fault==='UPLOCK_FAIL'&&n.progress[id]===0){n.uplock[id]=false;n.gear[id]='UNSAFE';}
+    if(fault==='DOWNLOCK_FAIL'&&n.progress[id]===1){n.downlock[id]=false;n.gear[id]='UNSAFE';}
+    return n;
+  }
+  function resetManual(s){
+    // Instructor maintenance reset only, never automatic after an UP request.
+    return {...s,manual:map(false),lastReject:null};
+  }
+  function hydraulic(s,input){
+    const c=typeof input==='number'?{hydraulicSystemAPsi:input}:input||{};
+    const a=Number.isFinite(c.hydraulicSystemAPsi)?c.hydraulicSystemAPsi:null;
+    const b=Number.isFinite(c.hydraulicSystemBPsi)?c.hydraulicSystemBPsi:null;
+    const lgtu=s.lever==='UP'&&c.onGround===false&&Number.isFinite(c.engine1N2)&&c.engine1N2<56&&c.systemBQuantityNormal!==false&&c.lgtuAvailable!==false&&(!s.uplock.left||!s.uplock.right)&&b!==null&&b>=HYD_MIN_PSI;
+    const pressure=s.lever==='OFF'?0:lgtu?b:a;
+    return {systemA:a,systemB:b,lgtu,pressure,source:s.lever==='OFF'?'ISOLATED':lgtu?'B_LGTU':a===null?'UNKNOWN':'A',available:pressure!==null&&pressure>=HYD_MIN_PSI};
+  }
+  function step(s,dt,input){
     if(!Number.isFinite(dt)||dt<0)throw Error('Valid elapsed seconds required');
-    if(!s.target||!Number.isFinite(psi)||psi<HYD_MIN_PSI||dt===0)return s;
-    const n={...s,gear:{...s.gear},progress:{...s.progress},elapsed:{...s.elapsed}};
-    const goal=s.target==='UP'?0:1;
+    if(!dt)return s;
+    const h=hydraulic(s,input),n={...s,gear:{...s.gear},progress:{...s.progress},elapsed:{...s.elapsed},uplock:{...s.uplock},downlock:{...s.downlock},direction:{...s.direction}};
     for(const id of POS){
-      const p=Number.isFinite(n.progress[id])?n.progress[id]:
-        n.gear[id]==='DOWN'?1:n.gear[id]==='UP'?0:.5;
-      const next=Math.max(0,Math.min(1,p+Math.sign(goal-p)*Math.min(Math.abs(goal-p),dt/NOMINAL_CYCLE_SEC[id])));
-      n.progress[id]=next;
-      n.gear[id]=next<=1e-6?'UP':next>=1-1e-6?'DOWN':'TRANSIT';
-      n.elapsed[id]=n.gear[id]===n.target?0:(n.elapsed[id]||0)+dt;
+      const manual=s.manual[id],goal=manual?1:s.target==='UP'?0:s.target==='DOWN'?1:null;
+      const p=s.progress[id],locked=goal===0?s.uplock[id]:goal===1?s.downlock[id]:false;
+      if(goal===null||locked||s.fault[id]==='JAM'||(!manual&&!h.available))continue;
+      if(goal===0&&s.fault[id]==='DOWNLOCK_FAIL'&&p===1&&s.downlock[id])continue;
+      const next=Math.max(0,Math.min(1,p+Math.sign(goal-p)*Math.min(Math.abs(goal-p),dt/(manual?NOMINAL_CYCLE_SEC[id]*1.3:NOMINAL_CYCLE_SEC[id]))));
+      n.progress[id]=next;n.direction[id]=goal===1?'EXTENDING':'RETRACTING';
+      n.uplock[id]=next<=1e-6&&s.fault[id]!=='UPLOCK_FAIL';
+      n.downlock[id]=next>=1-1e-6&&s.fault[id]!=='DOWNLOCK_FAIL';
+      n.gear[id]=n.uplock[id]?'UP':n.downlock[id]?'DOWN':next<=1e-6||next>=1-1e-6?'UNSAFE':'TRANSIT';
+      n.elapsed[id]=locked?0:(n.elapsed[id]||0)+dt;
+      if(n.uplock[id]||n.downlock[id])n.direction[id]=null;
     }
     return n;
   }
+  function movable(s,input){
+    const h=hydraulic(s,input);
+    return POS.some(id=>s.fault[id]!=='JAM'&&((s.manual[id]&&!s.downlock[id]&&s.progress[id]<1)||(h.available&&s.target==='UP'&&s.progress[id]>0)||(h.available&&s.target==='DOWN'&&s.progress[id]<1)));
+  }
+  function configuration(s){
+    if(POS.every(id=>s.downlock[id]))return 'DOWN';
+    if(POS.every(id=>s.uplock[id]))return 'UP';
+    return s.target==='UP'&&!POS.some(id=>s.manual[id])?'RETRACTING':'EXTENDING';
+  }
   const lamps=(s,flight={})=>({
     main:Object.fromEntries(POS.map(id=>{
-      const g=s.gear[id],approach=flight.onGround===false&&
-        Number.isFinite(flight.radioAltitudeFt)&&flight.radioAltitudeFt<800&&flight.thrustIdle===true;
-      return [id,{green:g==='DOWN',red:g==='TRANSIT'||g==='UNSAFE'||
-        s.lever==='UP'&&g!=='UP'||s.lever==='DN'&&g!=='DOWN'||
-        s.lever==='OFF'&&g!=='UP'||approach&&g!=='DOWN'}];
+      const g=s.gear[id],approach=flight.thrustIdle===true&&flight.onGround===false;
+      return [id,{green:s.downlock[id],red:!s.uplock[id]&&!s.downlock[id]||
+        s.lever==='UP'&&!s.uplock[id]||s.lever==='DN'&&!s.downlock[id]||
+        s.lever==='OFF'&&!s.uplock[id]||approach&&!s.downlock[id]}];
     })),
-    auxiliary:Object.fromEntries(POS.map(id=>[id,s.gear[id]==='DOWN']))
+    auxiliary:Object.fromEntries(POS.map(id=>[id,s.downlock[id]]))
   });
-  return {core:Object.freeze({POS,VISUAL,HYD_MIN_PSI,NOMINAL_CYCLE_SEC,detentAtY,initial,select,step,lamps})};
+  return {core:Object.freeze({POS,VISUAL,HYD_MIN_PSI,NOMINAL_CYCLE_SEC,detentAtY,initial,select,step,lamps,hydraulic,movable,configuration,manualRelease,resetManual,setFault})};
 });
