@@ -607,34 +607,30 @@ try{
   return {targetKt:Math.round(target),source:manual!==null?'MANUAL':'ECON_TRAINING',bounds:b,wind};
  }
  function routeForecast(plan,index,frame,conditions){
-  const a=plan.performance,d=perfInputs(a,conditions.fuelKg),out={quality:'TRAINING_ESTIMATE',reason:'NOT_CERTIFIED_PERFORMANCE',...d,waypoints:[],destination:null};
-  if(!d.ready||!coord(frame))return {...out,reason:'PERF_INPUTS_REQUIRED'};
-  const now=conditions.utcMs,flow=conditions.fuelFlowKgHr;
-  out.phaseSpeeds=Object.fromEntries(['CLIMB','CRUISE','DESCENT'].map(phase=>[phase,phaseSpeed(a,d,phase,phase==='CRUISE'?d.crz:Math.min(d.crz,Math.max(10000,frame.altitudeFt)),frame.trueHeadingDeg,{})?.targetKt??null]));
-  let prev=frame,total=0,seconds=0,complete=true;
+  const a=plan.performance,d=perfInputs(a,conditions.fuelKg),api=globalThis.B737TrajectoryPredictorV1;
+  const empty={quality:'UNAVAILABLE',ready:false,reason:'PERF_OR_TRAJECTORY_REQUIRED',waypoints:[],destination:null};
+  if(!d.ready||!coord(frame)||!api)return empty;
+  let prev=frame,complete=true;const legs=[];
   for(let j=index;j<plan.legs.length;j++){
    const l=plan.legs[j];if(l.type!=='FIX'||!coord(l)||l.hold){complete=false;break;}
-   const nm=length(vec(prev,l)),course=bearing(vec(prev,l)),phase=l.kind==='SID'?'CLIMB':['STAR','APP'].includes(l.kind)?'DESCENT':'CRUISE';
-   const ft=phase==='CRUISE'?d.crz:phase==='CLIMB'?Math.min(d.crz,Math.max(frame.altitudeFt,10000)):Math.min(d.crz,l.altitude?.ft??10000);
-   const s=phaseSpeed(a,d,phase,ft,course,l);if(!s){complete=false;break;}
-   const tas=tasAtCas(s.targetKt,ft,d.isa),headwind=phase==='CRUISE'?d.windKt*Math.cos(delta(course,d.windFromDeg)*Math.PI/180):0,gs=tas-headwind;
-   if(gs<=30||!finite(gs)){complete=false;break;}
-   total+=nm;seconds+=nm/gs*3600;
-   const eta=finite(now)?new Date(now+seconds*1000).toISOString().slice(11,16).replace(':','')+'Z':null;
-   const fuel=finite(flow)&&flow>0&&d.fuelKg!==null?Math.max(0,d.fuelKg-flow*seconds/3600):null;
-   out.waypoints.push({ident:l.ident,index:j,distanceNm:total,segmentNm:nm,speedRestrictionKt:finite(l.speed)?l.speed:null,courseTrueDeg:course,phase,altitudeFt:ft,eta,etaMs:finite(now)?now+seconds*1000:null,fuelKg:fuel,forecastWindFromDeg:phase==='CRUISE'?d.windFromDeg:null,forecastWindKt:phase==='CRUISE'?d.windKt:null});
-   prev=l;
+   const v=vec(prev,l),nm=length(v),course=bearing(v);
+   const al=l.altitude?String(l.altitude.ft)+(l.altitude.restriction||''):'-----';
+   legs.push({ident:l.ident,index:j,segmentNm:nm,courseTrueDeg:course,constraint:(l.speed??'----')+'/'+al,lat:l.lat,lon:l.lon});prev=l;
   }
-  out.active=out.waypoints[0]??null;out.next=out.waypoints[1]??null;
-  if(complete&&out.waypoints.length&&coord(plan.destinationPoint)&&length(vec(prev,plan.destinationPoint))<=3){
-   out.destination={...out.waypoints.at(-1),ident:plan.dest};out.fuelAtDestinationKg=out.destination.fuelKg;
-   out.reserveWarning=finite(out.fuelAtDestinationKg)?out.fuelAtDestinationKg<900?'INSUFFICIENT FUEL':out.fuelAtDestinationKg<d.res*1000?'USING RSV FUEL':null:null;
-  }
-  return out;
+  if(!legs.length)return empty;
+  if(complete&&coord(plan.destinationPoint)){
+   const v=vec(prev,plan.destinationPoint),nm=length(v);
+   if(nm>.01)legs.push({ident:plan.dest,index:plan.legs.length,segmentNm:nm,courseTrueDeg:bearing(v),lat:plan.destinationPoint.lat,lon:plan.destinationPoint.lon});
+  }else complete=false;
+  const airport=globalThis.B737FlightScenarioCoreV1?.AIRPORTS?.[plan.dest];
+  const elevation=[plan.destinationPoint?.elevationFt,airport?.elevationFt,airport?.elevation,airport?.altitudeFt].find(finite);
+  const endFt=elevation??0;
+  return api.solve({legs,startFt:frame.altitudeFt,endFt,crz:d.crz,gw:d.gw,fuelKg:d.fuelKg,ci:d.ci,isa:d.isa,windFromDeg:d.windFromDeg,windKt:d.windKt,transitionAltitudeFt:d.transitionAltitudeFt,nowMs:conditions.utcMs,origin:plan.origin,dest:plan.dest,complete,reservesKg:d.res*1000,onGround:frame.airborne===false,assumedDestinationAltitude:elevation===undefined,
+   speedAt:(phase,ft,course,weight,restriction)=>phaseSpeed(a,{...d,gw:weight},phase,ft,course,{speed:restriction?.speed})?.targetKt})??empty;
  }
  function rtaCommand(plan,index,frame,conditions,forecast,selected){
   const a=plan.performance,wpt=a.RTA_WPT;if(!wpt||!a.RTA_TIME||!finite(conditions.utcMs)||!selected||!forecast.ready)return null;
-  const matches=forecast.waypoints.filter(x=>x.ident===wpt);if(matches.length!==1)return null;
+  const matches=forecast.waypoints.filter(x=>x.ident===wpt);if(matches.length!==1||!forecast.complete)return null;
   const x=matches[0],legs=forecast.waypoints.filter(y=>y.index<=x.index);
   // Constant-altitude cruise RTA approximation only; no climb/descent/hold solve.
   if(!frame.airborne||legs.some(y=>y.phase!=='CRUISE')||Math.abs(frame.altitudeFt-forecast.crz)>500)return null;

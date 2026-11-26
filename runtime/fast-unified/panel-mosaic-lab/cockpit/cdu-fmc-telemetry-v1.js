@@ -52,8 +52,8 @@
   const p=next.position,position=p?.quality==='VALID'?{lat:p.latitudeDeg,lon:p.longitudeDeg}:flight;
   const flows=['engine1','engine2'].map(k=>ecu?.engines?.[k]?.fuelFlowKgHr);
   const native=next.predictions?.quality==='VALID'&&next.predictions.destination?.ident===state.active.DEST&&Number.isFinite(next.predictions.destination?.fuelKg)?next.predictions:null;
-  if(!native){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
-   if(estimate){next.predictions=null;next.trainingPerformance=estimate;}
+  if(!native&&!(next.trainingPerformance?.quality==='TRAINING_ESTIMATE'&&next.trainingPerformance.complete&&state.fmcOnGroundVerified===false)){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
+   next.predictions=null;next.trainingPerformance=estimate??(state.fmcOnGroundVerified===false?next.trainingPerformance:null);
   }
   const pred=native||next.trainingPerformance;
   const reserve=/^\d{1,2}(?:\.\d)?$/.test(String(state.active.RESERVES??''))?Number(state.active.RESERVES)*1000:null;

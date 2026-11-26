@@ -470,13 +470,16 @@
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
    const hold=holdList(s).some(x=>x.h.ident===leg.ident&&Math.abs(x.h.lat-leg.lat)<.00001&&Math.abs(x.h.lon-leg.lon)<.00001);
-   const original=constraint(s,leg,index),perf=s.fmcPageInputs?.trainingPerformance,estimate=perf?.quality==='TRAINING_ESTIMATE'&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident):[];
-   // Preserve every published or pilot altitude constraint. Only fill the missing predicted altitude of an unambiguous cruise fix.
-   const q=estimate?.length===1&&estimate[0].phase==='CRUISE'?estimate[0]:null;
-   const [sp,al]=original.split('/');const ta=perf?.transitionAltitudeFt??18000;
-   const predictedAlt=q&&Number.isFinite(q.altitudeFt)?q.altitudeFt>=ta?'FL'+Math.round(q.altitudeFt/100):String(Math.round(q.altitudeFt)):null;
-   const display=predictedAlt&&al==='-----'?sp+'/'+predictedAlt:original;
-   rows.push(pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),display));
+   const original=constraint(s,leg,index),perf=s.fmcPageInputs?.trainingPerformance;
+   const estimate=perf?.quality==='TRAINING_ESTIMATE'&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident&&(!Number.isFinite(x.lat)||!validPosition(leg)||legDistance(x,leg)<.05)):[];
+   const q=estimate?.length===1&&all.filter(x=>x.ident===leg.ident).length===1?estimate[0]:null;
+   const [sp,al]=original.split('/'),ta=perf?.transitionAltitudeFt??18000;
+   const predAlt=q&&Number.isFinite(q.altitudeFt)?q.altitudeFt>=ta?'FL'+String(Math.round(q.altitudeFt/100)).padStart(3,'0'):String(Math.round(q.altitudeFt/10)*10):null;
+   const predSpeed=q&&Number.isFinite(q.predictedIasKt)?q.altitudeFt>=ta&&Number.isFinite(q.predictedMach)?q.predictedMach.toFixed(3).replace(/^0/,''):String(Math.round(q.predictedIasKt)):null;
+   const speedMissing=!sp||/^-+$/.test(sp),altMissing=!al||/^-+$/.test(al);
+   const shownSp=speedMissing&&predSpeed?predSpeed:sp,shownAlt=altMissing&&predAlt?predAlt:al;
+   rows.push({...pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),shownSp+'/'+shownAlt),predictedSpeed:!!(speedMissing&&predSpeed),predictedAltitude:!!(altMissing&&predAlt)});
+
   }
   const action=routeAction(s);
   const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
@@ -663,8 +666,7 @@
   const start=bank['RUNWAY_DEP@'+act.ORIGIN]?.fixes?.[0]||env.origin;
   const end=bank['RUNWAY_ARR@'+act.DEST]?.fixes?.[0]||env.destination;
   if(!validPosition(start)||!validPosition(end))return null;
-  let points=[{...start,ident:act.ORIGIN},...all,{...end,ident:act.DEST}];
-  points=points.filter((p,i,a)=>i===0||legDistance(a[i-1],p)>.001||i===a.length-1);
+  let points=[{...start,ident:act.ORIGIN},...all.map((l,i)=>({...l,index:i,constraint:constraint(s,l,i)})),{...end,ident:act.DEST,index:all.length}];
   let index=1,pos=points[0];
   const air=env.onGround===false;
   if(air){
@@ -692,44 +694,21 @@
   for(let i=index;i<points.length;i++){
    const p=points[i],distance=legDistance(previous,p),course=legCourse(previous,p);
    if(!Number.isFinite(distance)||!Number.isFinite(course))return null;
-   total+=distance;legs.push({ident:p.ident,distanceNm:distance,courseTrueDeg:course});previous=p;
+   total+=distance;legs.push({ident:p.ident,index:p.index,segmentNm:distance,courseTrueDeg:course,constraint:p.constraint,lat:p.lat,lon:p.lon});previous=p;
   }
-  const altitude=Number.isFinite(env.altitudeFt)?env.altitudeFt:0;
-  const destinationAltitude=Number.isFinite(env.destinationAltitudeFt)?env.destinationAltitudeFt:0;
-  // Approximate clean-aircraft phase model, kg/h for both engines combined.
-  // These coefficients are not AFM fuel-planning data.
-  const ci=Math.max(0,Math.min(200,Number(act.CI)));
-  const weightFactor=Math.max(.75,Math.min(1.45,gw/55));
-  const climbNm=Math.min(total*.65,Math.max(0,crz-altitude)/1600*300/60);
-  const descentNm=Math.min(total-climbNm,Math.max(0,crz-destinationAltitude)/1800*280/60);
-  const inDescent=air&&Number.isFinite(env.verticalSpeedFpm)&&env.verticalSpeedFpm< -300&&total<=descentNm+15;
-  const climbEnd=inDescent?0:climbNm,descentStart=inDescent?0:total-descentNm;
-  const measured=env.flowKgHr;
-  const cruiseTas=390+ci*.20;
-  const cruiseFlow=(2450+ci*2)*weightFactor;
-  const stableCruise=air&&Math.abs(altitude-crz)<1500&&Number.isFinite(measured)&&measured>=1000&&measured<=6500;
-  const rates=[{end:climbEnd,tas:300,flow:3800*weightFactor},{end:descentStart,tas:cruiseTas,flow:stableCruise?measured:cruiseFlow},{end:total,tas:280,flow:1250*weightFactor}];
-  const wind=perf.forecast||{},wd=wind.windFromDeg,wk=wind.windKt;
-  let elapsed=0,used=env.onGround===true?100:0,cumulative=0;
-  const clock=Number.isFinite(env.nowMs)?env.nowMs:Date.now();
-  const records=[];
-  for(const leg of legs){
-   let remain=leg.distanceNm;
-   for(const rate of rates){
-    const distance=Math.min(remain,Math.max(0,rate.end-cumulative));
-    if(distance<=0)continue;
-    const head=Number.isFinite(wd)&&Number.isFinite(wk)?wk*Math.cos((wd-leg.courseTrueDeg)*Math.PI/180):0;
-    const gs=Math.max(120,rate.tas-head),hours=distance/gs;
-    elapsed+=hours;used+=hours*rate.flow;cumulative+=distance;remain-=distance;
-   }
-   const eta=new Date(clock+elapsed*3600000).toISOString().slice(11,16).replace(':','')+'Z';
-   records.push({...leg,eta,fuelKg:Math.max(0,fuel.totalKg-used)});
-  }
-  const remaining=fuel.totalKg-used,rawDest=records.at(-1),destination={...rawDest,ident:act.DEST,distanceNm:total};
-  const reserves=/^\d{1,2}(?:\.\d)?$/.test(String(act.RESERVES??''))?Number(act.RESERVES)*1000:null;
-  const warnings=fuelWarnings(remaining,reserves);
-  return {quality:'TRAINING_ESTIMATE',source:'CLEAN_PHASE_APPROXIMATION',origin:act.ORIGIN,destination,active:records[0],next:records[1],waypoints:records,from:{ident:points[index-1]?.ident},fuelAtDestinationKg:destination.fuelKg,requiredFuelKg:used,remainingFuelRawKg:remaining,reserveWarnings:warnings,reserveWarning:warnings[0]||null};
+  const host=root?.parent||root,api=host?.B737TrajectoryPredictorV1,guidance=host?.B737FmcTrainingGuidanceV1;
+  if(!api)return null;
+  const airport=host.B737FlightScenarioCoreV1?.AIRPORTS?.[act.DEST];
+  const dep=host.B737FlightScenarioCoreV1?.AIRPORTS?.[act.ORIGIN];
+  const elevation=[env.destinationAltitudeFt,end.elevationFt,airport?.elevationFt,airport?.elevation,airport?.altitudeFt].find(Number.isFinite);
+  const altitude=[env.altitudeFt,start.elevationFt,dep?.elevationFt,dep?.elevation,dep?.altitudeFt,0].find(Number.isFinite);
+  const d=guidance?.perfInputs?.(act,fuel.totalKg);
+  const wind=perf.forecast||{};
+  const result=api.solve({legs,startFt:altitude,endFt:elevation??0,crz,gw:gw*1000,fuelKg:fuel.totalKg,ci:Number(act.CI),isa:wind.isaDeviationC??0,windFromDeg:wind.windFromDeg??0,windKt:wind.windKt??0,transitionAltitudeFt:perf.trans??18000,nowMs:Number.isFinite(env.nowMs)?env.nowMs:Date.now(),origin:act.ORIGIN,dest:act.DEST,onGround:env.onGround===true,complete:true,reservesKg:Number.isFinite(perf.res)?perf.res*1000:null,assumedDestinationAltitude:elevation===undefined,
+   speedAt:d?.ready?(phase,ft,course,weight,restriction)=>guidance.phaseSpeed(act,{...d,gw:weight},phase,ft,course,{speed:restriction?.speed})?.targetKt:undefined});
+  return result?{...result,from:{ident:points[index-1]?.ident}}:null;
  }
+
  function progress(s){
   const f=s.fmcPageInputs??{},p=f.predictions?.quality==='VALID'?f.predictions:f.trainingPerformance?.quality==='TRAINING_ESTIMATE'?f.trainingPerformance:{};
   const flight=s.active.FLIGHT?'FLT '+s.active.FLIGHT+' ':'';

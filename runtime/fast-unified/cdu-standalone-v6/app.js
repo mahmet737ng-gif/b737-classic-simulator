@@ -312,7 +312,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
  else if(chapter11){
-   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL},index)=>{
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL,predictedSpeed,predictedAltitude},index)=>{
      const {label,value}=lskTextTops(index+1);
      const line=centerLabel?makeDepArrTriplet(label,labelL,centerLabel,labelR,true):makePairRow(label,labelL,labelR,false,true);
      if(separator){line.textContent='------------------------';line.classList.add('fmc-perf-separator');line.style.textAlign='center';}
@@ -326,6 +326,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       for(const [cls,small] of [['.fmc-left',smallL],['.fmc-right',smallR],['.fmc-center',smallCenter]])if(small)valueRow.querySelector(cls)?.classList.add('cdu-perf-default');
       if(smallSuffixL){const left=valueRow.querySelector('.fmc-left');if(left?.textContent.endsWith(smallSuffixL)){left.textContent=left.textContent.slice(0,-smallSuffixL.length);const suffix=document.createElement('span');suffix.className='cdu-perf-default';suffix.textContent=smallSuffixL;left.appendChild(suffix);}}
      }
+     if(state.page==='LEGS'&&(predictedSpeed||predictedAltitude)){const span=valueRow.querySelector('.fmc-right'),parts=String(valueR).split('/');if(span&&parts.length===2){span.replaceChildren();parts.forEach((v,i)=>{if(i)span.appendChild(document.createTextNode('/'));const part=document.createElement('span');part.textContent=v;if(i===0?predictedSpeed:predictedAltitude){part.style.setProperty('font-size','75%','important');part.dataset.fmcPredicted='true';}span.appendChild(part);});}}
      if(activeSpeed){const field=valueRow.querySelector('.fmc-right');field.style.setProperty('background','#29ff31','important');field.style.setProperty('color','#071208','important');}
      frame.appendChild(valueRow);
    });

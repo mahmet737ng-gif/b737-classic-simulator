@@ -1,0 +1,6 @@
+/* Educational trajectory invariant regression. */
+const assert=require('node:assert/strict');
+const api=require('../runtime/fast-unified/engine/fmc/trajectory-predictor-v1.js');
+for(let i=0;i<2000;i++){const fuel=6000+i%20*50;const r=api.solve({legs:[{ident:'A',segmentNm:70+i%100,courseTrueDeg:90},{ident:'B',segmentNm:160,courseTrueDeg:90},{ident:'DEST',segmentNm:100,courseTrueDeg:90}],startFt:1000,endFt:1500,crz:25000+i%11*1000,gw:45000+i%300*50,fuelKg:fuel,ci:i%201,isa:i%30-15,windFromDeg:i%360,windKt:i%80,nowMs:1700000000000,origin:'AAAA',dest:'BBBB',reservesKg:2000});assert.equal(r.quality,'TRAINING_ESTIMATE');assert.equal(r.destination.altitudeFt,1500);assert(r.waypoints.every(x=>Number.isFinite(x.predictedIasKt)&&Number.isFinite(x.predictedMach)));assert(r.profile.every((x,j)=>!j||x.elapsedSec>=r.profile[j-1].elapsedSec&&x.fuelKg<=r.profile[j-1].fuelKg));assert(Math.abs(r.remainingFuelRawKg+r.requiredFuelKg-fuel)<1e-6);}
+assert.equal(api.solve({legs:[{ident:'A',segmentNm:1,courseTrueDeg:0,constraint:'250/10000A'},{ident:'B',segmentNm:1,courseTrueDeg:0}],startFt:0,endFt:0,crz:30000,gw:50000,fuelKg:6000,ci:20}).quality,'UNABLE');
+console.log('2000 trajectory cases + infeasible constraint passed');
