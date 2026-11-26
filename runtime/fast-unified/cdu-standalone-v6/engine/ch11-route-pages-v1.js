@@ -68,9 +68,10 @@
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
   native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
-  if(star)rows.push(star);
-   if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
-    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
+  // Keep the next enroute input slot ahead of the arrival procedure.
+  if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
+   rows.push({via:'---',to:'---',nativeIndex:native.length+1});
+  if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
   return rows;
  }
  function routeCount(s,list){
@@ -117,7 +118,7 @@
   const needsActivation=!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec;
   rows.push(pair(DASH,action?.side==='L'?action.label:'',DASH,
    needsActivation?'ACTIVATE>':action?.side==='R'?action.label:''));
-  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,list),rows};
+  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,native),rows};
  }
  function routeCell(s,k){
   if(!RTE.has(s.page)||!/^LSK_[LR][1-5]$/.test(k))return null;
@@ -126,8 +127,8 @@
    const name={L1:'ORIGIN',R1:'DEST',L2:'CO_ROUTE',R2:'FLIGHT',L3:'RUNWAY'}[side+line];
    return name?field(side,name,limits[name],line===1):null;
   }
-  const entry=list[(number-2)*ROUTE_ROWS+line-1],n=entry?.nativeIndex;
-  if(!n||entry.sourceOnly||n>MAX_ROUTE_ROWS||sourcePlan(s)||currentNav(s))return null;
+  const entry=list[(number-2)*ROUTE_ROWS+line-1],n=entry?.nativeIndex??(side==='R'?entry?.arrivalInsertIndex:null);
+  if(!n||(entry.sourceOnly&&!entry.arrivalInsertIndex)||n>MAX_ROUTE_ROWS||sourcePlan(s)||currentNav(s))return null;
   return side==='L'?field(side,'VIA'+n,'AIRWAY'):field(side,'TO'+n,'WAYPOINT');
  }
  function activeReferenceRoute(s){

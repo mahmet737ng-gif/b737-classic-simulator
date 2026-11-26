@@ -38,8 +38,8 @@
   // snapshot arrives. Once the aircraft feeder is evaluated, proven loss
   // suppresses the screen; UNKNOWN retains trainer-mode behavior only when
   // an authoritative snapshot has actually been received.
-  const off=pendingPowerEvidence||feed==='ABSENT';
-  for(const id of ['fmc-screen','annunciators']){
+  const off=pendingPowerEvidence||feed!=='PRESENT';
+  for(const id of ['fmc-lines','annunciators']){
    const el=document.getElementById(id);if(el)el.style.visibility=off?'hidden':'visible';
   }
   document.documentElement.dataset.cduElectricalFeed=feed;
@@ -48,12 +48,12 @@
  // Block all keyboard and physical key activation only for proven CDU loss.
  for(const evt of ['pointerdown','click']){
   document.addEventListener(evt,e=>{
-   if(feed!=='ABSENT'||!e.target?.closest?.('#clickmap .hotspot'))return;
+   if((!pendingPowerEvidence&&feed==='PRESENT')||!e.target?.closest?.('#clickmap .hotspot'))return;
    e.preventDefault();e.stopImmediatePropagation();
   },true);
  }
  document.addEventListener('keydown',e=>{
-  if(feed!=='ABSENT')return;
+  if(!pendingPowerEvidence&&feed==='PRESENT')return;
   if(e.key==='Escape'||e.key==='Tab')return;
   e.stopImmediatePropagation();e.preventDefault();
  },true);

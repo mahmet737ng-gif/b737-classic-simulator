@@ -388,13 +388,29 @@
   if(!ref||ref.conditional||ref.gap){issue('INVALID LEG');return;}
   airwayBusy=true;state.message='';update();
   try{
-   const spec=globalThis.B737PilotWaypointsV1.parse(input);
-   if(spec.kind==='ATW'&&spec.place!==ref.ident)throw Error('INVALID ALONG TRACK');
-   const p=await pilotPoint(input,route,spec.kind==='ATW'?selected:null);
+   const isPilot=/[\/]/.test(input)||/^[NS]\d{2}.*[EW]\d{3}/.test(input);
+   let p;
+   if(isPilot){
+    const spec=globalThis.B737PilotWaypointsV1.parse(input);
+    if(spec.kind==='ATW'&&spec.place!==ref.ident)throw Error('INVALID ALONG TRACK');
+    p=await pilotPoint(input,route,spec.kind==='ATW'?selected:null);
+   }else{
+    if(!core.validate?.('WAYPOINT',input))throw Error('INVALID ENTRY');
+    const matches=route.filter(x=>x.ident===input&&!x.gap&&!x.conditional&&Number.isFinite(x.lat)&&Number.isFinite(x.lon));
+    if(matches.length===1)p={ident:input,lat:matches[0].lat,lon:matches[0].lon};
+    else{
+     const response=await bridge.request('/api/iran-navdata/fix?ident='+encoded(input)),body=await response.json();
+     if(!response.ok||body.matches?.length!==1)throw Error(body.matches?.length>1?'DUPLICATE WAYPOINT':'NOT IN DATABASE');
+     p=body.matches[0];
+    }
+    if(p.ident!==input||!Number.isFinite(p.lat)||!Number.isFinite(p.lon))throw Error('INVALID FIX DATA');
+   }
    const index=p.insertIndex??selected,next=route[index],prev=route[index-1];
    if(!attached||ticket!==airwayTicket||state.page!=='LEGS'||String(state.scratch||'').trim().toUpperCase()!==input||shared.snapshot().revision!==revision)return;
    if(!prev||!next||prev.conditional||next.conditional||prev.gap||next.gap||!next.geoKey)throw Error('INVALID LEG');
-   shared.insertPilotBefore(next.geoKey,next.rawIndex,p,prev.ident,next.ident);
+   const downpath=route.slice(index).find(x=>x.ident===p.ident&&!x.conditional&&!x.gap&&Math.abs(x.lat-p.lat)<1e-7&&Math.abs(x.lon-p.lon)<1e-7);
+   if(downpath&&downpath.geoKey!==next.geoKey)throw Error('USE DIRECT TO / RESEQUENCE');
+   shared.insertPilotBefore(next.geoKey,next.rawIndex,p,prev.ident,next.ident,{downpathIndex:downpath?.rawIndex??null,previous:prev});
    state.scratch='';state.message='';update();
   }catch(e){if(attached&&ticket===airwayTicket)issue(e.message);}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
@@ -453,7 +469,7 @@
     }catch(e){issue(e.message);}return true;
    }
   }
-  if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&(/[\/]/.test(state.scratch)||/^[NS]\d{2}.*[EW]\d{3}/.test(state.scratch))){
+  if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&!state.holdAt&&/^LSK_L[1-5]$/.test(k)&&state.scratch&&state.scratch!=='DELETE'){
    void insertLegPilot(k);return true;
   }
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FLIGHT_PLAN'&&/^LSK_[LR][1-5]$/.test(k)&&
