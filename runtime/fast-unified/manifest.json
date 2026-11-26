@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "8fb72c5c95b2e92b67deb5edc799e344874f61ab9dd668a2e419f25f0498ac32"
+      "sha256": "2abc2d4cfc90a445dc37cd4b3a8e9bffa83b8232902e0fd6d90f4f79f099cbcf"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -148,7 +148,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
-      "sha256": "d6aff682fbe4dc029eaaad3e68c379ea64fafd129693de4e66f2a5e96585e4a1"
+      "sha256": "d09088363b62ada3a242a7cb7b65ca4fc6d9d0d5be6a9e69f952855af415111d"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
@@ -616,7 +616,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/manual-n1-live-v1.css",
-      "sha256": "ba6ad81667a27ede4f686d511c36ec291e791ddc27e0e86958c48ff935c30ee0"
+      "sha256": "40a09735f039ee64500c8f51834e49635b013db4cb7b54bffe5a7d5545746b46"
     },
     {
       "path": "panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.css",
