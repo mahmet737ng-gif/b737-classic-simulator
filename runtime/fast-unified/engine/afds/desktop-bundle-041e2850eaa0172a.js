@@ -938,7 +938,7 @@ try{
    try{ra?.publish(topic,ralt);}catch(e){producerErrors.RADIO_ALTIMETER=String(e);}
   const gps=producer('GPS');
   const pos={lat:state.lat,lon:state.lon,gsKt:state.gsKt,trackDeg:state.trueTrackDeg,
-   source:'FLIGHT_SCENARIO_V1_TRAINING'};
+   fixValid:Number.isFinite(state.lat)&&Number.isFinite(state.lon),source:'FLIGHT_SCENARIO_V1_TRAINING'};
   for(const topic of ['navigation.gps1','navigation.gps2'])
    try{gps?.publish(topic,pos);}catch(e){producerErrors.GPS=String(e);}
  }

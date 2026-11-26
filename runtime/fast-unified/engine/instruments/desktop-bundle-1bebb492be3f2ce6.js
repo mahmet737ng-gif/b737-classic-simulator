@@ -492,7 +492,7 @@ try{
   const bank=source.active,geo=bank?.geometries||{},legs=[];let previous=null;
   const validFix=(p)=>coord(p)&&typeof p.ident==='string'&&/^[A-Z0-9._-]{1,24}$/.test(p.ident);
   const start=geo['RUNWAY_DEP@'+origin]?.fixes?.[0]||session.activeNavFixEvidence?.ORIGIN;
-  if(validFix(start))previous={lat:start.lat,lon:start.lon,ident:start.ident};
+  if(coord(start))previous={lat:start.lat,lon:start.lon,ident:start.ident??origin};
   function gap(reason){if(legs.at(-1)?.type!=='GAP')legs.push({type:'GAP',reason});previous=null;}
   function fixed(p,raw={},kind='RTE'){
    if(!validFix(p)){gap('UNVERIFIED_FIX');return;}
@@ -611,9 +611,10 @@ try{
   const mag=conditions.variationAt?.(prev)??conditions.variation;if(!finite(mag)||!finite(l.headingMag))return null;
   const course=norm(l.headingMag+mag),r=course*Math.PI/180,u={x:Math.sin(r),y:Math.cos(r)};let nm=null;
   if(l.type==='ALTITUDE'){
-   const ft=l.altitude?.ft;if(!finite(ft))return null;const phase=ft>=prevFt?'CLIMB':'DESCENT',fn=phase==='CLIMB'?provider?.climbAirNm:provider?.descentAirNm;
+   const ft=l.altitude?.ft;if(!finite(ft))return null;const satisfied=l.climb?prevFt>=ft:prevFt<=ft;
+   const phase=ft>=prevFt?'CLIMB':'DESCENT',fn=phase==='CLIMB'?provider?.climbAirNm:provider?.descentAirNm;
    const dist=h=>{const lo=Math.floor(h/1000)*1000,hi=Math.min(37000,lo+1000);return !fn?h/340:hi===lo?fn(lo):fn(lo)+(fn(hi)-fn(lo))*(h-lo)/(hi-lo);};
-   nm=Math.abs(dist(ft)-dist(prevFt))*(provider?.windFactor(course,phase)??1);
+   nm=satisfied?0:Math.abs(dist(ft)-dist(prevFt))*(provider?.windFactor(course,phase)??1);
   }else if(l.type==='DME'&&coord(l.station)){
    const q=vec(prev,l.station),p=dot(q,u),disc=p*p-dot(q,q)+l.target*l.target;if(disc<0)return null;
    nm=[p-Math.sqrt(disc),p+Math.sqrt(disc)].filter(x=>x>=0).sort((a,b)=>a-b)[0];
@@ -637,9 +638,9 @@ try{
    const l=plan.legs[j];if(l.type==='GAP'||l.hold){complete=false;stopReason=l.reason??(l.hold?'HOLD_DURATION_UNKNOWN':'ROUTE_DISCONTINUITY');break;}
    const point=l.type==='FIX'&&coord(l)?l:conditionalFix(prev,l,prevFt,d,conditions,provider);if(!coord(point)){complete=false;stopReason='UNRESOLVED_'+l.type;break;}
    const v=vec(prev,point),nm=point.estimated===true?point.distanceNm:length(v),course=point.estimated===true?point.courseTrueDeg:nm>.0001?bearing(v):norm(l.headingMag??frame.trueHeadingDeg??0);
-   const al=l.altitude?String(l.altitude.ft)+(l.type==='ALTITUDE'?'':l.altitude.restriction||''):'-----';
+   const al=l.altitude?String(l.altitude.ft)+(l.type==='ALTITUDE'?(l.climb?'A':'B'):l.altitude.restriction||''):'-----';
    legs.push({ident:l.ident,index:j,segmentNm:nm,courseTrueDeg:course,constraint:l.constraintText??((l.speed??'----')+'/'+al),lat:point.lat,lon:point.lon,estimated:point.estimated===true});prev=point;
-   if(finite(l.altitude?.ft))prevFt=l.altitude.ft;else prevFt=Math.min(d.crz,prevFt+nm*300);
+   if(finite(l.altitude?.ft))prevFt=l.type==='ALTITUDE'?(l.climb?Math.max(prevFt,l.altitude.ft):Math.min(prevFt,l.altitude.ft)):l.altitude.ft;else prevFt=Math.min(d.crz,prevFt+nm*300);
   }
   if(!legs.length&&!(complete&&coord(plan.destinationPoint)))return {...empty,reason:stopReason??empty.reason};
   if(complete&&coord(plan.destinationPoint)){
@@ -689,7 +690,7 @@ try{
   const z=numeric(a.ZFW),gw=numeric(a.GW_CG),fuel=finite(liveFuel)&&liveFuel>=0?liveFuel/1000:numeric(a.FUEL);
   const ci=numeric(a.CI),res=numeric(a.RESERVES);
   const ready=crz&&crz.ft>0&&finite(m)&&finite(now)&&fuel!==null&&fuel>=0&&(z!==null&&z>0||gw!==null&&gw>fuel)&&res!==null&&res>=0&&res<=99.9&&ci!==null&&Number.isInteger(ci)&&ci>=0&&ci<=200&&finite(frame.radioAltitudeFt)&&frame.radioAltitudeFt>=400&&frame.airborne===true;
-  if(!ready)return {valid:false,engage:false,reason:'PERF_INIT_OR_RA_REQUIRED'};
+  if(!ready)return {valid:false,engage:false,reason:frame.airborne!==true||!finite(frame.radioAltitudeFt)||frame.radioAltitudeFt<400?'VNAV_RADIO_ALTITUDE_INHIBIT':'PERF_INIT_REQUIRED'};
   const forecast=conditions.forecast??routeForecast(plan,index,frame,{...conditions,fuelKg:liveFuel}),g=forecast?.guidance;
   const d=perfInputs(a,liveFuel),track=coord(leg)?bearing(vec(frame,leg)):frame.trueHeadingDeg;
   if(!g||!(forecast.quality==='TRAINING_ESTIMATE'||forecast.reason==='ABOVE_DESCENT_PATH'&&g.recoverable)){
@@ -811,10 +812,13 @@ function followHold(points,step,frame,gs){
    let leg=plan.legs[index];
    if(leg?.hold&&completed.get(leg.hold.key)===JSON.stringify(leg.hold)){index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];}
    if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index,sequence:sequenceState()};
-   if(leg.type==='ALTITUDE'){
-    const satisfied=leg.climb?frame.altitudeFt>=leg.altitude.ft:frame.altitudeFt<=leg.altitude.ft;
-    const crossed=frame.airborne===true&&satisfied&&(!priorAirborne||!finite(previousAltitude)||(leg.climb?previousAltitude<leg.altitude.ft:previousAltitude>leg.altitude.ft));
-    if(crossed){pass(leg,frame,conditions);index++;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];}
+   // Altitude termination is a level condition, not an edge that can be
+   // missed during power restoration, fast simulation or consecutive legs.
+   while(frame.airborne===true&&leg?.type==='ALTITUDE'&&(leg.climb?frame.altitudeFt>=leg.altitude.ft:frame.altitudeFt<=leg.altitude.ft)){
+    const observed=priorAirborne&&finite(previousAltitude)&&(leg.climb?previousAltitude<leg.altitude.ft:previousAltitude>leg.altitude.ft);
+    if(observed)pass(leg,frame,conditions);
+    // If already satisfied on acquisition, sequence without inventing ATA.
+    index++;previousCondition=null;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];
    }
    if(leg&&['DME','RADIAL'].includes(leg.type)){
     const stationVariation=conditions.variationAt?.(leg.station)??conditions.variation;
@@ -878,9 +882,9 @@ function followHold(points,step,frame,gs){
    if(holdStatus&&v.valid){const holdAltitude=finite(mcp?.values?.altitude)?mcp.values.altitude:frame.altitudeFt;v.targetAltitudeFt=holdAltitude;v.vsFpm=clamp((holdAltitude-frame.altitudeFt)*2,-1200,1200);v.mode='VNAV PTH';v.thrust='FMC SPD';}
    wasDescending=v.phase==='DESCENT';
    return {fmcTrackValid:finite(track),trackDeg:track,lnavEngage:engage&&finite(track),
-    fmcVerticalValid:finite(track)&&v.valid===true,vnavEngage:finite(track)&&v.engage===true,
+    fmcVerticalValid:v.valid===true,vnavEngage:v.engage===true,
     vsFpm:v.vsFpm,vnavMode:v.mode,targetKt:v.targetKt,thrust:v.thrust,targetAltitudeFt:v.targetAltitudeFt,
-    sequence:sequenceState(),hold:holdStatus,holdExited,holdMetrics:metrics,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',vertical:v,performance:forecast,rta:v.rta??null};
+    sequence:sequenceState(),hold:holdStatus,holdExited,holdMetrics:metrics,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',verticalReason:v.reason??null,lateralReason:finite(track)?null:'ACTIVE_LEG_TRACK_UNAVAILABLE',vertical:v,performance:forecast,rta:v.rta??null};
   }
   return {evaluate,reset};
  }
@@ -933,7 +937,7 @@ try{
   const running=Object.values(engineValues||{}).filter(x=>x?.running===true),idle=running.length>0&&running.every(x=>finiteNumber(x.throttle)&&x.throttle<=.06);
   const limit=win.B737ManualN1LiveV1?.getState?.(),n1Ready=[1,2].every(n=>limit?.[n]?.automaticSource==='FMC'&&finiteNumber(limit[n].automaticPct));
   attachFmc();
-  const sample=frame&&isActive()?fmcTrainer.evaluate(sessionCache??win.B737UnifiedFmc?.snapshot?.(),sourceCache??win.B737CduSgRouteV1?.snapshot?.(),frame,output,{power:value?.operational===true&&value.failed!==true,positionValid:value?.position?.quality==='VALID',variation,variationAt:p=>{const w=win.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;},n1Ready,idle,engines:frame.airborne===true&&running.length===1?1:2,utcMs:net?.getSignal?.('clock.utc')?.quality==='VALID'?net.getSignal('clock.utc').value?.epochMs:null,fuelFlowKgHr:(()=>{const a=[1,2].map(n=>net?.getSignal?.('propulsion.engine'+n));return a.every(x=>x?.quality==='VALID'&&finiteNumber(x.value?.fuelFlowKgHr))?a.reduce((sum,x)=>sum+x.value.fuelFlowKgHr,0):null;})(),fuelKg:value?.fuel?.quality==='VALID'?value.fuel.totalKg:null}):{fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false};
+  const sample=frame&&isActive()?fmcTrainer.evaluate(win.B737UnifiedFmc?.snapshot?.()??sessionCache,win.B737CduSgRouteV1?.snapshot?.()??sourceCache,frame,output,{power:value?.operational===true&&value.failed!==true,positionValid:value?.position?.quality==='VALID',variation,variationAt:p=>{const w=win.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;},n1Ready,idle,engines:frame.airborne===true&&running.length===1?1:2,utcMs:net?.getSignal?.('clock.utc')?.quality==='VALID'?net.getSignal('clock.utc').value?.epochMs:null,fuelFlowKgHr:(()=>{const a=[1,2].map(n=>net?.getSignal?.('propulsion.engine'+n));return a.every(x=>x?.quality==='VALID'&&finiteNumber(x.value?.fuelFlowKgHr))?a.reduce((sum,x)=>sum+x.value.fuelFlowKgHr,0):null;})(),fuelKg:value?.fuel?.quality==='VALID'?value.fuel.totalKg:null}):{fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false};
   lastFmc={...sample,position:frame&&sample.fmcTrackValid?{lat:frame.lat,lon:frame.lon}:null,observedAtMs:Date.now()};
   if(sample.holdExited?.expected)win.B737UnifiedFmc?.completeHold?.(sample.holdExited);
   return {...sample,
@@ -955,7 +959,11 @@ try{
  }
  function guidance(frame,output){
   if(!frame||!output)return null;
-  const res=Guidance.evaluate(fcc,output,frame,navInput(frame));
+  const nav=navInput(frame,output);
+  const evidence={confirmed:true,source:'SIMULATED_FCC',lateral:nav.fmcTrackValid===true,vertical:nav.fmcVerticalValid===true,lnavEngage:nav.lnavEngage===true,vnavEngage:nav.vnavEngage===true,mode:nav.vnavMode||null,targetKt:nav.targetKt??null,thrust:nav.thrust||null};
+  const sig=JSON.stringify(evidence);
+  if(sig!==lastFmcSignature||!output.fmcGuidance){lastFmcSignature=sig;win.B737McpAFDSBridgeV1?.observeFmcGuidance?.(evidence);output=mcp()??output;}
+  const res=Guidance.evaluate(fcc,output,frame,nav);
   fcc=res.state;last=res;
   return res;
  }

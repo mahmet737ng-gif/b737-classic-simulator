@@ -140,7 +140,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "7f102280e5aa7d62b48edaf518f4a9dd190fd21757b8883537985ec040152b2c"
+      "sha256": "66788678cfe1dc7d51196c94f1c93567bf9aabd111895b27ae30e019595643a8"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -232,7 +232,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "7af016fe3d44e11449bde2c66426414ee5d8d9222159059286f68fe248909373"
+      "sha256": "a331f81567aaa9caa19ce314a7856e00209c1fc979960a01ab6de35e97d22a3b"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -636,7 +636,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1bcaefe30722e6d5.js",
-      "sha256": "3ade54b30d97cd79a8ec37c12e115152ea1ace2cdad0032207211829881ba0c3"
+      "sha256": "69d080a2f6a3e20f492ebee3eee7f825448ade64af86a1425824cb4f0efebe0c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-25fa9f115da165b4.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "4d29873f91c75a81924197cd089c44837a36b96923cdcb0bb0dd2176c4ac7e3b"
+      "sha256": "35067340c9a6294a4a0a53890a981883a1ae1328669a1a0d50f61a3d23065eb2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
