@@ -371,7 +371,7 @@ async function validateRteEntry(k){
  return true;
 }
 function handlesStage6Key(k){
- if(lookupBusy&&/^LSK_[LR][1-6]$/.test(k)){error('NAV DATA LOOKUP BUSY');return true;}
+ if(lookupBusy&&['RTE','FLIGHT_PLAN','DEP_ARR','DEPARTURES','ARRIVALS'].includes(state.page)&&/^LSK_[LR][1-6]$/.test(k)){error('NAV DATA LOOKUP BUSY');return true;}
  if((state.page==='RTE'||state.page==='FLIGHT_PLAN')&&state.scratch&&state.scratch!=='DELETE'){
   const cell=chapter11Cell(k);
   const field=state.chapter11RoutePages?cell?.format:state.page==='RTE'?

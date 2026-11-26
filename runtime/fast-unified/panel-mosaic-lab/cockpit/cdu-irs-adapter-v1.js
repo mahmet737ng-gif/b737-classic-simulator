@@ -10,14 +10,16 @@ const original=send,originalUpdate=update;
 // Published Jeppesen airport diagram coordinates, cycle 2621, 10-9; tenths of arcminute. Not runway thresholds.
 const ARP=Object.freeze({OIII:{lat:35+41.3/60,lon:51+18.9/60},OIMM:{lat:36+14.1/60,lon:59+38.7/60},OIFM:{lat:32+45.1/60,lon:51+51.8/60},OISS:{lat:29+32.4/60,lon:52+35.3/60}});
 function arp(icao){
+ if(!/^[A-Z]{4}$/.test(String(icao||'')))return null;
  const published=ARP[icao];
- const reference=parent.B737IranNavReferenceV1?.find(r=>r.type==='AIRPORT'&&r.ident===icao&&r.verified===true);
+ const refs=parent.B737IranNavReferenceV1;
+ const reference=Array.isArray(refs)?refs.find(r=>r.type==='AIRPORT'&&r.ident===icao&&r.verified===true):null;
  const scenario=parent.B737FlightScenarioCoreV1?.AIRPORTS?.[icao];
  const p=published||reference||scenario;
  if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180)return null;
  return {icao,lat:p.lat,lon:p.lon,display:fmt(p).join(' '),source:published?'JEPPESEN_2621_10_9':reference?'UNIFIED_AIRPORT_REFERENCE':'UNIFIED_SCENARIO_AIRPORT'};
 }
-function syncArp(){state.refAirportArp=arp(state.active.REF_AIRPORT);}
+function syncArp(){if(state.page==='POS_INIT')state.refAirportArp=arp(state.active?.REF_AIRPORT);}
 function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch{return null}}
 function syncEnteredPosition(){ /* Shared CDU session owns active.IRS_POS; never restore a stale or preset position after FMC reset. */ }
 function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
@@ -96,7 +98,11 @@ function syncIrsAlerts(snapshot){
  }
  irsOwnedMessage='';return false;
 }
-update=function(){syncPosInitEvidence();syncArp();syncEnteredPosition();originalUpdate();patchPositionPages();};
+update=function(){
+ try{syncPosInitEvidence();syncArp();syncEnteredPosition();}catch(e){console.warn('CDU POS source unavailable',e);state.refAirportArp=null;}
+ originalUpdate();
+ try{patchPositionPages();}catch(e){console.warn('CDU POS reference paint unavailable',e);}
+};
 window.updateStage5View=update;
 function handleKey(key){
  const normalized=String(key).replace(/^CDU_(?:CAPT|FO)_/,'');
@@ -108,6 +114,9 @@ function handleKey(key){
   if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
   else if(g?.quality==='VALID'&&typeof g.value?.onGround==='boolean')state.fmcOnGroundVerified=g.value.onGround;
   core.press(state,pages,'CDU_CAPT_INIT_REF');update();return true;
+ }
+ if(state.page==='INDEX'&&/^LSK_[LR][1-6]$/.test(normalized)){
+  core.press(state,pages,'CDU_CAPT_'+normalized);update();return true;
  }
  if(state.page==='POS_INIT'&&normalized==='LSK_L6'){
   core.press(state,pages,'CDU_CAPT_LSK_L6');update();return true;

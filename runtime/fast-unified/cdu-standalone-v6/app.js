@@ -407,6 +407,11 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
 function send(k){
  const prior=procedureLedger?.capture(state)||null;
  try{const before=state.page;
+  const key=String(k).replace(/^CDU_(?:CAPT|FO)_/,'');
+  // Native preflight LSKs never depend on route-source lookups.
+  if((before==='INDEX'||before==='POS_INIT')&&/^LSK_[LR][1-6]$/.test(key)){
+   core.press(state,pages,k);update();return;
+  }
   syncPlanReview();
   if(String(k).replace(/^CDU_CAPT_/,'')==='EXEC'&&chapter11RoutePages?.holdExecReady?.(state)===false){state.message='ENTER INBD CRS';update();return;}
   if(state.page==='LEGS'&&!state.holdAt&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_CAPT_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
