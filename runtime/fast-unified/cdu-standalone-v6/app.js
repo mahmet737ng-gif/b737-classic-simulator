@@ -326,8 +326,9 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
    if(state.page==='POS_INIT'){
      const sources=state.preflightEvidence||{};
      if(row===1){valueL=preflight.lastPosition(sources);valueR='';}
+     if(row===2)valueR=state.refAirportArp?.icao===state.active.REF_AIRPORT?state.refAirportArp.display:'';
      if(row===3&&!core.readValue(state,'REF_AIRPORT','POS_INIT'))valueL='-----';
-     if(row===4){valueR=preflight.irsPositionPrompt(sources);}
+     if(row===4){valueR=preflight.irsPositionPrompt(sources)||state.active.IRS_POS||'';}
      if(row===5){
        valueL=preflight.clock(sources);
        if(!preflight.irsHeadingAvailable(sources)){labelR='';valueR='';}
@@ -350,6 +351,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
    if(state.page==='POS_INIT'&&row===1){
      valueLine.querySelector('.fmc-left')?.classList.add('full');
    }
+   if(state.page==='POS_INIT'&&(row===2||row===4))valueLine.querySelector('.fmc-right')?.style.setProperty('width','76%','important');
    frame.appendChild(valueLine);
  }
  frame.appendChild(makePairRow(((CDU_DISPLAY_GEOMETRY.scratchpadTop-screenTop)/screenHeight*100), state.message||state.scratch||'', '', true));

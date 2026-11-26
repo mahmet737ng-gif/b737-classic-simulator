@@ -29,7 +29,7 @@
   return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({"737-300":"EP-FSI","737-300W":"EP-FSV","737-500":"EP-FSA","737-500W":"EP-FSG","737-400":"EP-AOA"})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
-   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model.replace(/W$/,'')}),
+   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),
    ENG_RATING:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_ENGINE_RATING',value:engine.rating})
   });
  }

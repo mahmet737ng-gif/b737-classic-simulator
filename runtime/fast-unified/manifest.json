@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "249c65926882e0d79838e3c5bebf0009a03127b56549816caf75eed0f8d5b2b4"
+      "sha256": "605330dc21d7fb1888f6cd29ffc53875b272f7b566a5388b27aaced859c794e7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -48,7 +48,7 @@
     },
     {
       "path": "engine/config/desktop-bundle-0934f674ee3ca2e3.js",
-      "sha256": "3230a0cbb0fcbfb29b6ea982453f9842790216bffb52bb0b4d87039309e6bb81"
+      "sha256": "ff3ebe74ae2f2873d96c51e855e863b37cb05cd94e59d4542adf239b48ddb763"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-df37b59c14eedab3.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "b40a14d0bdda8bee5f5f22524563cf90b442517a71759647ba0a10ef169bae76"
+      "sha256": "66bd1d620c8a69d0933e15fcba48b9434de5d19e888e3f329e61122ac30a326b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -928,7 +928,7 @@
     },
     {
       "path": "engine/ch11/cdu-preflight-evidence-v1.js",
-      "sha256": "4e95d7c8c9a722c3f54b01875b36241faa4e84b386c692af5e15ca14afcff953"
+      "sha256": "eed6f6f2463fbd029ca5d30e877cf6835c31b4965d91a053cc99ecaf43bf2ef2"
     },
     {
       "path": "engine/ch11/airac2611-middle-east-preview-v1.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "1c45cd813edd8b2ff2978ad0e192ce9441e8306bebceec4df4a0b1be64407333"
+      "sha256": "711ec88203c759a20b9472a42e92193e08d3b52e787ef98e2474609434b3722f"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -988,7 +988,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
-      "sha256": "71ab9f113246327a174b72324dcf7a32a73074a912129fdd73c39853e98baa56"
+      "sha256": "ba07f0a1d88c9ee00ec96478acc5a4b0d5893f944d836d65636ac1ec401d58cd"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
@@ -996,7 +996,7 @@
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",
-      "sha256": "16d280a85b77a2f6a1008389fcb9be711461303f2d9beba8a92f6612ab691080"
+      "sha256": "e945b200644d0f2865c04416bd0af838d73f41767cc281f3691d3e1747014839"
     },
     {
       "path": "engine/ch11/cdu-airac-banks-v1.js",

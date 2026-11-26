@@ -18,7 +18,7 @@
   SUPP_DATA:['VERIFIED_SUPPLEMENTAL_DATABASE']
  });
  const texts=Object.freeze({
-  MODEL:/^737-(300|400|500)$/,
+  MODEL:/^737-(300W?|400|500W?)$/,
   ENG_RATING:/^\d{2}(?:\.\d)?K$/,
   NAV_DATA:/^[A-Z0-9._-]{1,24}$/,
   ACTIVE:/^[A-Z0-9/.-]{1,24}$/,

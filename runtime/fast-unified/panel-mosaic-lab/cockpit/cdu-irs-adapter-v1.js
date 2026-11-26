@@ -7,6 +7,12 @@
 if(typeof state==='undefined'||typeof update!=='function'||typeof send!=='function')return;
 if(!new URLSearchParams(location.search).get('seat'))return;
 const original=send,originalUpdate=update;
+// Published Jeppesen airport diagram coordinates, cycle 2621, 10-9; tenths of arcminute. Not runway thresholds.
+const ARP=Object.freeze({OIII:{lat:35+41.3/60,lon:51+18.9/60},OIMM:{lat:36+14.1/60,lon:59+38.7/60},OIFM:{lat:32+45.1/60,lon:51+51.8/60},OISS:{lat:29+32.4/60,lon:52+35.3/60}});
+function arp(icao){const p=ARP[icao];return p?{icao,...p,display:fmt(p).join(' '),source:'JEPPESEN_2621_10_9'}:null;}
+function syncArp(){state.refAirportArp=arp(state.active.REF_AIRPORT);}
+function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch{return null}}
+function syncEnteredPosition(){const record=sharedPosition(),raw=parentIRS()?.getCoreState?.();if(!record||!raw?.units)return;const match=u=>u?.enteredPosition&&Math.abs(u.enteredPosition.lat-record.lat)<1e-7&&Math.abs(u.enteredPosition.lon-record.lon)<1e-7;if(['L','R'].some(s=>match(raw.units[s])))state.active.IRS_POS=record.display;}
 function parentIRS(){try{return parent.B737IRSTrainerUnified||null}catch{return null}}
 function inputFormat(raw){
  const s=String(raw||'').trim().toUpperCase().replace(/[\s./]+/g,'');
@@ -73,6 +79,7 @@ function syncIrsAlerts(snapshot){
    (find(4)||find(8)||find(12))?'ENTER IRS POS':
    units.some(u=>u.cduMessage==='VERIFY POSITION')?'VERIFY POSITION':null;
  if(desired){
+  if(state.scratch&&!state.message)return false;
   if(state.message&&state.message!==irsOwnedMessage&&!IRS_MESSAGES.has(state.message))return false;
   if(state.message===desired){irsOwnedMessage=desired;return false;}
   state.message=desired;irsOwnedMessage=desired;return true;
@@ -82,18 +89,34 @@ function syncIrsAlerts(snapshot){
  }
  irsOwnedMessage='';return false;
 }
-update=function(){syncPosInitEvidence();originalUpdate();patchPositionPages();};
+update=function(){syncPosInitEvidence();syncArp();syncEnteredPosition();originalUpdate();patchPositionPages();};
 window.updateStage5View=update;
 send=function(key){
- const normalized=String(key).replace(/^CDU_CAPT_/,'');
+ const normalized=String(key).replace(/^CDU_(?:CAPT|FO)_/,'');
+ if(state.page==='POS_INIT'&&normalized==='LSK_L2'&&state.scratch&&state.scratch!=='DELETE'){
+  const icao=String(state.scratch).trim().toUpperCase();
+  if(!/^[A-Z]{4}$/.test(icao)){state.message='INVALID ENTRY';update();return;}
+  if(!arp(icao)){state.message='NOT IN DATABASE';update();return;}
+  return original(key);
+ }
+ if(state.page==='POS_INIT'&&normalized==='LSK_R2'){
+  const ref=arp(state.active.REF_AIRPORT);
+  if(ref){state.scratch=ref.display;state.message='';}else state.message='ENTER REF AIRPORT';
+  update();return;
+ }
  if(state.page==='POS_INIT'&&normalized==='LSK_R4'){
   try{
    const input=inputFormat(state.scratch);
    const t=parentIRS();if(!t)throw Error('IRS TRAINER NOT READY');
    const result=t.setFmcPosition(input);
    if(!result.ok)throw Error('IRS POSITION NOT ACCEPTED');
-   // LSK 4R commits without CDU EXEC, as on the FCOM POS INIT page.
-   state.active.IRS_POS=input;delete state.pending.IRS_POS;
+   const p=result.position,raw=t.getCoreState?.();
+   const accepted=(result.sides||[]).filter(s=>{const q=raw?.units?.[s]?.enteredPosition;return q&&Math.abs(q.lat-p.lat)<1e-7&&Math.abs(q.lon-p.lon)<1e-7;});
+   if(!accepted.length)throw Error('ENTER IRS POS');
+   const display=fmt(p).join(' ');
+   state.active.IRS_POS=display;delete state.pending.IRS_POS;
+   parent.B737FmcEnteredPositionV1=Object.freeze({lat:p.lat,lon:p.lon,display,sides:accepted,source:'FMC_POS_INIT'});
+   parent.dispatchEvent(new parent.CustomEvent('b737:fmc-entered-position',{detail:parent.B737FmcEnteredPositionV1}));
    state.scratch='';state.message='';
   }catch(e){state.message=String(e.message||e).slice(0,32);}
   update();return;
@@ -111,8 +134,8 @@ setInterval(()=>{
  }
  if(alertChanged)update();
 },1100);
-try{parent.addEventListener('b737:flight-location-reference',()=>{
+try{parent.addEventListener('b737:fmc-entered-position',()=>{if(state.page==='POS_INIT'||state.page==='POS_REF')update();else syncEnteredPosition();});parent.addEventListener('b737:flight-location-reference',()=>{
  if(state.page==='POS_REF')patchPositionPages();
 });}catch(_){/* CDU iframe on a different origin cannot read the parent */ }
-window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence});
+window.B737CDUIRSAdapterV1=Object.freeze({inputFormat,patchPositionPages,syncIrsAlerts,syncPosInitEvidence,arp});
 })();
