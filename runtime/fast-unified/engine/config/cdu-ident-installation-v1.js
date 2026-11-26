@@ -25,7 +25,7 @@
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
   if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP/FSI','737-400':'EP/AOA','737-500':'EP/FSQ'})[model],
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP-FSI','737-400':'EP-AOA','737-500':'EP-FSA'})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
    MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),

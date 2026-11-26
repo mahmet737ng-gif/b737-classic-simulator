@@ -24,9 +24,9 @@ try{
       Object.freeze({id: 'B737-400', label: '737-400', variants: Object.freeze(['737-400'])})
     ]),
     aircraftModel: Object.freeze([
-      Object.freeze({id:'737-300',label:'Boeing 737-300 · EP/FSI',registration:'EP/FSI',family:'B737-300-500'}),
-      Object.freeze({id:'737-400',label:'Boeing 737-400 · EP/AOA',registration:'EP/AOA',family:'B737-400'}),
-      Object.freeze({id:'737-500',label:'Boeing 737-500 · EP/FSQ',registration:'EP/FSQ',family:'B737-300-500'})
+      Object.freeze({id:'737-300',label:'Boeing 737-300 · EP-FSI',registration:'EP-FSI',family:'B737-300-500'}),
+      Object.freeze({id:'737-400',label:'Boeing 737-400 · EP-AOA',registration:'EP-AOA',family:'B737-400'}),
+      Object.freeze({id:'737-500',label:'Boeing 737-500 · EP-FSA',registration:'EP-FSA',family:'B737-300-500'})
     ]),
     engineVariant: Object.freeze([
       Object.freeze({id:'CFM56-3B1',label:'CFM56-3 B1',rating:'18.5K',ratingLbf:18500}),
@@ -273,7 +273,7 @@ try{
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
   if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP/FSI','737-400':'EP/AOA','737-500':'EP/FSQ'})[model],
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP-FSI','737-400':'EP-AOA','737-500':'EP-FSA'})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
    MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),

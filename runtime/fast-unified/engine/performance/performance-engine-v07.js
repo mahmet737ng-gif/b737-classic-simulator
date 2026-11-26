@@ -1,7 +1,7 @@
 /* B737 Classic central educational performance engine. No extrapolation; preserves source and proxy labels. */
 (function(root){const make=function makeEngine(root,raw,perf){
  'use strict';
- const variants=Object.freeze({'737-300':Object.freeze({model:'737-300',registration:'EP/FSI',rating:20000}), '737-400':Object.freeze({model:'737-400',registration:'EP/AOA',rating:22000}), '737-500':Object.freeze({model:'737-500',registration:'EP/FSQ',rating:20000})});
+ const variants=Object.freeze({'737-300':Object.freeze({model:'737-300',registration:'EP-FSI',rating:20000}), '737-400':Object.freeze({model:'737-400',registration:'EP-AOA',rating:22000}), '737-500':Object.freeze({model:'737-500',registration:'EP-FSA',rating:20000})});
  const unpack=t=>t.rows.map(r=>Object.fromEntries(t.fields.map((k,i)=>[k,r[i]])));
  const rows=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,unpack(v)]));
  const by=(data,keys)=>{const m=new Map;for(const r of data){const k=keys.map(x=>r[x]).join('|');if(!m.has(k))m.set(k,[]);m.get(k).push(r);}return m};
