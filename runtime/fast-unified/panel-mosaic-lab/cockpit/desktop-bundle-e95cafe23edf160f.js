@@ -478,6 +478,22 @@ try{
     // HOLD overlay uses the same projection/clip as the selected seat's route.
     screen.svg.querySelector('[data-fmc-holding]')?.remove();
     const guidance=win.B737FmcTrainingGuidanceV1,session=win.B737UnifiedFmc?.snapshot?.();
+    screen.svg.querySelector('[data-fmc-profile-points]')?.remove();screen.host.dataset.profilePointsRendered='0';
+    if(session?.routeActivated===true&&anchor&&project&&['MAP','CTR_MAP','PLAN'].includes(mode)&&src.displayPowered===true&&src.video===true&&!preview&&!failure.active){
+     const live=win.B737UnifiedFccFlightV1?.getFmcGuidance?.(),p=scenarioState?.airborne===true?live?.performance:win.B737TrajectoryPredictorV1?.getPreview(session);
+     if(p?.quality==='TRAINING_ESTIMATE'&&p.origin===session.active?.ORIGIN&&p.dest===session.active?.DEST&&(p.routeRevision===null||p.routeRevision===session.routeRevision)){
+      const ns='http://www.w3.org/2000/svg',g=doc.createElementNS(ns,'g');g.setAttribute('data-fmc-profile-points','true');
+      const rangeId=(screen.svg.id||'ehsi')+'-route-range',plotId=(screen.svg.id||'ehsi')+'-plot',clipId=screen.svg.querySelector('[id="'+rangeId+'"]')?rangeId:plotId;
+      g.setAttribute('clip-path','url("'+doc.URL.split('#')[0]+'#'+clipId+'")');
+      let n=0;for(const point of [p.topOfClimb,p.topOfDescent]){
+       if(!Number.isFinite(point?.lat)||!Number.isFinite(point?.lon))continue;
+       const o=sources.offsets(anchor,point),xy=project(o.x,o.y);if(!Array.isArray(xy)||!xy.every(Number.isFinite))continue;
+       const circle=doc.createElementNS(ns,'circle'),label=doc.createElementNS(ns,'text');
+       for(const [k,v] of Object.entries({cx:xy[0],cy:xy[1],r:4.5,fill:'none',stroke:'#00ef00','stroke-width':1.5,'data-fmc-profile-point':point.label}))circle.setAttribute(k,String(v));
+       for(const [k,v] of Object.entries({x:xy[0]+7,y:xy[1]-5,fill:'#00ef00','font-size':11,'font-family':'monospace'}))label.setAttribute(k,String(v));label.textContent=point.label;g.append(circle,label);n++;
+      }screen.svg.appendChild(g);screen.host.dataset.profilePointsRendered=String(n);
+     }
+    }
     if(!holdSubscription&&typeof win.B737UnifiedFmc?.subscribe==='function')holdSubscription=win.B737UnifiedFmc.subscribe(schedule)||true;
     screen.host.dataset.holdRendered='0';
     if(guidance&&session&&anchor&&project&&['MAP','CTR_MAP','PLAN'].includes(mode)&&src.displayPowered===true&&src.video===true&&!preview){
@@ -531,6 +547,7 @@ try{
    const status=diagnostics.join(' / ');
    if(output&&output.textContent!==status)output.textContent=status;
   }
+  win.addEventListener('b737:fmc-trajectory-preview',()=>schedule());
   function schedule(){
    if(frame)return;
    frame=win.requestAnimationFrame(()=>{frame=0;refresh();});

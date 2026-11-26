@@ -139,11 +139,11 @@ function perfData(s){
  const crz=perfAlt(perfValue(s,'CRZ_ALT')),std=crz===null?null:Math.round(15-1.9812*Math.min(crz,36089)/1000);
  let isa=perfSigned(perfValue(s,'ISA_DEV')),oat=perfSigned(perfValue(s,'TC_OAT'));
  if(std!==null){if(perfValue(s,'PERF_TEMP_SOURCE')==='OAT'||isa===null){if(oat!==null)isa=oat-std;}else oat=std+isa;}
- const pred=s.fmcPageInputs?.predictions,ci=perfValue(s,'CI');
+ const pred=s.fmcPageInputs?.predictions?.quality==='VALID'?s.fmcPageInputs.predictions:s.fmcPageInputs?.trainingPerformance,ci=perfValue(s,'CI');
  const origin=readValue(s,'ORIGIN','RTE'),dest=readValue(s,'DEST','RTE');
  // 11.40.41: TRIP is computed minimum-cost altitude, never CRZ or OPT by substitution.
  const tripReady=/^[A-Z]{4}$/.test(origin)&&/^[A-Z]{4}$/.test(dest)&&origin!==dest&&gw!==null&&gw>0&&validate('CI_CL',ci);
- const trip=tripReady&&pred?.quality==='VALID'&&Number.isFinite(pred.tripAltitudeFt)&&pred.tripAltitudeFt>0&&pred.origin===origin&&pred.destination===dest&&pred.costIndex===Number(ci)&&Math.abs(pred.grossWeightKg-gw*1000)<=100?pred.tripAltitudeFt:null;
+ const trip=tripReady&&['VALID','TRAINING_ESTIMATE'].includes(pred?.quality)&&Number.isFinite(pred.tripAltitudeFt)&&pred.tripAltitudeFt>0&&pred.origin===origin&&(pred.dest??pred.destination)===dest&&(pred.ci??pred.costIndex)===Number(ci)&&Math.abs((pred.gw??pred.grossWeightKg)-gw*1000)<=100?pred.tripAltitudeFt:null;
  const sid=s.cduSgReference?.modified?.geometries??s.cduSgReference?.active?.geometries??{};
  const ta=Object.values(sid).find(g=>g.kind==='SID')?.transitionAltitudeFt;
  const trans=perfAlt(perfValue(s,'TRANS_ALT'))??(Number.isFinite(ta)?ta:18000);

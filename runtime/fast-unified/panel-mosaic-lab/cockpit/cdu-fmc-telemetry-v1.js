@@ -52,14 +52,18 @@
   const p=next.position,position=p?.quality==='VALID'?{lat:p.latitudeDeg,lon:p.longitudeDeg}:flight;
   const flows=['engine1','engine2'].map(k=>ecu?.engines?.[k]?.fuelFlowKgHr);
   const native=next.predictions?.quality==='VALID'&&next.predictions.destination?.ident===state.active.DEST&&Number.isFinite(next.predictions.destination?.fuelKg)?next.predictions:null;
-  if(!native&&!(next.trainingPerformance?.quality==='TRAINING_ESTIMATE'&&next.trainingPerformance.complete&&state.fmcOnGroundVerified===false)){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
+  if(!native&&data?.value?.failed!==true&&!(next.trainingPerformance?.source==='UNIFIED_TRAJECTORY_V2'&&next.trainingPerformance.origin===state.active.ORIGIN&&next.trainingPerformance.dest===state.active.DEST&&state.fmcOnGroundVerified===false)){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
    next.predictions=null;next.trainingPerformance=estimate??(state.fmcOnGroundVerified===false?next.trainingPerformance:null);
   }
   const pred=native||next.trainingPerformance;
   const reserve=/^\d{1,2}(?:\.\d)?$/.test(String(state.active.RESERVES??''))?Number(state.active.RESERVES)*1000:null;
   const validPrediction=next.fuel?.quality==='VALID'&&state.routeActivated===true&&!route?.modified?.(state)&&pred?.destination?.ident===state.active.DEST;
   const warnings=validPrediction?route?.fuelWarnings?.(pred.remainingFuelRawKg??pred.destination.fuelKg,reserve)||[]:[];
-  if(next.fuel?.quality==='INVALID'){next.predictions=null;next.trainingPerformance=null;}
+  if(next.fuel?.quality==='INVALID'||feed==='ABSENT'||data?.value?.failed===true){next.predictions=null;next.trainingPerformance=null;}
+  const session=parent.B737UnifiedFmc?.snapshot?.();
+  if(state.fmcOnGroundVerified===true&&session?.routeActivated&&state.active.ORIGIN===session.active?.ORIGIN&&state.active.DEST===session.active?.DEST&&!route?.modified?.(state)){
+   parent.B737TrajectoryPredictorV1?.publishPreview(next.fuel?.quality==='VALID'?next.trainingPerformance:null,session);
+  }
   state.fmcPageInputs=prior;
   const warningChanged=displayFuelWarnings(warnings);
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);

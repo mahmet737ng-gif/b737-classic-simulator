@@ -377,6 +377,13 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       if(left?.action&&!left.field&&!left.value&&labelL&&!valueL){valueL=labelL;labelL='';}
       if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
     }
+    {const p=state.fmcPageInputs?.trainingPerformance;
+     if(p?.quality==='TRAINING_ESTIMATE'&&!chapter11RoutePages?.modified?.(state)){
+      const fl=n=>Number.isFinite(n)?'FL'+String(Math.round(n/100)).padStart(3,'0'):'---';
+      if(state.page==='CRZ'&&row===1&&/OPT|MAX/i.test(labelR))valueR=fl(p.optimumAltitudeFt)+'/'+fl(p.maximumOperatingAltitudeFt);
+      if(state.page==='CLB'&&row===2&&p.topOfClimb&&/T\/C/i.test(labelR))valueR=p.topOfClimb.distanceNm.toFixed(1)+'NM';
+      if(['CRZ','DES'].includes(state.page)&&p.topOfDescent&&/T\/D/i.test(labelR))valueR=p.topOfDescent.distanceNm.toFixed(1)+'NM';
+     }}
     if(state.page==='CRZ'&&row===4){const p=state.fmcPageInputs?.trainingPerformance;if(Number.isFinite(p?.fuelAtDestinationKg))valueL=(p.fuelAtDestinationKg/1000).toFixed(1);}
     if(n1&&state.page==='N1_LIMIT'&&row===1){labelR=n1.mode+' N1';valueR=n1.maxN1Pct.toFixed(1)+'/'+n1.maxN1Pct.toFixed(1);}
    if(n1&&state.page==='TAKEOFF'&&row===3){labelL=n1.mode+' N1';valueL=n1.maxN1Pct.toFixed(1)+'%';}

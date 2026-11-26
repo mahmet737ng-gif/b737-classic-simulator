@@ -1,0 +1,9 @@
+'use strict';
+const assert=require('node:assert/strict');
+require('../runtime/fast-unified/engine/performance/climb-tables-v05.js');
+const perf=require('../runtime/fast-unified/engine/fmc/trajectory-performance-v2.js');
+const api=require('../runtime/fast-unified/engine/fmc/trajectory-predictor-v1.js');
+const p=perf.make({model:'737-300',rating:22000,weightKg:50000,isa:10});assert.equal(p.lrc(31000,50000).fuelFlowPerEngineKgHr,1150);assert.equal(p.fuelFlow('CRUISE',31000,274,.741,50000).kgHr,2300);assert.equal(p.altitudeLimits(52000).engineOutCeilingFt,18000);assert.equal(perf.make({model:'737-300W',rating:20000}).native,false);
+const base={"startPoint":{"lat":35,"lon":50},"legs":[{"ident":"A","lat":35,"lon":52,"segmentNm":98,"courseTrueDeg":90},{"ident":"B","lat":35,"lon":56,"segmentNm":196,"courseTrueDeg":90},{"ident":"DEST","lat":35,"lon":58,"segmentNm":98,"courseTrueDeg":90}],"startFt":1000,"endFt":1500,"crz":33000,"gw":52000,"fuelKg":6000,"ci":40,"isa":5,"windFromDeg":270,"windKt":25,"nowMs":1700000000000,"origin":"AAAA","dest":"BBBB","reservesKg":2000};
+for(const [model,rating] of [['737-300',22000],['737-300',20000],['737-300W',20000],['737-400',22000],['737-400',23500],['737-500',20000],['737-500W',18500]]){const r=api.solve({...base,model,rating});assert.equal(r.quality,'TRAINING_ESTIMATE');assert.equal(r.destination.altitudeFt,1500);assert(r.topOfClimb.distanceNm<r.topOfDescent.distanceNm);assert(Number.isFinite(r.topOfClimb.lat));assert(Number.isFinite(r.topOfDescent.lon));assert(r.fuelSources.length);assert.equal(r.performanceData.model,model);}
+assert.equal(api.solve({...base,startFt:33000,endFt:2000,legs:[{ident:'A',segmentNm:20,courseTrueDeg:90}]}).guidance.recoverable,true);assert.equal(api.solve({...base,crz:41000}).reason,'CERTIFIED_ALTITUDE_LIMIT');assert(Math.abs(Math.abs(api.geoAt({lat:0,lon:179},{lat:0,lon:-179},.5).lon)-180)<1e-6);console.log('V2 source, model, route geometry, altitude and off-path invariants passed');
