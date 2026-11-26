@@ -132,6 +132,7 @@ try{
   function publish(){revision++;const v=snapshot();for(const fn of [...listeners])try{fn(v)}catch(_){/* Observer isolation */}return v}
   function clearAll(){active=empty();mod=null;activeContext=null;activeRevision++;}
   function setConnected(on){if(connected===(on===true))return snapshot();connected=on===true;if(!connected)clearAll();return publish()}
+  function resetContext({origin:a='',destination:b=''}={}){origin=String(a||'').trim().toUpperCase();destination=String(b||'').trim().toUpperCase();clearAll();return publish();}
   function setContext({origin:a='',destination:b=''}={}){
    a=String(a||'').toUpperCase().trim();b=String(b||'').toUpperCase().trim();
    if(a===origin&&b===destination)return snapshot();
@@ -286,7 +287,7 @@ try{
   }
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}
-  return Object.freeze({snapshot,subscribe,setConnected,setContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore,linkDiscontinuity});
+  return Object.freeze({snapshot,subscribe,setConnected,setContext,resetContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore,linkDiscontinuity});
  }
  return Object.freeze({VERSION,CYCLE,create});
 });
@@ -299,7 +300,7 @@ try{
 /* One shared FMC dataset, with separate CDU display/input state. Unified only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.B737CduSession=api;})(typeof window==='undefined'?globalThis:window,function(){
  'use strict';
- const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo','lastHoldExit']);
+ const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo','lastHoldExit','originResetRevision']);
  const copy=value=>JSON.parse(JSON.stringify(value));
  function extract(state){const shared={};for(const key of keys)if(Object.hasOwn(state,key))shared[key]=copy(state[key]);return shared;}
  function apply(state,shared){for(const key of keys){if(Object.hasOwn(shared,key))state[key]=copy(shared[key]);else delete state[key];}}

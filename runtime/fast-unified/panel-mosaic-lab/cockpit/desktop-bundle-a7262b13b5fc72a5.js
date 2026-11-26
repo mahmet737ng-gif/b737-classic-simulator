@@ -329,9 +329,13 @@ try{
  const fmcSession=window.B737CduSession.create();
   // The private CDU/SG reference state follows the actual shared RTE context;
   // staged origin/destination changes invalidate prior previews, never FMC active legs.
+  let lastOriginReset=0;
   fmcSession.subscribe?.(data=>{
    const value=key=>String(data.pending?.[key]??data.stagedRoute?.[key]??data.active?.[key]??'').toUpperCase();
-   window.B737CduSgRouteV1?.setContext({origin:value('ORIGIN'),destination:value('DEST')});
+   const context={origin:value('ORIGIN'),destination:value('DEST')},next=data.originResetRevision||0;
+   const reset=next!==lastOriginReset;lastOriginReset=next;
+   if(reset)window.B737CduSgRouteV1?.resetContext(context);
+   else window.B737CduSgRouteV1?.setContext(context);
   });
  window.B737UnifiedFmc=Object.freeze({snapshot:()=>fmcSession.snapshot(),subscribe:fn=>fmcSession.subscribe(fn),completeHold:event=>fmcSession.completeHold(event),attach(seat,source,peer){const c=cduFrames.get(seat);if(!c||c.child.contentWindow!==source)throw Error('Unknown CDU frame');return fmcSession.attach(seat,peer);}});
  const wheelController=window.B737WheelPanModelV1?.createController(vp);

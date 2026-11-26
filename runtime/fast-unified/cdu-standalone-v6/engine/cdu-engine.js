@@ -53,7 +53,33 @@ function readValue(st,key,pageName=''){if(Object.prototype.hasOwnProperty.call(s
 function addMessage(st,msg){st.message=msg;st.history.unshift(msg);st.history=st.history.slice(0,30);}
 function clearPending(st){st.pending={};}
 function clearRoutePending(st){for(const key of Object.keys(st.pending)){if(routeField(st,key)) delete st.pending[key];}}
-function choose(st,pages,page){if(!pages[page]){addMessage(st,'KEY INACTIVE');return;}st.page=page;st.message='';st.subpage=1;}
+function choose(st,pages,page){
+ if(!pages[page]){addMessage(st,'KEY INACTIVE');return;}
+ const from=st.page;st.page=page;st.message='';st.subpage=1;
+ // FCOM 11.60.22: advisory airport identifier, never auto-insert ORIGIN.
+ if(page==='RTE'&&from!=='RTE'&&!readValue(st,'ORIGIN','RTE')&&!st.scratch&&validate('ICAO',st.active.REF_AIRPORT))st.scratch=st.active.REF_AIRPORT;
+}
+// Origin change is one new-flight transaction. Keep POS INIT and live
+// hardware/installation evidence; discard crew flight data and old route banks.
+function clearOriginLocal(st){
+ for(const k of ['depArrSelection','cduSgView','holdAt','holdPage','planReviewCenter','stage5Page','stage6Page','stage6View','performanceN1','stage8Monitor','stage10Advisory','lastTrainingFuelWarning'])delete st[k];
+}
+function resetForOrigin(st,value){
+ const active={...SAMPLE};for(const k of ['REF_AIRPORT','GATE','IRS_POS','IRS_HDG','GMT_DATE','LAST_POS'])if(Object.hasOwn(st.active,k))active[k]=st.active[k];
+ st.active=active;st.pending={};st.stagedRoute={ORIGIN:value};
+ for(const k of ['navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fixInfo','lastHoldExit'])delete st[k];
+ clearOriginLocal(st);st.routeActivated=false;st.routeActivationArmed=false;
+ st.originResetRevision=(st.originResetRevision||0)+1;st.routeRevision=(st.routeRevision||0)+1;
+ st.offsetGuidance=false;st.scratch='';st.message='';st.history=[];st.subpage=1;
+}
+function originEntry(st){
+ if(st.page!=='RTE'||st.subpage!==1||!st.scratch||st.scratch==='DELETE')return false;
+ const value=clean(st.scratch),previous=readValue(st,'ORIGIN','RTE');
+ if(!validate('ICAO',value)){addMessage(st,'INVALID ENTRY');return true;}
+ if(value===previous){st.scratch='';st.message='';return true;}
+ if(st.routeActivated===true&&st.fmcOnGroundVerified!==true){addMessage(st,'INVALID ENTRY');return true;}
+ resetForOrigin(st,value);return true;
+}
 function stageRouteField(st,cell){const f=cell.field; if(!f) return; if(st.scratch==='DELETE'){st.stagedRoute[f]=''; st.scratch=''; st.message=''; return;} if(!st.scratch){const existing=readValue(st,f,'RTE'); if(existing){st.scratch=String(existing)} else addMessage(st,'INVALID ENTRY'); return;} const value=clean(st.scratch); if(!validate(cell.format,value)){addMessage(st,'INVALID ENTRY');return;} const activeNow=st.active[f]??''; if(value===activeNow) delete st.stagedRoute[f]; else st.stagedRoute[f]=value; st.scratch=''; st.message=''; if(f==='RUNWAY'){const num=parseInt(value,10); if(!Number.isNaN(num)){st.ehsi.course=(num*10)%360;}}
 }
 function enterPosInitField(st,cell){
@@ -283,6 +309,7 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|FO)_/,
   choose(st,pages,st.fmcOnGroundVerified===false?'APP_REF':entered&&st.irsPositionRequired!==true?'PERF_INIT':'POS_INIT');
   return st;
  }
+ if(k==='LSK_L1'&&originEntry(st))return st;
  const routeScreens=getRouteScreens(st);
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
@@ -327,5 +354,5 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  return lines.map(l=>String(l).slice(0,24)); }
 function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:st.routeActivationArmed===true||executableKeys(st).length>0};}
 function inspect(st,pages,key){if(!/^([LR][1-6])$/.test(key))return null;const c=pages[st.page]?.rows[Number(key[1])-1]?.[key[0]==='L'?0:1];return c?{page:st.page,lsk:key,...c,reference:pages[st.page].source_ref}:null;}
-return {perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
+return {clearOriginLocal,perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
 });

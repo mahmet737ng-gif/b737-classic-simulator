@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "391248030fd6f33d39dedeac167df3204f205f7202ad9c68dcb08cb11e8766d4"
+      "sha256": "5441cbaf51c25d8a7fb4e5d0b8669bbabe497bf34e774759b440e019a39c25ef"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -56,11 +56,11 @@
     },
     {
       "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
-      "sha256": "6f8ac38b0715d5f5d523839700bc91f6445f83206282a358386e879a96dfe47c"
+      "sha256": "2e311abb54454f3969a9ea1cc9b0da9a1d133550d782e56d6289dcebb14d023e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
-      "sha256": "43706c07a0ba203f2227ef1675d31514aa8d38f64fe33d69d5a9f8efd56e1c9d"
+      "sha256": "61e815474783edb6313fe94b583ba3dc571e61802a6a3c694c5615622154fccb"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-f1289c3f47af2175.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "212aa998e2cd7c237d43a93feb0b132950bb12edfa2a997fafcb79d7146350ca"
+      "sha256": "2c249f6f52243701733d40bef6490a25ebd980dc3f1056a525182bbc16a6b700"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,7 +908,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "79b822f4592a88e237ae27984268bc032f544d16bb47fa42372b5682949d0753"
+      "sha256": "2d5a89b6437513d8e968d0cd1b8153dbe3f9144799af0c90e44ce5cb79ffaf00"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "9296461a722dae7ceac5863a6d5b1451e9881bce4cfe7d23b4e081aa05a32198"
+      "sha256": "4688838947441053e66b0d556dda4b388126f18b4e69cba1aeb459e79d721745"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",
@@ -984,7 +984,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-bridge.js",
-      "sha256": "6e77bf1c75e8c531d92c381bdecf18e07ad41713fdf9b70c90cac13b549b832e"
+      "sha256": "67c47433a55792389e302f8c50335776055b0275d8477256e123500e551ef35e"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",

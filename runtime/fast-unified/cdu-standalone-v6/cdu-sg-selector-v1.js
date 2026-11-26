@@ -509,5 +509,6 @@
   if(state.cduSgView){delete state.cduSgView;if(['DEPARTURES','ARRIVALS'].includes(state.page))
    core.choose(state,pages,'DEP_ARR');}
  }
- return Object.freeze({attach,detach,beforeKey,afterKey,execLit,routeView,chapter11CatalogView:catalogView});
+ function resetForOrigin(){++serial;++airwayTicket;++fixTicket;airwayBusy=false;revisionBeforeExec=null;preloadKey='';delete state.cduSgView;delete state.stage6View;}
+ return Object.freeze({attach,detach,beforeKey,afterKey,execLit,routeView,chapter11CatalogView:catalogView,resetForOrigin});
 });

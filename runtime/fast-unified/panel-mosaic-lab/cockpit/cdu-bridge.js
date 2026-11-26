@@ -22,8 +22,10 @@
   return true;
  }});
  let applying=false,session;
- const write=shared=>{const old=state.lastHoldExit?.revision;for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}if(state.page==='HOLD'&&state.lastHoldExit&&old!==state.lastHoldExit.revision){core.choose(state,pages,'LEGS');state.subpage=1;}};
- update=function(){originalUpdate();if(!applying)session?.publish();report();};
+ let resetRevision=state.originResetRevision||0;
+ function reconcileOriginReset(){const next=state.originResetRevision||0;if(next===resetRevision)return;resetRevision=next;core.clearOriginLocal?.(state);window.CDU_STAGE6_API?.cancelPendingPrivate?.();window.CDU_SG_API?.resetForOrigin?.();state.scratch='';state.message='';if(['DEPARTURES','ARRIVALS','HOLD','ACTIVATE','FLIGHT_PLAN'].includes(state.page))core.choose(state,pages,'RTE');}
+ const write=shared=>{const old=state.lastHoldExit?.revision;for(const key of parent.B737CduSession.keys){if(Object.hasOwn(shared,key))state[key]=structuredClone(shared[key]);else delete state[key];}reconcileOriginReset();if(state.page==='HOLD'&&state.lastHoldExit&&old!==state.lastHoldExit.revision){core.choose(state,pages,'LEGS');state.subpage=1;}};
+ update=function(){reconcileOriginReset();originalUpdate();if(!applying)session?.publish();report();};
  window.updateStage5View=update;
  session=parent.B737UnifiedFmc.attach(seat,window,{read:()=>state,write,refresh(){applying=true;try{update();}finally{applying=false;}}});
  // A CDU reset clears its screen/input; shared flight data survives it.
