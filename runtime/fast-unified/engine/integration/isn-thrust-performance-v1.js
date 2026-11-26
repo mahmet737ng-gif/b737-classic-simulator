@@ -46,20 +46,31 @@
    crosswindKt:round(crosswindKt),groundSpeedKt:achievable?round(along-headwindKt):null,
    trackHoldPossible:achievable};
  }
- function ratings({pressureAltitudeFt=0,oatC=15,clb2Available=true}={}){
+ function ratings({pressureAltitudeFt=0,oatC=15,clb2Available=true,model,tatC,iasKt,operatingEngines=2,packsOn=true,engineAntiIce=false,wingAntiIce=false}={}){
   const a=atmosphere(pressureAltitudeFt,oatC);
   if(typeof clb2Available!=='boolean')throw Error('clb2Available must be boolean');
   const correction=CONFIG.altitudeN1CorrectionPer1000Ft*Math.max(0,pressureAltitudeFt)/1000+
    CONFIG.temperatureN1CorrectionPerC*Math.max(0,a.isaDeviationC);
   const base={};
   for(const [name,n1] of Object.entries(CONFIG.referenceN1))base[name]=round(clamp(n1-correction,0,97));
+  const engine=globalThis.B737PerformanceEngineV07,selected=model||globalThis.B737AircraftProfileStore?.get?.()?.aircraftModel;
+  const tableSources={};
+  if(engine&&selected){
+   const satK=oatC+273.15,mach=Number.isFinite(iasKt)?Math.min(.9,iasKt/661/Math.sqrt(Math.max(.25,Math.pow(Math.max(.74,1-pressureAltitudeFt/145442),4.256)))):null;
+   const t=Number.isFinite(tatC)?tatC:Number.isFinite(mach)?satK*(1+.2*mach*mach)-273.15:null;
+   for(const mode of Object.keys(base)){
+    const r=engine.safe(()=>engine.n1({model:selected,mode,altFt:pressureAltitudeFt,oatC,tatC:t,iasKt,engines:operatingEngines,packs:packsOn?'AUTO':'OFF',engineAI:engineAntiIce,wingAI:wingAntiIce,allowProxy:true}));
+    if(r.status==='TRAINING_TABLE'){base[mode]=round(r.n1Pct);tableSources[mode]={source:r.source,proxy:r.proxy,pages:r.pages};}
+    else tableSources[mode]={source:'TRAINING_SURROGATE',reason:r.reason};
+   }
+  }
   // FCOM 11.41.43: reduced climb washes out progressively by 15,000 ft.
   const fade=clamp((15000-pressureAltitudeFt)/15000,0,1);
   base['CLB-1']=round(base.CLB-3*fade);
   base['CLB-2']=clb2Available?round(base.CLB-6*fade):null;
   return {limitsN1Percent:base,clb2Available,
    reducedClimbAutoDeleteAbove15000Ft:pressureAltitudeFt>15000,
-   rule:'TRAINING_N1_LIMIT_SURROGATE',atmosphere:a};
+   rule:Object.keys(tableSources).length?'TRAINING_TABLE_WITH_EXPLICIT_SURROGATE_FALLBACK':'TRAINING_N1_LIMIT_SURROGATE',tableSources,atmosphere:a};
  }
  function resolveMode(mode,pressureAltitudeFt,clb2Available){
   if(!VALID_MODES.includes(mode))throw Error('Unsupported thrust mode');
@@ -83,7 +94,7 @@
   if(targetIasKt!==iasKt&&accelTimeSec===null)throw Error('Acceleration time is required when target speed differs');
   if(![1,2].includes(operatingEngines))throw Error('operatingEngines must be 1 or 2');
   for(const [k,v] of Object.entries({onGround,engineAntiIce,wingAntiIce,packsOn}))if(typeof v!=='boolean')throw Error(k+' must be boolean');
-  const ratingsTable=ratings({pressureAltitudeFt,oatC,clb2Available});
+  const ratingsTable=ratings({pressureAltitudeFt,oatC,clb2Available,model:input.model,tatC:input.tatC,iasKt,operatingEngines,packsOn,engineAntiIce,wingAntiIce});
   const selection=resolveMode(mode,pressureAltitudeFt,clb2Available);
   const limit=ratingsTable.limitsN1Percent[selection.mode];
   function dragAt(ias){
@@ -94,7 +105,9 @@
    return {tasKt,tasMps:tas,parasiteN,inducedN,dragN:parasiteN+inducedN};
   }
   const current=dragAt(iasKt),target=dragAt(targetIasKt);
-  const maxThrustN=CONFIG.engineTakeoffRatingLbf*4.4482216152605*Math.pow(a.densityRatio,CONFIG.thrustLapseExponent);
+  const model=input.model||globalThis.B737AircraftProfileStore?.get?.()?.aircraftModel;
+  const rating=globalThis.B737PerformanceEngineV07?.variants?.[model]?.rating||CONFIG.engineTakeoffRatingLbf;
+  const maxThrustN=rating*4.4482216152605*Math.pow(a.densityRatio,CONFIG.thrustLapseExponent);
   const climbN=weightKg*G*(verticalSpeedFpm*0.00508)/Math.max(current.tasMps,1);
   const accelerationMps2=accelTimeSec===null?0:
    ((targetIasKt-iasKt)*KTS_TO_MS/Math.sqrt(a.densityRatio))/accelTimeSec;
@@ -120,7 +133,7 @@
    speeds:{iasKt,tasKt:round(current.tasKt),groundSpeedKt:wi.groundSpeedKt,
     targetIasKt,targetTasKt:round(target.tasKt),...wi},
    mode:{requested:mode,active:selection.mode,autoCleared:selection.autoCleared,
-    limitN1Percent:limit,limitTable:ratingsTable.limitsN1Percent},
+    limitN1Percent:limit,limitTable:ratingsTable.limitsN1Percent,tableSources:ratingsTable.tableSources},
    performance:{parasiteDragN:round(current.parasiteN),inducedDragN:round(current.inducedN),
     totalDragN:round(current.dragN),climbForceN:round(climbN),accelerationForceN:round(accelN),
     accelerationMps2:round(accelerationMps2,3),maxThrustPerOperatingEngineN:round(maxThrustN),

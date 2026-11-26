@@ -23,10 +23,9 @@
    throw Error('INVALID_TRAINER_INSTALLATION');
   if(profile.aircraftFamily&&profile.aircraftFamily!==family(model))
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
-  if(model==='737-500')throw Error('737-300_500_FAMILY_IDENT_REQUIRES_737-300');
   if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP/FSI','737-400':'EP/AOA','737-500':'EP/FSQ'})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
    MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),
@@ -38,7 +37,7 @@
    if(!value||value.version!==VERSION||
       value.provenance!=='FAMILY_DERIVED_TRAINER_CONFIGURATION')return false;
    const expected=select(value);
-   return ['aircraftModel','aircraftFamily','engineVariant','engineLabel','engineRating','ratingLbf'].every(k=>value[k]===expected[k])&&
+   return ['aircraftModel','aircraftFamily','registration','engineVariant','engineLabel','engineRating','ratingLbf'].every(k=>value[k]===expected[k])&&
       ['MODEL','ENG_RATING'].every(k=>['quality','origin','value'].every(f=>value[k]?.[f]===expected[k][f]));
   }catch{return false;}
  }

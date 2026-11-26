@@ -24,9 +24,9 @@ try{
       Object.freeze({id: 'B737-400', label: '737-400', variants: Object.freeze(['737-400'])})
     ]),
     aircraftModel: Object.freeze([
-      Object.freeze({id:'737-300',label:'Boeing 737-300',family:'B737-300-500'}),
-      Object.freeze({id:'737-400',label:'Boeing 737-400',family:'B737-400'}),
-      Object.freeze({id:'737-500',label:'Boeing 737-500',family:'B737-300-500'})
+      Object.freeze({id:'737-300',label:'Boeing 737-300 · EP/FSI',registration:'EP/FSI',family:'B737-300-500'}),
+      Object.freeze({id:'737-400',label:'Boeing 737-400 · EP/AOA',registration:'EP/AOA',family:'B737-400'}),
+      Object.freeze({id:'737-500',label:'Boeing 737-500 · EP/FSQ',registration:'EP/FSQ',family:'B737-300-500'})
     ]),
     engineVariant: Object.freeze([
       Object.freeze({id:'CFM56-3B1',label:'CFM56-3 B1',rating:'18.5K',ratingLbf:18500}),
@@ -47,7 +47,7 @@ try{
   const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', aircraftModel:'737-300', engineVariant:'CFM56-3B3', pressurization: 'DCPCS', engineInstruments: 'EIS'});
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
   // Simulator-specific fixed IDENT configuration. Family is the only editable aircraft model choice.
-  const assignedModel = family => family === 'B737-400' ? '737-400' : '737-300';
+  const assignedModel = (family,preferred) => family === 'B737-400' ? '737-400' : preferred==='737-500'?'737-500':'737-300';
   const assignedEngine = family => family === 'B737-400' ? 'CFM56-3B2' : 'CFM56-3B3';
 
   function validate(value) {
@@ -57,7 +57,7 @@ try{
     for (const key of FIELDS) {
       if (!CATALOG[key].some(option => option.id === value[key])) throw Error('Invalid aircraft profile option: ' + key);
     }
-    if (value.aircraftModel !== assignedModel(value.aircraftFamily))
+    if (value.aircraftModel !== assignedModel(value.aircraftFamily,value.aircraftModel))
       throw Error('IDENT aircraft model must match the selected family');
     if (value.engineVariant !== assignedEngine(value.aircraftFamily))
       throw Error('IDENT engine rating must match the selected family');
@@ -69,7 +69,7 @@ try{
       if (CATALOG[field].some(option => option.id === data[field])) result[field] = data[field];
     }
     // Always migrate old saved manual selections to the family-derived IDENT model/rating.
-    result.aircraftModel=assignedModel(result.aircraftFamily);
+    result.aircraftModel=assignedModel(result.aircraftFamily,result.aircraftModel);
     result.engineVariant=assignedEngine(result.aircraftFamily);
     return result;
   }
@@ -111,7 +111,7 @@ try{
         next.aircraftFamily=model.family;
       }
       // No independent model or thrust-rating selection: engine / IDENT always follow family.
-      next.aircraftModel=assignedModel(next.aircraftFamily);
+      next.aircraftModel=assignedModel(next.aircraftFamily,next.aircraftModel);
       next.engineVariant=assignedEngine(next.aircraftFamily);
       validate(next);
       if (FIELDS.every(key => next[key] === current[key])) return {...current};
@@ -271,10 +271,9 @@ try{
    throw Error('INVALID_TRAINER_INSTALLATION');
   if(profile.aircraftFamily&&profile.aircraftFamily!==family(model))
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
-  if(model==='737-500')throw Error('737-300_500_FAMILY_IDENT_REQUIRES_737-300');
   if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP/FSI','737-400':'EP/AOA','737-500':'EP/FSQ'})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
    MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),
@@ -286,7 +285,7 @@ try{
    if(!value||value.version!==VERSION||
       value.provenance!=='FAMILY_DERIVED_TRAINER_CONFIGURATION')return false;
    const expected=select(value);
-   return ['aircraftModel','aircraftFamily','engineVariant','engineLabel','engineRating','ratingLbf'].every(k=>value[k]===expected[k])&&
+   return ['aircraftModel','aircraftFamily','registration','engineVariant','engineLabel','engineRating','ratingLbf'].every(k=>value[k]===expected[k])&&
       ['MODEL','ENG_RATING'].every(k=>['quality','origin','value'].every(f=>value[k]?.[f]===expected[k][f]));
   }catch{return false;}
  }

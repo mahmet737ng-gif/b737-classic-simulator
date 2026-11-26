@@ -15,7 +15,7 @@
   state.engineInstallation={
    variant:current.engineVariant,label:current.engineLabel,
    rating:current.engineRating,ratingLbf:current.ratingLbf,
-   aircraftModel:current.aircraftModel,source:'USER_SELECTED_TRAINER_CONFIGURATION'
+   aircraftModel:current.aircraftModel,registration:current.registration,source:'USER_SELECTED_TRAINER_CONFIGURATION'
   };
   return true;
  }

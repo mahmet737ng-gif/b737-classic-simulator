@@ -107,15 +107,12 @@ try{
   return toga?.phase==='GA'?'GO_AROUND':toga?.phase==='TO'?'TAKEOFF':'MAX_CONTINUOUS';
  }
  function estimate(){
-  if(!EST||!validProfile())return null;
-  const f=win.B737UnifiedFlightScenarioV1?.getState?.();
-  const context=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('flightcontext.state');
-  const oat=context?.quality==='VALID'?context.value?.oatC:null;
-  return EST.estimate({...EST.AIRFRAME,phase:phase(),
-   pressureAltitudeFt:num(f?.altitudeFt)?f.altitudeFt:null,
-   oatC:num(oat)?oat:null,
-   weatherMode:'ISA',engineBleedMode:'ON',acPacks:'AUTO',
-   antiIceMode:'OFF',thrustLeverPct:100});
+  const api=win.B737PerformanceEngineV07;
+  if(!api)return null;
+  const f=win.B737UnifiedFlightScenarioV1?.getState?.(),toga=win.B737UnifiedTOGACh4V1?.getState?.(),ctx=api.liveContext();
+  const mode=toga?.phase==='GA'?'GA':toga?.phase==='TO'?'TO':ctx.engines===1?'CON':(f?.onGround===true||f?.airborne===false||!f)?'TO':String(f?.phase||'').toUpperCase().includes('CRUISE')?'CRZ':'CLB';
+  const r=api.live(mode);
+  return r.status==='TRAINING_TABLE'?{...r,maxN1Pct:r.n1Pct}:null;
  }
  function source(n){const st=state[n],est=estimate();
   const auto=num(st.fmcPct)?st.fmcPct:num(est?.maxN1Pct)?est.maxN1Pct:null;
@@ -123,7 +120,7 @@ try{
   return {targetPct:st.pulled?st.manualPct:auto,source:label,
    automaticPct:auto,automaticSource:num(st.fmcPct)?'FMC':'EST',
    pulled:st.pulled,atInfluenced:false,
-   maxN1Pct:num(est?.maxN1Pct)?est.maxN1Pct:null,estimateNotAfm:true};
+   maxN1Pct:num(est?.maxN1Pct)?est.maxN1Pct:null,estimateNotAfm:true,tableSource:est?.source||null,tableProxy:est?.proxy||null};
  }
  function change(n,value){
   if(!num(value))return;
@@ -260,7 +257,7 @@ try{
  win.addEventListener('b737:fmc-n1-limit',verifiedFmc);
  for(const ev of ['b737:cockpit-mounted','b737:engine-indication-view',
    'b737:flight-scenario-state','b737:toga-mode','b737:aircraft-profile-change']){
-  win.addEventListener(ev,()=>{if(!frame)mount();else if(ev==='b737:engine-indication-view')mount();else paint();});
+  win.addEventListener(ev,()=>{if(ev==='b737:aircraft-profile-change')for(const n of [1,2]){state[n].fmcPct=null;state[n].fmcSource=null;}if(!frame)mount();else if(ev==='b737:engine-indication-view')mount();else paint();});
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
  else mount();

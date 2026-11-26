@@ -18,23 +18,28 @@ const procedureLedger=window.B737CDUTransitionLedgerV1?.create({
 });
 const byId={};
 function n1EstimateV19(){
- // V19 estimate is calibrated only to a legacy B1/20K demonstration.
- // User-selected B1/18.5K, B3/20K and C1/23.5K must NOT reuse that curve.
- const selected=state.engineInstallation;
- if(selected&&!(selected.variant==='CFM56-3B1'&&selected.ratingLbf===20000))return null;
- const engine=window.EPFSI_ESTIMATED_N1_V19;
- if(!engine)return null;
- const altitude=$('n1-v6-altitude');
- const phase=$('n1-v6-phase');
- const lever=$('n1-v6-lever');
- const altText=altitude?String(altitude.value??'').trim():'';
- const altFt=altText!==''&&Number.isFinite(Number(altText))?Number(altText):null;
- const leverText=lever?String(lever.value??'').trim():'';
- const context=window.EPFSI_SCENARIO_DEFAULTS?.normalize?.({pressureAltitudeFt:altFt})||{
-  weatherMode:'ISA',antiIceMode:'OFF',engineBleedMode:'ON',acPacks:'AUTO',pressureAltitudeFt:altFt};
- return engine.estimate({registration:'EP-FSI',serial:29340,engine:'CFM56-3B-1',
-  ratingLbf:20000,...context,phase:phase?.value||'TAKEOFF',
-  thrustLeverPct:leverText!==''&&Number.isFinite(Number(leverText))?Number(leverText):null});
+ const p=window.parent, engine=p.B737PerformanceEngineV07;
+ if(!engine||!state.engineInstallation)return null;
+ const context=engine.liveContext();
+ if(context.model!==state.engineInstallation.aircraftModel)return null;
+ const f=p.B737UnifiedFlightScenarioV1?.getState?.(), toga=p.B737UnifiedTOGACh4V1?.getState?.();
+ const chosen=$('n1-v6-phase')?.value||'AUTO';
+ let mode=state.page==='TAKEOFF'?'TO':state.page==='CLB'?'CLB':state.page==='CRZ'?'CRZ':
+  chosen!=='AUTO'?chosen:toga?.phase==='GA'?'GA':toga?.phase==='TO'?'TO':context.engines===1?'CON':(f?.onGround===true||f?.airborne===false)?'TO':String(f?.phase||'').toUpperCase().includes('CRUISE')?'CRZ':'CLB';
+ if(state.page==='N1_LIMIT'&&!f&&chosen==='AUTO')mode='TO';
+ const overrides={};
+ const number=v=>{const m=String(v??'').trim().match(/^([+-]?\d+(?:\.\d+)?)\s*(?:°?C)?$/i);return m?Number(m[1]):null};
+ const alt=number($('n1-v6-altitude')?.value);
+ if(alt!==null)overrides.altFt=alt;
+ if(mode==='TO'){
+  const oat=number(core.readValue(state,'OAT','TAKEOFF'));
+  if(oat!==null)overrides.oatC=oat;
+  const assumed=number(core.readValue(state,'SEL_TEMP','TAKEOFF'));
+  if(assumed!==null){mode='R-TO';overrides.assumedC=assumed;}
+ }
+ const r=engine.live(mode,overrides);state.performanceN1=r;
+ if(r.status!=='TRAINING_TABLE'||!Number.isFinite(r.n1Pct))return null;
+ return {...r,status:'SIM_ESTIMATE',phase:mode,maxN1Pct:r.n1Pct};
 }
 
 function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x1/1199*100+'%',top:y1/1312*100+'%',width:(x2-x1)/1199*100+'%',height:(y2-y1)/1312*100+'%'});}
@@ -338,8 +343,8 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
     }
     if(state.page==='CRZ'&&row===4){const p=state.fmcPageInputs?.trainingPerformance;if(Number.isFinite(p?.fuelAtDestinationKg))valueL=(p.fuelAtDestinationKg/1000).toFixed(1);}
-    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR='20K N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
-   if(n1&&state.page==='TAKEOFF'&&row===3){labelL='TO N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
+    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR=n1.mode+' N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
+   if(n1&&state.page==='TAKEOFF'&&row===3){labelL=n1.mode+' N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
    frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
    const valueLine=makePairRow(valueTop,valueL,valueR);
    if(state.page==='POS_INIT'&&row===1){
@@ -392,10 +397,9 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
    ' / unresolved static cell issues: '+review.issues.length;
  const status=$('n1-v6-est-status');
  if(status&&state.engineInstallation&&!n1)status.textContent=
-  'ENGINE '+state.engineInstallation.label+' · '+state.engineInstallation.rating+
-  ' · N1 EST NOT CALIBRATED FOR SELECTED VARIANT';
- if(status&&n1)status.textContent='SIM EST / '+n1.phase+': MAX '+n1.maxN1Pct.toFixed(1)+
-  '% / PRESENT ENG1 '+n1.presentN1Pct[1].toFixed(1)+'% / ENG2 '+n1.presentN1Pct[2].toFixed(1)+'%';
+  state.engineInstallation.registration+' · '+state.engineInstallation.rating+' · '+(state.performanceN1?.reason||'N1 TABLE / CONTEXT UNAVAILABLE');
+ if(status&&n1)status.textContent=n1.registration+' · '+n1.phase+': '+n1.maxN1Pct.toFixed(1)+'% EST · '+n1.source+(n1.proxy?' · PROXY '+n1.proxy:'');
+
  updateEHSI();
 }
 function send(k){
