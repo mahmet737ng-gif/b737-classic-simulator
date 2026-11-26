@@ -17,6 +17,17 @@
 .manual-n1-reference-bug{position:absolute;z-index:2;pointer-events:none;
  width:3px;height:12px;border:0;background:#ffc247;filter:drop-shadow(0 0 1px #222);
  transform-origin:50% 50%;margin-left:-1.5px;margin-top:-6px}
+/* EIS owner photo: four compact amber luminous cells, not a solid bar.
+ * Percentage dimensions follow the registered 1235 x 1274 photo. */
+.manual-n1-overlay[data-indication="EIS"] .manual-n1-reference-bug{
+ width:.78%;height:.95%;margin:0;translate:-50% -50%;
+ background:
+  linear-gradient(#f8dc8a,#dcae51) left top / 37% 41% no-repeat,
+  linear-gradient(#f8dc8a,#dcae51) right top / 37% 41% no-repeat,
+  linear-gradient(#f8dc8a,#dcae51) left bottom / 37% 41% no-repeat,
+  linear-gradient(#f8dc8a,#dcae51) right bottom / 37% 41% no-repeat;
+ filter:drop-shadow(0 0 .7px #bb8b38);
+}
 .manual-n1-reference-bug[hidden]{display:none!important}
 .manual-n1-status{position:absolute;left:32%;bottom:0;font:700 8px/1.3 system-ui;
  color:#ffe095;background:#0c1826d9;padding:3px 6px;border-radius:3px;pointer-events:none;
