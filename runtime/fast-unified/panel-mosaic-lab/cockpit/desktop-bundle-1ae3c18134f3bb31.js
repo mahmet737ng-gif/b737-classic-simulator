@@ -88,7 +88,7 @@ try{
  const doc=win.document;
  const EST=win.EPFSI_ESTIMATED_N1_V19;
  const REG=win.B737EnginePhotoControlRegistrationV1;
- const VERSION='MANUAL_N1_RASTER_CH7_10_0003-SOURCE-HOLE-FIT',knobs={1:null,2:null};
+ const VERSION='MANUAL_N1_RASTER_CH7_10_0004-EIS-FOUR-CELL-BUG',knobs={1:null,2:null};
  const fitted={1:null,2:null};
  const state={1:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null},
               2:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null}};
@@ -195,6 +195,7 @@ try{
   const geo=win.B737EngineIndicationModeV1?.layout?.();
   const conventional=view==='CONVENTIONAL'&&geo?.w>0;
   mode=conventional?'CONVENTIONAL':'EIS';
+  frame.dataset.indication=mode;
   const rectangle=conventional?geo:{x:parseFloat(piece.style.left),y:parseFloat(piece.style.top),
    w:parseFloat(piece.style.width),h:parseFloat(piece.style.height)};
   if(!Object.values(rectangle).every(num))return false;
@@ -241,8 +242,9 @@ try{
     // placement is a visual approximation pending photo-pixel alignment.
     const deg=45+(r/120)*270;
     const cx=Number(mark.dataset.faceX),cy=Number(mark.dataset.faceY);
-    const radius=mode==='CONVENTIONAL'?.038:65/1235;
-    const radiusY=mode==='CONVENTIONAL'?radius:65/1274;
+    // Owner photo: EIS bug sits outside the printed scale; conventional unchanged.
+    const radius=mode==='CONVENTIONAL'?.038:75/1235;
+    const radiusY=mode==='CONVENTIONAL'?radius:75/1274;
     const a=deg*Math.PI/180;
     css(mark,{left:((cx+Math.sin(a)*radius)*100)+'%',
      top:((cy-Math.cos(a)*radiusY)*100)+'%',transform:'rotate('+deg+'deg)'});
