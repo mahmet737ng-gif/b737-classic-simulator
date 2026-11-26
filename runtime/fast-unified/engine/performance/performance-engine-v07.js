@@ -90,9 +90,11 @@
   const f=root.B737UnifiedFlightScenarioV1?.getState?.();
   const signal=key=>{const r=root.B737UnifiedAvionicsNetworkV1?.getSignal?.(key);return r?.quality==='VALID'?r.value:null};
   const c=signal('flightcontext.state'),adc=signal('airdata.adc1')||signal('airdata.adc2');
-  const altFt=[adc?.pressureAltitudeFt,c?.pressureAltitudeFt,f?.altitudeFt].find(finite);
-  const oatC=[adc?.satC,c?.oatC,f?.oatC].find(finite);
-  const iasKt=[adc?.casKt,c?.iasKt,f?.iasKt].find(finite);
+  const ecu=root.B737ISNCockpitV1?.getECUState?.()?.aircraft;
+  const activeScenario=root.B737UnifiedFlightScenarioV1?.getDiagnostics?.()?.active===true?f:null;
+  const altFt=[adc?.pressureAltitudeFt,c?.pressureAltitudeFt,activeScenario?.altitudeFt,ecu?.pressureAltitudeFt].find(finite);
+  const oatC=[adc?.satC,c?.oatC,activeScenario?.oatC,ecu?.oatC].find(finite);
+  const iasKt=[adc?.casKt,c?.iasKt,activeScenario?.iasKt,ecu?.iasKt].find(finite);
   const isa=finite(altFt)?Math.max(-56.5,15-.0019812*altFt):null;
   const sat=finite(oatC)?oatC:isa;
   const mach=[adc?.mach,f?.mach].find(finite);

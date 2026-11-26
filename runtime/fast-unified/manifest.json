@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "9aa6f32d76339ef9f6a150c36b9273fb17389a004c88aa77496e1189b36e315e"
+      "sha256": "38b20f435746f509ce3ff308bf1ca8cc9225f58ec50ee6d7211f4fd84d916fd7"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "6cd1160408f3eec5888066d159850f3c472904e64d31040cb5fb090115620288"
+      "sha256": "b83b5b4c6ecf8c3db8b34abc25e61df76069cfdba56c95e5ef5a6992a2bdeb38"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,7 +908,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "78f9c10bd8f5170656ea727a036be1eae322826864cb48055c23036df45e45a1"
+      "sha256": "ebddcfa83be62762cbf82b00a0449756579b4ca6857ce82a868a0cb0cd581c83"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -948,7 +948,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "8b9abc51d8eaf8061a06369b557196cd5b16f67060df48fe16eab6b0cc3327a6"
+      "sha256": "3df927b7606a276a6f2e92c42a95043cb74ef5d8d1852ae621a0b376b96c1bda"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
@@ -992,7 +992,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "a3c07ac8c044fa4f6838c5ec75d15ecd37a0fcc78d69f64376b79c84e9d4a2d7"
+      "sha256": "eb340107e43084eace24184bcbf2c1917d8bca0138b7397440d29b81c07cf44d"
     },
     {
       "path": "engine/config/cdu-ident-installation-v1.js",
@@ -1812,7 +1812,7 @@
     },
     {
       "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "a8be7573c898e85c6cc0a8149a090c44788819f09b249dd20ca541762f24b6cc"
+      "sha256": "77d6e22f047ae58144714e49759bcc7d9efb04815f80c70dbc509812feb8b20c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",

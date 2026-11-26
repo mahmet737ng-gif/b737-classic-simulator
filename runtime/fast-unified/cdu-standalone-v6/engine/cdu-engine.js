@@ -296,11 +296,24 @@ function n1Enter(s,pages,key){
   if((a[0]&&sel===null)||(a.length===2&&a[1]&&oat===null)||!a.some(Boolean)||sel!==null&&(sel< -60||sel>80)||oat!==null&&(oat< -80||oat>60))return invalid();
   const sensed=s.fmcPageInputs?.airData?.oatC,actual=oat??sensed;
   if(sel!==null&&Number.isFinite(actual)&&sel<=actual)return invalid();
+  // Validate the proposed pair before committing it to the shared FMC.
+  // Never replace a working thrust limit with a rejected table input.
+  if(sel!==null&&typeof globalThis.CDU_VALIDATE_TAKEOFF_N1==='function'){
+   const computed=globalThis.CDU_VALIDATE_TAKEOFF_N1({...x,sel,oat});
+   if(computed?.status!=='TRAINING_TABLE'||!Number.isFinite(computed.n1Pct)){
+    if(['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION','OUTSIDE_TABLE_DOMAIN'].includes(computed?.reason))return invalid();
+    return addMessage(s,'N1 DATA UNAVAILABLE');
+   }
+  }
   perfStore(s,{SEL_TEMP:sel===null?'':String(sel),OAT:oat===null?'':String(oat)});return;
  }
  if(input)return invalid();
  if(/^L[234]$/.test(key)){
   const i=Number(key[1])-2;if(!x.takeoff[i])return inactive();
+  if(x.sel!==null&&typeof globalThis.CDU_VALIDATE_TAKEOFF_N1==='function'){
+   const computed=globalThis.CDU_VALIDATE_TAKEOFF_N1({...x,selectedRating:x.takeoff[i]});
+   if(computed?.status!=='TRAINING_TABLE'||!Number.isFinite(computed.n1Pct))return invalid();
+  }
   perfStore(s,{TO_DERATE:i?'TO-'+i:'TO',CLB_DERATE:i?'CLB-'+i:'CLB'});return;
  }
  if(/^R[234]$/.test(key)){const i=Number(key[1])-2;perfStore(s,{CLB_DERATE:i?'CLB-'+i:'CLB'});return;}

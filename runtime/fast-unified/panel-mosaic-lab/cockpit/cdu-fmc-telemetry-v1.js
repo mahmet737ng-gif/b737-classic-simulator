@@ -56,7 +56,7 @@
    if(estimate){next.predictions=null;next.trainingPerformance=estimate;}
   }
   const pred=native||next.trainingPerformance;
-  const reserve=/^\\d{1,2}(?:\\.\\d)?$/.test(String(state.active.RESERVES??''))?Number(state.active.RESERVES)*1000:null;
+  const reserve=/^\d{1,2}(?:\.\d)?$/.test(String(state.active.RESERVES??''))?Number(state.active.RESERVES)*1000:null;
   const validPrediction=next.fuel?.quality==='VALID'&&state.routeActivated===true&&!route?.modified?.(state)&&pred?.destination?.ident===state.active.DEST;
   const warnings=validPrediction?route?.fuelWarnings?.(pred.remainingFuelRawKg??pred.destination.fuelKg,reserve)||[]:[];
   if(next.fuel?.quality==='INVALID'){next.predictions=null;next.trainingPerformance=null;}
