@@ -1328,6 +1328,14 @@ try{
    if(state.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();
    if(win.B737PoweredGeneralPresetsV1?.applies(state.preset))win.B737PoweredGeneralPresetsV1.apply(state);
    return snapshot();},
+  setFmcPosition:p=>{
+   if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180)throw Error('INVALID FMC POSITION');
+   if(!active||!state||state.airborne===true)throw Error('GROUND POSITION REQUIRED');
+   state={...state,lat:p.lat,lon:p.lon};
+   publish();updateUI();
+   win.B737UnifiedFlightLocationV1?.choose({lat:p.lat,lon:p.lon,icao:state.icao,source:'FMC_POS_INIT'});
+   return snapshot();
+  },
   command:(action)=>{if(!state)throw Error('NO_SCENARIO');state=Core.command(state,action);publish();updateUI();return snapshot();},
   stepForTest:dt=>{if(!state)throw Error('NO_SCENARIO');state=Core.step(state,dt);return snapshot();},
   crewFollower:value=>{crewFollower=value===true;lastTick=performance.now();},

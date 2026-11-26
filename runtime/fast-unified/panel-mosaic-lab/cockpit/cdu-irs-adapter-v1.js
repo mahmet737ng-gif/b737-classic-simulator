@@ -9,7 +9,14 @@ if(!new URLSearchParams(location.search).get('seat'))return;
 const original=send,originalUpdate=update;
 // Published Jeppesen airport diagram coordinates, cycle 2621, 10-9; tenths of arcminute. Not runway thresholds.
 const ARP=Object.freeze({OIII:{lat:35+41.3/60,lon:51+18.9/60},OIMM:{lat:36+14.1/60,lon:59+38.7/60},OIFM:{lat:32+45.1/60,lon:51+51.8/60},OISS:{lat:29+32.4/60,lon:52+35.3/60}});
-function arp(icao){const p=ARP[icao];return p?{icao,...p,display:fmt(p).join(' '),source:'JEPPESEN_2621_10_9'}:null;}
+function arp(icao){
+ const published=ARP[icao];
+ const reference=parent.B737IranNavReferenceV1?.find(r=>r.type==='AIRPORT'&&r.ident===icao&&r.verified===true);
+ const scenario=parent.B737FlightScenarioCoreV1?.AIRPORTS?.[icao];
+ const p=published||reference||scenario;
+ if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180)return null;
+ return {icao,lat:p.lat,lon:p.lon,display:fmt(p).join(' '),source:published?'JEPPESEN_2621_10_9':reference?'UNIFIED_AIRPORT_REFERENCE':'UNIFIED_SCENARIO_AIRPORT'};
+}
 function syncArp(){state.refAirportArp=arp(state.active.REF_AIRPORT);}
 function sharedPosition(){try{return parent.B737FmcEnteredPositionV1||null}catch{return null}}
 function syncEnteredPosition(){ /* Shared CDU session owns active.IRS_POS; never restore a stale or preset position after FMC reset. */ }
@@ -98,8 +105,8 @@ function handleKey(key){
   const g=parent.B737UnifiedAvionicsNetworkV1?.getSignal?.('aircraft.airground');
   const f=parent.B737UnifiedFlightScenarioV1;
   const flight=f?.getDiagnostics?.()?.active===true?f.getState?.():null;
-  if(g?.quality==='VALID'&&typeof g.value?.onGround==='boolean')state.fmcOnGroundVerified=g.value.onGround;
-  else if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
+  if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
+  else if(g?.quality==='VALID'&&typeof g.value?.onGround==='boolean')state.fmcOnGroundVerified=g.value.onGround;
   core.press(state,pages,'CDU_CAPT_INIT_REF');update();return true;
  }
  if(state.page==='POS_INIT'&&normalized==='LSK_L6'){
@@ -149,9 +156,16 @@ function handleKey(key){
     if(accepted.length)delivery='ALREADY_INITIALIZED';
    }
    const display=fmt(p).join(' ');
+   const flight=parent.B737UnifiedFlightScenarioV1;
+   if(flight?.getDiagnostics?.()?.active===true&&flight.getState()?.airborne!==true){
+    if(typeof flight.setFmcPosition!=='function')throw Error('FLIGHT POSITION LINK NOT READY');
+    flight.setFmcPosition(p);
+   }else if(flight?.getDiagnostics?.()?.active!==true){
+    parent.B737UnifiedFlightLocationV1?.choose({...p,icao:state.active.REF_AIRPORT,source:'FMC_POS_INIT'});
+   }
    state.active.IRS_POS=display;delete state.pending.IRS_POS;
    parent.B737FmcEnteredPositionV1=Object.freeze({lat:p.lat,lon:p.lon,display,sides:accepted,source:'FMC_POS_INIT',irsDelivery:delivery});
-   state.scratch='';state.message=delivery==='NOT_ALIGNING'?'IRS NOT ALIGNING':'';
+   state.scratch='';state.message='';
    // Publish shared FMC state before notifying the other CDU.
    update();
    parent.dispatchEvent(new parent.CustomEvent('b737:fmc-entered-position',{detail:parent.B737FmcEnteredPositionV1}));
