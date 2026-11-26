@@ -81,11 +81,10 @@
     if (!form || !win.B737UnifiedFlightScenarioV1?.startFromSelection ||
         !win.B737AircraftProfileStore || !by('flightRunway')?.options.length) return;
     const fields = [...form.querySelectorAll('fieldset')];
-    for (const item of fields.slice(0, 3)) relocate(item, aircraft);
+    const equipment = fields.filter(item => item.querySelector('input[name="pressurization"],input[name="engineInstruments"]'));
     const current = win.B737AircraftProfileStore.get();
-    for (const input of aircraft.querySelectorAll('input[name]')) {
-      input.checked = input.value === current[input.name];
-    }
+    if (equipment.length !== 2) throw Error('Welcome equipment controls unavailable');
+    aircraft?.remove();
     const locationGrid = by('flightAirport').closest('.flight-grid');
     const locationSelect = by('flightPreset');
     const setupRoot = by('flightSetupTabs');
@@ -94,6 +93,12 @@
     const generalButton = setupButtons.find(b => b.getAttribute('aria-controls') === 'flightGeneralSetup');
     // Move only the location controls; leave the in-cockpit tabs and ground services intact.
     relocate(locationGrid, flight);
+    const equipmentGroup = doc.createElement('div');
+    equipmentGroup.id='welcomeEquipmentOptions';
+    equipmentGroup.className='welcome-equipment-options';
+    flight.append(equipmentGroup);
+    for (const item of equipment) { relocate(item, equipmentGroup); }
+    for (const input of equipmentGroup.querySelectorAll('input[name]')) input.checked=input.value===current[input.name];
     const remove5 = [...locationSelect.options].find(o => o.value === 'FINAL_5');
     if (remove5) {
       if (locationSelect.value === 'FINAL_5') locationSelect.value = 'FINAL_10';
@@ -104,7 +109,7 @@
       if (o.value === 'FINAL_10') o.textContent = '10 NM FINAL';
       if (o.value === 'MANUAL') o.textContent = 'MANUAL';
     }
-    flight.querySelector('h2').textContent = 'Location and Weather';
+    flight.querySelector('h2').textContent = 'Aircraft & Location';
     const stripRunwayHeadings = () => {
       for (const o of by('flightRunway').options) o.textContent = 'RWY ' + o.value;
     };
@@ -112,10 +117,16 @@
     by('flightAirport').addEventListener('change', stripRunwayHeadings);
     const layoutStyle = doc.createElement('style');
     layoutStyle.textContent = `
-      #unifiedWelcome[data-stage="setup"] .welcome-card{width:min(100%,1180px)}
-      #unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:14px}
+      #unifiedWelcome[data-stage="setup"] .welcome-card{width:min(100%,1000px)}
+      #unifiedWelcome #unifiedWelcomeSetup{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:14px}
       #unifiedWelcome .welcome-section{min-width:0;box-sizing:border-box;box-shadow:0 10px 24px #0003}
       #unifiedWelcome .welcome-section h2{margin-top:0}
+      #unifiedWelcome .welcome-equipment-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+      #unifiedWelcome .welcome-equipment-options fieldset{margin:0;min-width:0}
+      #unifiedWelcome .welcome-equipment-options .profile-options{display:flex;flex-wrap:wrap;gap:6px}
+      #unifiedWelcome .welcome-equipment-options .profile-options label{padding:7px 9px;min-width:0;white-space:nowrap;cursor:pointer}
+      #unifiedWelcome .welcome-equipment-options input{accent-color:#65e0d3}
+      @media(max-width:400px){#unifiedWelcome .welcome-equipment-options{grid-template-columns:minmax(0,1fr)}}
       #unifiedWelcome .welcome-subheading{font-size:14px;font-weight:700;margin:15px 0 9px;padding-top:14px;border-top:1px solid #334952;color:#e4f4fa}
       #unifiedWelcome .welcome-choice{display:flex;align-items:center;gap:8px;border:1px solid #365564;border-radius:7px;padding:9px 10px;margin:7px 0;background:#142731}
       #unifiedWelcome .welcome-choice:has(input:checked){border-color:#65e0d3;background:#17413f}
@@ -140,8 +151,7 @@
       '<label class="welcome-choice"><input id="welcomeColdDark" name="welcomeGroundState" value="COLD_DARK" type="radio"> <span>COLD &amp; DARK</span></label>' +
       '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_START" type="radio"> <span>READY FOR START</span></label>' +
       '<label class="welcome-choice"><input name="welcomeGroundState" value="READY_FOR_TAKEOFF" type="radio"> <span>READY FOR TAKEOFF</span></label>';
-    aircraft.append(general);
-    const cold = by('welcomeColdDark');
+    const cold = general.querySelector('#welcomeColdDark');
     const groundChoices=[...general.querySelectorAll('input[name="welcomeGroundState"]')];
     cold.disabled = !locationButton || !generalButton;
     const scenarios = doc.createElement('section');
@@ -176,6 +186,7 @@
       ).join('') +
       '<h3 class="welcome-subheading">Special Operations</h3>' +
       renderChoice(rapid);
+    scenarios.append(general);
     by('unifiedWelcomeSetup').append(scenarios);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
@@ -263,10 +274,10 @@
       locationGrid.hidden = isGeneral;
       locationGrid.style.display = isGeneral ? 'none' : '';
     };
-    aircraft.addEventListener('change', () => {
-      const changes = Object.fromEntries([...aircraft.querySelectorAll('fieldset input[name]:checked')]
-        .map(input => [input.name, input.value]));
-      win.B737AircraftProfileStore.set(changes);
+    equipmentGroup.addEventListener('change', event => {
+      const input=event.target;
+      if(!['pressurization','engineInstruments'].includes(input.name)||!input.checked)return;
+      win.B737AircraftProfileStore.set({[input.name]:input.value});
       lastProgressAt = performance.now();
       retry.hidden = true;
     });
