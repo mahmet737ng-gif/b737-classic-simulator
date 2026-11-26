@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "a57f2754b06783c6208adab6e6e8e35d20d1c11ae5aa8c42102a13837cb01174"
+      "sha256": "31cee64cbf335d7d2ae95a5996e54c86c6ae6181c2d4cbcce597167ab8ed3ac8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -932,7 +932,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
-      "sha256": "1e03b3c86197f9578be384aea2ca9c76f78edac6e140abba18f23a9c0bb68971"
+      "sha256": "d6c4a5939a8db320f89f0f800758026410b2ec7f30effcb57d55e1f18e3244c3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",

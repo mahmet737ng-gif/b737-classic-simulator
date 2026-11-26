@@ -92,6 +92,46 @@
     emit('b737:landing-gear-horn',{active:on,asset:'gearHorn',source:'WARNING_ENGINE_FCOM15',audio:'SYNTHETIC_TRAINING_PLACEHOLDER'});
   }
 
+  // Mechanical schematic, not CAD dimensions. Nose side view retracts forward;
+  // main gear front view folds inward toward the centerline. All angles are
+  // projections of the single physical ATA32 progress state.
+  function drawGear(){
+    const canvas=detailPanel?.querySelector('[data-gear-mechanism]'),ctx=canvas?.getContext('2d');if(!ctx)return;
+    const W=760,H=310;ctx.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
+    ctx.fillStyle='#101a22';ctx.fillRect(0,0,W,H);
+    const line=(x,y,X,Y,w=2,c='#98afbc')=>{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(X,Y);ctx.lineWidth=w;ctx.lineCap='round';ctx.strokeStyle=c;ctx.stroke();};
+    const ellipse=(x,y,rx,ry,c,edge)=>{ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();if(edge){ctx.strokeStyle=edge;ctx.lineWidth=1.5;ctx.stroke();}};
+    const label=(str,x,y,color='#b5c8d3',size=13)=>{ctx.font='600 '+size+'px system-ui';ctx.textAlign='center';ctx.fillStyle=color;ctx.fillText(str,x,y);};
+    ctx.strokeStyle='#324955';ctx.strokeRect(12,12,230,285);ctx.strokeRect(252,12,496,285);
+    label('NOSE GEAR · SIDE VIEW',127,33);label('MAIN GEAR · FRONT VIEW',500,33);
+    ctx.fillStyle='#334a57';ctx.fillRect(30,59,193,44);ctx.fillRect(266,59,468,44);
+    // Wheel wells and body/wing structural baseline; no fictional clamshell
+    // main wheel doors enclosing the exposed outer tire on the Classic.
+    ctx.fillStyle='#0a1117';ctx.fillRect(40,71,175,27);ctx.fillRect(340,71,318,27);
+    line(30,104,224,104,3);line(266,104,734,104,3);
+    line(500,49,500,237,1,'#577280');label('CENTERLINE',500,252,'#839ba9',10);
+    label('← FORWARD',79,51,'#8fa6b6',10);
+    function assembly(id,x,y,sign,nose){
+      const p=state.progress[id],angle=(1-p)*Math.PI/2*sign,length=nose?111:123;
+      const ex=x+Math.sin(angle)*length,ey=y+Math.cos(angle)*length;
+      const ix=x+Math.sin(angle)*length*.6,iy=y+Math.cos(angle)*length*.6;
+      line(x,y,ix,iy,nose?15:19,'#7f929d');line(ix,iy,ex,ey,nose?8:10,'#d7e0e5');
+      line(x-sign*27,y+4,ix,iy,5,'#8296a1');
+      line(x+sign*25,y+3,x+Math.sin(angle)*length*.4,y+Math.cos(angle)*length*.4,5,'#567783');
+      ellipse(x,y,7,7,'#c6d1d7','#5c727c');ellipse(ix,iy,4,4,'#c6d1d7');
+      if(nose){ellipse(ex,ey,17,17,'#171c20','#65717a');ellipse(ex,ey,8,8,'#7d939e','#c3cdd1');ellipse(ex+4,ey,3,3,'#d7e0e5');}
+      else{
+        const wx=Math.cos(angle)*15,wy=-Math.sin(angle)*15;
+        line(ex-wx,ey-wy,ex+wx,ey+wy,8,'#a8b7bf');
+        for(const side of [-1,1]){ctx.save();ctx.translate(ex+wx*side,ey+wy*side);ctx.rotate(-angle);ctx.fillStyle='#11161a';ctx.strokeStyle='#65717a';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(-9,-17,18,34,6);ctx.fill();ctx.stroke();ctx.restore();}
+      }
+      const color=state.downlock[id]?'#56e18c':state.uplock[id]?'#a9b8c0':'#ff716c';
+      ellipse(x,267,5,5,color);label(id.toUpperCase()+' · '+state.gear[id],x,288,color,12);
+    }
+    const door=state.progress.nose;line(43,104,43+21*Math.cos(door*Math.PI/2),104+21*Math.sin(door*Math.PI/2),5,'#8599a5');
+    line(210,104,210-21*Math.cos(door*Math.PI/2),104+21*Math.sin(door*Math.PI/2),5,'#8599a5');
+    assembly('nose',161,80,-1,true);assembly('left',363,80,1,false);assembly('right',637,80,-1,false);
+  }
   function publish(force=false){
     if(track){track.dataset.detent=state.lever;track.setAttribute('aria-valuenow',String({UP:0,OFF:1,DN:2}[state.lever]));track.setAttribute('aria-label','Landing gear selector '+state.lever+'. Tap or drag: UP, OFF, DOWN.');
       if(handle){handle.style.backgroundPosition={UP:'0% 50%',OFF:'50% 50%',DN:'100% 50%'}[state.lever];
@@ -108,7 +148,7 @@
       normalHydraulicAvailable:Number.isFinite(hydPsi)?hydPsi>=api.core.HYD_MIN_PSI:null,
       nominalCycleSeconds:api.core.NOMINAL_CYCLE_SEC,
       main:l.main,auxiliaryOverhead:l.auxiliary,limitations:['TRAINING_TRANSIT_TIMING','AFT_OVERHEAD_GEOMETRY_UNVERIFIED']};
-    if(detailPanel){const h=detail.hydraulic;detailPanel.querySelector('[data-gear-source]').textContent='LEVER '+state.lever+' · '+h.source+' · '+(h.pressure??'—')+' PSI';
+    if(detailPanel){drawGear();const h=detail.hydraulic;detailPanel.querySelector('[data-gear-source]').textContent='LEVER '+state.lever+' · '+h.source+' · '+(h.pressure??'—')+' PSI';
       for(const id of POS){const row=detailPanel.querySelector('[data-gear-row="'+id+'"]');row.querySelector('progress').value=state.progress[id]*100;row.querySelector('[data-lock]').textContent=state.gear[id]+' / '+(state.uplock[id]?'UPLOCK':state.downlock[id]?'DOWNLOCK':'UNLOCKED')+(state.manual[id]?' / MANUAL':'');}}
     const signature=JSON.stringify({lever:state.lever,gear:state.gear,target:state.target,progress:Object.values(state.progress).map(x=>Math.round(x*100)),manual:state.manual,fault:state.fault,onGround:ground,source:detail.hydraulic.source,hydraulicAvailable:detail.hydraulic.available,main:l.main});
     if(!force&&signature===lastPublished)return;
@@ -151,7 +191,7 @@
     const next=api.core.select(state,position,{...info,lockOverride:opts.lockOverride===true});
     if(next.lastReject){emit('b737:landing-gear-selection-rejected',{position,reason:next.lastReject});return false;}
     state=next;
-    if(track)track.dataset.detent=position;
+    if(track)track.dataset.detent=state.lever;
     if(ticker){root.clearInterval(ticker);ticker=0;lastAt=0;}
     run();publish(true);
     emit('b737:landing-gear-command',{position,lockOverride:opts.lockOverride===true});
@@ -202,7 +242,7 @@
       const style=doc.createElement('style');style.textContent='#b737GearAftIndicatorStatus [data-on="true"]{background:#135934;color:#a5ffc7!important;box-shadow:0 0 10px #29e67c77}';
       section.append(style);inspector.append(section);aux=section;
       const panel=doc.createElement('section');panel.id='b737GearSystemStatus';panel.style.cssText='padding:12px;margin:12px 0;border:1px solid #576c5b;border-radius:8px';
-      panel.innerHTML='<h3>ATA32 · LANDING GEAR SYSTEM</h3><p data-gear-source></p>'+POS.map(id=>'<div data-gear-row="'+id+'" style="margin:8px 0"><b>'+id.toUpperCase()+' GEAR</b> <span data-lock></span><progress max="100" value="100" style="display:block;width:100%"></progress><button type="button" data-release="'+id+'">MANUAL RELEASE</button> <select aria-label="'+id+' gear instructor fault" data-fault="'+id+'"><option>NONE</option><option>JAM</option><option>UPLOCK_FAIL</option><option>DOWNLOCK_FAIL</option></select></div>').join('')+'<button type="button" data-manual-reset>Instructor reset manual release</button> <button type="button" data-override>Instructor lever lock override UP</button><small style="display:block;margin-top:8px">Training system schematic/status; manual controls here are not physical cockpit handle geometry.</small><p data-gear-reject role="status"></p>';
+      panel.innerHTML='<h3>ATA32 · LANDING GEAR SYSTEM</h3><canvas width="1520" height="620" data-gear-mechanism aria-label="Animated nose gear side view and main gear front view" style="width:100%;height:auto;display:block;border-radius:6px"></canvas><p data-gear-source></p>'+POS.map(id=>'<div data-gear-row="'+id+'" style="margin:8px 0"><b>'+id.toUpperCase()+' GEAR</b> <span data-lock></span><progress max="100" value="100" style="display:block;width:100%"></progress><button type="button" data-release="'+id+'">MANUAL RELEASE</button> <select aria-label="'+id+' gear instructor fault" data-fault="'+id+'"><option>NONE</option><option>JAM</option><option>UPLOCK_FAIL</option><option>DOWNLOCK_FAIL</option></select></div>').join('')+'<button type="button" data-manual-reset>Instructor reset manual release</button> <button type="button" data-override>Instructor lever lock override UP</button><small style="display:block;margin-top:8px">Training system schematic/status; manual controls here are not physical cockpit handle geometry.</small><p data-gear-reject role="status"></p>';
       inspector.append(panel);detailPanel=panel;for(const el of panel.querySelectorAll('[data-release]'))el.addEventListener('click',()=>manualRelease(el.dataset.release));for(const el of panel.querySelectorAll('[data-fault]'))el.addEventListener('change',()=>setFault(el.dataset.fault,el.value));panel.querySelector('[data-manual-reset]').addEventListener('click',()=>{state=api.core.resetManual(state);publish(true);});panel.querySelector('[data-override]').addEventListener('click',()=>select('UP',{lockOverride:true}));root.addEventListener('b737:landing-gear-selection-rejected',e=>{panel.querySelector('[data-gear-reject]').textContent=e.detail?.reason||'';});
     }
     emit('b737:landing-gear-mounted',{source:'FO_INNER_PANEL',graphic:'3STATE_WHEEL_HANDLE',version:'ATA32-GEAR-0006'});
@@ -268,7 +308,7 @@
   }
   function manualRelease(s,id,info={}){
     if(!POS.includes(id))throw Error('Invalid gear');
-    if(s.lever!=='OFF')return {...s,lastReject:'SELECT_OFF_FOR_MANUAL_EXTENSION'};
+    if(!['OFF','DN'].includes(s.lever))return {...s,lastReject:'SELECT_OFF_OR_DN_FOR_MANUAL_EXTENSION'};
     if(info.onGround!==false)return {...s,lastReject:'MANUAL_EXTENSION_AIRBORNE_TRAINING_ONLY'};
     return {...s,manual:{...s.manual,[id]:true},lastReject:null};
   }
@@ -317,7 +357,7 @@
   function configuration(s){
     if(POS.every(id=>s.downlock[id]))return 'DOWN';
     if(POS.every(id=>s.uplock[id]))return 'UP';
-    return s.target==='UP'&&!POS.some(id=>s.manual[id])?'RETRACTING':'EXTENDING';
+    return (s.target==='UP'||s.target===null&&POS.some(id=>s.direction[id]==='RETRACTING'))&&!POS.some(id=>s.manual[id])?'RETRACTING':'EXTENDING';
   }
   const lamps=(s,flight={})=>({
     main:Object.fromEntries(POS.map(id=>{
