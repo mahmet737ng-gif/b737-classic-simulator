@@ -344,6 +344,21 @@
    }
    return all;
   }
+ function sequence(s){
+  const q=s.fmcPageInputs?.sequence??s.fmcPageInputs?.guidance?.sequence;
+  return !modified(s)&&s.routeActivated&&q?.origin===s.active.ORIGIN&&q?.dest===s.active.DEST&&q.routeRevision===(s.routeRevision??0)?q:null;
+ }
+ function displayedLegs(s){
+  const all=visibleLegs(s),q=sequence(s);let offset=0;
+  if(q?.ended===true)offset=all.length;
+  else if(q?.activeIdent){
+   const matches=all.map((l,i)=>({l,i})).filter(({l})=>l.ident===q.activeIdent);
+   const coords=matches.filter(({l})=>validPosition(l)&&validPosition(q.activePoint)&&legDistance(l,q.activePoint)<.1);
+   const match=coords.length===1?coords[0]:matches.length===1?matches[0]:matches.find(x=>x.i===q.activeIndex);
+   if(match)offset=match.i;
+  }else if(q?.blocked===true&&q.lastPassed){const p=all.map((l,i)=>({l,i})).filter(({l})=>l.ident===q.lastPassed.ident);if(p.length===1)offset=p[0].i+1;}
+  return {all:all.slice(offset),offset};
+ }
  const track=n=>Number.isFinite(n)?String(Math.round(n)%360).padStart(3,'0')+'°T':'';
  const nm=n=>Number.isFinite(n)&&n>=0?(n<10?n.toFixed(1):String(Math.round(n)))+'NM':'';
  const validPosition=p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180;
@@ -360,7 +375,7 @@
  }
  function planMode(s){return s.planReviewMode===undefined?s.ehsi?.mode==='PLAN':s.planReviewMode===true;}
   function planCandidates(all){return all.map((leg,index)=>({leg,index})).filter(({leg})=>!leg.gap&&validPosition(leg)&&typeof leg.ident==='string');}
-  function planCenter(s,all=visibleLegs(s)){
+  function planCenter(s,all=displayedLegs(s).all){
    const candidates=planCandidates(all);if(!candidates.length){delete s.planReviewCenter;return null;}
    const old=s.planReviewCenter;
    const same=x=>old&&x.leg.ident===old.ident&&(x.index===old.index||x.leg.lat===old.lat&&x.leg.lon===old.lon);
@@ -368,7 +383,7 @@
    const {leg,index}=chosen;return s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};
   }
   function planStep(s){
-   const all=visibleLegs(s),current=planCenter(s,all),candidates=planCandidates(all);if(!current||!candidates.length)return false;
+   const all=displayedLegs(s).all,current=planCenter(s,all),candidates=planCandidates(all);if(!current||!candidates.length)return false;
    const page=Math.max(1,s.subpage||1),start=(page-1)*5,end=start+5;
    const i=candidates.findIndex(x=>x.index===current.index);
    const next=current.index<start||current.index>=end?candidates.find(x=>x.index>=start&&x.index<end)||candidates[(i+1)%candidates.length]:candidates[(i+1)%candidates.length];
@@ -423,7 +438,7 @@
  }
  function holdInvoke(s,pages,key,core){
   if(key==='HOLD'){s.holdAt=false;const list=holdList(s);if(!list.length)holdStart(s,pages,core);else{const current=list.findIndex(x=>x.i===s.holdPage);s.holdPage=s.page==='HOLD'&&current>=0?list[(current+1)%list.length].i:list.find(x=>s.fmcPageInputs?.guidance?.hold?.key===holdKey(x.i))?.i??list[0].i;core.choose(s,pages,'HOLD');}return true;}
-  if(s.page==='LEGS'&&s.holdAt){if(/^LSK_L[1-5]$/.test(key)){if(!s.scratch){const l=visibleLegs(s)[((s.subpage||1)-1)*5+Number(key[5])-1];if(l&&!l.gap&&!l.conditional){s.scratch=l.ident;s.message='';}else core.addMessage(s,'INVALID HOLD FIX');return true;}holdSelect(s,pages,core,false);return true;}if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
+  if(s.page==='LEGS'&&s.holdAt){if(/^LSK_L[1-5]$/.test(key)){if(!s.scratch){const l=displayedLegs(s).all[((s.subpage||1)-1)*5+Number(key[5])-1];if(l&&!l.gap&&!l.conditional){s.scratch=l.ident;s.message='';}else core.addMessage(s,'INVALID HOLD FIX');return true;}holdSelect(s,pages,core,false);return true;}if(key==='LSK_L6'){if(s.scratch)holdSelect(s,pages,core,false);else core.addMessage(s,'ENTER HOLD FIX');return true;}if(key==='LSK_R6'){holdSelect(s,pages,core,true);return true;}if(!/^LSK_|^(NEXT|PREV)_PAGE$|^KEY_/.test(key))s.holdAt=false;return false;}
   if(s.page!=='HOLD')return false;
   const list=holdList(s),entry=list.find(x=>x.i===s.holdPage)||list[0],h=entry?.h;
   if(key==='NEXT_PAGE'||key==='PREV_PAGE'){if(list.length)s.holdPage=list[(list.indexOf(entry)+(key==='NEXT_PAGE'?1:-1)+list.length)%list.length].i;return true;}
@@ -447,7 +462,7 @@
   holdWrite(s,entry.i,next);return true;
  }
  function legs(s){
-   const all=visibleLegs(s),center=planMode(s)?planCenter(s,all):null,count=Math.max(1,Math.ceil(all.length/5));
+   const {all,offset}=displayedLegs(s),center=planMode(s)?planCenter(s,all):null,count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const at=(number-1)*5;
   for(let i=0;i<5;i++){
@@ -456,7 +471,7 @@
    if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
    const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
    const live=s.fmcPageInputs?.guidance?.activeLeg;
-   const activeIdent=s.fmcPageInputs?.guidance?.simulatorCoupled===true?live?.ident:prediction?.quality==='VALID'?prediction.active?.ident:null;
+   const activeIdent=sequence(s)?.activeIdent??(s.fmcPageInputs?.guidance?.simulatorCoupled===true?live?.ident:prediction?.quality==='VALID'?prediction.active?.ident:null);
    const activeMatch=activeIdent?all.filter(x=>x.ident===activeIdent).length===1&&leg.ident===activeIdent:index===0;
    const position=activeMatch?ownship(s):null;
    const from=validPosition(position)?position:!previous?.gap&&!previous?.conditional&&validPosition(previous)?previous:null;
@@ -470,7 +485,7 @@
    }
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
    const hold=holdList(s).some(x=>x.h.ident===leg.ident&&Math.abs(x.h.lat-leg.lat)<.00001&&Math.abs(x.h.lon-leg.lon)<.00001);
-   const original=constraint(s,leg,index),perf=s.fmcPageInputs?.trainingPerformance;
+   const original=constraint(s,leg,index+offset),perf=s.fmcPageInputs?.trainingPerformance;
    const estimate=(perf?.quality==='TRAINING_ESTIMATE'||perf?.advisory===true)&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident&&(!Number.isFinite(x.lat)||!validPosition(leg)||leg.conditional||legDistance(x,leg)<.05)):[];
    const q=estimate?.length===1&&all.filter(x=>x.ident===leg.ident).length===1?estimate[0]:null;
    const [sp,al]=original.split('/'),ta=perf?.transitionAltitudeFt??18000;
@@ -478,7 +493,7 @@
    const predSpeed=q&&Number.isFinite(q.predictedIasKt)?q.speedMode==='MACH'&&Number.isFinite(q.predictedMach)?q.predictedMach.toFixed(3).replace(/^0/,''):String(Math.round(q.predictedIasKt)):null;
    const speedMissing=!sp||/^-+$/.test(sp),altMissing=!al||/^-+$/.test(al);
    const shownSp=speedMissing&&predSpeed?predSpeed:sp,shownAlt=altMissing&&predAlt?predAlt:al;
-   rows.push({...pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),shownSp+'/'+shownAlt),predictedSpeed:!!(speedMissing&&predSpeed),predictedAltitude:!!(altMissing&&predAlt)});
+   rows.push({...pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),shownSp+'/'+shownAlt),activeWaypoint:!modified(s)&&s.routeActivated&&activeMatch&&!sequence(s)?.blocked,predictedSpeed:!!(speedMissing&&predSpeed),predictedAltitude:!!(altMissing&&predAlt)});
 
   }
   const action=routeAction(s);
@@ -625,7 +640,7 @@
    return true;
   }
   if(legPage&&/^LSK_/.test(key)){
-   const index=(legs(s).number-1)*5+Number(key[5])-1,leg=visibleLegs(s)[index];
+   const shown=displayedLegs(s),displayIndex=(legs(s).number-1)*5+Number(key[5])-1,index=displayIndex+shown.offset,leg=shown.all[displayIndex];
    if(key.startsWith('LSK_R')&&Number(key[5])<=5&&leg&&!leg.gap){
     const field=constraintKey(s,leg,index),old=constraint(s,leg,index);
     if(!s.scratch){s.scratch=old;s.message='';return true;}
@@ -773,11 +788,11 @@
    return {title:flight+'PROGRESS',number,count:3,rows};
   }
   const live=f.guidance?.simulatorCoupled===true?f.guidance.activeLeg:null;
-  const from=p.from??{},active=p.active??(live?{ident:live.ident,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg}:{}),next=p.next??{},dest=p.destination??{};
+  const q=sequence(s),from=q?.lastPassed??(p.from?.ident?{ident:p.from.ident}:{}),active=p.active??(live?{ident:live.ident,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg}:{}),next=p.next??{},dest=p.destination??{};
   const metrics=(x,time)=>[fixed(x.distanceNm),utc(time),mass(x.fuelKg)].filter(Boolean).join(' ');
   rows[0]=pair('FROM',from.ident||'','ALT  ATA  FUEL',
-   [Number.isFinite(from.altitudeFt)?'FL'+Math.round(from.altitudeFt/100):'',utc(from.ata),mass(from.fuelKg)].filter(Boolean).join(' '));
-  rows[1]=pair(track(active.courseTrueDeg),active.ident||'','DTG  ETA  FUEL',metrics(active,active.eta));
+   [Number.isFinite(from.altitudeFt)?from.altitudeFt>=(p.transitionAltitudeFt??18000)?'FL'+Math.round(from.altitudeFt/100):String(Math.round(from.altitudeFt/10)*10):'',utc(from.ata),mass(from.fuelKg)].filter(Boolean).join(' '));
+  rows[1]=pair(track(active.courseTrueDeg),active.ident||'','DTG  ETA  FUEL',metrics(active,active.eta),{activeWaypoint:!!active.ident&&!modified(s)});
   rows[2]=pair(track(next.courseTrueDeg),next.ident||'','',metrics(next,next.eta));
   rows[3]=pair(modified(s)?'MOD':'',dest.ident||s.active.DEST||'','',metrics(dest,dest.eta));
   rows[4]=pair(p.altitudeChange?.label||'',p.altitudeChange?metrics(p.altitudeChange,p.altitudeChange.eta):'',
@@ -786,7 +801,7 @@
   return {title:flight+'PROGRESS',number,count:3,rows};
  }
  function routeData(s){
-  const all=visibleLegs(s),count=Math.max(1,Math.ceil(all.length/5)),number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
+  const all=displayedLegs(s).all,count=Math.max(1,Math.ceil(all.length/5)),number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const f=s.fmcPageInputs,pred=f?.predictions?.quality==='VALID'?f.predictions:f?.trainingPerformance;
   const records=!modified(s)&&['VALID','TRAINING_ESTIMATE'].includes(pred?.quality)?(Array.isArray(pred.waypoints)&&pred.waypoints.length?pred.waypoints:[pred.from,pred.active,pred.next,pred.destination].filter(Boolean)):[];
   for(let i=0;i<5;i++){
@@ -815,5 +830,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({trainingFuelPrediction,fuelWarnings,view,invoke,routeCell,isRouteField,modified,canActivate,routeIncomplete,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
+ return Object.freeze({trainingFuelPrediction,fuelWarnings,view,invoke,routeCell,isRouteField,modified,canActivate,routeIncomplete,activeReferenceRoute,visibleLegs,displayedLegs,holdExecReady,planMode,planCenter,planStep});
 });

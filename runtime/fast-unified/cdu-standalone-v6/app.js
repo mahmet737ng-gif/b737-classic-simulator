@@ -291,7 +291,7 @@ function applyCDUScreenTypography(box){
  box.dataset.valueLine='LSK_CENTER';
 }
 // Avoid repainting unchanged FMC glyphs on unrelated network/SG notifications.
-let lastCduVisualMarkup=null;
+let lastCduVisualMarkup=null,lastCduRows=[];
 const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO':'CAPT';
  let planSyncKey='';
  function syncPlanReview(){
@@ -312,7 +312,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
  else if(chapter11){
-   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL,predictedSpeed,predictedAltitude},index)=>{
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL,predictedSpeed,predictedAltitude,activeWaypoint},index)=>{
      const {label,value}=lskTextTops(index+1);
      const line=centerLabel?makeDepArrTriplet(label,labelL,centerLabel,labelR,true):makePairRow(label,labelL,labelR,false,true);
      if(separator){line.textContent='------------------------';line.classList.add('fmc-perf-separator');line.style.textAlign='center';}
@@ -326,7 +326,8 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       for(const [cls,small] of [['.fmc-left',smallL],['.fmc-right',smallR],['.fmc-center',smallCenter]])if(small)valueRow.querySelector(cls)?.classList.add('cdu-perf-default');
       if(smallSuffixL){const left=valueRow.querySelector('.fmc-left');if(left?.textContent.endsWith(smallSuffixL)){left.textContent=left.textContent.slice(0,-smallSuffixL.length);const suffix=document.createElement('span');suffix.className='cdu-perf-default';suffix.textContent=smallSuffixL;left.appendChild(suffix);}}
      }
-     if(state.page==='LEGS'&&(predictedSpeed||predictedAltitude)){const span=valueRow.querySelector('.fmc-right'),parts=String(valueR).split('/');if(span&&parts.length===2){span.replaceChildren();parts.forEach((v,i)=>{if(i)span.appendChild(document.createTextNode('/'));const part=document.createElement('span');part.textContent=v;if(i===0?predictedSpeed:predictedAltitude){part.style.setProperty('font-size','75%','important');part.dataset.fmcPredicted='true';}span.appendChild(part);});}}
+     if(state.page==='LEGS'&&(predictedSpeed||predictedAltitude)){const span=valueRow.querySelector('.fmc-right'),parts=String(valueR).split('/');if(span&&parts.length===2){span.replaceChildren();parts.forEach((v,i)=>{if(i)span.appendChild(document.createTextNode('/'));const part=document.createElement('span');part.textContent=v;if(i===0?predictedSpeed:predictedAltitude){part.style.setProperty('font-size','75%','important');part.dataset.fmcPredicted='true';part.classList.add('cdu-perf-default');}span.appendChild(part);});}}
+     if(activeWaypoint){const field=valueRow.querySelector('.fmc-left');if(field){const token=document.createElement('span');token.className='cdu-active-waypoint';token.textContent=field.textContent;token.style.cssText='background:#29ff31!important;color:#071208!important;display:inline!important;white-space:pre!important';field.replaceChildren(token);}}
      if(activeSpeed){const field=valueRow.querySelector('.fmc-right');field.style.setProperty('background','#29ff31','important');field.style.setProperty('color','#071208','important');}
      frame.appendChild(valueRow);
    });
@@ -412,9 +413,10 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  // receive or mutate the live DOM and cannot erase a FCOM-owned screen.
  const nextVisualMarkup=frame.innerHTML;
  if(nextVisualMarkup!==lastCduVisualMarkup||box.childNodes.length===0){
-  box.replaceChildren(...frame.childNodes);
-  applyCDUScreenTypography(box);
-  lastCduVisualMarkup=nextVisualMarkup;
+  const fresh=[...frame.children],keys=fresh.map(n=>n.outerHTML);
+  if(box.children.length===fresh.length&&lastCduRows.length===fresh.length){for(let i=0;i<fresh.length;i++)if(lastCduRows[i]!==keys[i])box.children[i].replaceWith(fresh[i]);}
+  else box.replaceChildren(...fresh);
+  lastCduRows=keys;applyCDUScreenTypography(box);window.B737CduScreenFitV6?.apply?.();lastCduVisualMarkup=nextVisualMarkup;
  }
  box.dataset.screenOwner=output.owner;
  box.dataset.sourceVerified=String(output.sourceVerified);

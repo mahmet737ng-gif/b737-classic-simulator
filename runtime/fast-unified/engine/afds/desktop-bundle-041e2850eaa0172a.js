@@ -59,11 +59,12 @@ try{
   const fdCommand=fn=>fn===true&&mcp.flightDirectorBarsRetracted!==true;
   const bankLimit=[10,15,20,25,30].includes(mcp.bankAngleLimit)?mcp.bankAngleLimit:20;
   const direction=m.lateral;
+  const lnavBank=nav?.hold?.active===true?20:25,independentBank=15;
   const speedForPitch=valid(flight.tasKt)?flight.tasKt:flight.iasKt;
   const pitchForVs=vs=>Laws?.pitchForVs(vs,speedForPitch)??clamp(
    2+Math.atan2(vs*.3048/60,Math.max(speedForPitch*.514444,35))*180/Math.PI,-10,15);
-  const bankForHeading=trueTarget=>Laws?.bankForHeading(flight.trueHeadingDeg,trueTarget,bankLimit)??
-   clamp(delta(flight.trueHeadingDeg,trueTarget)*.65,-bankLimit,bankLimit);
+  const bankForHeading=(trueTarget,limit=bankLimit)=>Laws?.bankForHeading(flight.trueHeadingDeg,trueTarget,limit)??
+   clamp(delta(flight.trueHeadingDeg,trueTarget)*.65,-limit,limit);
   const altitudeVs=alt=>Laws?.altitudeVs(flight.altitudeFt,alt)??
    clamp((alt-flight.altitudeFt)*2,-2500,2500);
   function acquireAltitude(selected){
@@ -97,6 +98,7 @@ try{
   if(rAxis==='CWS'){
    if(!valid(out.state.cwsHeadingDeg))out.state.cwsHeadingDeg=flight.trueHeadingDeg;
    out.actions.push({type:'HEADING',value:norm(out.state.cwsHeadingDeg)});
+   out.actions.push({type:'BANK_LIMIT',value:30});
    out.rollCommandDeg=0;out.rollValid=true;
   }else if(direction==='HDG_SEL'&&valid(v.heading)){
    // MCP selector and EHSI bug are MAGNETIC. The flight plant uses TRUE
@@ -111,14 +113,14 @@ try{
   }else if(direction==='LNAV'){
    if(nav?.fmcTrackValid===true&&valid(nav.trackDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.trackDeg)});
-    const holdBank=nav.hold?.active===true?30:bankLimit;
-    out.actions.push({type:'BANK_LIMIT',value:holdBank});
-    out.rollCommandDeg=nav.hold?.active===true?Laws?.bankForHeading(flight.trueHeadingDeg,nav.trackDeg,holdBank)??clamp(delta(flight.trueHeadingDeg,nav.trackDeg)*.65,-holdBank,holdBank):bankForHeading(nav.trackDeg);
+    out.actions.push({type:'BANK_LIMIT',value:lnavBank});
+    out.rollCommandDeg=bankForHeading(nav.trackDeg,lnavBank);
     out.rollValid=true;
    }else out.reasons.push('LNAV_ACTIVE_LEG_TRACK_NOT_VERIFIED');
   }else if(direction==='VOR_LOC'||mcp.capture?.roll==='VOR_LOC'){
    if(nav?.courseTrackValid===true&&valid(nav.courseDeg)){
     out.actions.push({type:'HEADING',value:norm(nav.courseDeg)});
+    out.actions.push({type:'BANK_LIMIT',value:bankLimit});
     out.rollCommandDeg=bankForHeading(nav.courseDeg);
     out.rollValid=true;
    }else out.reasons.push('VOR_LOC_CAPTURE_SOURCE_UNVERIFIED');
@@ -190,7 +192,8 @@ try{
    if(!rollSelected){
     out.rollValid=true;
     out.rollCommandDeg=Number.isFinite(nav.togaTrackDeg)?
-     bankForHeading(nav.togaTrackDeg):0;
+     bankForHeading(nav.togaTrackDeg,independentBank):0;
+    out.actions.push({type:'BANK_LIMIT',value:independentBank});
    }
    if(active){
     out.actions=out.actions.filter(a=>!['VS','ALTITUDE','ALT_ACQ','PITCH'].includes(a.type)&&

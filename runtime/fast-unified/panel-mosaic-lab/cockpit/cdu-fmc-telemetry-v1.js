@@ -7,7 +7,7 @@
  if(!['CAPT','FO'].includes(seat)||parent===window||typeof state==='undefined'||typeof update!=='function')return;
  const original=update;let queued=false,feed='UNKNOWN',pendingPowerEvidence=true;
  const performancePages=new Set(['RTE','FLIGHT_PLAN','ACTIVATE','LEGS','PROG','PROG2','PERF_INIT','PERF_LIMITS','N1_LIMIT','TAKEOFF','CLB','CRZ','DES','APP_REF','RTE_DATA','FIX','HOLD']);
- let avionicsFrame=0,lastInputs='';
+ let avionicsFrame=0,lastInputs='',lastSequenceKey='',lastRouteKey='',lastRenderAt=0,renderTimer=0;
  // Use exactly the same ATA28 tank readings and electrical gates as
  // the physical Smiths quantity indicators, not a local 6000 kg constant.
  function fuelInput(host){
@@ -43,6 +43,11 @@
    position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
   }:{};
   const actual=fuelInput(parent);if(actual)next.fuel=actual;
+  const live=parent.B737UnifiedFccFlightV1?.getFmcGuidance?.(),seq=live?.sequence??next.guidance?.sequence;
+  if(seq?.origin===state.active.ORIGIN&&seq?.dest===state.active.DEST&&seq.routeRevision===(state.routeRevision??0)&&data?.value?.failed!==true&&feed!=='ABSENT'){next.sequence=seq;}
+  const seqKey=JSON.stringify([next.sequence?.routeRevision,next.sequence?.activeIndex,next.sequence?.lastPassed?.ataMs]);
+  const sequenced=seqKey!==lastSequenceKey;lastSequenceKey=seqKey;
+  if(sequenced&&state.page==='LEGS'&&state.routeActivated&&!window.CDU_CH11_ROUTE_PAGES?.modified?.(state))state.subpage=1;
   const route=window.CDU_CH11_ROUTE_PAGES,scenario=parent.B737UnifiedFlightScenarioV1;
   const flight=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
   if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
@@ -76,7 +81,11 @@
   const weightSettled=core.settlePerfWeight?.(state)===true;
 
   if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
-  if(refCleared||weightSettled||warningChanged||performancePages.has(state.page))update();
+  if(refCleared||weightSettled||warningChanged||sequenced){lastRenderAt=performance.now();original();send();}
+  else if(performancePages.has(state.page)){const now=performance.now(),delay=250-(now-lastRenderAt);
+   if(delay<=0){lastRenderAt=now;original();send();}
+   else if(!renderTimer)renderTimer=setTimeout(()=>{renderTimer=0;if(performancePages.has(state.page)){lastRenderAt=performance.now();original();send();}},delay);
+  }
  }
  function queueAvionics(){
   if(!avionicsFrame)avionicsFrame=requestAnimationFrame(receiveAvionics);
@@ -130,7 +139,7 @@
   if(queued)return;queued=true;
   requestAnimationFrame(()=>{queued=false;parent.postMessage(snapshot(),location.origin);});
  }
- update=function(){original();send();queueAvionics();};
+ update=function(){original();send();const k=JSON.stringify([state.routeRevision,state.routeActivated,state.active,state.pending,state.stagedRoute]);if(k!==lastRouteKey){lastRouteKey=k;queueAvionics();}};
  window.updateStage5View=update;
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)send()});
  window.addEventListener('message',e=>{
@@ -144,7 +153,7 @@
   queueAvionics();
  }
  // Poll the authoritative ATA28 ledger even when the optional avionics bus is absent.
- const poll=setInterval(queueAvionics,1000);window.addEventListener('pagehide',()=>clearInterval(poll),{once:true});queueAvionics();
+ const poll=setInterval(queueAvionics,1000);window.addEventListener('pagehide',()=>{clearInterval(poll);clearTimeout(renderTimer);},{once:true});queueAvionics();
  paintFeed();send();parent.postMessage({type:'b737:fmc-cdu-power-ready',seat},location.origin);
  window.B737CduFmcTelemetryV1=Object.freeze({snapshot,getFeed:()=>feed,
   awaitingPower:()=>pendingPowerEvidence,trajectory:()=>state.fmcPageInputs?.trainingPerformance??null});

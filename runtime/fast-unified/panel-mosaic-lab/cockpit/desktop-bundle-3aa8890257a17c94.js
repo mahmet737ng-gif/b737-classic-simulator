@@ -723,11 +723,12 @@ try{
   const ready=powerReady&&!!fix&&active&&data.route.legsVerified&&!data.route.discontinuitiesUnknown;
   const live=typeof globalThis==='object'?globalThis.B737UnifiedFccFlightV1?.getFmcGuidance?.():null;
   const training=operational&&!!fix&&active&&live?.fmcTrackValid===true&&Number.isFinite(live.observedAtMs)&&Date.now()-live.observedAtMs<2000;
+  const sequence=operational&&active&&live?.sequence&&Number.isFinite(live.observedAtMs)&&Date.now()-live.observedAtMs<2000?live.sequence:null;
   const navActive=training?{ident:live.activeIdent,index:live.activeIndex,distanceNm:live.distanceNm,courseTrueDeg:live.courseTrueDeg,bearingTrueDeg:live.bearingTrueDeg,crossTrackNm:live.crossTrackNm,position:live.position}:null;
   const vertical=training&&live.fmcVerticalValid===true&&mcp?.value?.verticalMode==='VNAV';
   const performance=training?live.performance??null:null;
   data.guidance={routeEvidenceReady:ready||training,canCommandAircraft:false,authority:training?'SIMULATOR_FCC_ONLY':'ADVISORY_ONLY',simulatorCoupled:training,
-   activeLeg:navActive,hold:training?live.hold:null,holdMetrics:training?live.holdMetrics:null,holdExited:live?.holdExited??null,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
+   sequence,activeLeg:navActive,hold:training?live.hold:null,holdMetrics:training?live.holdMetrics:null,holdExited:live?.holdExited??null,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
    reason:training?'EXECUTED_TRAINING_GUIDANCE':ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
   return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,motion,operational,failed:fmcFeed?.failed===true,
    radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,

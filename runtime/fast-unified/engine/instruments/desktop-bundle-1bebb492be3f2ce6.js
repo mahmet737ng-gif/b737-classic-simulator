@@ -548,7 +548,7 @@ try{
    if(hold.ppos){const matches=legs.map((l,j)=>same(l,hold.anchor)?j:-1).filter(j=>j>=0);if(matches.length!==1)continue;const j=matches[0];legs.splice(j,0,{type:'FIX',kind:'RTE',ident:'PPOS',lat:hold.lat,lon:hold.lon,from:null,flyOver:true,hold:{...hold,key}});}
    else{const matches=legs.filter(l=>same(l,hold));if(matches.length!==1)continue;matches[0].hold={...hold,key};matches[0].flyOver=true;}
   }
-  return {origin,dest,legs,revision:session.routeRevision||0,performance:{...a},destinationPoint:geo['RUNWAY_ARR@'+dest]?.fixes?.[0]||session.activeNavFixEvidence?.DEST||globalThis.B737FlightScenarioCoreV1?.AIRPORTS?.[dest]||null};
+  return {origin,dest,legs,revision:session.routeRevision||0,originResetRevision:session.originResetRevision??0,performance:{...a},destinationPoint:geo['RUNWAY_ARR@'+dest]?.fixes?.[0]||session.activeNavFixEvidence?.DEST||globalThis.B737FlightScenarioCoreV1?.AIRPORTS?.[dest]||null};
  }
  function segment(from,to,p,heading){
   const ab=vec(from,to),ap=vec(from,p),len=length(ab);if(len<.001)return null;
@@ -790,8 +790,10 @@ function followHold(points,step,frame,gs){
 }
  function create(){
   let holding=null,completed=new Map();
-  let plan=null,signature='',index=0,from=null,previousAltitude=null,previousCondition=null,lastElapsed=null,wasDescending=false;
-  function reset(){holding=null;completed.clear();plan=null;signature='';index=0;from=null;previousAltitude=null;previousCondition=null;lastElapsed=null;wasDescending=false;}
+  let plan=null,signature='',index=0,from=null,previousAltitude=null,previousCondition=null,lastElapsed=null,wasDescending=false,priorAirborne=false,history=[];
+  function sequenceState(){const l=plan?.legs[index];return plan?{origin:plan.origin,dest:plan.dest,routeRevision:plan.revision,activeIndex:index,activeIdent:l?.ident??null,activePoint:coord(l)?{lat:l.lat,lon:l.lon}:null,ended:!l,blocked:l?.type==='GAP',lastPassed:history.at(-1)??null,history:history.slice()}:null;}
+  function pass(l,frame,conditions){if(!l?.ident||frame.airborne!==true)return;const ms=finite(conditions.utcMs)?conditions.utcMs:null;history.push({ident:l.ident,index,altitudeFt:finite(frame.altitudeFt)?frame.altitudeFt:null,ataMs:ms,ata:ms===null?null:new Date(ms).toISOString().slice(11,16).replace(':','')+'Z',fuelKg:finite(conditions.fuelKg)&&conditions.fuelKg>=0?conditions.fuelKg:null,lat:frame.lat,lon:frame.lon,elapsedSec:frame.elapsedSec??null});if(history.length>501)history.shift();}
+  function reset(){holding=null;completed.clear();plan=null;signature='';index=0;from=null;previousAltitude=null;previousCondition=null;lastElapsed=null;wasDescending=false;priorAirborne=false;history=[];}
   function evaluate(session,source,frame,mcp,conditions={}){
    const off={fmcTrackValid:false,fmcVerticalValid:false,lnavEngage:false,vnavEngage:false,reason:'NO_EXECUTED_ROUTE'};
    if(!session?.routeActivated){reset();return off;}
@@ -800,26 +802,27 @@ function followHold(points,step,frame,gs){
    if(source?.connected!==true){reset();return {...off,reason:'NAV_SOURCE_LOST'};}
    if((source.activeContext?.origin??source.origin)===a.ORIGIN&&(source.activeContext?.destination??source.destination)===a.DEST){
     const sig=JSON.stringify([revision,a,source.activeRevision??source.active]);
-    if(sig!==signature){const next=compile(session,source);if(next){const sameGeometry=plan?.origin===next.origin&&plan?.dest===next.dest&&JSON.stringify(plan.legs)===JSON.stringify(next.legs);const old=plan?.legs?.[index],match=old?.ident?next.legs.map((l,i)=>l.ident===old.ident&&l.type===old.type?i:-1).filter(i=>i>=0):[];const newPpos=next.legs.findIndex(l=>l.hold?.ppos&&!plan?.legs?.some(x=>x.hold?.key===l.hold.key));index=newPpos>=0?newPpos:match.length===1?match[0]:0;if(!next.legs[index]?.hold||next.legs[index].hold.key!==holding?.key)holding=null;if(!sameGeometry){from=null;previousAltitude=null;previousCondition=null;wasDescending=false;}plan=next;}else{plan=null;index=0;}signature=sig;}
+    if(sig!==signature){const next=compile(session,source);if(next){const sameFlight=plan?.origin===next.origin&&plan?.dest===next.dest&&plan?.originResetRevision===next.originResetRevision;const sameGeometry=sameFlight&&JSON.stringify(plan.legs)===JSON.stringify(next.legs);if(!sameFlight){history=[];priorAirborne=false;}const old=plan?.legs?.[index],match=old?.ident?next.legs.map((l,i)=>l.ident===old.ident&&l.type===old.type?i:-1).filter(i=>i>=0):[];const newPpos=next.legs.findIndex(l=>l.hold?.ppos&&!plan?.legs?.some(x=>x.hold?.key===l.hold.key));index=newPpos>=0?newPpos:sameGeometry?Math.min(index,next.legs.length):sameFlight&&match.length===1?match[0]:0;if(!next.legs[index]?.hold||next.legs[index].hold.key!==holding?.key)holding=null;if(!sameGeometry){from=null;previousAltitude=null;previousCondition=null;wasDescending=false;}plan=next;}else{plan=null;index=0;}signature=sig;}
    }else if(!plan||plan.origin!==a.ORIGIN||plan.dest!==a.DEST||plan.revision!==revision){reset();return off;}
    if(!plan)return off;
-   if(!conditions.power||!conditions.positionValid||!coord(frame)||!finite(frame.trueHeadingDeg)||!finite(frame.altitudeFt))return {...off,reason:'FMC_OR_IRS_UNAVAILABLE'};
-   if(finite(lastElapsed)&&finite(frame.elapsedSec)&&frame.elapsedSec<lastElapsed){index=0;from=null;previousAltitude=null;previousCondition=null;wasDescending=false;holding=null;completed.clear();}
+   if(!conditions.power||!conditions.positionValid||!coord(frame)||!finite(frame.trueHeadingDeg)||!finite(frame.altitudeFt))return {...off,reason:'FMC_OR_IRS_UNAVAILABLE',sequence:sequenceState()};
+   if(finite(lastElapsed)&&finite(frame.elapsedSec)&&frame.elapsedSec<lastElapsed){index=0;from=null;previousAltitude=null;previousCondition=null;wasDescending=false;holding=null;completed.clear();history=[];priorAirborne=false;}
    lastElapsed=frame.elapsedSec;
    let leg=plan.legs[index];
    if(leg?.hold&&completed.get(leg.hold.key)===JSON.stringify(leg.hold)){index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];}
-   if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};
+   if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index,sequence:sequenceState()};
    if(leg.type==='ALTITUDE'){
-    const crossed=finite(previousAltitude)&&(leg.climb?previousAltitude<leg.altitude.ft&&frame.altitudeFt>=leg.altitude.ft:previousAltitude>leg.altitude.ft&&frame.altitudeFt<=leg.altitude.ft);
-    if(crossed){index++;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];}
+    const satisfied=leg.climb?frame.altitudeFt>=leg.altitude.ft:frame.altitudeFt<=leg.altitude.ft;
+    const crossed=frame.airborne===true&&satisfied&&(!priorAirborne||!finite(previousAltitude)||(leg.climb?previousAltitude<leg.altitude.ft:previousAltitude>leg.altitude.ft));
+    if(crossed){pass(leg,frame,conditions);index++;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];}
    }
    if(leg&&['DME','RADIAL'].includes(leg.type)){
     const stationVariation=conditions.variationAt?.(leg.station)??conditions.variation;
     const v=leg.type==='DME'?length(vec(leg.station,frame))-leg.target:finite(stationVariation)?delta(leg.target,norm(bearing(vec(leg.station,frame))-stationVariation)):null;
-    if(finite(v)&&finite(previousCondition)&&Math.abs(v-previousCondition)<180&&((previousCondition<0&&v>=0)||(previousCondition>0&&v<=0))){index++;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];previousCondition=null;}else previousCondition=v;
+    if(frame.airborne===true&&finite(v)&&finite(previousCondition)&&Math.abs(v-previousCondition)<180&&((previousCondition<0&&v>=0)||(previousCondition>0&&v<=0))){pass(leg,frame,conditions);index++;from={lat:frame.lat,lon:frame.lon};leg=plan.legs[index];previousCondition=null;}else previousCondition=v;
    }
-   previousAltitude=frame.altitudeFt;
-   if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};
+   previousAltitude=frame.altitudeFt;priorAirborne=frame.airborne===true;
+   if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index,sequence:sequenceState()};
    let track=null,engage=false,remaining=null,course=null,xtk=null,bearingTo=null;
    let holdStatus=null,holdExited=null;
    const hold=leg.hold,mag=hold?(conditions.variationAt?.(leg)??conditions.variation):null;
@@ -841,7 +844,7 @@ function followHold(points,step,frame,gs){
      }
      let p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;
      if(p.done){
-       if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident,expected:plan.performance[hold.key]};completed.set(hold.key,JSON.stringify(hold));holding=null;index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};}
+       if(hold.exit&&holding.exitPath){holdExited={key:hold.key,ident:leg.ident,expected:plan.performance[hold.key]};completed.set(hold.key,JSON.stringify(hold));holding=null;pass(leg,frame,conditions);index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];if(!leg||leg.type==='GAP')return {...off,holdExited,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index,sequence:sequenceState()};}
        else{holding.race=geometry();holding.points=holding.race;holding.step=1;holding.laps++;holding.exitInhibited=false;p=followHold(holding.points,holding.step,frame,gs);holding.step=p.step;}
      }
      if(holding){
@@ -856,11 +859,11 @@ function followHold(points,step,frame,gs){
     if(!from)from=coord(leg.from)?leg.from:{lat:frame.lat,lon:frame.lon};
     let s=segment(from,leg,frame,frame.trueHeadingDeg);remaining=length(vec(frame,leg));
     const next=plan.legs[index+1],turn=next?.type==='FIX'&&coord(next)?Math.abs(delta(s?.course??0,bearing(vec(leg,next)))):0;
-    const bank=clamp(mcp?.bankAngleLimit||20,10,30)*Math.PI/180,radius=finite(frame.gsKt)?((frame.gsKt*.514444)**2/(9.80665*Math.tan(bank)))/1852:0;
+    const bank=25*Math.PI/180,radius=finite(frame.gsKt)?((frame.gsKt*.514444)**2/(9.80665*Math.tan(bank)))/1852:0;
     const lead=!leg.flyOver&&s&&next?.type==='FIX'&&turn>2&&turn<150?Math.min(radius*Math.tan(turn*Math.PI/360),s.len*.45,length(vec(leg,next))*.45):0;
-    if(!leg.hold&&(remaining<=.12||s&&(s.along>=s.len&&Math.abs(s.xtk)<.35||lead>0&&s.along>=s.len-lead&&Math.abs(s.xtk)<.2))){
-     index++;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];
-     if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index};
+    if(frame.airborne===true&&!leg.hold&&(remaining<=.12||s&&(s.along>=s.len&&Math.abs(s.xtk)<.35||lead>0&&s.along>=s.len-lead&&Math.abs(s.xtk)<.2))){
+     pass(leg,frame,conditions);index++;previousCondition=null;from={lat:leg.lat,lon:leg.lon};leg=plan.legs[index];
+     if(!leg||leg.type==='GAP')return {...off,reason:leg?.reason||'END_OF_ROUTE',activeIndex:index,sequence:sequenceState()};
      if(['ALTITUDE','DME','RADIAL'].includes(leg.type)){if(finite(conditions.variation)){track=norm(leg.headingMag+conditions.variation);course=track;engage=true;}}else{s=segment(from,leg,frame,frame.trueHeadingDeg);remaining=length(vec(frame,leg));}
     }
     if(leg.type==='FIX'&&s){track=s.track;course=s.course;xtk=s.xtk;bearingTo=bearing(vec(frame,leg));engage=s.engage;
@@ -877,7 +880,7 @@ function followHold(points,step,frame,gs){
    return {fmcTrackValid:finite(track),trackDeg:track,lnavEngage:engage&&finite(track),
     fmcVerticalValid:finite(track)&&v.valid===true,vnavEngage:finite(track)&&v.engage===true,
     vsFpm:v.vsFpm,vnavMode:v.mode,targetKt:v.targetKt,thrust:v.thrust,targetAltitudeFt:v.targetAltitudeFt,
-    hold:holdStatus,holdExited,holdMetrics:metrics,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',vertical:v,performance:forecast,rta:v.rta??null};
+    sequence:sequenceState(),hold:holdStatus,holdExited,holdMetrics:metrics,activeIndex:index,activeIdent:leg.ident,distanceNm:remaining,courseTrueDeg:course,crossTrackNm:xtk,bearingTrueDeg:bearingTo,reason:v.reason||'TRAINING_ROUTE_GUIDANCE',vertical:v,performance:forecast,rta:v.rta??null};
   }
   return {evaluate,reset};
  }
