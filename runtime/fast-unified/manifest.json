@@ -68,7 +68,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "006aff08c53dbd1998d013f152a6062679ecb12c395ac76adec8a9f5adfdf173"
+      "sha256": "00bc5691cfd7647c74ae3cd4db16be139c85431930adaa03f0f6eb3075b9db18"
     },
     {
       "path": "cdu-standalone-v6/engine/prompt-policy-v1.js",
@@ -224,7 +224,7 @@
     },
     {
       "path": "engine/fmc/trajectory-predictor-v1.js",
-      "sha256": "417e53f3658fd638b570e4a5bdb923d25f2af73ed38afa83454501d3f9c3ec74"
+      "sha256": "1cc303e8c809b111ee9472d2fc08e4a3c043a877d7e82a16ede6d732f1a14abc"
     },
     {
       "path": "engine/instruments/conventional-indication-sync-v1.js",
@@ -232,7 +232,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "9a403e713fb3fdd18b5c0e51a3fb0d6d6066d2860dbfbe17ff4ae478840f3af7"
+      "sha256": "b03bc0203cc29cb26a374d7cf233cb6b2a2970322db14fbeab5f81e44e23f955"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -508,7 +508,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "6211d177962286f9abc9f51759702635ae9937c28342f70c4059e5f31dd21648"
+      "sha256": "84f8caf26f4ff44ae3093c4992ddd14c869b14d54d8ea87af446c39478f5c755"
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
@@ -528,7 +528,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "8d929f5d9ada9cda4adae3067e62a8bd23f889c491c7883518fa9a408e770c2c"
+      "sha256": "324ed21c43b57d879a8cad9ec0d010fbb9719294c476dde7e72ae12969de3654"
     },
     {
       "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "a006b9797f5e41c0357c52384fe80bffe1dd510cd2985bdc4aed167baa86a39b"
+      "sha256": "b17149e04d8f61b31374bac7b04ad8985f4fa90678713ffe14b0da43d3a35a84"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",

@@ -45,6 +45,7 @@
   const actual=fuelInput(parent);if(actual)next.fuel=actual;
   const route=window.CDU_CH11_ROUTE_PAGES,scenario=parent.B737UnifiedFlightScenarioV1;
   const flight=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
+  if(typeof flight?.airborne==='boolean')state.fmcOnGroundVerified=!flight.airborne;
   const arp=icao=>window.B737CDUIRSAdapterV1?.arp?.(icao);
   // PERF data is derived against the same current quantity, with no second fuel ledger.
   const prior=state.fmcPageInputs;state.fmcPageInputs=next;
@@ -52,7 +53,7 @@
   const p=next.position,position=p?.quality==='VALID'?{lat:p.latitudeDeg,lon:p.longitudeDeg}:flight;
   const flows=['engine1','engine2'].map(k=>ecu?.engines?.[k]?.fuelFlowKgHr);
   const native=next.predictions?.quality==='VALID'&&next.predictions.destination?.ident===state.active.DEST&&Number.isFinite(next.predictions.destination?.fuelKg)?next.predictions:null;
-  if(!native&&data?.value?.failed!==true&&!(next.trainingPerformance?.source==='UNIFIED_TRAJECTORY_V2'&&next.trainingPerformance.origin===state.active.ORIGIN&&next.trainingPerformance.dest===state.active.DEST&&state.fmcOnGroundVerified===false)){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
+  if(!native&&data?.value?.failed!==true&&!(next.trainingPerformance?.source==='UNIFIED_TRAJECTORY_V2'&&next.trainingPerformance.origin===state.active.ORIGIN&&next.trainingPerformance.dest===state.active.DEST&&next.trainingPerformance.routeRevision===(state.routeRevision??0)&&state.fmcOnGroundVerified===false&&next.trainingPerformance.ready===true)){const estimate=route?.trainingFuelPrediction?.(state,next,{perf,onGround:state.fmcOnGroundVerified,origin:arp(state.active.ORIGIN),destination:arp(state.active.DEST),position,altitudeFt:flight?.altitudeFt??ecu?.aircraft?.pressureAltitudeFt,verticalSpeedFpm:flight?.verticalSpeedFpm,flowKgHr:flows.every(Number.isFinite)?flows[0]+flows[1]:null});
    next.predictions=null;next.trainingPerformance=estimate??(state.fmcOnGroundVerified===false?next.trainingPerformance:null);
   }
   const pred=native||next.trainingPerformance;
@@ -61,9 +62,11 @@
   const warnings=validPrediction?route?.fuelWarnings?.(pred.remainingFuelRawKg??pred.destination.fuelKg,reserve)||[]:[];
   if(next.fuel?.quality==='INVALID'||feed==='ABSENT'||data?.value?.failed===true){next.predictions=null;next.trainingPerformance=null;}
   const session=parent.B737UnifiedFmc?.snapshot?.();
-  if(state.fmcOnGroundVerified===true&&session?.routeActivated&&state.active.ORIGIN===session.active?.ORIGIN&&state.active.DEST===session.active?.DEST&&!route?.modified?.(state)){
+  if(state.fmcOnGroundVerified!==false&&session?.routeActivated&&state.active.ORIGIN===session.active?.ORIGIN&&state.active.DEST===session.active?.DEST&&!route?.modified?.(state)){
    parent.B737TrajectoryPredictorV1?.publishPreview(next.fuel?.quality==='VALID'?next.trainingPerformance:null,session);
   }
+  document.documentElement.dataset.trajectoryStatus=next.trainingPerformance?.reason??(native?'NATIVE_VALID':'NO_PROFILE');
+  document.documentElement.dataset.trajectoryPoints=String(next.trainingPerformance?.waypoints?.length??0);
   state.fmcPageInputs=prior;
   const warningChanged=displayFuelWarnings(warnings);
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
@@ -127,7 +130,7 @@
   if(queued)return;queued=true;
   requestAnimationFrame(()=>{queued=false;parent.postMessage(snapshot(),location.origin);});
  }
- update=function(){original();send();};
+ update=function(){original();send();queueAvionics();};
  window.updateStage5View=update;
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)send()});
  window.addEventListener('message',e=>{
@@ -144,5 +147,5 @@
  const poll=setInterval(queueAvionics,1000);window.addEventListener('pagehide',()=>clearInterval(poll),{once:true});queueAvionics();
  paintFeed();send();parent.postMessage({type:'b737:fmc-cdu-power-ready',seat},location.origin);
  window.B737CduFmcTelemetryV1=Object.freeze({snapshot,getFeed:()=>feed,
-  awaitingPower:()=>pendingPowerEvidence});
+  awaitingPower:()=>pendingPowerEvidence,trajectory:()=>state.fmcPageInputs?.trainingPerformance??null});
 })();

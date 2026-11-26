@@ -471,7 +471,7 @@
    const angle=leg.headingLabel?leg.headingLabel.replace(/\s*HDG$|°[MT]$/,'°'):Number.isFinite(magnetic)?String(Math.round(magnetic)%360).padStart(3,'0')+'°':'';
    const hold=holdList(s).some(x=>x.h.ident===leg.ident&&Math.abs(x.h.lat-leg.lat)<.00001&&Math.abs(x.h.lon-leg.lon)<.00001);
    const original=constraint(s,leg,index),perf=s.fmcPageInputs?.trainingPerformance;
-   const estimate=perf?.quality==='TRAINING_ESTIMATE'&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident&&(!Number.isFinite(x.lat)||!validPosition(leg)||legDistance(x,leg)<.05)):[];
+   const estimate=(perf?.quality==='TRAINING_ESTIMATE'||perf?.advisory===true)&&!modified(s)?perf.waypoints?.filter(x=>x.ident===leg.ident&&(!Number.isFinite(x.lat)||!validPosition(leg)||leg.conditional||legDistance(x,leg)<.05)):[];
    const q=estimate?.length===1&&all.filter(x=>x.ident===leg.ident).length===1?estimate[0]:null;
    const [sp,al]=original.split('/'),ta=perf?.transitionAltitudeFt??18000;
    const predAlt=q&&Number.isFinite(q.altitudeFt)?q.altitudeFt>=ta?'FL'+String(Math.round(q.altitudeFt/100)).padStart(3,'0'):String(Math.round(q.altitudeFt/10)*10):null;
@@ -657,65 +657,99 @@
  }
  let groundForecastCache=null;
  function trainingFuelPrediction(s,inputs={},env={}){
-  const fuel=inputs.fuel,act=s.active||{};
-  if(!s.routeActivated||modified(s)||fuel?.quality!=='VALID'||!Number.isFinite(fuel.totalKg)||fuel.totalKg<0)return null;
-  const perf=env.perf||{},crz=perf.crz,gw=perf.gw;
-  if(!Number.isFinite(crz)||crz<1000||!Number.isFinite(gw)||gw<=0||!/^\d{1,3}$/.test(String(act.CI??'')))return null;
-  const all=visibleLegs(s);
-  if(!all.length)return null;
-  const bank=sourceSnapshot(s)?.active?.geometries||{};
-  const start=bank['RUNWAY_DEP@'+act.ORIGIN]?.fixes?.[0]||env.origin;
-  const end=bank['RUNWAY_ARR@'+act.DEST]?.fixes?.[0]||env.destination;
-  if(!validPosition(start)||!validPosition(end))return null;
+  const act=s.active||{},fuel=inputs.fuel,perf=env.perf||{};
   const host=root?.parent||root,api=host?.B737TrajectoryPredictorV1,guidance=host?.B737FmcTrainingGuidanceV1;
-  if(!api)return null;
-  const session=host.B737UnifiedFmc?.snapshot?.(),source=host.B737CduSgRouteV1?.snapshot?.();
-  if(env.onGround===true&&session?.routeActivated&&session.active?.ORIGIN===act.ORIGIN&&session.active?.DEST===act.DEST&&!all.some(p=>p.gap)){
-   const dep=host.B737FlightScenarioCoreV1?.AIRPORTS?.[act.ORIGIN],altitudeFt=[start.elevationFt,dep?.elevationFt,dep?.elevation,dep?.altitudeFt,env.altitudeFt,0].find(Number.isFinite);
-   const variationAt=p=>{const w=host.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:null;};
-   const key=JSON.stringify([api.sessionKey?.(session),source?.activeRevision??source?.active,Math.round(fuel.totalKg/10),Math.floor(Date.now()/1000)]);if(groundForecastCache?.key===key)return groundForecastCache.value;
-   const plan=guidance?.compile(session,source);if(plan){const forecast=guidance.routeForecast(plan,0,{...start,altitudeFt,airborne:false,trueHeadingDeg:0,gsKt:0,iasKt:0},{fuelKg:fuel.totalKg,utcMs:Math.floor(Date.now()/1000)*1000,variation:variationAt(start),variationAt,engines:2});if(forecast?.quality==='TRAINING_ESTIMATE'||forecast?.quality==='UNABLE'){groundForecastCache={key,value:forecast};return forecast;}}
+  const fail=(reason,extra={})=>({source:'UNIFIED_TRAJECTORY_V2',quality:'UNAVAILABLE',ready:false,complete:false,origin:act.ORIGIN,dest:act.DEST,routeRevision:s.routeRevision??0,reason,waypoints:[],profile:[],destination:null,...extra});
+  if(!s.routeActivated)return fail('ROUTE_NOT_EXECUTED');
+  if(modified(s))return fail('ROUTE_MOD_PENDING');
+  if(!api)return fail('TRAJECTORY_ENGINE_NOT_LOADED');
+  if(fuel?.quality!=='VALID'||!Number.isFinite(fuel.totalKg)||fuel.totalKg<0)return fail('FUEL_QUANTITY_UNAVAILABLE');
+  if(!Number.isFinite(perf.crz)||perf.crz<1000||!Number.isFinite(perf.gw)||perf.gw<=0||!/^\d{1,3}$/.test(String(act.CI??'')))return fail('PERF_INIT_REQUIRED',{missing:[...(!Number.isFinite(perf.crz)?['CRZ_ALT']:[]),...(!Number.isFinite(perf.gw)?['GW/ZFW']:[]),...(!/^\d{1,3}$/.test(String(act.CI??''))?['CI']:[])]});
+  const all=visibleLegs(s),source=host.B737CduSgRouteV1?.snapshot?.()??sourceSnapshot(s),bank=source?.active?.geometries||{};
+  const airport=icao=>host.B737FlightScenarioCoreV1?.AIRPORTS?.[icao];
+  const choose=(...ps)=>ps.find(validPosition);
+  const start=choose(bank['RUNWAY_DEP@'+act.ORIGIN]?.fixes?.[0],env.origin,s.activeNavFixEvidence?.ORIGIN,airport(act.ORIGIN));
+  const end=choose(bank['RUNWAY_ARR@'+act.DEST]?.fixes?.[0],env.destination,s.activeNavFixEvidence?.DEST,airport(act.DEST));
+  const air=env.onGround===false,planning=!air;
+  if(!validPosition(start)&&planning)return fail('ORIGIN_COORDINATES_REQUIRED');
+  const dep=airport(act.ORIGIN),arr=airport(act.DEST);
+  const elevation=[env.destinationAltitudeFt,end?.elevationFt,arr?.elevationFt,arr?.elevation,arr?.altitudeFt].find(Number.isFinite);
+  const altitude=air?env.altitudeFt:[start?.elevationFt,dep?.elevationFt,dep?.elevation,dep?.altitudeFt,env.altitudeFt].find(Number.isFinite);
+  if(!Number.isFinite(altitude))return fail('AIRCRAFT_OR_ORIGIN_ALTITUDE_REQUIRED');
+  const d=guidance?.perfInputs?.(act,fuel.totalKg),wind=perf.forecast||{};
+  const stamp=Number.isFinite(env.nowMs)?env.nowMs:Math.floor(Date.now()/1000)*1000;
+  // No dependence on an airborne/ground switch for route planning. Unknown
+  // ground status permits a departure-based planning calculation, never FCC coupling.
+  const key=JSON.stringify([s.routeRevision??0,act,source?.activeRevision??source?.active,Math.round(fuel.totalKg/10),Math.floor(stamp/1000),start,end]);
+  if(planning&&groundForecastCache?.key===key)return groundForecastCache.value;
+  const finish=value=>{if(planning)groundForecastCache={key,value};return value;};
+  let compiled=null;
+  const firstGap=all.findIndex(p=>p.gap),prefix=firstGap>=0?all.slice(0,firstGap):all;
+  if(planning&&guidance&&source?.connected===true){
+   const session={...s,active:act,routeActivated:true};
+   const plan=guidance.compile(session,source);
+   if(plan){
+    if(validPosition(end))plan.destinationPoint=end;
+    // The LEGS discontinuity must also be respected by the compiled plan.
+    if(firstGap>=0){
+     const boundary=prefix.at(-1),match=boundary?plan.legs.map((l,i)=>l.ident===boundary.ident?i:-1).filter(i=>i>=0):[];
+     if(match.length===1)plan.legs=[...plan.legs.slice(0,match[0]+1),{type:'GAP',reason:'ROUTE_DISCONTINUITY'}];
+     else plan.legs=[];
+    }
+    const variationAt=p=>{const w=host.B737WMM2025V1?.evaluate?.({lat:p.lat,lon:p.lon,altitudeFt:0});return w?.valid===true?w.declinationDeg:host.B737CduSgBridgeV1?.magneticVariation?.(p)??null;};
+    if(plan.legs.length)compiled=guidance.routeForecast(plan,0,{...start,altitudeFt:altitude,airborne:false,trueHeadingDeg:0,gsKt:0,iasKt:0},{fuelKg:fuel.totalKg,utcMs:stamp,variation:variationAt(start),variationAt,engines:2});
+    if(compiled?.quality==='TRAINING_ESTIMATE'&&compiled.complete)return finish(compiled);
+   }
   }
-  if(all.some(p=>p.gap||!validPosition(p)))return null;
-  let points=[{...start,ident:act.ORIGIN},...all.map((l,i)=>({...l,index:i,constraint:constraint(s,l,i)})),{...end,ident:act.DEST,index:all.length}];
+  // Verified CDU route fallback, including preflight without a committed SG
+  // cache. Never create a direct leg across a gap or an unresolved conditional.
+  const usable=[];let stopReason=null;
+  for(const p of all){
+   if(p.gap||!validPosition(p)||p.conditional){stopReason=p.gap?'ROUTE_DISCONTINUITY':p.conditional?'CONDITIONAL_GEOMETRY_REQUIRED':'UNVERIFIED_FIX';break;}
+   usable.push(p);
+  }
+  let complete=!stopReason&&validPosition(end);
+  if(!complete&&!stopReason)stopReason='DESTINATION_COORDINATES_REQUIRED';
+  if(!usable.length&&!(complete&&all.length===0&&validPosition(start)&&validPosition(end)))return finish(compiled??fail(stopReason??'ROUTE_GEOMETRY_REQUIRED'));
+  if(compiled?.waypoints?.length>usable.length&&!complete)return finish(compiled);
+  let points=[{...start,ident:act.ORIGIN},...usable.map((l,i)=>({...l,index:i,constraint:constraint(s,l,i)}))];
+  if(complete){
+   const last=points.at(-1);
+   if(legDistance(last,end)>.01||points.length===1)points.push({...end,ident:act.DEST,index:all.length});
+  }
   let index=1,pos=points[0];
-  const air=env.onGround===false;
   if(air){
-   pos=env.position;if(!validPosition(pos))return null;
+   pos=env.position;if(!validPosition(pos))return fail('AIRCRAFT_POSITION_REQUIRED');
    const ident=inputs.guidance?.activeLeg?.ident;
    const matches=ident?points.map((p,i)=>p.ident===ident?i:-1).filter(i=>i>0):[];
    if(matches.length===1)index=matches[0];
    else{
-    // Match position to the closest actual route segment. Do not select
-    // an arbitrary waypoint when far away from the planned path.
     let best=Infinity,second=Infinity,chosen=0;
     for(let i=1;i<points.length;i++){
-     const a=points[i-1],b=points[i],cos=Math.cos(pos.lat*Math.PI/180);
-     const dlon=(a,b)=>((a-b+540)%360)-180;
-     const ax=dlon(a.lon,pos.lon)*cos*60,ay=(a.lat-pos.lat)*60,bx=dlon(b.lon,pos.lon)*cos*60,by=(b.lat-pos.lat)*60;
-     const dx=bx-ax,dy=by-ay,d=dx*dx+dy*dy;if(d<.00001)continue;
-     const t=Math.max(0,Math.min(1,-(ax*dx+ay*dy)/d)),cross=Math.hypot(ax+t*dx,ay+t*dy);
+     const a=points[i-1],b=points[i];if(!validPosition(a)||!validPosition(b))continue;
+     const cos=Math.cos(pos.lat*Math.PI/180),dlon=(a,b)=>((a-b+540)%360)-180;
+     const ax=dlon(a.lon,pos.lon)*cos*60,ay=(a.lat-pos.lat)*60,bx=dlon(b.lon,pos.lon)*cos*60,by=(b.lat-pos.lat)*60,dx=bx-ax,dy=by-ay,d=dx*dx+dy*dy;
+     if(d<.00001)continue;const t=Math.max(0,Math.min(1,-(ax*dx+ay*dy)/d)),cross=Math.hypot(ax+t*dx,ay+t*dy);
      if(cross<best){second=best;best=cross;chosen=i;}else if(cross<second)second=cross;
     }
-    if(!chosen||best>15||second-best<.05&&legDistance(pos,points[chosen])>1)return null;
+    if(!chosen||best>15||second-best<.05&&legDistance(pos,points[chosen])>1)return fail('ACTIVE_ROUTE_POSITION_UNRESOLVED');
     index=chosen;
    }
-  }else if(env.onGround!==true)return null;
-  const legs=[];let previous=pos,total=0;
+  }
+  const legs=[];let previous=pos;
   for(let i=index;i<points.length;i++){
    const p=points[i],distance=legDistance(previous,p),course=legCourse(previous,p);
-   if(!Number.isFinite(distance)||!Number.isFinite(course))return null;
-   total+=distance;legs.push({ident:p.ident,index:p.index,segmentNm:distance,courseTrueDeg:course,constraint:p.constraint,lat:p.lat,lon:p.lon});previous=p;
+   if(!Number.isFinite(distance)||!Number.isFinite(course))return fail('INVALID_LEG_GEOMETRY');
+   legs.push({ident:p.ident,index:p.index,segmentNm:distance,courseTrueDeg:course,constraint:p.constraint,lat:p.lat,lon:p.lon});previous=p;
   }
-  const airport=host.B737FlightScenarioCoreV1?.AIRPORTS?.[act.DEST];
-  const dep=host.B737FlightScenarioCoreV1?.AIRPORTS?.[act.ORIGIN];
-  const elevation=[env.destinationAltitudeFt,end.elevationFt,airport?.elevationFt,airport?.elevation,airport?.altitudeFt].find(Number.isFinite);
-  const altitude=(air?[env.altitudeFt]:[start.elevationFt,dep?.elevationFt,dep?.elevation,dep?.altitudeFt,env.altitudeFt,0]).find(Number.isFinite);
-  const d=guidance?.perfInputs?.(act,fuel.totalKg);
-  const wind=perf.forecast||{};
-  const result=api.solve({legs,startPoint:pos,routeRevision:s.routeRevision??null,computeTrip:env.onGround===true,startFt:altitude,endFt:elevation??0,crz,gw:gw*1000,fuelKg:fuel.totalKg,ci:Number(act.CI),isa:wind.isaDeviationC??0,windFromDeg:wind.windFromDeg??0,windKt:wind.windKt??0,transitionAltitudeFt:perf.trans??18000,nowMs:Number.isFinite(env.nowMs)?env.nowMs:Date.now(),origin:act.ORIGIN,dest:act.DEST,onGround:env.onGround===true,complete:true,reservesKg:Number.isFinite(perf.res)?perf.res*1000:null,assumedDestinationAltitude:elevation===undefined,
+  if(!legs.length)return finish(compiled??fail(stopReason??'NO_REMAINING_LEGS'));
+  const terminal=legs.at(-1),rwy=/^RW(?:Y)?\d{2}[LRC]?$/i.test(terminal?.ident||'')?api.limits(terminal.constraint):null;
+  const endFt=complete&&rwy&&rwy.lo===rwy.hi&&Math.abs(rwy.lo-(elevation??rwy.lo))<=150?rwy.lo:elevation??0;
+  const result=api.solve({legs,startPoint:pos,routeRevision:s.routeRevision??0,computeTrip:planning,startFt:altitude,endFt,crz:perf.crz,gw:perf.gw*1000,fuelKg:fuel.totalKg,ci:Number(act.CI),isa:wind.isaDeviationC??0,windFromDeg:wind.windFromDeg??0,windKt:wind.windKt??0,transitionAltitudeFt:perf.trans??18000,nowMs:stamp,origin:act.ORIGIN,dest:act.DEST,onGround:planning,complete,reservesKg:Number.isFinite(perf.res)?perf.res*1000:null,assumedDestinationAltitude:elevation===undefined,
    speedAt:d?.ready?(phase,ft,course,weight,restriction)=>guidance.phaseSpeed(act,{...d,gw:weight},phase,ft,course,{speed:restriction?.speed}):undefined});
-  return result?{...result,from:{ident:points[index-1]?.ident}}:null;
+  const value=result?{...result,routeStopReason:stopReason,from:{ident:points[index-1]?.ident},planningOnly:planning}:fail('TRAJECTORY_INPUT_REJECTED');
+  if(compiled?.quality==='TRAINING_ESTIMATE'&&value.quality!=='TRAINING_ESTIMATE')return finish(compiled);
+  return finish(value);
  }
 
  function progress(s){
