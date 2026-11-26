@@ -14,20 +14,21 @@
   const ground=network?.getSignal('aircraft.airground');
   state.fmcOnGroundVerified=ground?.quality==='VALID'&&typeof ground.value?.onGround==='boolean'?
    ground.value.onGround:null;
+  const refCleared=core.onAirGround?.(state,state.fmcOnGroundVerified)===true;
   const data=network?.getSignal('fmc.computed');
   const next=data?.quality==='VALID'?{
    predictions:data.value.predictions,trainingPerformance:data.value.trainingPerformance,rta:data.value.rta,motion:data.value.motion,fuel:data.value.fuel,airData:data.value.airData,guidance:data.value.guidance,
    position:data.value.failed!==true&&data.value.position?.quality==='VALID'?data.value.position:null
   }:null;
   const signature=JSON.stringify([state.fmcOnGroundVerified,next]);
-  if(signature===lastInputs)return;
+  if(signature===lastInputs){if(refCleared)update();return;}
   lastInputs=signature;state.fmcPageInputs=next;
   // Settle the weight once and publish via the existing CDU shared-state bridge.
   const weightSettled=core.settlePerfWeight?.(state)===true;
   const warning=next?.trainingPerformance?.reserveWarning;
   if(warning&&!state.message&&warning!==state.lastTrainingFuelWarning){state.message=warning;state.lastTrainingFuelWarning=warning;}if(!warning)state.lastTrainingFuelWarning=null;
   if(next?.guidance?.holdExited&&state.page==='HOLD'){core.choose(state,pages,'LEGS');state.subpage=1;}
-  if(weightSettled||performancePages.has(state.page))update();
+  if(refCleared||weightSettled||performancePages.has(state.page))update();
  }
  function queueAvionics(){
   if(!avionicsFrame)avionicsFrame=requestAnimationFrame(receiveAvionics);

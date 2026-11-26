@@ -73,20 +73,22 @@
    requiresRouteClear:true,approvedOnGround:true};
   return {state:next,changed:true,clearRoute:true};
  }
- const ROUTE_FIELDS=Object.freeze(['ORIGIN','DEST','CO_ROUTE','FLIGHT','RUNWAY','WPT1','WPT2','OFFSET']);
+ const ROUTE_FIELDS=/^(?:ORIGIN|DEST|CO_ROUTE|FLIGHT|RUNWAY|OFFSET|SID|STAR|APP|APP_RUNWAY|APP_CRS|WPT\d+(?:_CONSTRAINT)?|(?:VIA|TO)\d+|LEG_CONSTRAINT_[A-Z0-9_]+|HOLD_(?:[1-5]|PUB_[A-F0-9]{8}))$/;
  const ROUTE_STATE=Object.freeze(['navdbActive','navdbPending','navdbStage',
   'stage5Pending','stage5Committed','stage5AwaitingExec','stage6PendingPlan',
-  'stage6Selections','stage6AwaitingExec','stage6BasePlanId','depArrSelection']);
+  'stage6Selections','stage6AwaitingExec','stage6BasePlanId','depArrSelection','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','fixInfo','lastHoldExit','holdAt','holdPage','cduSgView','stage6View','planReviewCenter']);
  function switchFmc(fmc,cycle,environment){
   if(!fmc||!fmc.fmcNavDataBanks)throw Error('FMC_NAVDATA_BANKS_REQUIRED');
   const decision=activate(fmc.fmcNavDataBanks,cycle,environment);
   const next=copy(fmc);
   next.fmcNavDataBanks=decision.state;
   if(decision.changed){
-   for(const key of ROUTE_FIELDS)if(Object.hasOwn(next.active||{},key))next.active[key]='';
-   for(const key of ROUTE_FIELDS)if(Object.hasOwn(next.pending||{},key))delete next.pending[key];
+   for(const key of Object.keys(next.active||{}))if(ROUTE_FIELDS.test(key))delete next.active[key];
+   for(const key of Object.keys(next.pending||{}))if(ROUTE_FIELDS.test(key))delete next.pending[key];
    next.stagedRoute={};
    for(const key of ROUTE_STATE)delete next[key];
+   next.routeActivated=false;next.routeActivationArmed=false;next.routeRevision=(next.routeRevision||0)+1;
+   next.originResetRevision=(next.originResetRevision||0)+1;next.offsetGuidance=false;
    next.message='';next.scratch='';
   }
   return {state:next,changed:decision.changed,clearedRoute:decision.clearRoute};

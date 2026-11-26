@@ -301,7 +301,7 @@ function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)
  }
  if(item.action?.type==='erase'){clearPending(st);st.scratch='';st.message='';return;}
  addMessage(st,'KEY INACTIVE');}
-function press(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|FO)_/,'');st.lastKey=k;st.events.push({key:k,page:st.page});if(st.events.length>300)st.events.shift();
+function pressNative(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|FO)_/,'');st.lastKey=k;st.events.push({key:k,page:st.page});if(st.events.length>300)st.events.shift();
  // INIT REF is context-sensitive; INDEX remains an independent LSK destination.
  if(k==='INIT_REF'){
   // An actual IRS reference (including scenario alignment or ISDU entry) initializes FMC position.
@@ -337,6 +337,31 @@ function press(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|FO)_/,
  if(routes[k]){choose(st,pages,routes[k]);return st;}
  if(k==='NEXT_PAGE'||k==='PREV_PAGE'){ const positions=['POS_INIT','POS_REF','POS_SHIFT']; if(positions.includes(st.page)){const offset=k==='NEXT_PAGE'?1:-1;choose(st,pages,positions[(positions.indexOf(st.page)+offset+positions.length)%positions.length]);return st;} const pairs={PERF_INIT:['PERF_INIT','PERF_LIMITS'],PERF_LIMITS:['PERF_INIT','PERF_LIMITS'],RTE:['RTE','FLIGHT_PLAN'],FLIGHT_PLAN:['RTE','FLIGHT_PLAN'],PROG:['PROG','PROG2'],PROG2:['PROG','PROG2']}; if(pairs[st.page]){ const page=pairs[st.page];choose(st,pages,st.page===page[0]?page[1]:page[0]); }else addMessage(st,'END OF PAGES'); return st; }
  addMessage(st,'KEY INACTIVE');return st;}
+// FCOM 11.40.56 / 11.60.10: changed performance inputs invalidate entered V speeds.
+const V_SPEED_INPUTS=[...PERF_KEYS,'FLAPS','CG','OAT','SEL_TEMP','TO_DERATE','CLB_DERATE','RUNWAY','TO_SHIFT','INTERSECT'];
+function takeoffInputSignature(s){return JSON.stringify(V_SPEED_INPUTS.map(k=>readValue(s,k,k==='RUNWAY'?'RTE':'PERF_INIT')));}
+function invalidateTakeoffSpeeds(s){
+ let had=false;
+ for(const bank of [s.active,s.pending,s.stagedRoute])for(const key of ['V1','VR','V2'])if(Object.hasOwn(bank||{},key)){if(bank[key]!==''&&bank[key]!=null)had=true;delete bank[key];}
+ if(had)addMessage(s,'TAKEOFF SPEEDS DELETED');
+ return had;
+}
+function press(st,pages,key,options={}){
+ const before=takeoffInputSignature(st),revision=st.originResetRevision||0;
+ const result=pressNative(st,pages,key,options);
+ if(revision===(st.originResetRevision||0)&&before!==takeoffInputSignature(st))invalidateTakeoffSpeeds(st);
+ return result;
+}
+// FCOM 11.40.12: a verified liftoff clears REF AIRPORT and GATE, not IRS.
+function onAirGround(st,onGround){
+ if(typeof onGround!=='boolean')return false;
+ const previous=st.lastVerifiedAirGround;st.lastVerifiedAirGround=onGround;
+ if(onGround!==false||previous===false)return false;
+ let changed=false;
+ for(const bank of [st.active,st.pending])for(const k of ['REF_AIRPORT','GATE'])if(Object.hasOwn(bank,k)){delete bank[k];changed=true;}
+ if(st.refAirportArp){st.refAirportArp=null;changed=true;}
+ return changed;
+}
 function pairLine(left='',right=''){ let l=String(left).slice(0,11); let r=String(right).slice(0,11); return l.padEnd(12,' ')+r.padStart(12,' '); }
 function shown(st,val,pageName=''){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>readValue(st,key,pageName)||'----');}
 function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('');const lines=Array(14).fill('');if(['PERF_INIT','PERF_LIMITS'].includes(st.page)){const v=st.page==='PERF_INIT'?perfRows(st):perfLimitsRows(st);lines[0]=v.title.padEnd(20)+' '+v.number+'/'+v.count;v.rows.forEach((r,i)=>{lines[1+i*2]=r.separator?'------------------------':r.centerLabel?r.centerLabel.padStart(Math.ceil((24+r.centerLabel.length)/2)):pairLine(r.labelL,r.labelR);lines[2+i*2]=r.centerValue||pairLine(r.valueL,r.valueR);});lines[13]=st.message||st.scratch||'';return lines;}const tag=(pendingCount(st)>0)?'MOD ':'ACT ';
@@ -354,5 +379,5 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  return lines.map(l=>String(l).slice(0,24)); }
 function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:st.routeActivationArmed===true||executableKeys(st).length>0};}
 function inspect(st,pages,key){if(!/^([LR][1-6])$/.test(key))return null;const c=pages[st.page]?.rows[Number(key[1])-1]?.[key[0]==='L'?0:1];return c?{page:st.page,lsk:key,...c,reference:pages[st.page].source_ref}:null;}
-return {clearOriginLocal,perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
+return {clearOriginLocal,onAirGround,invalidateTakeoffSpeeds,perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
 });
