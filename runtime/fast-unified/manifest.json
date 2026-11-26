@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "c3c56c24aa879bd9f41f3b3fb22930c213744c77ef0c751781657cb8a32699b1"
+      "sha256": "9f2102e7e52ca621af71bd2c3fd3655b2977325e10991ff4ddc47b3a2c76f6b3"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -912,7 +912,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "a4a1643c33485cb583b77f5484b4a4762e02cef1a298c6c54ee6ea3f58c5fc37"
+      "sha256": "ebd55a3d214d1d7c7017cd714d697757916ea94e0837e0ee088f4ad7f435d8be"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -968,7 +968,7 @@
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "e6172e32d0b354472b08e59e751ac3c23dfb733c328c9e69c9ab5ce0459f059b"
+      "sha256": "0e393d24edd51313e190098e45003dfe582b9ee0f9d69392a163f9224bdd9ea8"
     },
     {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",

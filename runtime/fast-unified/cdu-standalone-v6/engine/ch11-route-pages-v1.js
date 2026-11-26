@@ -68,9 +68,10 @@
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
   native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
+  const boundary=star&&arrivalBoundary(s,native);
+  if(boundary)rows.push({gap:true,via:'---',to:'□□□□□',nativeIndex:boundary.arrivalInsertIndex});
   if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
-  // The next editable slot follows the displayed route, not a discontinuity.
-  if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
+  if(!boundary&&!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
   return rows;
  }
@@ -101,6 +102,7 @@
  }
  function routeRow(list,n,head){
   const entry=list[n-1];
+  if(entry?.gap)return pair('ROUTE DISCONTINUITY','---','','□□□□□');
   return pair(head?'VIA':'',entry?.via||'',head?'TO':'',
    entry?.to||(entry?.via?'□□□□□':''));
  }
@@ -272,6 +274,31 @@
    }
    return expanded;
   }
+  // An arrival boundary is connected only at the same verified fixed waypoint.
+  // Do not invent a connecting leg, or treat an input placeholder as a gap.
+  function arrivalBoundary(s,rows=segments(s)){
+   if(sourcePlan(s)||currentNav(s)||rows.length>=MAX_ROUTE_ROWS||rows.some(x=>!x.to))return null;
+   const source=sourceSnapshot(s);if(!source)return null;
+   const bank=source.modified||source.active;
+   const star=sourceProcedureLegs(s,source,'STAR',entered(s,'DEST'));
+   const next=star[0];
+   if(!next?.ident||next.gap||next.conditional||!validPosition(next))return null;
+   let prev;
+   if(rows.length){
+    const last=rows.at(-1),key='RTE@'+rows.length,g=bank?.geometries?.[key];
+    const legs=pilotGeometryLegs(g,key);
+    const end=legs?.at(-1);
+    const evidence=s.navFixEvidence?.['TO'+rows.length]||s.activeNavFixEvidence?.['TO'+rows.length];
+    prev=end?.ident===last.to&&!end.gap&&!end.conditional?end:
+     evidence?.ident===last.to?evidence:{ident:last.to};
+   }else{
+    const sid=sourceProcedureLegs(s,source,'SID',entered(s,'ORIGIN'));
+    prev=sid.at(-1);
+   }
+   if(!prev?.ident||prev.gap||prev.conditional)return null;
+   if(prev.ident===next.ident&&(!validPosition(prev)||legDistance(prev,next)<0.05))return null;
+   return {gap:true,arrivalBoundary:true,arrivalInsertIndex:rows.length+1,from:prev,to:next};
+  }
   function visibleLegs(s){
    let native=expandedRouteLegs(s);const source=sourceSnapshot(s);
    if(!source)return native;
@@ -298,7 +325,8 @@
    // Preserve enroute rows, with consecutive source boundary duplicates
    // collapsed. A segment's every sourced intermediate fix remains visible.
    const all=[];
-   for(const item of [...sid,...native,...star,...app]){
+   const boundary=arrivalBoundary(s);
+   for(const item of [...sid,...native,...(boundary?[boundary]:[]),...star,...app]){
     if(!item?.ident&&!item?.gap)continue;
     if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap){
      // The pending source row can carry geometry the native row lacks.

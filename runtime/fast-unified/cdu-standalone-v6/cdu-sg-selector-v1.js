@@ -464,8 +464,37 @@
    const api=globalThis.CDU_CH11_ROUTE_PAGES,route=api?.visibleLegs?.(state)||[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
    const gap=route[index],next=route[index+1],prev=route[index-1];
    if(gap?.gap){
-    try{if(!next||!prev||state.scratch.trim().toUpperCase()!==next.ident||gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey)throw Error('INVALID ENTRY');
-     shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident);state.scratch='';state.message='';update();
+    try{
+     if(!next||!prev||state.scratch.trim().toUpperCase()!==next.ident)throw Error('INVALID ENTRY');
+     if(gap.arrivalBoundary){
+      const n=gap.arrivalInsertIndex,from=gap.from,to=gap.to;
+      const valid=p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180&&(p.lat!==0||p.lon!==0);
+      if(!valid(from)||!valid(to)||from.ident!==prev.ident||to.ident!==next.ident||from.ident===to.ident)throw Error('INVALID LEG');
+      // Use the ordinary RTE input transaction so ACT/MOD, dual-CDU
+      // synchronization and EXEC share the same DIRECT segment.
+      const savedPage=state.page,savedSubpage=state.subpage;
+      let found=false;
+      try{
+       state.page='FLIGHT_PLAN';state.subpage=2;
+       const count=api.view(state).count;
+       for(let page=2;page<=count&&!found;page++){
+        state.subpage=page;
+        for(let line=1;line<=5;line++){
+         const key='LSK_R'+line,cell=api.routeCell(state,key),row=api.view(state).rows[line-1];
+         if(cell?.field==='TO'+n&&row?.labelL==='ROUTE DISCONTINUITY'){
+          core.press(state,pages,'CDU_CAPT_'+key);found=true;break;
+         }
+        }
+       }
+      }finally{state.page=savedPage;state.subpage=savedSubpage;}
+      if(!found||state.scratch||core.readValue(state,'TO'+n,'FLIGHT_PLAN')!==to.ident)throw Error('INVALID ENTRY');
+      state.navFixEvidence={...(state.navFixEvidence||{}),['TO'+n]:{ident:to.ident,lat:to.lat,lon:to.lon}};
+      shared.stageEnroute(n,[from,to],'DIRECT');
+     }else{
+      if(gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey)throw Error('INVALID ENTRY');
+      shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident);
+     }
+     state.scratch='';state.message='';update();
     }catch(e){issue(e.message);}return true;
    }
   }
