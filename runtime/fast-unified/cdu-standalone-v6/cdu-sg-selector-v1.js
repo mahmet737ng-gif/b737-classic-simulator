@@ -57,6 +57,9 @@
   const chosen=!v.departure&&(v.inlineApp||snapshot.selections?.['APP@'+v.airport]);
   const app=chosen&&v.right.find(x=>x.kind==='APP'&&x.ident===chosen.ident);
   const runway=chosen?.runway||snapshot.runways?.[slot],fits=item=>!runway||!item.item?.runways?.length||item.item.runways.includes(runway);
+  // Re-entering ARRIVALS starts from the complete airport catalogue.
+  // Existing selections still supply markers, not visibility filters.
+  if(!v.departure&&v.fullCatalog===true)return {slot,runway,left:v.left,right:v.right};
   const right=app?[app,...app.item.transitions.map(ident=>({kind:'APP_TRANS',ident,app}))]:
     v.right.filter(x=>x.kind==='RUNWAY'?!runway||x.ident===runway:fits(x));
   return {slot,runway,left:v.left.filter(fits),right};
@@ -93,7 +96,7 @@
   const page=mode==='DEP'?'DEPARTURES':'ARRIVALS',referenceOnly=source==='OTHER';
   if(referenceOnly)state.scratch='';
   const view={owner:'CDU_SG_SOURCE',mode:'LOADING',airport,departure:mode==='DEP',
-   source,referenceOnly,page:1,left:[],right:[],candidate:null,
+   source,referenceOnly,page:1,fullCatalog:mode==='ARR',left:[],right:[],candidate:null,
    options:[],runway:null,transition:null};
   ++serial;const ticket=serial;
   delete state.stage6View;
@@ -167,7 +170,7 @@
   if(k==='LSK_L6'){
    ++serial;state.message='';
    if(!v.referenceOnly&&shared.snapshot().modified&&mayExecute()){
-    shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;v.inlineApp=null;
+    shared.erase();v.mode='CATALOG';v.page=1;v.candidate=null;v.inlineApp=null;v.fullCatalog=!v.departure;
    }else{delete state.cduSgView;core.choose(state,pages,'DEP_ARR');}
    update();return true;
   }
@@ -187,7 +190,16 @@
    if(entry.kind==='APP_TRANS'){
     v.candidate=entry.app;v.runway=catalog.runway;v.transition=entry.ident;void confirm(v);return true;
    }
+   if(entry.kind==='APP'){
+    const selected=shared.snapshot().selections?.['APP@'+v.airport];
+    // Reopening the selected approach exposes transitions without clearing
+    // its already selected transition or modifying the route.
+    if(selected?.ident===entry.ident&&v.fullCatalog===true){
+     v.fullCatalog=false;v.page=1;state.message='';update();return true;
+    }
+   }
    if(entry.kind==='APP'&&(entry.item.runways.length===1||catalog.runway&&entry.item.runways.includes(catalog.runway))){
+    v.fullCatalog=false;
     v.inlineApp={ident:entry.ident,runway:entry.item.runways.length===1?entry.item.runways[0]:catalog.runway};v.candidate=entry;v.runway=v.inlineApp.runway;v.transition=null;
     try{shared.chooseRunway({airport:v.airport,runway:v.runway,airportRecord:v.airportRecord,role:'ARR'});}catch(e){issue(e.message);return true;}
     void confirm(v);return true;
@@ -195,7 +207,7 @@
    if(entry.kind==='RUNWAY'){
     try{
      shared.chooseRunway({airport:v.airport,runway:entry.ident,airportRecord:v.airportRecord,role:v.departure?'DEP':'ARR'});
-     v.page=1;state.message='';update();
+     v.fullCatalog=false;v.page=1;state.message='';update();
     }catch(e){issue(e.message);}
     return true;
    }
@@ -213,7 +225,7 @@
   if(v.referenceOnly){issue('NOT ON ROUTE');return true;}
   if(v.mode==='RUNWAY'){
    v.runway=value;
-   if(v.candidate?.kind==='APP'){v.inlineApp={ident:v.candidate.ident,runway:value};v.mode='CATALOG';void confirm(v);}
+   if(v.candidate?.kind==='APP'){v.fullCatalog=false;v.inlineApp={ident:v.candidate.ident,runway:value};v.mode='CATALOG';void confirm(v);}
    else if(v.transitions.length){v.mode='TRANSITION';v.options=v.transitions;v.page=1;update();}
    else void confirm(v);
   }else if(v.mode==='TRANSITION'){v.transition=value;void confirm(v);}
@@ -237,7 +249,7 @@
    state.message='';update();
   }catch(err){
    if(ticket===serial&&state.cduSgView===v){
-    v.mode='CATALOG';v.page=1;issue(err.message);
+    v.mode='CATALOG';v.page=1;v.inlineApp=null;v.fullCatalog=!v.departure;issue(err.message);
    }
   }
  }
