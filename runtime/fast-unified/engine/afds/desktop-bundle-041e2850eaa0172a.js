@@ -1052,6 +1052,7 @@ try{
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();lastPublish=0;
    syncInitialEngineContext();
+   win.B737ISNCockpitV1?.initializeScenarioFuel?.({source:'FLIGHT_SCENARIO_ENGINE'});
    if(preset!=='MANUAL'){
     by('flightAlt').value=Math.round(state.altitudeFt);
     const mag=magneticHeading(state.trueHeadingDeg,state);
@@ -1323,6 +1324,7 @@ try{
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=config.holdStart===true||state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
+   win.B737ISNCockpitV1?.initializeScenarioFuel?.({source:'FLIGHT_SCENARIO_ENGINE'});
    publish();lastPublish=performance.now();updateUI();
    if(state.preset==='FINAL_10')win.B737Final10ApproachPresetV1?.apply?.(state);
    if(state.preset==='COLD_DARK')win.B737ColdDarkGeneralPresetV1?.apply();

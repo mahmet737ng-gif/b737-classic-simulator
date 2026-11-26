@@ -14,7 +14,7 @@
  const finite=x=>typeof x==='number'&&Number.isFinite(x);
  const pumpNames=Object.freeze({main1:['fuel.main1FwdPump','fuel.main1AftPump'],
   main2:['fuel.main2FwdPump','fuel.main2AftPump'],center:['fuel.centerLeftPump','fuel.centerRightPump']});
- const approx=Object.freeze({apuFuelKgHr:110,initialFuelKg:{main1:3500,center:0,main2:3500},
+ const approx=Object.freeze({apuFuelKgHr:110,initialFuelKg:Object.freeze({main1:3000,center:0,main2:3000}),
   mainFuelPriority:'CENTER_BEFORE_MAIN',apuStartFuelKgHr:55,maxStepMs:1000,
    suctionPumpMotoringN2Pct:5,suctionTrainingHighAltitudeFt:10000});
  function checkedKg(x){if(!finite(x)||x<0||x>25000)throw Error('Fuel quantity must be finite kg between 0 and 25000');return x;}

@@ -74,9 +74,8 @@ function resetForOrigin(st,value){
 }
 function originEntry(st){
  if(st.page!=='RTE'||st.subpage!==1||!st.scratch||st.scratch==='DELETE')return false;
- const value=clean(st.scratch),previous=readValue(st,'ORIGIN','RTE');
+ const value=clean(st.scratch);
  if(!validate('ICAO',value)){addMessage(st,'INVALID ENTRY');return true;}
- if(value===previous){st.scratch='';st.message='';return true;}
  if(st.routeActivated===true&&st.fmcOnGroundVerified!==true){addMessage(st,'INVALID ENTRY');return true;}
  resetForOrigin(st,value);return true;
 }

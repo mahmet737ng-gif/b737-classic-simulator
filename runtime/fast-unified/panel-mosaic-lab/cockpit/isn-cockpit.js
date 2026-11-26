@@ -41,7 +41,7 @@
    requests.push(new Promise((resolve,reject)=>{
     const script=document.createElement('script');
     script.async=false;
-    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(['B737ISN1318ECUTestbenchV1','B737ISNAPUStartChainV1'].includes(global)?'V1-ENGINE-FAILURE-0001':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':global==='B737ClassicFuelSystemV1'?'ATA28-FAILURES-FUEL-0002':'ELEC-LIVE-0001');
+    script.src=new URL(path,moduleBase).href+'?cb=CB-UNIFIED-0001&v='+(['B737ISN1318ECUTestbenchV1','B737ISNAPUStartChainV1'].includes(global)?'V1-ENGINE-FAILURE-0001':global==='B737PneumaticsV6'?'AIRCON-FCOM-0001':global==='B737ISNUnifiedControlRouterV1'?'ENGINE-START-ACK-0001':global==='B737ClassicFuelSystemV1'?'ATA28-FAILURES-FUEL-0002':global==='B737ISN0912RuntimeV1'?'FUEL-DEFAULT-6000-01':'ELEC-LIVE-0001');
     script.onload=resolve;
     script.onerror=()=>reject(Error('Missing integration script '+path));
     document.head.append(script);
@@ -754,6 +754,15 @@
      return {...indications,standbyAc:chain.get().electrical?.acStandby??null};
     },
     getFuelSystem:()=>ecu.get().fuel?.system??null,
+    // Loading a new training flight initializes the single ATA28 ledger.
+    // This is not a continuous refill and does not use a CDU-local quantity.
+    initializeScenarioFuel:({source}={})=>{
+     if(source!=='FLIGHT_SCENARIO_ENGINE')throw Error('Unrecognized fuel initialization owner');
+     const fuel=ecu.core.fuel,initial=window.B737ISN0912RuntimeV1.approx.initialFuelKg;
+     for(const [tank,kg] of Object.entries(initial))fuel.setTank(tank,kg);
+     ecu.core.refreshFuelDelivery();render();
+     return ecu.get().fuel.system;
+    },
    reconcileElectricalConsumers:reason=>reconcileElectricalConsumers(reason),
    refreshElectricalAnnunciations:()=>{render();return true;},
     fuelTrainerAction:command=>{
