@@ -68,10 +68,10 @@
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
   native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
-  // Keep the next enroute input slot ahead of the arrival procedure.
+  if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
+  // The next editable slot follows the displayed route, not a discontinuity.
   if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
-  if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
   return rows;
  }
  function routeCount(s,list){
