@@ -236,7 +236,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "eff8030b6617854883343148b823333d7e67ef88d9a0f7f457655769e4fb141d"
+      "sha256": "efd43cc4f94da0a5bf46e2f6b61d1bca3bb0d5d5789b5dd9228009777fb93646"
     },
     {
       "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
@@ -908,7 +908,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "d3be8b5a59f1a1c4fae7a68e0803cff94795808431a43fc5b87af72f5bf7b027"
+      "sha256": "1c63bd1660dcbbe8e76a99a4fdca7fec827aec900a592b2dc6f1e6e7d1a14bfd"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
