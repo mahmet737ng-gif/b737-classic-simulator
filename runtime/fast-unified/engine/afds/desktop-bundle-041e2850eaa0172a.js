@@ -799,6 +799,19 @@ try{
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;
  let tickErrorCount=0,lastTickError=null,crewFollower=false;
+ // Accelerated flight is an explicit standalone instructor function.
+ let labRate=1;
+ function effectiveLabRate(frame,requested){
+  if(!frame||requested===1)return 1;
+  if(!frame.airborne||frame.radioAltitudeFt<400)return Math.min(4,requested);
+  if(frame.radioAltitudeFt<1500||frame.altitudeCapture?.phase==='ACQUIRE'||frame.target?.verticalMode==='GLIDEPATH'||frame.target?.verticalMode==='ALT_ACQ')return Math.min(10,requested);
+  return requested;
+ }
+ function labClock(){
+  const enabled=win.__UnifiedCduLab===true&&!crewFollower&&active&&!!state&&labRate>1;
+  return {enabled,requested:enabled?labRate:1,effective:enabled?(pause?0:effectiveLabRate(state,labRate)):1,paused:!!pause};
+ }
+
  const crewEvent=(type,value)=>win.dispatchEvent(new CustomEvent('b737:crew-flight-command',{detail:{type,value}}));
  const VERSION='UNIFIED-FLIGHT-SCENARIOS-0009-FINAL10-STARTPAUSE';
  const html=`
@@ -979,7 +992,7 @@ try{
   try{win.B737ISNCockpitV1?.setFlightScenarioContext?.({active:false,source:'FLIGHT_SCENARIO_ENGINE'});}
   catch(error){console.warn('ISN flight context restore',error);}
   win.B737EngineFailureV1Scenario?.reset();
-  active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;
+  active=false;pause=false;state=null;lastTick=0;previouslyCoupled=false;labRate=1;
   lastPropulsionAt=0;lastPropulsion=null;lastEngineContextAt=0;
   win.B737IRSTrainerUnified?.stopMotion?.();
   for(const owner of Object.keys(producers)){
@@ -1197,11 +1210,16 @@ try{
       altitudeFt:state.altitudeFt,source:'FLIGHT_SCENARIO_ENGINE'});}
      catch(error){console.warn('ISN scenario flight context',error);}
     }
-    followMcp();
-    if(dt>0){const before=state;state=Core.step(state,dt,propulsionObservation(now));
+    const rate=labClock().effective;
+    // Small integration slices preserve capture/waypoint/V1 checks at high rates.
+    let remaining=dt*rate;
+    if(remaining<=0)followMcp();
+    while(remaining>1e-8){
+     followMcp();const step=Math.min(remaining,.25);remaining-=step;
+     const before=state;state=Core.step(state,step,propulsionObservation(now));
      const wasArmed=win.B737EngineFailureV1Scenario?.getStatus?.()?.status==='ARMED';
      const v1=win.B737EngineFailureV1Scenario?.observe(before,state);
-     if(wasArmed&&v1?.status==='FIRED'){lastPropulsionAt=0;lastPropulsion=null;}
+     if(wasArmed&&v1?.status==='FIRED'){lastPropulsionAt=0;lastPropulsion=null;remaining=0;}
      if(wasArmed&&v1?.status==='ERROR')status('ENGINE FAILURE INJECTION ERROR · '+v1.error,true);
     }
    }}catch(error){
@@ -1320,7 +1338,7 @@ try{
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,prepareScenario,
-  loadScenario:config=>{win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=prepareScenario(config);
+  loadScenario:config=>{labRate=1;win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=prepareScenario(config);
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=config.holdStart===true||state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
    syncInitialEngineContext();
@@ -1356,8 +1374,9 @@ try{
    if(initial&&sample.preset==='FINAL_10')
     win.B737Final10ApproachPresetV1?.apply?.(state);
   },
+  setLabRunRate:value=>{if(win.__UnifiedCduLab!==true||crewFollower||!active||!state||![1,10,20,60].includes(value))throw Error('STANDALONE RUN RATE NOT AVAILABLE');labRate=value;lastTick=performance.now();return labClock();},getLabRunClock:labClock,
   pause:value=>{pause=value===true;lastTick=performance.now();updateUI();},togglePause,stop,
-  getDiagnostics:()=>({active,paused:pause,airborne:state?.airborne===true,
+  getDiagnostics:()=>({active,paused:pause,labRun:labClock(),airborne:state?.airborne===true,
    phase:state?.phase??null,revision:state?.revision??null,elapsedSec:state?.elapsedSec??null,
    lastPublishAgeMs:active?Math.max(0,performance.now()-lastPublish):null,
    tickErrorCount,lastTickError:lastTickError?{...lastTickError}:null,

@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "4714bf65d70dbd2883430668828a07d65dde2c1ef1d12ff6ec5db2a86ead0d86"
+      "sha256": "6613bd7e79c9f59716c7bdde25593a3d2e2ab8a24de6ffa3e99a5d3b4cb8cff8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -176,7 +176,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "1f01d3ede89cb6fa34a36ab8660688ed4de79868fd7d5dcda5a006197483fae9"
+      "sha256": "1eaafc6a2e7d14c0384c1be8e4e0fdab328e633a20e6dc3ae34f623af6dcbe53"
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
@@ -512,7 +512,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "21a48136b03434171b9d996086981877791ab2f7bdaea47dd1dc7b3446200643"
+      "sha256": "77504d1cb91db05b85854ef857175630917853b74eb79dda6f3356cb99f2e333"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",

@@ -32,7 +32,48 @@ function view(){
   take.type=des.type='button';take.textContent='START TAKEOFF';des.textContent='START DESCENT';
   take.disabled=des.disabled=true;take.hidden=des.hidden=true;
   const resume=doc.createElement('button');resume.type='button';resume.textContent='START FLIGHT';resume.hidden=true;resume.disabled=true;
-  bar.append(status,take,des,resume);doc.body.append(bar);
+  const hud=doc.createElement('section');hud.id='unifiedCduRunHud';hud.hidden=true;hud.setAttribute('aria-label','Live flight telemetry');
+  const metrics=doc.createElement('div');metrics.className='lab-run-metrics';
+  const fields={};function metric(key,label){const cell=doc.createElement('div'),title=doc.createElement('small'),value=doc.createElement('strong');title.textContent=label;value.textContent='—';cell.append(title,value);metrics.append(cell);fields[key]=value;}
+  for(const [key,label] of [['alt','ALT MSL'],['ra','RAD ALT'],['ias','IAS'],['gs','GS'],['vs','V/S'],['time','SIM TIME'],['phase','PHASE']])metric(key,label);
+  const fma=doc.createElement('div');fma.className='lab-run-fma';fma.setAttribute('aria-label','Live FMA');
+  const fmaFields={};for(const [key,label] of [['at','A/T'],['pitch','PITCH'],['roll','ROLL'],['afds','AFDS']]){
+   const cell=doc.createElement('div'),title=doc.createElement('small'),value=doc.createElement('strong'),armed=doc.createElement('span');title.textContent=label;value.textContent='—';cell.append(title,value,armed);fma.append(cell);fmaFields[key]={value,armed};
+  }
+  hud.append(metrics,fma);
+  const runControls=doc.createElement('div');runControls.id='unifiedCduRunControls';runControls.hidden=true;
+  const rate=doc.createElement('select');rate.setAttribute('aria-label','Simulation speed');
+  for(const n of [1,10,20,60])rate.add(new Option(n+'×',String(n)));rate.value='20';
+  const run=doc.createElement('button'),pauseRun=doc.createElement('button'),runState=doc.createElement('span');
+  run.type=pauseRun.type='button';run.textContent='RUN';pauseRun.textContent='PAUSE';run.disabled=pauseRun.disabled=true;runState.setAttribute('role','status');
+  runControls.append(rate,run,pauseRun,runState);
+  const actions=doc.createElement('div');actions.className='lab-run-actions';actions.append(status,take,des,resume,runControls);
+  bar.append(hud,actions);doc.body.append(bar);
+  function paintRun(api,state,prepared){
+   const d=api.getDiagnostics(),clock=api.getLabRunClock?.();
+   hud.hidden=false;runControls.hidden=!clock;
+   const fmt=(n,unit)=>Number.isFinite(n)?Math.round(n).toLocaleString('en-US')+' '+unit:'—';
+   fields.alt.textContent=fmt(state.altitudeFt,'FT');fields.ra.textContent=fmt(state.radioAltitudeFt,'FT');
+   fields.ias.textContent=fmt(state.iasKt,'KT');fields.gs.textContent=fmt(state.gsKt,'KT');fields.vs.textContent=fmt(state.vsFpm,'FPM');
+   const sec=Math.max(0,Math.floor(state.elapsedSec||0));fields.time.textContent=[Math.floor(sec/3600),Math.floor(sec/60)%60,sec%60].map(n=>String(n).padStart(2,'0')).join(':');
+   fields.phase.textContent=String(state.phase||'—').replaceAll('_',' ');
+   const f=window.B737EADIFMAFcomV2?.getState?.(seat||'CAPT')?.fields;
+   for(const [k,cell] of Object.entries(fmaFields)){cell.value.textContent=f?String(f[k]?.active||''):'—';cell.armed.textContent=f?String(f[k]?.armed||''):'';}
+   const canStart=prepared&&!loadPending&&!!clock&&(state.phase!=='GROUND_READY'||!take.disabled);
+   run.disabled=!canStart;pauseRun.disabled=!prepared||loadPending||d.paused;
+   run.textContent=d.paused&&clock?.enabled?'RESUME':'RUN';
+   runState.textContent=d.paused?'PAUSED':clock?.enabled?'RUNNING '+clock.effective+'× / '+clock.requested+'×':'NORMAL 1×';
+   if(clock?.enabled)resume.hidden=true;
+  }
+  run.onclick=()=>{try{
+   const api=get(),state=api?.getState?.();if(!state||run.disabled)throw Error('AIRCRAFT NOT READY');
+   api.setLabRunRate(Number(rate.value));
+   if(state.phase==='GROUND_READY'){const button=doc.getElementById('flightTakeoff');if(!button||button.disabled)throw Error('TAKEOFF NOT AVAILABLE');api.pause(false);button.click();}
+   else if(api.getDiagnostics()?.paused&&!api.togglePause())throw Error('FLIGHT START INHIBITED');
+   status.hidden=true;runState.textContent='RUNNING';
+  }catch(e){try{get()?.setLabRunRate?.(1);}catch{}failure(e);}};
+  pauseRun.onclick=()=>{try{const api=get();if(!api?.getDiagnostics()?.paused)api.togglePause();}catch(e){failure(e);}};
+  rate.onchange=()=>{try{const api=get();if(api?.getLabRunClock?.()?.enabled)api.setLabRunRate(Number(rate.value));}catch(e){failure(e);}};
   const setup=doc.createElement('section');setup.id='unifiedCduLabLocation';setup.dataset.cduLabItem='location';setup.hidden=true;setup.dir='ltr';
   const airportPick=doc.createElement('select'),runwayPick=doc.createElement('select'),positionPick=doc.createElement('select'),load=doc.createElement('button');
   function field(title,select){const label=doc.createElement('label'),text=doc.createElement('span');text.textContent=title;label.append(text,select);select.setAttribute('aria-label',title);setup.append(label);}
@@ -84,7 +125,7 @@ function view(){
   function failure(error){status.hidden=false;status.textContent=String(error?.message||error);}
   take.onclick=()=>{try{const api=get(),button=doc.getElementById('flightTakeoff');
    if(!api||!button||button.disabled)throw Error('TAKEOFF NOT AVAILABLE');
-   api.pause(false);button.click();status.hidden=true;
+   api.setLabRunRate?.(1);api.pause(false);button.click();status.hidden=true;
   }catch(e){failure(e);}};
   des.onclick=()=>{try{const api=get();if(api?.getState()?.airborne!==true)throw Error('AIRCRAFT NOT AIRBORNE');
    api.command({type:'VS',value:-1000});api.pause(false);status.hidden=true;
@@ -125,7 +166,7 @@ function view(){
     }
     const native=geometry.get(cdu),n=geometry.get(nd),c=geometry.get(cp);
     if(!(native.w>0&&native.h>0&&n.w>0&&n.h>0&&c.w>0&&c.h>0))return;
-    const gap=10,available=Math.max(250,innerWidth-4*gap),height=Math.max(120,innerHeight-90);
+    const gap=10,available=Math.max(250,innerWidth-4*gap),height=Math.max(120,innerHeight-146);
     const ratios=[native.w/native.h,n.w/n.h,c.w/c.h];
     // Relative to the previous equal-height layout: CDU +20%, EHSI unchanged,
     // EFIS CP 50%. Reserve the released width for the CDU; fit as a group on
@@ -140,12 +181,12 @@ function view(){
     const total=widths[0]+widths[1]+setupWidth+2*gap;
     let x=Math.max(4,(innerWidth-total)/2);
     for(const [i,e] of last.entries()){
-     let y=Math.max(6,(innerHeight-70-heights[i])/2),px=x;
+     let y=Math.max(6,(innerHeight-132-heights[i])/2),px=x;
      if(i===2){
       setup.style.setProperty('--lab-x',x+'px');setup.style.setProperty('--lab-w',setupWidth+'px');
       const sh=setup.offsetHeight||132;
       const groupHeight=sh+gap+heights[i];
-      const top=Math.max(6,(innerHeight-70-groupHeight)/2);
+      const top=Math.max(6,(innerHeight-132-groupHeight)/2);
       setup.style.setProperty('--lab-y',top+'px');y=top+sh+gap;px=x+(setupWidth-widths[i])/2;
      }
      e.style.setProperty('--lab-x',px+'px');e.style.setProperty('--lab-y',y+'px');
@@ -165,6 +206,7 @@ function view(){
     des.disabled=loadPending||state?.airborne!==true||!prepared;
     resume.hidden=state?.airborne!==true;resume.disabled=loadPending||!prepared;
     resume.textContent=api.getDiagnostics()?.paused?'START FLIGHT':'PAUSE FLIGHT';
+    if(state)paintRun(api,state,prepared);
     const feed=frame.contentDocument?.documentElement?.dataset;
     if(feed?.cduAwaitingPower==='true'||feed?.cduElectricalFeed==='ABSENT'){
      waiting('Waiting for CDU power'+(preset?.missing?.length?' · '+preset.missing.join(' / '):'')+'…');
@@ -201,6 +243,23 @@ html[data-cdu-lab-ready] [data-cdu-lab-item="cdu"] .cdu-seat-label{display:none!
 #unifiedCduLabControls button{padding:10px 16px!important;border-radius:5px!important;background:#23333c!important;border:1px solid #61717a!important;color:#e3eef0!important;cursor:pointer!important;}
 #unifiedCduLabControls button:disabled{opacity:.42!important;cursor:default!important;}
 #unifiedCduLabControls [hidden]{display:none!important;}
+
+#unifiedCduLabControls{flex-direction:column!important;gap:6px!important;padding:0 10px!important;}
+#unifiedCduRunHud{display:flex!important;align-items:stretch!important;gap:8px!important;max-width:100%;background:#141f25;color:#dce8ed;border:1px solid #53636b;border-radius:6px;padding:5px 8px;box-sizing:border-box;font:12px system-ui,sans-serif;}
+#unifiedCduRunHud .lab-run-metrics,#unifiedCduRunHud .lab-run-fma{display:flex;align-items:stretch;gap:3px;}
+#unifiedCduRunHud .lab-run-metrics>div,#unifiedCduRunHud .lab-run-fma>div{min-width:57px;display:grid;align-content:start;padding:3px 6px;border-right:1px solid #34434c;text-align:center;}
+#unifiedCduRunHud small{font-size:10px;letter-spacing:.04em;color:#a6bbc4;}
+#unifiedCduRunHud strong{font:600 14px monospace;white-space:nowrap;min-height:17px;}
+#unifiedCduRunHud .lab-run-fma{background:#050807;border:1px solid #53636b;border-radius:3px;}
+#unifiedCduRunHud .lab-run-fma strong{color:#40e873;min-width:66px;}
+#unifiedCduRunHud .lab-run-fma span{color:white;font:11px monospace;min-height:12px;}
+#unifiedCduLabControls .lab-run-actions,#unifiedCduRunControls{display:flex!important;gap:6px!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap;}
+#unifiedCduRunControls select{background:#263740;color:#e3eef0;border:1px solid #61717a;border-radius:4px;padding:8px;font:13px system-ui;}
+#unifiedCduRunControls #unifiedCduRunControls button{white-space:nowrap;}
+#unifiedCduRunControls span{font:11px monospace;min-width:95px;color:#b8d5e0;}
+#unifiedCduLabControls button{padding:7px 12px!important;font-size:12px!important;}
+@media(max-width:850px){#unifiedCduRunHud{flex-wrap:wrap;justify-content:center;}#unifiedCduRunHud .lab-run-metrics{flex-wrap:wrap;justify-content:center;}#unifiedCduRunHud .lab-run-metrics>div,#unifiedCduRunHud .lab-run-fma>div{min-width:38px;padding:2px 3px;}#unifiedCduRunHud strong{font-size:11px;}#unifiedCduRunHud .lab-run-fma strong{min-width:46px;}}
+
 `;
 function head(isLab){
  return '<script>('+volatileStorage.toString()+')('+String(isLab)+');</script>'+

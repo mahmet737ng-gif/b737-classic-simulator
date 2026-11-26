@@ -559,7 +559,12 @@
   }
   lastPassiveCoolingAt=now;
   const advanceStarted=profileStart();
-  const observations=ecu.advance(elapsed);
+  // Same standalone clock as the flight dynamics; no extra fuel ledger.
+  // Pausing an accelerated run freezes the engine/fuel clock too. A new
+  // scenario restores 1x so physical preparation is never blocked.
+  const lab=window.__UnifiedCduLab===true?window.B737UnifiedFlightScenarioV1?.getLabRunClock?.():null;
+  const simElapsed=lab?.enabled?Math.min(300,elapsed)*lab.effective:elapsed;
+  const observations=ecu.advance(simElapsed);
   profileDone('ISN ECU.advance',advanceStarted);
   for(const effect of chain.consumeEffects())if(effect.type==='ROTARY_RELEASE'){
    byId('overheadFrame')?.contentWindow?.postMessage({type:'b737:cockpit-command',
