@@ -472,7 +472,7 @@
    const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
    const live=s.fmcPageInputs?.guidance?.activeLeg;
    const activeIdent=sequence(s)?.activeIdent??(s.fmcPageInputs?.guidance?.simulatorCoupled===true?live?.ident:prediction?.quality==='VALID'?prediction.active?.ident:null);
-   const activeMatch=activeIdent?all.filter(x=>x.ident===activeIdent).length===1&&leg.ident===activeIdent:index===0;
+   const activeMatch=sequence(s)?index===0&&!sequence(s).blocked&&!sequence(s).ended&&leg.ident===activeIdent:activeIdent?all.filter(x=>x.ident===activeIdent).length===1&&leg.ident===activeIdent:index===0;
    const position=activeMatch?ownship(s):null;
    const from=validPosition(position)?position:!previous?.gap&&!previous?.conditional&&validPosition(previous)?previous:null;
    const trueCourse=activeMatch&&live?.ident===leg.ident&&Number.isFinite(live.bearingTrueDeg)?live.bearingTrueDeg:!leg.conditional&&from&&validPosition(leg)?legCourse(from,leg):leg.course;

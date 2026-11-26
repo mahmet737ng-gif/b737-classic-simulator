@@ -246,6 +246,26 @@ try{
   if(mode==='PLAN'){const points=referencePlanPoints(sg);return points[Math.max(0,Math.min(points.length-1,planStep||0))]??route?.points?.[route.centerIndex]??threshold??selected??live;}
   return live??selected??threshold;
  }
+ const remainingRoute=function makeRemainingRoute(q,forecast,own,planCenter,mode,offset){
+ const valid=p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon);
+ if(!q||!Array.isArray(q.remainingLegs)||!q.ended&&q.activeIndex===0)return null;
+ const points=[],rows=q.remainingLegs,look=forecast?.waypoints??[];
+ const start=valid(q.legStart)?q.legStart:own;
+ if(!q.ended&&valid(start))points.push({...start,name:"",hidden:true,leg:"ACTIVE"});
+ let gap=!points.length,activeIndex=-1;
+ for(let i=0;i<rows.length;i++){
+  const l=rows[i];if(l.type==="GAP"){gap=true;continue;}
+  const prediction=look.find(p=>p.index===l.index&&p.ident===l.ident);
+  const p=valid(l)?l:valid(prediction)?prediction:null;
+  if(!p){gap=true;continue;}
+  const pt={lat:p.lat,lon:p.lon,name:l.ident??"",leg:gap?"DISCONTINUITY":"ACTIVE",altitude:l.altitude?.ft?String(l.altitude.ft)+(l.altitude.restriction??""):null,eta:prediction?.eta??null};
+  points.push(pt);if(i===0)activeIndex=points.length-1;gap=false;
+ }
+ const selected=valid(planCenter)&&points.some(p=>!p.hidden&&p.name===planCenter.ident&&Math.abs(p.lat-planCenter.lat)<.001&&Math.abs(p.lon-planCenter.lon)<.001)?planCenter:points.find(p=>!p.hidden)??own;
+ const anchor=mode==="PLAN"?selected:own;
+ const projected=valid(anchor)?points.map(p=>({...p,...offset(anchor,p)})):[];
+ return {source:"FMC_SEQUENCE",points:projected,activeIndex:projected.length?activeIndex:-1,centerIndex:0,centerAnchor:mode==="PLAN"?{x:0,y:0}:undefined,aircraftPosition:own,verified:false,activeSource:"FMC_SEQUENCE",anchor};
+};
  function mount(win){
   const {document:doc,EFISDisplayLabCore:core,EFISClassicEHSIV2:renderer,B737UnifiedEfisSources:sources}=win;
   if(!core||!renderer||!sources)return null;
@@ -353,6 +373,8 @@ try{
     const scenarioState=scenario?.getDiagnostics?.().active===true?
      scenario.getState?.():null;
     const trajectoryFlight=scenarioState?.icao===sg?.origin?scenarioState:null;
+    const sessionState=win.B737UnifiedFmc?.snapshot?.(),liveGuidance=win.B737UnifiedFccFlightV1?.getFmcGuidance?.(),seq=liveGuidance?.sequence;
+    const validSequence=sessionState?.routeActivated===true&&!failure.active&&seq?.origin===sessionState.active?.ORIGIN&&seq?.dest===sessionState.active?.DEST&&seq?.routeRevision===(sessionState.routeRevision??0)&&Array.isArray(seq.remainingLegs)?seq:null;
    for(const seat of SEATS){
     const screen=display(seat,native);
     if(!screen)continue;
@@ -370,9 +392,10 @@ try{
     const planCenter=origin.ehsi.mode==='PLAN'?planCenters[seat]:null;
      const nativePoints=src.fmc?.route?.displayRoute?.points||[];
      const matching=planCenter?nativePoints.findIndex(p=>(p.name??p.ident)===planCenter.ident&&Math.abs(p.lat-planCenter.lat)<.0001&&Math.abs(p.lon-planCenter.lon)<.0001):-1;
-     const route=sources.route(src.fmc,origin.ehsi.mode,matching>=0?matching:origin.ehsi.planStep);
+     const sequencedRoute=!preview?remainingRoute(validSequence,liveGuidance?.performance,src.mapPosition??scenarioState,planCenter,origin.ehsi.mode,sources.offsets):null;
+     const route=sequencedRoute??sources.route(src.fmc,origin.ehsi.mode,matching>=0?matching:origin.ehsi.planStep);
      // Both the executed route and source overlay must project from the exact CDU review fix.
-     if(planCenter){route.points=route.points.map(p=>({...p,...sources.offsets(planCenter,p)}));route.centerAnchor={x:0,y:0};}
+     if(planCenter&&!sequencedRoute){route.points=route.points.map(p=>({...p,...sources.offsets(planCenter,p)}));route.centerAnchor={x:0,y:0};}
     const fmcNav=sources.fullNavFromRoute?.(src,route);
     const model=preview?core.ehsiModel(setup):
      liveModel(src,origin,setup,screen.aspect,route,failure,fmcNav);
@@ -466,7 +489,7 @@ try{
     const mode=origin.ehsi.mode;
     // PLAN can be reviewed before position/track is available. MAP remains
     // aircraft-centered, including when the source is the selected IRS.
-    const anchor=planCenter||referenceAnchor(mode,route,src.mapPosition,
+    const anchor=sequencedRoute?.anchor||planCenter||referenceAnchor(mode,route,src.mapPosition,
       win.B737UnifiedFlightLocationV1?.getLocation?.(),sg,origin.ehsi.planStep);
     // The reviewed runway is the reference origin in PLAN. Do not subtract
      // the unrelated FMC route's selected center waypoint a second time.
@@ -474,7 +497,7 @@ try{
       renderer.routeProjection({...model,route:{...model.route,points:[],centerIndex:0}}):
       Number.isFinite(src.trueTrack)?renderer.routeProjection(model):null;
     reference?.draw(screen.svg,sg,mode,origin.ehsi.range,
-     src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor,trajectoryFlight);
+     src.displayPowered===true&&src.video===true&&!preview,sources.offsets,project,anchor,trajectoryFlight,{suppressActiveRoute:!!sequencedRoute});
     // HOLD overlay uses the same projection/clip as the selected seat's route.
     screen.svg.querySelector('[data-fmc-holding]')?.remove();
     const guidance=win.B737FmcTrainingGuidanceV1,session=win.B737UnifiedFmc?.snapshot?.();
@@ -523,7 +546,7 @@ try{
      const ao=session.active?.ORIGIN,ad=session.active?.DEST,mo=session.pending?.ORIGIN??session.stagedRoute?.ORIGIN??ao,md=session.pending?.DEST??session.stagedRoute?.DEST??ad;
      for(let i=1;i<=5;i++){
       const k='HOLD_'+i,a=parse(session.active?.[k]),v=session.pending?.[k]??session.stagedRoute?.[k],h=parse(v);
-      if(session.routeActivated===true&&a?.origin===ao&&a?.dest===ad)draw(a,k,false);
+      if(session.routeActivated===true&&a?.origin===ao&&a?.dest===ad&&(!sequencedRoute||validSequence.remainingLegs.some(l=>l.holdKey===k)))draw(a,k,false);
       if(v!==undefined&&v!==session.active?.[k]&&h?.origin===mo&&h?.dest===md)draw(h,k,true);
      }
      const parser=win.B737RouteEngine?.publishedHold;
@@ -535,7 +558,7 @@ try{
         const h=parser(raw,geometry,i,mod?mo:ao,mod?md:ad);if(!h)continue;
         const v=mod?(session.pending?.[h.key]??session.stagedRoute?.[h.key]??session.active?.[h.key]):session.active?.[h.key];
         if(mod&&session.routeActivated&&JSON.stringify(geometry)===JSON.stringify(active[geoKey])&&v===session.active?.[h.key])continue;
-        const override=parse(v);if(override?.deleted!==true)draw({...h,...override},h.key,mod);
+        const override=parse(v);if(override?.deleted!==true&&(mod||!sequencedRoute||validSequence.remainingLegs.some(l=>l.holdKey===h.key)))draw({...h,...override},h.key,mod);
        }
       }
      }

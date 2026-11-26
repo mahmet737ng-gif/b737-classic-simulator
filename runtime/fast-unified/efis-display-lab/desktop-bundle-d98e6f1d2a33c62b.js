@@ -1468,7 +1468,7 @@ try{
   }
   return result;
  }
- function draw(svg,source,mode,range,powered,offset,project,anchor,flight=null){
+ function draw(svg,source,mode,range,powered,offset,project,anchor,flight=null,options={}){
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
   if(!powered||!['PLAN','MAP','CTR_MAP','EXP_NAV','FULL_NAV'].includes(mode)||!Number.isFinite(range)||range<=0||
@@ -1484,7 +1484,7 @@ try{
   const valid=x=>x?.renderStyle==='DASHED_REFERENCE_CHORDS_ONLY';
   const layers=[
    {stage:'ACT',color:'#ff47e1',dash:null,geometries:orderedGeometries(active)
-    .filter(([k,g])=>valid(g)&&!(g.kind==='RUNWAY'&&pending?.[k]&&
+    .filter(([k,g])=>valid(g)&&(!options.suppressActiveRoute||g.kind==='RUNWAY')&&!(g.kind==='RUNWAY'&&pending?.[k]&&
       JSON.stringify(g)!==JSON.stringify(pending[k]))).map(([,g])=>g)},
    ...(changed?[{stage:'MOD',color:Object.keys(active).length?'#ffffff':'#00d9f5',dash:Object.keys(active).length?'4 4':'12 7',
     geometries:orderedGeometries(changed).map(([,g])=>g).filter(valid)}]:[])
