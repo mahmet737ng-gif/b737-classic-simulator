@@ -33,6 +33,8 @@ function view(){
   take.disabled=des.disabled=true;take.hidden=des.hidden=true;
   bar.append(status,take,des);doc.body.append(bar);
   let requested=false,last=[],seat=null;const geometry=new WeakMap();
+  const startedAt=Date.now();
+  function waiting(message){status.hidden=false;status.textContent=message+(Date.now()-startedAt>45000?' · RELOAD IF NOT READY':'');}
   const get=()=>window.B737UnifiedFlightScenarioV1;
   function failure(error){status.hidden=false;status.textContent=String(error?.message||error);}
   take.onclick=()=>{try{const api=get(),button=doc.getElementById('flightTakeoff');
@@ -47,25 +49,31 @@ function view(){
   function branch(e,name){e.dataset.cduLabItem=name;for(let a=e.parentElement;a;a=a.parentElement)a.dataset.cduLabBranch='true';}
   function tick(){
    try{
-    const start=doc.getElementById('unifiedWelcomeStart'),ags=doc.getElementById('welcomeGroundState');
-    if(!requested&&start&&!start.hidden&&!start.disabled&&ags&&!ags.disabled){
-     ags.value='READY_FOR_TAKEOFF';ags.dispatchEvent(new Event('change',{bubbles:true}));
-     if(!start.disabled){requested=true;start.click();}
+    // This route intentionally has no Welcome UI. Start the live scenario
+    // through its own public API, not through a hidden Welcome button.
+    const api=get(),airport=doc.getElementById('flightAirport')?.value,runway=doc.getElementById('flightRunway')?.value;
+    if(!api?.loadScenario||!airport||!runway||!window.B737PoweredGeneralPresetsV1?.apply||!window.B737ISNCockpitV1){
+     waiting('Waiting for Unified flight and electrical owners…');return;
     }
-    const welcome=doc.getElementById('unifiedWelcome'),error=doc.getElementById('unifiedWelcomeError');
-    if(error&&!error.hidden){failure(error.textContent||'Unified startup failed');return;}
-    if(!welcome?.hidden||get()?.getDiagnostics()?.active!==true)return;
+    if(!requested&&api.getDiagnostics()?.active!==true){
+     requested=true;
+     try{api.loadScenario({airport,runway,preset:'READY_FOR_TAKEOFF',airborne:false,holdStart:true});}
+     catch(e){requested=false;throw e;}
+    }
+    if(api.getDiagnostics()?.active!==true){waiting('Waiting for flight scenario…');return;}
     const frames=['CAPT','FO'].map(s=>[s,doc.getElementById('cduFrame'+s)]).filter(x=>x[1]);
     const pair=frames.find(x=>x[1].closest('.cdu-station')?.classList.contains('ready'))||frames.find(x=>x[1].contentDocument?.getElementById('fmc-lines')?.children.length);
-    if(!pair)return;
+    if(!pair){waiting('Waiting for live CDU…');return;}
     const [s,frame]=pair;const cdu=frame.closest('.cdu-station');
     const nd=doc.querySelector('[data-unified-ehsi-seat="'+s+'"]');
     const cp=doc.querySelector('[data-uefis-seat="'+s+'"]');
-    if(!cdu||!nd||!cp)return;
+    if(!cdu||!nd||!cp){waiting('Waiting for '+[!cdu?'CDU':null,!nd?'EHSI':null,!cp?'EFIS CP':null].filter(Boolean).join(' / ')+'…');return;}
     for(const e of [cdu,nd,cp])if(!geometry.has(e)){
      const rect=e.getBoundingClientRect();
-     geometry.set(e,{w:e.offsetWidth||rect.width,h:e.offsetHeight||rect.height});
+     const w=e.offsetWidth||rect.width,h=e.offsetHeight||rect.height;
+     if(w>0&&h>0)geometry.set(e,{w,h});
     }
+    if(![cdu,nd,cp].every(e=>geometry.has(e))){waiting('Waiting for live panel layout…');return;}
     if(last[0]!==cdu||last[1]!==nd||last[2]!==cp){
      clearMarks();last=[cdu,nd,cp];branch(cdu,'cdu');branch(nd,'nd');branch(cp,'cp');branch(bar,'controls');seat=s;
     }
@@ -85,9 +93,15 @@ function view(){
     cdu.style.setProperty('--lab-scale',String(widths[0]/native.w));
     root.dataset.cduLabReady='true';root.dataset.cduLabSeat=seat;
     take.hidden=des.hidden=false;
-    const state=get().getState();take.disabled=state?.airborne===true||doc.getElementById('flightTakeoff')?.disabled===true;
+    const state=api.getState(),preset=window.B737PoweredGeneralPresetsV1?.getStatus?.();
+    take.disabled=state?.airborne===true||doc.getElementById('flightTakeoff')?.disabled===true||preset?.coreReady!==true;
     des.disabled=state?.airborne!==true;
-    if(status.textContent==='Loading current Unified cockpit…')status.hidden=true;
+    const feed=frame.contentDocument?.documentElement?.dataset;
+    if(feed?.cduAwaitingPower==='true'||feed?.cduElectricalFeed==='ABSENT'){
+     waiting('Waiting for CDU power'+(preset?.missing?.length?' · '+preset.missing.join(' / '):'')+'…');
+    }else if(preset?.timedOut&&!preset.coreReady){waiting('Aircraft preparation incomplete · '+(preset.missing||[]).join(' / '));}
+    else if(!preset?.coreReady&&state?.airborne!==true){waiting('Preparing aircraft · '+(preset?.missing||[]).join(' / '));}
+    else status.hidden=true;
    }catch(e){failure(e);}
   }
   setInterval(tick,250);tick();
@@ -98,7 +112,7 @@ const css=String.raw
 `
 html[data-cdu-lab]{background:#10171b!important;}
 html[data-cdu-lab] body{background:#10171b!important;margin:0!important;}
-html[data-cdu-lab]:not([data-cdu-lab-ready]) body > :not(#unifiedCduLabControls){visibility:hidden!important;pointer-events:none!important;}
+html[data-cdu-lab]:not([data-cdu-lab-ready]) body :not(#unifiedCduLabControls):not(#unifiedCduLabControls *){visibility:hidden!important;pointer-events:none!important;}
 html[data-cdu-lab-ready] body :not([data-cdu-lab-branch]):not([data-cdu-lab-item]):not([data-cdu-lab-item] *){visibility:hidden!important;pointer-events:none!important;}
 html[data-cdu-lab-ready] [data-cdu-lab-branch]{visibility:visible!important;overflow:visible!important;transform:none!important;contain:none!important;clip-path:none!important;filter:none!important;backdrop-filter:none!important;perspective:none!important;will-change:auto!important;content-visibility:visible!important;background:transparent!important;}
 html[data-cdu-lab-ready] [data-cdu-lab-item]:not([data-cdu-lab-item="controls"]){position:fixed!important;left:var(--lab-x)!important;top:var(--lab-y)!important;right:auto!important;bottom:auto!important;z-index:999999!important;visibility:visible!important;pointer-events:auto!important;}
