@@ -20,13 +20,15 @@ try{
   const FIELDS = Object.freeze(['aircraftFamily', 'aircraftModel', 'engineVariant', 'pressurization', 'engineInstruments']);
   const CATALOG = Object.freeze({
     aircraftFamily: Object.freeze([
-      Object.freeze({id: 'B737-300-500', label: '737-300 / 737-500', variants: Object.freeze(['737-300', '737-500'])}),
+      Object.freeze({id: 'B737-300-500', label: '737-300 / 737-500', variants: Object.freeze(['737-300', '737-300W', '737-500', '737-500W'])}),
       Object.freeze({id: 'B737-400', label: '737-400', variants: Object.freeze(['737-400'])})
     ]),
     aircraftModel: Object.freeze([
       Object.freeze({id:'737-300',label:'Boeing 737-300 · EP-FSI',registration:'EP-FSI',family:'B737-300-500'}),
       Object.freeze({id:'737-400',label:'Boeing 737-400 · EP-AOA',registration:'EP-AOA',family:'B737-400'}),
-      Object.freeze({id:'737-500',label:'Boeing 737-500 · EP-FSA',registration:'EP-FSA',family:'B737-300-500'})
+      Object.freeze({id:'737-500',label:'Boeing 737-500 · EP-FSA',registration:'EP-FSA',family:'B737-300-500'}),
+      Object.freeze({id:'737-300W',label:'Boeing 737-300W · EP-FSV',registration:'EP-FSV',family:'B737-300-500'}),
+      Object.freeze({id:'737-500W',label:'Boeing 737-500W · EP-FSG',registration:'EP-FSG',family:'B737-300-500'})
     ]),
     engineVariant: Object.freeze([
       Object.freeze({id:'CFM56-3B1',label:'CFM56-3 B1',rating:'18.5K',ratingLbf:18500}),
@@ -47,7 +49,9 @@ try{
   const DEFAULTS = Object.freeze({schema: SCHEMA, aircraftFamily: 'B737-300-500', aircraftModel:'737-300', engineVariant:'CFM56-3B3', pressurization: 'DCPCS', engineInstruments: 'EIS'});
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
   // Simulator-specific fixed IDENT configuration. Family is the only editable aircraft model choice.
-  const assignedModel = (family,preferred) => family === 'B737-400' ? '737-400' : preferred==='737-500'?'737-500':'737-300';
+  const ALLOWED=Object.freeze({"737-300":["CFM56-3B3","CFM56-3B2"],"737-300W":["CFM56-3B3","CFM56-3B2"],"737-500":["CFM56-3B1","CFM56-3B3"],"737-500W":["CFM56-3B1","CFM56-3B3"],"737-400":["CFM56-3B2","CFM56-3C1"]});
+  const assignedModel = (family,preferred) => family === 'B737-400' ? '737-400' : ['737-300','737-300W','737-500','737-500W'].includes(preferred)?preferred:'737-300';
+  const defaultEngine=model=>model==='737-400'?'CFM56-3B2':'CFM56-3B3';
   const assignedEngine = family => family === 'B737-400' ? 'CFM56-3B2' : 'CFM56-3B3';
 
   function validate(value) {
@@ -59,7 +63,7 @@ try{
     }
     if (value.aircraftModel !== assignedModel(value.aircraftFamily,value.aircraftModel))
       throw Error('IDENT aircraft model must match the selected family');
-    if (value.engineVariant !== assignedEngine(value.aircraftFamily))
+    if (!ALLOWED[value.aircraftModel].includes(value.engineVariant))
       throw Error('IDENT engine rating must match the selected family');
     return true;
   }
@@ -70,7 +74,7 @@ try{
     }
     // Always migrate old saved manual selections to the family-derived IDENT model/rating.
     result.aircraftModel=assignedModel(result.aircraftFamily,result.aircraftModel);
-    result.engineVariant=assignedEngine(result.aircraftFamily);
+    if(!ALLOWED[result.aircraftModel].includes(result.engineVariant))result.engineVariant=defaultEngine(result.aircraftModel);
     return result;
   }
   function resolve(input) {
@@ -112,7 +116,7 @@ try{
       }
       // No independent model or thrust-rating selection: engine / IDENT always follow family.
       next.aircraftModel=assignedModel(next.aircraftFamily,next.aircraftModel);
-      next.engineVariant=assignedEngine(next.aircraftFamily);
+      if(!ALLOWED[next.aircraftModel].includes(next.engineVariant)){if(next.aircraftModel===current.aircraftModel&&has(patch,'engineVariant'))throw Error('Invalid rating for selected aircraft');next.engineVariant=defaultEngine(next.aircraftModel);}
       validate(next);
       if (FIELDS.every(key => next[key] === current[key])) return {...current};
       if (storage) storage.setItem(STORAGE_KEY, JSON.stringify(next));
@@ -262,7 +266,8 @@ try{
   'CFM56-3B2':Object.freeze({label:'CFM56-3 B2',rating:'22K',ratingLbf:22000}),
   'CFM56-3C1':Object.freeze({label:'CFM56-3 C1',rating:'23.5K',ratingLbf:23500})
  });
- const MODELS=Object.freeze(['737-300','737-400','737-500']);
+ const ALLOWED=Object.freeze({"737-300":["CFM56-3B3","CFM56-3B2"],"737-300W":["CFM56-3B3","CFM56-3B2"],"737-500":["CFM56-3B1","CFM56-3B3"],"737-500W":["CFM56-3B1","CFM56-3B3"],"737-400":["CFM56-3B2","CFM56-3C1"]});
+ const MODELS=Object.freeze(Object.keys(ALLOWED));
  const family=model=>model==='737-400'?'B737-400':'B737-300-500';
  const assignedEngine=model=>model==='737-400'?'CFM56-3B2':'CFM56-3B3';
  function select(profile){
@@ -271,12 +276,12 @@ try{
    throw Error('INVALID_TRAINER_INSTALLATION');
   if(profile.aircraftFamily&&profile.aircraftFamily!==family(model))
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
-  if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
+  if(!ALLOWED[model].includes(variant))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP-FSI','737-400':'EP-AOA','737-500':'EP-FSA'})[model],
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({"737-300":"EP-FSI","737-300W":"EP-FSV","737-500":"EP-FSA","737-500W":"EP-FSG","737-400":"EP-AOA"})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
-   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),
+   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model.replace(/W$/,'')}),
    ENG_RATING:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_ENGINE_RATING',value:engine.rating})
   });
  }

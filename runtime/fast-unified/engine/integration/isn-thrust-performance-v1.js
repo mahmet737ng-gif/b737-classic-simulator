@@ -59,7 +59,7 @@
    const satK=oatC+273.15,mach=Number.isFinite(iasKt)?Math.min(.9,iasKt/661/Math.sqrt(Math.max(.25,Math.pow(Math.max(.74,1-pressureAltitudeFt/145442),4.256)))):null;
    const t=Number.isFinite(tatC)?tatC:Number.isFinite(mach)?satK*(1+.2*mach*mach)-273.15:null;
    for(const mode of Object.keys(base)){
-    const r=engine.safe(()=>engine.n1({model:selected,mode,altFt:pressureAltitudeFt,oatC,tatC:t,iasKt,engines:operatingEngines,packs:packsOn?'AUTO':'OFF',engineAI:engineAntiIce,wingAI:wingAntiIce,allowProxy:true}));
+    const r=engine.safe(()=>engine.n1({model:selected,rating:engine.selectedRating(selected),mode,altFt:pressureAltitudeFt,oatC,tatC:t,iasKt,engines:operatingEngines,packs:packsOn?'AUTO':'OFF',engineAI:engineAntiIce,wingAI:wingAntiIce,allowProxy:true}));
     if(r.status==='TRAINING_TABLE'){base[mode]=round(r.n1Pct);tableSources[mode]={source:r.source,proxy:r.proxy,pages:r.pages};}
     else tableSources[mode]={source:'TRAINING_SURROGATE',reason:r.reason};
    }
@@ -106,7 +106,7 @@
   }
   const current=dragAt(iasKt),target=dragAt(targetIasKt);
   const model=input.model||globalThis.B737AircraftProfileStore?.get?.()?.aircraftModel;
-  const rating=globalThis.B737PerformanceEngineV07?.variants?.[model]?.rating||CONFIG.engineTakeoffRatingLbf;
+  const rating=globalThis.B737PerformanceEngineV07?.selectedRating?.(model)||CONFIG.engineTakeoffRatingLbf;
   const maxThrustN=rating*4.4482216152605*Math.pow(a.densityRatio,CONFIG.thrustLapseExponent);
   const climbN=weightKg*G*(verticalSpeedFpm*0.00508)/Math.max(current.tasMps,1);
   const accelerationMps2=accelTimeSec===null?0:

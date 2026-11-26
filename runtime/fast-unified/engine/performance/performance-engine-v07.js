@@ -1,7 +1,9 @@
 /* B737 Classic central educational performance engine. No extrapolation; preserves source and proxy labels. */
 (function(root){const make=function makeEngine(root,raw,perf){
  'use strict';
- const variants=Object.freeze({'737-300':Object.freeze({model:'737-300',registration:'EP-FSI',rating:20000}), '737-400':Object.freeze({model:'737-400',registration:'EP-AOA',rating:22000}), '737-500':Object.freeze({model:'737-500',registration:'EP-FSA',rating:20000})});
+ const variants=Object.freeze({"737-300":{"model":"737-300","registration":"EP-FSI","rating":20000,"ratings":[20000,22000]},"737-300W":{"model":"737-300W","registration":"EP-FSV","rating":20000,"ratings":[20000,22000]},"737-500":{"model":"737-500","registration":"EP-FSA","rating":20000,"ratings":[18500,20000]},"737-500W":{"model":"737-500W","registration":"EP-FSG","rating":20000,"ratings":[18500,20000]},"737-400":{"model":"737-400","registration":"EP-AOA","rating":22000,"ratings":[22000,23500]}});
+ const ratingMap=Object.freeze({'CFM56-3B1':18500,'CFM56-3B3':20000,'CFM56-3B2':22000,'CFM56-3C1':23500});
+ function selectedRating(model){const profile=root.B737AircraftProfileStore?.get?.();return profile?.aircraftModel===model?ratingMap[profile.engineVariant]??variants[model]?.rating:variants[model]?.rating;}
  const unpack=t=>t.rows.map(r=>Object.fromEntries(t.fields.map((k,i)=>[k,r[i]])));
  const rows=Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,unpack(v)]));
  const by=(data,keys)=>{const m=new Map;for(const r of data){const k=keys.map(x=>r[x]).join('|');if(!m.has(k))m.set(k,[]);m.get(k).push(r);}return m};
@@ -15,33 +17,38 @@
  const unpackPerf=(name,keys)=>perf[name].map(r=>Object.fromEntries(keys.map((k,i)=>[k,r[i]])));
  const pp={cruise:unpackPerf('cruise',['page','alt','weight','n1','maxTat','ias','mach','ff','tas','stdTat']),limit:unpackPerf('cruise_limit',['page','alt','tat','n1','eai','wai']),oei:unpackPerf('oei_ceiling',['page','speed','rating','weight','isa','ceiling','eai','wai']),optimum:unpackPerf('optimum',['page','isa','weight','opt','tat','margin','max','limited']).map(r=>({...r,isa:Number(r.isa)})),climb:unpackPerf('climb_slice',['page','isa','alt','weight','time','fuel','dist','tas'])};
  function n1(input){
-  const p=variants[input.model];if(!p)fail('MODEL_REQUIRED');
+  const spec=variants[input.model];if(!spec)fail('MODEL_REQUIRED');const rating=input.rating??selectedRating(input.model);if(!spec.ratings.includes(rating))fail('INVALID_RATING_FOR_MODEL');const p={...spec,rating};
   const {mode,altFt,tatC,oatC,iasKt,engines=2,packs='AUTO',engineAI=false,wingAI=false,pmc='ON',assumedC=null}=input;
   if(!['AUTO','OFF','HIGH'].includes(packs)||![1,2].includes(engines)||!['ON','OFF'].includes(pmc))fail('INVALID_CONFIGURATION');
   const used=[],corr={};let v,source,proxy=null;
+  const nativeQ=(model,mode)=>fetch(q,model,p.rating,mode);let tableModel=p.model;
+  const baseModel=p.model.replace(/W$/,'');
+  const markProxy=model=>{if(model!==p.model){if(input.allowProxy!==true)fail('NATIVE_WINGLET_N1_NOT_EXTRACTED');proxy=model+'/'+(p.rating/1000)+'K (N1 ONLY)';}return model;};
   if(mode==='TO'||mode==='R-TO'){
    if(wingAI)fail('TO_WING_AI_CORRECTION_NOT_AVAILABLE');
    if(mode==='R-TO'||finite(assumedC)){
     if(pmc!=='ON'||packs==='HIGH'||!finite(assumedC)||assumedC<=oatC)fail('INVALID_ASSUMED_TEMP_CONFIGURATION');
-    const k=kind=>p.model==='737-400'?fetch(qr,kind):fetch(fr,p.model==='737-300'?'737-500':p.model,p.rating,p.rating,kind);
-    if(p.model==='737-300'){if(input.allowProxy!==true)fail('NATIVE_300_ASSUMED_TEMP_NOT_AVAILABLE');proxy='737-500/20K';}
+    let reducedModel=baseModel;if(baseModel==='737-300'&&p.rating===20000){if(input.allowProxy!==true)fail('NATIVE_300_ASSUMED_TEMP_NOT_AVAILABLE');reducedModel='737-500';}markProxy(reducedModel);
+    const k=kind=>baseModel==='737-400'&&p.rating===22000?fetch(qr,kind):fetch(fr,reducedModel,p.rating,p.rating,kind);
     const maxRows=k('max_assumed_temp');if(!maxRows?.length)fail('ASSUMED_TEMP_NOT_AVAILABLE');
     const max=grid(maxRows,['x','y'],[altFt,Math.max(Math.min(...maxRows.map(r=>r.y)),oatC)],'value',used), min=grid(k('min_assumed_temp'),['x'],[altFt],'value',used);
     if(assumedC<min||assumedC>max)fail('ASSUMED_TEMP_OUTSIDE_ENVELOPE');
-    v=grid(k('assumed_n1_base'),['x','y'],[altFt,assumedC],'value',used)-grid(k('assumed_n1_delta'),['x','y'],[oatC,assumedC-oatC],'value',used)+(packs==='OFF'?1:0);source=p.model==='737-400'?'QRH_REDUCED':'FCOM_TRAINING_REDUCED';
+    v=grid(k('assumed_n1_base'),['x','y'],[altFt,assumedC],'value',used)-grid(k('assumed_n1_delta'),['x','y'],[oatC,assumedC-oatC],'value',used)+(packs==='OFF'?1:0);source=baseModel==='737-400'&&p.rating===22000?'QRH_REDUCED':'FCOM_TRAINING_REDUCED';
    }else{
     if(packs==='HIGH')fail('TO_HIGH_PACK_CORRECTION_NOT_AVAILABLE');
-    if(p.model==='737-400'){v=grid(fetch(old,'FPPM',p.model,p.rating,'TO',pmc,pmc==='ON'?'AUTO':packs),['alt_ft','temp_c'],[altFt,oatC],'n1',used);source='FPPM';}
-    else if(p.model==='737-500'){v=grid(fetch(ft,p.model,p.rating,p.rating,pmc,pmc==='ON'?'AUTO':packs),['alt_ft','oat_c'],[altFt,oatC],'n1',used);source='FCOM_TRAINING';}
-    else{
-     // Native AFM preview only covers small areas; only its base AUTO/ON table is used.
-     try{if(pmc!=='ON'||packs!=='AUTO'||engineAI)fail('AFM_CORRECTION_NOT_COMPLETE');v=grid(fetch(old,'AFM',p.model,p.rating,'TO','ON','AUTO'),['alt_ft','temp_c'],[altFt,oatC],'n1',used);source='AFM_PARTIAL_TRACE';}
-     catch(e){if(input.allowProxy!==true)throw e;used.length=0;v=grid(fetch(ft,'737-500',20000,20000,pmc,pmc==='ON'?'AUTO':packs),['alt_ft','oat_c'],[altFt,oatC],'n1',used);source='FCOM_TRAINING_PROXY';proxy='737-500/20K';}
-    }
+    const pack=pmc==='ON'?'AUTO':packs;
+    const native=fetch(ft,baseModel,p.rating,p.rating,pmc,pack);
+    if(baseModel==='737-400'&&p.rating===22000){v=grid(fetch(old,'FPPM',baseModel,p.rating,'TO',pmc,pack),['alt_ft','temp_c'],[altFt,oatC],'n1',used);source='FPPM';}
+    else if(native?.length){markProxy(baseModel);v=grid(native,['alt_ft','oat_c'],[altFt,oatC],'n1',used);source='FCOM_TRAINING';}
+    else if(baseModel==='737-300'&&p.rating===20000){
+      markProxy(baseModel);
+      try{if(pmc!=='ON'||packs!=='AUTO'||engineAI)fail('AFM_CORRECTION_NOT_COMPLETE');v=grid(fetch(old,'AFM',baseModel,p.rating,'TO','ON','AUTO'),['alt_ft','temp_c'],[altFt,oatC],'n1',used);source='AFM_PARTIAL_TRACE';}
+      catch(e){if(input.allowProxy!==true)throw e;used.length=0;v=grid(fetch(ft,'737-500',20000,20000,pmc,pack),['alt_ft','oat_c'],[altFt,oatC],'n1',used);source='FCOM_TRAINING_PROXY';proxy='737-500/20K';}
+    }else fail('TAKEOFF_TABLE_FOR_SELECTED_RATING_UNAVAILABLE');
     if(pmc==='ON'&&packs==='OFF')corr.packs_off=1;
    }
   }else if(mode==='CRZ'){
-   if(p.model!=='737-400')fail('CRUISE_LIMIT_VARIANT_NOT_EXTRACTED');
+   if(p.model!=='737-400'||p.rating!==22000)fail('CRUISE_LIMIT_VARIANT_NOT_EXTRACTED');
    if(packs!=='AUTO'||wingAI&&!engineAI)fail('CRUISE_CORRECTION_NOT_AVAILABLE');
    v=grid(pp.limit,['alt','tat'],[altFt,tatC],r=>r.n1+(wingAI?r.wai:engineAI?r.eai:0),used);source='FPPM_400_CRUISE_LIMIT';
   }else{
@@ -50,9 +57,10 @@
    if(m==='CLB'&&engines!==2)fail('CLB_REQUIRES_TWO_ENGINES');
    if(!['CLB','GA','MCT_INITIAL','MCT_OEI'].includes(m))fail('MODE_NOT_SUPPORTED');
    if(wingAI&&m!=='GA'&&!engineAI)fail('WING_ONLY_CORRECTION_NOT_AVAILABLE');
+   if(!nativeQ(tableModel,m)?.length&&tableModel!==baseModel&&nativeQ(baseModel,m)?.length)tableModel=markProxy(baseModel);
    const axes=m==='MCT_OEI'?['alt_ft','ias_kt','tat_c']:['alt_ft','tat_c'],vs=m==='MCT_OEI'?[altFt,iasKt,tatC]:[altFt,tatC];
-   if(mode==='CON'&&engines===1){try{v=grid(fetch(q,p.model,p.rating,m),axes,vs,'n1',used);}catch(e){if(e.message==='SOURCE_CELL_WITHHELD')throw e;used.length=0;m='MCT_INITIAL';v=grid(fetch(q,p.model,p.rating,m),['alt_ft','tat_c'],[altFt,tatC],'n1',used);}}else v=grid(fetch(q,p.model,p.rating,m),axes,vs,'n1',used);
-   function c(kind){const rr=fetch(b,p.model,p.rating,m,kind);if(!rr?.length)fail('CORRECTION_UNAVAILABLE_'+kind);return grid(rr,['x'],[rr[0].axis==='tat_c'?tatC:altFt],'delta_n1',used);}
+   if(mode==='CON'&&engines===1){try{v=grid(fetch(q,tableModel,p.rating,m),axes,vs,'n1',used);}catch(e){if(e.message==='SOURCE_CELL_WITHHELD')throw e;used.length=0;m='MCT_INITIAL';v=grid(fetch(q,tableModel,p.rating,m),['alt_ft','tat_c'],[altFt,tatC],'n1',used);}}else v=grid(fetch(q,tableModel,p.rating,m),axes,vs,'n1',used);
+   function c(kind){const rr=fetch(b,tableModel,p.rating,m,kind);if(!rr?.length)fail('CORRECTION_UNAVAILABLE_'+kind);return grid(rr,['x'],[rr[0].axis==='tat_c'?tatC:altFt],'delta_n1',used);}
    if(packs==='OFF')corr.packs_off=c('packs_off');if(packs==='HIGH')corr.packs_high=c('packs_high');
    if(m==='GA'){if(wingAI)corr.wing_ai=c(engines===2?'wing_ai_aEO':'wing_ai_OEI');}
    else if(wingAI)corr.engine_wing_ai=c('engine_wing_ai');else if(engineAI)corr.engine_ai=c('engine_ai');
@@ -64,7 +72,7 @@
  }
  function flightPerformance(input){
   const {model,kind,altFt,weightKg,isaDeltaC,margin=1.3,speed='LRC',rating='MCT',engineAI=false,wingAI=false}=input;
-  if(model!=='737-400')fail('FPPM_400_ONLY');
+  if(model!=='737-400'||(input.engineRating??selectedRating(model))!==22000)fail('FPPM_400_22K_ONLY');
   if(wingAI&&!engineAI)fail('WING_ONLY_NOT_AVAILABLE');
   const used=[],out={model,kind,source:'FPPM_737-400_22K',trainingOnly:true};
   if(kind==='LRC'){for(const k of ['n1','ias','mach','ff','tas','stdTat'])out[k]=grid(pp.cruise,['alt','weight'],[altFt,weightKg],k,used);}
@@ -91,9 +99,9 @@
   const tatC=finite(measuredTat)?measuredTat:finite(sat)&&finite(estimatedMach)?(sat+273.15)*(1+.2*estimatedMach*estimatedMach)-273.15:null;
   const prop=root.B737ISNCockpitV1?.getPropulsionSnapshot?.()?.engines;
   const count=prop?['engine1','engine2'].filter(k=>prop[k]?.running).length:2;
-  return {model,altFt,oatC:sat,tatC,iasKt,weightKg:c?.massKg,isaDeltaC:finite(sat)&&finite(isa)?sat-isa:null,engines:count===1?1:2,packs:'AUTO',engineAI:false,wingAI:false,pmc:'ON',allowProxy:true,clb2Available:false,contextQuality:{altitude:finite(adc?.pressureAltitudeFt)?'ADC':'TRAINING_REFERENCE',oat:finite(oatC)?'OBSERVED':'ISA_ASSUMPTION',tat:finite(measuredTat)?'OBSERVED':'TRAINING_ESTIMATE',configuration:'REFERENCE_AUTO_PACKS_ANTIICE_OFF_PMC_ON'}};
+  return {model,rating:selectedRating(model),engineRating:selectedRating(model),altFt,oatC:sat,tatC,iasKt,weightKg:c?.massKg,isaDeltaC:finite(sat)&&finite(isa)?sat-isa:null,engines:count===1?1:2,packs:'AUTO',engineAI:false,wingAI:false,pmc:'ON',allowProxy:true,clb2Available:false,contextQuality:{altitude:finite(adc?.pressureAltitudeFt)?'ADC':'TRAINING_REFERENCE',oat:finite(oatC)?'OBSERVED':'ISA_ASSUMPTION',tat:finite(measuredTat)?'OBSERVED':'TRAINING_ESTIMATE',configuration:'REFERENCE_AUTO_PACKS_ANTIICE_OFF_PMC_ON'}};
  }
  function live(mode,override={}){const x={...liveContext(),...override,mode};return {...safe(()=>n1(x)),contextQuality:x.contextQuality};}
  function livePerformance(kind,override={}){const x={...liveContext(),...override,kind};return safe(()=>flightPerformance(x));}
- return Object.freeze({version:'N1-v0.7-PERF-v0.5',variants,n1,flightPerformance,live,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
+ return Object.freeze({version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
 };const api=make(root,root.B737N1TablesV07,root.B737PerfTablesV05);root.B737PerformanceEngineV07=api;if(typeof module==='object'&&module.exports)module.exports=api;})(globalThis);

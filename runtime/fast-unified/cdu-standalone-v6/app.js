@@ -21,7 +21,7 @@ function n1EstimateV19(){
  const p=window.parent, engine=p.B737PerformanceEngineV07;
  if(!engine||!state.engineInstallation)return null;
  const context=engine.liveContext();
- if(context.model!==state.engineInstallation.aircraftModel)return null;
+ if(context.model!==state.engineInstallation.aircraftModel||context.rating!==state.engineInstallation.ratingLbf)return null;
  const f=p.B737UnifiedFlightScenarioV1?.getState?.(), toga=p.B737UnifiedTOGACh4V1?.getState?.();
  const chosen=$('n1-v6-phase')?.value||'AUTO';
  let mode=state.page==='TAKEOFF'?'TO':state.page==='CLB'?'CLB':state.page==='CRZ'?'CRZ':

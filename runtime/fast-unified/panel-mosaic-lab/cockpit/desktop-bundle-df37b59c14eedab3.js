@@ -392,7 +392,7 @@ try{
   form.addEventListener('submit', event => {
     event.preventDefault();
     const values = new FormData(form);
-    const editableFields = ['aircraftModel','pressurization','engineInstruments'];
+    const editableFields = ['aircraftModel','engineVariant','pressurization','engineInstruments'];
     const changes = Object.fromEntries(editableFields.map(field => [field, values.get(field)]));
     try {
       store.set(changes);

@@ -14,7 +14,8 @@
   'CFM56-3B2':Object.freeze({label:'CFM56-3 B2',rating:'22K',ratingLbf:22000}),
   'CFM56-3C1':Object.freeze({label:'CFM56-3 C1',rating:'23.5K',ratingLbf:23500})
  });
- const MODELS=Object.freeze(['737-300','737-400','737-500']);
+ const ALLOWED=Object.freeze({"737-300":["CFM56-3B3","CFM56-3B2"],"737-300W":["CFM56-3B3","CFM56-3B2"],"737-500":["CFM56-3B1","CFM56-3B3"],"737-500W":["CFM56-3B1","CFM56-3B3"],"737-400":["CFM56-3B2","CFM56-3C1"]});
+ const MODELS=Object.freeze(Object.keys(ALLOWED));
  const family=model=>model==='737-400'?'B737-400':'B737-300-500';
  const assignedEngine=model=>model==='737-400'?'CFM56-3B2':'CFM56-3B3';
  function select(profile){
@@ -23,12 +24,12 @@
    throw Error('INVALID_TRAINER_INSTALLATION');
   if(profile.aircraftFamily&&profile.aircraftFamily!==family(model))
    throw Error('INCONSISTENT_AIRCRAFT_MODEL_AND_FAMILY');
-  if(variant!==assignedEngine(model))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
+  if(!ALLOWED[model].includes(variant))throw Error('ENGINE_RATING_MUST_FOLLOW_AIRCRAFT_FAMILY');
   const engine=RATINGS[variant];
-  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({'737-300':'EP-FSI','737-400':'EP-AOA','737-500':'EP-FSA'})[model],
+  return Object.freeze({version:VERSION,aircraftModel:model,aircraftFamily:family(model),registration:({"737-300":"EP-FSI","737-300W":"EP-FSV","737-500":"EP-FSA","737-500W":"EP-FSG","737-400":"EP-AOA"})[model],
    engineVariant:variant,engineLabel:engine.label,engineRating:engine.rating,
    ratingLbf:engine.ratingLbf,provenance:'FAMILY_DERIVED_TRAINER_CONFIGURATION',
-   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model}),
+   MODEL:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_AIRCRAFT_MODEL',value:model.replace(/W$/,'')}),
    ENG_RATING:Object.freeze({quality:'VALID',origin:'SELECTED_TRAINER_ENGINE_RATING',value:engine.rating})
   });
  }

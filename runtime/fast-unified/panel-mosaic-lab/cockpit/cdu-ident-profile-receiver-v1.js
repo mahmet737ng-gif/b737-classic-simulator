@@ -37,7 +37,7 @@
  root.addEventListener('pageshow',request);
  root.B737CDUIdentReceiverV1=Object.freeze({
   getState:()=>current?{aircraftModel:current.aircraftModel,
-   engineVariant:current.engineVariant,engineRating:current.engineRating}:null,
+   registration:current.registration,engineVariant:current.engineVariant,engineRating:current.engineRating}:null,
   version:model.VERSION
  });
  request();
