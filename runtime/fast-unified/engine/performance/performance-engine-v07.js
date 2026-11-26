@@ -19,6 +19,8 @@
  function n1(input){
   const spec=variants[input.model];if(!spec)fail('MODEL_REQUIRED');const rating=input.rating??selectedRating(input.model);if(!spec.ratings.includes(rating))fail('INVALID_RATING_FOR_MODEL');const p={...spec,rating};
   const {mode,altFt,tatC,oatC,iasKt,engines=2,packs='AUTO',engineAI=false,wingAI=false,pmc='ON',assumedC=null}=input;
+  const takeoffRating=input.takeoffRating??p.rating;
+  if(takeoffRating!==p.rating&&(!['TO','R-TO'].includes(mode)||!rows.to.some(r=>r.model===p.model.replace(/W$/,'')&&r.installed_rating===p.rating&&r.rating===takeoffRating)))fail('FIXED_DERATE_TABLE_UNAVAILABLE');
   if(!['AUTO','OFF','HIGH'].includes(packs)||![1,2].includes(engines)||!['ON','OFF'].includes(pmc))fail('INVALID_CONFIGURATION');
   const used=[],corr={};let v,source,proxy=null;
   const nativeQ=(model,mode)=>fetch(q,model,p.rating,mode);let tableModel=p.model;
@@ -29,7 +31,7 @@
    if(mode==='R-TO'||finite(assumedC)){
     if(pmc!=='ON'||packs==='HIGH'||!finite(assumedC)||assumedC<=oatC)fail('INVALID_ASSUMED_TEMP_CONFIGURATION');
     let reducedModel=baseModel;if(baseModel==='737-300'&&p.rating===20000){if(input.allowProxy!==true)fail('NATIVE_300_ASSUMED_TEMP_NOT_AVAILABLE');reducedModel='737-500';}markProxy(reducedModel);
-    const k=kind=>baseModel==='737-400'&&p.rating===22000?fetch(qr,kind):fetch(fr,reducedModel,p.rating,p.rating,kind);
+    const k=kind=>baseModel==='737-400'&&p.rating===22000?fetch(qr,kind):fetch(fr,reducedModel,p.rating,takeoffRating,kind);
     const maxRows=k('max_assumed_temp');if(!maxRows?.length)fail('ASSUMED_TEMP_NOT_AVAILABLE');
     const max=grid(maxRows,['x','y'],[altFt,Math.max(Math.min(...maxRows.map(r=>r.y)),oatC)],'value',used), min=grid(k('min_assumed_temp'),['x'],[altFt],'value',used);
     if(assumedC<min||assumedC>max)fail('ASSUMED_TEMP_OUTSIDE_ENVELOPE');
@@ -37,7 +39,7 @@
    }else{
     if(packs==='HIGH')fail('TO_HIGH_PACK_CORRECTION_NOT_AVAILABLE');
     const pack=pmc==='ON'?'AUTO':packs;
-    const native=fetch(ft,baseModel,p.rating,p.rating,pmc,pack);
+    const native=fetch(ft,baseModel,p.rating,takeoffRating,pmc,pack);
     if(baseModel==='737-400'&&p.rating===22000){v=grid(fetch(old,'FPPM',baseModel,p.rating,'TO',pmc,pack),['alt_ft','temp_c'],[altFt,oatC],'n1',used);source='FPPM';}
     else if(native?.length){markProxy(baseModel);v=grid(native,['alt_ft','oat_c'],[altFt,oatC],'n1',used);source='FCOM_TRAINING';}
     else if(baseModel==='737-300'&&p.rating===20000){
@@ -68,7 +70,7 @@
    source='QRH_'+m;
   }
   const n=v+Object.values(corr).reduce((s,x)=>s+x,0);
-  return result(n,p,used,{mode,source,proxy,corrections:corr,baseN1Pct:v,trainingOnly:true});
+  return result(n,p,used,{mode,source,proxy,corrections:corr,baseN1Pct:v,takeoffRating,trainingOnly:true});
  }
  function flightPerformance(input){
   const {model,kind,altFt,weightKg,isaDeltaC,margin=1.3,speed='LRC',rating='MCT',engineAI=false,wingAI=false}=input;

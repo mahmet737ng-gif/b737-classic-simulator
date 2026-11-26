@@ -26,8 +26,12 @@ function n1EstimateV19(){
  const chosen=$('n1-v6-phase')?.value||'AUTO';
  let mode=state.page==='TAKEOFF'?'TO':state.page==='CLB'?'CLB':state.page==='CRZ'?'CRZ':
   chosen!=='AUTO'?chosen:toga?.phase==='GA'?'GA':toga?.phase==='TO'?'TO':context.engines===1?'CON':(f?.onGround===true||f?.airborne===false)?'TO':String(f?.phase||'').toUpperCase().includes('CRUISE')?'CRZ':'CLB';
- if(state.page==='N1_LIMIT'&&!f&&chosen==='AUTO')mode='TO';
- const overrides={};
+ if(state.page==='N1_LIMIT'&&state.fmcOnGroundVerified!==false)mode='TO';
+ const selected=core.n1Selection(state);
+ if(state.fmcOnGroundVerified===false&&mode==='CLB')mode=selected.selectedClimb;
+ if(state.fmcOnGroundVerified===false&&state.page==='N1_LIMIT'){const manual=core.readValue(state,'N1_MANUAL_MODE');if(manual&&manual!=='AUTO')mode=manual;}
+ const overrides={clb2Available:true};
+ if(mode==='TO')overrides.takeoffRating=selected.selectedRating;
  const number=v=>{const m=String(v??'').trim().match(/^([+-]?\d+(?:\.\d+)?)\s*(?:°?C)?$/i);return m?Number(m[1]):null};
  const alt=number($('n1-v6-altitude')?.value);
  if(alt!==null)overrides.altFt=alt;
@@ -42,6 +46,16 @@ function n1EstimateV19(){
  return {...r,status:'SIM_ESTIMATE',phase:mode,maxN1Pct:r.n1Pct};
 }
 
+function n1PageData(n1){
+ const engine=window.parent.B737PerformanceEngineV07;
+ if(!engine||!state.engineInstallation)return {};
+ const x=core.n1Selection(state),ctx=engine.liveContext(),oat=x.oat??ctx.oatC;
+ const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,limits:{}};
+ if(state.fmcOnGroundVerified===false)for(const mode of ['GA','CON','CLB','CRZ']){
+  const r=engine.live(mode,{clb2Available:true});if(r.status==='TRAINING_TABLE')result.limits[mode]=r.n1Pct;
+ }
+ return result;
+}
 function position(el,box){const [x1,y1,x2,y2]=box;Object.assign(el.style,{left:x1/1199*100+'%',top:y1/1312*100+'%',width:(x2-x1)/1199*100+'%',height:(y2-y1)/1312*100+'%'});}
 function makeControls(){const click=$('clickmap');for(const c of map.controls){let el=document.createElement('button');el.type='button';el.className='hotspot '+c.shape;position(el,c.bbox_px);el.title=c.label+' — '+c.id;el.dataset.short=c.label;el.setAttribute('aria-label',c.label);let handled=false,timer;el.addEventListener('pointerdown',()=>{if(c.id.endsWith('KEY_CLR')){handled=false;timer=setTimeout(()=>{handled=true;core.press(state,pages,c.id,{longPress:true});update()},700)}});el.addEventListener('pointerup',()=>clearTimeout(timer));el.addEventListener('pointerleave',()=>clearTimeout(timer));el.addEventListener('pointercancel',()=>clearTimeout(timer));el.addEventListener('click',()=>{if(!handled){send(c.id)}else handled=false});el.addEventListener('focus',()=>{if($('selected-code'))$('selected-code').textContent=JSON.stringify(c,null,2)});click.appendChild(el);byId[c.id]=el;}
  const outputs=$('annunciators');for(const a of map.outputs){const el=document.createElement('div');el.id=a.id;el.className='annunciator '+a.color+(a.label==='EXEC'?' exec':'');let b=a.sprite_bbox_px;position(el,b);if(a.illuminated_sprite){const pic=document.createElement('img');pic.className='light-glyph';pic.src=a.illuminated_sprite;el.appendChild(pic);}outputs.appendChild(el);byId[a.id]=el;}}
@@ -216,7 +230,7 @@ function applyCDUScreenTypography(box){
    node.style.setProperty('font-family',f,'important');
    const entry=node.classList?.contains('cdu-entry-placeholder');
    const navigation=node.classList?.contains('cdu-lsk-prompt');
-   node.style.setProperty('font-size',(entry?px*1.10:navigation?px*1.05:size)+'px','important');
+   node.style.setProperty('font-size',(entry?px*1.012:navigation?px*.966:size)+'px','important');
    node.style.setProperty('font-weight','400','important');
    node.style.setProperty('line-height',
     isScratch?'1':isHeader?'.92':small?'.72':entry?'.96':'.77','important');
@@ -230,8 +244,8 @@ function applyCDUScreenTypography(box){
     if(!span.textContent?.trim()||!ctx||typeof span.getBoundingClientRect!=='function')continue;
     const available=span.getBoundingClientRect().width;
     if(!(available>0))continue;
-    const textSize=span.classList.contains('cdu-entry-placeholder')?px*1.10:
-     span.classList.contains('cdu-lsk-prompt')?px*1.05:size;
+    const textSize=span.classList.contains('cdu-entry-placeholder')?px*1.012:
+     span.classList.contains('cdu-lsk-prompt')?px*.966:size;
     ctx.font='400 '+textSize+'px "'+f+'"';
     const measured=ctx.measureText(span.textContent).width;
     const factor=measured>available-2?(available-2)/measured:1;
@@ -251,8 +265,8 @@ function applyCDUScreenTypography(box){
  box.dataset.labelCapRatio='2x-previous';
  box.dataset.pageValueScale='1.44';
  box.dataset.pageLabelScale='1.8';
- box.dataset.entryPromptScale='1.10';
- box.dataset.navigationPromptScale='1.05';
+ box.dataset.entryPromptScale='1.012';
+ box.dataset.navigationPromptScale='0.966';
  box.dataset.lastRowSafe='true';
  box.dataset.scratchpadScale='1';
  box.dataset.valueLine='LSK_CENTER';
@@ -272,7 +286,7 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  }
  function update(){syncPlanReview();const box=$('fmc-lines'); const frame=document.createElement('div');
  const {screenTop,screenHeight}=CDU_DISPLAY_GEOMETRY;
- const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const perf=state.page==='PERF_INIT'?core.perfRows(state):state.page==='PERF_LIMITS'?core.perfLimitsRows(state):null; const chapter11=perf??window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
+ const page=pages[state.page]; const nativePage=chapter11RoutePages?.view(state); const perf=state.page==='PERF_INIT'?core.perfRows(state):state.page==='PERF_LIMITS'?core.perfLimitsRows(state):null; const n1Screen=state.page==='N1_LIMIT'?core.n1Rows(state,n1PageData(v19SafeN1())):null; const chapter11=perf??n1Screen??window.CDU_SG_API?.chapter11CatalogView?.()??window.CDU_SG_API?.routeView?.(nativePage)??nativePage??window.CDU_STAGE6_API?.chapter11CatalogView?.()??sourceOfflineCatalog(); const tag=(core.pendingCount(state)>0)?'MOD ':'ACT ';
  const header=document.createElement('div'); header.className='fmc-line fmc-header'; header.style.top=((110-screenTop)/screenHeight*100)+'%';
  const ht=document.createElement('span'); ht.className='fmc-header-title'; ht.textContent=chapter11?.title??((TITLE_PLAIN.has(state.page)?'':tag)+page.title);
  const hc=document.createElement('span'); hc.className='fmc-header-count'; hc.textContent=(chapter11?.number??page.page_number??1)+'/'+(chapter11?.count??page.page_count); header.appendChild(ht); header.appendChild(hc); frame.appendChild(header);
@@ -344,8 +358,8 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
       if(right?.action&&!right.field&&!right.value&&labelR&&!valueR){valueR=labelR;labelR='';}
     }
     if(state.page==='CRZ'&&row===4){const p=state.fmcPageInputs?.trainingPerformance;if(Number.isFinite(p?.fuelAtDestinationKg))valueL=(p.fuelAtDestinationKg/1000).toFixed(1);}
-    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR=n1.mode+' N1 EST';valueR=n1.maxN1Pct.toFixed(1)+'% EST';}
-   if(n1&&state.page==='TAKEOFF'&&row===3){labelL=n1.mode+' N1 EST';valueL=n1.maxN1Pct.toFixed(1)+'% EST';}
+    if(n1&&state.page==='N1_LIMIT'&&row===1){labelR=n1.mode+' N1';valueR=n1.maxN1Pct.toFixed(1)+'/'+n1.maxN1Pct.toFixed(1);}
+   if(n1&&state.page==='TAKEOFF'&&row===3){labelL=n1.mode+' N1';valueL=n1.maxN1Pct.toFixed(1)+'%';}
    frame.appendChild(makePairRow(labelTop,labelL,labelR,false,true));
    const valueLine=makePairRow(valueTop,valueL,valueR);
    if(state.page==='POS_INIT'&&row===1){

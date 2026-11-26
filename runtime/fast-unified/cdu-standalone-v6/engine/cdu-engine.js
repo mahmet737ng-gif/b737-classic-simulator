@@ -223,7 +223,8 @@ function perfEnter(s,cell){
  }else if(k==='CI'){
   if(!validate('CI_CL',input))return bad();patch[k]=String(Number(input));
  }else if(k==='CRZ_ALT'||k==='TRANS_ALT'){
-  const n=perfAlt(input);if(n===null||n<0||n>41000||k==='CRZ_ALT'&&n<1000)return bad();patch[k]=k==='CRZ_ALT'?perfFL(n):String(n);
+  const raw=k==='CRZ_ALT'?input.replace(/^\//,''):input;
+  const n=k==='CRZ_ALT'&&/^\d{2,3}$/.test(raw)?Number(raw)*100:perfAlt(raw);if(n===null||n<0||n>41000||k==='CRZ_ALT'&&n<1000)return bad();patch[k]=k==='CRZ_ALT'?perfFL(n):String(n);
  }else if(k==='CRZ_WIND'){
   const a=input.replace('°','').split('/');if(a.length!==2||!/^\d{1,3}$/.test(a[0])||Number(a[0])>360||!/^\d{1,3}$/.test(a[1]))return bad();
   patch[k]=String(Number(a[0])%360).padStart(3,'0')+'/'+String(Number(a[1]));
@@ -245,6 +246,66 @@ function perfLimitEnter(s,k){
  perfStore(s,{[k]:cas+'/'+Number(mach).toFixed(3).slice(1)});
 }
 
+// N1 LIMIT preflight: use the installed rating, independently selected takeoff
+// rating, assumed-temperature calculation and armed climb limit.
+function n1Choices(s){
+ const rating=s.engineInstallation?.ratingLbf,model=String(s.engineInstallation?.aircraftModel||'').replace(/W$/,'');
+ const fixed=model==='737-300'&&rating===22000?[20000]:model==='737-400'&&rating===23500?[22000]:[];
+ return {rating,takeoff:[rating,...fixed],climb:['CLB','CLB-1','CLB-2']};
+}
+const n1Temp=v=>{const m=/^([+-]?\d{1,3})(?:°?([CF]))?$/.exec(String(v??'').trim().toUpperCase());if(!m)return null;const t=Number(m[1]);return m[2]==='F'?Math.round((t-32)*5/9):t;};
+function n1Selection(s){
+ const choices=n1Choices(s),to=perfValue(s,'TO_DERATE')||'TO',ti=to==='TO-1'?1:to==='TO-2'?2:0;
+ const mode=choices.takeoff[ti]?to:'TO',rating=choices.takeoff[ti]||choices.rating;
+ const climb=perfValue(s,'CLB_DERATE')||'CLB';
+ return {...choices,mode,selectedRating:rating,selectedClimb:choices.climb.includes(climb)?climb:'CLB',sel:n1Temp(perfValue(s,'SEL_TEMP')),oat:n1Temp(perfValue(s,'OAT'))};
+}
+function n1Rows(s,data={}){
+ const x=n1Selection(s),air=s.fmcOnGroundVerified===false,pair=(labelL,valueL,labelR,valueR,extra={})=>({labelL,valueL,labelR,valueR,...extra});
+ const format=v=>Number.isFinite(v)?v.toFixed(1)+'/'+v.toFixed(1):'---.-/---.-';
+ const temp=v=>Number.isFinite(v)?(v>=0?'+':'')+v+'°C':'----';
+ const label=r=>Number.isFinite(r)?r/1000+'K':'';
+ if(air){
+  const mode=perfValue(s,'N1_MANUAL_MODE')||'AUTO';
+  return {title:'N1 LIMIT',number:1,count:1,rows:[pair('','<AUTO','','',{centerValue:mode==='AUTO'?'<ACT>':''}),...['GA','CON','CLB','CRZ'].map(m=>pair('','<'+m,'',format(data.limits?.[m]),{centerValue:mode===m?'<ACT>':''})),pair('','<CLB-1','','CLB-2>',{centerLabel:'REDUCED CLB',centerValue:x.selectedClimb!=='CLB'?'<SEL>':''})]};
+ }
+ const act=m=>x.mode===m?' <ACT>':'',sel=m=>x.selectedClimb===m?'<SEL> ':'';
+ const oat=x.oat??data.oatC;
+ const rows=[pair('SEL/OAT',(x.sel===null?'----':temp(x.sel))+'/'+temp(oat),(x.sel!==null&&Number.isFinite(data.takeoffN1)?'RED ':'')+(label(x.selectedRating)||'XXK')+' N1',format(data.takeoffN1)),
+ pair(label(x.rating),'<TO'+act('TO'),'',sel('CLB')+'CLB>'),
+ pair(x.takeoff[1]?label(x.takeoff[1])+' DERATE':'',x.takeoff[1]?'<TO-1'+act('TO-1'):'TO-1','',sel('CLB-1')+'CLB-1>'),
+ pair(x.takeoff[2]?label(x.takeoff[2])+' DERATE':'',x.takeoff[2]?'<TO-2'+act('TO-2'):'TO-2','',sel('CLB-2')+'CLB-2>'),
+ pair('','<PERF INIT','','TAKEOFF>',{separator:true}),pair('','','','')];
+ return {title:'N1 LIMIT',number:1,count:1,rows};
+}
+function n1Enter(s,pages,key){
+ const x=n1Selection(s),input=clean(s.scratch),air=s.fmcOnGroundVerified===false,invalid=()=>addMessage(s,'INVALID ENTRY'),inactive=()=>addMessage(s,'KEY INACTIVE');
+ if(air){
+  const m={L1:'AUTO',L2:'GA',L3:'CON',L4:'CLB',L5:'CRZ'}[key];
+  if(input)return invalid();
+  if(m){perfStore(s,{N1_MANUAL_MODE:m});return;}
+  if(key==='L6'||key==='R6'){perfStore(s,{CLB_DERATE:key==='L6'?'CLB-1':'CLB-2'});return;}
+  return inactive();
+ }
+ if(key==='L5'||key==='R5'){choose(s,pages,key==='L5'?'PERF_INIT':'TAKEOFF');return;}
+ if(key==='L1'){
+  if(!input){if(x.sel!==null||x.oat!==null){s.scratch=(x.sel??'')+'/'+(x.oat??'');s.message='';}else inactive();return;}
+  if(input==='DELETE'){perfStore(s,{SEL_TEMP:''});return;}
+  const a=input.split('/');if(a.length>2)return invalid();
+  const sel=a[0]?n1Temp(a[0]):x.sel,oat=a.length===2&&a[1]?n1Temp(a[1]):x.oat;
+  if((a[0]&&sel===null)||(a.length===2&&a[1]&&oat===null)||!a.some(Boolean)||sel!==null&&(sel< -60||sel>80)||oat!==null&&(oat< -80||oat>60))return invalid();
+  const sensed=s.fmcPageInputs?.airData?.oatC,actual=oat??sensed;
+  if(sel!==null&&Number.isFinite(actual)&&sel<=actual)return invalid();
+  perfStore(s,{SEL_TEMP:sel===null?'':String(sel),OAT:oat===null?'':String(oat)});return;
+ }
+ if(input)return invalid();
+ if(/^L[234]$/.test(key)){
+  const i=Number(key[1])-2;if(!x.takeoff[i])return inactive();
+  perfStore(s,{TO_DERATE:i?'TO-'+i:'TO',CLB_DERATE:i?'CLB-'+i:'CLB'});return;
+ }
+ if(/^R[234]$/.test(key)){const i=Number(key[1])-2;perfStore(s,{CLB_DERATE:i?'CLB-'+i:'CLB'});return;}
+ inactive();
+}
 function field(st,cell){const f=cell.field; if(!f)return;
  if(st.page==='POS_INIT'&&enterPosInitField(st,cell))return;
  if(st.page==='PERF_INIT'&&perfEnter(st,cell))return;
@@ -287,6 +348,7 @@ function pressLSK(st,pages,key){st.lastLSK=key;const def=pages[st.page];if(!def)
    return;
   }
  }
+ if(st.page==='N1_LIMIT'){n1Enter(st,pages,key);return;}
  if(st.page==='DEP_ARR'){selectDepArrAirport(st,pages,key);return;}
  if(st.page==='PERF_LIMITS'&&key==='R6'){choose(st,pages,'PROG2');st.subpage=2;return;}
  const [side,number]=[key[0],Number(key[1])];const item=def.rows[number-1]?.[side==='L'?0:1];
@@ -340,7 +402,7 @@ function pressNative(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|
  if(k==='NEXT_PAGE'||k==='PREV_PAGE'){ const positions=['POS_INIT','POS_REF','POS_SHIFT']; if(positions.includes(st.page)){const offset=k==='NEXT_PAGE'?1:-1;choose(st,pages,positions[(positions.indexOf(st.page)+offset+positions.length)%positions.length]);return st;} const pairs={PERF_INIT:['PERF_INIT','PERF_LIMITS'],PERF_LIMITS:['PERF_INIT','PERF_LIMITS'],RTE:['RTE','FLIGHT_PLAN'],FLIGHT_PLAN:['RTE','FLIGHT_PLAN'],PROG:['PROG','PROG2'],PROG2:['PROG','PROG2']}; if(pairs[st.page]){ const page=pairs[st.page];choose(st,pages,st.page===page[0]?page[1]:page[0]); }else addMessage(st,'END OF PAGES'); return st; }
  addMessage(st,'KEY INACTIVE');return st;}
 // FCOM 11.40.56 / 11.60.10: changed performance inputs invalidate entered V speeds.
-const V_SPEED_INPUTS=[...PERF_KEYS,'FLAPS','CG','OAT','SEL_TEMP','TO_DERATE','CLB_DERATE','RUNWAY','TO_SHIFT','INTERSECT'];
+const V_SPEED_INPUTS=[...PERF_KEYS,'FLAPS','CG','OAT','SEL_TEMP','TO_DERATE','RUNWAY','TO_SHIFT','INTERSECT'];
 function takeoffInputSignature(s){return JSON.stringify(V_SPEED_INPUTS.map(k=>readValue(s,k,k==='RUNWAY'?'RTE':'PERF_INIT')));}
 function invalidateTakeoffSpeeds(s){
  let had=false;
@@ -381,5 +443,5 @@ function render(st,pages){const p=pages[st.page];if(!p)return Array(14).fill('')
  return lines.map(l=>String(l).slice(0,24)); }
 function lights(st){return {CALL:!!st.call,FAIL:!!st.fail,MSG:!!st.message,OFST:!!st.offsetGuidance,EXEC:st.routeActivationArmed===true||executableKeys(st).length>0};}
 function inspect(st,pages,key){if(!/^([LR][1-6])$/.test(key))return null;const c=pages[st.page]?.rows[Number(key[1])-1]?.[key[0]==='L'?0:1];return c?{page:st.page,lsk:key,...c,reference:pages[st.page].source_ref}:null;}
-return {clearOriginLocal,onAirGround,invalidateTakeoffSpeeds,perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
+return {n1Rows,n1Selection,clearOriginLocal,onAirGround,invalidateTakeoffSpeeds,perfRows,perfLimitsRows,perfData,settlePerfWeight,makeState,press,pressLSK,pendingCount,readValue,render,lights,inspect,validate,clearPending,choose,hasStagedRoute};
 });
