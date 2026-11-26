@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e86b23f2bfe26f51e94789c727adf6a5109cbe646a08cb8b03f61732f17a4f7f"
+      "sha256": "4714bf65d70dbd2883430668828a07d65dde2c1ef1d12ff6ec5db2a86ead0d86"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -180,7 +180,7 @@
     },
     {
       "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
-      "sha256": "91c67b86144e4090820fd43236ca5c2d1a9d68307ef4a0545915d860df0cf7e0"
+      "sha256": "2244317678f51c4e0f78ff499024bcd5a1a7d0a5b954f3d45922c0aee6438379"
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",

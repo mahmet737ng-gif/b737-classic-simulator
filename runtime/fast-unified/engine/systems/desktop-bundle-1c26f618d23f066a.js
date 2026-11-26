@@ -991,7 +991,7 @@ try{
   // Reduced GA retains the existing climb-rate training proxy. Full GA and
   // takeoff follow the computed limit; manual reference bugs are irrelevant.
   const tracking=fm.thrust!=='GA_REDUCED'&&packet?.valid===true;
-  if(phase==='TO'&&packet&&!tracking){thrustFeedback='NOT_APPLIED_'+packet.reason;return;}
+  if((phase==='TO'||phase==='CLB')&&!tracking){thrustFeedback='NOT_APPLIED_'+(packet?.reason||'FMC_N1_UNAVAILABLE');return;}
   const finger=state.phase+':'+state.presses+':'+state.throttleFraction+':'+state.n1SelectedAfterArm;
   if(!tracking&&lastThrust===finger)return;
   const engines=tracking?owner()?.getPropulsionSnapshot?.()?.engines:null;
