@@ -80,13 +80,22 @@ function view(){
     const native=geometry.get(cdu),n=geometry.get(nd),c=geometry.get(cp);
     if(!(native.w>0&&native.h>0&&n.w>0&&n.h>0&&c.w>0&&c.h>0))return;
     const gap=10,available=Math.max(250,innerWidth-4*gap),height=Math.max(120,innerHeight-90);
-    const ratios=[native.w/native.h,n.w/n.h,c.w/c.h],sum=ratios.reduce((a,b)=>a+b,0);
-    const scale=Math.min(height,available/sum);
-    const widths=ratios.map(x=>x*scale),total=widths.reduce((a,b)=>a+b,0)+2*gap;
-    let x=(innerWidth-total)/2;const y=Math.max(6,(innerHeight-70-scale)/2);
+    const ratios=[native.w/native.h,n.w/n.h,c.w/c.h];
+    // Relative to the previous equal-height layout: CDU +20%, EHSI unchanged,
+    // EFIS CP 50%. Reserve the released width for the CDU; fit as a group on
+    // smaller screens and keep all original interactive elements intact.
+    const factors=[1.2,1,0.5];
+    const sum=ratios.reduce((a,b,i)=>a+b*factors[i],0);
+    const oldScale=Math.min(height,available/ratios.reduce((a,b)=>a+b,0));
+    const scale=Math.min(oldScale,height/Math.max(...factors),available/sum);
+    const heights=factors.map(f=>scale*f);
+    const widths=ratios.map((r,i)=>r*heights[i]);
+    const total=widths.reduce((a,b)=>a+b,0)+2*gap;
+    let x=(innerWidth-total)/2;
     for(const [i,e] of last.entries()){
+     const y=Math.max(6,(innerHeight-70-heights[i])/2);
      e.style.setProperty('--lab-x',x+'px');e.style.setProperty('--lab-y',y+'px');
-     e.style.setProperty('--lab-w',widths[i]+'px');e.style.setProperty('--lab-h',scale+'px');
+     e.style.setProperty('--lab-w',widths[i]+'px');e.style.setProperty('--lab-h',heights[i]+'px');
      x+=widths[i]+gap;
     }
     cdu.style.setProperty('--lab-native-w',native.w+'px');cdu.style.setProperty('--lab-native-h',native.h+'px');
