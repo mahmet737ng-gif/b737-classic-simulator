@@ -31,7 +31,7 @@
   ...row,id:row.key+'_'+side,engine:'engine'+side,cx:row.x[side-1],cy:row.y,
   length:row.radius*.44,width:row.radius*.10,gap:row.radius*.06
  }))));
- const needle=Object.freeze({color:'#83a220',shape:'single-straight-line',linecap:'butt'});
+ const needle=Object.freeze({color:'#36e76f',shape:'single-straight-line',linecap:'butt'});
  function eisAngle(spec,value){
   if(!Number.isFinite(value))return null;
   const fraction=Math.max(0,Math.min(1,(value-spec.min)/(spec.max-spec.min)));

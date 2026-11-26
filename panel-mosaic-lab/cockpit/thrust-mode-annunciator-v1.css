@@ -3,13 +3,17 @@
  * registration is provisional and requires visual inspection on Unified.
  */
 .texture-piece[data-piece="engine"] .unified-tmd-fcom{
- position:absolute;left:40%;top:34%;width:25%;height:5%;
+ position:absolute;left:46.05%;top:26.45%;width:10.45%;height:2.65%;
  display:flex;align-items:center;justify-content:center;
  margin:0;padding:0;box-sizing:border-box;pointer-events:none;
- color:#e4edcf;background:#111614;
+ color:#f0f4e8;background:transparent;
  text-shadow:0 0 2px #d0dfac,0 0 5px #536741;
- font:700 clamp(8px,1.35vw,16px)/1.1 "Lucida Console",Consolas,monospace;
+ font:700 clamp(7px,.85vw,14px)/1.1 "Lucida Console",Consolas,monospace;
  letter-spacing:.035em;white-space:nowrap;z-index:7;
  border-radius:1px;overflow:hidden}
 .texture-piece[data-piece="engine"] .unified-tmd-fcom[hidden]{display:none!important}
 .reference-mode .unified-tmd-fcom{display:none!important}
+
+.texture-piece[data-piece="engine"] .unified-tat-eis{position:absolute;left:81.65%;top:27.65%;width:5.65%;height:2.65%;display:flex;align-items:center;justify-content:center;color:#43ed81;font:700 12px/1 monospace;background:transparent;pointer-events:none;z-index:7;white-space:nowrap}
+.texture-piece[data-piece="engine"] .unified-tat-eis[hidden]{display:none!important}
+.reference-mode .unified-tat-eis{display:none!important}

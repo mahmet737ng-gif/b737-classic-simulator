@@ -29,7 +29,7 @@
  }
  function mount(win){
   const doc=win.document;
-  let face=null,mode=null,revision=0,fmcPacket=null;
+  let face=null,tat=null,mode=null,revision=0,fmcPacket=null;
   function fmcSignal(){
    const net=win.B737UnifiedAvionicsNetworkV1;
    const record=net?.getSignal?.('fmc.computed');
@@ -56,12 +56,26 @@
     face.setAttribute('aria-label','Thrust Mode Display, FMC N1 limit');
     face.setAttribute('role','status');
     piece.appendChild(face);
+    tat?.remove();
+    tat=doc.createElement('output');tat.className='unified-tat-eis';
+    tat.setAttribute('aria-label','Total air temperature, training ISA model, degrees Celsius');piece.appendChild(tat);
    }
    const eis=doc.documentElement.dataset.engineIndication!=='CONVENTIONAL';
+   const bus=win.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+   const feeds=['generator1','generator2','transfer1','transfer2','dc1','dc2','acStandby','battery','switchedHotBattery','dcStandby'];
+   const dark=!!bus&&feeds.every(id=>bus[id]===false);
+   const visible=eis&&!dark;
+   const flight=win.B737UnifiedFlightScenarioV1?.getState?.();
+   const alt=Number.isFinite(flight?.altitudeFt)?flight.altitudeFt:0;
+   const mach=Number.isFinite(flight?.mach)?flight.mach:Number.isFinite(flight?.tasKt)?Math.min(.95,Math.max(0,flight.tasKt/660)):0;
+   const sat=15-1.98*Math.min(36089,alt)/1000;
+   const temperature=Math.round((sat+273.15)*(1+.2*mach*mach)-273.15);
+   tat.hidden=!visible;tat.textContent=(temperature>=0?'+':'')+temperature;
+   tat.title='ISA +15°C sea level, 1.98°C per 1000 ft, ideal ram rise (training approximation)';
    const next=resolve(observation());
-   const changed=mode?.mode!==next.mode||mode?.origin!==next.origin||face.hidden===eis;
+   const changed=mode?.mode!==next.mode||mode?.origin!==next.origin||face.hidden===visible;
    if(changed){
-    face.hidden=!eis;
+    face.hidden=!visible;
     if(face.textContent!==next.mode)face.textContent=next.mode;
     face.dataset.source=next.origin;
     face.title='FCOM 7.10.1–2 · '+next.origin+
@@ -83,7 +97,7 @@
   win.addEventListener('b737:flight-scenario-stopped',()=>{fmcPacket=null;present();});
   for(const ev of ['b737:cockpit-mounted','b737:engine-indication-view',
    'b737:flight-scenario-state','b737:toga-mode','b737:aircraft-profile-change',
-   'b737:unified-ecu-observation'])
+   'b737:unified-ecu-observation','b737:electrical-v7-state','b737:electrical-network'])
    win.addEventListener(ev,present);
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',present,{once:true});
   else present();

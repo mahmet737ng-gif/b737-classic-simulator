@@ -246,6 +246,14 @@
    const nextMode=desired==='CONVENTIONAL'?'CONVENTIONAL':'EIS';
    if(mode!==nextMode){mode=nextMode;lastPaint.clear();}
    const observed=api().fromEcu(live);
+   // Explicit educational AVM approximation. Instructor overrides below take precedence.
+   for(const id of ['engine1','engine2']){
+    const rpm=observed[id]?.n2?.value;
+    if(numeric(rpm)&&!observed[id].vibration){
+     const v=rpm<5?0:rpm<55?1.5*(rpm-5)/50:1.5+.5*Math.min(1,(rpm-55)/45);
+     observed[id].vibration={value:v,unit:'units',valid:true,origin:'TRAINER_AVM_ESTIMATE',quality:'TRAINING_SIMULATION_ONLY'};
+    }
+   }
    for(const id of ['engine1','engine2'])for(const [param,override] of Object.entries(sensorOverrides[id])){
     observed[id][param]=copy(override);
    }
