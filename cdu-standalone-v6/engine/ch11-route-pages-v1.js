@@ -68,9 +68,11 @@
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
   native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
+  if(star)rows.push(star);
+  // Keep the editable next VIA/TO slot after all populated route segments.
+  // This is an entry placeholder, not a route discontinuity.
   if(!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
-  if(star)rows.push(star);
   return rows;
  }
  function routeCount(s,list){
@@ -113,11 +115,11 @@
    const first=1+(number-2)*ROUTE_ROWS;
    for(let i=0;i<ROUTE_ROWS;i++)rows.push(routeRow(list,first+i,i===0));
   }
-  const action=routeAction(s,list);
+  const action=routeAction(s,native);
   const needsActivation=s.stage6PendingPlan&&!s.stage6AwaitingExec;
   rows.push(pair(DASH,action?.side==='L'?action.label:'',DASH,
    needsActivation?'ACTIVATE>':action?.side==='R'?action.label:''));
-  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,list),rows};
+  return {title:titleWithStatus(s,'RTE'),number,count:routeCount(s,native),rows};
  }
  function routeCell(s,k){
   if(!RTE.has(s.page)||!/^LSK_[LR][1-5]$/.test(k))return null;
