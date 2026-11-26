@@ -294,12 +294,15 @@ function n1Enter(s,pages,key){
   const a=input.split('/');if(a.length>2)return invalid();
   const sel=a[0]?n1Temp(a[0]):x.sel,oat=a.length===2&&a[1]?n1Temp(a[1]):x.oat;
   if((a[0]&&sel===null)||(a.length===2&&a[1]&&oat===null)||!a.some(Boolean)||sel!==null&&(sel< -60||sel>80)||oat!==null&&(oat< -80||oat>60))return invalid();
-  const sensed=s.fmcPageInputs?.airData?.oatC,actual=oat??sensed;
+  // The common departure provider owns sensed OAT; airborne or stale FMC
+  // air data must not reject a valid departure selection.
+  const actual=oat??(typeof globalThis.CDU_VALIDATE_TAKEOFF_N1==='function'?null:s.fmcPageInputs?.airData?.oatC);
   if(sel!==null&&Number.isFinite(actual)&&sel<=actual)return invalid();
   // Validate the proposed pair before committing it to the shared FMC.
   // Never replace a working thrust limit with a rejected table input.
   if(sel!==null&&typeof globalThis.CDU_VALIDATE_TAKEOFF_N1==='function'){
    const computed=globalThis.CDU_VALIDATE_TAKEOFF_N1({...x,sel,oat});
+   s.n1EntryDiagnostic={reason:computed?.reason??null,details:computed?.details??null,context:computed?.takeoffContext??null};
    if(computed?.status!=='TRAINING_TABLE'||!Number.isFinite(computed.n1Pct)){
     if(['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION','OUTSIDE_TABLE_DOMAIN'].includes(computed?.reason))return invalid();
     return addMessage(s,'N1 DATA UNAVAILABLE');

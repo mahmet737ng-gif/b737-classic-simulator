@@ -22,7 +22,7 @@
   const takeoffRating=input.takeoffRating??p.rating;
   if(takeoffRating!==p.rating&&(!['TO','R-TO'].includes(mode)||!rows.to.some(r=>r.model===p.model.replace(/W$/,'')&&r.installed_rating===p.rating&&r.rating===takeoffRating)))fail('FIXED_DERATE_TABLE_UNAVAILABLE');
   if(!['AUTO','OFF','HIGH'].includes(packs)||![1,2].includes(engines)||!['ON','OFF'].includes(pmc))fail('INVALID_CONFIGURATION');
-  const used=[],corr={};let v,source,proxy=null;
+  const used=[],corr={};let v,source,proxy=null,assumedTemperatureEnvelope=null;
   const nativeQ=(model,mode)=>fetch(q,model,p.rating,mode);let tableModel=p.model;
   const baseModel=p.model.replace(/W$/,'');
   const markProxy=model=>{if(model!==p.model){if(input.allowProxy!==true)fail('NATIVE_WINGLET_N1_NOT_EXTRACTED');proxy=model+'/'+(p.rating/1000)+'K (N1 ONLY)';}return model;};
@@ -34,7 +34,8 @@
     const k=kind=>baseModel==='737-400'&&p.rating===22000?fetch(qr,kind):fetch(fr,reducedModel,p.rating,takeoffRating,kind);
     const maxRows=k('max_assumed_temp');if(!maxRows?.length)fail('ASSUMED_TEMP_NOT_AVAILABLE');
     const max=grid(maxRows,['x','y'],[altFt,Math.max(Math.min(...maxRows.map(r=>r.y)),oatC)],'value',used), min=grid(k('min_assumed_temp'),['x'],[altFt],'value',used);
-    if(assumedC<min||assumedC>max)fail('ASSUMED_TEMP_OUTSIDE_ENVELOPE');
+    assumedTemperatureEnvelope={minimumC:min,maximumC:max,altFt,oatC,takeoffRating};
+     if(assumedC<min||assumedC>max){const e=Error('ASSUMED_TEMP_OUTSIDE_ENVELOPE');e.details=assumedTemperatureEnvelope;throw e;}
     v=grid(k('assumed_n1_base'),['x','y'],[altFt,assumedC],'value',used)-grid(k('assumed_n1_delta'),['x','y'],[oatC,assumedC-oatC],'value',used)+(packs==='OFF'?1:0);source=baseModel==='737-400'&&p.rating===22000?'QRH_REDUCED':'FCOM_TRAINING_REDUCED';
    }else{
     if(packs==='HIGH')fail('TO_HIGH_PACK_CORRECTION_NOT_AVAILABLE');
@@ -70,7 +71,7 @@
    source='QRH_'+m;
   }
   const n=v+Object.values(corr).reduce((s,x)=>s+x,0);
-  return result(n,p,used,{mode,source,proxy,corrections:corr,baseN1Pct:v,takeoffRating,trainingOnly:true});
+  return result(n,p,used,{mode,source,proxy,corrections:corr,baseN1Pct:v,takeoffRating,assumedTemperatureEnvelope,trainingOnly:true});
  }
  function flightPerformance(input){
   const {model,kind,altFt,weightKg,isaDeltaC,margin=1.3,speed='LRC',rating='MCT',engineAI=false,wingAI=false}=input;
@@ -84,7 +85,7 @@
   else fail('PERFORMANCE_KIND_UNSUPPORTED');
   out.pages=[...new Set(used.map(r=>r.page))];return out;
  }
- const safe=fn=>{try{return fn()}catch(e){return{status:'UNAVAILABLE',reason:String(e.message||e),n1Pct:null,trainingOnly:true}}};
+ const safe=fn=>{try{return fn()}catch(e){return{status:'UNAVAILABLE',reason:String(e.message||e),details:e.details??null,n1Pct:null,trainingOnly:true}}};
  function liveContext(){
   const model=root.B737AircraftProfileStore?.get?.()?.aircraftModel;
   const f=root.B737UnifiedFlightScenarioV1?.getState?.();
@@ -104,6 +105,64 @@
   const prop=root.B737ISNCockpitV1?.getPropulsionSnapshot?.()?.engines;
   const count=prop?['engine1','engine2'].filter(k=>prop[k]?.running).length:2;
   return {model,rating:selectedRating(model),engineRating:selectedRating(model),altFt,oatC:sat,tatC,iasKt,weightKg:c?.massKg,isaDeltaC:finite(sat)&&finite(isa)?sat-isa:null,engines:count===1?1:2,packs:'AUTO',engineAI:false,wingAI:false,pmc:'ON',allowProxy:true,clb2Available:false,contextQuality:{altitude:finite(adc?.pressureAltitudeFt)?'ADC':'TRAINING_REFERENCE',oat:finite(oatC)?'OBSERVED':'ISA_ASSUMPTION',tat:finite(measuredTat)?'OBSERVED':'TRAINING_ESTIMATE',configuration:'REFERENCE_AUTO_PACKS_ANTIICE_OFF_PMC_ON'}};
+ }
+ // Shared departure input owner: CDU validation and the committed N1 schedule
+ // must use the same airport, pressure altitude and OAT. Never recalculate
+ // departure thrust from the airborne pressure altitude.
+ let groundDeparture=null;
+ function takeoffContext(origin,override={}){
+  const ctx=liveContext();
+  const scenario=root.B737UnifiedFlightScenarioV1;
+  const f=scenario?.getDiagnostics?.()?.active===true?scenario.getState?.():null;
+  const loc=root.B737UnifiedFlightLocationV1?.getLocation?.();
+  const ground=root.B737UnifiedAvionicsNetworkV1?.getSignal?.('aircraft.airground');
+  const ecu=root.B737ISNCockpitV1?.getECUState?.()?.aircraft;
+  const onGround=typeof f?.airborne==='boolean'?!f.airborne:typeof f?.onGround==='boolean'?f.onGround:ground?.quality==='VALID'&&typeof ground.value?.onGround==='boolean'?ground.value.onGround:ecu?.onGround;
+  const current=String(f?.icao||loc?.icao||'').toUpperCase();
+  const requested=String(origin||current||'').toUpperCase();
+  const airport=/^[A-Z]{4}$/.test(requested)?requested:'';
+  const key=[ctx.model,ctx.rating,airport].join('/');
+  const matched=!airport||!current||airport===current;
+  const explicit=Number.isFinite(override.altFt);
+  const airportRef=root.B737FlightScenarioCoreV1?.AIRPORTS?.[airport];
+  const field=airportRef?.elevationFt;
+  let altFt=null,oatC=null,altitudeSource='DEPARTURE_UNAVAILABLE',oatSource='DEPARTURE_UNAVAILABLE';
+  if(explicit){
+   altFt=override.altFt;altitudeSource='EXPLICIT_STANDALONE_REFERENCE';
+   oatC=Number.isFinite(override.oatC)?override.oatC:matched?ctx.oatC:null;
+   oatSource=Number.isFinite(override.oatC)?'PILOT_ENTRY':matched?ctx.contextQuality?.oat:'ISA_ASSUMPTION';
+  }else if(onGround===false&&groundDeparture?.key===key){
+   ({altFt,oatC,altitudeSource,oatSource}=groundDeparture);
+  }else if(onGround===true&&matched&&Number.isFinite(ctx.altFt)&&(ctx.contextQuality?.altitude==='ADC'||f)){
+   altFt=ctx.altFt;oatC=ctx.oatC;altitudeSource='GROUND_PRESSURE_ALTITUDE';oatSource=ctx.contextQuality?.oat;
+  }else if(Number.isFinite(field)){
+   // Published simulator field elevation is NOT observed pressure altitude.
+   // In the absence of a departure pressure sample, the reference explicitly
+   // assumes 1013.25 hPa; never substitute the altitude of another airport.
+   altFt=field;altitudeSource='AIRPORT_ELEVATION_STANDARD_PRESSURE_TRAINING';
+   if(onGround===true&&matched){oatC=ctx.oatC;oatSource=ctx.contextQuality?.oat;}
+  }else if(onGround!==false&&matched&&Number.isFinite(ctx.altFt)){
+   altFt=ctx.altFt;oatC=ctx.oatC;altitudeSource='GROUND_TRAINING_REFERENCE';oatSource=ctx.contextQuality?.oat;
+  }
+  if(!Number.isFinite(oatC)&&Number.isFinite(altFt)){oatC=Math.max(-56.5,15-.0019812*altFt);oatSource='ISA_ASSUMPTION';}
+  if(!explicit&&onGround===true&&matched&&Number.isFinite(altFt)&&Number.isFinite(oatC))groundDeparture={key,altFt,oatC,altitudeSource,oatSource};
+  if(Number.isFinite(override.oatC)){oatC=override.oatC;oatSource='PILOT_ENTRY';}
+  return {...ctx,...override,altFt,oatC,departureAirport:airport,departureMatched:matched,onGround,
+   contextQuality:{...ctx.contextQuality,altitude:altitudeSource,oat:oatSource}};
+ }
+ function takeoff(origin,mode,override={}){
+  const x={...takeoffContext(origin,override),mode};
+  const context={airport:x.departureAirport,altFt:x.altFt,oatC:x.oatC,quality:x.contextQuality};
+  const unavailable=(reason,details=null)=>({status:'UNAVAILABLE',reason,details,n1Pct:null,trainingOnly:true,takeoffContext:context});
+  if(!Number.isFinite(x.altFt)||!Number.isFinite(x.oatC))return unavailable('DEPARTURE_CONDITIONS_UNAVAILABLE');
+  if(mode==='R-TO'&&(!Number.isFinite(x.assumedC)||x.assumedC<=x.oatC))return unavailable('INVALID_ASSUMED_TEMP_CONFIGURATION',{oatC:x.oatC,altFt:x.altFt});
+  const result=safe(()=>n1(x));
+  if(result.status==='TRAINING_TABLE'&&mode==='R-TO'){
+   const full=safe(()=>n1({...x,mode:'TO',assumedC:null}));
+   if(full.status!=='TRAINING_TABLE'||!Number.isFinite(full.n1Pct))return unavailable(full.reason||'FULL_RATED_N1_UNAVAILABLE',result.assumedTemperatureEnvelope);
+   if(result.n1Pct>full.n1Pct+.01)return unavailable('REDUCED_N1_ABOVE_RATED',result.assumedTemperatureEnvelope);
+  }
+  return {...result,contextQuality:x.contextQuality,takeoffContext:context};
  }
  function live(mode,override={}){const x={...liveContext(),...override,mode};return {...safe(()=>n1(x)),contextQuality:x.contextQuality};}
  // Display-only training estimate, never consumed by coupledLimits or A/T.
@@ -146,13 +205,16 @@
    const rating=derate==='TO'?ctx.rating:derate==='TO-1'&&base==='737-300'&&ctx.rating===22000?20000:derate==='TO-1'&&base==='737-400'&&ctx.rating===23500?22000:null;
    if(!rating)return invalid('FIXED_DERATE_TABLE_UNAVAILABLE');
    const oat=parseTemp(active.OAT),sel=parseTemp(active.SEL_TEMP);
-   const signature=[profileKey,derate,oat,sel].join('/');
-   if(onGround===false&&departure?.signature===signature)return departure.packet;
+   const origin=active.ORIGIN||'';
+   const signature=[profileKey,origin,derate,oat,sel].join('/');
+   if(onGround===false){if(departure?.signature===signature)return departure.packet;return invalid('GROUND_DEPARTURE_LIMIT_NOT_CAPTURED');}
    const o={...options,takeoffRating:rating,...(oat===null?{}:{oatC:oat})};
-   const full=live('TO',o),reduced=sel===null?full:live('R-TO',{...o,assumedC:sel});
+   const dep=takeoffContext(origin,o);
+   if(!dep.departureMatched)return invalid('DEPARTURE_LOCATION_MISMATCH');
+   const full=takeoff(origin,'TO',o),reduced=sel===null?full:takeoff(origin,'R-TO',{...o,assumedC:sel});
    if(full.status!=='TRAINING_TABLE'||reduced.status!=='TRAINING_TABLE'||!finite(full.n1Pct)||!finite(reduced.n1Pct))return invalid(reduced.reason||full.reason||'N1_TABLE_UNAVAILABLE');
    if(sel!==null&&reduced.n1Pct>full.n1Pct+.01)return invalid('REDUCED_N1_ABOVE_RATED');
-   const packet={valid:true,mode:sel===null?'TO':'R-TO',rating,derate,referencePct:full.n1Pct,atLimitPct:reduced.n1Pct,source:reduced.source,proxy:reduced.proxy,pages:reduced.pages,trainingOnly:true};
+   const packet={valid:true,mode:sel===null?'TO':'R-TO',rating,derate,referencePct:full.n1Pct,atLimitPct:reduced.n1Pct,source:reduced.source,proxy:reduced.proxy,pages:reduced.pages,takeoffContext:reduced.takeoffContext,trainingOnly:true};
    if(onGround===true)departure={profileKey,signature,packet};
    return packet;
   }
@@ -160,5 +222,5 @@
   if(r.status!=='TRAINING_TABLE'||!finite(r.n1Pct))return invalid(r.reason||'N1_TABLE_UNAVAILABLE');
   return {valid:true,mode:mode==='GA'?'G/A':mode.startsWith('CLB-')?'R-CLB':mode,referencePct:r.n1Pct,atLimitPct:r.n1Pct,source:r.source,proxy:r.proxy,pages:r.pages,trainingOnly:true};
  }
- return Object.freeze({coupledLimits,version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,displayLimit,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
+ return Object.freeze({coupledLimits,version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,displayLimit,livePerformance,liveContext,takeoffContext,takeoff,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
 };const api=make(root,root.B737N1TablesV07,root.B737PerfTablesV05);root.B737PerformanceEngineV07=api;if(typeof module==='object'&&module.exports)module.exports=api;})(globalThis);

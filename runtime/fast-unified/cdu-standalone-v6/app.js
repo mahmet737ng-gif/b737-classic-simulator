@@ -25,10 +25,12 @@ function evaluateTakeoffN1(candidate=core.n1Selection(state)){
  if(context.model!==state.engineInstallation.aircraftModel||context.rating!==state.engineInstallation.ratingLbf)return {status:'UNAVAILABLE',reason:'ENGINE_INSTALLATION_MISMATCH'};
  const override={takeoffRating:candidate.selectedRating,clb2Available:true};
  const altText=$('n1-v6-altitude')?.value;
- if(String(altText??'').trim()!==''&&Number.isFinite(Number(altText)))override.altFt=Number(altText);
+ const embedded=['CAPT','FO'].includes(new URLSearchParams(location.search).get('seat'));
+ if(!embedded&&String(altText??'').trim()!==''&&Number.isFinite(Number(altText)))override.altFt=Number(altText);
  if(Number.isFinite(candidate.oat))override.oatC=candidate.oat;
  if(Number.isFinite(candidate.sel))override.assumedC=candidate.sel;
- return engine.live(Number.isFinite(candidate.sel)?'R-TO':'TO',override);
+ const origin=core.readValue(state,'ORIGIN','RTE');
+ return engine.takeoff(origin,Number.isFinite(candidate.sel)?'R-TO':'TO',override);
 }
 window.CDU_VALIDATE_TAKEOFF_N1=evaluateTakeoffN1;
 function n1EstimateV19(){
@@ -59,7 +61,7 @@ function n1EstimateV19(){
 function n1PageData(n1){
  const engine=window.parent.B737PerformanceEngineV07;
  if(!engine||!state.engineInstallation)return {};
- const x=core.n1Selection(state),ctx=engine.liveContext(),oat=x.oat??ctx.oatC;
+ const x=core.n1Selection(state),ctx=state.fmcOnGroundVerified!==false?engine.takeoffContext(core.readValue(state,'ORIGIN','RTE')):engine.liveContext(),oat=x.oat??ctx.oatC;
  const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,limits:{},limitQuality:{}};
  // Legacy saved invalid entries must not look like accepted reduced thrust.
  if(state.fmcOnGroundVerified!==false&&x.sel!==null&&!n1){

@@ -40,7 +40,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "9ed201266087f855d407fe5e897a4a46c0e7278c2b494d7bcd5bf3af1b76ebf7"
+      "sha256": "068e68cfd46f8af2a4d2fc0f0b75290870238f4b4c9710944aae69ccdc395368"
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
@@ -64,7 +64,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "e4512405c121de4642dfabc332f6d16a2494b2f9ac126b4a28c4f22952a6614a"
+      "sha256": "c4f43c8b4dc41fddc084ad6fdf03cc83f6641d123d7811103690dbd994264558"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -308,7 +308,7 @@
     },
     {
       "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "1576605d0a0cb5804fa9a894f533111c2a66f28aa0bef1a6e3b49c500c792223"
+      "sha256": "b4e134ef7b365c890663ac53eea9588dd0ce784d38599e4833a8b801978cd246"
     },
     {
       "path": "engine/runtime/owner18-electrical-input-v1.js",
