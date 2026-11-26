@@ -232,7 +232,7 @@ try{
   $('hydClose').onclick=()=>dialog.close();
   dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
   dialog.addEventListener('close',()=>{
-   disconnect();model=Core.loadPreset('healthy');preset='healthy';frame.removeAttribute('src');
+   disconnect();frame.removeAttribute('src');renderEisQuantity();
   });
   photoIndicators();buildControls();buildFailureList();
   $('hydOH07Photo').style.backgroundImage='url("'+new URL('../../panel-mosaic-lab/assets/locked/2026-10-23/OH07-08-FLIGHT-NAV-c82458314584.png',document.baseURI).href+'")';
@@ -304,6 +304,7 @@ try{
   s.textContent=css.join('\n');
  }
  function render(){
+  renderEisQuantity();
   if(!dialog||!dialog.open)return;
   const out=output;
   renderPhotoLamps();mark();special();
@@ -425,7 +426,7 @@ try{
  function open(){
   if(!dialog)build();
   if(dialog.open)return true;
-  choosePreset('healthy');
+  // Preserve active system failures and reservoir depletion across lab open/close.
   dialog.showModal();
   const url=new URL(document.getElementById('overheadFrame')?.getAttribute('src')||
     './overhead-stage.html',document.baseURI);
@@ -441,6 +442,55 @@ try{
    .map(n=>({type:'SET_ENV',id:'fireHandle'+n,value:state.handles['ENG'+n].pulled}));
   if(actions.length)after(actions);
  });
+ // The Secondary EIS and OH17 lab consume the very same sensor outputs.
+ // Coordinates are photo-native, from the existing gauge calibration.
+ let eisQtyLayer=null,eisQtyFields={},lastClosedAt=performance.now();
+ function renderEisQuantity(){
+  const piece=document.querySelector('#region-main .texture-piece[data-piece="engine"]');
+  if(!piece)return;
+  const ns='http://www.w3.org/2000/svg';
+  if(eisQtyLayer?.parentNode!==piece){
+   eisQtyLayer?.remove();
+   eisQtyLayer=document.createElementNS(ns,'svg');
+   eisQtyLayer.setAttribute('viewBox','0 0 1235 1274');
+   eisQtyLayer.setAttribute('preserveAspectRatio','none');
+   eisQtyLayer.setAttribute('data-eis-hyd-quantity','true');
+   eisQtyLayer.setAttribute('role','img');
+   eisQtyLayer.setAttribute('aria-label','Hydraulic reservoir quantity, systems A and B, percent full');
+   Object.assign(eisQtyLayer.style,{position:'absolute',inset:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'8'});
+   eisQtyFields={};
+   for(const id of ['A','B']){
+    const q=Cal.gauge(id).qtyWindow;
+    const field=document.createElementNS(ns,'text');
+    for(const [k,v] of Object.entries({x:q.x,y:q.y+5,'text-anchor':'middle','font-family':'Consolas, monospace','font-size':18,'font-weight':700,fill:'#74b66c','data-hyd-system':id}))field.setAttribute(k,String(v));
+    eisQtyLayer.append(field);eisQtyFields[id]=field;
+   }
+   piece.append(eisQtyLayer);
+  }
+  const bus=window.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+  const feeds=['generator1','generator2','transfer1','transfer2','dc1','dc2','acStandby','battery','switchedHotBattery','dcStandby'];
+  const dark=!!bus&&feeds.every(id=>bus[id]===false);
+  const visible=!dark&&document.documentElement.dataset.engineIndication!=='CONVENTIONAL'&&!document.documentElement.classList.contains('reference-mode')&&!document.body?.classList.contains('reference-mode');
+  eisQtyLayer.style.display=visible?'':'none';
+  for(const id of ['A','B']){
+   const value=output?.indications?.['eng.hyd_qty.'+id.toLowerCase()];
+   const text=Number.isFinite(value)?String(Math.round(value)):'---';
+   const field=eisQtyFields[id];
+   if(field.textContent!==text)field.textContent=text;
+   field.setAttribute('aria-label','System '+id+' quantity '+(Number.isFinite(value)?text+' percent':'sensor unavailable'));
+  }
+ }
+ // Keep the training leak running after the test-lab window is closed.
+ // The open lab has its own tick; never step the same model twice.
+ window.setInterval(()=>{
+  const now=performance.now(),dt=Math.max(0,Math.min(.5,(now-lastClosedAt)/1000));lastClosedAt=now;
+  if(!dialog?.open&&dt>0&&model.faults.some(id=>/^(A|B|STBY)_(RAPID_LEAK|LEAK|LOW_QTY|QTY_LOW)$/.test(id))){
+   model=Core.step(model,dt);output=Core.evaluate(model);
+  }
+  renderEisQuantity();
+ },250);
+ for(const event of ['b737:cockpit-mounted','b737:engine-indication-view','b737:electrical-network','b737:electrical-v7-state','b737:electrical-owner-ready'])window.addEventListener(event,renderEisQuantity);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderEisQuantity,{once:true});else renderEisQuantity();
  window.B737HydraulicLabV1=Object.freeze({
   open,getState:()=>Core.clone(model),getOutput:()=>output,
   presets:Core.PRESETS,faults:Core.FAULTS,choosePreset,inject,
