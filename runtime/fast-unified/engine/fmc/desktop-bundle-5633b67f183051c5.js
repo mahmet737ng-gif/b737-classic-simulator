@@ -247,14 +247,46 @@ try{
    if(!keys.length)return snapshot();const bank=startMod();
    for(const k of keys)delete bank.geometries[k];return publish();
   }
-  function stageEnroute(row,points,via='DIRECT'){
+  function shiftGeometry(bank,row){
+   const keys=Object.keys(bank.geometries).filter(k=>/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row).sort((a,b)=>Number(b.slice(4))-Number(a.slice(4)));
+   for(const k of keys){bank.geometries['RTE@'+(Number(k.slice(4))+1)]=bank.geometries[k];delete bank.geometries[k];}
+  }
+  function shiftEnroute(row){
+   if(!connected||!Number.isInteger(row)||row<1||row>250)throw Error('INVALID ROUTE ROW');
+   shiftGeometry(startMod(),row);return publish();
+  }
+  const validRtePoint=p=>p&&isIdent(p.ident)&&validPoint([p.lon,p.lat])&&!(p.lon===0&&p.lat===0);
+  const sameRtePoint=(a,b)=>validRtePoint(a)&&validRtePoint(b)&&a.ident===b.ident&&Math.abs(a.lat-b.lat)<1e-5&&Math.abs(a.lon-b.lon)<1e-5;
+  const routeRaw=p=>({ident:p.ident,lat:p.lat,lon:p.lon,type:'Normal',fly:'Fly-by',...(p.pilotType?{pilotType:p.pilotType}:{})});
+  function makeEnroute(points,via){
+   const fixes=points.map(({ident,lat,lon,pilotType})=>({ident,lat,lon,...(pilotType?{pilotType}:{})}));
+   const program={version:'IRAN-ROUTE-PREVIEW-V2',sourceOnly:true,fmcExecutable:false,runway:null,input:{kind:'RTE',legs:fixes.map(routeRaw),performance:{gsKt:250,vsFpm:2000,rollNm:0,bankDeg:25,variationDeg:0}}};
+   const g={kind:'RTE',ident:String(via),segments:[],fixes,program,renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
+   refreshEditedGeometry(g);return g;
+  }
+  function stageEnroute(row,points,via='DIRECT',options={}){
    if(!connected||!Number.isInteger(row)||row<1||!Array.isArray(points)||points.length<1||points.length>250||
     !points.every(p=>isIdent(p.ident)&&validPoint([p.lon,p.lat])&&!(p.lon===0&&p.lat===0)))throw Error('INVALID ENROUTE REFERENCE');
-   const bank=startMod();for(const k of Object.keys(bank.geometries))if(/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row)delete bank.geometries[k];
-   const fixes=points.map(({ident,lat,lon,pilotType})=>({ident,lat,lon,...(pilotType?{pilotType}:{})}));
-   const segments=fixes.slice(1).map((p,i)=>[[fixes[i].lon,fixes[i].lat],[p.lon,p.lat]]);
-   const program={version:'IRAN-ROUTE-PREVIEW-V2',sourceOnly:true,fmcExecutable:false,runway:null,input:{kind:'RTE',legs:fixes.map(p=>({...p,type:'Normal',fly:'Fly-by'})),performance:{gsKt:250,vsFpm:2000,rollNm:0,bankDeg:25,variationDeg:0}}};
-   bank.geometries['RTE@'+row]={kind:'RTE',ident:String(via),segments,fixes,program,renderStyle:'DASHED_REFERENCE_CHORDS_ONLY'};
+   const bank=startMod();
+   if(options.shift)shiftGeometry(bank,row);
+   else if(!options.preserveFollowing)for(const k of Object.keys(bank.geometries))if(/^RTE@\d+$/.test(k)&&Number(k.slice(4))>=row)delete bank.geometries[k];
+   bank.geometries['RTE@'+row]=makeEnroute(points,via);
+   if(options.preserveFollowing&&options.followingVia){
+    const key='RTE@'+(row+1),old=bank.geometries[key],point=points.at(-1),following=options.followingPoints;
+    if(Array.isArray(following)&&following.length&&following.length<=250&&following.every(validRtePoint)&&sameRtePoint(following[0],point)){
+     bank.geometries[key]=makeEnroute(following,options.followingVia);
+    }else if(!sameRtePoint(old?.fixes?.[0],point)){
+     const raw=old?.program?.input?.legs;
+     if(Array.isArray(raw)&&raw.length){
+      const tail=raw.length>1?raw.slice(1):raw.slice();
+      while(tail.length&&(tail[0].Type??tail[0].type)==='Discontinuity')tail.shift();
+      if(tail.length){old.program.input.legs=[routeRaw(point),{type:'Discontinuity'},...tail];refreshEditedGeometry(old);}
+     }else if(validRtePoint(options.followingFix)){
+      const g=makeEnroute([point,options.followingFix],options.followingVia);
+      g.program.input.legs.splice(1,0,{type:'Discontinuity'});refreshEditedGeometry(g);bank.geometries[key]=g;
+     }
+    }
+   }
    return publish();
   }
 
@@ -303,7 +335,7 @@ try{
   }
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}
-  return Object.freeze({snapshot,subscribe,setConnected,setContext,resetContext,select,chooseRunway,clear,execute,erase,stageEnroute,clearEnrouteFrom,insertPilotBefore,linkDiscontinuity});
+  return Object.freeze({snapshot,subscribe,setConnected,setContext,resetContext,select,chooseRunway,clear,execute,erase,stageEnroute,shiftEnroute,clearEnrouteFrom,insertPilotBefore,linkDiscontinuity});
  }
  return Object.freeze({VERSION,CYCLE,create});
 });
@@ -316,7 +348,7 @@ try{
 /* One shared FMC dataset, with separate CDU display/input state. Unified only. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.B737CduSession=api;})(typeof window==='undefined'?globalThis:window,function(){
  'use strict';
- const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo','lastHoldExit','originResetRevision']);
+ const keys=Object.freeze(['active','pending','stagedRoute','routeActivated','routeActivationArmed','routeRevision','navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','activeVerifiedAirwayEntries','activeVerifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fmcNavDataBanks','fixInfo','lastHoldExit','originResetRevision']);
  const copy=value=>JSON.parse(JSON.stringify(value));
  function extract(state){const shared={};for(const key of keys)if(Object.hasOwn(state,key))shared[key]=copy(state[key]);return shared;}
  function apply(state,shared){for(const key of keys){if(Object.hasOwn(shared,key))state[key]=copy(shared[key]);else delete state[key];}}

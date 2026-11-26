@@ -67,7 +67,11 @@
   }
   const rows=[],sid=procedure('SID',origin),star=procedure('STAR',dest);
   if(sid)rows.push(sid);
-  native.forEach((line,i)=>rows.push({...line,nativeIndex:i+1}));
+  native.forEach((line,i)=>{
+   const raw=bank?.geometries?.['RTE@'+(i+1)]?.program?.input?.legs;
+   const boundaryGap=(i>0&&native[i-1].via&&!native[i-1].to)||Array.isArray(raw)&&raw.some(l=>(l.Type??l.type)==='Discontinuity');
+   rows.push({...line,nativeIndex:i+1,boundaryGap});
+  });
   const boundary=star&&arrivalBoundary(s,native);
   if(boundary)rows.push({gap:true,via:'---',to:'□□□□□',nativeIndex:boundary.arrivalInsertIndex});
   if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
@@ -81,6 +85,7 @@
  function routeNumber(s,list){
   return s.page==='FLIGHT_PLAN'?Math.min(routeCount(s,list),Math.max(2,s.subpage||2)):1;
  }
+ function routeIncomplete(s){return !sourcePlan(s)&&!currentNav(s)&&segments(s).some(row=>row.via&&!row.to);}
  function canActivate(s,list=segments(s)){
   return !s.routeActivated&&!modified(s)&&/^[A-Z]{4}$/.test(entered(s,'ORIGIN'))&&
    /^[A-Z]{4}$/.test(entered(s,'DEST'))&&entered(s,'ORIGIN')!==entered(s,'DEST')&&
@@ -103,7 +108,7 @@
  function routeRow(list,n,head){
   const entry=list[n-1];
   if(entry?.gap)return pair('ROUTE DISCONTINUITY','---','','□□□□□');
-  return pair(head?'VIA':'',entry?.via||'',head?'TO':'',
+  return pair(entry?.boundaryGap?'ROUTE DISCONTINUITY':head?'VIA':'',entry?.via||'',head?'TO':'',
    entry?.to||(entry?.via?'□□□□□':''));
  }
  function route(s){
@@ -309,7 +314,7 @@
    if(!sourcePlan(s)&&!currentNav(s)){
     const typed=[];
     for(const [i,row] of segments(s).entries()){
-     if(!row.to)continue;
+     if(!row.to){if(row.via&&segments(s).slice(i+1).some(x=>x.to))typed.push({gap:true,sourceOnly:true,pendingRoute:true});continue;}
      const key='RTE@'+(i+1),g=bank?.geometries?.[key];
      const pts=pilotGeometryLegs(g,key);
      if(pts&&pts.at(-1)?.ident===row.to){if(pts.length>1)typed.push(...pts.slice(1));else typed.push(...pts);}
@@ -481,6 +486,7 @@
   for(const key of Object.keys(s.pending))if(isRouteField(key))delete s.pending[key];
   s.stagedRoute={};
   s.navFixEvidence={...s.activeNavFixEvidence};
+  s.verifiedAirwayEntries={...s.activeVerifiedAirwayEntries};s.verifiedToEntries={...s.activeVerifiedToEntries};
   s.routeActivationArmed=false;
   s.scratch='';s.message='';
   if(s.stage5Pending){delete s.stage5Pending;s.stage5AwaitingExec=false;}
@@ -699,5 +705,5 @@
   if(s.page==='PROG'||s.page==='PROG2')return progress(s);
   return null;
  }
- return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
+ return Object.freeze({view,invoke,routeCell,isRouteField,modified,canActivate,routeIncomplete,activeReferenceRoute,visibleLegs,holdExecReady,planMode,planCenter,planStep});
 });

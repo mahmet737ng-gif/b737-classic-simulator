@@ -275,9 +275,53 @@
    Number.isFinite(p.lat)&&Number.isFinite(p.lon)).at(-1);
   return fix?{ident:fix.ident,lat:fix.lat,lon:fix.lon}:null;
  }
+ const rteValue=(name,n)=>String(core.readValue(state,name+n,'FLIGHT_PLAN')||'').trim().toUpperCase();
+ function occupied(n){return !!rteValue('TO',n);}
+ function routeEnd(){let last=0;for(let i=1;i<=250;i++)if(rteValue('VIA',i)||rteValue('TO',i))last=i;return last;}
+ function draftRoute(){return state.routeActivated||state.routeActivationArmed?state.pending:state.stagedRoute;}
+ function shiftRouteFields(n){
+  const end=routeEnd();if(end>=250)throw Error('ROUTE FULL');
+  const draft=draftRoute();
+  for(let i=end;i>=n;i--)for(const k of ['VIA','TO'])draft[k+(i+1)]=rteValue(k,i);
+  for(const [mapName,prefix,activeName] of [['navFixEvidence','TO','activeNavFixEvidence'],['verifiedAirwayEntries','VIA','activeVerifiedAirwayEntries'],['verifiedToEntries','TO','activeVerifiedToEntries']]){
+   const map={...(state[activeName]||{}),...(state[mapName]||{})};
+   if(state.routeActivated&&!state[activeName])state[activeName]={...map};
+   for(let i=end;i>=n;i--){const a=prefix+i,b=prefix+(i+1);if(Object.hasOwn(map,a))map[b]=map[a];else delete map[b];}
+   delete map[prefix+n];state[mapName]=map;
+  }
+  draft['VIA'+n]='';draft['TO'+n]='';
+ }
+ const fixedPoint=p=>p&&typeof p.ident==='string'&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180&&(p.lat!==0||p.lon!==0);
+ const samePoint=(a,b)=>fixedPoint(a)&&fixedPoint(b)&&a.ident===b.ident&&Math.abs(a.lat-b.lat)<1e-5&&Math.abs(a.lon-b.lon)<1e-5;
+ async function followingConnection(index,point){
+  const to=rteValue('TO',index);if(!to)return {};
+  const via=rteValue('VIA',index)||'DIRECT',snap=shared.snapshot(),g=(snap.modified||snap.active)?.geometries?.['RTE@'+index];
+  const evidence=state.navFixEvidence?.['TO'+index]||state.activeNavFixEvidence?.['TO'+index],end=g?.fixes?.at(-1);
+  const target=fixedPoint(end)&&end.ident===to?end:fixedPoint(evidence)&&evidence.ident===to?evidence:null;
+  const result={preserveFollowing:true,followingVia:via,followingFix:target};
+  if(!fixedPoint(point))return result;
+  if(['DIRECT','DCT'].includes(via)){if(target)result.followingPoints=samePoint(point,target)?[point]:[point,target];return result;}
+  if(g?.program?.input?.legs?.some(l=>l.pilotType||(l.Type??l.type)==='Discontinuity'))return result;
+  if(target&&samePoint(point,target)){result.followingPoints=[point];return result;}
+  try{
+   const url='/api/cdu/airway-check?from='+encoded(point.ident)+'&airway='+encoded(via)+'&to='+encoded(to)+'&lat='+encoded(point.lat)+'&lon='+encoded(point.lon);
+   const response=await bridge.request(url),proof=await response.json(),pts=proof?.points;
+   if(response.ok&&proof.available===true&&proof.valid===true&&proof.from===point.ident&&proof.airway===via&&proof.to===to&&Array.isArray(pts)&&pts.length>1&&pts.length<=250&&pts.every(fixedPoint)&&samePoint(pts[0],point)&&pts.at(-1).ident===to&&(!target||samePoint(pts.at(-1),target)))result.followingPoints=pts;
+  }catch(_){}
+  return result;
+ }
+ function recordFollowingProof(n,connection,point){
+  const pts=connection.followingPoints,via=connection.followingVia;if(!pts?.length||['DIRECT','DCT'].includes(via))return;
+  const origin=core.readValue(state,'ORIGIN','RTE'),destination=core.readValue(state,'DEST','RTE'),end=pts.at(-1);
+  const proof={airway:via,from:point.ident,origin,destination,source:'OWNER_WPNAVRTE_VERIFIED'};
+  state.verifiedAirwayEntries={...(state.verifiedAirwayEntries||{}),['VIA'+n]:proof};
+  state.verifiedToEntries={...(state.verifiedToEntries||{}),['TO'+n]:{...proof,to:end.ident,fixes:pts.slice(1).map(p=>p.ident)}};
+  state.navFixEvidence={...(state.navFixEvidence||{}),['TO'+n]:end};
+ }
  async function verifyAirwayKey(key,cell){
   if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
-  const from=precedingFix(cell.field),value=String(state.scratch||'').trim().toUpperCase();
+  const n=Number(cell.field.slice(3)),inserting=occupied(n),from=precedingFix(cell.field),value=String(state.scratch||'').trim().toUpperCase();
+  if(inserting&&(routeEnd()>=250||typeof shared.shiftEnroute!=='function')){issue(routeEnd()>=250?'ROUTE FULL':'NAV DATA UNAVAILABLE');return;}
   if(!from||!value){issue('NOT IN DATABASE');return;}
   airwayBusy=true;const ticket=++airwayTicket,revision=shared.snapshot().revision;
   state.message='';update();
@@ -294,14 +338,17 @@
    if(data.valid!==true||data.from!==from.ident||data.airway!==value){
     issue('NOT IN DATABASE');return;
    }
+   if(inserting)shiftRouteFields(n);
    state.verifiedAirwayEntries={...(state.verifiedAirwayEntries||{}),
     [cell.field]:{airway:value,from:from.ident,
      origin:core.readValue(state,'ORIGIN','RTE'),destination:core.readValue(state,'DEST','RTE'),
      source:'OWNER_WPNAVRTE_VERIFIED'}};
    const previous=core.readValue(state,cell.field,'FLIGHT_PLAN');
    state.message='';
-   core.press(state,pages,'CDU_CAPT_'+key);
-   if(bridge.cycle==='AIRAC-2611'&&previous!==value&&core.readValue(state,cell.field,'FLIGHT_PLAN')===value)shared.clearEnrouteFrom?.(Number(cell.field.slice(3)));
+   if(inserting){draftRoute()[cell.field]=value;state.scratch='';shared.shiftEnroute(n);}
+   else{core.press(state,pages,'CDU_CAPT_'+key);
+    if(bridge.cycle==='AIRAC-2611'&&previous!==value&&core.readValue(state,cell.field,'FLIGHT_PLAN')===value)shared.clearEnrouteFrom?.(n);}
+
    update();
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
   finally{if(ticket===airwayTicket)airwayBusy=false;}
@@ -342,6 +389,10 @@
    const fixes=Array.isArray(proof.fixes)&&proof.fixes.length<=250&&
     proof.fixes.every(f=>typeof f==='string'&&/^[A-Z0-9._-]{2,16}$/.test(f))&&
     proof.fixes.at(-1)===input?proof.fixes.slice():[input];
+   const points=proof.points;
+   if(bridge.cycle==='AIRAC-2611'&&(!Array.isArray(points)||points.length<2||points.length>250||!points.every(fixedPoint)||points[0].ident!==from.ident||points.at(-1).ident!==input)){issue('NAV DATA UNAVAILABLE');return;}
+   const connection=bridge.cycle==='AIRAC-2611'?await followingConnection(n+1,points.at(-1)):{};
+   if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||state.scratch.trim().toUpperCase()!==input||shared.snapshot().revision!==revision||core.readValue(state,viaField,'FLIGHT_PLAN')!==via||globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
    state.verifiedToEntries={...(state.verifiedToEntries||{}),
     [cell.field]:{to:input,airway:via,from:from.ident,origin,destination,
      fixes,source:'OWNER_WPNAVRTE_VERIFIED'}};
@@ -350,7 +401,7 @@
    if(bridge.cycle==='AIRAC-2611'&&core.readValue(state,cell.field,'FLIGHT_PLAN')===input&&
       Array.isArray(proof.points)&&proof.points.length>1&&proof.points.at(-1).ident===input){
     const p=proof.points.at(-1);state.navFixEvidence={...(state.navFixEvidence||{}),[cell.field]:p};
-    shared.stageEnroute?.(n,proof.points,via);
+    recordFollowingProof(n+1,connection,p);shared.stageEnroute?.(n,proof.points,via,connection);
    }
    update();
   }catch(_){if(attached&&ticket===airwayTicket)issue('NAV DATA UNAVAILABLE');}
@@ -418,7 +469,8 @@
 
  async function verifyDirectKey(key,cell){
   if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
-  const n=Number(cell.field.slice(2)),input=String(state.scratch||'').trim().toUpperCase();
+  const n=Number(cell.field.slice(2)),input=String(state.scratch||'').trim().toUpperCase(),inserting=occupied(n);
+  if(inserting&&(routeEnd()>=250||typeof shared.shiftEnroute!=='function')){issue(routeEnd()>=250?'ROUTE FULL':'NAV DATA UNAVAILABLE');return;}
   const isPilot=/[\/]/.test(input)||/^[NS]\d{2}.*[EW]\d{3}/.test(input);
   if(!Number.isInteger(n)||(!isPilot&&!core.validate?.('WAYPOINT',input))){issue('INVALID ENTRY');return;}
   if(isPilot){try{if(globalThis.B737PilotWaypointsV1.parse(input).kind==='ATW'){issue('USE LEGS PAGE');return;}}catch(e){issue(e.message);return;}}
@@ -434,11 +486,15 @@
    if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||shared.snapshot().revision!==revision||
     String(state.scratch||'').trim().toUpperCase()!==input||globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
    if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||(!isPilot&&p.ident!==input)){issue('NOT IN DATABASE');return;}
-   state.message='';state.scratch=p.ident;core.press(state,pages,'CDU_CAPT_'+key);
+   const connection=await followingConnection(inserting?n:n+1,p);
+   if(!attached||ticket!==airwayTicket||state.page!=='FLIGHT_PLAN'||shared.snapshot().revision!==revision||state.scratch.trim().toUpperCase()!==input||globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,key)?.field!==cell.field)return;
+   state.message='';state.scratch=p.ident;
+   if(inserting){shiftRouteFields(n);const draft=draftRoute();draft['VIA'+n]='DIRECT';draft[cell.field]=p.ident;state.scratch='';}
+   else core.press(state,pages,'CDU_CAPT_'+key);
    if(core.readValue(state,cell.field,'FLIGHT_PLAN')===p.ident){
     state.navFixEvidence={...(state.navFixEvidence||{}),[cell.field]:p};
-    const pts=from&&Number.isFinite(from.lat)&&Number.isFinite(from.lon)&&from.ident!==p.ident?[from,p]:[p];
-    shared.stageEnroute?.(n,pts,'DIRECT');
+    const pts=fixedPoint(from)&&!samePoint(from,p)?[from,p]:[p];
+    recordFollowingProof(n+1,connection,p);shared.stageEnroute?.(n,pts,'DIRECT',{...connection,shift:inserting,preserveFollowing:inserting||connection.preserveFollowing});
    }
    update();
   }catch(e){if(attached&&ticket===airwayTicket)issue(e.message||'NAV DATA UNAVAILABLE');}
@@ -458,6 +514,7 @@
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
   const k=String(code).replace(/^CDU_CAPT_/,'');
+  if(k==='EXEC'&&globalThis.CDU_CH11_ROUTE_PAGES?.routeIncomplete?.(state)){revisionBeforeExec=null;issue('ENTER TO WAYPOINT');return true;}
   if(k==='EXEC')revisionBeforeExec=mayExecute()?(state.routeRevision||0):null;
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FIX'&&k==='LSK_L1'&&state.scratch){void selectInfoFix();return true;}
   if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&state.scratch){
@@ -491,7 +548,7 @@
       state.navFixEvidence={...(state.navFixEvidence||{}),['TO'+n]:{ident:to.ident,lat:to.lat,lon:to.lon}};
       shared.stageEnroute(n,[from,to],'DIRECT');
      }else{
-      if(gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey)throw Error('INVALID ENTRY');
+      if(gap.pendingRoute||gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey&&!/^RTE@\d+$/.test(gap.geoKey||''))throw Error('INVALID ENTRY');
       shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident);
      }
      state.scratch='';state.message='';update();
@@ -523,6 +580,7 @@
    const cell=globalThis.CDU_CH11_ROUTE_PAGES?.routeCell(state,k);
    if(cell?.format==='WAYPOINT'&&/^TO\d+$/.test(cell.field)){
     const viaField='VIA'+cell.field.slice(2);
+    if(bridge.cycle==='AIRAC-2611'&&occupied(Number(cell.field.slice(2)))){void verifyDirectKey(k,cell);return true;}
     const via=String(core.readValue(state,viaField,'FLIGHT_PLAN')||'').trim().toUpperCase();
     if(via&&via!=='DIRECT'&&via!=='DCT'){
      if(!core.validate?.('WAYPOINT',state.scratch)){issue('INVALID ENTRY');return true;}

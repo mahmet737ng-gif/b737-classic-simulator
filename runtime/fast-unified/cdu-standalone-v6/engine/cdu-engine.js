@@ -67,7 +67,7 @@ function clearOriginLocal(st){
 function resetForOrigin(st,value){
  const active={...SAMPLE};for(const k of ['REF_AIRPORT','GATE','IRS_POS','IRS_HDG','GMT_DATE','LAST_POS'])if(Object.hasOwn(st.active,k))active[k]=st.active[k];
  st.active=active;st.pending={};st.stagedRoute={ORIGIN:value};
- for(const k of ['navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fixInfo','lastHoldExit'])delete st[k];
+ for(const k of ['navFixEvidence','activeNavFixEvidence','verifiedAirwayEntries','verifiedToEntries','activeVerifiedAirwayEntries','activeVerifiedToEntries','navdbActive','navdbPending','navdbStage','stage5Pending','stage5Committed','stage5AwaitingExec','stage6BasePlanId','stage6Selections','stage6PendingPlan','stage6AwaitingExec','fixInfo','lastHoldExit'])delete st[k];
  clearOriginLocal(st);st.routeActivated=false;st.routeActivationArmed=false;
  st.originResetRevision=(st.originResetRevision||0)+1;st.routeRevision=(st.routeRevision||0)+1;
  st.offsetGuidance=false;st.scratch='';st.message='';st.history=[];st.subpage=1;
@@ -313,6 +313,7 @@ function pressNative(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
  if(k==='EXEC'){
+  if(routeScreens?.routeIncomplete?.(st)&&(st.routeActivationArmed||Object.keys(st.pending).some(f=>/^(VIA|TO)\d+$/.test(f)))){addMessage(st,'ENTER TO WAYPOINT');return st;}
   if(routeScreens?.holdExecReady?.(st)===false){addMessage(st,'ENTER INBD CRS');return st;}
   const keys=executableKeys(st);
   if(keys.length||st.routeActivationArmed===true){
@@ -323,6 +324,7 @@ function pressNative(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|
    if(routeChanged){
     st.routeActivated=true;st.routeActivationArmed=false;st.routeRevision=(st.routeRevision||0)+1;
     st.activeNavFixEvidence={...st.navFixEvidence};
+    st.activeVerifiedAirwayEntries={...st.verifiedAirwayEntries};st.activeVerifiedToEntries={...st.verifiedToEntries};
    }
    if(st.page==='ACTIVATE')choose(st,pages,'RTE');
   }
