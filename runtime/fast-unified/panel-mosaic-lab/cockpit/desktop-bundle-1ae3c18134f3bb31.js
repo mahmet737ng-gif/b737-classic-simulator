@@ -92,7 +92,7 @@ try{
  const fitted={1:null,2:null};
  const state={1:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null},
               2:{pulled:false,manualPct:90.0,fmcPct:null,fmcSource:null}};
- let mountNode=null,frame=null,status=null,marker=null,mode='EIS',events=0;
+ let mountNode=null,frame=null,status=null,marker=null,manualWindows={},mode='EIS',events=0;
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const num=v=>typeof v==='number'&&Number.isFinite(v);
  const by=id=>doc.getElementById(id);
@@ -184,6 +184,9 @@ try{
    marker={};
    for(const n of [1,2]){
     marker[n]=el('div',frame,'manual-n1-reference-bug');
+    manualWindows[n]=el('output',frame,'manual-n1-window');
+    manualWindows[n].dataset.engine=String(n);
+    manualWindows[n].setAttribute('aria-label','Engine '+n+' manual N1 reference percent');
     marker[n].title='N1 reference bug · yellow, per FCOM Chapter 7.10';
    }
   }
@@ -201,7 +204,7 @@ try{
   // in natural pixels of the SHA-verified, unmodified engine photograph.
   // Fitting the image into the dark aperture must not alter the switch owner.
   const coords=conventional?[[.318,.404],[.412,.404]]:null;
-  const dial=conventional?[[.293,.402],[.408,.402]]:[[.426,.425],[.587,.425]];
+  const dial=conventional?[[.293,.402],[.408,.402]]:[[536/1235,542/1274],[724/1235,542/1274]];
   for(const n of [1,2]){
    if(conventional){
     css(knobs[n],{left:(coords[n-1][0]*100)+'%',
@@ -222,21 +225,27 @@ try{
   if(!frame)return;
   for(const n of [1,2]){
    const rec=source(n),button=knobs[n],mark=marker[n];
+   const bus=win.B737ISNCockpitV1?.getState?.()?.state?.electrical?.bus;
+   const feeds=['generator1','generator2','transfer1','transfer2','dc1','dc2','acStandby','battery','switchedHotBattery','dcStandby'];
+   const dark=!!bus&&feeds.every(id=>bus[id]===false);
+   manualWindows[n].hidden=mode!=='EIS'||!rec.pulled||dark;
+   manualWindows[n].textContent=rec.pulled?rec.targetPct.toFixed(1):'';
    button.dataset.pulled=String(rec.pulled);
    button.setAttribute('aria-pressed',String(rec.pulled));
    button.title='ENGINE '+n+' N1 '+rec.source+' '+(num(rec.targetPct)?rec.targetPct.toFixed(1)+'%':'UNAVAILABLE')+
     ' · PULL TO SET does not affect A/T operation';
    const r=num(rec.targetPct)?clamp(rec.targetPct,0,120):null;
-   mark.hidden=r===null;
+   mark.hidden=r===null||dark;
    if(r!==null){
     // Calibrated training scale from existing N1 gauge model; angular
     // placement is a visual approximation pending photo-pixel alignment.
     const deg=45+(r/120)*270;
     const cx=Number(mark.dataset.faceX),cy=Number(mark.dataset.faceY);
-    const radius=mode==='CONVENTIONAL'?.038:.060;
+    const radius=mode==='CONVENTIONAL'?.038:65/1235;
+    const radiusY=mode==='CONVENTIONAL'?radius:65/1274;
     const a=deg*Math.PI/180;
     css(mark,{left:((cx+Math.sin(a)*radius)*100)+'%',
-     top:((cy-Math.cos(a)*radius)*100)+'%',transform:'rotate('+deg+'deg)'});
+     top:((cy-Math.cos(a)*radiusY)*100)+'%',transform:'rotate('+deg+'deg)'});
    }
   }
   const a=source(1),b=source(2);
@@ -256,7 +265,7 @@ try{
  }
  win.addEventListener('b737:fmc-n1-limit',verifiedFmc);
  for(const ev of ['b737:cockpit-mounted','b737:engine-indication-view',
-   'b737:flight-scenario-state','b737:toga-mode','b737:aircraft-profile-change']){
+   'b737:flight-scenario-state','b737:toga-mode','b737:aircraft-profile-change','b737:electrical-v7-state','b737:electrical-network']){
   win.addEventListener(ev,()=>{if(ev==='b737:aircraft-profile-change')for(const n of [1,2]){state[n].fmcPct=null;state[n].fmcSource=null;}if(!frame)mount();else if(ev==='b737:engine-indication-view')mount();else paint();});
  }
  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',mount,{once:true});
