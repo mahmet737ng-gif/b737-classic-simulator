@@ -40,7 +40,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "7a7965a5fe5e4b10e9d00c63badb79453e1f8c7866edae9745d92cd19eea735a"
+      "sha256": "9ed201266087f855d407fe5e897a4a46c0e7278c2b494d7bcd5bf3af1b76ebf7"
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
@@ -64,7 +64,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "32836b49f72beff853d308a09c3453ec8f30636c6eb0ef460b94d660904686c1"
+      "sha256": "e4512405c121de4642dfabc332f6d16a2494b2f9ac126b4a28c4f22952a6614a"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -308,7 +308,7 @@
     },
     {
       "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "9d58aef4edd24906768295cba8864762e2b438eaa0f1b0078d6b475b3cbebc5d"
+      "sha256": "1576605d0a0cb5804fa9a894f533111c2a66f28aa0bef1a6e3b49c500c792223"
     },
     {
       "path": "engine/runtime/owner18-electrical-input-v1.js",
@@ -936,7 +936,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",
-      "sha256": "531b3ccab63cdf105d2697b9d4ea44c331f4283ac8fbd3be486fbeb69ca262a5"
+      "sha256": "38cbd973f1b66397da3647f180c34773d44ff421de9837a2a8df36134a6f3a20"
     },
     {
       "path": "panel-mosaic-lab/cockpit/lights.js",

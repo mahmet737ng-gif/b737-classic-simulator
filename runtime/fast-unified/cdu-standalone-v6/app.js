@@ -60,7 +60,7 @@ function n1PageData(n1){
  const engine=window.parent.B737PerformanceEngineV07;
  if(!engine||!state.engineInstallation)return {};
  const x=core.n1Selection(state),ctx=engine.liveContext(),oat=x.oat??ctx.oatC;
- const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,limits:{}};
+ const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,limits:{},limitQuality:{}};
  // Legacy saved invalid entries must not look like accepted reduced thrust.
  if(state.fmcOnGroundVerified!==false&&x.sel!==null&&!n1){
   const reason=state.performanceN1?.reason||'N1_DATA_UNAVAILABLE';
@@ -71,7 +71,9 @@ function n1PageData(n1){
   }
  }else delete state.lastSelTempError;
  if(state.fmcOnGroundVerified===false)for(const mode of ['GA','CON','CLB','CRZ']){
-  const r=engine.live(mode,{clb2Available:true});if(r.status==='TRAINING_TABLE')result.limits[mode]=r.n1Pct;
+  const selected=mode==='CLB'?x.selectedClimb:mode;
+  const r=engine.displayLimit?.(selected,{clb2Available:true})??engine.live(selected,{clb2Available:true});
+  if(['TRAINING_TABLE','TRAINING_ESTIMATE'].includes(r.status)&&Number.isFinite(r.n1Pct)){result.limits[mode]=r.n1Pct;result.limitQuality[mode]=r.status;}
  }
  return result;
 }

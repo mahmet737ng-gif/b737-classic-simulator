@@ -106,6 +106,20 @@
   return {model,rating:selectedRating(model),engineRating:selectedRating(model),altFt,oatC:sat,tatC,iasKt,weightKg:c?.massKg,isaDeltaC:finite(sat)&&finite(isa)?sat-isa:null,engines:count===1?1:2,packs:'AUTO',engineAI:false,wingAI:false,pmc:'ON',allowProxy:true,clb2Available:false,contextQuality:{altitude:finite(adc?.pressureAltitudeFt)?'ADC':'TRAINING_REFERENCE',oat:finite(oatC)?'OBSERVED':'ISA_ASSUMPTION',tat:finite(measuredTat)?'OBSERVED':'TRAINING_ESTIMATE',configuration:'REFERENCE_AUTO_PACKS_ANTIICE_OFF_PMC_ON'}};
  }
  function live(mode,override={}){const x={...liveContext(),...override,mode};return {...safe(()=>n1(x)),contextQuality:x.contextQuality};}
+ // Display-only training estimate, never consumed by coupledLimits or A/T.
+ function displayLimit(mode,override={}){
+  const ctx={...liveContext(),...override};const r=live(mode,override);
+  if(r.status==='TRAINING_TABLE'&&finite(r.n1Pct))return r;
+  if(!['GA','CON','CLB','CLB-1','CLB-2','CRZ'].includes(mode)||!variants[ctx.model]||!finite(ctx.altFt)||!finite(ctx.oatC))return r;
+  if(mode==='CON'&&ctx.engines===2){const o=live('CON',{...override,engines:1});if(o.status==='TRAINING_TABLE'&&finite(o.n1Pct))return {...o,status:'TRAINING_ESTIMATE',source:'OEI_REFERENCE_DISPLAY_ONLY',reason:r.reason};}
+  // Same documented simulator surrogate as ISN thrust planner; not AFM data.
+  const base={GA:96.5,CON:94,CLB:92,'CLB-1':92,'CLB-2':92,CRZ:88}[mode];
+  const isa=15-.0019812*ctx.altFt;
+  const fade=Math.max(0,Math.min(1,1-ctx.altFt/15000));
+  const reduced=mode==='CLB-1'?3*fade:mode==='CLB-2'?6*fade:0;
+  const value=Math.max(0,Math.min(97,base-.08*Math.max(0,ctx.altFt)/1000-.025*Math.max(0,ctx.oatC-isa)-reduced));
+  return {status:'TRAINING_ESTIMATE',n1Pct:value,mode,source:'ISN_TRAINING_SURROGATE_DISPLAY_ONLY',reason:r.reason,trainingOnly:true};
+ }
  function livePerformance(kind,override={}){const x={...liveContext(),...override,kind};return safe(()=>flightPerformance(x));}
  // Shared committed FMC thrust schedule. No CDU-page dependence or manual bug feedback.
  const parseTemp=v=>{const m=/^([+-]?\d+(?:\.\d+)?)\s*(?:°?([CF]))?$/i.exec(String(v??'').trim());return m?(m[2]?.toUpperCase()==='F'?(Number(m[1])-32)*5/9:Number(m[1])):null;};
@@ -146,5 +160,5 @@
   if(r.status!=='TRAINING_TABLE'||!finite(r.n1Pct))return invalid(r.reason||'N1_TABLE_UNAVAILABLE');
   return {valid:true,mode:mode==='GA'?'G/A':mode.startsWith('CLB-')?'R-CLB':mode,referencePct:r.n1Pct,atLimitPct:r.n1Pct,source:r.source,proxy:r.proxy,pages:r.pages,trainingOnly:true};
  }
- return Object.freeze({coupledLimits,version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
+ return Object.freeze({coupledLimits,version:'N1-v0.7-PERF-v0.5',variants,selectedRating,n1,flightPerformance,live,displayLimit,livePerformance,liveContext,safe,counts:Object.fromEntries(Object.entries(rows).map(([k,v])=>[k,v.length]))});
 };const api=make(root,root.B737N1TablesV07,root.B737PerfTablesV05);root.B737PerformanceEngineV07=api;if(typeof module==='object'&&module.exports)module.exports=api;})(globalThis);

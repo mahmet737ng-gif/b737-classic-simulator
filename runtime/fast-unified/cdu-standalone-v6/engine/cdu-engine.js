@@ -267,7 +267,7 @@ function n1Rows(s,data={}){
  const label=r=>Number.isFinite(r)?r/1000+'K':'';
  if(air){
   const mode=perfValue(s,'N1_MANUAL_MODE')||'AUTO';
-  return {title:'N1 LIMIT',number:1,count:1,rows:[pair('','<AUTO','','',{centerValue:mode==='AUTO'?'<ACT>':''}),...['GA','CON','CLB','CRZ'].map(m=>pair('','<'+m,'',format(data.limits?.[m]),{centerValue:mode===m?'<ACT>':''})),pair('','<CLB-1','','CLB-2>',{centerLabel:'REDUCED CLB',centerValue:x.selectedClimb!=='CLB'?'<SEL>':''})]};
+  return {title:'N1 LIMIT',number:1,count:1,rows:[pair('','<AUTO','','',{centerValue:mode==='AUTO'?'<ACT>':''}),...['GA','CON','CLB','CRZ'].map(m=>pair('','<'+m,data.limitQuality?.[m]==='TRAINING_ESTIMATE'?'SIM':'',format(data.limits?.[m]),{centerValue:mode===m?'<ACT>':''})),pair('','<CLB-1','','CLB-2>',{centerLabel:'REDUCED CLB',centerValue:x.selectedClimb!=='CLB'?'<SEL>':''})]};
  }
  const act=m=>x.mode===m?' <ACT>':'',sel=m=>x.selectedClimb===m?'<SEL> ':'';
  const oat=x.oat??data.oatC;
