@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "5441cbaf51c25d8a7fb4e5d0b8669bbabe497bf34e774759b440e019a39c25ef"
+      "sha256": "417478c8f73a6cfab261c4de0b59267f2d4a46e232c49fcb758253ccb557be3b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -1817,6 +1817,34 @@
     {
       "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",
       "sha256": "de79968f8cdbc0cf215a7a3b630065b100f833ec8c65c461e9e87d15a8d30d3e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c0721da98ea446b1.js",
+      "sha256": "c0721da98ea446b1e85c37a3191b0c490ea87f04d0e6f12ddbaebe9faf06de4c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-test-lab-v3.html",
+      "sha256": "15fd665f8012757065ba5c00d14ec8745c6972ecfcb6cc70b6c73c806e2d2a7f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v3.js",
+      "sha256": "c416f28d7d83dccd3c7f9fa0777d3582bbb9bca0bbbc5218a6ad448cc45dba60"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-assets/face.png",
+      "sha256": "2f14db720daf6652e7cdb501cd737ff2cc82243419ba37c6b706be38c3db6e32"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
+      "sha256": "cb511e089c4b3a9f7db5a6f84eec587ef35469af75df40795ee21fae5cd814fc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-assets/gmt.png",
+      "sha256": "7d70662d07325ae4a37a64efe5d4a00c0d6fe3a848d2938f8d32f3d023f0c9f9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-assets/needle.png",
+      "sha256": "46fcc03b4cdbb7c9be4e0cb8c451a0b35683569443f9f0437bbb6d8ea70dc338"
     }
   ]
 }
