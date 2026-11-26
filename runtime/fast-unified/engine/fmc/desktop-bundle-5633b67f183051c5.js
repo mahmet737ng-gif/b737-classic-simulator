@@ -324,14 +324,18 @@ try{
    g.fixes=fixes;g.segments=segments;
   }
   // Close an explicit database discontinuity only between verified fixed legs.
-  function linkDiscontinuity(key,index,expectedPrevious,expectedNext){
+  function linkDiscontinuity(key,index,expectedPrevious,expectedNext,context={}){
    const g=working().geometries[key],raw=g?.program?.input?.legs;
    const type=l=>l?.Type??l?.type,id=l=>l?.Name??l?.ident;
-   const fixed=l=>type(l)==='Normal'&&validPoint([Number(l.Longitude??l.lon),Number(l.Latitude??l.lat)]);
-   if(!connected||!Array.isArray(raw)||!Number.isInteger(index)||index<1||index>=raw.length-1||
-      type(raw[index])!=='Discontinuity'||!fixed(raw[index-1])||!fixed(raw[index+1])||
-      id(raw[index-1])!==expectedPrevious||id(raw[index+1])!==expectedNext)throw Error('INVALID LEG');
-   const bank=startMod();bank.geometries[key].program.input.legs.splice(index,1);refreshEditedGeometry(bank.geometries[key]);return publish();
+   const fixed=l=>['Normal','Runway'].includes(type(l))&&validPoint([Number(l.Longitude??l.lon),Number(l.Latitude??l.lat)]);
+   const external=(point,otherKey,ident)=>validRtePoint(point)&&point.ident===ident&&otherKey&&otherKey!==key;
+   if(!connected||!Array.isArray(raw)||!Number.isInteger(index)||index<0||index>=raw.length||type(raw[index])!=='Discontinuity')throw Error('INVALID LEG');
+   const left=raw[index-1],right=raw[index+1],before=index===0,after=index===raw.length-1;
+   if(before?!external(context.previous,context.previousKey,expectedPrevious):!fixed(left)||id(left)!==expectedPrevious)throw Error('INVALID LEG');
+   if(after?!external(context.next,context.nextKey,expectedNext):!fixed(right)||id(right)!==expectedNext)throw Error('INVALID LEG');
+   const bank=startMod(),edited=bank.geometries[key],legs=edited.program.input.legs;
+   legs.splice(index,1,...(before?[routeRaw(context.previous)]:[]),...(after?[routeRaw(context.next)]:[]));
+   refreshEditedGeometry(edited);return publish();
   }
   function subscribe(fn){if(typeof fn!=='function')throw Error('SUBSCRIBER_REQUIRED');
    listeners.add(fn);fn(snapshot());return ()=>listeners.delete(fn)}

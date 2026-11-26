@@ -310,6 +310,7 @@ function pressNative(st,pages,key,options={}){const k=key.replace(/^CDU_(?:CAPT|
  }
  if(k==='LSK_L1'&&originEntry(st))return st;
  const routeScreens=getRouteScreens(st);
+ if(k==='LEGS'){delete st.planReviewCenter;st.subpage=1;}
  if(routeScreens?.invoke(st,pages,k,{field,stageRouteField,activateStagedRoute,choose,addMessage}))return st;
  if(k.startsWith('LSK_')){pressLSK(st,pages,k.slice(4));return st;}
  if(k==='EXEC'){

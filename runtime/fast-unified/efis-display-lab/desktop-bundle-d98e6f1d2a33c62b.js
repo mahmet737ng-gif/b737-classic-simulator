@@ -1128,7 +1128,8 @@ function drawRoute(svg,m,l,status,plan){
      }
      occupied.push(placement.box);
     }
-   }else waypoint(g,x,y,points[i],color,m.options.rteData,'star',l.calibrated);
+   }else if(plan&&l.calibrated){waypoint(g,x,y,{...points[i],name:''},color,false,'star',true);photoText(g,points[i].name,x+10,y-7,19,color);if(m.options.rteData){photoText(g,points[i].altitude,x+10,y+13,MAP_DETAIL_SIZE,color);photoText(g,points[i].eta,x+10,y+28,MAP_DETAIL_SIZE,color);}}
+   else waypoint(g,x,y,points[i],color,m.options.rteData,'star',l.calibrated);
   });
  }
  if(!m.nav.valid)return;
@@ -1448,6 +1449,25 @@ try{
   }
   return [[x+start*dx,y+start*dy],[x+end*dx,y+end*dy]];
  }
+ function orderedGeometries(bank){
+  const rank=g=>g.kind==='RUNWAY'?0:g.kind==='SID'?1:g.kind==='RTE'?2:g.kind==='STAR'?3:g.kind==='APP'?4:5;
+  return Object.entries(bank).sort(([ak,a],[bk,b])=>rank(a)-rank(b)||(a.kind==='RTE'&&b.kind==='RTE'?Number(ak.slice(4))-Number(bk.slice(4)):0));
+ }
+ // Combine only contiguous fixed enroute segments of the same ACT/MOD bank.
+ // This lets the physical turn model anticipate a turn across VIA/TO rows,
+ // without ever drawing a bridge through an explicit discontinuity.
+ function mergeEnroute(geometries){
+  const result=[],raw=g=>g?.kind==='RTE'&&g.program?.version==='IRAN-ROUTE-PREVIEW-V2'?g.program.input.legs:null;
+  const fixed=l=>['Normal','Runway'].includes(l?.Type??l?.type)&&Number.isFinite(Number(l?.Latitude??l?.lat))&&Number.isFinite(Number(l?.Longitude??l?.lon));
+  const equal=(a,b)=>fixed(a)&&fixed(b)&&(a.Name??a.ident)===(b.Name??b.ident)&&Math.abs(Number(a.Latitude??a.lat)-Number(b.Latitude??b.lat))<1e-5&&Math.abs(Number(a.Longitude??a.lon)-Number(b.Longitude??b.lon))<1e-5;
+  for(const g of geometries){
+   const prev=result.at(-1),a=raw(prev),b=raw(g);
+   if(a?.length&&b?.length&&equal(a.at(-1),b[0])){
+    result[result.length-1]={...prev,program:{...prev.program,input:{...prev.program.input,legs:[...a,...b.slice(1)]}},fixes:[...prev.fixes,...g.fixes.slice(1)]};
+   }else result.push(g);
+  }
+  return result;
+ }
  function draw(svg,source,mode,range,powered,offset,project,anchor,flight=null){
   if(!svg)return 0;
   svg.querySelector('[data-cdu-sg-reference]')?.remove();
@@ -1463,11 +1483,11 @@ try{
    JSON.stringify(value)!==JSON.stringify(active[key]))):null;
   const valid=x=>x?.renderStyle==='DASHED_REFERENCE_CHORDS_ONLY';
   const layers=[
-   {stage:'ACT',color:'#ff47e1',dash:null,geometries:Object.entries(active)
+   {stage:'ACT',color:'#ff47e1',dash:null,geometries:orderedGeometries(active)
     .filter(([k,g])=>valid(g)&&!(g.kind==='RUNWAY'&&pending?.[k]&&
       JSON.stringify(g)!==JSON.stringify(pending[k]))).map(([,g])=>g)},
    ...(changed?[{stage:'MOD',color:Object.keys(active).length?'#ffffff':'#00d9f5',dash:Object.keys(active).length?'4 4':'12 7',
-    geometries:Object.values(changed).filter(valid)}]:[])
+    geometries:orderedGeometries(changed).map(([,g])=>g).filter(valid)}]:[])
   ].filter(layer=>layer.geometries.length);
   if(!layers.length)return 0;
   const state=pending?'MOD':'ACT';
@@ -1503,9 +1523,11 @@ try{
      make(clip,'ellipse',{cx:c[0],cy:c[1],rx,ry});rangeClip='url(#'+id+')';}
    }
   }
+  const labelBoxes=[],seenPlanLabels=new Set();
   for(const layer of layers){
    const plot=make(group,'g',{'data-cdu-sg-plot':'true','data-reference-stage':layer.stage,'clip-path':rangeClip});
-   for(const g of layer.geometries){
+   const labels=mode==='PLAN'?make(group,'g',{'data-plan-labels':'true'}):plot;
+   for(const g of mergeEnroute(layer.geometries)){
     if(g.kind==='RUNWAY'){
      const axis=g.segments?.[0],threshold=g.fixes?.[0];
      const shape=make(plot,'g',{'data-cdu-sg-runway':g.ident,'data-airport':g.airport,
@@ -1589,10 +1611,23 @@ try{
      {
       if(point.estimated)make(plot,'circle',{cx:x,cy:y,r:3.2,fill:'none',stroke:layer.color,'data-conditional-fix':'true'});
       else make(plot,'path',{d:'M'+x+' '+(y-4)+' L'+(x+4)+' '+y+' L'+x+' '+(y+4)+' L'+(x-4)+' '+y+' Z',fill:'none',stroke:layer.color,'stroke-width':1.3,'data-sourced-fix':'true'});
-      const t=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:layer.color,
-       'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace',
-       'data-source-ident':'true'});
-      t.textContent=point.ident;
+      if(mode==='PLAN'){
+       const id=String(point.ident||''),key=id+'@'+point.lat.toFixed(5)+','+point.lon.toFixed(5);
+       if(id&&!seenPlanLabels.has(key)){
+        seenPlanLabels.add(key);
+        const size=19,w=Math.max(24,id.length*size*.64),h=size+3;
+        const offsets=[[10,-9],[-w-10,-9],[10,23],[-w-10,23],[-w/2,-19],[-w/2,36],[14,44],[-w-14,44]];
+        const candidates=offsets.map(([dx,dy])=>({left:x+dx,top:y+dy-h+3,baseline:y+dy}));
+        const fits=b=>b.left>=PLOT.left+4&&b.left+w<=PLOT.right-4&&b.top>=PLOT.top+4&&b.top+h<=PLOT.bottom-4;
+        const free=b=>!labelBoxes.some(a=>b.left<a.left+a.w+3&&b.left+w+3>a.left&&b.top<a.top+a.h+3&&b.top+h+3>a.top);
+        const b=candidates.find(c=>fits(c)&&free(c))||candidates.find(fits);
+        if(b){labelBoxes.push({...b,w,h});const t=make(labels,'text',{x:b.left,y:b.baseline,fill:layer.color,'font-size':size,'font-weight':500,'font-family':'monospace','paint-order':'stroke',stroke:'#000','stroke-width':2,'stroke-linejoin':'round','data-source-ident':'true'});t.textContent=id;}
+       }
+      }else{
+       const t=make(plot,'text',{x:x+(right?-6:6),y:y<65?y+15:y-5,fill:layer.color,
+        'font-size':12,'text-anchor':right?'end':'start','font-family':'monospace','data-source-ident':'true'});
+       t.textContent=point.ident;
+      }
      }
      count++;
     }

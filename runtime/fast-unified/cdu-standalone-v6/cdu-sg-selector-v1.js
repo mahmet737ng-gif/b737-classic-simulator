@@ -513,7 +513,7 @@
  }
  function beforeKey(code){
   if(!attached||!bridge.isConnected())return false;
-  const k=String(code).replace(/^CDU_CAPT_/,'');
+  const k=String(code).replace(/^CDU_(?:CAPT|FO)_/,'');
   if(k==='EXEC'&&globalThis.CDU_CH11_ROUTE_PAGES?.routeIncomplete?.(state)){revisionBeforeExec=null;issue('ENTER TO WAYPOINT');return true;}
   if(k==='EXEC')revisionBeforeExec=mayExecute()?(state.routeRevision||0):null;
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FIX'&&k==='LSK_L1'&&state.scratch){void selectInfoFix();return true;}
@@ -548,8 +548,8 @@
       state.navFixEvidence={...(state.navFixEvidence||{}),['TO'+n]:{ident:to.ident,lat:to.lat,lon:to.lon}};
       shared.stageEnroute(n,[from,to],'DIRECT');
      }else{
-      if(gap.pendingRoute||gap.geoKey!==next.geoKey||gap.geoKey!==prev.geoKey&&!/^RTE@\d+$/.test(gap.geoKey||''))throw Error('INVALID ENTRY');
-      shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident);
+      if(gap.pendingRoute||!gap.geoKey||!fixedPoint(prev)||!fixedPoint(next)||prev.conditional||next.conditional)throw Error('INVALID ENTRY');
+      shared.linkDiscontinuity(gap.geoKey,gap.rawIndex,prev.ident,next.ident,{previous:prev,next,nextKey:next.geoKey,previousKey:prev.geoKey});
      }
      state.scratch='';state.message='';update();
     }catch(e){issue(e.message);}return true;
@@ -599,7 +599,7 @@
  }
  function afterKey(code){
   if(attached)void preloadAirports();
-  if(String(code).replace(/^CDU_CAPT_/,'')!=='EXEC'||!attached||revisionBeforeExec===null||!hasReferenceChanges()||state.routeActivated!==true)return;
+  if(String(code).replace(/^CDU_(?:CAPT|FO)_/,'')!=='EXEC'||!attached||revisionBeforeExec===null||!hasReferenceChanges()||state.routeActivated!==true)return;
   // The shared state is a verified display reference, not a flight-leg
   // execution or the activation of the aircraft FMC/LNAV. EXEC changes
   // the EHSI's cyan dashed MOD REF to magenta solid ACT REF only.

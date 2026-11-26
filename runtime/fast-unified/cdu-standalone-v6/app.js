@@ -413,8 +413,8 @@ function send(k){
    core.press(state,pages,k);update();return;
   }
   syncPlanReview();
-  if(String(k).replace(/^CDU_CAPT_/,'')==='EXEC'&&chapter11RoutePages?.holdExecReady?.(state)===false){state.message='ENTER INBD CRS';update();return;}
-  if(state.page==='LEGS'&&!state.holdAt&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_CAPT_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
+  if(String(k).replace(/^CDU_(?:CAPT|FO)_/,'')==='EXEC'&&chapter11RoutePages?.holdExecReady?.(state)===false){state.message='ENTER INBD CRS';update();return;}
+  if(state.page==='LEGS'&&!state.holdAt&&chapter11RoutePages?.planMode(state)&&String(k).replace(/^CDU_(?:CAPT|FO)_/,'')==='LSK_R6'){core.press(state,pages,k);update();return;}
   if(window.CDU_SG_API?.beforeKey?.(k)){update();return;}
   if(window.CDU_STAGE6_API?.beforeKey?.(k)){update();return;}
  if(window.CDU_STAGE5_API?.beforeKey?.(k)){update();return;}

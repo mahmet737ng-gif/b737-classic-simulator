@@ -213,9 +213,11 @@
    if(!api)return null;
    let prev=null;
    const result=[];
+   // Use the very same estimated conditional coordinates as the EHSI preview.
+   let estimated=[];try{const host=root?.parent,scenario=host?.B737UnifiedFlightScenarioV1;const flight=scenario?.getDiagnostics?.().active===true?scenario.getState?.():null;estimated=host?.B737IranRoutePreviewV2?.trajectory(p,flight?.icao===g.airport?flight:null)?.fixes||[];}catch(_){}
    for(let i=0;i<raw.length;i++){
     const l=raw[i],t=l.Type??l.type,conditional=api.conditional(l);
-    if(conditional){const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed);result.push({...conditional,geoKey:key,rawIndex:i,constraint:(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+(t==='ConstHdgtoAlt'?'A':''):'-----')});prev=null;continue;}
+    if(conditional){const alt=Number(l.Altitude??l.alt),speed=Number(l.Speed??l.speed),point=estimated.find(f=>f.estimated&&f.rawIndex===i&&validPosition(f));result.push({...conditional,...(point?{lat:point.lat,lon:point.lon,estimated:true}:{}),geoKey:key,rawIndex:i,constraint:(speed>0?String(speed):'----')+'/'+(alt>0?String(alt)+(t==='ConstHdgtoAlt'?'A':''):'-----')});prev=null;continue;}
     if(t==='Discontinuity'){result.push({gap:true,sourceOnly:true,geoKey:key,rawIndex:i});prev=null;continue;}
     const id=l.Name??l.ident,lat=Number(l.Latitude??l.lat),lon=Number(l.Longitude??l.lon);
     const pub=t==='Hold'?root?.parent?.B737RouteEngine?.publishedHold?.(l,g,i,g.kind==='SID'?g.airport:null,null):null;
@@ -317,7 +319,7 @@
      if(!row.to){if(row.via&&segments(s).slice(i+1).some(x=>x.to))typed.push({gap:true,sourceOnly:true,pendingRoute:true});continue;}
      const key='RTE@'+(i+1),g=bank?.geometries?.[key];
      const pts=pilotGeometryLegs(g,key);
-     if(pts&&pts.at(-1)?.ident===row.to){if(pts.length>1)typed.push(...pts.slice(1));else typed.push(...pts);}
+     if(pts&&pts.at(-1)?.ident===row.to){const previous=typed.at(-1)||sid.at(-1),first=pts[0];const repeated=pts.length>1&&previous?.ident===first?.ident&&!previous.gap&&!first.gap&&validPosition(previous)&&validPosition(first)&&legDistance(previous,first)<.001;typed.push(...(repeated?pts.slice(1):pts));}
      else {
       const proof=s.verifiedToEntries?.['TO'+(i+1)];
       const verified=proof?.source==='OWNER_WPNAVRTE_VERIFIED'&&proof.airway===row.via&&proof.to===row.to&&proof.origin===origin&&proof.destination===dest&&Array.isArray(proof.fixes)&&proof.fixes.at(-1)===row.to;
@@ -333,7 +335,7 @@
    const boundary=arrivalBoundary(s);
    for(const item of [...sid,...native,...(boundary?[boundary]:[]),...star,...app]){
     if(!item?.ident&&!item?.gap)continue;
-    if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap){
+    if(item.ident&&all.at(-1)?.ident===item.ident&&!item.gap&&!item.conditional&&!all.at(-1)?.conditional&&(!validPosition(item)||!validPosition(all.at(-1))||legDistance(item,all.at(-1))<.001)){
      // The pending source row can carry geometry the native row lacks.
      if(item.publishedRaw||!all.at(-1).sourceOnly&&item.sourceOnly||item.geoKey&&Number.isFinite(item.lat)&&!Number.isFinite(all.at(-1).lat))all[all.length-1]=item;
      continue;
@@ -357,11 +359,11 @@
   return (m[1]||speed||'----')+'/'+(m[2]?m[2]+(m[3]||''):alt||'-----');
  }
  function planMode(s){return s.planReviewMode===undefined?s.ehsi?.mode==='PLAN':s.planReviewMode===true;}
-  function planCandidates(all){return all.map((leg,index)=>({leg,index})).filter(({leg})=>!leg.gap&&!leg.conditional&&validPosition(leg)&&typeof leg.ident==='string');}
+  function planCandidates(all){return all.map((leg,index)=>({leg,index})).filter(({leg})=>!leg.gap&&validPosition(leg)&&typeof leg.ident==='string');}
   function planCenter(s,all=visibleLegs(s)){
    const candidates=planCandidates(all);if(!candidates.length){delete s.planReviewCenter;return null;}
    const old=s.planReviewCenter;
-   const same=x=>old&&x.leg.ident===old.ident&&x.leg.lat===old.lat&&x.leg.lon===old.lon;
+   const same=x=>old&&x.leg.ident===old.ident&&(x.index===old.index||x.leg.lat===old.lat&&x.leg.lon===old.lon);
    const chosen=candidates.find(x=>x.index===old?.index&&same(x))||candidates.find(same)||candidates.find(x=>x.index>=((s.subpage||1)-1)*5)||candidates[0];
    const {leg,index}=chosen;return s.planReviewCenter={index,ident:leg.ident,lat:leg.lat,lon:leg.lon};
   }

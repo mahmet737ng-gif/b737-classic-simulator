@@ -225,11 +225,11 @@ try{
  // MAP and CTR MAP remain aircraft-centered when a real IRS/FMC position exists.
 
  function referencePlanPoints(sg){
-  const geometries=Object.values((sg?.modified||sg?.active)?.geometries||{});
+  const geometries=Object.entries((sg?.modified||sg?.active)?.geometries||{});
   const order=g=>g.kind==='RUNWAY'?0:g.kind==='SID'?1:g.kind==='RTE'?2:g.kind==='STAR'?3:g.kind==='APP'?4:5;
-  const list=geometries.filter(g=>g.kind!=='RUNWAY').sort((a,b)=>order(a)-order(b)).flatMap(g=>g.fixes||[]);
-  const runway=geometries.find(g=>g.kind==='RUNWAY')?.fixes?.[0];
-  return [runway,...list].filter(p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon))
+  const list=geometries.filter(([,g])=>g.kind!=='RUNWAY').sort(([ak,a],[bk,b])=>order(a)-order(b)||(a.kind==='RTE'&&b.kind==='RTE'?Number(ak.slice(4))-Number(bk.slice(4)):0)).flatMap(([,g])=>{const model=globalThis.B737IranRoutePreviewV2?.trajectory(g.program);return (model?.fixes||g.fixes||[]).filter(p=>!/^RW\d{2}[LRC]?$/.test(p.ident));});
+  const runway=geometries.find(([,g])=>g.kind==='RUNWAY')?.[1]?.fixes?.[0];
+  return (list.length?list:[runway]).filter(p=>p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon))
     .filter((p,i,a)=>!i||p.ident!==a[i-1].ident||p.lat!==a[i-1].lat||p.lon!==a[i-1].lon);
  }
 
