@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "8537ad81dd020c992bf0b83ab02a109445477b80bd225b47ba7f59c73a37cd87"
+      "sha256": "fec1e6bd8505fe960515c651eb33da97fa1b32d55d9507ffe691084e091c0802"
     },
     {
       "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
@@ -1845,6 +1845,14 @@
     {
       "path": "panel-mosaic-lab/cockpit/clock-assets/needle.png",
       "sha256": "46fcc03b4cdbb7c9be4e0cb8c451a0b35683569443f9f0437bbb6d8ea70dc338"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v5.js",
+      "sha256": "00063b0424a974438e5a87f70aa3f10b9e801c9116afb022467a9d75392c1433"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/clock-embedded-v5.html",
+      "sha256": "d012f5c926b0abd69414cf83ca636d4eb14f1fb5ca29313edda225267d95884d"
     }
   ]
 }
