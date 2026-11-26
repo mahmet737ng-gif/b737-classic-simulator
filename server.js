@@ -96,8 +96,35 @@ const fastRuntime=(()=>{
   if(!bytes.has('panel-mosaic-lab/cockpit/index.html')||
    !bytes.has('panel-mosaic-lab/cockpit/overhead-stage.html'))
     throw Error('Compiled cockpit or overhead entry missing');
+  // Package revision-bound lamp artwork instead of fetching it at boot.
+  // Authorization is still performed by the existing source route.
+  const mirrored=new Set();
+  const mirrorDir=path.join(runtimeDir,'fast-unified-source-cache');
+  try{
+   const mirror=JSON.parse(disk.readFileSync(path.join(mirrorDir,'index.json'),'utf8'));
+   if(mirror.sourceCommit!==manifest.sourceCommit||!Array.isArray(mirror.files))
+    throw Error('Source cache revision mismatch');
+   let mirrorBytes=0,skipped=0;
+   for(const entry of mirror.files){
+    try{
+     const relative=entry.path;
+     if(typeof relative!=='string'||relative.includes('..')||
+      !/^panel-mosaic-lab\/lights-reference-v2\/svg\/[a-zA-Z0-9_. -]+\.svg$/.test(relative)||
+      !/^[a-f0-9]{40}$/.test(entry.sha)||!Number.isSafeInteger(entry.size)||entry.size<0||
+      entry.size>1024*1024||mirrorBytes+entry.size>16*1024*1024||bytes.has(relative)){skipped++;continue;}
+     const full=path.resolve(mirrorDir,'files',relative);
+     if(!full.startsWith(path.join(mirrorDir,'files')+path.sep)){skipped++;continue;}
+     const body=disk.readFileSync(full);
+     const blobSha=crypto.createHash('sha1').update('blob '+body.length+'\0').update(body).digest('hex');
+     if(body.length!==entry.size||blobSha!==entry.sha||body.subarray(0,42).toString().startsWith('version https://git-lfs.github.com/spec/v1')){skipped++;continue;}
+     bytes.set(relative,body);digests.set(relative,crypto.createHash('sha256').update(body).digest('hex'));
+     mirrored.add(relative);mirrorBytes+=body.length;
+    }catch(error){skipped++;}
+   }
+   console.log('UNIFIED LOCAL SOURCE CACHE: '+mirrored.size+' assets / '+mirrorBytes+' bytes / '+skipped+' skipped');
+  }catch(error){console.warn('UNIFIED LOCAL SOURCE CACHE unavailable: '+error.message);}
   console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
-  return {sourceCommit:manifest.sourceCommit,releaseId:crypto.createHash('sha256').update(JSON.stringify(manifest)).digest('hex'),bytes,compressed,digests};
+  return {sourceCommit:manifest.sourceCommit,releaseId:crypto.createHash('sha256').update(JSON.stringify(manifest)).digest('hex'),bytes,compressed,digests,mirrored};
  } catch(error){
   if(error.code==='ENOENT'&&!require('node:fs').existsSync(fastRuntimeDir))return null;
   throw Error('Invalid Unified release', {cause:error});
@@ -410,7 +437,7 @@ async function serveFastCompiledResponse(req,res,relative,bytes,{cockpitDocument
    new URL(req.url,'http://localhost').searchParams.get('unifiedRelease')===fastRuntime.releaseId;
   const immutable=releasePinned||/desktop-bundle-[a-f0-9]{16}\.js$|[a-f0-9]{20}-q96-(?:384|768|1536)\.webp$/.test(relative)||
    /^panel-mosaic-lab\/cockpit\/performance\/boot-art\/[a-z0-9-]+-[a-f0-9]{20}\.webp$/.test(relative);
-  res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':'private, max-age=0, must-revalidate');
+  res.setHeader('Cache-Control',immutable?'private, max-age=31536000, immutable':fastRuntime.mirrored?.has(relative)?'private, max-age=30':'private, max-age=0, must-revalidate');
   if(immutable)res.removeHeader('Pragma');
   res.setHeader('Vary','Accept-Encoding');
   const brotli=fastRuntime.compressed.get(relative);

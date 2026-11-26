@@ -1,0 +1,1530 @@
+{
+  "sourceCommit": "a16e545d711bb437a22357517c06cd878847036c",
+  "files": [
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_CARGO__AMBER__BRIGHT.svg",
+      "sha": "2586883040eb5e3845e90e03e899f04715c09e75",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_CARGO__AMBER__DIM.svg",
+      "sha": "de6a4eed8eb817214aee17f8846ccf4df88a416f",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_CARGO__AMBER__OFF.svg",
+      "sha": "aeeb40e7414d0d16798c258e04add7bf54a63910",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_ENTRY__AMBER__BRIGHT.svg",
+      "sha": "58bb2a5cc399b9a2ac654acca9e528b4e9b0ec95",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_ENTRY__AMBER__DIM.svg",
+      "sha": "0d5d6ae2586ca0b4c0fb023e7b1d520afd692053",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_ENTRY__AMBER__OFF.svg",
+      "sha": "fe62c87404a42acb9f53c865d1f58f14aaa4df5c",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_SERVICE__AMBER__BRIGHT.svg",
+      "sha": "97d628e0a329ddca6d126fa96fbb44de4a161473",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_SERVICE__AMBER__DIM.svg",
+      "sha": "53fb3c80aab76f5c367c634033d16fc5814864da",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AFT_SERVICE__AMBER__OFF.svg",
+      "sha": "aab9edfeb3ffdb279680f807c2d26946d136f12d",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AIR_STAIR__AMBER__BRIGHT.svg",
+      "sha": "36359b75ff1d08b2e397c1c3452a739f137f9b93",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AIR_STAIR__AMBER__DIM.svg",
+      "sha": "58aae8079af475096514fc45f7660cf27432ad25",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AIR_STAIR__AMBER__OFF.svg",
+      "sha": "2639a3c370abc1be3cc83042d2d6e91efbfb8863",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALIGN__WHITE__BRIGHT.svg",
+      "sha": "eeab1d50af616f505068a43394fb9a99ee7ee630",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALIGN__WHITE__DIM.svg",
+      "sha": "b371c5c230b8f135609256e34d577eb7d6302a0f",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALIGN__WHITE__OFF.svg",
+      "sha": "70cab785740486349010220d04f9916b68a8c7d6",
+      "size": 3247
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALTITUDE_ALERT__AMBER__BRIGHT.svg",
+      "sha": "6871c2bc38a544a47c56d7ed9ef6ba0d91b7c478",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALTITUDE_ALERT__AMBER__DIM.svg",
+      "sha": "553cdf502654a5ac4d143f59a53aaab7bec5338e",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ALTITUDE_ALERT__AMBER__OFF.svg",
+      "sha": "24ef17ae3a680135ed08bb9a9cfb2eef683337de",
+      "size": 3409
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ANTI_SKID_INOP__AMBER__BRIGHT.svg",
+      "sha": "ffe8f804349fd6185f0fd0a318aabf121fd6dfb9",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ANTI_SKID_INOP__AMBER__DIM.svg",
+      "sha": "a8fb5f9ff5fe8e031796adaa26699f367531c4d8",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ANTI_SKID_INOP__AMBER__OFF.svg",
+      "sha": "61463b748f13f0437f71e5eaad30b5cc1442e8b6",
+      "size": 3409
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "e09f56bdb094b110b18ec0918c8da3b7141a6982",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "c4455454ea91a2496940ec913c7eac394ad6b950",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "de1415a4cc1b150829a94a13f98fe7018882cd2d",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "2162c0aca3fdd28dfb1e9f9b32406ce9bca9d19f",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__BRIGHT.svg",
+      "sha": "19b9e151789b58df8bfa66f47476440f5f2ec140",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__DIM.svg",
+      "sha": "c5e2ca3eefea81723b646fb9f8e1bb474ba3440d",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/APU_GEN_OFF_BUS__BLUE__OFF.svg",
+      "sha": "bb8a4da1bab4c94f1f3858db6c16b08b1d19dac4",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_BRAKE_DISARM__AMBER__BRIGHT.svg",
+      "sha": "8afb090ca7ea2b342de2dbc96654773b5334454b",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_BRAKE_DISARM__AMBER__DIM.svg",
+      "sha": "4f1bd4cde62bf1014115ed906139e81b076e6e9e",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_BRAKE_DISARM__AMBER__OFF.svg",
+      "sha": "04b8936aeb52583214a29e6736251b7857c99244",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_FAIL__AMBER__BRIGHT.svg",
+      "sha": "a13dab4c677cfb8b72ed70efe4dfce5a60bac495",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_FAIL__AMBER__DIM.svg",
+      "sha": "62bf98d32591428768dc6e9eaefb84e8829dc8f6",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_FAIL__AMBER__OFF.svg",
+      "sha": "c682cfeba7e91a3705403a83e78ed5ad0cdf5353",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_SLAT_FAIL__AMBER__BRIGHT.svg",
+      "sha": "58ebdafd35f096ef8f0e6f5c2db6f3e294449fe5",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_SLAT_FAIL__AMBER__DIM.svg",
+      "sha": "50f11ff8782ab0c8099481138396d7f1322066c8",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/AUTO_SLAT_FAIL__AMBER__OFF.svg",
+      "sha": "9968fda16a2144abbdab518c07bb089c562e4910",
+      "size": 3409
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/A_T_LIM__WHITE__BRIGHT.svg",
+      "sha": "14f604160c4151571f1f2a433347491acafa9e2b",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/A_T_LIM__WHITE__DIM.svg",
+      "sha": "8e43c72d72d6451dab694ba017048cde9d844f98",
+      "size": 3254
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/A_T_LIM__WHITE__OFF.svg",
+      "sha": "1274f022cf298dfda49063877b2bb68da3208b04",
+      "size": 3255
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BELOW_G_S_P_INHIBIT__AMBER__BRIGHT.svg",
+      "sha": "31e161743335e496c5df23e563a0b290b1758a53",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BELOW_G_S_P_INHIBIT__AMBER__DIM.svg",
+      "sha": "32177e01d2ca4eeb1e1b359a5884a857add09a07",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BELOW_G_S_P_INHIBIT__AMBER__OFF.svg",
+      "sha": "0f36091542bfe935f959931faf41346c5b196b4e",
+      "size": 3429
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BLEED_TRIP_OFF__AMBER__BRIGHT.svg",
+      "sha": "ae96433bf03074cbb2bf03d32e40f4d02d991881",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BLEED_TRIP_OFF__AMBER__DIM.svg",
+      "sha": "f6c03e0a24ea9e1fdffb156c62927d70aa377f1d",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BLEED_TRIP_OFF__AMBER__OFF.svg",
+      "sha": "eb972a51fda8787083814c5e1dcedeae28d69c44",
+      "size": 3409
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BRAKE_TEMP__AMBER__BRIGHT.svg",
+      "sha": "0e8eeb7be4508530749f66097834e0e8e2557dce",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BRAKE_TEMP__AMBER__DIM.svg",
+      "sha": "508997af4f64c8d17fee4d319fe96378d9c124b3",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BRAKE_TEMP__AMBER__OFF.svg",
+      "sha": "8a3bef7137e2c0577df454362b7c44cc7c0ab87a",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BUS_OFF__AMBER__BRIGHT.svg",
+      "sha": "b1d3da63b0630978ec18ea7ea1c5516d261043c0",
+      "size": 3384
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BUS_OFF__AMBER__DIM.svg",
+      "sha": "b40553a683acabf4c8fad4d39e07d87c8cf8bbb9",
+      "size": 3380
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/BUS_OFF__AMBER__OFF.svg",
+      "sha": "7661151a35c35228d80bbac707daa72624490019",
+      "size": 3381
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "75c363a9d339ab31d2daeae243ad85abc2c9d42f",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "3f1099b2a03ef1f3860b303a8a45ecc9fcad5333",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "48efd9bd24167490f653f1694d9c71a64855ecf0",
+      "size": 3247
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "676882d445cbfd7b650d6e009b313bab5aee7c20",
+      "size": 3243
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__BRIGHT.svg",
+      "sha": "c2c4233088aec1c0f172373991b03214db14bfbd",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__DIM.svg",
+      "sha": "0d8ae97ba9a6bd80a77a624179cfa45ae0e867dd",
+      "size": 3242
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CALL__BLUE__OFF.svg",
+      "sha": "b24f30bf9a505afa941249ecb65a55146c146827",
+      "size": 3243
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_P_S_1_AUX_STATIC__AMBER__BRIGHT.svg",
+      "sha": "aea85e937d57dc3b703cc3dcc322dc1b3a07cd3a",
+      "size": 3440
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_P_S_1_AUX_STATIC__AMBER__DIM.svg",
+      "sha": "71532f4d796dcf08a0444634a8f56f4d8c175b0b",
+      "size": 3436
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_P_S_1_AUX_STATIC__AMBER__OFF.svg",
+      "sha": "5515325d8e5e9e37d5028f77b33711898f9b1c8b",
+      "size": 3437
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_STATIC_1_AUX_P_S__AMBER__BRIGHT.svg",
+      "sha": "acf58245c494d1cf511c6bbacbc0fe6d85b4585c",
+      "size": 3440
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_STATIC_1_AUX_P_S__AMBER__DIM.svg",
+      "sha": "693584dd3c462aa85e7112e2c84b812e3d5301d3",
+      "size": 3436
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/CAPT_STATIC_1_AUX_P_S__AMBER__OFF.svg",
+      "sha": "3fd5cc9384fae0cecf68bdfaf8d04f4bddb16f8c",
+      "size": 3437
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_ANTI_ICE__AMBER__BRIGHT.svg",
+      "sha": "f3c58d11b95d8b86221dbf7a63398e44e420300e",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_ANTI_ICE__AMBER__DIM.svg",
+      "sha": "6419c95d7444ae091b9c6c68dc06a840092a99d5",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_ANTI_ICE__AMBER__OFF.svg",
+      "sha": "15d8494811825ffc812ec6f8989d7295fe045d56",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "98af2f963f1ac024d109e435474e68483fac54da",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "5f3947ae5987e5a1c835c8fa0ef6f0f1a6ccde23",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "3f0244fe94cf5c064aa2a7110936756b1d6dacfd",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "816822dd7ba18f13f19f4148b9b56e39bd8b7fe1",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__BRIGHT.svg",
+      "sha": "b25e7fd141f1c298e05b160827b23f887c5a74e7",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__DIM.svg",
+      "sha": "f90088af0cb4fc016e0dbe09ad1929aa7fba8445",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/COWL_VALVE_OPEN__BLUE__OFF.svg",
+      "sha": "04a965bf543404a38cf3e53f2f2567cf4341f4b5",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DC_FAIL__AMBER__BRIGHT.svg",
+      "sha": "44d7e6f81771e0b42ca9cdb5a9330b4ae963f9cf",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DC_FAIL__AMBER__DIM.svg",
+      "sha": "8ef9e12cf71f7293ae8f29b1e8f471e2ad01e073",
+      "size": 3254
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DC_FAIL__AMBER__OFF.svg",
+      "sha": "cfc62241b24d4566cf7032e71db0d943409b6c70",
+      "size": 3255
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUAL_BLEED__AMBER__BRIGHT.svg",
+      "sha": "4b49a6fe0df8d9ed8348f78d705fb2440bd8e07a",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUAL_BLEED__AMBER__DIM.svg",
+      "sha": "3c43b526a470efbc22b2ac105a14df60fc4116bf",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUAL_BLEED__AMBER__OFF.svg",
+      "sha": "310107aa2f49d0d42d0636f877fae650daa01058",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUCT_OVERHEAT__AMBER__BRIGHT.svg",
+      "sha": "41929128e32ea6b15723d99711e89869a7bbcefd",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUCT_OVERHEAT__AMBER__DIM.svg",
+      "sha": "74d8180f00d4aad7de8eba18da1fe63c7fcd4e03",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/DUCT_OVERHEAT__AMBER__OFF.svg",
+      "sha": "2987b978a31ed5c887121301b6b6f7308f40186d",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/EQUIP__AMBER__BRIGHT.svg",
+      "sha": "235a86d5c914fb43e3c068cb93a143967f78f689",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/EQUIP__AMBER__DIM.svg",
+      "sha": "4fa9ae2c05e886f459d1d42838842f29b8c671f8",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/EQUIP__AMBER__OFF.svg",
+      "sha": "4e6f32214a7223571289424430155d0a95c0a3a4",
+      "size": 3247
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FAULT__AMBER__BRIGHT.svg",
+      "sha": "fde57bd4431a6ac1fbd617929fdffa278fb37524",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FAULT__AMBER__DIM.svg",
+      "sha": "607e9d777c14065e46da30e33845c11300e710ee",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FAULT__AMBER__OFF.svg",
+      "sha": "27c6410b24d04142dc824680054db4a3712a6b39",
+      "size": 3247
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FEEL_DIFF_PRESS__AMBER__BRIGHT.svg",
+      "sha": "538d51e9aad9356c0506049c8ad3171df85b0085",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FEEL_DIFF_PRESS__AMBER__DIM.svg",
+      "sha": "a7da0f292c6590c908365309c582c3e03c1d1705",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FEEL_DIFF_PRESS__AMBER__OFF.svg",
+      "sha": "4c5acf066b83dd6d8edc72ada7b63cf442d2f235",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FILTER_BYPASS__AMBER__BRIGHT.svg",
+      "sha": "42370d51afe21e9ea717b7402380c1f66a1a02ab",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FILTER_BYPASS__AMBER__DIM.svg",
+      "sha": "0b134c4160eba07b870dfc6f05559e4a6919fd40",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FILTER_BYPASS__AMBER__OFF.svg",
+      "sha": "d09d8d897c1414a7a7c800454b966dd4ce3d130a",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "757dd1216a3fe9da208df85d0e2dfe01f5152e31",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "aca6a36f195807001d5a423dae6ab6bac7853e12",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "2bc51a1b7aeb6e71e186082a28c266ed73515285",
+      "size": 3425
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "b147a67468e279e6f09dd4928218f546930eabe7",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__BRIGHT.svg",
+      "sha": "9ed96fd242da1cb2cc6b5ba6f601aed35a113b31",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__DIM.svg",
+      "sha": "0e9bb5f83c5c8942b8d79a0c9cd5d55f0ec6a71a",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FUEL_VALVE_CLOSED__BLUE__OFF.svg",
+      "sha": "ec9e0dadad1a048db5143d3a90800a8cec3ed38a",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_CARGO__AMBER__BRIGHT.svg",
+      "sha": "33134ddff37f029f5110c2c7c3b9177811accf03",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_CARGO__AMBER__DIM.svg",
+      "sha": "79050e9f8658cb7a11eb82c16169da24cdf08b94",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_CARGO__AMBER__OFF.svg",
+      "sha": "ab77afffe8cf256769b78294d229a6537148fd91",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_ENTRY__AMBER__BRIGHT.svg",
+      "sha": "ae92540925fa9c73d18d9d37ab17d6ba58120c6f",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_ENTRY__AMBER__DIM.svg",
+      "sha": "29fa86403c0bf6f541de02cc422366a05c838d4a",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_ENTRY__AMBER__OFF.svg",
+      "sha": "9f7f1eb32e84e92fe80271f5addb0df46acc576e",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_SERVICE__AMBER__BRIGHT.svg",
+      "sha": "d9dfdb832018f545804e6d6003500c7bc9cadc1b",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_SERVICE__AMBER__DIM.svg",
+      "sha": "4c1dabb1ffeed115c5b8cbf48f6b79c9915bb81b",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/FWD_SERVICE__AMBER__OFF.svg",
+      "sha": "1290a210ebf2d73da048ce640fd4a13622e7c689",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_P_S_2_AUX_STATIC__AMBER__BRIGHT.svg",
+      "sha": "af157ba30d8d1aca6416365cdfd3437c60d1827c",
+      "size": 3436
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_P_S_2_AUX_STATIC__AMBER__DIM.svg",
+      "sha": "89435dfd7978247753a2756b0ad3e63c640573f9",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_P_S_2_AUX_STATIC__AMBER__OFF.svg",
+      "sha": "bb4d5a4fb2259a24008fb69f885c27f802edfa5f",
+      "size": 3433
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_STATIC_2_AUX_P_S__AMBER__BRIGHT.svg",
+      "sha": "bdef12b9876939d73947927f1854b2a5d2d25359",
+      "size": 3436
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_STATIC_2_AUX_P_S__AMBER__DIM.svg",
+      "sha": "4e5e139839b4b8eff8ec0417d74df83ac61199b8",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/F_O_STATIC_2_AUX_P_S__AMBER__OFF.svg",
+      "sha": "0ce02451a84fe70759f754bad3ce2d3af6f68780",
+      "size": 3433
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "11fe9cbe52cd06617799efa27fc7163ec15ab48d",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "88410458479d3afb2f2f3d069ce0e9494566988e",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "500fb7f83db7e8b4839c369599d050d89bd99ee4",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "db1854a3ef212200548b1737e5751df3aadff4af",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__BRIGHT.svg",
+      "sha": "e35381c0194f486e42bc47e480c8b60e4b6363b2",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__DIM.svg",
+      "sha": "f78eab8a78225a16e309d3d201951ebf5f507a84",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GEN_OFF_BUS__BLUE__OFF.svg",
+      "sha": "415e80ca69322c6095c25188a9d8764aab6839c3",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "cf6d9800eddb534ec7cabaac83e358a22e3cf1d0",
+      "size": 3436
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "702634b8cc5deceeb8bc08415f622ecf031d14b4",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "2add0676e999cda0e8a724f7dff545f50e4b2d63",
+      "size": 3433
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "77f58650e59ccfdaaaa9f535d67f90bbee1160d2",
+      "size": 3429
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__BRIGHT.svg",
+      "sha": "1b6c8d16849d74db2b732f41b678d4edfe2d537d",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__DIM.svg",
+      "sha": "68e0f806978f8cfc80c8195ffeeb7c69bd5d936c",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/GRD_POWER_AVAILABLE__BLUE__OFF.svg",
+      "sha": "231981d5afa52426eb9a92ffdb353b19f0e731a5",
+      "size": 3429
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/HIGH_OIL_TEMP__AMBER__BRIGHT.svg",
+      "sha": "fcd7d6f0234275cb9e4e1a7f0d0f1817eff4735b",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/HIGH_OIL_TEMP__AMBER__DIM.svg",
+      "sha": "2d8b22dac0f24f45208cb500abe1a9f64a6cf2d7",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/HIGH_OIL_TEMP__AMBER__OFF.svg",
+      "sha": "c15da6ddc5d23a83f7d483716fceaedf588a1f5f",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/INOP__AMBER__BRIGHT.svg",
+      "sha": "d94d7ec2cfb4ba33b03349cb5ae6285d87ecadd5",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/INOP__AMBER__DIM.svg",
+      "sha": "bcc9c1bb556bffd46f235262ac6ff6610b5eee7c",
+      "size": 3242
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/INOP__AMBER__OFF.svg",
+      "sha": "77c56e7619a7dd005e85863a3d0623b7a339274c",
+      "size": 3243
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__GREEN__BRIGHT.svg",
+      "sha": "a01bbdac92d889b59c767547c81de339b6c145dd",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__GREEN__DIM.svg",
+      "sha": "2b592a403a3302655ecfb841f635ea5042591b7a",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__GREEN__OFF.svg",
+      "sha": "6beb0d249728c8030daaeacda469033c82ac5d31",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__RED__BRIGHT.svg",
+      "sha": "881ca79c9d606e67cf84621758122c13e6dc611c",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__RED__DIM.svg",
+      "sha": "2398d3558c53ced7592414b5534a09602c888669",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LEFT_GEAR__RED__OFF.svg",
+      "sha": "cfba250241cbac80a3c107c575cdadd7dcd99c3d",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_EXT__GREEN__BRIGHT.svg",
+      "sha": "7a7866fccd068319e8c5ea1b1eee49c323d2c421",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_EXT__GREEN__DIM.svg",
+      "sha": "ddc0962f18b22c734df45fe83ddc7616388b5e3e",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_EXT__GREEN__OFF.svg",
+      "sha": "a2edc877eaf91f0bf7adb316249478b00f99fdae",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_TRANSIT__AMBER__BRIGHT.svg",
+      "sha": "da365e9ff904598517eed1fa594cefac7167fbd6",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_TRANSIT__AMBER__DIM.svg",
+      "sha": "c0c3fbff97c83b3a474b8b24452e0c9a784f0cd5",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LE_FLAPS_TRANSIT__AMBER__OFF.svg",
+      "sha": "e6ab0d2f4bfc22df08277bb2431f331bbf0a7b50",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_IDLE__AMBER__BRIGHT.svg",
+      "sha": "1baad4cd920e3b569ef8d9dc0ecf90c723a75def",
+      "size": 3262
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_IDLE__AMBER__DIM.svg",
+      "sha": "581d4d699fa8adfa20f5b02e96ba536247c7bc57",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_IDLE__AMBER__OFF.svg",
+      "sha": "d4189dd50ddd841dfdf61e9faf1c63a571049689",
+      "size": 3259
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_PRESSURE__AMBER__BRIGHT.svg",
+      "sha": "682c2fa206e340e4d67de11d9d7edac8a4494a61",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_PRESSURE__AMBER__DIM.svg",
+      "sha": "2594be0099bb695fda750507ca41d492dc48fc64",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_PRESSURE__AMBER__OFF.svg",
+      "sha": "ee35396b81a5c7dede20ab654e2b76bbfb99833f",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "f55b97784f2a9139923285f881894dc85df7673c",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "8dd7fd10c15ec2c067893dda6ead65d2f5414584",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "829f503544627335c6314774a553b6e53e2b7cf0",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "7dd0abd7030cac5024e108257d363b54de638b5e",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__BRIGHT.svg",
+      "sha": "f94bbbe82be0079b7b10a6e39fd25c4123c3e97f",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__DIM.svg",
+      "sha": "49e4958566e0d24aabb8faac936618691681acd9",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_OIL_QUANTITY__BLUE__OFF.svg",
+      "sha": "42c1f982caa7d8f1d2c549ead5cc6ab05a5ef3e4",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_PRESSURE__AMBER__BRIGHT.svg",
+      "sha": "615fd334f4fcfd9a1506b901f410322b729fc90d",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_PRESSURE__AMBER__DIM.svg",
+      "sha": "672438062aaa8d4368a477f8f80e9ce0dc6c5968",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_PRESSURE__AMBER__OFF.svg",
+      "sha": "8514aa39cdfbb18eb2deefe117a35a6929b034bd",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_QUANTITY__AMBER__BRIGHT.svg",
+      "sha": "2e2da40bbf57e35c47b0238bb887c2acb4c4b97f",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_QUANTITY__AMBER__DIM.svg",
+      "sha": "e497122491888c4e39eaefa738470106eedcd3a9",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/LOW_QUANTITY__AMBER__OFF.svg",
+      "sha": "7262028d2a59d5df934a64fc9b2eb3e61a7498fa",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ALPHA_VANE__AMBER__BRIGHT.svg",
+      "sha": "302ce54757b6c5bb24465517c83451521bdc54f3",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ALPHA_VANE__AMBER__DIM.svg",
+      "sha": "081917be7fddc88cf484b940e4eff298a5ded866",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ALPHA_VANE__AMBER__OFF.svg",
+      "sha": "d8df19a8b9e9303077f1c8392e69665ec0291e1f",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ELEV_PITOT__AMBER__BRIGHT.svg",
+      "sha": "08ffe2c3098f83a81177baa7f2cd42350f001372",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ELEV_PITOT__AMBER__DIM.svg",
+      "sha": "5e363e12e61537ef4d7440f01b44cbc942f3448b",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_ELEV_PITOT__AMBER__OFF.svg",
+      "sha": "8b6c788108a856adb3481d8842517c334200b4ce",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "751b77c58e6dde3692ae2c4681627af7906d354f",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "dd1fd603fd22a9313eeebefd5292a3fb8fbf65d3",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "39ef232000c37b603494530845e36fa76a1878e1",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "93696ab59b12fb3ce023ebbb2b426eae7efb07aa",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__BRIGHT.svg",
+      "sha": "5cd404775985633b99f7b35dff7916537be1076e",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__DIM.svg",
+      "sha": "dac8aa454d69ef759a21e9546fb5eba65b5fe81c",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/L_VALVE_OPEN__BLUE__OFF.svg",
+      "sha": "88d1e6a5c32c04ca4ceefcab94059fa75f20c5c0",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MACH_TRIM_FAIL__AMBER__BRIGHT.svg",
+      "sha": "82f796050dfe1c09ab54beef91e228e2414bb78c",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MACH_TRIM_FAIL__AMBER__DIM.svg",
+      "sha": "a7698b313887d4d860dc471f2f7f8d5edaf3eafe",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MACH_TRIM_FAIL__AMBER__OFF.svg",
+      "sha": "189db7e2ae6040b8b63fb5c6eb98c6dfe0f08bae",
+      "size": 3409
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MANUAL__GREEN__BRIGHT.svg",
+      "sha": "45529599e347095c8e0938c90fcf9b15c0c5d892",
+      "size": 3254
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MANUAL__GREEN__DIM.svg",
+      "sha": "969417624eee283c0bd28d49efb7f14a20611149",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/MANUAL__GREEN__OFF.svg",
+      "sha": "b680c1eb7f77dde6446879f28216c0c92520298c",
+      "size": 3251
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__GREEN__BRIGHT.svg",
+      "sha": "b04271e4e3144fb1a7a99723d5cdc189cf8abcbb",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__GREEN__DIM.svg",
+      "sha": "03cd64fd610fe5383207d9028c837922a1c8a897",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__GREEN__OFF.svg",
+      "sha": "531125afd97f6ce5136c5dd010d1ff09065bf1b9",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__RED__BRIGHT.svg",
+      "sha": "9766fb8815dd8c1989785889e8c6827e7dcec16d",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__RED__DIM.svg",
+      "sha": "359841e6f36be7b3249c6d4896afe9d558ce36aa",
+      "size": 3388
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOSE_GEAR__RED__OFF.svg",
+      "sha": "4b8b2a8ee1557e7377aa01e04a5461008793c6b9",
+      "size": 3389
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOT_ARMED__AMBER__VERTICAL__BRIGHT.svg",
+      "sha": "cf0398dc97f9efae3ad5709526f90cb28adf4344",
+      "size": 4175
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOT_ARMED__AMBER__VERTICAL__DIM.svg",
+      "sha": "415896bcf00e2c79cf79daad81b093e5afbfd944",
+      "size": 4171
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/NOT_ARMED__AMBER__VERTICAL__OFF.svg",
+      "sha": "a217d2ea9d50d6bc5a469a75b18393078022c7d3",
+      "size": 4172
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF_SCHED_DESCENT__AMBER__BRIGHT.svg",
+      "sha": "35346245d4167a79f481f0cce39dd7ef3dbd8faf",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF_SCHED_DESCENT__AMBER__DIM.svg",
+      "sha": "d3833e719f39f71c6907978d5995b770cdd0574a",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF_SCHED_DESCENT__AMBER__OFF.svg",
+      "sha": "855dc2da6fbb93105043ac4b873347dc969aff20",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF__AMBER__BRIGHT.svg",
+      "sha": "25779fdbfa8aaf391588e0578c27b631f2296946",
+      "size": 3242
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF__AMBER__DIM.svg",
+      "sha": "dd992246f5482f75423bad90b44385a1142a7992",
+      "size": 3238
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OFF__AMBER__OFF.svg",
+      "sha": "bf6c60fd80981f439b3e1bec1a50d29c57ed1f07",
+      "size": 3239
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OIL_FILTER_BYPASS__AMBER__BRIGHT.svg",
+      "sha": "0bee05b3285e60b924c557925ef009941ae1ad7b",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OIL_FILTER_BYPASS__AMBER__DIM.svg",
+      "sha": "6675112d596b1df581d565d5455f67a74f83d4e9",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OIL_FILTER_BYPASS__AMBER__OFF.svg",
+      "sha": "e02237fd33f10d602a0e0349af1cdc9410fef255",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON_DC__AMBER__BRIGHT.svg",
+      "sha": "47b0c11527f004ed160989f518c92f584b49c7a6",
+      "size": 3250
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON_DC__AMBER__DIM.svg",
+      "sha": "e78820555aa42cd8f744fe4487412c19b92ca421",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON_DC__AMBER__OFF.svg",
+      "sha": "b65619197f4057e84d8acd418a0f83e4fb114fde",
+      "size": 3247
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON__GREEN__BRIGHT.svg",
+      "sha": "c94abe6d63fbce7990ab0b80cff25a7316eb6caf",
+      "size": 3238
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON__GREEN__DIM.svg",
+      "sha": "aeb3e8528d194430f9de3ab85542902c95e14bec",
+      "size": 3234
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/ON__GREEN__OFF.svg",
+      "sha": "b7b6542890d67318bbe4c56b1ed0640d63973444",
+      "size": 3235
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVERHEAT__AMBER__BRIGHT.svg",
+      "sha": "5361692ccf244d3832e3540c3bff81b2235a35ed",
+      "size": 3262
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVERHEAT__AMBER__DIM.svg",
+      "sha": "497ea129d8379c9067eb05a48af2b4fd8bc84e73",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVERHEAT__AMBER__OFF.svg",
+      "sha": "a69e7b3e2273aca9d09240675b11fa758188de60",
+      "size": 3259
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVER_SPEED__AMBER__BRIGHT.svg",
+      "sha": "6018cd8d245096f859b4e86713b9f264e80ed9c2",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVER_SPEED__AMBER__DIM.svg",
+      "sha": "3ec2516938ddf03a6a1a37cc04ce928fcaa7c499",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/OVER_SPEED__AMBER__OFF.svg",
+      "sha": "068f539a054f5ccb615ff90c93f7197ab88056c3",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK_TRIP_OFF__AMBER__BRIGHT.svg",
+      "sha": "b0fecc6c32888847b975a6cba5154fc305f0279c",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK_TRIP_OFF__AMBER__DIM.svg",
+      "sha": "b6693d046c468885cadb4da33a0ec887973537ba",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK_TRIP_OFF__AMBER__OFF.svg",
+      "sha": "f56188825a562844b7502e238a51e898529bc393",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK__AMBER__BRIGHT.svg",
+      "sha": "94f0a698bc6ed0465ca0ca64c0123365f0e55a6a",
+      "size": 3246
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK__AMBER__DIM.svg",
+      "sha": "8058ffaf652cd3ea2fdb82f754f2c6a6795f1b8c",
+      "size": 3242
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PACK__AMBER__OFF.svg",
+      "sha": "e4b21c2643e8e5c56843ade8e4ffb67e0495304f",
+      "size": 3243
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PASS_OXY_ON__AMBER__BRIGHT.svg",
+      "sha": "caa909a212264f4d2412cfaf012dcfa46ce581fb",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PASS_OXY_ON__AMBER__DIM.svg",
+      "sha": "7d7a1329f8052927617d40b63b5ba787e1cb7ff0",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PASS_OXY_ON__AMBER__OFF.svg",
+      "sha": "5899fb4f79f6eb771694fc34d7675d0421aa9a57",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PULL_UP__RED__BRIGHT.svg",
+      "sha": "6c07b311376143dd21de6b9ab95df79c963bff4d",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PULL_UP__RED__DIM.svg",
+      "sha": "a2e4bcbad7a21a6ed1a65ff33291224f62556fc9",
+      "size": 3254
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/PULL_UP__RED__OFF.svg",
+      "sha": "9139bd0290aa043896d10bedfc47ae5ca3168743",
+      "size": 3255
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "d6c592b77924cff87c1205ec16a978dc8efe0454",
+      "size": 3432
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "518c1342a36b107753d1c9a15a17258360370457",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "375f01e25e715af8a3d484dcb0749567d0a50b27",
+      "size": 3429
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "ab456448edc324a0a13133cd8085affbd7b497aa",
+      "size": 3425
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__BRIGHT.svg",
+      "sha": "a83daa0ad07cb10b85798b39103d7c2f063dfa8d",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__DIM.svg",
+      "sha": "cc713dad5ce1f1f30791e145b26f1642efb95283",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RAM_DOOR_FULL_OPEN__BLUE__OFF.svg",
+      "sha": "ad27dab1c2154152c1405e09333b2b728ff6d6cc",
+      "size": 3425
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER_UNLOCKED__AMBER__BRIGHT.svg",
+      "sha": "8ad769988bf2784950ffac7b0d76f43a64317e73",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER_UNLOCKED__AMBER__DIM.svg",
+      "sha": "38368c44e4669c529a19f7f2978851296eb26611",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER_UNLOCKED__AMBER__OFF.svg",
+      "sha": "e37bc6ff2c04e3153c89c9376cf3a08f1421c72c",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER__AMBER__BRIGHT.svg",
+      "sha": "82b697b08e9046c70fa6cc1ca34d733d4301d33b",
+      "size": 3262
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER__AMBER__DIM.svg",
+      "sha": "d5cd40261d0d946aa856b52be2801d32af1affec",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/REVERSER__AMBER__OFF.svg",
+      "sha": "f12c54c2294bd2614255362f55359f16d6ff4b7a",
+      "size": 3259
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__GREEN__BRIGHT.svg",
+      "sha": "56c151e3061750f83ea392fe39766ed36067831c",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__GREEN__DIM.svg",
+      "sha": "44790a2fd015edaec4f74835d4da9cae067944ec",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__GREEN__OFF.svg",
+      "sha": "e8f868c7bc0d3e180f1d8258135890f70dfbd9e7",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__RED__BRIGHT.svg",
+      "sha": "337f928ae01e37b8ecd9719e37580a8690f2f63f",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__RED__DIM.svg",
+      "sha": "9b5e6df9d1b1243b19a12b72a1b0bd3181197787",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/RIGHT_GEAR__RED__OFF.svg",
+      "sha": "736b05b9dada1eefaed3ec6da3aa4d1ff779dd87",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ALPHA_VANE__AMBER__BRIGHT.svg",
+      "sha": "1c06f5eaf4ab1ffbabdc80dcc98d2972fd9595b8",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ALPHA_VANE__AMBER__DIM.svg",
+      "sha": "99e7c8a0e36b6348c059f0d680ebfee36e2b9a4e",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ALPHA_VANE__AMBER__OFF.svg",
+      "sha": "6536d1cf7d9c2500a3c508289800bfe2d146e95c",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ELEV_PITOT__AMBER__BRIGHT.svg",
+      "sha": "a028f1ef8cff00578a3d36b206025563f35ec051",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ELEV_PITOT__AMBER__DIM.svg",
+      "sha": "e65077fc7dcf471ef185b4b1b96a673d014f8a6a",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_ELEV_PITOT__AMBER__OFF.svg",
+      "sha": "68ab682a11dba73c6ec08b56844cd1bdd1f10112",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "ce47f371d0899c88d24df84eb3ab0975d7eb1924",
+      "size": 3408
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "75f9183809b71da072602629933c319e5afe7373",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "afed7dfb1a23b007a8aa2804ed23976757b04465",
+      "size": 3405
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "1a8ce23b8471abd8da70240840303be4df574e5e",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__BRIGHT.svg",
+      "sha": "3cfc3d42fcf0d1b7c6b2bd462d07bf75c75f7e3f",
+      "size": 3404
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__DIM.svg",
+      "sha": "63cf099558ddc1c6eeadd1476515533415c083df",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/R_VALVE_OPEN__BLUE__OFF.svg",
+      "sha": "a5ecd407f160737725cf7b30259fbfdce12f4b43",
+      "size": 3401
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_ARMED__GREEN__BRIGHT.svg",
+      "sha": "b8e634462c1b473ced6f1c8795c530677362f61f",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_ARMED__GREEN__DIM.svg",
+      "sha": "51b369e7f516dc082ac9f707fa87dd89d08dcf54",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_ARMED__GREEN__OFF.svg",
+      "sha": "df9d350fe3139cb33ca98cad57478ad370d2140b",
+      "size": 3421
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__BRIGHT.svg",
+      "sha": "6fe17943d6b9d45977967279db74967a5e98c6f2",
+      "size": 3452
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__DIM.svg",
+      "sha": "fe9afc6a45b812489a588bdc63b323a0fdf66233",
+      "size": 3448
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_BRAKE_DO_NOT_ARMED__AMBER__OFF.svg",
+      "sha": "de041011f8c2d78791ea9023b2b4ce3683c464d1",
+      "size": 3449
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_TRIM_FAIL__AMBER__BRIGHT.svg",
+      "sha": "5fc34c0d02279f8e8183ea70270c5c0220d076a6",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_TRIM_FAIL__AMBER__DIM.svg",
+      "sha": "5a2886d1fd8827743aa75f95065b4ef88d22fbb5",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/SPEED_TRIM_FAIL__AMBER__OFF.svg",
+      "sha": "beb17f2a75c0d0fb941516971ac075278e1afbd2",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STAB_OUT_OF_TRIM__AMBER__BRIGHT.svg",
+      "sha": "c66502990e37eb81f7fb5986a60e882ad78c7bfc",
+      "size": 3564
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STAB_OUT_OF_TRIM__AMBER__DIM.svg",
+      "sha": "7c8c6655c1d1077995315ac8d762409c6687cd1a",
+      "size": 3560
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STAB_OUT_OF_TRIM__AMBER__OFF.svg",
+      "sha": "f8d0f392628af8dd3a796caa9bcf040c41692b5f",
+      "size": 3561
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY_PWR_OFF__AMBER__BRIGHT.svg",
+      "sha": "c75cefa0972b4ae4b3c0866ae6ba07c6b0bfb626",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY_PWR_OFF__AMBER__DIM.svg",
+      "sha": "2dfe1eac06098286f4a29504252562e89e316b6b",
+      "size": 3412
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY_PWR_OFF__AMBER__OFF.svg",
+      "sha": "6149365c48ace4a664d5fba2b67f12e3d4974c44",
+      "size": 3413
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY__GREEN__BRIGHT.svg",
+      "sha": "28372b503282d4fc840feac9bdb2f65bd67bff85",
+      "size": 3258
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY__GREEN__DIM.svg",
+      "sha": "a10e88b64fb5b8c8694d203ad7f5a505376410f4",
+      "size": 3254
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STANDBY__GREEN__OFF.svg",
+      "sha": "1a5bac132db57b20fde21081b46cd9bb27c48db3",
+      "size": 3255
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/START_VALVE_OPEN__AMBER__BRIGHT.svg",
+      "sha": "dd9576063792017c105e03a621fc54636074d7e0",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/START_VALVE_OPEN__AMBER__DIM.svg",
+      "sha": "d64d04bf5328ccfb803ea0e2591384aef80568e0",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/START_VALVE_OPEN__AMBER__OFF.svg",
+      "sha": "7fc863dc1be93a00782b1c404e51a2d15eed1611",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STBY_RUD_ON__AMBER__BRIGHT.svg",
+      "sha": "ecdfa8a8f8ebc3878ba484c7f144f2ac8c33dcf1",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STBY_RUD_ON__AMBER__DIM.svg",
+      "sha": "e12a6d2d268a005fb959ded94a5327c4e1d416af",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/STBY_RUD_ON__AMBER__OFF.svg",
+      "sha": "6a0110738109dd2d43194393633872a8264aed32",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TEMP_PROBE__AMBER__BRIGHT.svg",
+      "sha": "cdc94a3312e90f1ce36a4bf200ce79fc2f7d49ce",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TEMP_PROBE__AMBER__DIM.svg",
+      "sha": "89612948933baf2fb4e596b5a0ff0c0c0f98a0f4",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TEMP_PROBE__AMBER__OFF.svg",
+      "sha": "f591a03149a36b292b24f9b37237f0b13910a635",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TRANSFER_BUS_OFF__AMBER__BRIGHT.svg",
+      "sha": "a93dfc98acfae792964a2c7dbb99a8d08724938f",
+      "size": 3420
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TRANSFER_BUS_OFF__AMBER__DIM.svg",
+      "sha": "97441498a4507db696749580e6c9c411364961cc",
+      "size": 3416
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/TRANSFER_BUS_OFF__AMBER__OFF.svg",
+      "sha": "46fb8e352fd2e1361c0be6d5e3deb326a54bc617",
+      "size": 3417
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_BRIGHT.svg",
+      "sha": "fa455b24cba977906f9f0caf4cd98cee1853c7a2",
+      "size": 3400
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__BLUE_BRIGHT__GLOBAL_DIM.svg",
+      "sha": "dec2d124f7635483cfa9a35674122365e83b411f",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_BRIGHT.svg",
+      "sha": "dbedd56b794803ca9ac2942cd938355f559b8036",
+      "size": 3397
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__BLUE_DIM__GLOBAL_DIM.svg",
+      "sha": "cec667600b77a2c8631d5d0e55b2e6297d346eb3",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__BRIGHT.svg",
+      "sha": "a45fdabf11b1e913ac3f008208585472b05a5657",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__DIM.svg",
+      "sha": "73d3fe6cff9c74d9c53277065b8610b4d0fa24a7",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/VALVE_OPEN__BLUE__OFF.svg",
+      "sha": "00ce6bafc30f5c626467eb7f8f0f51b421c98541",
+      "size": 3393
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/WING_BODY_OVERHEAT__AMBER__BRIGHT.svg",
+      "sha": "4214b62a1c7bb08ef5a0d3c6ce8c3576771ec07e",
+      "size": 3428
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/WING_BODY_OVERHEAT__AMBER__DIM.svg",
+      "sha": "b14e20b0dad8e904be494da3a83d88363b25a7d0",
+      "size": 3424
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/WING_BODY_OVERHEAT__AMBER__OFF.svg",
+      "sha": "b87ea11509a611d5ea07e4987c5d491c56484df0",
+      "size": 3425
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/YAW_DAMPER__AMBER__BRIGHT.svg",
+      "sha": "941685a016f2a14bc38c37c51d9cf864463cecdc",
+      "size": 3396
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/YAW_DAMPER__AMBER__DIM.svg",
+      "sha": "17d27036b3922eaffe9543aa6bceaa8ff083c5b5",
+      "size": 3392
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/svg/YAW_DAMPER__AMBER__OFF.svg",
+      "sha": "d941a3d1e443157eaeb8cb4e89431042c54dc952",
+      "size": 3393
+    }
+  ]
+}
