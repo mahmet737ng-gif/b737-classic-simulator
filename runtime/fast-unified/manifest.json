@@ -1,918 +1,54 @@
 {
   "schema": "b737-unified-fast-runtime/1",
-  "sourceCommit": "a16e545d711bb437a22357517c06cd878847036c",
+  "sourceCommit": "f4460222b023facbd528ed2e4aed500efff92b86",
   "mainBefore": 328,
   "mainAfter": 107,
   "overheadBefore": 62,
   "overheadAfter": 43,
   "files": [
     {
-      "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "6613bd7e79c9f59716c7bdde25593a3d2e2ab8a24de6ffa3e99a5d3b4cb8cff8"
+      "path": "assets/fonts/boeing-cdu/BoeingCDU-Large.ttf",
+      "sha256": "6df71c5dc38105240f80c94f39a3daa075d4fdc6f33ccda7ce1bb48470ed0626"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
-      "sha256": "d3d3848af8ef1a801f68266295c19e8d7e49671553ce83f841b4b34b6c87b35b"
-    },
-    {
-      "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
-      "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
-    },
-    {
-      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-6b08d0cd89e5e470.js",
-      "sha256": "6b08d0cd89e5e470aa126288dcbff67066f97d677d3c39a5fdaed5fe52b43c44"
-    },
-    {
-      "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
-      "sha256": "824bd1661d8cf653e67be65b58b657f82ce1a41e65e1c7db371c906d8150d0f1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1bcaefe30722e6d5.js",
-      "sha256": "3ade54b30d97cd79a8ec37c12e115152ea1ace2cdad0032207211829881ba0c3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-68d4f5acf351d53f.js",
-      "sha256": "68d4f5acf351d53f2e048dc324e6d5aa95025ac2c29263c18f3620f23ca3fcaf"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-25fa9f115da165b4.js",
-      "sha256": "95bb157c29bd91c2803af0bab97d7be9dd2c4215cd1e80b94ae0147d7806fa3f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-656e682a7ed7a058.js",
-      "sha256": "245a64c56c1fe673c5ffdd24bcb7b790bef2e653fd4569e89bba11e820c0f952"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8b08647124142f06.js",
-      "sha256": "8b08647124142f06adcbfecea7fe7dd3ed74f40fbb9fa452c014fdec1f4dbb6e"
-    },
-    {
-      "path": "engine/config/desktop-bundle-0934f674ee3ca2e3.js",
-      "sha256": "ff3ebe74ae2f2873d96c51e855e863b37cb05cd94e59d4542adf239b48ddb763"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-df37b59c14eedab3.js",
-      "sha256": "bf36bc89cf4ba6f12ca972ccbfe1c2a60be60503a80cbd06edcce68659471efd"
-    },
-    {
-      "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
-      "sha256": "8a48b360f6836afb2f3d226a30470d9a7c031d1bcdf14d3156113922024bc9aa"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
-      "sha256": "61e815474783edb6313fe94b583ba3dc571e61802a6a3c694c5615622154fccb"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-f1289c3f47af2175.js",
-      "sha256": "1ec7d3fd863c2ed115d17bcaebf06970e417796ff2d79a5e354c2e31ab53f359"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c1b91f69a0cfc771.js",
-      "sha256": "c1b91f69a0cfc77195ff4b30f47c746e1f8b420163b4623dd8a78ca7bed2266c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-0cac7f156d00082d.js",
-      "sha256": "0cac7f156d00082d08226aa12c2f0463425df9a04a3a81f3b49d1af36d850db2"
-    },
-    {
-      "path": "panel-mosaic-lab/lights-test/desktop-bundle-000fb2540bcc78fc.js",
-      "sha256": "000fb2540bcc78fc97efd7fd6d98d8ca842828f4731a8f0f183e7fe57f9d9ead"
-    },
-    {
-      "path": "engine/systems/desktop-bundle-4bb33cfc18fe750e.js",
-      "sha256": "4bb33cfc18fe750eba1b76b87ef931f03ebfbfd5ecc94d9612c9a896d921451f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-02bd2b77b2f6ae57.js",
-      "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-6256d726299b0a28.js",
-      "sha256": "28dc876055189b6b951459c863797f58148e02372fd07d363036e207a281abc9"
-    },
-    {
-      "path": "audio/desktop-bundle-c60801bce01e92be.js",
-      "sha256": "c60801bce01e92be8c26267b5c995aacc43b7a194e16bf78d04cb3c43c4e9d90"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-73f2ccb93460e616.js",
-      "sha256": "73f2ccb93460e616f9582f9fb1bed67be844de9da1a18d16ba5be90d49fc65e0"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-07dbfd46ef5aa048.js",
-      "sha256": "07dbfd46ef5aa048b024c8e4dc6bbf8b971ee67864bc0c12f2be50d1b8064645"
-    },
-    {
-      "path": "engine/integration/desktop-bundle-f2bde8996357d2ca.js",
-      "sha256": "f2bde8996357d2cad75fa0cb674445461cd1affce7f84c776203a20a70bc9a19"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c17d543da71fbafb.js",
-      "sha256": "c17d543da71fbafb48925bfbe8d96219e0c356c9ee5857a58305ebea8db4589b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c041ee2a9e2c5fda.js",
-      "sha256": "c041ee2a9e2c5fda124e49bfd5e3907a02eff5cab999dfa42fe5daecfc09e32b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b1771f97f24a6ce0.js",
-      "sha256": "b1771f97f24a6ce02e16399da6d63b08d70732e556437d20876657f85498a1ae"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-3aa8890257a17c94.js",
-      "sha256": "5c5887a7f3bfe077e9793d5f4bcb58d6fd927d9806b827dc3e9669c143166b0b"
-    },
-    {
-      "path": "engine/systems/desktop-bundle-18d585c6839bd074.js",
-      "sha256": "18d585c6839bd074a66209bdceb991649c32338b8c198df5b9688cf1f1696484"
-    },
-    {
-      "path": "engine/systems/desktop-bundle-7508f29d61a33f3c.js",
-      "sha256": "7508f29d61a33f3c89464fb735432bd4c8620b6498ef53766cf50ccddea07f1c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1891e53d326736e6.js",
-      "sha256": "1891e53d326736e628feff035c0b7454982a002312ebc087b52fcce914555e0c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-a87d427570c9ef04.js",
-      "sha256": "38002ada786810212d8e4a99d97915225bd300d41bebe4811dd3cb41c89a461a"
-    },
-    {
-      "path": "engine/instruments/desktop-bundle-75446c3ce3970339.js",
-      "sha256": "e45fec564b8ccb0f5de228edd4b77c26e96589831c4b4f697bffe7ed2e86b393"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ade8c2cc4c5b8b45.js",
-      "sha256": "ac309b02be4a172fca26c513b4dd80a93596bce8b2936229eb9c91384080c5f9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
-      "sha256": "3ffc3c2b9e2d2b2abad8b5ddfd3caf09237dca30f2f178ce763756bce2d3fe44"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
-      "sha256": "2249c4a8b0f7911d9d73c193a571dd61106a825abd6ccf98ddbf73ad34531df7"
-    },
-    {
-      "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
-      "sha256": "e041124d9ab5f0ec98578c5f1b975d3758be84b6d4704f6d1aab958e567e02e3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-5db4117e839416ef.js",
-      "sha256": "708b6cca75760d0dd37af340b8933f6ad985bdd914e6d795b2f100031065d361"
-    },
-    {
-      "path": "efis-display-lab/desktop-bundle-d98e6f1d2a33c62b.js",
-      "sha256": "7889204392f8fc3cbbb57c89c6c17a19d6a730325f734c2bc6a7fd04f3b6bcc4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e95cafe23edf160f.js",
-      "sha256": "c9dea8e8f8e9e5b73f3bb100d40e52b7c8dbaba0331ec40a00b52ab02448e2c5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
-      "sha256": "e9508d2e73b9afa7d851066fcce37304861d360b07408391a53b1f6e1bd1ecd6"
-    },
-    {
-      "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "1eaafc6a2e7d14c0384c1be8e4e0fdab328e633a20e6dc3ae34f623af6dcbe53"
-    },
-    {
-      "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
-      "sha256": "2244317678f51c4e0f78ff499024bcd5a1a7d0a5b954f3d45922c0aee6438379"
-    },
-    {
-      "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "d135eb7413da0fba13f80ec32be2fcfb40f117a85c6360d211b405a27dc1c4ac"
-    },
-    {
-      "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
-      "sha256": "155d5e937c5b8b632527f8caf9eb653b6557f9b8eb492559803dfeec1c90bb4e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-80caabdb05a512d8.js",
-      "sha256": "80caabdb05a512d893954d240e39e55a74d647dbb148bfa7dacb420e37516b8f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
-      "sha256": "3fabc4a78d5bc9cd47fbbe2fe1da33a757fc6db2f09965ab033613d37ab9cbcc"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8141a7a984c68908.js",
-      "sha256": "8141a7a984c68908d3dbc4645cdc1bd97d8a2955deac31c5ed70d9893cc3f810"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-80ca1e7d3efede04.js",
-      "sha256": "80ca1e7d3efede04bc3c66d77d8ac2f5e5aec0c3e491a854b065e55efaf7b948"
-    },
-    {
-      "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
-      "sha256": "8bfe051180cf5d3d43404a1984bbc9813e8aa4296665c180d7e1a72362edc5e9"
-    },
-    {
-      "path": "flight-controls-panel/desktop-bundle-89fa9686e7b22295.js",
-      "sha256": "89fa9686e7b222954c3f76ca8a29df5b7d4e27c358b6572ac1ad004b9876eef5"
-    },
-    {
-      "path": "engine/systems/desktop-bundle-bda8390aa7ff14a9.js",
-      "sha256": "bda8390aa7ff14a94b0e4acb104c6495cbbddef586a91fe73ac8541d80a42b8b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-90bf28e49f7aba34.js",
-      "sha256": "90bf28e49f7aba348211bd1df57713ef3b1c762ff119c04d9543bcdfc891c5e7"
-    },
-    {
-      "path": "engine/interaction/desktop-bundle-3e4f206ef74d4731.js",
-      "sha256": "3e4f206ef74d47310b56e75f5dc52717dce4952c6b7b85a4280e08ffdca3a80f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-6dfd1ac03dc1e4ba.js",
-      "sha256": "6dfd1ac03dc1e4ba1a3bf8a196ddc1288b82e2f95661afc0c3929d58c3b63bc4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-cb665f3fa7900b08.js",
-      "sha256": "cb665f3fa7900b0834925a496bf3f627fb2497e841c565acffd10485ffcf179a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "b83b5b4c6ecf8c3db8b34abc25e61df76069cfdba56c95e5ef5a6992a2bdeb38"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
-      "sha256": "a69502263893661fd55293931177e3a41bdcf80854ea1dcf07b85b8f30b3d102"
-    },
-    {
-      "path": "cb-panel-lab/catalog.js",
-      "sha256": "ac9b31752d68502acd87154344df4d93f82aebf94b61bc7da3d96b5c3b885251"
-    },
-    {
-      "path": "engine/systems/pneumatics-v6.js",
-      "sha256": "e4ed96e17094a77c995d9e17093ea61119374702c76850cf8c28a7086167a26f"
-    },
-    {
-      "path": "engine/integration/isn-engine-apu-v1.js",
-      "sha256": "3ace3bb4cb4f130ae2876992165896b5ac7400b4708d52f0d0eca6fd9b5290e1"
-    },
-    {
-      "path": "engine/integration/isn-start-sequence-v1.js",
-      "sha256": "3b153011224f0dd82c1206f17f9c5ec4f3cee8ca52a6ab051181e37a70d7e97e"
-    },
-    {
-      "path": "engine/integration/isn-engine-start-dynamics-v1.js",
-      "sha256": "452369375173752fe05fc0e3ffdd6d9fd306ebf4631c9c01d30bdbcacd0f55b3"
-    },
-    {
-      "path": "engine/integration/isn-apu-start-chain-v1.js",
-      "sha256": "67458323d23129fcfa0bca4056410146a9f92530de82d279f36b9b426dc3fb05"
-    },
-    {
-      "path": "engine/integration/isn-start-indications-v1.js",
-      "sha256": "a690f7ab46f55f2b30b3550ac0af38de92b5038aba14d0bb986a2b3c5d98aa3d"
-    },
-    {
-      "path": "engine/integration/isn-fuel-shutoff-indicator-v1.js",
-      "sha256": "77b342710973f4785f48823ccb4f011061bb964db5d8936646d03e9d3a6cf0b9"
-    },
-    {
-      "path": "engine/integration/isn-unified-control-router-v1.js",
-      "sha256": "ad27b85e13874e19e1d8aa5e5b806a1689b2dc3f299ffad377943acb06e67c28"
-    },
-    {
-      "path": "engine/integration/isn-thrust-performance-v1.js",
-      "sha256": "1e4be2a479601d01597968560cfda16800d7b4a016653407a3dcfb5f3ee4bd4a"
-    },
-    {
-      "path": "engine/systems/classic-fuel-system-v1.js",
-      "sha256": "62d30442bd7115e96d8132b6961d72cc1c0227e05b1a717769ea999f009f8c14"
-    },
-    {
-      "path": "engine/integration/isn-09-12-runtime-v1.js",
-      "sha256": "ca8cfa95923c827c8078b371d80f27c502030ed4d3e94aeaf475d74b6eb37902"
-    },
-    {
-      "path": "engine/integration/isn-apu-load-dynamics-v1.js",
-      "sha256": "2e78341afd55a64156cc6b8f588b226f38ac639f4c11c0187d6762eae9df0cee"
-    },
-    {
-      "path": "engine/integration/isn-13-18-ecu-testbench-v1.js",
-      "sha256": "39c0966804ad2a79edaa50cb07e4b04b3293da9be93d966e2fa0af36280de907"
-    },
-    {
-      "path": "engine/runtime/unified-live-gateway-v1.js",
-      "sha256": "dd702bcd2c0f8160e3dadb13c4405178d99e537051b583ee1802cf0ac607e6f9"
-    },
-    {
-      "path": "engine/runtime/owner18-electrical-input-v1.js",
-      "sha256": "96dae65fabb4a4430e2dfd33f744740a16ba55b10dd09071715debe06ff674b7"
-    },
-    {
-      "path": "engine/runtime/unified-authority-diagnostics-v1.js",
-      "sha256": "1b7c37d43117e65263c7ae52bf28305a2f3a820544a2611ef7b005a34e257b1b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/manifest.js",
-      "sha256": "aec145a9bf162a42c33c762dbcc4171e52c3c69bbf18d316bf9dd79d0a7274a5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
-      "sha256": "df508e3f53aa9012c60d3ce3a1709908e8ddc02c6d2f834aef721efe3e05990a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/lossless-integrator.js",
-      "sha256": "a72ec641689a30e96a32e04aab49012393583634ca0ed3ea557c8baffaea27fe"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance-loader.js",
-      "sha256": "da021db21575dc4a0e8fde397fe0dba24bbcc700f42499eb3a684532859a3542"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/style.css",
-      "sha256": "8bfa8b10b9f8f48d54c424530db5787f9c1c792972a027caa4d160b94a391658"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/engine-indication-live-v2.css",
-      "sha256": "5ba8bd194f893a22602bcc377249ef089a9eb703985021ed25e608ab26ec8607"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.css",
-      "sha256": "656fef1540e534f7df53364439533f4e1e58111d9d8bc6d59f9c837dd903bbe6"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-01-v1.css",
-      "sha256": "d1448c7277dd806c8172912a09e487169f4d8f4c469bdf8d8bfc75f4b59618d9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-owner-photo-components-v1.css",
-      "sha256": "8a263e3addf4c396d329c0a9cb6ef6020fa035c9a00df7d7b9d0f1b3dd12ea2b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-front-actual-photo-v3.css",
-      "sha256": "9364149b78e1760e85a794b2e3d49e77d15de459e59d5499c47b4b835af1d6c9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-owner13-v1.css",
-      "sha256": "1ce1b7bed4acce7d91c11f80066c4075941b8100b77a3732b47965c581d10074"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-02-v1.css",
-      "sha256": "8f83ee23f728843c4cc9dd2ac78b9bdcdca9d25248dd874afa345f99b8050961"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-visual-v3.js",
-      "sha256": "e8264f99e434ad170548343c002c2b2e2231cdc2ae1b1fae7c82b8eadc560aa0"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-hardware-v1.js",
-      "sha256": "6a7d9922b4fdfd8c5e5eda3ede978c64c3b81b8d2f55cffe7c289b087d8e8f62"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-owner13-v1.js",
-      "sha256": "b52ae4c74756d6d0bd23d9932b0d4c4f782134ca95d2b3e5f30cddf03c7965e7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/mcp-knob-retina-v1.js",
-      "sha256": "66c5760b993c83638d14a482d0a81545d5632686448f7a8357d90776f79a6a23"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/airspeed-pointers-model.js",
-      "sha256": "6cd99a57c1aa8f54faa043fad94ba12044816e14cd169990a9ecfadba920a7df"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/airspeed-pointers-unified.js",
-      "sha256": "8164d3804635f95387ec667d2149c38a4e620990b17c7bd701b59c1c3119da77"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.css",
-      "sha256": "037bf769149d1b3a9c3afa8fe4b1276e746b771c49d1acb1abcb3a5aad93cdfc"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.css",
-      "sha256": "44fb93803decaa7dc6754b7d2edc2821c080c1efefd79338835920b3d4dca07b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-cues-v1.css",
-      "sha256": "42d5eff19fba44f6fe2a0fd65a1b8dec915420660ee94bea8b037908d9cbe4f3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.css",
-      "sha256": "6cfd52e64ca7d8f5abc2924ca4cc58f117561bc7310280332afbbc3db3fbd0d7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.css",
-      "sha256": "9e9b88d3746750dd3d1a9a129b18612d85b5c7ba7b6879278ead79a9bc714da3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.css",
-      "sha256": "b16da5d7a854f8cf53e1615dca138b1b0f55d30e082bd4dde385e5892561068a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-upper-face-v2.css",
-      "sha256": "d49881fce6acce78821315a75c356d65c4a450b6c0266f68a198baa0fb611ce9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-amber-display-v1.css",
-      "sha256": "49100abbc8616313733081aa975a679f449fb644f6fd539d03885f7fdc1b0e31"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-upper-dspl-v1.css",
-      "sha256": "8ea15e0d9fb57d165034abd3c8b9721924f20f137b51cbd5e5eda75848cce6a1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
-      "sha256": "d90858addedd11887abada0531563c67f8124811566834a54762f5ccda0b1540"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-trainer-unified-v1.css",
-      "sha256": "c10326ff479dc6863ad9fabcc29ff3a85a781cafe81d21188a0a32a3f27497cd"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-panel-registration-v1.css",
-      "sha256": "d0399be3d99bc37c7487d7fff46b82edb118e4fd4eb9aae1231b043fd3608c5b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.css",
-      "sha256": "df2e4b6268263384a49dc268d74ef71be9980f18f1d1554f83aef66063b02be7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-03-v1.css",
-      "sha256": "c536d063e4cadf61e01681b727b4c123743ddec2322a6ab955d7ac55e3f7a35d"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-physical-controls-v1.css",
-      "sha256": "8bdd02d43037e25608485afe34c359ad16c31a5e94970008e138b0d8aa338da3"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.css",
-      "sha256": "7a1ba24b46b705cbda61efa0cf606eff265cda8e78553c22233452e007c89b34"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css",
-      "sha256": "849cbc58c4e05e14ad7927f2aa5ad4a139af5fecda48a225a00d04c1fae28a00"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-04-v1.css",
-      "sha256": "f8f517397a3cc167dede9a2de387a2ce8512819318a90e149c11e3b0d9de7fa0"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/smiths-fuel-quantity-v1.js",
-      "sha256": "37a2a4a71d571b56ca7738be43f460625785bb7989ffb6a07517ddb98aae6869"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",
-      "sha256": "32ec7e6cc0aafe02e6754057fc3562b84e0e52d35e98e9e403155bfd3af10451"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.css",
-      "sha256": "c30b8e99495b0e7286f0035248b6905225f114d1808a3b356771e285e935b3aa"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
-      "sha256": "235d02db647c131671b8f7bf14868e9efd4b24e663a6b363b890f803af7e8d7f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
-      "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
-      "sha256": "c79eea7e3a20806ad57e4100c9a61eb686c42900bd32809a8edda3f3866d1555"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
-      "sha256": "75de4c30769e76e894323b86a5a40ec3fe8c382fb8fc252eb8d7830547f2a791"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.js",
-      "sha256": "caae92926bce44430d4b5972790ab5580c879bbecd2920b608112d9d250aeab5"
-    },
-    {
-      "path": "panel-mosaic-lab/lights-reference-v2/live-mount.js",
-      "sha256": "cc87c90d3818613e1ce4545c4ed209bba70fe31fe1d5e17159ed2596406025d6"
-    },
-    {
-      "path": "panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js",
-      "sha256": "fab8fbd5bc3664dd5557fc64ec42ee8f32600bfc65a1e62ae7667406a2d3354c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/lights.js",
-      "sha256": "6e12a0d8ef432f7337074f933f61719c85c7f185ebbef284deca4d3a42e6766c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",
-      "sha256": "531b3ccab63cdf105d2697b9d4ea44c331f4283ac8fbd3be486fbeb69ca262a5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-05-v1.css",
-      "sha256": "b56603affaebd7893c49acd64cb96e0292cd70751eee14a39f3130aa543d56b6"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/stage78-readonly-unified.js",
-      "sha256": "532c53a75a4386b028c3a96899c50950ef6b18b48a44cfd24b38f1aba42a3c7f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
-      "sha256": "77504d1cb91db05b85854ef857175630917853b74eb79dda6f3356cb99f2e333"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
-      "sha256": "40598dedf1804ae52771813419dcb37e75a6df60011d6c1d42a3ba17c99f2df1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js",
-      "sha256": "1834e6eefb7d819a720973bad40dce61e7dedf0507f489802f5357762fa82043"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-isdu-cues-v1.js",
-      "sha256": "a34f79fd6ec8e48c792bf3b43a0e41b2d57ca8c069afce1edefb5442015fe9ce"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.js",
-      "sha256": "ea48bb01182af54d6e0f131636e1eaf76f50e51aa627f4671728ea932780588c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js",
-      "sha256": "de523d3443030be3b038cda3e303c67f650269ffce4f3aa95765d3970d93841e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.js",
-      "sha256": "133019a6fa4cd4a1a6bad616d6826e511bc235f80d32c214e6e354bb7d90d04e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-upper-face-v2.js",
-      "sha256": "5b94776615c06fe7b275b8dff97d58fd7017aba034884e59e5d8e3bacd9fd87c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-amber-display-v1.js",
-      "sha256": "da839af95b855185c1e9daaccf66ade3778a6c9324dfaa5672e8a38abb2ca26a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-upper-dspl-v1.js",
-      "sha256": "a683cd9714c13d058bb58262ed049557330cfd9377f3c8146ff4f3abe06cef4a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.js",
-      "sha256": "48ca1b26c101f9abc9f88b8bd33ef3d925efcc37723338c8ad9adca4d1d501fb"
-    },
-    {
-      "path": "engine/systems/irs-trainer-web-v1.js",
-      "sha256": "3dcd9b4e57b6dabe171f324d1dc88d0db9e0d91272a4ac3ae21ca4c93697d893"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js",
-      "sha256": "57d629b9f1ff61283c2869e8c6a31f6d6e40cdf17012974a6c7e0947c827fa86"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-panel-registration-v1.js",
-      "sha256": "c0c02a9ee2aa06d73b102e1ff58d4b3e978c6bd6ddc965cc76de9bc23e787e57"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-background-hash-clean-v1.js",
-      "sha256": "15882269c153b7848b2d2468a179d134d58efd20a7a33d075843177f2f097a4e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.js",
-      "sha256": "ae85689aa357c6300b02505cc6167266774bbe3ddb613c584bc831b3adebcd0f"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js",
-      "sha256": "bec3742657a37e3e51eeabefb75e85e1699131c531872267b30f431757e3c2eb"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-full-paint-v1.js",
-      "sha256": "c7e7f5ccda283d08cb964b086ec9310e2bf46e626374708795ce5176124f844e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js",
-      "sha256": "389f4da41e1e307d9e22f9844e956e0294b5cfc1d7a4e1e4c24f42c238e4a1b8"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/fo-owner-panel-v1.js",
-      "sha256": "6824dbc7e7dc49fb9235ca481b9dab1ba22887ee964132e40244286789a048fd"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-lamp-registration-v1.js",
-      "sha256": "4ec5f3ba724fe6d149c8d51ce7b28d9ebe2b515d6d617a5065bfefd3d2be3071"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/detent-hit-geometry-v1.js",
-      "sha256": "accd22f649e81d2bde03fca36971b8648d11f9654d0c7888e75919b0e421c1f5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js",
-      "sha256": "d38c5edc5d67a9dac9541efcc9293bf6dff6e6de51c70ab7df430f9f630beb83"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-06-v1.css",
-      "sha256": "13d3bfe45de94b645de3bfc361a4d642cf4686a550606318cd3f0fd96466115a"
-    },
-    {
-      "path": "engine/instruments/conventional-indication-sync-v1.js",
-      "sha256": "ace7a5c8d52a9808bf5edc8033b3c9b68f2014d23098425488cee11fc97a1a71"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js",
-      "sha256": "a406fdc0e46d34ef7c9f6302f6afdcecb5153da627e3d2179734cebc8b5dab53"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/manual-n1-live-v1.css",
-      "sha256": "40a09735f039ee64500c8f51834e49635b013db4cb7b54bffe5a7d5545746b46"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.css",
-      "sha256": "d2457c2edaf78ae3f33ffdea8ce7b0d51e5555f53e43e6d1cd1c5639ced1d7f9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css",
-      "sha256": "2e88580f834180ae3c0133121d9d7909b992b591a54c5fc5d1f55fd22ccde550"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js",
-      "sha256": "901e76725b9d328946cc509d1715e491128314aaf82f7fb4defa3502012e378a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-css-safe-07-v1.css",
-      "sha256": "4111604c75d64ef17b78d85740c931c462d332f416fdc8731c8207e3c93f79dc"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js",
-      "sha256": "9f86280b9f752c1e9cca509d6b88e1dfeb74d4aabba7706146af9b0b3fc8228a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pedestal-faceplates-library-v1.js",
-      "sha256": "332e7a58ce55ee15690443355eba958487f3ac5d42a44bf36b9641a3839ae3d9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pedestal-dual-vhf-knobs-v1.js",
-      "sha256": "e2e4589f097e9cb35c1325fd95adff8cc01967f5876464b66b6c188fb6d74a35"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.js",
-      "sha256": "77b5e90999f1830af6cf5be1a5e13a3d25ffeb72f839d845f55b17b17164a362"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
-      "sha256": "ee2bab060a1fbfb5a8e73d8ed92735c98fe40cba1eefbdabacc1398b38606d69"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "0d4e2fc30d2a7980f9eaffc1eb9b8262a30a8bd1344eceeb69cc341b48c26bb3"
-    },
-    {
-      "path": "audio-lab/owner-ra-callouts-v1.js",
-      "sha256": "8ff4fa951e98a5cdaa47d9b474575f7eeb2d6653547827cd43d02575a4fe1394"
-    },
-    {
-      "path": "audio/owner-egpws-approved-samples-v1.js",
-      "sha256": "d2890c2bbb14d05420bbd232b2394d5a59afb14b14bbca838fa02abe0550b786"
-    },
-    {
-      "path": "panel-mosaic-lab/all-overhead/spec.json",
-      "sha256": "039e78c0778ebd91bf0b8a44675e8f989fa37b1cfe39e11cb8dbfc1eaa965dd4"
-    },
-    {
-      "path": "panel-mosaic-lab/upper-oh/geometry.json",
-      "sha256": "821ee6bea332ca172d3b45115c93b9aa9239b5dbde1897b457d5ed8950ab45c6"
-    },
-    {
-      "path": "panel-mosaic-lab/all-overhead/atlas-layout.json",
-      "sha256": "dc5971aba82146b0e5217f5ceef91db1194e1f8adb965b7498bb03e0730cc8ae"
-    },
-    {
-      "path": "panel-mosaic-lab/all-overhead/style.css",
-      "sha256": "4dabf74f3733ff99fc26bae649875494b51a817ca1b9c1f0ef960f7cb25562c4"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/overlay.css",
-      "sha256": "10920e1d598298d979cebf312c207ed87a6db9d051ee844c27f593c0cdbb65cd"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.css",
-      "sha256": "584b2ba27083a159fc5226c56758f6b599823fdda856f580b3f08771abe140c6"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/lights.css",
-      "sha256": "63ca54611dc19a9c58d776c26f32fe108a8b9516b972017269b3eccdef60fae0"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/aircon-400-overlay.css",
-      "sha256": "0f34dff1728e154eecd75efa721c76ea84daaeae5db2a96898d871dd684eeff5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/aircon-400-oh21-overlay.css",
-      "sha256": "e0da124778a5d9c594974bf0611d7b9a87706b12e7ab7a31aee29cb9d69b596f"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/lights-fit.css",
-      "sha256": "118cfde886310aa6fe547ded33a8da6fba25f40fb2974dff724241c422074ddf"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/overhead-embed.css",
-      "sha256": "23505e0b6328e5bc5698681d50957872df53d9fb4925e87411beefe62cdb29c1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/oh15-r-alpha-blank-v1.css",
-      "sha256": "6423066048061703dfed972b090e1a5c31a07b795c337a32df7394730ba34311"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/asp-controls-v1.css",
-      "sha256": "48f14f41c5e14016cc43241dfb4806a4cf9fc649a41abf79a746857435e806ed"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pressurization-oh22.css",
-      "sha256": "bdcd93b15463083886b8bfac1b9631af4926f49f8731cf1466ae9b0d57502c75"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/no-old-guards.css",
-      "sha256": "f7878201029fb0a4e9fbcb47149f15d65f0be433c6c504badd27a955b4ba02db"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/panel.css",
-      "sha256": "892dca6fcecc5668a64548a1605d5a9eacdbb58fdbee48da1372bb74f2457fb4"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/stagger-v1.css",
-      "sha256": "df07b11fadcca61630ad0b1ec1a798fa0b28807a9b69727adbc6a0ade976addf"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/photo-lens-v2.css",
-      "sha256": "a530b9e193fbf7d507dd9400e562abf9a00b4fad0bdbe251209f06754d46b4c5"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/photometric-emission-v1.css",
-      "sha256": "05285ee071a930daf9bebe643cdfc01cb1342cf842fad1fadfc498eeb2ac242d"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/smooth-glass-v1.css",
-      "sha256": "cee9b38c4cd7d2fc61c541d585b1f564b9f209e62f440e6b645e196aecf39faf"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/recessed-overhead-v2.css",
-      "sha256": "c3852369dccce517e735b43ca5548c7969c0a83c5853484bc64c94bc1a5810d7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/overhead-photo-input-v1.css",
-      "sha256": "48decb96d9070beffe0e7a46201306b8008677e6cc695a2bd95af56f8b17a0e5"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/overhead-pinch-bridge-v1.css",
-      "sha256": "01218e84d19be4c27db3e2716a1734a385bbbf3c04c0acaeb1fb4452dabc2d66"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/overhead-renderer.js",
-      "sha256": "078c8cdb2d649ba38aea82de4600f968306f6d603ce5afbff63f9da919e8da16"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/lower-panel-replacement-v1.js",
-      "sha256": "cce4907de5cb936d3a207a9524bd4c400ac3eb3bd97aa247f13d3c85135532f1"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/model.js",
-      "sha256": "08a30a335b8e8819ca32e44bc0aa20862014000561abf2d4f8b24160e83094f4"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/app.js",
-      "sha256": "58502aff6c3568c72dd3f1f223b7e18e9e6f177e540fe71c7253e7e1d9cf3c58"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards-model.js",
-      "sha256": "6d1cb0307098f0e563de17aad379d24aa4cc5eb1e464abac50b3d96b8a865961"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.js",
-      "sha256": "452c0bae9340a6f8fbe708bbbb3994a44407105b38331a4c8eb0e026d07faed8"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/lights-model.js",
-      "sha256": "55a7d20f8a394052cb3d18873460a62c413a67ab3a1c1bf1109f90c84eb6f9cd"
-    },
-    {
-      "path": "panel-mosaic-lab/interactive-overhead/lights.js",
-      "sha256": "e7a64aadcd7dfbe16b448a65d30d1a1e3dd21ef1f4d593737537165d4e081718"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/asp-physical-controls-v1.css",
-      "sha256": "7287472e292680db6d21398ec4afd40283639b4fd546a027332e4b324b979321"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pressurization-oh22-model.js",
-      "sha256": "ac54046a17b56c1f8c23fe815735a4f3c6106d933eb2a266df86c774a8333874"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pressurization-oh22.js",
-      "sha256": "cffa3ecb4880d8702cb651e8edfb39e1feca45488a5187f23130a0285216e58e"
-    },
-    {
-      "path": "panel-mosaic-lab/lamp-socket-fit-v3/variant-fit.js",
-      "sha256": "f4a2d897f0ab135162a9b46763131c2c145fa66a95ddabde51189b12b6c7131e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.js",
-      "sha256": "b6cbfccd55e71d812b403607c26063ec27917a05a4d8a10d44e5e9e155a28690"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/no-old-guards.js",
-      "sha256": "c49a6e472894190e1ad3f5c0dec6255cfcf82c9d2dbb1de388e8503aa5ffccc1"
-    },
-    {
-      "path": "engine/systems/le-devices-classic-v1.js",
-      "sha256": "d77e4188f23c3dd782c2aea6df23079d5c72722484ff2c846188369bada02a95"
-    },
-    {
-      "path": "engine/systems/te-flap-actuator-v1.js",
-      "sha256": "14a7d7a386dcb3a9ba6fd568c78f2b2e5b018384ece8fcfae29062b0c31254cb"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/panel.js",
-      "sha256": "01c30ef41e4cc65658481351710143e7e8f20d3c21c01eeb8c362becd5bdd768"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/photo-lens-v3.js",
-      "sha256": "953b19dcdb0a3ba3a35affce772f64d5d2f94f7d97848e932c929bdf1d62409f"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/smooth-glass-v1.js",
-      "sha256": "8d6d02904123ff03fc4e7e6ec43f7995d75f763e5c4673ec29dfc594f1ac0ec3"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/trainer-bridge-v1.js",
-      "sha256": "38eb454501fcd6ae4f38c0e5e2536b5477434dd7dad1246574c4f22322cef67d"
-    },
-    {
-      "path": "engine/integrations/le-devices-external-ports-v1.js",
-      "sha256": "b462c7070a57b5485a02829813745261ee242a94df89edceb0de64fe5a556c5a"
-    },
-    {
-      "path": "panel-mosaic-lab/le-devices/flight-envelope-integration-v1.js",
-      "sha256": "36a9abce081d41925e866aa7eb76fc7f65a4fa1bb32c18febc5c3508544754d4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/asp-vbr-small-silver-v1.css",
-      "sha256": "40466060ae6407c366bf884c338dd4a9097195b9fe28220cc02230cbac0c19a7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/asp-vbr-model-v1.js",
-      "sha256": "4f328eed6cf300cfb3d208f7a9e9cfa8e533e65f6593d5775607ffe304520469"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/toggle-base-matte-v1.css",
-      "sha256": "ba5419598b522ecdb17c311e3014a5acc7308dfb38ae98c31aa4d9aa5f7b8f66"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pmc-glass-guard-v1.css",
-      "sha256": "d1f610c4e0cadd29618b823e67c17a175bb8c0e2e4effbb24243b7e1dce7e36b"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pmc-glass-model-v1.js",
-      "sha256": "91fff474a14f83b8073999723a2874e7b356040df90063eced149e6ca83da135"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/pmc-glass-guard-v1.js",
-      "sha256": "c3fecf16c760a9dcf2e98196cdd2a6887bcea39a5c0e9c7dd5050c0072d6b8b0"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/oh21-owner-photo-registration-v1.js",
-      "sha256": "7a0e90f1af635de9ebaf574f1b14335b2c4a374a1a368789e50113ef5bc6c4f4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/redundancy-physical-recall-v1.js",
-      "sha256": "6bc5e130024b76b21ef281a7ac460e5c4d4c1ba29038b1a1100f0de5dc472383"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/exterior-lights-classic-v1.css",
-      "sha256": "6c6d25e435005bb3ba5e768678b4da6c76e308b31061313ec7e93af1cdd3f7a7"
-    },
-    {
-      "path": "cdu-standalone-v6/style.css",
-      "sha256": "7dc0aa362693bd171cc888cd8ec5cd8c8d85863aadbd3942f95044eb09f40503"
+      "path": "assets/fonts/boeing-cdu/BoeingCDU-Small.ttf",
+      "sha256": "f6576ace4558b0a611920d28664fed3462b66a246dc393f7fcbd8e04a8563db1"
     },
     {
       "path": "assets/fonts/boeing-cdu/cdu-screen.css",
       "sha256": "8000e8d1dafa8ddb4b4077b928fa2ccfd0ef056f8f1f35b63a79a67bbafd76f5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/cdu-embed.css",
-      "sha256": "4686c4f157e85f81b50027e651a75c7bb9327c6946b842cfd6273423f9fcfc8f"
+      "path": "audio-lab/assets/owner-ra-callouts-v1.mp3",
+      "sha256": "a81fde2be7bbb10c2857af5e5c8721670f88c56fafdeb60f7cb15b560144b5a8"
+    },
+    {
+      "path": "audio-lab/owner-ra-callouts-v1.js",
+      "sha256": "8ff4fa951e98a5cdaa47d9b474575f7eeb2d6653547827cd43d02575a4fe1394"
+    },
+    {
+      "path": "audio/desktop-bundle-c60801bce01e92be.js",
+      "sha256": "c60801bce01e92be8c26267b5c995aacc43b7a194e16bf78d04cb3c43c4e9d90"
+    },
+    {
+      "path": "audio/owner-egpws-approved-samples-v1.js",
+      "sha256": "d2890c2bbb14d05420bbd232b2394d5a59afb14b14bbca838fa02abe0550b786"
+    },
+    {
+      "path": "cb-panel-lab/catalog.js",
+      "sha256": "ac9b31752d68502acd87154344df4d93f82aebf94b61bc7da3d96b5c3b885251"
+    },
+    {
+      "path": "cdu-standalone-v6/app.js",
+      "sha256": "7a9db221a22c4ac3df02bd598a08adf97e40e67be5b978c8e7403a2df4f868ad"
+    },
+    {
+      "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
+      "sha256": "73006fb6af31621d19aff0f1f7abb0b298a46c2f0919e4e5d6b80f6fbf831134"
     },
     {
       "path": "cdu-standalone-v6/data/cdu-map.js",
       "sha256": "240e9966028449c45982e307797173501ae8302e432c95c0aeaa4bf230fd7246"
-    },
-    {
-      "path": "cdu-standalone-v6/data/page-definitions.js",
-      "sha256": "bdbb92237d3547c4b9a30fec8c74c8b5ab4d8605046fa32bac480d9d79837e81"
-    },
-    {
-      "path": "cdu-standalone-v6/engine/prompt-policy-v1.js",
-      "sha256": "f6024f92ee2cde1f7da2428838b2f6af1ba409b484a170cee663628bf9144377"
-    },
-    {
-      "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "ebddcfa83be62762cbf82b00a0449756579b4ca6857ce82a868a0cb0cd581c83"
-    },
-    {
-      "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "ac9fe9cf77af5a5e6b531a2a50c7e5100946d96b0a38dd54831e566fdaae0a20"
     },
     {
       "path": "cdu-standalone-v6/data/epfsi-scenario-defaults-v17.js",
@@ -923,276 +59,68 @@
       "sha256": "e21ca32a3691da55a3e7341d93c6b6a88b1a6ad96c380ddee058ccf4d6e0b07c"
     },
     {
-      "path": "cdu-standalone-v6/nav-map-overlay.js",
-      "sha256": "17e4d7f0e70d9e4332db6ee26a04c723950b7b3a73b05b2c2c5ec26d29699195"
+      "path": "cdu-standalone-v6/data/page-definitions.js",
+      "sha256": "bdbb92237d3547c4b9a30fec8c74c8b5ab4d8605046fa32bac480d9d79837e81"
     },
     {
-      "path": "engine/ch11/cdu-preflight-evidence-v1.js",
-      "sha256": "8b7e5b475ee6fac75ea15c635d17a89b1c8ef96bd2300166fa9ecae1c42fa3fb"
+      "path": "cdu-standalone-v6/engine/cdu-engine.js",
+      "sha256": "ebddcfa83be62762cbf82b00a0449756579b4ca6857ce82a868a0cb0cd581c83"
     },
     {
-      "path": "engine/ch11/airac2611-middle-east-preview-v1.js",
-      "sha256": "c0aa65441626bbfdee24c462c3fcb8308246aaa90780c7b1ca71c4a9a8e9790b"
+      "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
+      "sha256": "bf013da4f712ac66f42ad4d877173b2eca95c04a94071c2aa93a6dbd9b518716"
     },
     {
-      "path": "engine/ch11/fcom-screen-contract-v1.js",
-      "sha256": "63cbad058ad4be50e10dfc99afb55d748dc1b85a77849d8b3fdf027a519582f3"
-    },
-    {
-      "path": "engine/ch11/cdu-transition-ledger-v1.js",
-      "sha256": "cfab01d8a94e07f966e3762de03f6337bc66cce3b5e1ccce9cc11227dcc21e60"
+      "path": "cdu-standalone-v6/engine/prompt-policy-v1.js",
+      "sha256": "f6024f92ee2cde1f7da2428838b2f6af1ba409b484a170cee663628bf9144377"
     },
     {
       "path": "cdu-standalone-v6/engine/screen-compositor-v1.js",
       "sha256": "f27438bb63e1529d95f12729e839ccb788129ed8c48fc39effd6542698513917"
     },
     {
-      "path": "cdu-standalone-v6/app.js",
-      "sha256": "3df927b7606a276a6f2e92c42a95043cb74ef5d8d1852ae621a0b376b96c1bda"
+      "path": "cdu-standalone-v6/nav-map-overlay.js",
+      "sha256": "17e4d7f0e70d9e4332db6ee26a04c723950b7b3a73b05b2c2c5ec26d29699195"
     },
     {
       "path": "cdu-standalone-v6/nav-route-adapter.js",
       "sha256": "52925a8b907fc6d912524a647412bd41f5878d88d2ae6618b414fe41bb108851"
     },
     {
-      "path": "cdu-standalone-v6/stage5-model.js",
-      "sha256": "ff39394cbcef33971d6201c0f44a29412ada7426ee4dab3f0c8a7d6bea5b801f"
-    },
-    {
-      "path": "cdu-standalone-v6/stage5-adapter.js",
-      "sha256": "f4f59707c8dcd25bf96c2ee21fcd57206f5aaec97b96dc5d3df056c27d79aad5"
-    },
-    {
-      "path": "cdu-standalone-v6/stage6-selector.js",
-      "sha256": "dcf42cd70d0a0c3f1d573340f4dc8da50c9d5494702aa3c8cf1cd1558b6d0e2f"
-    },
-    {
-      "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "73006fb6af31621d19aff0f1f7abb0b298a46c2f0919e4e5d6b80f6fbf831134"
-    },
-    {
       "path": "cdu-standalone-v6/reference-progress-advisory.js",
       "sha256": "17d92ddf573248c7e1f2b21de2ab99656042b9c497401b463c7df7511acf362f"
-    },
-    {
-      "path": "cdu-standalone-v6/stage9-advisory.js",
-      "sha256": "f6c911a958334f985b198a2a9098b9953971e6b149fb960e521afdc805ec822b"
     },
     {
       "path": "cdu-standalone-v6/stage10-advisory.js",
       "sha256": "83c567e18cc4475faf4ea5ce16bd2983b66279b11b5c6aa2c2174e90ffd9d9e8"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/cdu-bridge.js",
-      "sha256": "67c47433a55792389e302f8c50335776055b0275d8477256e123500e551ef35e"
+      "path": "cdu-standalone-v6/stage5-adapter.js",
+      "sha256": "f4f59707c8dcd25bf96c2ee21fcd57206f5aaec97b96dc5d3df056c27d79aad5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
-      "sha256": "2f1ab397226f22eadbe476d0424d7389716dca5e3775e77973046def2e885003"
+      "path": "cdu-standalone-v6/stage5-model.js",
+      "sha256": "ff39394cbcef33971d6201c0f44a29412ada7426ee4dab3f0c8a7d6bea5b801f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
-      "sha256": "eb340107e43084eace24184bcbf2c1917d8bca0138b7397440d29b81c07cf44d"
+      "path": "cdu-standalone-v6/stage6-selector.js",
+      "sha256": "dcf42cd70d0a0c3f1d573340f4dc8da50c9d5494702aa3c8cf1cd1558b6d0e2f"
     },
     {
-      "path": "engine/config/cdu-ident-installation-v1.js",
-      "sha256": "e945b200644d0f2865c04416bd0af838d73f41767cc281f3691d3e1747014839"
+      "path": "cdu-standalone-v6/stage9-advisory.js",
+      "sha256": "f6c911a958334f985b198a2a9098b9953971e6b149fb960e521afdc805ec822b"
     },
     {
-      "path": "engine/ch11/cdu-airac-banks-v1.js",
-      "sha256": "9527f1ac726f71b49418d1c547ca36103e2fadd4ed552b618d36c1f5ec004909"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-ident-profile-receiver-v1.js",
-      "sha256": "cf20d2855b2d71d6f9d2b392a0c671e53c13f4a1d2404cb33fda895f2a73d72c"
-    },
-    {
-      "path": "engine/ch11/fmc-airac-banks-v1.js",
-      "sha256": "f62bbec9f6f62ca078a6f45e1703411cf4c64959b5f54ee07572421aad332f63"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-airac-ident-adapter-v1.js",
-      "sha256": "49998930cae3df43e9b2794c359fc5b02e36e1f5a0834d5584dfb7a13f6806d7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js",
-      "sha256": "c12dab17123b44ab0dd287e75fe67de35da780751bb164257fa95c04e24c7f57"
-    },
-    {
-      "path": "engine/ch11/cdu-24-column-metrics-v1.js",
-      "sha256": "79ccf329998f9e1b5c7e36f5f50d00e8592251f38981d97e6af41d522940e5c1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js",
-      "sha256": "0f755e8a416f864670f024dc644c904e5d3953bff9dbb4df79fd54bdb6c03793"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
-      "sha256": "98e76a764ea0da2ba6d1e6da9ec199f5659f1940aa9c1adcd1939afdfef32eea"
-    },
-    {
-      "path": "audio-lab/assets/owner-ra-callouts-v1.mp3",
-      "sha256": "a81fde2be7bbb10c2857af5e5c8721670f88c56fafdeb60f7cb15b560144b5a8"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assembly.json",
-      "sha256": "5ca89625b863e9f43ac4bba537e9d949fe967e64064443054216cbc12350509a"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/boot-trace.js",
-      "sha256": "ef026fc6acad3fdd5f2b43368679cade3b4da9975b16dfd4cf3a38e0ab8dfd0c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/sw.js",
-      "sha256": "7d57162c42cd700aea96cc1ca11acf48b197114928ba260044ef7045171b8bb9"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/crew-room-v1.js",
-      "sha256": "a34e7a43e5cadf94cf4caf3441b417c6b8921c6e30afeaf401c13238f963f3f6"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
-      "sha256": "7180c4d2feb86ed2755790e993812e5f96f9abdce972385f0f8d3d17e56d5c3d"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/vendor/qrcode-generator-2.0.4.js",
-      "sha256": "4cafa28b1abd28b1b4a22779cbcbd10a9a205b9132cb3e1b905f8ff30ed3c29c"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
-      "sha256": "ff78bdcf9816dabe7c1a491dcc8c643af77fb1267b93e7c8f84969da32b87696"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-frame.webp",
-      "sha256": "e0d125cedde11f80c9f90f52a2e55bc027764f0385e469fa249d81df7df5a142"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-aircraft.webp",
-      "sha256": "99b4a623650ffad8d0740fba9373603bf1c74a2785af1130c478dd312495c276"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-orbit.webp",
-      "sha256": "943713caae6193eab91ea251c914ee74dba9de39517118a5fc6b9d5721420d16"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-white.webp",
-      "sha256": "a6756fdecd4a4f37c5de812983a44d28c21e7fe319acb31aea11cf9a6e15b168"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-wordmark.webp",
-      "sha256": "40febdcec9164147957003b9bf25c257d04d1a4668c97bf6325e1e41635da0ce"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-still.webp",
-      "sha256": "e4d6c8b421eeb382762a24f071913c094721c20c983ac579a1cc1e7aef320909"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
-      "sha256": "2d11a0ba986561dae17be9ca3b01d5c4dd8719317ef7d91700004794c296dafb"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/unified.webmanifest",
-      "sha256": "9b30f03cea8e14589ae960bc74ba97a480ca788f12c5a669bf110335306518b4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
-      "sha256": "6f016cba8f8b1719a2d7495fdc0d97f5db428d8ebc6ec289d317e378d12069d7"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/overhead-test-labs-catalog-v1.json",
-      "sha256": "54888bd63dc2734b378bdd34d4133f26e0c952a915715d62cb23a1d2266a55d4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assets/p15-refuel-photo-v1.webp",
-      "sha256": "914164f9727ac815334cd3f0edc48d90fe6694c461c7d8ed28347717be028734"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assets/p15-toggle-photo-approved-v2.webp",
-      "sha256": "5aa76125c4550d279551e9f98fddfa23a3b45bd1ecfcfdb0b84ee79f654b4583"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assets/p15-approved-switch-5state-v3.webp",
-      "sha256": "1dab4bd1d0ea62c8728a01828b67b2874af221a72aaa9b30271f9b1785de18bc"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg",
-      "sha256": "340cbaa176b3dd4e8c12c76b25b17f62cd7dafcc005a4c36b711e885443c5c60"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg",
-      "sha256": "1b6398e3547a6ad8bd5173c35161df42ca09351635b721b606ee62b1968a74f4"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",
-      "sha256": "ec9defd2472170b8b8018387420697879985be57d83602eb3b939c3cdb45eb0e"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/style.css",
-      "sha256": "bfacd7c683d5bb8c96765636b28f22ec098a4db87a7a8daa24ad45f4aabde920"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
-      "sha256": "5d9166eb835169df7e56330ab04dcf6df632a3529571ee0ae06fdc67097525fc"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js",
-      "sha256": "fe1f16d20b50e5841f78bb6ac13f2975270eaae099e2ea8207dd59cd3b74f039"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js",
-      "sha256": "5ef7cce0e004bc20faf7690cd9759bc2652e982a6ffd5815e0a97d4b942ec939"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.webp",
-      "sha256": "05238868582199b79dba142fb2b5398f1e8a779f0f6558dcc05d71922ec2d6b6"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-photo/scale.webp",
-      "sha256": "e2887014862d126c52889624c52539638a3473ea01595b3bf947d3d57c4ccc99"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-photo/brightness.png",
-      "sha256": "cffa35373147e7b5d2dd3484fd6b35160ad6d2785878a5ddc2577a41c38fa1db"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/tcas-photo/ta.png",
-      "sha256": "5533b440fa60dca6416a7cf279accc264127711b011350f76e420bda38eb9e05"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",
-      "sha256": "164477803935c380951ab0b5a9f6bc4cdaf3d6d4a63162a5809f5bbd44cbdcdd"
-    },
-    {
-      "path": "engine/afds/fma-mode-engine-v1.js",
-      "sha256": "58ee49f1f7c7f36259d85018e8041524a7cd0703487c2ac039e1e2bea3c6e664"
-    },
-    {
-      "path": "engine/efis/classic-flap-speed-profile-v1.js",
-      "sha256": "8649325aabf1c9ea84fc0868ed308abfe61118ad426d616a5dffdf46f52c23f1"
-    },
-    {
-      "path": "engine/efis/classic-speed-tape-engine-v1.js",
-      "sha256": "d8a8061e199489c176d5a3eab7fc1804be1bebeb23ab5d029aa84eb2158abef1"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js",
-      "sha256": "c2a3cf0393b297388e76b6ce059b6ffd8925606a921f78198a3e32e083db68e2"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js",
-      "sha256": "48a12e84a1c232aa052cd5d12aeb75157e0e77d5d4da5533d8c7d7ead7de0992"
-    },
-    {
-      "path": "efis-display-lab/reference-geometry.js",
-      "sha256": "4f3464ca6740863b9f0b6e8309c8ca72bba7c19cbfc7f8125ac7c0156db7eb5c"
-    },
-    {
-      "path": "efis-display-lab/glyphs.js",
-      "sha256": "83f083862ef68187ef312c752b8c988c4f85c9a5f0b14828bf88b12c7108312f"
+      "path": "cdu-standalone-v6/style.css",
+      "sha256": "7dc0aa362693bd171cc888cd8ec5cd8c8d85863aadbd3942f95044eb09f40503"
     },
     {
       "path": "efis-display-lab/core.js",
       "sha256": "0b5ce93761117f2aff91840d423e0f797aee81a0637fb89dba045503caae2937"
+    },
+    {
+      "path": "efis-display-lab/desktop-bundle-d98e6f1d2a33c62b.js",
+      "sha256": "7889204392f8fc3cbbb57c89c6c17a19d6a730325f734c2bc6a7fd04f3b6bcc4"
     },
     {
       "path": "efis-display-lab/eadi.js",
@@ -1203,6 +131,234 @@
       "sha256": "e80d1d5d977f4202bd0f8a17035482ea69c27ff420fad3d477366c38e6435b34"
     },
     {
+      "path": "efis-display-lab/glyphs.js",
+      "sha256": "83f083862ef68187ef312c752b8c988c4f85c9a5f0b14828bf88b12c7108312f"
+    },
+    {
+      "path": "efis-display-lab/reference-geometry.js",
+      "sha256": "4f3464ca6740863b9f0b6e8309c8ca72bba7c19cbfc7f8125ac7c0156db7eb5c"
+    },
+    {
+      "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
+      "sha256": "1eaafc6a2e7d14c0384c1be8e4e0fdab328e633a20e6dc3ae34f623af6dcbe53"
+    },
+    {
+      "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
+      "sha256": "824bd1661d8cf653e67be65b58b657f82ce1a41e65e1c7db371c906d8150d0f1"
+    },
+    {
+      "path": "engine/afds/fma-mode-engine-v1.js",
+      "sha256": "58ee49f1f7c7f36259d85018e8041524a7cd0703487c2ac039e1e2bea3c6e664"
+    },
+    {
+      "path": "engine/cb/desktop-bundle-8bfe051180cf5d3d.js",
+      "sha256": "8bfe051180cf5d3d43404a1984bbc9813e8aa4296665c180d7e1a72362edc5e9"
+    },
+    {
+      "path": "engine/cb/desktop-bundle-ead9dd67de883c75.js",
+      "sha256": "ead9dd67de883c751bc04470b0f3d9560731a6518aeb11fdd6207b0cb4a753d4"
+    },
+    {
+      "path": "engine/ch11/airac2611-middle-east-preview-v1.js",
+      "sha256": "c0aa65441626bbfdee24c462c3fcb8308246aaa90780c7b1ca71c4a9a8e9790b"
+    },
+    {
+      "path": "engine/ch11/cdu-24-column-metrics-v1.js",
+      "sha256": "79ccf329998f9e1b5c7e36f5f50d00e8592251f38981d97e6af41d522940e5c1"
+    },
+    {
+      "path": "engine/ch11/cdu-airac-banks-v1.js",
+      "sha256": "9527f1ac726f71b49418d1c547ca36103e2fadd4ed552b618d36c1f5ec004909"
+    },
+    {
+      "path": "engine/ch11/cdu-preflight-evidence-v1.js",
+      "sha256": "8b7e5b475ee6fac75ea15c635d17a89b1c8ef96bd2300166fa9ecae1c42fa3fb"
+    },
+    {
+      "path": "engine/ch11/cdu-transition-ledger-v1.js",
+      "sha256": "cfab01d8a94e07f966e3762de03f6337bc66cce3b5e1ccce9cc11227dcc21e60"
+    },
+    {
+      "path": "engine/ch11/fcom-screen-contract-v1.js",
+      "sha256": "63cbad058ad4be50e10dfc99afb55d748dc1b85a77849d8b3fdf027a519582f3"
+    },
+    {
+      "path": "engine/ch11/fmc-airac-banks-v1.js",
+      "sha256": "f62bbec9f6f62ca078a6f45e1703411cf4c64959b5f54ee07572421aad332f63"
+    },
+    {
+      "path": "engine/config/cdu-ident-installation-v1.js",
+      "sha256": "e945b200644d0f2865c04416bd0af838d73f41767cc281f3691d3e1747014839"
+    },
+    {
+      "path": "engine/config/desktop-bundle-0934f674ee3ca2e3.js",
+      "sha256": "ff3ebe74ae2f2873d96c51e855e863b37cb05cd94e59d4542adf239b48ddb763"
+    },
+    {
+      "path": "engine/efis/classic-flap-speed-profile-v1.js",
+      "sha256": "8649325aabf1c9ea84fc0868ed308abfe61118ad426d616a5dffdf46f52c23f1"
+    },
+    {
+      "path": "engine/efis/classic-speed-tape-engine-v1.js",
+      "sha256": "d8a8061e199489c176d5a3eab7fc1804be1bebeb23ab5d029aa84eb2158abef1"
+    },
+    {
+      "path": "engine/efis/desktop-bundle-087e5841318998ab.js",
+      "sha256": "e041124d9ab5f0ec98578c5f1b975d3758be84b6d4704f6d1aab958e567e02e3"
+    },
+    {
+      "path": "engine/fmc/desktop-bundle-5633b67f183051c5.js",
+      "sha256": "8a48b360f6836afb2f3d226a30470d9a7c031d1bcdf14d3156113922024bc9aa"
+    },
+    {
+      "path": "engine/fmc/iran-navdata-client-v2.js",
+      "sha256": "cce6611500739a313577598149f36192eab7d0dc771fdab6d072e3be71a1f6ca"
+    },
+    {
+      "path": "engine/fmc/pilot-waypoints-v1.js",
+      "sha256": "deed5cb1a4b007ef93d43d9847a07851d303e9c0a1aa24ae123f946d0c41967a"
+    },
+    {
+      "path": "engine/fmc/trajectory-predictor-v1.js",
+      "sha256": "ea96926916a193b2cd982b9f4fc210f0d7b6c09f676adbfd3a4a7688c654fa95"
+    },
+    {
+      "path": "engine/instruments/conventional-indication-sync-v1.js",
+      "sha256": "ace7a5c8d52a9808bf5edc8033b3c9b68f2014d23098425488cee11fc97a1a71"
+    },
+    {
+      "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
+      "sha256": "d23e2da66ec5fe4989e8e46bc8f8191df32e9868ca609fe0d873440d42abcaf7"
+    },
+    {
+      "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
+      "sha256": "155d5e937c5b8b632527f8caf9eb653b6557f9b8eb492559803dfeec1c90bb4e"
+    },
+    {
+      "path": "engine/instruments/desktop-bundle-75446c3ce3970339.js",
+      "sha256": "e45fec564b8ccb0f5de228edd4b77c26e96589831c4b4f697bffe7ed2e86b393"
+    },
+    {
+      "path": "engine/integration/desktop-bundle-f2bde8996357d2ca.js",
+      "sha256": "f2bde8996357d2cad75fa0cb674445461cd1affce7f84c776203a20a70bc9a19"
+    },
+    {
+      "path": "engine/integration/isn-09-12-runtime-v1.js",
+      "sha256": "ca8cfa95923c827c8078b371d80f27c502030ed4d3e94aeaf475d74b6eb37902"
+    },
+    {
+      "path": "engine/integration/isn-13-18-ecu-testbench-v1.js",
+      "sha256": "39c0966804ad2a79edaa50cb07e4b04b3293da9be93d966e2fa0af36280de907"
+    },
+    {
+      "path": "engine/integration/isn-apu-load-dynamics-v1.js",
+      "sha256": "2e78341afd55a64156cc6b8f588b226f38ac639f4c11c0187d6762eae9df0cee"
+    },
+    {
+      "path": "engine/integration/isn-apu-start-chain-v1.js",
+      "sha256": "67458323d23129fcfa0bca4056410146a9f92530de82d279f36b9b426dc3fb05"
+    },
+    {
+      "path": "engine/integration/isn-engine-apu-v1.js",
+      "sha256": "3ace3bb4cb4f130ae2876992165896b5ac7400b4708d52f0d0eca6fd9b5290e1"
+    },
+    {
+      "path": "engine/integration/isn-engine-start-dynamics-v1.js",
+      "sha256": "452369375173752fe05fc0e3ffdd6d9fd306ebf4631c9c01d30bdbcacd0f55b3"
+    },
+    {
+      "path": "engine/integration/isn-fuel-shutoff-indicator-v1.js",
+      "sha256": "77b342710973f4785f48823ccb4f011061bb964db5d8936646d03e9d3a6cf0b9"
+    },
+    {
+      "path": "engine/integration/isn-start-indications-v1.js",
+      "sha256": "a690f7ab46f55f2b30b3550ac0af38de92b5038aba14d0bb986a2b3c5d98aa3d"
+    },
+    {
+      "path": "engine/integration/isn-start-sequence-v1.js",
+      "sha256": "3b153011224f0dd82c1206f17f9c5ec4f3cee8ca52a6ab051181e37a70d7e97e"
+    },
+    {
+      "path": "engine/integration/isn-thrust-performance-v1.js",
+      "sha256": "1e4be2a479601d01597968560cfda16800d7b4a016653407a3dcfb5f3ee4bd4a"
+    },
+    {
+      "path": "engine/integration/isn-unified-control-router-v1.js",
+      "sha256": "ad27b85e13874e19e1d8aa5e5b806a1689b2dc3f299ffad377943acb06e67c28"
+    },
+    {
+      "path": "engine/integrations/le-devices-external-ports-v1.js",
+      "sha256": "b462c7070a57b5485a02829813745261ee242a94df89edceb0de64fe5a556c5a"
+    },
+    {
+      "path": "engine/interaction/desktop-bundle-3e4f206ef74d4731.js",
+      "sha256": "3e4f206ef74d47310b56e75f5dc52717dce4952c6b7b85a4280e08ffdca3a80f"
+    },
+    {
+      "path": "engine/performance/climb-tables-v05.js",
+      "sha256": "213c69909412bfb4b68653610ed3856c9197d17ba548a0d2d652bf77b9822308"
+    },
+    {
+      "path": "engine/performance/n1-tables-v07.js",
+      "sha256": "48b44050a48231b45aab131c41f7c2b2a6888706c4e0c08f74c01992dc84695a"
+    },
+    {
+      "path": "engine/performance/performance-engine-v07.js",
+      "sha256": "9d58aef4edd24906768295cba8864762e2b438eaa0f1b0078d6b475b3cbebc5d"
+    },
+    {
+      "path": "engine/runtime/owner18-electrical-input-v1.js",
+      "sha256": "96dae65fabb4a4430e2dfd33f744740a16ba55b10dd09071715debe06ff674b7"
+    },
+    {
+      "path": "engine/runtime/unified-authority-diagnostics-v1.js",
+      "sha256": "1b7c37d43117e65263c7ae52bf28305a2f3a820544a2611ef7b005a34e257b1b"
+    },
+    {
+      "path": "engine/runtime/unified-live-gateway-v1.js",
+      "sha256": "dd702bcd2c0f8160e3dadb13c4405178d99e537051b583ee1802cf0ac607e6f9"
+    },
+    {
+      "path": "engine/systems/classic-fuel-system-v1.js",
+      "sha256": "62d30442bd7115e96d8132b6961d72cc1c0227e05b1a717769ea999f009f8c14"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-18d585c6839bd074.js",
+      "sha256": "18d585c6839bd074a66209bdceb991649c32338b8c198df5b9688cf1f1696484"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-1c26f618d23f066a.js",
+      "sha256": "2244317678f51c4e0f78ff499024bcd5a1a7d0a5b954f3d45922c0aee6438379"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-4bb33cfc18fe750e.js",
+      "sha256": "4bb33cfc18fe750eba1b76b87ef931f03ebfbfd5ecc94d9612c9a896d921451f"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-7508f29d61a33f3c.js",
+      "sha256": "7508f29d61a33f3c89464fb735432bd4c8620b6498ef53766cf50ccddea07f1c"
+    },
+    {
+      "path": "engine/systems/desktop-bundle-bda8390aa7ff14a9.js",
+      "sha256": "bda8390aa7ff14a94b0e4acb104c6495cbbddef586a91fe73ac8541d80a42b8b"
+    },
+    {
+      "path": "engine/systems/irs-trainer-web-v1.js",
+      "sha256": "3dcd9b4e57b6dabe171f324d1dc88d0db9e0d91272a4ac3ae21ca4c93697d893"
+    },
+    {
+      "path": "engine/systems/le-devices-classic-v1.js",
+      "sha256": "d77e4188f23c3dd782c2aea6df23079d5c72722484ff2c846188369bada02a95"
+    },
+    {
+      "path": "engine/systems/pneumatics-v6.js",
+      "sha256": "e4ed96e17094a77c995d9e17093ea61119374702c76850cf8c28a7086167a26f"
+    },
+    {
+      "path": "engine/systems/te-flap-actuator-v1.js",
+      "sha256": "14a7d7a386dcb3a9ba6fd568c78f2b2e5b018384ece8fcfae29062b0c31254cb"
+    },
+    {
       "path": "engine/tcas/classic-tcas-v1.js",
       "sha256": "4266aa25e6842328a6b61eef0fdc163a540e40d97aff1a9f8a60255be79e9898"
     },
@@ -1211,484 +367,668 @@
       "sha256": "351121970fd6b6e08f826e579c787903249ca2f40c13ba55e86002b5de5d75bc"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
-      "sha256": "68888486524df70c13f6024c5044b7381055d368b69d6a12010bb8eeafa05eff"
+      "path": "flight-controls-panel/desktop-bundle-89fa9686e7b22295.js",
+      "sha256": "89fa9686e7b222954c3f76ca8a29df5b7d4e27c358b6572ac1ad004b9876eef5"
+    },
+    {
+      "path": "panel-mosaic-lab/all-overhead/atlas-layout.json",
+      "sha256": "dc5971aba82146b0e5217f5ceef91db1194e1f8adb965b7498bb03e0730cc8ae"
+    },
+    {
+      "path": "panel-mosaic-lab/all-overhead/spec.json",
+      "sha256": "039e78c0778ebd91bf0b8a44675e8f989fa37b1cfe39e11cb8dbfc1eaa965dd4"
+    },
+    {
+      "path": "panel-mosaic-lab/all-overhead/style.css",
+      "sha256": "4dabf74f3733ff99fc26bae649875494b51a817ca1b9c1f0ef960f7cb25562c4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/aircon-400-oh21-overlay.css",
+      "sha256": "e0da124778a5d9c594974bf0611d7b9a87706b12e7ab7a31aee29cb9d69b596f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/aircon-400-overlay.css",
+      "sha256": "0f34dff1728e154eecd75efa721c76ea84daaeae5db2a96898d871dd684eeff5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",
+      "sha256": "de79968f8cdbc0cf215a7a3b630065b100f833ec8c65c461e9e87d15a8d30d3e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/airspeed-pointers-model.js",
+      "sha256": "6cd99a57c1aa8f54faa043fad94ba12044816e14cd169990a9ecfadba920a7df"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/airspeed-pointers-unified.js",
+      "sha256": "8164d3804635f95387ec667d2149c38a4e620990b17c7bd701b59c1c3119da77"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/asp-controls-v1.css",
+      "sha256": "48f14f41c5e14016cc43241dfb4806a4cf9fc649a41abf79a746857435e806ed"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/asp-physical-controls-v1.css",
+      "sha256": "7287472e292680db6d21398ec4afd40283639b4fd546a027332e4b324b979321"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/asp-vbr-model-v1.js",
+      "sha256": "4f328eed6cf300cfb3d208f7a9e9cfa8e533e65f6593d5775607ffe304520469"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/asp-vbr-selector-v1.js",
+      "sha256": "bec3742657a37e3e51eeabefb75e85e1699131c531872267b30f431757e3c2eb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/asp-vbr-small-silver-v1.css",
+      "sha256": "40466060ae6407c366bf884c338dd4a9097195b9fe28220cc02230cbac0c19a7"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/assembly.json",
+      "sha256": "5ca89625b863e9f43ac4bba537e9d949fe967e64064443054216cbc12350509a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/assets/oh21-737-300500-owner-20261030.q100.webp",
       "sha256": "754cfa32b415d06b90c30336e50a677852806a43e9ccdfe0bb17c111b20ab07a"
     },
     {
-      "path": "panel-mosaic-lab/lights-test/registry.json",
-      "sha256": "3f0388fd747a08f9fe1bdd69cd4b5fc157944c5dd13c4fcbb5a48aa1da7e6fd9"
+      "path": "panel-mosaic-lab/cockpit/assets/oh21-737-400-owner-20261030.q100.webp",
+      "sha256": "68888486524df70c13f6024c5044b7381055d368b69d6a12010bb8eeafa05eff"
     },
     {
-      "path": "panel-mosaic-lab/lights-reference-v2/manifest.json",
-      "sha256": "7b24201bd84e4f102e106a9c1f2544a1daacc4890c4e383836fc9a3510d5c6e7"
+      "path": "panel-mosaic-lab/cockpit/assets/p15-approved-switch-5state-v3.webp",
+      "sha256": "1dab4bd1d0ea62c8728a01828b67b2874af221a72aaa9b30271f9b1785de18bc"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/registry.json",
-      "sha256": "2b71d3595c5af7786eef7cb642f17a0215684cfbd7b5ca380fb73bce0167a751"
+      "path": "panel-mosaic-lab/cockpit/assets/p15-refuel-photo-v1.webp",
+      "sha256": "914164f9727ac815334cd3f0edc48d90fe6694c461c7d8ed28347717be028734"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
-      "sha256": "355d8f4d1b7aa67e2f18103c76eb403f8800c23ff73062d9a89d45c4de62858c"
+      "path": "panel-mosaic-lab/cockpit/assets/p15-toggle-photo-approved-v2.webp",
+      "sha256": "5aa76125c4550d279551e9f98fddfa23a3b45bd1ecfcfdb0b84ee79f654b4583"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/lights-controls.json",
-      "sha256": "6ecedcb0d0af3036dabeb5294e9c1d0fd0b14e3afbcb30d13f17cdfa69e44857"
+      "path": "panel-mosaic-lab/cockpit/assets/parking-brake-off-front-v1.svg",
+      "sha256": "340cbaa176b3dd4e8c12c76b25b17f62cd7dafcc005a4c36b711e885443c5c60"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/lights.json",
-      "sha256": "e98e46a869a64a6557c5783e57de17795d949134e83481a46f7318f167bc1d84"
+      "path": "panel-mosaic-lab/cockpit/assets/parking-brake-on-top-left-v1.svg",
+      "sha256": "1b6398e3547a6ad8bd5173c35161df42ca09351635b721b606ee62b1968a74f4"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/instance-faces.json",
-      "sha256": "ccf1e70eea20c0e69bfe48203f210e9cd3106746564e4523f95282c935fedbc3"
+      "path": "panel-mosaic-lab/cockpit/boot-trace.js",
+      "sha256": "ef026fc6acad3fdd5f2b43368679cade3b4da9975b16dfd4cf3a38e0ab8dfd0c"
     },
     {
-      "path": "panel-mosaic-lab/interactive-overhead/readability-faces.json",
-      "sha256": "3bdeb8b9ab89c0546fa80264930b92996b744ff752bf0e238177a4b7b5063fc6"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-icon-192.webp",
+      "sha256": "ff78bdcf9816dabe7c1a491dcc8c643af77fb1267b93e7c8f84969da32b87696"
     },
     {
-      "path": "assets/fonts/boeing-cdu/BoeingCDU-Large.ttf",
-      "sha256": "6df71c5dc38105240f80c94f39a3daa075d4fdc6f33ccda7ce1bb48470ed0626"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-aircraft.webp",
+      "sha256": "99b4a623650ffad8d0740fba9373603bf1c74a2785af1130c478dd312495c276"
     },
     {
-      "path": "assets/fonts/boeing-cdu/BoeingCDU-Small.ttf",
-      "sha256": "f6576ace4558b0a611920d28664fed3462b66a246dc393f7fcbd8e04a8563db1"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-frame.webp",
+      "sha256": "e0d125cedde11f80c9f90f52a2e55bc027764f0385e469fa249d81df7df5a142"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-384.webp",
-      "sha256": "a8ce59b4be65200ea5386b0cca4a3fd610e59cc749d4fbfa6ade9a4839d4a8c0"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-orbit.webp",
+      "sha256": "943713caae6193eab91ea251c914ee74dba9de39517118a5fc6b9d5721420d16"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-768.webp",
-      "sha256": "a5a8f3df7fcc9f02d163335b158a095f498539476c14fe3f4009e3b4437cdb7f"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-still.webp",
+      "sha256": "e4d6c8b421eeb382762a24f071913c094721c20c983ac579a1cc1e7aef320909"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-384.webp",
-      "sha256": "d182f3995c0dd57de7e7e8de5c32a0d308d6f77f56859e558ed21e8606da6d67"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-white.webp",
+      "sha256": "a6756fdecd4a4f37c5de812983a44d28c21e7fe319acb31aea11cf9a6e15b168"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-768.webp",
-      "sha256": "40da4c4cf670c8f41be9de5191406e4b3120d44fa2f9dbc33edbc80c8847672e"
+      "path": "panel-mosaic-lab/cockpit/brand/unified-intro-wordmark.webp",
+      "sha256": "40febdcec9164147957003b9bf25c257d04d1a4668c97bf6325e1e41635da0ce"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-384.webp",
-      "sha256": "83f1ebf937b1f3d94efd27dfbf901ddc6dfedb6dcf196f8a9e3ec9bb7af66fff"
+      "path": "panel-mosaic-lab/cockpit/cdu-airac-bank-receiver-v1.js",
+      "sha256": "c12dab17123b44ab0dd287e75fe67de35da780751bb164257fa95c04e24c7f57"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-768.webp",
-      "sha256": "e04e70b78e1c8276d6d59e8d550ec5975d24e6fab2e4293f7343f868d8f8c9ce"
+      "path": "panel-mosaic-lab/cockpit/cdu-airac-ident-adapter-v1.js",
+      "sha256": "49998930cae3df43e9b2794c359fc5b02e36e1f5a0834d5584dfb7a13f6806d7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-384.webp",
-      "sha256": "25b3598133da56a5d47fdaf376bc78bec387a5218787b4b9ec9e631231ec9da2"
+      "path": "panel-mosaic-lab/cockpit/cdu-bridge.js",
+      "sha256": "67c47433a55792389e302f8c50335776055b0275d8477256e123500e551ef35e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-768.webp",
-      "sha256": "2fd040abb0bae892483e4f27cc26e840d4eb7c54817ed161904f9074039477c5"
+      "path": "panel-mosaic-lab/cockpit/cdu-embed.css",
+      "sha256": "4686c4f157e85f81b50027e651a75c7bb9327c6946b842cfd6273423f9fcfc8f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-384.webp",
-      "sha256": "565b5057c64500f05ce04f608f419dc7693db272a5c580d5bfe5a6302b18b692"
+      "path": "panel-mosaic-lab/cockpit/cdu-fmc-telemetry-v1.js",
+      "sha256": "cb9e2327cbda6bdcf1fc62394e6c18f7d2940c4054e042bd5a7f10778a10016b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-768.webp",
-      "sha256": "cdb38d796b7646cf6f8e911a43c635f87f4a4541621e5927b653dec264701de0"
+      "path": "panel-mosaic-lab/cockpit/cdu-font-diagnostics-v6.js",
+      "sha256": "98e76a764ea0da2ba6d1e6da9ec199f5659f1940aa9c1adcd1939afdfef32eea"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-384.webp",
-      "sha256": "a51128cda3b4fd460c98a1f357d66eed50f1775d530244479dbb9244e9281b2d"
+      "path": "panel-mosaic-lab/cockpit/cdu-ident-profile-receiver-v1.js",
+      "sha256": "cf20d2855b2d71d6f9d2b392a0c671e53c13f4a1d2404cb33fda895f2a73d72c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-768.webp",
-      "sha256": "06dd66289be0069e78bab5de58c08ae1b5de343c6a96194440bcc14db3db50d5"
+      "path": "panel-mosaic-lab/cockpit/cdu-irs-adapter-v1.js",
+      "sha256": "2f1ab397226f22eadbe476d0424d7389716dca5e3775e77973046def2e885003"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-384.webp",
-      "sha256": "2c7a062995edf978eeab5e973ca7d27b067b233fbff5670ed4f8b99e17e1d84a"
+      "path": "panel-mosaic-lab/cockpit/cdu-screen-fit-v6.js",
+      "sha256": "0f755e8a416f864670f024dc644c904e5d3953bff9dbb4df79fd54bdb6c03793"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-768.webp",
-      "sha256": "26d1d3b2f64e876dcf90240914ab97391a876c4a78571e498e1d6c126be06c49"
+      "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
+      "sha256": "da9f3714f282d44a8ffc5a14ade47f50f1f7f8ab292f49717fbedd2188533a37"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-384.webp",
-      "sha256": "045704e7efd7bae8ec8e4ce4ccf904546f041affb4c8345b652b51f3994710cb"
+      "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
+      "sha256": "cb511e089c4b3a9f7db5a6f84eec587ef35469af75df40795ee21fae5cd814fc"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-768.webp",
-      "sha256": "bfbf94aae6678c59a1ca4387fc7decdbe147a7a1b035a2d845506001b3e0a822"
+      "path": "panel-mosaic-lab/cockpit/clock-assets/face.png",
+      "sha256": "2f14db720daf6652e7cdb501cd737ff2cc82243419ba37c6b706be38c3db6e32"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-384.webp",
-      "sha256": "0ec760871414f2ec35c13cb7e50809f9ad0a4240cbb4fbbf3d4549beff161bea"
+      "path": "panel-mosaic-lab/cockpit/clock-assets/gmt.png",
+      "sha256": "7d70662d07325ae4a37a64efe5d4a00c0d6fe3a848d2938f8d32f3d023f0c9f9"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-768.webp",
-      "sha256": "ab6d735febbc361c5877e6539a08fc95546579da7a10815284251e70f2526602"
+      "path": "panel-mosaic-lab/cockpit/clock-assets/needle.png",
+      "sha256": "46fcc03b4cdbb7c9be4e0cb8c451a0b35683569443f9f0437bbb6d8ea70dc338"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-384.webp",
-      "sha256": "bf212a9940e4fedd3d65c6b63d763ccc23055f30f3c14b03b02e4414921d35eb"
+      "path": "panel-mosaic-lab/cockpit/clock-embedded-v5.html",
+      "sha256": "d012f5c926b0abd69414cf83ca636d4eb14f1fb5ca29313edda225267d95884d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-768.webp",
-      "sha256": "7c5779eba9d608b29846c11fc2393a79324a7a3c54051b5a00b868df10c8e28e"
+      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v3.js",
+      "sha256": "c6c5a26341683cffcd045279122dbf2997ed48c08638f8221e6b212125e10044"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-384.webp",
-      "sha256": "4ace416afad285374cf2605af893ebef5676e94c4f8d718a4a44678b4a061c49"
+      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v5.js",
+      "sha256": "00063b0424a974438e5a87f70aa3f10b9e801c9116afb022467a9d75392c1433"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-768.webp",
-      "sha256": "9b432808f57f6d75c32c855b2651408afe772191af4f0dc88f7b3eae0bdd7d5f"
+      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v6.js",
+      "sha256": "2692ac4e349177970c3252954165342132c3fe53be0ddbc7fc412bd39bd9d676"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-384.webp",
-      "sha256": "a2aa857faff69b5949804f709236aa65005ebe763cddf889612efa19e74d7c47"
+      "path": "panel-mosaic-lab/cockpit/clock-test-lab-v3.html",
+      "sha256": "d1498caccce37170e0ee9127b042439362833d6eb7d900d98e502a25abec20b7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-768.webp",
-      "sha256": "8e5d4233b84d4a44c37acd8868e780534faa7150f7855d3f491f108d655fea3d"
+      "path": "panel-mosaic-lab/cockpit/cold-dark-general-preset-v1.js",
+      "sha256": "32db27a555175195d1ea5c5fe942e4e5bf33c090c57f8fc938cd2fff46e12c6d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-384.webp",
-      "sha256": "e70d7e58802b7e398adc28aef3d03a5660631ffe0b480f516b6fc686b79718be"
+      "path": "panel-mosaic-lab/cockpit/conventional-eadi-socket-v1.js",
+      "sha256": "901e76725b9d328946cc509d1715e491128314aaf82f7fb4defa3502012e378a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-768.webp",
-      "sha256": "94022484c213a66b2067361389286b26ccacbd8480660cc3aca5c8cc859f4fff"
+      "path": "panel-mosaic-lab/cockpit/conventional-engine-needles-v1.css",
+      "sha256": "849cbc58c4e05e14ad7927f2aa5ad4a139af5fecda48a225a00d04c1fae28a00"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-384.webp",
-      "sha256": "b3583c16c840c3f13909264c4f6de66db1f1993e43ecac06ceada53d4bc6a3ec"
+      "path": "panel-mosaic-lab/cockpit/conventional-engine-needles-v1.js",
+      "sha256": "389f4da41e1e307d9e22f9844e956e0294b5cfc1d7a4e1e4c24f42c238e4a1b8"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-768.webp",
-      "sha256": "4ed7dc50f95ae88e92eaed51f50e3f94dbac8ed7609d7b38336834038e35ce83"
+      "path": "panel-mosaic-lab/cockpit/conventional-full-paint-v1.js",
+      "sha256": "c7e7f5ccda283d08cb964b086ec9310e2bf46e626374708795ce5176124f844e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-384.webp",
-      "sha256": "f310d107ee8103ec101763989b13ee3cf5fa3727b3dc67a89b6effffcc882a05"
+      "path": "panel-mosaic-lab/cockpit/conventional-lamp-registration-v1.js",
+      "sha256": "4ec5f3ba724fe6d149c8d51ce7b28d9ebe2b515d6d617a5065bfefd3d2be3071"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-768.webp",
-      "sha256": "56c5ab12b25301f7bc6d3894464d09b214c18b755e711313566f4f281771089f"
+      "path": "panel-mosaic-lab/cockpit/conventional-physical-controls-v1.css",
+      "sha256": "8bdd02d43037e25608485afe34c359ad16c31a5e94970008e138b0d8aa338da3"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-384.webp",
-      "sha256": "c117c446716c1b4f17d2ebc804a566332648b3ce36c959cb03da9f991c4618f1"
+      "path": "panel-mosaic-lab/cockpit/conventional-physical-controls-v1.js",
+      "sha256": "d38c5edc5d67a9dac9541efcc9293bf6dff6e6de51c70ab7df430f9f630beb83"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-768.webp",
-      "sha256": "aee9b99af254d478852373ba29b3266bad36e14957d4650ad9ebcc01c38c409b"
+      "path": "panel-mosaic-lab/cockpit/conventional-sync-runtime-v1.js",
+      "sha256": "a406fdc0e46d34ef7c9f6302f6afdcecb5153da627e3d2179734cebc8b5dab53"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-384.webp",
-      "sha256": "b9400d5778c760ebd8024158c7a5bd85074fb97055a064e7a51addb7e95a87ee"
+      "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
+      "sha256": "7180c4d2feb86ed2755790e993812e5f96f9abdce972385f0f8d3d17e56d5c3d"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-768.webp",
-      "sha256": "400f643f271d6aa4eb77d665e905de12218b98276d51a16bf4619127d7bd061e"
+      "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
+      "sha256": "235d02db647c131671b8f7bf14868e9efd4b24e663a6b363b890f803af7e8d7f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-384.webp",
-      "sha256": "d54cf9aae0cafa7b129577fe3dca86a200c66cdd11b81fe41a2c8ed7b8daefa2"
+      "path": "panel-mosaic-lab/cockpit/crew-room-v1.js",
+      "sha256": "a34e7a43e5cadf94cf4caf3441b417c6b8921c6e30afeaf401c13238f963f3f6"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-768.webp",
-      "sha256": "b231b484e783ca1d9a412e00b77d3d6777b61f14d8193fb8e169d1f4559f09ee"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-02bd2b77b2f6ae57.js",
+      "sha256": "02bd2b77b2f6ae573f5e47d2eaa0b7a289836a68edfd4aafa05c5429f6802484"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-384.webp",
-      "sha256": "b68fbd6c9b6afdda20ec2453149b91632ee861d4e41559fe08b48f7cddb7938b"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-07dbfd46ef5aa048.js",
+      "sha256": "07dbfd46ef5aa048b024c8e4dc6bbf8b971ee67864bc0c12f2be50d1b8064645"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-768.webp",
-      "sha256": "e7d9bc5d2972d28e0cf296ff9f2ed70ff8944c2ef05e369bb5fdae9ec491d98e"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-0cac7f156d00082d.js",
+      "sha256": "0cac7f156d00082d08226aa12c2f0463425df9a04a3a81f3b49d1af36d850db2"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-384.webp",
-      "sha256": "161bbee8895bf0f7285f423f7bc688f7ecf3bfeacccccfce3c18aa7afa919cd2"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1891e53d326736e6.js",
+      "sha256": "1891e53d326736e628feff035c0b7454982a002312ebc087b52fcce914555e0c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-768.webp",
-      "sha256": "6b0d7e28a2ad42765bcf2404a8dde5cc3be4b08fa448d0cbb66f434bb11658f9"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1ae3c18134f3bb31.js",
+      "sha256": "3ffc3c2b9e2d2b2abad8b5ddfd3caf09237dca30f2f178ce763756bce2d3fe44"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-384.webp",
-      "sha256": "b16f06ace36c6d2454494cae10ee424272de21cd21d478a06441ec2ace049af3"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-1bcaefe30722e6d5.js",
+      "sha256": "3ade54b30d97cd79a8ec37c12e115152ea1ace2cdad0032207211829881ba0c3"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-768.webp",
-      "sha256": "162634d28e05c8fb62c2b2fd8f58cbb93f290617e526a57eb972c3738a03444f"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-25fa9f115da165b4.js",
+      "sha256": "95bb157c29bd91c2803af0bab97d7be9dd2c4215cd1e80b94ae0147d7806fa3f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-384.webp",
-      "sha256": "db06be62b0ee50847448971fa200ea06331aadbd48b870c70db292abc2eb9a48"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-3aa8890257a17c94.js",
+      "sha256": "5c5887a7f3bfe077e9793d5f4bcb58d6fd927d9806b827dc3e9669c143166b0b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-768.webp",
-      "sha256": "f30c7917e5c2264eea30d423e053f457a373085eff13fe4be6e4220cf22940ef"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-5db4117e839416ef.js",
+      "sha256": "708b6cca75760d0dd37af340b8933f6ad985bdd914e6d795b2f100031065d361"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-384.webp",
-      "sha256": "fa020e40c43fe7def5239aabe71457302de48967877f820ae458960c3d2fa401"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-6256d726299b0a28.js",
+      "sha256": "28dc876055189b6b951459c863797f58148e02372fd07d363036e207a281abc9"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-768.webp",
-      "sha256": "e18d919577206378537faa8d624f7564614d1f5ab76ae7f35f0521a563950340"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-656e682a7ed7a058.js",
+      "sha256": "245a64c56c1fe673c5ffdd24bcb7b790bef2e653fd4569e89bba11e820c0f952"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-384.webp",
-      "sha256": "eac4cfd3d9767ffb1bc4e2644d735c353daadbaba33f44d1f957794a4826aa5e"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-68d4f5acf351d53f.js",
+      "sha256": "68d4f5acf351d53f2e048dc324e6d5aa95025ac2c29263c18f3620f23ca3fcaf"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-768.webp",
-      "sha256": "f7e1488dbf3a1b5d3c66db92b817c11ed2399a3215a28c70461093cf1a44f3cd"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-6dfd1ac03dc1e4ba.js",
+      "sha256": "6dfd1ac03dc1e4ba1a3bf8a196ddc1288b82e2f95661afc0c3929d58c3b63bc4"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-384.webp",
-      "sha256": "ed4933cf4cfd32b4f230b5cfc15afd6bc4ec313dcd33939fce026757926fb8aa"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-73f2ccb93460e616.js",
+      "sha256": "73f2ccb93460e616f9582f9fb1bed67be844de9da1a18d16ba5be90d49fc65e0"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-768.webp",
-      "sha256": "87501a9a53b59401d64f102ded6810152f9e74df2e92125039aed4f596b6dae2"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-80ca1e7d3efede04.js",
+      "sha256": "80ca1e7d3efede04bc3c66d77d8ac2f5e5aec0c3e491a854b065e55efaf7b948"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-384.webp",
-      "sha256": "aa9634f7ffaf2bc2dc332ba31dff15c4c382d30c13312fbef605935fd15b73ae"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-80caabdb05a512d8.js",
+      "sha256": "80caabdb05a512d893954d240e39e55a74d647dbb148bfa7dacb420e37516b8f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-768.webp",
-      "sha256": "4ab3c49f36e975c64108ff2b97083fad78276be5500edd429bb2c3842e76fe50"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8141a7a984c68908.js",
+      "sha256": "8141a7a984c68908d3dbc4645cdc1bd97d8a2955deac31c5ed70d9893cc3f810"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-384.webp",
-      "sha256": "4edeb6d7e51de4ce00c216132238bc8eab5e92ebd1c4a7c3aac04a7bf9537b7a"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-8b08647124142f06.js",
+      "sha256": "8b08647124142f06adcbfecea7fe7dd3ed74f40fbb9fa452c014fdec1f4dbb6e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-768.webp",
-      "sha256": "c0564b29b1f540452acbc77371f17abf194933958cf4f20fc2dd44d542df164c"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-90bf28e49f7aba34.js",
+      "sha256": "90bf28e49f7aba348211bd1df57713ef3b1c762ff119c04d9543bcdfc891c5e7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-384.webp",
-      "sha256": "5b9c70b68b40891bc3cedf7d410add3ed8bc8032d6dd224b2d1bb67d9a06836a"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-a7262b13b5fc72a5.js",
+      "sha256": "61e815474783edb6313fe94b583ba3dc571e61802a6a3c694c5615622154fccb"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-768.webp",
-      "sha256": "cfa4915a29900f7ebf79f755c2bbadb40e5bd9220ab3f799b720f47576b9ed3b"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-a87d427570c9ef04.js",
+      "sha256": "38002ada786810212d8e4a99d97915225bd300d41bebe4811dd3cb41c89a461a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-384.webp",
-      "sha256": "8dca501e0281450a8d48cb55106958663cc62e7d205fbb0ecadac903ab2408fb"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-ade8c2cc4c5b8b45.js",
+      "sha256": "ac309b02be4a172fca26c513b4dd80a93596bce8b2936229eb9c91384080c5f9"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-768.webp",
-      "sha256": "20482a90609fd185a402a2b17ae911547bb59cd38df36032c8378e7ea65e77ff"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b1771f97f24a6ce0.js",
+      "sha256": "b1771f97f24a6ce02e16399da6d63b08d70732e556437d20876657f85498a1ae"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-384.webp",
-      "sha256": "e746ec36f12c77e90fb7852d179c8f261b1fbe85c912f2188c27cf825c3fd939"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-b64986c0c0babb42.js",
+      "sha256": "2249c4a8b0f7911d9d73c193a571dd61106a825abd6ccf98ddbf73ad34531df7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-768.webp",
-      "sha256": "6003fe7c6060fcf2cec4d7d8e97d9493ddf0ee1d00be5f2d2fc36a35b3075c58"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c041ee2a9e2c5fda.js",
+      "sha256": "c041ee2a9e2c5fda124e49bfd5e3907a02eff5cab999dfa42fe5daecfc09e32b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-384.webp",
-      "sha256": "732bec0648acbbd5f237e5787e389d8e447fa4283a606051bb73fe9d97cb95dc"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c0721da98ea446b1.js",
+      "sha256": "c0721da98ea446b1e85c37a3191b0c490ea87f04d0e6f12ddbaebe9faf06de4c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-768.webp",
-      "sha256": "6db0ecf66e07b6dd8942b1f618f19a7577d7c5893b0defd252542db765ea0058"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c17d543da71fbafb.js",
+      "sha256": "c17d543da71fbafb48925bfbe8d96219e0c356c9ee5857a58305ebea8db4589b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-384.webp",
-      "sha256": "742977c32ad0073b16cfdcdfea7ce85ea226d22eee6ff754328471d94773e9ef"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c1b91f69a0cfc771.js",
+      "sha256": "c1b91f69a0cfc77195ff4b30f47c746e1f8b420163b4623dd8a78ca7bed2266c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-768.webp",
-      "sha256": "9a878b17d1cb0535b1f662f336b013208c35ac5ecb6e9ecc899f41be6f2ab98a"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-cb665f3fa7900b08.js",
+      "sha256": "cb665f3fa7900b0834925a496bf3f627fb2497e841c565acffd10485ffcf179a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-384.webp",
-      "sha256": "0ab4823d3d4513f6cf1b1b22adf3c1f1fc3ab7f3adca0c8f8e9e8ec735f8ad42"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-df37b59c14eedab3.js",
+      "sha256": "bf36bc89cf4ba6f12ca972ccbfe1c2a60be60503a80cbd06edcce68659471efd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-768.webp",
-      "sha256": "3cbaa8ef694a1e50b32b580f759db86d9320638cb77ad2e8d7a8ad7621b63e20"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e4da0a11b25f3c4b.js",
+      "sha256": "e9508d2e73b9afa7d851066fcce37304861d360b07408391a53b1f6e1bd1ecd6"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-384.webp",
-      "sha256": "0365b0bac1a0c0572f5c8b483e91e0bc0ceeb008f954fbc09b1105dcb2709ed1"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-e95cafe23edf160f.js",
+      "sha256": "c9dea8e8f8e9e5b73f3bb100d40e52b7c8dbaba0331ec40a00b52ab02448e2c5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-768.webp",
-      "sha256": "601a34734caa6636cf1bc3ad266d2c1fb6c98b7e1ddb2fae58db5baffb5e8b96"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-f1289c3f47af2175.js",
+      "sha256": "1ec7d3fd863c2ed115d17bcaebf06970e417796ff2d79a5e354c2e31ab53f359"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-384.webp",
-      "sha256": "ddcd03a1cd546ce7fc38c7a286124510078871ea45eb6a73bc3118710912063d"
+      "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
+      "sha256": "3fabc4a78d5bc9cd47fbbe2fe1da33a757fc6db2f09965ab033613d37ab9cbcc"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-768.webp",
-      "sha256": "4d837a15d0ca5792cbe4ef0b5f06d30a5e04b7b95ddf7d3f7d1339592454caa4"
+      "path": "panel-mosaic-lab/cockpit/detent-hit-geometry-v1.js",
+      "sha256": "accd22f649e81d2bde03fca36971b8648d11f9654d0c7888e75919b0e421c1f5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-384.webp",
-      "sha256": "9ba88dca0341cefc6f50a352ac36816fbc6b15f63385e512374197d321511b8f"
+      "path": "panel-mosaic-lab/cockpit/eadi-fma-fcom-v2.js",
+      "sha256": "48a12e84a1c232aa052cd5d12aeb75157e0e77d5d4da5533d8c7d7ead7de0992"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-768.webp",
-      "sha256": "3eba49de15c402c3b2509633213031a7bd39922cfde8c3af46e9da85eb77dd8c"
+      "path": "panel-mosaic-lab/cockpit/eadi-speed-tape-v1.js",
+      "sha256": "c2a3cf0393b297388e76b6ce059b6ffd8925606a921f78198a3e32e083db68e2"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-384.webp",
-      "sha256": "ed9ce7bb72103edb82f6eb4666054d8135d35b880ed201770ac610ec9a12db5b"
+      "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.css",
+      "sha256": "164477803935c380951ab0b5a9f6bc4cdaf3d6d4a63162a5809f5bbd44cbdcdd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-768.webp",
-      "sha256": "4b348cb30f0ebf3d8231a192787a4639f2f339762881a47a81ae05495aa0434c"
+      "path": "panel-mosaic-lab/cockpit/efis-pedestal-raster-v1.js",
+      "sha256": "9f86280b9f752c1e9cca509d6b88e1dfeb74d4aabba7706146af9b0b3fc8228a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-384.webp",
-      "sha256": "2535ab7a54b31eb2f1bfad286ccebc7a717337a974ec997ffa924f65c546a929"
+      "path": "panel-mosaic-lab/cockpit/eis-autobrake-physical-v1.css",
+      "sha256": "7a1ba24b46b705cbda61efa0cf606eff265cda8e78553c22233452e007c89b34"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-768.webp",
-      "sha256": "c30a6f3da509f34927944fbad13443fa29c499ef226e1fe5218880eb51de2320"
+      "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
+      "sha256": "a7ad76eec146599d73570cf71f6947ce70be26f519dc0a5e9f4b86b60dc987db"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-384.webp",
-      "sha256": "447dea5a84b070bf32cd449104cd25e411c953de16bf01d48fa5c11d77153336"
+      "path": "panel-mosaic-lab/cockpit/engine-indication-live-v2.css",
+      "sha256": "5ba8bd194f893a22602bcc377249ef089a9eb703985021ed25e608ab26ec8607"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-768.webp",
-      "sha256": "45cb2f20155f33f3d6a4df5b251fb6ebb6912e1d174cf765ee05d6c74956dc70"
+      "path": "panel-mosaic-lab/cockpit/exterior-lights-classic-v1.css",
+      "sha256": "6c6d25e435005bb3ba5e768678b4da6c76e308b31061313ec7e93af1cdd3f7a7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-384.webp",
-      "sha256": "e88a12d3e4219696907e2d13baf1fb2ffcf93d563b5dd8848f2294c063df1394"
+      "path": "panel-mosaic-lab/cockpit/flight-scenario-panel-v1.css",
+      "sha256": "a69502263893661fd55293931177e3a41bdcf80854ea1dcf07b85b8f30b3d102"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-768.webp",
-      "sha256": "a1cf25639c0b78adf810767ff3049209c866468fd56a92c6e780848d1fc513c2"
+      "path": "panel-mosaic-lab/cockpit/flight-scenario-shell-v1.js",
+      "sha256": "5b6d2e548e7b78c95218d80ece6673a0ebccd5407232b65b96c20dabb522f7fd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-384.webp",
-      "sha256": "a700524287cbfcd9f4f6a6bb8fd2f0396a885c7581933f0be92b6732326f880f"
+      "path": "panel-mosaic-lab/cockpit/fo-owner-panel-v1.js",
+      "sha256": "6824dbc7e7dc49fb9235ca481b9dab1ba22887ee964132e40244286789a048fd"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-768.webp",
-      "sha256": "98adc43335757f9e2949b1f45277dfc166763b6fc38462609cd716f7a57e4df8"
+      "path": "panel-mosaic-lab/cockpit/fuel-used-physical-ch7-v1.css",
+      "sha256": "d2457c2edaf78ae3f33ffdea8ce7b0d51e5555f53e43e6d1cd1c5639ced1d7f9"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-384.webp",
-      "sha256": "56b43ceebde919b6593f03fb8a0fb43963fc1bde97f6dc6ba531006d14d002ca"
+      "path": "panel-mosaic-lab/cockpit/guard-close-policy-v2.js",
+      "sha256": "75de4c30769e76e894323b86a5a40ec3fe8c382fb8fc252eb8d7830547f2a791"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-768.webp",
-      "sha256": "3d808bcec6a5d643c8e3d35e1ad220140f2aa654fa16a3afaca13d59de314cb5"
+      "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.css",
+      "sha256": "656fef1540e534f7df53364439533f4e1e58111d9d8bc6d59f9c837dd903bbe6"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-384.webp",
-      "sha256": "a02387bb9648b442c11b589d629e380e34bb986bb4dca42522966a386279ee35"
+      "path": "panel-mosaic-lab/cockpit/guard-owner18-v1.js",
+      "sha256": "caae92926bce44430d4b5972790ab5580c879bbecd2920b608112d9d250aeab5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-768.webp",
-      "sha256": "6e0d4245a9b65f26e17bd5c872942866ab16cc8d2f4c45771c3cec0c16dce2e5"
+      "path": "panel-mosaic-lab/cockpit/index.html",
+      "sha256": "d23aa82969d37b28e4d6e121700bd2d8cef8a92e37bdf3ab6642ba580a56d087"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-384.webp",
-      "sha256": "c9f87ab3d934e267838405bdce28cee0fcefd0dbeca8aead7069761e6b3d60ae"
+      "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
+      "sha256": "d90858addedd11887abada0531563c67f8124811566834a54762f5ccda0b1540"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-768.webp",
-      "sha256": "29d7cb45df81488168a41458d6fdafaefc04d61a053738ed23d1e588e81ca03c"
+      "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.js",
+      "sha256": "48ca1b26c101f9abc9f88b8bd33ef3d925efcc37723338c8ad9adca4d1d501fb"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-384.webp",
-      "sha256": "1eb4952043faac7391fa167d5fe600e462d27c1a66e928ff66bc8651ae0b9d84"
+      "path": "panel-mosaic-lab/cockpit/irs-amber-display-v1.css",
+      "sha256": "49100abbc8616313733081aa975a679f449fb644f6fd539d03885f7fdc1b0e31"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-768.webp",
-      "sha256": "5490a7d7dd77f8b1151e655b47d1292a2cbc4c42dcdfe83aa1f77f1006b05ba0"
+      "path": "panel-mosaic-lab/cockpit/irs-amber-display-v1.js",
+      "sha256": "da839af95b855185c1e9daaccf66ade3778a6c9324dfaa5672e8a38abb2ca26a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-384.webp",
-      "sha256": "84183c53fc78556226fbd81f904c1b96f1c5611f32bb7752380b9108ffffb1e2"
+      "path": "panel-mosaic-lab/cockpit/irs-background-hash-clean-v1.js",
+      "sha256": "15882269c153b7848b2d2468a179d134d58efd20a7a33d075843177f2f097a4e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-768.webp",
-      "sha256": "40c4f3e8685bea5ac356824bcd6e5c6b94c9d8fd34007e832fb4d3f597701a79"
+      "path": "panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.css",
+      "sha256": "b16da5d7a854f8cf53e1615dca138b1b0f55d30e082bd4dde385e5892561068a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-384.webp",
-      "sha256": "0442134d39913a6b94863d8db0224dee183fc049a0810f68d4065ed59b182680"
+      "path": "panel-mosaic-lab/cockpit/irs-dspl-sel-upper-v1.js",
+      "sha256": "133019a6fa4cd4a1a6bad616d6826e511bc235f80d32c214e6e354bb7d90d04e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-768.webp",
-      "sha256": "9867173731c20bde5e4aafe9047dd1cc38004ff8b5cc7d30ce265c7ea2194ae8"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-cues-v1.css",
+      "sha256": "42d5eff19fba44f6fe2a0fd65a1b8dec915420660ee94bea8b037908d9cbe4f3"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-384.webp",
-      "sha256": "296ed2849f6caefb2d9434f398aaab87989bc5dc6a71590678bba43f07752a0d"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-cues-v1.js",
+      "sha256": "a34f79fd6ec8e48c792bf3b43a0e41b2d57ca8c069afce1edefb5442015fe9ce"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-768.webp",
-      "sha256": "c4b1e3118de94839f339d18e06361ac92e17bfd0af99f88d78f9bfbe376e8c60"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.css",
+      "sha256": "037bf769149d1b3a9c3afa8fe4b1276e746b771c49d1acb1abcb3a5aad93cdfc"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-384.webp",
-      "sha256": "8c06b89b3c7961f47f24a08331d28a52aa156cb45b404c515afaafc7ce67186d"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-frontend-v1.js",
+      "sha256": "40598dedf1804ae52771813419dcb37e75a6df60011d6c1d42a3ba17c99f2df1"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-768.webp",
-      "sha256": "5ec60e7f8357074d34c385cafb0285351aa5fa91a2919de445fe32dcd9a9927f"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.css",
+      "sha256": "44fb93803decaa7dc6754b7d2edc2821c080c1efefd79338835920b3d4dca07b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-384.webp",
-      "sha256": "cf2d8fd8b4df01db5fd18e0d1a9d9b0454b836060ffe41015d89bc0743f18f4f"
+      "path": "panel-mosaic-lab/cockpit/irs-isdu-onpanel-v2.js",
+      "sha256": "1834e6eefb7d819a720973bad40dce61e7dedf0507f489802f5357762fa82043"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-768.webp",
-      "sha256": "497f35b98943dac6710675959c8dac2b09994f694bd4a4dc2dbe17a032f22e97"
+      "path": "panel-mosaic-lab/cockpit/irs-panel-registration-v1.css",
+      "sha256": "d0399be3d99bc37c7487d7fff46b82edb118e4fd4eb9aae1231b043fd3608c5b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-384.webp",
-      "sha256": "9969eee9f933d4f19ec6cdc4db99cfe2c74e46d71b2e863f79828e8068804fa3"
+      "path": "panel-mosaic-lab/cockpit/irs-panel-registration-v1.js",
+      "sha256": "c0c02a9ee2aa06d73b102e1ff58d4b3e978c6bd6ddc965cc76de9bc23e787e57"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-768.webp",
-      "sha256": "4cfdaacc2336c560b7cbcb92684ee43d434c739a98f53fc7f59b3e9a16f513b0"
+      "path": "panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.css",
+      "sha256": "df2e4b6268263384a49dc268d74ef71be9980f18f1d1554f83aef66063b02be7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-384.webp",
-      "sha256": "b23f611b96d2ade2b6078aae52a7e23bcb2f57c98ba0ea0a2d44e73780042577"
+      "path": "panel-mosaic-lab/cockpit/irs-rotary-detent-indices-v1.js",
+      "sha256": "ae85689aa357c6300b02505cc6167266774bbe3ddb613c584bc831b3adebcd0f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-768.webp",
-      "sha256": "2df1d3d185df65e7b049d654a15a827db88787c28cf059e9f3a1e01982b381c3"
+      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.css",
+      "sha256": "9e9b88d3746750dd3d1a9a129b18612d85b5c7ba7b6879278ead79a9bc714da3"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-384.webp",
-      "sha256": "9a7cb96ecf45cc9cc082ec4bda40e7ad68679935001ff4d06980daf8387b2e33"
+      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-lr-markings-v1.js",
+      "sha256": "de523d3443030be3b038cda3e303c67f650269ffce4f3aa95765d3970d93841e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-768.webp",
-      "sha256": "7259c0a6d1e144d3ffa841e80e1b751e7721fea44825d8687c38d8ee81a6bd16"
+      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.css",
+      "sha256": "6cfd52e64ca7d8f5abc2924ca4cc58f117561bc7310280332afbbc3db3fbd0d7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-384.webp",
-      "sha256": "accea6ffe99e7d5d52477b0b5402a131658b19a536c6d72571687fb440065cc5"
+      "path": "panel-mosaic-lab/cockpit/irs-sys-dspl-v1.js",
+      "sha256": "ea48bb01182af54d6e0f131636e1eaf76f50e51aa627f4671728ea932780588c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-768.webp",
-      "sha256": "adb7e74f98d09fd7a92f96923b316276384fea81ba4ef2c9b4b9455e67ab0b28"
+      "path": "panel-mosaic-lab/cockpit/irs-trainer-unified-v1.css",
+      "sha256": "c10326ff479dc6863ad9fabcc29ff3a85a781cafe81d21188a0a32a3f27497cd"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/irs-trainer-unified-v1.js",
+      "sha256": "57d629b9f1ff61283c2869e8c6a31f6d6e40cdf17012974a6c7e0947c827fa86"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/irs-upper-dspl-v1.css",
+      "sha256": "8ea15e0d9fb57d165034abd3c8b9721924f20f137b51cbd5e5eda75848cce6a1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/irs-upper-dspl-v1.js",
+      "sha256": "a683cd9714c13d058bb58262ed049557330cfd9377f3c8146ff4f3abe06cef4a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/irs-upper-face-v2.css",
+      "sha256": "d49881fce6acce78821315a75c356d65c4a450b6c0266f68a198baa0fb611ce9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/irs-upper-face-v2.js",
+      "sha256": "5b94776615c06fe7b275b8dff97d58fd7017aba034884e59e5d8e3bacd9fd87c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/isn-cockpit.js",
+      "sha256": "77504d1cb91db05b85854ef857175630917853b74eb79dda6f3356cb99f2e333"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/landing-gear-unified-v1.js",
+      "sha256": "ee2bab060a1fbfb5a8e73d8ed92735c98fe40cba1eefbdabacc1398b38606d69"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/le-devices-live-link-v1.js",
+      "sha256": "531b3ccab63cdf105d2697b9d4ea44c331f4283ac8fbd3be486fbeb69ca262a5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/lights.js",
+      "sha256": "6e12a0d8ef432f7337074f933f61719c85c7f185ebbef284deca4d3a42e6766c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/lower-panel-replacement-v1.js",
+      "sha256": "cce4907de5cb936d3a207a9524bd4c400ac3eb3bd97aa247f13d3c85135532f1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/manual-n1-live-v1.css",
+      "sha256": "40a09735f039ee64500c8f51834e49635b013db4cb7b54bffe5a7d5545746b46"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-front-actual-photo-v3.css",
+      "sha256": "9364149b78e1760e85a794b2e3d49e77d15de459e59d5499c47b4b835af1d6c9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-hardware-v1.js",
+      "sha256": "6a7d9922b4fdfd8c5e5eda3ede978c64c3b81b8d2f55cffe7c289b087d8e8f62"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-knob-retina-v1.js",
+      "sha256": "66c5760b993c83638d14a482d0a81545d5632686448f7a8357d90776f79a6a23"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-owner-photo-components-v1.css",
+      "sha256": "8a263e3addf4c396d329c0a9cb6ef6020fa035c9a00df7d7b9d0f1b3dd12ea2b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-owner13-v1.css",
+      "sha256": "1ce1b7bed4acce7d91c11f80066c4075941b8100b77a3732b47965c581d10074"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-owner13-v1.js",
+      "sha256": "b52ae4c74756d6d0bd23d9932b0d4c4f782134ca95d2b3e5f30cddf03c7965e7"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/mcp-visual-v3.js",
+      "sha256": "e8264f99e434ad170548343c002c2b2e2231cdc2ae1b1fae7c82b8eadc560aa0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/no-old-guards.css",
+      "sha256": "f7878201029fb0a4e9fbcb47149f15d65f0be433c6c504badd27a955b4ba02db"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/no-old-guards.js",
+      "sha256": "c49a6e472894190e1ad3f5c0dec6255cfcf82c9d2dbb1de388e8503aa5ffccc1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/oh15-r-alpha-blank-v1.css",
+      "sha256": "6423066048061703dfed972b090e1a5c31a07b795c337a32df7394730ba34311"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/oh21-owner-photo-registration-v1.js",
+      "sha256": "7a0e90f1af635de9ebaf574f1b14335b2c4a374a1a368789e50113ef5bc6c4f4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-embed.css",
+      "sha256": "23505e0b6328e5bc5698681d50957872df53d9fb4925e87411beefe62cdb29c1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-photo-input-v1.css",
+      "sha256": "48decb96d9070beffe0e7a46201306b8008677e6cc695a2bd95af56f8b17a0e5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-pinch-bridge-v1.css",
+      "sha256": "01218e84d19be4c27db3e2716a1734a385bbbf3c04c0acaeb1fb4452dabc2d66"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-stage.html",
+      "sha256": "d3d3848af8ef1a801f68266295c19e8d7e49671553ce83f841b4b34b6c87b35b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/overhead-test-labs-catalog-v1.json",
+      "sha256": "54888bd63dc2734b378bdd34d4133f26e0c952a915715d62cb23a1d2266a55d4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/panel-photo-registry.v1.json",
+      "sha256": "2d11a0ba986561dae17be9ca3b01d5c4dd8719317ef7d91700004794c296dafb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/pedestal-dual-vhf-knobs-v1.js",
+      "sha256": "e2e4589f097e9cb35c1325fd95adff8cc01967f5876464b66b6c188fb6d74a35"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/pedestal-faceplates-library-v1.js",
+      "sha256": "332e7a58ce55ee15690443355eba958487f3ac5d42a44bf36b9641a3839ae3d9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance-loader.js",
+      "sha256": "da021db21575dc4a0e8fde397fe0dba24bbcc700f42499eb3a684532859a3542"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/02338ea5248d87ef8b6f-q96-384.webp",
+      "sha256": "51fe75364aa17daf76c5f9932d6cb8be36a081563ce548e6e7e70ac3158f7b1f"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/0667fc8267a7812dc558-q96-384.webp",
@@ -1699,12 +1039,468 @@
       "sha256": "f700b865f03e0094d2c0cff7b1a0048597ecc432822fcbc3e3b2cc70b8a23161"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-384.webp",
-      "sha256": "e255f51b261623d53fadb42546ce17857f05c168a8abaa65a1034ca02bf22b73"
+      "path": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-384.webp",
+      "sha256": "e746ec36f12c77e90fb7852d179c8f261b1fbe85c912f2188c27cf825c3fd939"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-768.webp",
-      "sha256": "54518fa214938f2ae2ff98c47661553edc0e20be538b998ac110a6ef961c4dcf"
+      "path": "panel-mosaic-lab/cockpit/performance/0756878f35a9b3e4bc9c-q96-768.webp",
+      "sha256": "6003fe7c6060fcf2cec4d7d8e97d9493ddf0ee1d00be5f2d2fc36a35b3075c58"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-384.webp",
+      "sha256": "83f1ebf937b1f3d94efd27dfbf901ddc6dfedb6dcf196f8a9e3ec9bb7af66fff"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/08f7478a6a2d3e58faf5-q96-768.webp",
+      "sha256": "e04e70b78e1c8276d6d59e8d550ec5975d24e6fab2e4293f7343f868d8f8c9ce"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-384.webp",
+      "sha256": "a31fe571f4d9335ab2d8d54c150fd2a1d3b6c735571ee92aa813bb56b50ef1df"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-768.webp",
+      "sha256": "3550a9453bdc2a18a43f2959e11c2838f772d168bcb7b1aad7fb008d43f87257"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-384.webp",
+      "sha256": "b23f611b96d2ade2b6078aae52a7e23bcb2f57c98ba0ea0a2d44e73780042577"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0bb7a727395212b5b578-q96-768.webp",
+      "sha256": "2df1d3d185df65e7b049d654a15a827db88787c28cf059e9f3a1e01982b381c3"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-384.webp",
+      "sha256": "a02387bb9648b442c11b589d629e380e34bb986bb4dca42522966a386279ee35"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/0bcea81d94c9affd3a3b-q96-768.webp",
+      "sha256": "6e0d4245a9b65f26e17bd5c872942866ab16cc8d2f4c45771c3cec0c16dce2e5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-384.webp",
+      "sha256": "8c06b89b3c7961f47f24a08331d28a52aa156cb45b404c515afaafc7ce67186d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/16120d7f4e38aef38546-q96-768.webp",
+      "sha256": "5ec60e7f8357074d34c385cafb0285351aa5fa91a2919de445fe32dcd9a9927f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-384.webp",
+      "sha256": "bf212a9940e4fedd3d65c6b63d763ccc23055f30f3c14b03b02e4414921d35eb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/171bf9e8d21347e7a522-q96-768.webp",
+      "sha256": "7c5779eba9d608b29846c11fc2393a79324a7a3c54051b5a00b868df10c8e28e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/198d056d0b2652027022-q96-384.webp",
+      "sha256": "44e86bf9052a35c4466c8553776828262f8d04d56a0c34e4bcda12fed8dcb8f9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-384.webp",
+      "sha256": "4ace416afad285374cf2605af893ebef5676e94c4f8d718a4a44678b4a061c49"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/20b5a4a331566a1d1fd0-q96-768.webp",
+      "sha256": "9b432808f57f6d75c32c855b2651408afe772191af4f0dc88f7b3eae0bdd7d5f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-384.webp",
+      "sha256": "0365b0bac1a0c0572f5c8b483e91e0bc0ceeb008f954fbc09b1105dcb2709ed1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/25e6f1dba39bc0bdfc18-q96-768.webp",
+      "sha256": "601a34734caa6636cf1bc3ad266d2c1fb6c98b7e1ddb2fae58db5baffb5e8b96"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-384.webp",
+      "sha256": "a2aa857faff69b5949804f709236aa65005ebe763cddf889612efa19e74d7c47"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/29e87130e683813cb134-q96-768.webp",
+      "sha256": "8e5d4233b84d4a44c37acd8868e780534faa7150f7855d3f491f108d655fea3d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-384.webp",
+      "sha256": "25b3598133da56a5d47fdaf376bc78bec387a5218787b4b9ec9e631231ec9da2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/2c60c534e6e9cd80afa7-q96-768.webp",
+      "sha256": "2fd040abb0bae892483e4f27cc26e840d4eb7c54817ed161904f9074039477c5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-384.webp",
+      "sha256": "4edeb6d7e51de4ce00c216132238bc8eab5e92ebd1c4a7c3aac04a7bf9537b7a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/2e012ed71ea7d656a058-q96-768.webp",
+      "sha256": "c0564b29b1f540452acbc77371f17abf194933958cf4f20fc2dd44d542df164c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-384.webp",
+      "sha256": "2535ab7a54b31eb2f1bfad286ccebc7a717337a974ec997ffa924f65c546a929"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/3ff0b4486ec15c1099d8-q96-768.webp",
+      "sha256": "c30a6f3da509f34927944fbad13443fa29c499ef226e1fe5218880eb51de2320"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-384.webp",
+      "sha256": "296ed2849f6caefb2d9434f398aaab87989bc5dc6a71590678bba43f07752a0d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/449c6375b5a19271c963-q96-768.webp",
+      "sha256": "c4b1e3118de94839f339d18e06361ac92e17bfd0af99f88d78f9bfbe376e8c60"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-384.webp",
+      "sha256": "accea6ffe99e7d5d52477b0b5402a131658b19a536c6d72571687fb440065cc5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/450d942811e7b3e6359f-q96-768.webp",
+      "sha256": "adb7e74f98d09fd7a92f96923b316276384fea81ba4ef2c9b4b9455e67ab0b28"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-384.webp",
+      "sha256": "9ba88dca0341cefc6f50a352ac36816fbc6b15f63385e512374197d321511b8f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/47d1d5ed34715eac8070-q96-768.webp",
+      "sha256": "3eba49de15c402c3b2509633213031a7bd39922cfde8c3af46e9da85eb77dd8c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-384.webp",
+      "sha256": "aa9634f7ffaf2bc2dc332ba31dff15c4c382d30c13312fbef605935fd15b73ae"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/4c667d96ea7652e52784-q96-768.webp",
+      "sha256": "4ab3c49f36e975c64108ff2b97083fad78276be5500edd429bb2c3842e76fe50"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-384.webp",
+      "sha256": "8dca501e0281450a8d48cb55106958663cc62e7d205fbb0ecadac903ab2408fb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/4efe8c59579e8675825e-q96-768.webp",
+      "sha256": "20482a90609fd185a402a2b17ae911547bb59cd38df36032c8378e7ea65e77ff"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-384.webp",
+      "sha256": "1eb4952043faac7391fa167d5fe600e462d27c1a66e928ff66bc8651ae0b9d84"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/500e497bf4067c3434bf-q96-768.webp",
+      "sha256": "5490a7d7dd77f8b1151e655b47d1292a2cbc4c42dcdfe83aa1f77f1006b05ba0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-384.webp",
+      "sha256": "fa020e40c43fe7def5239aabe71457302de48967877f820ae458960c3d2fa401"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6009e9eba2bd5ea6e4fc-q96-768.webp",
+      "sha256": "e18d919577206378537faa8d624f7564614d1f5ab76ae7f35f0521a563950340"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-384.webp",
+      "sha256": "629e183ac51cff6ec94fed51bba2f17ab7123d6dfd3b8d0c0ace500cab87f622"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-768.webp",
+      "sha256": "30af7e3dfa76d636a5e597d85118436a6c874f158e4df0780a325ee78f5555ac"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-384.webp",
+      "sha256": "447dea5a84b070bf32cd449104cd25e411c953de16bf01d48fa5c11d77153336"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/703b1dc32ac784fd46e4-q96-768.webp",
+      "sha256": "45cb2f20155f33f3d6a4df5b251fb6ebb6912e1d174cf765ee05d6c74956dc70"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-384.webp",
+      "sha256": "b68fbd6c9b6afdda20ec2453149b91632ee861d4e41559fe08b48f7cddb7938b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/709cb15a86f9038ca082-q96-768.webp",
+      "sha256": "e7d9bc5d2972d28e0cf296ff9f2ed70ff8944c2ef05e369bb5fdae9ec491d98e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-384.webp",
+      "sha256": "045704e7efd7bae8ec8e4ce4ccf904546f041affb4c8345b652b51f3994710cb"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/709ea64910a134c4199f-q96-768.webp",
+      "sha256": "bfbf94aae6678c59a1ca4387fc7decdbe147a7a1b035a2d845506001b3e0a822"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-384.webp",
+      "sha256": "2c7a062995edf978eeab5e973ca7d27b067b233fbff5670ed4f8b99e17e1d84a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7763f8f700ff42f2179d-q96-768.webp",
+      "sha256": "26d1d3b2f64e876dcf90240914ab97391a876c4a78571e498e1d6c126be06c49"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-384.webp",
+      "sha256": "742977c32ad0073b16cfdcdfea7ce85ea226d22eee6ff754328471d94773e9ef"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7a41044771faad1d59f5-q96-768.webp",
+      "sha256": "9a878b17d1cb0535b1f662f336b013208c35ac5ecb6e9ecc899f41be6f2ab98a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-384.webp",
+      "sha256": "b16f06ace36c6d2454494cae10ee424272de21cd21d478a06441ec2ace049af3"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/7a707630ada8d1ae84a7-q96-768.webp",
+      "sha256": "162634d28e05c8fb62c2b2fd8f58cbb93f290617e526a57eb972c3738a03444f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-384.webp",
+      "sha256": "732bec0648acbbd5f237e5787e389d8e447fa4283a606051bb73fe9d97cb95dc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/80cb82375dccc9a12791-q96-768.webp",
+      "sha256": "6db0ecf66e07b6dd8942b1f618f19a7577d7c5893b0defd252542db765ea0058"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-384.webp",
+      "sha256": "d54cf9aae0cafa7b129577fe3dca86a200c66cdd11b81fe41a2c8ed7b8daefa2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/86cf2f1de81146756adf-q96-768.webp",
+      "sha256": "b231b484e783ca1d9a412e00b77d3d6777b61f14d8193fb8e169d1f4559f09ee"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-384.webp",
+      "sha256": "161bbee8895bf0f7285f423f7bc688f7ecf3bfeacccccfce3c18aa7afa919cd2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/8fef9e3d67fd78c794d0-q96-768.webp",
+      "sha256": "6b0d7e28a2ad42765bcf2404a8dde5cc3be4b08fa448d0cbb66f434bb11658f9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-384.webp",
+      "sha256": "c117c446716c1b4f17d2ebc804a566332648b3ce36c959cb03da9f991c4618f1"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/921977b568870233c961-q96-768.webp",
+      "sha256": "aee9b99af254d478852373ba29b3266bad36e14957d4650ad9ebcc01c38c409b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-384.webp",
+      "sha256": "ed4933cf4cfd32b4f230b5cfc15afd6bc4ec313dcd33939fce026757926fb8aa"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/939e9f6ed14cbe2a8a61-q96-768.webp",
+      "sha256": "87501a9a53b59401d64f102ded6810152f9e74df2e92125039aed4f596b6dae2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-384.webp",
+      "sha256": "5b9c70b68b40891bc3cedf7d410add3ed8bc8032d6dd224b2d1bb67d9a06836a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/94669d21f0be8aa538b2-q96-768.webp",
+      "sha256": "cfa4915a29900f7ebf79f755c2bbadb40e5bd9220ab3f799b720f47576b9ed3b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-384.webp",
+      "sha256": "eac4cfd3d9767ffb1bc4e2644d735c353daadbaba33f44d1f957794a4826aa5e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/96c08c4f331d5c375cb7-q96-768.webp",
+      "sha256": "f7e1488dbf3a1b5d3c66db92b817c11ed2399a3215a28c70461093cf1a44f3cd"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-384.webp",
+      "sha256": "b9400d5778c760ebd8024158c7a5bd85074fb97055a064e7a51addb7e95a87ee"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9a1ca4d6cfb277ec1404-q96-768.webp",
+      "sha256": "400f643f271d6aa4eb77d665e905de12218b98276d51a16bf4619127d7bd061e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-384.webp",
+      "sha256": "a8ce59b4be65200ea5386b0cca4a3fd610e59cc749d4fbfa6ade9a4839d4a8c0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9d82db8f672d766f98d7-q96-768.webp",
+      "sha256": "a5a8f3df7fcc9f02d163335b158a095f498539476c14fe3f4009e3b4437cdb7f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-384.webp",
+      "sha256": "b3583c16c840c3f13909264c4f6de66db1f1993e43ecac06ceada53d4bc6a3ec"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9d8ac0ac86bdb92c040e-q96-768.webp",
+      "sha256": "4ed7dc50f95ae88e92eaed51f50e3f94dbac8ed7609d7b38336834038e35ce83"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-384.webp",
+      "sha256": "0ec760871414f2ec35c13cb7e50809f9ad0a4240cbb4fbbf3d4549beff161bea"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9ee5a14d8b3bbf903e62-q96-768.webp",
+      "sha256": "ab6d735febbc361c5877e6539a08fc95546579da7a10815284251e70f2526602"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-384.webp",
+      "sha256": "e70d7e58802b7e398adc28aef3d03a5660631ffe0b480f516b6fc686b79718be"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9f3db84357a88909210c-q96-768.webp",
+      "sha256": "94022484c213a66b2067361389286b26ccacbd8480660cc3aca5c8cc859f4fff"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-384.webp",
+      "sha256": "9a7cb96ecf45cc9cc082ec4bda40e7ad68679935001ff4d06980daf8387b2e33"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/9f67035dc7fcdc2ca861-q96-768.webp",
+      "sha256": "7259c0a6d1e144d3ffa841e80e1b751e7721fea44825d8687c38d8ee81a6bd16"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-384.webp",
+      "sha256": "56b43ceebde919b6593f03fb8a0fb43963fc1bde97f6dc6ba531006d14d002ca"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a39a47344f50704982db-q96-768.webp",
+      "sha256": "3d808bcec6a5d643c8e3d35e1ad220140f2aa654fa16a3afaca13d59de314cb5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-384.webp",
+      "sha256": "a700524287cbfcd9f4f6a6bb8fd2f0396a885c7581933f0be92b6732326f880f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a3e35e28bafe1ad12c9c-q96-768.webp",
+      "sha256": "98adc43335757f9e2949b1f45277dfc166763b6fc38462609cd716f7a57e4df8"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-384.webp",
+      "sha256": "0ab4823d3d4513f6cf1b1b22adf3c1f1fc3ab7f3adca0c8f8e9e8ec735f8ad42"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a5ee96933c71f39af1a1-q96-768.webp",
+      "sha256": "3cbaa8ef694a1e50b32b580f759db86d9320638cb77ad2e8d7a8ad7621b63e20"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-384.webp",
+      "sha256": "e88a12d3e4219696907e2d13baf1fb2ffcf93d563b5dd8848f2294c063df1394"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a6a208300913994bcbbc-q96-768.webp",
+      "sha256": "a1cf25639c0b78adf810767ff3049209c866468fd56a92c6e780848d1fc513c2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-384.webp",
+      "sha256": "c9f87ab3d934e267838405bdce28cee0fcefd0dbeca8aead7069761e6b3d60ae"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/a7a83795687ea3fa3c4a-q96-768.webp",
+      "sha256": "29d7cb45df81488168a41458d6fdafaefc04d61a053738ed23d1e588e81ca03c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-384.webp",
+      "sha256": "565b5057c64500f05ce04f608f419dc7693db272a5c580d5bfe5a6302b18b692"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b2439666f75ddbcab158-q96-768.webp",
+      "sha256": "cdb38d796b7646cf6f8e911a43c635f87f4a4541621e5927b653dec264701de0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-384.webp",
+      "sha256": "9969eee9f933d4f19ec6cdc4db99cfe2c74e46d71b2e863f79828e8068804fa3"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b68d4f30f7dcef356c1a-q96-768.webp",
+      "sha256": "4cfdaacc2336c560b7cbcb92684ee43d434c739a98f53fc7f59b3e9a16f513b0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-384.webp",
+      "sha256": "db06be62b0ee50847448971fa200ea06331aadbd48b870c70db292abc2eb9a48"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/b8c4ca3047fe5028093f-q96-768.webp",
+      "sha256": "f30c7917e5c2264eea30d423e053f457a373085eff13fe4be6e4220cf22940ef"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-384.webp",
+      "sha256": "0442134d39913a6b94863d8db0224dee183fc049a0810f68d4065ed59b182680"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/bc1f5f4c72272ca729ee-q96-768.webp",
+      "sha256": "9867173731c20bde5e4aafe9047dd1cc38004ff8b5cc7d30ce265c7ea2194ae8"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-art/engine1-start-lever-e21a1a02adc945b27091.webp",
+      "sha256": "e21a1a02adc945b2709159d1f3f9f22d659c7b2b3bfda2dd2b7ba1fed5aadb65"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-art/engine2-start-lever-3678f7fe7ceb8ce8b04f.webp",
+      "sha256": "3678f7fe7ceb8ce8b04f5bd016c922ffbec43b35b5fc78e19a3554ed47c56167"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
+      "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-art/oh10-needle-mask-eacdc127f7340f9b3b0a.webp",
+      "sha256": "eacdc127f7340f9b3b0a19357d09a84aa2d6611261f9ad7fd810f7bb32f19293"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-art/oh12-needle-mask-5088a2f7e5870a835fc1.webp",
+      "sha256": "5088a2f7e5870a835fc128a18de4b16cd6035e61076b6b0c7774ab1757a0eabc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/boot-lamp-sources.json",
+      "sha256": "3e45340578798c51b9b6e6c0ac3e6aed536dc0f38dfcbd552565063829dd9947"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-384.webp",
+      "sha256": "f310d107ee8103ec101763989b13ee3cf5fa3727b3dc67a89b6effffcc882a05"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/c8245831458450691a9d-q96-768.webp",
+      "sha256": "56c5ab12b25301f7bc6d3894464d09b214c18b755e711313566f4f281771089f"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-384.webp",
+      "sha256": "ddcd03a1cd546ce7fc38c7a286124510078871ea45eb6a73bc3118710912063d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/d1a2676302a026cc1412-q96-768.webp",
+      "sha256": "4d837a15d0ca5792cbe4ef0b5f06d30a5e04b7b95ddf7d3f7d1339592454caa4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-384.webp",
+      "sha256": "84183c53fc78556226fbd81f904c1b96f1c5611f32bb7752380b9108ffffb1e2"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/d460c1247e8f95bd0d88-q96-768.webp",
+      "sha256": "40c4f3e8685bea5ac356824bcd6e5c6b94c9d8fd34007e832fb4d3f597701a79"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-384.webp",
+      "sha256": "d182f3995c0dd57de7e7e8de5c32a0d308d6f77f56859e558ed21e8606da6d67"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/dc503ac0276ce29f9d4b-q96-768.webp",
+      "sha256": "40da4c4cf670c8f41be9de5191406e4b3120d44fa2f9dbc33edbc80c8847672e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-384.webp",
+      "sha256": "a51128cda3b4fd460c98a1f357d66eed50f1775d530244479dbb9244e9281b2d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/dea7c23ddd5d648cf517-q96-768.webp",
+      "sha256": "06dd66289be0069e78bab5de58c08ae1b5de343c6a96194440bcc14db3db50d5"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/performance/e194df5a62ba5d70cefa-q96-384.webp",
+      "sha256": "fc1f238dfb22f5fba552505d20c98ed7615f49e0388191ad37dfa2da2fcf6965"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/ee1743f1ac4ed261761e-q96-384.webp",
@@ -1723,140 +1519,348 @@
       "sha256": "dacc42dfae9fce365ab744c887af0aa0e6574ff5cc3f835aaa13e0820c734d81"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/02338ea5248d87ef8b6f-q96-384.webp",
-      "sha256": "51fe75364aa17daf76c5f9932d6cb8be36a081563ce548e6e7e70ac3158f7b1f"
+      "path": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-384.webp",
+      "sha256": "e255f51b261623d53fadb42546ce17857f05c168a8abaa65a1034ca02bf22b73"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-384.webp",
-      "sha256": "629e183ac51cff6ec94fed51bba2f17ab7123d6dfd3b8d0c0ace500cab87f622"
+      "path": "panel-mosaic-lab/cockpit/performance/f2bb85e2374a7e010d2a-q96-768.webp",
+      "sha256": "54518fa214938f2ae2ff98c47661553edc0e20be538b998ac110a6ef961c4dcf"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/6508914f374180f95095-q96-768.webp",
-      "sha256": "30af7e3dfa76d636a5e597d85118436a6c874f158e4df0780a325ee78f5555ac"
+      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-384.webp",
+      "sha256": "ed9ce7bb72103edb82f6eb4666054d8135d35b880ed201770ac610ec9a12db5b"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/198d056d0b2652027022-q96-384.webp",
-      "sha256": "44e86bf9052a35c4466c8553776828262f8d04d56a0c34e4bcda12fed8dcb8f9"
+      "path": "panel-mosaic-lab/cockpit/performance/f5b18ef4cca4a279be83-q96-768.webp",
+      "sha256": "4b348cb30f0ebf3d8231a192787a4639f2f339762881a47a81ae05495aa0434c"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/e194df5a62ba5d70cefa-q96-384.webp",
-      "sha256": "fc1f238dfb22f5fba552505d20c98ed7615f49e0388191ad37dfa2da2fcf6965"
+      "path": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-384.webp",
+      "sha256": "cf2d8fd8b4df01db5fd18e0d1a9d9b0454b836060ffe41015d89bc0743f18f4f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-384.webp",
-      "sha256": "a31fe571f4d9335ab2d8d54c150fd2a1d3b6c735571ee92aa813bb56b50ef1df"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/0a7c8431162377276f5e-q96-768.webp",
-      "sha256": "3550a9453bdc2a18a43f2959e11c2838f772d168bcb7b1aad7fb008d43f87257"
-    },
-    {
-      "path": "panel-mosaic-lab/cockpit/performance/patch-b9e4c59f0173e9d72804.webp",
-      "sha256": "e0afdbd5e55089b8c2f05f8a43e39bc806d6680248f035ebfeba0a651fc8f2cf"
+      "path": "panel-mosaic-lab/cockpit/performance/f7c3b3406b533ec60633-q96-768.webp",
+      "sha256": "497f35b98943dac6710675959c8dac2b09994f694bd4a4dc2dbe17a032f22e97"
     },
     {
       "path": "panel-mosaic-lab/cockpit/performance/label-patch-8b916fc43aa7cc7868e3.webp",
       "sha256": "3e780f9fb0d266fa424d9eca703a416b57f7815d9b30bed24a152dbb12da509a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-lamp-sources.json",
-      "sha256": "3e45340578798c51b9b6e6c0ac3e6aed536dc0f38dfcbd552565063829dd9947"
+      "path": "panel-mosaic-lab/cockpit/performance/lossless-integrator.js",
+      "sha256": "a72ec641689a30e96a32e04aab49012393583634ca0ed3ea557c8baffaea27fe"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-art/oh10-needle-mask-eacdc127f7340f9b3b0a.webp",
-      "sha256": "eacdc127f7340f9b3b0a19357d09a84aa2d6611261f9ad7fd810f7bb32f19293"
+      "path": "panel-mosaic-lab/cockpit/performance/lossless/manifest.js",
+      "sha256": "df508e3f53aa9012c60d3ce3a1709908e8ddc02c6d2f834aef721efe3e05990a"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-art/oh12-needle-mask-5088a2f7e5870a835fc1.webp",
-      "sha256": "5088a2f7e5870a835fc128a18de4b16cd6035e61076b6b0c7774ab1757a0eabc"
+      "path": "panel-mosaic-lab/cockpit/performance/manifest.js",
+      "sha256": "aec145a9bf162a42c33c762dbcc4171e52c3c69bbf18d316bf9dd79d0a7274a5"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-art/engine1-start-lever-e21a1a02adc945b27091.webp",
-      "sha256": "e21a1a02adc945b2709159d1f3f9f22d659c7b2b3bfda2dd2b7ba1fed5aadb65"
+      "path": "panel-mosaic-lab/cockpit/performance/manifest.json",
+      "sha256": "6f016cba8f8b1719a2d7495fdc0d97f5db428d8ebc6ec289d317e378d12069d7"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-art/engine2-start-lever-3678f7fe7ceb8ce8b04f.webp",
-      "sha256": "3678f7fe7ceb8ce8b04f5bd016c922ffbec43b35b5fc78e19a3554ed47c56167"
+      "path": "panel-mosaic-lab/cockpit/performance/overhead-renderer.js",
+      "sha256": "078c8cdb2d649ba38aea82de4600f968306f6d603ce5afbff63f9da919e8da16"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/performance/boot-art/manifest.json",
-      "sha256": "e76740a158421e4a3d987e8f17e86e08aa1d92614178e6338602b706330a86fe"
+      "path": "panel-mosaic-lab/cockpit/performance/patch-b9e4c59f0173e9d72804.webp",
+      "sha256": "e0afdbd5e55089b8c2f05f8a43e39bc806d6680248f035ebfeba0a651fc8f2cf"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/cold-dark-general-preset-v1.js",
-      "sha256": "32db27a555175195d1ea5c5fe942e4e5bf33c090c57f8fc938cd2fff46e12c6d"
+      "path": "panel-mosaic-lab/cockpit/pmc-glass-guard-v1.css",
+      "sha256": "d1f610c4e0cadd29618b823e67c17a175bb8c0e2e4effbb24243b7e1dce7e36b"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/pmc-glass-guard-v1.js",
+      "sha256": "c3fecf16c760a9dcf2e98196cdd2a6887bcea39a5c0e9c7dd5050c0072d6b8b0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/pmc-glass-model-v1.js",
+      "sha256": "91fff474a14f83b8073999723a2874e7b356040df90063eced149e6ca83da135"
     },
     {
       "path": "panel-mosaic-lab/cockpit/powered-general-presets-v1.js",
       "sha256": "9b5807f905e614786b5585a8144fa7c2e3f14553de8f69cd4c811586fead7340"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/engine-failure-v1-scenario.js",
-      "sha256": "a7ad76eec146599d73570cf71f6947ce70be26f519dc0a5e9f4b86b60dc987db"
+      "path": "panel-mosaic-lab/cockpit/pressurization-oh22-diagnostics.js",
+      "sha256": "b6cbfccd55e71d812b403607c26063ec27917a05a4d8a10d44e5e9e155a28690"
     },
     {
-      "path": "engine/fmc/iran-navdata-client-v2.js",
-      "sha256": "cce6611500739a313577598149f36192eab7d0dc771fdab6d072e3be71a1f6ca"
+      "path": "panel-mosaic-lab/cockpit/pressurization-oh22-model.js",
+      "sha256": "ac54046a17b56c1f8c23fe815735a4f3c6106d933eb2a266df86c774a8333874"
     },
     {
-      "path": "engine/fmc/pilot-waypoints-v1.js",
-      "sha256": "deed5cb1a4b007ef93d43d9847a07851d303e9c0a1aa24ae123f946d0c41967a"
+      "path": "panel-mosaic-lab/cockpit/pressurization-oh22.css",
+      "sha256": "bdcd93b15463083886b8bfac1b9631af4926f49f8731cf1466ae9b0d57502c75"
     },
     {
-      "path": "engine/performance/climb-tables-v05.js",
-      "sha256": "213c69909412bfb4b68653610ed3856c9197d17ba548a0d2d652bf77b9822308"
+      "path": "panel-mosaic-lab/cockpit/pressurization-oh22.js",
+      "sha256": "cffa3ecb4880d8702cb651e8edfb39e1feca45488a5187f23130a0285216e58e"
     },
     {
-      "path": "engine/performance/n1-tables-v07.js",
-      "sha256": "48b44050a48231b45aab131c41f7c2b2a6888706c4e0c08f74c01992dc84695a"
+      "path": "panel-mosaic-lab/cockpit/recessed-overhead-v2.css",
+      "sha256": "c3852369dccce517e735b43ca5548c7969c0a83c5853484bc64c94bc1a5810d7"
     },
     {
-      "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "9d58aef4edd24906768295cba8864762e2b438eaa0f1b0078d6b475b3cbebc5d"
+      "path": "panel-mosaic-lab/cockpit/redundancy-physical-recall-v1.js",
+      "sha256": "6bc5e130024b76b21ef281a7ac460e5c4d4c1ba29038b1a1100f0de5dc472383"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/aircraft-variant-sync-v1.js",
-      "sha256": "de79968f8cdbc0cf215a7a3b630065b100f833ec8c65c461e9e87d15a8d30d3e"
+      "path": "panel-mosaic-lab/cockpit/smiths-fuel-quantity-v1.js",
+      "sha256": "37a2a4a71d571b56ca7738be43f460625785bb7989ffb6a07517ddb98aae6869"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/desktop-bundle-c0721da98ea446b1.js",
-      "sha256": "c0721da98ea446b1e85c37a3191b0c490ea87f04d0e6f12ddbaebe9faf06de4c"
+      "path": "panel-mosaic-lab/cockpit/stage78-readonly-unified.js",
+      "sha256": "532c53a75a4386b028c3a96899c50950ef6b18b48a44cfd24b38f1aba42a3c7f"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-test-lab-v3.html",
-      "sha256": "d1498caccce37170e0ee9127b042439362833d6eb7d900d98e502a25abec20b7"
+      "path": "panel-mosaic-lab/cockpit/style.css",
+      "sha256": "8bfa8b10b9f8f48d54c424530db5787f9c1c792972a027caa4d160b94a391658"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v3.js",
-      "sha256": "c6c5a26341683cffcd045279122dbf2997ed48c08638f8221e6b212125e10044"
+      "path": "panel-mosaic-lab/cockpit/sw.js",
+      "sha256": "7d57162c42cd700aea96cc1ca11acf48b197114928ba260044ef7045171b8bb9"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-assets/face.png",
-      "sha256": "2f14db720daf6652e7cdb501cd737ff2cc82243419ba37c6b706be38c3db6e32"
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/app.js",
+      "sha256": "5d9166eb835169df7e56330ab04dcf6df632a3529571ee0ae06fdc67097525fc"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
-      "sha256": "cb511e089c4b3a9f7db5a6f84eec587ef35469af75df40795ee21fae5cd814fc"
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/cruise-scenario-v1.js",
+      "sha256": "fe1f16d20b50e5841f78bb6ac13f2975270eaae099e2ea8207dd59cd3b74f039"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-assets/gmt.png",
-      "sha256": "7d70662d07325ae4a37a64efe5d4a00c0d6fe3a848d2938f8d32f3d023f0c9f9"
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/efis-physical-cp-v1.js",
+      "sha256": "5ef7cce0e004bc20faf7690cd9759bc2652e982a6ffd5815e0a97d4b942ec939"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-assets/needle.png",
-      "sha256": "46fcc03b4cdbb7c9be4e0cb8c451a0b35683569443f9f0437bbb6d8ea70dc338"
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/index.html",
+      "sha256": "ec9defd2472170b8b8018387420697879985be57d83602eb3b939c3cdb45eb0e"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v5.js",
-      "sha256": "00063b0424a974438e5a87f70aa3f10b9e801c9116afb022467a9d75392c1433"
+      "path": "panel-mosaic-lab/cockpit/tcas-lab/style.css",
+      "sha256": "bfacd7c683d5bb8c96765636b28f22ec098a4db87a7a8daa24ad45f4aabde920"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-embedded-v5.html",
-      "sha256": "d012f5c926b0abd69414cf83ca636d4eb14f1fb5ca29313edda225267d95884d"
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/brightness.png",
+      "sha256": "cffa35373147e7b5d2dd3484fd6b35160ad6d2785878a5ddc2577a41c38fa1db"
     },
     {
-      "path": "panel-mosaic-lab/cockpit/clock-photo-unified-v6.js",
-      "sha256": "2692ac4e349177970c3252954165342132c3fe53be0ddbc7fc412bd39bd9d676"
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.js",
+      "sha256": "77b5e90999f1830af6cf5be1a5e13a3d25ffeb72f839d845f55b17b17164a362"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/ivsi.webp",
+      "sha256": "05238868582199b79dba142fb2b5398f1e8a779f0f6558dcc05d71922ec2d6b6"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/scale.webp",
+      "sha256": "e2887014862d126c52889624c52539638a3473ea01595b3bf947d3d57c4ccc99"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/tcas-photo/ta.png",
+      "sha256": "5533b440fa60dca6416a7cf279accc264127711b011350f76e420bda38eb9e05"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/thrust-mode-annunciator-v1.css",
+      "sha256": "2e88580f834180ae3c0133121d9d7909b992b591a54c5fc5d1f55fd22ccde550"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/toggle-base-matte-v1.css",
+      "sha256": "ba5419598b522ecdb17c311e3014a5acc7308dfb38ae98c31aa4d9aa5f7b8f66"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-01-v1.css",
+      "sha256": "d1448c7277dd806c8172912a09e487169f4d8f4c469bdf8d8bfc75f4b59618d9"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-02-v1.css",
+      "sha256": "8f83ee23f728843c4cc9dd2ac78b9bdcdca9d25248dd874afa345f99b8050961"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-03-v1.css",
+      "sha256": "c536d063e4cadf61e01681b727b4c123743ddec2322a6ab955d7ac55e3f7a35d"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-04-v1.css",
+      "sha256": "f8f517397a3cc167dede9a2de387a2ce8512819318a90e149c11e3b0d9de7fa0"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-05-v1.css",
+      "sha256": "b56603affaebd7893c49acd64cb96e0292cd70751eee14a39f3130aa543d56b6"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-06-v1.css",
+      "sha256": "13d3bfe45de94b645de3bfc361a4d642cf4686a550606318cd3f0fd96466115a"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-css-safe-07-v1.css",
+      "sha256": "4111604c75d64ef17b78d85740c931c462d332f416fdc8731c8207e3c93f79dc"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.css",
+      "sha256": "c30b8e99495b0e7286f0035248b6905225f114d1808a3b356771e285e935b3aa"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
+      "sha256": "0d4e2fc30d2a7980f9eaffc1eb9b8262a30a8bd1344eceeb69cc341b48c26bb3"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",
+      "sha256": "32ec7e6cc0aafe02e6754057fc3562b84e0e52d35e98e9e403155bfd3af10451"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/unified.webmanifest",
+      "sha256": "9b30f03cea8e14589ae960bc74ba97a480ca788f12c5a669bf110335306518b4"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/vendor/qrcode-generator-2.0.4.js",
+      "sha256": "4cafa28b1abd28b1b4a22779cbcbd10a9a205b9132cb3e1b905f8ff30ed3c29c"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/visual-first-shell-v1.js",
+      "sha256": "c79eea7e3a20806ad57e4100c9a61eb686c42900bd32809a8edda3f3866d1555"
+    },
+    {
+      "path": "panel-mosaic-lab/desktop-shell/desktop-bundle-6b08d0cd89e5e470.js",
+      "sha256": "6b08d0cd89e5e470aa126288dcbff67066f97d677d3c39a5fdaed5fe52b43c44"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/app.js",
+      "sha256": "58502aff6c3568c72dd3f1f223b7e18e9e6f177e540fe71c7253e7e1d9cf3c58"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/instance-faces.json",
+      "sha256": "ccf1e70eea20c0e69bfe48203f210e9cd3106746564e4523f95282c935fedbc3"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights-controls.json",
+      "sha256": "6ecedcb0d0af3036dabeb5294e9c1d0fd0b14e3afbcb30d13f17cdfa69e44857"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights-fit.css",
+      "sha256": "118cfde886310aa6fe547ded33a8da6fba25f40fb2974dff724241c422074ddf"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights-model.js",
+      "sha256": "55a7d20f8a394052cb3d18873460a62c413a67ab3a1c1bf1109f90c84eb6f9cd"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights.css",
+      "sha256": "63ca54611dc19a9c58d776c26f32fe108a8b9516b972017269b3eccdef60fae0"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights.js",
+      "sha256": "e7a64aadcd7dfbe16b448a65d30d1a1e3dd21ef1f4d593737537165d4e081718"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/lights.json",
+      "sha256": "e98e46a869a64a6557c5783e57de17795d949134e83481a46f7318f167bc1d84"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/model.js",
+      "sha256": "08a30a335b8e8819ca32e44bc0aa20862014000561abf2d4f8b24160e83094f4"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/overlay.css",
+      "sha256": "10920e1d598298d979cebf312c207ed87a6db9d051ee844c27f593c0cdbb65cd"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/readability-faces.json",
+      "sha256": "3bdeb8b9ab89c0546fa80264930b92996b744ff752bf0e238177a4b7b5063fc6"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/registry.json",
+      "sha256": "2b71d3595c5af7786eef7cb642f17a0215684cfbd7b5ca380fb73bce0167a751"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards-model.js",
+      "sha256": "6d1cb0307098f0e563de17aad379d24aa4cc5eb1e464abac50b3d96b8a865961"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.css",
+      "sha256": "584b2ba27083a159fc5226c56758f6b599823fdda856f580b3f08771abe140c6"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.js",
+      "sha256": "452c0bae9340a6f8fbe708bbbb3994a44407105b38331a4c8eb0e026d07faed8"
+    },
+    {
+      "path": "panel-mosaic-lab/interactive-overhead/rotary-guards.json",
+      "sha256": "355d8f4d1b7aa67e2f18103c76eb403f8800c23ff73062d9a89d45c4de62858c"
+    },
+    {
+      "path": "panel-mosaic-lab/lamp-socket-fit-v3/live-fit.js",
+      "sha256": "fab8fbd5bc3664dd5557fc64ec42ee8f32600bfc65a1e62ae7667406a2d3354c"
+    },
+    {
+      "path": "panel-mosaic-lab/lamp-socket-fit-v3/variant-fit.js",
+      "sha256": "f4a2d897f0ab135162a9b46763131c2c145fa66a95ddabde51189b12b6c7131e"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/flight-envelope-integration-v1.js",
+      "sha256": "36a9abce081d41925e866aa7eb76fc7f65a4fa1bb32c18febc5c3508544754d4"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/panel.css",
+      "sha256": "892dca6fcecc5668a64548a1605d5a9eacdbb58fdbee48da1372bb74f2457fb4"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/panel.js",
+      "sha256": "01c30ef41e4cc65658481351710143e7e8f20d3c21c01eeb8c362becd5bdd768"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/photo-lens-v2.css",
+      "sha256": "a530b9e193fbf7d507dd9400e562abf9a00b4fad0bdbe251209f06754d46b4c5"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/photo-lens-v3.js",
+      "sha256": "953b19dcdb0a3ba3a35affce772f64d5d2f94f7d97848e932c929bdf1d62409f"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/photometric-emission-v1.css",
+      "sha256": "05285ee071a930daf9bebe643cdfc01cb1342cf842fad1fadfc498eeb2ac242d"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/smooth-glass-v1.css",
+      "sha256": "cee9b38c4cd7d2fc61c541d585b1f564b9f209e62f440e6b645e196aecf39faf"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/smooth-glass-v1.js",
+      "sha256": "8d6d02904123ff03fc4e7e6ec43f7995d75f763e5c4673ec29dfc594f1ac0ec3"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/stagger-v1.css",
+      "sha256": "df07b11fadcca61630ad0b1ec1a798fa0b28807a9b69727adbc6a0ade976addf"
+    },
+    {
+      "path": "panel-mosaic-lab/le-devices/trainer-bridge-v1.js",
+      "sha256": "38eb454501fcd6ae4f38c0e5e2536b5477434dd7dad1246574c4f22322cef67d"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/live-mount.js",
+      "sha256": "cc87c90d3818613e1ce4545c4ed209bba70fe31fe1d5e17159ed2596406025d6"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-reference-v2/manifest.json",
+      "sha256": "7b24201bd84e4f102e106a9c1f2544a1daacc4890c4e383836fc9a3510d5c6e7"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-test/desktop-bundle-000fb2540bcc78fc.js",
+      "sha256": "000fb2540bcc78fc97efd7fd6d98d8ca842828f4731a8f0f183e7fe57f9d9ead"
+    },
+    {
+      "path": "panel-mosaic-lab/lights-test/registry.json",
+      "sha256": "3f0388fd747a08f9fe1bdd69cd4b5fc157944c5dd13c4fcbb5a48aa1da7e6fd9"
+    },
+    {
+      "path": "panel-mosaic-lab/upper-oh/geometry.json",
+      "sha256": "821ee6bea332ca172d3b45115c93b9aa9239b5dbde1897b457d5ed8950ab45c6"
     }
   ]
 }
