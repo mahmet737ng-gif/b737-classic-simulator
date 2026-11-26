@@ -47,6 +47,7 @@
   [10,'EFIS Display Lab','../../efis-display-lab/'],
   [10,'Main Panel Lab','../../main-panel-lab/'],
   [10,'Speed Tape Lab','./speed-tape-lab.html'],
+  [10,'Clock Test Lab','./clock-test-lab-v3.html'],
   [10,'Scale Calibration Lab','./scale-calibration-lab/'],
   [11,'CDU Font Test','../../cdu-font-test/'],
   [11,'IRS Test Lab','../irs-test-lab/'],

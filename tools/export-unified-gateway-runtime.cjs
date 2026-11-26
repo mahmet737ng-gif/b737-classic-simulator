@@ -67,6 +67,9 @@ for(const relative of [
  cockpit+'assets/parking-brake-on-top-left-v1.svg',
  // Authenticated TCAS Test Lab: keep its exact reference HTML, JS and CSS
  // on the same verified fast runtime as Unified (no broken Pages dependency).
+ cockpit+'clock-test-lab-v3.html',
+ cockpit+'clock-photo-unified-v3.js',
+ ...['face','et','gmt','needle'].map(name=>cockpit+'clock-assets/'+name+'.png'),
  cockpit+'tcas-lab/index.html',
  cockpit+'tcas-lab/style.css',
  cockpit+'tcas-lab/app.js',
