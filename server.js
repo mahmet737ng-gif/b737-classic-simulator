@@ -66,6 +66,77 @@ const directDocuments=new Map([
  [directPath+'cdu-stage.html',cockpitSource+'cdu-stage.html']
 ]);
 const fastRuntimeDir=path.join(runtimeDir,'fast-unified');
+// Apply a narrowly scoped, revisioned correction AFTER verifying the packaged
+// source digests. Derived responses get their own digest and release cache key.
+function applyColdDarkVisualFix(bytes,compressed,digests){
+ const root='panel-mosaic-lab/cockpit/';
+ const previewKey='cdu-standalone-v6/assets/cdu-approved-unlit.png';
+ const photo=JSON.parse(bytes.get(root+'performance/manifest.json').toString()).images[previewKey];
+ const local=photo.levels.filter(x=>!x.original&&bytes.has(x.url)).sort((a,b)=>b.extent-a.extent)[0];
+ if(!local)throw Error('CDU local faceplate not packaged');
+ const changes=[];
+ function patch(relative,from,to){
+  const body=bytes.get(relative);if(!body)throw Error('Visual fix asset missing '+relative);
+  const source=body.toString('utf8');
+  if(source.split(from).length!==2)throw Error('Visual fix marker mismatch '+relative);
+  const result=Buffer.from(source.replace(from,to));
+  bytes.set(relative,result);
+  const digest=crypto.createHash('sha256').update(result).digest('hex');
+  digests.set(relative,digest);changes.push([relative,digest]);
+  if(/\.js$/.test(relative))compressed.set(relative,zlib.brotliCompressSync(result,{params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}}));
+ }
+ const app=root+'desktop-bundle-a7262b13b5fc72a5.js';
+ patch(app,`   if(preview){
+    child.style.visibility='hidden';
+    child.addEventListener('load',()=>{
+     preview.remove();child.style.visibility='';
+     station.removeAttribute('data-visual-shell');
+    },{once:true});
+   }`,`   // A frame load can be an error document or precede image decoding.
+   // Retain the approved physical face until the actual child face is ready.
+   if(preview){
+    child.style.visibility='hidden';
+    let generation=0;
+    child.addEventListener('load',()=>{
+     const current=++generation;
+     const handoff=async()=>{
+      if(current!==generation||!child.isConnected)return;
+      let image;
+      try{image=child.contentDocument?.querySelector('#cdu-stage img.base');}catch(_){}
+      if(image&&image.complete&&image.naturalWidth>0){
+       try{await image.decode();}catch(_){image=null;}
+       if(current!==generation||!child.isConnected)return;
+       if(image&&image.complete&&image.naturalWidth>0&&image===child.contentDocument?.querySelector('#cdu-stage img.base')){
+        child.style.visibility='';preview.remove();station.removeAttribute('data-visual-shell');
+        station.dataset.cduPhysicalReady='true';return;
+       }
+      }
+      window.setTimeout(handoff,100);
+     };
+     handoff();
+    });
+   }`);
+ // Use the verified, same-photo local texture immediately. No dependency on
+ // an upstream original fetch for first paint; preserve all native geometry.
+ patch(root+'cdu-stage.html','<img class="base" src="assets/cdu-approved-unlit.png"','<img class="base" src="/'+local.url+'"');
+ const welcome=root+'unified-welcome-v1.js';
+ patch(welcome,'    if (stable && startRequested) beginFlight(now);',`    // The scenario can prepare early; reveal only once all photographs,
+    // both CDU faces and subsystem readiness are simultaneously confirmed.
+    if (stable && startRequested && (!scenarioStarted || (panelComplete && physicalCduReady()))) beginFlight(now);`);
+ patch(welcome,'  function releaseSystems() {',`  function physicalCduReady(){
+    if(win.B737UnifiedNoCduTest)return true;
+    return ['CAPT','FO'].every(seat=>{
+      const frame=by('cduFrame'+seat);
+      if(!frame||frame.style.visibility==='hidden')return false;
+      try{return imagesReady(frame.contentDocument,'#cdu-stage img.base');}catch(_){return false;}
+    });
+  }
+
+  function releaseSystems() {`);
+ patch(welcome,'if (gate?.canEnter === true && priorityReady) {','if (gate?.canEnter === true && priorityReady && (!scenarioStarted || (panelComplete && physicalCduReady()))) {');
+ patch(welcome,"if (full?.cdu !== true) labels.push('Preparing Captain and First Officer CDU…');","if (full?.cdu !== true || !physicalCduReady()) labels.push('Preparing Captain and First Officer CDU…');");
+ return changes;
+}
 const fastRuntime=(()=>{
  try {
   const disk=require('node:fs');
@@ -123,8 +194,10 @@ const fastRuntime=(()=>{
    }
    console.log('UNIFIED LOCAL SOURCE CACHE: '+mirrored.size+' assets / '+mirrorBytes+' bytes / '+skipped+' skipped');
   }catch(error){console.warn('UNIFIED LOCAL SOURCE CACHE unavailable: '+error.message);}
+  const derived=applyColdDarkVisualFix(bytes,compressed,digests);
+  console.log('UNIFIED VISUAL FIX: '+derived.length+' derived resources');
   console.log('UNIFIED FAST RUNTIME LOADED: '+manifest.sourceCommit+' / '+bytes.size+' verified resources');
-  return {sourceCommit:manifest.sourceCommit,releaseId:crypto.createHash('sha256').update(JSON.stringify(manifest)).digest('hex'),bytes,compressed,digests,mirrored};
+  return {sourceCommit:manifest.sourceCommit,releaseId:crypto.createHash('sha256').update(JSON.stringify(manifest)).update(JSON.stringify(derived)).digest('hex'),bytes,compressed,digests,mirrored};
  } catch(error){
   if(error.code==='ENOENT'&&!require('node:fs').existsSync(fastRuntimeDir))return null;
   throw Error('Invalid Unified release', {cause:error});
