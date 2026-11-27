@@ -354,7 +354,7 @@ function transformCockpitHTML(content,{direct=false,lab=false}={}) {
   // Start an immediate same-origin session renewal BEFORE the hundreds of
   // original deferred cockpit assets. If a cached page survives expiry,
   // show login rather than leaving a partially loaded white cockpit.
-  const preflight='<script>(function(){fetch("/api/pulse",{method:"POST",credentials:"same-origin",cache:"no-store"})'+
+  const preflight='<script>(function(){var h={};if(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)h["X-Unified-Device-Class"]="ipad";fetch("/api/pulse",{method:"POST",credentials:"same-origin",cache:"no-store",headers:h})'+
     '.then(function(r){if(r.status===401)location.replace("/login?e=expired");})'+
     '.catch(function(){})})();</script>';
   const injection = '<base href="/panel-mosaic-lab/cockpit/">'+(direct?directBootSetup():'')+preflight+
@@ -687,6 +687,7 @@ function cookie(req, name, value, age, sameSite='Strict') {
 function commonHeaders(req,res) {
   res.setHeader('Cache-Control','no-store, max-age=0');
   res.setHeader('Pragma','no-cache');
+  res.setHeader('Accept-CH','Sec-CH-UA-Platform-Version');
   res.setHeader('Referrer-Policy','no-referrer');
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('X-Frame-Options','SAMEORIGIN');
@@ -787,19 +788,23 @@ async function registerUnifiedDevice(req,username,password) {
     // device never consumes a second slot. The unlimited owner has no cap.
     if(canRegisterDevice(tier==='unlimited'?'unlimited':'guest',
       same.rows[0]?.account_tier===tier?'guest':null,count.rows[0].total,MAX_DEVICES)){
-      const agent=String(req.headers['user-agent']||'Unknown browser').slice(0,320);
+      const {agent,label}=memberRequestInfo(req);
       await client.query(`INSERT INTO ata24_devices
         (device_hash,session_hash,last_seen,account_tier,device_user_agent,last_ip,registered_at)
         VALUES($1,$2,now(),$3,$4,$5,now())
         ON CONFLICT (device_hash) DO UPDATE SET session_hash=EXCLUDED.session_hash,
-          last_seen=now(),account_tier=EXCLUDED.account_tier,
+          last_seen=now(),presence_started_at=NULL,account_tier=EXCLUDED.account_tier,
           device_user_agent=EXCLUDED.device_user_agent,last_ip=EXCLUDED.last_ip,
           registered_at=CASE WHEN ata24_devices.account_tier=EXCLUDED.account_tier THEN ata24_devices.registered_at ELSE now() END`,
         [hash(device),hash(token),tier,agent,ip]);
-      await client.query(`INSERT INTO unified_member_devices(account_tier,device_hash,agent,ip,first_seen,last_seen)
-        VALUES($1,$2,$3,$4,now(),now()) ON CONFLICT(account_tier,device_hash)
-        DO UPDATE SET agent=EXCLUDED.agent,ip=EXCLUDED.ip,last_seen=now()`,[tier,hash(device),agent,ip]);
-      await memberEvent(client,tier,'LOGIN',hash(device),null);
+      const history=await client.query(`INSERT INTO unified_member_devices(account_tier,device_hash,agent,ip,first_seen,last_seen,device_label)
+        VALUES($1,$2,$3,$4,now(),now(),$5) ON CONFLICT(account_tier,device_hash)
+        DO UPDATE SET agent=EXCLUDED.agent,ip=EXCLUDED.ip,last_seen=now(),device_label=CASE
+          WHEN unified_member_devices.agent=EXCLUDED.agent AND
+            ((EXCLUDED.device_label LIKE 'Windows 10/11 %' AND unified_member_devices.device_label ~ '^WIN(10|11) ') OR
+             (EXCLUDED.device_label LIKE 'macOS %' AND unified_member_devices.device_label LIKE 'iPad %'))
+          THEN unified_member_devices.device_label ELSE EXCLUDED.device_label END RETURNING device_label`,[tier,hash(device),agent,ip,label]);
+      await memberEvent(client,tier,'LOGIN',hash(device),null,history.rows[0].device_label,ip);
       allowed=true;
     }
     await client.query('COMMIT');
@@ -854,10 +859,10 @@ function devicesHTML(rows){
  }).join('');
  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
  '<meta name="robots" content="noindex,nofollow"><title>Guest Device Registry | B737 Classic</title>'+
- '<style>body{background:#0a1420;color:#eaf5ff;font:14px system-ui,Arial,sans-serif;margin:auto;padding:24px;max-width:1100px}a{color:#70cbff}h1{font-size:24px}p,small{color:#a1bbcf}table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:12px;border-bottom:1px solid #31485c;vertical-align:top}th{white-space:nowrap}small{display:block;margin-top:8px}button{border:0;border-radius:6px;padding:10px;background:#b94747;color:white;font-weight:700;cursor:pointer}td{overflow-wrap:anywhere}form{margin:0}</style></head><body>'+
+ '<style>body{background:#0a1420;color:#eaf5ff;font:14px system-ui,Arial,sans-serif;margin:auto;padding:24px;max-width:1100px}a{color:#70cbff}h1{font-size:24px}p,small{color:#a1bbcf}table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:12px;border-bottom:1px solid #31485c;vertical-align:top}th{white-space:nowrap}small{display:block;margin-top:8px}button{border:0;border-radius:6px;padding:10px;background:#b94747;color:white;font-weight:700;cursor:pointer}td{overflow-wrap:anywhere}td button{white-space:nowrap}th:last-child,td:last-child{min-width:88px}details{max-width:320px;margin-top:5px}summary{color:#9eb7c9;cursor:pointer;font-size:12px}td:has(details){min-width:180px}form{margin:0}</style></head><body>'+
  '<p><a href="/">BACK TO UNIFIED</a></p><h1>Registered Guest Devices — '+rows.length+' total</h1>'+
  '<p>Each guest account has up to three registered browser profiles. Slots persist until sign out or owner revocation. Clearing cookies does not free a registration.</p>'+
- '<table><thead><tr><th>#</th><th>Account</th><th>Browser / OS</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
+ '<table><thead><tr><th>#</th><th>Account</th><th>Device / Browser</th><th>Last IP</th><th>Registered (UTC)</th><th>Last Seen (UTC)</th><th>Control</th></tr></thead><tbody>'+body+'</tbody></table>'+
  (rows.length?'':'<p>No guest devices are registered.</p>')+'</body></html>';
 }
 async function unifiedIdentity(req){
@@ -872,35 +877,70 @@ async function ownerAccess(req){
 }
 
 
+function describeMemberDevice(agent,platformVersion='',deviceClass=''){
+  const ua=String(agent||'');
+  let os='Unknown OS', browser='Unknown browser';
+  if(deviceClass==='ipad'||/iPad/i.test(ua))os='iPad';
+  else if(/iPhone/i.test(ua))os='iPhone';
+  else if(/iPod/i.test(ua))os='iPod';
+  else if(/Windows NT 10\.0/i.test(ua)){
+    const major=Number(String(platformVersion).replace(/"/g,'').split('.')[0]);
+    os=major>=13?'WIN11':major>0?'WIN10':'Windows 10/11';
+  }else if(/Windows NT 6\.3/i.test(ua))os='WIN8.1';
+  else if(/Windows NT 6\.2/i.test(ua))os='WIN8';
+  else if(/Windows NT 6\.1/i.test(ua))os='WIN7';
+  else if(/Android/i.test(ua))os='Android';
+  else if(/CrOS/i.test(ua))os='ChromeOS';
+  else if(/Macintosh|Mac OS X/i.test(ua))os='macOS';
+  else if(/Linux/i.test(ua))os='Linux';
+  if(/Edg(?:A|iOS)?\/|Edge\//i.test(ua))browser='EDGE';
+  else if(/OPR\/|OPiOS\/|Opera/i.test(ua))browser='OPERA';
+  else if(/SamsungBrowser\//i.test(ua))browser='SAMSUNG INTERNET';
+  else if(/FxiOS\/|Firefox\//i.test(ua))browser='FIREFOX';
+  else if(/CriOS\/|Chrome\/|Chromium\//i.test(ua))browser='CHROME';
+  else if(/Safari\//i.test(ua)&&/Version\//i.test(ua))browser='SAFARI';
+  return os+' '+browser+' BROWSER';
+}
+function memberRequestInfo(req){
+  const agent=String(req.headers['user-agent']||'Unknown browser').slice(0,512);
+  const ip=String(req.headers['x-forwarded-for']||req.socket.remoteAddress||'').split(',')[0].trim().slice(0,80);
+  const version=String(req.headers['sec-ch-ua-platform-version']||'').slice(0,40);
+  const deviceClass=req.headers['x-unified-device-class']==='ipad'?'ipad':'';
+  return {agent,ip,label:describeMemberDevice(agent,version,deviceClass)};
+}
 async function initializeMembers(){
   await pool.query("CREATE TABLE IF NOT EXISTS unified_members (account_tier text PRIMARY KEY, username_key text UNIQUE NOT NULL, username text NOT NULL, verifier text, suspended boolean NOT NULL DEFAULT false, created_at timestamptz NOT NULL DEFAULT now())");
   await pool.query("CREATE TABLE IF NOT EXISTS unified_member_devices (account_tier text NOT NULL, device_hash text NOT NULL, agent text NOT NULL, ip text NOT NULL, first_seen timestamptz NOT NULL, last_seen timestamptz NOT NULL, PRIMARY KEY(account_tier,device_hash))");
   await pool.query("CREATE TABLE IF NOT EXISTS unified_member_events (id bigserial PRIMARY KEY, account_tier text NOT NULL, action text NOT NULL, device_hash text, actor text, at timestamptz NOT NULL DEFAULT now())");
+  await pool.query("ALTER TABLE unified_member_devices ADD COLUMN IF NOT EXISTS device_label text");
+  await pool.query("ALTER TABLE unified_member_events ADD COLUMN IF NOT EXISTS device_label text");
+  await pool.query("ALTER TABLE unified_member_events ADD COLUMN IF NOT EXISTS ip text");
+  await pool.query("ALTER TABLE ata24_devices ADD COLUMN IF NOT EXISTS presence_started_at timestamptz");
   await pool.query("CREATE INDEX IF NOT EXISTS unified_member_events_account_at ON unified_member_events(account_tier,at DESC)");
   for(const [tier,name] of [['unlimited',UNLIMITED_USER],['guest',USER],...Object.keys(EXTRA_USERS).map(name=>['user:'+name.toLowerCase(),name])]){
     await pool.query("INSERT INTO unified_members(account_tier,username_key,username) VALUES($1,$2,$3) ON CONFLICT(account_tier) DO NOTHING",[tier,name.toLowerCase(),name]);
   }
   await pool.query("INSERT INTO unified_member_devices(account_tier,device_hash,agent,ip,first_seen,last_seen) SELECT account_tier,device_hash,device_user_agent,last_ip,registered_at,last_seen FROM ata24_devices ON CONFLICT(account_tier,device_hash) DO UPDATE SET last_seen=GREATEST(unified_member_devices.last_seen,EXCLUDED.last_seen)");
 }
-async function memberEvent(db,tier,action,device,actor){
-  await db.query('INSERT INTO unified_member_events(account_tier,action,device_hash,actor) VALUES($1,$2,$3,$4)',[tier,action,device,actor]);
+async function memberEvent(db,tier,action,device,actor,label=null,ip=null){
+  await db.query('INSERT INTO unified_member_events(account_tier,action,device_hash,actor,device_label,ip) VALUES($1,$2,$3,$4,$5,$6)',[tier,action,device,actor,label,ip]);
 }
-const userPanelScript="(function(){if(window.top!==window.self)return;function mount(){const footer=document.querySelector('#unifiedWelcome .welcome-footer');if(!footer||document.getElementById('unifiedUserPanelLink'))return;fetch('/api/user-panel/access',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>{if(!x||!x.owner||document.getElementById('unifiedUserPanelLink'))return;const a=document.createElement('a');a.id='unifiedUserPanelLink';a.href='/user-panel/';a.textContent='User Panel';a.title='Manage Unified members and devices';a.style.cssText='display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:9px 14px;border:1px solid #5a8399;border-radius:7px;color:#d6f2ff;background:#173447;text-decoration:none;font:600 13px system-ui;';footer.append(a);}).catch(()=>{});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();})();";
+const userPanelScript="(function(){\n if(window.top!==window.self)return;\n fetch('/api/user-panel/access',{credentials:'same-origin',cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>{\n  if(!x||!x.owner)return;\n  let observer;\n  function mount(){\n   const welcome=document.getElementById('unifiedWelcome');\n   if(!welcome||document.getElementById('unifiedUserPanelLink'))return false;\n   const footer=welcome.querySelector('.welcome-footer');\n   if(!footer)return false;\n   const heading=Array.from(welcome.querySelectorAll('h1,h2,h3,[class*=\"title\"],[class*=\"brand\"]')).find(e=>/B737CL QRH.*Procedure Trainer/i.test(e.textContent.trim())&&e.getBoundingClientRect().width>0);\n   const a=document.createElement('a');a.id='unifiedUserPanelLink';a.href='/user-panel/';a.textContent='User Panel';a.title='Manage Unified members and devices';\n   a.style.cssText='display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid #5a8399;border-radius:7px;color:#d6f2ff;background:#173447;text-decoration:none;font:600 13px system-ui;';\n   const wrap=document.createElement('div');wrap.style.cssText='display:flex;justify-content:flex-end;align-items:center;gap:12px;margin:0 0 12px;';\n   wrap.append(a);\n   if(heading&&heading.parentElement&&heading.parentElement!==welcome){\n     const header=heading.parentElement;\n     header.style.display='flex';header.style.alignItems='center';header.style.flexWrap='wrap';header.style.columnGap='12px';\n     a.style.marginInlineStart='auto';header.append(a);\n   }else{\n     const body=footer.parentElement;\n     body.insertBefore(wrap,body.firstChild);\n   }\n   return true;\n  }\n  if(!mount()){observer=new MutationObserver(()=>{if(mount())observer.disconnect();});observer.observe(document.body||document.documentElement,{subtree:true,childList:true});}\n }).catch(()=>{});\n})();";
 function memberPanelHTML(members,devices,events,message){
   const E=escapeHtml;
   const stamp=v=>v?new Date(v).toISOString().replace('T',' ').slice(0,19):'—';
   const action=(tier,kind,label)=>'<form method="post" action="/api/user-panel/change"><input type="hidden" name="tier" value="'+E(tier)+'"><input type="hidden" name="action" value="'+kind+'"><button type="submit" class="'+(kind==='suspend'?'danger':'')+'">'+label+'</button></form>';
   const rows=members.map(m=>'<tr><td><strong>'+E(m.username)+'</strong><small>'+E(m.account_tier==='unlimited'?'Owner':'Member')+'</small></td><td><span class="'+(m.suspended?'off':'on')+'">'+(m.suspended?'Suspended':'Active')+'</span></td><td>'+E(m.registered)+' / '+(m.account_tier==='unlimited'?'Unlimited':'3')+'</td><td>'+E(m.online)+'</td><td>'+E(m.unique_devices)+'</td><td>'+E(m.logins)+'</td><td>'+stamp(m.last_login)+'</td><td class="actions">'+(m.account_tier==='unlimited'?'Protected owner':action(m.account_tier,m.suspended?'activate':'suspend',m.suspended?'Activate':'Suspend')+'<form method="post" action="/api/user-panel/change"><input type="hidden" name="tier" value="'+E(m.account_tier)+'"><input type="hidden" name="action" value="password"><input type="password" name="password" placeholder="New password" minlength="8" maxlength="200" required autocomplete="new-password" aria-label="New password"><button>Reset password</button></form>')+'</td></tr>').join('');
-  const ds=devices.map(d=>'<tr><td>'+E(d.username||d.account_tier)+'</td><td>'+E(d.agent)+'<small>ID '+E(d.device_hash.slice(0,12))+'</small></td><td>'+E(d.ip)+'</td><td>'+stamp(d.first_seen)+'</td><td>'+stamp(d.last_seen)+'</td><td>'+(!d.registered?'Released':d.online?'Online':'Registered')+'</td><td>'+(d.registered&&d.account_tier!=='unlimited'?'<form method="post" action="/api/user-panel/change"><input type="hidden" name="action" value="revoke"><input type="hidden" name="tier" value="'+E(d.account_tier)+'"><input type="hidden" name="device" value="'+E(d.device_hash)+'"><button class="danger">Revoke</button></form>':'—')+'</td></tr>').join('');
-  const es=events.map(e=>'<tr><td>'+stamp(e.at)+'</td><td>'+E(e.username||e.account_tier)+'</td><td>'+E(e.action)+'</td><td>'+E(e.device_hash?.slice(0,12)||'—')+'</td><td>'+E(e.actor||'—')+'</td></tr>').join('');
+  const ds=devices.map(d=>'<tr><td>'+E(d.username||d.account_tier)+'</td><td>'+E(d.device_label||describeMemberDevice(d.agent))+'<details><summary>Device details</summary><small>'+E(d.agent)+'</small></details><small>ID '+E(d.device_hash.slice(0,12))+'</small></td><td>'+E(d.ip||'—')+'</td><td>'+stamp(d.first_seen)+'</td><td>'+stamp(d.last_seen)+'</td><td>'+(!d.registered?'Released':d.online?'Online':'Offline (registered)')+'</td><td>'+(d.registered&&d.account_tier!=='unlimited'?'<form method="post" action="/api/user-panel/change"><input type="hidden" name="action" value="revoke"><input type="hidden" name="tier" value="'+E(d.account_tier)+'"><input type="hidden" name="device" value="'+E(d.device_hash)+'"><button class="danger">Revoke</button></form>':'—')+'</td></tr>').join('');
+  const es=events.map(e=>'<tr><td>'+stamp(e.at)+'</td><td>'+E(e.username||e.account_tier)+'</td><td>'+E(e.action)+'</td><td>'+E(e.device_label||'—')+'<small>'+E(e.device_hash?.slice(0,12)||'—')+'</small></td><td>'+E(e.ip||'—')+'</td><td>'+E(e.actor||'—')+'</td></tr>').join('')||'<tr><td colspan="6">No recorded events yet. Existing sessions will appear on their next heartbeat.</td></tr>';
   const sum=k=>members.reduce((n,m)=>n+Number(m[k]||0),0);
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>User Panel | B737 Classic Unified</title><style>*,*::before,*::after{box-sizing:border-box}body{margin:0;background:#0b1520;color:#e9f3fa;font:14px system-ui,Arial,sans-serif}main{max-width:1500px;margin:auto;padding:24px}a{color:#94d7ff}h1{font-size:28px;margin:10px 0}h2{font-size:18px}p,small{color:#9eb7c9}small{display:block;margin-top:5px}header,.stats,.actions,form{display:flex;gap:10px;align-items:center;flex-wrap:wrap}header{justify-content:space-between}.stats{margin:20px 0}.metric,section{background:#132331;border:1px solid #2c4659;border-radius:12px;padding:16px}.metric{flex:1;min-width:140px}.metric strong{display:block;font-size:28px;margin-top:7px}section{margin:14px 0;overflow:auto}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px 9px;border-bottom:1px solid #314455;vertical-align:top}th{color:#adc5d7;white-space:nowrap;font-size:12px}td{overflow-wrap:anywhere}input,button{border:1px solid #45677c;background:#0b1925;color:#effaff;padding:9px;border-radius:7px;font:inherit}button{background:#246081;cursor:pointer;font-weight:650}button.danger{background:#843943}.on{color:#7de2b2}.off{color:#ff9b9b}.notice{border:1px solid #486e85;padding:10px;border-radius:8px}.actions{min-width:210px}.actions input{width:140px}label{display:flex;flex-direction:column;gap:5px}@media(max-width:600px){main{padding:12px}section{padding:10px}}</style></head><body><main><header><div><small>B737 CLASSIC / ADMINISTRATION</small><h1>User Panel</h1></div><div><a href="/panel-mosaic-lab/unified/">Back to Unified</a> · <a href="/user-panel/">Refresh</a></div></header>'+
   (message?'<p class="notice" role="status">'+E(message)+'</p>':'')+
   '<div class="stats"><div class="metric">Members<strong>'+members.length+'</strong></div><div class="metric">Suspended<strong>'+members.filter(m=>m.suspended).length+'</strong></div><div class="metric">Registered devices<strong>'+sum('registered')+'</strong></div><div class="metric">Online (last 2 min)<strong>'+sum('online')+'</strong></div></div>'+
   '<section><h2>Create member</h2><form method="post" action="/api/user-panel/change"><input type="hidden" name="action" value="create"><label>Username<input name="username" required pattern="[A-Za-z0-9][A-Za-z0-9_.-]{2,39}" maxlength="40" autocomplete="off"></label><label>Initial password<input name="password" type="password" minlength="8" maxlength="200" required autocomplete="new-password"></label><button>Create member</button></form><p>Each new member has three registered browser-profile slots. Suspending or resetting a password revokes all existing sessions. Owner access is protected.</p></section>'+
   '<section><h2>Members</h2><table><thead><tr><th>Username</th><th>Status</th><th>Registered / cap</th><th>Online</th><th>Unique history</th><th>Logins recorded</th><th>Last login UTC</th><th>Controls</th></tr></thead><tbody>'+rows+'</tbody></table></section>'+
-  '<section><h2>Device registry and history</h2><p>Unique means a persistent browser profile, not a hardware serial number. Online is estimated from the latest heartbeat. History starts at this release, with existing registrations imported.</p><table><thead><tr><th>Member</th><th>Browser / OS</th><th>Last IP</th><th>First seen UTC</th><th>Last seen UTC</th><th>State</th><th>Control</th></tr></thead><tbody>'+ds+'</tbody></table></section>'+
-  '<section><h2>Activity log — latest 200 events</h2><table><thead><tr><th>UTC</th><th>Member</th><th>Event</th><th>Device ID</th><th>Admin</th></tr></thead><tbody>'+es+'</tbody></table></section></main></body></html>';
+  '<section><h2>Device registry and history</h2><p>Device names are derived from browser reports. A unique device is a persistent browser profile, not a hardware serial number. Online means a heartbeat within 2 minutes. Earlier registrations are retained; missing historical events are not invented.</p><table><thead><tr><th>Member</th><th>Browser / OS</th><th>Last IP</th><th>First seen UTC</th><th>Last seen UTC</th><th>State</th><th>Control</th></tr></thead><tbody>'+ds+'</tbody></table></section>'+
+  '<section><h2>Activity log — latest 200 events</h2><table><thead><tr><th>UTC</th><th>Member</th><th>Event</th><th>Device / ID</th><th>IP at event</th><th>Admin</th></tr></thead><tbody>'+es+'</tbody></table></section></main></body></html>';
 }
 async function userPanel(req,res,url){
   if(!await ownerAccess(req)){res.writeHead(403,{'Content-Type':'text/plain'});res.end('Owner access required');return;}
@@ -1053,10 +1093,41 @@ async function handle(req,res) {
   if (req.method==='POST' && url.pathname==='/api/pulse') {
     const token=cookies(req)[TOKEN_COOKIE];
     if(token) {
+      const {agent,ip,label}=memberRequestInfo(req);
       const updated=await pool.query(
-        "UPDATE ata24_devices SET last_seen=now() WHERE session_hash=$1 RETURNING account_tier",
-        [hash(token)]
+        `WITH prior AS (
+          SELECT d.device_hash,d.account_tier,d.last_seen,d.presence_started_at
+          FROM ata24_devices d JOIN unified_members m USING(account_tier)
+          WHERE d.session_hash=$1 AND NOT m.suspended FOR UPDATE OF d
+        ), touched AS (
+          UPDATE ata24_devices d SET last_seen=now(),
+            device_user_agent=CASE WHEN $2='Unknown browser' THEN d.device_user_agent ELSE $2 END,
+            last_ip=CASE WHEN $3='' THEN d.last_ip ELSE $3 END,
+            presence_started_at=CASE WHEN p.presence_started_at IS NULL OR p.last_seen<=now()-interval '2 minutes'
+              THEN now() ELSE p.presence_started_at END
+          FROM prior p WHERE d.device_hash=p.device_hash
+          RETURNING d.account_tier,d.device_hash,d.device_user_agent,d.last_ip,d.registered_at,d.last_seen,
+            (p.presence_started_at IS NULL OR p.last_seen<=now()-interval '2 minutes') AS connected
+        ), history AS (
+          INSERT INTO unified_member_devices(account_tier,device_hash,agent,ip,first_seen,last_seen,device_label)
+          SELECT account_tier,device_hash,device_user_agent,last_ip,registered_at,last_seen,
+            CASE WHEN $2='Unknown browser' THEN NULL ELSE $4 END FROM touched
+          ON CONFLICT(account_tier,device_hash) DO UPDATE SET agent=EXCLUDED.agent,ip=EXCLUDED.ip,last_seen=EXCLUDED.last_seen,
+            device_label=CASE WHEN EXCLUDED.device_label IS NULL THEN unified_member_devices.device_label
+              WHEN unified_member_devices.agent=EXCLUDED.agent AND
+                ((EXCLUDED.device_label LIKE 'Windows 10/11 %' AND unified_member_devices.device_label ~ '^WIN(10|11) ') OR
+                 (EXCLUDED.device_label LIKE 'macOS %' AND unified_member_devices.device_label LIKE 'iPad %'))
+              THEN unified_member_devices.device_label ELSE EXCLUDED.device_label END
+          RETURNING account_tier,device_hash,device_label,ip
+        ), event AS (
+          INSERT INTO unified_member_events(account_tier,action,device_hash,device_label,ip)
+          SELECT t.account_tier,'CONNECTED',t.device_hash,h.device_label,h.ip
+          FROM touched t JOIN history h USING(account_tier,device_hash) WHERE t.connected
+          RETURNING id
+        ) SELECT account_tier FROM touched`,
+        [hash(token),agent,ip,label]
       );
+      if(updated.rowCount!==1){res.writeHead(401);res.end();return;}
       // Keep persistent cookies refreshed for owners and registered guests.
       if(updated.rowCount===1){
         const owner=updated.rows[0].account_tier==='unlimited';
@@ -1072,10 +1143,11 @@ async function handle(req,res) {
   if (req.method==='POST' && url.pathname==='/api/logout') {
     const token=cookies(req)[TOKEN_COOKIE];
     if (token){
-      const removed=await pool.query('DELETE FROM ata24_devices WHERE session_hash=$1 RETURNING account_tier,device_hash,last_seen',[hash(token)]);
+      const removed=await pool.query('DELETE FROM ata24_devices WHERE session_hash=$1 RETURNING account_tier,device_hash,last_seen,device_user_agent,last_ip',[hash(token)]);
       for(const d of removed.rows){
         await pool.query('UPDATE unified_member_devices SET last_seen=GREATEST(last_seen,$3) WHERE account_tier=$1 AND device_hash=$2',[d.account_tier,d.device_hash,d.last_seen]);
-        await memberEvent(pool,d.account_tier,'LOGOUT',d.device_hash,null);
+        const h=(await pool.query('SELECT device_label FROM unified_member_devices WHERE account_tier=$1 AND device_hash=$2',[d.account_tier,d.device_hash])).rows[0];
+        await memberEvent(pool,d.account_tier,'LOGOUT',d.device_hash,null,h?.device_label||describeMemberDevice(d.device_user_agent),d.last_ip);
       }
     }
     redirect(res,'/login',{'Set-Cookie':cookie(req,TOKEN_COOKIE,'',0)});return;
