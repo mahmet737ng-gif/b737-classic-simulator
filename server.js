@@ -814,7 +814,7 @@ async function authorized(req) {
   let inFlight = authorizationInFlight.get(key);
   if (!inFlight) {
     inFlight = pool.query(
-      "SELECT d.session_hash FROM ata24_devices d JOIN unified_members m USING(account_tier) WHERE d.session_hash=$1 AND NOT m.suspended",
+      "SELECT d.session_hash FROM ata24_devices d JOIN unified_members m USING(account_tier) WHERE d.session_hash=$1 AND NOT m.suspended AND (m.account_tier='unlimited' OR NOT (SELECT locked FROM unified_security_state WHERE singleton=true))",
       [key]
     ).then(result=>result.rowCount===1).finally(()=>{
       authorizationInFlight.delete(key);
@@ -838,6 +838,7 @@ async function registerUnifiedDevice(req,username,password) {
     verifyPassword(password,account.verifier||legacyVerifier||'');
   if (!valid) {
     bucket.n++;attemptMap.set(ip,bucket);
+    await securityEvent(pool,req,username,'LOGIN_FAILED');
     return {error:'invalid'};
   }
   attemptMap.delete(ip);
@@ -850,7 +851,7 @@ async function registerUnifiedDevice(req,username,password) {
     await client.query('BEGIN');
     await client.query('SELECT pg_advisory_xact_lock(73724003)');
     const locked=(await client.query('SELECT suspended,verifier FROM unified_members WHERE account_tier=$1',[tier])).rows[0];
-    if(!locked||locked.suspended||locked.verifier!==account.verifier){
+    if(!locked||locked.suspended||locked.verifier!==account.verifier||(tier!=='unlimited'&&await securityLocked(client))){
       await client.query('ROLLBACK');return {error:'invalid'};
     }
     // Every registered guest browser keeps its slot until explicit release.
@@ -878,6 +879,7 @@ async function registerUnifiedDevice(req,username,password) {
              (EXCLUDED.device_label LIKE 'macOS %' AND unified_member_devices.device_label LIKE 'iPad %'))
           THEN unified_member_devices.device_label ELSE EXCLUDED.device_label END RETURNING device_label`,[tier,hash(device),agent,ip,label]);
       await memberEvent(client,tier,'LOGIN',hash(device),null,history.rows[0].device_label,ip);
+      await securityEvent(client,req,account.username,'LOGIN_SUCCESS');
       allowed=true;
     }
     await client.query('COMMIT');
@@ -941,7 +943,7 @@ function devicesHTML(rows){
 async function unifiedIdentity(req){
  const token=cookies(req)[TOKEN_COOKIE];
  if(!token||token.length<30||token.length>128)return null;
- const result=await pool.query('SELECT m.username FROM ata24_devices d JOIN unified_members m USING(account_tier) WHERE d.session_hash=$1 AND NOT m.suspended',[hash(token)]);
+ const result=await pool.query('SELECT m.username FROM ata24_devices d JOIN unified_members m USING(account_tier) WHERE d.session_hash=$1 AND NOT m.suspended AND (m.account_tier=\'unlimited\' OR NOT (SELECT locked FROM unified_security_state WHERE singleton=true))',[hash(token)]);
  return result.rows[0]?.username || null;
 }
 
@@ -981,7 +983,77 @@ function memberRequestInfo(req){
   const deviceClass=req.headers['x-unified-device-class']==='ipad'?'ipad':'';
   return {agent,ip,label:describeMemberDevice(agent,version,deviceClass)};
 }
+const securityRates=new Map(),securityCrewStreams=new Set();
+async function securityLocked(db=pool){
+ const r=await db.query('SELECT locked FROM unified_security_state WHERE singleton=true');
+ if(r.rowCount!==1)throw Error('Security state unavailable');
+ return r.rows[0].locked===true;
+}
+async function securityEvent(db,req,username,action){
+ const info=memberRequestInfo(req);
+ await db.query('INSERT INTO unified_security_events(username,action,ip,device_label) VALUES($1,$2,$3,$4)',[String(username||'').slice(0,80),action,info.ip,info.label]);
+}
+async function confirmOwnerPassword(db,req,password){
+ const key=memberRequestInfo(req).ip||'unknown',now=Date.now();
+ if(securityRates.size>=5000)for(const [k,v] of securityRates)if(v.until<=now)securityRates.delete(k);
+ let r=securityRates.get(key);
+ if(!r||r.until<=now){if(securityRates.size>=5000&&!r)return false;r={n:0,until:now+900000};securityRates.set(key,r);}
+ if(r.n>=8)return false;
+ const result=await db.query("SELECT m.verifier FROM unified_members m JOIN ata24_devices d USING(account_tier) WHERE m.account_tier='unlimited' AND NOT m.suspended AND d.session_hash=$1",[hash(cookies(req)[TOKEN_COOKIE]||'')]);
+ const valid=result.rowCount===1&&typeof password==='string'&&password.length>0&&password.length<=200&&verifyPassword(password,result.rows[0].verifier||UNLIMITED_PASSWORD_SCRYPT||'');
+ if(!valid){r.n++;await securityEvent(db,req,UNLIMITED_USER,'ADMIN_REAUTH_FAILED');return false;}
+ securityRates.delete(key);return true;
+}
+function securityPanelHTML(state,events,sessions,req,message){
+ const E=escapeHtml,stamp=v=>v?new Date(v).toISOString().replace('T',' ').slice(0,19):'—',current=hash(cookies(req)[TOKEN_COOKIE]||'');
+ const form=(action,label,extra='',danger=false)=>'<form method="post" action="/api/user-panel/security"><input type="hidden" name="action" value="'+action+'">'+extra+'<label>Owner password<input type="password" name="owner_password" required maxlength="200" autocomplete="current-password"></label><button'+(danger?' class="danger"':'')+'>'+label+'</button></form>';
+ const sr=sessions.map(d=>'<tr><td>'+E(d.username)+'</td><td>'+E(d.device_label||describeMemberDevice(d.device_user_agent))+'</td><td>'+E(d.last_ip||'—')+'</td><td>'+stamp(d.last_seen)+'</td><td>'+(d.session_hash===current?'Current session':form('revoke_session','Revoke','<input type="hidden" name="device" value="'+E(d.device_hash)+'">',true))+'</td></tr>').join('')||'<tr><td colspan="5">No registered sessions.</td></tr>';
+ const er=events.map(e=>'<tr><td>'+stamp(e.at)+'</td><td>'+E(e.username)+'</td><td>'+E(e.action)+'</td><td>'+E(e.device_label)+'</td><td>'+E(e.ip||'—')+'</td></tr>').join('')||'<tr><td colspan="5">No security events recorded yet.</td></tr>';
+ return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unified Security Center</title><style>*{box-sizing:border-box}body{margin:0;background:#0b1520;color:#e9f3fa;font:14px system-ui}main{max-width:1200px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}a{color:#a6e2ff}section{background:#132331;border:1px solid #2c4659;border-radius:12px;padding:18px;margin:16px 0;overflow:auto}h1{margin:6px 0}h2{font-size:17px;margin-top:0}p,small{color:#a9c2d0}.eyebrow{letter-spacing:1.5px;color:#82b8c5;font-size:11px}.status{font-weight:700;color:#82dfb3}.locked{color:#ffb3b3}input,button{font:inherit;color:#effaff;padding:9px;border:1px solid #45677c;border-radius:7px;background:#0b1925}button{background:#246081;cursor:pointer;font-weight:650;white-space:nowrap}button.danger{background:#843943}form{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}label{display:grid;gap:4px;font-size:12px}table{width:100%;border-collapse:collapse;min-width:680px;margin-top:12px}td,th{padding:10px 8px;text-align:left;border-bottom:1px solid #314455}th{color:#adc5d7}td{overflow-wrap:anywhere}td input{width:140px}.notice{padding:10px;border:1px solid #486e85;border-radius:8px}@media(max-width:600px){main{padding:12px}}</style></head><body><main><header><div><div class="eyebrow">B737 CLASSIC / OWNER SECURITY</div><h1>Unified Security Center</h1></div><div><a href="/user-panel/">User Panel</a> · <a href="/user-panel/security/">Refresh</a></div></header>'+
+ (message?'<p class="notice" role="status">'+E(message)+'</p>':'')+
+ '<section><h2>Emergency Lockdown</h2><p class="'+(state.locked?'locked':'status')+'">'+(state.locked?'LOCKDOWN ACTIVE':'NORMAL OPERATION')+'</p><p>Last change UTC: '+stamp(state.changed_at)+'</p><p>Revokes all other Unified sessions and blocks non-owner sign-ins. Private Room requests are paused during lockdown. Previously downloaded offline files cannot be erased. Unlocking does not restore revoked Unified sessions.</p>'+
+ (state.locked?form('unlock','Restore normal access'):form('lockdown','Activate emergency lockdown','<label>Type LOCKDOWN to confirm<input name="confirm" required pattern="LOCKDOWN" autocomplete="off"></label>',true))+'</section>'+
+ '<section><h2>Registered sessions</h2><p>The current owner session is preserved. Separate Private Room sessions are not listed here.</p>'+form('revoke_others','Revoke all other Unified sessions','<label>Type REVOKE to confirm<input name="confirm" required pattern="REVOKE" autocomplete="off"></label>',true)+'<table><thead><tr><th>Member</th><th>Device</th><th>Last IP</th><th>Last seen UTC</th><th>Control</th></tr></thead><tbody>'+sr+'</tbody></table></section>'+
+ '<section><h2>Security audit — latest 200 events</h2><p>Server-observed login and administrative security activity. No passwords or session tokens are displayed.</p><table><thead><tr><th>UTC</th><th>Username</th><th>Event</th><th>Device</th><th>IP</th></tr></thead><tbody>'+er+'</tbody></table></section></main></body></html>';
+}
+async function securityPanel(req,res,url){
+ if(!await ownerAccess(req)){res.writeHead(403);res.end('Owner access required');return;}
+ if(req.method==='GET'&&url.pathname==='/user-panel/security/'){
+  const [state,events,sessions]=await Promise.all([
+   pool.query('SELECT locked,changed_at FROM unified_security_state WHERE singleton=true'),
+   pool.query('SELECT username,action,ip,device_label,at FROM unified_security_events ORDER BY id DESC LIMIT 200'),
+   pool.query('SELECT d.*,m.username,h.device_label FROM ata24_devices d JOIN unified_members m USING(account_tier) LEFT JOIN unified_member_devices h USING(account_tier,device_hash) ORDER BY d.last_seen DESC')]);
+  res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(securityPanelHTML(state.rows[0],events.rows,sessions.rows,req,url.searchParams.get('message')?.slice(0,120)));return;
+ }
+ if(req.method!=='POST'||url.pathname!=='/api/user-panel/security'||!sameOriginRequest(req)){res.writeHead(403);res.end('Origin or method denied');return;}
+ const p=new URLSearchParams(await body(req)),action=p.get('action'),client=await pool.connect();
+ let message='No change',closeStreams=false;
+ try{
+  await client.query('BEGIN');await client.query('SELECT pg_advisory_xact_lock(73724003)');
+  if(!await confirmOwnerPassword(client,req,p.get('owner_password'))){message='Owner authentication failed or rate limited';}
+  else{
+   const current=hash(cookies(req)[TOKEN_COOKIE]||'');
+   const lock=action==='lockdown'&&p.get('confirm')==='LOCKDOWN',all=action==='revoke_others'&&p.get('confirm')==='REVOKE',one=action==='revoke_session'&&/^[a-f0-9]{64}$/.test(p.get('device')||'');
+   if(lock||all||one){
+    if(lock)await client.query('UPDATE unified_security_state SET locked=true,changed_at=now() WHERE singleton=true');
+    const removed=await client.query('DELETE FROM ata24_devices WHERE session_hash<>$1 AND ($2::text IS NULL OR device_hash=$2) RETURNING account_tier,device_hash,last_seen',[current,one?p.get('device'):null]);
+    for(const d of removed.rows){await client.query('UPDATE unified_member_devices SET last_seen=GREATEST(last_seen,$3) WHERE account_tier=$1 AND device_hash=$2',[d.account_tier,d.device_hash,d.last_seen]);await memberEvent(client,d.account_tier,lock?'LOCKDOWN_REVOKE':'SECURITY_REVOKE',d.device_hash,UNLIMITED_USER);}
+    await securityEvent(client,req,UNLIMITED_USER,lock?'LOCKDOWN_ENABLED':all?'REVOKE_OTHER_SESSIONS':'REVOKE_SESSION');
+    message=lock?'Lockdown active; other Unified sessions revoked':removed.rowCount+' Unified session(s) revoked';closeStreams=lock||all||one;
+   }else if(action==='unlock'){
+    await client.query('UPDATE unified_security_state SET locked=false,changed_at=now() WHERE singleton=true');
+    await securityEvent(client,req,UNLIMITED_USER,'LOCKDOWN_DISABLED');message='Normal access restored';
+   }
+  }
+  await client.query('COMMIT');
+ }catch(e){await client.query('ROLLBACK').catch(()=>{});throw e;}finally{client.release();}
+ if(closeStreams)for(const stream of securityCrewStreams){try{stream.end();}catch(_){}}
+ redirect(res,'/user-panel/security/?message='+encodeURIComponent(message));
+}
 async function initializeMembers(){
+  await pool.query("CREATE TABLE IF NOT EXISTS unified_security_state (singleton boolean PRIMARY KEY CHECK(singleton), locked boolean NOT NULL DEFAULT false, changed_at timestamptz NOT NULL DEFAULT now())");
+  await pool.query("INSERT INTO unified_security_state(singleton) VALUES(true) ON CONFLICT DO NOTHING");
+  await pool.query("CREATE TABLE IF NOT EXISTS unified_security_events (id bigserial PRIMARY KEY, username text NOT NULL, action text NOT NULL, ip text NOT NULL, device_label text NOT NULL, at timestamptz NOT NULL DEFAULT now())");
   await pool.query("CREATE TABLE IF NOT EXISTS unified_members (account_tier text PRIMARY KEY, username_key text UNIQUE NOT NULL, username text NOT NULL, verifier text, suspended boolean NOT NULL DEFAULT false, created_at timestamptz NOT NULL DEFAULT now())");
   await pool.query("CREATE TABLE IF NOT EXISTS unified_member_devices (account_tier text NOT NULL, device_hash text NOT NULL, agent text NOT NULL, ip text NOT NULL, first_seen timestamptz NOT NULL, last_seen timestamptz NOT NULL, PRIMARY KEY(account_tier,device_hash))");
   await pool.query("CREATE TABLE IF NOT EXISTS unified_member_events (id bigserial PRIMARY KEY, account_tier text NOT NULL, action text NOT NULL, device_hash text, actor text, at timestamptz NOT NULL DEFAULT now())");
@@ -1007,7 +1079,7 @@ function memberPanelHTML(members,devices,events,message){
   const ds=devices.map(d=>'<tr><td>'+E(d.username||d.account_tier)+'</td><td>'+E(d.device_label||describeMemberDevice(d.agent))+'<details><summary>Device details</summary><small>'+E(d.agent)+'</small></details><small>ID '+E(d.device_hash.slice(0,12))+'</small></td><td>'+E(d.ip||'—')+'</td><td>'+stamp(d.first_seen)+'</td><td>'+stamp(d.last_seen)+'</td><td>'+(!d.registered?'Released':d.online?'Online':'Offline (registered)')+'</td><td>'+(d.registered&&d.account_tier!=='unlimited'?'<form method="post" action="/api/user-panel/change"><input type="hidden" name="action" value="revoke"><input type="hidden" name="tier" value="'+E(d.account_tier)+'"><input type="hidden" name="device" value="'+E(d.device_hash)+'"><button class="danger">Revoke</button></form>':'—')+'</td></tr>').join('');
   const es=events.map(e=>'<tr><td>'+stamp(e.at)+'</td><td>'+E(e.username||e.account_tier)+'</td><td>'+E(e.action)+'</td><td>'+E(e.device_label||'—')+'<small>'+E(e.device_hash?.slice(0,12)||'—')+'</small></td><td>'+E(e.ip||'—')+'</td><td>'+E(e.actor||'—')+'</td></tr>').join('')||'<tr><td colspan="6">No recorded events yet. Existing sessions will appear on their next heartbeat.</td></tr>';
   const sum=k=>members.reduce((n,m)=>n+Number(m[k]||0),0);
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>User Panel | B737 Classic Unified</title><style>*,*::before,*::after{box-sizing:border-box}body{margin:0;background:#0b1520;color:#e9f3fa;font:14px system-ui,Arial,sans-serif}main{max-width:1500px;margin:auto;padding:24px}a{color:#94d7ff}h1{font-size:28px;margin:10px 0}h2{font-size:18px}p,small{color:#9eb7c9}small{display:block;margin-top:5px}header,.stats,.actions,form{display:flex;gap:10px;align-items:center;flex-wrap:wrap}header{justify-content:space-between}.stats{margin:20px 0}.metric,section{background:#132331;border:1px solid #2c4659;border-radius:12px;padding:16px}.metric{flex:1;min-width:140px}.metric strong{display:block;font-size:28px;margin-top:7px}section{margin:14px 0;overflow:auto}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px 9px;border-bottom:1px solid #314455;vertical-align:top}th{color:#adc5d7;white-space:nowrap;font-size:12px}td{overflow-wrap:anywhere}input,button{border:1px solid #45677c;background:#0b1925;color:#effaff;padding:9px;border-radius:7px;font:inherit}button{background:#246081;cursor:pointer;font-weight:650}button.danger{background:#843943}.on{color:#7de2b2}.off{color:#ff9b9b}.notice{border:1px solid #486e85;padding:10px;border-radius:8px}.actions{min-width:210px}.actions input{width:140px}label{display:flex;flex-direction:column;gap:5px}@media(max-width:600px){main{padding:12px}section{padding:10px}}</style></head><body><main><header><div><small>B737 CLASSIC / ADMINISTRATION</small><h1>User Panel</h1></div><div><a href="/panel-mosaic-lab/unified/">Back to Unified</a> · <a href="/user-panel/">Refresh</a></div></header>'+
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>User Panel | B737 Classic Unified</title><style>*,*::before,*::after{box-sizing:border-box}body{margin:0;background:#0b1520;color:#e9f3fa;font:14px system-ui,Arial,sans-serif}main{max-width:1500px;margin:auto;padding:24px}a{color:#94d7ff}h1{font-size:28px;margin:10px 0}h2{font-size:18px}p,small{color:#9eb7c9}small{display:block;margin-top:5px}header,.stats,.actions,form{display:flex;gap:10px;align-items:center;flex-wrap:wrap}header{justify-content:space-between}.stats{margin:20px 0}.metric,section{background:#132331;border:1px solid #2c4659;border-radius:12px;padding:16px}.metric{flex:1;min-width:140px}.metric strong{display:block;font-size:28px;margin-top:7px}section{margin:14px 0;overflow:auto}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px 9px;border-bottom:1px solid #314455;vertical-align:top}th{color:#adc5d7;white-space:nowrap;font-size:12px}td{overflow-wrap:anywhere}input,button{border:1px solid #45677c;background:#0b1925;color:#effaff;padding:9px;border-radius:7px;font:inherit}button{background:#246081;cursor:pointer;font-weight:650}button.danger{background:#843943}.on{color:#7de2b2}.off{color:#ff9b9b}.notice{border:1px solid #486e85;padding:10px;border-radius:8px}.actions{min-width:210px}.actions input{width:140px}label{display:flex;flex-direction:column;gap:5px}@media(max-width:600px){main{padding:12px}section{padding:10px}}</style></head><body><main><header><div><small>B737 CLASSIC / ADMINISTRATION</small><h1>User Panel</h1></div><div><a href="/panel-mosaic-lab/unified/">Back to Unified</a> · <a href="/user-panel/">Refresh</a> · <a href="/user-panel/security/">Security Center</a></div></header>'+
   (message?'<p class="notice" role="status">'+E(message)+'</p>':'')+
   '<div class="stats"><div class="metric">Members<strong>'+members.length+'</strong></div><div class="metric">Suspended<strong>'+members.filter(m=>m.suspended).length+'</strong></div><div class="metric">Registered devices<strong>'+sum('registered')+'</strong></div><div class="metric">Online (last 2 min)<strong>'+sum('online')+'</strong></div></div>'+
   '<section><h2>Create member</h2><form method="post" action="/api/user-panel/change"><input type="hidden" name="action" value="create"><label>Username<input name="username" required pattern="[A-Za-z0-9][A-Za-z0-9_.-]{2,39}" maxlength="40" autocomplete="off"></label><label>Initial password<input name="password" type="password" minlength="8" maxlength="200" required autocomplete="new-password"></label><button>Create member</button></form><p>Each new member has three registered browser-profile slots. Suspending or resetting a password revokes all existing sessions. Owner access is protected.</p></section>'+
@@ -1021,14 +1093,15 @@ async function userPanel(req,res,url){
     const members=(await pool.query("SELECT m.account_tier,m.username,m.suspended,(SELECT count(*)::int FROM ata24_devices d WHERE d.account_tier=m.account_tier) AS registered,(SELECT count(*)::int FROM ata24_devices d WHERE d.account_tier=m.account_tier AND d.last_seen>now()-interval '2 minutes') AS online,(SELECT count(*)::int FROM unified_member_devices h WHERE h.account_tier=m.account_tier) AS unique_devices,(SELECT count(*)::int FROM unified_member_events e WHERE e.account_tier=m.account_tier AND e.action='LOGIN') AS logins,(SELECT max(at) FROM unified_member_events e WHERE e.account_tier=m.account_tier AND e.action='LOGIN') AS last_login FROM unified_members m ORDER BY (m.account_tier='unlimited') DESC,m.username_key")).rows;
     const devices=(await pool.query("SELECT h.*,m.username,COALESCE(d.last_seen,h.last_seen) AS last_seen,(d.device_hash IS NOT NULL) AS registered,COALESCE(d.last_seen>now()-interval '2 minutes',false) AS online FROM unified_member_devices h LEFT JOIN unified_members m USING(account_tier) LEFT JOIN ata24_devices d USING(account_tier,device_hash) ORDER BY h.account_tier,COALESCE(d.last_seen,h.last_seen) DESC")).rows;
     const events=(await pool.query("SELECT e.*,m.username FROM unified_member_events e LEFT JOIN unified_members m USING(account_tier) ORDER BY e.id DESC LIMIT 200")).rows;
-    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(memberPanelHTML(members,devices,events,url.searchParams.get('message')?.slice(0,150)));return;
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(memberPanelHTML(members,devices,events,url.searchParams.get('message')?.slice(0,150)).replaceAll('<form method="post" action="/api/user-panel/change">','<form method="post" action="/api/user-panel/change"><input type="password" name="owner_password" placeholder="Owner password" aria-label="Owner password" required maxlength="200" autocomplete="current-password">'));return;
   }
   if(req.method!=='POST'||url.pathname!=='/api/user-panel/change'||!sameOriginRequest(req)){res.writeHead(403);res.end('Origin or method denied');return;}
   const p=new URLSearchParams(await body(req)), action=p.get('action'), tier=p.get('tier'), password=p.get('password')||'';
   const client=await pool.connect();let message='No change';
   try{
     await client.query('BEGIN');await client.query('SELECT pg_advisory_xact_lock(73724003)');
-    if(action==='create'){
+    if(!await confirmOwnerPassword(client,req,p.get('owner_password'))){message='Owner authentication failed or rate limited';}
+    else if(action==='create'){
       const name=(p.get('username')||'').trim(), key=name.toLowerCase();
       if(!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,39}$/.test(name)||password.length<8||password.length>200)message='Invalid username or password (minimum 8 characters)';
       else if(crewReady&&(await client.query('SELECT 1 FROM unified_crew_accounts WHERE account_key=$1',[key])).rowCount)message='Username already in use by a Private Room account';
@@ -1085,6 +1158,8 @@ async function handle(req,res) {
   const url=new URL(req.url,'http://localhost');
   if (url.pathname==='/healthz') { res.writeHead(200,{'Content-Type':'text/plain'});res.end('ok');return; }
   if(crewReady && (url.pathname==='/api/crew' || url.pathname.startsWith('/api/crew/'))){
+    if(await securityLocked()){res.writeHead(503,{'Content-Type':'application/json'});res.end(JSON.stringify({error:'Private Room paused by owner'}));return;}
+    if(url.pathname==='/api/crew/events'){securityCrewStreams.add(res);res.once('close',()=>securityCrewStreams.delete(res));}
     crew.handle(req,res);return;
   }
   if(serveCrewEntry(req,res,url))return;
@@ -1118,7 +1193,8 @@ async function handle(req,res) {
   const authStarted=performance.now();
   const ok=await authorized(req);
   const authMs=performance.now()-authStarted;
-  const crewGuest = !ok && crewCockpitReady ? crew.cockpitAccess(req) : null;
+  const candidate = !ok && crewCockpitReady ? crew.cockpitAccess(req) : null;
+  const crewGuest = candidate && !await securityLocked() ? candidate : null;
   if (crewGuest) {
     const assetRequest = ['GET','HEAD'].includes(req.method);
     const pulse = req.method==='POST' && url.pathname==='/api/pulse';
@@ -1146,23 +1222,13 @@ async function handle(req,res) {
     }
     return;
   }
+  if(url.pathname==='/user-panel/security/'||url.pathname==='/api/user-panel/security'){await securityPanel(req,res,url);return;}
   if(url.pathname==='/user-panel/'||url.pathname==='/api/user-panel/change'){await userPanel(req,res,url);return;}
   if(req.method==='GET'&&url.pathname==='/devices'){
     if(!await ownerAccess(req)){res.writeHead(403,{'Content-Type':'text/plain'});res.end('Owner access required');return;}
     redirect(res,'/user-panel/');return;
   }
-  if(req.method==='POST'&&url.pathname==='/api/devices/revoke'){
-    if(!sameOriginRequest(req)){res.writeHead(403);res.end('Origin denied');return;}
-    if(!await ownerAccess(req)){res.writeHead(403);res.end('Owner access required');return;}
-    const device=String(new URLSearchParams(await body(req)).get('device')||'');
-    if(!/^[a-f0-9]{64}$/.test(device)){res.writeHead(400);res.end('Invalid device ID');return;}
-    const removed=await pool.query("DELETE FROM ata24_devices WHERE device_hash=$1 AND account_tier<>'unlimited' RETURNING account_tier,last_seen",[device]);
-    for(const d of removed.rows){
-      await pool.query('UPDATE unified_member_devices SET last_seen=GREATEST(last_seen,$3) WHERE account_tier=$1 AND device_hash=$2',[d.account_tier,device,d.last_seen]);
-      await memberEvent(pool,d.account_tier,'REVOKE',device,UNLIMITED_USER);
-    }
-    redirect(res,'/user-panel/');return;
-  }
+  if(req.method==='POST'&&url.pathname==='/api/devices/revoke'){res.writeHead(403);res.end('Use User Panel with owner password confirmation');return;}
   if (req.method==='POST' && url.pathname==='/api/pulse') {
     const token=cookies(req)[TOKEN_COOKIE];
     if(token) {
