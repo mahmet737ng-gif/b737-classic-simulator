@@ -40,11 +40,11 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "10622ac80922962a5f1bb4f87fa21d6e24d2605e8980e35cbf04cd92e3f50d1f"
+      "sha256": "88c7e4a7520d2cdcd1f6ac25aa82df391af363eac4f6094a2311310b233ad9b5"
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
-      "sha256": "73006fb6af31621d19aff0f1f7abb0b298a46c2f0919e4e5d6b80f6fbf831134"
+      "sha256": "83282a9b4b2de72d4c27948a7db40643183c1d73fc0d0fa7dd3684d57a7c3921"
     },
     {
       "path": "cdu-standalone-v6/data/cdu-map.js",
@@ -68,7 +68,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
-      "sha256": "bbba3ed0f78b3e9a7034e4d8a04dcd81bbf845be373451aeca850a2e2ceba89b"
+      "sha256": "c16e609a489dbd9d59243fac4bc0cbedba6c1adf70d49e4223407f4d449a4cae"
     },
     {
       "path": "cdu-standalone-v6/engine/prompt-policy-v1.js",
@@ -232,7 +232,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "8f80ef48741e2dabdf36a3cbaa628d29fcb188866fef96fc0e97dc0b206c0096"
+      "sha256": "bedc7b9784f2e84e6f6dca8df3d7213483f18e73bddba0547a5a010c07a2a3eb"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -528,7 +528,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "2ea1ec96bb339e56cfc455a1234f985654c319adf24a0160d9734834bb01a211"
+      "sha256": "0eb36eb83585489754d303b16921220377d03528139b7f9e26bd4df197c4589b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "6651b2ccfb9622f7d3d9feac7e3e6564a25ad1c0c91dd6cfa0c823f6b2095c75"
+      "sha256": "4bad389ab3ff028fac1a509a2d2517d541fa4612c326e1d162c52aac91bc6420"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",

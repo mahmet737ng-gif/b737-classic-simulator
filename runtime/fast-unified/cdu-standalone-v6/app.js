@@ -316,14 +316,16 @@ const cduSeat=new URLSearchParams(window.location.search).get('seat')==='FO'?'FO
  const n1=v19SafeN1();
  if(state.page==='DEP_ARR')renderDepArrIndex(frame);
  else if(chapter11){
-   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL,predictedSpeed,predictedAltitude,activeWaypoint},index)=>{
+   chapter11.rows.forEach(({labelL,valueL,labelR,valueR,activeSpeed,centerLabel,centerValue,separator,smallL,smallR,smallCenter,smallSuffixL,predictedSpeed,predictedAltitude,activeWaypoint,fullLabel,footerRule},index)=>{
      const {label,value}=lskTextTops(index+1);
      const line=centerLabel?makeDepArrTriplet(label,labelL,centerLabel,labelR,true):makePairRow(label,labelL,labelR,false,true);
+     if(fullLabel){line.replaceChildren();const span=document.createElement('span');span.textContent=fullLabel;span.style.cssText='position:absolute;left:0;width:100%;text-align:center;white-space:pre;overflow:visible';line.appendChild(span);}
+     if(footerRule){const span=document.createElement('span');span.textContent='------------';span.style.cssText='position:absolute;right:0;width:49%;text-align:right;white-space:pre';line.appendChild(span);}
      if(separator){line.textContent='------------------------';line.classList.add('fmc-perf-separator');line.style.textAlign='center';}
-     if(state.page==='LEGS'&&/^\d{3}°$/.test(labelL||'')){
+     if(state.page==='LEGS'&&!fullLabel&&/^\d{1,3}°$/.test(labelL||'')){
       const left=line.querySelector('.fmc-left');left.classList.add('cdu-leg-angle');left.textContent=labelL.slice(0,-1);const deg=document.createElement('span');deg.className='cdu-leg-degree';deg.textContent='°';left.appendChild(deg);
      }
-     if(state.page==='LEGS'&&/NM$/.test(labelR||''))line.querySelector('.fmc-right').classList.add('cdu-leg-distance');
+     if(state.page==='LEGS'&&/NM$/.test(centerLabel||'')){const dist=line.querySelector('.fmc-center');if(dist){dist.style.setProperty('left','36%','important');dist.style.setProperty('width','30%','important');dist.style.setProperty('text-align','center','important');}}
      frame.appendChild(line);
      const valueRow=centerValue?makeDepArrTriplet(value,valueL,centerValue,valueR):makePairRow(value,valueL,valueR);
      if(perf){valueRow.classList.add('fmc-perf-value');for(const span of valueRow.querySelectorAll('.fmc-left,.fmc-right')){span.style.setProperty('white-space','pre','important');}

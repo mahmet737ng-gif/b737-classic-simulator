@@ -433,7 +433,7 @@
  }
  async function insertLegPilot(k){
   if(airwayBusy){issue('NAV DATA LOOKUP BUSY');return;}
-  const page=globalThis.CDU_CH11_ROUTE_PAGES,route=page?.visibleLegs?.(state)||[];
+  const page=globalThis.CDU_CH11_ROUTE_PAGES,route=page?.displayedLegs?.(state)?.all??page?.visibleLegs?.(state)??[];
   const selected=((page?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1,input=String(state.scratch||'').trim().toUpperCase();
   const ref=route[selected],revision=shared.snapshot().revision,ticket=++airwayTicket;
   if(!ref||ref.conditional||ref.gap){issue('INVALID LEG');return;}
@@ -518,8 +518,8 @@
   if(k==='EXEC')revisionBeforeExec=mayExecute()?(state.routeRevision||0):null;
   if(bridge.cycle==='AIRAC-2611'&&state.page==='FIX'&&k==='LSK_L1'&&state.scratch){void selectInfoFix();return true;}
   if(bridge.cycle==='AIRAC-2611'&&state.page==='LEGS'&&/^LSK_L[1-5]$/.test(k)&&state.scratch){
-   const api=globalThis.CDU_CH11_ROUTE_PAGES,route=api?.visibleLegs?.(state)||[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
-   const gap=route[index],next=route[index+1],prev=route[index-1];
+   const api=globalThis.CDU_CH11_ROUTE_PAGES,shown=api?.displayedLegs?.(state),route=shown?.all??api?.visibleLegs?.(state)??[],index=((api?.view(state)?.number||1)-1)*5+Number(k.slice(-1))-1;
+   const gap=route[index],next=route[index+1],prev=route[index-1]??(shown?.offset>0?api.visibleLegs(state)[shown.offset-1]:null);
    if(gap?.gap){
     try{
      if(!next||!prev||state.scratch.trim().toUpperCase()!==next.ident)throw Error('INVALID ENTRY');
@@ -538,7 +538,7 @@
         state.subpage=page;
         for(let line=1;line<=5;line++){
          const key='LSK_R'+line,cell=api.routeCell(state,key),row=api.view(state).rows[line-1];
-         if(cell?.field==='TO'+n&&row?.labelL==='ROUTE DISCONTINUITY'){
+         if(cell?.field==='TO'+n&&row?.arrivalBoundary===true){
           core.press(state,pages,'CDU_CAPT_'+key);found=true;break;
          }
         }

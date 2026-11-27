@@ -537,7 +537,13 @@ try{
    if(g?.program?.input?.legs?.length&&g.fixes?.at(-1)?.ident===to)append(g,'RTE');
    else {const evidence=session.activeNavFixEvidence?.['TO'+n];if((!a['VIA'+n]||['DIRECT','DCT'].includes(a['VIA'+n]))&&evidence?.ident===to)fixed(evidence);else gap('UNVERIFIED_AIRWAY');}
   }
-  for(const kind of ['STAR','APP'])if(bank?.selections?.[kind+'@'+dest])append(geo[kind+'@'+dest],kind);
+  for(const kind of ['STAR','APP'])if(bank?.selections?.[kind+'@'+dest]){
+   const g=geo[kind+'@'+dest],raw=g?.program?.input?.legs;
+   const first=Array.isArray(raw)?raw[0]:null,t=first?.Type??first?.type;
+   const p={ident:first?.Name??first?.ident,lat:Number(first?.Latitude??first?.lat),lon:Number(first?.Longitude??first?.lon)};
+   if(legs.length&&previous&&['Normal','Runway'].includes(t)&&validFix(p)&&!(previous.ident===p.ident&&length(vec(previous,p))<.05))gap('ROUTE_DISCONTINUITY');
+   append(g,kind);
+  }
   if(!legs.length)return null;
   // User-entered constraints override the same executed row, never MOD.
   for(let i=0;i<legs.length;i++){const l=legs[i];if(!l.ident)continue;const key='LEG_CONSTRAINT_'+[origin,dest,i,l.ident].join('_').replace(/[^A-Z0-9_]/g,'_');const v=a[key];if(typeof v==='string'){const [s,h]=v.split('/');l.speed=speed(s)??l.speed;l.altitude=alt(h)??l.altitude;l.constraintText=v;}}

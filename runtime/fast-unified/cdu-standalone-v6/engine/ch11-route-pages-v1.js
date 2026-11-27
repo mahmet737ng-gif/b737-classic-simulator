@@ -70,11 +70,15 @@
   native.forEach((line,i)=>{
    const raw=bank?.geometries?.['RTE@'+(i+1)]?.program?.input?.legs;
    const boundaryGap=(i>0&&native[i-1].via&&!native[i-1].to)||Array.isArray(raw)&&raw.some(l=>(l.Type??l.type)==='Discontinuity');
-   rows.push({...line,nativeIndex:i+1,boundaryGap});
+   if(boundaryGap&&!rows.at(-1)?.gap)rows.push({gap:true,via:'-----',to:'□□□□□',nativeIndex:i+1,sourceGap:true});
+   rows.push({...line,nativeIndex:i+1});
   });
   const boundary=star&&arrivalBoundary(s,native);
-  if(boundary)rows.push({gap:true,via:'---',to:'□□□□□',nativeIndex:boundary.arrivalInsertIndex});
+  if(boundary)rows.push({gap:true,via:'-----',to:'□□□□□',nativeIndex:boundary.arrivalInsertIndex,arrivalBoundary:true});
   if(star)rows.push({...star,arrivalInsertIndex:native.length+1});
+  const app=procedure('APP',dest),transition=bank?.selections?.['APP@'+dest]?.transition;
+  if(app&&transition){rows.push({via:'APPR TRANS',to:transition,sourceOnly:true});}
+  if(app)rows.push(app);
   if(!boundary&&!sourcePlan(s)&&!currentNav(s)&&native.length<MAX_ROUTE_ROWS)
    rows.push({via:'---',to:'---',nativeIndex:native.length+1});
   return rows;
@@ -107,9 +111,9 @@
  }
  function routeRow(list,n,head){
   const entry=list[n-1];
-  if(entry?.gap)return pair('ROUTE DISCONTINUITY','---','','□□□□□');
-  return pair(entry?.boundaryGap?'ROUTE DISCONTINUITY':head?'VIA':'',entry?.via||'',head?'TO':'',
-   entry?.to||(entry?.via?'□□□□□':''));
+  const afterGap=list[n-2]?.gap===true;
+  if(entry?.gap)return pair('',entry.via||'-----','','□□□□□',{centerLabel:'THEN',gapEntry:true,arrivalBoundary:entry.arrivalBoundary===true});
+  return pair(afterGap?'':head?'VIA':'',entry?.via||'',afterGap?'':head?'TO':'',entry?.to||(entry?.via?'□□□□□':''),afterGap?{fullLabel:'-- ROUTE DISCONTINUITY -'}:{});
  }
  function route(s){
   const native=segments(s),list=displaySegments(s,native),number=routeNumber(s,native),rows=[];
@@ -135,6 +139,7 @@
    return name?field(side,name,limits[name],line===1):null;
   }
   const entry=list[(number-2)*ROUTE_ROWS+line-1],n=entry?.nativeIndex??(side==='R'?entry?.arrivalInsertIndex:null);
+  if(entry?.gap&&(!entry.arrivalBoundary||side==='L'))return null;
   if(!n||(entry.sourceOnly&&!entry.arrivalInsertIndex)||n>MAX_ROUTE_ROWS||sourcePlan(s)||currentNav(s))return null;
   return side==='L'?field(side,'VIA'+n,'AIRWAY'):field(side,'TO'+n,'WAYPOINT');
  }
@@ -461,14 +466,20 @@
   else{core.addMessage(s,'INVALID ENTRY');return true;}
   holdWrite(s,entry.i,next);return true;
  }
+ function navigationAccuracy(s){
+  const q=s.fmcPageInputs?.navigationAccuracy??s.fmcPageInputs?.position??{};
+  const fmt=v=>Number.isFinite(v)&&v>=0?v.toFixed(2):'--.--';
+  return fmt(q.rnpNm)+'/'+fmt(q.anpNm??q.actualNm)+'NM';
+ }
  function legs(s){
    const {all,offset}=displayedLegs(s),center=planMode(s)?planCenter(s,all):null,count=Math.max(1,Math.ceil(all.length/5));
   const number=Math.min(count,Math.max(1,s.subpage||1)),rows=[];
   const at=(number-1)*5;
   for(let i=0;i<5;i++){
    const leg=all[at+i];
-   if(!leg){rows.push(empty());continue;}
-   if(leg.gap){rows.push(pair('ROUTE DISCONTINUITY','□□□□□'));continue;}
+   const previousGap=all[at+i-1]?.gap===true;
+   if(!leg){rows.push(previousGap?pair('','','','',{fullLabel:'-- ROUTE DISCONTINUITY -'}):empty());continue;}
+   if(leg.gap){rows.push(pair('THEN','□□□□□','','',{gapEntry:true}));continue;}
    const index=at+i,previous=all[index-1],prediction=s.fmcPageInputs?.predictions;
    const live=s.fmcPageInputs?.guidance?.activeLeg;
    const activeIdent=sequence(s)?.activeIdent??(s.fmcPageInputs?.guidance?.simulatorCoupled===true?live?.ident:prediction?.quality==='VALID'?prediction.active?.ident:null);
@@ -493,13 +504,13 @@
    const predSpeed=q&&Number.isFinite(q.predictedIasKt)?q.speedMode==='MACH'&&Number.isFinite(q.predictedMach)?q.predictedMach.toFixed(3).replace(/^0/,''):String(Math.round(q.predictedIasKt)):null;
    const speedMissing=!sp||/^-+$/.test(sp),altMissing=!al||/^-+$/.test(al);
    const shownSp=speedMissing&&predSpeed?predSpeed:sp,shownAlt=altMissing&&predAlt?predAlt:al;
-   rows.push({...pair(hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),nm(distance),shownSp+'/'+shownAlt),activeWaypoint:!modified(s)&&s.routeActivated&&activeMatch&&!sequence(s)?.blocked,predictedSpeed:!!(speedMissing&&predSpeed),predictedAltitude:!!(altMissing&&predAlt)});
+   rows.push({...pair(previousGap?'':hold?'HOLD AT '+angle:angle,leg.ident+(center?.index===index?' <CTR>':''),'',shownSp+'/'+shownAlt,{centerLabel:previousGap?'':nm(distance),...(previousGap?{fullLabel:'-- ROUTE DISCONTINUITY -'}:{})}),activeWaypoint:!modified(s)&&s.routeActivated&&activeMatch&&!sequence(s)?.blocked,predictedSpeed:!!(speedMissing&&predSpeed),predictedAltitude:!!(altMissing&&predAlt)});
 
   }
   const action=routeAction(s);
   const right=canActivate(s)||!s.routeActivated&&s.stage6PendingPlan&&!s.stage6AwaitingExec?'ACTIVATE>':
    s.routeActivated||s.navdbActive||s.stage5Committed?'RTE DATA>':'';
-  rows.push(s.holdAt?pair('HOLD AT','□□□□□','',s.fmcOnGroundVerified===false?'PPOS>':''):pair('',action?.command==='erase'?'<ERASE':'',planMode(s)?'MAP CTR':'',planMode(s)?'STEP>':right));
+  rows.push(s.holdAt?pair('HOLD AT','□□□□□','',s.fmcOnGroundVerified===false?'PPOS>':''):pair('RNP/ACTUAL',action?.command==='erase'?'<ERASE':navigationAccuracy(s),planMode(s)?'MAP CTR':'',planMode(s)?'STEP>':right,{footerRule:!planMode(s)}));
   return {title:titleWithStatus(s,'RTE LEGS'),number,count,rows};
  }
  function erase(s){
