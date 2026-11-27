@@ -86,10 +86,12 @@ function updateEHSI(){ if(window.EHSI_ENGINE){ if((state.navdbActive||state.stag
 const TITLE_PLAIN=new Set(['MENU','INDEX','IDENT','POS_INIT','MESSAGES','MSG_RECALL','NAV_DATA','NAV_OPTIONS','SUPP_NAV','POS_REF','FIX','PROG','PROG2','HOLD','DEP_ARR','DEPARTURES','ARRIVALS']);
 function shown(val){return String(val??'').replace(/\{([A-Z_0-9]+)\}/g,(_,key)=>core.readValue(state,key,state.page)||'----');}
 function displayCell(cell){if(!cell)return ''; if(cell.field){const get=(field,page)=>core.readValue(state,field,page);
-  if(['CLB','CRZ','DES'].includes(state.page)&&/^(CLB|CRZ|DES)_SPEED$/.test(cell.field)&&!get(cell.field,state.page)){
-   const phase={CLB:'CLIMB',CRZ:'CRUISE',DES:'DESCENT'}[state.page],p=state.fmcPageInputs?.trainingPerformance,r=state.fmcPageInputs?.rta;
+  if(['CLB','CRZ','DES'].includes(state.page)&&/^(CLB|CRZ|DES)_SPEED$/.test(cell.field)){
+   const phase={CLB:'CLIMB',CRZ:'CRUISE',DES:'DESCENT'}[state.page],p=state.fmcPageInputs?.trainingPerformance,r=state.fmcPageInputs?.rta,g=state.fmcPageInputs?.guidance;
+   const activePhase=g?.effectiveSpeedPhase==='LEVEL'?'CRUISE':g?.effectiveSpeedPhase;
+   if(activePhase===phase&&Number.isFinite(g?.effectiveTargetKt)&&!state.pending?.[cell.field])return String(Math.round(g.effectiveTargetKt));
    const speed=phase==='CRUISE'&&Number.isFinite(r?.targetKt)?r.targetKt:p?.phaseSpeeds?.[phase];
-   if(p?.quality==='TRAINING_ESTIMATE'&&Number.isFinite(speed))return String(speed);
+   if(!get(cell.field,state.page)&&p?.quality==='TRAINING_ESTIMATE'&&Number.isFinite(speed))return String(speed);
   }
   if(state.page==='PERF_INIT'||state.page==='APP_REF'){
    const fuel=state.fmcPageInputs?.fuel,tonnes=fuel?.quality==='VALID'&&Number.isFinite(fuel.totalKg)&&fuel.totalKg>=0?fuel.totalKg/1000:null;

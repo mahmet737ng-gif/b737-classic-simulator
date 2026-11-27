@@ -728,7 +728,7 @@ try{
   const vertical=training&&live.fmcVerticalValid===true&&mcp?.value?.verticalMode==='VNAV';
   const performance=training?live.performance??null:null;
   data.guidance={routeEvidenceReady:ready||training,canCommandAircraft:false,authority:training?'SIMULATOR_FCC_ONLY':'ADVISORY_ONLY',simulatorCoupled:training,
-   sequence,activeLeg:navActive,hold:training?live.hold:null,holdMetrics:training?live.holdMetrics:null,holdExited:live?.holdExited??null,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,
+   sequence,activeLeg:navActive,hold:training?live.hold:null,holdMetrics:training?live.holdMetrics:null,holdExited:live?.holdExited??null,lnavActive:training&&mcp?.value?.lateralMode==='LNAV',vnavActive:vertical,descent:vertical&&live.vertical?.phase==='DESCENT',commandCasKt:vertical?live.targetKt:null,vnavMode:vertical?live.vnavMode:null,effectiveTargetKt:training&&live.fmcVerticalValid===true?live.targetKt:null,effectiveSpeedPhase:training&&live.fmcVerticalValid===true?live.vertical?.phase:null,verticalReason:training?live.verticalReason??null:null,
    reason:training?'EXECUTED_TRAINING_GUIDANCE':ready?'INPUT_EVIDENCE_READY_NO_ACTUATOR_AUTHORITY':'SOURCE_OR_ROUTE_NOT_VERIFIED'};
   return {schema:'B737_FMC_COMPUTED_V1',inputs:INPUTS.length,position:data.position,motion,operational,failed:fmcFeed?.failed===true,
    radioUpdate:data.radioUpdate,airData:data.airData,trainingFlightContext:data.trainingFlightContext,fuel:data.fuel,fmcFeeds:data.fmcFeeds,

@@ -864,7 +864,7 @@ function transition(state,action){
   const g=action.sample;
   if(g?.confirmed!==true||g.source!=='SIMULATED_FCC'||typeof g.lateral!=='boolean'||typeof g.vertical!=='boolean')return rejected(s,'INVALID_FMC_GUIDANCE');
   const vertical=g.vertical&&['VNAV SPD','VNAV PTH'].includes(g.mode);
-  s.fmcGuidance={lateral:g.lateral,vertical,lnavEngage:g.lnavEngage===true,vnavEngage:g.vnavEngage===true,mode:['VNAV SPD','VNAV PTH'].includes(g.mode)?g.mode:null,targetKt:Number.isFinite(g.targetKt)?g.targetKt:null,thrust:['FMC SPD','N1','RETARD','ARM'].includes(g.thrust)?g.thrust:null};
+  s.fmcGuidance={lateral:g.lateral,vertical,lnavEngage:g.lnavEngage===true,vnavEngage:g.vnavEngage===true,mode:['VNAV SPD','VNAV PTH'].includes(g.mode)?g.mode:null,targetKt:Number.isFinite(g.targetKt)?g.targetKt:null,reason:typeof g.reason==='string'?g.reason:null,thrust:['FMC SPD','N1','RETARD','ARM'].includes(g.thrust)?g.thrust:null};
   if(!g.lateral&&s.modes.lateral==='LNAV'){s.modes.lateral=null;s.capture.roll=null;}
   if(!vertical&&s.modes.vertical==='VNAV'){s.modes.vertical=null;s.capture.pitch=null;s.modes.thrust=null;}
   if(s.modes.vertical==='VNAV'&&s.autoThrottleArm)s.modes.thrust=s.fmcGuidance.thrust==='FMC SPD'?'FMC_SPD':s.fmcGuidance.thrust;

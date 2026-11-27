@@ -595,6 +595,12 @@ try{
   const min=Math.min(lo[0],casAtMach(lo[1],ft));
   return min<=max?{min,max,prefix}:null;
  }
+ function speedCap(a,phase,ft,leg){
+  const prefix=phase==='CLIMB'?'CLB':phase==='DESCENT'?'DES':'CRZ';
+  const rest=/^(\d{2,3})\/(\d{3,5})$/.exec(String(a[prefix+'_REST']||''));
+  const cap=rest&&ft<Number(rest[2])?Number(rest[1]):ft<10000?250:Infinity;
+  return Math.min(cap,finite(leg?.speed)&&leg.speed>0?leg.speed:Infinity);
+ }
  function phaseSpeed(a,d,phase,ft,track,leg){
   const b=speedBounds(a,phase,ft);if(!b||!d.ready)return null;
   const raw=String(a[b.prefix+'_SPEED']||'').split('/')[0];
@@ -606,11 +612,9 @@ try{
   const fast=Math.max(range,Math.min(320,casAtMach(.80,ft)));
   const econ=clamp(range+(fast-range)*d.ci/200+Math.max(0,wind)*.07-Math.max(0,-wind)*.035,range,Math.max(range,fast));
   let target=manual!==null?Math.min(manual,340,casAtMach(.82,ft)):clamp(econ,b.min,b.max);
-  const rest=/^(\d{2,3})\/(\d{3,5})$/.exec(String(a[b.prefix+'_REST']||''));
-  if(rest&&ft<Number(rest[2]))target=Math.min(target,Number(rest[1]));
-  else if(ft<10000&&manual===null)target=Math.min(target,250);
-  if(finite(leg?.speed)&&leg.speed>0)target=Math.min(target,leg.speed);
-  return {targetKt:Math.round(target),source:manual!==null?'MANUAL':'ECON_TRAINING',bounds:b,wind};
+  const cap=speedCap(a,phase,ft,leg);
+  target=Math.min(target,cap);
+  return {targetKt:Math.round(target),limitKt:finite(cap)?cap:null,source:manual!==null?'MANUAL':'ECON_TRAINING',bounds:b,wind};
  }
  const forecastCache=new WeakMap();
  function conditionalFix(prev,l,prevFt,d,conditions,provider){
@@ -699,7 +703,11 @@ try{
   if(!ready)return {valid:false,engage:false,reason:frame.airborne!==true||!finite(frame.radioAltitudeFt)||frame.radioAltitudeFt<400?'VNAV_RADIO_ALTITUDE_INHIBIT':'PERF_INIT_REQUIRED'};
   const forecast=conditions.forecast??routeForecast(plan,index,frame,{...conditions,fuelKg:liveFuel}),g=forecast?.guidance;
   const d=perfInputs(a,liveFuel),track=coord(leg)?bearing(vec(frame,leg)):frame.trueHeadingDeg;
-  if(!g||!(forecast.quality==='TRAINING_ESTIMATE'||forecast.reason==='ABOVE_DESCENT_PATH'&&g.recoverable)){
+  // A future-leg forecast conflict is advisory during a valid current climb.
+  const activeClimbValid=g?.phase==='CLIMB'&&forecast?.reason==='ALTITUDE_CONSTRAINT_UNREACHABLE'&&
+   Array.isArray(forecast.conflicts)&&forecast.conflicts.length>0&&forecast.conflicts.every(c=>c.index>=1)&&
+   finite(g.nextMaximumFt)&&g.nextMaximumFt>now&&m>now&&finite(g.profileGradientFtNm)&&g.profileGradientFtNm>0;
+  if(!g||!(forecast.quality==='TRAINING_ESTIMATE'||forecast.reason==='ABOVE_DESCENT_PATH'&&g.recoverable||activeClimbValid)){
    if(leg.hold){const selected=phaseSpeed(a,d,'CRUISE',now,track,leg);if(selected)return {valid:true,engage:true,phase:'LEVEL',targetKt:selected.targetKt,targetAltitudeFt:now,vsFpm:0,mode:'VNAV PTH',thrust:'FMC SPD',guidanceSource:'HOLD_LEVEL'};}
    return {valid:false,engage:false,reason:forecast?.reason??'PROFILE_UNAVAILABLE'};
   }
@@ -707,7 +715,8 @@ try{
   const selected=phaseSpeed(a,d,phase==='LEVEL'?'CRUISE':phase,now,track,leg);
   if(!selected||!finite(g.targetKt))return {valid:false,engage:false,reason:'PERFORMANCE_SPEED_UNAVAILABLE'};
   const rta=phase==='CRUISE'&&selected.source!=='MANUAL'?rtaCommand(plan,index,frame,conditions,forecast,selected):null;
-  const targetKt=rta?Math.min(rta.targetKt,finite(leg.speed)?leg.speed:Infinity):g.targetKt;let vs=0;
+  const cap=speedCap(a,phase==='LEVEL'?'CRUISE':phase,now,leg);
+  const targetKt=Math.min(rta?rta.targetKt:g.targetKt,cap);let vs=0;
   if(phase==='DESCENT'){
    if(m>=now-50){phase='LEVEL';reason='RESET_MCP_ALT';}
    else{commanded=Math.min(now,Math.max(m,g.nextMinimumFt,g.nextAltitudeFt));const err=commanded-now;
@@ -715,7 +724,9 @@ try{
     vs=Math.abs(err)<=80?clamp(err*2,-160,0):Math.max(pathVs,err*2);if(g.verticalDeviationFt>300)reason='DRAG_REQUIRED';}
   }else if(phase==='CLIMB'){
    commanded=Math.max(now,Math.min(m,g.cruiseTargetFt,g.nextMaximumFt));const err=commanded-now;
-   vs=Math.abs(err)<=80?clamp(err*2,0,160):Math.min(clamp(g.profileGradientFtNm*gs/60+(frame.iasKt-targetKt)*10,0,2200),err*2);
+   // Training VNAV SPD pitch law: feed-forward path plus IAS feedback.
+   const speedError=finite(frame.iasKt)?frame.iasKt-targetKt:0;
+   vs=Math.abs(err)<=80?clamp(err*2,0,160):Math.min(clamp(g.profileGradientFtNm*gs/60+speedError*35,0,3000),err*2);
    if(err<=50){phase='LEVEL';reason='MCP_OR_CONSTRAINT_LEVEL';}
   }else{commanded=phase==='CRUISE'?g.cruiseTargetFt:g.plannedAltitudeFt;
    if((commanded-now)*(m-now)<0||Math.abs(m-now)<50)commanded=now;
@@ -723,7 +734,7 @@ try{
    vs=clamp((commanded-now)*2,-800,800);}
   return {valid:finite(vs),engage:finite(vs),phase,targetKt,speedSource:rta?'RTA_TRAINING':g.source,rta,targetAltitudeFt:commanded,vsFpm:vs,
    mode:phase==='CLIMB'&&Math.abs(commanded-now)>100?'VNAV SPD':'VNAV PTH',thrust:phase==='CRUISE'||phase==='LEVEL'||Math.abs(commanded-now)<=100?'FMC SPD':phase==='CLIMB'?(conditions.n1Ready===true?'N1':'ARM'):(conditions.idle===true?'ARM':'RETARD'),
-   todNm:g.topOfDescentNm??forecast.topOfDescentNm??null,pathAltitudeFt:g.descentPathFt,verticalDeviationFt:g.verticalDeviationFt,guidanceSource:g.source,reason};
+   todNm:g.topOfDescentNm??forecast.topOfDescentNm??null,pathAltitudeFt:g.descentPathFt,verticalDeviationFt:g.verticalDeviationFt,guidanceSource:g.source,reason:reason??(activeClimbValid?'FUTURE_ALTITUDE_CONSTRAINT_UNREACHABLE':null)};
  }
  // Approximate simulator racetrack; no certified holding performance model.
  function holdGeometry(fix,course,gs,altitude,bank=20){
@@ -884,7 +895,7 @@ function followHold(points,step,frame,gs){
    const forecast=routeForecast(plan,index,frame,conditions);
    const v=vertical(plan,leg,frame,mcp,index,remaining??0,conditions.fuelKg,{...conditions,wasDescending,forecast});
    const metrics=holdStats(plan,index,frame,conditions,holding),nextHold=plan.legs.slice(index).find(l=>l.hold);
-   if(v.valid&&nextHold?.hold){const h=nextHold.hold,best=metrics[h.key]?.bestKt,target=h.speed??best,eta=metrics[h.key]?.eta;const close=holdStatus||leg===nextHold&&finite(remaining)&&finite(frame.gsKt)&&remaining/frame.gsKt*60<=3;if(close&&finite(target)){v.targetKt=target;}}
+   if(v.valid&&nextHold?.hold){const h=nextHold.hold,best=metrics[h.key]?.bestKt,target=h.speed??best,eta=metrics[h.key]?.eta;const close=holdStatus||leg===nextHold&&finite(remaining)&&finite(frame.gsKt)&&remaining/frame.gsKt*60<=3;if(close&&finite(target)){v.targetKt=Math.min(target,speedCap(plan.performance,v.phase==='LEVEL'?'CRUISE':v.phase,frame.altitudeFt,leg));}}
    if(holdStatus&&v.valid){const holdAltitude=finite(mcp?.values?.altitude)?mcp.values.altitude:frame.altitudeFt;v.targetAltitudeFt=holdAltitude;v.vsFpm=clamp((holdAltitude-frame.altitudeFt)*2,-1200,1200);v.mode='VNAV PTH';v.thrust='FMC SPD';}
    wasDescending=v.phase==='DESCENT';
    return {fmcTrackValid:finite(track),trackDeg:track,lnavEngage:engage&&finite(track),
@@ -894,7 +905,7 @@ function followHold(points,step,frame,gs){
   }
   return {evaluate,reset};
  }
- return Object.freeze({compile,segment,vertical,perfInputs,phaseSpeed,routeForecast,rtaCommand,casAtMach,tasAtCas,holdGeometry,holdEntry,holdStats,holdBestSpeed,create});
+ return Object.freeze({compile,segment,vertical,perfInputs,phaseSpeed,speedCap,routeForecast,rtaCommand,casAtMach,tasAtCas,holdGeometry,holdEntry,holdStats,holdBestSpeed,create});
 });
 
 }catch(error){queueMicrotask(()=>{throw error});}
@@ -958,7 +969,7 @@ try{
  function refreshFmcGuidance(frame=flight(),force=false){
   const now=performance.now();if(!force&&now-lastFmcAt<150)return;lastFmcAt=now;
   const g=navInput(frame,mcp());
-  const sample={confirmed:true,source:'SIMULATED_FCC',lateral:g.fmcTrackValid===true,vertical:g.fmcVerticalValid===true,lnavEngage:g.lnavEngage===true,vnavEngage:g.vnavEngage===true,mode:g.vnavMode||null,targetKt:g.targetKt??null,thrust:g.thrust||null};
+  const sample={confirmed:true,source:'SIMULATED_FCC',lateral:g.fmcTrackValid===true,vertical:g.fmcVerticalValid===true,lnavEngage:g.lnavEngage===true,vnavEngage:g.vnavEngage===true,mode:g.vnavMode||null,targetKt:g.targetKt??null,thrust:g.thrust||null,reason:g.verticalReason??g.reason??null};
   const sig=JSON.stringify(sample),current=mcp()?.fmcGuidance;
   if(sig===lastFmcSignature&&current)return;lastFmcSignature=sig;
   win.B737McpAFDSBridgeV1?.observeFmcGuidance?.(sample);
@@ -966,7 +977,7 @@ try{
  function guidance(frame,output){
   if(!frame||!output)return null;
   const nav=navInput(frame,output);
-  const evidence={confirmed:true,source:'SIMULATED_FCC',lateral:nav.fmcTrackValid===true,vertical:nav.fmcVerticalValid===true,lnavEngage:nav.lnavEngage===true,vnavEngage:nav.vnavEngage===true,mode:nav.vnavMode||null,targetKt:nav.targetKt??null,thrust:nav.thrust||null};
+  const evidence={confirmed:true,source:'SIMULATED_FCC',lateral:nav.fmcTrackValid===true,vertical:nav.fmcVerticalValid===true,lnavEngage:nav.lnavEngage===true,vnavEngage:nav.vnavEngage===true,mode:nav.vnavMode||null,targetKt:nav.targetKt??null,thrust:nav.thrust||null,reason:nav.verticalReason??nav.reason??null};
   const sig=JSON.stringify(evidence);
   if(sig!==lastFmcSignature||!output.fmcGuidance){lastFmcSignature=sig;win.B737McpAFDSBridgeV1?.observeFmcGuidance?.(evidence);output=mcp()??output;}
   const res=Guidance.evaluate(fcc,output,frame,nav);

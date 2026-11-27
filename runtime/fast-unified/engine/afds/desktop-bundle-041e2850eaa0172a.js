@@ -173,7 +173,7 @@ try{
     out.pitchValid=true;
    }else out.reasons.push('LVL_CHG_VALID_IAS_AND_ALTITUDE_REQUIRED');
   }else if(pitchMode==='VNAV'){
-   if(nav?.fmcVerticalValid===true&&valid(nav.vsFpm)){
+   if(nav?.fmcVerticalValid===true&&valid(nav.vsFpm)&&valid(nav.targetKt)){
     if(valid(nav.targetKt))out.actions.push({type:'SPEED',value:nav.targetKt});
     if(valid(nav.targetAltitudeFt)&&Math.abs(nav.targetAltitudeFt-flight.altitudeFt)<=80)out.actions.push({type:'ALTITUDE',value:nav.targetAltitudeFt});
     else out.actions.push({type:'VS',value:clamp(nav.vsFpm,-5000,5000)});

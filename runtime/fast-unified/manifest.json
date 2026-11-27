@@ -40,7 +40,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "3d685e9a92adfd84cf3368767ae70260394d7e382003bda16c9ba7c5a5ccbbc2"
+      "sha256": "0709d8b41b58dcbd1cc433f29ef0c598877bc4177fbe9b65385749da750fff10"
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
@@ -140,7 +140,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "66788678cfe1dc7d51196c94f1c93567bf9aabd111895b27ae30e019595643a8"
+      "sha256": "9e29afaf4b4a2e0ff093eb0ac4ae71b14400e2481752cf0e8c169b3d6cf060a7"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -224,7 +224,7 @@
     },
     {
       "path": "engine/fmc/trajectory-predictor-v1.js",
-      "sha256": "1cc303e8c809b111ee9472d2fc08e4a3c043a877d7e82a16ede6d732f1a14abc"
+      "sha256": "59f9ae2ecf1bde273ec6249119eb5f4a0b677caa2e73d63d2180bbd89e0bceeb"
     },
     {
       "path": "engine/instruments/conventional-indication-sync-v1.js",
@@ -232,7 +232,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-1bebb492be3f2ce6.js",
-      "sha256": "bedc7b9784f2e84e6f6dca8df3d7213483f18e73bddba0547a5a010c07a2a3eb"
+      "sha256": "b64189468c5e59bfbf08c50c3b45df24504d3c6f513bd7f670a1eb7f28ba63d9"
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
@@ -528,7 +528,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "7df0c3fa7a671586e59c369dd77ebfde9593b23d2cb0d1efe6702515d92dabb2"
+      "sha256": "e3bed8abfd40ef9c0e314f330b517ab544b820442a3c0747fce66af1f99a7422"
     },
     {
       "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
@@ -636,7 +636,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-1bcaefe30722e6d5.js",
-      "sha256": "2b9e8c7a93fce8a81f32c717be52a745e77f8832e5a9bc49cbea1fc2dbbee45c"
+      "sha256": "71c847649c9f53310a1841e69ee6c747deaa3ec6d154f34db67e72b524babdb4"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-25fa9f115da165b4.js",
@@ -644,7 +644,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-3aa8890257a17c94.js",
-      "sha256": "3840acadc70d8b4372873dd61d79467562682c5650c96cdc5497025fb944bd40"
+      "sha256": "f3a2921e97fcbcd0a31c418d087c9d4f084942ac26422464fc639573d80f004a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-5db4117e839416ef.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "b7550a35fbe7f2916bad7030e82f9545cd96db6ca049f1221a35cd6dbe3343cc"
+      "sha256": "a3e6e571a5081ce521cf2ff7339bf7070568be5e386081f9cca287f5a533c729"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
