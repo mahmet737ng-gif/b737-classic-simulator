@@ -62,13 +62,13 @@ function n1PageData(n1){
  const engine=window.parent.B737PerformanceEngineV07;
  if(!engine||!state.engineInstallation)return {};
  const x=core.n1Selection(state),ctx=state.fmcOnGroundVerified!==false?engine.takeoffContext(core.readValue(state,'ORIGIN','RTE')):engine.liveContext(),oat=x.oat??ctx.oatC;
- const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,limits:{},limitQuality:{}};
+ const result={oatC:oat,takeoffN1:state.fmcOnGroundVerified!==false?n1?.maxN1Pct:null,estimated:state.performanceN1?.estimated===true,limits:{},limitQuality:{}};
  // Legacy saved invalid entries must not look like accepted reduced thrust.
  if(state.fmcOnGroundVerified!==false&&x.sel!==null&&!n1){
   const reason=state.performanceN1?.reason||'N1_DATA_UNAVAILABLE';
   const token=[x.sel,x.oat,x.selectedRating,reason].join('/');
   if(state.lastSelTempError!==token&&!state.message&&!state.scratch){
-   state.message=['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION','OUTSIDE_TABLE_DOMAIN'].includes(reason)?'INVALID ENTRY':'N1 DATA UNAVAILABLE';
+   state.message=['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION'].includes(reason)?'INVALID ENTRY':'N1 DATA UNAVAILABLE';
    state.lastSelTempError=token;
   }
  }else delete state.lastSelTempError;

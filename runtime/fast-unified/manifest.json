@@ -40,7 +40,7 @@
     },
     {
       "path": "cdu-standalone-v6/app.js",
-      "sha256": "88c7e4a7520d2cdcd1f6ac25aa82df391af363eac4f6094a2311310b233ad9b5"
+      "sha256": "3d685e9a92adfd84cf3368767ae70260394d7e382003bda16c9ba7c5a5ccbbc2"
     },
     {
       "path": "cdu-standalone-v6/cdu-sg-selector-v1.js",
@@ -64,7 +64,7 @@
     },
     {
       "path": "cdu-standalone-v6/engine/cdu-engine.js",
-      "sha256": "c4f43c8b4dc41fddc084ad6fdf03cc83f6641d123d7811103690dbd994264558"
+      "sha256": "de130d0dc0615275b28288e69df7eba6b4290561a883e4bd3835ccb1dd0d33aa"
     },
     {
       "path": "cdu-standalone-v6/engine/ch11-route-pages-v1.js",
@@ -308,7 +308,7 @@
     },
     {
       "path": "engine/performance/performance-engine-v07.js",
-      "sha256": "b4e134ef7b365c890663ac53eea9588dd0ce784d38599e4833a8b801978cd246"
+      "sha256": "84d4ec22a711152c6b265df19234e7cc5ab837b657a38a2d18ae588f664bfed9"
     },
     {
       "path": "engine/runtime/owner18-electrical-input-v1.js",
@@ -528,7 +528,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/cdu-stage.html",
-      "sha256": "0eb36eb83585489754d303b16921220377d03528139b7f9e26bd4df197c4589b"
+      "sha256": "7df0c3fa7a671586e59c369dd77ebfde9593b23d2cb0d1efe6702515d92dabb2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/clock-assets/et.png",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "4bad389ab3ff028fac1a509a2d2517d541fa4612c326e1d162c52aac91bc6420"
+      "sha256": "b7550a35fbe7f2916bad7030e82f9545cd96db6ca049f1221a35cd6dbe3343cc"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",

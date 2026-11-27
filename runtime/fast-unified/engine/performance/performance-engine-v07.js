@@ -36,6 +36,23 @@
     const max=grid(maxRows,['x','y'],[altFt,Math.max(Math.min(...maxRows.map(r=>r.y)),oatC)],'value',used), min=grid(k('min_assumed_temp'),['x'],[altFt],'value',used);
     assumedTemperatureEnvelope={minimumC:min,maximumC:max,altFt,oatC,takeoffRating};
      if(assumedC<min||assumedC>max){const e=Error('ASSUMED_TEMP_OUTSIDE_ENVELOPE');e.details=assumedTemperatureEnvelope;throw e;}
+    // Simulator-only bridge across the missing low-delta chart domain.
+    // Keep the published envelope; interpolate between two computed endpoints,
+    // never extrapolate a chart or present this as AFM-verified performance.
+    const deltaRows=k('assumed_n1_delta'),delta=assumedC-oatC;
+    const firstDelta=Math.min(...(deltaRows||[]).map(r=>r.y));
+    if(finite(firstDelta)&&delta<firstDelta){
+     const anchor=oatC+firstDelta;
+     if(anchor>max)fail('LOW_DELTA_REFERENCE_UNAVAILABLE');
+     const full=n1({...input,mode:'TO',assumedC:null});
+     const boundary=n1({...input,mode:'R-TO',assumedC:anchor});
+     if(!finite(full.n1Pct)||!finite(boundary.n1Pct)||boundary.n1Pct>full.n1Pct)fail('LOW_DELTA_REFERENCE_UNAVAILABLE');
+     const estimate=full.n1Pct+(boundary.n1Pct-full.n1Pct)*(delta/firstDelta);
+     return {...boundary,n1Pct:estimate,baseN1Pct:estimate,source:'SIM_LOW_DELTA_INTERPOLATION',
+      quality:[...new Set([...full.quality,...boundary.quality,'TRAINING_ESTIMATE'])],
+      pages:[...new Set([...full.pages,...boundary.pages])],estimated:true,assumedTemperatureEnvelope,
+      interpolation:{actualC:oatC,selectedC:assumedC,anchorC:anchor,fullN1Pct:full.n1Pct,anchorN1Pct:boundary.n1Pct}};
+    }
     v=grid(k('assumed_n1_base'),['x','y'],[altFt,assumedC],'value',used)-grid(k('assumed_n1_delta'),['x','y'],[oatC,assumedC-oatC],'value',used)+(packs==='OFF'?1:0);source=baseModel==='737-400'&&p.rating===22000?'QRH_REDUCED':'FCOM_TRAINING_REDUCED';
    }else{
     if(packs==='HIGH')fail('TO_HIGH_PACK_CORRECTION_NOT_AVAILABLE');
@@ -214,7 +231,7 @@
    const full=takeoff(origin,'TO',o),reduced=sel===null?full:takeoff(origin,'R-TO',{...o,assumedC:sel});
    if(full.status!=='TRAINING_TABLE'||reduced.status!=='TRAINING_TABLE'||!finite(full.n1Pct)||!finite(reduced.n1Pct))return invalid(reduced.reason||full.reason||'N1_TABLE_UNAVAILABLE');
    if(sel!==null&&reduced.n1Pct>full.n1Pct+.01)return invalid('REDUCED_N1_ABOVE_RATED');
-   const packet={valid:true,mode:sel===null?'TO':'R-TO',rating,derate,referencePct:full.n1Pct,atLimitPct:reduced.n1Pct,source:reduced.source,proxy:reduced.proxy,pages:reduced.pages,takeoffContext:reduced.takeoffContext,trainingOnly:true};
+   const packet={valid:true,mode:sel===null?'TO':'R-TO',rating,derate,referencePct:full.n1Pct,atLimitPct:reduced.n1Pct,source:reduced.source,estimated:reduced.estimated===true,quality:reduced.quality,proxy:reduced.proxy,pages:reduced.pages,takeoffContext:reduced.takeoffContext,trainingOnly:true};
    if(onGround===true)departure={profileKey,signature,packet};
    return packet;
   }

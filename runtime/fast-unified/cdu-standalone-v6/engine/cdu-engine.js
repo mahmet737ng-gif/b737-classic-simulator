@@ -271,7 +271,7 @@ function n1Rows(s,data={}){
  }
  const act=m=>x.mode===m?' <ACT>':'',sel=m=>x.selectedClimb===m?'<SEL> ':'';
  const oat=x.oat??data.oatC;
- const rows=[pair('SEL/OAT',(x.sel===null?'----':temp(x.sel))+'/'+temp(oat),(x.sel!==null&&Number.isFinite(data.takeoffN1)?'RED ':'')+(label(x.selectedRating)||'XXK')+' N1',format(data.takeoffN1)),
+ const rows=[pair('SEL/OAT',(x.sel===null?'----':temp(x.sel))+'/'+temp(oat),(x.sel!==null&&Number.isFinite(data.takeoffN1)?(data.estimated?'SIM ':'RED '):'')+(label(x.selectedRating)||'XXK')+' N1',format(data.takeoffN1)),
  pair(label(x.rating),'<TO'+act('TO'),'',sel('CLB')+'CLB>'),
  pair(x.takeoff[1]?label(x.takeoff[1])+' DERATE':'',x.takeoff[1]?'<TO-1'+act('TO-1'):'TO-1','',sel('CLB-1')+'CLB-1>'),
  pair(x.takeoff[2]?label(x.takeoff[2])+' DERATE':'',x.takeoff[2]?'<TO-2'+act('TO-2'):'TO-2','',sel('CLB-2')+'CLB-2>'),
@@ -304,7 +304,7 @@ function n1Enter(s,pages,key){
    const computed=globalThis.CDU_VALIDATE_TAKEOFF_N1({...x,sel,oat});
    s.n1EntryDiagnostic={reason:computed?.reason??null,details:computed?.details??null,context:computed?.takeoffContext??null};
    if(computed?.status!=='TRAINING_TABLE'||!Number.isFinite(computed.n1Pct)){
-    if(['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION','OUTSIDE_TABLE_DOMAIN'].includes(computed?.reason))return invalid();
+    if(['ASSUMED_TEMP_OUTSIDE_ENVELOPE','INVALID_ASSUMED_TEMP_CONFIGURATION'].includes(computed?.reason))return invalid();
     return addMessage(s,'N1 DATA UNAVAILABLE');
    }
   }
