@@ -19,7 +19,7 @@ function standalone(html){
  html=exact(html,"const live=location.hostname==='ata24-review-gateway-production.up.railway.app'&&\n  /^\\/panel-mosaic-lab\\/(?:unified|cockpit)\\/(?:index\\.html)?$/.test(location.pathname);","const live=true; // GitHub standalone entry");
  // The private database connector is not a public data source.
  html=html.replace(/<script\b[^>]*src="[^"]*iran-navdata-client-v2\.js[^"]*"[^>]*><\/script>/g,'');
- const notice='<style>[data-crew-open]{display:none!important}</style><script>window.B737StandaloneRelease=Object.freeze({commit:"'+RELEASE+'",mode:"GITHUB_ONLY",privateRoom:false,privateNavdata:false});</script>';
+ const notice='<script>window.B737StandaloneRelease=Object.freeze({commit:"'+RELEASE+'",mode:"GITHUB_ONLY",privateRoom:"P2P_TRIAL",privateNavdata:false});</script><script src="./peer-authority-v2.js?v=P2P-2" defer></script><script src="./peer-room-v2.js?v=P2P-2" defer></script>';
  html=exact(html,'</head>',notice+'</head>');
  if(html.includes('ata24-review-gateway-production.up.railway.app'))throw Error('Railway redirect survived');
  return html;
@@ -60,6 +60,17 @@ function publish(){
   const lamps=bytes.get(COCKPIT+'performance/boot-lamp-sources.json');
   if(lamps)h=exact(h,'</head>','<script>window.B737BootLampSources=Promise.resolve('+lamps.toString('utf8').replace(/</g,'\\u003c')+');</script></head>');
   bytes.set(entry,Buffer.from(h));
+  const lobby=bytes.get(COCKPIT+'crew-room-v1.js').toString('utf8').trim();
+  const crew=bytes.get(COCKPIT+'crew-cockpit-v1.js').toString('utf8').trim();
+  const bundleName=COCKPIT+'desktop-bundle-fa87fb95723b69b3.js';
+  let bundle=bytes.get(bundleName).toString('utf8');
+  bundle=exact(bundle,lobby,'/* P2P lobby is mounted separately. */');
+  bundle=exact(bundle,crew,'/* Native crew adapter starts after P2P pairing. */');
+  bytes.set(bundleName,Buffer.from(bundle));
+  for(const file of ['peer-authority-v2.js','peer-room-v2.js','peer-cockpit-v2.js']){
+   const source=path.join(ROOT,'tools','peer-room',file);
+   bytes.set(COCKPIT+file,fs.readFileSync(source));
+  }
   // Static resources are served within the repository's project URL, not /.
   // Only browser runtime files are overlaid; the existing public Pages tree
   // supplies original reference artwork and shared source dependencies.
@@ -80,7 +91,7 @@ function publish(){
   const alias=path.join(OUT,'panel-mosaic-lab','unified','index.html');
   fs.mkdirSync(path.dirname(alias),{recursive:true});
   fs.writeFileSync(alias,'<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../cockpit/"><title>Unified Standalone</title></head><body><a href="../cockpit/">Open Unified</a></body></html>');
-  fs.writeFileSync(path.join(OUT,COCKPIT,'github-release.json'),JSON.stringify({commit:RELEASE,sourceCommit:manifest.sourceCommit,mode:'GITHUB_ONLY',privateRoom:false,privateNavdata:false,verifiedFiles:bytes.size},null,2)+'\n');
+  fs.writeFileSync(path.join(OUT,COCKPIT,'github-release.json'),JSON.stringify({commit:RELEASE,sourceCommit:manifest.sourceCommit,mode:'GITHUB_ONLY',privateRoom:'P2P_TRIAL',privateNavdata:false,verifiedFiles:bytes.size},null,2)+'\n');
   // Validate all local resource URLs on the three primary documents.
   for(const relative of [entry,COCKPIT+'overhead-stage.html',COCKPIT+'cdu-stage.html']){
    const html=fs.readFileSync(path.join(OUT,relative),'utf8'),doc=new URL(PROJECT+relative,'https://static.invalid');

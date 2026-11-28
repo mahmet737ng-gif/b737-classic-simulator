@@ -1,0 +1,20 @@
+'use strict';
+const assert=require('node:assert/strict'),{createAuthority}=require('./peer-authority-v2.js');
+let n=0,events=[];
+const roomId='a'.repeat(32),authority=createAuthority(roomId,(name,data)=>events.push({name,data}),()=>++n);
+const captain='captain-client-01',fo='firstofficer-client-02';
+const call=(role,action,data={})=>authority.request(role,action,{roomId,client:role==='captain'?captain:fo,...data});
+call('captain','cockpit');call('firstOfficer','cockpit');
+let id=0;const command=(role,type,key,value,requestId='request-'+(++id).toString().padStart(8,'0'))=>call(role,'command',{commands:[{requestId,command:{type,id:key,value}}]}).results[0];
+for(let i=0;i<1000;i++){const role=i%2?'captain':'firstOfficer';const value=i%4<2?'ON':'OFF';const r=command(role,'toggle','test-switch',value);assert.equal(r.sequence,i+1);assert.equal(authority.get(role).shared.overhead.toggles['test-switch'],value);}
+assert.equal(events.filter(e=>e.name==='command').length,1000);
+const a=command('firstOfficer','mcpValue','IAS',240,'duplicate-0001'),b=command('firstOfficer','mcpValue','IAS',240,'duplicate-0001');assert.equal(a.sequence,b.sequence);assert.equal(b.duplicate,true);
+assert.ok(command('firstOfficer','profile','aircraft',{family:'B737-400'}).error);
+assert.ok(command('firstOfficer','failure','engine',true).error);
+const scenario=command('captain','loadFlight','flight',{preset:'FINAL_10',airport:'OIII',runway:'29L'});
+assert.equal(authority.get('captain').scenario.ready,false);assert.ok(command('captain','pauseFlight','flight',false).error);
+for(const role of ['captain','firstOfficer'])call(role,'scenarioStatus',{generation:scenario.sequence,complete:true,missing:[]});
+assert.equal(authority.get('captain').scenario.ready,true);assert.ok(command('captain','pauseFlight','flight',false).sequence);
+call('captain','flight',{state:{altitudeFt:7000,iasKt:240},paused:false});assert.equal(authority.get('firstOfficer').flight.state.altitudeFt,7000);
+assert.throws(()=>call('firstOfficer','flight',{state:{altitudeFt:6500,iasKt:240},paused:false}));
+console.log('PASS: 1000 ordered alternating controls, receipt deduplication, role checks, scenario readiness and single flight authority. No browser/network timing claimed.');

@@ -264,6 +264,9 @@ jobs:
       - name: Overlay pinned current Unified standalone release (GitHub only)
         run: |
           node --check tools/publish-unified-github.cjs
+          node --check tools/peer-room/peer-room-v2.js
+          node --check tools/peer-room/peer-cockpit-v2.js
+          node tools/peer-room/peer-authority.test.cjs
           node tools/publish-unified-github.cjs
       - name: Remove unreferenced archive files from Pages artifact only
         run: |
