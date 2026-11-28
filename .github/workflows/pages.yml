@@ -261,6 +261,10 @@ jobs:
           test -f web-dist/panel-mosaic-lab/cockpit/failures-header-v1.css
           grep -q 'id="failuresHeaderOpen"' web-dist/panel-mosaic-lab/cockpit/index.html
           grep -q 'v3.html' web-dist/panel-mosaic-lab/cockpit/index.html
+      - name: Overlay pinned current Unified standalone release (GitHub only)
+        run: |
+          node --check tools/publish-unified-github.cjs
+          node tools/publish-unified-github.cjs
       - name: Remove unreferenced archive files from Pages artifact only
         run: |
           node --check tools/prune-pages-artifact.cjs
