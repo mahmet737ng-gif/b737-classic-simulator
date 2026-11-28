@@ -924,11 +924,19 @@ try{
    return producers[owner];
   }catch(error){producerErrors[owner]=String(error?.message||error);return null;}
  }
+ function scenarioAdcAirData(casKt,altFt,oatC){
+ const h=altFt*.3048,t=288.15-.0065*Math.min(h,11000),R=287.05287,g=9.80665;
+ const p=101325*(t/288.15)**(g/(R*.0065))*Math.exp(-g*Math.max(0,h-11000)/(R*t));
+ const q=101325*((1+.2*(casKt*.5144444444/Math.sqrt(1.4*R*288.15))**2)**3.5-1);
+ const mach=Math.sqrt(Math.max(0,5*((1+q/p)**(2/7)-1))),satC=Number.isFinite(oatC)?oatC:t-273.15;
+ return {mach,tasKt:mach*Math.sqrt(1.4*R*(satC+273.15))/.5144444444,satC};
+}
  function sendAvionics(){
   if(!state)return;
   const adc=producer('ADC');
-  const sample={pressureAltitudeFt:state.altitudeFt,casKt:state.iasKt,iasKt:state.iasKt,
-   tasKt:state.tasKt,mach:Math.min(.95,state.tasKt/660),
+  const air=scenarioAdcAirData(state.iasKt,state.altitudeFt,state.oatC);
+   const sample={pressureAltitudeFt:state.altitudeFt,casKt:state.iasKt,iasKt:state.iasKt,
+   tasKt:air.tasKt,mach:air.mach,satC:air.satC,
    source:'FLIGHT_SCENARIO_V1_TRAINING'};
   for(const topic of ['airdata.adc1','airdata.adc2'])
    try{adc?.publish(topic,sample);}catch(e){producerErrors.ADC=String(e);}

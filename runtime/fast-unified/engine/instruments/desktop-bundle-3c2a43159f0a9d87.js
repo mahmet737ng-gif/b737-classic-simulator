@@ -309,8 +309,8 @@ try{
           },()=>options.onChange('cursorManual',!state.cursorManual,state.autoCursor??state.cursor));
         }
         update=s=>{
-          const air=airData(s.ias,s.altitude,s.oat);
-          mach.textContent=s.airDataOff||air.mach<.4?'':Math.min(.99,air.mach).toFixed(2).slice(1);
+          const air=Object.prototype.hasOwnProperty.call(s,'adcMach')?{mach:s.adcMach}:airData(s.ias,s.altitude,s.oat);
+          mach.textContent=s.airDataOff||!Number.isFinite(air.mach)||air.mach<.4?'':Math.min(.99,air.mach).toFixed(2).slice(1);
           setVisible(manual,s.cursorManual);
           // A low IAS is a valid numeric reading. Ground/zero must not blank the drum.
           ias.set(Math.max(0,Math.min(s.ias,999.999)),!s.airDataOff&&Number.isFinite(s.ias));
@@ -677,7 +677,7 @@ try{
           altitude,
           vs:live?.verticalSpeedFpm??0,
           autoCursor:Number.isFinite(selectedCas)?selectedCas:fmc?.targets?.speedKt,
-          oat:adc?.satC??scene?.oatC??null,hdg,
+          adcMach:Number.isFinite(adc?.mach)?adc.mach:null,oat:adc?.satC??scene?.oatC??null,hdg,
           bearing1:bearing(1),bearing2:bearing(2),
           adfBearing1:adf(1),adfBearing2:adf(2),
           dme1:valid('navigation.dme1')?.distanceNm??null,dme2:valid('navigation.dme2')?.distanceNm??null
@@ -1406,3 +1406,29 @@ try{
 }catch(error){queueMicrotask(()=>{throw error});}
 ;await 0;
 })();
+
+;/* P2 YAW DAMPER, USAir handbook 12-35-1/2. Estimated training response, not measured PCU feedback. */
+(function(win){'use strict';function yawStep(s,x,dt){
+ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),enabled=x.switchOn===true&&x.flightControlB===true&&Number.isFinite(x.pressureB)&&x.pressureB>=1000&&x.electrical!==false;
+ let rate=Number.isFinite(x.yawRateDegSec)?x.yawRateDegSec:null;
+ if(rate===null&&Number.isFinite(x.headingDeg)&&Number.isFinite(s.heading)&&Number.isFinite(x.elapsedSec)&&x.elapsedSec>s.elapsed&&x.elapsedSec-s.elapsed<=2)rate=((x.headingDeg-s.heading+540)%360-180)/(x.elapsedSec-s.elapsed);
+ const speed=Math.max(0,x.iasKt||0),coord=x.airborne&&speed>40&&Number.isFinite(x.bankDeg)?9.80665*Math.tan(x.bankDeg*Math.PI/180)/Math.max((x.tasKt||speed)*.5144444,20)*180/Math.PI:0;
+ const target=!enabled?0:Number.isFinite(x.testCommand)?clamp(x.testCommand,-1,1):x.airborne&&rate!==null?clamp(-(rate-coord)*.22/(1+(speed/210)**2),-1,1):0;
+ let indication=(s.indication||0)+(target-(s.indication||0))*(1-Math.exp(-clamp(dt,0,.25)/.18));if(Math.abs(indication)<.001)indication=0;
+ return {heading:x.headingDeg,elapsed:x.elapsedSec,indication,enabled,target,pressureB:x.pressureB,source:'TRAINING_YAW_DAMPER_ESTIMATE'};
+}
+const doc=win.document;let face,marker,s={indication:0},last=performance.now(),test=null;
+function mount(){if(face?.isConnected)return true;const host=doc.querySelector('#region-main .region-native');if(!host)return false;
+ face=doc.createElement('div');face.id='b737YawDamperIndicator';face.setAttribute('role','img');face.style.cssText='position:absolute;left:1129.6px;top:141.6px;width:32.8px;height:32.8px;border-radius:50%;background:radial-gradient(circle at 45% 36%,#292a26,#171916 62%,#080909 96%);box-shadow:inset 0 0 2px 1px #080909;z-index:20;overflow:hidden;pointer-events:none';
+ const w=doc.createElement('div');w.style.cssText='position:absolute;left:20%;top:32%;width:60%;height:36%;border-radius:34% / 25%;background:linear-gradient(180deg,#c1c0b4,#e2e0d4 45%,#b4b3a8);box-shadow:0 0 0 .7px #080909,inset 0 0 1.3px #36362e;overflow:hidden';
+ for(const top of ['0','76%']){const t=doc.createElement('span');t.style.cssText='position:absolute;left:47%;top:'+top+';width:6%;height:24%;background:#272722';w.append(t);}
+ marker=doc.createElement('span');marker.style.cssText='position:absolute;left:46%;top:24%;width:8%;height:52%;background:#151714;will-change:transform';w.append(marker);face.append(w);host.append(face);return true;}
+function inputs(){const lab=win.B737HydraulicLabV1?.getOutput?.(),ecu=win.B737ISNCockpitV1?.getECUState?.(),sim=win.B737UnifiedFlightScenarioV1,sc=sim?.getDiagnostics?.()?.active===true?sim.getState?.():null;let sw,guard;try{const c=doc.getElementById('overheadFrame')?.contentWindow;sw=c?.B737OverheadToggles?.getState?.();guard=c?.B737GuardOwner18?.inspect?.()?.['flight-control-b'];}catch{}
+ const pressureB=[lab?.pressurePsi?.B,ecu?.hydraulics?.systemB?.pressurePsi].find(Number.isFinite),power=win.B737UnifiedBusConsumerLiveV1?.getDevice?.('Yaw Damper')?.state,adc=win.B737UnifiedAvionicsNetworkV1?.getSignal?.('airdata.adc1');
+ return {switchOn:sw?.['yaw-damper']==='ON',flightControlB:guard?.value==='ON',pressureB:pressureB??null,electrical:power==='OFF'?false:undefined,airborne:sc?.airborne===true,headingDeg:sc?.trueHeadingDeg,elapsedSec:sc?.elapsedSec,bankDeg:sc?.bankDeg,yawRateDegSec:sc?.yawRateDegSec,iasKt:adc?.quality==='VALID'?adc.value?.casKt:sc?.iasKt,tasKt:adc?.quality==='VALID'?adc.value?.tasKt:sc?.tasKt};}
+function tick(){const now=performance.now(),dt=(now-last)/1000;last=now;const x=inputs();if(test!==null){const t=(now-test)/1000;if(t>3||x.airborne)test=null;else x.testCommand=t<1?1:t<2?-1:0;}s=yawStep(s,x,dt);if(mount()){marker.style.transform='translateX('+(s.indication*7).toFixed(3)+'px)';face.dataset.engaged=String(s.enabled);face.setAttribute('aria-label','Yaw damper indicator '+(s.indication>.02?'right':s.indication<-.02?'left':'centered')+(s.enabled?'':' inactive'));}}
+function groundTest(){const x=inputs();if(x.airborne||!x.switchOn||!x.flightControlB||!Number.isFinite(x.pressureB)||x.pressureB<1000||x.electrical===false)return false;test=performance.now();return true;}
+win.B737YawDamperIndicatorV1=Object.freeze({getState:()=>({...s}),groundTest,step:yawStep});
+function init(){mount();const h=doc.querySelector('#unifiedControlCenter .control-center-actions');if(h&&!doc.getElementById('b737YawDamperGroundTest')){const b=doc.createElement('button');b.type='button';b.id='b737YawDamperGroundTest';b.textContent='YAW DAMPER · GROUND TEST';b.onclick=()=>{b.textContent=groundTest()?'YAW DAMPER · TEST RUNNING':'YAW DAMPER · CHECK SWITCH / HYD B';setTimeout(()=>{b.textContent='YAW DAMPER · GROUND TEST'},3500)};h.append(b);}tick();setInterval(tick,50);}
+if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})(window);

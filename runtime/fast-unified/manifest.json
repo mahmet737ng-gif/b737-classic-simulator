@@ -140,7 +140,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "9e29afaf4b4a2e0ff093eb0ac4ae71b14400e2481752cf0e8c169b3d6cf060a7"
+      "sha256": "21f80a78b1e71130b15cf0047e1e70dff64ad2f3cb11a0c60e9bcb00327a6a19"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -236,7 +236,7 @@
     },
     {
       "path": "engine/instruments/desktop-bundle-3c2a43159f0a9d87.js",
-      "sha256": "155d5e937c5b8b632527f8caf9eb653b6557f9b8eb492559803dfeec1c90bb4e"
+      "sha256": "99c6779b9567c2c30c236aa6ebaa5fdbd3583d6f57696b40638e0beeed4f2018"
     },
     {
       "path": "engine/instruments/desktop-bundle-75446c3ce3970339.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "a3e6e571a5081ce521cf2ff7339bf7070568be5e386081f9cca287f5a533c729"
+      "sha256": "e25134cd00e775fcfdd831fd5f3ab593cc6e9dbfa4369ea7d6da1a34e4385938"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
