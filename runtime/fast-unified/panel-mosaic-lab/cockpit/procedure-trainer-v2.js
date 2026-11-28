@@ -70,7 +70,7 @@
   const doc=win.document;let entries=builtins.slice(),selected=entries[0],running=false,paused=false;
   const session=createSession(s=>nativeInject(win,s));
   function mount(){
-   const host=doc.getElementById('flightScenarioDialog');if(!host||doc.getElementById('unifiedProcedureTrainerV2'))return !!host;
+   const host=doc.getElementById('procedureTrainerMount');if(!host||doc.getElementById('unifiedProcedureTrainerV2'))return !!host;
    const section=doc.createElement('details');section.id='unifiedProcedureTrainerV2';section.className='adv-scenario';section.open=true;
    function el(tag,parent,label){const e=doc.createElement(tag);if(label)e.textContent=label;parent.append(e);return e;}
    function button(parent,label,fn){const b=el('button',parent,label);b.type='button';b.className='adv-action';b.onclick=()=>{try{fn();render()}catch(e){status.textContent=e.message;}};return b;}
@@ -92,7 +92,7 @@
    search.oninput=options;select.onchange=()=>{selected=entries.find(x=>x.id===select.value);fill();};
    file.onchange=async()=>{try{if(!file.files[0])return;if(file.files[0].size>3000000)throw Error('Catalog too large');entries=parse(JSON.parse(await file.files[0].text()));selected=entries[0];search.value='';options();status.textContent=entries.length+' private titles loaded locally';}catch(e){status.textContent=e.message;}};
    button(controls,'ARM',()=>{if(!selected)throw Error('Select an exercise');if(mode.value==='manual'&&!story.value.trim())throw Error('Enter a story / cue for this exercise');session.arm({name:selected.name,mode:mode.value,phase:phase.value,delay:Number(delay.value),story:story.value});running=false;paused=false;});
-   button(controls,'START / RESUME',()=>{if(session.snapshot().status!=='ARMED')throw Error('Arm an exercise first');running=true;paused=false;});
+   button(controls,'START / RESUME',()=>{if(doc.documentElement.dataset.unifiedWelcome==='active')throw Error('Enter the cockpit first, then open QRH TRAINER to start.');if(session.snapshot().status!=='ARMED')throw Error('Arm an exercise first');running=true;paused=false;});
    button(controls,'PAUSE',()=>{paused=true;});
    button(controls,'LOG CREW ACTION',()=>{session.note(role.value,note.value);note.value='';});
    button(controls,'FINISH',()=>{session.finish();running=false;});
@@ -100,11 +100,11 @@
    button(controls,'EXPORT DEBRIEF',()=>{const blob=new Blob([JSON.stringify(session.snapshot(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=doc.createElement('a');a.href=url;a.download='procedure-debrief.json';a.click();win.setTimeout(()=>URL.revokeObjectURL(url),1000);});
    function render(){const s=session.snapshot();status.textContent=entries.length+' TITLES · '+s.status+' · '+Math.min(s.elapsed,s.delay).toFixed(1)+' / '+s.delay+' s';log.textContent=s.log.map(e=>e.elapsed.toFixed(1)+'s  '+e.type+'  '+e.detail).join('\n');}
    win.setInterval(()=>{if(running){const flight=win.B737UnifiedFlightScenarioV1?.getDiagnostics?.();session.tick(!paused&&flight?.paused!==true);render();}else session.tick(false);},250);
-   options();render();const anchor=host.querySelector('#advancedScenarioBlock, #instructorScenarioPresets');if(anchor&&anchor.parentElement===host)host.insertBefore(section,anchor);else {const tabs=host.querySelector('#flightSetupTabs');if(tabs&&tabs.parentElement===host)tabs.after(section);else host.append(section);}return true;
+   options();render();host.replaceChildren(section);return true;
   }
   let attempts=0;function boot(){if(!mount()&&++attempts<40)win.setTimeout(boot,250);}
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  win.B737ProcedureTrainerV2=Object.freeze({version:'2.0',getState:session.snapshot});
+  win.B737ProcedureTrainerV2=Object.freeze({version:'2.0.4',getState:session.snapshot});
  }
  return {parse,createSession,nativeInject,install,builtins};
 });

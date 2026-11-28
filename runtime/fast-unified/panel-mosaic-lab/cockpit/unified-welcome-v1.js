@@ -192,6 +192,7 @@
       '<h3 class="welcome-subheading">Special Operations</h3>' +
       renderChoice(rapid);
     by('unifiedWelcomeSetup').append(scenarios);
+    const trainerButton=doc.createElement('button');trainerButton.type='button';trainerButton.textContent='OPEN QRH PROCEDURE TRAINER';trainerButton.dataset.procedureOpen='';trainerButton.setAttribute('aria-haspopup','dialog');trainerButton.setAttribute('aria-controls','procedureTrainerDialog');trainerButton.style.cssText='width:100%;margin:10px 0 0;';scenarios.append(trainerButton);
     const currentScenario=()=>scenarios.querySelector('input[name="welcomeScenario"]:checked')?.value;
     selectedV1Type=()=>currentScenario()==='ENGINE_FAILURE_V1'?by('welcomeFailure_ENGINE_FAILURE_V1')?.querySelector('input:checked')?.value||null:null;
     selectedFinalType=()=>currentScenario()==='ENGINE_FAILURE_FINAL'?by('welcomeFailure_ENGINE_FAILURE_FINAL')?.querySelector('input:checked')?.value||null:null;

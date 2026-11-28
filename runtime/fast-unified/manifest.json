@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "00937babe93c2dbd2250cdd33646fd8fce2a5aef601637b740fac238f924d139"
+      "sha256": "a2077fde2ca33da5dd0a706a8698433101c16731e4175b20803759ad3c56ae01"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -1608,7 +1608,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/procedure-trainer-v2.js",
-      "sha256": "54c77901375adad6cac0ba89ae46f8f424af2bbee07141292957b5f4520a24a9"
+      "sha256": "0db5c16a1aa1a49795fe28f539c53617a360d54ae7fe47c2410c653a1e736d4b"
     },
     {
       "path": "panel-mosaic-lab/cockpit/recessed-overhead-v2.css",
@@ -1716,7 +1716,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "0d4e2fc30d2a7980f9eaffc1eb9b8262a30a8bd1344eceeb69cc341b48c26bb3"
+      "sha256": "213b5cd0b302e1f8d016c0b70057962790e99d8f580674b65a54958e9d90c309"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",
