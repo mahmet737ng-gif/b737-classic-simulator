@@ -72,12 +72,12 @@ const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
 const STORED_CONTROL_TYPES = new Set([
   'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
   'commTransfer','navMode','autobrake','trim','flap','gear',
-  'speedbrake','startLever','throttle','cb','clock','engineFailure'
+  'speedbrake','startLever','throttle','cb','clock','engineFailure','timedFailure'
 ]);
 const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
 const INVALIDATED_BY_SCENARIO = new Set([
   'flap','gear','autobrake','speedbrake','throttle','startLever',
-  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer','engineFailure'
+  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer','engineFailure','timedFailure'
 ]);
 const FINAL10_OVERHEAD_IDS = new Set([
   'bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r',
@@ -116,7 +116,7 @@ function publicScenario(room) {
   const scenario = room.scenario;
   if (!scenario) return {active:false};
   return {active:true,generation:scenario.generation,config:scenario.config,
-    ready:scenario.ready, reports:scenario.reports};
+    ready:scenario.ready, reports:scenario.reports,started:scenario.started===true,triggered:scenario.triggered===true};
 }
 const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
@@ -155,6 +155,12 @@ function crewCommand(data) {
     if (!['ack','fireAck','recall','hold','release'].includes(id) ||
         !['CAPT','FO'].includes(value)) throw new RequestError(400,'Invalid caution command.');
     return {type,id,value};
+  }
+  if(type==='loadFlight'&&value?.trainingId){
+    const types=['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'];
+    const rules={ENGINE_FAILURE_V1:['READY_FOR_TAKEOFF',types],ENGINE_FAILURE_FINAL:['FINAL_10',types],ENGINE_FIRE_GROUND:['READY_FOR_TAKEOFF',['PERSISTING','CONTROLLABLE']],RAPID_DECOMPRESSION:['MANUAL',['CONTROLLABLE','UNCONTROLLABLE']]};
+    const rule=rules[value.trainingId];
+    if(!rule||rule[0]!==value.preset||!rule[1].includes(value.trainingType)||value.holdStart!==true||typeof value.airport!=='string'||typeof value.runway!=='string'||value.airborne!==(value.preset!=='READY_FOR_TAKEOFF')||(value.trainingId==='RAPID_DECOMPRESSION'&&value.altitudeFt!==30000))throw new RequestError(400,'Invalid timed training scenario.');
   }
   if (controlValue(value)) return {type, id, value};
   if (type === 'guard' && typeof value?.open === 'boolean' && controlValue(value.value)) {
@@ -700,9 +706,22 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
             !Number.isFinite(data.state.iasKt) || typeof data.paused !== 'boolean') {
           throw new RequestError(400, 'Invalid flight state.');
         }
-        member.flightAt = now();
-        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role, serverAt:now()};
-        broadcast(room, 'flight', room.flight);
+        const sc=room.scenario, timed=sc?.config?.trainingId;
+        if(timed&&(data.generation!==sc.generation||data.state.preset!==sc.config.preset||data.state.icao!==sc.config.airport||data.state.runway!==sc.config.runway))throw new RequestError(409,'Flight sample belongs to another scenario.');
+        if(timed&&!sc.started&&!data.paused)throw new RequestError(409,'Shared training scenario not started.');
+        member.flightAt=now();
+        room.flight={state:data.state,paused:data.paused,client:data.client,role:member.role,serverAt:now(),generation:sc?.generation??null};
+        if(timed&&sc.started&&!sc.triggered&&!data.paused){
+          const x=data.state,elapsed=Number(x.elapsedSec);
+          const trigger=timed==='ENGINE_FAILURE_V1'?x.iasKt>=140&&['TAKEOFF_ROLL','INITIAL_CLIMB'].includes(x.phase):timed==='ENGINE_FIRE_GROUND'?x.airborne===false&&x.iasKt<=1&&elapsed>=10:timed==='ENGINE_FAILURE_FINAL'||timed==='RAPID_DECOMPRESSION'?x.airborne===true&&elapsed>0:false;
+          if(trigger){
+            sc.triggered=true;
+            const entry={type:'timedFailure',id:timed==='RAPID_DECOMPRESSION'?'rapid':sc.engine,value:sc.config.trainingType,sequence:++room.sequence,client:'crew-timed',serverAt:now(),generation:sc.generation,elapsedSec:elapsed};
+            room.sharedControls.set(entry.type+':'+entry.id,entry);room.commands.push(entry);if(room.commands.length>2400)room.commands.shift();
+            broadcast(room,'command',entry);broadcast(room,'scenario',publicScenario(room));
+          }
+        }
+        broadcast(room,'flight',room.flight);
         return send(res, 200, {});
       }
       const acceptCommand = item => {
@@ -711,8 +730,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
       if (command.type === 'pauseFlight' && command.value === false &&
-          room.scenario?.config?.preset === 'FINAL_10' && !room.scenario.ready)
-        throw new RequestError(409, 'FINAL_10 requires Captain and FO physical readiness before START.');
+          (room.scenario?.config?.preset === 'FINAL_10'||room.scenario?.config?.trainingId) && !room.scenario.ready && !room.scenario.started)
+        throw new RequestError(409, 'Captain and FO physical readiness required before START.');
       if (command.type === 'profile' && room.manager !== key) {
         throw new RequestError(403, 'Only the host can configure the shared aircraft.');
       }
@@ -743,7 +762,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (STORED_CONTROL_TYPES.has(command.type))
         room.sharedControls.set(command.type + ':' + command.id, entry);
       if (command.type === 'loadFlight') {
-        room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false};
+        room.scenario = {generation:entry.sequence,config:command.value,reports:{},ready:false,started:false,triggered:false,engine:randomBytes(1)[0]<128?'engine1':'engine2'};
         // A new flight preset replaces the previous physical configuration.
         // Do not replay stale flap/MCP/autobrake detents over FINAL_10 READY.
         for (const [name, older] of room.sharedControls) {
@@ -753,7 +772,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         // The host will provide a fresh post-preset snapshot. No stale OH
         // baseline may be replayed while FINAL_10 systems are configuring.
         room.snapshot=null;
-      } else if (command.type === 'stopFlight') room.scenario = null;
+      } else if(command.type==='pauseFlight'&&command.value===false&&room.scenario?.config?.trainingId){room.scenario.started=true;broadcast(room,'scenario',publicScenario(room));} else if (command.type === 'stopFlight') room.scenario = null;
       room.commands.push(entry);
       if (receiptKey) {
         room.commandReceipts.set(receiptKey,{username:key,command,sequence:entry.sequence});
