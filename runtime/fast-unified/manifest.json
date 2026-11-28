@@ -2,7 +2,7 @@
   "schema": "b737-unified-fast-runtime/1",
   "sourceCommit": "a16e545d711bb437a22357517c06cd878847036c",
   "mainBefore": 328,
-  "mainAfter": 107,
+  "mainAfter": 108,
   "overheadBefore": 62,
   "overheadAfter": 43,
   "files": [
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "e25134cd00e775fcfdd831fd5f3ab593cc6e9dbfa4369ea7d6da1a34e4385938"
+      "sha256": "b9e6f09d8538af33dc89889f0cab500a7f64a55279ee9fcb0c0dd1caeba9c3af"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -1605,6 +1605,10 @@
     {
       "path": "panel-mosaic-lab/cockpit/pressurization-oh22.js",
       "sha256": "cffa3ecb4880d8702cb651e8edfb39e1feca45488a5187f23130a0285216e58e"
+    },
+    {
+      "path": "panel-mosaic-lab/cockpit/procedure-trainer-v2.js",
+      "sha256": "4eeb714f5dddcd2468edb4a676c4797def6285be41ef4080fc9bd9b082936226"
     },
     {
       "path": "panel-mosaic-lab/cockpit/recessed-overhead-v2.css",
