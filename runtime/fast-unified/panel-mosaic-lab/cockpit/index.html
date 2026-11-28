@@ -255,7 +255,15 @@ body > header.unified-minimal-header .header-settings>button{
 #procedureTrainerDialog .pt-head button,[data-procedure-open]{cursor:pointer;background:#1b3b52;color:#edf7ff;border:1px solid #6388a7;border-radius:6px;padding:8px 12px;font:600 12px system-ui}
 #procedureTrainerDialog #unifiedProcedureTrainerV2{display:block!important;padding:4px 0;border:0;background:none}
 #procedureTrainerDialog #unifiedProcedureTrainerV2 > summary{display:none!important}
-#procedureTrainerDialog #unifiedProcedureTrainerV2 > label{display:grid!important;gap:5px}
+#procedureTrainerDialog #unifiedProcedureTrainerV2 .pt-field{display:grid!important;visibility:visible!important;opacity:1!important;position:static!important;gap:6px;margin:0;min-width:0;height:auto!important;max-height:none!important;overflow:visible!important}
+#procedureTrainerDialog .pt-field-title{display:block!important;color:#b9d2e4;font:600 11px system-ui;letter-spacing:.03em}
+#procedureTrainerDialog .pt-fields{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0;align-items:start}
+#procedureTrainerDialog .pt-wide{grid-column:1/-1}
+#procedureTrainerDialog .pt-field input,#procedureTrainerDialog .pt-field select,#procedureTrainerDialog .pt-field textarea{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;min-height:36px!important;height:auto!important;max-height:none!important;width:100%!important;max-width:100%!important;pointer-events:auto!important;transform:none!important;clip:auto!important;clip-path:none!important}
+#procedureTrainerDialog .pt-actions{display:flex!important;flex-wrap:wrap;gap:6px;margin:12px 0}
+#procedureTrainerDialog .pt-status{display:block!important;background:#0a1824;border:1px solid #36536a;border-radius:6px;padding:10px;font:600 12px system-ui}
+#procedureTrainerDialog .pt-brief{color:#a5bbce;font:12px/1.5 system-ui}
+@media(max-width:520px){#procedureTrainerDialog .pt-fields{grid-template-columns:minmax(0,1fr)}}
 #procedureTrainerDialog #unifiedProcedureTrainerV2 > p,#procedureTrainerDialog #unifiedProcedureTrainerV2 > pre{white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:640px){body > header.unified-minimal-header .header-settings{grid-template-columns:repeat(8,minmax(0,1fr))!important}}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #flightSetupTabs > :not(.flight-actions){display:none!important}
@@ -415,7 +423,7 @@ body > header.unified-minimal-header .header-settings>button{
   <button type="button" data-crew-logout hidden>Sign Out</button>
   <p role="status"></p>
 </dialog>
-<dialog id="procedureTrainerDialog" aria-labelledby="procedureTrainerTitle" dir="ltr"><div class="pt-head"><div><strong id="procedureTrainerTitle">QRH PROCEDURE TRAINER</strong><small> SESSION LAB · BUILD 04</small></div><button type="button" data-procedure-close aria-label="Close trainer">×</button></div><div id="procedureTrainerMount"><p id="procedureTrainerLoading" role="status">Initializing procedure trainer… If this message persists, reload the simulator.</p></div></dialog>
+<dialog id="procedureTrainerDialog" aria-labelledby="procedureTrainerTitle" dir="ltr"><div class="pt-head"><div><strong id="procedureTrainerTitle">QRH PROCEDURE TRAINER</strong><small> SESSION LAB · BUILD 05 · 143 NNC</small></div><button type="button" data-procedure-close aria-label="Close trainer">×</button></div><div id="procedureTrainerMount"><p id="procedureTrainerLoading" role="status">Initializing procedure trainer… If this message persists, reload the simulator.</p></div></dialog>
 <dialog id="flightScenarioDialog" aria-labelledby="flightScenarioTitle" dir="ltr">
   <div class="flight-head"><strong id="flightScenarioTitle">FLIGHT SCENARIO ENGINE</strong><button id="flightScenarioClose" type="button" aria-label="Close flight scenarios">×</button></div>
   <p class="flight-sub">B737 Classic · Instructor training model · MSL altitude / MAGNETIC heading using live WMM2025 variation; TRUE retained inside flight physics. Training only.</p>
@@ -700,4 +708,4 @@ body > header.unified-minimal-header .header-settings>button{
  });
  observer.observe(dialog,{childList:true,subtree:true});
 })(document);
-</script><script id="procedure-trainer-entry-v4">(function(d){d.addEventListener("click",function(e){const b=e.target.closest?.("[data-procedure-open],[data-procedure-close]");if(!b)return;const p=d.getElementById("procedureTrainerDialog");if(!p)return;e.preventDefault();if(b.hasAttribute("data-procedure-close")){p.close();return;}if(!p.open)p.showModal();});})(document);</script><script src="./clock-photo-unified-v6.js?v=CLOCK-PHOTO-0006" defer></script><script src="./procedure-trainer-v2.js?v=PROCEDURE-TRAINER-04" defer></script></body></html>
+</script><script id="procedure-trainer-entry-v4">(function(d){d.addEventListener("click",function(e){const b=e.target.closest?.("[data-procedure-open],[data-procedure-close]");if(!b)return;const p=d.getElementById("procedureTrainerDialog");if(!p)return;e.preventDefault();if(b.hasAttribute("data-procedure-close")){p.close();return;}if(!p.open)p.showModal();});})(document);</script><script src="./clock-photo-unified-v6.js?v=CLOCK-PHOTO-0006" defer></script><script src="./procedure-trainer-v2.js?v=PROCEDURE-TRAINER-05" defer></script></body></html>

@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "a2077fde2ca33da5dd0a706a8698433101c16731e4175b20803759ad3c56ae01"
+      "sha256": "18998c55c7d25668117175eecfa04045b54fd5b45d54121cf73a85bc121f7efe"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -1608,7 +1608,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/procedure-trainer-v2.js",
-      "sha256": "0db5c16a1aa1a49795fe28f539c53617a360d54ae7fe47c2410c653a1e736d4b"
+      "sha256": "40d07ff38dc112bafe67d12f823a5780ffe8e72ce76cb142ce974bae42f0a74c"
     },
     {
       "path": "panel-mosaic-lab/cockpit/recessed-overhead-v2.css",
