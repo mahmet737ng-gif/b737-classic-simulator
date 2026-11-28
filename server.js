@@ -85,7 +85,7 @@ function applyColdDarkVisualFix(bytes,compressed,digests){
   bytes.set(relative,result);
   const digest=crypto.createHash('sha256').update(result).digest('hex');
   digests.set(relative,digest);changes.push([relative,digest]);
-  if(/\.js$/.test(relative))compressed.set(relative,zlib.brotliCompressSync(result,{params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}}));
+  if(/\.(?:js|css)$/.test(relative))compressed.set(relative,zlib.brotliCompressSync(result,{params:{[zlib.constants.BROTLI_PARAM_QUALITY]:4}}));
  }
  const app=root+'desktop-bundle-a7262b13b5fc72a5.js';
  patch(app,`   if(preview){
@@ -96,11 +96,13 @@ function applyColdDarkVisualFix(bytes,compressed,digests){
     },{once:true});
    }`,`   // A frame load can be an error document or precede image decoding.
    // Retain the approved physical face until the actual child face is ready.
-   if(preview){
+   {
     child.style.visibility='hidden';
     let generation=0;
     child.addEventListener('load',()=>{
      const current=++generation;
+     child.style.visibility='hidden';
+     station.dataset.cduPhysicalReady='false';
      const handoff=async()=>{
       if(current!==generation||!child.isConnected)return;
       let image;
@@ -109,7 +111,7 @@ function applyColdDarkVisualFix(bytes,compressed,digests){
        try{await image.decode();}catch(_){image=null;}
        if(current!==generation||!child.isConnected)return;
        if(image&&image.complete&&image.naturalWidth>0&&image===child.contentDocument?.querySelector('#cdu-stage img.base')){
-        child.style.visibility='';preview.remove();station.removeAttribute('data-visual-shell');
+        child.style.visibility='';preview?.remove();station.removeAttribute('data-visual-shell');
         station.dataset.cduPhysicalReady='true';return;
        }
       }
@@ -118,6 +120,23 @@ function applyColdDarkVisualFix(bytes,compressed,digests){
      handoff();
     });
    }`);
+
+ // Every station has its own permanent, correctly registered unlit face.
+ // Keep it underneath the child, independent of power, load and crew role.
+ patch(app,"frameWindow.className='cdu-frame-window';frameWindow.append(child);station.append(frameWindow);",`frameWindow.className='cdu-frame-window';const physical=document.createElement('img');physical.className='cdu-permanent-face';physical.alt='';physical.setAttribute('aria-hidden','true');physical.src='/${local.url}';physical.draggable=false;Object.assign(physical.style,{position:'absolute',pointerEvents:'none',width:item.nativeWidth+'px',height:item.nativeHeight+'px',left:placement.left+'px',top:placement.top+'px',transform:'scale('+placement.scaleX+','+placement.scaleY+')',transformOrigin:'0 0'});frameWindow.append(physical,child);station.dataset.cduPhysicalFallback='true';station.append(frameWindow);`);
+ // Remove the obsolete full-face optical blackout. Retain the independent
+ // live engine channel/CB logic; blank only luminous pointers and glyphs.
+ const glass=root+'desktop-bundle-02bd2b77b2f6ae57.js';
+ patch(glass,"if(absent!==last){last=absent;if(layer)layer.dataset.unpowered=String(absent);}","if(absent!==last){last=absent;document.documentElement.dataset.eisAllFeedsAbsent=String(absent);if(layer)layer.dataset.unpowered=String(absent);}");
+ const skin=root+'style.css';
+ patch(skin,'.cdu-frame-window{position:absolute;inset:0;overflow:hidden}',`.cdu-frame-window{position:absolute;inset:0;overflow:hidden}
+ .cdu-station[data-cdu-physical-fallback="true"]:not(.ready)::after{display:none!important}
+ #eisColdDarkGlassV1{display:none!important}
+ html[data-eis-all-feeds-absent="true"] #region-main .isn-engine-gauges [data-gauge]{display:none!important}
+ #region-main [data-eis-readout][data-engine-live-status="POWER_LOSS"],#region-main [data-eis-readout][data-engine-live-status="UNIT_FAILED"],html[data-eis-all-feeds-absent="true"] #region-main [data-eis-readout]{visibility:visible!important}
+ #region-main [data-eis-readout][data-engine-live-status="POWER_LOSS"] [data-eis-digit-cell],#region-main [data-eis-readout][data-engine-live-status="UNIT_FAILED"] [data-eis-digit-cell],html[data-eis-all-feeds-absent="true"] #region-main [data-eis-readout] [data-eis-digit-cell]{display:none!important}
+ #region-main [data-eis-readout][data-engine-live-status="POWER_LOSS"] rect[data-eis-display-face],#region-main [data-eis-readout][data-engine-live-status="POWER_LOSS"] rect[data-eis-tall-window],#region-main [data-eis-readout][data-engine-live-status="UNIT_FAILED"] rect[data-eis-display-face],#region-main [data-eis-readout][data-engine-live-status="UNIT_FAILED"] rect[data-eis-tall-window],html[data-eis-all-feeds-absent="true"] #region-main [data-eis-readout] rect[data-eis-display-face],html[data-eis-all-feeds-absent="true"] #region-main [data-eis-readout] rect[data-eis-tall-window]{fill-opacity:1!important}
+ `);
  // Use the verified, same-photo local texture immediately. No dependency on
  // an upstream original fetch for first paint; preserve all native geometry.
  patch(root+'cdu-stage.html','<img class="base" src="assets/cdu-approved-unlit.png"','<img class="base" src="/'+local.url+'"');
