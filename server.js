@@ -7,6 +7,8 @@ const crypto = require('node:crypto');
 const zlib = require('node:zlib');
 const {performance} = require('node:perf_hooks');
 const { Pool } = require('pg');
+const {WebSocketServer}=require('ws');
+const {Readable: CrewReadable}=require('node:stream');
 const PrivateNavData=require('./navdata-store.js');
 const IranNavDataV2=require('./iran-navdata-v2.js');
 const IranBootstrapV2=require('./iran-navdata-bootstrap-v2.js');
@@ -983,7 +985,7 @@ function memberRequestInfo(req){
   const deviceClass=req.headers['x-unified-device-class']==='ipad'?'ipad':'';
   return {agent,ip,label:describeMemberDevice(agent,version,deviceClass)};
 }
-const securityRates=new Map(),securityCrewStreams=new Set();
+const securityRates=new Map(),securityCrewStreams=new Set(),securityCrewSockets=new Set();
 async function securityLocked(db=pool){
  const r=await db.query('SELECT locked FROM unified_security_state WHERE singleton=true');
  if(r.rowCount!==1)throw Error('Security state unavailable');
@@ -1047,7 +1049,7 @@ async function securityPanel(req,res,url){
   }
   await client.query('COMMIT');
  }catch(e){await client.query('ROLLBACK').catch(()=>{});throw e;}finally{client.release();}
- if(closeStreams)for(const stream of securityCrewStreams){try{stream.end();}catch(_){}}
+ if(closeStreams){for(const stream of securityCrewStreams){try{stream.end();}catch(_){}}for(const socket of securityCrewSockets){try{socket.close(1008,'Session revoked');}catch(_){}}}
  redirect(res,'/user-panel/security/?message='+encodeURIComponent(message));
 }
 async function initializeMembers(){
@@ -1439,6 +1441,56 @@ async function handle(req,res) {
   }
   res.writeHead(404,{'Content-Type':'text/plain'});res.end('Not found');
 }
+// Persistent ordered command channel. All requests use the existing crew
+// authorization, role validation, lockdown checks and receipt deduplication.
+function crewSocketRequest(upgrade,action,payload){
+ return new Promise(async resolve=>{
+  try{
+   if(await securityLocked())return resolve({status:503,body:{error:'Private Room paused by owner'}});
+   const req=CrewReadable.from([Buffer.from(JSON.stringify(payload))]);
+   req.url='/api/crew/'+action;req.method='POST';
+   req.headers={...upgrade.headers,'content-type':'application/json'};
+   req.socket=upgrade.socket;
+   let status=500,done=false;
+   const finish=(result)=>{if(!done){done=true;resolve(result);}};
+   const res={headersSent:false,writeHead(code){status=code;this.headersSent=true;},
+    end(data){let body;try{body=JSON.parse(String(data));}catch{body={error:'Invalid crew response'};}finish({status,body});},
+    destroy(){finish({status:500,body:{error:'Crew response failed'}});}};
+   crew.handle(req,res);
+  }catch{resolve({status:503,body:{error:'Crew service unavailable'}});}
+ });
+}
+function installCrewCommandSocket(httpServer){
+ if(!crewCockpitReady)return;
+ const wss=new WebSocketServer({noServer:true,maxPayload:12288,perMessageDeflate:false});
+ httpServer.on('upgrade',async(req,socket,head)=>{
+  const reject=()=>{if(!socket.destroyed){socket.write('HTTP/1.1 403 Forbidden\\r\\nConnection: close\\r\\n\\r\\n');socket.destroy();}};
+  try{
+   const url=new URL(req.url,crewOrigin),roomId=url.searchParams.get('room'),client=url.searchParams.get('client');
+   if(url.pathname!=='/api/crew/socket'||req.headers.origin!==crewOrigin||
+     !/^[A-Za-z0-9_-]{32}$/.test(roomId||'')||!/^[a-zA-Z0-9_-]{12,64}$/.test(client||'')||securityCrewSockets.size>=256)return reject();
+   const auth=await crewSocketRequest(req,'cockpit',{roomId,client});
+   if(auth.status!==200||!['captain','firstOfficer','instructor'].includes(auth.body?.role)||socket.destroyed)return reject();
+   wss.handleUpgrade(req,socket,head,ws=>{
+    securityCrewSockets.add(ws);let pending=0,chain=Promise.resolve(),halted=false;
+    ws.on('error',()=>{halted=true;ws.terminate();});
+    ws.on('close',()=>{halted=true;securityCrewSockets.delete(ws);});
+    ws.on('message',(data,binary)=>{
+     if(halted||binary||++pending>64){halted=true;ws.close(1008,'Command queue limit');return;}
+     let msg;try{msg=JSON.parse(data.toString());}catch{halted=true;ws.close(1008,'Invalid command');return;}
+     if(!Number.isSafeInteger(msg?.id)||!Array.isArray(msg.commands)||!msg.commands.length||msg.commands.length>24){halted=true;ws.close(1008,'Invalid command');return;}
+     chain=chain.then(async()=>{
+      if(halted||ws.readyState!==1)return;
+      const result=await crewSocketRequest(req,'command',{roomId,client,commands:msg.commands});
+      if(ws.readyState!==1)return;
+      ws.send(JSON.stringify({id:msg.id,...result}));
+      if(result.status===429||result.status>=500||result.status===401||result.status===403){halted=true;ws.close(1013,'Retry using HTTP');}
+     }).catch(()=>{halted=true;ws.terminate();}).finally(()=>{pending--;});
+    });
+   });
+  }catch{reject();}
+ });
+}
 async function start() {
   if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required: attach a Postgres service.');
   await pool.query('CREATE TABLE IF NOT EXISTS ata24_devices(device_hash text PRIMARY KEY,session_hash text UNIQUE NOT NULL,last_seen timestamptz NOT NULL DEFAULT now())');
@@ -1488,11 +1540,13 @@ async function start() {
       }
     }
   }
-  http.createServer((req,res)=>handle(req,res).catch(e=>{
+  const httpServer=http.createServer((req,res)=>handle(req,res).catch(e=>{
     console.error('Gateway request failed:',e.message);
     if (!res.headersSent) {res.writeHead(503,{'Content-Type':'text/plain'});res.end('Service temporarily unavailable');}
     else res.end();
-  })).listen(PORT,'0.0.0.0',()=>{
+  }));
+  installCrewCommandSocket(httpServer);
+  httpServer.listen(PORT,'0.0.0.0',()=>{
     console.log('ATA24 gateway listening on '+PORT);
     setTimeout(()=>prewarmFastRuntime().catch(e=>console.warn('UNIFIED FAST PREWARM: '+e.message)),1500);
    });

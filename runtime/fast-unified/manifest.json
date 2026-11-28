@@ -604,7 +604,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
-      "sha256": "7f5d63fe88a08691f997fd7b24a133c085d96b7dfa8ef0755b2f64415a621a29"
+      "sha256": "a5329505656bda163fc1cb13450f64029d972085d272157f09a17d4e5381254a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
@@ -748,7 +748,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
-      "sha256": "4eaf6635a50950197a81aebc01b57e2ca84bf2f8926fd635b66bba35ee96c966"
+      "sha256": "1d27407773780af18a6c5a87d7d11fd43d12852e2176a5ec624f9a0f5bebdef2"
     },
     {
       "path": "panel-mosaic-lab/cockpit/detent-hit-geometry-v1.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "3770f5d648b251e854ffd91bc09028e94483ad74cf7129a47f59fb35b1fc2c90"
+      "sha256": "aa5436b7240e7943b6c33fe344b01ba2990f69c61de209631b00c240bbf38191"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",

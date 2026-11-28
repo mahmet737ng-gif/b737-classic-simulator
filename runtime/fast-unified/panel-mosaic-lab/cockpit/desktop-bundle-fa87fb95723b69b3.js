@@ -438,6 +438,10 @@ try{
   let requestSerial = 0;
   const outbound=[],pendingOverhead=new Map();
   let writing=false,scenarioGeneration=0,pendingScenario=false;
+  let commandSocket=null,socketRetry=null,socketSerial=0;
+  const socketBatches=new Map();
+  const socketOpen=()=>commandSocket?.readyState===1;
+  const transportBusy=()=>writing||outbound.length>0||socketBatches.size>0;
   const ohKey=(type,id)=>['toggle','rotary','guard'].includes(type)?type+':'+id:null;
   let flightWrite = false;
   let flightChangedAt = 0;
@@ -639,23 +643,77 @@ try{
     if(syncFailures.length>60)syncFailures.shift();
     refreshStatus('Sync command failed: '+error.message);
   }
+  function acceptResults(batch,reply) {
+    if(!Array.isArray(reply.results)||reply.results.length!==batch.length)throw Error('Invalid command batch response');
+    batch.forEach((item,n)=>{
+      const result=reply.results[n],key=ohKey(item.command.type,item.command.id);
+      if(result.error)failed(item,Error(result.error));
+      else if(key&&pendingOverhead.get(key)===item.requestId&&result.sequence<=lastSequence)pendingOverhead.delete(key);
+    });
+  }
+  function reconnectCommands() {
+    if(socketRetry||role==='observer'||!win.WebSocket)return;
+    socketRetry=win.setTimeout(()=>{socketRetry=null;openCommandSocket();},1600);
+  }
+  function openCommandSocket() {
+    if(commandSocket||!role||role==='observer'||!win.WebSocket)return;
+    const url=new URL('/api/crew/socket',win.location.href);
+    url.protocol=url.protocol==='https:'?'wss:':'ws:';
+    url.searchParams.set('room',roomId);
+    url.searchParams.set('client',client);
+    let ws;
+    try{ws=new win.WebSocket(url);}catch{reconnectCommands();return;}
+    commandSocket=ws;
+    const connectTimer=win.setTimeout(()=>{if(ws.readyState!==1)ws.close();},5000);
+    ws.addEventListener('open',()=>{win.clearTimeout(connectTimer);flushCommands();refreshStatus();});
+    ws.addEventListener('message',event=>{
+      let response;try{response=JSON.parse(event.data);}catch{ws.close();return;}
+      const pending=socketBatches.get(response.id);
+      if(!pending)return;
+      if(response.status===429||response.status>=500){ws.close();return;}
+      socketBatches.delete(response.id);win.clearTimeout(pending.timer);
+      try{
+        if(response.status!==200)throw Error(response.body?.error||'Crew command rejected');
+        acceptResults(pending.batch,response.body);
+        networkDurations.push(Number((performance.now()-pending.started).toFixed(2)));
+        if(networkDurations.length>400)networkDurations.shift();
+      }catch(error){pending.batch.forEach(item=>failed(item,error));}
+      flushCommands();publishHostSnapshot();
+    });
+    ws.addEventListener('error',()=>{try{ws.close();}catch{}});
+    ws.addEventListener('close',()=>{
+      win.clearTimeout(connectTimer);
+      if(commandSocket!==ws)return;
+      commandSocket=null;
+      const retry=[];
+      for(const pending of socketBatches.values()){win.clearTimeout(pending.timer);retry.push(...pending.batch);}
+      socketBatches.clear();
+      outbound.unshift(...retry);
+      flushCommands();reconnectCommands();refreshStatus();
+    });
+  }
   function flushCommands() {
     if(writing||!outbound.length)return;
-    writing=true;
-    commandWrites=commandWrites.then(async()=>{
-      while(outbound.length){
-        const batch=outbound.splice(0,24);
-        try{
-          const reply=await send('command',{commands:batch});
-          if(!Array.isArray(reply.results)||reply.results.length!==batch.length)throw Error('Invalid command batch response');
-          batch.forEach((item,n)=>{
-            const result=reply.results[n],key=ohKey(item.command.type,item.command.id);
-            if(result.error)failed(item,Error(result.error));
-            else if(key&&pendingOverhead.get(key)===item.requestId&&result.sequence<=lastSequence)pendingOverhead.delete(key);
-          });
-        }catch(error){batch.forEach(item=>failed(item,error));}
+    if(socketOpen()){
+      while(outbound.length&&socketBatches.size<32&&commandSocket.bufferedAmount<65536){
+        const batch=outbound.splice(0,24),id=++socketSerial;
+        const pending={batch,started:performance.now(),timer:win.setTimeout(()=>{commandSocket?.close();},5000)};
+        socketBatches.set(id,pending);
+        try{commandSocket.send(JSON.stringify({id,commands:batch}));}
+        catch{commandSocket.close();break;}
       }
-    }).finally(()=>{writing=false;if(outbound.length)flushCommands();});
+      return;
+    }
+    if(socketBatches.size)return;
+    writing=true;
+    // HTTP fallback preserves FIFO and idempotent request IDs.
+    (async()=>{
+      while(outbound.length&&!socketOpen()){
+        const batch=outbound.splice(0,24);
+        try{acceptResults(batch,await send('command',{commands:batch}));}
+        catch(error){batch.forEach(item=>failed(item,error));}
+      }
+    })().finally(()=>{writing=false;if(outbound.length)flushCommands();publishHostSnapshot();});
   }
   function command(type,id,value) {
     if(!role||role==='observer'||replay||value===undefined||value===null)return;
@@ -667,16 +725,16 @@ try{
     flushCommands();
   }
   function publishHostSnapshot() {
-    if (snapshotTimer || !roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
+    if (snapshotTimer || transportBusy() || !roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
     snapshotTimer = setTimeout(() => {
       snapshotTimer = null;
-      if (!roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
+      if (transportBusy() || !roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
       const overhead = currentOverhead;
       const serialized = JSON.stringify(overhead);
       if (serialized === lastPublishedOverhead) return;
       lastPublishedOverhead = serialized;
       // Preserve ordering with all interactive changes already accepted locally.
-      commandWrites = commandWrites.then(() => send('snapshot', {overhead}))
+      send('snapshot', {overhead})
         .catch(error => { lastPublishedOverhead = null; refreshStatus(error.message); });
     }, 350);
   }
@@ -943,12 +1001,12 @@ try{
     }
   }
   async function auditShared(){
-    if(!online||auditBusy||(writing||outbound.length||pendingScenario)||(activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready))return;
+    if(!online||auditBusy||(transportBusy()||pendingScenario)||(activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready))return;
     auditBusy=true;const before=Date.now();
     try{
       const data=await send('cockpit');const after=Date.now();
       if(Number.isFinite(data.serverAt))serverOffset=data.serverAt-(before+after)/2;
-      if(!(writing||outbound.length||pendingScenario)&&data.shared?.sequence===lastSequence){
+      if(!(transportBusy()||pendingScenario)&&data.shared?.sequence===lastSequence){
         receiveShared({...data.shared,controls:(data.shared.controls??[]).filter(e=>['clock','mcpValue','mcpHardware'].includes(e.type))});
         if(!clockSeeded&&roster?.manager){
           const seats=['captain','firstOfficer'];const missing=seats.filter(seat=>!data.shared.controls?.some(e=>e.type==='clock'&&e.id===seat));
@@ -1197,7 +1255,7 @@ try{
       url.searchParams.set('cockpit', '1');
       const feed = new EventSource(url);
       feed.addEventListener('open', () => {
-        online = true; refreshStatus(); flushCommands(); publishHostSnapshot();
+        online = true; refreshStatus(); openCommandSocket(); flushCommands(); publishHostSnapshot();
       });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));
       feed.addEventListener('snapshot', event => receiveHostSnapshot(JSON.parse(event.data)));
@@ -1224,8 +1282,8 @@ try{
         online = false;refreshStatus();
         if (feed.readyState === EventSource.CLOSED) refreshStatus('Crew Room disconnected. Rejoin to continue.');
       });
-      setInterval(() => {drain();syncLabAccess();reportScenarioReadiness();crossCheckFlight();}, 120);
-      setInterval(()=>{if(!pendingScenario&&!writing&&!outbound.length){reconcileMountedOverhead();auditShared();}},2000);
+      setInterval(() => {drain();flushCommands();syncLabAccess();reportScenarioReadiness();crossCheckFlight();}, 120);
+      setInterval(()=>{if(!pendingScenario&&!transportBusy()){reconcileMountedOverhead();auditShared();}},2000);
       bindFrames();
     } catch (error) {
       refreshStatus(error.message);
@@ -1239,6 +1297,7 @@ try{
       const network=[...networkDurations].sort((a,b)=>a-b);
       const quantile=(numbers,f)=>numbers.length ? numbers[Math.max(0,Math.ceil(numbers.length*f)-1)] : null;
       return {online,role,controller,lastSequence,lastSharedSequence,lastAppliedSequence,
+        transport:socketOpen()?'WEBSOCKET':'HTTP_FALLBACK',socketInflight:socketBatches.size,
         outbound:outbound.length,pendingOverhead:pendingOverhead.size,scenarioGeneration,
         queued:queue.map(e=>({sequence:e.sequence??null,type:e.type,id:e.id,
           retryAt:e.retryAt??null})),applyP50Ms:quantile(sorted,.5),applyP95Ms:quantile(sorted,.95),
