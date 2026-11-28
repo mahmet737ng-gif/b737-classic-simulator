@@ -66,50 +66,75 @@
    if(result?.accepted!==true||!def.read(api.getFuelSystem()))throw Error('Fuel ECU command/readback rejected');
   }
  }
- function install(win){
-  const doc=win.document;let entries=builtins.slice(),selected=entries[0],running=false,paused=false;
-  const session=createSession(s=>nativeInject(win,s));
-  function mount(){
-   const host=doc.getElementById('procedureTrainerMount');if(!host||doc.getElementById('unifiedProcedureTrainerV2'))return !!host;
-   const section=doc.createElement('div');section.id='unifiedProcedureTrainerV2';section.className='pt-root';section.setAttribute('open','');
-   function el(tag,parent,label){const e=doc.createElement(tag);if(label)e.textContent=label;parent.append(e);return e;}
-   function button(parent,label,fn){const b=el('button',parent,label);b.type='button';b.className='adv-action';b.onclick=()=>{try{fn();render()}catch(e){status.textContent=e.message;}};return b;}
-   const intro=el('p',section,'143 NNC exercises · Select a chapter or search, configure the event, then ARM. Native system commands are distinguished from instructor-led exercises.');intro.className='pt-brief';
-   const fields=el('div',section);fields.className='pt-fields';
-   let fieldIndex=0;
-   function show(e,display){for(const [k,v] of Object.entries({display,visibility:'visible',opacity:'1',position:'static',height:'auto','max-height':'none',transform:'none',clip:'auto','clip-path':'none'}))e.style.setProperty(k,v,'important');}
-   function field(label,tag,wide=false){const l=el('div',fields);l.className='pt-field'+(wide?' pt-wide':'');show(l,'grid');const title=el('span',l,label);title.className='pt-field-title';const control=el(tag,l);control.id='pt-control-'+(++fieldIndex);control.setAttribute('aria-label',label);show(control,'block');control.style.setProperty('width','100%','important');return control;}
-   const chapter=field('CHAPTER / SYSTEM','select');
-   function chapterOptions(){chapter.replaceChildren();const all=el('option',chapter,'All chapters');all.value='';for(const ch of [...new Set(entries.map(x=>x.chapter))]){const o=el('option',chapter,ch);o.value=ch;}}
-   chapterOptions();
-   const search=field('SEARCH NNC','input');search.type='search';search.placeholder='e.g. Hydraulic, Engine Fire';
-   const select=field('SELECT NNC','select',true);
-   const file=field('Optional: import local scenario catalog','input',true);file.type='file';file.accept='.json,application/json';
-   const mode=field('Mode','select');for(const [v,l] of [['native','Native system command'],['manual','Instructor / procedural cue']]){const o=el('option',mode,l);o.value=v;}
-   const phase=field('Initial phase (prepare actual aircraft first)','input');
-   const story=field('SCENARIO STORY / INSTRUCTOR CUE','textarea',true);story.rows=4;story.style.width='100%';
-   const delay=field('Delay after exercise starts (seconds)','input');delay.type='number';delay.min='0';delay.max='900';delay.value='30';
-   const controls=el('div',section),status=el('p',section),log=el('pre',section);controls.className='pt-actions';status.className='pt-status';status.setAttribute('role','status');log.style.cssText='white-space:pre-wrap;max-height:180px;overflow:auto;font-size:11px';
-   const role=field('Crew role','select');for(const k of ['CPT','FO','INSTRUCTOR'])el('option',role,k);
-   const note=field('Observation / action (self-reported)','input');
-   function fill(){const def=native[normalize(selected?.name)];phase.value=def?.phase||selected?.suggested_phase||'INSTRUCTOR DEFINED';story.value=selected?.story||def?.story||'';mode.value=def?'native':'manual';mode.options[0].disabled=!def;}
-   function options(){select.replaceChildren();const list=entries.filter(x=>(!chapter.value||x.chapter===chapter.value)&&(x.name+' '+x.chapter+' '+x.section).toLowerCase().includes(search.value.toLowerCase()));for(const x of list){const o=el('option',select,x.section+' · '+x.name);o.value=x.id;}selected=list.find(x=>x.id===selected?.id)||list[0];if(selected)select.value=selected.id;fill();}
-   chapter.onchange=options;search.oninput=options;select.onchange=()=>{selected=entries.find(x=>x.id===select.value);fill();};
-   file.onchange=async()=>{try{if(!file.files[0])return;if(file.files[0].size>3000000)throw Error('Catalog too large');entries=parse(JSON.parse(await file.files[0].text()));selected=entries[0];search.value='';chapterOptions();options();status.textContent=entries.length+' private titles loaded locally';}catch(e){status.textContent=e.message;}};
-   button(controls,'ARM',()=>{if(!selected)throw Error('Select an exercise');if(mode.value==='manual'&&!story.value.trim())throw Error('Enter a story / cue for this exercise');session.arm({name:selected.name,mode:mode.value,phase:phase.value,delay:Number(delay.value),story:story.value});running=false;paused=false;});
-   button(controls,'START / RESUME',()=>{if(doc.documentElement.dataset.unifiedWelcome==='active')throw Error('Enter the cockpit first, then open QRH TRAINER to start.');if(session.snapshot().status!=='ARMED')throw Error('Arm an exercise first');running=true;paused=false;});
-   button(controls,'PAUSE',()=>{paused=true;});
-   button(controls,'LOG CREW ACTION',()=>{session.note(role.value,note.value);note.value='';});
-   button(controls,'FINISH',()=>{session.finish();running=false;});
-   button(controls,'NEW SESSION',()=>{session.reset();running=false;paused=false;});
-   button(controls,'EXPORT DEBRIEF',()=>{const blob=new Blob([JSON.stringify(session.snapshot(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=doc.createElement('a');a.href=url;a.download='procedure-debrief.json';a.click();win.setTimeout(()=>URL.revokeObjectURL(url),1000);});
-   function render(){const s=session.snapshot();status.textContent=entries.length+' TITLES · '+s.status+' · '+Math.min(s.elapsed,s.delay).toFixed(1)+' / '+s.delay+' s';log.textContent=s.log.map(e=>e.elapsed.toFixed(1)+'s  '+e.type+'  '+e.detail).join('\n');}
-   win.setInterval(()=>{if(running){const flight=win.B737UnifiedFlightScenarioV1?.getDiagnostics?.();session.tick(!paused&&flight?.paused!==true);render();}else session.tick(false);},250);
-   options();render();host.replaceChildren(section);return true;
-  }
-  let attempts=0;function boot(){if(!mount()&&++attempts<40)win.setTimeout(boot,250);}
-  if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  win.B737ProcedureTrainerV2=Object.freeze({version:'2.0.5',getState:session.snapshot});
+function install(win){
+ const doc=win.document,entries=builtins.slice(),dialog=doc.getElementById('procedureTrainerDialog'),mount=doc.getElementById('procedureTrainerMount');
+ if(!mount||!dialog)return;
+ let selected=entries[0],blind=false,running=false,paused=false,pending=0;
+ const session=createSession(s=>nativeInject(win,s));
+ const style=doc.createElement('style');style.textContent=`
+ #pt7{font:14px/1.45 system-ui,sans-serif;color:#e5eef5;display:grid!important;gap:14px;padding:12px 2px;box-sizing:border-box}
+ #pt7 *{box-sizing:border-box} #pt7 .p7-fields{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+ #pt7 .p7-field{display:grid!important;gap:5px;min-width:0} #pt7 .p7-wide{grid-column:1/-1}
+ #pt7 .p7-caption{font-size:11px;letter-spacing:.06em;color:#a5bfd0;font-weight:650}
+ #pt7 select,#pt7 input,#pt7 textarea{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;width:100%!important;min-height:40px!important;height:auto!important;background:#132a3b!important;color:#e7f2f9!important;border:1px solid #426179!important;border-radius:7px!important;padding:9px 12px!important;font:13px system-ui!important;clip:auto!important;clip-path:none!important;transform:none!important}
+ #pt7 .p7-brief{border:1px solid #36556b;border-radius:10px;padding:14px;background:#122738;display:grid!important;gap:7px}
+ #pt7 .p7-title{font-size:18px;font-weight:700} #pt7 .p7-story{color:#d0e1eb;white-space:pre-wrap} #pt7 .p7-meta{font-size:12px;color:#9cb7ca}
+ #pt7 button{display:inline-flex!important;align-items:center;justify-content:center;cursor:pointer;border:1px solid #3d6079;background:#19364a;color:#e7f2f9;font:600 13px system-ui;border-radius:7px;padding:10px 14px;min-height:38px}
+ #pt7 button:disabled{opacity:.45;cursor:not-allowed} #pt7 .p7-primary{width:100%;background:#9bcbea;color:#102435;border-color:#9bcbea;font-size:14px;min-height:46px}
+ #pt7 .p7-actions{display:flex!important;gap:8px;flex-wrap:wrap} #pt7 .p7-link{justify-content:flex-start;background:transparent;border:0;padding:0;color:#b3d1e7;min-height:24px}
+ #pt7 .p7-hidden{display:none!important} #pt7 .p7-status{font-size:12px;color:#a6c1d4;min-height:18px}
+ #pt7 .p7-log{white-space:pre-wrap;font:12px/1.5 monospace;max-height:190px;overflow:auto} #pt7 .p7-warning{color:#f3cc89;font-size:12px}
+ @media(max-width:520px){#pt7 .p7-fields{grid-template-columns:minmax(0,1fr)}}`;
+ doc.head.append(style);const root=doc.createElement('div');root.id='pt7';mount.replaceChildren(root);
+ function el(tag,parent,cls,txt){const e=doc.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;parent.append(e);return e;}
+ function btn(parent,txt,fn,cls=''){const b=el('button',parent,cls,txt);b.type='button';b.onclick=()=>{try{fn();}catch(e){status.textContent=String(e.message||e);}};return b;}
+ function field(parent,title,tag,wide=false){const box=el('div',parent,'p7-field'+(wide?' p7-wide':''));el('span',box,'p7-caption',title);const input=el(tag,box);input.setAttribute('aria-label',title);return input;}
+ function opts(select,items){select.replaceChildren();for(const [v,t] of items){const o=el('option',select,'',t);o.value=v;}}
+ function hide(e,yes){e.classList.toggle('p7-hidden',yes);}
+ const setup=el('div',root,'p7-fields'),system=field(setup,'01 · SYSTEM','select'),search=field(setup,'SEARCH','input');search.type='search';search.placeholder='Find a checklist…';const scenario=field(setup,'02 · SCENARIO','select',true);
+ const brief=el('div',root,'p7-brief');el('span',brief,'p7-caption','03 · BRIEFING');const briefTitle=el('div',brief,'p7-title'),story=el('div',brief,'p7-story'),meta=el('div',brief,'p7-meta'),warning=el('div',brief,'p7-warning');
+ const toggle=btn(root,'Instructor settings  +',()=>{hide(settings,!settings.classList.contains('p7-hidden'));toggle.textContent=settings.classList.contains('p7-hidden')?'Instructor settings  +':'Instructor settings  −';},'p7-link');
+ const settings=el('div',root,'p7-fields p7-hidden'),delay=field(settings,'EVENT DELAY (SEC)','input');delay.type='number';delay.min='0';delay.max='900';delay.value='30';const mode=field(settings,'EXERCISE MODE','select');opts(mode,[['native','Native command'],['manual','Instructor cue']]);const blindBtn=btn(settings,'Blind briefing: OFF',()=>{blind=!blind;blindBtn.textContent='Blind briefing: '+(blind?'ON':'OFF');paint();});const custom=field(settings,'OPTIONAL INSTRUCTOR CUE','textarea',true);custom.rows=2;
+ const launch=btn(root,'START TRAINING',start,'p7-primary'),status=el('div',root,'p7-status');status.setAttribute('role','status');
+ const active=el('div',root,'p7-hidden'),actions=el('div',active,'p7-actions');const pauseBtn=btn(actions,'PAUSE',()=>{paused=!paused;pauseBtn.textContent=paused?'RESUME':'PAUSE';render();});
+ btn(actions,'END TRAINING',()=>{if(session.snapshot().status==='ARMED')session.reset();else session.finish();running=false;pending=0;render();});
+ const notes=el('div',active,'p7-fields'),role=field(notes,'CREW ROLE','select');opts(role,[['CPT','Captain'],['FO','First Officer'],['INSTRUCTOR','Instructor']]);const note=field(notes,'OBSERVATION','input');btn(active,'LOG OBSERVATION',()=>{session.note(role.value,note.value);note.value='';render();});
+ const debrief=el('div',root,'p7-hidden');el('div',debrief,'p7-caption','DEBRIEF · SELF-REPORTED');const log=el('pre',debrief,'p7-log');const da=el('div',debrief,'p7-actions');
+ btn(da,'EXPORT',()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(session.snapshot(),null,2)],{type:'application/json'}));const a=doc.createElement('a');a.href=url;a.download='qrh-debrief.json';a.click();win.setTimeout(()=>URL.revokeObjectURL(url),1000);});
+ btn(da,'NEW TRAINING',()=>{session.reset();paused=false;render();});
+ const dock=el('div',doc.body,'','');dock.id='pt7-session-dock';dock.style.cssText='position:fixed;bottom:12px;right:12px;z-index:45;background:#142d40;color:#e7f2f9;border:1px solid #678ca7;border-radius:8px;padding:9px 12px;max-width:min(340px,90vw);font:12px/1.4 system-ui;box-shadow:0 4px 18px #0007';
+ const dockStatus=el('div',dock),dockCue=el('div',dock);dockCue.style.cssText='white-space:pre-wrap;margin-top:4px;color:#f2d49d';
+ const dockOpen=el('button',dock,'','SESSION / DEBRIEF');dockOpen.type='button';dockOpen.style.cssText='margin-top:6px;padding:5px 9px;background:#24485f;color:#fff;border:1px solid #678ca7;border-radius:5px';dockOpen.onclick=()=>{if(!dialog.open)dialog.showModal();};
+ opts(system,[['','All systems'],...[...new Set(entries.map(e=>e.chapter))].map(x=>[x,x])]);system.value='';
+ const flight=()=>win.B737UnifiedFlightScenarioV1?.getDiagnostics?.();
+ const onWelcome=()=>doc.documentElement.dataset.unifiedWelcome==='active';
+ function paint(){const d=native[normalize(selected?.name)];briefTitle.textContent=selected?(blind?'Unrevealed exercise':selected.name):'No matching scenario';story.textContent=selected?(blind?'Briefing hidden.':selected.story):'Change system or search.';meta.textContent=selected?('QRH '+selected.section+' · '+(d?.phase||selected.suggested_phase||'Instructor defined')):'';warning.textContent=selected?(d?'Native command available · cockpit effect not fully validated':'Instructor-led · no automatic fault injection'):'';launch.disabled=!selected;}
+ function fill(){const d=native[normalize(selected?.name)];mode.options[0].disabled=!d;mode.value=d?'native':'manual';custom.value='';paint();}
+ function filter(){const q=search.value.trim().toLowerCase(),found=entries.filter(x=>(!system.value||x.chapter===system.value)&&(x.name+' '+x.section+' '+x.chapter).toLowerCase().includes(q));selected=found.find(x=>x.id===selected?.id)||found[0];opts(scenario,found.map(x=>[x.id,x.section+' · '+x.name]));if(selected)scenario.value=selected.id;fill();}
+ system.onchange=filter;search.oninput=filter;scenario.onchange=()=>{selected=entries.find(x=>x.id===scenario.value);fill();};
+ function start(){
+  if(!selected)throw Error('Select an exercise');
+  if(new URLSearchParams(win.location.search).has('crewRoom'))throw Error('QRH handoff is not yet synchronized for Private Room. Use local training.');
+  const d=native[normalize(selected.name)],seconds=Number(delay.value),phase=d?.phase||selected.suggested_phase;
+  if(!Number.isFinite(seconds)||seconds<0||seconds>900)throw Error('Delay must be 0–900 seconds');
+  const welcome=onWelcome(),b=doc.getElementById('unifiedWelcomeStart');
+  if(welcome){if(!b||b.disabled||b.hidden)throw Error('Complete Aircraft & Location configuration first.');const choice=doc.querySelector('input[name="welcomeScenario"]:checked');if(choice&&choice.value!=='NONE')throw Error('Select NORMAL FLIGHT in Welcome to avoid duplicate failures.');}
+  else if(flight()?.active!==true)throw Error('Load an initial aircraft state in FLT PHASE first.');
+  session.arm({name:selected.name,mode:mode.value,delay:seconds,phase,story:custom.value.trim()||selected.story});paused=false;pauseBtn.textContent='PAUSE';
+  if(welcome){pending=Date.now();running=false;render();if(dialog.open)dialog.close();b.click();}
+  else{running=true;render();if(dialog.open)dialog.close();}
  }
+ function render(){const st=session.snapshot(),busy=['ARMED','TRIGGERED','OBSERVE','FAILED'].includes(st.status),done=st.status==='COMPLETE';hide(setup,busy||done);hide(toggle,busy||done);if(busy||done){hide(settings,true);toggle.textContent='Instructor settings  +';}hide(launch,busy||done);hide(active,!busy);hide(debrief,!done);if(done)log.textContent=st.log.map(e=>e.elapsed.toFixed(1)+'s · '+e.type+' '+e.detail).join('\n');
+ const cue=st.status==='OBSERVE'?(st.log.find(e=>e.type==='INSTRUCTOR_CUE')?.detail||''):st.status==='FAILED'?(st.log.at(-1)?.detail||''):'';
+ dock.style.setProperty('display',onWelcome()||st.status==='IDLE'?'none':'block','important');dockStatus.textContent='QRH SESSION · '+(st.status==='ARMED'?'EVENT PENDING':st.status);dockCue.textContent=cue;
+ status.textContent=pending?'Preparing cockpit…':st.status==='ARMED'?(paused?'PAUSED':('EVENT PENDING · '+Math.min(st.elapsed,st.delay).toFixed(0)+' / '+st.delay+' sec')):st.status==='OBSERVE'?'INSTRUCTOR CUE · '+cue:st.status==='TRIGGERED'?'EVENT TRIGGERED · native readback confirmed':st.status==='FAILED'?'FAILED · '+cue:done?'SESSION COMPLETE':'Ready · training only';
+ }
+ win.setInterval(()=>{
+  if(pending){if(!onWelcome()&&doc.documentElement.dataset.unifiedWelcome==='entered'&&flight()?.active===true){pending=0;running=true;session.tick(false);render();}
+   else if(Date.now()-pending>90000){pending=0;running=false;session.reset();render();status.textContent='Cockpit preparation not confirmed. No fault injected.';if(!dialog.open)dialog.showModal();}}
+  if(running){const f=flight();session.tick(!paused&&f?.active===true&&f?.paused!==true);render();}else session.tick(false);
+ },250);
+ filter();render();win.B737ProcedureTrainerV2=Object.freeze({version:'2.0.7',getState:session.snapshot});
+}
  return {parse,createSession,nativeInject,install,builtins};
 });
