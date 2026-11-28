@@ -432,6 +432,9 @@ try{
   let latestFlight;
   let commandWrites = Promise.resolve();
   let requestSerial = 0;
+  const outbound=[],pendingOverhead=new Map();
+  let writing=false,scenarioGeneration=0,pendingScenario=false;
+  const ohKey=(type,id)=>['toggle','rotary','guard'].includes(type)?type+':'+id:null;
   let flightWrite = false;
   let flightChangedAt = 0;
   let roster = null;
@@ -477,8 +480,8 @@ try{
   // Physical readiness and network delivery are separate states. This gate
   // is consumed by the FLT PHASE START button and stays local to crew sessions.
   win.B737CrewScenarioReadyV1 = Object.freeze({
-    canStart: () => !activeScenario?.active ||
-      activeScenario.config?.preset !== 'FINAL_10' || activeScenario.ready === true,
+    canStart: () => !pendingScenario && (!activeScenario?.active ||
+      activeScenario.config?.preset !== 'FINAL_10' || activeScenario.ready === true),
     getState: () => activeScenario ? JSON.parse(JSON.stringify(activeScenario)) : null
   });
   doc.documentElement.dataset.crewRole = 'pending';
@@ -536,7 +539,7 @@ try{
       for (const [id, state] of Object.entries(expected[groupName] ?? {})) {
         if (JSON.stringify(actual[groupName]?.[id]) === JSON.stringify(state)) continue;
         // A newer queued change for this control always beats the cache.
-        if (queue.some(entry => entry.type === type && entry.id === id)) continue;
+        if (pendingOverhead.has(ohKey(type,id)) || queue.some(entry => entry.type === type && entry.id === id)) continue;
         const value = type === 'guard' ? {open: state.guard === 'open', value: state.value} : state;
         queue.push({type, id, value, client: 'crew-restore'});
       }
@@ -595,7 +598,7 @@ try{
     const payload = JSON.stringify({roomId, client, ...body});
     const requestStart = performance.now();
     let retries = 0;
-    const retryable = action === 'command' && typeof body.requestId === 'string';
+    const retryable = action === 'command' && (typeof body.requestId === 'string' || Array.isArray(body.commands));
     for (;;) {
       let reply;
       try {
@@ -624,23 +627,46 @@ try{
     }
   }
 
-  function command(type, id, value) {
-    if (!online || role === 'observer' || replay || value === undefined || value === null) return;
-    rememberSharedOverhead(type, id, value);
-    const requestId = client + '-' + (++requestSerial).toString(36);
-    commandWrites = commandWrites.then(() => send('command',
-      {requestId,command:{type,id,value}}))
-      .catch(error => {
-        syncFailures.push({at:Date.now(),type,id,reason:error.message});
-        if (syncFailures.length>60) syncFailures.shift();
-        refreshStatus('Sync command failed: '+error.message);
-      });
+  function failed(item,error) {
+    const {type,id}=item.command,key=ohKey(type,id);
+    if(key&&pendingOverhead.get(key)===item.requestId)pendingOverhead.delete(key);
+    if(type==='loadFlight')pendingScenario=false;
+    syncFailures.push({at:Date.now(),type,id,reason:error.message});
+    if(syncFailures.length>60)syncFailures.shift();
+    refreshStatus('Sync command failed: '+error.message);
+  }
+  function flushCommands() {
+    if(writing||!outbound.length)return;
+    writing=true;
+    commandWrites=commandWrites.then(async()=>{
+      while(outbound.length){
+        const batch=outbound.splice(0,24);
+        try{
+          const reply=await send('command',{commands:batch});
+          if(!Array.isArray(reply.results)||reply.results.length!==batch.length)throw Error('Invalid command batch response');
+          batch.forEach((item,n)=>{
+            const result=reply.results[n],key=ohKey(item.command.type,item.command.id);
+            if(result.error)failed(item,Error(result.error));
+            else if(key&&pendingOverhead.get(key)===item.requestId&&result.sequence<=lastSequence)pendingOverhead.delete(key);
+          });
+        }catch(error){batch.forEach(item=>failed(item,error));}
+      }
+    }).finally(()=>{writing=false;if(outbound.length)flushCommands();});
+  }
+  function command(type,id,value) {
+    if(!role||role==='observer'||replay||value===undefined||value===null)return;
+    const requestId=client+'-'+(++requestSerial).toString(36),key=ohKey(type,id);
+    if(key)pendingOverhead.set(key,requestId);
+    if(type==='loadFlight')pendingScenario=true;
+    rememberSharedOverhead(type,id,value);
+    outbound.push({requestId,command:{type,id,value}});
+    flushCommands();
   }
   function publishHostSnapshot() {
-    if (snapshotTimer || !roster?.manager || !online || !currentOverhead) return;
+    if (snapshotTimer || !roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
     snapshotTimer = setTimeout(() => {
       snapshotTimer = null;
-      if (!roster?.manager || !online || !currentOverhead) return;
+      if (!roster?.manager || !online || !currentOverhead || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
       const overhead = currentOverhead;
       const serialized = JSON.stringify(overhead);
       if (serialized === lastPublishedOverhead) return;
@@ -732,7 +758,7 @@ try{
       case 'speedbrake': win.B737SpeedbrakeLever.set(value); break;
       case 'startLever': win.B737EngineStartLevers.request(id, value); break;
       case 'toga': win.dispatchEvent(new CustomEvent('b737:toga-request', {detail: {source: id}})); break;
-      case 'loadFlight': flight().loadScenario(value); break;
+      case 'loadFlight': flight().loadScenario(value,{crewReplay:true}); scenarioGeneration=Math.max(scenarioGeneration,entry.sequence??0); break;
       case 'flightTargets':
         if (flight().getState()) {
           flight().command({type: 'SPEED', value: value.speedKt});
@@ -780,7 +806,7 @@ try{
           JSON.stringify(previous[groupName]?.[id]) === JSON.stringify(desired);
         const alreadyApplied = installed &&
           JSON.stringify(installed[groupName]?.[id]) === JSON.stringify(desired);
-        if (previouslySent && alreadyApplied) continue;
+        if (alreadyApplied || pendingOverhead.has(ohKey(type,id))) continue;
         for (let i = queue.length - 1; i >= 0; i--) {
           if (queue[i].type === type && queue[i].id === id &&
               (queue[i].sequence === undefined || queue[i].sequence <= snapshot.sequence)) {
@@ -805,6 +831,7 @@ try{
     lastReceivedOverhead = shared.overhead;
     const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
     const push = (entry, actualValue, desired) => {
+      if(pendingOverhead.has(ohKey(entry.type,entry.id)))return;
       for (let i=queue.length-1;i>=0;i--) {
         if (queue[i].type === entry.type && queue[i].id === entry.id &&
             (queue[i].sequence === undefined || queue[i].sequence <= shared.sequence))
@@ -834,23 +861,17 @@ try{
     activeScenario = scenario?.active ? scenario : null;
     if ((activeScenario?.generation ?? null) !== previousGeneration)
       lastScenarioReport = '';
-    if (activeScenario?.config?.preset === 'FINAL_10' && role !== 'observer') {
-      const config=activeScenario.config, current=flight()?.getState?.();
-      const matching = current?.preset === config.preset &&
-        current?.icao === config.airport && current?.runway === config.runway;
-      // Late joiners might never receive the original loadFlight command.
-      // Do not reset an already loaded aircraft on every readiness update.
-      if (!matching && !queue.some(item=>item.type==='loadFlight')) {
-        if (typeof flight()?.loadScenario === 'function')
-          flight().loadScenario(config);
-      }
+    if(activeScenario&&activeScenario.generation>scenarioGeneration&&!queue.some(item=>item.type==='loadFlight'&&item.sequence===activeScenario.generation)){
+      queue.push({type:'loadFlight',id:'flight',value:activeScenario.config,sequence:activeScenario.generation,client:'crew-scenario'});
     }
+    drain();
     refreshStatus();
+    publishHostSnapshot();
     reportScenarioReadiness();
   }
   function reportScenarioReadiness() {
     if (!online || reportingScenario || !['captain','firstOfficer'].includes(role) ||
-        !activeScenario?.active || activeScenario.config?.preset !== 'FINAL_10') return;
+        !activeScenario?.active || activeScenario.config?.preset !== 'FINAL_10' || scenarioGeneration!==activeScenario.generation) return;
     const now=performance.now();
     if (now-lastScenarioProbeAt < 750) return;
     lastScenarioProbeAt=now;
@@ -876,7 +897,7 @@ try{
       .finally(()=>{reportingScenario=false;});
   }
   function receiveFlight() {
-    if (!latestFlight || !flight() || queue.some(entry =>
+    if (!latestFlight || !flight() || pendingScenario || (activeScenario&&scenarioGeneration<activeScenario.generation) || queue.some(entry =>
       ['profile', 'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type))) return;
     const update = latestFlight;
     latestFlight = null;
@@ -892,10 +913,15 @@ try{
       const entry = queue[index];
       const key = entry.type + ':' + entry.id;
       if (entry.client === client) {
+        const oh=ohKey(entry.type,entry.id);
+        if(oh&&pendingOverhead.get(oh)===entry.requestId)pendingOverhead.delete(oh);
+        if(entry.type==='loadFlight'){scenarioGeneration=entry.sequence;pendingScenario=false;}
         queue.splice(index, 1);
         changed = true;
         continue;
       }
+      if(pendingOverhead.has(ohKey(entry.type,entry.id))){queue.splice(index,1);changed=true;continue;}
+      if(entry.type!=='loadFlight'&&queue.some(other=>other.type==='loadFlight'&&other.sequence!==undefined&&(entry.sequence??0)>other.sequence)){index++;continue;}
       if (blocked.has(key) || (entry.retryAt && performance.now() < entry.retryAt) || !available(entry)) {
         blocked.add(key);
         index++;
@@ -964,7 +990,7 @@ try{
       if (data.toggles && data.rotaries && data.guards) {
         currentOverhead = {toggles: data.toggles, rotaries: data.rotaries, guards: data.guards};
         if (!replay) publishHostSnapshot();
-        if (role && !roster?.manager) reconcileMountedOverhead();
+        // Never reconcile a local input against an older host state on every child report.
       }
       return;
     }
@@ -1100,13 +1126,13 @@ try{
       readRoster(data);
       // This initial view is provisional; the SSE shared event that follows
       // becomes authoritative after all replay traffic and host snapshots.
-      if (data.scenario?.active) receiveScenario(data.scenario);
+      // Apply the scenario only after ordered SSE command replay.
       const url = new URL('/api/crew/events', win.location.href);
       url.searchParams.set('room', roomId);
       url.searchParams.set('cockpit', '1');
       const feed = new EventSource(url);
       feed.addEventListener('open', () => {
-        online = true; refreshStatus(); publishHostSnapshot();
+        online = true; refreshStatus(); flushCommands(); publishHostSnapshot();
       });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));
       feed.addEventListener('snapshot', event => receiveHostSnapshot(JSON.parse(event.data)));
@@ -1116,6 +1142,10 @@ try{
         const entry = JSON.parse(event.data);
         if (entry.sequence <= lastSequence) return;
         lastSequence = entry.sequence;
+        if(entry.type==='loadFlight'){
+          lastReceivedOverhead=null;lastPublishedOverhead=null;latestFlight=null;
+          for(let n=queue.length-1;n>=0;n--)if(queue[n].sequence===undefined||(queue[n].sequence<entry.sequence&&['loadFlight','flightTargets','pauseFlight','stopFlight','flap','gear','autobrake','speedbrake','throttle','startLever','mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer'].includes(queue[n].type)))queue.splice(n,1);
+        }
         queue.push(entry);
         if (['toggle','rotary','guard'].includes(entry.type))
           rememberSharedOverhead(entry.type, entry.id, entry.value);
@@ -1143,6 +1173,7 @@ try{
       const network=[...networkDurations].sort((a,b)=>a-b);
       const quantile=(numbers,f)=>numbers.length ? numbers[Math.max(0,Math.ceil(numbers.length*f)-1)] : null;
       return {online,role,controller,lastSequence,lastSharedSequence,lastAppliedSequence,
+        outbound:outbound.length,pendingOverhead:pendingOverhead.size,scenarioGeneration,
         queued:queue.map(e=>({sequence:e.sequence??null,type:e.type,id:e.id,
           retryAt:e.retryAt??null})),applyP50Ms:quantile(sorted,.5),applyP95Ms:quantile(sorted,.95),
         applyP99Ms:quantile(sorted,.99),networkP50Ms:quantile(network,.5),

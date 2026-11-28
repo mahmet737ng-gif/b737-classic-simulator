@@ -686,7 +686,8 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         broadcast(room, 'flight', room.flight);
         return send(res, 200, {});
       }
-      const command = crewCommand(data.command);
+      const acceptCommand = item => {
+      const command = crewCommand(item.command);
       if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
@@ -698,7 +699,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       }
       // A request with an explicit ID can be safely retried even if the
       // first HTTP response was lost after the command committed.
-      const requestId=data.requestId;
+      const requestId=item.requestId;
       if (requestId !== undefined && !COMMAND_REQUEST_ID.test(requestId))
         throw new RequestError(400, 'Invalid command request ID.');
       const receiptKey=requestId === undefined ? null : data.client+':'+requestId;
@@ -706,7 +707,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (receipt) {
         if (receipt.username !== key || JSON.stringify(receipt.command) !== JSON.stringify(command))
           throw new RequestError(409, 'A command ID cannot be reused for a different action.');
-        return send(res, 200, {sequence:receipt.sequence,duplicate:true});
+        return {sequence:receipt.sequence,duplicate:true};
       }
       const nextProfile = command.type === 'profile' ? aircraftProfile(command.value) : null;
       if (!member.commandAt || now() - member.commandAt > 1000) {
@@ -718,7 +719,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         room.profile = nextProfile;
         room.snapshot = null;
       }
-      const entry = {...command, sequence: ++room.sequence, client: data.client};
+      const entry = {...command, sequence: ++room.sequence, client: data.client, ...(requestId && {requestId})};
       if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
       if (STORED_CONTROL_TYPES.has(command.type))
         room.sharedControls.set(command.type + ':' + command.id, entry);
@@ -744,7 +745,17 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       broadcast(room, 'command', entry);
       if (command.type === 'loadFlight' || command.type === 'stopFlight')
         broadcast(room, 'scenario', publicScenario(room));
-      return send(res, 200, {sequence: entry.sequence});
+      return {sequence:entry.sequence};
+      };
+      if(Array.isArray(data.commands)){
+        if(!data.commands.length||data.commands.length>24||data.commands.some(item=>!item||typeof item.requestId!=='string'))throw new RequestError(400,'Invalid cockpit command batch.');
+        const fresh=data.commands.filter(item=>!room.commandReceipts.has(data.client+':'+item.requestId)).length;
+        const count=member.commandAt&&now()-member.commandAt<=1000?member.commandCount:0;
+        if(count+fresh>65)throw new RequestError(429,'Too many cockpit commands.');
+        const results=data.commands.map(item=>{try{return acceptCommand(item);}catch(error){if(!(error instanceof RequestError))throw error;return {error:error.message,status:error.status};}});
+        return send(res,200,{results});
+      }
+      return send(res,200,acceptCommand(data));
     }
     if (action === 'invite') {
       if (room.manager !== key || !ROLES.includes(data.role)) throw new RequestError(403, 'The room host issues invitations.');

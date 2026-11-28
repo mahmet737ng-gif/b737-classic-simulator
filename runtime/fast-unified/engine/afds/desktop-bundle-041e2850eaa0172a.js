@@ -1349,9 +1349,10 @@ try{
   timer=win.setInterval(tick,100);mounted=true;
  }
  const api=Object.freeze({version:VERSION,getState:snapshot,getSelectedPreset:selectedPreset,startFromSelection:load,prepareScenario,
-  loadScenario:config=>{labRate=1;win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=prepareScenario(config);
+  loadScenario:(config,options={})=>{labRate=1;win.B737UnifiedInstructorNonNormalV1?.clearRapid?.();win.B737EngineFailureV1Scenario?.reset();win.B737ColdDarkGeneralPresetV1?.stop();win.B737PoweredGeneralPresetsV1?.stop();state=prepareScenario(config);
    win.B737UnifiedFlightLocationV1?.choose({lat:state.lat,lon:state.lon,icao:state.icao,source:'FLIGHT_SCENARIO_INITIAL_POSITION'});
    active=true;pause=config.holdStart===true||state.preset==='FINAL_10';previouslyCoupled=false;lastTick=performance.now();
+   if(!options.crewReplay)crewEvent('loadFlight',config);
    syncInitialEngineContext();
    win.B737ISNCockpitV1?.initializeScenarioFuel?.({source:'FLIGHT_SCENARIO_ENGINE'});
    publish();lastPublish=performance.now();updateUI();
