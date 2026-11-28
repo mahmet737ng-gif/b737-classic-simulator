@@ -162,22 +162,7 @@
     const scenarios = doc.createElement('section');
     scenarios.className = 'welcome-section';
     scenarios.id = 'unifiedWelcomeScenarios';
-    const engineFailureTypes = [
-      ['FLAME_OUT', 'FLAME OUT'], ['FIRE', 'FIRE'],
-      ['SEVERE_DAMAGE', 'SEVERE DAMAGE'], ['SEPARATION', 'SEPARATION']
-    ];
-    const abnormalStartTypes = [
-      ['HOT_START', 'HOT START'], ['HUNG_START', 'HUNG START'],
-      ['WET_START', 'WET START'], ['OIL_PRESSURE', 'OIL PRESSURE']
-    ];
-    const engineScenarios = [
-      ['ENGINE_FAILURE_V1', 'ENGINE FAILURE AT V1', engineFailureTypes],
-      ['ENGINE_FAILURE_FINAL', 'ENGINE FAILURE ON FINAL', engineFailureTypes],
-      ['ENGINE_FAILURE_CRUISE', 'ENGINE FAILURE IN CRUISE', engineFailureTypes],
-      ['ABNORMAL_ENGINE_START', 'ABNORMAL ENGINE START', abnormalStartTypes],
-      ['ENGINE_FIRE_GROUND','ENGINE FIRE ON GROUND',[['PERSISTING','PERSISTING'],['CONTROLLABLE','CONTROLLABLE']]]
-    ];
-    const rapid=['RAPID_DECOMPRESSION','RAPID DECOMPRESSION',[['CONTROLLABLE','CONTROLLABLE'],['UNCONTROLLABLE','UNCONTROLLABLE']]];
+    const {engine:engineScenarios,rapid}=win.B737UnifiedScenarioCatalogV1;
     const renderChoice=([id,title,types])=>'<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="'+id+'" aria-controls="welcomeFailure_'+id+'" aria-expanded="false"> <span>'+title+'</span></label><fieldset class="welcome-failure-options" id="welcomeFailure_'+id+'" hidden disabled><legend>Failure Type</legend>'+types.map(([v,l])=>'<label class="welcome-choice"><input type="radio" name="welcomeFailure_'+id+'" value="'+v+'"> <span>'+l+'</span></label>').join('')+'</fieldset>';
     scenarios.innerHTML = '<h2>Scenarios</h2>' +
       '<label class="welcome-choice"><input type="radio" name="welcomeScenario" value="NONE" checked> <span>NORMAL FLIGHT</span></label>' +
@@ -211,6 +196,7 @@
         if (!active) group.querySelectorAll('input').forEach(input => { input.checked = false; });
       }
       const pending = pendingEngineScenario();
+      win.B737UnifiedScenarioSelectionV1={id:selected,type:selected==='NONE'?null:by('welcomeFailure_'+selected)?.querySelector('input:checked')?.value||null};
       enforceV1Ground();
       if (!startRequested) start.disabled = pending;
     };

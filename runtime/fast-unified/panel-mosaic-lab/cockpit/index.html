@@ -8,7 +8,7 @@ body > header.unified-minimal-header .header-settings > #unifiedNavDataHeader,
 body > header.unified-minimal-header .header-settings > #navDataHeader {
   display:none !important;
 }
-</style><script id="unified-gateway-entry-v1">(function(location){
+</style><script id="shared-flight-scenario-catalog">window.B737UnifiedScenarioCatalogV1=Object.freeze({"engine":[["ENGINE_FAILURE_V1","ENGINE FAILURE AT V1",[["FLAME_OUT","FLAME OUT"],["FIRE","FIRE"],["SEVERE_DAMAGE","SEVERE DAMAGE"],["SEPARATION","SEPARATION"]]],["ENGINE_FAILURE_FINAL","ENGINE FAILURE ON FINAL",[["FLAME_OUT","FLAME OUT"],["FIRE","FIRE"],["SEVERE_DAMAGE","SEVERE DAMAGE"],["SEPARATION","SEPARATION"]]],["ENGINE_FAILURE_CRUISE","ENGINE FAILURE IN CRUISE",[["FLAME_OUT","FLAME OUT"],["FIRE","FIRE"],["SEVERE_DAMAGE","SEVERE DAMAGE"],["SEPARATION","SEPARATION"]]],["ABNORMAL_ENGINE_START","ABNORMAL ENGINE START",[["HOT_START","HOT START"],["HUNG_START","HUNG START"],["WET_START","WET START"],["OIL_PRESSURE","OIL PRESSURE"]]],["ENGINE_FIRE_GROUND","ENGINE FIRE ON GROUND",[["PERSISTING","PERSISTING"],["CONTROLLABLE","CONTROLLABLE"]]]],"rapid":["RAPID_DECOMPRESSION","RAPID DECOMPRESSION",[["CONTROLLABLE","CONTROLLABLE"],["UNCONTROLLABLE","UNCONTROLLABLE"]]],"supported":["ENGINE_FAILURE_V1","ENGINE_FAILURE_FINAL","ENGINE_FIRE_GROUND","RAPID_DECOMPRESSION"]});</script><script id="unified-gateway-entry-v1">(function(location){
   'use strict';
   // Keep the existing authenticated entry for the public cockpit URL.
   if(location.hostname!=='mahmet737ng-gif.github.io')return;
@@ -238,7 +238,7 @@ body > header.unified-minimal-header .header-settings>button{
 #flightScenarioDialog #flightScenarioStatus:not([data-error="true"]){display:none!important}
 #flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #advancedScenarioBlock,
 #flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #instructorScenarioPresets{display:none!important}
-#flightScenarioDialog[data-owner-flt-tab="scenarios"] > :not(.flight-head):not(.flight-sub):not(#flightSetupTabs):not(#advancedScenarioBlock):not(#instructorScenarioPresets):not(#flightScenarioStatus):not(#unifiedProcedureTrainerV2){display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] > :not(.flight-head):not(.flight-sub):not(#flightSetupTabs):not(#advancedScenarioBlock):not(#instructorScenarioPresets):not(#flightScenarioStatus):not(#unifiedProcedureTrainerV2):not(#unifiedCockpitScenarios){display:none!important}
 #flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #unifiedProcedureTrainerV2{display:none!important}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] > #unifiedProcedureTrainerV2{display:block!important;margin:10px 0;padding:14px;border:1px solid #4b7897;border-radius:9px;background:#102332;color:#eaf5ff;box-sizing:border-box;min-width:0}
 #unifiedProcedureTrainerV2 > summary{cursor:pointer;font:700 14px system-ui;letter-spacing:.04em;color:#b7e1ff;padding:8px 0}
@@ -271,6 +271,23 @@ body > header.unified-minimal-header .header-settings>button{
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock .adv-label{display:flex!important}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock .adv-label select{display:block!important}
 #flightScenarioDialog #advancedPressurizationOptions[hidden]{display:none!important}
+
+#flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #unifiedCockpitScenarios{display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"]:not([data-show-legacy-scenarios="true"]) #advancedScenarioBlock,#flightScenarioDialog[data-owner-flt-tab="scenarios"]:not([data-show-legacy-scenarios="true"]) #instructorScenarioPresets{display:none!important}
+#unifiedCockpitScenarios{margin:12px 0;display:grid;gap:12px}
+#unifiedCockpitScenarios .phase-card{border:1px solid #365564;border-radius:9px;background:#142731;padding:12px;min-width:0}
+#unifiedCockpitScenarios .phase-card h3{margin:0 0 10px;font:700 13px system-ui;color:#dcebf5}
+#unifiedCockpitScenarios .phase-choice{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid #365564;border-radius:6px;margin:5px 0;cursor:pointer}
+#unifiedCockpitScenarios .phase-choice:has(input:checked){background:#17413f;border-color:#65e0d3}
+#unifiedCockpitScenarios .phase-choice input{width:auto;min-width:0;accent-color:#65e0d3}
+#unifiedCockpitScenarios fieldset[hidden]{display:none!important}
+#unifiedCockpitScenarios fieldset{margin:0 0 8px 18px;border:1px solid #365564;border-radius:6px;min-width:0}
+#unifiedCockpitScenarios .phase-action{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#unifiedCockpitScenarios .phase-status{font:12px/1.5 system-ui;color:#c4d9e5;min-height:1.5em}
+#unifiedCockpitScenarios .phase-status[data-error="true"]{color:#ff9e91}
+#unifiedCockpitScenarios select{width:100%;min-width:0}
+html[data-crew-role="captain"] #unifiedLiveFailurePanel,html[data-crew-role="firstOfficer"] #unifiedLiveFailurePanel,html[data-crew-role="observer"] #unifiedLiveFailurePanel{display:none!important}
+#cockpitGroundStateLabel[hidden]{display:none!important}
 </style></head><body>
 <section id="unifiedWelcome" data-stage="welcome" aria-labelledby="unifiedWelcomeTitle" hidden>
  <div class="welcome-card">
@@ -645,14 +662,14 @@ body > header.unified-minimal-header .header-settings>button{
 <link rel="stylesheet" href="./unified-css-safe-07-v1.css?v=WEB-4111604c75d64ef1"><script src="./efis-pedestal-raster-v1.js?v=WEB-9f86280b9f752c1e" defer></script>
 <script src="./pedestal-faceplates-library-v1.js?v=WEB-332e7a58ce55ee15&amp%3Bfit=2" defer></script>
 <script src="./pedestal-dual-vhf-knobs-v1.js?v=WEB-e2e4589f097e9cb3" defer></script>
-<script src="./desktop-bundle-e4da0a11b25f3c4b.js?v=V1-FAILURE-0001" defer></script><script src="../../engine/afds/desktop-bundle-041e2850eaa0172a.js?v=CREW-BATCH-SCENARIO-20261128-01-FMC-GUIDANCE-01-HOLD-03-ARP-FLIGHT-03-LAB-FAST-RUN-19-SEQUENCE-04-FMC-FCC-COUPLING-05-VNAV-SPD-20-ADC-YD-21" defer></script>
+<script src="./desktop-bundle-e4da0a11b25f3c4b.js?v=V1-FAILURE-0001" defer></script><script src="../../engine/afds/desktop-bundle-041e2850eaa0172a.js?v=FLT-PHASE-WELCOME-PARITY-20261128-FMC-GUIDANCE-01-HOLD-03-ARP-FLIGHT-03-LAB-FAST-RUN-19-SEQUENCE-04-FMC-FCC-COUPLING-05-VNAV-SPD-20-ADC-YD-21" defer></script>
 <script src="../../engine/systems/desktop-bundle-1c26f618d23f066a.js?v=WEB-1c26f618d23f066a-FMC-GUIDANCE-02-N1-AT-REF-17-N1-AT-GATE-18" defer></script>
 <script src="../../engine/fmc/trajectory-performance-v2.js?v=TRAJECTORY-V2-20261127" defer></script><script src="../../engine/fmc/trajectory-predictor-v1.js?v=TRAJECTORY-V2-20261127-PROFILE-FIX-03-VNAV-SPD-20" defer></script><script src="../../engine/instruments/desktop-bundle-1bebb492be3f2ce6.js?v=WEB-1bebb492be3f2ce6-FMC-GUIDANCE-01-FMC-GUIDANCE-02-FMC-GUIDANCE-03-HOLD-01-HOLD-02-HOLD-03-HOLD-04-HOLD-05-PERF-AUDIT-02-PERF-COUPLE-03-PERF-COUPLE-04-N1-AT-REF-17-TRAJECTORY-V1-20261127-TRAJECTORY-V2-PROFILE-FIX-03-SEQUENCE-04-FMC-FCC-COUPLING-05-SEQ-DISPLAY-06-LEGS-REF-07-VNAV-SPD-20" defer></script><style>#instrumentPhotoLabOpen{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;color:#b5e1ff;text-decoration:none;border:1px solid #559dca;border-radius:7px;font:600 11px system-ui,sans-serif}</style>
 <script src="../../engine/instruments/desktop-bundle-3c2a43159f0a9d87.js?v=ATA24-CD-FLAGS-0001-ADC-YD-21" defer></script>
 <script defer src="./tcas-photo/ivsi.js?v=ATA24-CD-FLAGS-0001"></script>
 <script src="./landing-gear-unified-v1.js?v=WEB-ee2bab060a1fbfb5-ATA32-0006-MECHANISM-01" defer></script>
-<script src="./desktop-bundle-c0721da98ea446b1.js?v=WEB-c0721da98ea446b1" defer></script><script src="./cold-dark-general-preset-v1.js?v=CD-HOTBAT-0002" defer></script><script src="./powered-general-presets-v1.js?v=UNIFIED-SCENARIOS-20261125" defer></script><script src="./engine-failure-v1-scenario.js?v=WEB-a7ad76eec146599d" defer></script><script src="./unified-welcome-v1.js?v=WEB-30712a3da1c77d7b-AGS-DEFAULT-START-03-QRH-04" async></script>
-<script src="./desktop-bundle-fa87fb95723b69b3.js?v=CREW-WS-FAST-20261128-01" defer></script>
+<script src="./desktop-bundle-c0721da98ea446b1.js?v=WEB-c0721da98ea446b1" defer></script><script src="./cold-dark-general-preset-v1.js?v=CD-HOTBAT-0002" defer></script><script src="./powered-general-presets-v1.js?v=UNIFIED-SCENARIOS-20261125" defer></script><script src="./engine-failure-v1-scenario.js?v=WEB-a7ad76eec146599d" defer></script><script src="./unified-welcome-v1.js?v=SHARED-SCENARIO-CATALOG-20261128" async></script>
+<script src="./desktop-bundle-fa87fb95723b69b3.js?v=CREW-LIVE-FAILURE-20261128" defer></script>
 <script src="../../audio-lab/owner-ra-callouts-v1.js?v=RA-CALLS-0001" defer></script>
 <script src="./desktop-bundle-8141a7a984c68908.js?v=WEB-8141a7a984c68908" defer></script><script src="../../audio/owner-egpws-approved-samples-v1.js?v=EGPWS-CH15-0001" defer></script><script src="./desktop-bundle-80ca1e7d3efede04.js?v=WEB-80ca1e7d3efede04" defer></script><script src="../../engine/fmc/iran-navdata-client-v2.js?v=PILOT-WPT-0002-HOLD-05-PLAN-REVIEW-13" defer></script><script id="owner-flt-phase-tabs-v1">
 (function(doc){
@@ -708,4 +725,104 @@ body > header.unified-minimal-header .header-settings>button{
  });
  observer.observe(dialog,{childList:true,subtree:true});
 })(document);
+</script><script id="unified-cockpit-scenarios-v1">
+(function(win,doc){
+'use strict';
+const by=id=>doc.getElementById(id),dialog=by('flightScenarioDialog'),catalog=win.B737UnifiedScenarioCatalogV1;
+if(!dialog||!catalog)return;
+const crew=()=>new URLSearchParams(win.location.search).has('crewRoom');
+const instructor=()=>!crew()||doc.documentElement.dataset.crewRole==='instructor';
+const stateOwner=()=>win.B737UnifiedFlightScenarioV1;
+const rows=[...catalog.engine,catalog.rapid];
+function el(tag,txt,parent){const n=doc.createElement(tag);if(txt!==null)n.textContent=txt;if(parent)parent.append(n);return n;}
+function button(txt,parent,fn){const b=el('button',txt,parent);b.type='button';b.addEventListener('click',fn);return b;}
+function choice(parent,name,value,label){const l=el('label',null,parent);l.className='phase-choice';const i=el('input',null,l);i.type='radio';i.name=name;i.value=value;el('span',label,l);return i;}
+function status(text,bad=false){const s=by('cockpitScenarioStatus');if(s){s.textContent=text;s.dataset.error=String(bad);}}
+function setLocationUI(){
+ const loc=by('flightPreset'),grid=by('flightLocationGrid');
+ if(!loc||!grid||doc.documentElement.dataset.unifiedWelcome==='active')return;
+ if(!by('cockpitGroundState')){
+  const l=el('label','Aircraft General State (AGS)',grid);l.id='cockpitGroundStateLabel';
+  const s=el('select',null,l);s.id='cockpitGroundState';
+  for(const [v,t] of [['COLD_DARK','COLD & DARK'],['READY_FOR_START','READY FOR START'],['READY_FOR_TAKEOFF','READY FOR TAKEOFF']]){const o=el('option',t,s);o.value=v;}
+  const native=()=>doc.querySelector('input[name="flightGeneralSetup"]:checked');
+  const active=stateOwner()?.getState?.()?.preset;
+  s.value=['COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF'].includes(active)?active:(native()?.value||'COLD_DARK');
+  if(native()&&native().value!==s.value){const r=doc.querySelector('input[name="flightGeneralSetup"][value="'+s.value+'"]');if(r)r.checked=true;}
+  s.addEventListener('change',()=>{const r=doc.querySelector('input[name="flightGeneralSetup"][value="'+s.value+'"]');if(r)r.checked=true;loc.dispatchEvent(new Event('change',{bubbles:true}));});
+  dialog.addEventListener('change',e=>{if(e.target.name==='flightGeneralSetup'&&e.target.checked)s.value=e.target.value;});
+  loc.addEventListener('change',()=>{l.hidden=loc.value!=='RUNWAY_READY';s.disabled=l.hidden;});
+ }
+ for(const o of [...loc.options]){if(o.value==='FINAL_5')o.remove();else if(o.value==='RUNWAY_READY')o.textContent='ON THRESHOLD';else if(o.value==='MANUAL')o.textContent='MANUAL';}
+ const l=by('cockpitGroundStateLabel');l.hidden=loc.value!=='RUNWAY_READY';by('cockpitGroundState').disabled=l.hidden;
+}
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function ready(check){for(let i=0;i<160;i++){if(check())return;await delay(250);}throw Error('COCKPIT PREPARATION NOT CONFIRMED');}
+async function launch(id,type){
+ const f=stateOwner();if(!f?.loadScenario)throw Error('FLIGHT ENGINE NOT READY');
+ if(id==='NONE'){if(f.startFromSelection(null)!==true)throw Error('NORMAL FLIGHT NOT LOADED');return;}
+ if(!catalog.supported.includes(id))throw Error('THIS SCENARIO IS NOT YET IMPLEMENTED');
+ if(crew())throw Error('TIMED SCENARIOS REQUIRE STANDALONE; USE LIVE FAILURE IN THE INSTRUCTOR SEAT');
+ if(!type)throw Error('SELECT FAILURE TYPE');
+ const airport=by('flightAirport').value,runway=by('flightRunway').value;
+ const engine=win.B737EngineFailureV1Scenario, powered=win.B737PoweredGeneralPresetsV1;
+ if(id==='RAPID_DECOMPRESSION'){
+  const s=f.loadScenario({airport,runway,preset:'MANUAL',airborne:true,holdStart:true,altitudeFt:30000,headingDeg:90,speedKt:279,vsFpm:0});
+  if(!powered?.applyCruise||!win.B737UnifiedInstructorNonNormalV1?.armRapid)throw Error('PRESSURIZATION OWNER NOT READY');
+  powered.applyCruise(s);
+  await ready(()=>{const x=powered.getStatus();return x?.settled&&x?.coreReady;});
+  win.B737UnifiedInstructorNonNormalV1.armRapid(type);f.pause(false);return;
+ }
+ if(!engine)throw Error('ENGINE FAILURE OWNER NOT READY');
+ if(id==='ENGINE_FAILURE_FINAL'){
+  f.loadScenario({airport,runway,preset:'FINAL_10',airborne:true,holdStart:true});
+  await ready(()=>win.B737Final10ApproachPresetV1?.getStatus?.()?.complete===true);
+  engine.armFinal(type,f.getState());return;
+ }
+ f.loadScenario({airport,runway,preset:'READY_FOR_TAKEOFF',airborne:false,holdStart:true});
+ await ready(()=>{const x=powered?.getStatus?.();return x?.settled&&x?.coreReady;});
+ if(id==='ENGINE_FIRE_GROUND')engine.armGround(type,f.getState());else engine.arm(type,f.getState());
+ f.pause(false);
+}
+function mount(){
+ if(by('unifiedCockpitScenarios'))return;
+ const root=el('section',null,dialog);root.id='unifiedCockpitScenarios';
+ const a=el('section',null,root);a.className='phase-card';el('h3','Scenarios',a);
+ const normal=choice(a,'cockpitScenario','NONE','NORMAL FLIGHT');normal.checked=true;
+ for(const [group,items] of [['Engine Failure',catalog.engine],['Special Operations',[catalog.rapid]]]){
+  el('h3',group,a);for(const [id,title,types] of items){const r=choice(a,'cockpitScenario',id,title);const set=el('fieldset',null,a);set.id='cockpitType_'+id;set.hidden=true;set.disabled=true;r.setAttribute('aria-controls',set.id);r.setAttribute('aria-expanded','false');el('legend','Failure Type',set);
+    for(const [value,label] of types)choice(set,'cockpitType_'+id,value,label);
+    if(!catalog.supported.includes(id))el('small','Scenario not yet implemented in Welcome or FLT PHASE.',set);
+  }
+ }
+ const actions=el('div',null,a);actions.className='phase-action';
+ const apply=button('LOAD SCENARIO',actions,async()=>{if(apply.disabled)return;const id=selected(),type=selectedType(id);apply.disabled=true;status('PREPARING COCKPIT…');try{await launch(id,type);win.B737UnifiedScenarioSelectionV1={id,type};status('SCENARIO LOADED');dialog.close();}catch(e){status(String(e.message||e),true);}finally{sync();}});
+ apply.className='flight-primary';
+ const q=button('OPEN QRH PROCEDURE TRAINER',actions,()=>{});q.dataset.procedureOpen='';
+ const panel=el('section',null,root);panel.className='phase-card';panel.id='unifiedLiveFailurePanel';el('h3','Live Failure · Current Flight',panel);el('p','Inject a failure without loading or repositioning the aircraft.',panel);
+ const engineLabel=el('label','Engine',panel),eng=el('select',null,engineLabel);for(const [v,t] of [['engine1','ENGINE 1'],['engine2','ENGINE 2']]){const o=el('option',t,eng);o.value=v;}
+ const typeLabel=el('label','Failure type',panel),ty=el('select',null,typeLabel);for(const [v,t] of catalog.engine[0][2]){const o=el('option',t,ty);o.value=v;}
+ const row=el('div',null,panel);row.className='phase-action';
+ button('APPLY FAILURE NOW',row,()=>{try{if(!instructor())throw Error('INSTRUCTOR SEAT REQUIRED');if(crew()&&!win.B737CrewDiagnosticsV1?.report?.().online)throw Error('CREW ROOM NOT CONNECTED');const o=win.B737ISNCockpitV1;if(!o?.injectFlightEngineFailure)throw Error('ENGINE OWNER NOT READY');const result=o.injectFlightEngineFailure({engine:eng.value,type:ty.value});if(result?.accepted!==true)throw Error('FAILURE NOT ACKNOWLEDGED');if(crew())win.dispatchEvent(new CustomEvent('b737:crew-engine-failure',{detail:{engine:eng.value,type:ty.value}}));status('FAILURE APPLIED · '+eng.value.toUpperCase()+' · '+ty.value);dialog.close();}catch(e){status(String(e.message||e),true);}});
+ button('SYSTEM FAILURES',row,()=>{if(!instructor())return;dialog.close();by('failuresHeaderOpen')?.click();});
+ button('MORE SYSTEM SCENARIOS',row,()=>{dialog.dataset.showLegacyScenarios=String(dialog.dataset.showLegacyScenarios!=='true');});
+ const s=el('p','',root);s.id='cockpitScenarioStatus';s.className='phase-status';s.setAttribute('role','status');
+ function selected(){return root.querySelector('input[name="cockpitScenario"]:checked')?.value||'NONE';}
+ function selectedType(id){return by('cockpitType_'+id)?.querySelector('input:checked')?.value||null;}
+ function sync(){const id=selected();for(const [k] of rows){const f=by('cockpitType_'+k),on=id===k;f.hidden=!on;f.disabled=!on;root.querySelector('input[name="cockpitScenario"][value="'+k+'"]').setAttribute('aria-expanded',String(on));}
+  apply.disabled=id!=='NONE'&&(!selectedType(id)||!catalog.supported.includes(id)||crew());
+  if(id!=='NONE'&&crew())status('Timed scenarios are standalone only. Instructor: use Live Failure for the current flight.');
+  else if(id!=='NONE'&&!catalog.supported.includes(id))status('Scenario not yet implemented.');
+  else status('');
+  win.B737UnifiedScenarioSelectionV1={id,type:selectedType(id)};
+ }
+ root.addEventListener('change',sync);
+ // Welcome's selection is restored for display only, never auto-executed.
+ function restore(){const sel=win.B737UnifiedScenarioSelectionV1;if(sel){const r=[...root.querySelectorAll('input[name="cockpitScenario"]')].find(x=>x.value===sel.id);if(r)r.checked=true;const f=by('cockpitType_'+sel.id);if(f){const t=[...f.querySelectorAll('input')].find(x=>x.value===sel.type);if(t)t.checked=true;}}sync();}
+ by('ownerFlightScenariosTab')?.addEventListener('click',restore);
+ restore();
+}
+by('flightScenarioHeader')?.addEventListener('click',()=>{setLocationUI();mount();});
+by('flightScenarioDialog')?.addEventListener('close',()=>{dialog.dataset.showLegacyScenarios='false';});
+})(window,document);
 </script><script id="procedure-trainer-entry-v4">(function(d){d.addEventListener("click",function(e){const b=e.target.closest?.("[data-procedure-open],[data-procedure-close]");if(!b)return;const p=d.getElementById("procedureTrainerDialog");if(!p)return;e.preventDefault();if(b.hasAttribute("data-procedure-close")){p.close();return;}if(!p.open)p.showModal();});})(document);</script><script src="./clock-photo-unified-v6.js?v=CLOCK-PHOTO-0007-CREW" defer></script><script src="./procedure-trainer-v2.js?v=PROCEDURE-TRAINER-07" defer></script></body></html>

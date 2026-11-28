@@ -797,7 +797,7 @@ try{
  const doc=win.document,by=id=>doc.getElementById(id);
  let mounted=false, setupTab='LOCATION';
  const groundPresets=['RUNWAY_READY','COLD_DARK','READY_FOR_START','READY_FOR_TAKEOFF'];
- const selectedPreset=()=>setupTab==='GENERAL'?(doc.querySelector('input[name="flightGeneralSetup"]:checked')?.value||'COLD_DARK'):by('flightPreset').value;
+ const selectedPreset=()=>setupTab==='GENERAL'?(doc.querySelector('input[name="flightGeneralSetup"]:checked')?.value||'COLD_DARK'):(doc.documentElement.dataset.unifiedWelcome!=='active'&&by('flightPreset').value==='RUNWAY_READY'&&by('cockpitGroundState')?.value?by('cockpitGroundState').value:by('flightPreset').value);
  let state=null,active=false,pause=false,lastTick=0,lastPublish=0,lastUI=0,choiceArmed=false;
  let producers={},producerErrors={},timer=null,mcpFollow=true,previouslyCoupled=false;
  let lastPropulsionAt=0,lastPropulsion=null,lastEngineContextAt=0;

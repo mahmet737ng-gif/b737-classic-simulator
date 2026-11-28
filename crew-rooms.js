@@ -72,12 +72,12 @@ const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
 const STORED_CONTROL_TYPES = new Set([
   'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
   'commTransfer','navMode','autobrake','trim','flap','gear',
-  'speedbrake','startLever','throttle','cb','clock'
+  'speedbrake','startLever','throttle','cb','clock','engineFailure'
 ]);
 const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
 const INVALIDATED_BY_SCENARIO = new Set([
   'flap','gear','autobrake','speedbrake','throttle','startLever',
-  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer'
+  'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer','engineFailure'
 ]);
 const FINAL10_OVERHEAD_IDS = new Set([
   'bleed-apu','bleed-eng-1','bleed-eng-2','pack-l','pack-r',
@@ -123,7 +123,7 @@ const CONTROL_TYPES = new Set([
   'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
   'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga',
   'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight',
-  'failure', 'failureScenario', 'profile', 'efis', 'cdu',
+  'failure', 'failureScenario', 'engineFailure', 'profile', 'efis', 'cdu',
   'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb', 'clock', 'sixpack'
 ]);
 
@@ -136,6 +136,10 @@ function crewCommand(data) {
   const {type, id, value} = data ?? {};
   if (!CONTROL_TYPES.has(type) || typeof id !== 'string' || !CONTROL_ID.test(id)) {
     throw new RequestError(400, 'Unknown cockpit command.');
+  }
+  if(type==='engineFailure'){
+    if(!['engine1','engine2'].includes(id)||!['FLAME_OUT','FIRE','SEVERE_DAMAGE','SEPARATION'].includes(value))throw new RequestError(400,'Invalid engine failure.');
+    return {type,id,value};
   }
   if (type === 'clock') {
     const nums=['at','utc','et','ch','dateAge','setAge','resetAge','resetFrom'];
@@ -703,7 +707,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       }
       const acceptCommand = item => {
       const command = crewCommand(item.command);
-      if (['failure', 'failureScenario'].includes(command.type) && member.role !== 'instructor') {
+      if (['failure', 'failureScenario', 'engineFailure'].includes(command.type) && member.role !== 'instructor') {
         throw new RequestError(403, 'Only Instructor can send failures.');
       }
       if (command.type === 'pauseFlight' && command.value === false &&

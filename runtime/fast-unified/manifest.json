@@ -140,7 +140,7 @@
     },
     {
       "path": "engine/afds/desktop-bundle-041e2850eaa0172a.js",
-      "sha256": "52874e080f4eeb5a86aae1ece9980a44af22e1d4fc1abbaa55f85419874192e6"
+      "sha256": "22f2e0d779aff5651220c78ccb1bc3b445ed0027a8f52e20872aca4ce5ce24d6"
     },
     {
       "path": "engine/afds/desktop-bundle-824bd1661d8cf653.js",
@@ -604,7 +604,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-cockpit-v1.js",
-      "sha256": "a5329505656bda163fc1cb13450f64029d972085d272157f09a17d4e5381254a"
+      "sha256": "473e02255f3326109481469ebc516b4d70901e94dcb0d74d2cb5372058c52fb8"
     },
     {
       "path": "panel-mosaic-lab/cockpit/crew-room-v1.css",
@@ -748,7 +748,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/desktop-bundle-fa87fb95723b69b3.js",
-      "sha256": "1d27407773780af18a6c5a87d7d11fd43d12852e2176a5ec624f9a0f5bebdef2"
+      "sha256": "8cf39020e7e073e76c2948da974c95916cc33eecb7e6a7db655b43de34eda65a"
     },
     {
       "path": "panel-mosaic-lab/cockpit/detent-hit-geometry-v1.js",
@@ -816,7 +816,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/index.html",
-      "sha256": "aa5436b7240e7943b6c33fe344b01ba2990f69c61de209631b00c240bbf38191"
+      "sha256": "1e7b90c809423bd3d00fa0be4bfb6a1a84f963f5015c545999eca38570298e30"
     },
     {
       "path": "panel-mosaic-lab/cockpit/irs-13seg-display-v2.css",
@@ -1716,7 +1716,7 @@
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-welcome-v1.js",
-      "sha256": "213b5cd0b302e1f8d016c0b70057962790e99d8f580674b65a54958e9d90c309"
+      "sha256": "92d83745ec9c2207a4e195dc374271ae0728f64292f49a8a2c5abd9343e34b85"
     },
     {
       "path": "panel-mosaic-lab/cockpit/unified-workspace-v1.css",

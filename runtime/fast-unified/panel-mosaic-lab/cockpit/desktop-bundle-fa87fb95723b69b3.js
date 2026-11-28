@@ -502,7 +502,7 @@ try{
 
   function guardInput(event, nested) {
     if (role && role !== 'observer' && (role === 'instructor' || !event.target.closest?.(
-      '#workspaceLabsToggle,#workspaceLabsMenu,#failuresHeaderOpen,#failuresHeaderPopover'))) return;
+      '#workspaceLabsToggle,#workspaceLabsMenu,#failuresHeaderOpen,#failuresHeaderPopover,#unifiedLiveFailurePanel'))) return;
     const source = event.target;
     if (!source.closest) return;
     // Every crew member sees the host's aircraft installation; a guest
@@ -767,6 +767,7 @@ try{
     if (entry.type === 'throttle') return win.B737ThrottlePositions?.mounted();
     if (entry.type === 'startLever') return win.B737EngineStartLevers;
     if (entry.type === 'gear') return win.B737LandingGearUnifiedV1;
+    if(entry.type==='engineFailure')return !!win.B737ISNCockpitV1?.injectFlightEngineFailure;
     if (entry.type === 'failure' || entry.type === 'failureScenario') {
       return win.B737UnifiedInstructorNonNormalV1 && win.B737UnifiedAdvancedInstructorV1;
     }
@@ -849,6 +850,11 @@ try{
         break;
       case 'pauseFlight': flight().pause(value); break;
       case 'stopFlight': flight().stop(); break;
+      case 'engineFailure': {
+        const owner=win.B737ISNCockpitV1;
+        if(owner.getPropulsionSnapshot?.()?.engines?.[id]?.flightFailure===value)return true;
+        return owner.injectFlightEngineFailure({engine:id,type:value})?.accepted===true;
+      }
       case 'failure': {
         const [group, fault] = id.split('.');
         if (group === 'advanced') win.B737UnifiedAdvancedInstructorV1.setFailure(id.slice(9), value);
@@ -1208,6 +1214,7 @@ try{
   listen(win, 'b737:engine-start-lever-command', d => command('startLever', d.device, d.position));
   listen(win, 'b737:toga-request', d => command('toga', d.source, true));
   listen(win, 'b737:crew-flight-command', d => command(d.type, 'flight', d.value));
+  listen(win,'b737:crew-engine-failure',d=>{if(role==='instructor')command('engineFailure',d.engine,d.type);});
   listen(win, 'b737:instructor-failure-change', d => {
     if (role === 'instructor') command('failure', d.group + '.' + d.id, d.active);
   });
@@ -1267,7 +1274,7 @@ try{
         lastSequence = entry.sequence;
         if(entry.type==='loadFlight'){
           lastReceivedOverhead=null;lastPublishedOverhead=null;latestFlight=null;
-          for(let n=queue.length-1;n>=0;n--)if(queue[n].sequence===undefined||(queue[n].sequence<entry.sequence&&['loadFlight','flightTargets','pauseFlight','stopFlight','flap','gear','autobrake','speedbrake','throttle','startLever','mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer'].includes(queue[n].type)))queue.splice(n,1);
+          for(let n=queue.length-1;n>=0;n--)if(queue[n].sequence===undefined||(queue[n].sequence<entry.sequence&&['loadFlight','flightTargets','pauseFlight','stopFlight','flap','gear','autobrake','speedbrake','throttle','startLever','mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer','engineFailure'].includes(queue[n].type)))queue.splice(n,1);
         }
         queue.push(entry);
         if (['toggle','rotary','guard'].includes(entry.type))
