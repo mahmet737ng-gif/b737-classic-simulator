@@ -238,7 +238,15 @@ body > header.unified-minimal-header .header-settings>button{
 #flightScenarioDialog #flightScenarioStatus:not([data-error="true"]){display:none!important}
 #flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #advancedScenarioBlock,
 #flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #instructorScenarioPresets{display:none!important}
-#flightScenarioDialog[data-owner-flt-tab="scenarios"] > :not(.flight-head):not(.flight-sub):not(#flightSetupTabs):not(#advancedScenarioBlock):not(#instructorScenarioPresets):not(#flightScenarioStatus){display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] > :not(.flight-head):not(.flight-sub):not(#flightSetupTabs):not(#advancedScenarioBlock):not(#instructorScenarioPresets):not(#flightScenarioStatus):not(#unifiedProcedureTrainerV2){display:none!important}
+#flightScenarioDialog:not([data-owner-flt-tab="scenarios"]) #unifiedProcedureTrainerV2{display:none!important}
+#flightScenarioDialog[data-owner-flt-tab="scenarios"] > #unifiedProcedureTrainerV2{display:block!important;margin:10px 0;padding:14px;border:1px solid #4b7897;border-radius:9px;background:#102332;color:#eaf5ff;box-sizing:border-box;min-width:0}
+#unifiedProcedureTrainerV2 > summary{cursor:pointer;font:700 14px system-ui;letter-spacing:.04em;color:#b7e1ff;padding:8px 0}
+#unifiedProcedureTrainerV2 > label{margin:8px 0;display:grid!important;gap:5px;min-width:0}
+#unifiedProcedureTrainerV2 input,#unifiedProcedureTrainerV2 select,#unifiedProcedureTrainerV2 textarea{box-sizing:border-box;width:100%;max-width:100%;min-width:0;background:#122532;color:#edf7ff;border:1px solid #66849a;border-radius:5px;padding:8px;font:13px system-ui}
+#unifiedProcedureTrainerV2 .adv-action{margin:3px;padding:8px 10px;border:1px solid #6388a7;border-radius:5px;background:#1b3b52;color:#eaf5ff;cursor:pointer}
+#unifiedProcedureTrainerV2 > p,#unifiedProcedureTrainerV2 > pre{overflow-wrap:anywhere;font-size:12px}
+#unifiedProcedureTrainerV2:not([open]) > :not(summary){display:none!important}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #flightSetupTabs > :not(.flight-actions){display:none!important}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock{display:grid!important}
 #flightScenarioDialog[data-owner-flt-tab="scenarios"] #advancedScenarioBlock .adv-label{display:flex!important}
@@ -656,7 +664,7 @@ body > header.unified-minimal-header .header-settings>button{
   if(!location||!general||doc.getElementById('ownerFlightScenariosTab'))return;
   const scenario=doc.createElement('button');
   scenario.type='button';scenario.id='ownerFlightScenariosTab';scenario.textContent='SCENARIOS';
-  scenario.setAttribute('aria-controls','advancedScenarioBlock');scenario.setAttribute('aria-pressed','false');
+  scenario.setAttribute('aria-controls','unifiedProcedureTrainerV2 advancedScenarioBlock instructorScenarioPresets');scenario.setAttribute('aria-pressed','false');
   nav.append(scenario);
   function select(name){
    dialog.dataset.ownerFltTab=name;
@@ -679,4 +687,4 @@ body > header.unified-minimal-header .header-settings>button{
  });
  observer.observe(dialog,{childList:true,subtree:true});
 })(document);
-</script><script src="./clock-photo-unified-v6.js?v=CLOCK-PHOTO-0006" defer></script><script src="./procedure-trainer-v2.js?v=PROCEDURE-TRAINER-02" defer></script></body></html>
+</script><script src="./clock-photo-unified-v6.js?v=CLOCK-PHOTO-0006" defer></script><script src="./procedure-trainer-v2.js?v=PROCEDURE-TRAINER-03" defer></script></body></html>

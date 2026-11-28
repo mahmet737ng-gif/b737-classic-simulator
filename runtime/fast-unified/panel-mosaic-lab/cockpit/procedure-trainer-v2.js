@@ -71,7 +71,7 @@
   const session=createSession(s=>nativeInject(win,s));
   function mount(){
    const host=doc.getElementById('flightScenarioDialog');if(!host||doc.getElementById('unifiedProcedureTrainerV2'))return !!host;
-   const section=doc.createElement('details');section.id='unifiedProcedureTrainerV2';section.className='adv-scenario';
+   const section=doc.createElement('details');section.id='unifiedProcedureTrainerV2';section.className='adv-scenario';section.open=true;
    function el(tag,parent,label){const e=doc.createElement(tag);if(label)e.textContent=label;parent.append(e);return e;}
    function button(parent,label,fn){const b=el('button',parent,label);b.type='button';b.className='adv-action';b.onclick=()=>{try{fn();render()}catch(e){status.textContent=e.message;}};return b;}
    function field(label,tag){const l=el('label',section,label);l.className='adv-label';return el(tag,l);}
@@ -100,7 +100,7 @@
    button(controls,'EXPORT DEBRIEF',()=>{const blob=new Blob([JSON.stringify(session.snapshot(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=doc.createElement('a');a.href=url;a.download='procedure-debrief.json';a.click();win.setTimeout(()=>URL.revokeObjectURL(url),1000);});
    function render(){const s=session.snapshot();status.textContent=entries.length+' TITLES · '+s.status+' · '+Math.min(s.elapsed,s.delay).toFixed(1)+' / '+s.delay+' s';log.textContent=s.log.map(e=>e.elapsed.toFixed(1)+'s  '+e.type+'  '+e.detail).join('\n');}
    win.setInterval(()=>{if(running){const flight=win.B737UnifiedFlightScenarioV1?.getDiagnostics?.();session.tick(!paused&&flight?.paused!==true);render();}else session.tick(false);},250);
-   options();render();host.append(section);return true;
+   options();render();const anchor=host.querySelector('#advancedScenarioBlock, #instructorScenarioPresets');if(anchor&&anchor.parentElement===host)host.insertBefore(section,anchor);else {const tabs=host.querySelector('#flightSetupTabs');if(tabs&&tabs.parentElement===host)tabs.after(section);else host.append(section);}return true;
   }
   let attempts=0;function boot(){if(!mount()&&++attempts<40)win.setTimeout(boot,250);}
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
