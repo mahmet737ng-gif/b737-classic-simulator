@@ -770,7 +770,7 @@
       // Apply the scenario only after ordered SSE command replay.
       const feed = peer.feed();
       feed.addEventListener('open', () => {
-        online = true; refreshStatus(); flushCommands(); publishHostSnapshot();
+        online = true; flight()?.crewFollower(role !== controller); refreshStatus(); flushCommands(); publishHostSnapshot();
         if(roster?.manager){const profile=win.B737AircraftProfileStore?.get?.();if(profile)command('profile','aircraft',profile);}
       });
       feed.addEventListener('roster', event => readRoster(JSON.parse(event.data)));

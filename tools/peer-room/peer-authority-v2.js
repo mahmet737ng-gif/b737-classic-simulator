@@ -147,7 +147,7 @@ function createAuthority(roomId,emit,now=Date.now){
     if(command.type==='profile'&&role!=='captain')throw Error('Only Captain can set aircraft profile');
     if(command.type==='pauseFlight'&&command.value===false&&room.scenario?.config.preset==='FINAL_10'&&!room.scenario.ready)throw Error('Both pilots must be ready for FINAL 10');
     const entry={...copy(command),client:data.client,requestId:item.requestId,sequence:++room.sequence,serverAt:now()};
-    if(STORED_CONTROL_TYPES.has(entry.type))room.sharedControls.set(entry.type+':'+entry.id,entry);
+    if(STORED_CONTROL_TYPES.has(entry.type)||entry.type==='profile')room.sharedControls.set(entry.type+':'+entry.id,entry);
     if(entry.type==='loadFlight'){
      room.scenario={generation:entry.sequence,config:entry.value,reports:{},ready:false};room.snapshot=null;room.flight=null;
      for(const [key,value] of room.sharedControls)if(invalidatedByScenario(value,room.scenario))room.sharedControls.delete(key);

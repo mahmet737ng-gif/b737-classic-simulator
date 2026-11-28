@@ -3,7 +3,7 @@
  const protocol='B737-P2P-2',build='159b868108df',uid=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join('');
  const wrap=x=>btoa(unescape(encodeURIComponent(JSON.stringify(x)))),unwrap=s=>JSON.parse(decodeURIComponent(escape(atob(s.trim()))));
  const config={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
- let pc=null,control=null,telemetry=null,role=null,roomId=null,authority=null,feed=null,active=false,closed=false,serial=0,localClient=null,remoteClient=null,remoteHello=false,helloSent=false,flightSerial=0,generation=0,waiting=new Map(),backlog=[],rtt=null,started=false;
+ let pc=null,control=null,telemetry=null,role=null,roomId=null,authority=null,feed=null,active=false,closed=false,serial=0,localClient=null,remoteClient=null,remoteHello=false,helloSent=false,localReady=false,remoteReady=false,feedOpened=false,flightSerial=0,generation=0,waiting=new Map(),backlog=[],rtt=null,started=false;
  const root=new URL('.',doc.baseURI);
  const dialog=doc.createElement('dialog');dialog.id='peerRoomDialog';
  dialog.style.cssText='width:min(570px,92vw);max-height:85vh;overflow:auto;background:#14202d;color:#e9f5ff;border:1px solid #5e7e99;border-radius:12px;padding:18px;box-sizing:border-box;font:14px system-ui';
@@ -15,7 +15,7 @@
  function wireEvent(name,value){
   if(name==='scenario'){const next=value.active?value.generation:0;if(next!==generation){generation=next;flightSerial=0;}}
   if(name==='flight'){if(value.generation!==generation||value.flightSerial<=flightSerial)return;flightSerial=value.flightSerial;}
-  if(feed){queueMicrotask(()=>feed.dispatchEvent(new MessageEvent(name,{data:JSON.stringify(value)})));}
+  if(feedOpened){queueMicrotask(()=>feed.dispatchEvent(new MessageEvent(name,{data:JSON.stringify(value)})));}
   else{backlog.push([name,value]);if(backlog.length>1000)backlog.shift();}
  }
  function sendWire(packet,channel=control){
@@ -45,7 +45,7 @@
   win.B737PeerRoomV2=Object.freeze({request,feed:createFeed,diagnostics:()=>({role,roomId,connection:pc.connectionState,ice:pc.iceConnectionState,control:control.readyState,telemetry:telemetry?.readyState,rttMs:rtt,waiting:waiting.size})});
   const url=new URL(win.location.href);url.searchParams.set('crewRoom',roomId);history.replaceState(history.state,'',url);
   const script=doc.createElement('script');script.src=new URL('peer-cockpit-v2.js?v='+build,root).href;script.onerror=()=>fail('Native cockpit adapter could not load');doc.head.append(script);
-  status('P2P CONNECTED · '+(role==='captain'?'Captain / authority':'First Officer')+' · Close this dialog; Captain loads a new scenario.');
+  status('P2P transport connected · mounting native cockpit adapters…');
  }
  function hello(){
   if(helloSent||control?.readyState!=='open')return;
@@ -61,6 +61,7 @@
    remoteHello=true;hello();activate();return;
   }
   if(!active)return;
+  if(msg.kind==='ready'){remoteReady=true;openFeedIfReady();return;}
   if(msg.kind==='request'&&role==='captain'){
    let body,error;
    try{
@@ -84,22 +85,25 @@
    waiting.set(id,{resolve,reject,timer});try{sendWire({kind:'request',id,action,data});}catch(e){waiting.delete(id);clearTimeout(timer);reject(e);fail(e.message);}
   });
  }
+ async function openFeedIfReady(){
+  if(!localReady||!remoteReady||feedOpened||closed)return;
+  feedOpened=true;
+  try{
+   const data=await request('cockpit',{roomId,client:localClient});
+   feed.dispatchEvent(new MessageEvent('roster',{data:JSON.stringify(data)}));
+   if(data.scenario?.active)feed.dispatchEvent(new MessageEvent('scenario',{data:JSON.stringify(data.scenario)}));
+   feed.dispatchEvent(new MessageEvent('shared',{data:JSON.stringify(data.shared)}));
+   if(data.flight)feed.dispatchEvent(new MessageEvent('flight',{data:JSON.stringify(data.flight)}));
+   const events=backlog;backlog=[];
+   for(const [name,value] of events)if(name!=='command'||value.sequence>data.shared.sequence)feed.dispatchEvent(new MessageEvent(name,{data:JSON.stringify(value)}));
+   feed.dispatchEvent(new Event('open'));
+   status('P2P CONNECTED · '+(role==='captain'?'Captain / authority':'First Officer')+' · Close this dialog; Captain loads a new scenario.');
+  }catch(e){fail(e.message);}
+ }
  function createFeed(){
   if(feed)throw Error('P2P feed already attached');
   feed=new EventTarget();feed.readyState=1;
-  setTimeout(async()=>{
-   try{
-    const data=await request('cockpit',{roomId,client:localClient});
-    feed.dispatchEvent(new MessageEvent('roster',{data:JSON.stringify(data)}));
-    // Initial state first; commands already present in the initial snapshot are idempotently reconciled.
-    if(data.scenario?.active)feed.dispatchEvent(new MessageEvent('scenario',{data:JSON.stringify(data.scenario)}));
-    feed.dispatchEvent(new MessageEvent('shared',{data:JSON.stringify(data.shared)}));
-    if(data.flight)feed.dispatchEvent(new MessageEvent('flight',{data:JSON.stringify(data.flight)}));
-    const events=backlog;backlog=[];
-    for(const [name,value] of events)if(name!=='command'||value.sequence>data.shared.sequence)feed.dispatchEvent(new MessageEvent(name,{data:JSON.stringify(value)}));
-    feed.dispatchEvent(new Event('open'));
-   }catch(e){fail(e.message);}
-  },0);
+  setTimeout(()=>{localReady=true;try{sendWire({kind:'ready'});openFeedIfReady();}catch(e){fail(e.message);}},0);
   return feed;
  }
  function attach(ch){
