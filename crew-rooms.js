@@ -72,11 +72,11 @@ const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
 const STORED_CONTROL_TYPES = new Set([
   'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
   'commTransfer','navMode','autobrake','trim','flap','gear',
-  'speedbrake','startLever','throttle','cb','clock','engineFailure','timedFailure'
+  'speedbrake','startLever','throttle','cb','clock','engineFailure','timedFailure','parkingBrake'
 ]);
 const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
 const INVALIDATED_BY_SCENARIO = new Set([
-  'flap','gear','autobrake','speedbrake','throttle','startLever',
+  'flap','gear','autobrake','speedbrake','throttle','startLever','parkingBrake',
   'mcpMode','mcpValue','mcpHardware','trim','frequency','navMode','commTransfer','engineFailure','timedFailure'
 ]);
 const FINAL10_OVERHEAD_IDS = new Set([
@@ -121,7 +121,7 @@ function publicScenario(room) {
 const CONTROL_ID = /^[a-zA-Z0-9_.|:-]{1,72}$/;
 const CONTROL_TYPES = new Set([
   'toggle', 'rotary', 'guard', 'mcpValue', 'mcpHardware', 'mcpMode',
-  'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga',
+  'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga', 'parkingBrake',
   'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight',
   'failure', 'failureScenario', 'engineFailure', 'profile', 'efis', 'cdu',
   'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb', 'clock', 'sixpack'
@@ -162,6 +162,7 @@ function crewCommand(data) {
     const rule=rules[value.trainingId];
     if(!rule||rule[0]!==value.preset||!rule[1].includes(value.trainingType)||value.holdStart!==true||typeof value.airport!=='string'||typeof value.runway!=='string'||value.airborne!==(value.preset!=='READY_FOR_TAKEOFF')||(value.trainingId==='RAPID_DECOMPRESSION'&&value.altitudeFt!==30000))throw new RequestError(400,'Invalid timed training scenario.');
   }
+  if(type==='parkingBrake'){if(id!=='parkingBrake'||typeof value!=='boolean')throw new RequestError(400,'Invalid parking brake');return {type,id,value};}
   if (controlValue(value)) return {type, id, value};
   if (type === 'guard' && typeof value?.open === 'boolean' && controlValue(value.value)) {
     return {type, id, value: {open: value.open, value: value.value}};
