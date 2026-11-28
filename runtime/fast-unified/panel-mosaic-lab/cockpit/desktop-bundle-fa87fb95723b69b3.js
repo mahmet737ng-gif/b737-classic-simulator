@@ -429,7 +429,11 @@ try{
   let online = false;
   let replay = false;
   let lastSequence = 0;
-  let latestFlight;
+  let latestFlight,lastFlightPacket=null,lastFlightAt=0,serverOffset=0,clockSeeded=false,auditBusy=false,pendingWrites=0;
+  const clockSequences=new Map();
+  const roomNow=()=>Date.now()+serverOffset;
+  const crosscheck={altitudeDeltaFt:null,iasDeltaKt:null,headingDeltaDeg:null,lastSampleAgeMs:null,corrections:0};
+
   let commandWrites = Promise.resolve();
   let requestSerial = 0;
   const outbound=[],pendingOverhead=new Map();
@@ -534,7 +538,7 @@ try{
   function reconcileMountedOverhead() {
     const expected = lastReceivedOverhead ?? currentOverhead;
     const actual = byId('overheadFrame')?.contentWindow?.B737CrewOverheadV1?.snapshot?.();
-    if (!expected || !actual) return;
+    if (!expected || !actual || pendingScenario || (activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready)) return;
     for (const [type, groupName] of [['guard','guards'],['rotary','rotaries'],['toggle','toggles']]) {
       for (const [id, state] of Object.entries(expected[groupName] ?? {})) {
         if (JSON.stringify(actual[groupName]?.[id]) === JSON.stringify(state)) continue;
@@ -691,8 +695,10 @@ try{
     if (entry.type === 'navMode') return win.B737UnifiedVHFNavControlsV1;
     if (entry.type === 'firePanel') return typeof win.B737UnifiedFireLights?.dispatch === 'function';
     if (entry.type === 'efis') return typeof win.B737UnifiedEFISPedestalV1?.operate === 'function';
-    if (entry.type === 'mcpValue') return typeof win.B737McpVisualV3?.setValue === 'function';
-    if (entry.type === 'mcpHardware') return typeof win.B737McpHardwareV1?.setState === 'function';
+    if (entry.type === 'clock') return !!win.B737ClassicClockPhotoV3?.snapshot?.(entry.id);
+    if (entry.type === 'sixpack') return !!win.B737SixPack;
+    if (entry.type === 'mcpValue') return typeof win.B737McpAFDSBridgeV1?.applyCrewControl === 'function';
+    if (entry.type === 'mcpHardware') return typeof win.B737McpAFDSBridgeV1?.applyCrewControl === 'function';
     if (entry.type === 'mcpMode') return typeof win.B737McpAFDSBridgeV1?.press === 'function';
     if (entry.type === 'autobrake') return typeof win.B737AutobrakeUnified?.setSelector === 'function';
     if (entry.type === 'trim') return typeof win.B737StabilizerTrim?.set === 'function';
@@ -749,8 +755,23 @@ try{
         win.B737UnifiedCB.refresh();
         break;
       }
-      case 'mcpValue': win.B737McpVisualV3?.setValue(id, value); break;
-      case 'mcpHardware': win.B737McpHardwareV1?.setState(id, value); break;
+      case 'mcpValue':
+      case 'mcpHardware': return win.B737McpAFDSBridgeV1.applyCrewControl(type,id,value);
+      case 'clock': {
+        const ok=win.B737ClassicClockPhotoV3.apply(id,value,Math.max(0,roomNow()-value.at));
+        if(ok)clockSequences.set(id,entry.sequence??0);
+        return ok;
+      }
+      case 'sixpack': {
+        const owner=win.B737SixPack;
+        if(id==='ack')owner.acknowledge('crew-replay');
+        else if(id==='fireAck')owner.acknowledgeFire('crew-replay');
+        else if(id==='recall')owner.recall(value);
+        else if(id==='hold')owner.press(value);
+        else if(id==='release')owner.release(value);
+        return true;
+      }
+
       case 'mcpMode': win.B737McpAFDSBridgeV1?.press(id); break;
       case 'throttle': win.B737ThrottlePositions.set(Number(id), value); break;
       case 'flap': return win.B737FlapVisualTest.request(value,{crewReplay:true});
@@ -852,6 +873,10 @@ try{
       const existing = queue.findIndex(item=>item.type===entry.type&&item.id===entry.id&&
         (item.sequence===undefined||item.sequence<=shared.sequence));
       if (existing!==-1) queue.splice(existing,1);
+      if(entry.type==='clock'&&(clockSequences.get(entry.id)??-1)>=entry.sequence)continue;
+      if(entry.type==='mcpValue'&&win.B737McpAFDSBridgeV1?.getOutput?.()?.values?.[entry.id]===entry.value&&win.B737McpVisualV3?.getState?.()?.[entry.id]===entry.value)continue;
+      if(entry.type==='mcpHardware'&&['CO','SPD_INTV','ALT_INTV'].includes(entry.id))continue;
+      if(entry.type==='mcpHardware'&&win.B737McpHardwareV1?.getState?.()?.[entry.id]===entry.value)continue;
       queue.push({...entry,client:'crew-shared'});
     }
     drain();
@@ -901,9 +926,41 @@ try{
       ['profile', 'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight'].includes(entry.type))) return;
     const update = latestFlight;
     latestFlight = null;
+    lastFlightPacket=update;lastFlightAt=performance.now();
     if (update.client !== client && role !== controller) flight().followCrew(update.state, update.paused);
   }
 
+  function crossCheckFlight(){
+    if(!lastFlightPacket||role===controller||!flight()?.getState||queue.some(e=>['profile','loadFlight','stopFlight','pauseFlight','flightTargets'].includes(e.type)))return;
+    const expected=lastFlightPacket.state,actual=flight().getState();
+    crosscheck.lastSampleAgeMs=Math.round(performance.now()-lastFlightAt);
+    if(!actual||crosscheck.lastSampleAgeMs>2500)return;
+    crosscheck.altitudeDeltaFt=actual.altitudeFt-expected.altitudeFt;
+    crosscheck.iasDeltaKt=actual.iasKt-expected.iasKt;
+    crosscheck.headingDeltaDeg=((actual.trueHeadingDeg-expected.trueHeadingDeg+540)%360)-180;
+    if(Math.abs(crosscheck.altitudeDeltaFt)>1||Math.abs(crosscheck.iasDeltaKt)>.1||Math.abs(crosscheck.headingDeltaDeg)>.1){
+      flight().followCrew(expected,lastFlightPacket.paused);crosscheck.corrections++;
+    }
+  }
+  async function auditShared(){
+    if(!online||auditBusy||(writing||outbound.length||pendingScenario)||(activeScenario?.config?.preset==='FINAL_10'&&!activeScenario.ready))return;
+    auditBusy=true;const before=Date.now();
+    try{
+      const data=await send('cockpit');const after=Date.now();
+      if(Number.isFinite(data.serverAt))serverOffset=data.serverAt-(before+after)/2;
+      if(!(writing||outbound.length||pendingScenario)&&data.shared?.sequence===lastSequence){
+        receiveShared({...data.shared,controls:(data.shared.controls??[]).filter(e=>['clock','mcpValue','mcpHardware'].includes(e.type))});
+        if(!clockSeeded&&roster?.manager){
+          const seats=['captain','firstOfficer'];const missing=seats.filter(seat=>!data.shared.controls?.some(e=>e.type==='clock'&&e.id===seat));
+          if(missing.every(seat=>win.B737ClassicClockPhotoV3?.snapshot?.(seat))){
+            clockSeeded=true;for(const seat of missing){const value=win.B737ClassicClockPhotoV3.snapshot(seat);value.at=roomNow();command('clock',seat,value);}
+          }
+        }
+      }
+      if(!pendingScenario&&data.flight&&role!==controller&&(!lastFlightPacket||data.flight.serverAt>lastFlightPacket.serverAt)){latestFlight=data.flight;receiveFlight();}
+    }catch(error){syncFailures.push({at:Date.now(),type:'audit',reason:error.message});if(syncFailures.length>60)syncFailures.shift();}
+    finally{auditBusy=false;}
+  }
   function drain() {
     // Do not lose a remote command because its instrument has not mounted.
     // Commands for unrelated controls may pass a pending instrument.
@@ -912,9 +969,10 @@ try{
     for (let index = 0; index < queue.length;) {
       const entry = queue[index];
       const key = entry.type + ':' + entry.id;
-      if (entry.client === client) {
+      if (entry.client === client && entry.type!=='clock') {
         const oh=ohKey(entry.type,entry.id);
         if(oh&&pendingOverhead.get(oh)===entry.requestId)pendingOverhead.delete(oh);
+        if(['loadFlight','stopFlight','failureScenario'].includes(entry.type)){lastFlightPacket=null;latestFlight=null;lastFlightAt=0;}
         if(entry.type==='loadFlight'){scenarioGeneration=entry.sequence;pendingScenario=false;}
         queue.splice(index, 1);
         changed = true;
@@ -975,7 +1033,8 @@ try{
 
   function readRoster(data) {
     roster = {...roster, ...data};
-    controller = data.controller;
+    const previous=controller;controller = data.controller;
+    if(previous!==controller&&role===controller&&lastFlightPacket&&flight()?.followCrew)flight().followCrew(lastFlightPacket.state,lastFlightPacket.paused);
     flight()?.crewFollower(role !== controller);
     refreshStatus();
     syncLabAccess();
@@ -1065,6 +1124,11 @@ try{
     }
     command('firePanel', type, native);
   });
+  listen(win,'b737:crew-clock-control',d=>{if(d.state){command('clock',d.seat,{...d.state,at:roomNow()});}});
+  listen(win,'b737:sixpack-acknowledge',d=>{if(d.source!=='crew-replay')command('sixpack','ack','CAPT');});
+  listen(win,'b737:sixpack-fire-acknowledge',d=>{if(d.source!=='crew-replay')command('sixpack','fireAck','CAPT');});
+  listen(win,'b737:sixpack-recall',d=>command('sixpack','recall',d.side));
+  listen(win,'b737:sixpack-lamp-test',d=>command('sixpack',d.held?'hold':'release',d.side));
   listen(win, 'b737:mcp-value-change', d => {
     if (d.method !== 'external') command('mcpValue', d.control, d.value);
   });
@@ -1111,16 +1175,17 @@ try{
   });
   listen(win, 'b737:flight-scenario-state', state => {
     const time = performance.now();
-    if (!online || replay || role !== controller || !state?.target || flightWrite || time - flightChangedAt < 200) return;
+    if (!online || replay || pendingScenario || role !== controller || !state?.target || flightWrite || time - flightChangedAt < 200) return;
     flightChangedAt = time;
     flightWrite = true;
-    commandWrites.then(() => send('flight', {state, paused: flight().getDiagnostics().paused}))
-      .catch(() => {}).finally(() => { flightWrite = false; });
+    send('flight', {state, paused: flight().getDiagnostics().paused})
+      .catch(error=>{syncFailures.push({at:Date.now(),type:'flight',reason:error.message});if(syncFailures.length>60)syncFailures.shift();}).finally(()=>{flightWrite=false;});
   });
 
   async function connect() {
     try {
-      const data = await send('cockpit');
+      const started=Date.now();const data=await send('cockpit');
+      if(Number.isFinite(data.serverAt))serverOffset=data.serverAt-(started+Date.now())/2;
       role = data.role;
       doc.documentElement.dataset.crewRole = role;
       readRoster(data);
@@ -1159,7 +1224,8 @@ try{
         online = false;refreshStatus();
         if (feed.readyState === EventSource.CLOSED) refreshStatus('Crew Room disconnected. Rejoin to continue.');
       });
-      setInterval(() => {drain();syncLabAccess();reportScenarioReadiness();}, 120);
+      setInterval(() => {drain();syncLabAccess();reportScenarioReadiness();crossCheckFlight();}, 120);
+      setInterval(()=>{if(!pendingScenario&&!writing&&!outbound.length){reconcileMountedOverhead();auditShared();}},2000);
       bindFrames();
     } catch (error) {
       refreshStatus(error.message);
@@ -1179,6 +1245,7 @@ try{
         applyP99Ms:quantile(sorted,.99),networkP50Ms:quantile(network,.5),
         networkP95Ms:quantile(network,.95),networkP99Ms:quantile(network,.99),
         recentLongTasks:longTasks.slice(),failures:syncFailures.slice(),
+        crosscheck:{...crosscheck,stale:role!==controller&&(!lastFlightAt||performance.now()-lastFlightAt>2500)},
         scenario:win.B737CrewScenarioReadyV1.getState(),
         final10:win.B737Final10ApproachPresetV1?.getStatus?.()??null};
     }

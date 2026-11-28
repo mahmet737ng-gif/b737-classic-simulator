@@ -72,7 +72,7 @@ const COMMAND_REQUEST_ID = /^[a-zA-Z0-9_-]{8,88}$/;
 const STORED_CONTROL_TYPES = new Set([
   'toggle','rotary','guard','mcpValue','mcpHardware','efis','frequency',
   'commTransfer','navMode','autobrake','trim','flap','gear',
-  'speedbrake','startLever','throttle','cb'
+  'speedbrake','startLever','throttle','cb','clock'
 ]);
 const SCENARIO_REPORT_KEYS = /^[a-zA-Z0-9_:-]{1,72}$/;
 const INVALIDATED_BY_SCENARIO = new Set([
@@ -124,7 +124,7 @@ const CONTROL_TYPES = new Set([
   'gear', 'throttle', 'flap', 'speedbrake', 'startLever', 'toga',
   'loadFlight', 'flightTargets', 'pauseFlight', 'stopFlight',
   'failure', 'failureScenario', 'profile', 'efis', 'cdu',
-  'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb'
+  'frequency', 'commTransfer', 'navMode', 'autobrake', 'trim', 'firePanel', 'cb', 'clock', 'sixpack'
 ]);
 
 function controlValue(value) {
@@ -136,6 +136,21 @@ function crewCommand(data) {
   const {type, id, value} = data ?? {};
   if (!CONTROL_TYPES.has(type) || typeof id !== 'string' || !CONTROL_ID.test(id)) {
     throw new RequestError(400, 'Unknown cockpit command.');
+  }
+  if (type === 'clock') {
+    const nums=['at','utc','et','ch','dateAge','setAge','resetAge','resetFrom'];
+    if (!['captain','firstOfficer'].includes(id) || !value || typeof value !== 'object' ||
+        !['RUN','HLD','RESET'].includes(value.es) || !['RUN','HLD','RESET'].includes(value.cs) ||
+        !['RUN','HLD','MS','HS'].includes(value.gs) || typeof value.dateMode !== 'boolean' ||
+        !nums.every(k=>Number.isFinite(value[k])) || value.et<0 || value.ch<0 ||
+        value.dateAge<0 || value.setAge<0 || value.resetAge<0)
+      throw new RequestError(400,'Invalid shared clock state.');
+    return {type,id,value:Object.fromEntries([...nums,'es','cs','gs','dateMode'].map(k=>[k,value[k]]))};
+  }
+  if (type === 'sixpack') {
+    if (!['ack','fireAck','recall','hold','release'].includes(id) ||
+        !['CAPT','FO'].includes(value)) throw new RequestError(400,'Invalid caution command.');
+    return {type,id,value};
   }
   if (controlValue(value)) return {type, id, value};
   if (type === 'guard' && typeof value?.open === 'boolean' && controlValue(value.value)) {
@@ -617,7 +632,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
       if (!member) throw new RequestError(403, 'Join the room before opening the cockpit.');
       member.lastSeen = now();
       if (action === 'cockpit') return send(res, 200, {
-          ...stateFor(room, user), shared: sharedState(room), scenario: publicScenario(room)
+          ...stateFor(room, user), shared: sharedState(room), scenario: publicScenario(room), flight:room.flight, serverAt:now()
         });
       if (member.role === 'observer') throw new RequestError(403, 'Observer is read-only.');
       if (typeof data.client !== 'string' || !CLIENT_ID.test(data.client)) {
@@ -682,7 +697,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
           throw new RequestError(400, 'Invalid flight state.');
         }
         member.flightAt = now();
-        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role};
+        room.flight = {state: data.state, paused: data.paused, client: data.client, role: member.role, serverAt:now()};
         broadcast(room, 'flight', room.flight);
         return send(res, 200, {});
       }
@@ -719,7 +734,7 @@ function createCrewRoomHandler({origin, database, accounts, roomStore, ownerUser
         room.profile = nextProfile;
         room.snapshot = null;
       }
-      const entry = {...command, sequence: ++room.sequence, client: data.client, ...(requestId && {requestId})};
+      const entry = {...command, sequence: ++room.sequence, client: data.client, serverAt:now(), ...(requestId && {requestId})};
       if (['loadFlight', 'stopFlight', 'failureScenario'].includes(command.type)) room.flight = null;
       if (STORED_CONTROL_TYPES.has(command.type))
         room.sharedControls.set(command.type + ':' + command.id, entry);

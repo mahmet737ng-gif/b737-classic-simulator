@@ -1640,6 +1640,8 @@ window.B737McpAFDSBridgeV1=Object.freeze({
  },
  disconnectAutothrottle:()=>{const before=Core.output(state);if(!before.controls.atArm){window.B737AFDSAnnunciatorUnifiedV1?.acknowledge?.("AT");return before;}return send({type:"AT_ARM",armed:false});},
  press:requestMode,
+ applyCrewControl:(type,id,value)=>{if(type==='mcpValue')return send({type:'VALUE',id,value});if(type==='mcpHardware'){if(['FD_LEFT','FD_RIGHT','AT_ARM','VS_WHEEL','CO','SPD_INTV','ALT_INTV'].includes(id)){hardwareCommand({detail:{id,value,method:'crew'}});return Core.output(state);}window.B737McpHardwareV1?.setState(id,value);return true;}return false;},
+
  reset:()=>{window.dispatchEvent(new CustomEvent("b737:afds-owner-reset"));send({type:"RESET"});lastElectrical="";electrical();return Core.output(state);}
 });
 })();
